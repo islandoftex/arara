@@ -1,0 +1,10 @@
+!config
+identifier: makeindex
+name: makeindex
+command: 'makeindex @{style} @{expandoptions} @{file}.idx'
+arguments: 
+  - identifier: style
+    flag: -s @{value}
+  - identifier: expandoptions
+    flag: '@{value}'
+

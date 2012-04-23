@@ -1,0 +1,9 @@
+!config
+identifier: dvips
+name: Dvi-To-Ps
+command: 'dvips @{file}.dvi -o @{outputfile == "" ? file : outputfile}.ps @{expandoptions}'
+arguments:
+  - identifier: outputfile
+    flag:  '@{value}'
+  - identifier: expandoptions
+    flag: '@{value}'

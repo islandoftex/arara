@@ -1,0 +1,13 @@
+!config
+identifier: nomencl
+name: nomencl
+command: 'makeindex @{log} @{expandoptions} @{file}.nlo -s @{stylefile == "" ? file : nomencl}.ist -o @{file}.nls'
+arguments: 
+  - identifier: log
+    flag: '@{value.toLowerCase() == "yes" || value.toLowerCase() == "true" ||
+             value.toLowerCase() == "on" ? "" : "-t mynomencl.nlg" }'
+  - identifier: stylefile
+    flag: '@{value}'
+  - identifier: expandoptions
+    flag: '@{value}'
+

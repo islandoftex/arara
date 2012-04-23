@@ -1,0 +1,8 @@
+!config
+identifier: cleanhelpfiles
+name: Removing-Help-Files
+command: find -type f ! -iname "*.pdf" ! -iname "*.tex" ! -iname "*.sty" ! -iname "*.def" ! -iname "*.bst" -exec rm '{}' +
+##command: 'rm -f !(@{keep == "" ? "*.pdf|*.tex" : "*.pdf|*.tex|" + keep })'
+arguments:
+  - identifier: keep
+    flag:  '@{value}'

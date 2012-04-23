@@ -1,0 +1,7 @@
+!config
+identifier: bibtex
+name: BibTeX
+command: 'bibtex @{expandoptions} @{file}.aux'
+arguments: 
+  - identifier: expandoptions
+    flag: '@{value}'
