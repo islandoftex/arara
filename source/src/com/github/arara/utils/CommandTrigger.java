@@ -1,46 +1,37 @@
 /**
- * \cond LICENSE
- * ********************************************************************
- * This is a conditional block for preventing the DoxyGen documentation
- * tool to include this license header within the description of each
- * source code file. If you want to include this block, please define
- * the LICENSE parameter into the provided DoxyFile.
- * ********************************************************************
- *
+ * *********************************************************************
  * Arara -- the cool TeX automation tool
  * Copyright (c) 2012, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
+ * Redistribution and  use in source  and binary forms, with  or without
+ * modification, are  permitted provided  that the  following conditions
+ * are met:
  *
- * 1. Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
+ * 1. Redistributions  of source  code must  retain the  above copyright
+ * notice, this list of conditions and the following disclaimer.
  *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
+ * 2. Redistributions in binary form  must reproduce the above copyright
+ * notice, this list  of conditions and the following  disclaimer in the
+ * documentation and/or other materials provided with the distribution.
  *
- * 3. Neither the name of the project's author nor the names of its contributors
- * may be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ * 3. Neither  the name  of the  project's author nor  the names  of its
+ * contributors may be used to  endorse or promote products derived from
+ * this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * THIS SOFTWARE IS  PROVIDED BY THE COPYRIGHT  HOLDERS AND CONTRIBUTORS
+ * "AS IS"  AND ANY  EXPRESS OR IMPLIED  WARRANTIES, INCLUDING,  BUT NOT
+ * LIMITED  TO, THE  IMPLIED WARRANTIES  OF MERCHANTABILITY  AND FITNESS
+ * FOR  A PARTICULAR  PURPOSE  ARE  DISCLAIMED. IN  NO  EVENT SHALL  THE
+ * COPYRIGHT HOLDER OR CONTRIBUTORS BE  LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY,  OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT  NOT LIMITED  TO, PROCUREMENT  OF SUBSTITUTE  GOODS OR  SERVICES;
+ * LOSS  OF USE,  DATA, OR  PROFITS; OR  BUSINESS INTERRUPTION)  HOWEVER
+ * CAUSED AND  ON ANY THEORY  OF LIABILITY, WHETHER IN  CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
+ * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
  * POSSIBILITY OF SUCH DAMAGE.
- *
- * ********************************************************************
- * End of the LICENSE conditional block
- * ********************************************************************
- * \endcond
+ * *********************************************************************
  *
  * CommandTrigger.java: This class is responsible for running the Arara
  * commands.
@@ -63,7 +54,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Implements an environment for running the Arara commands.
  * @author Paulo Roberto Massa Cereda
- * @version 1.0
+ * @version 1.0.1
  * @since 1.0
  */
 public class CommandTrigger {
@@ -76,6 +67,9 @@ public class CommandTrigger {
     
     // the main file
     private File theFile;
+    
+    // flag to determine verbose output
+    private boolean showVerboseOutput;
 
     /**
      * Constructor.
@@ -85,6 +79,11 @@ public class CommandTrigger {
         
         // set the list
         this.commands = commands;
+    }
+    
+    public void setVerbose(boolean verbose) {
+        
+        showVerboseOutput = verbose;
     }
 
     /**
@@ -107,15 +106,22 @@ public class CommandTrigger {
             // print a message
             System.out.print("Running " + currentAraraCommand.getName() + "... ");
             
+            // if verbose
+            if (showVerboseOutput) {
+                
+                // add two lines
+                System.out.println("\n");
+            }
+            
             // log action
             logger.info("Running {}.", currentAraraCommand.getName());
             
             // log command
             logger.trace("Command: {}", currentAraraCommand.getCommand());
-                        
+            
             // if the execution was ok
             if (runCommand(currentAraraCommand)) {
-                
+                              
                 // print a message
                 System.out.println("SUCCESS");
                 
@@ -135,6 +141,14 @@ public class CommandTrigger {
                 return false;
                 
             }
+            
+            // if verbose
+            if (showVerboseOutput) {
+                
+                // add one line to the output
+                System.out.println("");
+            }
+            
         }
         
         // log action
@@ -195,6 +209,28 @@ public class CommandTrigger {
             // log values
             logger.trace("Standard error logging: {}", araraStdErr.toString());
             logger.trace("Standard output logging: {}", araraStdOut.toString());
+            
+            // if verbose
+            if (showVerboseOutput) {
+                
+                // there is something in the error log
+                if (!araraStdErr.toString().isEmpty()) {
+                    
+                    // print it
+                    System.out.println(araraStdErr.toString());
+                }
+                
+                // there is something in the standard output log
+                if (!araraStdOut.toString().isEmpty()) {
+                    
+                    // print it
+                    System.out.println(araraStdOut.toString());
+                }
+                
+                // print the output status
+                System.out.print("Status: ");
+                
+            }
                         
             // return the status as a boolean
             return (exitValue == 0 ? true : false);

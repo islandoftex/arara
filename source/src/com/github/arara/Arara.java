@@ -1,46 +1,37 @@
 /**
- * \cond LICENSE
- * ********************************************************************
- * This is a conditional block for preventing the DoxyGen documentation
- * tool to include this license header within the description of each
- * source code file. If you want to include this block, please define
- * the LICENSE parameter into the provided DoxyFile.
- * ********************************************************************
- *
+ * *********************************************************************
  * Arara -- the cool TeX automation tool
  * Copyright (c) 2012, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
+ * Redistribution and  use in source  and binary forms, with  or without
+ * modification, are  permitted provided  that the  following conditions
+ * are met:
  *
- * 1. Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
+ * 1. Redistributions  of source  code must  retain the  above copyright
+ * notice, this list of conditions and the following disclaimer.
  *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
+ * 2. Redistributions in binary form  must reproduce the above copyright
+ * notice, this list  of conditions and the following  disclaimer in the
+ * documentation and/or other materials provided with the distribution.
  *
- * 3. Neither the name of the project's author nor the names of its contributors
- * may be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ * 3. Neither  the name  of the  project's author nor  the names  of its
+ * contributors may be used to  endorse or promote products derived from
+ * this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * THIS SOFTWARE IS  PROVIDED BY THE COPYRIGHT  HOLDERS AND CONTRIBUTORS
+ * "AS IS"  AND ANY  EXPRESS OR IMPLIED  WARRANTIES, INCLUDING,  BUT NOT
+ * LIMITED  TO, THE  IMPLIED WARRANTIES  OF MERCHANTABILITY  AND FITNESS
+ * FOR  A PARTICULAR  PURPOSE  ARE  DISCLAIMED. IN  NO  EVENT SHALL  THE
+ * COPYRIGHT HOLDER OR CONTRIBUTORS BE  LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY,  OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT  NOT LIMITED  TO, PROCUREMENT  OF SUBSTITUTE  GOODS OR  SERVICES;
+ * LOSS  OF USE,  DATA, OR  PROFITS; OR  BUSINESS INTERRUPTION)  HOWEVER
+ * CAUSED AND  ON ANY THEORY  OF LIABILITY, WHETHER IN  CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
+ * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
  * POSSIBILITY OF SUCH DAMAGE.
- *
- * ********************************************************************
- * End of the LICENSE conditional block
- * ********************************************************************
- * \endcond
+ * *********************************************************************
  *
  * Arara.java: The main class. Basically, this class will get the file name
  * from the arguments list and call the proper methods from the other helper
@@ -61,7 +52,7 @@ import org.slf4j.LoggerFactory;
  * so if something goes wrong, the generic exception catch here will simply
  * print it. I tried to make the code as easier as possible.
  * @author Paulo Roberto Massa Cereda
- * @version 1.0
+ * @version 1.0.1
  * @since 1.0
  */
 public class Arara {
@@ -88,11 +79,15 @@ public class Arara {
             // create a new analyzer
             CommandLineAnalyzer commandLine = new CommandLineAnalyzer(args);
             
-            // if there's no file to parse
+            // if the minimum parameters are not satisfied
+            // or it's a simple help request
             if (!commandLine.parse()) {
-                
+                              
                 // simply return
-                return;
+                exitStatus = 0;
+                
+                // exit right now
+                System.exit(exitStatus);
             }
             
             // define the main file
@@ -100,16 +95,6 @@ public class Arara {
             
             // create a new file
             file = new File(commandLine.getFile());
-                    
-            // file does not exist
-            if (!file.exists()) {
-                
-                // print message about it
-                System.out.println("ERROR: File '" + file.getName() + "' does not exist.");
-                
-                // and return, end of execution
-                return;
-            }
             
             // welcome message
             logger.info("Welcome to Arara!");
@@ -132,7 +117,7 @@ public class Arara {
             
             // the file without extension doesn't need to exist, as
             // it's just a reference
-            file = new File(commandLine.getFile().substring(0, commandLine.getFile().length() - ".tex".length()));
+            file = commandLine.getFileReference();
             
             // set the file
             dirParser.setFile(file);
@@ -143,17 +128,30 @@ public class Arara {
             // deploy the tasks through a command trigger
             CommandTrigger commandTrigger = new CommandTrigger(taskDeployer.deploy());
             
+            // get file from command line
             commandTrigger.setFile(new File(commandLine.getFile()));
             
+            // set verbose option, if enabled
+            commandTrigger.setVerbose(commandLine.isVerbose());
+            
             // execute the tasks
-            commandTrigger.execute();
+            boolean overallResult = commandTrigger.execute();
             
             // final message
             logger.info("Done.");
             
-            // everything fine
-            exitStatus = 0;
-            
+            // if everything was ok
+            if (overallResult) {
+                
+                // everything fine
+                exitStatus = 0;
+            }
+            else {
+                
+                // something wrong happened
+                exitStatus = 1;
+            }
+                    
         } catch (Exception e) {
                         
             // something bad happened, exit

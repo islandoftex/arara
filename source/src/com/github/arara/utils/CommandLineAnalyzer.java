@@ -1,46 +1,37 @@
 /**
- * \cond LICENSE
- * ********************************************************************
- * This is a conditional block for preventing the DoxyGen documentation
- * tool to include this license header within the description of each
- * source code file. If you want to include this block, please define
- * the LICENSE parameter into the provided DoxyFile.
- * ********************************************************************
- *
+ * *********************************************************************
  * Arara -- the cool TeX automation tool
  * Copyright (c) 2012, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
+ * Redistribution and  use in source  and binary forms, with  or without
+ * modification, are  permitted provided  that the  following conditions
+ * are met:
  *
- * 1. Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
+ * 1. Redistributions  of source  code must  retain the  above copyright
+ * notice, this list of conditions and the following disclaimer.
  *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
+ * 2. Redistributions in binary form  must reproduce the above copyright
+ * notice, this list  of conditions and the following  disclaimer in the
+ * documentation and/or other materials provided with the distribution.
  *
- * 3. Neither the name of the project's author nor the names of its contributors
- * may be used to endorse or promote products derived from this software without
- * specific prior written permission.
+ * 3. Neither  the name  of the  project's author nor  the names  of its
+ * contributors may be used to  endorse or promote products derived from
+ * this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * THIS SOFTWARE IS  PROVIDED BY THE COPYRIGHT  HOLDERS AND CONTRIBUTORS
+ * "AS IS"  AND ANY  EXPRESS OR IMPLIED  WARRANTIES, INCLUDING,  BUT NOT
+ * LIMITED  TO, THE  IMPLIED WARRANTIES  OF MERCHANTABILITY  AND FITNESS
+ * FOR  A PARTICULAR  PURPOSE  ARE  DISCLAIMED. IN  NO  EVENT SHALL  THE
+ * COPYRIGHT HOLDER OR CONTRIBUTORS BE  LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY,  OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT  NOT LIMITED  TO, PROCUREMENT  OF SUBSTITUTE  GOODS OR  SERVICES;
+ * LOSS  OF USE,  DATA, OR  PROFITS; OR  BUSINESS INTERRUPTION)  HOWEVER
+ * CAUSED AND  ON ANY THEORY  OF LIABILITY, WHETHER IN  CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
+ * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
  * POSSIBILITY OF SUCH DAMAGE.
- *
- * ********************************************************************
- * End of the LICENSE conditional block
- * ********************************************************************
- * \endcond
+ * *********************************************************************
  *
  * CommandLineAnalyzer.java: This class implements a command line parser to
  * provide better control of flags and files to process.
@@ -50,28 +41,35 @@
 package com.github.arara.utils;
 
 // needed import
+import java.io.File;
 import org.apache.commons.cli.*;
 
 /**
  * Implements a command line parser to provide better control of flags
  * and files to process.
  * @author Paulo Roberto Massa Cereda
- * @version 1.0
+ * @version 1.0.1
  * @since 1.0
  */
 public class CommandLineAnalyzer {
 
     // the version number
-    private final String VERSION = "1.0";
+    private final String VERSION = "1.0.1";
     
     // the file to process
     private String theFile;
+    
+    // the file reference
+    private File fileReference;
     
     // the command line arguments
     private String[] theArgs;
     
     // the command line options
     private Options commandLineOptions;
+    
+    // the verbose option
+    private boolean showVerboseOutput;
 
     /**
      * Constructor.
@@ -84,6 +82,9 @@ public class CommandLineAnalyzer {
         
         // create new options
         commandLineOptions = new Options();
+        
+        // set the default value to the output
+        showVerboseOutput = false;
 
     }
 
@@ -95,13 +96,16 @@ public class CommandLineAnalyzer {
     public boolean parse() {
 
         // create version option
-        Option optVersion = new Option("v", "version", false, "print the application version");
+        Option optVersion = new Option("V", "version", false, "print the application version");
         
         // create help option
         Option optHelp = new Option("h", "help", false, "print the help message");
         
         // create log option
         Option optLog = new Option("l", "log", false, "generate a log output");
+        
+        // create verbose option
+        Option optVerbose = new Option("v", "verbose", false, "print the command output");
 
         // add version
         commandLineOptions.addOption(optVersion);
@@ -111,6 +115,9 @@ public class CommandLineAnalyzer {
         
         // add log
         commandLineOptions.addOption(optLog);
+        
+        // add verbose
+        commandLineOptions.addOption(optVerbose);
         
         // create a new basic parser
         CommandLineParser parser = new BasicParser();
@@ -169,15 +176,20 @@ public class CommandLineAnalyzer {
                         // active logging
                         AraraLogging.enableLogging(line.hasOption("log"));
                         
+                        // set verbose flag
+                        showVerboseOutput = line.hasOption("verbose");
+                        
                         // everything is fine, set
                         // the file
                         theFile = files[0];
-                        
-                        // if there's no extension
-                        if (!theFile.toLowerCase().endsWith(".tex")) {
+                                                
+                        // check if file exists
+                        if (!checkFile(theFile, new String[] { ".tex", ".dtx", ".ltx" })) {
                             
-                            // add it
-                            theFile = theFile.concat(".tex");
+                            // file not found,
+                            // return false
+                            return false;
+                            
                         }
                         
                         // and return
@@ -210,7 +222,7 @@ public class CommandLineAnalyzer {
         HelpFormatter formatter = new HelpFormatter();
         
         // add the text and print
-        formatter.printHelp("arara [ file [ --log ] | --help | --version ]\n", commandLineOptions);
+        formatter.printHelp("arara [ file [ --log ] [ --verbose ] | --help | --version ]\n", commandLineOptions);
     }
 
     /**
@@ -247,4 +259,150 @@ public class CommandLineAnalyzer {
         // return it
         return theFile;
     }
+
+    /**
+     * Getter for the file reference, without extension.
+     * @return The file reference.
+     */
+    public File getFileReference() {
+        
+        // return it
+        return fileReference;
+    }
+    
+    /**
+     * Checks if file is valid.
+     * @param filename The file name.
+     * @param extensions A priority list of allowed extensions.
+     * @return A boolean value to determine if the file is valid.
+     */
+    private boolean checkFile(String filename, String[] extensions) {
+        
+        // flag to indicate the file was found
+        boolean foundFile = false;
+        
+        // iterate through all the extensions
+        for (String currentExtension: extensions) {
+            
+            // check if the file has the current extension
+            if (filename.toLowerCase().endsWith(currentExtension)) {
+                
+                // set flag
+                foundFile = true;
+                
+                // break iteration
+                break;
+            }
+        }
+        
+        // create a new file status
+        File fileStatus = null;
+        
+        // check if a reference was found
+        if (foundFile) {
+            
+            // create new instance
+            fileStatus = new File(filename);
+            
+            // check if exists
+            if (fileStatus.exists()) {
+                
+                // add file
+                theFile = filename;
+                
+                // add reference
+                fileReference = new File(theFile.substring(0, theFile.length() - 4));
+                
+                // found it!
+                return true;
+            }
+            else {
+                
+                // print message about it
+                System.out.println("ERROR: File '" + filename + "' does not exist.");
+                
+                // not found
+                return false;
+            }
+            
+        }
+        else {
+            
+            // there's no extension, we will add them
+            // and see if something is found
+            for (String currentExtension: extensions) {
+                
+                // new file with extension
+                fileStatus = new File(filename + currentExtension);
+                
+                // let's check it
+                if (fileStatus.exists()) {
+                    
+                    // add file
+                    theFile = filename + currentExtension;
+                
+                    // add reference
+                    fileReference = new File(theFile.substring(0, theFile.length() - 4));
+                    
+                    // found it!
+                    return true;
+                    
+                }
+                            
+            }
+            
+            // print message about it
+            System.out.println("ERROR: File '" + filename + " " + getExtensionList(extensions) + "' does not exist.");
+            
+            // not found
+            return false;
+            
+        }
+        
+    }
+    
+    /**
+     * Returns a string with the extensions list.
+     * @param extensions The extensions list.
+     * @return A string with the extensions list.
+     */
+    private String getExtensionList(String[] extensions) {
+        
+        // if it's an empty vector
+        if (extensions.length == 0) {
+            
+            // return an empty string
+            return "";
+            
+        }
+        else {
+            
+            // get first element
+            String result = "[ ".concat(extensions[0]);
+            
+            // iterate through the other values
+            for (int i = 1; i < extensions.length; i++) {
+                
+                // add the current extension
+                result = result.concat(", ").concat(extensions[i]);
+            }
+            
+            // close the list
+            result = result.concat(" ]");
+            
+            // return it
+            return result;
+        }
+    }
+    
+    /**
+     * Checks if the output must be verbose.
+     * @return A boolean value.
+     */
+    public boolean isVerbose() {
+
+        // return it
+        return showVerboseOutput;
+    }
+    
 }
