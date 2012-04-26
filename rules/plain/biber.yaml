@@ -1,0 +1,7 @@
+!config
+identifier: biber
+name: Biber
+command: 'biber @{expandoptions} @{file}'
+arguments: 
+  - identifier: expandoptions
+    flag: '@{value}'
