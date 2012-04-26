@@ -1,0 +1,7 @@
+!config
+identifier: make
+name: Running-Make
+command: make @{task}
+arguments: 
+  - identifier: task
+    flag: '@{value}'

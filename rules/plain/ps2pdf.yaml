@@ -1,0 +1,9 @@
+!config
+identifier: ps2pdf
+name: Ps-To-Pdf
+command: 'ps2pdf @{expandoptions} @{file}.ps @{outputfile == "" ? file : outputfile}.pdf'
+arguments: 
+  - identifier: outputfile
+    flag:  '@{value}'
+  - identifier: expandoptions
+    flag: '@{value}'
