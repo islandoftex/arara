@@ -199,3 +199,10 @@
 % -------------------------------------------------
 \RequirePackage[colorlinks, linkcolor={black}, urlcolor={araracolor}]{hyperref}
 % -------------------------------------------------
+
+% Helper macros
+% -------------------------------------------------
+\newcommand*\arara{\@ifstar\@arara\@@arara}
+\def\@arara{{\fontfamily{fco}\color{araracolor}\bfseriesArara}}
+\def\@@arara{{\fontfamily{fco}\color{araracolor}\bfseriesarara}}
+% -------------------------------------------------
