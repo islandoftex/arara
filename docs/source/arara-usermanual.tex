@@ -264,8 +264,8 @@ you are in control, so it depends on you.
 
 Maybe I should provide an example for a better understanding. Consider the \LaTeX{} 
 code presented in Code~\ref{code:hellolatex}. How would you compile 
-\verb|mydoc.tex| in \verb|rubber|, for instance? It's quite easy, a simple 
-\verb|rubber --pdf mydoc| would do the trick. Now, if you try \verb|arara mydoc|, 
+|mydoc.tex| in |rubber|, for instance? It's quite easy, a simple 
+|rubber --pdf mydoc| would do the trick. Now, if you try |arara mydoc|, 
 I'm afraid nothing will be generated. Why? Isn't \arara supposed to be a \TeX{} 
 automation tool? Well, \arara doesn't know what to do with your file. You need to
 tell it. For now, please understand that you need to provide the batteries for 
@@ -302,7 +302,7 @@ explicitly tell it to execute the task. Introducing the \arara terminology:
 \end{description}
 
 That's probably one of the major differences of \arara from other automation 
-tools. With \verb|latexmk| and \verb|rubber|, for example, you have great 
+tools. With |latexmk| and |rubber|, for example, you have great 
 features out of the box, ready for you to use and abuse -- batteries included. 
 \arara takes a minimalist approach and gives you the simplicity of doing exactly 
 what you want it to do. Nothing more, nothing less.
@@ -333,14 +333,14 @@ will need to adapt them when porting to other operating system.
 
 \arara can be used in complex workflows, like theses and books. You can tell 
 \arara to compile the document, generate indices and apply styles, remove 
-temporary files, compile other \verb|.tex| documents, run MetaPost or MetaFont, 
-create glossaries, call \verb|pdfcrop|, move files, and much more. It's up to 
+temporary files, compile other |.tex| documents, run MetaPost or MetaFont, 
+create glossaries, call |pdfcrop|, move files, and much more. It's up to 
 you.
 
 Code~\ref{code:exlatexone} contains the \arara workflow I used for an article I 
-recently wrote. Note that the first call to \verb|pdflatex| creates the 
-\verb|.aux| file, then \verb|bibtex| will extract the cited publications. The 
-next calls to \verb|pdflatex| will insert and refine the references.
+recently wrote. Note that the first call to |pdflatex| creates the 
+|.aux| file, then |bibtex| will extract the cited publications. The 
+next calls to |pdflatex| will insert and refine the references.
 
 \begin{code}[!ht]
 \caption{\texttt{myarticle.tex}}
@@ -360,8 +360,8 @@ next calls to \verb|pdflatex| will insert and refine the references.
 
 Code~\ref{code:exlatextwo} contains another \arara workflow I used for a manual. 
 I had to use a package that required shell escape, so the calls to 
-\verb|pdflatex| had to enable it. Also, I had an index with a custom formatting, 
-then \verb|makeindex| was called with the proper style.
+|pdflatex| had to enable it. Also, I had an index with a custom formatting, 
+then |makeindex| was called with the proper style.
 
 \begin{code}[!ht]
 \caption{\texttt{mymanual.tex}}
@@ -412,7 +412,7 @@ The Pink Panther (2006)}
 
 Splendid, so you decided to give \arara a try? This chapter will cover the 
 installation procedure. Well, to be honest, there is nothing much to see here. 
-The provided \verb|.jar| file is a self-contained, batteries-included executable 
+The provided |.jar| file is a self-contained, batteries-included executable 
 Java file, so it's not an installation per se, but more like a deployment.
 
 \section{Obtaining \texorpdfstring{\arara}{arra}}
@@ -420,34 +420,34 @@ Java file, so it's not an installation per se, but more like a deployment.
 
 First of all, we need to obtain the \arara binary. Go to the 
 \href{http://github.com/cereda/arara}{project repository} and download the 
-current release. The filename to get is \verb|arara.jar|. You can also build 
+current release. The filename to get is |arara.jar|. You can also build 
 \arara from sources, but it's far beyond the scope of this manual.
 
 \section{Deployment}
 \label{sec:deployment}
 
 The first step is to create an application folder. Feel free to create a folder 
-anywhere in your computer. It can be \verb|C:\arara|, \verb|/opt/arara| or 
-another location. My setup is usually \verb|C:\paulo\softwares\arara| for 
-Windows machines and \verb|/opt/paulo/arara| for Linux and Mac, but this is of 
+anywhere in your computer. It can be |C:\arara|, |/opt/arara| or 
+another location. My setup is usually |C:\paulo\softwares\arara| for 
+Windows machines and |/opt/paulo/arara| for Linux and Mac, but this is of 
 course a matter of personal taste. For convenience, this folder will be called 
-\verb|ARARA_HOME|. Although it's not mandatory, try to avoid folders structures 
+|ARARA_HOME|. Although it's not mandatory, try to avoid folders structures 
 with spaces in the path.
 
 Since \arara is written in Java, it requires a Java Virtual Machine. Do you have 
-one installed? If you are not sure, try running \verb|java -version| in the 
+one installed? If you are not sure, try running |java -version| in the 
 terminal and see if you get an output similar to the Code~\ref{code:javainstalled}.
 
 \begin{code}[!ht]
 \caption{Checking if \texttt{java} is installed.}
 \label{code:javainstalled}
 \begin{infobox}
-\begin{verbatim}
+\begin{bash}[morekeywords=version]
 $ java -version
 java version "1.6.0_24"
 OpenJDK Runtime Environment (IcedTea6 1.11.1)
 OpenJDK Client VM (build 20.0-b12, mixed mode)
-\end{verbatim}
+\end{bash}
 \end{infobox}
 \end{code}
 
@@ -455,31 +455,31 @@ If you don't have a proper Java Virtual Machine installed, I suggest you to
 visit the \href{http://www.java.com}{Java website} and download one, according 
 to your operating system. Installation instructions are also provided.
 
-Now, copy the \verb|.jar| file we have downloaded in the very first step inside 
-the \verb|ARARA_HOME| folder. Don't forget to add \verb|ARARA_HOME| to the 
+Now, copy the |.jar| file we have downloaded in the very first step inside 
+the |ARARA_HOME| folder. Don't forget to add |ARARA_HOME| to the 
 system path. Unfortunately, this manual can't cover the path settings, since 
 it's again a matter of personal taste. For my tools, I usually set the path in 
-my local \verb|.bashrc| with \verb|export PATH="$PATH:$ARARA_HOME"|. It's up to 
+my local |.bashrc| with |export PATH="$PATH:$ARARA_HOME"|. It's up to 
 you.
 
 The last step for deploying \arara is platform-specific. In order to run \arara, 
-we should run \verb|java -jar arara.jar|, but that is not intuitive. To make our 
+we should run |java -jar arara.jar|, but that is not intuitive. To make our 
 lives easier, we will create a shortcut for this command. If you are in Windows, 
-create a file named \verb|arara.cmd| inside \verb|ARARA_HOME| and add the content 
+create a file named |arara.cmd| inside |ARARA_HOME| and add the content 
 from Code~\ref{code:windows}. If you are in Linux or Mac, create a file named 
-\verb|arara| inside \verb|ARARA_HOME| and add the content from
+|arara| inside |ARARA_HOME| and add the content from
 Code~\ref{code:unix}. In Linux and Mac, there only one more thing to do: don't 
-forget to add execute permissions for \verb|arara| by running 
-\verb|chmod +x arara|.
+forget to add execute permissions for |arara| by running 
+|chmod +x arara|.
 
 \begin{code}
 \caption{\texttt{arara.cmd} for Windows.}
 \label{code:windows}
 \begin{infobox}
-\begin{verbatim}
+\begin{bash}
 @echo off
 java -jar "%~dp0\arara.jar" %*
-\end{verbatim}
+\end{bash}
 \end{infobox}
 \end{code}
 
@@ -487,22 +487,22 @@ java -jar "%~dp0\arara.jar" %*
 \caption{\texttt{arara} for Linux and Mac.}
 \label{code:unix}
 \begin{infobox}
-\begin{verbatim}
+\begin{bash}
 #!/bin/bash
 java -jar "$(dirname "$0")/arara.jar" $*
-\end{verbatim}
+\end{bash}
 \end{infobox}
 \end{code}
 
-Did you add \verb|ARARA_HOME| to the path? If so, we are good to go. Try running 
-\verb|arara| in the terminal and see if you get the output shown in 
+Did you add |ARARA_HOME| to the path? If so, we are good to go. Try running 
+|arara| in the terminal and see if you get the output shown in 
 Code~\ref{code:arararun}.
 
 \begin{code}
 \caption{Testing if \arara is correctly deployed.}
 \label{code:arararun}
 \begin{infobox}
-\begin{verbatim}
+\begin{bash}
 $ arara
   __ _ _ __ __ _ _ __ __ _ 
  / _` | '__/ _` | '__/ _` |
@@ -519,7 +519,7 @@ usage: arara [file [--log] [--verbose] | --help | --version]
  -l,--log       generate a log output
  -v,--verbose   print the command output
  -V,--version   print the application version
-\end{verbatim}
+\end{bash}
 \end{infobox}
 \end{code}
 
@@ -530,10 +530,10 @@ your system. If you have any doubts, feel free to contact me.
 \section{Updating}
 \label{sec:updating}
 
-If there is a newer version of \arara, simply download the \verb|.jar| file and 
-move it inside the \verb|ARARA_HOME| folder, replacing the old one. No further 
+If there is a newer version of \arara, simply download the |.jar| file and 
+move it inside the |ARARA_HOME| folder, replacing the old one. No further 
 steps are needed, the newer version is already deployed. Try running 
-\verb|arara| in the terminal and see if the version is equal to the one you have 
+|arara| in the terminal and see if the version is equal to the one you have 
 downloaded.
 % -------------------------------------------------
 
@@ -547,9 +547,9 @@ downloaded.
 Time for our first contact with \arara! It's important to understand two concepts 
 in which \arara is based: rules and directives. A \emph{rule} is a formal 
 description of how \arara should handle a certain task. For example, if we want 
-to use \verb|pdflatex| with \arara, we should have a rule for that. Once a rule 
+to use |pdflatex| with \arara, we should have a rule for that. Once a rule 
 is defined, \arara automatically provides an access layer to that rule through 
-directives. A \emph{directive} is a special comment in the \verb|.tex| file 
+directives. A \emph{directive} is a special comment in the |.tex| file 
 which will tell \arara how it should execute a certain task. A directive can have 
 as many parameters as its corresponding rule has. Don't worry, let's get started 
 with these new concepts.
@@ -557,8 +557,8 @@ with these new concepts.
 \section{Rules}
 \label{sec:rules}
 
-Do you remember \verb|mydoc.tex| from Code~\ref{code:hellolatex}? When we tried 
-to mimic \verb|rubber| and run \verb|arara mydoc|, nothing happened. We should 
+Do you remember |mydoc.tex| from Code~\ref{code:hellolatex}? When we tried 
+to mimic |rubber| and run |arara mydoc|, nothing happened. We should 
 tell \arara how it should handle this execution. Let's start with the rules.
 
 A rule is a plain text file written in the \textsc{yaml} format. I chose this 
@@ -567,12 +567,12 @@ languages, besides of course being a data oriented format. As a bonus,
 \textsc{yaml} rhymes with the word \emph{camel}, so \arara is environmentally 
 friendly.
 
-The rules must be placed in a special folder inside \verb|ARARA_HOME|. The full 
-path for plain \arara rules is \verb|ARARA_HOME/rules/plain|, so feel free to 
+The rules must be placed in a special folder inside |ARARA_HOME|. The full 
+path for plain \arara rules is |ARARA_HOME/rules/plain|, so feel free to 
 create this folder structure before proceeding with the reading. Wait a minute,
 what is a plain rule? Easy, it's a rule written using the \textsc{yaml} format. 
-We can also have compiled rules in the form of \verb|.jar| files to be placed 
-inside \verb|ARARA_HOME/rules/compiled|, but I'm almost sure you will never need 
+We can also have compiled rules in the form of |.jar| files to be placed 
+inside |ARARA_HOME/rules/compiled|, but I'm almost sure you will never need 
 to write one of them. This manual doesn't cover compiled rules, please refer to 
 the developer manual for further reference.
 
@@ -594,28 +594,30 @@ Code~\ref{code:yamlrule}.
 \end{infobox}
 \end{code}
 
-The \verb|!config| keyword (line 1) is mandatory and it must be the first line 
+The |!config| keyword (line 1) is mandatory and it must be the first line 
 of a plain \arara rule. The following keys are defined:
 
 \begin{description}
-\item[identifier]\hfill\\ This key (line 2) acts as a unique identifier for the 
-rule. It's highly recommended to use lowercase letters without spaces, accents 
-or punctuation symbols. As a convention, if you have an identifier named 
-\verb|makefoo|, the rule filename must be \verb|makefoo.yaml|.
-\item[name]\hfill\\ The \verb|name| key (line 3) holds the name of the task. 
-When running \arara, this value will be displayed in the output. In our example, 
-\arara will display \verb|Running MakeFoo| when dealing with this task.
-\item[command]\hfill\\ This key (line 4) contains the system command to be 
-executed. It's highly recommended to avoid interactive commands. Prefer those 
-commands that run as a non-interactive mode, mainly because \arara won't output 
-anything in the terminal neither provide user interaction. You probably noticed 
-a strange element \verb|@{file}|: this element is called \emph{orb tag}. For now, 
-just admit they exist. We will come back to them later on, in 
-Section~\ref{sec:orbtags}.
-\item[arguments]\hfill\\ The \verb|arguments| key (line 5) is a list. In our 
-example, it has an empty list, denoted as \verb|[]|. You can define as many 
-arguments as your command requires. Check Code~\ref{code:makebar} for an example 
-of a list of arguments.
+\item[identifier]\mbox{}\newline
+   This key (line 2) acts as a unique identifier for the rule. It's highly 
+   recommended to use lowercase letters without spaces, accents or punctuation 
+   symbols. As a convention, if you have an identifier named |makefoo|, the rule 
+   filename must be |makefoo.yaml|.
+\item[name]\mbox{}\newline 
+   The |name| key (line 3) holds the name of the task. When running \arara, this 
+   value will be displayed in the output. In our example, \arara will display 
+   |Running MakeFoo| when dealing with this task.
+\item[command]\mbox{}\newline 
+   This key (line 4) contains the system command to be executed. It's highly 
+   recommended to avoid interactive commands. Prefer those commands that run as 
+   a non-interactive mode, mainly because \arara won't output anything in the 
+   terminal neither provide user interaction. You probably noticed a strange 
+   element |@{file}|: this element is called \emph{orb tag}. For now, just admit 
+   they exist. We will come back to them later on, in Section~\ref{sec:orbtags}.
+\item[arguments]\mbox{}\newline 
+   The |arguments| key (line 5) is a list. In our example, it has an empty list, 
+   denoted as |[]|. You can define as many arguments as your command requires. 
+   Check Code~\ref{code:makebar} for an example of a list of arguments.
 \end{description}
 
 For more complex rules, we might want to use arguments. Code~\ref{code:makebar} 
@@ -641,16 +643,16 @@ in Code~\ref{code:yamlrule}.
 \end{infobox}
 \end{code}
 
-For every argument in the list, we have a \verb|-| mark and the proper indentation. 
+For every argument in the list, we have a |-| mark and the proper indentation. 
 The required keys for an argument are:
 
 \begin{description}
 \item[identifier]\hfill\\ This key (lines 6 and 8) acts as a unique identifier 
 for the argument. It's highly recommended to use lowercase letters without 
 spaces, accents or punctuation symbols.
-\item[flag]\hfill\\ The \verb|flag| key (lines 7 and 9) represents the argument 
+\item[flag]\hfill\\ The |flag| key (lines 7 and 9) represents the argument 
 value. Please note that we have another orb tag in the definition, 
-\verb|@{value}|. We will discuss them later in Section~\ref{sec:orbtags}.
+|@{value}|. We will discuss them later in Section~\ref{sec:orbtags}.
 \end{description}
 
 For now, just keep in mind that \arara uses rules to tell it how to do a certain 
@@ -661,22 +663,24 @@ through orb tags. Don't worry, I'll explain how things work.
 \section{Directives}
 \label{sec:directives}
 
-A directive is a special comment inserted in the \verb|.tex| file in which you 
+A directive is a special comment inserted in the |.tex| file in which you 
 indicate how \arara should behave. You can insert as many directives as you want, 
-and in any position of the \verb|.tex| file. \arara will read the whole file and 
+and in any position of the |.tex| file. \arara will read the whole file and 
 extract the directives. A directive should be placed in a line of its own, in 
-the form \verb|% arara: <directive>|. There are two types of directives:
+the form |% arara: <directive>|. There are two types of directives:
 
 \begin{description}
-\item[empty directive]\hfill\\ An empty directive has only the rule identifier, 
-as we seen in Section~\ref{sec:rules}. Lines 1 and 3 of 
-Code~\ref{code:directiveslatex} show an example of empty directives. Note that 
-you can supress arguments (line 3 in constrast to line 2), but we will see that 
-\arara assumes that you know exactly what you are doing.
-\item[parametrized directive]\hfill\\ A parametrized directive has the rule 
-identifier followed by its arguments. Line 2 of Code~\ref{code:directiveslatex} 
-shows an example of a parametrized directive. Note that the arguments are mapped 
-by their identifiers, not by their positions.
+\item[empty directive]\mbox{}\newline  
+   An empty directive has only the rule identifier, as we seen in 
+   Section~\ref{sec:rules}. Lines 1 and 3 of Code~\ref{code:directiveslatex} 
+   show an example of empty directives. Note that you can supress arguments 
+   (line 3 in constrast to line 2), but we will see that \arara assumes that you 
+   know exactly what you are doing.
+\item[parametrized directive]\mbox{}\newline
+   A parametrized directive has the rule identifier followed by its arguments. 
+   Line 2 of Code~\ref{code:directiveslatex} shows an example of a parametrized 
+   directive. Note that the arguments are mapped by their identifiers, not by 
+   their positions.
 \end{description}
 
 \begin{code}
@@ -695,13 +699,13 @@ by their identifiers, not by their positions.
 \end{code}
 
 The arguments are defined according to the rule mapped by the directive. For 
-example, the rule \verb|makebar| (Code~\ref{code:makebar}) has a list of two 
-arguments, \verb|one| and \verb|two|. So you can safely write 
-\verb|makebar: { one: hello }|, but trying to map a nonexisting argument with 
-\verb|makebar: { three: hi }| will raise an error.
+example, the rule |makebar| (Code~\ref{code:makebar}) has a list of two 
+arguments, |one| and |two|. So you can safely write 
+|makebar: { one: hello }|, but trying to map a nonexisting argument with 
+|makebar: { three: hi }| will raise an error.
 
 If you want to disable an \arara directive, there's no need of removing it from 
-the \verb|.tex| file. Simply replace \verb|% arara:| by \verb|% !arara:| and this 
+the |.tex| file. Simply replace |% arara:| by |% !arara:| and this 
 directive will be ignored.
 
 Directives are mapped to rules. In Section~\ref{sec:orbtags} we will learn about 
@@ -714,54 +718,54 @@ since we understand what an orb tag is and how it works.
 When I was planning the mapping scheme, I opted for a templating mechanism. I was 
 looking for flexibility, so the \href{http://mvel.codehaus.org}{\textsc{mvel}} 
 library was perfect for the job. I could extend my mapping plans by using the 
-orb tags. An orb tag consists of a \verb|@| character followed by braces 
-\verb|{...}| which contain regular \textsc{mvel} expressions. In particular, 
-\arara uses the \verb|@{}| expression orb, which contains a value expression 
+orb tags. An orb tag consists of a |@| character followed by braces 
+|{...}| which contain regular \textsc{mvel} expressions. In particular, 
+\arara uses the |@{}| expression orb, which contains a value expression 
 which will be evaluated to a string, and appended to the output template. 
-For example, the following template \verb|Hello, my name is @{name}| with 
-\verb|name| resolving to \verb|Paulo| will be expanded to 
-\verb|Hello, my name is Paulo|.
+For example, the following template |Hello, my name is @{name}| with 
+|name| resolving to |Paulo| will be expanded to 
+|Hello, my name is Paulo|.
 
 When mapping rules, every command argument will be mapped to the form 
-\verb|@{identifier}| with value equals to the content of the \verb|flag| key. 
-There are two reserved orb tags, \verb|@{file}| and \verb|@{value}|. The first 
-one refers to the \verb|.tex| filename argument passed to \arara. The extension 
-is removed, so no matter if \arara is called with \verb|arara mydoc.tex| or 
-\verb|arara mydoc|, \verb|@{file}| will be expanded to \verb|mydoc|. The 
-\verb|@{file}| value can be overriden, but we will discuss it later. The second 
-reserved orb tag \verb|@{value}| is expanded to the argument value passed in the 
-directive. If you have \verb|makebar: { one: hello }|, the \verb|flag| key of 
-argument \verb|one| will be expanded from the original definition 
-\verb|-i @{value}| to \verb|-i hello|. Now \verb|@{one}| contains the expanded 
-\verb|flag| value, which is \verb|-i hello|. All arguments tags are expanded in 
+|@{identifier}| with value equals to the content of the |flag| key. 
+There are two reserved orb tags, |@{file}| and |@{value}|. The first 
+one refers to the |.tex| filename argument passed to \arara. The extension 
+is removed, so no matter if \arara is called with |arara mydoc.tex| or 
+|arara mydoc|, |@{file}| will be expanded to |mydoc|. The 
+|@{file}| value can be overriden, but we will discuss it later. The second 
+reserved orb tag |@{value}| is expanded to the argument value passed in the 
+directive. If you have |makebar: { one: hello }|, the |flag| key of 
+argument |one| will be expanded from the original definition 
+|-i @{value}| to |-i hello|. Now |@{one}| contains the expanded 
+|flag| value, which is |-i hello|. All arguments tags are expanded in 
 the rule command. If one of them is not defined in the directive, \arara will 
-admit an empty value, so the \verb|command| flag will be expanded to 
-\verb|makebar -i hello mydoc|. The whole procedure is summarized as follows:
+admit an empty value, so the |command| flag will be expanded to 
+|makebar -i hello mydoc|. The whole procedure is summarized as follows:
 
 \begin{enumerate}
-\item \arara processed a file named \verb|mydoc.tex|.
-\item A directive \verb|makebar: { one: hello }| was found, so \arara will look 
-      up the rule \verb|makebar.yaml| (Code~\ref{code:makebar}).
-\item The argument \verb|one| is defined and has value \verb|hello|, so the 
-      corresponding \verb|flag| key will have the orb tag \verb|@{value}| 
-      expanded to \verb|hello|. The new value is now added to the template 
-      referenced by the \verb|command| key and then \verb|@{one}| is expanded to
-      \verb|-i hello|.
-\item The argument \verb|two| is not defined, so the template referenced by the 
-      \verb|command| key has \verb|@{two}| expanded to an empty string.
+\item \arara processed a file named |mydoc.tex|.
+\item A directive |makebar: { one: hello }| was found, so \arara will look 
+      up the rule |makebar.yaml| (Code~\ref{code:makebar}).
+\item The argument |one| is defined and has value |hello|, so the 
+      corresponding |flag| key will have the orb tag |@{value}| 
+      expanded to |hello|. The new value is now added to the template 
+      referenced by the |command| key and then |@{one}| is expanded to
+      |-i hello|.
+\item The argument |two| is not defined, so the template referenced by the 
+      |command| key has |@{two}| expanded to an empty string.
 \item There are no more arguments, so the template referenced by the 
-      \verb|command| key now expands \verb|@{file}| to \verb|mydoc|.
-\item The final command is now \verb|makebar -i hello mydoc|.
+      |command| key now expands |@{file}| to |mydoc|.
+\item The final command is now |makebar -i hello mydoc|.
 \end{enumerate}
 
-There's a reserved directive key named \verb|files|, which is in fact a list. In 
-case you want to override the default \verb|@{file}| value, use the \verb|files| 
-key, like \verb|makebar: { files: [ thedoc ] }|. This will result in 
-\verb|makebar thedoc| instead of \verb|makebar mydoc|.
+There's a reserved directive key named |files|, which is in fact a list. In 
+case you want to override the default |@{file}| value, use the |files| 
+key, like |makebar: { files: [ thedoc ] }|. This will result in 
+|makebar thedoc| instead of |makebar mydoc|.
 
 If you provide more than one file in the list, \arara will replicate the directive 
-for every file found, so  \verb|makebar: { files: [ a, b, c ] }| will result in 
-three commands: \verb|makebar a|, \verb|makebar b| and \verb|makebar c|.
+for every file found, so  |makebar: { files: [ a, b, c ] }| will result in 
+three commands: |makebar a|, |makebar b| and |makebar c|.
 
 \section{Examples}
 \label{sec:examples}
@@ -774,7 +778,7 @@ platform-specific rules, so double-check the commands before running them.
 \subsection{PDFLaTeX}
 \label{sub:pdflatex}
 
-Our first example is to add support to \verb|pdflatex|. My first attempt to 
+Our first example is to add support to |pdflatex|. My first attempt to 
 write this rule is presented in Code~\ref{code:pdflatexone}.
 
 \begin{code}[!ht]
@@ -792,9 +796,9 @@ write this rule is presented in Code~\ref{code:pdflatexone}.
 \end{infobox}
 \end{code}
 
-So far, so good. The \verb|command| flag has the \verb|pdflatex| program and also
- the flag \verb|-interaction=nonstopmode|, since \arara doesn't provide user 
-interaction. Now we can add the \verb|pdflatex| directive to our \verb|.tex| 
+So far, so good. The |command| flag has the |pdflatex| program and also
+ the flag |-interaction=nonstopmode|, since \arara doesn't provide user 
+interaction. Now we can add the |pdflatex| directive to our |.tex| 
 file, as we can see in Code~\ref{code:helloexampleone}.
 
 \begin{code}[!ht]
@@ -815,15 +819,15 @@ Hello world.
 \end{infobox}
 \end{code}
 
-It's just a matter of calling \verb|arara helloworld.tex| ( you can also provide 
-the \verb|.tex| extension by calling \verb|arara helloworld.tex|) and \arara will 
+It's just a matter of calling |arara helloworld.tex| ( you can also provide 
+the |.tex| extension by calling |arara helloworld.tex|) and \arara will 
 process our file, according to the Code~\ref{code:araraoutputone}.
 
 \begin{code}[!ht]
 \caption{\protect\arara output for \texttt{pdflatex}.}
 \label{code:araraoutputone}
 \begin{infobox}
-\begin{verbatim}
+\begin{bash}
 $ arara helloworld
   __ _ _ __ __ _ _ __ __ _
  / _` | '__/ _` | '__/ _` |
@@ -831,7 +835,7 @@ $ arara helloworld
  \__,_|_|  \__,_|_|  \__,_|
 
 Running PDFLaTeX... SUCCESS
-\end{verbatim}
+\end{bash}
 \end{infobox}
 \end{code}
 
@@ -840,25 +844,25 @@ automatically available for us to call it as many times as we want. What if we
 make this rule better? Consider the following situation:
 
 \begin{quotation}
-\noindent Sometimes, we need to use \verb|\write18| or call a package that makes 
-use of it (for example, \verb|minted|). It's very dangerous to enable shell 
-escape globally, but changing the \verb|pdflatex| call every time we need it 
+\noindent Sometimes, we need to use |\write18| or call a package that makes 
+use of it (for example, |minted|). It's very dangerous to enable shell 
+escape globally, but changing the |pdflatex| call every time we need it 
 sounds boring.
 \end{quotation}
 
 \arara has a special treatment for cases like this. In the early stages of 
-development, \arara was able to handle boolean values. Entries with \verb|true| 
-or \verb|false|, \verb|on| or \verb|off|, \verb|yes| and \verb|no| were mapped 
-to boolean values. If you wanted to use \verb|yes| as text, you could explicitly 
+development, \arara was able to handle boolean values. Entries with |true| 
+or |false|, |on| or |off|, |yes| and |no| were mapped 
+to boolean values. If you wanted to use |yes| as text, you could explicitly 
 tell \arara that the value was a string by enclosing it with single or double 
-quotes, \verb|'yes'| or \verb|"yes"|. In my humble opinion, it was a good design 
+quotes, |'yes'| or |"yes"|. In my humble opinion, it was a good design 
 at first, but it opened a dangerous pitfall: if a certain mapping was expecting 
 a boolean, but another value was received, the result was automatically resolved 
-to \verb|true|. We have enough problems of \arara itself giving us enough rope, 
+to |true|. We have enough problems of \arara itself giving us enough rope, 
 so I decided to consider every argument value as string. No big deal, we can 
 still mimic a boolean behaviour, as we will see in our next attempt.
 
-We will rewrite our \verb|pdflatex| rule to include a flag for shell escape. 
+We will rewrite our |pdflatex| rule to include a flag for shell escape. 
 Another cool feature will be presented now, as we can see in the new rule shown 
 in Code~\ref{code:pdflatextwo}.
 
@@ -880,17 +884,17 @@ in Code~\ref{code:pdflatextwo}.
 \end{code}
 
 Orb tags allow evaluation inside the tag block! Line 7 from 
-Code~\ref{code:pdflatextwo} makes use of the ternary operator \verb|?:| 
+Code~\ref{code:pdflatextwo} makes use of the ternary operator |?:| 
 which defines a conditional expression. In the first part of the evaluation, 
-we check if \verb|value| is equal to the string \verb|"yes"|. If so, 
-\verb|"-shell-escape"| is defined as the result of the operation. If the 
-conditional expression is false, \verb|"-no-shell-escape"| is set instead.
+we check if |value| is equal to the string |"yes"|. If so, 
+|"-shell-escape"| is defined as the result of the operation. If the 
+conditional expression is false, |"-no-shell-escape"| is set instead.
 
-What if you want to allow \verb|true| and \verb|on| as valid options as well? We 
+What if you want to allow |true| and |on| as valid options as well? We 
 can easily rewrite our orb tag to check for additional values. It's also 
-possible to invoke some string methods on orb tags, like \verb|toLowerCase|. A 
+possible to invoke some string methods on orb tags, like |toLowerCase|. A 
 third attempt is presented in Code~\ref{code:pdflatexthree}. The 
-\verb|toLowerCase| method was added to allow entries like \verb|Yes|, \verb|yEs| 
+|toLowerCase| method was added to allow entries like |Yes|, |yEs| 
 and other combinations. Although \arara can support cases in arguments and values, 
 I recommend you to stick with lowercase entries. By the way, for more complex 
 orb tag schemes, it's important to enclose the orb tags with either single or 
@@ -915,19 +919,19 @@ double quotes for internal evaluations, and vice versa.
 \end{code}
 
 With this new rule, it's now easy to enable the shell escape option in 
-\verb|pdflatex|. Simply go with the directive \verb|pdflatex: { shell: yes }|. 
-You can also use \verb|true| or \verb|on| instead of \verb|yes|. Any other value 
-for \verb|shell| will disable the shell escape option. It's important to observe 
+|pdflatex|. Simply go with the directive |pdflatex: { shell: yes }|. 
+You can also use |true| or |on| instead of |yes|. Any other value 
+for |shell| will disable the shell escape option. It's important to observe 
 that \arara directives have no mandatory arguments. If you want to add a dangerous 
-option like \verb|-shell-escape|, consider calling it as an argument with a 
+option like |-shell-escape|, consider calling it as an argument with a 
 proper check and rely on a safe state for the argument fallback.
 
 \subsection{MakeIndex}
 \label{sub:makeindex}
 
-For the next example, we will create a rule for \verb|makeindex|. To be honest, 
-although \verb|makeindex| has a lot of possible arguments, I only use the 
-\verb|-s| flag once in a while. Code~\ref{code:makeindexone} shows our first 
+For the next example, we will create a rule for |makeindex|. To be honest, 
+although |makeindex| has a lot of possible arguments, I only use the 
+|-s| flag once in a while. Code~\ref{code:makeindexone} shows our first 
 attempt of writing this rule.
 
 \begin{code}[!ht]
@@ -947,7 +951,7 @@ attempt of writing this rule.
 \end{infobox}
 \end{code}
 
-As a follow-up to our fist attempt, we will now add support for the \verb|-g| 
+As a follow-up to our fist attempt, we will now add support for the |-g| 
 flag that employs German word ordering in the index. Since this flag is 
 basically a switch, we can borrow the same tactic used for shell escape in the 
 previous example. The new rule is presented in Code~\ref{code:makeindextwo}.
@@ -971,13 +975,13 @@ previous example. The new rule is presented in Code~\ref{code:makeindextwo}.
 \end{infobox}
 \end{code}
 
-The new \verb|makeindex| rule presented in Code~\ref{code:makeindextwo} looks 
+The new |makeindex| rule presented in Code~\ref{code:makeindextwo} looks 
 good. We can now test the compilation workflow with an example. Consider a file 
-named \verb|helloindex.tex| which has a few index entries, presented in 
+named |helloindex.tex| which has a few index entries, presented in 
 Code~\ref{code:examplemakeindex}. As usual, I'll present my normal workflow, 
-that involves calling \verb|pdflatex| two times to get references right, one
-call to \verb|makeindex| and finally, a last call to \verb|pdflatex|. Though 
-there's no need of calling \verb|pdflatex| two times in the beginning, I'll keep 
+that involves calling |pdflatex| two times to get references right, one
+call to |makeindex| and finally, a last call to |pdflatex|. Though 
+there's no need of calling |pdflatex| two times in the beginning, I'll keep 
 that as a good practice from my side.
 
 \begin{code}[!ht]
@@ -1009,16 +1013,16 @@ Goodbye world\index{Goodbye world}.
 \end{infobox}
 \end{code}
 
-By running \verb|arara helloindex| or \verb|helloindex.tex| in the terminal, we 
+By running |arara helloindex| or |helloindex.tex| in the terminal, we 
 will obtain the same output from Code~\ref{code:araramakeexample}. The execution 
-order is defined by the directives order in the \verb|.tex| file. If any command 
+order is defined by the directives order in the |.tex| file. If any command 
 fails, \arara halts at that position and nothing else is executed.
 
 You might ask how \arara knows if the command was successfully executed. The idea 
-is quite simple: good programs like \verb|pdflatex| make use of a concept known 
+is quite simple: good programs like |pdflatex| make use of a concept known 
 as exit status. In short, when a program had a normal execution, the exit status 
 is zero. Other values are returned when an abnormal execution happened. When 
-\verb|pdflatex| successfully compiles a \verb|.tex| file, it returns zero, so 
+|pdflatex| successfully compiles a |.tex| file, it returns zero, so 
 \arara intercepts this number. Again, it's a good practice to make command line 
 applications return proper exit status according to the execution flow, but 
 beware: you might find applications or shell commands that don't feature this 
@@ -1028,7 +1032,7 @@ control (in the worst case, the returned value is always zero).
 \caption{Running \texttt{helloindex.tex}.}
 \label{code:araramakeexample}
 \begin{infobox}
-\begin{verbatim}
+\begin{bash}
 $ arara helloindex
   __ _ _ __ __ _ _ __ __ _
  / _` | '__/ _` | '__/ _` |
@@ -1039,7 +1043,7 @@ Running PDFLaTeX... SUCCESS
 Running PDFLaTeX... SUCCESS
 Running MakeIndex... SUCCESS
 Running PDFLaTeX... SUCCESS
-\end{verbatim}
+\end{bash}
 \end{infobox}
 \end{code}
 
@@ -1051,33 +1055,33 @@ outputs for a more detailed analysis.
 \subsection{Cleaning temporary files}
 \label{sub:clean}
 
-After running \verb|arara helloindex| successfully 
+After running |arara helloindex| successfully 
 (Code~\ref{code:araramakeexample}), we now have as a result a new 
-\verb|helloindex.pdf| file, but also a lot of auxiliary files, as we can see in
+|helloindex.pdf| file, but also a lot of auxiliary files, as we can see in
 Code~\ref{code:lsone}.
 
 \begin{code}[!ht]
 \caption{List of auxiliary files after running \texttt{arara helloindex}.}
 \label{code:lsone}
 \begin{infobox}
-\begin{verbatim}
+\begin{bash}
 $ ls
 helloindex.aux  helloindex.ilg  helloindex.log  helloindex.tex
 helloindex.idx  helloindex.ind  helloindex.pdf
-\end{verbatim}
+\end{bash}
 \end{infobox}
 \end{code}
 
-What if we write a new \verb|clean| rule to remove all the auxiliary files? The 
-idea is to use \verb|rm| to remove each one of them. As mentioned in the 
+What if we write a new |clean| rule to remove all the auxiliary files? The 
+idea is to use |rm| to remove each one of them. As mentioned in the 
 beginning of the manual, some rules might be system-specific, so this one is a 
 perfect example.
 
 Since we want our rule to be generic enough, it's now a good opportunity to 
-introduce the use of the reserved directive key \verb|files|, first seen in 
+introduce the use of the reserved directive key |files|, first seen in 
 Section~\ref{sec:orbtags}. This special key is a list that overrides the default 
-\verb|@{file}| value and replicates the directive for every element in the list. 
-I'm sure this will be the easiest rule we've written so far. The \verb|clean| 
+|@{file}| value and replicates the directive for every element in the list. 
+I'm sure this will be the easiest rule we've written so far. The |clean| 
 rule is presented in Code~\ref{code:cleanone}.
 
 \begin{code}[!ht]
@@ -1095,18 +1099,18 @@ rule is presented in Code~\ref{code:cleanone}.
 \end{infobox}
 \end{code}
 
-Note that the command \verb|rm| has a \verb|-f| flag. As mentioned before, 
+Note that the command |rm| has a |-f| flag. As mentioned before, 
 commands return an exit status after their calls. If we try to remove a 
-nonexistent file, \verb|rm| will complain and return a value different than zero. 
+nonexistent file, |rm| will complain and return a value different than zero. 
 This will make \arara halt and print a big \textsc{failure}  on screen, since it 
-is considered an abnormal execution. If we provide the \verb|-f| flag, \verb|rm| 
+is considered an abnormal execution. If we provide the |-f| flag, |rm| 
 will not complain of a nonexistent file, so we won't be bothered for this 
 trivial task.
 
-Now we need to add the directive to our \verb|helloindex.tex| file 
-(Code~\ref{code:examplemakeindex}). Of course, \verb|clean| will be the last 
+Now we need to add the directive to our |helloindex.tex| file 
+(Code~\ref{code:examplemakeindex}). Of course, |clean| will be the last 
 directive, since it will only be reachable if everything executed before was 
-returned no errors. The new header of \verb|helloindex.tex| is presented in 
+returned no errors. The new header of |helloindex.tex| is presented in 
 Code~\ref{code:examplemakeindextwo}.
 
 \begin{code}[!ht]
@@ -1126,22 +1130,22 @@ Code~\ref{code:examplemakeindextwo}.
 \end{infobox}
 \end{code}
 
-The reserved directive key \verb|files| has five elements, so the \verb|clean| 
-rule will be replicated five times with the orb tag \verb|@{file}| being 
+The reserved directive key |files| has five elements, so the |clean| 
+rule will be replicated five times with the orb tag |@{file}| being 
 expanded to each element. If you wish, you can also evaluate the value through 
 conditional expression, as we did before with the other rules. In my opinion, I 
 don't think it's necessary for this particular rule.
 
-Time to run \verb|arara helloindex| again and see if our new \verb|clean| rule 
+Time to run |arara helloindex| again and see if our new |clean| rule 
 works! Code~\ref{code:araramakeexampletwo} shows both \arara execution and 
-directory listing. We expect to find only our source \verb|helloindex.tex| and 
-the resulting \verb|helloindex.pdf| file.
+directory listing. We expect to find only our source |helloindex.tex| and 
+the resulting |helloindex.pdf| file.
 
 \begin{code}[!ht]
 \caption{Running \texttt{helloindex.tex} with the new \texttt{clean} rule.}
 \label{code:araramakeexampletwo}
 \begin{infobox}
-\begin{verbatim}
+\begin{bash}
 $ arara helloindex
   __ _ _ __ __ _ _ __ __ _ 
  / _` | '__/ _` | '__/ _` |
@@ -1159,13 +1163,13 @@ Running CleaningTool... SUCCESS
 Running CleaningTool... SUCCESS
 $ ls
 helloindex.pdf  helloindex.tex
-\end{verbatim}
+\end{bash}
 \end{infobox}
 \end{code}
 
-Great, the \verb|clean| rule works like a charm! A friendly note: if you are in 
-Windows, replacing \verb|rm| by the equivalent \verb|del| won't probably work. 
-Commands like \verb|del| must be called in the form \verb|cmd /c del|. Make sure 
+Great, the |clean| rule works like a charm! A friendly note: if you are in 
+Windows, replacing |rm| by the equivalent |del| won't probably work. 
+Commands like |del| must be called in the form |cmd /c del|. Make sure 
 to exhaustively test your rules before putting them into production. Check 
 Chapter~\ref{chap:logging} to learn more about tracking the \arara execution.
 % -------------------------------------------------
@@ -1180,7 +1184,7 @@ Chapter~\ref{chap:logging} to learn more about tracking the \arara execution.
 One of \arara's goals is to reduce the verbosity of commands. Though the 
 extensive output might contain relevant information about the execution process, 
 in most of the cases it is simply to much stuff going on for us to follow. 
-Besides, commands like \verb|pdflatex| generate a proper \verb|.log| file for us 
+Besides, commands like |pdflatex| generate a proper |.log| file for us 
 to check how things went. \arara's minimalist approach informs us about the 
 execution status: \textsc{success} or \textsc{failure}. When things go terribly 
 wrong, we need to rely on more than this status. We should ask \arara to keep 
@@ -1196,22 +1200,22 @@ Those messages are usually associated with errors. I tried to include useful
 messages, like telling in which directive and line an error ocurred, or that a 
 certain rule does not exist or has an incorrect format. \arara also checks if a 
 command is valid. If you try to call a rule that executes a nonexisting 
-\verb|makefoo| command, \arara will complain about it.
+|makefoo| command, \arara will complain about it.
 
 \section{Logging}
 \label{sec:logging}
 
 Another way of looking for an abnormal behaviour is to read the proper 
-\verb|.log| file. Unfortunately, not every command emits a report of its 
-execution and, even if the command generates a \verb|.log| file, multiple runs 
+|.log| file. Unfortunately, not every command emits a report of its 
+execution and, even if the command generates a |.log| file, multiple runs 
 would overwrite the previous reports and we would have only the last call. 
 \arara provides a more consistent way of monitoring commands and their own 
-behaviour through a global \verb|.log| file that holds every single bit of 
+behaviour through a global |.log| file that holds every single bit of 
 information. You can enable the logging feature by adding either the 
-\verb|--log| or \verb|-l| flags to the \verb|arara| application.
+|--log| or |-l| flags to the |arara| application.
 
 Before we continue, I need to explain about standard streams, since they 
-constitute an important part of the generated \verb|.log| file by \arara. 
+constitute an important part of the generated |.log| file by \arara. 
 \href{http://en.wikipedia.org/wiki/Standard_streams}{Wikipedia} has a nice 
 definition of them:
 
@@ -1219,25 +1223,25 @@ definition of them:
 \noindent ``In computer programming, standard streams are preconnected input and 
 output channels between a computer program and its environment (typically a text 
 terminal) when it begins execution. The three \textsc{i/o} connections are called 
-standard input (\verb|stdin|), standard output (\verb|stdout|) and standard error
-(\verb|stderr|).''
+standard input (|stdin|), standard output (|stdout|) and standard error
+(|stderr|).''
 \end{quotation}
 
 Basically, the operating system provides two streams directed to display data: 
-\verb|stdout| and \verb|stderr|. Usually, the first stream is used by a program 
+|stdout| and |stderr|. Usually, the first stream is used by a program 
 to write its output data, while the second one is typically used to output error 
 messages or diagnostics. Of course, the decision of what output stream to use is 
 up to the program author.
 
-When \arara traces a command execution, it logs both \verb|stdout| and 
-\verb|stderr|. The log entry for \verb|stdout| is \texttt{Standard output 
-logging} while \verb|stderr| is referenced by \texttt{Standard error logging}. 
-Again, an output to \verb|stderr| does not necessarily mean that an error was 
-found in the code, while an output to \verb|stdout| does not necessarily mean 
+When \arara traces a command execution, it logs both |stdout| and 
+|stderr|. The log entry for |stdout| is \texttt{Standard output 
+logging} while |stderr| is referenced by \texttt{Standard error logging}. 
+Again, an output to |stderr| does not necessarily mean that an error was 
+found in the code, while an output to |stdout| does not necessarily mean 
 that everything ran flawlessly. It's just a naming convention, as the program 
 author decides how to handle the messages flow. That's why \arara logs them both. 
-Read the \verb|stdout| and \verb|stderr| log entries carefully. A excerpt of the 
-resulting \verb|arara.log| from \verb|arara helloindex --log| is show in 
+Read the |stdout| and |stderr| log entries carefully. A excerpt of the 
+resulting |arara.log| from |arara helloindex --log| is show in 
 Code~\ref{code:araralog} -- several lines were removed in order to leave only 
 the more important parts.
 
@@ -1284,7 +1288,7 @@ Transcript written in helloindex.ilg.
 \end{infobox}
 \end{code}
 
-If by any chance your code is not working, try to run \verb|arara| with the 
+If by any chance your code is not working, try to run |arara| with the 
 logging feature enabled. It might take a while for you to digest the log entries, 
 but I'm sure you will be able to track every single step of \arara's execution and 
 fix the offending line in your code.
@@ -1310,30 +1314,30 @@ own practices. After all, \arara depends on the user, and not the other way arou
 \item[Use a text editor with support to {\normalfont\texttt{.yaml}} files]\mbox{}
      \newline In my humble opinion, \textsc{yaml} is a great format for 
               expressing \arara rules, but you might encounter problems if the 
-              \verb|.yaml| file is not well-formed. Please follow the rule format 
+              |.yaml| file is not well-formed. Please follow the rule format 
               presented in Section~\ref{sec:rules} and use a text editor with 
               proper support to the \textsc{yaml} format. Personally, I use 
               \href{http://www.vim.org}{Vim} for editing \arara rules.
 \item[Use only lowercase letters when defining identifiers for rules]\mbox{}
      \newline Avoid at all costs uppercase letters, digits, spaces, punctuation 
-              or other symbols when defining the \verb|identifier| key for 
+              or other symbols when defining the |identifier| key for 
               \arara rules.
 \item[Prefer to enclose orb tags with single quotes]\mbox{}\newline
               Although you can also enclose orb tags with double quotes, I 
               suggest you to stick with single quotes. Use double quotes inside 
               the orb tag for possible evaluations.
 \item[If the key value only contains an orb tag, enclose it]\mbox{}\newline
-              Compare the \verb|flag| key of the two arguments from the 
-              \verb|makeindex| rule (Code~\ref{code:makeindextwo}). When there's 
+              Compare the |flag| key of the two arguments from the 
+              |makeindex| rule (Code~\ref{code:makeindextwo}). When there's 
               only the orb tag as value or if the orb tag comes first in the 
               value, please enclose the whole value with single quotes, like 
-              \verb|'@{value}'| or \verb|'@{value} --flag'|. \arara tries to 
+              |'@{value}'| or |'@{value} --flag'|. \arara tries to 
               resolve the value type, but sometimes orb tags can mislead the 
               extractor. If you want to play it safe, enclose the value with 
               single quotes.
 \item[Don't use reserved keywords as identifiers]\mbox{}\newline
-              \arara has a few reserved keywords: \verb|file|, \verb|files|,
-              \verb|value| and \verb|arara|. Don't use them as identifiers, 
+              \arara has a few reserved keywords: |file|, |files|,
+              |value| and |arara|. Don't use them as identifiers, 
               otherwise name clashes will make \arara's behaviour unpredictable 
               and mess with the document workflow.
 \end{description}
@@ -1347,15 +1351,15 @@ own practices. After all, \arara depends on the user, and not the other way arou
               really need them, enclose the value with single quotes. Beware: 
               commands might require you to enclose values with spaces with 
               double quotes! If you try to run the directive 
-              \verb|clean: { files: [ 'my doc.aux' ] }|, the command will be 
-              expanded to \verb|rm -f my doc.aux| which is wrong! Two files will 
-              be removed: \verb|my| and \verb|doc.aux|. The solution is to use 
+              |clean: { files: [ 'my doc.aux' ] }|, the command will be 
+              expanded to |rm -f my doc.aux| which is wrong! Two files will 
+              be removed: |my| and |doc.aux|. The solution is to use 
               double quotes inside the value surround by single quotes, so a 
-              call to the directive \verb|clean: { files: [ '"my doc.aux"' ] }| 
-              will be expanded to \verb|rm -f "my doc.aux"| which is correct. 
-              Another example is the \verb|makeindex| directive. If you have a 
-              style named \verb|my style.ist|, you can call it by running 
-              \verb|makeindex: { style: '"my style"' }| and the command will be
+              call to the directive |clean: { files: [ '"my doc.aux"' ] }| 
+              will be expanded to |rm -f "my doc.aux"| which is correct. 
+              Another example is the |makeindex| directive. If you have a 
+              style named |my style.ist|, you can call it by running 
+              |makeindex: { style: '"my style"' }| and the command will be
               correctly expanded.
 \end{description}
 
@@ -1363,7 +1367,7 @@ own practices. After all, \arara depends on the user, and not the other way arou
 
 \begin{infobox}%[frametitle={}]
 If you want to make sure that both rules and directives are being mapped and 
-expanded correctly, enable the logging option with the \verb|--log| flag and 
+expanded correctly, enable the logging option with the |--log| flag and 
 verify the output. All expansions are logged.
 \end{infobox}
 % -------------------------------------------------
