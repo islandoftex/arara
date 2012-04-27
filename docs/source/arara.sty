@@ -179,7 +179,37 @@
    keywordstyle=\color{bluekeywords},
    stringstyle=\color{redstrings}
 }}{}
+
+% bash
 % -------------------------------------------------
+\lstnewenvironment{bash}{\lstset{%
+   language=bash,
+   basicstyle=\ttfamily,
+   columns=flexible,
+   showspaces=false,
+   xleftmargin=1.5em,
+   breaklines=true,
+   numberstyle=\color{araracolor}\ttfamily\small,
+   breakatwhitespace=true,
+   showstringspaces=false,
+   commentstyle=\color{greencomments},
+   keywordstyle=\color{bluekeywords},
+   stringstyle=\color{redstrings},
+   keywords={latexmk,rubber,pdfcrop,pdflatex,bibtex,makeindex,
+            chmod,java,arara,export,PATH,@echo,off},%
+}}{}
+% -------------------------------------------------
+
+% Short inline listings
+%\lstMakeShortInline[]{}
+\lstMakeShortInline[language=bash,%
+                    basicstyle=\ttfamily,%
+                    commentstyle=\color{greencomments},%
+                    keywordstyle=\color{bluekeywords},
+                    keywords={latexmk,rubber,pdfcrop,pdflatex,bibtex,makeindex,
+                              chmod,java,arara,export,PATH,},%
+                    alsoletter={.},
+                    stringstyle=\color{redstrings}]{|}
 
 % list of codes
 % -------------------------------------------------
