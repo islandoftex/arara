@@ -49,6 +49,7 @@
 \RequirePackage[scaled=0.8]{beramono}
 \RequirePackage{url}
 \RequirePackage{marvosym}
+\RequirePackage{xspace}
 
 % colors
 % -------------------------------------------------
@@ -197,12 +198,11 @@
 
 % hyperref here, so it won't cause any trouble
 % -------------------------------------------------
-\RequirePackage[colorlinks, linkcolor={black}, urlcolor={araracolor}]{hyperref}
+\RequirePackage[colorlinks, linkcolor={black}, urlcolor={araracolor},pdfpagelabels]{hyperref}
+
 % -------------------------------------------------
 
 % Helper macros
 % -------------------------------------------------
-\newcommand*\arara{\@ifstar\@arara\@@arara}
-\def\@arara{{\fontfamily{fco}\color{araracolor}\bfseriesArara}}
-\def\@@arara{{\fontfamily{fco}\color{araracolor}\bfseriesarara}}
+\newcommand*\arara{{\fontfamily{fco}\color{araracolor}\bfseries arara}\xspace}
 % -------------------------------------------------
