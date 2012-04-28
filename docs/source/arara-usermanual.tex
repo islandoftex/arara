@@ -1407,8 +1407,9 @@ verify the output. All expansions are logged.
 
 The following list shows predefined style which can be used out of the box.
 However it's important to save the rules in the folder |ARARA_HOME/rules/plain|
-(see section \ref{sec:rules}). 
-
+(see section \ref{sec:rules}). In the description you will find the
+flag argument |yes|. Please note you can also use |on| or |true| in capitals
+or not. 
 
 \begin{yamlrule}
 \headyamlrule{latex}
@@ -1419,7 +1420,7 @@ However it's important to save the rules in the folder |ARARA_HOME/rules/plain|
 \end{latex}
 \optionyamlrule
 \renewcommand\arraystretch{1.3}
-\noindent\begin{tabular}{>{\ttfamily\color{bluekeywords}}p{3cm}p{8cm}}
+\noindent\begin{tabular}{>{\mbox{}\ttfamily\color{bluekeywords}}p{3cm}p{8cm}}
  shell         & If you say |shell:yes| you compile with |--shell-escape| 
                  otherwise with |--no-shell-escape|                           \\
  synctex       & If you say |synctex:yes| you compile with |--synctex=1| 
@@ -1427,45 +1428,178 @@ However it's important to save the rules in the folder |ARARA_HOME/rules/plain|
  draft         & If you say |draft:yes| you compile with |-draftmode| otherwise
                  with |--draftmode=off|                                       \\
  expandoptions & Every value of this options will be passed to the compilation 
-                 run direct. So you can expand the option list.
+                 run direct. So you can expand the option list.               \\
+\end{tabular}
+\end{yamlrule}
+%------------------------------------------------------------------------------
+\begin{yamlrule}
+\headyamlrule{pdflatex}
+ The rule calls the compiler |pdflatex|. The rule doesn't have a mandatory argument. 
+ Inside your |.tex| file you can use:
+\begin{latex}
+% arara: pdflatex
+\end{latex}
+\optionyamlrule
+\renewcommand\arraystretch{1.3}
+\noindent\begin{tabular}{>{\mbox{}\ttfamily\color{bluekeywords}}p{3cm}p{8cm}}
+ shell         & If you say |shell:yes| you compile with |--shell-escape| 
+                 otherwise with |--no-shell-escape|                           \\
+ synctex       & If you say |synctex:yes| you compile with |--synctex=1| 
+                 otherwise with |--synctex=0|                                 \\
+ draft         & If you say |draft:yes| you compile with |-draftmode| otherwise
+                 with |--draftmode=off|                                       \\
+ expandoptions & Every value of this options will be passed to the compilation 
+                 run direct. So you can expand the option list.               \\
+\end{tabular}
+\end{yamlrule}
+%------------------------------------------------------------------------------
+\begin{yamlrule}
+\headyamlrule{lualatex}
+ The rule calls the compiler |lualatex|. The rule doesn't have a mandatory argument. 
+ Inside your |.tex| file you can use:
+\begin{latex}
+% arara: lualatex
+\end{latex}
+\optionyamlrule
+\renewcommand\arraystretch{1.3}
+\noindent\begin{tabular}{>{\mbox{}\ttfamily\color{bluekeywords}}p{3cm}p{8cm}}
+ shell         & If you say |shell:yes| you compile with |--shell-escape| 
+                 otherwise with |--no-shell-escape|                           \\
+ synctex       & If you say |synctex:yes| you compile with |--synctex=1| 
+                 otherwise with |--synctex=0|                                 \\
+ draft         & If you say |draft:yes| you compile with |-draftmode| otherwise
+                 with |--draftmode=off|                                       \\
+ expandoptions & Every value of this options will be passed to the compilation 
+                 run direct. So you can expand the option list.               \\
+\end{tabular}
+\end{yamlrule}
+%------------------------------------------------------------------------------
+\begin{yamlrule}
+\headyamlrule{xelatex}
+ The rule calls the compiler |xelatex|. The rule doesn't have a mandatory argument. 
+ Inside your |.tex| file you can use:
+\begin{latex}
+% arara: xelatex
+\end{latex}
+\optionyamlrule
+\renewcommand\arraystretch{1.3}
+\noindent\begin{tabular}{>{\mbox{}\ttfamily\color{bluekeywords}}p{3cm}p{8cm}}
+ shell         & If you say |shell:yes| you compile with |--shell-escape| 
+                 otherwise with |--no-shell-escape|                           \\
+ synctex       & If you say |synctex:yes| you compile with |--synctex=1| 
+                 otherwise with |--synctex=0|                                 \\
+ draft         & If you say |draft:yes| you compile with |-draftmode| otherwise
+                 with |--draftmode=off|                                       \\
+ expandoptions & Every value of this options will be passed to the compilation 
+                 run direct. So you can expand the option list.               \\
+\end{tabular}
+\end{yamlrule}
+%------------------------------------------------------------------------------
+\begin{yamlrule}
+\headyamlrule{biber}
+ The rule calls the bibliography compiler |biber|. The compiler is recommended
+ by |biblatex| and so implemented by \arara. The rule doesn't have a mandatory
+ argument. Inside your |.tex| file you can use:
+\begin{latex}
+% arara: biber
+\end{latex}
+\optionyamlrule
+\renewcommand\arraystretch{1.3}
+\noindent\begin{tabular}{>{\mbox{}\ttfamily\color{bluekeywords}}p{3cm}p{8cm}}
+ expandoptions & Every value of this options will be passed to the compilation 
+                 run direct. So you can expand the option list.               \\
+\end{tabular}
+\end{yamlrule}
+%------------------------------------------------------------------------------
+\begin{yamlrule}
+\headyamlrule{bibtex}
+ The rule calls the standard bibliography compiler |bibtex|. The rule doesn't 
+ have a mandatory argument. Inside your |.tex| file you can use:
+\begin{latex}
+% arara: biber
+\end{latex}
+\optionyamlrule
+\renewcommand\arraystretch{1.3}
+\noindent\begin{tabular}{>{\mbox{}\ttfamily\color{bluekeywords}}p{3cm}p{8cm}}
+ expandoptions & Every value of this options will be passed to the compilation 
+                 run direct. So you can expand the option list.               \\
+\end{tabular}
+\end{yamlrule}
+%------------------------------------------------------------------------------
+\begin{yamlrule}
+\headyamlrule{makeglossaries}
+ The rule calls the perl script |makeglossaries| provided by the package 
+ |glossaries| The rule doesn't have a mandatory argument. Inside your |.tex|
+ file you can use:
+\begin{latex}
+% arara: makeglossaries
+\end{latex}
+\optionyamlrule
+\renewcommand\arraystretch{1.3}
+\noindent\begin{tabular}{>{\mbox{}\ttfamily\color{bluekeywords}}p{3cm}p{8cm}}
+ expandoptions & Every value of this options will be passed to the compilation 
+                 run direct. So you can expand the option list.               \\
+\end{tabular}
+\end{yamlrule}
+%------------------------------------------------------------------------------
+\begin{yamlrule}
+\headyamlrule{makeindex}
+ The rule calls the standard index processor of \LaTeX. The rule doesn't have 
+ a mandatory argument. Inside your |.tex| file you can use:
+\begin{latex}
+% arara: makeindex
+\end{latex}
+\optionyamlrule
+\renewcommand\arraystretch{1.3}
+\noindent\begin{tabular}{>{\mbox{}\ttfamily\color{bluekeywords}}p{3cm}p{8cm}}
+ style         & You can specify a style file which will be used by |makeindex|.\\
+ expandoptions & Every value of this options will be passed to the compilation 
+                 run direct. So you can expand the option list.               \\              
+\end{tabular}
+\end{yamlrule}
+%------------------------------------------------------------------------------
+\begin{yamlrule}
+\headyamlrule{nomencl}
+ The rule calls the correct |makeindex| run which is required by the package
+ |nomencl|. The rule doesn't have a mandatory argument. Inside your |.tex| file
+ you can use:
+\begin{latex}
+% arara: nomencl
+\end{latex}
+\optionyamlrule
+\renewcommand\arraystretch{1.3}
+\noindent\begin{tabular}{>{\mbox{}\ttfamily\color{bluekeywords}}p{3cm}p{8cm}}
+ log           & If you say |log:yes| the compilation by |makeindex| will create
+                 a log file named |mynomencl.nlg|                            \\
+
+ stylefile     & If you want to use your own style file for the compilation by
+                 |makeindex| you can give the name of the file as argument to the
+                 option.                                                      \\
+ expandoptions & Every value of this options will be passed to the compilation 
+                 run direct. So you can expand the option list.               \\          
 \end{tabular}
 \end{yamlrule}
 
+%------------------------------------------------------------------------------
+\begin{yamlrule}
+\headyamlrule{make}
+ The rule calls the Unix command |make|. The argument of make can be handled as
+ mandatory because it depends on you |Makefile|. 
+\begin{latex}
+% arara: make
+\end{latex}
+\optionyamlrule
+\renewcommand\arraystretch{1.3}
+\noindent\begin{tabular}{>{\mbox{}\ttfamily\color{bluekeywords}}p{3cm}p{8cm}}
+ task          & Specify the task of |make| \\
+\end{tabular}
+\end{yamlrule}
 
 \begin{description}[font=\bfseries\ttfamily]
-\item[pdflatex]
-     The compiler |pdflatex|.
-     Usage: |% arara: pdflatex|
-\item[latex]
-     The compiler |latex|. 
-     Usage: |% arara: latex|
-\item[lualatex]
-     The compiler |lualatex|. 
-     Usage: |% arara: lualatex|
-\item[xelatex]
-     The compiler |xelatex|. 
-     Usage: |% arara: xelatex|
-\item[biber] 
-     The recommend compiler of |biblatex| and used to create a bibliography.
-     Usage: |% arara: biber|
-\item[bibtex]
-     The standard compiler of a bibliography. 
-     Usage: |% arara: bibtex|
-\item[makeglossaries]
-     A perl script provided by the package |glossaries|.
-     Usage: |% arara: makeglossaries|
-\item[makeindex]
-     The standard index processor.
-     Usage: |% arara: makeindex|
-\item[nomencl]
-     Creating a nomenclature with the help of the package |nomencl|
-     Usage: |% arara: nomencl|
 \item[dvips]
 \item[ps2pdf]
 \item[removehelpfiles]
 \item[cleanhelpfiles]
-
-\item[make]
 \end{description}
 % -------------------------------------------------
 
