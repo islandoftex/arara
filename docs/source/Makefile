@@ -49,7 +49,7 @@ pdf: $(DOCUMENATION).pdf
 
 clean:  
 	echo -e "\n\t$(ERROR_COLOR)Start removing help files$(NO_COLOR)" ;\
-	for I in $(FILELIST) ;\
+	for I in $(DOCUMENATION) ;\
 	do \
 	  for J in $(AUXFILES) ;\
 	  do \
