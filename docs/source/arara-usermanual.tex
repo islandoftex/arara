@@ -295,9 +295,9 @@ As I keep saying since the first pages of this manual: you are in control of you
 explicitly tell it to execute the task. Introducing the \arara terminology:
 
 \begin{description}
-\item[How can I teach \arara to do a task?] \mbox{}\newline 
+\item[How can I teach \arara to do a task?] 
         You need to define \arara rules.
-\item[How can I tell \arara to execute a task?] \mbox{}\newline 
+\item[How can I tell \arara to execute a task?]
         You need to use \arara directives.
 \end{description}
 
@@ -598,23 +598,23 @@ The |!config| keyword (line 1) is mandatory and it must be the first line
 of a plain \arara rule. The following keys are defined:
 
 \begin{description}
-\item[identifier]\mbox{}\newline
+\item[identifier]
    This key (line 2) acts as a unique identifier for the rule. It's highly 
    recommended to use lowercase letters without spaces, accents or punctuation 
    symbols. As a convention, if you have an identifier named |makefoo|, the rule 
    filename must be |makefoo.yaml|.
-\item[name]\mbox{}\newline 
+\item[name]
    The |name| key (line 3) holds the name of the task. When running \arara, this 
    value will be displayed in the output. In our example, \arara will display 
    |Running MakeFoo| when dealing with this task.
-\item[command]\mbox{}\newline 
+\item[command] 
    This key (line 4) contains the system command to be executed. It's highly 
    recommended to avoid interactive commands. Prefer those commands that run as 
    a non-interactive mode, mainly because \arara won't output anything in the 
    terminal neither provide user interaction. You probably noticed a strange 
    element |@{file}|: this element is called \emph{orb tag}. For now, just admit 
    they exist. We will come back to them later on, in Section~\ref{sec:orbtags}.
-\item[arguments]\mbox{}\newline 
+\item[arguments]
    The |arguments| key (line 5) is a list. In our example, it has an empty list, 
    denoted as |[]|. You can define as many arguments as your command requires. 
    Check Code~\ref{code:makebar} for an example of a list of arguments.
@@ -647,12 +647,14 @@ For every argument in the list, we have a |-| mark and the proper indentation.
 The required keys for an argument are:
 
 \begin{description}
-\item[identifier]\hfill\\ This key (lines 6 and 8) acts as a unique identifier 
-for the argument. It's highly recommended to use lowercase letters without 
-spaces, accents or punctuation symbols.
-\item[flag]\hfill\\ The |flag| key (lines 7 and 9) represents the argument 
-value. Please note that we have another orb tag in the definition, 
-|@{value}|. We will discuss them later in Section~\ref{sec:orbtags}.
+\item[identifier]
+     This key (lines 6 and 8) acts as a unique identifier for the argument. It's 
+     highly recommended to use lowercase letters without spaces, accents or 
+     punctuation symbols.
+\item[flag]
+     The |flag| key (lines 7 and 9) represents the argument value. Please note 
+     that we have another orb tag in the definition, |@{value}|. We will discuss 
+     them later in Section~\ref{sec:orbtags}.
 \end{description}
 
 For now, just keep in mind that \arara uses rules to tell it how to do a certain 
@@ -670,13 +672,13 @@ extract the directives. A directive should be placed in a line of its own, in
 the form |% arara: <directive>|. There are two types of directives:
 
 \begin{description}
-\item[empty directive]\mbox{}\newline  
+\item[empty directive]  
    An empty directive has only the rule identifier, as we seen in 
    Section~\ref{sec:rules}. Lines 1 and 3 of Code~\ref{code:directiveslatex} 
    show an example of empty directives. Note that you can supress arguments 
    (line 3 in constrast to line 2), but we will see that \arara assumes that you 
    know exactly what you are doing.
-\item[parametrized directive]\mbox{}\newline
+\item[parametrized directive]
    A parametrized directive has the rule identifier followed by its arguments. 
    Line 2 of Code~\ref{code:directiveslatex} shows an example of a parametrized 
    directive. Note that the arguments are mapped by their identifiers, not by 
@@ -1311,22 +1313,22 @@ own practices. After all, \arara depends on the user, and not the other way arou
 \label{sec:plainrules}
 
 \begin{description}
-\item[Use a text editor with support to {\normalfont\texttt{.yaml}} files]\mbox{}
-     \newline In my humble opinion, \textsc{yaml} is a great format for 
+\item[Use a text editor with support to {\normalfont\texttt{.yaml}} files]
+              In my humble opinion, \textsc{yaml} is a great format for 
               expressing \arara rules, but you might encounter problems if the 
               |.yaml| file is not well-formed. Please follow the rule format 
               presented in Section~\ref{sec:rules} and use a text editor with 
               proper support to the \textsc{yaml} format. Personally, I use 
               \href{http://www.vim.org}{Vim} for editing \arara rules.
-\item[Use only lowercase letters when defining identifiers for rules]\mbox{}
-     \newline Avoid at all costs uppercase letters, digits, spaces, punctuation 
+\item[Use only lowercase letters when defining identifiers for rules]
+              Avoid at all costs uppercase letters, digits, spaces, punctuation 
               or other symbols when defining the |identifier| key for 
               \arara rules.
-\item[Prefer to enclose orb tags with single quotes]\mbox{}\newline
+\item[Prefer to enclose orb tags with single quotes]
               Although you can also enclose orb tags with double quotes, I 
               suggest you to stick with single quotes. Use double quotes inside 
               the orb tag for possible evaluations.
-\item[If the key value only contains an orb tag, enclose it]\mbox{}\newline
+\item[If the key value only contains an orb tag, enclose it]
               Compare the |flag| key of the two arguments from the 
               |makeindex| rule (Code~\ref{code:makeindextwo}). When there's 
               only the orb tag as value or if the orb tag comes first in the 
@@ -1335,7 +1337,7 @@ own practices. After all, \arara depends on the user, and not the other way arou
               resolve the value type, but sometimes orb tags can mislead the 
               extractor. If you want to play it safe, enclose the value with 
               single quotes.
-\item[Don't use reserved keywords as identifiers]\mbox{}\newline
+\item[Don't use reserved keywords as identifiers]
               \arara has a few reserved keywords: |file|, |files|,
               |value| and |arara|. Don't use them as identifiers, 
               otherwise name clashes will make \arara's behaviour unpredictable 
@@ -1346,7 +1348,7 @@ own practices. After all, \arara depends on the user, and not the other way arou
 \label{sec:directives}
 
 \begin{description}
-\item[If an argument value has spaces, enclose it with quotes]\mbox{}\newline
+\item[If an argument value has spaces, enclose it with quotes]
               Again, try to avoid at all costs values with spaces, but if you 
               really need them, enclose the value with single quotes. Beware: 
               commands might require you to enclose values with spaces with 
@@ -1372,6 +1374,51 @@ verify the output. All expansions are logged.
 \end{infobox}
 % -------------------------------------------------
 
+% Predefined rules
+% -------------------------------------------------
+\chapter{Predefined rules}
+\label{chap:predefinedrules}
+
+The following list shows predefined style which can be used out of the box.
+However it's important to save the rules in the folder |ARARA_HOME/rules/plain|
+(see section \ref{sec:rules}).
+\begin{description}[font=\bfseries\ttfamily]
+\item[pdflatex]
+     The compiler |pdflatex|. 
+     Usage: |% arara: pdflatex|
+\item[latex]
+     The compiler |latex|. 
+     Usage: |% arara: latex|
+\item[lualatex]
+     The compiler |lualatex|. 
+     Usage: |% arara: lualatex|
+\item[xelatex]
+     The compiler |xelatex|. 
+     Usage: |% arara: xelatex|
+\item[biber] 
+     The recommend compiler of |biblatex| and used to create a bibliography.
+     Usage: |% arara: biber|
+\item[bibtex]
+     The standard compiler of a bibliography. 
+     Usage: |% arara: bibtex|
+\item[makeglossaries]
+     A perl script provided by the package |glossaries|.
+     Usage: |% arara: makeglossaries|
+\item[makeindex]
+     The standard index processor.
+     Usage: |% arara: makeindex|
+\item[nomencl]
+     Creating a nomenclature with the help of the package |nomencl|
+     Usage: |% arara: nomencl|
+\item[dvips]
+\item[ps2pdf]
+\item[removehelpfiles]
+\item[cleanhelpfiles]
+
+\item[make]
+\end{description}
+% -------------------------------------------------
+
 % For developers
 % -------------------------------------------------
 \part{For developers}
@@ -1383,7 +1430,6 @@ verify the output. All expansions are logged.
 \chapter{Writing compiled rules}
 \label{chap:writingcompiledrules}
 
-Hello world.
 % -------------------------------------------------
 
 \end{document}
