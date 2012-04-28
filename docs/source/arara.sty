@@ -286,7 +286,10 @@
 ]{yamlrule}
 
 \newcommand*\headyamlrule[1]{%
-  \subsection*{Predefined rule: {\color{bluekeywords}\ttfamily #1}}%
+  \phantomsection%
+  \subsection*{#1}%
+  \addcontentsline{toc}{section}{\texttt{#1}}%
+%  \subsection*{Predefined rule: {\color{bluekeywords}\ttfamily #1}}%
   }
 \newcommand*\optionyamlrule{\subsubsection*{Options}}
 
