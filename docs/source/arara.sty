@@ -44,6 +44,7 @@
 \RequirePackage{xcolor}
 \RequirePackage{listings}
 \RequirePackage[framemethod=TikZ]{mdframed}
+\usetikzlibrary{calc}
 \RequirePackage{cantarell}
 \RequirePackage{lmodern}
 \RequirePackage[scaled=0.8]{beramono}
@@ -240,7 +241,7 @@
 % Helper macros
 % -------------------------------------------------
 \newcommand*\arara{{\fontfamily{fco}\color{araracolor}\bfseries arara}\xspace}
-
+\newcommand*\arararule{{\fontfamily{fco}\color{araracolor}\bfseries arara rule}\xspace}
 \newcommand{\feature}[1]{%
 \begin{tikzpicture}%
 \node[draw=black!30,top color=white,bottom color=black!20,inner sep=1pt, minimum height=0.32cm, minimum width=0.8cm,rounded corners=3pt,font=\sffamily\tiny] {#1};
@@ -249,4 +250,44 @@
 
 \newcommand{\featurenew}{\feature{\raisebox{-.5pt}[\height][0pt]{new}}}
 \newcommand{\featurefixed}{\feature{\raisebox{0pt}[\height][0pt]{fixed}}}
+% -------------------------------------------------
+
+
+
+% Environment and command for yaml rules
+
+% yamlrule
+% -------------------------------------------------
+\tikzset{%
+   warningsymbol/.style={%
+            rectangle,draw=araracolor,rounded corners=3pt,
+            fill=white,scale=1,,rotate=90,
+            overlay}}
+\newmdenv[%
+    hidealllines=true,leftline=true,
+    skipabove=12,skipbelow=12pt,
+    innertopmargin=0.4em,%
+    innerbottommargin=0.4em,%
+    innerrightmargin=0.7em,%
+    innermargin=1em,%
+    outermargin=1em,%
+    innerleftmargin=1.7em,%
+    leftmargin=0.7em,%
+    middlelinewidth=.2em,%
+    linecolor=araracolor,%
+    firstextra={\path let \p1=(P), \p2=(O) in ($(\x2,0)+0.5*(0,\y1)$)%
+                node[warningsymbol] {\arararule};},%
+    secondextra={\path let \p1=(P), \p2=(O) in ($(\x2,0)+0.5*(0,\y1)$)%
+                  node[warningsymbol] {\arararule};},%
+    middleextra={\path let \p1=(P), \p2=(O) in ($(\x2,0)+0.5*(0,\y1)$)%
+                 node[warningsymbol] {\arararule};},%
+    singleextra={\path let \p1=(P), \p2=(O) in ($(\x2,0)+0.5*(0,\y1)$)%
+                 node[warningsymbol] {\arararule};},%
+]{yamlrule}
+
+\newcommand*\headyamlrule[1]{%
+  \subsection*{Predefined rule: {\color{bluekeywords}\ttfamily #1}}%
+  }
+\newcommand*\optionyamlrule{\subsubsection*{Options}}
+
 % -------------------------------------------------
