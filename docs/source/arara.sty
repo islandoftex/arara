@@ -240,4 +240,13 @@
 % Helper macros
 % -------------------------------------------------
 \newcommand*\arara{{\fontfamily{fco}\color{araracolor}\bfseries arara}\xspace}
+
+\newcommand{\feature}[1]{%
+\begin{tikzpicture}%
+\node[draw=black!30,top color=white,bottom color=black!20,inner sep=1pt, minimum height=0.32cm, minimum width=0.8cm,rounded corners=3pt,font=\sffamily\tiny] {#1};
+\end{tikzpicture}%
+}
+
+\newcommand{\featurenew}{\feature{\raisebox{-.5pt}[\height][0pt]{new}}}
+\newcommand{\featurefixed}{\feature{\raisebox{0pt}[\height][0pt]{fixed}}}
 % -------------------------------------------------

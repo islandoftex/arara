@@ -143,16 +143,42 @@ I'd like to thank some friends that made \arara possible:
                        itself.
 \item[Joseph Wright] for testing it, providing contributed code for Linux and Mac
                      installations, and also blogging about \arara in his 
-                     personal blog.
+                     \href{http://www.texdev.net}{personal blog}.
 \item[Marco Daniel] for heavily testing \arara, suggesting enhancements to the 
                     manual and to the program itself and also providing lots of 
-                    contributed rules for common tasks.
+                    contributed rules for common tasks. Marco is now an official
+                    collaborator and is helping me a lot with the project
+                    management. I have no words to express my gratitude for what
+                    Marco has been doing to \arara.
 \item[Patrick Gundlach] for advertising \arara in the official Twitter channel 
                         of Dante -- the German \TeX\ User Group.
 \end{description}
 
-And at last but not least, to all 
+And at last but not least, I want to thank you, dear reader and potential user, for giving \arara a try. It's been an honour to serve the \TeX\ community.
 % -------------------------------------------------
+
+\cleardoublepage
+
+% Release information
+% -------------------------------------------------
+\section*{Release information}
+
+\subsection*{1.0.1}
+
+\begin{itemize}
+\item[\featurenew] Added support for |.tex|, |.dtx| and |.ltx| files. When no extension is provided, \arara will automatically look for these extensions in this specific order.
+\item[\featurenew] Added the |--verbose| flag to allow printing the complete log in the terminal. A short |-v| tag is also available. Both |stdout| and |stderr| are printed.
+\item[\featurefixed] Fixed exit status when an exception is thrown. Now \arara also returns a non-zero exit status when something wrong happened. Note that this behaviour happens only when \arara is processing a file.
+\end{itemize}
+
+\subsection*{1.0}
+
+\begin{itemize}
+\item[\featurenew] First public release.
+\end{itemize}
+
+% -------------------------------------------------
+
 
 \cleardoublepage
 
@@ -171,7 +197,7 @@ open source license by the
 \vfill
 
 \begin{infobox}[skipabove=\baselineskip plus 2pt minus 1pt]
-\noindent{\color{araracolor}\fontfamily{fco}\bfseries \arara -- the cool \TeX{} 
+\noindent{\color{araracolor}\fontfamily{fco}\bfseries \arara \ -- the cool \TeX{} 
 automation tool}
 
 \vspace{.5em}
