@@ -1405,11 +1405,19 @@ verify the output. All expansions are logged.
 \chapter{Predefined rules}
 \label{chap:predefinedrules}
 
-The following list shows predefined style which can be used out of the box.
+On the next pages you will find some predefined styles which can be used out
+of the box. 
+
 However it's important to save the rules in the folder |ARARA_HOME/rules/plain|
-(see section \ref{sec:rules}). In the description you will find the
+(see section \ref{sec:rules}). 
+
+
+The description of the optional arguments you will find the
 flag argument |yes|. Please note you can also use |on| or |true| in capitals
-or not. 
+or not. That means values like |TrUe| or |YES| are also welcome.
+
+If you have some improvements or new rules please write an-email.
+
 
 \begin{yamlrule}
 \headyamlrule{latex}
@@ -1423,6 +1431,8 @@ or not.
 \noindent\begin{tabular}{>{\mbox{}\ttfamily\color{bluekeywords}}p{3cm}p{8cm}}
  shell         & If you say |shell:yes| you compile with |--shell-escape| 
                  otherwise with |--no-shell-escape|                           \\
+ write         & If you say |write:yes| you compile with |--enable-write18|
+                 otherwise with |--disable-write18|                           \\
  synctex       & If you say |synctex:yes| you compile with |--synctex=1| 
                  otherwise with |--synctex=0|                                 \\
  draft         & If you say |draft:yes| you compile with |-draftmode| otherwise
@@ -1444,6 +1454,8 @@ or not.
 \noindent\begin{tabular}{>{\mbox{}\ttfamily\color{bluekeywords}}p{3cm}p{8cm}}
  shell         & If you say |shell:yes| you compile with |--shell-escape| 
                  otherwise with |--no-shell-escape|                           \\
+ write         & If you say |write:yes| you compile with |--enable-write18|
+                 otherwise with |--disable-write18|                           \\
  synctex       & If you say |synctex:yes| you compile with |--synctex=1| 
                  otherwise with |--synctex=0|                                 \\
  draft         & If you say |draft:yes| you compile with |-draftmode| otherwise
@@ -1465,6 +1477,8 @@ or not.
 \noindent\begin{tabular}{>{\mbox{}\ttfamily\color{bluekeywords}}p{3cm}p{8cm}}
  shell         & If you say |shell:yes| you compile with |--shell-escape| 
                  otherwise with |--no-shell-escape|                           \\
+ write         & If you say |write:yes| you compile with |--enable-write18|
+                 otherwise with |--disable-write18|                           \\
  synctex       & If you say |synctex:yes| you compile with |--synctex=1| 
                  otherwise with |--synctex=0|                                 \\
  draft         & If you say |draft:yes| you compile with |-draftmode| otherwise
@@ -1486,6 +1500,8 @@ or not.
 \noindent\begin{tabular}{>{\mbox{}\ttfamily\color{bluekeywords}}p{3cm}p{8cm}}
  shell         & If you say |shell:yes| you compile with |--shell-escape| 
                  otherwise with |--no-shell-escape|                           \\
+ write         & If you say |write:yes| you compile with |--enable-write18|
+                 otherwise with |--disable-write18|                           \\
  synctex       & If you say |synctex:yes| you compile with |--synctex=1| 
                  otherwise with |--synctex=0|                                 \\
  draft         & If you say |draft:yes| you compile with |-draftmode| otherwise
