@@ -1618,13 +1618,73 @@ the rules were written for using with TeX Live.
 \end{tabular}
 \end{yamlrule}
 
-\begin{description}[font=\bfseries\ttfamily]
-\item[dvips]
-\item[ps2pdf]
-\item[removehelpfiles]
-\item[cleanhelpfiles]
-\end{description}
-% -------------------------------------------------
+%------------------------------------------------------------------------------
+\begin{yamlrule}
+\headyamlrule{dvips}
+ The rule calls the converting command |dvips|. 
+\begin{latex}
+% arara: make
+\end{latex}
+\optionyamlrule
+\renewcommand\arraystretch{1.3}
+\noindent\begin{tabular}{>{\mbox{}\ttfamily\color{bluekeywords}}p{3cm}p{8cm}}
+ outputfile    & Declare the name of the output file. By default the name which
+                 is save in the \emph{orb tag} |file| is used.               \\
+ expandoptions & Every value of this options will be passed to the compilation 
+                 run direct. So you can expand the option list.               \\          
+\end{tabular}
+\end{yamlrule}
+
+%------------------------------------------------------------------------------
+\begin{yamlrule}
+\headyamlrule{ps2pdf}
+ The rule calls the converting command |ps2pdf|.
+\begin{latex}
+% arara: make
+\end{latex}
+\optionyamlrule
+\renewcommand\arraystretch{1.3}
+\noindent\begin{tabular}{>{\mbox{}\ttfamily\color{bluekeywords}}p{3cm}p{8cm}}
+ outputfile    & Declare the name of the output file. By default the name which
+                 is save in the \emph{orb tag} |file| is used.               \\
+ expandoptions & Every value of this options will be passed to the compilation 
+                 run direct. So you can expand the option list.               \\          
+\end{tabular}
+\end{yamlrule}
+
+%------------------------------------------------------------------------------
+\begin{yamlrule}
+\headyamlrule{removehelpfiles}
+ The rule works only with a Unix System. Instead of explaining the options I
+will show the definition of the rule.
+\begin{yaml}
+!config
+identifier: removehelpfiles
+name: Removing-Help-Files
+command: 'rm -f @{remove}'
+arguments:
+  - identifier: remove
+    flag:  '@{value}'
+\end{yaml}
+\end{yamlrule}
+
+%------------------------------------------------------------------------------
+\begin{yamlrule}
+\headyamlrule{cleanhelpfiles}
+ The rule works only with a Unix System. Instead of explaining the options I
+will show the definition of the rule.
+\begin{yaml}
+!config
+identifier: cleanhelpfiles
+name: Removing-Help-Files
+command: find -type f ! -iname ''*.pdf'' ! -iname ''*.tex'' ! -iname ''*.sty'' 
+                      ! -iname ''*.def'' ! -iname ''*.bst'' -exec rm '{}' +
+arguments:
+  - identifier: keep
+    flag:  '@{value}'
+\end{yaml}
+\end{yamlrule}
+
 
 % For developers
 % -------------------------------------------------
