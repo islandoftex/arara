@@ -1412,16 +1412,18 @@ However it's important to save the rules in the folder |ARARA_HOME/rules/plain|
 (see section \ref{sec:rules}). 
 
 
-The description of the optional arguments you will find the
-flag argument |yes|. Please note you can also use |on| or |true| in capitals
-or not. That means values like |TrUe| or |YES| are also welcome.
+The description of the optional arguments contains the flag argument |yes|. 
+Please note you can also use |on| or |true| in capitals or not. That means values 
+like |TrUe| or |YES| are also welcome.
 
-If you have some improvements or new rules please write an-email.
+If you have some improvements or new rules please inform me.
 
 The rules |latex|, |pdflatex|, |xelatex| and |lualatex| provide the option
-|write18|. This option doesn't work because the \emph{orb tag} isn't set in the
-command line. If you use MikTeX you have to change the \emph{orb tag} of the
-command line from |@{shell}| to |@{write18}|
+|write18|. This option doesn't work out of the box because the \emph{orb tag} 
+isn't set in the command line. If you use MikTeX you have to change the 
+\emph{orb tag} of the command line from |@{shell}| to |@{write18}| to work
+with the optional argument |write18|. This behavior depends on the facht that
+the rules were written for using with TeX Live.
 
 
 \begin{yamlrule}
