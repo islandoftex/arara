@@ -20,12 +20,12 @@ if [ -f $FILENAME ];
    echo -e "\tOlder version of $FILENAME will be removed"
    rm -rf $FILENAME
    echo -e "\t$FILENAME will be downloaded to `pwd`"
-   wget -q  https://github.com/downloads/cereda/arara/arara.jar 
+   wget --no-check-certificate http://github.com/downloads/cereda/arara/arara.jar  
    echo -e "\tUpdate complete"
  else
    echo -e "\t$FILENAME not found -- no update possible"
    echo -e "\t$FILENAME will be downloaded to `pwd`"
-   wget -q  https://github.com/downloads/cereda/arara/arara.jar 
+   wget --no-check-certificate http://github.com/downloads/cereda/arara/arara.jar 
    echo -e "\tdownload complete"
 fi
 
