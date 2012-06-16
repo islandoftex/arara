@@ -1,8 +1,20 @@
 !config
 identifier: lualatex
 name: LuaLaTeX
-command: 'lualatex --interaction=nonstopmode @{draft} @{shell} @{synctex} @{expandoptions} @{file}.tex'
-arguments: 
+command: 'lualatex 
+          @{ action == "" ?  "--interaction=nonstopmode" :
+                             "--interaction=@{action}"  } 
+          @{draft} @{shell} @{synctex} @{expandoptions} 
+          @{file}.tex'
+
+arguments:
+  - identifier: action
+    flag:  '@{value}'
+#alternative to use a simple bool key for interaction nonstopmode
+# !NOT ADDED TO command yet
+  - identifier: nonstopmode
+    flag: '@{value.toLowerCase() == "yes" || value.toLowerCase() == "true" ||
+             value.toLowerCase() == "on" ? "--interaction=nonstopmode" : "" }'
   - identifier: shell
     flag: '@{value.toLowerCase() == "yes" || value.toLowerCase() == "true" ||
              value.toLowerCase() == "on" ? "--shell-escape" : "--no-shell-escape" }'
