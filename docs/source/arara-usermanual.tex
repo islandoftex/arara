@@ -494,7 +494,10 @@ it's again a matter of personal taste. For my tools, I usually set the path in
 my local |.bashrc| with |export PATH="$PATH:$ARARA_HOME"|. It's up to 
 you.
 
-Instead of adding |ARARA_HOME| to the system path in Linux or Mac, you can also create a symbolic link for \arara in \verb+/usr/bin/arara+. In this case there's no need of exporting the application folder. The target for this symbolic link is presented in the next paragraph.
+Instead of adding |ARARA_HOME| to the system path in Linux or Mac, you can
+also create a symbolic link for \arara in \verb+/usr/bin/arara+. In this case there's no
+need of exporting the application folder. The target for this symbolic link is presented
+in the next paragraph.
 
 The last step for deploying \arara is platform-specific. In order to run \arara, 
 we should run |java -jar arara.jar|, but that is not intuitive. To make our 
@@ -528,7 +531,8 @@ java -jar "$(dirname "$0")/arara.jar" $*
 \end{infobox}
 \end{code}
 
-Did you add |ARARA_HOME| to the path or create a symbolic link to \verb+ARARA_HOME/arara+ in a system folder? If so, we are good to go. Try running 
+Did you add |ARARA_HOME| to the path? Or did you create a symbolic link to 
+\verb+ARARA_HOME/arara+ in a system folder? If so, we are good to go. Try running 
 |arara| in the terminal and see if you get the output shown in 
 Code~\ref{code:arararun}.
 
@@ -1444,6 +1448,9 @@ the rules were written for using with TeX Live.
 \optionyamlrule
 \renewcommand\arraystretch{1.3}
 \noindent\begin{tabular}{>{\mbox{}\ttfamily\color{bluekeywords}}p{3cm}p{8cm}}
+ action         & The flag \mbox{\ttfamily\color{bluekeywords}action} will be passed 
+                 the argument to the compilation option |interaction|. By default the rule will use
+                 |--interaction=nonstopmode|.                       \\
  shell         & If you say |shell:yes| you compile with |--shell-escape| 
                  otherwise with |--no-shell-escape|                           \\
  write18       & If you say |write:yes| you compile with |--enable-write18|
@@ -1467,6 +1474,9 @@ the rules were written for using with TeX Live.
 \optionyamlrule
 \renewcommand\arraystretch{1.3}
 \noindent\begin{tabular}{>{\mbox{}\ttfamily\color{bluekeywords}}p{3cm}p{8cm}}
+ action         & The flag \mbox{\ttfamily\color{bluekeywords}action} will be passed 
+                 the argument to the compilation option |interaction|. By default the rule will use
+                 |--interaction=nonstopmode|.                       \\
  shell         & If you say |shell:yes| you compile with |--shell-escape| 
                  otherwise with |--no-shell-escape|                           \\
  write18       & If you say |write:yes| you compile with |--enable-write18|
@@ -1490,6 +1500,9 @@ the rules were written for using with TeX Live.
 \optionyamlrule
 \renewcommand\arraystretch{1.3}
 \noindent\begin{tabular}{>{\mbox{}\ttfamily\color{bluekeywords}}p{3cm}p{8cm}}
+ action         & The flag \mbox{\ttfamily\color{bluekeywords}action} will be passed 
+                 the argument to the compilation option |interaction|. By default the rule will use
+                 |--interaction=nonstopmode|.                       \\
  shell         & If you say |shell:yes| you compile with |--shell-escape| 
                  otherwise with |--no-shell-escape|                           \\
  write18       & If you say |write:yes| you compile with |--enable-write18|
@@ -1513,14 +1526,15 @@ the rules were written for using with TeX Live.
 \optionyamlrule
 \renewcommand\arraystretch{1.3}
 \noindent\begin{tabular}{>{\mbox{}\ttfamily\color{bluekeywords}}p{3cm}p{8cm}}
+ action         & The flag \mbox{\ttfamily\color{bluekeywords}action} will be passed 
+                 the argument to the compilation option |interaction|. By default the rule will use
+                 |--interaction=nonstopmode|.                       \\
  shell         & If you say |shell:yes| you compile with |--shell-escape| 
                  otherwise with |--no-shell-escape|                           \\
  write18       & If you say |write:yes| you compile with |--enable-write18|
                  otherwise with |--disable-write18|                           \\
  synctex       & If you say |synctex:yes| you compile with |--synctex=1| 
                  otherwise with |--synctex=0|                                 \\
- draft         & If you say |draft:yes| you compile with |-draftmode| otherwise
-                 with |--draftmode=off|                                       \\
  expandoptions & Every value of this options will be passed to the compilation 
                  run direct. So you can expand the option list.               \\
 \end{tabular}
@@ -1631,7 +1645,7 @@ the rules were written for using with TeX Live.
 \headyamlrule{dvips}
  The rule calls the converting command |dvips|. 
 \begin{latex}
-% arara: make
+% arara: dvips
 \end{latex}
 \optionyamlrule
 \renewcommand\arraystretch{1.3}
@@ -1648,7 +1662,7 @@ the rules were written for using with TeX Live.
 \headyamlrule{ps2pdf}
  The rule calls the converting command |ps2pdf|.
 \begin{latex}
-% arara: make
+% arara: ps2pdf
 \end{latex}
 \optionyamlrule
 \renewcommand\arraystretch{1.3}
