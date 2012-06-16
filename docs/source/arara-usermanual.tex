@@ -43,12 +43,13 @@
 
 % current version
 % -------------------------------------------------
-\newcommand{\araraversion}{1.0.1}
+\newcommand{\araraversion}{2.0}
 % -------------------------------------------------
 
 % document
 % -------------------------------------------------
 \begin{document}
+
 % title page
 % -------------------------------------------------
 \begin{titlingpage}
@@ -163,6 +164,11 @@ And at last but not least, I want to thank you, dear reader and potential user, 
 % -------------------------------------------------
 \section*{Release information}
 
+\subsection*{2.0}
+\begin{itemize}
+\item[\featurenew] TODO.
+\item[\featurefixed] TODO.
+\end{itemize}
 \subsection*{1.0.1}
 
 \begin{itemize}
@@ -266,7 +272,7 @@ in the prologue -- What prologue? Anyway, this chapter is a quick introduction t
  what you can expect from \arara. Don't be afraid, it will be easy to digest, I 
 promise.
 
-\section{What is \texorpdfstring{\arara}{arra}?}
+\section{What is \texorpdfstring{\arara}{arara}?}
 \label{sec:whatisarara}
 
 Good question. I've been asking it myself for a quite long time. Since I have to 
@@ -453,9 +459,9 @@ current release. The filename to get is |arara.jar|. You can also build
 \label{sec:deployment}
 
 The first step is to create an application folder. Feel free to create a folder 
-anywhere in your computer. It can be |C:\arara|, |/opt/arara| or 
-another location. My setup is usually |C:\paulo\softwares\arara| for 
-Windows machines and |/opt/paulo/arara| for Linux and Mac, but this is of 
+anywhere in your computer. It can be \verb+C:\arara+, \verb+/opt/arara+ or 
+another location. My setup is usually \verb+C:\paulo\softwares\arara+ for 
+Windows machines and \verb+/opt/paulo/arara+ for Linux and Mac, but this is of 
 course a matter of personal taste. For convenience, this folder will be called 
 |ARARA_HOME|. Although it's not mandatory, try to avoid folders structures 
 with spaces in the path.
@@ -488,6 +494,8 @@ it's again a matter of personal taste. For my tools, I usually set the path in
 my local |.bashrc| with |export PATH="$PATH:$ARARA_HOME"|. It's up to 
 you.
 
+Instead of adding |ARARA_HOME| to the system path in Linux or Mac, you can also create a symbolic link for \arara in \verb+/usr/bin/arara+. In this case there's no need of exporting the application folder. The target for this symbolic link is presented in the next paragraph.
+
 The last step for deploying \arara is platform-specific. In order to run \arara, 
 we should run |java -jar arara.jar|, but that is not intuitive. To make our 
 lives easier, we will create a shortcut for this command. If you are in Windows, 
@@ -496,7 +504,7 @@ from Code~\ref{code:windows}. If you are in Linux or Mac, create a file named
 |arara| inside |ARARA_HOME| and add the content from
 Code~\ref{code:unix}. In Linux and Mac, there only one more thing to do: don't 
 forget to add execute permissions for |arara| by running 
-|chmod +x arara|.
+|chmod +x arara|. If you want to use a symbolic link, make sure to use \verb|arara| as target.
 
 \begin{code}
 \caption{\texttt{arara.cmd} for Windows.}
@@ -520,7 +528,7 @@ java -jar "$(dirname "$0")/arara.jar" $*
 \end{infobox}
 \end{code}
 
-Did you add |ARARA_HOME| to the path? If so, we are good to go. Try running 
+Did you add |ARARA_HOME| to the path or create a symbolic link to \verb+ARARA_HOME/arara+ in a system folder? If so, we are good to go. Try running 
 |arara| in the terminal and see if you get the output shown in 
 Code~\ref{code:arararun}.
 
