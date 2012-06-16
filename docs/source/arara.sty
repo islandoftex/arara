@@ -31,7 +31,10 @@
 % WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
 % POSSIBILITY OF SUCH DAMAGE.
 % -------------------------------------------------
-
+%
+% The package works only in combination with the class memoir!
+%
+% -------------------------------------------------
 % package definition
 % -------------------------------------------------
 \NeedsTeXFormat{LaTeX2e}
@@ -220,6 +223,8 @@
 \newlistof{listofcodes}{cod}{\listcodename}
 \newfloat{code}{cod}{\codename}
 \newlistentry{code}{cod}{0}
+\setfloatlocations{code}{!htbp}
+
 % -------------------------------------------------
 
 % caption style
