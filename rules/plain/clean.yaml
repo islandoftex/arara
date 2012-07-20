@@ -1,0 +1,7 @@
+!config
+# Clean rule for arara
+# author: Paulo Cereda
+identifier: clean
+name: CleaningTool
+command: '@{ SystemUtils.IS_OS_WINDOWS ? "cmd /c del" : "rm -f" } @{file}'
+arguments: []

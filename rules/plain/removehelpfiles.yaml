@@ -1,7 +1,0 @@
-!config
-identifier: removehelpfiles
-name: Removing-Help-Files
-command: 'rm -f @{remove}'
-arguments:
-  - identifier: remove
-    flag:  '@{value}'

@@ -6,3 +6,4 @@
 
 This application is licensed under the [New BSD License](http://www.opensource.org/licenses/bsd-license.php).Please note that the New BSD License has been verified as a GPL-compatible free software license by the [Free Software Foundation](http://www.fsf.org/), and has been vetted as an open source license by the [Open Source Initiative](http://www.opensource.org/).
 
+

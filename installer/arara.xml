@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
+<installation version="1.0">
+
+    <info>
+        <appname>arara</appname>
+        <appversion>2.0</appversion>
+        <authors>
+            <author email="cereda@users.sf.net" name="Paulo Roberto Massa Cereda"/>
+        </authors>
+        <url>http://cereda.github.com/arara</url>
+        <uninstaller name="uninstaller.jar" write="yes"/>
+        <javaversion>1.5.0</javaversion>
+        <requiresjdk>no</requiresjdk>
+        <writeinstallationinformation>no</writeinstallationinformation>
+        <run-privileged condition="izpack.windowsinstall.vista|izpack.windowsinstall.7"/>
+    </info>
+
+    <guiprefs height="480" resizable="no" width="640">
+        <modifier key="useFlags" value="yes"/>
+        <modifier key="langDisplayType" value="native"/>
+    </guiprefs>
+
+    <locale>
+        <langpack iso3="eng"/>
+        <langpack iso3="deu"/>
+        <langpack iso3="ita"/>
+        <langpack iso3="por"/>
+        <langpack iso3="spa"/>
+        <langpack iso3="fra"/>
+    </locale>
+
+    <resources>
+        <res id="LicencePanel.licence" parse="yes" src="resources\license.txt"/>
+        <res id="installer.langsel.img" src="resources\splash.png"/>
+    </resources>
+
+    <panels>
+        <panel classname="CheckedHelloPanel"/>
+        <panel classname="LicencePanel"/>
+        <panel classname="PacksPanel"/>
+        <panel classname="TargetPanel"/>
+        <panel classname="InstallPanel"/>
+        <panel classname="SimpleFinishPanel"/>
+    </panels>
+
+    <packs>
+    
+        <pack name="Main application" preselected="yes" required="yes">
+            <description/>
+            <file override="update" src="resources\arara.jar" targetdir="$INSTALL_PATH/"/>
+            <file override="update" src="resources\arara.exe" targetdir="$INSTALL_PATH/">
+                <os family="Windows"/>
+            </file>
+            <file override="update" src="resources\arara" targetdir="$INSTALL_PATH/">
+                <os family="Unix"/>
+                <os family="Mac"/>
+            </file>
+            <executable failure="warn" stage="never" targetfile="$INSTALL_PATH/arara">
+                <os family="Unix"/>
+                <os family="Mac"/>
+            </executable>
+        </pack>
+
+        <pack name="Include the arara user manual" preselected="no" required="no">
+            <description/>
+            <file override="update" src="resources\arara-usermanual.pdf" targetdir="$INSTALL_PATH/docs/"/>
+        </pack>
+
+        <pack name="Include predefined rules" preselected="no" required="no">
+            <description/>
+            <file override="update" src="resources\rules\plain\biber.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
+            <file override="update" src="resources\rules\plain\bibtex.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
+            <file override="update" src="resources\rules\plain\clean.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
+            <file override="update" src="resources\rules\plain\dvips.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
+            <file override="update" src="resources\rules\plain\latex.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
+            <file override="update" src="resources\rules\plain\lualatex.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
+            <file override="update" src="resources\rules\plain\make.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
+            <file override="update" src="resources\rules\plain\makeglossaries.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
+            <file override="update" src="resources\rules\plain\makeindex.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
+            <file override="update" src="resources\rules\plain\nomencl.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
+            <file override="update" src="resources\rules\plain\pdflatex.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
+            <file override="update" src="resources\rules\plain\ps2pdf.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
+            <file override="update" src="resources\rules\plain\xelatex.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
+        </pack>
+
+        <pack name="Add arara to the system path" preselected="no" required="no">
+            <os family="Windows"/>
+            <description/>
+            <file override="update" src="resources\modpath.exe" targetdir="$INSTALL_PATH/etc/">
+                <os family="Windows"/>
+            </file>
+            <executable failure="warn" keep="true" stage="postinstall" targetfile="$INSTALL_PATH/etc/modpath.exe">
+                <os family="Windows"/>
+                <args>
+                    <arg value="\/add"/>
+                    <arg value="$INSTALL_PATH"/>
+                </args>
+            </executable>
+            <executable failure="warn" keep="false" stage="uninstall" targetfile="$INSTALL_PATH/etc/modpath.exe">
+                <os family="Windows"/>
+                <args>
+                    <arg value="\/del"/>
+                    <arg value="$INSTALL_PATH"/>
+                </args>
+            </executable>
+        </pack>
+        
+        <pack name="Add a symbolic link to arara in /usr/local/bin" preselected="no" required="no">
+            <os family="Unix"/>
+            <os family="Mac"/>
+            <description/>
+            <executable failure="warn" keep="true" stage="postinstall" targetfile="/bin/ln">
+                <os family="Unix"/>
+                <os family="Mac"/>
+                <args>
+                    <arg value="-s"/>
+                    <arg value="$INSTALL_PATH/arara"/>
+                    <arg value="/usr/local/bin/arara"/>
+                </args>
+            </executable>
+            <executable failure="warn" keep="true" stage="uninstall" targetfile="/bin/rm">
+                <os family="Unix"/>
+                <os family="Mac"/>
+                <args>
+                    <arg value="-f"/>
+                    <arg value="/usr/local/bin/arara"/>
+                </args>
+            </executable>
+        </pack>
+
+    </packs>
+
+</installation>

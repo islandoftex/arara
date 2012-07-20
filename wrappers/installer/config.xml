@@ -1,0 +1,34 @@
+<launch4jConfig>
+  <dontWrapJar>false</dontWrapJar>
+  <headerType>gui</headerType>
+  <jar>wrappers\installer\arara-2.0-installer.jar</jar>
+  <outfile>wrappers\installer\arara-2.0-installer.exe</outfile>
+  <errTitle></errTitle>
+  <cmdLine></cmdLine>
+  <chdir></chdir>
+  <priority>normal</priority>
+  <downloadUrl>http://java.com/download</downloadUrl>
+  <supportUrl></supportUrl>
+  <customProcName>false</customProcName>
+  <stayAlive>false</stayAlive>
+  <manifest></manifest>
+  <icon>wrappers\installer\araraicon.ico</icon>
+  <jre>
+    <path></path>
+    <minVersion>1.5.0</minVersion>
+    <maxVersion></maxVersion>
+    <jdkPreference>preferJre</jdkPreference>
+  </jre>
+  <versionInfo>
+    <fileVersion>2.0.0.0</fileVersion>
+    <txtFileVersion>2.0</txtFileVersion>
+    <fileDescription>arara 2.0 installer</fileDescription>
+    <copyright>2012, Paulo Roberto Massa Cereda</copyright>
+    <productVersion>2.0.0.0</productVersion>
+    <txtProductVersion>2.0</txtProductVersion>
+    <productName>arara 2.0 installer</productName>
+    <companyName></companyName>
+    <internalName>arara 2.0 installer</internalName>
+    <originalFilename>arara-2.0-installer.exe</originalFilename>
+  </versionInfo>
+</launch4jConfig>
