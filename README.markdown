@@ -1,6 +1,6 @@
-# Arara
+# arara
 
-`arara` is a TeX automation tool. It is as powerful as you want it to be. `arara` doesn’t provide solutions out of the box, but it gives you subsidies to enhance your TeX experience.
+`arara` is a TeX automation tool based on rules and directives. It gives you subsidies to enhance your TeX experience.
 
 ## License
 
