@@ -764,7 +764,7 @@ By the way, if you called the installer through the command line, please do not
 close the terminal! It might end the all running processes, including our 
 installer.
 
-\begin{figure}[ht]
+\begin{figure}[!ht]
 \centering
 \includegraphics[scale=0.5]{figures/install-langsel.png}
 \caption{Language selection screen.}
@@ -784,7 +784,7 @@ installation\footnote{Of course, this statement is just a joke. No animals were
 harmed, killed or severely wounded during the making of this user manual. After 
 all, \arara is environmentally friendly.}.
 
-\begin{figure}[p]
+\begin{figure}[!ht]
 \centering
 \includegraphics[scale=0.5]{figures/install-welcome.png}
 \caption{Welcome screen.}
@@ -801,7 +801,7 @@ Open Source Initiative~\cite{osi:1998}. The full license is also available in
 this document (page~\pageref{sec:license}). You need to accept the terms of the 
 license agreement before proceeding.
 
-\begin{figure}[p]
+\begin{figure}[!ht]
 \centering
 \includegraphics[scale=0.5]{figures/install-license.png}
 \caption{License agreement screen.}
@@ -813,16 +813,18 @@ here we will choose the packs we want to install (Figure~\ref{fig:instpacks}).
 All packs are described in Table~\ref{tab:packs}. Note that the grayed packs are 
 required.
 
-\begin{figure}[p]
+\begin{figure}[!ht]
 \centering
 \includegraphics[scale=0.5]{figures/install-packs.png}
 \caption{Packs screen.}
 \label{fig:instpacks}
 \end{figure}
 
-{\renewcommand{\arraystretch}{1.5}
-\begin{table}[ht]
+\begin{table}[!ht]
 \centering
+\caption{Available packs.}
+\label{tab:packs}
+\renewcommand{\arraystretch}{1.5}
 \footnotesize
 \begin{tabular}{p{0.30\textwidth}p{0.12\textwidth}p{0.4\textwidth}}
 \hline
@@ -849,9 +851,7 @@ add itself to the system path. This feature is provided by a Windows script name
  \href{http://legroom.net/software/modpath}{Modify Path}~\cite{modpath:2012}. \\
 \hline
 \end{tabular}
-\caption{Available packs.}
-\label{tab:packs}
-\end{table}}
+\end{table}
 
 It's very important to mention that all these modifications in the operating 
 system -- the symbolic link creation for Unix or the addition to the path for 
@@ -863,9 +863,12 @@ In the next screen, we will select the installation path (Figure~
 installation path according to the Table~\ref{tab:paths}, but feel free to 
 install \arara in your favorite structure -- even |/opt| or your home folder.
 
-{\renewcommand{\arraystretch}{1.5}
-\begin{table}[ht]
+
+\begin{table}[!ht]
 \centering
+\caption{Default installation paths.}
+\label{tab:paths}
+\renewcommand{\arraystretch}{1.5}
 \begin{tabular}{cl}
 \hline
 \textbf{OS} & \textbf{Default installation path}\\
@@ -875,11 +878,9 @@ Windows & |C:\Program Files\arara|\\
 Unix & |/usr/local/arara|\\
 \hline
 \end{tabular}
-\caption{Default installation paths.}
-\label{tab:paths}
-\end{table}}
+\end{table}
 
-\begin{figure}[p]
+\begin{figure}[!ht]
 \centering
 \includegraphics[scale=0.5]{figures/install-path.png}
 \caption{Installation path screen.}
@@ -892,7 +893,7 @@ click \textit{OK} to accept it. For convenience, the full installation path
 defined in the installation path screen (Figure~\ref{fig:instpath}) will be 
 referred as |ARARA_HOME| from now on.
 
-\begin{figure}[ht]
+\begin{figure}[!ht]
 \centering
 \includegraphics[scale=0.5]{figures/install-pathwarning.png}
 \caption{Target directory confirmation.}
@@ -906,14 +907,14 @@ the system path -- are performed here as well. If the installation has completed
 successfully, we will reach the final screen of the installer congratulating us 
 for installing \arara (Figure~\ref{fig:instfinish}).
 
-\begin{figure}[p]
+\begin{figure}[!ht]
 \centering
 \includegraphics[scale=0.5]{figures/install-progress.png}
 \caption{Progress screen.}
 \label{fig:instprogress}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[!ht]
 \centering
 \includegraphics[scale=0.5]{figures/install-finish.png}
 \caption{Final screen.}
@@ -928,7 +929,7 @@ in Windows and the system path pack is selected. Other files are
 platform-specific, such as |arara.exe| for Windows and the |arara| bash file for 
 Unix.
 
-\begin{figure}[ht]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[grow via three points={one child at (0.5,-0.7) and two children at (0.5,-0.7) and (0.5,-1.4)}, edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}, anchor=west, font=\ttfamily]
   \node {ARARA\_HOME/}
