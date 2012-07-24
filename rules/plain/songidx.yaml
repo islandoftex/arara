@@ -1,0 +1,12 @@
+ !config
+# songidx rule for arara
+# author: Francesco Endrici
+identifier: songidx
+name: songidx
+command: 'songidx @{input}.sxd @{output}.sbx'
+arguments:
+- identifier: input
+  flag: '@{value}'
+- identifier: output
+  flag: '@{value}'
+
