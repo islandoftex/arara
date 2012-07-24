@@ -1,0 +1,9 @@
+!config
+# Clean rule for arara, via latexmk
+# author: Brent Longborough
+identifier: lmkclean
+name: LaTeXmKCleaner
+command: 'latexmk @{ include == "" ? "-c" : include } @{file}'
+arguments: 
+- identifier: include
+  flag: '@{ value.toLowerCase() == "all" ? "-C" : "-c" }' 
