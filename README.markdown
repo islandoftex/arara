@@ -1,3 +1,5 @@
+> We have the upcoming major release of `arara` - version 3.0 - in the testing phase. Branch 2.0 is the current stable release.
+
 # arara
 
 `arara` is a TeX automation tool based on rules and directives. It gives you subsidies to enhance your TeX experience.
