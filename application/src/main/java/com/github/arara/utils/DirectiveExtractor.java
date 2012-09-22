@@ -137,13 +137,13 @@ public class DirectiveExtractor {
      * @throws AraraException Raised when there's a problem with the directive.
      */
     public void extract() throws FileNotFoundException, IOException, AraraException {
-
+        
         // create a new file reader
         FileReader fileReader = new FileReader(file);
 
         // create a new buffer
         BufferedReader bufferedReader = new BufferedReader(fileReader);
-
+        
         // variable to hold the current line
         String currentLine;
 
@@ -158,11 +158,11 @@ public class DirectiveExtractor {
 
             // increment the current line number
             currentLineNumber++;
-
+            
             // extract directive
             extractDirective(currentLine);
         }
-
+        
         // close the buffer
         bufferedReader.close();
 
@@ -178,19 +178,19 @@ public class DirectiveExtractor {
      * @throws AraraException Raised when there is a problem with the directive.
      */
     private void extractDirective(String currentLine) throws AraraException {
-
+        
         // get the pattern for the chosen filetype
         Pattern linePattern = Pattern.compile(configuration.getChosenFilePattern().getPattern());
-
+        
         // create the matcher according to the pattern
         Matcher matcher = linePattern.matcher(currentLine);
-
+        
         // if the pattern is found
         if (matcher.find()) {
 
             // get the substring
             currentLine = (currentLine.substring(matcher.end(), currentLine.length())).trim();
-
+            
             // there is actually something after the keyword
             if (!currentLine.isEmpty()) {
 

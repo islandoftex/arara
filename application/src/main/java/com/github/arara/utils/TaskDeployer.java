@@ -285,8 +285,6 @@ public class TaskDeployer {
             throw new AraraException(localization.getMessage("Error_ArgumentsNotDefinedInRule", task.getName(), configuration.getPaths().get(pathIndex), argumentsNotDefinedInRule.toString()));
         }
 
-        //System.out.println(directiveMap);
-
         // for all arguments in the rule not mapped in the directive, set
         // their default value to an empty string
         for (String currentKey : argumentsNotDefinedInDirective) {
