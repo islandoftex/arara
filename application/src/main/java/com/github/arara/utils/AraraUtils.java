@@ -102,7 +102,7 @@ public class AraraUtils {
      * @return A new message.
      */
     public static String wrap(String message) {
-        
+                
         // create a new tokenizer in order to allow line breaks, so
         // every line is processed individually
         StringTokenizer tokens = new StringTokenizer(message, "\n", true);

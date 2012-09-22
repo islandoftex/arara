@@ -55,8 +55,6 @@ public class CommandLineAnalyzer {
 
     // the file to process
     private String theFile;
-    // the file reference
-    private File fileReference;
     // the command line arguments
     private String[] theArgs;
     // the command line options
@@ -270,7 +268,7 @@ public class CommandLineAnalyzer {
                             return false;
 
                         }
-
+                        
                         // and return
                         return true;
                     }
@@ -326,17 +324,6 @@ public class CommandLineAnalyzer {
     }
 
     /**
-     * Getter for the file reference, without extension.
-     *
-     * @return The file reference.
-     */
-    public File getFileReference() {
-
-        // return it
-        return fileReference;
-    }
-
-    /**
      * Checks if file is valid.
      *
      * @param filename The file name.
@@ -357,6 +344,7 @@ public class CommandLineAnalyzer {
                 // set flag
                 foundFile = true;
 
+                // set configuration
                 configuration.setChosenFilePattern(currentExtension);
 
                 // break iteration
@@ -379,15 +367,12 @@ public class CommandLineAnalyzer {
                 // add file
                 theFile = filename;
 
-                // add reference
-                fileReference = new File(theFile.substring(0, theFile.length() - 4));
-
                 // found it!
                 return true;
             } else {
 
                 // print message about it
-                System.out.println("ERROR: File '" + filename + "' does not exist.");
+                System.out.println(localization.getMessage("Error_FileDoesNotExist", filename));
 
                 // not found
                 return false;
@@ -409,7 +394,7 @@ public class CommandLineAnalyzer {
                     theFile = filename + currentExtension;
 
                     // add reference
-                    fileReference = new File(theFile.substring(0, theFile.length() - 4));
+                    configuration.setChosenFilePattern(currentExtension);
 
                     // found it!
                     return true;

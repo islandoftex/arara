@@ -114,21 +114,14 @@ public class Arara {
 
             // file exists, let's proceed with the directive extractor
             DirectiveExtractor dirExtractor = new DirectiveExtractor(file, configuration);
-
+            
             // extract all directives from the file
             dirExtractor.extract();
-
+            
             // now let's parse the directives
             DirectiveParser dirParser = new DirectiveParser(dirExtractor.getDirectives());
-
-            // the file extension is now removed just to make the rules
-            // definition more easy
-
-            // the file without extension actually doesn't need to exist, as
-            // it's just a reference
-            file = commandLine.getFileReference();
-
-            // set the hypothetical file
+            
+            // set the file
             dirParser.setFile(file);
 
             // parse the directives
