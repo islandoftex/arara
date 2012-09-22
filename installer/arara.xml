@@ -12,7 +12,7 @@
         <javaversion>1.5.0</javaversion>
         <requiresjdk>no</requiresjdk>
         <writeinstallationinformation>no</writeinstallationinformation>
-        <run-privileged condition="izpack.windowsinstall.vista|izpack.windowsinstall.7"/>
+        <run-privileged condition="izpack.windowsinstall.vista|izpack.windowsinstall.7|izpack.macinstall"/>
     </info>
 
     <guiprefs height="480" resizable="no" width="640">
