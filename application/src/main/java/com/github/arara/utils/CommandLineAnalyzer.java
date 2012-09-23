@@ -163,6 +163,16 @@ public class CommandLineAnalyzer {
                     // and simply return
                     return false;
                 }
+                else {
+                    
+                    // new language, refresh the options
+                    optVersion.setDescription(localization.getMessage("Help_Version"));
+                    optHelp.setDescription(localization.getMessage("Help_Help"));
+                    optLog.setDescription(localization.getMessage("Help_Log"));
+                    optVerbose.setDescription(localization.getMessage("Help_Verbose"));
+                    optTimeout.setDescription(localization.getMessage("Help_Timeout"));
+                    optLanguage.setDescription(localization.getMessage("Help_Language"));
+                }
             }
 
             // if -h or --help found
