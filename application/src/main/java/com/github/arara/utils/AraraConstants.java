@@ -84,8 +84,13 @@ public class AraraConstants {
      * The method exception matching pattern.
      */
     public static final String METHODEXCEPTIONPATTERN = "^\\[Error: unable to access property \\((.*)\\): (.*)\\]";
-    
+    /**
+     * The full directive matching pattern.
+     */
     public static final String FULLDIRECTIVEPATTERN = "^\\s*(\\w+)\\s*:\\s*\\{.*\\}\\s*$";
+    /**
+     * The empty directive matching pattern.
+     */
     public static final String EMPTYDIRECTIVEPATTERN = "^\\s*(\\w+)\\s*$";
     
 }
