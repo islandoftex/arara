@@ -197,17 +197,27 @@ public class DirectiveExtractor {
                 // log directive
                 logger.trace(localization.getMessage("Log_DirectiveFound", currentLineNumber, currentLine));
 
-                // if there are arguments
-                if (currentLine.contains("{")) {
-
-                    // call the directive method
+                // look for a full directive
+                if (AraraUtils.checkForFullDirective(currentLine)) {
+                    
+                    // add it
                     addAraraDirective(currentLine);
-
-                } else {
-
-                    // call the empty directive
-                    addEmptyAraraDirective(currentLine);
                 }
+                else {
+                    
+                    // look for an empty directive
+                    if (AraraUtils.checkForEmptyDirective(currentLine)) {
+                        
+                        // add it
+                        addEmptyAraraDirective(currentLine.trim());
+                    }
+                    else {
+                        
+                        // an invalid directive was found, throw error
+                        throw new AraraException(localization.getMessage("Error_InvalidDirective", currentLineNumber));
+                    }
+                }
+                
             }
         }
     }

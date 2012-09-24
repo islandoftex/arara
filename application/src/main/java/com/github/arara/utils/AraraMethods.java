@@ -335,6 +335,7 @@ public class AraraMethods {
     
     /**
      * Checks if the operating system is Windows.
+     * 
      * @param ifTrue The value if true.
      * @param ifFalse The value if false.
      * @return A string according the condition.
@@ -350,6 +351,7 @@ public class AraraMethods {
     
     /**
      * Checks if the operating system is Linux.
+     * 
      * @param ifTrue The value if true.
      * @param ifFalse The value if false.
      * @return A string according the condition.
@@ -365,6 +367,7 @@ public class AraraMethods {
     
     /**
      * Checks if the operating system is Unix.
+     * 
      * @param ifTrue The value if true.
      * @param ifFalse The value if false.
      * @return A string according the condition.
@@ -380,6 +383,7 @@ public class AraraMethods {
     
     /**
      * Checks if the operating system is Mac.
+     * 
      * @param ifTrue The value if true.
      * @param ifFalse The value if false.
      * @return A string according the condition.
@@ -392,6 +396,63 @@ public class AraraMethods {
             return ifFalse;
         }
     }
+
+    /**
+     * Checks if the logic condition is true.
+     * 
+     * @param value Logic condition to be evaluated.
+     * @param ifTrue The value if true.
+     * @return A string according the condition.
+     */
+    public static String isTrue(boolean value, String ifTrue) {
+        if (value) {
+            return ifTrue;
+        }
+        return "";
+    }
     
+    /**
+     * Checks if the logic condition is true.
+     * 
+     * @param value Logic condition to be evaluated.
+     * @param ifTrue The value if true.
+     * @param ifFalse The value if false.
+     * @return A string according the condition.
+     */
+    public static String isTrue(boolean value, String ifTrue, String ifFalse) {
+        if (value) {
+            return ifTrue;
+        }
+        return ifFalse;
+    }
+    
+    /**
+     * Checks if the logic condition is false.
+     * 
+     * @param value Logic condition to be evaluated.
+     * @param ifTrue The value if true.
+     * @return A string according the condition.
+     */
+    public static String isFalse(boolean value, String ifTrue) {
+        if (!value) {
+            return ifTrue;
+        }
+        return "";
+    }
+    
+    /**
+     * Checks if the logic condition is false.
+     * 
+     * @param value Logic condition to be evaluated.
+     * @param ifTrue The value if true.
+     * @param ifFalse The value if false.
+     * @return A string according the condition.
+     */
+    public static String isFalse(boolean value, String ifTrue, String ifFalse) {
+        if (!value) {
+            return ifTrue;
+        }
+        return ifFalse;
+    }
 
 }

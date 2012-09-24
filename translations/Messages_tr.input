@@ -1,42 +1,40 @@
-﻿# arara -- the cool TeX automation tool
+﻿# Arara -- the cool TeX automation tool
 # Copyright (c) 2012, Paulo Roberto Massa Cereda
 # All rights reserved.
 #
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions
+# Redistribution and  use in source  and binary forms, with  or without
+# modification, are  permitted provided  that the  following conditions
 # are met:
 #
-# 1. Redistributions of source code must retain the above copyright
+# 1. Redistributions  of source  code must  retain the  above copyright
 # notice, this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright
-# notice, this list of conditions and the following disclaimer in the
+# 2. Redistributions in binary form  must reproduce the above copyright
+# notice, this list  of conditions and the following  disclaimer in the
 # documentation and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the project's author nor the names of its
-# contributors may be used to endorse or promote products derived from
+# 3. Neither  the name  of the  project's author nor  the names  of its
+# contributors may be used to  endorse or promote products derived from
 # this software without specific prior written permission.
 #
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-# COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+# THIS SOFTWARE IS  PROVIDED BY THE COPYRIGHT  HOLDERS AND CONTRIBUTORS
+# "AS IS"  AND ANY  EXPRESS OR IMPLIED  WARRANTIES, INCLUDING,  BUT NOT
+# LIMITED  TO, THE  IMPLIED WARRANTIES  OF MERCHANTABILITY  AND FITNESS
+# FOR  A PARTICULAR  PURPOSE  ARE  DISCLAIMED. IN  NO  EVENT SHALL  THE
+# COPYRIGHT HOLDER OR CONTRIBUTORS BE  LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY,  OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT  NOT LIMITED  TO, PROCUREMENT  OF SUBSTITUTE  GOODS OR  SERVICES;
+# LOSS  OF USE,  DATA, OR  PROFITS; OR  BUSINESS INTERRUPTION)  HOWEVER
+# CAUSED AND  ON ANY THEORY  OF LIABILITY, WHETHER IN  CONTRACT, STRICT
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
-# WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
 # POSSIBILITY OF SUCH DAMAGE.
 #
-# Messages: This file holds the Turkish language messages for arara.
+# Messages_tr: This file holds the Turkish language messages for arara.
 #
-# author: Paulo Roberto Massa Cereda
-# e-mail: cereda@users.sf.net
 # initially translated by: Brent Longborough (Obviously not a fluent Turkish speaker!)
 # e-mail: brent@longborough.org
-# enjoyed and revised by : İlhan Polat (Brent is just humble, he is wonderful)
+# enjoyed and revised by: İlhan Polat (Brent is just humble, he is wonderful)
 # e-mail: i.polat@tudelft.nl
 Log_WelcomeMessage = arara'ya hoşgeldin
 Log_ProcessingFile = Dosya ''{0}'' işleniyor, biraz bekletecegim.
@@ -74,7 +72,7 @@ YamlError_ErrorLocation = {0}. satır, {1}. sütunda hata bulundu.
 
 Error_FileDoesNotExistWithExtensionsList = Üzgünüm ama ''{0} {1}'' diye bir dosya yok. Ancak, uzantısı olmayan (veya bilinmeyen bir uzantısı olan) dosya adını girdiğinde, arara sırasıyla {1} uzantılarını bulmayı dener. Elbette bu sırayı geçersiz kılmak, değiştirmek hatta yeni uzantılar ekleyebilmek mümkün. Bu özellik hakkında daha fazla bilgi edinmek için arara kılavuzuna bakın.
 Error_FileDoesNotExist = ''{0}'' diye bir dosya yok.
-Error_CommandNotFound = Üzgünüm ama ''{0}'' görevindeki komutu bulunamadı. ''{1}''  komutunun doğru veya sistem yolu ile erişilebilir olduğundan emin misin?
+Error_CommandNotFound = \nÜzgünüm ama ''{0}'' görevindeki komutu bulunamadı. ''{1}''  komutunun doğru veya sistem yolu ile erişilebilir olduğundan emin misin?
 Error_InvalidYAMLConfigurationFile = Üzgünüm, ama görünüşe göre arara yapılandırma dosyası geçersiz, daha doğrusu geçersiz veya eksik YAML girişleri barındırıyor. Maalesef, arara bu hata giderilene kadar devam edemeyecek. Elimden geldiğince, şöyle bir hata dökümü çıkarttım:
 Error_InvalidConfigurationFile = Tüh, yapılandırma dosyası geçersiz görünüyor. Uygun bir YAML dosyası olduğundan emin misin? Uygun bir yapılandırma dosyası girilene kadar maalesef arara devam edemeyecek.
 Error_InvalidLanguageConfigurationFile = Houston, bir sorun var. Ne yazık ki, yapılandırma dosyasında ayarlanan dil geçerli değil. Şu anda, arara şu dilleri destekliyor: {0}. Anlayabildiğim bir dil seçin ya da yapılandırma dosyasından bu (isteğe bağlı) girişi kaldırın, aksi takdirde arara devam edemeyecek.
@@ -86,6 +84,7 @@ Error_DirectiveEmptyCurlyBrackets = Satır {1} üzerindeki ''{0}'' yönergesinde
 Error_DirectiveInvalidArgumentList = Satır {1} üzerinde ''{0}'' yönergesi için geçersiz bir argüman türü var. ''{2}'' argümanı arara''ya özeldir her zaman bir liste gerektirir.
 Error_DirectiveReservedKeyword = Satır {1} üzerinde ''{0}'' yönergesi için geçersiz bir argüman türü var. ''{2}'' kelimesi arara''ya ait ''{3}'' listesinde her elementi temsil eden özel bir kelimedir. Lütfen, başka bir kelime seçin.
 Error_DirectiveListError = Satır {1} üzerinde ''{0}'' yönergesi için geçersiz bir argüman türü var. Sadece ''file'' ve ''items'' argümanları bir liste olabilir. Her ikisi de arara''ya ait özel kelimelerdir.
+Error_InvalidDirective = Apparently, there''s an invalid directive at line {0}. Please take a look and fix it.
 Error_DirectiveGenericError = Satır {1} üzerinde ''{0}'' yönergesi bozuk gibi. YAML sözdizimi hatası ya da yanlış bir eşleme olabilir.
 Error_InvalidLanguage = Üzgünüm, ama seçtiğin dil kodu geçersiz. Şimdilik aşağıdaki dilleri konuşabiliyorum:
 Error_RuleNotFound = Tüh, arama yolunda ''{0}'' kuralını bulamadım. Kural arama yolu üzerinden erişilebilir ise kural adının doğru olduğuna bakar mısın?
@@ -102,3 +101,4 @@ Error_FlagRuntimeErrorRule = Üzgünüm ama ''{1}'' görevinin ''{0}'' argüman 
 Error_DuplicatedCommandElementsRule = Tüh, her iki ''command'' ve ''commands'' alanı da ''{0}'' görevinde (''{1}'' deki ''{0}.yaml'' dosyasına atfen) kullanılmaya ayarlanmış. Sadece birinin seçilmiş olması gerekiyor. Eğer işlenecek görev sadece bir komut içeriyorsa, ''command'' kullanabilirsin; birden fazla komut kullanımı için ''commands'' daha uygun olacaktır.
 Error_MissingCommandElementsRule = her iki ''command'' ve ''commands'' alanı da ''{0}'' görevinde (''{1}'' deki ''{0}.yaml'' dosyasına atfen) kullanılmaya ayarlanmış. İkisinden birinin kullanılıyor olması gerekiyor. Eğer işlenecek görev sadece bir komut içeriyorsa, ''command'' kullanabilirsin; birden fazla komut kullanımı için ''commands'' daha uygun olacaktır.
 Error_CommandRuntimeErrorRule = Üzgünüm ama ''{0}'' görevi için belirlenmiş komut (''{1}'' deki ''{0}.yaml'' dosyasına atfen) bu kural için kullanılamayacak bir değişken/yöntem içeriyor: ''{2}''
+

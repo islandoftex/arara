@@ -187,4 +187,38 @@ public class AraraUtils {
         }
         return stringBuilder.toString();
     }
+    
+    /**
+     * Checks if the line contains a valid full directive.
+     * 
+     * @param line The current line.
+     * @return A logic value indicating if a valid directive was found.
+     */
+    public static boolean checkForFullDirective(String line) {
+        Pattern pattern = Pattern.compile(AraraConstants.FULLDIRECTIVEPATTERN);
+        Matcher m = pattern.matcher(line);
+        if (m.find()) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
+    /**
+     * Checks if the line contains a valid empty directive.
+     * 
+     * @param line The current line.
+     * @return A logic value indicating if a valid directive was found.
+     */
+    public static boolean checkForEmptyDirective(String line) {
+        Pattern pattern = Pattern.compile(AraraConstants.EMPTYDIRECTIVEPATTERN);
+        Matcher m = pattern.matcher(line);
+        if (m.find()) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }

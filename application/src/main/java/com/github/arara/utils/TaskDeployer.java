@@ -327,6 +327,11 @@ public class TaskDeployer {
         argumentMap.put("isUnix", AraraMethods.class.getMethod("isUnix", String.class, String.class));
         argumentMap.put("isMac", AraraMethods.class.getMethod("isMac", String.class, String.class));
         
+        argumentMap.put("isTrue", AraraMethods.class.getMethod("isTrue", boolean.class, String.class));
+        argumentMap.put("isTrue", AraraMethods.class.getMethod("isTrue", boolean.class, String.class, String.class));
+        argumentMap.put("isFalse", AraraMethods.class.getMethod("isFalse", boolean.class, String.class));
+        argumentMap.put("isFalse", AraraMethods.class.getMethod("isFalse", boolean.class, String.class, String.class));
+        
 
         
         // create a rule map
@@ -394,6 +399,11 @@ public class TaskDeployer {
         ruleMap.put("isLinux", AraraMethods.class.getMethod("isLinux", String.class, String.class));
         ruleMap.put("isUnix", AraraMethods.class.getMethod("isUnix", String.class, String.class));
         ruleMap.put("isMac", AraraMethods.class.getMethod("isMac", String.class, String.class));
+        
+        ruleMap.put("isTrue", AraraMethods.class.getMethod("isTrue", boolean.class, String.class));
+        ruleMap.put("isTrue", AraraMethods.class.getMethod("isTrue", boolean.class, String.class, String.class));
+        ruleMap.put("isFalse", AraraMethods.class.getMethod("isFalse", boolean.class, String.class));
+        ruleMap.put("isFalse", AraraMethods.class.getMethod("isFalse", boolean.class, String.class, String.class));
 
         // remove references to file and item
         availableArgumentsInDirective.remove("file");
@@ -472,18 +482,23 @@ public class TaskDeployer {
                 throw new AraraException(localization.getMessage("Error_CommandRuntimeErrorRule", task.getName(), configuration.getPaths().get(pathIndex), AraraUtils.getVariableFromException(runtimeException)));
 
             }
+            
+            // check if it's a valid command
+            if (!commandTemplate.trim().isEmpty()) {
 
-            // create a new command
-            AraraCommand araraCommand = new AraraCommand();
+                // create a new command
+                AraraCommand araraCommand = new AraraCommand();
 
-            // add the command
-            araraCommand.setCommand(commandTemplate);
+                // add the command
+                araraCommand.setCommand(commandTemplate);
 
-            // add the name
-            araraCommand.setName(plainRule.getName());
+                // add the name
+                araraCommand.setName(plainRule.getName());
 
-            // add to the list
-            commands.add(araraCommand);
+                // add to the list
+                commands.add(araraCommand);
+                
+            }
         }
     }
 
