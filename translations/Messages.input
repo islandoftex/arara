@@ -59,7 +59,7 @@ Help_Language = set the application language
 Header_Slogan = The cool TeX automation tool
 Header_AllRightsReserved = All rights reserved.
 
-Msg_SpecialThanks = A special thanks goes to Alan Munn, Andrew Stacey, Brent Longborough, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Gonzalo Medina, Harish Kumar, \u0130lhan Polat, Joseph Wright, Marco Daniel, Patrick Gundlach, Rasmus Roulund, Stefan Kottwitz, and many others for making this humble tool possible.
+Msg_SpecialThanks = A special thanks goes to Alan Munn, Andrew Stacey, Brent Longborough, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Gonzalo Medina, Harish Kumar, İlhan Polat, Joseph Wright, Marco Daniel, Patrick Gundlach, Rasmus Roulund, Stefan Kottwitz, and many others for making this humble tool possible.
 Msg_RunningCommand = Running {0}...
 Msg_Success = SUCCESS
 Msg_Failure = FAILURE
