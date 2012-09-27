@@ -50,6 +50,8 @@ Log_OutputLogging = Kayıt Çıktısı:
 Log_CommandNotFound = ''{0}'' komutuna giden uygun bir yol bulunamadı. Deneme: {1}
 Log_DirectiveFound = Satır {1} üzerinde {0} yönergesi bulundu .
 Log_RuleFound = ''{1}'' de/da ''{0}'' görevi bulundu.
+Log_NoDirectivesFound = No directives found in ''{0}''.
+
 Help_Version = uygulama sürümünü yazdırır
 Help_Help = yardım iletisini yazdırır
 Help_Log = kayıt çıktısı üretir
@@ -60,7 +62,8 @@ Help_Language = uygulama dilini ayarlar
 Header_Slogan = Şahane TeX otomasyon aracı
 Header_AllRightsReserved = Tüm hakları saklıdır.
 
-Msg_SpecialThanks = Alan Munn, Andrew Stacey, Brent Longborough, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Harish Kumar, İlhan Polat, Joseph Wright, Marco Daniel, Patrick Gundlach, Rasmus Roulund, Stefan Kottwitz, ve diğerlerine bu mütevazi aracı mümkün kıldıkları için çok teşekkürler.
+Msg_NoDirectivesFound = I didn''t find any directives in ''{0}'', and so didn''t do anything. Is that what you really wanted?
+Msg_SpecialThanks = Alan Munn, Andrew Stacey, Brent Longborough, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Gonzalo Medina, Harish Kumar, İlhan Polat, Joseph Wright, Marco Daniel, Patrick Gundlach, Rasmus Roulund, Stefan Kottwitz, ve diğerlerine bu mütevazi aracı mümkün kıldıkları için çok teşekkürler.
 Msg_RunningCommand = {0} yerine getiriliyor...
 Msg_Success = BAŞARILI
 Msg_Failure = BAŞARISIZ
