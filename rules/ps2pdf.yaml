@@ -1,0 +1,14 @@
+!config
+# PS2PDF rule for arara
+# author: Marco Daniel
+# last edited by: Paulo Cereda
+# requires arara 3.0+
+identifier: ps2pdf
+name: PS2PDF
+command: <arara> ps2pdf @{options} "@{getBasename(file)}.ps" "@{output}.pdf"
+arguments:
+- identifier: output
+  flag: <arara> @{parameters.output}
+  default: <arara> @{getBasename(file)}
+- identifier: options
+  flag: <arara> @{parameters.options}

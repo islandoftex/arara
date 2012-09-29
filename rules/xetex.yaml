@@ -1,0 +1,16 @@
+!config
+# XeLaTeX rule for arara
+# author: Paulo Cereda
+# requires arara 3.0+
+identifier: xetex
+name: XeTeX
+command: <arara> xetex @{action} @{shell} @{synctex} @{options} "@{file}"
+arguments:
+- identifier: action
+  flag: <arara> --interaction=@{parameters.action}
+- identifier: shell
+  flag: <arara> @{isTrue(parameters.shell,"--shell-escape","--no-shell-escape")}
+- identifier: synctex
+  flag: <arara> @{isTrue(parameters.synctex,"--synctex=1","--synctex=0")}
+- identifier: options
+  flag: <arara> @{parameters.options}

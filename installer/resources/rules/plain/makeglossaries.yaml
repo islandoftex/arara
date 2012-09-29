@@ -1,9 +1,0 @@
-!config
-# MakeGlossaries rule for arara
-# author: Marco Daniel
-identifier: makeglossaries
-name: MakeGlossaries
-command: 'makeglossaries @{expandoptions} @{file}'
-arguments: 
-- identifier: expandoptions
-  flag: '@{value}'

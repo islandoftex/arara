@@ -1,9 +1,0 @@
-!config
-# Biber rule for arara
-# author: Marco Daniel
-identifier: biber
-name: Biber
-command: 'biber @{expandoptions} @{file}'
-arguments: 
-- identifier: expandoptions
-  flag: '@{value}'

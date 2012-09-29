@@ -1,0 +1,11 @@
+!config
+# Clean rule for arara, via latexmk
+# author: Brent Longborough
+# requires arara 3.0+
+identifier: lmkclean
+name: LaTeXmKCleaner
+command: <arara> latexmk @{include} "@{file}"
+arguments: 
+- identifier: include
+  flag: <arara> @{isTrue(parameters.include.toLowerCase() == "all", "-C", "-c") }
+  default: <arara> -c

@@ -1,0 +1,19 @@
+!config
+# LaTeXmk with LuaLaTeX rule for arara
+# author: Brent Longborough
+# requires: arara 3.0+
+identifier: lualatexmk
+name: luaLaTeXmK
+command: <arara> latexmk -e '$pdflatex=q/lualatex%O%S/' @{action} @{synctex} @{shell} @{options} @{style} -pdf "@{file}"
+arguments:
+- identifier: action
+  flag: <arara> --interaction=@{parameters.action}
+- identifier: shell
+  flag: <arara> @{isTrue(parameters.shell,"--shell-escape"," --no-shell-escape")}
+- identifier: synctex
+  flag: <arara> @{isTrue(parameters.synctex,"--synctex=0","--synctex=1")}
+- identifier: options
+  flag: <arara> @{parameters.options}
+- identifier: style
+  flag: <arara> -e '$makeindex=q/makeindex %O -s @{parameters.style}.ist -o %D %S/'
+

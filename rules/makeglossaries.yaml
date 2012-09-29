@@ -1,0 +1,10 @@
+!config
+# MakeGlossaries rule for arara
+# author: Marco Daniel
+# requres arara 3.0+
+identifier: makeglossaries
+name: MakeGlossaries
+command: <arara> makeglossaries @{options} "@{getBasename(file)}"
+arguments: 
+- identifier: options
+  flag: <arara> @{parameters.options}

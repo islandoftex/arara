@@ -1,0 +1,18 @@
+!config
+# Frontespizio rule for arara
+# author: Francesco Endrici
+# author: Enrico Gregorio
+# requires arara 3.0+
+identifier: frontespizio
+name: Frontespizio
+commands:
+- <arara> @{engine} "@{getBasename(file)}"
+- <arara> @{engine} "@{getBasename(file)}-frn"
+- <arara> @{dvips}
+- <arara> @{engine} "@{getBasename(file)}"
+arguments: 
+- identifier: engine
+  flag: <arara> @{parameters.engine}
+  default: pdflatex
+- identifier: dvips
+  default: <arara> @{ isTrue(parameters.engine == 'latex', 'dvips -o "' + getBasename(file) + '-frn.eps" "'+ getBasename(file) + '-frn"') }
