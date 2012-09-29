@@ -1,0 +1,104 @@
+# Arara -- the cool TeX automation tool
+# Copyright (c) 2012, Paulo Roberto Massa Cereda
+# All rights reserved.
+#
+# Redistribution and  use in source  and binary forms, with  or without
+# modification, are  permitted provided  that the  following conditions
+# are met:
+#
+# 1. Redistributions  of source  code must  retain the  above copyright
+# notice, this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form  must reproduce the above copyright
+# notice, this list  of conditions and the following  disclaimer in the
+# documentation and/or other materials provided with the distribution.
+#
+# 3. Neither  the name  of the  project's author nor  the names  of its
+# contributors may be used to  endorse or promote products derived from
+# this software without specific prior written permission.
+#
+# THIS SOFTWARE IS  PROVIDED BY THE COPYRIGHT  HOLDERS AND CONTRIBUTORS
+# "AS IS"  AND ANY  EXPRESS OR IMPLIED  WARRANTIES, INCLUDING,  BUT NOT
+# LIMITED  TO, THE  IMPLIED WARRANTIES  OF MERCHANTABILITY  AND FITNESS
+# FOR  A PARTICULAR  PURPOSE  ARE  DISCLAIMED. IN  NO  EVENT SHALL  THE
+# COPYRIGHT HOLDER OR CONTRIBUTORS BE  LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY,  OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT  NOT LIMITED  TO, PROCUREMENT  OF SUBSTITUTE  GOODS OR  SERVICES;
+# LOSS  OF USE,  DATA, OR  PROFITS; OR  BUSINESS INTERRUPTION)  HOWEVER
+# CAUSED AND  ON ANY THEORY  OF LIABILITY, WHETHER IN  CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
+# WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
+# POSSIBILITY OF SUCH DAMAGE.
+#
+# Messages: This file holds the default Italian language messages for arara.
+#
+# translator: Enrico Gregorio
+# e-mail: Enrico.Gregorio@univr.it
+Log_WelcomeMessage = arara ti dà il benvenuto!
+Log_ProcessingFile = Sto elaborando il file ''{0}'', attendi.
+Log_Done = Done.
+Log_ExceptionRaised = Arara ha sollevato un''eccezione con il seguente messaggio:
+Log_ReadyToRunCommands = Pronto a eseguire comandi.
+Log_CommandName = Sto eseguendo ''{0}''.
+Log_Command = Comando: {0}
+Log_CommandSuccess = ''{0}'' è stato eseguito con successo.
+Log_CommandFailure = ''{0}'' ha emesso uno stato di errore.
+Log_AllCommandsSuccess = Tutti i comandi sono stati eseguiti con successo.
+Log_OutputLogging = Resoconto dell''output:
+Log_CommandNotFound = ''{0}'' non è stato trovato nel ''path''. Tentativo di esecuzione: {1}
+Log_DirectiveFound = Direttiva trovata alla riga {0} con {1}.
+Log_RuleFound = Compito ''{0}'' trovato in ''{1}''.
+Log_NoDirectivesFound = Non ho trovato direttive in ''{0}''.
+
+Help_Version = stampa la versione dell''applicazione
+Help_Help = stampa il messaggio di aiuto
+Help_Log = genera un resoconto dell''output
+Help_Verbose = stampa l''output del comando
+Help_Timeout = imposta il ''timeout'' dell''esecuzione (in millisecondi)
+Help_Language = imposta la lingua dell''applicazione
+
+Header_Slogan = The cool TeX automation tool
+Header_AllRightsReserved = Tutti i diritti riservati.
+
+Msg_NoDirectivesFound = Non ho trovato direttive in ''{0}'', così non ho fatto niente. È proprio quello che volevi?
+Msg_SpecialThanks = Un ringraziamento speciale va a Alan Munn, Andrew Stacey, Brent Longborough, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Gonzalo Medina, Harish Kumar, İlhan Polat, Joseph Wright, Marco Daniel, Patrick Gundlach, Rasmus Roulund, Stefan Kottwitz e molti altri che hanno reso possibile la realizzazione di questo umile strumento.
+Msg_RunningCommand = Sto eseguendo {0}...
+Msg_Success = SUCCESSO
+Msg_Failure = FALLIMENTO
+Msg_Status = Stato:
+
+YamlError_Context = Contesto: {0}
+YamlError_Problem = Problema: {0}
+YamlError_ErrorLocation = Ho trovato un errore alla riga {0}, colonna {1}.
+
+Error_FileDoesNotExistWithExtensionsList = Splacente, ma il file ''{0} {1}'' non esiste. Osserva che quando inserisci solo il nome proprio (cioè il nome del file senza estensione) o il nome con un''estensione sconosciuta, arara cercherà un file che termini con le estensioni predefinite {1} in quest''ordine. È possibile modificare l''ordine, lo schema di ricerca e anche abilitare nuove estensioni agendo sul file di configurazione. Consulta il manuale di arara per saperne di più.
+Error_FileDoesNotExist = Il file ''{0}'' non esiste.
+Error_CommandNotFound = \nMi dispiace, ma il comando chiesto dal compito ''{0}'' non è stato trovato. Assicurati che il comando ''{1}'' sia corretto e accessibile dal ''path'' di sistema.
+Error_InvalidYAMLConfigurationFile = Mi dispiace, ma sembra che il file di configurazione di arara non sia valido, cioè che abbia istruzioni YAML mancanti o scorrette. Sfortunatamente arara non può andare oltre finché l''errore non viene corretto. Ho fatto del mio meglio registrando il messaggio di errore che è questo:
+Error_InvalidConfigurationFile = Oh, oh! Il file di configurazione non sembra valido. Assicurati che sia un file YAML corretto. Sfortunatamente arara non può andare oltre finché non trova un file di configurazione corretto.
+Error_InvalidLanguageConfigurationFile = Houston, abbiamo un problema. Spiacente, la lingua impostata nel file di configurazione non è valida. Attualmente arara comprende le seguenti lingue: {0}. Assicurati di scegliere una lingua della lista o togli quella sbagliata dal file di configurazione (la lingua è facoltativa), altrimenti arara non può andare oltre.
+Error_InvalidFiletypesConfigurationFile = Spiacente, ma sembra che il file di configurazione abbia tipi di file personalizzati senza che siano stati definiti un''estensione o uno schema: entrambi sono richiesti per poter continuare. Per favore, correggi l''errore nel file di configurazione e riprova.
+Error_PathRuntimeErrorConfigurationFile = Spiacente, ma uno degli elementi nel percorso di ricerca indicato nel file di configurazione usa una variabile non disponibile in questo contesto: ''{0}''
+Error_PathIOErrorConfigurationFile = Spiacente, ma uno degli elementi nel percorso di ricerca indicato nel file di configurazione ha una struttura gerarchica malformata. Puoi darci un''occhiata?
+Error_InvalidYAMLDirective = Sembra che ci sia una direttiva malformata alla riga {0}, cioè una direttiva con un errore di sintassi YAML oppure un campo non valido. Ho fatto del mio meglio registrando il messaggio di errore che è questo:
+Error_DirectiveEmptyCurlyBrackets = La direttiva ''{0}'' alla riga {1} non ha nulla tra le graffe. Osserva che arara preferisce una sintassi più snella quando una direttiva non ha parametri. Per correggere, è sufficiente togliere le graffe o inserire un argomento per la direttiva.
+Error_DirectiveInvalidArgumentList = La direttiva ''{0}'' alla riga {1} ha un argomento di tipo non valido. L''argomento ''{2}'' è una parola chiave riservata di arara che richiede sempre una lista.
+Error_DirectiveReservedKeyword = La direttiva ''{0}'' alla riga {1} ha un nome di argomento non valido. Il nome ''{2}'' è una parola chiave riservata di arara che rappresenta tutti gli elementi della lista ''{3}''. Per favore, scegli un nome diverso per quell''argomento.
+Error_DirectiveListError = La direttiva ''{0}'' alla riga {1} ha un tipo di argomento non valido. Solo gli argomenti ''files'' e ''items'' possono contenere una lista. Entrambi sono parole chiave riservate di arara.
+Error_InvalidDirective = Sembra che ci sia una direttiva non valida alla riga {0}. Dacci un''occhiata e correggi.
+Error_DirectiveGenericError = La direttiva ''{0}'' alla riga {1} sembra malformata. Potrebbe essere un errore di sintassi YAML o un''assegnazione sbagliata.
+Error_InvalidLanguage = Spiacente, ma questo codice di lingua non è valido. Attualmente arara comprende le seguenti lingue:
+Error_RuleNotFound = Oh, oh! Non sono riuscito a trovare la regola ''{0}'' nel percorso di ricerca. Puoi controllare che il nome della regola sia giusto e che la regola sia accessibile nel percorso di ricerca?
+Error_InvalidYAMLRule = Sembra che il compito ''{0}'' abbia un errore di sintassi YAML o un campo non valido. Puoi dare un''occhiata al file ''{0}.yaml'' che si trova in ''{1}''? Ho fatto del mio meglio registrando il messaggio di errore che è questo:
+Error_InvalidRule = Oh, oh! Il compito ''{0}'' sembra non valido. Assicurati che il file ''{0}.yaml'' che si trova in ''{1}'' sia un file YAML corretto.
+Error_EmptyIdentifierRule = C''è un problema nell''eseguire ''{0}''. Il file ''{0}.yaml'' che si trova in ''{1}'' richiede un identificatore valido. Puoi correggerlo?
+Error_EmptyNameRule = C''è un problema nell''eseguire ''{0}''. Il file ''{0}.yaml'' che si trova in ''{1}'' richede un nome valido. Puoi correggerlo?
+Error_ForbiddenIdentifierRule = Oh, oh! Il compito ''{0}'' (riferito al file ''{0}.yaml'' che si trova in ''{1}'') ha un identificatore di argomento non valido. ''{2}'' è una parola chiave riservata e non può essere usato. Puoi scegliere un altro nome?
+Error_EmptyArgumentsListRule = C''è un problame nell''eseguire ''{0}''. Il file ''{0}.yaml'' che si trova in ''{1}'' richiede una lista di argomenti valida. Puoi correggerlo? Nota che la lista di argomenti può anche essere vuota, ma è comunque necessario definirla esplicitamente (con ''arguments: []'').
+Error_WrongIdentifierRule = Oh, oh! Il compito ''{0}'' (riferito al file ''{0}.yaml'' che si trova in ''{1}'') ha un identificatore sbagliato; mi aspettavo ''{0}'' e non ''{2}''. Puoi correggerlo?
+Error_ArgumentsNotDefinedInRule = Oh, no! Alcuni argomenti usati nella direttiva ''{0}'' non sono definiti nella regola ''{0}.yaml'' che si trova in ''{1}''. Puoi rimuoverli dalla direttiva ''{0}'' oppure aggiungerli alla lista di argomenti nella regola ''{0}.yaml''. Eccoli: {2}
+Error_DefaultValueRuntimeErrorRule = Spiacente, ma il valore di default impostato per l''argomento ''{0}'' del compito ''{1}'' (riferito al file ''{1}.yaml'' che si trova in ''{2}'') usa un metodo o una variabile che non è disponibile nel contesto della regola: ''{3}''
+Error_FlagRuntimeErrorRule = Spiacente, ma il segnale (flag) impostato per l''argomento ''{0}'' del compito ''{1}'' (riferito al file ''{1}.yaml'' che si trova in ''{2}'') vuole un metodo o una variabile che non è disponibile nel contesto della regola: ''{3}''
+Error_DuplicatedCommandElementsRule = Oh, oh! Entrambi i campi ''command'' e ''commands'' sono impostati per il compito ''{0}'' (riferito al file ''{0}.yaml'' che si trova in ''{1}''). Si può adoperarne solo uno. Se il compito richiede a un solo comando, scegli ''command''; se la regola richiede più comandi, forse il campo ''commands'' è più adatto.
+Error_MissingCommandElementsRule = Oh, oh! Il compito ''{0}'' (riferito al file ''{0}.yaml'' che si trova in ''{1}'') non ha né il campo ''command'' né ''commands''. Occorre usare uno (solo) di essi. Se il compito richiede un solo comando, scegli ''command''; se la regola richiede più comandi, forse il campo ''commands'' è più adatto.
+Error_CommandRuntimeErrorRule = Spiacente, ma il comando impostato per il compito ''{0}'' task (riferito al file ''{0}.yaml'' che si trova in ''{1}'') usa un metodo o una variabile non disponibile nel contesto della regola: ''{2}''
