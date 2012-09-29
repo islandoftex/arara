@@ -117,7 +117,7 @@ Error_EmptyNameRule = Ein Problem in der Aufgabe ''{0}'' wurde festgestellt. Die
 
 Error_ForbiddenIdentifierRule = Uh-oh, die Aufgabe ''{0}'' (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}'') hat einen ungültigen Argumenteinbezeichner. ''{2}'' ist ein reserviertes Schlüsselwort und kann daher nicht genutzt werden. Kannst du einen anderen nutzen?
 
-Error_EmptyArgumentsListRule = Ein Problem wurde in der Aufgabe ''{0}'' festgestellt. Die Datei ''{0}.yaml'' im Pfad ''{1}'' verlangt eine validierte Liste an Argumenten. Kannst du es beheben? Beachte, dass die Argumenteniste auch leer sein kann. Es ist aber unbedingt   notwendig, das Argument explizit anzugeben: ''arguments: []''.
+Error_EmptyArgumentsListRule = Ein Problem wurde in der Aufgabe ''{0}'' festgestellt. Die Datei ''{0}.yaml'' im Pfad ''{1}'' verlangt eine validierte Liste an Argumenten. Kannst du es beheben? Beachte, dass die Argumenteniste auch leer sein kann. Es ist aber unbedingt notwendig, das Argument explizit anzugeben: ''arguments: []''.
 
 Error_WrongIdentifierRule = Uh-oh, die Aufgabe ''{0}'' (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}'') hat einen falschen ''identifier'' - es wurde ''{0}'' anstelle von ''{2}'' erwartet. Kannst du es beheben?
 
@@ -129,6 +129,6 @@ Error_FlagRuntimeErrorRule = Es tut mir leid, aber der Flag für das Argument ''
 
 Error_DuplicatedCommandElementsRule = Uh-oh, in der Aufgabe ''{0}'' werden beide Felder ''command'' und ''commands'' verwendet (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}''). Du kannst du eine der Anweisungen auswählen. Sollte deine Aufgabe von einem einzelnen Kommando abhängen, kannst du ''command'' optimieren. Sollte deine Regel mehrere Anweisungen benötigen, könnte das Feld ''commands'' geeignet sein.
 
-Error_MissingCommandElementsRule = Uh-oh, die Aufgabe ''{0}'' (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}'') hat weder 'command'' noch 'commands'' Elemente. Du musst nur eine der Anweisungen auswählen. Sollte deine Aufgabe von einem einzelnen Kommando abhängen, kannst du ''command'' optimieren. Sollte deine Regel mehrere Anweisungen benötigen, könnte das Feld ''commands'' geeignet sein.
+Error_MissingCommandElementsRule = Uh-oh, die Aufgabe ''{0}'' (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}'') hat weder ''command'' noch ''commands'' Elemente. Du musst nur eine der Anweisungen auswählen. Sollte deine Aufgabe von einem einzelnen Kommando abhängen, kannst du ''command'' optimieren. Sollte deine Regel mehrere Anweisungen benötigen, könnte das Feld ''commands'' geeignet sein.
 
 Error_CommandRuntimeErrorRule = Es tut mir Leid, aber das Kommando, welches in der Aufgabe ''{0}'' (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}'') genutzt wird, hat eine/n ungültige Variable/Methode im Regelsinn: ''{2}''
