@@ -1,0 +1,15 @@
+!config
+# Nomencl rule for arara
+# author: Marco Daniel
+# last edited by: Paulo Cereda
+# requires arara 3.0+
+identifier: nomencl
+name: Nomencl
+command: <arara> makeindex @{options} "@{getBasename(file)}.nlo" -s "@{style}.ist" -o "@{getBasename(file)}.nls"
+arguments: 
+- identifier: style
+  flag: <arara> @{parameters.style}
+  default: nomencl
+- identifier: options
+  flag: <arara> @{parameters.options}
+

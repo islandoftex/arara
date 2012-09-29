@@ -1,0 +1,12 @@
+!config
+# Make rule for arara
+# author: Marco Daniel
+# last edited by: Paulo Cereda
+# requires arara 3.0+
+identifier: make
+name: Make
+command: <arara> make @{task}
+arguments: 
+- identifier: task
+  flag: <arara> @{parameters.task}
+

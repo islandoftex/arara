@@ -1,0 +1,16 @@
+!config
+# MakeIndex rule for arara
+# author: Marco Daniel
+# last edited by: Paulo Cereda
+# requires arara 3.0+
+identifier: makeindex
+name: MakeIndex
+command: <arara> makeindex @{german} @{style} @{options} "@{getBasename(file)}.idx"
+arguments: 
+- identifier: style
+  flag: <arara> -s @{parameters.style}
+- identifier: german
+  flag: <arara> @{isTrue(parameters.german,"-g")}
+- identifier: options
+  flag: <arara> @{parameters.options}
+

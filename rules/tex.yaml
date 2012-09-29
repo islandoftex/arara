@@ -1,0 +1,16 @@
+!config
+# TeX rule for arara
+# author: Marco Daniel
+# last edited by: Paulo Cereda
+# requires arara 3.0+
+identifier: tex
+name: TeX
+command: <arara> tex @{action} @{shell} @{options} "@{file}"
+arguments:
+arguments:
+- identifier: action
+  flag: <arara> --interaction=@{parameters.action}
+- identifier: shell
+  flag: <arara> @{isTrue(parameters.shell,"--shell-escape","--no-shell-escape")}
+- identifier: options
+  flag: <arara> @{parameters.options}

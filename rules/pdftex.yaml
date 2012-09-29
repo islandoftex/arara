@@ -1,0 +1,19 @@
+!config
+# PDFTeX rule for arara
+# author: Paulo Cereda
+# requires arara 3.0+
+identifier: pdftex
+name: PDFTeX
+command: <arara> pdftex @{action} @{draft} @{shell} @{synctex} @{options} "@{file}"
+arguments:
+arguments:
+- identifier: action
+  flag: <arara> --interaction=@{parameters.action}
+- identifier: shell
+  flag: <arara> @{isTrue(parameters.shell,"--shell-escape","--no-shell-escape")}
+- identifier: synctex
+  flag: <arara> @{isTrue(parameters.synctex,"--synctex=1","--synctex=0")}
+- identifier: draft
+  flag: <arara> @{isTrue(parameters.draft,"--draftmode")}
+- identifier: options
+  flag: <arara> @{parameters.options}

@@ -1,0 +1,11 @@
+ !config
+# songidx rule for arara
+# author: Francesco Endrici
+# requires arara 3.0
+identifier: songidx
+name: SongIDX
+command: <arara> songidx "@{input}.sxd"
+arguments:
+- identifier: input
+  flag: <arara> @{parameters.input}
+

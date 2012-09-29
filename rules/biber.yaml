@@ -1,0 +1,10 @@
+!config
+# Biber rule for arara
+# author: Marco Daniel
+# requires arara 3.0+
+identifier: biber
+name: Biber
+command: <arara> biber @{options} "@{getBasename(file)}"
+arguments: 
+- identifier: options
+  flag: <arara> @{parameters.options}

@@ -1,9 +1,0 @@
-!config
-# BibTeX rule for arara
-# author: Marco Daniel
-identifier: bibtex
-name: BibTeX
-command: 'bibtex @{expandoptions} @{file}.aux'
-arguments: 
-- identifier: expandoptions
-  flag: '@{value}'

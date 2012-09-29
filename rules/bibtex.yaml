@@ -1,0 +1,10 @@
+!config
+# BibTeX rule for arara
+# author: Marco Daniel
+# requires arara 3.0+
+identifier: bibtex
+name: BibTeX
+command: <arara> bibtex @{options} "@{getBasename(file)}.aux"
+arguments: 
+- identifier: options
+  flag: <arara> @{parameters.options}
