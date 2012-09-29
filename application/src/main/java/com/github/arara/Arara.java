@@ -40,8 +40,10 @@
 package com.github.arara;
 
 // needed imports
+import com.github.arara.model.AraraDirective;
 import com.github.arara.utils.*;
 import java.io.File;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -117,27 +119,45 @@ public class Arara {
             
             // extract all directives from the file
             dirExtractor.extract();
+
+            // get all directives found
+            List<AraraDirective> directives = dirExtractor.getDirectives();
             
-            // now let's parse the directives
-            DirectiveParser dirParser = new DirectiveParser(dirExtractor.getDirectives());
+            // set the overall result flag
+            boolean overallResult = true;
             
-            // set the file
-            dirParser.setFile(file);
+            // check if any directive was found
+            if (!directives.isEmpty()) {
+            
+                // now let's parse the directives
+                DirectiveParser dirParser = new DirectiveParser(directives);
 
-            // parse the directives
-            TaskDeployer taskDeployer = new TaskDeployer(dirParser.parse(), configuration);
+                // set the file
+                dirParser.setFile(file);
 
-            // deploy the tasks through a command trigger
-            CommandTrigger commandTrigger = new CommandTrigger(taskDeployer.deploy());
+                // parse the directives
+                TaskDeployer taskDeployer = new TaskDeployer(dirParser.parse(), configuration);
 
-            // set verbose option, if enabled
-            commandTrigger.setVerbose(commandLine.isVerbose());
+                // deploy the tasks through a command trigger
+                CommandTrigger commandTrigger = new CommandTrigger(taskDeployer.deploy());
 
-            // set an execution timeout, if set
-            commandTrigger.setExecutionTimeout(commandLine.getExecutionTimeout());
+                // set verbose option, if enabled
+                commandTrigger.setVerbose(commandLine.isVerbose());
 
-            // execute the tasks
-            boolean overallResult = commandTrigger.execute();
+                // set an execution timeout, if set
+                commandTrigger.setExecutionTimeout(commandLine.getExecutionTimeout());
+
+                // execute the tasks
+                overallResult = commandTrigger.execute();
+            }
+            else {
+                
+                // no directives found, add message to the log
+                logger.info(localization.getMessage("Log_NoDirectivesFound", file.getName()));
+                
+                // print message
+                System.out.println(AraraUtils.wrap(localization.getMessage("Msg_NoDirectivesFound", file.getName())));
+            }
 
             // final message
             logger.info(localization.getMessage("Log_Done"));
