@@ -30,7 +30,7 @@
 # WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
 # POSSIBILITY OF SUCH DAMAGE.
 #
-# Messages_de: This file holds the German language messages for arara.
+# Messages_de: Diese Datei beinhalted alle Meldungen für arara in Deutsch.
 #
 # translator: Marco Daniel
 # e-mail: marco.daniel@mada-nada.de
@@ -44,7 +44,7 @@ Log_Command = Anweisung: {0}
 Log_CommandSuccess = ''{0}'' wurde erfolgreich ausgeführt.
 Log_CommandFailure = ''{0}'' gibt einen Fehlerwert zurück.
 Log_AllCommandsSuccess = Alle Anweisungen wurden erfolgreich ausgeführt.
-Log_OutputLogging = Output logging:
+Log_OutputLogging = Ausgabe des Protokolls:
 Log_CommandNotFound = ''{0}'' wurde nicht im Suchpfad gefunden. Ausführungsversuch: {1}
 Log_DirectiveFound = Anweisung in Zeile {0} mit {1} gefunden.
 Log_RuleFound = Aufgabe ''{0}'' gefunden in ''{1}''.
@@ -52,15 +52,15 @@ Log_NoDirectivesFound = Keine Anweisungen in ''{0}'' gefunden.
 
 Help_Version = Ausgabe der Version.
 Help_Help = Ausgabe der Hilfe.
-Help_Log = Erstelle ein Protokoll (Log).
-Help_Verbose = Gebe die Ausgabe der Anweisungen aus.
-Help_Timeout = Deklariere die Zeitbeschränkung der Ausführung (in Millisekunden).
-Help_Language = Definiere die Sprache der Anwendung.
+Help_Log = Erstelle eine Protokolldatei (.log-Datei).
+Help_Verbose = Zeige die Terminalausgabe der Anweisungen an.
+Help_Timeout = Deklariere die Zeitbeschränkung je Anweisung (in Millisekunden).
+Help_Language = Lege die Sprache der Anwendung fest.
 
 Header_Slogan = Das coole TeX Automatisierungstool
 Header_AllRightsReserved = Alle Rechte vorbehalten!
 
-Msg_NoDirectivesFound = Ich habe keine Anweisungen in ''{0}'' gefunden and daher nicht getan. Is es das, was du wirklich wolltest.
+Msg_NoDirectivesFound = Ich habe keine Anweisungen in ''{0}'' gefunden and daher nichts getan. Ist es das, was du wirklich wolltest.
 Msg_SpecialThanks = Ein besonderes Danke geht an Alan Munn, Andrew Stacey, Brent Longborough, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Gonzalo Medina, Harish Kumar, İlhan Polat, Joseph Wright, Marco Daniel, Patrick Gundlach, Rasmus Roulund, Stefan Kottwitz und viele andere, die dieses bescheidene Tool ermöglichten.
 Msg_RunningCommand = Verarbeite {0}...
 Msg_Success = ERFOLGREICH
