@@ -79,17 +79,17 @@ Error_CommandNotFound = Es tut mir Leid, aber die Anweisung der Aufgabe ''{0}'' 
 
 Error_InvalidYAMLConfigurationFile =  Es tut mir Leid, aber deine arara Konfigurationsdatei ist unzulässig. Dies kann aus  einem unzulässigen oder fehlenden YAML Eintrag resultieren.
 
-Error_InvalidConfigurationFile = Uh-oh, Die Konfigurationsdatei scheint unzulässig zu sein. Bist du dir sicher, dass es sich um eine korrekte YAML-Datei handelt? Leider kann arara nicht fortsetzen, bis eine passende Konfigurationsdatei bereitgestellt wird.
+Error_InvalidConfigurationFile = Uh-oh, die Konfigurationsdatei scheint unzulässig zu sein. Bist du dir sicher, dass es sich um eine korrekt erstellte YAML-Datei handelt? Leider kann arara nicht fortsetzen, bis eine passende Konfigurationsdatei bereitgestellt wird.
 
-Error_InvalidLanguageConfigurationFile = Housten, wir haben ein Problem. Leider ist die in der Konfigurationsdatei spezifizierte Sprache nicht zulässig. Momentan kann arara die folgenden Sprachen unterstützen: {0}. Stelle sicher, dass eine gültige Sprache gewählt wird oder entferne den Eintrag aus der Konfigurationsdatei (der Sprachschlüssel ist optional), ansonsten kann arara nicht ausgeführt werden.
+Error_InvalidLanguageConfigurationFile = Housten, wir haben ein Problem. Leider ist die in der Konfigurationsdatei spezifizierte Sprache nicht zulässig. Momentan kann arara die folgenden Sprachen unterstützen: {0}. Stelle sicher, dass eine gültige Sprache gewählt wird oder entferne den Eintrag aus deiner Konfigurationsdatei (der Sprachschlüssel ist optional), ansonsten kann arara nicht ausgeführt werden.
 
-Error_InvalidFiletypesConfigurationFile = Es tut mir Leid, aber es scheint, dass du eine benutzerdefinierte Konfigurationsdatei nutzt, bei der weder die Dateiendung noch das Muster definiert sind. Beides wird benötigt um fortzufahren. Bitte behebe diesen Fehler in deiner Konfigurationsdatei und versuche es erneut.
+Error_InvalidFiletypesConfigurationFile = Es tut mir Leid, aber es scheint, dass du eine benutzerdefinierte Konfigurationsdatei nutzt, bei der weder die Dateiendung noch das Muster definiert wurde. Beides wird zum Fortfahren benötigt. Bitte behebe diesen Fehler in deiner Konfigurationsdatei und versuche es erneut.
 
 Error_PathRuntimeErrorConfigurationFile = Es tut mir Leid, aber einer der Einträge des Suchpfades in deiner Konfigurationsdatei hat eine nicht verfügbare Variable im Zusammenhang mit dem Pfad: {0}
 
 Error_PathIOErrorConfigurationFile = Es tut mir Leid, aber  einer der Einträge des Suchpfades in deiner Konfigurationsdatei hat eine ungültige Verzeichnisstruktur. Kannst du einen Blick drauf werfen?
 
-Error_InvalidYAMLDirective = Es scheint, als gäbe es eine deformierte Anweisung in der Zeile {0}. Das ist eine Anweisung, welche einen Fehler in der YAML-Syntax haben oder ein ungültiger Eintrag sein kann. 
+Error_InvalidYAMLDirective = Es scheint, als gäbe es eine deformierte Anweisung in der Zeile {0}. Die Anweisung kann einen Fehler in der YAML-Syntax aufweisen bzw. einen ungültiger Eintrag haben. 
 
 Error_DirectiveEmptyCurlyBrackets = Die Anweisung {0} in Zeile {1} hat ein leeres geschweiftes Klammerpaar. Beachte bitte, dass arara für eine klare Syntax optimiert ist, wenn kein Parameter übergeben wird, sollte auch keine Klammer angegeben werden. Um den Fehler zu beseitigen, reicht es aus, die geschweiften Klammern zu entfernen oder ein Argument für die Anweisung zu übergeben. 
 
@@ -97,7 +97,7 @@ Error_DirectiveInvalidArgumentList = Die Anweisung {0} in Zeile {1} hat einen un
 
 Error_DirectiveReservedKeyword = Die Anweisung {0} in Zeile {1} hat einen unzulässigen Argumentnamen. Der Name {2} ist ein reserviertes Schlüsselwort von arara und repräsentiert jedes Element in der Liste {3}. Bitte wähle einen anderen Namen als Argument.
 
-Error_DirectiveListError = Die Anweisung ''{0}'' in Zeile ''{1}'' hat einen unzulässigen Argumenttypen. Nur die Argumente ''files'' und ''items'' können eine liste haben. Beide sind reservierte Schlüsselwörter von arara.
+Error_DirectiveListError = Die Anweisung ''{0}'' in Zeile ''{1}'' hat einen unzulässigen Argumenttypen. Nur die Argumente ''files'' und ''items'' können eine liste haben. Beides sind reservierte Schlüsselwörter von arara.
 
 Error_InvalidDirective = Anscheinend gibt es eine ungültige Direktive in der Zeile {0}. Bitte prüfe es.
 
@@ -111,21 +111,21 @@ Error_InvalidYAMLRule = Es scheint, dass die Aufgabe ''{0}'' einen Fehler in der
 
 Error_InvalidRule = Uh-oh, Die Aufgabe ''{0}'' scheint ungültig zu sein. Bist du dir sicher, dass die Datei ''{0}.yaml'' im Pfad ''{1}'' eine gültige YAML file ist?
 
-Error_EmptyIdentifierRule = Ein Problem in der Aufgabe ''{0}'' wurde festgestellt. Die Datei ''{0}.yaml'' im Pfad ''{1}'' verlangt einen gültigen Bezeichner (identifier). Kannst du es beheben?
+Error_EmptyIdentifierRule = Ein Problem in der Aufgabe ''{0}'' wurde festgestellt. Die Datei ''{0}.yaml'' im Pfad ''{1}'' verlangt einen gültigen Bezeichner (identifier). Siehst du den Fehler?
 
 Error_EmptyNameRule = Ein Problem in der Aufgabe ''{0}'' wurde festgestellt. Die Datei ''{0}.yaml'' im Pfad ''{1}'' verlangt einen gültigen Dateinamen. Kannst du es beheben?
 
 Error_ForbiddenIdentifierRule = Uh-oh, die Aufgabe ''{0}'' (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}'') hat einen ungültigen Argumenteinbezeichner. ''{2}'' ist ein reserviertes Schlüsselwort und kann daher nicht genutzt werden. Kannst du einen anderen nutzen?
 
-Error_EmptyArgumentsListRule = Ein Problem wurde in der Aufgabe ''{0}'' festgestellt. Die Datei ''{0}.yaml'' im Pfad ''{1}'' verlangt eine validierte Liste an Argumenten. Kannst du es beheben? Beachte, dass die Argumenteniste auch leer sein kann. Es ist aber unbedingt   notwendig, das Argument explizit anzugeben: ''arguments: []''.
+Error_EmptyArgumentsListRule = Ein Problem wurde in der Aufgabe ''{0}'' festgestellt. Die Datei ''{0}.yaml'' im Pfad ''{1}'' verlangt eine validierte Liste an Argumenten. Kannst du es beheben? Beachte, dass die Argumentenliste auch leer sein kann. Es ist aber unbedingt notwendig, dass das Argument explizit angeben wird: ''arguments: []''.
 
 Error_WrongIdentifierRule = Uh-oh, die Aufgabe ''{0}'' (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}'') hat einen falschen ''identifier'' - es wurde ''{0}'' anstelle von ''{2}'' erwartet. Kannst du es beheben?
 
-Error_ArgumentsNotDefinedInRule = Oh no, es gibt Argumente in der Anweisung ''{0}'', welche nicht in der Regel ''{0}.yaml'' im Pfad ''{1}'' definiert wurden. Du kannst sie aus der Anweisung ''{0}'' entfernen oder als Argumentenliste in der Regel ''{0}.yaml'' ergänzen. Hier sind sie: {2}
+Error_ArgumentsNotDefinedInRule = Oh nein, es gibt Argumente in der Anweisung ''{0}'', welche nicht in der Regel ''{0}.yaml'' im Pfad ''{1}'' definiert wurden. Du kannst sie aus der Anweisung ''{0}'' entfernen oder als Argumentenliste in der Regel ''{0}.yaml'' ergänzen. Hier sind sie: {2}
 
-Error_DefaultValueRuntimeErrorRule = Es tut mir leid, aber der Defaultwert für das Argument ''{0}'' der Aufgabe ''{1}'' (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}'') hat eine ungültige Variable/Methode im Regelcontext: ''{3}''
+Error_DefaultValueRuntimeErrorRule = Es tut mir Leid, aber der Defaultwert für das Argument ''{0}'' der Aufgabe ''{1}'' (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}'') hat eine ungültige Variable/Methode im Regelkontext: ''{3}''
 
-Error_FlagRuntimeErrorRule = Es tut mir leid, aber der Flag für das Argument ''{0}'' der Aufgabe ''{1}'' (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}'') hat eine ungültige Variable/Methode im Regelcontext: ''{3}''
+Error_FlagRuntimeErrorRule = Es tut mir leid, aber der Flag für das Argument ''{0}'' der Aufgabe ''{1}'' (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}'') hat eine ungültige Variable/Methode im Regelkontext: ''{3}''
 
 Error_DuplicatedCommandElementsRule = Uh-oh, in der Aufgabe ''{0}'' werden beide Felder ''command'' und ''commands'' verwendet (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}''). Du kannst du eine der Anweisungen auswählen. Sollte deine Aufgabe von einem einzelnen Kommando abhängen, kannst du ''command'' optimieren. Sollte deine Regel mehrere Anweisungen benötigen, könnte das Feld ''commands'' geeignet sein.
 
