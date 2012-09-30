@@ -53,14 +53,14 @@ Log_NoDirectivesFound = Keine Anweisungen in ''{0}'' gefunden.
 Help_Version = Ausgabe der Version.
 Help_Help = Ausgabe der Hilfe.
 Help_Log = Erstelle eine Protokolldatei (.log-Datei).
-Help_Verbose = Zeige die Terminalausgabe der Anweisungen an.
+Help_Verbose = Zeige das Protokoll der Anweisungen im Terminal an.
 Help_Timeout = Deklariere die Zeitbeschränkung je Anweisung (in Millisekunden).
 Help_Language = Lege die Sprache der Anwendung fest.
 
 Header_Slogan = Das coole TeX Automatisierungstool
 Header_AllRightsReserved = Alle Rechte vorbehalten!
 
-Msg_NoDirectivesFound = Ich habe keine Anweisungen in ''{0}'' gefunden and daher nichts getan. Ist es das, was du wirklich wolltest.
+Msg_NoDirectivesFound = Ich habe keine Anweisungen in ''{0}'' gefunden und daher nichts getan. Ist es das, was du wirklich wolltest.
 Msg_SpecialThanks = Ein besonderes Danke geht an Alan Munn, Andrew Stacey, Brent Longborough, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Gonzalo Medina, Harish Kumar, İlhan Polat, Joseph Wright, Marco Daniel, Patrick Gundlach, Rasmus Roulund, Stefan Kottwitz und viele andere, die dieses bescheidene Tool ermöglichten.
 Msg_RunningCommand = Verarbeite {0}...
 Msg_Success = ERFOLGREICH
@@ -117,11 +117,11 @@ Error_EmptyNameRule = Ein Problem in der Aufgabe ''{0}'' wurde festgestellt. Die
 
 Error_ForbiddenIdentifierRule = Uh-oh, die Aufgabe ''{0}'' (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}'') hat einen ungültigen Argumenteinbezeichner. ''{2}'' ist ein reserviertes Schlüsselwort und kann daher nicht genutzt werden. Kannst du einen anderen nutzen?
 
-Error_EmptyArgumentsListRule = Ein Problem wurde in der Aufgabe ''{0}'' festgestellt. Die Datei ''{0}.yaml'' im Pfad ''{1}'' verlangt eine validierte Liste an Argumenten. Kannst du es beheben? Beachte, dass die Argumentenliste auch leer sein kann. Es ist aber unbedingt notwendig, dass das Argument explizit angeben wird: ''arguments: []''.
+Error_EmptyArgumentsListRule = Ein Problem wurde in der Aufgabe ''{0}'' festgestellt. Die Datei ''{0}.yaml'' im Pfad ''{1}'' verlangt eine validierte Liste an Argumenten. Kannst du es beheben? Beachte, dass die Liste der Argumente auch leer sein kann. Es ist aber unbedingt notwendig, dass das Argument explizit angeben wird: ''arguments: []''.
 
 Error_WrongIdentifierRule = Uh-oh, die Aufgabe ''{0}'' (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}'') hat einen falschen ''identifier'' - es wurde ''{0}'' anstelle von ''{2}'' erwartet. Kannst du es beheben?
 
-Error_ArgumentsNotDefinedInRule = Oh nein, es gibt Argumente in der Anweisung ''{0}'', welche nicht in der Regel ''{0}.yaml'' im Pfad ''{1}'' definiert wurden. Du kannst sie aus der Anweisung ''{0}'' entfernen oder als Argumentenliste in der Regel ''{0}.yaml'' ergänzen. Hier sind sie: {2}
+Error_ArgumentsNotDefinedInRule = Oh nein, es gibt Argumente in der Anweisung ''{0}'', welche nicht in der Regel ''{0}.yaml'' im Pfad ''{1}'' definiert wurden. Du kannst sie aus der Anweisung ''{0}'' entfernen oder als Liste von Argumenten in der Regel ''{0}.yaml'' ergänzen. Hier sind sie: {2}
 
 Error_DefaultValueRuntimeErrorRule = Es tut mir Leid, aber der Defaultwert für das Argument ''{0}'' der Aufgabe ''{1}'' (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}'') hat eine ungültige Variable/Methode im Regelkontext: ''{3}''
 
