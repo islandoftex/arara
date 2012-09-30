@@ -125,10 +125,13 @@ Error_ArgumentsNotDefinedInRule = Oh nein, es gibt Argumente in der Anweisung ''
 
 Error_DefaultValueRuntimeErrorRule = Es tut mir Leid, aber der Defaultwert für das Argument ''{0}'' der Aufgabe ''{1}'' (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}'') hat eine ungültige Variable/Methode im Regelkontext: ''{3}''
 
-Error_FlagRuntimeErrorRule = Es tut mir leid, aber der Flag für das Argument ''{0}'' der Aufgabe ''{1}'' (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}'') hat eine ungültige Variable/Methode im Regelkontext: ''{3}''
+Error_FlagRuntimeErrorRule = Es tut mir Leid, aber der Flag für das Argument ''{0}'' der Aufgabe ''{1}'' (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}'') hat eine ungültige Variable/Methode im Regelkontext: ''{3}''
 
-Error_DuplicatedCommandElementsRule = Uh-oh, in der Aufgabe ''{0}'' werden beide Felder ''command'' und ''commands'' verwendet (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}''). Du kannst du eine der Anweisungen auswählen. Sollte deine Aufgabe von einem einzelnen Kommando abhängen, kannst du ''command'' optimieren. Sollte deine Regel mehrere Anweisungen benötigen, könnte das Feld ''commands'' geeignet sein.
+Error_DuplicatedCommandElementsRule = Uh-oh, in der Aufgabe ''{0}'' werden beide Felder ''command'' und ''commands'' verwendet (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}''). Du kannst nur eine der Anweisungen auswählen. Sollte deine Aufgabe von einem einzelnen Kommando abhängen, kannst du ''command'' optimieren. Sollte deine Regel mehrere Anweisungen benötigen, könnte das Feld ''commands'' geeignet sein.
 
 Error_MissingCommandElementsRule = Uh-oh, die Aufgabe ''{0}'' (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}'') hat weder 'command'' noch 'commands'' Elemente. Du musst nur eine der Anweisungen auswählen. Sollte deine Aufgabe von einem einzelnen Kommando abhängen, kannst du ''command'' optimieren. Sollte deine Regel mehrere Anweisungen benötigen, könnte das Feld ''commands'' geeignet sein.
 
-Error_CommandRuntimeErrorRule = Es tut mir Leid, aber das Kommando, welches in der Aufgabe ''{0}'' (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}'') genutzt wird, hat eine/n ungültige Variable/Methode im Regelsinn: ''{2}''
+Error_CommandRuntimeErrorRule = Es tut mir Leid, aber das Kommando, welches in der Aufgabe ''{0}'' (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}'') genutzt wird, hat eine ungültige Variable/Methode im Regelsinn: ''{2}''
+
+
+
