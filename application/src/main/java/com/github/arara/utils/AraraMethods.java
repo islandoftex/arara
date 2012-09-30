@@ -126,8 +126,7 @@ public class AraraMethods {
      */
     public static boolean isTrue(String string) {
         string = string.toLowerCase();
-        if ((string.equals("yes")) || (string.equals("on")) || (string.equals("true"))
-           || (string.equals("y")) || (string.equals("1"))) {
+        if ((string.equals("yes")) || (string.equals("on")) || (string.equals("true")) || (string.equals("y")) || (string.equals("1"))) {
             return true;
         } else {
             return false;
@@ -142,8 +141,7 @@ public class AraraMethods {
      */
     public static boolean isFalse(String string) {
         string = string.toLowerCase();
-        if ((string.equals("no")) || (string.equals("off")) || (string.equals("false"))
-           || (string.equals("n")) || (string.equals("0"))) {
+        if ((string.equals("no")) || (string.equals("off")) || (string.equals("false")) || (string.equals("n")) || (string.equals("0"))) {
             return true;
         } else {
             return false;

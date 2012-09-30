@@ -42,6 +42,7 @@ package com.github.arara.utils;
 
 // needed imports
 import java.text.MessageFormat;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -67,6 +68,10 @@ public class AraraLocalization {
         // set the self-reference
         selfRef = this;
 
+        // instead of relying in the default locale from the
+        // operating system, always fallback to english
+        Locale.setDefault(Locale.ENGLISH);
+        
         // get the resource bundle
         resources = ResourceBundle.getBundle("com.github.arara.localization.Messages");
     }
