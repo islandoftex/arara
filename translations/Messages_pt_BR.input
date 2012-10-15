@@ -34,8 +34,8 @@
 #
 # author: Paulo Roberto Massa Cereda
 # e-mail: cereda@users.sf.net
-Log_WelcomeMessage = Bem-vindo a arara!
-Log_ProcessingFile = Processando o arquivo ''{0}'', por favor, aguarde.
+Log_WelcomeMessage = Bem-vindo ao arara!
+Log_ProcessingFile = Processando o arquivo ''{0}''; por favor, aguarde.
 Log_Done = Concluído.
 Log_ExceptionRaised = Arara gerou uma exceção com a seguinte mensagem:
 Log_ReadyToRunCommands = Pronto para executar comandos.
@@ -74,32 +74,31 @@ YamlError_ErrorLocation = Erro encontrado na linha {0}, coluna {1}.
 Error_FileDoesNotExistWithExtensionsList = Sinto muito, mas o arquivo ''{0} {1}'' não existe. Observe que se você fornecer apenas o nome base (isto é, o nome do arquivo sem a extensão) ou com uma extensão desconhecida, arara tentará encontrar arquivos terminados com as extensões predefinidas {1} nesta ordem. Você pode alterar a ordem, o padrão de busca ou mesmo adicionar suporte para novas extensões através do arquivo de configuração. Por favor, verifique o manual para aprender mais sobre essa funcionalidade.
 Error_FileDoesNotExist = O arquivo ''{0}'' não existe.
 Error_CommandNotFound = \nSinto muito, mas o comando da tarefa ''{0}'' não foi encontrado. Você tem certeza de que ''{1}'' está correto, ou mesmo acessível a partir do caminho do sistema?
-Error_InvalidYAMLConfigurationFile = Sinto muito, mas aparentemente o seu arquivo de configuração arara é inválido, isto é, contém entradas YAML inválidas ou inexistentes. Infelizmente, arara não pode prosseguir até que o erro seja reparado. Eu fiz o meu melhor para exibir a mensagem de erro, aqui está:
+Error_InvalidYAMLConfigurationFile = Sinto muito, mas aparentemente o seu arquivo de configuração arara é inválido, isto é, contém entradas YAML inválidas ou inexistentes. Infelizmente, arara não pode prosseguir até que o erro seja reparado. Fiz o meu melhor para exibir a mensagem de erro; aqui está:
 Error_InvalidConfigurationFile = Uh-oh, o arquivo de configuração parece ser inválido. Você tem certeza de que ele é um arquivo YAML adequado? Infelizmente, arara não pode prosseguir até que um arquivo de configuração válido seja fornecido.
-Error_InvalidLanguageConfigurationFile = Houston, temos um problema. Infelizmente, o idioma definido no arquivo de configuração não é válido. No momento, arara oferece suporte para os seguintes idiomas: {0}. Certifique-se de escolher um idioma válido ou remova a entrada do arquivo de configuração (o campo é opcional), caso contrário arara não poderá prosseguir.
-Error_InvalidFiletypesConfigurationFile = Sinto muito, mas parece que o seu arquivo de configuração tem tipos de arquivos personalizados sem a extensão ou o padrão de busca definidos. Ambos são requeridos para que arara prossiga. Por favor, repare o erro no seu arquivo de configuração e tente novamente.
+Error_InvalidLanguageConfigurationFile = Houston, temos um problema. Infelizmente, o idioma definido no arquivo de configuração não é válido. No momento, arara oferece suporte para os seguintes idiomas: {0}. Certifique-se de ter escolhido um idioma válido, ou remova a entrada do arquivo de configuração (o campo é opcional). Caso contrário arara não poderá prosseguir.
+Error_InvalidFiletypesConfigurationFile = Sinto muito, mas parece que o seu arquivo de configuração tem tipos de arquivos personalizados sem a extensão ou o padrão de busca definidos. Ambos são requeridos para que arara prossiga. Por favor, conserte o erro no seu arquivo de configuração e tente novamente.
 Error_PathRuntimeErrorConfigurationFile = Sinto muito, mas uma das entradas do caminho de busca no seu arquivo de configuração tem uma variável não resolvida no contexto do caminho: ''{0}''
     Error_PathIOErrorConfigurationFile = Sinto muito, mas uma das entradas do caminho de busca no seu arquivo de configuração tem uma estrutura de diretório malformada. Você poderia dar uma olhadinha?
-Error_InvalidYAMLDirective = Parece que existe uma diretiva malformada encontrada na linha {0}, isto é, uma diretiva que pode ter um erro na sintaxe YAML ou um campo inválido. Eu fiz o meu melhor para exibir a mensagem de erro, aqui está:
+Error_InvalidYAMLDirective = Parece que existe uma diretiva malformada encontrada na linha {0}, isto é, uma diretiva que pode ter um erro na sintaxe YAML ou um campo inválido. Fiz o meu melhor para exibir a mensagem de erro; aqui está:
 Error_DirectiveEmptyCurlyBrackets = A diretiva ''{0}'' na linha {1} tem chaves vazias. Observe que arara opta por uma sintaxe mais limpa quando uma diretiva não tem parâmetros. Para repará-la, é suficiente remover as chaves ou fornecer os argumentos para a diretiva.
 Error_DirectiveInvalidArgumentList = A diretiva ''{0}'' na linha {1} tem um tipo de argumento inválido. O argumento ''{2}'' é uma palavra reservada arara e sempre requer uma lista.
 Error_DirectiveReservedKeyword = A diretiva ''{0}'' na linha {1} tem um nome de argumento inválido. O nome ''{2}'' é uma palavra reservada arara representando cada elemento na lista ''{3}''. Por favor, escolha um outro nome para esse argumento.
 Error_DirectiveListError = A diretiva ''{0}'' na linha {1} tem um tipo de argumento inválido. Apenas os argumentos ''files'' e ''items'' podem conter uma lista. Ambos são palavras reservadas arara.
-Error_InvalidDirective = Aparentemente, existe uma diretiva inválida na linha {0}. Por favor, dê uma olhadinha e repare a diretiva.
+Error_InvalidDirective = Aparentemente, existe uma diretiva inválida na linha {0}. Por favor, dê uma olhadinha e conserte a diretiva.
 Error_DirectiveGenericError = A diretiva ''{0}'' na linha {1} parece ser malformada. Pode ser um erro na sintaxe YAML ou um mapeamento incorreto.
 Error_InvalidLanguage = Sinto muito, mas o código de idioma que você escolheu é inválido. No momento, os seguintes idiomas são suportados:
 Error_RuleNotFound = Uh-oh, eu não consegui encontrar a regra ''{0}'' no caminho de busca. Você poderia conferir se o nome da regra está correto e se a regra é acessível a partir do caminho de busca?
-Error_InvalidYAMLRule = Parece que a tarefa ''{0}'' tem um erro na sintaxe YAML ou um campo inválido. Você poderia dar uma olhadinha no arquivo ''{0}.yaml'' localizado em ''{1}''? Eu fiz o meu melhor para exibir a mensagem de erro, aqui está:
+Error_InvalidYAMLRule = Parece que a tarefa ''{0}'' tem um erro na sintaxe YAML ou um campo inválido. Você poderia dar uma olhadinha no arquivo ''{0}.yaml'' localizado em ''{1}''? Fiz o meu melhor para exibir a mensagem de erro; aqui está:
 Error_InvalidRule = Uh-oh, a tarefa ''{0}'' parece ser inválida. Você tem certeza de que o arquivo ''{0}.yaml'' localizado em ''{1}'' é um arquivo YAML apropriado?
-Error_EmptyIdentifierRule = Um problema foi detectado na tarefa ''{0}''. O arquivo ''{0}.yaml'' localizado em ''{1}'' requer um identificador válido. Você pode repará-lo?
-Error_EmptyNameRule = Um problema foi detectado na tarefa ''{0}''. O arquivo ''{0}.yaml'' localizado em ''{1}'' requer um nome válido. Você pode repará-lo?
+Error_EmptyIdentifierRule = Um problema foi detectado na tarefa ''{0}''. O arquivo ''{0}.yaml'' localizado em ''{1}'' requer um identificador válido. Você pode consertá-lo?
+Error_EmptyNameRule = Um problema foi detectado na tarefa ''{0}''. O arquivo ''{0}.yaml'' localizado em ''{1}'' requer um nome válido. Você pode consertá-lo?
 Error_ForbiddenIdentifierRule = Uh-oh, a tarefa ''{0}'' (referenciando o arquivo ''{0}.yaml'' localizado em ''{1}'') tem um identificador de argumento inválido. ''{2}'' é uma palavra reservada, portanto não pode ser utilizada. Você poderia utilizar outro nome?
-Error_EmptyArgumentsListRule = Um problema foi detectado na tarefa ''{0}''. O arquivo ''{0}.yaml'' localizado em ''{1}'' requer uma lista válida de argumentos. Você pode repará-lo? Observe que a lista de argumentos também pode ser vazia, mas mesmo assim é necessário definí-la explicitamente (com ''arguments: []'').
-Error_WrongIdentifierRule = Uh-oh, a tarefa ''{0}'' (referenciando o arquivo ''{0}.yaml'' localizado em ''{1}'') tem o identificador incorreto - era esperado ''{0}'', ao invés de ''{2}''. Você pode repará-lo?
+Error_EmptyArgumentsListRule = Um problema foi detectado na tarefa ''{0}''. O arquivo ''{0}.yaml'' localizado em ''{1}'' requer uma lista válida de argumentos. Você pode consertá-lo? Observe que a lista de argumentos também pode ser vazia, mas mesmo assim é necessário definí-la explicitamente (com ''arguments: []'').
+Error_WrongIdentifierRule = Uh-oh, a tarefa ''{0}'' (referenciando o arquivo ''{0}.yaml'' localizado em ''{1}'') tem o identificador incorreto - era esperado ''{0}'', ao invés de ''{2}''. Você pode consertá-lo?
 Error_ArgumentsNotDefinedInRule = Uh-oh, existem argumentos utilizados na diretiva ''{0}'' que não estão definidos na regra ''{0}.yaml'' localizada em ''{1}''. Você pode remover esses argumentos inexistentes da diretiva ''{0}'' ou adicioná-los à lista de argumentos na regra ''{0}.yaml''. Aqui estão eles: {2}
 Error_DefaultValueRuntimeErrorRule = Sinto muito, mas o valor padrão definido para o argumento ''{0}'' da tarefa ''{1}'' (referenciando o arquivo ''{1}.yaml'' localizado em ''{2}'') tem uma variável ou método indisponível no contexto da regra: ''{3}''
 Error_FlagRuntimeErrorRule = Sinto muito, mas a flag definida para o argumento ''{0}'' da tarefa ''{1}'' (referenciando o arquivo ''{1}.yaml'' localizado em ''{2}'') tem uma variável ou método indisponível no contexto da regra: ''{3}''
 Error_DuplicatedCommandElementsRule = Uh-oh, os campos ''command'' e ''commands'' estão definidos ao mesmo tempo na tarefa ''{0}'' (referenciando o arquivo ''{0}.yaml'' localizado em ''{1}''). Você precisa escolher apenas um deles. Se a sua regra precisa de apenas um comando, você pode optar por ''command''; se a sua regra requer um conjunto de comandos, talvez o campo ''commands'' seja mais adequado.
 Error_MissingCommandElementsRule = Uh-oh, a tarefa ''{0}'' (referenciando o arquivo ''{0}.yaml'' localizado em ''{1}'') não possui o elemento ''command'' ou ''commands''. Você precisa escolher um deles. Se a sua regra precisa de apenas um comando, você pode optar por ''command''; se a sua regra requer um conjunto de comandos, talvez o campo ''commands'' seja mais adequado.
 Error_CommandRuntimeErrorRule = Sinto muito, mas o conjunto de comandos da tarefa ''{0}'' (referenciando o arquivo ''{0}.yaml'' localizado em ''{1}'') tem uma variável ou método indisponível no contexto da regra: ''{2}''
-
