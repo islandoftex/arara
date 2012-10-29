@@ -84,17 +84,4 @@ public class AraraException extends Exception {
         super(cause);
     }
 
-    /**
-     * Constructor with message, cause, and two logical values indicating
-     * suppression and a writable stacktrace.
-     *
-     * @param message The message containing the cause of the exception thrown.
-     * @param cause The throwable cause.
-     * @param enableSuppression A logical value indicating suppression.
-     * @param writableStackTrace A logical value indicating if the stacktrace is
-     * writable.
-     */
-    public AraraException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }
