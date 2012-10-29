@@ -68,12 +68,12 @@ public class LanguageController {
 
         // add the resources
         languages.add(new AraraLanguage("English", "en", new Locale("en")));
-        //languages.add(new AraraLanguage("Brazilian Portuguese", "ptbr", new Locale("pt", "BR")));
-        //languages.add(new AraraLanguage("Italian", "it", new Locale("it")));
-        //languages.add(new AraraLanguage("French", "fr", new Locale("fr")));
-        //languages.add(new AraraLanguage("Spanish", "es", new Locale("es")));
-        //languages.add(new AraraLanguage("German", "de", new Locale("de")));
-        //languages.add(new AraraLanguage("Turkish", "tr", new Locale("tr", "TR")));
+        languages.add(new AraraLanguage("Brazilian Portuguese", "ptbr", new Locale("pt", "BR")));
+        languages.add(new AraraLanguage("Italian", "it", new Locale("it")));
+        languages.add(new AraraLanguage("French", "fr", new Locale("fr")));
+        languages.add(new AraraLanguage("Spanish", "es", new Locale("es")));
+        languages.add(new AraraLanguage("German", "de", new Locale("de")));
+        languages.add(new AraraLanguage("Turkish", "tr", new Locale("tr", "TR")));
 
     }
 
