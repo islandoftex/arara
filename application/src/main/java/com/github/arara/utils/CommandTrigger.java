@@ -236,7 +236,13 @@ public class CommandTrigger {
                 // add it to the execution
                 executor.setWatchdog(watchDog);
             }
+            
+            // set the shutdown hook
+            ShutdownHookProcessDestroyer processDestroyer = new ShutdownHookProcessDestroyer();
 
+            // add it to the executor
+            executor.setProcessDestroyer(processDestroyer);
+            
             // execute the command and get the exit code
             int exitValue = executor.execute(commandLine);
 
