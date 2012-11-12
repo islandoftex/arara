@@ -83,7 +83,7 @@ Header_AllRightsReserved = All rights reserved.
 
 Msg_NoDirectivesFound = I didn''t find any directives in ''{0}'', and so didn''t do anything. Is that what you really wanted?
 
-Msg_SpecialThanks = A special thanks goes to Alan Munn, Andrew Stacey, Brent Longborough, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Gonzalo Medina, Harish Kumar, İlhan Polat, Joseph Wright, Marco Daniel, Patrick Gundlach, Rasmus Roulund, Stefan Kottwitz, and many others for making this humble tool possible.
+Msg_SpecialThanks = A special thanks goes to Alan Munn, Andrew Stacey, Brent Longborough, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Gonzalo Medina, Harish Kumar, İlhan Polat, Joseph Wright, Marco Daniel, Mikaël Maunier, Patrick Gundlach, Rasmus Roulund, Stefan Kottwitz, and many others for making this humble tool possible.
 
 Msg_RunningCommand = Running {0}...
 

@@ -33,10 +33,10 @@
 # Messages_fr: This file holds the French language messages for arara.
 #
 # translator: Mikaël Maunier
-# e-mail: 
+# e-mail: mmaunier2001@yahoo.fr 
 
 # Log_WelcomeMessage = Welcome to arara!
-Log_WelcomeMessage = arara vous souhaite la bienvenue !
+Log_WelcomeMessage = Arara vous souhaite la bienvenue !
 
 # Log_ProcessingFile = Processing file ''{0}'', please wait.
 Log_ProcessingFile = Traitement du fichier ''{0}'', veuillez patienter.
@@ -48,7 +48,7 @@ Log_Done = Terminé.
 Log_ExceptionRaised = Arara a généré une erreur avec le message suivant :
 
 # Log_ReadyToRunCommands = Ready to run commands.
-Log_ReadyToRunCommands = Prêt à executer une commande.
+Log_ReadyToRunCommands = Prêt à executer des commandes.
 
 # Log_CommandName = Running ''{0}''.
 Log_CommandName = Execution de ''{0}''.
@@ -78,7 +78,7 @@ Log_DirectiveFound = Instruction trouvée à la ligne {0} avec {1}.
 Log_RuleFound = Tâche ''{0}'' trouvée dans ''{1}''.
 
 # Log_NoDirectivesFound = No directives found in ''{0}''.
-Log_NoDirectivesFound = Aucune instruction trouvées dans ''{0}''.
+Log_NoDirectivesFound = Aucune instructions trouvées dans ''{0}''.
 
 # Help_Version = print the application version
 Help_Version = affiche la version de l'application
@@ -90,7 +90,7 @@ Help_Help = affiche le message d'aide
 Help_Log = génère un journal de sortie
 
 # Help_Verbose = print the command output
-Help_Verbose = affiche la sortie de la commande
+Help_Verbose = affiche la sortie de la commande.
 
 # Help_Timeout = set the execution timeout (in milliseconds)
 Help_Timeout = définit le temps d'execution (en millisecondes)
@@ -107,8 +107,8 @@ Header_AllRightsReserved = Tous droits réservés.
 # Msg_NoDirectivesFound = I didn''t find any directives in ''{0}'', and so didn''t do anything. Is that what you really wanted?
 Msg_NoDirectivesFound = Je n''ai trouvé aucunes instructions dans ''{0}'', aussi n''ai-je rien fait. Est-ce réellment ce que vous vouliez ?
 
-# Msg_SpecialThanks = A special thanks goes to Alan Munn, Andrew Stacey, Brent Longborough, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Gonzalo Medina, Harish Kumar, İlhan Polat, Joseph Wright, Marco Daniel, Patrick Gundlach, Rasmus Roulund, Stefan Kottwitz, and many others for making this humble tool possible.
-Msg_SpecialThanks = Un remerciement spécial pour Alan Munn, Andrew Stacey, Brent Longborough, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Gonzalo Medina, Harish Kumar, İlhan Polat, Joseph Wright, Marco Daniel, Patrick Gundlach, Rasmus Roulund, Stefan Kottwitz, et de nombreux autres pour rendre possible la création de cet humble outil.
+# Msg_SpecialThanks = A special thanks goes to Alan Munn, Andrew Stacey, Brent Longborough, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Gonzalo Medina, Harish Kumar, İlhan Polat, Joseph Wright, Marco Daniel, Mikaël Maunier, Patrick Gundlach, Rasmus Roulund, Stefan Kottwitz, and many others for making this humble tool possible.
+Msg_SpecialThanks = Un remerciement spécial pour Alan Munn, Andrew Stacey, Brent Longborough, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Gonzalo Medina, Harish Kumar, İlhan Polat, Joseph Wright, Marco Daniel, Mikaël Maunier, Patrick Gundlach, Rasmus Roulund, Stefan Kottwitz, et de nombreux autres qui ont rendu possible la création de cet humble outil.
 
 # Msg_RunningCommand = Running {0}...
 Msg_RunningCommand = Execution de {0}...
@@ -117,7 +117,7 @@ Msg_RunningCommand = Execution de {0}...
 Msg_Success = SUCCÈS
 
 # Msg_Failure = FAILURE
-Msg_Failure = ECHEC
+Msg_Failure = ÉCHEC
 
 # Msg_Status = Status:
 Msg_Status = Status :
@@ -132,62 +132,61 @@ YamlError_Problem = Problème: {0}
 YamlError_ErrorLocation = Erreur trouvée à la ligne {0}, colonne {1}.
 
 # Error_FileDoesNotExistWithExtensionsList = I''m sorry, but the file ''{0} {1}'' does not exist. Note that when you provide only the basename (i.e, the filename without the extension) or with an unknown extension, arara will try to look for files ending with the predefined extensions {1} in that order. You can override the order, the search pattern or even add support for new extensions through the configuration file. Please refer to the arara manual to learn more about this feature.
-Error_FileDoesNotExistWithExtensionsList = Je suis désolé mais le fichier ''{0} {1}'' n''existe pas. Notez qu''en ne fournissant que le nom de base (i.e, le nom sans l''extension) ou bien une extension inconnue, arara essaiera de chercher des fichiers se terminant par les extensions prédéfinies {1} dans cet ordre. Vous pouvez modifier l''ordre, le motif pour la recherche ou même ajouter de nouvelles extensions par le biais du fichier de configuration. Merci de vous référer au manuel d''arara pour en apprendre plus sur cette caractéristique.
+Error_FileDoesNotExistWithExtensionsList = Je suis désolé mais le fichier ''{0} {1}'' n''existe pas. Notez qu''en ne fournissant que le nom de base (i.e, le nom sans l''extension) ou bien une extension inconnue, arara essaiera de chercher des fichiers se terminant par les extensions prédéfinies {1} dans cet ordre. Vous pouvez modifier l''ordre, le motif pour la recherche ou même ajouter de nouvelles extensions par le biais du fichier de configuration. Merci de vous référer au manuel d'arara pour en apprendre plus sur cette caractéristique.
 
 # Error_FileDoesNotExist = File ''{0}'' does not exist.
 Error_FileDoesNotExist = Le fichier ''{0}'' n''existe pas.
 
 # Error_CommandNotFound = \nI''m sorry, but the command from the ''{0}'' task could not be found. Are you sure the command ''{1}'' is correct, or even accessible from the system path?
-Error_CommandNotFound = \nJe suis navré, mais la commande en provenance de la tâche ''{0}'' n''a pas été trouvée. Êtes-vous sur(e) que la commande ''{1}'' est correcte et accessible depuis le PATH du système ?
+Error_CommandNotFound = \nJe suis navré, mais la commande en provenance de la tâche ''{0}'' n''a pas été trouvée. Êtes-vous sur(e) que la commande ''{1}'' est correcte et accessible depuis le PATH ?
 
 # Error_InvalidYAMLConfigurationFile = I'm sorry, but apparently your arara configuration file is invalid, that is, it has invalid or missing YAML entries. Unfortunately, arara cannot proceed until the error is fixed. I tried my best to dump the error message, so here it is:
-Error_InvalidYAMLConfigurationFile = Je susi désolé, apparemment votre fichier de configuration d'arara est invalide ; il contient des entrées YAML invalides ou certaines sont manquantes. Malheureusement, arara ne peut pas continuer tant que l'erreur n''est pas réparée. J'ai fait de mon mieux pour récupérer le message d'erreur, le voici :
+Error_InvalidYAMLConfigurationFile = Je suis désolé, apparemment votre fichier de configuration d'arara est invalide ; il contient des entrées YAML invalides ou certaines sont manquantes. Malheureusement, arara ne peut pas continuer tant que l'erreur n'est pas réparée. J'ai fait de mon mieux pour récupérer le message d'erreur, le voici :
 
 # Error_InvalidConfigurationFile = Uh-oh, the configuration file appears to be invalid. Are you sure it's a proper YAML file? Unfortunately, arara cannot proceed until a proper configuration file is provided.
 Error_InvalidConfigurationFile = Oh-oh, le fichier de configuration est invalide. Êtes-vous sur(e) qu'il s'agit d'un fichier YAML correct ? Malheureusement, arara ne pourra pas continuer tant qu'un fichier de configuration correct ne sera pas disponible.
 
 # Error_InvalidLanguageConfigurationFile = Houston, we have a problem. Sadly, the language set in the configuration file is not valid. Currently, arara can provide support for the following languages: {0}. Make sure to choose a valid language or remove the entry from the configuration file (the field is optional), otherwise arara cannot proceed.
-Error_InvalidLanguageConfigurationFile = Houston, nous avons un problème. C''est triste à dire mais le langage du fichier de configuration est incorrect. Pour l''instant, arara supporte les langages suivants : {0}. Soyez sur(e) de choisir un langage correct ou de retirer l''entrée du fichier de configuration (le champ est optionnel), sinon arara ne peut pas continuer.
+Error_InvalidLanguageConfigurationFile = Houston, nous avons un problème. C''est triste à dire mais le langage définit dans le fichier de configuration est incorrect. Pour l''instant, arara supporte les langages suivants : {0}. Soyez sur(e) de choisir un langage correct ou de retirer l''entrée du fichier de configuration (le champ est optionnel), sinon arara ne pourra pas continuer.
 
 # Error_InvalidFiletypesConfigurationFile = I'm sorry, but it seems your configuration file has customized filetypes with neither the extension or pattern defined. Both are required in order to continue. Please fix this error in your configuration file and try again.
 Error_InvalidFiletypesConfigurationFile = Je suis navré mais il semble que votre fichier de configuration contient des extensions de fichiers personnalisées dont ni l'extension ni le motif ne sont définis. Les deux sont requis pour pouvoir continuer. Veuillez régler ce problème dans votre fichier de configuration puis essayer à nouveau.
 
 # Error_PathRuntimeErrorConfigurationFile = I''m sorry, but one of the entries of the search path in your configuration file has an unavailable variable in the path context: ''{0}''
-Error_PathRuntimeErrorConfigurationFile = Je suis désolé mais une des entrées du chemin de recherche dans votre fichier de configuration contient une variable non disponible dans le contexte : ''{0}''
+Error_PathRuntimeErrorConfigurationFile = Je suis désolé mais une des entrées du chemin de recherche dans votre fichier de configuration contient une variable non disponible dans le contexte du PATH : ''{0}''
 
 # Error_PathIOErrorConfigurationFile = I'm sorry, but one of the entries of the search path in your configuration file has a malformed directory structure. Could you take a look at it?
-Error_PathIOErrorConfigurationFile = Désolé. Une des entrées du chemin de recherche dans votre fichier de configuration contient une structure incorrecte de répertoire. Pourriez vous y jetez un coup d'oeil ?
+Error_PathIOErrorConfigurationFile = Désolé. Une des entrées du chemin de recherche dans votre fichier de configuration contient une structure de répertoire incorrecte. Pourriez vous y jetez un coup d'oeil ?
 
 # Error_InvalidYAMLDirective = It appears there is a malformed directive found at line {0}, that is, a directive that might have a YAML syntax error or an invalid field. I tried my best to dump the error message, so here it is:
 Error_InvalidYAMLDirective = Il semble qu''il y ait une intruction mal écrite à la ligne {0}. Il est possible que ce soit une instruction qui contiennent une erreur de syntaxe YAML ou un champ invalide. J''ai fait de mon mieux pour récupérer le message d''erreur, le voici :
 
 # Error_DirectiveEmptyCurlyBrackets = Directive ''{0}'' at line {1} has empty curly brackets. Note that arara opts for a cleaner syntax when a directive has no parameters. To fix it, it''s enough to either remove the curly brackets or provide the arguments for the directive.
-Error_DirectiveEmptyCurlyBrackets = La commande ''{0}'' à la ligne {1} a des accolades vides. Notez qu''arara opte pour une syntaxe plus épurée quand une instruction n''a pas de paramètres. Pour régler le problème, il suffit soit d''enlever les accolades soit de fournir les arguments pour la commande.
+Error_DirectiveEmptyCurlyBrackets = L''instruction ''{0}'' à la ligne {1} a des accolades vides. Notez qu''arara opte pour une syntaxe plus épurée quand une instruction n''a pas de paramètres. Pour régler le problème, il suffit soit d''enlever les accolades soit de fournir les arguments pour la commande.
 
 # Error_DirectiveInvalidArgumentList = Directive ''{0}'' at line {1} has an invalid argument type. The argument ''{2}'' is a reserved arara keyword and always requires a list.
-Error_DirectiveInvalidArgumentList = La commande ''{0}'' à la ligne {1} a un type d''argument incorrect. L''argument ''{2}'' est un mot-clé pour arara et requiert obligatoirement une liste.
+Error_DirectiveInvalidArgumentList = L''instruction ''{0}'' à la ligne {1} a un type d''argument incorrect. L''argument ''{2}'' est un mot-clé pour arara et requiert obligatoirement une liste.
 
 # Error_DirectiveReservedKeyword = Directive ''{0}'' at line {1} has an invalid argument name. The name ''{2}'' is a reserved arara keyword representing every element in the ''{3}'' list. Please, pick another name for that argument.
-Error_DirectiveReservedKeyword =  La commande ''{0}'' à la ligne {1} a un nom d''argument incorrect. Le nom ''{2}'' est un mot-clé pour arara qui représenté tous les éléents dans la liste ''{3}''. Veuillez choisir un autre nom pour argument.
+Error_DirectiveReservedKeyword = L''instruction ''{0}'' à la ligne {1} a un nom d''argument incorrect. Le nom ''{2}'' est un mot-clé pour arara qui représente tous les éléments dans la liste ''{3}''. Veuillez choisir un autre nom pour cet argument.
 
 # Error_DirectiveListError = Directive ''{0}'' at line {1} has an invalid argument type. Only the arguments ''files'' and ''items'' can have a list. Both are reserved arara keywords.
-Error_DirectiveListError = La commande ''{0}'' à la ligne {1} a type d''argument incorrect. Seul les arguments ''files'' et ''items'' peuvent avoir une liste. Les deux sont des mots-clés réservés pour arara.
+Error_DirectiveListError = L''instruction ''{0}'' à la ligne {1} a type d''argument incorrect. Seul les arguments ''files'' et ''items'' peuvent avoir une liste. Les deux sont des mots-clés réservés pour arara.
 
 # Error_InvalidDirective = Apparently, there''s an invalid directive at line {0}. Please take a look and fix it.
-Error_InvalidDirective = Apparemment, il y a  une commande invalide à la ligne {0}. S'il vous plaît, veuillez y jeter un oeil et régler le problème.
+Error_InvalidDirective = Apparemment, il y a une commande invalide à la ligne {0}. S''il vous plaît, veuillez y jeter un oeil et régler le problème.
 
-# TODO
 # Error_DirectiveGenericError = Directive ''{0}'' at line {1} seems to be malformed. It might be a YAML syntax error or a wrong mapping.
-Error_DirectiveGenericError = 
+Error_DirectiveGenericError = L''instruction ''{0}'' à la ligne {1} semble malformée. Cela pourrait être une erreur de syntaxe YAML ou un mauvais mapping.
 
 # Error_InvalidLanguage = I'm sorry, but the language code you chose is invalid. Currently, the following languages are supported:
-Error_InvalidLanguage = Je suis désolé mais la langue choisie est incorrecte. Pour l''instant, seuls les langages suivants sont supportés :
+Error_InvalidLanguage = Je suis désolé mais la langue choisie est incorrecte. Pour l'instant, seuls les langages suivants sont supportés :
 
 # Error_RuleNotFound = Uh-oh, I could not find the ''{0}'' rule in the search path. Could you take a look if the rule name is correct and if the rule is accessible through the search path?
 Error_RuleNotFound = Oh-oh, Je n''ai pas trouvé la règle ''{0}'' dans le chemin de recherche. Pourriez-vous vérifier si le nom de la règle est correct et si celle-ci est accessible dans le chemin de recherche ?
 
 # Error_InvalidYAMLRule = It appears that the ''{0}'' task has a YAML syntax error or an invalid field. Could you take a look at the ''{0}.yaml'' file located at ''{1}''. I tried my best to dump the error message, so here it is:
-Error_InvalidYAMLRule = Il semble que la tâche ''{0}'' contient une erreur de syntaxe YAML ou un champ invalide. Pourriez-vous vérifier  le fichier ''{0}.yaml'' situé dans ''{1}''. J''ai fait de mon mieux pour récupérer le message d'erreur, le voici :
+Error_InvalidYAMLRule = Il semble que la tâche ''{0}'' contienne une erreur de syntaxe YAML ou un champ invalide. Pourriez-vous vérifier le fichier ''{0}.yaml'' situé dans ''{1}''. J''ai fait de mon mieux pour récupérer le message d'erreur, le voici :
 
 # Error_InvalidRule = Uh-oh, the ''{0}'' task appears to be invalid. Are you sure the ''{0}.yaml'' file located at ''{1}'' is a proper YAML file?
 Error_InvalidRule = Oh-oh, la tâche ''{0}'' semble invalide. Êtes vous sur(e) que le fichier ''{0}.yaml'' situé dans ''{1}'' est un fichier YAML valide ?
@@ -199,28 +198,28 @@ Error_EmptyIdentifierRule = Un problème a été détecté dans la tâche ''{0}'
 Error_EmptyNameRule = Un problème a été détecté dans la tâche ''{0}''. Le fichier ''{0}.yaml'' situé dans ''{1}'' requiert un nom valide. Pouvez-vous régler ça ?
 
 # Error_ForbiddenIdentifierRule = Uh-oh, the ''{0}'' task (referencing the ''{0}.yaml'' file located at ''{1}'') has an invalid argument identifier. ''{2}'' is a reserved keyword, so it cannot be used. Could you use another name?
-Error_ForbiddenIdentifierRule = Oh-oh, la tâche ''{0}'' (qui fait référence au fichier ''{0}.yaml'' situé dans ''{1}'') a un identifiant d''argument invlaide. ''{2}'' is est un mot-clé réservé, aussi il ne peut pas être utilisé. Pouvez-vous utiliser un autre nom ?
+Error_ForbiddenIdentifierRule = Oh-oh, la tâche ''{0}'' (qui fait référence au fichier ''{0}.yaml'' situé dans ''{1}'') a un identifiant d''argument invalide. ''{2}'' est un mot-clé réservé, aussi il ne peut pas être utilisé. Pouvez-vous utiliser un autre nom ?
 
 # Error_EmptyArgumentsListRule = A problem was detected in the ''{0}'' task. The ''{0}.yaml'' file located at ''{1}'' requires a valid list of arguments. Could you fix it? Note that the list of arguments can also be empty, but it is still necessary to define it explicitly (with ''arguments: []'').
-Error_EmptyArgumentsListRule = Un problème a été détecté dans la tâche ''{0}''. Le fichier ''{0}.yaml'' situé dans ''{1}'' requiert une liste d''arguments valides. Pourriez-vous régler cela ? Notez que la liste d''arguments peut aussi être vide, mais il sera toujours nécessaire de la définir explicitement (avec ''arguments: []'').
+Error_EmptyArgumentsListRule = Un problème a été détecté dans la tâche ''{0}''. Le fichier ''{0}.yaml'' situé dans ''{1}'' requiert une liste d''arguments valide. Pourriez-vous régler cela ? Notez que la liste d''arguments peut aussi être vide, mais il sera toujours nécessaire de la définir explicitement (avec ''arguments: []'').
 
 # Error_WrongIdentifierRule = Uh-oh, the ''{0}'' task (referencing the ''{0}.yaml'' file located at ''{1}'') has the wrong identifier - ''{0}'' was expected, rather than ''{2}''. Could you fix it?
 Error_WrongIdentifierRule = Oh-oh, la tâche ''{0}'' (faisant référence au fichier ''{0}.yaml'' situé dans ''{1}'') a un mauvais identifiant - ''{0}'' était attendu, au lieu de ''{2}''. Pourriez-vous régler cela ?
 
 # Error_ArgumentsNotDefinedInRule = Oh no, there are arguments used in the diretive ''{0}'' which are not defined in the ''{0}.yaml'' rule located at ''{1}''. You can either remove them from the ''{0}'' directive or add them to the list of arguments in the ''{0}.yaml'' rule. Here they are: {2}
-Error_ArgumentsNotDefinedInRule = Oh, non ! Il y a des arguments utilisés dans la commande ''{0}'' qui ne sont pas définis dans la règle ''{0}.yaml'' situé dans ''{1}''. Vous pouvez soit les enlever de la commande ''{0}'' ou les ajouter à la liste des arguments de la règle ''{0}.yaml''. Les voilà : {2}
+Error_ArgumentsNotDefinedInRule = Oh, non ! Il y a des arguments utilisés dans l''instruction ''{0}'' qui ne sont pas définis dans la règle ''{0}.yaml'' situé dans ''{1}''. Vous pouvez soit les enlever de la commande ''{0}'' ou les ajouter à la liste des arguments de la règle ''{0}.yaml''. Les voilà : {2}
 
 # Error_DefaultValueRuntimeErrorRule = I''m sorry, but the default value set for the argument ''{0}'' of the ''{1}'' task (referencing the ''{1}.yaml'' file located at ''{2}'') has an unavailable variable/method in the rule context: ''{3}''
-Error_DefaultValueRuntimeErrorRule = Désolé, mais la valeur par défaut définie pour l''agument ''{0}'' de la règle ''{1}'' (qui fait référence au fichier ''{0}.yaml'' situé dans ''{2}'') a une variable/méthode incorrecte dans le contexte de la règle : ''{3}'' 
+Error_DefaultValueRuntimeErrorRule = Désolé, mais la valeur par défaut définie pour l''agument ''{0}'' de la règle ''{1}'' (qui fait référence au fichier ''{0}.yaml'' situé dans ''{2}'') a une variable/méthode incorrecte dans le contexte de la règle : ''{3}''
 
 # Error_FlagRuntimeErrorRule = I''m sorry, but the flag set for the argument ''{0}'' of the ''{1}'' task (referencing the ''{1}.yaml'' file located at ''{2}'') has an unavailable variable/method in the rule context: ''{3}''
-Error_FlagRuntimeErrorRule = Je suis désolé mais le drapeau définit par l''argument ''{0}'' de la tâche ''{1}''  (qui fait référence au fichier ''{0}.yaml'' situé dans ''{2}'') a une variable/méthode incorrecte dans le contexte de la règle : ''{3}'' 
+Error_FlagRuntimeErrorRule = Je suis désolé mais le drapeau définit par l''argument ''{0}'' de la tâche ''{1}'' (qui fait référence au fichier ''{0}.yaml'' situé dans ''{2}'') a une variable/méthode incorrecte dans le contexte de la règle : ''{3}''
 
 # Error_DuplicatedCommandElementsRule = Uh-oh, both ''command'' and ''commands'' fields are set in the ''{0}'' task (referencing the ''{0}.yaml'' file located at ''{1}''). You need to pick only one of them. If your task only relies on a single command, you can opt for ''command''; if your rule requires a set of commands, maybe the ''commands'' field is more suitable.
-Error_DuplicatedCommandElementsRule = Oh-oh, les 2 champs ''command'' et ''commands'' sont simultanément définis dans la tâche ''{0}'' (qui fait référence au fichier ''{0}.yaml'' situé dans ''{1}''). Vous ne devez en choisir qu''un des deux. Si votre tâche n''a besoin que d''une seule commande, vous pouvez choisir ''command''; s''il s''agit d''une succesion de commandes, peut-être que le champ ''commands'' serait plus avisé.
+Error_DuplicatedCommandElementsRule = Oh-oh, les 2 champs ''command'' et ''commands'' sont simultanément définis dans la tâche ''{0}'' (qui fait référence au fichier ''{0}.yaml'' situé dans ''{1}''). Vous ne devez en choisir qu''un des deux. Si votre tâche n''a besoin que d''une seule commande, vous pouvez choisir ''command''; s''il s''agit d''une succession de commandes, peut-être que le champ ''commands'' serait plus avisé.
 
 # Error_MissingCommandElementsRule = Uh-oh, the ''{0}'' task (referencing the ''{0}.yaml'' file located at ''{1}'') does not have either the ''command'' or ''commands'' elements. You need to pick only one of them. If your task only relies on a single command, you can opt for ''command''; if your rule requires a set of commands, maybe the ''commands'' field is more suitable.
-Error_MissingCommandElementsRule = Oh-oh, la tâche ''{0}'' (qui fait référence au fichier ''{0}.yaml'' situé dans ''{1}'') ne contient ni l''élément ''command'' ni l''élément ''commands''. Vous devez en choisir un des deux. Si votre tâche n''a besoin que d''une seule commande, vous pouvez choisir ''command''; s''il s''agit d''une succesion de commandes, peut-être que le champ ''commands'' serait plus avisé.
+Error_MissingCommandElementsRule = Oh-oh, la tâche ''{0}'' (qui fait référence au fichier ''{0}.yaml'' situé dans ''{1}'') ne contient ni l''élément ''command'' ni l''élément ''commands''. Vous devez en choisir un des deux. Si votre tâche n''a besoin que d''une seule commande, vous pouvez choisir ''command''; s''il s''agit d''une succession de commandes, peut-être que le champ ''commands'' serait plus avisé.
 
 # Error_CommandRuntimeErrorRule = I''m sorry, but the command set for the ''{0}'' task (referencing the ''{0}.yaml'' file located at ''{1}'') has an unavailable variable/method in the rule context: ''{2}''
 Error_CommandRuntimeErrorRule = Je suis désolé, mais la commande définie pour la tâche ''{0}'' (qui fait référence au fichier ''{0}.yaml'' situé dans ''{1}'') contient une variable/méthode non disponible dans le contexte de la règle : ''{2}''
