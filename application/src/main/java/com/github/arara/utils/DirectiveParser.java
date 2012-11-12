@@ -263,7 +263,7 @@ public class DirectiveParser {
             }
 
             // set original file name
-            AraraMethods.originalFile = file.getName();
+            AraraMethods.setOriginalFile(file.getName());
             
             // if there is not a list of filenames
             if (fileNames.isEmpty()) {

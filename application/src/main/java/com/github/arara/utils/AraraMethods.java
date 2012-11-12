@@ -55,8 +55,17 @@ public class AraraMethods {
     /**
      * Holds the original filename.
      */
-    protected static String originalFile;
+    private static String originalFile;
 
+    /**
+     * Setter for the original filename.
+     * 
+     * @param originalFile The original filename.
+     */
+    public static void setOriginalFile(String originalFile) {
+        AraraMethods.originalFile = originalFile;
+    }
+    
     /**
      * Getter for the original filename.
      * 
