@@ -4,5 +4,8 @@
 # requires arara 3.0+
 identifier: clean
 name: CleaningTool
-command: <arara> @{isWindows("cmd /c del", "rm -f")} "@{file}"
-arguments: []
+command: <arara> @{remove}
+arguments:
+- identifier: remove
+  default: <arara> @{isFalse(file == getOriginalFile(), isWindows("cmd /c del", "rm -f").concat(' "').concat(file).concat('"'))}
+
