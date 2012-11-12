@@ -51,6 +51,20 @@ import org.apache.commons.lang3.SystemUtils;
  * @since 3.0
  */
 public class AraraMethods {
+    
+    /**
+     * Holds the original filename.
+     */
+    protected static String originalFile;
+
+    /**
+     * Getter for the original filename.
+     * 
+     * @return A string containing the original filename.
+     */
+    public static String getOriginalFile() {
+        return originalFile;
+    }
 
     /**
      * Checks if string is empty.

@@ -332,7 +332,7 @@ public class TaskDeployer {
         argumentMap.put("isFalse", AraraMethods.class.getMethod("isFalse", boolean.class, String.class));
         argumentMap.put("isFalse", AraraMethods.class.getMethod("isFalse", boolean.class, String.class, String.class));
         
-
+        argumentMap.put("getOriginalFile", AraraMethods.class.getMethod("getOriginalFile"));
         
         // create a rule map
         HashMap ruleMap = new HashMap();
@@ -405,6 +405,8 @@ public class TaskDeployer {
         ruleMap.put("isFalse", AraraMethods.class.getMethod("isFalse", boolean.class, String.class));
         ruleMap.put("isFalse", AraraMethods.class.getMethod("isFalse", boolean.class, String.class, String.class));
 
+        ruleMap.put("getOriginalFile", AraraMethods.class.getMethod("getOriginalFile"));
+        
         // remove references to file and item
         availableArgumentsInDirective.remove("file");
         availableArgumentsInDirective.remove("item");
