@@ -1,4 +1,4 @@
-> We have the upcoming major release of `arara` - version 3.0 - in the testing phase. Branch 2.0 is the current stable release.
+> Dear users, `arara` has reached a mature and stable code for version 3.0 and it's now ready for production. The application is declared **gold** for use, and now our efforts are directed to the manual itself. `arara` is now featuring so many features that require a total rewrite of the documentation, including examples, configuration, and other stuff. When the manual is finally reviewed, `arara` will be deployed to CTAN and hopefully reach TeX Live as well. Our code repository will also feature the cross-platform installer for power users.
 
 # arara
 
