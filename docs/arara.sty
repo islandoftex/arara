@@ -53,6 +53,7 @@
 \RequirePackage{lmodern}
 \RequirePackage[scaled=0.8]{beramono}
 \RequirePackage[framemethod=TikZ]{mdframed}
+\RequirePackage{fourier-orns}
 
 \RequirePackage[backend=biber,backref=true,hyperref=auto,refsection=chapter,citereset=chapter]{biblatex}
 
@@ -193,6 +194,11 @@
 \newcommand{\newfeature}{\feature{\raisebox{-.5pt}[\height][0pt]{new}}}
 \newcommand{\bugfix}{\feature{\raisebox{0pt}[\height][0pt]{fixed}}}
 \newcommand{\mycmd}[1]{\texttt{#1}}
+% -------------------------------------------------
+
+% Ornament line
+% -------------------------------------------------
+\newcommand{\ornamentline}{{\color{araracolor}\noindent\hrulefill\hspace{0.2cm} \raisebox{-0.6ex}{\decoone} \hspace{0.2cm} \hrulefill}}
 % -------------------------------------------------
 
 % arara logo
