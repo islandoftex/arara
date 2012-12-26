@@ -118,19 +118,61 @@ Marco Daniel & Brent Longborough\\
 
 \epigraph{\emph{Moral of the story: never read the documentation, bad things happen.}}{David Carlisle}
 
-When I released the very first version of \arara on a Friday 13th, April 2012, I never thought the tool would receive so many positive comments and feedback. To be honest, since \arara was written for helping me with my own personal \LaTeX\ projects, I really doubted if the tool could be of service to anyone else. And, to my surprise, it seems \arara did good. To a lot of people around the \TeX\ world.
+When I released the very first version of \arara on a Friday 13th, April 2012, I never thought the tool would
+receive so many positive comments and feedback. To be honest, since \arara was written for helping me
+with my own personal \LaTeX\ projects, I really doubted if the tool could be of service to anyone else. And,
+to my surprise, it seems \arara did good. To a lot of people around the \TeX\ world.
 
-I never intended to release the tool to the whole world, since I wasn't sure if other people could benefit from \arara's features. After all, there's already a plethora of tools available to the \TeX\ community in general, although with different approaches. The reason I decided to make \arara publicly available is quite simple: I wanted to somehow contribute to the \TeX\ community, and I wanted to give my best to make such community even more awesome.
+I never intended to release the tool to the whole world, since I wasn't sure if other people could benefit from
+\arara's features. After all, there's already a plethora of tools available to the \TeX\ community in general,
+although with different approaches. The reason I decided to make \arara publicly available is quite simple:
+I wanted to somehow contribute to the \TeX\ community, and I wanted to give my best to make such
+community even more awesome.
 
-As time goes by, I'm quite satisfied with the current state of \arara~--~this is our 3rd major release. We have reached a very mature code and a great team of developers, translators and testers. Since version 1.0, the code evolved a lot -- new features, lots of bug fixes, improvements -- thanks to all the feedback I received. In my humble opinion, that's how any project should evolve: based on what our users expect and want to achieve. I'm proud to see \arara being 100\% community-driven, it's a big achievement for a project with less than one year old.
+As time goes by, I'm quite satisfied with the current state of \arara~--~this is our 3rd major release. We
+have reached a very mature code and a great team of developers, translators and testers. Since version 1.0,
+the code evolved a lot -- new features, lots of bug fixes, improvements -- thanks to all the feedback I
+received. In my humble opinion, that's how any project should evolve: based on what our users expect and
+want to achieve. I'm proud to see \arara being 100\% community-driven, it's a big achievement for a project
+with less than one year old.
 
-First of all, I'd like to thank some friends of mine that really made \arara possible: Alan Munn, for providing great ideas and suggestions to the manual; Andrew Stacey, for heavily testing \arara, providing great user cases, and for suggesting improvements to the program; Brent Longborough, a member of the core team, for providing great suggestions and ideas to the program logic, writing rules, testing the code and also for working with the Portuguese and Turkish translations; Clemens Niederberger, for testing \arara, and also writing a great tutorial about it in his \href{http://www.mychemistry.eu/2012/06/arara-automate-latex-birds-music/}{blog on chemistry and \LaTeX}; David Carlisle, for reminding me to work on \arara, and also encouraging me to write answers about it in our \TeX\ community; Enrico Gregorio, for reviewing the original manual, testing \arara, providing great ideas and suggestions to the manual and to the program itself, and for working with the Italian translation; Francesco Endrici, for providing the very first \arara rule outside our core team; Harish Kumar, for being a heavy \arara user and integrating it with WinEdt and Inlage; \.Ilhan Polat for working with Brent in the Turkish translation; Joseph Wright, for testing it, providing contributed code for Linux and Mac installations, and also blogging about \arara in his 
-     \href{http://www.texdev.net}{personal blog}; Gonzalo Medina, for providing the Spanish translation; Mikaël Maunier, for providing the French translation; Marco Daniel, one of core team members, for heavily testing \arara, suggesting enhancements to the manual and to the program itself, providing lots of contributed rules for common tasks, and also for the German version; Patrick Gundlach, for advertising \arara in the official Twitter channel of \href{http://www.dante.de}{Dante} -- the German \TeX\ User Group; Stefan Kottwitz, for encouraging me to write an article about \arara, published in the \href{http://latex-community.org/know-how/435-gnuplot-arara}{\LaTeX\ Community} forum, and also tweeting about it. Thank you very much. I'm sorry if I forgot to mention somebody, I really have so much people to thank and my memory happens to be very short.
+First of all, I'd like to thank some friends of mine that really made \arara possible: Alan Munn, for providing
+great ideas and suggestions to the manual; Andrew Stacey, for heavily testing \arara, providing great user
+cases, and for suggesting improvements to the program; Brent Longborough, a member of the core team,
+for providing great suggestions and ideas to the program logic, writing rules, testing the code and also for
+working with the Portuguese and Turkish translations; Clemens Niederberger, for testing \arara, and also
+writing a great tutorial about it in his
+\href{http://www.mychemistry.eu/2012/06/arara-automate-latex-birds-music/}{blog on chemistry and \LaTeX};
+David Carlisle, for reminding me to work on \arara, and also encouraging me to write answers about it in
+our \TeX\ community; Enrico Gregorio, for reviewing the original manual, testing \arara, providing great
+ideas and suggestions to the manual and to the program itself, and for working with the Italian translation;
+Francesco Endrici, for providing the very first \arara rule outside our core team; Harish Kumar, for being a
+heavy \arara user and integrating it with WinEdt and Inlage; \.Ilhan Polat for working with Brent in the Turkish
+translation; Joseph Wright, for testing it, providing contributed code for Linux and Mac installations, and also
+blogging about \arara in his \href{http://www.texdev.net}{personal blog}; Gonzalo Medina, for providing the
+Spanish translation; Mikaël Maunier, for providing the French translation; Marco Daniel, one of core team
+members, for heavily testing \arara, suggesting enhancements to the manual and to the program itself,
+providing lots of contributed rules for common tasks, and also for the German version; Patrick Gundlach,
+for advertising \arara in the official Twitter channel of \href{http://www.dante.de}{Dante} -- the German
+\TeX\ User Group; Stefan Kottwitz, for encouraging me to write an article about \arara, published in the
+\href{http://latex-community.org/know-how/435-gnuplot-arara}{\LaTeX\ Community} forum, and also
+tweeting about it. Thank you very much. I'm sorry if I forgot to mention somebody, I really have so much
+people to thank and my memory happens to be very short.
 
-That said, I still believe that the warning featured in the first version of this manual still applies: \textsc{Hic Sunt Dracones}. Though the code really evolved from the first commit I made, \arara is far from being bug-free. And you will learn that \arara gives you enough rope. In other words, \emph{you} will be responsible for how \arara behaves and all the consequences from your actions. Sorry to sound scary, but I really needed to tell you this. After all, one of \arara's greatest features is the freedom it offers. But as you know, freedom always comes at a cost. Please, don't send us angry letters -- or e-mails, perhaps -- if something bad happen.
+That said, I still believe that the warning featured in the first version of this manual still applies:
+\textsc{Hic Sunt Dracones}. Though the code really evolved from the first commit I made, \arara is far from
+being bug-free. And you will learn that \arara gives you enough rope. In other words, \emph{you} will be
+responsible for how \arara behaves and all the consequences from your actions. Sorry to sound scary, but I
+really needed to tell you this. After all, one of \arara's greatest features is the freedom it offers. But as you
+know, freedom always comes at a cost. Please, don't send us angry letters -- or e-mails, perhaps -- if
+something bad happen.
 
-Feedback is surely welcome for me to improve this humble tool, just write an 
-e-mail to me or any other member of the team and we will reply as soon as possible. The source code is fully available at \url{http://github.com/cereda/arara}, feel free to contribute to the project by forking it, submitting bugs, sending pull requests or even translating it to your language. If you want to support the \LaTeX\ development by a donation, the best way to do this is donating to the \href{http://www.tug.org/}{\TeX\ Users Group}. Please also  consider joining our \TeX\ community at \href{http://tex.stackexchange.com}{StackExchange}.
+Feedback is surely welcome for me to improve this humble tool, just write an e-mail to me or any other
+member of the team and we will reply as soon as possible. The source code is fully available at
+\url{http://github.com/cereda/arara}, feel free to contribute to the project by forking it, submitting bugs,
+sending pull requests or even translating it to your language. If you want to support the \LaTeX\ development
+by a donation, the best way to do this is donating to the \href{http://www.tug.org/}{\TeX\ Users Group}.
+Please also  consider joining our \TeX\ community at \href{http://tex.stackexchange.com}{StackExchange}.
 
 \vspace{2em}
 
@@ -172,28 +214,50 @@ Marco Daniel & Patrick Gundlach & Stefan Kottwitz
 
 \vspace{1em}
 
-\noindent\arara also makes use of some specific opensource Java projects and libraries in order to properly work. I would like to thank the following projects and their respective developers:
+\noindent\arara also makes use of some specific opensource Java projects and libraries in order to properly
+work. I would like to thank the following projects and their respective developers:
 
 \begin{enumerate}
-\item \href{http://commons.apache.org}{Apache Commons}, a project from the Apache Foundation focused on all aspects of reusable Java components. \arara uses three of the Commons libraries: \href{http://commons.apache.org/cli/}{CLI}, which provides a command line arguments parser, \href{http://commons.apache.org/collections/}{Collections}, a library which  	extends the Java Collections Framework, and \href{http://commons.apache.org/exec/}{Exec}, an API for dealing with external process execution and environment management in Java.
+\item \href{http://commons.apache.org}{Apache Commons}, a project from the Apache Foundation focused
+on all aspects of reusable Java components. \arara uses three of the Commons libraries:
+\href{http://commons.apache.org/cli/}{CLI}, which provides a command line arguments parser,
+\href{http://commons.apache.org/collections/}{Collections}, a library which extends the Java Collections
+Framework, and \href{http://commons.apache.org/exec/}{Exec}, an API for dealing with external process
+execution and environment management in Java.
 
-\item \href{http://logback.qos.ch}{Logback}, a logging framework intended to be the successor to the popular \href{http://logging.apache.org/log4j/}{log4j} project. According to some benchmarks, it is faster and has a smaller footprint than all existing logging systems, sometimes by a wide margin.
+\item \href{http://logback.qos.ch}{Logback}, a logging framework intended to be the successor to the
+popular \href{http://logging.apache.org/log4j/}{log4j} project. According to some benchmarks, it is faster
+and has a smaller footprint than all existing logging systems, sometimes by a wide margin.
 
-\item \href{http://code.google.com/p/snakeyaml}{SnakeYAML}, a YAML parser and emitter for the Java programming language. YAML is a data serialization format designed for human readability and interaction with scripting languages. \arara uses YAML as the rule format.
+\item \href{http://code.google.com/p/snakeyaml}{SnakeYAML}, a YAML parser and emitter for the Java
+programming language. YAML is a data serialization format designed for human readability and interaction
+with scripting languages. \arara uses YAML as the rule format.
 
-\item \href{http://www.slf4j.org/}{SLF4J}, a simple facade or abstraction for various logging frameworks, allowing the end user to plug in the desired logging framework at deployment time.
+\item \href{http://www.slf4j.org/}{SLF4J}, a simple facade or abstraction for various logging frameworks,
+allowing the end user to plug in the desired logging framework at deployment time.
 
-\item \href{http://mvel.codehaus.org}{MVEL}, a powerful expression language for Java-based applications. It provides a plethora of features and is suited for everything from the smallest property binding and extraction, to full blown scripts. \arara relies on MVEL to provide the expansion mechanism for rules.
+\item \href{http://mvel.codehaus.org}{MVEL}, a powerful expression language for Java-based applications.
+It provides a plethora of features and is suited for everything from the smallest property binding and extraction,
+to full blown scripts. \arara relies on MVEL to provide the expansion mechanism for rules.
 
-\item \href{http://maven.apache.org/}{Apache Maven}, a software project management and comprehension tool. Based on the concept of a project object model, Maven can manage a project's build, reporting and documentation from a central piece of information. 
+\item \href{http://maven.apache.org/}{Apache Maven}, a software project management and comprehension tool.
+Based on the concept of a project object model, Maven can manage a project's build, reporting and documentation
+from a central piece of information. 
 
-\item \href{http://izpack.github.com}{IzPack}, a Java-based software installer builder that will run on any operating system coming with a Java Virtual Machine that is compliant with the Oracle JVM 1.5 or higher.
+\item \href{http://izpack.github.com}{IzPack}, a Java-based software installer builder that will run on any
+operating system coming with a Java Virtual Machine that is compliant with the Oracle JVM 1.5 or higher.
 \end{enumerate}
 
-A special thanks goes to my great friend \href{http://antoineneveux.fr/}{Antoine Neveux} for encouraging me to try out the \href{http://maven.apache.org}{Apache Maven} software project management. In the past, \arara was released as a NetBeans project, which is based on \href{http://ant.apache.org/}{Apache Ant}, another great tool from the Apache Foundation. Although I'm really fine with Ant, thanks to Maven, now it is way easier to build and to maintain the code. And it's always nice to learn another tool.
+A special thanks goes to my great friend \href{http://antoineneveux.fr/}{Antoine Neveux} for encouraging me to
+try out the \href{http://maven.apache.org}{Apache Maven} software project management. In the past, \arara was
+released as a NetBeans project, which is based on \href{http://ant.apache.org/}{Apache Ant}, another great tool
+from the Apache Foundation. Although I'm really fine with Ant, thanks to Maven, now it is way easier to build and
+to maintain the code. And it's always nice to learn another tool.
 
-And at last but not least, I want to thank you, dear reader and potential user, 
-for giving \arara a try. Do not despair if you don't succeed with \arara at first; just try again. I'm sure you will find your way. This humble project is opensource and it will always be. Let the bird be your guide through the journey to the typographic land. Have a good read.
+And at last but not least, I want to thank you, dear reader and potential user, for giving \arara a try. Do not despair
+if you don't succeed with \arara at first; just try again. I'm sure you will find your way. This humble project is
+opensource and it will always be. Let the bird be your guide through the journey to the typographic land. Have a
+good read.
 % -------------------------------------------------
 
 \cleardoublepage
@@ -205,9 +269,28 @@ for giving \arara a try. Do not despair if you don't succeed with \arara at firs
 \subsection*{Version 3.0}
 \begin{itemize}
 \item[\newfeature] 
+     % TODO
      List of new features and a table containing the lines of code for
      version 3.0.
 \end{itemize}
+
+{\renewcommand{\arraystretch}{1.5}
+\begin{table}[ht]
+\centering
+\caption{Lines of code for version 3.0.}
+\begin{tabular}{lrrrr}
+\hline
+\textbf{Language} & \textbf{Files} & \textbf{Blank} & \textbf{Comment} & \textbf{Code}\\
+\hline
+\hline
+Java & 0 & 0 & 0 & 0\\
+XML & 0 & 0 & 0 & 0\\
+\hline
+Sum & 0 & 0 & 0 & 0\\
+\hline
+\end{tabular}
+\label{tab:locarara30}
+\end{table}}
 
 \subsection*{Version 2.0}
 \begin{itemize}
@@ -404,12 +487,228 @@ damage.}
 \mainmatter
 
 \part{The application}
+\label{part:application}
 
 \chapter{Introduction}
-\section{What is arara?}
+\label{chap:introduction}
+
+\epigraph{\emph{You can do such a lot with a Wompom, you can use every part of it too.
+For work or for pleasure, it's a triumph, it's a treasure,
+oh there's nothing that a Wompom cannot do.}}{Flanders \& Swann}
+
+Hello there, welcome to \arara! I'm glad you were not intimidated by the threatening
+message in the prologue. This chapter is actually a quick introduction to what you
+can expect from \arara. Don't be afraid, it will be easy to digest, I promise.
+
+\section{What is \texorpdfstring{\arara}{arara}?}
+\label{sec:whatisarara}
+
+Good question! \arara is a \TeX\ automation tool based on rules and directives. It is,
+in some aspects, similar to other well-known tools like |latexmk|~\cite{collins:2001}
+and |rubber|~\cite{rubber:2009}. The key difference might be the fact that \arara
+aims at explicit instructions in the source code in order to determine what to do instead
+of relying on other resources, such as log file analysis. It's a different approach for an automation tool, and
+we have both advantages and disadvantages of such decision. Let's talk about
+disadvantages first.
+
+Since we need to explicitly tell \arara what we want it to do, it might not be intuitive
+for casual users. Tools like |latexmk| and |rubber| rely on a analysis scheme in which
+the document is generated with a simple call to |latexmk mydoc.tex| or |rubber --pdf mydoc.tex|,
+while a similar call to |arara mydoc.tex| does absolutely nothing; it's not wrong, it's by design:
+\arara needs to know what you want. We do this by adding a directive in our |.tex| file, as shown
+in line~1 of Code~\ref{code:hellolatex}. Don't worry with the terms now, we will come back to the
+concepts later on in this manual, in Chapter~\ref{chap:importantconcepts}.
+
+\begin{code}[htbp]
+\caption{\mycmd{mydoc.tex}}
+\label{code:hellolatex}
+\begin{latex}
+% (*@@*)arara: pdflatex
+\documentclass{article}
+
+\begin{document}
+Hello world.
+\end{document}
+\end{latex}
+\end{code}
+
+When we add a directive in our source code, we are explicitly telling \arara what we want it to do,
+but I'm afraid that's not sufficient. So far, \arara knows \emph{what} to do, but now it needs to know
+\emph{how} the task should be done. Then, for every directive, we need to have an associated rule.
+In other words, if we want \arara to run |pdflatex| on |mydoc.tex|, we need to have a set of instructions
+which tells our tool how to run that specific application. Although the core team provides a lot of rules
+shipped with \arara out of the box, with the possibility of extending the set by adding more rules,
+some users might find this decision rather annoying, since other tools have most of their rules hardcoded,
+making the automation process even more transparent.
+
+Now, let's talk about some advantages. In my humble opinion, since \arara doesn't rely on a specific
+automation or compilation scheme, it becomes more extensible. The use of directives in the source code
+make the automation steps more fluent, which allows the specification of complex workflows very easily.
+Maybe \arara's verbosity on automation steps might not be suitable for small documents, but the tool
+really shines when you have a document which needs full control of the automation process.
+
+Another advantage that comes to my mind right now is the fact that directives and rules can be parametrized.
+In other words, you can create conditional branches, execution workflows based on parameters, flags, and so
+on, by simply providing a parameter in a directive. Besides, \arara also provides a lot of helper functions
+in order to enhance rules; for example, you can have a rule which executes a certain command when in Windows,
+and a different one when in Unix.
+
+The rules are written in a human-readable format. The reason for this decision came as an attempt to simplify
+the life of many casual users which are not versed into programming. Sadly, writing complex XML mappings or
+even deliberately injecting code into an application is not a trivial task, so we opted for an easy way of declaring
+the set of instructions that tells \arara how to do a task. We will discuss about the format later on, in Section~\ref{sec:rules}.
+
+Now that \arara was properly introduced, let me explain the meaning of the name. \emph{Arara} is the Brazilian
+name of a macaw bird (Figure~\ref{fig:arara}). Have you ever watched \emph{Rio: the movie}, produced by Blue
+Sky Studios? The protagonist is a blue arara. The word \emph{arara} comes from the Tupian word \emph{a'rara},
+which means \emph{big bird}~\cite{tupi:2012}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.6]{figures/arara.png}
+\caption{A lovely photo of an arara.}
+\label{fig:arara}
+\end{figure}
+
+Lovely bird, isn't it? Now, you are probably wondering why I chose this name. Well, araras are colorful, noisy,
+naughty and very funny. Everybody loves araras. So why can't you love a tool with the very same name? And
+there is also another motivation of the name \emph{arara}: the chatroom residents of 
+\href{http://chat.stackexchange.com/rooms/41}{\TeX.sx} -- including myself -- are fans of palindromes,
+especially palindromic numbers. As you can already tell, \emph{arara} is a palindrome.
+
 \section{How does it work?}
+\label{sec:howdoesitwork}
+
+Now that we know what \arara is, let's take a look on how the tool actually works. The whole idea is pretty
+straightforward, but some concepts might be confusing at first. Do not despair, we will come back to
+them later on in the manual, in Chapter~\ref{chap:importantconcepts}.
+
+First of all, we need to add at least one instruction in the source code to tell \arara what to do. This instruction
+is named \emph{directive} and it will be parsed during the preparation phase. By default, an \arara directive is
+defined in a line of its own, started with a comment, followed by the word |arara:|  and the name of the task.
+Code~\ref{code:hellolatex} has one directive, referencing |pdflatex|. It's important to observe that |pdflatex|
+is not the command to be executed, but the name of the rule associated with that directive.
+
+Once \arara finds a directive, it will look for the associated \emph{rule}. In our example, it will look for a rule named
+|pdflatex| which will evidently run the |pdflatex|  command line application. The rule is analyzed, all possible
+parameters are defined, the command line call is built and then it goes to a queue of commands to be executed.
+
+After extracting all directives from a source code and mapping each one of them to their respective rules, \arara
+then executes the queue of commands. The execution chain requires that the command $i$ was successfully
+executed to then proceed to the command $i+1$, and so forth. This is also by design: \arara will halt the execution
+if any of the commands in the queue had raised an error. If we run \arara on |mydoc.tex| -- we can also run
+|arara mydoc| too, we will discuss this later on -- presented in Code~\ref{code:hellolatex}, we get the output
+presented in Code~\ref{code:araraoutputexample}.
+
+\begin{code}[htbp]
+\caption{Running \arara on \mycmd{mydoc.tex}.}
+\label{code:araraoutputexample}
+\begin{bash}
+$ arara mydoc
+  __ _ _ __ __ _ _ __ __ _
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+Running PDFLaTeX... SUCCESS
+\end{bash}
+\end{code}
+
+That is pretty much how \arara works: directives in the source code are mapped to rules, which are converted to
+commands and added to a queue. The queue is then executed and the status is reported. We will cover more details
+about the expansion process later on in the manual. In short, we teach \arara to do a task by providing a rule,
+and tell it to execute it via directives in the source code.
+
 \section{Features}
+\label{sec:features}
+
+To name a few features I like in \arara, I'd mention the ability to write rules in a human-readable format called YAML,
+which rhymes with the word \emph{camel}. YAML is actually a recursive acronym for \emph{YAML Ain't Markup Language},
+and it's known as a human friendly data serialization standard for all programming languages~\cite{yaml:2001}. So far,
+I think this format is quite suitable to write rules, specially if you want to avoid the need of writing complicated XML mappings or
+even injecting code directly into the application.
+
+Another feature worth mentioning is the fact that \arara is platform independent. The application was written in Java,
+so \arara runs on top of a Java virtual machine, available on all the major operating systems~--~in some cases, you
+might need to install the proper virtual machine. We tried very hard to keep both code and libraries compatible with
+older virtual machines or from other vendors. Currently, \arara is known to run on Oracle's Java 5, 6 and 7, and OpenJDK 6 and 7.
+In Chapter~\ref{chap:buildingfromsources}, there are instructions on how to build \arara from sources. Even if
+you use multiple operating systems, \arara should behave the same, including the rules. There are helper functions
+available in order to provide support for system-specific rules based on the underlying operating system, presented
+in Section~\ref{sec:functions}.
+
+From version 3.0 on, \arara can now display localized messages. The default language is set to English, but the user can
+receive feedback from the execution process an logging in other languages as well, such as Brazilian Portuguese, German,
+Italian, French, Spanish and Turkish. There's also a way to redefine the default language by adding an entry in the configuration
+file, discussed later on in Section~\ref{sec:language}.
+
+Speaking of which, \arara has now an optional configuration file in which we can add rule paths, set the default language and
+define custom extensions and directive patterns, located in the user home directory. That way, we can extend \arara's behaviour
+to deal with other extensions, such as |.c| files, and use the tool with other formats. We will come back on this subject later on
+in Chapter~\ref{chap:configurationfile}.
+
+\arara is also easily integrated with other \TeX\ integrated development environment, such as \TeX works~\cite{texworks:2009}, an 
+environment for authoring \TeX\ documents shipped with both \TeX\ Live and MiK\TeX. Chapter~\ref{chap:ideintegration} covers
+the integration of \arara with several environments.
+
 \section{Common uses}
+\label{sec:commonuses}
+
+\arara can be used in complex workflows, like theses and books. You can tell \arara to compile the document, generate
+indices and apply styles, remove temporary files, compile other |.tex| documents, create glossaries, call |pdfcrop|, move files,
+run \hologo{METAPOST} or \hologo{METAFONT}, and so forth. You can easily come up with your own rules.
+
+There's an \href{http://latex-community.org/know-how/435-gnuplot-arara}{article} available in the \LaTeX\ community which
+describes the integration of |gnuplot| and \arara~\cite{cereda:2012}. This article was submitted as an entry to a contest organized
+by Stefan Kottwitz. It might be worth a read.
+
+Let's see a few examples. Code~\ref{code:exlatexone} contains the workflow I used for another article I recently wrote. Note that the first call to
+|pdflatex| creates the |.aux| file, then |bibtex| will extract the cited publications. The next calls to |pdflatex| will insert
+and refine the references.
+
+\begin{code}[htbp]
+\caption{\mycmd{article.tex}}
+\label{code:exlatexone}
+\begin{latex}
+% (*@@*)arara: pdflatex
+% (*@@*)arara: bibtex
+% (*@@*)arara: pdflatex
+% (*@@*)arara: pdflatex
+\documentclass[journal]{IEEEtran}
+...
+\end{latex}
+\end{code}
+
+Code~\ref{code:exlatextwo} contains another workflow I used for a manual. I had to use a package that required shell escape,
+so the calls to |pdflatex| had to enable it. Also, I had an index with a custom formatting, then |makeindex| was called with the
+ proper style.
+
+\begin{code}[htbp]
+\caption{\mycmd{manual.tex}}
+\label{code:exlatextwo}
+\begin{latex}
+% (*@@*)arara: pdflatex: { shell: yes }
+% (*@@*)arara: makeindex: { style: mystyle }
+% (*@@*)arara: pdflatex: { shell: yes }
+% (*@@*)arara: pdflatex: { shell: yes }
+\documentclass{book}
+...
+\end{latex}
+\end{code}
+
+And of course, the \arara user manual is also compiled with |arara|. You can take a look in the source code and check the
+header. By the way, note that I had to use a trick to avoid |arara| to read the example directives in this manual. As we will
+see later, \arara reads directives everywhere. Actually, I could have changed the directive pattern for |.tex| files through
+the configuration file, but that's another story.
+
+Other workflows can be easily created. There can be an arbitrary number of instructions for \arara to execute, so feel free to
+come up with your own workflow. \arara will handle it for you. My friend Joseph Wright wrote a great article about \arara in
+his personal blog, it's really worth a read~\cite{wright:2012}.
+
+I really hope you like my humble contribution to the \TeX\ community. Let \arara enhance your \TeX\ experience, it will help you
+when you'll need it the most. Enjoy the manual.
+
+\printbibliography[heading=subbibliography]
 
 \chapter{Installation}
 \section{Prerequesites}
@@ -420,11 +719,15 @@ damage.}
 \section{Uninstalling arara}
 
 \chapter{Building from sources}
+\label{chap:buildingfromsources}
+
 \section{Obtaining the sources}
 \section{Building arara}
 \section{Notes on the installer and wrapper}
 
 \chapter{IDE integration}
+\label{chap:ideintegration}
+
 \section{TeXworks}
 \section{TeXnic Center}
 \section{Kile}
@@ -434,14 +737,28 @@ damage.}
 \section{Inlage}
 
 \chapter{Important concepts}
+\label{chap:importantconcepts}
+
 \section{Rules}
+\label{sec:rules}
+
 \section{Directives}
+\label{sec:directives}
+
 \section{Orb tags}
+\label{sec:orbtags}
 
 \chapter{Configuration file}
+\label{chap:configurationfile}
+
 \section{Search paths}
+\label{sec:searchpaths}
+
 \section{Language}
+\label{sec:language}
+
 \section{File patterns}
+\label{sec:filepatterns}
 
 \chapter{Running arara}
 \section{Command line}
@@ -457,8 +774,13 @@ damage.}
 \section{Best practices}
 
 \chapter{Reference for rule library}
-\section{Directives arguments}
+\label{chap:referenceforrulelibraryone}
+
+\section{Directives and arguments}
+\label{sec:directivearguments}
+
 \section{Special orb tags}
+\label{sec:specialorbtags}
 
 \part{For rulemakers}
 
@@ -468,8 +790,13 @@ damage.}
 \section{Best practices}
 
 \chapter{Reference for rule library}
-\section{Functions and methods}
+\label{chap:referenceforrulelibrarytwo}
+
+\section{Functions}
+\label{sec:functions}
+
 \section{Notes on expansion}
+\label{sec:notesonexpansion}
 
 \part{Structure and execution}
 
