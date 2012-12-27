@@ -638,7 +638,7 @@ available in order to provide support for system-specific rules based on the und
 in Section~\ref{sec:functions}.
 
 From version 3.0 on, \arara can now display localized messages. The default language is set to English, but the user can
-receive feedback from the execution process an logging in other languages as well, such as Brazilian Portuguese, German,
+receive feedback from the execution process and logging in other languages as well, such as Brazilian Portuguese, German,
 Italian, French, Spanish and Turkish. There's also a way to redefine the default language by adding an entry in the configuration
 file, discussed later on in Section~\ref{sec:language}.
 
@@ -711,12 +711,485 @@ when you'll need it the most. Enjoy the manual.
 \printbibliography[heading=subbibliography]
 
 \chapter{Installation}
-\section{Prerequesites}
-\section{Obtaining arara}
+\label{chap:installation}
+
+\epigraph{\emph{Adjust \texttt{\string\hsize}: old man Fermat couldn't.}}{Enrico Gregorio}
+
+Spledid, so you decided to give \arara a try? This chapter will cover the installation procedure. We basically
+have two methods of installing \arara: the first one is through a cross-platform installer, which is of course
+the recommended method; the second one is a manual deployment, with the provided |.jar| file -- a
+self-contained, batteries-included executable Java archive file. If you have a recent \TeX\ Live distribution,
+good news: \arara is already available in your system!
+
+\section{Prerequisites}
+\label{sec:prerequisites}
+
+I know I've mentioned this before in Section~\ref{sec:features} and, at the risk of being repetitive, there we
+go again: \arara is written in Java and thus depends on a virtual machine in the underlying operating system.
+If you use a Mac or even a fairly recent Linux distribution, I have good news for you: it's mostly certain that
+you already have a Java virtual machine installed.
+
+It's very easy to check if you have a Java virtual machine installed: try running |java -version| in the terminal
+(bash, command prompt, you name it) and see if you get an output similar to the one provided in
+Code~\ref{code:javainstalled}.
+
+\begin{code}[htbp]
+\caption{Checking if \mycmd{java} is installed.}
+\label{code:javainstalled}
+\begin{bash}
+$ java -version
+java version "1.6.0_24"
+OpenJDK Runtime Environment (IcedTea6 1.11.1)
+OpenJDK Client VM (build 20.0-b12, mixed mode)
+\end{bash}
+\end{code}
+
+If the output goes along the lines of |java: command not found|, I'm afraid you don't have a Java virtual
+machine installed in your operating system. Since the virtual machine is a prerequisite for \arara to run,
+you can install one via your favorite package manager or manually install it from the binaries available
+in the official \href{http://www.java.com}{Java website}. Make sure to download the correct version for
+your operating system. The installation procedure is very straightforward. If you get stuck, take a look
+on the installation instructions.
+
+It's important to mention that \arara runs also with the Java virtual machine from the OpenJDK
+project~\cite{openjdk:2006}, which is already available in most of the recent Linux distributions -- actually
+the output from Code~\ref{code:javainstalled} shows the OpenJDK version from my Fedora machine.
+Feel free to use the virtual machine you feel most comfortable with.
+
+Speaking of virtual machines, \arara requires at least Java 5 to run. Don't worry, it's quite easy to spot the Java
+version: just look at the second digit of the version string. For example, Code~\ref{code:javainstalled} outputs |1.6.0_24|, 
+which means we have Java 6 installed.
+
+\section{Obtaining \texorpdfstring{\arara}{arara}}
+\label{sec:obtainingarara}
+
+Before proceeding, we need to choose the installation method. We have two options: the first option is the easiest one,
+which installs \arara through a cross-platform installer; the second option is a manual deployment.
+
+From version 3.0 on, \arara is also available as part of the \TeX\ Live distribution. If you have a recent \TeX\ distro,
+it's almost certain that you already have \arara; make sure to select it in the |tlmgr| application.
+
+If we opt for the installer, go to the \href{http://github.com/cereda/arara/downloads}{downloads} section of the project
+ repository and download |arara-3.0-installer.jar| for all operating systems or |arara-3.0-installer.exe| for Windows.
+Please note that the |.exe| version is only a wrapper which will launch |arara-3.0-installer.jar| under the hood. The 
+installer also requires Java.
+
+If we want to do things the complicated way, go to the \href{http://github.com/cereda/arara/downloads}{downloads}
+section of the project repository and download the |arara.jar| file, which is a self-contained, batteries-included executable
+Java archive file.
+
+In case you want to build \arara from source, please refer to Chapter~\ref{chap:buildingfromsources} which will
+cover the whole process. Thanks to Apache Maven, the build process is very easy.
+
 \section{Using the cross-platform installer}
+\label{sec:usingthecrossplatforminstaller}
+
+After downloading |arara-3.0-installer.jar| (or its |.exe| counterpart), it's now just a matter of running it.
+The installer is built with IzPack~\cite{izpack:2001}, an amazing tool for packaging applications on the Java 
+platform. Of course the source is also available at the project repository. Personally, I suggest you to run the
+installer in privileged mode, but you can also run it in user mode -- just keep in mind that some features might
+not work, like creating symbolic links or adding the application to the system path, which inevitably requires a
+privileged mode.
+
+When running |arara-3.0-installer.jar| or its |.exe| wrapper on Windows by simply double-clicking it, the installer
+will automatically run in privileged mode. A general Unix-based installation can be triggered by the command
+presented in Code~\ref{code:runinstaller1}. There's also an alternative command presented in 
+Code~\ref{code:runinstaller2}.
+
+\begin{code}[htbp]
+\caption{Running the installer in a Unix-based system -- method 1.}
+\label{code:runinstaller1}
+\begin{bash}
+$ sudo java -jar arara-3.0-installer.jar
+\end{bash}
+\end{code}
+
+\begin{code}[htbp]
+\caption{Running the installer in a Unix-based system -- method 2.}
+\label{code:runinstaller2}
+\begin{bash}
+$ su -c 'java -jar arara-3.0-installer.jar'
+\end{bash}
+\end{code}
+
+Since Windows doesn't have a similar command to |su| or |sudo|, you need to open the command prompt as
+administrator and then run the command presented in Code~\ref{code:runinstallerwin}. You can right-click
+the command prompt shortcut and select the ``Run as administrator\ldots'' option.
+
+\begin{code}[htbp]
+\caption{Running the installer in the Windows command prompt as administrator.}
+\label{code:runinstallerwin}
+\begin{bash}
+C:\> java -jar arara-3.0-installer.jar
+\end{bash}
+\end{code}
+
+The installation process will begin. Hopefully, the first screen of the installer will appear, which is the
+language selection (Figure~\ref{fig:instlang}). By the way, if you called the installer through the command line,
+please do not close the terminal! It might end the all running processes, including our installer.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.5]{figures/install-langsel.png}
+\caption{Language selection screen.}
+\label{fig:instlang}
+\end{figure}
+
+% TODO add more languages
+The installer currently supports six languages: English, German, French, Italian, Spanish, and Brazilian Portuguese.
+I plan to add more languages to the list in the near feature.
+
+The next screen welcomes you to the installation (Figure~\ref{fig:instwelcome}). There's the application name, the
+current version, the team, and the project homepage. We can proceed by clicking the \textit{Next} button. 
+Note that you can quit the installer at any time by clicking the \textit{Quit} button -- please, don't do it; a kitten dies
+every time you abort the installation\footnote{Of course, this statement is just a joke. No animals were 
+harmed, killed or severely wounded during the making of this user manual. After all, \arara is environmentally friendly.}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.5]{figures/install-welcome.png}
+\caption{Welcome screen.}
+\label{fig:instwelcome}
+\end{figure}
+
+Moving on, the next screen shows the license agreement (Figure~\ref{fig:instlicense}). \arara is licensed under the 
+\href{http://www.opensource.org/licenses/bsd-license.php}{New BSD License}~\cite{bsd:2012}. It's important to
+observe that the New BSD License has been verified as a GPL-compatible free software license by the Free Software
+Foundation~\cite{fsf:1985}, and has been vetted as an open source license by the Open Source Initiative~\cite{osi:1998}.
+The full license is also available in this document (page~\pageref{sec:license}). You need to accept the terms of the 
+license agreement before proceeding.
+
+The next screen is probably the most important section of the installation: in here we will choose the packs we want to
+install (Figure~\ref{fig:instpacks}). All packs are described in Table~\ref{tab:packs}. Note that the grayed packs are 
+required.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.5]{figures/install-packs.png}
+\caption{Packs screen.}
+\label{fig:instpacks}
+\end{figure}
+
+\begin{table}[htbp]
+\centering
+\caption{Available packs.}
+\label{tab:packs}
+\renewcommand{\arraystretch}{1.5}
+\footnotesize
+\begin{tabular}{p{0.30\textwidth}p{0.12\textwidth}p{0.4\textwidth}}
+\hline
+\textbf{Pack name} & \textbf{OS} & \textbf{Description}                       \\
+\hline
+\hline
+Main application & All & This pack contains the core application. It also 
+provides an |.exe| wrapper for Windows and a bash file for Unix.              \\
+\hline
+Include the \arara user manual & All & This pack installs this user manual into 
+the |docs/| subdirectory of \arara.                                           \\
+\hline
+Include predefined rules & All & Of course, \arara has a set of predefined rules
+for you to start with. If you prefer to write your own rules from scratch, do 
+not select this pack.                                                         \\
+\hline
+Add a symbolic link to \arara in |/usr/local/bin| & Unix & If you ran the 
+installer in privileged mode, a symbolic link to \arara can be created in the 
+|/usr/local/bin| directory. There's no magic here, the installer uses the good 
+old |ln| command.                                                             \\
+\hline
+Add \arara to the system path & Windows & Like the Unix task, \arara can also 
+add itself to the system path. This feature is provided by a Windows script named
+\href{http://legroom.net/software/modpath}{Modify Path}~\cite{modpath:2012}. \\
+\hline
+\end{tabular}
+\end{table}
+
+It's very important to mention that all these modifications in the operating 
+system -- the symbolic link creation for Unix or the addition to the path for 
+Windows -- are safely removed when you run the \arara uninstaller. We will talk 
+about it later, in Section~\ref{sec:uninstallingarara}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.5]{figures/install-license.png}
+\caption{License agreement screen.}
+\label{fig:instlicense}
+\end{figure}
+
+In the next screen, we will select the installation path (Figure~\ref{fig:instpath}). The installer
+will automatically set the default installation path according to the Table~\ref{tab:paths}, but
+feel free to install \arara in your favorite structure -- even |/opt| or your home folder.
+
+\begin{table}[htbp]
+\centering
+\caption{Default installation paths.}
+\label{tab:paths}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{cl}
+\hline
+\textbf{OS} & \textbf{Default installation path}\\
+\hline
+\hline
+Windows & |C:\Program Files\arara|\\
+Unix & |/usr/local/arara|\\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.5]{figures/install-path.png}
+\caption{Installation path screen.}
+\label{fig:instpath}
+\end{figure}
+
+After selecting the installation path, the installer will then confirm the creation of the target directory
+(Figure~\ref{fig:instnewfolder}). We simply click \textit{OK} to accept it. For convenience, the full installation path 
+defined in the installation path screen (Figure~\ref{fig:instpath}) will be referred as |ARARA_HOME| from now on.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.5]{figures/install-pathwarning.png}
+\caption{Target directory confirmation.}
+\label{fig:instnewfolder}
+\end{figure}
+
+Now, just sit back and relax while \arara is being installed (Figure~\ref{fig:instprogress}). All selected packs will
+be installed accordingly. The post installation tasks -- like creating the symbolic link or adding \arara to the system
+path -- are performed here as well. If the installation has completed successfully, we will reach the final screen of
+the installer congratulating us for installing \arara (Figure~\ref{fig:instfinish}).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.5]{figures/install-progress.png}
+\caption{Progress screen.}
+\label{fig:instprogress}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.5]{figures/install-finish.png}
+\caption{Final screen.}
+\label{fig:instfinish}
+\end{figure}
+
+The full installation scheme is presented in Figure~\ref{fig:ararastructure}. The directory structure is
+presented here as a whole; keep in mind that some parts will be omitted according to your operating
+system and pack selection. For example, the |etc/| subdirectory will only be installed if and only if
+you are in Windows and the system path pack is selected. Other files are platform-specific, such as
+|arara.exe| for Windows and the |arara| bash file for Unix.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[grow via three points={one child at (0.5,-0.7) and two children at (0.5,-0.7) and (0.5,-1.4)}, edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}, anchor=west, font=\ttfamily]
+  \node {ARARA\_HOME/}
+    child { node {arara.jar}}		
+    child { node {arara.exe}}
+    child { node {arara}}
+    child { node {docs/}
+      child { node {arara-usermanual.pdf}}
+    }
+    child [missing] {}
+    child { node {etc/}
+      child { node {modpath.exe}}
+    }
+    child [missing] {}
+    child { node {Uninstaller/}
+      child { node {uninstaller.jar}}
+    }
+	child [missing] {}
+	  child { node {rules/}
+        child { node {biber.yaml}}
+        child { node {\ldots}}
+        child { node {xetex.yaml}}
+    };
+\end{tikzpicture}
+\caption{Installation scheme.}
+\label{fig:ararastructure}
+\end{figure}
+
+That's it, \arara is installed in your operating system. If you opted for the symbolic link creation or the path addition,
+\arara is already available in your terminal by simply typing |arara|. Have fun!
+
 \section{Manual installation}
-\section{Updating arara}
-\section{Uninstalling arara}
+\label{sec:manualinstallation}
+
+Thankfully, \arara is also very easy to be manually deployed. First of all, we must create the application directory.
+Feel free to create this directory anywhere in your computer; it can be |C:\arara|, |/opt/arara| or another location 
+of your choice. This procedure is similar to the installation path screen (Figure~\ref{fig:instpath}) from
+Section~\ref{sec:installer}. Again, for convenience, the full installation path will be referred as |ARARA_HOME| from 
+now on. Although it's not mandatory, try to avoid folders structures with spaces in the path. In any case,
+\arara can handle such spaces.
+
+After downloading |arara.jar| from the \href{http://github.com/cereda/arara/downloads}{downloads} section of
+the project repository, let's copy it to the |ARARA_HOME| directory we've created in the previous step.
+Since |arara.jar| is a self-contained, batteries-included executable Java archive file, \arara is already installed.
+
+In order to run \arara from a manual installation, we should open a terminal and run |java -jar $ARARA_HOME/arara.jar|,
+but that is far from being intuitive. To make our lives easier, we will create a shortcut for this
+command.
+
+If you are deploying \arara in Windows, there are two methods for creating a shortcut: the first method -- the
+easiest -- consists of downloading the |arara.exe| wrapper from the \href{http://github.com/cereda/arara/downloads}{downloads}
+section and copying it to the |ARARA_HOME| directory, in the same level of |arara.jar|. This |.exe| wrapper, provided by \href{http://launch4j.sourceforge.net}{Launch4J}~\cite{launch4j:2005}, wraps |.jar| files in Windows native executables
+and allows to run them like a regular Windows program.
+
+The second method for creating a shortcut in Windows is to provide a batch file which will call |java -jar $ARARA_HOME/arara.jar|
+for us. Create a file named |arara.bat| or |arara.cmd| inside the |ARARA_HOME| directory, in the same level of |arara.jar|, and
+add the content from Code~\ref{code:windows}.
+
+\begin{code}[htbp]
+\caption{Creating a batch file for \arara in Windows.}
+\label{code:windows}
+\begin{bash}
+@echo off
+java -jar "%~dp0\arara.jar" %*
+\end{bash}
+\end{code}
+
+After creating the batch file, add the full |ARARA_HOME| path to the system path. Unfortunately, this manual can't cover
+the path settings, since it's again a matter of personal taste. I'm sure you can find tutorials on how to add a directory to
+the system path.
+
+If you are deploying \arara in Linux or Mac, we also need to create a shortcut to |java -jar $ARARA_HOME/arara.jar|.
+Create a file named |arara| inside the |ARARA_HOME| directory, in the same level of |arara.jar|, and add the content 
+from Code~\ref{code:unix}.
+
+\begin{code}[htbp]
+\caption{Creating a script for \arara in Linux and Mac.}
+\label{code:unix}
+\begin{bash}
+#!/bin/bash
+# Example script of arara
+# Installation and usage are described in the documentation
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ] ; do SOURCE="$(readlink "$SOURCE")"; done
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd -P "$( dirname "$SOURCE" )" && pwd )"
+java -jar "$DIR/arara.jar" "$@"
+\end{bash}
+\end{code}
+
+We now need to add execute permissions for our newly created script through |chmod +x arara|. The |arara| script can
+be invoked through path addition or symbolic link. I personally prefer to add |ARARA_HOME| to my user path, but a
+symbolic link creation seems way more robust -- it's what the installer does. Anyway, it's up to you to decide which method
+you want to use. There's no need to use both.
+
+Once we conclude the manual installation, it's time to check if \arara is working properly. Try running |arara| in the terminal
+and see if you get the output shown in Code~\ref{code:arararun}.
+
+\begin{code}[p]
+\caption{Testing if \arara is working properly.}
+\label{code:arararun}
+\begin{nolanguage}
+$ arara 
+  __ _ _ __ __ _ _ __ __ _ 
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+arara 3.0 - The cool TeX automation tool
+Copyright (c) 2012, Paulo Roberto Massa Cereda
+All rights reserved.
+
+usage: arara [file [--log] [--verbose] [--timeout N] [--language L] | --help | --version]
+
+ -h,--help             print the help message
+ -L,--language <arg>   set the application language
+ -l,--log              generate a log output
+ -t,--timeout <arg>    set the execution timeout (in milliseconds)
+ -v,--verbose          print the command output
+ -V,--version          print the application version
+\end{nolanguage}
+\end{code}
+
+If the terminal doesn't display the \arara logo and usage, please review the manual installation steps.
+Every step is important in order to make \arara available in your system. You can also try the cross-platform
+installer. If you still have any doubts, feel free to contact us.
+
+\section{Updating \texorpdfstring{\arara}{arara}}
+\label{sec:updatingarara}
+
+If there is a newer version of \arara available in the \href{http://github.com/cereda/arara/downloads}{downloads}
+section of the project repository, simply download the |arara.jar| file and copy it to the |ARARA_HOME| directory,
+replacing the current one. No further steps are needed, the newer version is deployed. Try running |arara --version|
+in the terminaland see if the version shown in the output is equal to the one you have downloaded.
+
+Anyway, for every version, \arara has the proper cross-platform installer available for download in the project repository.
+You can always uninstall the old \arara setup and install the new one. Please note that only major versions are released
+with the installer.
+
+If you have \arara through the \TeX\ Live distribution, the update process is straightforward: simply open a
+terminal and run |tlmgr update arara| in order to update the application. This is of course the preferred method.
+
+\section{Uninstalling \texorpdfstring{\arara}{arara}}
+\label{sec:uninstallingarara}
+
+If you want to uninstall \arara, there are two methods available. If you installed \arara through the cross-platform installer,
+I have good news for you: it's just a matter of running the uninstaller. Now, if \arara was deployed through the manual
+installation, we might have to remove some links or path additions.
+
+A general Unix-based uninstallation can be triggered by the command presented in Code~\ref{code:uninstall1}.
+There's also an alternative command presented in Code~\ref{code:uninstall2}.
+
+\begin{code}[htbp]
+\caption{Running the uninstaller in a Unix-based system -- method 1.}
+\label{code:uninstall1}
+\begin{bash}
+$ sudo java -jar $ARARA_HOME/Uninstaller/uninstaller.jar
+\end{bash}
+\end{code}
+
+\begin{code}[htbp]
+\caption{Running the uninstaller in a Unix-based system -- method 2.}
+\label{code:uninstall2}
+\begin{bash}
+$ su -c 'java -jar $ARARA_HOME/Uninstaller/uninstaller.jar'
+\end{bash}
+\end{code}
+
+Since Windows doesn't have a similar command to |su| or |sudo|, you need to open the command prompt as administrator
+and then run the command presented in Code~\ref{code:uninstallwin}. You can right-click the command prompt shortcut 
+and select the ``Run as administrator\ldots'' option.
+
+\begin{code}[htbp]
+\caption{Running the uninstaller in the Windows command prompt as administrator.}
+\label{code:uninstallwin}
+\begin{bash}
+C:\> java -jar $ARARA_HOME/Uninstaller/uninstaller.jar
+\end{bash}
+\end{code}
+
+The uninstallation process will begin. Hopefully, the first and only creen of the uninstaller will appear
+(Figure~\ref{fig:uninstallone}). By the way, if you called the uninstaller through the command line, please
+do not close the terminal! It might end the all running processes, including our uninstaller.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.5]{figures/uninstall-welcome.png}
+\caption{The uninstaller screen.}
+\label{fig:uninstallone}
+\end{figure}
+
+There's nothing much to see in the uninstaller. We have an option to force the deletion of the |ARARA_HOME| directory,
+but that's all. By clicking the \textit{Uninstall} button, the uninstaller will remove the symbolic link or the path entry for
+\arara from the operating system, if selected during the installation. Then it will erase the |ARARA_HOME| directory 
+(Figure~\ref{fig:uninstalltwo}).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.5]{figures/uninstall-finish.png}
+\caption{The uninstaller screen, after the execution.}
+\label{fig:uninstalltwo}
+\end{figure}
+
+Unfortunately, even if you force the deletion of the |ARARA_HOME| directory in Windows, the operating system can't
+remove the |Uninstaller| subdirectory because the uninstaller was being executed from there. But that's the only trace 
+left. You can safely delete |ARARA_HOME| after running the uninstaller.
+
+If \arara was manually installed, we need to remove the symbolic link reference or the path entry, if any, then delete
+the |ARARA_HOME| directory. Don't leave any traces of \arara in system directories or configuration files; a broken 
+symbolic link or a wrong path entry might cause trouble in the future.
+
+\printbibliography[heading=subbibliography]
 
 \chapter{Building from sources}
 \label{chap:buildingfromsources}
