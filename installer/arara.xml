@@ -3,9 +3,12 @@
 
     <info>
         <appname>arara</appname>
-        <appversion>2.0</appversion>
+        <appversion>3.0</appversion>
         <authors>
-            <author email="cereda@users.sf.net" name="Paulo Roberto Massa Cereda"/>
+            <author email="cereda@users.sf.net" name="Paulo Roberto Massa Cereda"/><author
+            	email="marco.daniel@mada-nada.de" name="Marco Daniel">
+</author>
+        	<author email="brent@longborough.org" name="Brent Longborough"></author>
         </authors>
         <url>http://cereda.github.com/arara</url>
         <uninstaller name="uninstaller.jar" write="yes"/>
@@ -68,23 +71,29 @@
 
         <pack name="Include predefined rules" preselected="no" required="no">
             <description/>
-            <file override="update" src="resources\rules\plain\biber.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
-            <file override="update" src="resources\rules\plain\bibtex.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
-            <file override="update" src="resources\rules\plain\clean.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
-            <file override="update" src="resources\rules\plain\dvips.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
-            <file override="update" src="resources\rules\plain\latex.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
-            <file override="update" src="resources\rules\plain\lmkclean.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
-            <file override="update" src="resources\rules\plain\lualatex.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
-            <file override="update" src="resources\rules\plain\lualatexmk.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
-            <file override="update" src="resources\rules\plain\make.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
-            <file override="update" src="resources\rules\plain\makeglossaries.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
-            <file override="update" src="resources\rules\plain\makeindex.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
-            <file override="update" src="resources\rules\plain\nomencl.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
-            <file override="update" src="resources\rules\plain\pdflatex.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
-            <file override="update" src="resources\rules\plain\pdflatexmk.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
-            <file override="update" src="resources\rules\plain\ps2pdf.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
-            <file override="update" src="resources\rules\plain\xelatex.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
-            <file override="update" src="resources\rules\plain\xelatexmk.yaml" targetdir="$INSTALL_PATH/rules/plain/"/>
+            <file override="update" src="resources\rules\biber.yaml" targetdir="$INSTALL_PATH/rules/"/>
+            <file override="update" src="resources\rules\bibtex.yaml" targetdir="$INSTALL_PATH/rules/"/>
+            <file override="update" src="resources\rules\clean.yaml" targetdir="$INSTALL_PATH/rules/"/>
+            <file override="update" src="resources\rules\dvips.yaml" targetdir="$INSTALL_PATH/rules/"/>
+            <file override="update" src="resources\rules\frontespizio.yaml" targetdir="$INSTALL_PATH/rules/"/>
+            <file override="update" src="resources\rules\latex.yaml" targetdir="$INSTALL_PATH/rules/"/>
+            <file override="update" src="resources\rules\lmkclean.yaml" targetdir="$INSTALL_PATH/rules/"/>
+            <file override="update" src="resources\rules\lualatex.yaml" targetdir="$INSTALL_PATH/rules/"/>
+            <file override="update" src="resources\rules\lualatexmk.yaml" targetdir="$INSTALL_PATH/rules/"/>
+            <file override="update" src="resources\rules\luatex.yaml" targetdir="$INSTALL_PATH/rules/"/>
+            <file override="update" src="resources\rules\make.yaml" targetdir="$INSTALL_PATH/rules/"/>
+            <file override="update" src="resources\rules\makeglossaries.yaml" targetdir="$INSTALL_PATH/rules/"/>
+            <file override="update" src="resources\rules\makeindex.yaml" targetdir="$INSTALL_PATH/rules/"/>
+            <file override="update" src="resources\rules\nomencl.yaml" targetdir="$INSTALL_PATH/rules/"/>
+            <file override="update" src="resources\rules\pdflatex.yaml" targetdir="$INSTALL_PATH/rules/"/>
+            <file override="update" src="resources\rules\pdflatexmk.yaml" targetdir="$INSTALL_PATH/rules/"/>
+            <file override="update" src="resources\rules\pdftex.yaml" targetdir="$INSTALL_PATH/rules/"/>
+            <file override="update" src="resources\rules\ps2pdf.yaml" targetdir="$INSTALL_PATH/rules/"/>
+            <file override="update" src="resources\rules\songidx.yaml" targetdir="$INSTALL_PATH/rules/"/>
+            <file override="update" src="resources\rules\tex.yaml" targetdir="$INSTALL_PATH/rules/"/>
+            <file override="update" src="resources\rules\xelatex.yaml" targetdir="$INSTALL_PATH/rules/"/>
+            <file override="update" src="resources\rules\xelatexmk.yaml" targetdir="$INSTALL_PATH/rules/"/>
+            <file override="update" src="resources\rules\xetex.yaml" targetdir="$INSTALL_PATH/rules/"/>
         </pack>
 
         <pack name="Add arara to the system path" preselected="no" required="no">
