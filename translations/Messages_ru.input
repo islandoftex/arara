@@ -1,0 +1,226 @@
+# Arara -- the cool TeX automation tool
+# Copyright (c) 2012, Paulo Roberto Massa Cereda
+# All rights reserved.
+#
+# Redistribution and  use in source  and binary forms, with  or without
+# modification, are  permitted provided  that the  following conditions
+# are met:
+#
+# 1. Redistributions  of source  code must  retain the  above copyright
+# notice, this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form  must reproduce the above copyright
+# notice, this list  of conditions and the following  disclaimer in the
+# documentation and/or other materials provided with the distribution.
+#
+# 3. Neither  the name  of the  project's author nor  the names  of its
+# contributors may be used to  endorse or promote products derived from
+# this software without specific prior written permission.
+#
+# THIS SOFTWARE IS  PROVIDED BY THE COPYRIGHT  HOLDERS AND CONTRIBUTORS
+# "AS IS"  AND ANY  EXPRESS OR IMPLIED  WARRANTIES, INCLUDING,  BUT NOT
+# LIMITED  TO, THE  IMPLIED WARRANTIES  OF MERCHANTABILITY  AND FITNESS
+# FOR  A PARTICULAR  PURPOSE  ARE  DISCLAIMED. IN  NO  EVENT SHALL  THE
+# COPYRIGHT HOLDER OR CONTRIBUTORS BE  LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY,  OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT  NOT LIMITED  TO, PROCUREMENT  OF SUBSTITUTE  GOODS OR  SERVICES;
+# LOSS  OF USE,  DATA, OR  PROFITS; OR  BUSINESS INTERRUPTION)  HOWEVER
+# CAUSED AND  ON ANY THEORY  OF LIABILITY, WHETHER IN  CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
+# WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
+# POSSIBILITY OF SUCH DAMAGE.
+#
+# Messages: This file holds the default Russian language messages for arara.
+#
+# author: Sergey Ulyanov
+# e-mail: ulyanov.sergey@gmail.com
+
+# Log_WelcomeMessage = Welcome to arara!
+Log_WelcomeMessage = Добро пожаловать в arara!
+
+# Log_ProcessingFile = Processing file ''{0}'', please wait.
+Log_ProcessingFile = Обработка файла ''{0}'', пожалуйста, подождите.
+
+# Log_Done = Done.
+Log_Done = Завершено.
+
+# Log_ExceptionRaised = Arara raised an exception with the following message:
+Log_ExceptionRaised = Arara выдала исключение со следующим сообщением:
+
+# Log_ReadyToRunCommands = Ready to run commands.
+Log_ReadyToRunCommands = Готов к запуску команд.
+
+# Log_CommandName = Running ''{0}''.
+Log_CommandName = Выполнение ''{0}''.
+
+# Log_Command = Command: {0}
+Log_Command = Команда: {0}
+
+# Log_CommandSuccess = ''{0}'' was successfully executed.
+Log_CommandSuccess = ''{0}'' была успешно выполнена.
+
+# Log_CommandFailure = ''{0}'' returned an error status.
+Log_CommandFailure = ''{0}'' завершилась неудачей.
+
+# Log_AllCommandsSuccess = All commands were successfully executed.
+Log_AllCommandsSuccess = Все команды были успешно выполнены.
+
+# Log_OutputLogging = Output logging:
+Log_OutputLogging = Журнал вывода:
+
+# Log_CommandNotFound = ''{0}'' was not found in the path. Execution attempt: {1}
+Log_CommandNotFound = ''{0}'' не найдена в пути. Попытка выполнения: {1}
+
+# Log_DirectiveFound = Directive found in line {0} with {1}.
+Log_DirectiveFound = Директива найдена в строке {0} с {1}.
+
+# Log_RuleFound = Task ''{0}'' found in ''{1}''.
+Log_RuleFound = Задача ''{0}'' найдена в ''{1}''.
+
+# Log_NoDirectivesFound = No directives found in ''{0}''.
+Log_NoDirectivesFound = Ни одной директивы не найдено в ''{0}''.
+
+# Help_Version = print the application version
+Help_Version = показать версию приложения
+
+# Help_Help = print the help message
+Help_Help = показать справочное сообщение
+
+# Help_Log = generate a log output
+Help_Log = вести журнал вывода
+
+# Help_Verbose = print the command output
+Help_Verbose = показать вывод команд
+
+# Help_Timeout = set the execution timeout (in milliseconds)
+Help_Timeout = установить время ожидания выполнения (в милисекундах)
+
+# Help_Language = set the application language
+Help_Language = установить язык приложения
+
+# Header_Slogan = The cool TeX automation tool
+Header_Slogan = Крутой инструмент автоматизации TeX
+
+# Header_AllRightsReserved = All rights reserved.
+Header_AllRightsReserved = Все права защищены.
+
+# Msg_NoDirectivesFound = I didn''t find any directives in ''{0}'', and so didn''t do anything. Is that what you really wanted?
+Msg_NoDirectivesFound = Я не могу найти ни одной директивы в ''{0}'', и поэтому не могу ничего выполнить. Это действительно то, что вы хотели?
+
+# Msg_SpecialThanks = A special thanks goes to Alan Munn, Andrew Stacey, Brent Longborough, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Gonzalo Medina, Harish Kumar, İlhan Polat, Joseph Wright, Marco Daniel, Mikaël Maunier, Patrick Gundlach, Rasmus Roulund, Stefan Kottwitz, and many others for making this humble tool possible.
+Msg_SpecialThanks = Особая благодарность выражается Alan Munn, Andrew Stacey, Brent Longborough, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Gonzalo Medina, Harish Kumar, İlhan Polat, Joseph Wright, Marco Daniel, Mikaël Maunier, Patrick Gundlach, Rasmus Roulund, Stefan Kottwitz и многим другим, благодаря кому стало возможным создание этого скромного инструмента.
+
+# Msg_RunningCommand = Running {0}...
+Msg_RunningCommand = Выполнение {0}...
+
+# Msg_Success = SUCCESS
+Msg_Success = УСПЕШНО
+
+# Msg_Failure = FAILURE
+Msg_Failure = НЕУДАЧА
+
+# Msg_Status = Status:
+Msg_Status = Статус:
+
+# YamlError_Context = Context: {0}
+YamlError_Context = Контекст: {0}
+
+# YamlError_Problem = Problem: {0}
+YamlError_Problem = Проблема: {0}
+
+# YamlError_ErrorLocation = Error found in line {0}, column {1}.
+YamlError_ErrorLocation = Ошибка в строке {0} позиции {1}.
+
+# Error_FileDoesNotExistWithExtensionsList = I''m sorry, but the file ''{0} {1}'' does not exist. Note that when you provide only the basename (i.e, the filename without the extension) or with an unknown extension, arara will try to look for files ending with the predefined extensions {1} in that order. You can override the order, the search pattern or even add support for new extensions through the configuration file. Please refer to the arara manual to learn more about this feature.
+Error_FileDoesNotExistWithExtensionsList = К сожалению, файл ''{0} {1}'' не существует. Обратите внимание, что когда вы указываете только базовое имя (т.е., имя файла без расширения) или имя с неизвестным расширением, arara пытается найти файлы с предопределенными расширениями {1} в этом порядке. Вы можете переопределить порядок, образец поиска или даже добавить поддержку новых расщирений через файл конфигурации. Пожалуйста, обратитесь к руководству arara, что бы узнать больше об этой возможности.
+
+# Error_FileDoesNotExist = File ''{0}'' does not exist.
+Error_FileDoesNotExist = Файл ''{0}'' не существует.
+
+# Error_CommandNotFound = \nI''m sorry, but the command from the ''{0}'' task could not be found. Are you sure the command ''{1}'' is correct, or even accessible from the system path?
+Error_CommandNotFound = = \nК сожалению, команда из задачи ''{0}'' не найдена. Вы уверены, что команда ''{1}'' корректна или же доступна из системного пути?
+
+# Error_InvalidYAMLConfigurationFile = I'm sorry, but apparently your arara configuration file is invalid, that is, it has invalid or missing YAML entries. Unfortunately, arara cannot proceed until the error is fixed. I tried my best to dump the error message, so here it is:
+Error_InvalidYAMLConfigurationFile = К сожалению, ваш файл конфигурации arara, по всей видимости, неверен, то есть в нем содержатся недопустимые или пропущенные записи YAML. К сожалению, arara не может продолжить работу, пока ошибка не будет исправлена​​. Я старался изо всех сил, чтобы получить сообщение об ошибке, итак, вот оно:
+
+# Error_InvalidConfigurationFile = Uh-oh, the configuration file appears to be invalid. Are you sure it's a proper YAML file? Unfortunately, arara cannot proceed until a proper configuration file is provided.
+Error_InvalidConfigurationFile = Ой-ой, конфигурационный файл, кажется, неверен. Вы уверены, что это правильный файл YAML? К сожалению, arara не может продолжить работу, пока не будет предоставлен корректный файл конфигурации.
+
+# Error_InvalidLanguageConfigurationFile = Houston, we have a problem. Sadly, the language set in the configuration file is not valid. Currently, arara can provide support for the following languages: {0}. Make sure to choose a valid language or remove the entry from the configuration file (the field is optional), otherwise arara cannot proceed.
+Error_InvalidLanguageConfigurationFile = Хьюстон, у нас проблема. К сожалению, язык, установленный в файле конфигурации не является допустимым. В настоящее время arara может предоставить поддержку следующих языков: {0}. Удостоверьтесь, что выбран допустимый язык или запись удалена из конфигурационного файла (поле не является обязательным), в противном случае arara не сможет продолжить работу.
+
+# Error_InvalidFiletypesConfigurationFile = I'm sorry, but it seems your configuration file has customized filetypes with neither the extension or pattern defined. Both are required in order to continue. Please fix this error in your configuration file and try again.
+Error_InvalidFiletypesConfigurationFile = К сожалению, видимо, в вашем файле конфигурации содержатся специализированные типы файлов без определения расширения и образца. И то и другое необходимо для продолжения работы. Пожалуйста, исправьте эту ошибку в вашем файле конфигурации и повторите попытку.
+
+# Error_PathRuntimeErrorConfigurationFile = I''m sorry, but one of the entries of the search path in your configuration file has an unavailable variable in the path context: ''{0}''
+Error_PathRuntimeErrorConfigurationFile = К сожалению, один из элементов пути поиска в вашем файле конфигурации содержит недоступную переменную в контексте пути: ''{0}''
+
+# Error_PathIOErrorConfigurationFile = I'm sorry, but one of the entries of the search path in your configuration file has a malformed directory structure. Could you take a look at it?
+Error_PathIOErrorConfigurationFile = К сожалению, один из элементов пути поиска в вашем файле конфигурации содержит неправильную структуру каталогов. Не могли бы вы взглянуть на это?
+
+# Error_InvalidYAMLDirective = It appears there is a malformed directive found at line {0}, that is, a directive that might have a YAML syntax error or an invalid field. I tried my best to dump the error message, so here it is:
+Error_InvalidYAMLDirective = Похоже, в строке {0} найдена некорректная директива, это значит, что директива может содержать синтаксическую ошибку YAML или неверное поле. Я старался изо всех сил, чтобы получить сообщение об ошибке, итак, вот оно:
+
+# Error_DirectiveEmptyCurlyBrackets = Directive ''{0}'' at line {1} has empty curly brackets. Note that arara opts for a cleaner syntax when a directive has no parameters. To fix it, it''s enough to either remove the curly brackets or provide the arguments for the directive.
+Error_DirectiveEmptyCurlyBrackets = Директива ''{0}'' в строке {1} содержит пустые фигурные скобки. Обратите внимание на то, что arara выбирает более простой синтаксис, когда у директивы отсутствуют параметры. Чтобы исправить это, достаточно либо удалить фигурные скобки, либо предоставить директиве аргументы.
+
+# Error_DirectiveInvalidArgumentList = Directive ''{0}'' at line {1} has an invalid argument type. The argument ''{2}'' is a reserved arara keyword and always requires a list.
+Error_DirectiveInvalidArgumentList = Директива ''{0}'' в строке {1} содержит неверный тип аргумента. Аргумент ''{2}'' является зарезервированным ключевым словом arara и всегда должен быть списком.
+
+# Error_DirectiveReservedKeyword = Directive ''{0}'' at line {1} has an invalid argument name. The name ''{2}'' is a reserved arara keyword representing every element in the ''{3}'' list. Please, pick another name for that argument.
+Error_DirectiveReservedKeyword = Директива ''{0}'' в строке {1} содержит неверное имя аргумента. Имя ''{2}'' является зарезервированным ключевым словом arara, представляющее элемент в списке ''{3}''. Пожалуйста, выберите другое имя для этого аргумента.
+
+# Error_DirectiveListError = Directive ''{0}'' at line {1} has an invalid argument type. Only the arguments ''files'' and ''items'' can have a list. Both are reserved arara keywords.
+Error_DirectiveListError = Директива ''{0}'' в строке {1} содержит неверный тип аргумента. Только аргументы ''files'' и ''items'' могут содержать списки. Оба являются зарезервированными ключевыми словоми arara.
+
+# Error_InvalidDirective = Apparently, there''s an invalid directive at line {0}. Please take a look and fix it.
+Error_InvalidDirective = Видимо, в строке {0} неверная директива. Пожалуйста, обратите внимание и исправьте ее.
+
+# Error_DirectiveGenericError = Directive ''{0}'' at line {1} seems to be malformed. It might be a YAML syntax error or a wrong mapping.
+Error_DirectiveGenericError = Директива ''{0}'' в строке {1}, кажется, имеет неверный формат. Это может быть следствием синтаксической ошибки YAML или неправильного отображения.
+
+# Error_InvalidLanguage = I'm sorry, but the language code you chose is invalid. Currently, the following languages are supported:
+Error_InvalidLanguage = К сожалению, выбранный вами код языка является неверным. В настоящее время поддерживаются следующие языки:
+
+# Error_RuleNotFound = Uh-oh, I could not find the ''{0}'' rule in the search path. Could you take a look if the rule name is correct and if the rule is accessible through the search path?
+Error_RuleNotFound = Ой-ой, я не смог найти ''{0}'' правило в каталоге поиска. Не могли бы вы проверить, верно ли задано имя правила и доступно ли оно в каталоге поиска?
+
+# Error_InvalidYAMLRule = It appears that the ''{0}'' task has a YAML syntax error or an invalid field. Could you take a look at the ''{0}.yaml'' file located at ''{1}''. I tried my best to dump the error message, so here it is:
+Error_InvalidYAMLRule = Похоже, задача ''{0}'' содержит синтаксическую ошибку YAML или неверное поле. Не могли бы вы взглянуть на файл ''{0}.yaml'', расположенный в ''{1}''. Я старался изо всех сил, чтобы получить сообщение об ошибке, итак, вот оно:
+
+# Error_InvalidRule = Uh-oh, the ''{0}'' task appears to be invalid. Are you sure the ''{0}.yaml'' file located at ''{1}'' is a proper YAML file?
+Error_InvalidRule = Ой-ой, похоже, задача ''{0}'' является неверной. Вы уверены, что файл ''{0}.yaml'', расположенный в ''{1}'', является правильным YAML файлом?
+
+# Error_EmptyIdentifierRule = A problem was detected in the ''{0}'' task. The ''{0}.yaml'' file located at ''{1}'' requires a valid identifier. Could you fix it?
+Error_EmptyIdentifierRule = В задаче ''{0}'' была обнаружена проблема. В файле ''{0}.yaml'', расположенном в ''{1}'', требуется верный идентификатор. Не могли бы вы это исправить?
+
+# Error_EmptyNameRule = A problem was detected in the ''{0}'' task. The ''{0}.yaml'' file located at ''{1}'' requires a valid name. Could you fix it?
+Error_EmptyNameRule = В задаче ''{0}'' была обнаружена проблема. В файле ''{0}.yaml'', расположенном в ''{1}'', требуется верное имя. Не могли бы вы это исправить?
+
+# Error_ForbiddenIdentifierRule = Uh-oh, the ''{0}'' task (referencing the ''{0}.yaml'' file located at ''{1}'') has an invalid argument identifier. ''{2}'' is a reserved keyword, so it cannot be used. Could you use another name?
+Error_ForbiddenIdentifierRule = Ой-ой, в задаче ''{0}'' (ссылающейся на файл ''{0}.yaml'', расположенный в ''{1}'') содержится неправильный идентификатор аргумента. Идентификатор ''{2}'' является зарезервированным ключевым словом, поэтому не может быть использован. Не могли бы вы использовать другое имя?
+
+# Error_EmptyArgumentsListRule = A problem was detected in the ''{0}'' task. The ''{0}.yaml'' file located at ''{1}'' requires a valid list of arguments. Could you fix it? Note that the list of arguments can also be empty, but it is still necessary to define it explicitly (with ''arguments: []'').
+Error_EmptyArgumentsListRule = В задаче ''{0}'' была обнаружена проблема. В файле ''{0}.yaml'', расположенном в ''{1}'', требуется верный список аргументов. Не могли бы вы это исправить? Обратите внимание, что список аргументов также может быть пустым, но для этого необходимо определить его явно (с помощью ''arguments: []'').
+
+# Error_WrongIdentifierRule = Uh-oh, the ''{0}'' task (referencing the ''{0}.yaml'' file located at ''{1}'') has the wrong identifier - ''{0}'' was expected, rather than ''{2}''. Could you fix it?
+Error_WrongIdentifierRule = Ой-ой, в задаче ''{0}'' (ссылающейся на файл ''{0}.yaml'', расположенный в ''{1}'') содержится неправильный идентификатор - ''{0}'' ожидалось, а не ''{2}''. Не могли бы вы это исправить?
+
+# Error_ArgumentsNotDefinedInRule = Oh no, there are arguments used in the diretive ''{0}'' which are not defined in the ''{0}.yaml'' rule located at ''{1}''. You can either remove them from the ''{0}'' directive or add them to the list of arguments in the ''{0}.yaml'' rule. Here they are: {2}
+Error_ArgumentsNotDefinedInRule = О нет, некоторые аргументы, используемые в директиве ''{0}'', не определены в правиле ''{0}.yaml'', расположенном в ''{1}''. Вы можете или удалить их из директивы ''{0}'', или добавить в список аргументов правила ''{0}.yaml''. Вот они: {2}
+
+# Error_DefaultValueRuntimeErrorRule = I''m sorry, but the default value set for the argument ''{0}'' of the ''{1}'' task (referencing the ''{1}.yaml'' file located at ''{2}'') has an unavailable variable/method in the rule context: ''{3}''
+Error_DefaultValueRuntimeErrorRule = К сожалению, значение по умолчанию, установленное для аргумента ''{0}'' задачи ''{1}'' (ссылающейся на файл ''{1}.yaml'', расположенный в ''{2}'') имеет недоступную переменную / метод в контексте правила: ''{3}''
+
+# Error_FlagRuntimeErrorRule = I''m sorry, but the flag set for the argument ''{0}'' of the ''{1}'' task (referencing the ''{1}.yaml'' file located at ''{2}'') has an unavailable variable/method in the rule context: ''{3}''
+Error_FlagRuntimeErrorRule = К сожалению, флаг, установленный для аргумента ''{0}'' задачи ''{1}'' (ссылающейся на файл ''{1}.yaml'', расположенный в ''{2}'') имеет недоступную переменную / метод в контексте правила: ''{3}''
+
+# Error_DuplicatedCommandElementsRule = Uh-oh, both ''command'' and ''commands'' fields are set in the ''{0}'' task (referencing the ''{0}.yaml'' file located at ''{1}''). You need to pick only one of them. If your task only relies on a single command, you can opt for ''command''; if your rule requires a set of commands, maybe the ''commands'' field is more suitable.
+Error_DuplicatedCommandElementsRule = Ой-ой, оба поля ''command'' и ''commands'' установлены в задаче ''{0}'' (ссылающейся на файл ''{0}.yaml'', расположенный в ''{1}''). Вы должны выбрать только одно из них. Если ваша задача полагается только на одну команду, вы можете выбрать ''command'', если ваше правило требует набора команд, поле ''commands'' является, может быть, более подходящим.
+
+# Error_MissingCommandElementsRule = Uh-oh, the ''{0}'' task (referencing the ''{0}.yaml'' file located at ''{1}'') does not have either the ''command'' or ''commands'' elements. You need to pick only one of them. If your task only relies on a single command, you can opt for ''command''; if your rule requires a set of commands, maybe the ''commands'' field is more suitable.
+Error_MissingCommandElementsRule = Ой-ой, в задаче ''{0}'' (ссылающейся на файл ''{0}.yaml'', расположенный в ''{1}'') ни один из элементов ''command'' или ''commands'' не определен. Вы должны выбрать только один из них. Если ваша задача полагается только на одну команду, вы можете выбрать ''command'', если ваше правило требует набора команд, поле ''commands'' является, может быть, более подходящим.
+
+# Error_CommandRuntimeErrorRule = I''m sorry, but the command set for the ''{0}'' task (referencing the ''{0}.yaml'' file located at ''{1}'') has an unavailable variable/method in the rule context: ''{2}''
+Error_CommandRuntimeErrorRule = К сожалению, команда, установленная для задачи ''{0}'' (ссылающейся на файл ''{0}.yaml'', расположенный в ''{1}'') имеет недоступную переменную / метод в контексте правила: ''{2}''
+
