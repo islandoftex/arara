@@ -125,7 +125,7 @@ public class ConfigurationLoader {
         // for .sk files
         AraraFilePattern skPattern = new AraraFilePattern();
         ltxPattern.setExtension("sk");
-        ltxPattern.setPattern("^(\\s)*[%#]\\s+");
+        ltxPattern.setPattern("^(\\s)*%\\s+");
 
         // create a list of default patterns
         List<AraraFilePattern> defaultPatterns = new ArrayList<AraraFilePattern>();
