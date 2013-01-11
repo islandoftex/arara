@@ -74,6 +74,7 @@ public class LanguageController {
         languages.add(new AraraLanguage("Spanish", "es", new Locale("es")));
         languages.add(new AraraLanguage("German", "de", new Locale("de")));
         languages.add(new AraraLanguage("Turkish", "tr", new Locale("tr", "TR")));
+        languages.add(new AraraLanguage("Russian", "ru", new Locale("ru")));
 
     }
 
