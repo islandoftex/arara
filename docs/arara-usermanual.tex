@@ -154,7 +154,8 @@ Spanish translation; Mikaël Maunier, for providing the French translation; Marc
 members, for heavily testing \arara, suggesting enhancements to the manual and to the program itself,
 providing lots of contributed rules for common tasks, and also for the German version; Patrick Gundlach,
 for advertising \arara in the official Twitter channel of \href{http://www.dante.de}{Dante} -- the German
-\TeX\ User Group; Stefan Kottwitz, for encouraging me to write an article about \arara, published in the
+\TeX\ User Group; Sergey Ulyanov, for providing the Russian translation and contributed rules; Stefan Kottwitz,
+for encouraging me to write an article about \arara, published in the
 \href{http://latex-community.org/know-how/435-gnuplot-arara}{\LaTeX\ Community} forum, and also
 tweeting about it. Thank you very much. I'm sorry if I forgot to mention somebody, I really have so much
 people to thank and my memory happens to be very short.
@@ -208,7 +209,8 @@ Alan Munn & Andrew Stacey & Brent Longborough\\
 Clemens Niederberger & David Carlisle & Enrico Gregorio\\
 Francesco Endrici & Harish Kumar & \.Ilhan Polat\\
 Joseph Wright & Gonzalo Medina & Mikaël Maunier\\
-Marco Daniel & Patrick Gundlach & Stefan Kottwitz
+Marco Daniel & Patrick Gundlach & Sergey Ulyanov\\
+Stefan Kottwitz & &
 \end{tabular}}
 \end{mdframed}
 
@@ -1194,14 +1196,129 @@ symbolic link or a wrong path entry might cause trouble in the future.
 \chapter{Building from sources}
 \label{chap:buildingfromsources}
 
+\epigraph{\emph{Knowledge brings fear.}}{From a \emph{Futurama} episode}
+
+Although \arara already features a self-contained, batteries-included executable Java archive file, an |.exe| wrapper, and a cross-platform
+installer, you can easily build it from sources. The only requirements are a working Java Development Kit~\cite{oracle:2012}
+and the Apache Maven software project management~\cite{maven:2012}. The next sections will cover the entire process, 
+from obtaining the sources to the build itself. Sadly, this manual doesn't cover Java and Maven deployments, so I kindly ask you
+to check their websites and read the available documentation.
+
 \section{Obtaining the sources}
 \label{sec:obtainingthesources}
+
+First of all, we need to get the source code, available in the project repository hosted on \href{https://github.com/cereda/arara}{GitHub}.
+We have two options on how to obtain the sources: either by clicking the \href{https://github.com/cereda/arara/archive/master.zip}{Zip} button in the project page and download a snapshot
+of the whole structure in an archive file, or by using |git| and clone the repository into our machine. The second option is easily done by executing the command presented in Code~\ref{code:gitobtain}, provided of course that you have |git|  installed.
+
+\begin{code}[htbp]
+\caption{Cloning the project repository.}
+\label{code:gitobtain}
+\begin{bash}
+$ git clone git://github.com/cereda/arara.git
+\end{bash}
+\end{code}
+
+After cloning the project repository (Code~\ref{code:gitobtain}), a new subdirectory named |arara| is created in the current directory
+with the project structure -- the very same available in the project repository on GitHub. The application source code is inside
+|arara/arara|. Note that there are other source codes for the cross-platform installer and the |.exe| wrapper, as well as the predefined
+rules, each one in a subdirectory of its own.
+
+If you opted for downloading the archive file, you'll have a file named |arara-master.zip| generated automatically by GitHub.
+Just extract the file somewhere in your computer and you'll end up with the very same project structure as the one available in the
+project repository.
 
 \section{Building \texorpdfstring{\arara}{arara}}
 \label{sec:buildingarara}
 
+Inside the |arara/arara| directory, we have the most important file for building \arara: a file named |pom.xml|. We now just need to
+call the |mvn| command with the proper target and relax while Maven takes care of the building process for us. First of all, let's take
+a look at some targets available in our |pom.xml| file: 
+
+\begin{ruleoptions}
+\item[compile] This target compiles the source code, generating the Java bytecode.
+\item[package] The |package| target is very similar to the |compile| one, but instead of only compiling the source code, it also
+packs the Java bytecode into an executable Java archive file without dependencies. The file will be available inside the
+|arara/arara/target| directory.
+\item[assembly:assembly] This target is almost identical to the |package| one, but it also includes all the dependencies into a
+final Java archive file. The file will be available inside the |arara/arara/target| directory. This is of course our preferred target,
+since \arara is shipped as a self-contained executable Java archive file.
+\item[clean] The |clean| target removes all the generated Java bytecode and deployment traces, cleaning the project structure.
+\end{ruleoptions}
+
+Now that we know the targets, we only need to call |mvn| with the target we want. If you want to generate the very same Java archive file
+we use for releases, execute the command presented in Code~\ref{code:mvnassembly}.
+
+\begin{code}[htbp]
+\caption{Building \arara with Maven, first attempt.}
+\label{code:mvnassembly}
+\begin{bash}
+$ mvn assembly:assembly
+\end{bash}
+\end{code}
+
+Actually, the command presented in Code~\ref{code:mvnassembly}, as the project structure is at the moment, will fail! Let me explain
+why: the application is not yet linked with the localized messages, so we need to convert our translation files into a correct format and
+then run the target in Maven. The error message after running |mvn assembly:assembly| presented in Code~\ref{code:errorlangnotfound}
+gives us a hint on what we should do.
+
+\begin{code}[htbp]
+\caption{The Maven error message about missing localization files.}
+\label{code:errorlangnotfound}
+\begin{bash}
+Failed tests: testLocalizationFile(com.github.arara.AraraTest):
+arara requires at least the default localization file
+Messages.properties located at the translations/ directory in
+the project repository. Rename Messages.input to
+Messages.properties and copy the new file to the src/
+directory, under com/github/arara/localization, and build
+arara again.
+
+Tests run: 1, Failures: 1, Errors: 0, Skipped: 0
+
+[INFO] ---------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ---------------------------------------------
+\end{bash}
+\end{code}
+
+Let's go into |arara/translations| and run the commands presented in Code~\ref{code:convertinglocales}. Since we are dealing with
+languages that require an encoding in UTF-8 while the localization files are set in ASCII, we need to run a conversion program in
+order to generate valid |.properties|  files.
+
+\begin{code}[htbp]
+\caption{Converting the localization files.}
+\label{code:convertinglocales}
+\begin{bash}
+$ native2ascii -encoding utf8 Messages.input ../application/src/main/resources/com/github/arara/localization/Messages.properties
+$ native2ascii -encoding utf8 Messages_de.input ../application/src/main/resources/com/github/arara/localization/Messages_de.properties
+$ native2ascii -encoding utf8 Messages_es.input ../application/src/main/resources/com/github/arara/localization/Messages_es.properties
+$ native2ascii -encoding utf8 Messages_fr.input ../application/src/main/resources/com/github/arara/localization/Messages_fr.properties
+$ native2ascii -encoding utf8 Messages_it.input ../application/src/main/resources/com/github/arara/localization/Messages_it.properties
+$ native2ascii -encoding utf8 Messages_pt_BR.input ../application/src/main/resources/com/github/arara/localization/Messages_pt_BR.properties
+$ native2ascii -encoding utf8 Messages_ru.input ../application/src/main/resources/com/github/arara/localization/Messages_ru.properties
+$ native2ascii -encoding utf8 Messages_tr.input ../application/src/main/resources/com/github/arara/localization/Messages_tr.properties
+\end{bash}
+\end{code}
+
+Now we can simply rerun the command presented in Code~\ref{code:mvnassembly}. Hopefully, we won't have trouble this time.
+Relax while Maven takes care of the building process. It might take a while, since all dependencies will be downloaded to your Maven repository. After a while, Maven will tell us that the project was built successfully!
+
+After a successful build via Maven, we can now get the generated executable Java archive file |arara-3.0-with-dependencies.jar| which is inside the |arara/arara/target| directory, rename it to |arara.jar| and use it as we have seen in the previous chapters.
+
 \section{Notes on the installer and wrapper}
 \label{sec:notesontheinstallerandwrapper}
+
+The project directory has additional subdirectories regarding the \arara cross-platform installer and the |.exe| wrapper. It's important to
+observe that only the build files are available, which means that you need to review the compilation process and make adjustments
+according to your directory structure. 
+
+The cross-platform installer Java archive file is generated with IzPack~\cite{izpack:2001}, while the |.exe| wrapper is built with
+Launch4J~\cite{launch4j:2005}. Both build files are written in plain XML, so you can easily adapt them to your needs. Sadly, the main
+purpose of this chapter is to cover the build process of \arara itself and not its helper tools; if you want to generate your own wrapper
+or installer, please refer to the available documentation on how to build each file. The build process is also very straightforward.
+
+\printbibliography[heading=subbibliography]
 
 \chapter{IDE integration}
 \label{chap:ideintegration}

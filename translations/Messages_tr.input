@@ -109,8 +109,8 @@ Header_AllRightsReserved = Tüm hakları saklıdır.
 # Msg_NoDirectivesFound = I didn''t find any directives in ''{0}'', and so didn''t do anything. Is that what you really wanted?
 Msg_NoDirectivesFound = Ben ''{0}'' dosyasında hiçbir yönerge bulamadım, nedenle bir şey yapmadım. Gerçekten istediğin bu mu?
 
-# Msg_SpecialThanks = A special thanks goes to Alan Munn, Andrew Stacey, Brent Longborough, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Gonzalo Medina, Harish Kumar, İlhan Polat, Joseph Wright, Marco Daniel, Mikaël Maunier, Patrick Gundlach, Rasmus Roulund, Stefan Kottwitz, and many others for making this humble tool possible.
-Msg_SpecialThanks = Alan Munn, Andrew Stacey, Brent Longborough, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Gonzalo Medina, Harish Kumar, İlhan Polat, Joseph Wright, Marco Daniel, Mikaël Maunier, Patrick Gundlach, Rasmus Roulund, Stefan Kottwitz, ve diğerlerine bu mütevazi aracı mümkün kıldıkları için çok teşekkürler.
+# Msg_SpecialThanks = A special thanks goes to Alan Munn, Andrew Stacey, Brent Longborough, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Gonzalo Medina, Harish Kumar, İlhan Polat, Joseph Wright, Marco Daniel, Mikaël Maunier, Patrick Gundlach, Rasmus Roulund, Sergey Ulyanov, Stefan Kottwitz, and many others for making this humble tool possible.
+Msg_SpecialThanks = Alan Munn, Andrew Stacey, Brent Longborough, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Gonzalo Medina, Harish Kumar, İlhan Polat, Joseph Wright, Marco Daniel, Mikaël Maunier, Patrick Gundlach, Rasmus Roulund, Sergey Ulyanov, Stefan Kottwitz, ve diğerlerine bu mütevazi aracı mümkün kıldıkları için çok teşekkürler.
 
 # Msg_RunningCommand = Running {0}...
 Msg_RunningCommand = {0} yerine getiriliyor...

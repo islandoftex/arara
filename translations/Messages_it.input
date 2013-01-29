@@ -107,8 +107,8 @@ Header_AllRightsReserved = Tutti i diritti riservati.
 # Msg_NoDirectivesFound = I didn''t find any directives in ''{0}'', and so didn''t do anything. Is that what you really wanted?
 Msg_NoDirectivesFound = Non ho trovato direttive in ''{0}'', così non ho fatto niente. È proprio quello che volevi?
 
-# Msg_SpecialThanks = A special thanks goes to Alan Munn, Andrew Stacey, Brent Longborough, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Gonzalo Medina, Harish Kumar, İlhan Polat, Joseph Wright, Marco Daniel, Mikaël Maunier, Patrick Gundlach, Rasmus Roulund, Stefan Kottwitz, and many others for making this humble tool possible.
-Msg_SpecialThanks = Un ringraziamento speciale va a Alan Munn, Andrew Stacey, Brent Longborough, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Gonzalo Medina, Harish Kumar, İlhan Polat, Joseph Wright, Marco Daniel, Mikaël Maunier, Patrick Gundlach, Rasmus Roulund, Stefan Kottwitz e molti altri che hanno reso possibile la realizzazione di questo umile strumento.
+# Msg_SpecialThanks = A special thanks goes to Alan Munn, Andrew Stacey, Brent Longborough, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Gonzalo Medina, Harish Kumar, İlhan Polat, Joseph Wright, Marco Daniel, Mikaël Maunier, Patrick Gundlach, Rasmus Roulund, Sergey Ulyanov, Stefan Kottwitz, and many others for making this humble tool possible.
+Msg_SpecialThanks = Un ringraziamento speciale va a Alan Munn, Andrew Stacey, Brent Longborough, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Gonzalo Medina, Harish Kumar, İlhan Polat, Joseph Wright, Marco Daniel, Mikaël Maunier, Patrick Gundlach, Rasmus Roulund, Sergey Ulyanov, Stefan Kottwitz e molti altri che hanno reso possibile la realizzazione di questo umile strumento.
 
 # Msg_RunningCommand = Running {0}...
 Msg_RunningCommand = Sto eseguendo {0}...
