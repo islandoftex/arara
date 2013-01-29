@@ -641,7 +641,7 @@ in Section~\ref{sec:functions}.
 
 From version 3.0 on, \arara can now display localized messages. The default language is set to English, but the user can
 receive feedback from the execution process and logging in other languages as well, such as Brazilian Portuguese, German,
-Italian, French, Spanish and Turkish. There's also a way to redefine the default language by adding an entry in the configuration
+Italian, French, Spanish, Russian and Turkish. There's also a way to redefine the default language by adding an entry in the configuration
 file, discussed later on in Section~\ref{sec:language}.
 
 Speaking of which, \arara has now an optional configuration file in which we can add rule paths, set the default language and
@@ -1323,40 +1323,529 @@ or installer, please refer to the available documentation on how to build each f
 \chapter{IDE integration}
 \label{chap:ideintegration}
 
-\section{TeXworks}
-\section{TeXnic Center}
+\epigraph{\emph{The answer to ``can Emacs\ldots'' is always ``yes''.}}{David Carlisle}
+
+This chapter covers the integration of \arara with several integrated development environments. For obvious reasons, it's almost
+impossible for us to cover the full range of editors available nowadays, so we tried to focus only on a couple of them. If you use
+\arara with an IDE other than the ones listed here, please let us know! It would be great to include your contribution in this user
+manual.
+
+\section{\texorpdfstring{\TeX works}{TeXworks}}
+\label{sex:texworks}
+
+\arara can be easily integrated with \TeX works~\cite{texworks:2009}, an environment for authoring \TeX\ documents shipped
+with both \TeX\ Live and MiK\TeX. In this section, we will learn how to integrate \arara and this cross-platform \TeX\ front-end
+program.
+
+First of all, make sure \arara is properly installed in your operating system. Thankfully, it's very easy to add a new tool in \TeX works,
+just open the program and click in \textit{Edit} $\rightarrow$ \textit{Preferences\ldots} to open the preferences screen (Figure~\ref{fig:texworkspref}).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.5]{figures/texworks-prefs.png}
+\caption{Opening the preferences screen in \TeX works.}
+\label{fig:texworkspref}
+\end{figure}
+
+The next screen is the \TeX works preferences (Figure~\ref{fig:texworksprefscreen}). There are several tabs available. Navigate to the
+\textit{Typesetting} tab, which contains two lists: the paths for \TeX\ and related programs, and the processing tools. In the second
+list -- the processing tools -- click the \textit{Plus (+)} button to add another tool.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.5]{figures/texworks-add.png}
+\caption{The \TeX works preferences screen.}
+\label{fig:texworksprefscreen}
+\end{figure}
+
+We are now in the new tool screen (Figure~\ref{fig:texworksarara}). \TeX works provides an very straightforward interface for adding
+new tools; we just need to provide the tool name, the executable path, and the parameters. Table~\ref{tab:texworksarara} helps us on
+what to type in each field. When done, just click \textit{OK} and our new tool will be available.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.5]{figures/texworks-arara.png}
+\caption{The new tool screen.}
+\label{fig:texworksarara}
+\end{figure}
+
+{\renewcommand{\arraystretch}{1.5}
+\begin{table}[htbp]
+\centering
+\footnotesize
+\begin{tabular}{p{0.15\textwidth}p{0.25\textwidth}p{0.50\textwidth}}
+\hline
+\textbf{Field name} & \textbf{Value} & \textbf{Description}                   \\
+\hline
+\hline
+Name & |arara| & The tool name. You can actually type whatever name your heart 
+desires. This value will be displayed in the compilation profile.             \\
+\hline
+Program & |$ARARA_HOME/arara| & The full executable path. Just browse the 
+filesystem and select the correct \arara path. Observe that symbolic links are 
+resolved to their full targets. For Windows, select the |.exe| wrapper; for 
+Unix, select the bash script.                                                 \\
+\hline
+Arguments & {\renewcommand{\arraystretch}{1}
+\begin{tabular}[t]{l}
+|$fullname|\\
+|--verbose|\\
+|--log|
+\end{tabular}} & The tool arguments. Note that you need to type one argument at 
+a time, by clicking the \textit{Plus (+)} button. The first argument is a 
+\TeX works variable which will expand to the current filename. The second and
+third arguments are \arara flags, discussed later, in 
+Chapter~\ref{chap:runningarara}.                                            \\
+\hline
+\end{tabular}
+\caption{Configuring \arara in \TeX works.}
+\label{tab:texworksarara}
+\end{table}}
+
+We are now back to the preferences screen (Figure~\ref{fig:texworksprefscreen}). Hopefully, \arara is in the list of processing tools.
+Just click \textit{OK} to confirm the new addition. Congratulations, now \arara is available as a compilation profile in \TeX works
+(Figure~\ref{fig:texworksprofile}).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.5]{figures/texworks-profile.png}
+\caption{Using \arara in the \TeX works compilation profile.}
+\label{fig:texworksprofile}
+\end{figure}
+
+And we are done, \arara is now integrated with \TeX works! Just make sure to select the correct profile when running the compilation
+process.
+
+\section{\texorpdfstring{\TeX nic Center}{TeXnic Center}}
 \section{Kile}
-\section{TeXmaker}
-\section{TeXstudio}
+\section{\texorpdfstring{\TeX maker}{TeXmaker}}
+\section{\texorpdfstring{\TeX studio}{TeXstudio}}
 \section{WinEdt}
 \section{Inlage}
-\section{TeXShop}
+\section{\texorpdfstring{\TeX Shop}{TeXShop}}
+
+\printbibliography[heading=subbibliography]
 
 \chapter{Important concepts}
 \label{chap:importantconcepts}
 
+\epigraph{\emph{Beware of bugs in the above code; I have only proved it correct, not tried it.}}{Donald Knuth}
+
+Time for our first contact with \arara! It's important to understand a few concepts in which \arara relies before we proceed
+to the usage itself. Do not worry, these concepts are easy to follow, yet they are vital to the comprehension of the application
+and the logic behind it.
+
 \section{Rules}
 \label{sec:rules}
+
+Do you remember |mydoc.tex| from Code~\ref{code:hellolatex} in page~\pageref{code:hellolatex}? When we tried to mimic |rubber| and
+run |arara mydoc|, nothing happened. We should tell \arara how it should handle this execution. Let's start with the rules.
+
+A \emph{rule} is a formal description of how \arara should handle a certain task. For example, if we want to use |pdflatex| with
+\arara, we should have a rule for that. Once a rule is defined, \arara automatically provides an access layer to that rule through
+directives, a concept to be introduced in Section~\ref{sec:directives}.
+
+A rule is a plain text file written in the YAML format~\cite{yaml:2001}. I opted for this format because it's cleaner and more intuitive to
+use than other markup languages, besides of course being a data serialization standard for all programming languages. As a bonus, the
+acronym \emph{YAML} rhymes with the word \emph{camel}, so \arara is heavily environmentally friendly\footnote{Perl, I'm looking at you.}.
+
+The default rules, that is, the rules shipped with \arara, are placed inside a special subdirectory named |rules/| inside |ARARA_HOME|. We will learn in
+Section~\ref{sec:searchpaths} that we can add an arbitrary number of paths for storing our own rules, in order of priority, so don't worry
+with the location of the default rules, although it's important to understand and acknowledge their existance.  The basic structure of an
+\arara rule is presented in Code~\ref{code:yamlrule}.
+
+\begin{code}[htbp]
+\caption{\mycmd{makefoo.yaml}, a basic structure of an \arara rule.}
+\label{code:yamlrule}
+\begin{yaml}
+!config
+# I am a comment
+identifier: makefoo
+name: MakeFoo
+command: makefoo @{file}
+arguments: []
+\end{yaml}
+\end{code}
+
+The |!config| keyword (line 1) is mandatory and it must be the first line of any \arara rule. Note that the format also accepts
+comments (line 2) by simply starting a line with the |#| symbol. The following keys are defined:
+
+\begin{ruleoptions}
+\item[identifier] This key (line 3) acts as a unique identifier for the rule. It's highly recommended to use lowercase letters without
+spaces, accents or punctuation symbols. As a convention, if you have an identifier named |makefoo|, the rule filename must
+be |makefoo.yaml|.
+\item[name] The |name| key (line 4) holds the name of the task. When running \arara, this value will be displayed in the output.
+In our example, \arara will display |Running MakeFoo| in the output when dealing with this task.
+\item[command] This key (line 5) contains the system command to be executed. You can use virtually any type of command,
+interactive or noninteractive. But beware: if \arara is running in silent mode, which is the default behaviour, an 
+interactive command wich might require the user input will be halted and the execution will fail. Don't despair, you can use a
+special |--verbose| flag with \arara in order to interact with such commands -- we will talk about flags in 
+Chapter~\ref{chap:runningarara}. There are cases in which you might want to have a list of commands instead of a single one;
+\arara has support for multiple commands inside one rule, we just need to replace |command| by |commands|  and provide
+a list of commands to be executed, as seen in Code~\ref{code:excommands}.
+You probably noticed a strange element |@{file}| in the |command| line: this element is called \emph{orb tag}. For now, just admit these elements exist. We will come back to them later on, in Section~\ref{sec:orbtags}, I promise.
+\item[arguments] The |arguments| key (line 6) denotes a list of arguments for the rule command. In our example, we have an empty list,
+denoted as |[]|. You can define as many arguments as your command requires. Please check Code~\ref{code:makebar} for an example of a list of arguments.
+\end{ruleoptions}
+
+There are cases in which we need to run more than just one command for a certain rule. Take, for example, the |frontespizio| rule
+released with \arara: when using the |frontespizio|  package\footnote{\url{http://ctan.org/pkg/frontespizio}, written by Enrico Gregorio.},
+the document has to processed by the choosen engine, say |pdflatex|, no less than three times; if |latex| is used, there's an additional
+run of |dvips|. In that case, the logic is enclosed inside the rule, so there's no need to write every compilation step as required by the
+package as directives in the source code; a simple call to |frontespizio| is enough to generate the proper results.
+
+If you need to run more than one command inside a rule, replace the |command| identifier by |commands| and add one command per line,
+preceeded by |-| to indicate an item in the list. Code~\ref{code:excommands} presents a sample |makefoobar| rule which runs the
+|makefoo| program two times, followed by one run of the |makebar| program.
+
+\begin{code}[htbp]
+\caption{\mycmd{makefoobar.yaml}, an \arara rule with multiple commands.}
+\label{code:excommands}
+\begin{yaml}
+!config
+identifier: makefoobar
+name: MakeFooBar
+commands:
+- makefoo @{file}
+- makefoo @{file}
+- makebar @{file}
+arguments: []
+\end{yaml}
+\end{code}
+
+For more complex rules, we might want to use arguments. Code~\ref{code:makebar} presents a new rule which makes use of them
+instead of an empty list as we saw in Code~\ref{code:yamlrule}.
+
+\begin{code}[htbp]
+\caption{\mycmd{makebar.yaml}, a rule with arguments.}
+\label{code:makebar}
+\begin{yaml}
+!config
+identifier: makebar
+name: MakeBar
+command: makebar @{one} @{two} @{file}
+arguments:
+- identifier: one
+   flag: -i @{parameters.one}
+- identifier: two
+   flag: -j @{parameters.two}
+\end{yaml}
+\end{code}
+
+For every argument in the |arguments| list, we have a |-| mark and the proper indentation. The required keys for an argument are:
+
+\begin{ruleoptions}
+\item[identifier] This key (lines 6 and 8) acts as a unique identifier for the  argument. It's highly recommended to use lowercase letters
+without spaces, accents or punctuation symbols.
+\item[flag] The |flag| key (lines 7 and 9) represents the argument value. Note that we have other orb tags in the arguments definitions,
+|@{parameters.one}| and |@{parameters.two}|; we will discuss them later on, in Section~\ref{sec:orbtags}. Just to give some context,
+|parameters| is a special keyword which maps the elements available in the directives. For example, if we have |one: 1| in a directive,
+|parameters.one| will resolve to |1|. The argument |flag| value is only triggered, that is, resolved, if and only if there's an explicit directive argument. Say, if |one| is not defined as a directive argument, the |flag| value of the argument |one| will be resolved to an empty string. There's a way of overriding the default empty string value when a directive argument is not specified, which is done by using the |default| key.
+By the way, the |flag| key is not really mandatory, but for most of the rules, you'll need it. At least one of the |flag| and |default| keys is
+mandatory.
+\end{ruleoptions}
+
+If we need to set a default value other than an empty string to a rule argument, we can use the |default| key. When a rule argument just needs
+a default value, you can safely ignore the |flag| key and rely on the |default| key. If you need to map a directive argument into a rule argument
+without falling back to a default value different than an empty string, just use the |flag| key. Now, if you need mapping and fallback,
+stick with both keys.
+
+For now, we need to keep in mind that \arara uses rules to tell it how to do a certain task. In the next sections, when more concepts are
+presented, we will come back to this subject. Just a taste of things to come, as we mentioned before already: directives are mapped to rules through orb tags. Don't worry, I'll explain how things work.
 
 \section{Directives}
 \label{sec:directives}
 
+A \emph{directive} is a special comment inserted in the |.tex| file in which you indicate how \arara should behave. You can
+insert as many directives as you want, and in any position of the |.tex| file. \arara will read the whole file and extract the directives.
+A directive should be placed in a line of its own, in the form |% arara: <directive>| -- actually, we will see in Section~\ref{sec:filepatterns}
+that the prefix search can be altered. There are two types of directives:
+
+\begin{description}
+\item[empty directive]  An empty directive, as the name indicates, has only the rule identifier, as we seen in Section~\ref{sec:rules}.
+Lines 1 and 3 of Code~\ref{code:directiveslatex} show an example of empty directives. Note that you can suppress arguments
+(line 3 in contrast to line 2), but we will see that \arara assumes that you know exactly what you are doing. The syntax for an empty 
+directive is |% arara: makefoo|.
+\item[parametrized directive] A parametrized directive has the rule identifier followed by its arguments. Line 2 of Code~\ref{code:directiveslatex} shows an 
+example of a parametrized directive. It's very important to mention that the arguments are mapped by their identifiers and not by
+their positions. The syntax for a parametrized directive is |% arara: makefoo: { arglist }|. The argument is in the form |arg: value|; a
+list of arguments and their respective values is separated by comma.
+\end{description}
+
+\begin{code}[htbp]
+\caption{Example of directives in a .tex file.}
+\label{code:directiveslatex}
+\begin{latex}
+%% (*@@*)arara: makefoo
+%% (*@@*)arara: makebar: { one: hello, two: bye }
+%% (*@@*)arara: makebar
+\documentclass{article}
+...
+\end{latex}
+\end{code}
+
+The arguments are defined according to the rule mapped by the directive. For example, the rule |makebar| (Code~\ref{code:makebar})
+has a list of two arguments, |one| and |two|. So you can safely write |makebar: { one: hello }|, but trying to map a nonexisting argument
+with |makebar: { three: hi }| will raise an error.
+
+If you want to disable an \arara directive, there's no need of removing it from the |.tex| file. Simply replace |% arara:| by |% !arara:| and
+this directive will be ignored. \arara always look for a line that, after removing the leading and trailing spaces, starts with a comment |%|
+and has the keyword |arara:| in it. In Section~\ref{sec:filepatterns}, we will learn how to override this search pattern, but the |arara:|
+keyword is always immutable.
+
+Directives are mapped to rules. In Section~\ref{sec:orbtags} we will learn about orb tags and then revisit rules and directives. I hope the concepts will be clearer since we will understand what an orb tag is and how it works. How about a nice cup of coffee?
+
 \section{Orb tags}
 \label{sec:orbtags}
+
+When I was planning the mapping scheme, I opted for a templating mechanism. I was looking for flexibility, and the powerful 
+\href{http://mvel.codehaus.org}{MVEL} expression language~\cite{mvel:2012} was perfect for the job. I could extend my mapping
+plans by using orb tags. An \emph{orb tag} consists of a |@| character followed by braces |{...}| which contain regular MVEL expressions.
+In particular, \arara uses the |@{}| expression orb, which contains a value expression which will be evaluated to a string, and 
+appended to the output template. For example, the following template |Hello, my name is @{name}| with the |name| variable resolving
+to |Paulo| will be expanded to the string |Hello, my name is Paulo|. Cool, isn't it? Code~\ref{code:exorbtags} presents a few examples
+on how orb tags are expanded.
+
+\begin{code}[htbp]
+\caption{A few examples on how orb tags are expanded.}
+\label{code:exorbtags}
+\begin{bash}
+# always consider: name = Paulo
+
+In[1]: Hello, my name is @{name}.
+Out[1]: Hello, my name is Paulo.
+
+In[2]: @{name == "Paulo"}
+Out[2]: true
+
+In[3]: @{name.toUpperCase()}
+Out[3]: PAULO
+
+In[4]: Hello, I am @{name == "Paulo" ? "John" : "Mary"}.
+Out[4]: Hello, I am John.
+\end{bash}
+\end{code}
+
+In the first example of Code~\ref{code:exorbtags}, |@{name}| simply indicates the expansion of the variable into its value, so the output is a
+concatenation of the text with the variable value. The second example is a conditional test, that is, whether the |name|  variable has its
+value equals to |Paulo|; the result of this evaluation is then expanded, which is |true|. The third example presents a more complex construction: since |name| holds a string, MVEL resolves this variable to a |String| object and automatically all methods from the |String| class in Java are available to the variable, so the method |toUpperCase()| is called in order to make all characters in the string to be capitalized, and the output is presented. The fourth and last example presents a ternary operation, which starts with a conditional to be evaluated; if this test evaluates to true, the first string is printed, with the second string being printed in case the test is false.
+
+When mapping rules, every command argument will be mapped to the form |@{identifier}| with value equals to the content of the |flag| key.
+The |@{identifier}| orb tag might hold the value of the |default| key instead, if the key is defined and there were no directive parameters
+referring to |identifier|. There are three reserved orb tags, |@{file}|, |@{item}| and |@{parameters}| -- actually, that's not true, there's a
+fourth reserved orb tag which plays a very special role in \arara \ -- |@{SystemUtils}| -- but we will talk about it later on. The |@{file}|
+orb tag refers to the filename argument passed to \arara. The |@{file}| value can be overriden, but we will discuss it later. The second
+reserved orb tag |@{item}| refers to a list of items, in case the rule might use some sort of list iteration, discussed later on. The
+third reserved orb tag |@{parameters}| is a map which can expand to the argument value passed in the directive. If you have |makebar: { one: hello }|, the |flag| key of argument |one| will be expanded from the original definition |-i @{parameters.one}| to |-i hello|. Now |@{one}| contains the expanded |flag| value, which is |-i hello|. All arguments tags are expanded in the rule command. If one of them is not defined in the directive, \arara will admit an empty value, so the |command| flag will be expanded to |makebar -i hello mydoc|, unless of course the current argument doesn't have a |default| elements in its definition. The whole procedure is summarized as follows:
+
+\begin{enumerate}
+\item \arara processes a file named |mydoc.tex|.
+\item A directive |makebar: { one: hello }| is found, so \arara will look up the rule |makebar.yaml| (Code~\ref{code:makebar}) inside the default rules directory. 
+\item The argument |one| is defined and has value |hello|, so the corresponding |flag| key will have the orb tag |@{parameters.one}| expanded to |hello|. The new value is now added to the template referenced by the |command| key and then |@{one}| is 
+expanded to |-i hello|.
+\item The argument |two| is not defined, so the template referenced by the |command| key has |@{two}| expanded to an empty string, since there's no |default| key in the argument definition.
+\item There are no more arguments, so the template referenced by the |command| key now expands |@{file}| to |mydoc|.
+\item The final command is now |makebar -i hello mydoc|.
+\end{enumerate}
+
+There's a reserved directive key named |files|, which is in fact a list. In case you want to override the default value of the |@{file}| orb tag, use the |files| key,
+like |makebar: { files: [ thedoc.tex ] }|. This will result in |makebar thedoc.tex| instead of |makebar mydoc.tex|. The very same concept applies
+to the other reserved directive key named |items|, which is also a list, and the expansion happens in the |@{item}| orb tag.
+
+If you provide more than one element in the list, \arara will replicate the directive for every file found, so  |makebar: { files: [ a, b, c ] }| will 
+result in three commands: |makebar a|, |makebar b| and |makebar c|. If you happen to have a rule which makes use of both |files|  and
+|items| in the directive, you'll end up with a cartesian product of those two lists.
+
+\printbibliography[heading=subbibliography]
 
 \chapter{Configuration file}
 \label{chap:configurationfile}
 
+\epigraph{\emph{An algorithm must be seen to be believed.}}{Donald Knuth}
+
+\arara has support for an optional configuration file in order to enhance and override some settings of the application without the need of delving into the source code. The optional configuration file has to reside inside the user home directory, which is usually |C:\Users\Username| for Windows Vista and superior, or |~/username| for the Unix world, under the name |araraconfig.yaml|. \arara always looks for a configuration file during every execution. In fact, |araraconfig.yaml| is just a plain text file written in the YAML format, starting with the |!config| line and at with least one of the three settings presented in the following sections. The order doesn't matter, as long as they are consistent.
+
 \section{Search paths}
 \label{sec:searchpaths}
+
+When looking for rules, \arara always searches the default rule path located at |ARARA_HOME/rules|; if no rule is found, the execution
+halts with an error. It's not wise to mess with the default rule path, so we use the configuration file to add search paths, that is, a list of
+directories in which \arara should look for rules. An example of a new search path is presented in Code~\ref{code:searchone}.
+
+\begin{code}[htbp]
+\caption{An example of a new search path for the configuration file.}
+\label{code:searchone}
+\begin{yaml}
+!config
+paths:
+- /home/paulo/rules
+\end{yaml}
+\end{code}
+
+According to Code~\ref{code:searchone}, from now on, \arara will look for rules first in the |/home/paulo/rules|; if the rule is not found,
+then the search falls back to the default search path located at |ARARA_HOME/rules|. We can even add an arbitrary number of paths, as seen in Code~\ref{code:searchtwo}.
+
+\begin{code}[htbp]
+\caption{An arbitrary number of paths added in the configuration file.}
+\label{code:searchtwo}
+\begin{yaml}
+!config
+paths:
+- /home/paulo/rules
+- /opt/arara/rules
+- /home/paulo/myrules
+\end{yaml}
+\end{code}
+
+The items order defines the search priority. \arara also features a special orb tag for search paths named |@{userhome}| which maps the variable to the user home directory, for example, |/home/paulo|, according to your operating system. But before we proceed, a word on the YAML format.
+
+Sadly, we can't start values with |@| because this symbol is reserved for future use in the YAML format. For example, |foo: @bar| is an invalid YAML format, so the correct usage is to enclose it in quotes: |foo: '@bar'| or |foo: "@bar"|. We also need to enclose our strings with quotes in \arara, but now we can save them by simply adding the |<arara>| prefix to the value. In other words, |foo: <arara > @bar| is correctly parsed; when that keyword in that specific position is found, \arara removes it. That means that the orb tag presented in Code~\ref{code:searchthree} will be correctly parsed.
+
+\begin{code}[htbp]
+\caption{Using the special orb tag for mapping the home directory in the configuration file.}
+\label{code:searchthree}
+\begin{yaml}
+!config
+- '@{userhome}/rules'
+- /opt/arara/rules
+- <arara> @{userhome}/myrules
+\end{yaml}
+\end{code}
+
+It's important to observe that the |<arara>| prefix is also valid in the rules context, presented in Section~\ref{sec:rules}. The idea of using this prefix is to actually ease the writing of rules that involve quoting without the need of escaping all internal quotes or even alternating between single and double quotes. It's also a way of writing cleaner rules.
 
 \section{Language}
 \label{sec:language}
 
+\arara currently features localized messages in English, French, Italian, German, Brazilian Portuguese, Russian and Turkish. The default language fallback is English, but we can easily change the language by adding |language: <code>| to the configuration file, as seen in Code~\ref{code:conflang}. The list of languages and codes is presented in Table~\ref{tab:langcodeconf}.
+
+\begin{code}[htbp]
+\caption{Changing the language in the configuration file.}
+\label{code:conflang}
+\begin{yaml}
+!config
+language: en
+\end{yaml}
+\end{code}
+
+\begin{table}[htbp]
+\centering
+\caption{Languages and codes.}
+\label{tab:langcodeconf}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{lr}
+\hline
+\textbf{Language} & \textbf{Code}                       \\
+\hline
+\hline
+English & |en| \\
+Brazilian Portuguese & |ptbr| \\
+Italian & |it| \\
+German & |de| \\
+French & |fr| \\
+Russian & |ru| \\
+Turkish & |tr|
+\end{tabular}
+\end{table}
+
+There's also a |--language| command line flag which has a higher priority, so it overrides the configuration file setting, if any. Beware of the terminal you use; the Windows command prompt has serious troubles in understanding UTF-8. You probably won't run into problems with the applications shipped in Mac or Linux.
+
 \section{File patterns}
 \label{sec:filepatterns}
 
+\arara accepts the following filetypes: |tex|, |dtx| and |ltx|. If no file extension is provided in the command line, for example, calling |arara mydoc| instead of |arara mydoc.tex|, the application will automatically look for files that match the filetypes in that specific order, that is, |mydoc.tex|, |mydoc.dtx| and |mydoc.ltx|. Let's say we want to change the order by promoting |dtx| to the first match; we can easily achieve that by rearranging the items of the list of filetypes in the configuration file according to Code~\ref{code:itemsconf}.
+
+\begin{code}[htbp]
+\caption{Rearranging the list of filetypes in the configuration file.}
+\label{code:itemsconf}
+\begin{yaml}
+!config
+filetypes:
+- extension: dtx
+- extension: tex
+- extension: ltx
+\end{yaml}
+\end{code}
+
+The |filetypes| key in the configuration file is actually way more powerful than the example shown in Code~\ref{code:itemsconf}. Before
+we continue, let's start with some basics. Consider the three directives presented in Code~\ref{code:confdirectives}.
+
+\begin{code}[htbp]
+\caption{Three directives with different formatting patterns.}
+\label{code:confdirectives}
+\begin{latex}
+% (*@@*)arara: foo
+    % (*@@*)arara: foo
+% (*@@*)       arara: foo
+\documentclass{book}
+...
+\end{latex}
+\end{code}
+
+The default setting for \arara is to recognize the three directives shown in Code~\ref{code:confdirectives}. In other words, the search pattern for all the three extensions is |^(\\s)*%\\s+| plus |arara:\\s| which is immutable, of course. Let’s say that, for the |dtx| format, you want
+\arara to look for directives that have no spaces in the beginning of the line, that is, the line must start with only one percentage sign followed by at least one space and the default prefix. We can easily achieve such requirement by adding a |pattern| element to our list, as presented in Code~\ref{code:confdirectivessearch}.
+
+\begin{code}[htbp]
+\caption{Changing the search pattern for \mycmd{.dtx} files.}
+\label{code:confdirectivessearch}
+\begin{yaml}
+!config
+!config filetypes:
+- extension: dtx
+   pattern: ^%\\s+
+- extension: tex
+- extension: ltx
+\end{yaml}
+\end{code}
+
+Now, only the first directive of Code~\ref{code:confdirectives} is recognized, if the analyzed file has the |.dtx| extension. All other extensions -- |.tex|  and |.ltx| -- will follow the default search pattern.
+
+We can also extend \arara to analyze files with arbitrary extensions. As an example, let's suppose we have a sample |hello.c| file, presented in Code~\ref{code:helloc}. Note that the code was omitted for obvious reasons, since we are interested in the header.
+
+\begin{code}[htbp]
+\caption{A sample \mycmd{hello.c} code.}
+\label{code:helloc}
+\begin{clang}
+// arara: gcc
+#include <stdio.h>
+...
+\end{clang}
+\end{code}
+
+We can add the |.c| extension to be recognized by \arara by simply adding the extension and search pattern entries in the configuration file, as presented in Code~\ref{code:confc}.
+
+\begin{code}[htbp]
+\caption{Adding support for \mycmd{.c} files in the configuration file.}
+\label{code:confc}
+\begin{yaml}
+!config
+filetypes:
+- extension: c
+   pattern: ^\\s*//\\s*
+\end{yaml}
+\end{code}
+
+Done, now \arara can support |.c| files! We can run |arara hello.c| and have our code compiled, provided we have a |gcc| rule, of course.  The extensions list will be |.tex|, |.dtx|, |.ltx| and |.c|. If you want to change the order, it’s a matter of rearranging the items, as shown in Code~\ref{code:confctwo}.
+
+\begin{code}[htbp]
+\caption{Rearranging items of arbitrary extensions in the configuration file.}
+\label{code:confctwo}
+\begin{yaml}
+!config
+filetypes:
+- extension: c
+   pattern: ^\\s*//\\s*
+- extension: tex
+- extension: dtx
+- extension: ltx
+\end{yaml}
+\end{code}
+
+From now on, the |.c| has priority over all other extensions. It's very important to note that for customized extensions, the |pattern| key is mandatory. For default extensions, use the |pattern| key if and only if you want to override the search pattern.
+
 \chapter{Running arara}
+\label{chap:runningarara}
+
 \section{Command line}
 \section{Messages}
 \section{Command output}
