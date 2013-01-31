@@ -270,10 +270,15 @@ good read.
 
 \subsection*{Version 3.0}
 \begin{itemize}
-\item[\newfeature] 
-     % TODO
-     List of new features and a table containing the lines of code for
-     version 3.0.
+\item[\newfeature] Localizated messages in English, Brazilian Portuguese, German, Italian, Spanish, French, Turkish and Russian.
+\item[\bugfix] Improved error analysis for rules and directives.
+\item[\newfeature] Friendly and very detailed messages instead of generic ones.
+\item[\newfeature] An optional configuration file is now available in order to customize and enhance the application behaviour.
+\item[\bugfix] Improved rule syntax, new keys added.
+\item[\newfeature] Now rules are unified in a plain format. No more compiled rules.
+\item[\newfeature] Rules can allow an arbitrary number of commands instead of just one.
+\item[\newfeature] Built-in functions in the rule context to ease the writing process.
+\item[\bugfix] Improved expansion mechanism.
 \end{itemize}
 
 {\renewcommand{\arraystretch}{1.5}
@@ -285,10 +290,10 @@ good read.
 \textbf{Language} & \textbf{Files} & \textbf{Blank} & \textbf{Comment} & \textbf{Code}\\
 \hline
 \hline
-Java & 0 & 0 & 0 & 0\\
-XML & 0 & 0 & 0 & 0\\
+Java & 25 & 847 & 2722 & 1659\\
+XML & 2 & 12 & 0 & 181\\
 \hline
-Sum & 0 & 0 & 0 & 0\\
+Sum & 27 & 859 & 2722 & 1840\\
 \hline
 \end{tabular}
 \label{tab:locarara30}
@@ -837,7 +842,6 @@ please do not close the terminal! It might end the all running processes, includ
 \label{fig:instlang}
 \end{figure}
 
-% TODO add more languages
 The installer currently supports six languages: English, German, French, Italian, Spanish, and Brazilian Portuguese.
 I plan to add more languages to the list in the near feature.
 
@@ -1918,7 +1922,7 @@ It's important to observe that the |<arara>| prefix is also valid in the rules c
 \section{Language}
 \label{sec:language}
 
-\arara currently features localized messages in English, French, Italian, German, Brazilian Portuguese, Russian and Turkish. The default language fallback is English, but we can easily change the language by adding |language: <code>| to the configuration file, as seen in Code~\ref{code:conflang}. The list of languages and codes is presented in Table~\ref{tab:langcodeconf}.
+\arara currently features localized messages in English, French, Italian, German, Spanish, Brazilian Portuguese, Russian and Turkish. The default language fallback is English, but we can easily change the language by adding |language: <code>| to the configuration file, as seen in Code~\ref{code:conflang}. The list of languages and codes is presented in Table~\ref{tab:langcodeconf}.
 
 \begin{code}[htbp]
 \caption{Changing the language in the configuration file.}
@@ -1942,6 +1946,7 @@ language: en
 English & |en| \\
 Brazilian Portuguese & |ptbr| \\
 Italian & |it| \\
+Spanish & |es| \\
 German & |de| \\
 French & |fr| \\
 Russian & |ru| \\
@@ -2155,7 +2160,7 @@ Of course, an error halts the execution, so we need to fix the reported issue be
 
 If you use the |--language| flag or set up the |language| key in the configuration file, \arara will be able to display localized messages
 according to the provided language code. In other words, users will be able to read messages from the application in languages other
-English. Currently, \arara is able to display messages in English, Brazilian Portuguese, German, Italian, French, Russian and Turkish.
+English. Currently, \arara is able to display messages in English, Brazilian Portuguese, Spanish, German, Italian, French, Russian and Turkish.
 Have fun!
 
 \section{Logging}
