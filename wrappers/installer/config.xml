@@ -1,8 +1,8 @@
 <launch4jConfig>
   <dontWrapJar>false</dontWrapJar>
   <headerType>gui</headerType>
-  <jar>wrappers\installer\arara-2.0-installer.jar</jar>
-  <outfile>wrappers\installer\arara-2.0-installer.exe</outfile>
+  <jar>wrappers\installer\arara-3.0-installer.jar</jar>
+  <outfile>wrappers\installer\arara-3.0-installer.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir></chdir>

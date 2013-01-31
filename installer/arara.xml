@@ -90,6 +90,7 @@
             <file override="update" src="resources\rules\pdftex.yaml" targetdir="$INSTALL_PATH/rules/"/>
             <file override="update" src="resources\rules\ps2pdf.yaml" targetdir="$INSTALL_PATH/rules/"/>
             <file override="update" src="resources\rules\songidx.yaml" targetdir="$INSTALL_PATH/rules/"/>
+            <file override="update" src="resources\rules\sketch.yaml" targetdir="$INSTALL_PATH/rules/"/>
             <file override="update" src="resources\rules\tex.yaml" targetdir="$INSTALL_PATH/rules/"/>
             <file override="update" src="resources\rules\xelatex.yaml" targetdir="$INSTALL_PATH/rules/"/>
             <file override="update" src="resources\rules\xelatexmk.yaml" targetdir="$INSTALL_PATH/rules/"/>
