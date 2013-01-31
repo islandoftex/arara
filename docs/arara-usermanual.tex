@@ -1843,49 +1843,1458 @@ filetypes:
 
 From now on, the |.c| has priority over all other extensions. It's very important to note that for customized extensions, the |pattern| key is mandatory. For default extensions, use the |pattern| key if and only if you want to override the search pattern.
 
-\chapter{Running arara}
+\arara comes with a rule for Sketch~\cite{sketch:2013}, written by Sergey Ulyanov. We can easily add |% arara: sketch: { files: [ drawing.sk ] }|
+and Sketch will be properly called. Let's say we want to make \arara recognize Sketch files; it's just a matter of adding the extension and the
+search pattern in our configuration file, as presented in Code~\ref{code:sketchconfig}.
+
+\begin{code}[htbp]
+\caption{Adding support for Sketch files in the configuration file.}
+\label{code:sketchconfig}
+\begin{yaml}
+!config
+filetypes:
+- extension: sk
+   pattern: ^(\\s)*[%#]\\s+
+\end{yaml}
+\end{code}
+
+Now \arara supports |.sk| files! We can write a sample Sketch file (borrowed from the documentation) presented in Code~\ref{code:sketchsample} and add a |sketch| directive. The comments in the Sketch language allow both |%| and |#| symbols at the beginning of the line.
+
+\begin{code}[htbp]
+\caption{\mycmd{drawing.sk}, a sample Sketch file.}
+\label{code:sketchsample}
+\begin{latex}
+% arara: sketch
+polygon(0,0,1)(1,0,0)(0,1,0)
+line(-1,-1,-1)(2,2,2)
+\end{latex}
+\end{code}
+
+With the new settings presented in Code~\ref{code:sketchconfig}, we can run |arara drawing| or |arara drawing.sk| (Code~\ref{code:sketchsample}) and Sketch will be properly executed through \arara with no problems.
+
+\printbibliography[heading=subbibliography]
+
+\chapter{Running \texorpdfstring{\arara}{arara}}
 \label{chap:runningarara}
 
+\epigraph{\emph{Never trust a computer you can't throw out a window.}}{Steve Wozniak}
+
+Now that we have learned some basics, it's time to run \arara! Thankfully, the application is very user-friendly; if something
+goes wrong, we can easily find out what happened through messages and the log file.
+
 \section{Command line}
+\label{sec:commandline}
+
+\arara has a very simple command line interface. A simple |arara mydoc| does the trick -- provided that |mydoc| has the proper directives.
+The default behaviour is to run in silent mode, that is, only the name and the execution status of the current task are displayed.
+The idea of the silent mode is to provide a concise output. Sadly, in some cases, we want to follow the compilation workflow and even 
+interact with a command which requires user input. If you have an interactive command, \arara won't even bother about it: the execution
+will halt and the command will fail. Well, that's the silent mode. Thankfully, \arara has a set of flags that can change the default
+behaviour or even enhance the compilation workflow. Table~\ref{tab:araraflags} shows the list of available \arara flags, 
+with both short and long options.
+
+{\renewcommand{\arraystretch}{1.5}
+\begin{table}[htbp]
+\centering
+\footnotesize
+\begin{tabular}{p{0.1\textwidth}p{0.2\textwidth}p{0.55\textwidth}}
+\hline
+\textbf{Flag} & & \textbf{Behaviour}\\
+\hline
+\hline
+|-h| & |--help| & This flag prints the help message, as seen in 
+Code~\ref{code:arararun}, and exits the application. If you run |arara| without 
+any flags or a file to process, this is the default behaviour.                \\
+\hline
+|-L c| & |--language c| & The |--language| flag sets the language of the current
+execution of \arara, where |c| is the language code presented in Table~\ref{tab:langcodeconf},
+on page~\pageref{tab:langcodeconf}. Note that this flag has higher priority than the
+language set in the configuration file. \\
+\hline
+|-l| & |--log| & The |--log| flag enables the logging feature of \arara. All 
+streams from all commands will be logged and, at the end of the execution, an
+|arara.log| file will be generated. The logging feature is discussed in 
+Section~\ref{sec:logging}.                                                   \\
+\hline
+|-t n| & |--timeout n| & This flag sets an execution timeout for every task. If
+the timeout is reached before the task ends, \arara will kill it and interrupt 
+the processing. The $n$ value is expressed in milliseconds.                   \\
+\hline
+|-v| & |--verbose| & The |--verbose| flag enables all streams to be flushed to 
+the terminal -- exactly the opposite of the silent mode. This flag also allows 
+user input if the current command requires so. The user input interaction is
+possible thanks to the amazing Apache Commons Exec library~\cite{exec:2010}.  \\
+\hline
+|-V| & |--version| & This flag, as the name indicates, prints the current 
+\arara version and exits the application.                                     \\
+\hline
+\end{tabular}
+\caption{The list of available \arara flags.}
+\label{tab:araraflags}
+\end{table}}
+
+\arara can recognize three types of files based on their extension, in this order: |.tex|, |.dtx| and |.ltx|. Other extensions are not recognized, unless of
+course you provide the correct mapping for them in the configuration file, as discussed in Section~\ref{sec:filepatterns}.
+
+The combination of flags is very useful to enhance the \TeX\ experience. They can provide nice features for integrating \arara with
+\TeX\ IDEs, as seen in Chapter~\ref{chap:ideintegration}. Note that both |--log| and |--verbose| flags are the most common combo
+to use in an IDE, so we can have both terminal and file output at the same time without any cost.
+
 \section{Messages}
-\section{Command output}
+\label{sec:messages}
+
+Messages are the first type of feedback provided by \arara. They are basically related to rules, directives and configuration settings.
+Bad syntax, nonexisting rules, malformed directives, wrong expansion, \arara tries to tell you what went wrong. Those messages are
+usually associated with errors. We tried to include useful messages, like telling in which directive and line an error ocurred, or 
+that a certain rule does not exist or has an incorrect format. \arara also checks if a command is valid. For example, if you try to call a rule
+that executes a nonexisting |makefoo| command, \arara will complain about it.
+
+These messages usually cover the events that can happen during the preprocessing phase. Don't panic, \arara will tell you what happened.
+Of course, an error halts the execution, so we need to fix the reported issue before proceeding. Note that \arara can also complain about nonexisting commands -- in this case, the error will be raised in runtime, since it's an underlying operating system dependency.
+
+If you use the |--language| flag or set up the |language| key in the configuration file, \arara will be able to display localized messages
+according to the provided language code. In other words, users will be able to read messages from the application in languages other
+English. Currently, \arara is able to display messages in English, Brazilian Portuguese, German, Italian, French, Russian and Turkish.
+Have fun!
+
 \section{Logging}
+\label{sec:logging}
+
+Another way of looking for an abnormal behaviour is to read the proper |.log| file. Unfortunately, not every command emits a report of
+its execution and, even if the command generates a |.log| file, multiple runs would overwrite the previous reports and we would have
+only the last call. \arara provides a more consistent way of monitoring commands and their own behaviour through a global 
+|.log| file that holds every single bit of information. You can enable the logging feature by adding either the |--log| or |-l| flags to
+the |arara| application.
+
+Before we continue, I need to explain about standard streams, since they constitute an important part of the generated |.log| file
+by \arara. Wikipedia~\cite{streams:2012} has a nice definition of them:
+
+\begin{quotation}
+\noindent ``In computer programming, standard streams are preconnected input and 
+output channels between a computer program and its environment (typically a 
+text terminal) when it begins execution. The three \textsc{i/o} connections are 
+called standard input (|stdin|), standard output (|stdout|) and standard error 
+(|stderr|).''
+\end{quotation}
+
+Basically, the operating system provides two streams directed to display data: |stdout| and |stderr|. Usually, the first stream is
+used by a program to write its output data, while the second one is typically used to output error messages or diagnostics.
+Of course, the decision of what output stream to use is up to the program author.
+
+When \arara traces a command execution, it logs both |stdout| and |stderr|. The log entry for both |stdout| and |stderr| is referred
+as \emph{Output logging}. Again, an output to |stderr| does not necessarily mean that an error was found in the code, while an
+output to |stdout| does not necessarily mean that everything ran flawlessly. It's just a naming convention, as the program author 
+decides how to handle the messages flow. That's why \arara logs them both in the same output stream. Read the log entries carefully.
+A excerpt of the resulting |arara.log| from |arara helloindex --log| is shown in Code~\ref{code:araralog} -- several lines were removed in order to leave only the more important parts.
+
+\begin{code}[htbp]
+\caption{\mycmd{arara.log} from \mycmd{arara helloindex {-}{-}log}.}
+\label{code:araralog}
+\begin{lstlisting}[basicstyle=\footnotesize\ttfamily, columns=flexible, showspaces=false, breaklines=true]
+09 Abr 2012 11:27:58.400 INFO  Arara - Welcome to Arara!
+09 Abr 2012 11:27:58.406 INFO  Arara - Processing file helloindex.tex, please wait.
+09 Abr 2012 11:27:58.413 INFO  DirectiveExtractor - Reading directives from helloindex.tex.
+09 Abr 2012 11:27:58.413 TRACE DirectiveExtractor - Directive found in line 1 with pdflatex.
+...
+09 Abr 2012 11:27:58.509 INFO  DirectiveParser - Parsing directives.
+09 Abr 2012 11:27:58.536 INFO  TaskDeployer - Deploying tasks into commands.
+09 Abr 2012 11:27:58.703 INFO  CommandTrigger - Ready to run commands.
+09 Abr 2012 11:27:58.704 INFO  CommandTrigger - Running PDFLaTeX.
+09 Abr 2012 11:27:58.704 TRACE CommandTrigger - Command: pdflatex helloindex.tex
+09 Abr 2012 11:27:59.435 TRACE CommandTrigger - Output logging: This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011)
+...
+Output written on helloindex.pdf (1 page, 12587 bytes).
+Transcript written on helloindex.log.
+09 Abr 2012 11:27:59.435 INFO  CommandTrigger - PDFLaTeX was successfully executed.
+09 Abr 2012 11:27:59.655 INFO  CommandTrigger - Running MakeIndex.
+09 Abr 2012 11:27:59.655 TRACE CommandTrigger - Command: makeindex helloindex.idx
+09 Abr 2012 11:27:59.807 TRACE CommandTrigger - Output logging: This is makeindex, version 2.15 [TeX Live 2011] (kpathsea + Thai support).
+...
+Generating output file helloindex.ind..done (9 lines written, 0 warnings).
+Output written in helloindex.ind.
+Transcript written in helloindex.ilg. 
+09 Abr 2012 11:27:59.807 INFO  CommandTrigger - MakeIndex was successfully executed.
+...
+09 Abr 2012 11:28:00.132 INFO  CommandTrigger - All commands were successfully executed.
+09 Abr 2012 11:28:00.132 INFO  Arara - Done.
+\end{lstlisting}
+\end{code}
+
+The \arara log is useful for keeping track of the execution flow as well as providing feedback on how both rules and directives are being
+expanded. The log file contains information about the directive extraction and parsing, rules checking and expansion, deployment of tasks
+and execution of commands. The \arara messages are also logged.
+
+If by any chance your code is not working, try to run |arara| with the logging feature enabled. It might take a while for you to digest the log
+entries, but I'm sure you will be able to track every single step of the execution and fix the offending line in your code.
+
+\section{Command output}
+\label{sec:commandoutput}
+
+Even when the |--log| flag is enabled, \arara still runs in silent mode. There's a drawback of this mode: if there's an interactive command
+wich requires the user input, \arara will simply halt the task and the execution will fail. We need to make |stdin| -- the standard input stream -- available for us. Thanks to the amazing Apache Commons Exec library~\cite{exec:2010}, \arara can also provide an access layer to the
+standard input stream in order to interact with commands, when needed. We just need to use a special |--verbose| flag.
+
+It's important to note that both |--log| and |--verbose| flags can be used together; \arara will log everything, including the input stream.
+I usually recommend those two flags when integrating \arara with \TeX\ IDEs, like we did in Chapter~\ref{chap:ideintegration}.
+
+\printbibliography[heading=subbibliography]
 
 \part{For authors}
+\label{part:forauthors}
 
 \chapter{Quick start}
+\label{sec:quickstarta}
+
+\epigraph{\emph{Snakes! Why did it have to be snakes?}}{Indiana Jones, \emph{Raiders of the Lost Ark} (1981)}
+
+This chapter covers a quick start of \arara, including an overview of the predefined rules and some notes on how to properly organize
+directives in the source code.
+
 \section{Predefined rules}
+\label{sec:predefinedrules}
+
+Let's take a look on the predefined rules and a brief description of their parameters. Note that these rules are constantly updated;
+the most recent versions are available in the project repository.
+
+For convenience, we will use |yes| and |no| for representing boolean values. Note that you can also use other pairs: |on| and |off|,
+and |true| and |false|. These values are also case insensitive, so entries like |True| or |NO| are valid.
+
+Note that the |latex|, |pdflatex|, |xelatex| and |lualatex| rules have a |shell| parameter resolving to |--shell-escape|. This flag is
+also available in MiK\TeX, but as an alias to the special |--enable-write18| flag. If you want to use \arara with an outdated
+MiK\TeX\ distribution which doesn't support the |--shell-escape| alias, make sure to edit the predefined rules accordingly -- 
+these rules are located inside |$ARARA_HOME/rules| -- and replace all occurrences of |--shell-escape| by |--enable-write18|.
+Another option is to add another search path in the configuration file with modified rules, since custom search paths have higher priority
+than the default rules directory. If you use \TeX~Live or a recent Mik\TeX\ installation, there's no need to edit the rules, since the 
+|--shell-escape| flag is already available.
+
+\subsection*{\texorpdfstring{\hologo{biber}}{biber}}
+
+\begin{description}
+\item[Description] This rule maps \hologo{biber}, calling the |biber| command 
+with the proper parameters, when available. All parameters are optional.
+\item[Syntax] |% arara: biber|
+\end{description}
+
+\subsubsection*{Parameters}
+
+\begin{ruleoptions}
+\item[options] This parameter is used to provide flags which were not 
+mapped. It is recommended to enclose the value with single or double quotes.
+\end{ruleoptions}
+
+\subsection*{\texorpdfstring{\hologo{BibTeX}}{BibTeX}}
+
+\begin{description}
+\item[Description] This rule maps \hologo{BibTeX}, calling the |bibtex| command 
+with the proper parameters, when available. All parameters are optional.
+\item[Syntax] |% arara: bibtex|
+\end{description}
+
+\subsubsection*{Parameters}
+
+\begin{ruleoptions}
+\item[options] This parameter is used to provide flags which were not 
+mapped. It is recommended to enclose the value with single or double quotes.
+\end{ruleoptions}
+
+\subsection*{Clean}
+
+\begin{description}
+\item[Description] This rule maps the removal command from the underlying operating system. There are no parameters for this rule,
+except the the reserved directive key |files| which \textit{must} be used. If |files| is not used in the directive, \arara will simply ignore this rule.
+\item[Syntax] |% arara: clean|
+\end{description}
+
+\subsection*{dvips}
+
+\begin{description}
+\item[Description] This rule maps dvips, calling the |dvips| command with the 
+proper parameters, when available. All parameters are optional.
+\item[Syntax] |% arara: dvips|
+\end{description}
+
+\subsubsection*{Parameters}
+
+\begin{ruleoptions}
+\item[output] This parameter is used to set the output PostScript filename. 
+If not provided, the default output name is set to |@{getBasename(file)}.ps|.
+\item[options] This parameter is used to provide flags which were not 
+mapped. It is recommended to enclose the value with single or double quotes.
+\end{ruleoptions}
+
+\subsection*{frontespizio}
+
+\begin{description}
+\item[Description] This rule maps a compilation chain defined in |frontespizio|, a package written by Enrico Gregorio; it calls a defined \TeX\ engine three times with the proper parameters, when available. All parameters are optional. If no engine is provided, |pdflatex| is used as default. When |latex| is the chosen engine, there's an additional call to dvips.
+\item[Syntax] |% arara: frontespizio|
+\end{description}
+
+\subsubsection*{Parameters}
+
+\begin{ruleoptions}
+\item[engine] This parameter is used to set the \TeX\ engine. If not provided, |pdflatex| is used as a default value.
+\end{ruleoptions}
+
+\subsection*{\texorpdfstring{\hologo{LaTeX}}{LaTeX}}
+
+\begin{description}
+\item[Description] This rule maps \hologo{LaTeX}, calling the |latex| command 
+with the proper parameters, when available. All parameters are optional.
+\item[Syntax] |% arara: latex|
+\end{description}
+
+\subsubsection*{Parameters}
+
+\begin{ruleoptions}
+\item[action] This parameter sets the interaction mode flag. Possible options 
+are |batchmode|, |nonstopmode|, |scrollmode|, and |errorstopmode|. If not 
+defined, no flag will be set.
+\item[shell] This is a boolean parameter which sets the shell escape mode. If 
+true, shell escape will be enabled; if the value is set to false, the feature 
+will be completely disabled. If not defined, the default behaviour is rely on 
+restricted mode.
+\item[synctex] This parameter is defined as boolean and sets the generation of 
+Sync\TeX\ data for previewers.  If true, data will be generated; false will 
+disable this feature. If not defined, no flag will be set.
+\item[draft] This is a boolean parameter which sets the draft mode, that is, no 
+PDF output is generated. When value set to true, the draft mode is enabled, 
+while false disables it. If not defined, no flag will be set.
+\item[options] This parameter is used to provide flags which were not 
+mapped. It is recommended to enclose the value with single or double quotes.
+\end{ruleoptions}
+
+\subsection*{Latexmk cleanup}
+
+\begin{description}
+\item[Description] This rule calls the cleanup option of Latexmk, according to the provided parameters. All parameters are optional.
+\item[Syntax] |% arara: lmkclean|
+\end{description}
+
+\subsubsection*{Parameters}
+
+\begin{ruleoptions}
+\item[include] This parameter, if equals to |all|, will remove all generated files, leaving only the source code intact; otherwise only the auxiliary files will be removed.
+\end{ruleoptions}
+
+\subsection*{\texorpdfstring{\hologo{LuaLaTeX}}{LuaLaTeX}}
+
+\begin{description}
+\item[Description] This rule maps \hologo{LuaLaTeX}, calling the |lualatex| 
+command with the proper parameters, when available. All parameters are optional.
+\item[Syntax] |% arara: lualatex|
+\end{description}
+
+\subsubsection*{Parameters}
+
+\begin{ruleoptions}
+\item[action] This parameter sets the interaction mode flag. Possible options 
+are |batchmode|, |nonstopmode|, |scrollmode|, and |errorstopmode|. If not 
+defined, no flag will be set.
+\item[shell] This is a boolean parameter which sets the shell escape mode. If 
+true, shell escape will be enabled; if the value is set to false, the feature 
+will be completely disabled. If not defined, the default behaviour is rely on 
+restricted mode.
+\item[synctex] This parameter is defined as boolean and sets the generation of 
+Sync\TeX\ data for previewers.  If true, data will be generated; false will 
+disable this feature. If not defined, no flag will be set.
+\item[draft] This is a boolean parameter which sets the draft mode, that is, 
+no PDF output is generated. When value set to true, the draft mode is enabled, 
+while false disables it. If not defined, no flag will be set.
+\item[options] This parameter is used to provide flags which were not 
+mapped. It is recommended to enclose the value with single or double quotes.
+\end{ruleoptions}
+
+\subsection*{Latexmk with \texorpdfstring{\hologo{LuaLaTeX}}{LuaLaTeX}}
+
+\begin{description}
+\item[Description] This rule calls Latexmk with \hologo{LuaLaTeX} as engine. All parameters are optional.
+\item[Syntax] |% arara: lualatexmk|
+\end{description}
+
+\begin{ruleoptions}
+\item[action] This parameter sets the interaction mode flag. Possible options 
+are |batchmode|, |nonstopmode|, |scrollmode|, and |errorstopmode|. If not 
+defined, no flag will be set.
+\item[shell] This is a boolean parameter which sets the shell escape mode. If 
+true, shell escape will be enabled; if the value is set to false, the feature 
+will be completely disabled. If not defined, the default behaviour is rely on 
+restricted mode.
+\item[synctex] This parameter is defined as boolean and sets the generation of 
+Sync\TeX\ data for previewers.  If true, data will be generated; false will 
+disable this feature. If not defined, no flag will be set.
+\item[options] This parameter is used to provide flags which were not 
+mapped. It is recommended to enclose the value with single or double quotes.
+\item[style] This parameter is used in case you want to provide a style for |makeindex|, if different than the default style.
+\end{ruleoptions}
+
+
+\subsection*{\texorpdfstring{\hologo{LuaTeX}}{LuaTeX}}
+
+\begin{description}
+\item[Description] This rule maps \hologo{LuaTeX}, calling the |luatex| 
+command with the proper parameters, when available. All parameters are optional.
+\item[Syntax] |% arara: luatex|
+\end{description}
+
+\subsubsection*{Parameters}
+
+\begin{ruleoptions}
+\item[action] This parameter sets the interaction mode flag. Possible options 
+are |batchmode|, |nonstopmode|, |scrollmode|, and |errorstopmode|. If not 
+defined, no flag will be set.
+\item[shell] This is a boolean parameter which sets the shell escape mode. If 
+true, shell escape will be enabled; if the value is set to false, the feature 
+will be completely disabled. If not defined, the default behaviour is rely on 
+restricted mode.
+\item[synctex] This parameter is defined as boolean and sets the generation of 
+Sync\TeX\ data for previewers.  If true, data will be generated; false will 
+disable this feature. If not defined, no flag will be set.
+\item[draft] This is a boolean parameter which sets the draft mode, that is, 
+no PDF output is generated. When value set to true, the draft mode is enabled, 
+while false disables it. If not defined, no flag will be set.
+\item[options] This parameter is used to provide flags which were not 
+mapped. It is recommended to enclose the value with single or double quotes.
+\end{ruleoptions}
+
+
+\subsection*{Make}
+
+\begin{description}
+\item[Description] This rule maps Make, calling the |make| command with the 
+proper parameters, when available. All parameters are optional.
+\item[Syntax] |% arara: make|
+\end{description}
+
+\subsubsection*{Parameters}
+
+\begin{ruleoptions}
+\item[task] This parameter is used to set the task name for |make| to execute.
+\end{ruleoptions}
+
+\subsection*{MakeGlossaries}
+
+\begin{description}
+\item[Description] This rule maps MakeGlossaries, calling the |makeglossaries| 
+command with the proper parameters, when available. All parameters are optional.
+\item[Syntax] |% arara: makeglossaries|
+\end{description}
+
+\subsubsection*{Parameters}
+
+\begin{ruleoptions}
+\item[options] This parameter is used to provide flags which were not 
+mapped. It is recommended to enclose the value with single or double quotes.
+\end{ruleoptions}
+
+\subsection*{MakeIndex}
+
+\begin{description}
+\item[Description] This rule maps MakeIndex, calling the |makeindex| command 
+with the proper parameters, when available. All parameters are optional.
+\item[Syntax] |% arara: makeindex|
+\end{description}
+
+\subsubsection*{Parameters}
+
+\begin{ruleoptions}
+\item[style] This parameter sets the index style. If not defined, |makeindex| 
+relies on the default index style.
+\item[german] This is a boolean parameter which sets the German word ordering 
+in the index. If true, the German word ordering will be employed; if the value 
+is set to false, |makeindex| will rely on the default behaviour.
+\item[options] This parameter is used to provide flags which were not 
+mapped. It is recommended to enclose the value with single or double quotes.
+\end{ruleoptions}
+
+\subsection*{Nomencl}
+
+\begin{description}
+\item[Description] This rule maps Nomencl, which is in fact a call to the 
+|makeindex| command with the the nomenclature feature. All parameters are optional.
+\item[Syntax] |% arara: nomencl|
+\end{description}
+
+\subsubsection*{Parameters}
+
+\begin{ruleoptions}
+\item[style] This parameter sets the nomenclature style. If not defined, 
+|makeindex| relies on the default nomenclature style.
+\item[options] This parameter is used to provide flags which were not 
+mapped. It is recommended to enclose the value with single or double quotes.
+\end{ruleoptions}
+
+\subsection*{\texorpdfstring{\hologo{pdfLaTeX}}{PDFLaTeX}}
+
+\begin{description}
+\item[Description] This rule maps \hologo{pdfLaTeX}, calling the |pdflatex| 
+command with the proper parameters, when available. All parameters are optional.
+\item[Syntax] |% arara: pdflatex|
+\end{description}
+
+\subsubsection*{Parameters}
+
+\begin{ruleoptions}
+\item[action] This parameter sets the interaction mode flag. Possible options 
+are |batchmode|, |nonstopmode|, |scrollmode|, and |errorstopmode|. If not 
+defined, no flag will be set.
+\item[shell] This is a boolean parameter which sets the shell escape mode. If 
+true, shell escape will be enabled; if the value is set to false, the feature 
+will be completely disabled. If not defined, the default behaviour is rely on 
+restricted mode.
+\item[synctex] This parameter is defined as boolean and sets the generation of 
+Sync\TeX\ data for previewers.  If true, data will be generated; false will 
+disable this feature. If not defined, no flag will be set.
+\item[draft] This is a boolean parameter which sets the draft mode, that is, no 
+PDF output is generated. When value set to true, the draft mode is enabled, 
+while false disables it. If not defined, no flag will be set.
+\item[options] This parameter is used to provide flags which were not 
+mapped. It is recommended to enclose the value with single or double quotes.
+\end{ruleoptions}
+
+\subsection*{Latexmk with \texorpdfstring{\hologo{pdfLaTeX}}{pdfLaTeX}}
+
+\begin{description}
+\item[Description] This rule calls Latexmk with \hologo{pdfLaTeX} as engine. All parameters are optional.
+\item[Syntax] |% arara: pdflatexmk|
+\end{description}
+
+\begin{ruleoptions}
+\item[action] This parameter sets the interaction mode flag. Possible options 
+are |batchmode|, |nonstopmode|, |scrollmode|, and |errorstopmode|. If not 
+defined, no flag will be set.
+\item[shell] This is a boolean parameter which sets the shell escape mode. If 
+true, shell escape will be enabled; if the value is set to false, the feature 
+will be completely disabled. If not defined, the default behaviour is rely on 
+restricted mode.
+\item[synctex] This parameter is defined as boolean and sets the generation of 
+Sync\TeX\ data for previewers.  If true, data will be generated; false will 
+disable this feature. If not defined, no flag will be set.
+\item[options] This parameter is used to provide flags which were not 
+mapped. It is recommended to enclose the value with single or double quotes.
+\item[style] This parameter is used in case you want to provide a style for |makeindex|, if different than the default style.
+\end{ruleoptions}
+
+\subsection*{\texorpdfstring{\hologo{pdfTeX}}{PDFTeX}}
+
+\begin{description}
+\item[Description] This rule maps \hologo{pdfTeX}, calling the |pdftex| 
+command with the proper parameters, when available. All parameters are optional.
+\item[Syntax] |% arara: pdflatex|
+\end{description}
+
+\subsubsection*{Parameters}
+
+\begin{ruleoptions}
+\item[action] This parameter sets the interaction mode flag. Possible options 
+are |batchmode|, |nonstopmode|, |scrollmode|, and |errorstopmode|. If not 
+defined, no flag will be set.
+\item[shell] This is a boolean parameter which sets the shell escape mode. If 
+true, shell escape will be enabled; if the value is set to false, the feature 
+will be completely disabled. If not defined, the default behaviour is rely on 
+restricted mode.
+\item[synctex] This parameter is defined as boolean and sets the generation of 
+Sync\TeX\ data for previewers.  If true, data will be generated; false will 
+disable this feature. If not defined, no flag will be set.
+\item[draft] This is a boolean parameter which sets the draft mode, that is, no 
+PDF output is generated. When value set to true, the draft mode is enabled, 
+while false disables it. If not defined, no flag will be set.
+\item[options] This parameter is used to provide flags which were not 
+mapped. It is recommended to enclose the value with single or double quotes.
+\end{ruleoptions}
+
+\subsection*{ps2pdf}
+
+\begin{description}
+\item[Description] This rule maps pdf2pdf, calling the |ps2pdf| command with 
+the proper parameters, when available. All parameters are optional.
+\item[Syntax] |% arara: ps2pdf|
+\end{description}
+
+\subsubsection*{Parameters}
+
+\begin{ruleoptions}
+\item[output] This parameter is used to set the output PDF filename. If not 
+provided, the default output name is set to |@{getBasename(file)}.pdf|.
+\item[options] This parameter is used to provide flags which were not 
+mapped. It is recommended to enclose the value with single or double quotes.
+\end{ruleoptions}
+
+\subsection*{Sketch}
+
+\begin{description}
+\item[Description] This rule maps Sketch, a small, simple system for producing line drawings of two or three-dimensional objects and scenes. All parameters are optional.
+\item[Syntax] |% arara: sketch|
+\end{description}
+
+\subsubsection*{Parameters}
+
+\begin{ruleoptions}
+\item[input] This parameter is used to provide flags which were not 
+mapped. It is recommended to enclose the value with single or double quotes.
+\end{ruleoptions}
+
+\subsection*{songidx}
+
+\begin{description}
+\item[Description] This rule maps |songidx|, a command line tool used to extract songs metadata from an file generated by the |songs| package\footnote{\url{http://songs.sourceforge.net}, written by Kevin Hamlen.} The parameter is mandatory.
+\item[Syntax] |% arara: songidx|
+\end{description}
+
+\subsubsection*{Parameters}
+
+\begin{ruleoptions}
+\item[input] This parameter sets the name of the file generated by |songs| in which |songidx| will extract the songs metadata.
+\end{ruleoptions}
+
+\subsection*{\texorpdfstring{\TeX}{TeX}}
+
+\begin{description}
+\item[Description] This rule maps \TeX, calling the |tex| 
+command with the proper parameters, when available. All parameters are optional.
+\item[Syntax] |% arara: pdflatex|
+\end{description}
+
+\subsubsection*{Parameters}
+
+\begin{ruleoptions}
+\item[action] This parameter sets the interaction mode flag. Possible options 
+are |batchmode|, |nonstopmode|, |scrollmode|, and |errorstopmode|. If not 
+defined, no flag will be set.
+\item[shell] This is a boolean parameter which sets the shell escape mode. If 
+true, shell escape will be enabled; if the value is set to false, the feature 
+will be completely disabled. If not defined, the default behaviour is rely on 
+restricted mode.
+\item[options] This parameter is used to provide flags which were not 
+mapped. It is recommended to enclose the value with single or double quotes.
+\end{ruleoptions}
+
+\subsection*{\texorpdfstring{\hologo{XeLaTeX}}{XeLaTeX}}
+
+\begin{description}
+\item[Description] This rule maps \hologo{XeLaTeX}, calling the |xelatex| 
+command with the proper parameters, when available. All parameters are optional.
+\item[Syntax] |% arara: xelatex|
+\end{description}
+
+\subsubsection*{Parameters}
+
+\begin{ruleoptions}
+\item[action] This parameter sets the interaction mode flag. Possible options 
+are |batchmode|, |nonstopmode|, |scrollmode|, and |errorstopmode|. If not 
+defined, no flag will be set.
+\item[shell] This is a boolean parameter which sets the shell escape mode. If 
+true, shell escape will be enabled; if the value is set to false, the feature 
+will be completely disabled. If not defined, the default behaviour is rely on 
+restricted mode.
+\item[synctex] This parameter is defined as boolean and sets the generation of 
+Sync\TeX\ data for previewers.  If true, data will be generated; false will 
+disable this feature. If not defined, no flag will be set.
+\item[options] This parameter is used to provide flags which were not 
+mapped. It is recommended to enclose the value with single or double quotes.
+\end{ruleoptions}
+
+\subsection*{Latexmk with \texorpdfstring{\hologo{XeLaTeX}}{XeLaTeX}}
+
+\begin{description}
+\item[Description] This rule calls Latexmk with \hologo{XeLaTeX} as engine. All parameters are optional.
+\item[Syntax] |% arara: xelatexmk|
+\end{description}
+
+\begin{ruleoptions}
+\item[action] This parameter sets the interaction mode flag. Possible options 
+are |batchmode|, |nonstopmode|, |scrollmode|, and |errorstopmode|. If not 
+defined, no flag will be set.
+\item[shell] This is a boolean parameter which sets the shell escape mode. If 
+true, shell escape will be enabled; if the value is set to false, the feature 
+will be completely disabled. If not defined, the default behaviour is rely on 
+restricted mode.
+\item[synctex] This parameter is defined as boolean and sets the generation of 
+Sync\TeX\ data for previewers.  If true, data will be generated; false will 
+disable this feature. If not defined, no flag will be set.
+\item[options] This parameter is used to provide flags which were not 
+mapped. It is recommended to enclose the value with single or double quotes.
+\item[style] This parameter is used in case you want to provide a style for |makeindex|, if different than the default style.
+\end{ruleoptions}
+
+\subsection*{\texorpdfstring{\hologo{XeTeX}}{XeTeX}}
+
+\begin{description}
+\item[Description] This rule maps \hologo{XeTeX}, calling the |xetex| 
+command with the proper parameters, when available. All parameters are optional.
+\item[Syntax] |% arara: xelatex|
+\end{description}
+
+\subsubsection*{Parameters}
+
+\begin{ruleoptions}
+\item[action] This parameter sets the interaction mode flag. Possible options 
+are |batchmode|, |nonstopmode|, |scrollmode|, and |errorstopmode|. If not 
+defined, no flag will be set.
+\item[shell] This is a boolean parameter which sets the shell escape mode. If 
+true, shell escape will be enabled; if the value is set to false, the feature 
+will be completely disabled. If not defined, the default behaviour is rely on 
+restricted mode.
+\item[synctex] This parameter is defined as boolean and sets the generation of 
+Sync\TeX\ data for previewers.  If true, data will be generated; false will 
+disable this feature. If not defined, no flag will be set.
+\item[options] This parameter is used to provide flags which were not 
+mapped. It is recommended to enclose the value with single or double quotes.
+\end{ruleoptions}
+
 \section{Organizing directives}
-\section{Best practices}
+\label{sec:organizingdirectives}
+
+Actually, there's nothing much to say about directives, they are really easy to use. The important part when dealing with directives is to make sure we will only use the right amount of them. Remember, for each directive, there will be call to the command line tool, and this might take some time.
+
+Since a directive can have as many parameters as its corresponding rule has, we need to take care. If an argument value has spaces, enclose it with quotes. Again, try to avoid at all costs values with spaces, but if you really need them, enclose the value with single quotes. If you want to make sure that both rules and directives are being mapped and expanded correctly, enable the logging option with the |--log| flag and verify 
+the output. All expansions are logged.
+
+Although \arara reads the whole file looking for directives, it's a good idea to organize them at the top of the file. It will surely make your life easier, as you can quickly spot the compilation chain to be applied to the current document. If there's something wrong with a directive, don't worry, \arara will be able to track the inconsistency down and warn us about it.
 
 \chapter{Reference for rule library}
 \label{chap:referenceforrulelibraryone}
 
-\section{Directives and arguments}
+\epigraph{\emph{Your brain may give birth to any technology, but other brains will decide whether the technology thrives. The number of possible technologies is infinite, and only a few pass this test of affinity with human nature.}}{Robert Wright}
+
+This chapter aims at discussing the reserved keywords of \arara for directive arguments and special orb tags, their purpose and how to correctly use them in the context of a document.
+
+\section{Directive arguments}
 \label{sec:directivearguments}
+
+As seen in the previous chapters, \arara has two reserved keywords for directive arguments which cannot be defined as arguments of a rule: |files| and |items|. Those variables do not hold a single value as the usual directive argument does, but they actually refer to a list of values instead. in the YAML format, a list is defined as a sequence of elements separated by a comma and enclosed with |[]|. For example, |items: [ a, b, c ]| is a list and refers to the elements |a|, |b| and |c|. Let's see in more details about each directive argument.
+
+\begin{ruleoptions}
+\item[files] When not defined with a proper value in the directive definition, |files| contains only one value: the current file reference. When we explicitly add this argument to a directive, the value is overriden, and \arara considers one iteration per element. In order words, if we have |foo: { files: [ a, b, c ] }|, \arara will perform the execution of the task |foo| three times, one for each value of |files|. Each value of |files| is expanded to the |@{file}| orb tag in the rule context.
+\item[items] The |items| directive argument, although it has the exact behaviour of |files| in the processing phase, happens to have a different semantics. Think of a rule that needs to process a list of elements, say, a list of extensions, files to copy, and so forth; for every value defined in |items|, \arara will perform the execution the current task. It's important to note that |items| has an empty list by default. Each value of |items| is expanded to the |@{item}| orb tag in the rule context.
+\end{ruleoptions}
+
+Both |files| and |items| can be used in any directive, if the rule of course makes use of their corresponding |@{file| and |@{item}| orb tags. Please note that, if those two lists are defined in the directive, \arara will resolve the variables as the cartesian product of the lists.
 
 \section{Special orb tags}
 \label{sec:specialorbtags}
 
+In the rule context, \arara has four reserved keywords which cannot be assigned as arguments identifiers; each one of them has its own purpose and semantics, besides of course mapping different values. These orb tags are |@{file}|, |@{item}|, |@{parameters}| and |@{SystemUtils}|.
+
+\begin{ruleoptions}
+\item[file] This orb tags always resolve to the filename processed by \arara. If the |files| directive argument is used in the directive definition, |@{file}| will resolve, in each iteration, to the current value of that list. The variable always hold an string value and it's never empty.
+\item[item] The |@{item}| orb tag resolves to each element of the list of items defined through the |items| directive argument. In each iteration of the |items| list, |@{item}| will resolve to the current value of that list. The variable always hold an string value and it is empty by default.
+\item[parameters] This orb tag is actually a map, that is, a collection of variables. The |@{parameters}| orb tag is set with all the directive arguments and their corresponding values. The access to a variable is done through |parameters.<variable>|, so if we want to access the |foo| directive argument value, we simply write |@{parameters.foo}|.
+\item[SystemUtils] This orb tag maps the |SystemUtils| class from the Apache Commons Lang library~\cite{lang:2001} and provides a lot of methods and properties in order to write cross-platform rules. Table~\ref{tab:properties} on page~\pageref{tab:properties} presents the list of properties available in the |@{SystemUtils}| orb tag.
+\end{ruleoptions}
+
+Since these are reserved keywords used for special orb tags, \arara will raise an error if there's an attempt of assigning one of them as rule argument identifier.
+
+\printbibliography[heading=subbibliography]
+
 \part{For rulemakers}
+\label{part:forrulemakers}
 
 \chapter{Quick start}
+\label{chap:quickstartrm}
+
+\epigraph{\emph{Cause and effect act in webs, not chains.}}{Steve Grand}
+
+Now that we know about rules, directives and orb tags, it's time to come up with some examples. I know it might not be trivial to understand how \arara works in a glance, but I'm sure the examples will help with the concepts. Please note that there might have platform-specific rules, so double-check the commands before running them -- actually, don't worry, \arara has a card up its sleeve.
+
 \section{Writing rules}
+\label{sec:writingrules}
+
+Before we proceed, I think it's important to mention this note again: we can't start values with |@| because this symbol is reserved for future use in the YAML format. For example, |foo: @bar| is an invalid YAML format, so the correct usage is to enclose it in quotes: |foo: '@bar'| or |foo: "@bar"|. We also need to enclose our strings with quotes in \arara, but we can save them by simply adding the |<arara>| prefix to the value. In other words, |foo: <arara > @bar| is correctly parsed; when that keyword in that specific position is found, \arara removes it.
+
+Our first example is to add support to \hologo{pdfLaTeX} instead of using the default rule. Our first attempt to write this rule is presented in Code~\ref{code:pdflatexone}. Make sure to create a directory to store your own rules and don't forget to add this directory to the search path in the configuration file (Chapter~\ref{chap:configurationfile}).
+
+\begin{code}[htbp]
+\caption{\mycmd{pdflatex.yaml}, first attempt.}
+\label{code:pdflatexone}
+\begin{yaml}
+!config
+identifier: pdflatex
+name: PDFLaTeX
+command: pdflatex "@{file}"
+arguments: []
+\end{yaml}
+\end{code}
+
+So far, so good. The |command| flag has the |pdflatex| program and the |@{file}| 
+orb tag. Now we can add the |pdflatex| directive to our |.tex| file, as we can see in 
+Code~\ref{code:helloexampleone}.
+
+\begin{code}[htbp]
+\caption{\mycmd{helloworld.tex}}
+\label{code:helloexampleone}
+\begin{latex}
+% (*@@*)arara: pdflatex
+\documentclass{article}
+
+\begin{document}
+Hello world.
+\end{document}
+\end{latex}
+\end{code}
+
+It's just a matter of calling |arara helloworld| -- you can also provide the |.tex| 
+extension by calling |arara helloworld.tex|, after all the extension will be 
+removed anyway -- and \arara will process our file, according to the 
+Code~\ref{code:araraoutputone}.
+
+\begin{code}[htbp]
+\caption{\arara output for the \mycmd{pdflatex} task.}
+\label{code:araraoutputone}
+\begin{bash}
+$ arara helloworld
+  __ _ _ __ __ _ _ __ __ _
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+Running PDFLaTeX... SUCCESS
+\end{bash}
+\end{code}
+
+Great, our first rule works like a charm. Once we define a rule, the directive is
+automatically available for us to call it as many times as we want. What if we 
+make this rule better? Consider the following situation:
+
+\begin{quotation}
+\noindent Sometimes, we need to use |\write18| to call a package that makes use of 
+it (for example, |minted|). It's very dangerous to enable shell escape globally,
+but changing the |pdflatex| call every time we need it sounds boring.
+\end{quotation}
+
+\arara has a special treatment for cases like this. We will rewrite our |pdflatex| rule to include a flag for shell escape. Another
+cool feature will be presented now, as we can see in the new rule shown in Code~\ref{code:pdflatextwo}.
+
+\begin{code}[htbp]
+\caption{\mycmd{pdflatex.yaml}, second attempt.}
+\label{code:pdflatextwo}
+\begin{yaml}
+!config
+identifier: pdflatex
+name: PDFLaTeX
+command: pdflatex @{shell} "@{file}"
+arguments:
+- identifier: shell
+   flag: <arara> @{parameters.shell == "yes" ? "--shell-escape" : "--no-shell-escape" }
+\end{yaml}
+\end{code}
+
+Line 7 from Code~\ref{code:pdflatextwo} makes use of the ternary operator |?:| which defines a conditional expression. In the first part of the evaluation, we check if |parameters.shell| is equal to the string |"yes"|. If so, |"--shell-escape"| is defined as the result of the operation. If the conditional expression is false, |"--no-shell-escape"| is set instead.
+
+What if you want to allow |true| and |on| as valid options as well? We can easily rewrite our orb tag to check for additional values, but \arara has a clever way of doing that: a function to look for boolean values! In this case, we will use a function named |isTrue()|, available in the rule context. Please refer to Section~\ref{sec:functions} for a list of the available functions and their meanings. The new attempt is presented in Code~\ref{code:pdflatexthree}
+
+\begin{code}[htbp]
+\caption{\mycmd{pdflatex.yaml}, third attempt.}
+\label{code:pdflatexthree}
+\begin{yaml}
+!config
+identifier: pdflatex
+name: PDFLaTeX
+command: pdflatex @{shell} "@{file}"
+arguments:
+- identifier: shell
+   flag: <arara> @{ isTrue( parameters.shell, "--shell-escape" , "--no-shell-escape" ) }
+\end{yaml}
+\end{code}
+
+With this new rule, it's now easy to enable the shell escape option in |pdflatex|. Simply go with the directive |pdflatex: { shell: yes }|. You can also use |true| or |on| instead of |yes|. Any other value for |shell| will disable the shell escape option. It's important to observe that \arara directives have no mandatory arguments. If you want to add a dangerous option like |--shell-escape|, consider calling it as an argument with a proper check and rely on a safe state for the argument fallback.
+
+For the next example, we will create a rule for MakeIndex. To be honest, although |makeindex| has a lot of possible arguments, I only use the |-s| flag once in a while. Code~\ref{code:makeindexone} shows our first attempt of writing this rule. Note that we are making use of another built-in function of \arara named |getBasename()|; this function returns the name of the file without the extension.
+
+\begin{code}[htbp]
+\caption{\mycmd{makeindex.yaml}, first attempt.}
+\label{code:makeindexone}
+\begin{yaml}
+!config
+identifier: makeindex
+name: MakeIndex
+command: makeindex @{style} "@{ getBasename(file) }.idx"
+arguments:
+- identifier: style
+   flag: <arara> -s @{parameters.style}
+\end{yaml}
+\end{code}
+
+As a follow-up to our first attempt, we will now add support for the |-g| flag that employs German word ordering in the index. Since this flag is basically a switch, we can borrow the same tactic used for enabling shell escape in the |pdflatex| rule from Code~\ref{code:pdflatexthree}. The new rule is presented in Code~\ref{code:makeindextwo}.
+
+\begin{code}[htbp]
+\caption{\mycmd{makeindex.yaml}, second attempt.}
+\label{code:makeindextwo}
+
+\begin{yaml}
+!config
+identifier: makeindex
+name: MakeIndex
+command: makeindex @{style} "@{ getBasename(file) }.idx"
+arguments:
+- identifier: style
+   flag: <arara> -s @{parameters.style}
+- identifier: german
+   flag: <arara> @{ isTrue( parameters.german, "-g" ) }
+\end{yaml}
+\end{code}
+
+The new |makeindex| rule presented in Code~\ref{code:makeindextwo} looks good. We can now test the compilation workflow with an example. Consider a file named |helloindex.tex| which has a few index entries for testing purposes, presented in Code~\ref{code:examplemakeindex}. As usual, I'll present my normal workflow, that involves calling |pdflatex| two times to get references right, one call to |makeindex| and finally, a last call to |pdflatex|. Though there's no need of calling |pdflatex| two times in the beginning, I'll keep that as a good practice from my side.
+
+\begin{code}[htbp]
+\caption{\mycmd{helloindex.tex}}
+\label{code:examplemakeindex}
+\begin{latex}
+% (*@@*)arara: pdflatex
+% (*@@*)arara: pdflatex
+% (*@@*)arara: makeindex
+% (*@@*)arara: pdflatex
+\documentclass{article}
+
+\usepackage{makeidx}
+
+\makeindex
+
+\begin{document}
+
+Hello world\index{Hello world}.
+
+Goodbye world\index{Goodbye world}.
+
+\printindex
+
+\end{document}
+\end{latex}
+\end{code}
+
+By running |arara helloindex| or |arara helloindex.tex| in the terminal, we will obtain the same output from Code~\ref{code:araramakeexample}. The execution order is defined by the order of directives in the |.tex| file. If any command fails, \arara halts at that position and nothing else is executed.
+
+You might ask how \arara knows if the command was successfully executed. The idea is quite simple: good programs like |pdflatex| make use of a concept known as exit status. In short, when a program had a normal execution, the exit status is zero. Other values are returned when an abnormal execution happened. When |pdflatex| successfully compiles a |.tex| file, it returns zero, so \arara intercepts this number. Again, it's a good practice to make command line applications return a proper exit status according to the execution flow, but beware: you might find applications or shell commands that don't feature this control (in the worst case, the returned value is always zero). \arara relies on 
+the \href{http://commons.apache.org/exec/}{Apache Commons Exec} library to provide the system calls.
+
+\begin{code}[!htbp]
+\caption{Running \mycmd{helloindex.tex}.}
+\label{code:araramakeexample}
+\begin{bash}
+$ arara helloindex
+  __ _ _ __ __ _ _ __ __ _
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+Running PDFLaTeX... SUCCESS
+Running PDFLaTeX... SUCCESS
+Running MakeIndex... SUCCESS
+Running PDFLaTeX... SUCCESS
+\end{bash}
+\end{code}
+
+According to the terminal output shown in Code~\ref{code:araramakeexample}, \arara executed all the commands successfully. In Section~\ref{sec:logging} we discuss how \arara works with commands and how to get their streams for a more detailed analysis.
+
+For the next example, we will write a rule for both \hologo{BibTeX} and \hologo{biber}. Instead of writing two rules -- one for each command -- I'll show how we can use conditional expressions and run different commands in a single rule. The common scenario is to have each tool mapped to its own rule, but as we can see, rules are very flexible. Let's see how \arara handles this unusual |bibliography| rule presented in Code~\ref{code:bibone}.
+
+\begin{code}[htbp]
+\caption{\mycmd{bibliography.yaml}}
+\label{code:bibone}
+\begin{yaml}
+!config
+identifier: bibliography
+name: Bibliography
+command: <arara> @{engine} @{args} @{ getBasename(file) }
+arguments:
+- identifier: engine
+   flag: <arara> @{ isTrue( parameters.engine == "biber", "biber", "bibtex" ) }
+   default: bibtex
+- identifier: args
+   flag: <arara> @{parameters.args}
+\end{yaml}
+\end{code}
+
+The |bibliography| rule is quite simple, actually. If no |engine| is provided in the |bibliography| directive, the |default| element of the |engine| argument will be set to |bibtex|. Otherwise, if the |engine| parameter is set to |biber| -- and only this value -- the |engine| orb tag
+will expand the result to |biber|. Code~\ref{code:examplebib} presents only the header of our |biblio.tex| file using the new |bibliography| directive. Other options are shown in Table~\ref{tab:biblio}.
+
+\begin{code}[htbp]
+\caption{\mycmd{biblio.tex}}
+\label{code:examplebib}
+\begin{latex}
+% (*@@*)arara: pdflatex
+% (*@@*)arara: bibliography
+% (*@@*)arara: pdflatex
+\documentclass{article}
+...
+\end{latex}
+\end{code}
+
+{\renewcommand{\arraystretch}{1.5}
+\begin{table}[ht]
+\centering
+\footnotesize
+\begin{tabular}{p{0.3\textwidth}p{0.55\textwidth}}
+\hline
+\textbf{Directive} & \textbf{Behaviour}\\
+\hline
+\hline
+\mycmd{bibliography: \{ engine: bibtex \}} & This directive sets the |engine| 
+parameter to |bibtex|, which will expand the command to |bibtex| in the rule. 
+Note that any value other than |biber| will expand the command to |bibtex|.   \\
+\hline
+\mycmd{bibliography: \{ engine: biber \}} &  This directive sets the |engine|
+parameter to |biber|, which will expand the command to |biber| in the rule. 
+This is the only possible value that will set |biber| as the rule command.    \\
+\hline
+\mycmd{bibliography: \{ engine: bibtex, args: '-min-crossrefs=2' \}} & This 
+directive sets the |engine| parameter to |bibtex| and also provides an argument 
+to the command. Note that the |args| value is specific to |bibtex| -- using this
+argument value with |biber| will surely raise an error.                       \\
+\hline
+\mycmd{bibliography: \{ engine: biber, args: '{-}{-}sortcase=true' \}} & This 
+directive sets the |engine| parameter to |biber| and also provides an argument 
+to the command. Note that the |args| value is specific to |biber| -- using this 
+argument value with |bibtex| will surely raise an error.                      \\
+\hline
+\end{tabular}
+\caption{Other directive options for \mycmd{bibliography}.}
+\label{tab:biblio}
+\end{table}}
+
+It's important to note that |bibtex| and |biber| differ in their flags, so I used a global |args| parameter. It is recommended to enclose the |args| value with single or double quotes. Use this parameter with great care, since the values differ from tool to tool. The output is presented in 
+Code~\ref{code:ararabib}.
+
+\begin{code}[!htbp]
+\caption{Running \mycmd{biblio.tex}.}
+\label{code:ararabib}
+\begin{bash}
+$ arara biblio
+  __ _ _ __ __ _ _ __ __ _
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+Running PDFLaTeX... SUCCESS
+Running Bibliography... SUCCESS
+Running PDFLaTeX... SUCCESS
+\end{bash}
+\end{code}
+
+According to the terminal output shown in Code~\ref{code:ararabib}, \arara 
+executed all the commands successfully. A friendly warning: this rule is very 
+powerful because of its flexibility, but the syntax -- specially the conditional 
+expression and the expansion tricks -- might mislead the user. My advice is to 
+exhaustively test the rules before deploying them into production. After all, 
+better be safe than sorry.
+
+Note that \arara already includes both |bibtex| and |biber| rules. We believe this is the best approach to deal with such tools instead of a generic |bibliography| rule. Take a look on the existing rules, they might help the learning process.
+
 \section{Cross-platform rules}
-\section{Best practices}
+\label{sec:crossplatformrules}
+
+One of the goals when writing \arara was to provide a cross-platform tool which 
+behaves exactly the same on every single operating system. Similarly, the rules 
+also follow the same idea, but sadly that's not always possible. After all, at 
+some point, commands are bounded to the underlying operating system.
+
+A rule that call |pdflatex|, for example, is easy to maintain; you just need to 
+ensure there's an actual |pdflatex| command available in the operating system -- 
+in the worst case, \arara warns about a nonexisting command. But there are cases 
+in which you need to call system-specific commands. You could write two or three 
+rules for the same task, say |makefoowin|, |makefoolinux|, and |makefoomac|, but 
+this approach is not intuitive. Besides, if you share documents between operating 
+systems, you'd have to also change the respective directive in your |.tex| file 
+in order to reflect which operating system you are on.
+
+Thankfully, there's a better solution for writing cross-platform rules which 
+require system-specific commands. In Section~\ref{sec:specialorbtags}, we mentioned about
+a special orb tag called |@{SystemUtils}| -- it's now time to unveil its power.
+This orb tag is available for all rules and maps the |SystemUtils| class from 
+the Apache Commons Lang library~\cite{lang:2001}. In other words, we 
+have access to all methods and properties from that class.
+
+Even though we have access to all public methods of the |SystemUtils| class, I 
+believe we won't need to use them -- the available properties are far more useful 
+for us. Table~\ref{tab:properties} shows the most relevant properties for our 
+context. The 
+\href{http://commons.apache.org/lang/api/org/apache/commons/lang3/SystemUtils.html}%
+{Apache Commons Lang documentation} contains the full class description.
+
+{\renewcommand{\arraystretch}{1.5}
+\begin{table}[htpb]
+\centering
+\footnotesize
+\begin{tabular}{lp{0.6\textwidth}}
+\hline
+\textbf{Property} & \textbf{Description}\\
+\hline
+\hline
+|IS_OS_AIX| & True if this is AIX.\\
+|IS_OS_FREE_BSD| & True if this is FreeBSD.\\
+|IS_OS_HP_UX| & True if this is HP-UX.\\
+|IS_OS_IRIX| & True if this is Irix.\\
+|IS_OS_LINUX| & True if this is Linux.\\
+|IS_OS_MAC| & True if this is Mac.\\
+|IS_OS_MAC_OSX| & True if this is Mac.\\
+|IS_OS_NET_BSD| & True if this is NetBSD.\\
+|IS_OS_OPEN_BSD| & True if this is OpenBSD.\\
+|IS_OS_OS2| & True if this is OS/2.\\
+|IS_OS_SOLARIS| & True if this is Solaris.\\
+|IS_OS_SUN_OS| & True if this is Sun OS.\\
+|IS_OS_UNIX| & True if this is a Unix-like system, as in any of AIX, HP-UX, Irix, Linux, Mac~OS~X, Solaris or Sun OS.\\
+|IS_OS_WINDOWS| & True if this is Windows.\\
+|IS_OS_WINDOWS_2000| & True if this is Windows 2000.\\
+|IS_OS_WINDOWS_2003| & True if this is Windows 2003.\\
+|IS_OS_WINDOWS_2008| & True if this is Windows 2008.\\
+|IS_OS_WINDOWS_7| & True if this is Windows 7.\\
+|IS_OS_WINDOWS_95| & True if this is Windows 95.\\
+|IS_OS_WINDOWS_98| & True if this is Windows 98.\\
+|IS_OS_WINDOWS_ME| & True if this is Windows ME.\\
+|IS_OS_WINDOWS_NT| & True if this is Windows NT.\\
+|IS_OS_WINDOWS_VISTA| & True if this is Windows Vista.\\
+|IS_OS_WINDOWS_XP| & True if this is Windows XP.\\
+\hline
+\end{tabular}
+\caption{Most relevant properties of \mycmd{SystemUtils}.}
+\label{tab:properties}
+\end{table}}
+
+Every time we want to call any of the available properties presented in 
+Table~\ref{tab:properties}, we just need to use the |SystemUtils.PROPERTY| 
+syntax, check the corresponding value through conditional expressions and define 
+commands or arguments according to the underlying operating system.
+
+Let's go back to our examples and add a new plain rule featuring the new |@{SystemUtils}| orb tag. Right after 
+running |arara helloindex| successfully (Code~\ref{code:araramakeexample}), we now have as a result a new |helloindex.pdf| file, but also a lot of auxiliary files, as we can see in Code~\ref{code:lsone}.
+
+\begin{code}[htbp]
+\caption{List of all files after running \mycmd{arara helloindex}.}
+\label{code:lsone}
+\begin{bash}
+$ ls
+helloindex.aux  helloindex.ilg  helloindex.log  helloindex.tex
+helloindex.idx  helloindex.ind  helloindex.pdf
+\end{bash}
+\end{code}
+
+What if we write a new |clean| rule to remove all the auxiliary files? The idea is to use |rm| to remove each one of them. For now, let's stick with a system-specific rule -- don't worry, we will improve this rule later on.
+
+Since we want our rule to be generic enough, it's now a good opportunity to introduce the use of the reserved directive key |files|. This special key is a list that overrides the default |@{file}| value and replicates the directive for every element in the list. I'm sure this will be the easiest rule we've written so far. The |clean| rule is presented in Code~\ref{code:cleanone}.
+
+\begin{code}[htbp]
+\caption{\mycmd{clean.yaml}, first attempt.}
+\label{code:cleanone}
+\begin{yaml}
+!config
+identifier: clean
+name: CleaningTool
+command: rm -f "@{file}"
+arguments: []
+\end{yaml}
+\end{code}
+
+Note that the command |rm| has a |-f| flag. As mentioned before, commands return an exit status after their calls. If we try to remove a nonexisting file, |rm| will complain and return a value different than zero. This will make \arara halt and print a big ``failure'' on screen, since a non-zero exit status is considered an abnormal execution. If we provide the |-f| flag, |rm| will not complain of a nonexisting file, so we won't be bothered for this trivial task.
+
+Now we need to add the new |clean| directive to our |helloindex.tex| file (Code~\ref{code:examplemakeindex}). Of course, |clean| will be the last directive, since it will only be reachable if everything executed before was returned withno errors. The new header of |helloindex.tex| is presented in 
+Code~\ref{code:examplemakeindextwo}.
+
+\begin{code}[htbp]
+\caption{\mycmd{helloindex.tex} with the new \mycmd{clean} directive.}
+\label{code:examplemakeindextwo}
+\begin{latex}
+% (*@@*)arara: pdflatex
+% (*@@*)arara: pdflatex
+% (*@@*)arara: makeindex
+% (*@@*)arara: pdflatex
+% (*@@*)arara: clean: { files: [ helloindex.aux, helloindex.idx, helloindex.ilg, helloindex.ind, helloindex.log ] }
+\documentclass{article}
+...
+\end{latex}
+\end{code}
+
+The reserved directive key |files| has five elements, so the |clean| rule will be replicated five times with the orb tag |@{file}| being expanded to each element. Time to run |arara helloindex| again and see if our new |clean| rule works! Code~\ref{code:araramakeexampletwo} shows both \arara execution and directory listing. We expect to find only our source |helloindex.tex| and the resulting |helloindex.pdf| file.
+
+\begin{code}[htbp]
+\caption{Running \mycmd{helloindex.tex} with the new \mycmd{clean} rule.}
+\label{code:araramakeexampletwo}
+\begin{bash}
+$ arara helloindex
+  __ _ _ __ __ _ _ __ __ _ 
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+Running PDFLaTeX... SUCCESS
+Running PDFLaTeX... SUCCESS
+Running MakeIndex... SUCCESS
+Running PDFLaTeX... SUCCESS
+Running CleaningTool... SUCCESS
+Running CleaningTool... SUCCESS
+Running CleaningTool... SUCCESS
+Running CleaningTool... SUCCESS
+Running CleaningTool... SUCCESS
+$ ls
+helloindex.pdf  helloindex.tex
+\end{bash}
+\end{code}
+
+Great, the |clean| rule works like a charm! But we have a big issue: if we try to use this rule in Windows, it doesn't work -- after all, |rm| is not a proper Windows command. Worse, replacing |rm| by the equivalent |del| won't probably work. Commands like |del| must be called in the form |cmd /c del|. Should we write another system-specific rule, say, |cleanwin|? Of course not, there's a very elegant way to solve this issue: the |@{SystemUtils}| orb tag.
+
+The idea is very simple: we check if \arara is running in a Windows operating system; if true, we set the command to |cmd /c del|, or |rm -f| otherwise. The new version of our |clean| rule is presented in Code~\ref{code:cleantwo}.
+
+\begin{code}[htbp]
+\caption{\mycmd{clean.yaml}, second attempt.}
+\label{code:cleantwo}
+\begin{yaml}
+!config
+identifier: clean
+name: CleaningTool
+command: <arara> @{ SystemUtils.IS_OS_WINDOWS ? "cmd /c del" : "rm -f" } "@{file}"
+arguments: []
+\end{yaml}
+\end{code}
+
+There we go, our first cross-platform rule! There's no need of writing a bunch of system-specific rules; only one cross-platform rule is enough. We know that the |clean| rule will work as expected in every operating system, even if the task to be performed relies on system-specific commands. With cross-platform rules, we are able to write cleaner and more concise code.
+
+There's another way of writing the |clean| rule, now with a built-in function instead of the |@{SystemUtils}| orb tag: we can use a function named |isWindows()| to check if \arara is running in a Windows operating System. The third attempt of our |clean| rule is presented in Code~\ref{code:cleanthree}.
+
+\begin{code}[htbp]
+\caption{\mycmd{clean.yaml}, third attempt.}
+\label{code:cleanthree}
+\begin{yaml}
+!config
+identifier: clean
+name: CleaningTool
+command: <arara> @{ isWindows( "cmd /c del" , "rm -f" ) } "@{file}"
+arguments: []
+\end{yaml}
+\end{code}
+
+Note that the |clean| rule is expecting |@{file}| to be overriden, since we rely on the reserved directive key |files|. If by any chance this rule is called without the |files| directive key, that is, an empty directive |% arara: clean|, I have very bad news to you: the rule will be expanded to 
+|rm -f mydoc.tex| and your |.tex| file will be gone! Is there any way to avoid this behaviour? Yes, there is.
+
+For our fourth attempt of rewritting the |clean| rule, we will make use of two new built-in functions. The first one is named |isFalse()|, which only expands the value if the conditional expression resolves to false; the second one is named |getOriginalFile()|, which holds the original reference to the file processed by \arara. The idea here is very simple: if the current |@{file}| is different than the original file, run the task; otherwise, the whole command is expanded to an empty string -- empty commands are discarded by \arara. We will use a rule argument to hold the whole command, but note that the |flag| element is not important here, since we won't use this argument in the directive; only |default| matters in this context. The new |clean| rule is presented in Code~\ref{code:cleanfour}.
+
+\begin{code}[htbp]
+\caption{\mycmd{clean.yaml}, fourth attempt.}
+\label{code:cleanfour}
+\begin{yaml}
+!config
+identifier: clean
+name: CleaningTool
+command: <arara> @{remove}
+arguments:
+- identifier: remove
+   default: <arara> @{ isFalse( file == getOriginalFile(), isWindows( "cmd /c del", "rm -f" ).concat(' "').concat(file).concat('"')) }
+\end{yaml}
+\end{code}
+
+Now we have a safe version of the |clean| rule. If we try to run \arara on our document with |% arara: clean|, nothing will happen and our original file won't be removed. That means that |clean| will only take action when we have an explicit list of files to be removed, and even
+if the element in the |files| list is different than the original file.
+
+Take a look in all the default rules available in the \href{http://github.com/cereda/arara}{project directory} on GitHub. They are very easy to understand. If you get stuck in any part, a good advice is to enable the logging feature through the |--log| flag, since \arara logs every expansion and command.
+
+\printbibliography[heading=subbibliography]
 
 \chapter{Reference for rule library}
 \label{chap:referenceforrulelibrarytwo}
 
+\epigraph{\emph{I first saw the \TeX book lying beside a brand new Macintosh Plus back in 1985 and was instantly amazed by both.}}{Enrico Gregorio}
+
+This chapter presents a list of built-in functions of \arara available in the rule context, as well as some notes on expansion. These functions have to be used always inside an orb tag, that is, |@{ <function> }|, in order to properly work, since they are written for the MVEL expression language.
+
 \section{Functions}
 \label{sec:functions}
+
+\arara features some functions in order to ease trivial tasks during the writing process of a rule. In this section, we will present a list of these functions, including their parameters and return value.
+
+\subsection*{getOriginalFile}
+
+\begin{description}
+\item[Syntax] |string getOriginalFile()|
+\item[Description] Returns the original file reference processed by \arara as |string|.
+\end{description}
+
+\subsection*{isEmpty}
+
+\begin{description}
+\item[Syntax] |boolean isEmpty(string s)|
+\item[Description] Checks if |s| is empty and returns a |boolean| value: |true| if |s| is empty, |false| otherwise.
+\end{description}
+
+\begin{description}
+\item[Syntax] |string isEmpty(string s1, string s2)|
+\item[Description] Checks if |s1| is empty and returns a |string| value: |s2| if |s1| is empty, or an empty |string| otherwise.
+\end{description}
+
+\begin{description}
+\item[Syntax] |string isEmpty(string s1, string s2, string s3)|
+\item[Description] Checks if |s1| is empty and returns a |string| value: |s2| if |s1| is empty, or |s3| otherwise.
+\end{description}
+
+\subsection*{isNotEmpty}
+
+\begin{description}
+\item[Syntax] |boolean isNotEmpty(string s)|
+\item[Description] Checks if |s| is not empty and returns a |boolean| value: |true| if |s| is not empty, |false| otherwise.
+\end{description}
+
+\begin{description}
+\item[Syntax] |string isNotEmpty(string s1, string s2)|
+\item[Description] Checks if |s1| is not empty and returns a |string| value: |s2| if |s1| is not empty, or an empty |string| otherwise.
+\end{description}
+
+\begin{description}
+\item[Syntax] |string isNotEmpty(string s1, string s2, string s3)|
+\item[Description] Checks if |s1| is not empty and returns a |string| value: |s2| if |s1| is not empty, or |s3| otherwise.
+\end{description}
+
+\subsection*{isTrue}
+
+\begin{description}
+\item[Syntax] |boolean isTrue(string s)|
+\item[Description] Checks if |s| has any of the values in the \arara context that are considered |true| -- |true|, |yes|, |y| and |1| -- and returns a |boolean| value: |true| if |s| has a valid |true| value, or |false| otherwise.
+\end{description}
+
+\begin{description}
+\item[Syntax] |string isTrue(string s1, string s2)|
+\item[Description] Checks if |s1| has any of the values in the \arara context that are considered |true| -- |true|, |yes|, |y| and |1| -- and returns a |string| value: |s2| if |s1| has a valid |true| value, or an empty |string| otherwise.
+\end{description}
+
+\begin{description}
+\item[Syntax] |string isTrue(string s1, string s2, string s3)|
+\item[Description] Checks if |s1| has any of the values in the \arara context that are considered |true| -- |true|, |yes|, |y| and |1| -- and returns a |string| value: |s2| if |s1| has a valid |true| value, or |s3| otherwise.
+\end{description}
+
+\begin{description}
+\item[Syntax] |string isTrue(string s1, string s2, string s3, string s4)|
+\item[Description] Checks if |s1| has any of the values in the \arara context that are considered |true| -- |true|, |yes|, |y| and |1| -- and returns a |string| value: |s2| if |s1| has a valid |true| value, |s3| if |s1| has any of the values in the \arara context that are considered |false| -- |false|, |no|, |n| and |0| -- or |s4| otherwise as a default fallback.
+\end{description}
+
+\begin{description}
+\item[Syntax] |string isTrue(boolean b, string s)|
+\item[Description] Returns |s| if |b| is |true|, or an empty |string| otherwise.
+\end{description}
+
+\begin{description}
+\item[Syntax] |string isTrue(boolean b, string s1, string s2)|
+\item[Description] Returns |s1| if |b| is |true|, or |s2| otherwise.
+\end{description}
+
+\subsection*{isFalse}
+
+\begin{description}
+\item[Syntax] |boolean isFalse(string s)|
+\item[Description] Checks if |s| has any of the values in the \arara context that are considered |false| -- |false|, |no|, |n| and |0| -- and returns a |boolean| value: |true| if |s| has a valid |false| value, or |false| otherwise.
+\end{description}
+
+\begin{description}
+\item[Syntax] |string isFalse(string s1, string s2)|
+\item[Description] Checks if |s1| has any of the values in the \arara context that are considered |false| -- |false|, |no|, |n| and |0| -- and returns a |string| value: |s2| if |s1| has a valid |false| value, or an empty |string| otherwise.
+\end{description}
+
+\begin{description}
+\item[Syntax] |string isFalse(string s1, string s2, string s3)|
+\item[Description] Checks if |s1| has any of the values in the \arara context that are considered |false| -- |false|, |no|, |n| and |0| -- and returns a |string| value: |s2| if |s1| has a valid |false| value, or |s3| otherwise.
+\end{description}
+
+\begin{description}
+\item[Syntax] |string isFalse(string s1, string s2, string s3, string s4)|
+\item[Description] Checks if |s1| has any of the values in the \arara context that are considered |false| -- |false|, |no|, |n| and |0| -- and returns a |string| value: |s2| if |s1| has a valid |false| value, |s3| if |s1| has any of the values in the \arara context that are considered |true| -- |true|, |yes|, |y| and |1| -- or |s4| otherwise as a default fallback.
+\end{description}
+
+\begin{description}
+\item[Syntax] |string isFalse(boolean b, string s)|
+\item[Description] Returns |s| if |b| is |false|, or an empty |string| otherwise.
+\end{description}
+
+\begin{description}
+\item[Syntax] |string isFalse(boolean b, string s1, string s2)|
+\item[Description] Returns |s1| if |b| is |false|, or |s2| otherwise.
+\end{description}
+
+\subsection*{trimSpaces}
+
+\begin{description}
+\item[Syntax] |string trimSpaces(string s)|
+\item[Description] Returns |s| with the trailing and leading spaces trimmed.
+\end{description}
+
+\subsection*{getFilename}
+
+\begin{description}
+\item[Syntax] |string getFilename(string s)|
+\item[Description] This function takes a file path in the form of a |string| and returns a |string| containing only the file name, or an empty |string| in case of error.
+\end{description}
+
+\subsection*{getBasename}
+
+\begin{description}
+\item[Syntax] |string getBasename(string s)|
+\item[Description] Returns the base name of |s| as a |string|, that is, the file name without the extension, or an empty |string| in case of error.
+\end{description}
+
+\subsection*{getFiletype}
+
+\begin{description}
+\item[Syntax] |string getFiletype(string s)|
+\item[Description] Returns the file type of |s| as a |string|, that is, the extension of the file name, or an empty |string| in case of error.
+\end{description}
+
+\subsection*{getDirname}
+
+\begin{description}
+\item[Syntax] |string getDirname(string s)|
+\item[Description] This function takes a file path in the form of a |string| and returns a |string| containing only the directory structure without the file name, or an empty |string| in case of error.
+\end{description}
+
+\subsection*{isFile}
+
+\begin{description}
+\item[Syntax] |boolean isFile(string s)|
+\item[Description] Returns |true| if |s| is a valid reference to a file, or |false| otherwise.
+\end{description}
+
+\subsection*{isDir}
+
+\begin{description}
+\item[Syntax] |boolean isDir(string s)|
+\item[Description] Returns |true| if |s| is a valid reference to a directory, or |false| otherwise.
+\end{description}
+
+\subsection*{isWindows}
+
+\begin{description}
+\item[Syntax] |string isWindows(string s1, string s2)|
+\item[Description] Returns |s1| if \arara is running in a Windows operating system, or |s2| otherwise.
+\end{description}
+
+\subsection*{isLinux}
+
+\begin{description}
+\item[Syntax] |string isLinux(string s1, string s2)|
+\item[Description] Returns |s1| if \arara is running in a Linux operating system, or |s2| otherwise.
+\end{description}
+
+\subsection*{isUnix}
+
+\begin{description}
+\item[Syntax] |string isUnix(string s1, string s2)|
+\item[Description] Returns |s1| if \arara is running in a Unix operating system, or |s2| otherwise.
+\end{description}
+
+\subsection*{isMac}
+
+\begin{description}
+\item[Syntax] |string isMac(string s1, string s2)|
+\item[Description] Returns |s1| if \arara is running in a Mac operating system, or |s2| otherwise.
+\end{description}
+
+All the functions described are available in the rule context and can be concatenated in order to create more complex checkings.
 
 \section{Notes on expansion}
 \label{sec:notesonexpansion}
 
+It's important to observe that \arara always try to rely on a smooth fallback to empty strings in case of function errors or unused arguments. This approach allows the application to not halt in case of a recoverable situation. If, for example, \arara finds an empty command to execute -- like in the |clean| rule presented in Code~\ref{code:cleanfour} when |files| isn't used -- the task is simply ignored. That way, we can make more robust rules without worrying too much with expansion.
+
+Remember that \arara basically deals with string values, and some times, with boolean operations. We decided to stick with those two types because of simplicity. Taking care of string comparisons, using the built-in functions and limiting the scope of the command is sufficient to write good rules.
+
 \part{Structure and execution}
+\label{part:structureandexecution}
 
 \chapter{Inside the rule format}
+\label{chap:insidetheruleformat}
+
 \section{Available fields}
 \section{Expansion order}
 \section{Processing rules}
