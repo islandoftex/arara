@@ -832,7 +832,7 @@ please do not close the terminal! It might end the all running processes, includ
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[scale=0.5]{figures/install-langsel.png}
+\includegraphics[scale=0.5]{figures/installer/install-langsel.png}
 \caption{Language selection screen.}
 \label{fig:instlang}
 \end{figure}
@@ -849,7 +849,7 @@ harmed, killed or severely wounded during the making of this user manual. After 
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[scale=0.5]{figures/install-welcome.png}
+\includegraphics[scale=0.5]{figures/installer/install-welcome.png}
 \caption{Welcome screen.}
 \label{fig:instwelcome}
 \end{figure}
@@ -867,7 +867,7 @@ required.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[scale=0.5]{figures/install-packs.png}
+\includegraphics[scale=0.5]{figures/installer/install-packs.png}
 \caption{Packs screen.}
 \label{fig:instpacks}
 \end{figure}
@@ -912,7 +912,7 @@ about it later, in Section~\ref{sec:uninstallingarara}.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[scale=0.5]{figures/install-license.png}
+\includegraphics[scale=0.5]{figures/installer/install-license.png}
 \caption{License agreement screen.}
 \label{fig:instlicense}
 \end{figure}
@@ -939,7 +939,7 @@ Unix & |/usr/local/arara|\\
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[scale=0.5]{figures/install-path.png}
+\includegraphics[scale=0.5]{figures/installer/install-path.png}
 \caption{Installation path screen.}
 \label{fig:instpath}
 \end{figure}
@@ -950,7 +950,7 @@ defined in the installation path screen (Figure~\ref{fig:instpath}) will be refe
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[scale=0.5]{figures/install-pathwarning.png}
+\includegraphics[scale=0.5]{figures/installer/install-pathwarning.png}
 \caption{Target directory confirmation.}
 \label{fig:instnewfolder}
 \end{figure}
@@ -962,14 +962,14 @@ the installer congratulating us for installing \arara (Figure~\ref{fig:instfinis
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[scale=0.5]{figures/install-progress.png}
+\includegraphics[scale=0.5]{figures/installer/install-progress.png}
 \caption{Progress screen.}
 \label{fig:instprogress}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[scale=0.5]{figures/install-finish.png}
+\includegraphics[scale=0.5]{figures/installer/install-finish.png}
 \caption{Final screen.}
 \label{fig:instfinish}
 \end{figure}
@@ -1166,7 +1166,7 @@ do not close the terminal! It might end the all running processes, including our
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[scale=0.5]{figures/uninstall-welcome.png}
+\includegraphics[scale=0.5]{figures/installer/uninstall-welcome.png}
 \caption{The uninstaller screen.}
 \label{fig:uninstallone}
 \end{figure}
@@ -1178,7 +1178,7 @@ but that's all. By clicking the \textit{Uninstall} button, the uninstaller will 
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[scale=0.5]{figures/uninstall-finish.png}
+\includegraphics[scale=0.5]{figures/installer/uninstall-finish.png}
 \caption{The uninstaller screen, after the execution.}
 \label{fig:uninstalltwo}
 \end{figure}
@@ -1342,7 +1342,7 @@ just open the program and click in \textit{Edit} $\rightarrow$ \textit{Preferenc
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[scale=0.5]{figures/texworks-prefs.png}
+\includegraphics[scale=0.5]{figures/texworks/texworks-prefs.png}
 \caption{Opening the preferences screen in \TeX works.}
 \label{fig:texworkspref}
 \end{figure}
@@ -1353,7 +1353,7 @@ list -- the processing tools -- click the \textit{Plus (+)} button to add anothe
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[scale=0.5]{figures/texworks-add.png}
+\includegraphics[scale=0.5]{figures/texworks/texworks-add.png}
 \caption{The \TeX works preferences screen.}
 \label{fig:texworksprefscreen}
 \end{figure}
@@ -1364,7 +1364,7 @@ what to type in each field. When done, just click \textit{OK} and our new tool w
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[scale=0.5]{figures/texworks-arara.png}
+\includegraphics[scale=0.5]{figures/texworks/texworks-arara.png}
 \caption{The new tool screen.}
 \label{fig:texworksarara}
 \end{figure}
@@ -1408,7 +1408,7 @@ Just click \textit{OK} to confirm the new addition. Congratulations, now \arara 
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[scale=0.5]{figures/texworks-profile.png}
+\includegraphics[scale=0.5]{figures/texworks/texworks-profile.png}
 \caption{Using \arara in the \TeX works compilation profile.}
 \label{fig:texworksprofile}
 \end{figure}
@@ -1416,13 +1416,160 @@ Just click \textit{OK} to confirm the new addition. Congratulations, now \arara 
 And we are done, \arara is now integrated with \TeX works! Just make sure to select the correct profile when running the compilation
 process.
 
-\section{\texorpdfstring{\TeX nic Center}{TeXnic Center}}
-\section{Kile}
-\section{\texorpdfstring{\TeX maker}{TeXmaker}}
-\section{\texorpdfstring{\TeX studio}{TeXstudio}}
 \section{WinEdt}
+\label{sec:winedt}
+
+The following procedure is kindly provided by Harish Kumar. It's very easy to integrate \arara with WinEdt, let's take a look at the steps.
+
+\subsection{Getting images for icons and toolbar}
+
+WinEdt uses $16 \times 16$ |.png| images for menu items, the toolbar and the tree control. They are available in \texttt{\%B\textbackslash Bitmaps\textbackslash Images}\footnote{\texttt{\%B} maps to \texttt{C:\textbackslash Program Files\textbackslash WinEdt Team\textbackslash WinEdt 7} for default installation.} folder and they are automatically loaded on startup or later through the \textit{Options Interface} (or |ReloadImages| macro function). Restricted users can place additional images in their \texttt{\%b\textbackslash Bitmaps\textbackslash Images}\footnote{\texttt{\%b} maps to \texttt{C:\textbackslash Users\textbackslash <username>\textbackslash AppData\textbackslash Roaming\textbackslash WinEdt Team\textbackslash WinEdt 7} for default installation} folder. At the moment all images have a $16\times16$ dimension and use 32-bit transparent |.png| format.
+
+The images for the \arara toolbar can be downloaded from the \href{http://github.com/cereda/arara/downloads}{downloads area} of the project repository. It would suffice to have a $16 \times 16$ |.png| image for WinEdt v7 while for WinEdt v6, one has to use $16 \times 16$ |.bmp| image. The downloaded images must be copied to \texttt{\%B\textbackslash Bitmaps\textbackslash Images} or \texttt{\%b\textbackslash Bitmaps\textbackslash Images} (depending upon the admin privileges). Once copied, WinEdt has to be restarted to load the images. Now the images should be available for use.
+
+\subsection{Adding a menu entry}
+
+The following steps describe how to add a menu entry for \arara in WinEdt v6 and v7.
+
+\begin{enumerate}
+\item Go to \textit{Options $\rightarrow$ Options Interface}. A side window will appear on the left side as shown in Figure~\ref{fig:optionsinterface}.
+\item From the \textit{Menus and Toolbar} drop down list, select \textit{Main Menu} and double click to open the file |Main Menu.ini|.
+\item In the |Main Menu.ini| file, type the code presented in Code~\ref{code:mainmenuwinedt} somewhere in the file.
+\item Save the file. Now the current script has to be loaded by clicking the \textit{Load current script} button, which is the first button in the tool bar in \textit{Options Interface} window shown in Figure~\ref{fig:optionsinterface}.
+\item Now in the WinEdt \textit{\TeX} menu, a submenu called \textit{Arara} should be visible and functional (Figure~\ref{fig:winedtmenu}).
+\item From the \textit{Menus and Toolbar} drop down list, select \textit{Toolbar} and double click to open the file |Toolbar.ini|.
+\item In the |Toolbar.ini| file, type the following line, somewhere in the file: |BUTTON="arara"|.
+\item Save the file |Toolbar.ini|. Now the current script has to be loaded by clicking the \textit{Load current script} button, which is the first button in the tool bar in \textit{Options Interface} window (Figure~\ref{fig:optionsinterface}).
+\item Now a button for \arara should be visible as shown in Figure~\ref{fig:wineditararabutton}.
+\end{enumerate}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.4\textwidth]{figures/winedt/winedt-optionsinterface.png}
+\caption{The \textit{Options Interface} window in WinEdt.}
+\label{fig:optionsinterface}
+\end{figure}
+
+\begin{code}[htbp]
+\caption{Adding an entry to \arara in \mycmd{Main Menu.ini}.}
+\label{code:mainmenuwinedt}
+\begin{lstlisting}[basicstyle=\footnotesize\ttfamily, columns=flexible, showspaces=false, breaklines=true]
+ITEM="Arara"
+CAPTION="Arara"
+IMAGE="arara16"
+SAVE_INPUT=1
+MACRO=:RunConsole('arara "\%F"','\%P','arara...');
+REQ_FILTER=:"\%!M=TeX"|"\%!M=TeX:STY"|"\%!M=TeX:AUX"
+\end{lstlisting}
+\end{code}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.7\textwidth]{figures/winedt/winedt-menu.png}
+\caption{The WinEdt \textit{\TeX} menu.}
+\label{fig:winedtmenu}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.5\textwidth]{figures/winedt/winedt-ararabutton.png}
+\caption{The \arara button in WinEdt.}
+\label{fig:wineditararabutton}
+\end{figure}
+
+And we are done! \arara is successfully integrated in WinEdt. Now you can add directives to your files and click the buttons to trigger the execution.
+
 \section{Inlage}
+\label{sec:inlage}
+
+The following procedure is kindly provided by Harish Kumar. It's very easy to integrate \arara with Inlage, let's take a look at the steps.
+
+\subsection{Inlage v4}
+
+The following steps describe how to add a menu entry for \arara in Inlage v4. It's an easy procedure.
+
+\begin{enumerate}
+\item Go to \textit{Build $\rightarrow$ User Commands}. A window named \textit{Edit Commands} will appear as shown in Figure~\ref{fig:inlageeditcommands}.
+\item Now press the \textit{Plus (+)} button to get the \textit{Add Command} window as shown in Figure~\ref{fig:inlageaddcommand}.
+\item Under the \textit{Name} textfield, type |arara| and under the \textit{Command Line} textarea, type |arara \%f|. Now the new configuration should be saved using the \textit{Save} button. Now an entry for \arara should be visible as seen in Figure~\ref{fig:inlagelistarara}.
+\item These settings must be then updated using the \textit{Update} button in the \textit{Edit Commands} window shown in Figure~\ref{fig:inlageeditcommands}.
+\item Now a menu entry for \arara should be visible in \textit{Build $\rightarrow$ Execute $\rightarrow$ arara}.
+\end{enumerate}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.4\textwidth]{figures/inlage/inlage-editcommands.png}
+\caption{The \textit{Edit Commands} window in Inlage.}
+\label{fig:inlageeditcommands}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.5\textwidth]{figures/inlage/inlage-addcommand.png}
+\caption{The \textit{Add Command} window in Inlage.}
+\label{fig:inlageaddcommand}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.4\textwidth]{figures/inlage/inlage-listarara.png}
+\caption{\arara added to the \textit{Edit Commands} window in Inlage.}
+\label{fig:inlagelistarara}
+\end{figure}
+
+That's it, \arara is now successfully integrated in Inlage v4. Have fun!
+
+\subsection{Inlage v5}
+
+The following steps describe how to add a menu entry for \arara in Inlage v5. It's an easy procedure.
+
+\begin{enumerate}
+\item Go to \textit{Build $\rightarrow$ Compiler Options\ldots}. A \textit{Settings} window will appear as shown in Figure~\ref{fig:inlagesettings}.
+\item Under \textit{Profiles}, create a new profile clicking the \textit{New} button. A new window will open; now let's type the name for the new profile as |arara|, as shown in Figure~\ref{fig:inlagenewprofile}. Now press \textit{Okay}.
+\item Under \textit{Compiler Order}, press \textit{Add Compiler}, as shown in Figure~\ref{fig:inlageaddcompiler}.
+\item Under \textit{Binaries}, change the following:
+\begin{enumerate}
+\item In \textit{Implementation}, choose \textit{Custom}.
+\item In \textit{Binary Name}, choose the executable for \arara using the \textit{Browse} button.
+\item In \textit{Parameters}, you can choose the parameters, such as |--verbose|.
+\item In \textit{Target File}, choose \textit{Active File/Masterfile}.
+\end{enumerate}
+\item Save these settings. After the previous steps, you should get a menu for \arara in Inlage v5 as seen in Figure~\ref{fig:inlageararamenu}.
+\end{enumerate}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.7\textwidth]{figures/inlage/inlage-settings.png}
+\caption{The \textit{Settings} window in Inlage.}
+\label{fig:inlagesettings}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.7\textwidth]{figures/inlage/inlage-newprofile.png}
+\caption{Adding a new profile in Inlage.}
+\label{fig:inlagenewprofile}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.7\textwidth]{figures/inlage/inlage-addcompiler.png}
+\caption{Adding a compiler in Inlage.}
+\label{fig:inlageaddcompiler}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.7\textwidth]{figures/inlage/inlage-araramenu.png}
+\caption{\arara added to the menu in Inlage.}
+\label{fig:inlageararamenu}
+\end{figure}
+
+That's it, \arara is successfully integrated with Inlage v5. Have fun!
+
 \section{\texorpdfstring{\TeX Shop}{TeXShop}}
+\section{\texorpdfstring{\TeX nic Center}{TeXnic Center}}
+\label{sec:texniccenter}
 
 \printbibliography[heading=subbibliography]
 
