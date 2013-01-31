@@ -1596,6 +1596,35 @@ arara "$1"
 \section{\texorpdfstring{\TeX nic Center}{TeXnic Center}}
 \label{sec:texniccenter}
 
+\TeX nic Center has also an easy integration with \arara. The first step is to go to \textit{Build $\rightarrow$ Define Output Profiles\ldots}. The \textit{Profiles} window should open, as shown in Figure~\ref{fig:txnprofiles}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.8\textwidth]{figures/texniccenter/texniccenter-profiles.png}
+\caption{The \textit{Profiles} window in \TeX nic Center.}
+\label{fig:txnprofiles}
+\end{figure}
+
+Let's now create a new profile! Click the \textit{Add} button. A window will pop up and ask for the new profile name (Figure~\ref{fig:txnnewprofile}). Type |arara| as the profile name and click \textit{OK}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.7\textwidth]{figures/texniccenter/texniccenter-newprofile.png}
+\caption{Creating a new profile in \TeX nic Center.}
+\label{fig:txnnewprofile}
+\end{figure}
+
+The last step is the easiest one. With the |arara| profile selected, check the box which says \textit{Run (La)\TeX in this profile}, then enter the full path to |arara| in the textbox named \textit{Path to the (La)\TeX compiler} and write |--log --verbose "%wm"| in the texbox named \textit{Command line arguments to pass to the compiler}; click \textit{OK}, as shown in Figure~\ref{fig:txnsettings}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.8\textwidth]{figures/texniccenter/texniccenter-config.png}
+\caption{Configuring \arara in \TeX nic Center.}
+\label{fig:txnsettings}
+\end{figure}
+
+That's it, now \arara is integrated with \TeX nic Center! Just make sure to select |arara| in the dropdown list of available profiles.
+
 \printbibliography[heading=subbibliography]
 
 \chapter{Important concepts}
