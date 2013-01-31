@@ -1568,6 +1568,31 @@ The following steps describe how to add a menu entry for \arara in Inlage v5. It
 That's it, \arara is successfully integrated with Inlage v5. Have fun!
 
 \section{\texorpdfstring{\TeX Shop}{TeXShop}}
+\label{sec:texshop}
+
+Integrating \arara with \TeX shop is probably one of the easiest procedures. Simply open your terminal, go to |~/Library/TeXShop/Engines| and create a file named |arara.engine| with the content presented in Code~\ref{code:texshopcode}.
+
+Now, we need to add execute permissions to our newly created file. A simple |chmod +x arara.engine| will do the trick. Now, open \TeX shop and you will see \arara available for use in the list of engines (Figure~\ref{fig:texshop}).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.8\textwidth]{figures/texshop/texshop-arara.png}
+\caption{\arara available in \TeX shop.}
+\label{fig:texshop}
+\end{figure}
+
+No more steps are needed, \arara is successfully deployed in \TeX shop. If you want to remove \arara from \TeX shop, just remove |arara.engine| from the |Engines| directory.
+
+\begin{code}[htbp]
+\caption{\mycmd{arara.engine}}
+\label{code:texshopcode}
+\begin{bash}
+#!/bin/bash
+export PATH=/usr/texbin:/usr/local/bin:${PATH}
+arara "$1"
+\end{bash}
+\end{code}
+
 \section{\texorpdfstring{\TeX nic Center}{TeXnic Center}}
 \label{sec:texniccenter}
 
