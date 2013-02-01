@@ -1,0 +1,10 @@
+#!/bin/bash
+native2ascii -encoding utf8 Messages.input ../application/src/main/resources/com/github/arara/localization/Messages.properties
+native2ascii -encoding utf8 Messages_de.input ../application/src/main/resources/com/github/arara/localization/Messages_de.properties
+native2ascii -encoding utf8 Messages_es.input ../application/src/main/resources/com/github/arara/localization/Messages_es.properties
+native2ascii -encoding utf8 Messages_fr.input ../application/src/main/resources/com/github/arara/localization/Messages_fr.properties
+native2ascii -encoding utf8 Messages_it.input ../application/src/main/resources/com/github/arara/localization/Messages_it.properties
+native2ascii -encoding utf8 Messages_pt_BR.input ../application/src/main/resources/com/github/arara/localization/Messages_pt_BR.properties
+native2ascii -encoding utf8 Messages_ru.input ../application/src/main/resources/com/github/arara/localization/Messages_ru.properties
+native2ascii -encoding utf8 Messages_tr.input ../application/src/main/resources/com/github/arara/localization/Messages_tr.properties
+rm ../application/src/main/resources/com/github/arara/localization/dummy

@@ -120,7 +120,7 @@ public class AraraLocalization {
     public void refresh() {
 
         // clear cache and reload the resource bundle
-        ResourceBundle.clearCache();
+        // ResourceBundle.clearCache(); // not supported by Java 5
         resources = ResourceBundle.getBundle("com.github.arara.localization.Messages");
     }
 }
