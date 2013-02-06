@@ -486,7 +486,6 @@ public class TaskDeployer {
             }
             
             // check if it's a valid command
-            // if (!commandTemplate.trim().isEmpty()) { // not compatible with Java 5
             if (!"".equals(commandTemplate.trim())) {
 
                 // create a new command
