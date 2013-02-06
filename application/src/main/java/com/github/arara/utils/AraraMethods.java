@@ -82,7 +82,6 @@ public class AraraMethods {
      * @return A logical value according to the condition.
      */
     public static boolean isEmpty(String string) {
-        // return string.isEmpty(); // not compatible with Java 5
         return "".equals(string);
     }
 
@@ -93,7 +92,6 @@ public class AraraMethods {
      * @return A logical value according to the condition.
      */
     public static boolean isNotEmpty(String string) {
-        //return !string.isEmpty();
         return !"".equals(string);
     }
 
@@ -105,7 +103,6 @@ public class AraraMethods {
      * @return A string according the condition.
      */
     public static String isEmpty(String string, String ifTrue) {
-        // return (string.isEmpty() ? ifTrue : string); // not compatible with Java 5
         return ("".equals(string) ? ifTrue : string);
     }
 
@@ -117,7 +114,6 @@ public class AraraMethods {
      * @return A string according the condition.
      */
     public static String isNotEmpty(String string, String ifTrue) {
-        // return (!string.isEmpty() ? ifTrue : string); // not compatible with Java 5
         return (!"".equals(string) ? ifTrue : string);
     }
 
@@ -130,7 +126,6 @@ public class AraraMethods {
      * @return A string according the condition.
      */
     public static String isEmpty(String string, String ifTrue, String ifFalse) {
-        // return (string.isEmpty() ? ifTrue : ifFalse); // not compatible with Java 5
         return ("".equals(string) ? ifTrue : ifFalse);
     }
 
@@ -143,7 +138,6 @@ public class AraraMethods {
      * @return A string according the condition.
      */
     public static String isNotEmpty(String string, String ifTrue, String ifFalse) {
-        // return (!string.isEmpty() ? ifTrue : ifFalse); // not compatible with Java 5
         return (!"".equals(string) ? ifTrue : ifFalse);
     }
 
