@@ -192,7 +192,8 @@ public class DirectiveExtractor {
             currentLine = (currentLine.substring(matcher.end(), currentLine.length())).trim();
             
             // there is actually something after the keyword
-            if (!currentLine.isEmpty()) {
+            // if (!currentLine.isEmpty()) { // not compatible with Java 5
+            if (!"".equals(currentLine)) {
 
                 // log directive
                 logger.trace(localization.getMessage("Log_DirectiveFound", currentLineNumber, currentLine));
