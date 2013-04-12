@@ -1,0 +1,13 @@
+!config
+# DVIPS rule for arara
+# author: Marco Daniel
+# requires arara 3.0+
+identifier: dvipdfmx
+name: XDVIPDFMX
+command: <arara> xdvipdfmx "@{getBasename(file)}.dvi" -o "@{output}.ps" @{options}
+arguments:
+- identifier: output
+  flag: <arara> @{parameters.output}
+  default: <arara> @{getBasename(file)}
+- identifier: options
+  flag: <arara> @{parameters.options}
