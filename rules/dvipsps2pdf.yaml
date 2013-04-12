@@ -1,0 +1,17 @@
+!config
+# DVIPS rule for arara
+# author: Marco Daniel
+# requires arara 3.0+
+identifier: dvipsps2pdf
+name: DVIPS-PS2PDF
+commands: 
+    - <arara> dvips "@{getBasename(file)}.dvi" -o "@{getBasename(file)}.ps" @{dvipsoptions} 
+    - <arara> ps2pdf @{ps2pdfoptions} "@{getBasename(file)}.ps" "@{output}.pdf"
+arguments:
+- identifier: output
+  flag: <arara> @{parameters.output}
+  default: <arara> @{getBasename(file)}
+- identifier: dvipsoptions
+  flag: <arara> @{parameters.options}
+- identifier: ps2pdfoptions
+  flag: <arara> @{parameters.options}
