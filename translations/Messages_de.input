@@ -90,7 +90,7 @@ Help_Help = Ausgabe der Hilfe.
 Help_Log = Erstelle eine Protokolldatei (.log-Datei).
 
 # Help_Verbose = print the command output
-Help_Verbose = Zeige das Protokoll der Anweisungen im Terminal an.
+Help_Verbose = Gebe das Protokoll der Anweisungen aus.
 
 # Help_Timeout = set the execution timeout (in milliseconds)
 Help_Timeout = Deklariere die Zeitbeschränkung je Anweisung (in Millisekunden).
@@ -141,7 +141,7 @@ Error_FileDoesNotExist = Datei ''{0}'' existiert nicht.
 Error_CommandNotFound = Es tut mir Leid, aber die Anweisung der Aufgabe ''{0}'' konnte nicht gefunden werden. Bist du dir sicher, dass die Anweisung ''{1}'' korrekt oder über die Systempfade zugänglich ist?
 
 # Error_InvalidYAMLConfigurationFile = I'm sorry, but apparently your arara configuration file is invalid, that is, it has invalid or missing YAML entries. Unfortunately, arara cannot proceed until the error is fixed. I tried my best to dump the error message, so here it is:
-Error_InvalidYAMLConfigurationFile =  Es tut mir Leid, aber deine arara Konfigurationsdatei ist unzulässig. Dies kann aus  einem unzulässigen oder fehlenden YAML Eintrag resultieren.
+Error_InvalidYAMLConfigurationFile =  Es tut mir Leid, aber deine arara Konfigurationsdatei ist unzulässig. Dies kann aus einem unzulässigen oder fehlenden YAML Eintrag resultieren. Ich versuchte mein besten, um einen Auszug der Fehlermeldung zu machen. Hier ist es:
 
 # Error_InvalidConfigurationFile = Uh-oh, the configuration file appears to be invalid. Are you sure it's a proper YAML file? Unfortunately, arara cannot proceed until a proper configuration file is provided.
 Error_InvalidConfigurationFile = Uh-oh, die Konfigurationsdatei scheint unzulässig zu sein. Bist du dir sicher, dass es sich um eine korrekt erstellte YAML-Datei handelt? Leider kann arara nicht fortsetzen, bis eine passende Konfigurationsdatei bereitgestellt wird.
