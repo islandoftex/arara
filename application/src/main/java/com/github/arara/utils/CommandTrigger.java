@@ -100,7 +100,7 @@ public class CommandTrigger {
             // we  are not in dry-run mode,
             // so let' execute the commands
             if (dryRun == false) {
-
+                
                 // set the current value of the file for
                 // this command, it might be overriden by
                 // a directive argument
