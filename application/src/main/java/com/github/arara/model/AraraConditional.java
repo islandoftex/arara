@@ -10,9 +10,6 @@ public class AraraConditional {
 
     // the conditional type
     private AraraConditionalType type;
-    // a flag indicating if there is
-    // any conditional set
-    private boolean empty;
     // the condition itself, to
     // be evaluated later
     private String condition;
@@ -23,7 +20,6 @@ public class AraraConditional {
     public AraraConditional() {
         
         // set the default values
-        empty = true;
         condition = "";
         type = AraraConditionalType.NONE;
     }
@@ -53,16 +49,7 @@ public class AraraConditional {
      * conditional structure.
      */
     public boolean isEmpty() {
-        return empty;
-    }
-
-    /**
-     * Setter for the empty flag.
-     *
-     * @param empty A boolean value.
-     */
-    public void setEmpty(boolean empty) {
-        this.empty = empty;
+        return condition.trim().equals("");
     }
 
     /**
@@ -82,7 +69,6 @@ public class AraraConditional {
     public void setCondition(String value) {
         
         // set values
-        empty = false;
         condition = value;
     }
     
