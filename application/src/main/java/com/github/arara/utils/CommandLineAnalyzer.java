@@ -89,7 +89,7 @@ public class CommandLineAnalyzer {
         Option optDryRun = new Option("n", "dry-run", false, localization.getMessage("Help_DryRun"));
         
         // create the option for the number of loops
-        Option optMaxNumberLoops = new Option("m", "max-loops", false, localization.getMessage("Help_MaximumNumberOfLoops"));
+        Option optMaxNumberLoops = new Option("m", "max-loops", true, localization.getMessage("Help_MaximumNumberOfLoops"));
 
         // add version
         commandLineOptions.addOption(optVersion);
