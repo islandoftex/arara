@@ -1,42 +1,3 @@
-/**
- * \cond LICENSE
- * Arara -- the cool TeX automation tool
- * Copyright (c) 2012, Paulo Roberto Massa Cereda
- * All rights reserved.
- *
- * Redistribution and  use in source  and binary forms, with  or without
- * modification, are  permitted provided  that the  following conditions
- * are met:
- *
- * 1. Redistributions  of source  code must  retain the  above copyright
- * notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form  must reproduce the above copyright
- * notice, this list  of conditions and the following  disclaimer in the
- * documentation and/or other materials provided with the distribution.
- *
- * 3. Neither  the name  of the  project's author nor  the names  of its
- * contributors may be used to  endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS  PROVIDED BY THE COPYRIGHT  HOLDERS AND CONTRIBUTORS
- * "AS IS"  AND ANY  EXPRESS OR IMPLIED  WARRANTIES, INCLUDING,  BUT NOT
- * LIMITED  TO, THE  IMPLIED WARRANTIES  OF MERCHANTABILITY  AND FITNESS
- * FOR  A PARTICULAR  PURPOSE  ARE  DISCLAIMED. IN  NO  EVENT SHALL  THE
- * COPYRIGHT HOLDER OR CONTRIBUTORS BE  LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY,  OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT  NOT LIMITED  TO, PROCUREMENT  OF SUBSTITUTE  GOODS OR  SERVICES;
- * LOSS  OF USE,  DATA, OR  PROFITS; OR  BUSINESS INTERRUPTION)  HOWEVER
- * CAUSED AND  ON ANY THEORY  OF LIABILITY, WHETHER IN  CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
- * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
- * POSSIBILITY OF SUCH DAMAGE.
- * \endcond
- * 
- * ConfigurationLoader: This class provides an object handler for the arara
- * configuration file.
- */
-// package definition
 package com.github.arara.utils;
 
 // needed imports
@@ -60,8 +21,7 @@ import org.yaml.snakeyaml.representer.Representer;
  * Provides an object handler for the arara configuration file.
  *
  * @author Paulo Roberto Massa Cereda
- * @version 3.0
- * @since 3.0
+ * @version 4.0
  */
 public class ConfigurationLoader {
 
@@ -76,6 +36,7 @@ public class ConfigurationLoader {
     // the chosen pattern
     private AraraFilePattern chosenFilePattern;
     // the localization class
+    /** Constant <code>localization</code> */
     final static AraraLocalization localization = AraraLocalization.getInstance();
 
     /**
@@ -100,8 +61,8 @@ public class ConfigurationLoader {
      * Loads the configuration settings, either the default setup or through the
      * configuration file.
      *
-     * @throws Exception An exception is thrown if something unexpected happens
-     * during the execution of this method.
+     * @throws java.lang.Exception An exception is thrown if something
+     * unexpected happens during the execution of this method.
      */
     public void load() throws Exception {
 
@@ -110,17 +71,27 @@ public class ConfigurationLoader {
         // for .tex files
         AraraFilePattern texPattern = new AraraFilePattern();
         texPattern.setExtension("tex");
-        texPattern.setPattern("^(\\s)*%\\s+");
+        texPattern.setPattern("^\\s*%\\s+");
 
         // for .dtx files
         AraraFilePattern dtxPattern = new AraraFilePattern();
         dtxPattern.setExtension("dtx");
-        dtxPattern.setPattern("^(\\s)*%\\s+");
+        dtxPattern.setPattern("^\\s*%\\s+");
 
         // for .ltx files
         AraraFilePattern ltxPattern = new AraraFilePattern();
         ltxPattern.setExtension("ltx");
-        ltxPattern.setPattern("^(\\s)*%\\s+");
+        ltxPattern.setPattern("^\\s*%\\s+");
+
+        // for .drv files
+        AraraFilePattern drvPattern = new AraraFilePattern();
+        drvPattern.setExtension("drv");
+        drvPattern.setPattern("^\\s*%\\s+");
+
+        // for .ins files
+        AraraFilePattern insPattern = new AraraFilePattern();
+        insPattern.setExtension("ltx");
+        insPattern.setPattern("^\\s*%\\s+");
 
         // create a list of default patterns
         List<AraraFilePattern> defaultPatterns = new ArrayList<AraraFilePattern>();
@@ -129,12 +100,25 @@ public class ConfigurationLoader {
         defaultPatterns.add(texPattern);
         defaultPatterns.add(dtxPattern);
         defaultPatterns.add(ltxPattern);
+        defaultPatterns.add(drvPattern);
+        defaultPatterns.add(insPattern);
 
         // create a list of file patterns
         filePatterns = new ArrayList<AraraFilePattern>();
 
+
+        // create a list of possible locations for
+        // the configuration file
+        String homeFolder = SystemUtils.USER_HOME + File.separator;
+        String[] locations = new String[]{
+            ".".concat(AraraConstants.ARARACONFIG),
+            AraraConstants.ARARACONFIG,
+            homeFolder + "." + AraraConstants.ARARACONFIG,
+            homeFolder + AraraConstants.ARARACONFIG
+        };
+
         // create a file reference
-        File configurationFile = new File(SystemUtils.USER_HOME + File.separator + AraraConstants.ARARACONFIG);
+        File configurationFile = AraraUtils.getConfigurationFile(locations);
 
         // if there is not a configuration file
         if (!configurationFile.exists()) {
@@ -177,12 +161,12 @@ public class ConfigurationLoader {
             configuration = (AraraConfiguration) yaml.load(fileReader);
 
         } catch (MarkedYAMLException yamlException) {
-            
+
             // there's an error with the YAML file, so an exception is thrown
             AraraLogging.enableLogging(false);
             throw new AraraException(localization.getMessage("Error_InvalidYAMLConfigurationFile").concat("\n\n").concat(AraraUtils.extractInformationFromYAMLException(yamlException)));
-        }
-        catch (Exception e) {
+            
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
 
@@ -214,20 +198,20 @@ public class ConfigurationLoader {
 
         // check if there are new paths
         if (configuration.getPaths() != null) {
-            
+
             // a runtime exception happened when resolving some
             // path names
             if (configuration.getPathRuntimeException() != null) {
-                
+
                 // raise an exception
                 AraraLogging.enableLogging(false);
                 throw new AraraException(localization.getMessage("Error_PathRuntimeErrorConfigurationFile", AraraUtils.getVariableFromException(configuration.getPathRuntimeException())));
             }
-            
+
             // a IO exception happened when checking if it was
             // a valid path entry
             if (configuration.getPathIOException() != null) {
-                
+
                 // raise an exception
                 AraraLogging.enableLogging(false);
                 throw new AraraException(localization.getMessage("Error_PathIOErrorConfigurationFile"));
@@ -391,4 +375,5 @@ public class ConfigurationLoader {
     public AraraFilePattern getChosenFilePattern() {
         return chosenFilePattern;
     }
+    
 }

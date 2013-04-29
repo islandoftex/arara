@@ -1,42 +1,3 @@
-/**
- * \cond LICENSE
- * Arara -- the cool TeX automation tool
- * Copyright (c) 2012, Paulo Roberto Massa Cereda
- * All rights reserved.
- *
- * Redistribution and  use in source  and binary forms, with  or without
- * modification, are  permitted provided  that the  following conditions
- * are met:
- *
- * 1. Redistributions  of source  code must  retain the  above copyright
- * notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form  must reproduce the above copyright
- * notice, this list  of conditions and the following  disclaimer in the
- * documentation and/or other materials provided with the distribution.
- *
- * 3. Neither  the name  of the  project's author nor  the names  of its
- * contributors may be used to  endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS  PROVIDED BY THE COPYRIGHT  HOLDERS AND CONTRIBUTORS
- * "AS IS"  AND ANY  EXPRESS OR IMPLIED  WARRANTIES, INCLUDING,  BUT NOT
- * LIMITED  TO, THE  IMPLIED WARRANTIES  OF MERCHANTABILITY  AND FITNESS
- * FOR  A PARTICULAR  PURPOSE  ARE  DISCLAIMED. IN  NO  EVENT SHALL  THE
- * COPYRIGHT HOLDER OR CONTRIBUTORS BE  LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY,  OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT  NOT LIMITED  TO, PROCUREMENT  OF SUBSTITUTE  GOODS OR  SERVICES;
- * LOSS  OF USE,  DATA, OR  PROFITS; OR  BUSINESS INTERRUPTION)  HOWEVER
- * CAUSED AND  ON ANY THEORY  OF LIABILITY, WHETHER IN  CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
- * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
- * POSSIBILITY OF SUCH DAMAGE.
- * \endcond
- * 
- * CommandLineAnalyzer: This class implements a command line parser to provide
- * better control of flags and files to process.
- */
-// package definition
 package com.github.arara.utils;
 
 // needed import
@@ -47,9 +8,9 @@ import org.apache.commons.cli.*;
  * Implements a command line parser to provide better control of flags and files
  * to process.
  *
- * @author Paulo Roberto Massa Cereda
- * @version 3.0
  * @since 1.0
+ * @author Paulo Roberto Massa Cereda
+ * @version 4.0
  */
 public class CommandLineAnalyzer {
 
@@ -61,12 +22,16 @@ public class CommandLineAnalyzer {
     private Options commandLineOptions;
     // the verbose option
     private boolean showVerboseOutput;
-    // the execution timeout,
-    // in milliseconds
+    // the execution timeout, in milliseconds
     private long executionTimeout;
+    // the dry-run option
+    private boolean dryRun;
+    // the maximum number of loops
+    private long maximumNumberOfLoops;
     // the configuration
     private ConfigurationLoader configuration;
     // the localization class
+    /** Constant <code>localization</code> */
     final static AraraLocalization localization = AraraLocalization.getInstance();
 
     /**
@@ -88,6 +53,9 @@ public class CommandLineAnalyzer {
 
         // set the default value to the output
         showVerboseOutput = false;
+        
+        // set the default value for dry-run
+        dryRun = false;
 
     }
 
@@ -95,7 +63,7 @@ public class CommandLineAnalyzer {
      * Parses the command line arguments and provides feedback to the main
      * class.
      *
-     * @return A boolean value if there is a file to be processed by Arara.
+     * @return A boolean value if there is a file to be processed by arara.
      */
     public boolean parse() {
 
@@ -116,6 +84,12 @@ public class CommandLineAnalyzer {
 
         // create the language option
         Option optLanguage = new Option("L", "language", true, localization.getMessage("Help_Language"));
+        
+        // create the dry-run option
+        Option optDryRun = new Option("n", "dry-run", false, localization.getMessage("Help_DryRun"));
+        
+        // create the option for the number of loops
+        Option optMaxNumberLoops = new Option("m", "max-loops", false, localization.getMessage("Help_MaximumNumberOfLoops"));
 
         // add version
         commandLineOptions.addOption(optVersion);
@@ -134,6 +108,12 @@ public class CommandLineAnalyzer {
 
         // add language
         commandLineOptions.addOption(optLanguage);
+        
+        // add dry-run
+        commandLineOptions.addOption(optDryRun);
+        
+        // add maximum number of loops
+        commandLineOptions.addOption(optMaxNumberLoops);
 
         // create a new basic parser
         CommandLineParser parser = new BasicParser();
@@ -172,6 +152,8 @@ public class CommandLineAnalyzer {
                     optVerbose.setDescription(localization.getMessage("Help_Verbose"));
                     optTimeout.setDescription(localization.getMessage("Help_Timeout"));
                     optLanguage.setDescription(localization.getMessage("Help_Language"));
+                    optDryRun.setDescription(localization.getMessage("Help_DryRun"));
+                    optMaxNumberLoops.setDescription(localization.getMessage("Help_MaximumNumberOfLoops"));
                 }
             }
 
@@ -195,6 +177,7 @@ public class CommandLineAnalyzer {
                     // print version
                     printVersion();
 
+                    // print special thanks
                     printSpecialThanks();
 
                     // and return
@@ -260,12 +243,64 @@ public class CommandLineAnalyzer {
                             // timeout is disabled
                             executionTimeout = 0;
                         }
+                        
+                        // if -m or --max-loops found
+                        if (line.hasOption("max-loops")) {
+
+                            // try to convert the argument to a number
+                            try {
+
+                                // parse the long value
+                                maximumNumberOfLoops = Long.parseLong(line.getOptionValue("max-loops"));
+
+                                // if it's not a valid number
+                                if (maximumNumberOfLoops <= 0) {
+
+                                    // print version
+                                    printVersion();
+
+                                    // usage
+                                    printUsage();
+
+                                    // and return
+                                    return false;
+
+                                }
+                            } catch (NumberFormatException numberFormatException) {
+
+                                // we have a bad conversion
+
+                                // print version
+                                printVersion();
+
+                                // usage
+                                printUsage();
+
+                                // and return
+                                return false;
+                            }
+                        } else {
+
+                            // fallback to the default value
+                            maximumNumberOfLoops = AraraConstants.MAXLOOPS;
+                        }
 
                         // active logging
                         AraraLogging.enableLogging(line.hasOption("log"));
 
                         // set verbose flag
                         showVerboseOutput = line.hasOption("verbose");
+                        
+                        // if we have -n or --dry-run
+                        if (line.hasOption("dry-run")) {
+                            
+                            // disable verbose, since
+                            // it won't matter
+                            showVerboseOutput = false;
+                            
+                            // set dry-run mode
+                            dryRun = true;
+                        }
 
                         // everything is fine, set
                         // the file
@@ -308,7 +343,7 @@ public class CommandLineAnalyzer {
         HelpFormatter formatter = new HelpFormatter();
 
         // add the text and print
-        formatter.printHelp("arara [file [--log] [--verbose] [--timeout N] [--language L] | --help | --version]", commandLineOptions);
+        formatter.printHelp("arara [file [--dry-run] [--log] [--verbose] [--timeout N] [--max-loops N] [--language L] | --help | --version]", commandLineOptions);
     }
 
     /**
@@ -469,6 +504,15 @@ public class CommandLineAnalyzer {
     }
 
     /**
+     * Checks if arara must run in dry-run mode.
+     *
+     * @return A boolean indicating if arara must run in dry-run mode.
+     */
+    public boolean isDryRun() {
+        return dryRun;
+    }
+    
+    /**
      * Getter for the execution timeout.
      *
      * @return The execution timeout.
@@ -485,4 +529,14 @@ public class CommandLineAnalyzer {
     private void printSpecialThanks() {
         System.out.println(AraraUtils.wrap(localization.getMessage("Msg_SpecialThanks")));
     }
+    
+    /**
+     * Getter for the maximum number of loops.
+     *
+     * @return A long value indicating the maximum number of loops.
+     */
+    public long getMaximumNumberOfLoops() {
+        return maximumNumberOfLoops;
+    }
+    
 }

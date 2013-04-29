@@ -1,42 +1,3 @@
-/**
- * \cond LICENSE
- * Arara -- the cool TeX automation tool
- * Copyright (c) 2012, Paulo Roberto Massa Cereda
- * All rights reserved.
- *
- * Redistribution and  use in source  and binary forms, with  or without
- * modification, are  permitted provided  that the  following conditions
- * are met:
- *
- * 1. Redistributions  of source  code must  retain the  above copyright
- * notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form  must reproduce the above copyright
- * notice, this list  of conditions and the following  disclaimer in the
- * documentation and/or other materials provided with the distribution.
- *
- * 3. Neither  the name  of the  project's author nor  the names  of its
- * contributors may be used to  endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS  PROVIDED BY THE COPYRIGHT  HOLDERS AND CONTRIBUTORS
- * "AS IS"  AND ANY  EXPRESS OR IMPLIED  WARRANTIES, INCLUDING,  BUT NOT
- * LIMITED  TO, THE  IMPLIED WARRANTIES  OF MERCHANTABILITY  AND FITNESS
- * FOR  A PARTICULAR  PURPOSE  ARE  DISCLAIMED. IN  NO  EVENT SHALL  THE
- * COPYRIGHT HOLDER OR CONTRIBUTORS BE  LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY,  OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT  NOT LIMITED  TO, PROCUREMENT  OF SUBSTITUTE  GOODS OR  SERVICES;
- * LOSS  OF USE,  DATA, OR  PROFITS; OR  BUSINESS INTERRUPTION)  HOWEVER
- * CAUSED AND  ON ANY THEORY  OF LIABILITY, WHETHER IN  CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
- * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
- * POSSIBILITY OF SUCH DAMAGE.
- * \endcond
- * 
- * Arara: The main class. Basically, this class will get the file name from the
- * arguments list and call the proper methods from the other helper classes.
- */
-// package definition
 package com.github.arara;
 
 // needed imports
@@ -48,19 +9,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The main arara class. The code logic is encapsulated in the helper class, so
- * if something goes wrong, the generic exception catch here will simply print
- * it. I tried to make the code as easier as possible.
+ * The main arara class. The code logic is encapsulated in the helper classes,
+ * so if something goes wrong, the generic exception catch here will simply
+ * print it. I tried to make the code as easier as possible.
  *
- * @author Paulo Roberto Massa Cereda
- * @version 3.0
  * @since 1.0
+ * @author Paulo Roberto Massa Cereda
+ * @version 4.0
  */
 public class Arara {
 
     // the logger
+    /** Constant <code>logger</code> */
     final static Logger logger = LoggerFactory.getLogger(Arara.class);
     // the localization class
+    /** Constant <code>localization</code> */
     final static AraraLocalization localization = AraraLocalization.getInstance();
 
     /**
@@ -69,7 +32,7 @@ public class Arara {
      * (if any) and call the other helper classes.
      *
      * @param args The command line arguments. In fact, arara supports a lot of
-     * flags, all listed in the CommandLineAnalyzer.
+     * flags, all listed in the CommandLineAnalyzer class.
      */
     public static void main(String[] args) {
 
@@ -109,26 +72,26 @@ public class Arara {
             file = new File(commandLine.getFile());
 
             // welcome message
-            logger.info(localization.getMessage("Log_WelcomeMessage"));
+            logger.info(localization.getMessage("Log_WelcomeMessage", AraraConstants.VERSION));
 
             // process file
             logger.info(localization.getMessage("Log_ProcessingFile", file.getName()));
 
             // file exists, let's proceed with the directive extractor
             DirectiveExtractor dirExtractor = new DirectiveExtractor(file, configuration);
-            
+
             // extract all directives from the file
             dirExtractor.extract();
 
             // get all directives found
             List<AraraDirective> directives = dirExtractor.getDirectives();
-            
+
             // set the overall result flag
             boolean overallResult = true;
-            
+
             // check if any directive was found
             if (!directives.isEmpty()) {
-            
+
                 // now let's parse the directives
                 DirectiveParser dirParser = new DirectiveParser(directives);
 
@@ -144,17 +107,23 @@ public class Arara {
                 // set verbose option, if enabled
                 commandTrigger.setVerbose(commandLine.isVerbose());
 
-                // set an execution timeout, if set
+                // set dry-run option, if enabled
+                commandTrigger.setDryRun(commandLine.isDryRun());
+
+                // set an execution timeout, if available
                 commandTrigger.setExecutionTimeout(commandLine.getExecutionTimeout());
+
+                // set the maximum number of loops, if available
+                commandTrigger.setMaximumNumberOfLoops(commandLine.getMaximumNumberOfLoops());
 
                 // execute the tasks
                 overallResult = commandTrigger.execute();
-            }
-            else {
                 
+            } else {
+
                 // no directives found, add message to the log
                 logger.info(localization.getMessage("Log_NoDirectivesFound", file.getName()));
-                
+
                 // print message
                 System.out.println(AraraUtils.wrap(localization.getMessage("Msg_NoDirectivesFound", file.getName())));
             }

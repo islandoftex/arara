@@ -1,42 +1,3 @@
-/**
- * \cond LICENSE
- * Arara -- the cool TeX automation tool
- * Copyright (c) 2012, Paulo Roberto Massa Cereda
- * All rights reserved.
- *
- * Redistribution and  use in source  and binary forms, with  or without
- * modification, are  permitted provided  that the  following conditions
- * are met:
- *
- * 1. Redistributions  of source  code must  retain the  above copyright
- * notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form  must reproduce the above copyright
- * notice, this list  of conditions and the following  disclaimer in the
- * documentation and/or other materials provided with the distribution.
- *
- * 3. Neither  the name  of the  project's author nor  the names  of its
- * contributors may be used to  endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS  PROVIDED BY THE COPYRIGHT  HOLDERS AND CONTRIBUTORS
- * "AS IS"  AND ANY  EXPRESS OR IMPLIED  WARRANTIES, INCLUDING,  BUT NOT
- * LIMITED  TO, THE  IMPLIED WARRANTIES  OF MERCHANTABILITY  AND FITNESS
- * FOR  A PARTICULAR  PURPOSE  ARE  DISCLAIMED. IN  NO  EVENT SHALL  THE
- * COPYRIGHT HOLDER OR CONTRIBUTORS BE  LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY,  OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT  NOT LIMITED  TO, PROCUREMENT  OF SUBSTITUTE  GOODS OR  SERVICES;
- * LOSS  OF USE,  DATA, OR  PROFITS; OR  BUSINESS INTERRUPTION)  HOWEVER
- * CAUSED AND  ON ANY THEORY  OF LIABILITY, WHETHER IN  CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
- * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
- * POSSIBILITY OF SUCH DAMAGE.
- * \endcond
- * 
- * AraraMethods: This class contains methods for the MVEL expression language to
- * be used in the rules.
- */
-// package definition
 package com.github.arara.utils;
 
 // needed import
@@ -46,9 +7,9 @@ import org.apache.commons.lang3.SystemUtils;
 /**
  * Contains methods for the MVEL expression language to be used in the rules.
  *
- * @author Paulo Roberto Massa Cereda
- * @version 3.0
  * @since 3.0
+ * @author Paulo Roberto Massa Cereda
+ * @version 4.0
  */
 public class AraraMethods {
     
@@ -59,7 +20,7 @@ public class AraraMethods {
 
     /**
      * Setter for the original filename.
-     * 
+     *
      * @param originalFile The original filename.
      */
     public static void setOriginalFile(String originalFile) {
@@ -68,7 +29,7 @@ public class AraraMethods {
     
     /**
      * Getter for the original filename.
-     * 
+     *
      * @return A string containing the original filename.
      */
     public static String getOriginalFile() {
@@ -149,7 +110,9 @@ public class AraraMethods {
      */
     public static boolean isTrue(String string) {
         string = string.toLowerCase();
-        if ((string.equals("yes")) || (string.equals("on")) || (string.equals("true")) || (string.equals("y")) || (string.equals("1"))) {
+        if ((string.equals("yes")) || (string.equals("on")) ||
+                (string.equals("true")) || (string.equals("y")) ||
+                (string.equals("1"))) {
             return true;
         } else {
             return false;
@@ -164,7 +127,9 @@ public class AraraMethods {
      */
     public static boolean isFalse(String string) {
         string = string.toLowerCase();
-        if ((string.equals("no")) || (string.equals("off")) || (string.equals("false")) || (string.equals("n")) || (string.equals("0"))) {
+        if ((string.equals("no")) || (string.equals("off")) ||
+                (string.equals("false")) || (string.equals("n")) ||
+                (string.equals("0"))) {
             return true;
         } else {
             return false;
@@ -358,7 +323,7 @@ public class AraraMethods {
     
     /**
      * Checks if the operating system is Windows.
-     * 
+     *
      * @param ifTrue The value if true.
      * @param ifFalse The value if false.
      * @return A string according the condition.
@@ -374,7 +339,7 @@ public class AraraMethods {
     
     /**
      * Checks if the operating system is Linux.
-     * 
+     *
      * @param ifTrue The value if true.
      * @param ifFalse The value if false.
      * @return A string according the condition.
@@ -390,7 +355,7 @@ public class AraraMethods {
     
     /**
      * Checks if the operating system is Unix.
-     * 
+     *
      * @param ifTrue The value if true.
      * @param ifFalse The value if false.
      * @return A string according the condition.
@@ -406,7 +371,7 @@ public class AraraMethods {
     
     /**
      * Checks if the operating system is Mac.
-     * 
+     *
      * @param ifTrue The value if true.
      * @param ifFalse The value if false.
      * @return A string according the condition.
@@ -422,7 +387,7 @@ public class AraraMethods {
 
     /**
      * Checks if the logic condition is true.
-     * 
+     *
      * @param value Logic condition to be evaluated.
      * @param ifTrue The value if true.
      * @return A string according the condition.
@@ -436,7 +401,7 @@ public class AraraMethods {
     
     /**
      * Checks if the logic condition is true.
-     * 
+     *
      * @param value Logic condition to be evaluated.
      * @param ifTrue The value if true.
      * @param ifFalse The value if false.
@@ -451,7 +416,7 @@ public class AraraMethods {
     
     /**
      * Checks if the logic condition is false.
-     * 
+     *
      * @param value Logic condition to be evaluated.
      * @param ifTrue The value if true.
      * @return A string according the condition.
@@ -465,7 +430,7 @@ public class AraraMethods {
     
     /**
      * Checks if the logic condition is false.
-     * 
+     *
      * @param value Logic condition to be evaluated.
      * @param ifTrue The value if true.
      * @param ifFalse The value if false.

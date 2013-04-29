@@ -1,0 +1,10 @@
+!config
+# Halt rule for arara
+# author: Paulo Cereda
+# requires arara 4.0+
+# note: this rule uses an arara trigger
+identifier: halt
+name: Halt
+command: <arara> arara halt
+arguments: []
+

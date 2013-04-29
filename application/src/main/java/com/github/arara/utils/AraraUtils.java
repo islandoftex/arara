@@ -1,44 +1,8 @@
-/**
- * \cond LICENSE
- * Arara -- the cool TeX automation tool
- * Copyright (c) 2012, Paulo Roberto Massa Cereda
- * All rights reserved.
- *
- * Redistribution and  use in source  and binary forms, with  or without
- * modification, are  permitted provided  that the  following conditions
- * are met:
- *
- * 1. Redistributions  of source  code must  retain the  above copyright
- * notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form  must reproduce the above copyright
- * notice, this list  of conditions and the following  disclaimer in the
- * documentation and/or other materials provided with the distribution.
- *
- * 3. Neither  the name  of the  project's author nor  the names  of its
- * contributors may be used to  endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS  PROVIDED BY THE COPYRIGHT  HOLDERS AND CONTRIBUTORS
- * "AS IS"  AND ANY  EXPRESS OR IMPLIED  WARRANTIES, INCLUDING,  BUT NOT
- * LIMITED  TO, THE  IMPLIED WARRANTIES  OF MERCHANTABILITY  AND FITNESS
- * FOR  A PARTICULAR  PURPOSE  ARE  DISCLAIMED. IN  NO  EVENT SHALL  THE
- * COPYRIGHT HOLDER OR CONTRIBUTORS BE  LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY,  OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT  NOT LIMITED  TO, PROCUREMENT  OF SUBSTITUTE  GOODS OR  SERVICES;
- * LOSS  OF USE,  DATA, OR  PROFITS; OR  BUSINESS INTERRUPTION)  HOWEVER
- * CAUSED AND  ON ANY THEORY  OF LIABILITY, WHETHER IN  CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
- * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
- * POSSIBILITY OF SUCH DAMAGE.
- * \endcond
- *
- * AraraUtils: This class contains some helper methods used for general purpose.
- */
-// package definition
 package com.github.arara.utils;
 
 // needed imports
+import com.github.arara.model.AraraConditionalType;
+import java.io.File;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,20 +11,21 @@ import org.yaml.snakeyaml.error.MarkedYAMLException;
 
 /**
  * Contains some helper methods used for general purpose.
- * 
- * @author Paulo Roberto Massa Cereda
- * @version 3.0
+ *
  * @since 3.0
+ * @author Paulo Roberto Massa Cereda
+ * @version 4.0
  */
 public class AraraUtils {
     
     // the localization class
+    /** Constant <code>localization</code> */
     final static AraraLocalization localization = AraraLocalization.getInstance();
 
     /**
      * Removes the reserved keyword in the strings to be analyzed by the MVEL
      * template engine. The keyword is set in AraraConstants.
-     * 
+     *
      * @param line The line to be analyzed.
      * @return The new line without the keyword.
      */
@@ -97,7 +62,7 @@ public class AraraUtils {
     /**
      * Wraps the string to several lines, according to the wrap length set in
      * the AraraConstants class.
-     * 
+     *
      * @param message The message to be wrapped.
      * @return A new message.
      */
@@ -121,8 +86,8 @@ public class AraraUtils {
 
     /**
      * Gets the variable reference from a RuntimeException object.
+     *
      * @param runtimeException The RuntimeException object.
-     * 
      * @return The variable reference name.
      */
     public static String getVariableFromException(RuntimeException runtimeException) {
@@ -166,7 +131,7 @@ public class AraraUtils {
     
     /**
      * Extracts information from a MarkedYAMLException object.
-     * 
+     *
      * @param yamlException The exception object.
      * @return A string containing all the available information from the
      * exception object.
@@ -189,36 +154,215 @@ public class AraraUtils {
     }
     
     /**
-     * Checks if the line contains a valid full directive.
-     * 
+     * Checks for a valid directive.
+     *
      * @param line The current line.
-     * @return A logic value indicating if a valid directive was found.
+     * @param regex The regular expression pattern.
+     * @return A boolean indicating if the pattern was found.
      */
-    public static boolean checkForFullDirective(String line) {
-        Pattern pattern = Pattern.compile(AraraConstants.FULLDIRECTIVEPATTERN);
-        Matcher m = pattern.matcher(line);
-        if (m.find()) {
-            return true;
+    public static boolean checkForValidDirective(String line, String regex) {
+        
+        // create a pattern and a matcher
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(line);
+        
+        // return the lookup result
+        return matcher.find();
+    }
+    
+    /**
+     * Extracts the directive from the current line.
+     *
+     * @param line The current line.
+     * @param regex The regular expression pattern.
+     * @return An array of strings containing each block of the pattern.
+     */
+    public static String[] extractDirective(String line, String regex) {
+        
+        // create a pattern and a matcher
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(line);
+        
+        // directive found
+        if (matcher.find()) {
+            
+            // get the number of blocks and allocate the
+            // size for the result array
+            String[] result = new String[matcher.groupCount()];
+            
+            // iterate through the groups
+            for (int i = 0; i < matcher.groupCount(); i++) {
+                
+                // add current group to the result
+                result[i] = matcher.group(i + 1);
+            }
+            
+            // return the array
+            return result;
         }
         else {
-            return false;
+            
+            // nothing was found, return
+            // a null value
+            return null;
         }
     }
     
     /**
-     * Checks if the line contains a valid empty directive.
-     * 
-     * @param line The current line.
-     * @return A logic value indicating if a valid directive was found.
+     * Searches for the configuration file in the array.
+     *
+     * @param files An array of strings representing a list of locations.
+     * @return A file reference to the first occurrence found in the list.
      */
-    public static boolean checkForEmptyDirective(String line) {
-        Pattern pattern = Pattern.compile(AraraConstants.EMPTYDIRECTIVEPATTERN);
-        Matcher m = pattern.matcher(line);
-        if (m.find()) {
-            return true;
+    public static File getConfigurationFile(String[] files) {
+        
+        // create reference
+        File file = null;
+        
+        // for every element in the array
+        for (int i = 0; i < files.length; i++) {
+            
+            // get the reference and
+            // check if it exists
+            file = new File(files[i]);
+            if (file.exists()) {
+                return file;
+            }
+        }
+        
+        // simply return the last element
+        // in the list
+        return file;
+    }
+    
+    /**
+     * Gets the conditional type based on the corresponding keyword.
+     *
+     * @param keyword A string containing the conditional keyword.
+     * @return A conditional type object.
+     */
+    public static AraraConditionalType getConditionalType(String keyword) {
+        
+        // we have an IF
+        if (keyword.equals("if")) {
+            return AraraConditionalType.IF;
         }
         else {
+            
+            // we have a WHILE
+            if (keyword.equals("while")) {
+                return AraraConditionalType.WHILE;
+            }
+            else {
+                
+                // we have UNTIL
+                if (keyword.equals("until")) {
+                    return AraraConditionalType.UNTIL;
+                }
+                else {
+                    
+                    // we have nothing!
+                    return AraraConditionalType.NONE;
+                }
+            }
+        }
+    }
+    
+    /**
+     * Checks if the line has an arara trigger.
+     *
+     * @param line The current line.
+     * @return A boolean flag indicating if the line has an arara trigger.
+     */
+    public static boolean checkForAraraTrigger(String line) {
+        
+        // create a pattern and a matcher
+        Pattern pattern = Pattern.compile(AraraConstants.ARARATRIGGER);
+        Matcher matcher = pattern.matcher(line);
+        
+        // return the matcher result
+        return matcher.find();
+    }
+    
+    /**
+     * Extracts the arara trigger.
+     *
+     * @param line The current line.
+     * @return An array of strings containing both the action and parameters.
+     */
+    public static String[] extractAraraTrigger(String line) {
+        
+        // create a pattern and a matcher
+        Pattern pattern = Pattern.compile(AraraConstants.ARARATRIGGER);
+        Matcher matcher = pattern.matcher(line);
+        
+        // directive found
+        if (matcher.find()) {
+            
+            // the result array
+            String[] result;
+            
+            // if we have no parameters
+            if (matcher.group(2) == null) {
+                
+                // set only the action
+                result = new String[1];
+                result[0] = matcher.group(1);
+            }
+            else {
+                
+                // we have parameters, then
+                // let's set both
+                result = new String[2];
+                result[0] = matcher.group(1);
+                result[1] = matcher.group(2);
+            }
+            
+            // return the array
+            return result;
+        }
+        else {
+            
+            // nothing was found, return
+            // a null value
+            return null;
+        }
+    }
+    
+    /**
+     * Checks if we should halt the execution from a trigger.
+     *
+     * @param line The current line.
+     * @return A boolean indicating if we should halt the execution.
+     */
+    public static boolean haltFromAraraTrigger(String line) {
+        
+        // if we have an arara trigger
+        if (checkForAraraTrigger(line)) {
+            
+            // get the result
+            String[] result = extractAraraTrigger(line);
+            
+            // check if the action
+            // is a halt operation
+            if (result[0].equals("halt")) {
+                
+                // return true
+                return true;
+            }
+            else {
+                
+                // other operation,
+                // return false
+                return false;
+            }
+        }
+        else {
+            
+            // nothing was found,
+            // simply return
             return false;
         }
     }
+    
 }
