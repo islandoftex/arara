@@ -1,4 +1,6 @@
-> **Note:** `arara 3.0` is now available on CTAN! I hope the application will hit TeX Live in a few days. If you want to use the installers, please take a look at the `releases/` directory. Sadly, GitHub got rid of the *Downloads* section, so I had to include the installers as a normal commit.
+> **Note:** `arara 3.0` is now available on CTAN and TeX Live! If you want to use the installers, please take a look at the `releases/` directory. Sadly, GitHub got rid of the *Downloads* section, so I had to include the installers as a normal commit.
+
+> **Attention:** we are already testing the upcoming `arara 4.0`!
 
 # arara
 

@@ -1,4 +1,4 @@
-# Arara -- the cool TeX automation tool
+# arara, the cool TeX automation tool
 # Copyright (c) 2012, Paulo Roberto Massa Cereda
 # All rights reserved.
 #
@@ -35,7 +35,7 @@
 # author: Paulo Roberto Massa Cereda
 # e-mail: cereda@users.sf.net
 
-Log_WelcomeMessage = Welcome to arara!
+Log_WelcomeMessage = Welcome to arara {0}!
 
 Log_ProcessingFile = Processing file ''{0}'', please wait.
 
@@ -77,13 +77,17 @@ Help_Timeout = set the execution timeout (in milliseconds)
 
 Help_Language = set the application language
 
+Help_DryRun = go through all the motions of running a command, but with no actual calls
+
+Help_MaximumNumberOfLoops = set the maximum number of loops
+
 Header_Slogan = The cool TeX automation tool
 
 Header_AllRightsReserved = All rights reserved.
 
 Msg_NoDirectivesFound = I didn''t find any directives in ''{0}'', and so didn''t do anything. Is that what you really wanted?
 
-Msg_SpecialThanks = A special thanks goes to Alan Munn, Andrew Stacey, Brent Longborough, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Gonzalo Medina, Harish Kumar, İlhan Polat, Joseph Wright, Marco Daniel, Mikaël Maunier, Patrick Gundlach, Rasmus Roulund, Sergey Ulyanov, Stefan Kottwitz, and many others for making this humble tool possible.
+Msg_SpecialThanks = A special thanks goes to Alan Munn, Andrew Stacey, Brent Longborough, Christopher Hughes, Clemens Niederberger, David Carlisle, Enrico Gregorio, Francesco Endrici, Gonzalo Medina, Harish Kumar, Heiko Oberdiek, İlhan Polat, Joseph Wright, Marco Daniel, Mikaël Maunier, Nicola Talbot, Patrick Gundlach, Rasmus Roulund, Sergey Ulyanov, Stefan Kottwitz, and many others for making this humble tool possible.
 
 Msg_RunningCommand = Running {0}...
 
@@ -161,3 +165,14 @@ Error_MissingCommandElementsRule = Uh-oh, the ''{0}'' task (referencing the ''{0
 
 Error_CommandRuntimeErrorRule = I''m sorry, but the command set for the ''{0}'' task (referencing the ''{0}.yaml'' file located at ''{1}'') has an unavailable variable/method in the rule context: ''{2}''
 
+Error_XMLFileNotFound = I''m sorry, but I could not find ''{0}'' in the current directory.
+
+Error_XMLBadEncoding = I''m sorry, but apparently ''{0}'' has a bad encoding. Delete the file and try again.
+
+Error_XMLMalformedFile = I''m sorry, but ''{0}'' seems to be malformed. Delete the file and try again.
+
+Error_XMLAccess = I''m sorry, but I could not access ''{0}''. Please check the directory permissions and try again.
+
+Error_ConditionalNotBoolean = I'm sorry, but the following conditional does not resolve to a boolean value. Please rewrite it and try again:
+
+Error_ConditionalRuntimeError = I''m sorry, but one of the conditionals has an unavailable variable in the evaluation context: ''{0}''

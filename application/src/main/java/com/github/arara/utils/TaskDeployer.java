@@ -1,42 +1,3 @@
-/**
- * \cond LICENSE
- * Arara -- the cool TeX automation tool
- * Copyright (c) 2012, Paulo Roberto Massa Cereda
- * All rights reserved.
- *
- * Redistribution and  use in source  and binary forms, with  or without
- * modification, are  permitted provided  that the  following conditions
- * are met:
- *
- * 1. Redistributions  of source  code must  retain the  above copyright
- * notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form  must reproduce the above copyright
- * notice, this list  of conditions and the following  disclaimer in the
- * documentation and/or other materials provided with the distribution.
- *
- * 3. Neither  the name  of the  project's author nor  the names  of its
- * contributors may be used to  endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS  PROVIDED BY THE COPYRIGHT  HOLDERS AND CONTRIBUTORS
- * "AS IS"  AND ANY  EXPRESS OR IMPLIED  WARRANTIES, INCLUDING,  BUT NOT
- * LIMITED  TO, THE  IMPLIED WARRANTIES  OF MERCHANTABILITY  AND FITNESS
- * FOR  A PARTICULAR  PURPOSE  ARE  DISCLAIMED. IN  NO  EVENT SHALL  THE
- * COPYRIGHT HOLDER OR CONTRIBUTORS BE  LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY,  OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT  NOT LIMITED  TO, PROCUREMENT  OF SUBSTITUTE  GOODS OR  SERVICES;
- * LOSS  OF USE,  DATA, OR  PROFITS; OR  BUSINESS INTERRUPTION)  HOWEVER
- * CAUSED AND  ON ANY THEORY  OF LIABILITY, WHETHER IN  CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
- * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
- * POSSIBILITY OF SUCH DAMAGE.
- * \endcond
- * 
- * TaskDeployer: This class is responsible for taking the tasks and turning them
- * into rara commands.
- */
-// package definition
 package com.github.arara.utils;
 
 // needed imports
@@ -61,17 +22,18 @@ import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
 /**
- * Class responsible for taking the tasks and turning them into Arara commands.
+ * Class responsible for taking the tasks and turning them into arara commands.
  *
  * @author Paulo Roberto Massa Cereda
- * @version 3.0
- * @since 1.0
+ * @version 4.0
  */
 public class TaskDeployer {
 
     // the logger
+    /** Constant <code>logger</code> */
     final static Logger logger = LoggerFactory.getLogger(TaskDeployer.class);
     // the localization class
+    /** Constant <code>localization</code> */
     final static AraraLocalization localization = AraraLocalization.getInstance();
     // the tasks list
     private List<AraraTask> tasks;
@@ -83,7 +45,8 @@ public class TaskDeployer {
     /**
      * Constructor.
      *
-     * @param tasks The Arara tasks.
+     * @param tasks The arara tasks.
+     * @param configuration The configuration loader object.
      */
     public TaskDeployer(List<AraraTask> tasks, ConfigurationLoader configuration) {
 
@@ -101,8 +64,8 @@ public class TaskDeployer {
     /**
      * Deploys the tasks and returns the commands list.
      *
-     * @return The Arara commands list.
-     * @throws Exception Raised if something bad happened.
+     * @return The arara commands list.
+     * @throws java.lang.Exception Raised if something bad happened.
      */
     public List<AraraCommand> deploy() throws Exception {
 
@@ -167,7 +130,8 @@ public class TaskDeployer {
      * Deploys plain rule.
      *
      * @param task The task.
-     * @throws Exception The rule has a bad definition.
+     * @throws java.lang.Exception The rule has a bad definition.
+     * @param pathIndex a int.
      */
     private void deployRule(AraraTask task, int pathIndex) throws Exception {
 
@@ -496,7 +460,13 @@ public class TaskDeployer {
 
                 // add the name
                 araraCommand.setName(plainRule.getName());
+                
+                // TODO add filename?
+                araraCommand.setFilename((String) argumentMap.get("file"));
 
+                // get conditionals from task and set the command
+                araraCommand.setConditional(task.getConditional());
+                
                 // add to the list
                 commands.add(araraCommand);
                 
@@ -508,6 +478,7 @@ public class TaskDeployer {
      * Checks if the current argument is included in the list of arguments from
      * the directive.
      *
+     * @param arguments List of arguments from the directive.
      * @param arguments List of arguments from the directive.
      * @param argument The current argument to be analyzed.
      * @return A logic value indicating if the current argument is included in
@@ -529,4 +500,5 @@ public class TaskDeployer {
         // not found
         return false;
     }
+    
 }
