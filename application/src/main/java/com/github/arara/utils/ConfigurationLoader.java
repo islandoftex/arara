@@ -90,7 +90,7 @@ public class ConfigurationLoader {
 
         // for .ins files
         AraraFilePattern insPattern = new AraraFilePattern();
-        insPattern.setExtension("ltx");
+        insPattern.setExtension("ins");
         insPattern.setPattern("^\\s*%\\s+");
 
         // create a list of default patterns
