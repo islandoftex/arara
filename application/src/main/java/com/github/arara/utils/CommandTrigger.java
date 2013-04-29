@@ -1,46 +1,9 @@
-/**
- * \cond LICENSE
- * Arara -- the cool TeX automation tool
- * Copyright (c) 2012, Paulo Roberto Massa Cereda
- * All rights reserved.
- *
- * Redistribution and  use in source  and binary forms, with  or without
- * modification, are  permitted provided  that the  following conditions
- * are met:
- *
- * 1. Redistributions  of source  code must  retain the  above copyright
- * notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form  must reproduce the above copyright
- * notice, this list  of conditions and the following  disclaimer in the
- * documentation and/or other materials provided with the distribution.
- *
- * 3. Neither  the name  of the  project's author nor  the names  of its
- * contributors may be used to  endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS  PROVIDED BY THE COPYRIGHT  HOLDERS AND CONTRIBUTORS
- * "AS IS"  AND ANY  EXPRESS OR IMPLIED  WARRANTIES, INCLUDING,  BUT NOT
- * LIMITED  TO, THE  IMPLIED WARRANTIES  OF MERCHANTABILITY  AND FITNESS
- * FOR  A PARTICULAR  PURPOSE  ARE  DISCLAIMED. IN  NO  EVENT SHALL  THE
- * COPYRIGHT HOLDER OR CONTRIBUTORS BE  LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY,  OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT  NOT LIMITED  TO, PROCUREMENT  OF SUBSTITUTE  GOODS OR  SERVICES;
- * LOSS  OF USE,  DATA, OR  PROFITS; OR  BUSINESS INTERRUPTION)  HOWEVER
- * CAUSED AND  ON ANY THEORY  OF LIABILITY, WHETHER IN  CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
- * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
- * POSSIBILITY OF SUCH DAMAGE.
- * \endcond
- * 
- * CommandTrigger: This class is responsible for running the arara commands.
- */
-// package definition
 package com.github.arara.utils;
 
 // needed imports
 import com.github.arara.exception.AraraException;
 import com.github.arara.model.AraraCommand;
+import com.github.arara.model.AraraConditionalType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -51,15 +14,17 @@ import org.slf4j.LoggerFactory;
 /**
  * Implements an environment for running the arara commands.
  *
- * @author Paulo Roberto Massa Cereda
- * @version 3.0
  * @since 3.0
+ * @author Paulo Roberto Massa Cereda
+ * @version 4.0
  */
 public class CommandTrigger {
 
     // the logger
+    /** Constant <code>logger</code> */
     final static Logger logger = LoggerFactory.getLogger(CommandTrigger.class);
     // the localization class
+    /** Constant <code>localization</code> */
     final static AraraLocalization localization = AraraLocalization.getInstance();
     // the commands list
     private List<AraraCommand> commands;
@@ -67,6 +32,11 @@ public class CommandTrigger {
     private boolean showVerboseOutput;
     // value for the execution timeout
     private long executionTimeout;
+    // value for the maximum number of loops
+    private long maximumNumberOfLoops;
+    // flag to determine if we
+    // are in dry-run mode
+    private boolean dryRun;
 
     /**
      * Constructor.
@@ -91,6 +61,15 @@ public class CommandTrigger {
     }
 
     /**
+     * Setter for the maximum number of loops.
+     *
+     * @param number A long value indicating the maximum number of loops.
+     */
+    public void setMaximumNumberOfLoops(long number) {
+        maximumNumberOfLoops = number;
+    }
+
+    /**
      * Setter for the verbose mode.
      *
      * @param verbose A flag to indicate the verbose mode.
@@ -107,8 +86,8 @@ public class CommandTrigger {
      * @return A boolean value about the execution. To be honest, I don't think
      * it's necessary to return an actual value, but I kept it for possible
      * future use.
-     * @throws AraraException Raised when the command is not found in the
-     * underlying system.
+     * @throws com.github.arara.exception.AraraException Raised when the command
+     * is not found in the underlying system.
      */
     public boolean execute() throws AraraException {
 
@@ -118,50 +97,119 @@ public class CommandTrigger {
         // for every command in the list
         for (AraraCommand currentAraraCommand : commands) {
 
-            // print a message
-            System.out.print(localization.getMessage("Msg_RunningCommand", currentAraraCommand.getName()).concat(" "));
+            // we  are not in dry-run mode,
+            // so let' execute the commands
+            if (dryRun == false) {
 
-            // if verbose
-            if (showVerboseOutput) {
+                // set the current value of the file for
+                // this command, it might be overriden by
+                // a directive argument
+                ConditionalMethods.setBasenameReference(AraraMethods.getBasename(currentAraraCommand.getFilename()));
 
-                // add two lines
-                System.out.println("\n");
-            }
+                // if we have either IF or WHILE blocks, the conditional
+                // is evaluated before the command
+                if ((currentAraraCommand.getConditional().getType() == AraraConditionalType.IF)
+                        || (currentAraraCommand.getConditional().getType() == AraraConditionalType.WHILE)) {
 
-            // log action
-            logger.info(localization.getMessage("Log_CommandName", currentAraraCommand.getName()));
+                    // if they evaluate to false, nothing to do here
+                    if (ConditionalEvaluator.evaluate(currentAraraCommand.getConditional().getCondition()) == false) {
 
-            // log command
-            logger.trace(localization.getMessage("Log_Command", currentAraraCommand.getCommand()));
+                        // proceed to the next command in the list
+                        continue;
+                    }
 
-            // if the execution was ok
-            //if (runCommand(currentAraraCommand)) {
-            if (runCommand(currentAraraCommand)) {
+                }
 
-                // print a message
-                System.out.println(localization.getMessage("Msg_Success"));
+                // we have a halt command, let's interrupt the loop
+                if (AraraUtils.haltFromAraraTrigger(currentAraraCommand.getCommand())) {
+                    break;
+                }
 
-                // log action
-                logger.info(localization.getMessage("Log_CommandSuccess", currentAraraCommand.getName()));
+                // set a few flags
+                long counter = 0;
+                boolean condition;
+
+                do {
+
+                    // print a message
+                    System.out.print(localization.getMessage("Msg_RunningCommand", currentAraraCommand.getName()).concat(" "));
+
+                    // if verbose
+                    if (showVerboseOutput) {
+
+                        // add two lines
+                        System.out.println("\n");
+                    }
+
+                    // log action
+                    logger.info(localization.getMessage("Log_CommandName", currentAraraCommand.getName()));
+
+                    // log command
+                    logger.trace(localization.getMessage("Log_Command", currentAraraCommand.getCommand()));
+
+                    // if the execution was ok
+                    if (runCommand(currentAraraCommand)) {
+
+                        // print a message
+                        System.out.println(localization.getMessage("Msg_Success"));
+
+                        // log action
+                        logger.info(localization.getMessage("Log_CommandSuccess", currentAraraCommand.getName()));
+
+                    } else {
+
+                        // something bad happened, print message
+                        System.out.println(localization.getMessage("Msg_Failure"));
+
+                        // log action
+                        logger.warn(localization.getMessage("Log_CommandFailure", currentAraraCommand.getName()));
+
+                        // and return false
+                        return false;
+
+                    }
+
+                    // if verbose
+                    if (showVerboseOutput) {
+
+                        // add one line to the output
+                        System.out.println("");
+                    }
+
+                    // we have no conditional, so there's no
+                    // reason to be in this loop
+                    if (currentAraraCommand.getConditional().isEmpty()) {
+                        break;
+                    }
+
+                    // increment loop counter
+                    counter++;
+
+                    // evaluate the condition
+                    condition = ConditionalEvaluator.evaluate(currentAraraCommand.getConditional().getCondition());
+
+                    // now the tricky part: UNTIL requires the
+                    // condition to be true in order to stop the
+                    // loop, so we need to invert it here for our
+                    // loop to work
+                    if (currentAraraCommand.getConditional().getType() == AraraConditionalType.UNTIL) {
+                        condition = !condition;
+                    }
+
+                } while (condition && (counter <= maximumNumberOfLoops));
 
             } else {
+                
+                // we are now in dry-run mode
 
-                // something bad happened, print message
-                System.out.println(localization.getMessage("Msg_Failure"));
+                // we have a halt command, let's interrupt the loop
+                if (AraraUtils.haltFromAraraTrigger(currentAraraCommand.getCommand())) {
+                    break;
+                }
 
-                // log action
-                logger.warn(localization.getMessage("Log_CommandFailure", currentAraraCommand.getName()));
+                // let' print the command expansion
+                System.out.println(currentAraraCommand.getName() + ": " + currentAraraCommand.getCommand());
 
-                // and return false
-                return false;
-
-            }
-
-            // if verbose
-            if (showVerboseOutput) {
-
-                // add one line to the output
-                System.out.println("");
             }
 
         }
@@ -179,8 +227,8 @@ public class CommandTrigger {
      *
      * @param command The Arara command.
      * @return A boolean indicating if the execution was successful.
-     * @throws AraraException Throws an exception in case the command was not
-     * found.
+     * @throws com.github.arara.exception.AraraException Throws an exception in
+     * case the command was not found.
      */
     private boolean runCommand(AraraCommand command) throws AraraException {
 
@@ -236,13 +284,13 @@ public class CommandTrigger {
                 // add it to the execution
                 executor.setWatchdog(watchDog);
             }
-            
+
             // set the shutdown hook
             ShutdownHookProcessDestroyer processDestroyer = new ShutdownHookProcessDestroyer();
 
             // add it to the executor
             executor.setProcessDestroyer(processDestroyer);
-            
+
             // execute the command and get the exit code
             int exitValue = executor.execute(commandLine);
 
@@ -281,5 +329,14 @@ public class CommandTrigger {
             throw new AraraException(localization.getMessage("Error_CommandNotFound", command.getName(), command.getCommand()));
 
         }
+    }
+
+    /**
+     * Setter for the dry-run mode.
+     *
+     * @param dryRun A boolean indicating if the dry-run mode must be set.
+     */
+    public void setDryRun(boolean dryRun) {
+        this.dryRun = dryRun;
     }
 }

@@ -43,3 +43,4 @@
 *.*~
 
 .DS_Store
+/application/target/

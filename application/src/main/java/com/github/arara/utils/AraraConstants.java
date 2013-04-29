@@ -1,57 +1,22 @@
-/**
- * \cond LICENSE
- * Arara -- the cool TeX automation tool
- * Copyright (c) 2012, Paulo Roberto Massa Cereda
- * All rights reserved.
- *
- * Redistribution and  use in source  and binary forms, with  or without
- * modification, are  permitted provided  that the  following conditions
- * are met:
- *
- * 1. Redistributions  of source  code must  retain the  above copyright
- * notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form  must reproduce the above copyright
- * notice, this list  of conditions and the following  disclaimer in the
- * documentation and/or other materials provided with the distribution.
- *
- * 3. Neither  the name  of the  project's author nor  the names  of its
- * contributors may be used to  endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS  PROVIDED BY THE COPYRIGHT  HOLDERS AND CONTRIBUTORS
- * "AS IS"  AND ANY  EXPRESS OR IMPLIED  WARRANTIES, INCLUDING,  BUT NOT
- * LIMITED  TO, THE  IMPLIED WARRANTIES  OF MERCHANTABILITY  AND FITNESS
- * FOR  A PARTICULAR  PURPOSE  ARE  DISCLAIMED. IN  NO  EVENT SHALL  THE
- * COPYRIGHT HOLDER OR CONTRIBUTORS BE  LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY,  OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT  NOT LIMITED  TO, PROCUREMENT  OF SUBSTITUTE  GOODS OR  SERVICES;
- * LOSS  OF USE,  DATA, OR  PROFITS; OR  BUSINESS INTERRUPTION)  HOWEVER
- * CAUSED AND  ON ANY THEORY  OF LIABILITY, WHETHER IN  CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
- * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
- * POSSIBILITY OF SUCH DAMAGE.
- * \endcond
- * 
- * AraraConstants: This class contains all the constants used in the main
- * application.
- */
-// package definition
 package com.github.arara.utils;
+
+// needed imports
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hashing;
 
 /**
  * Contains all the constants used in the main application.
- * 
- * @author Paulo Roberto Massa Cereda
- * @version 3.0
+ *
  * @since 3.0
+ * @author Paulo Roberto Massa Cereda
+ * @version 4.0
  */
 public class AraraConstants {
     
     /**
      * The arara version.
      */
-    public static final String VERSION = "3.0";
+    public static final String VERSION = "4.0RC1";
     /**
      * The number of characters per line in messages.
      */
@@ -87,10 +52,33 @@ public class AraraConstants {
     /**
      * The full directive matching pattern.
      */
-    public static final String FULLDIRECTIVEPATTERN = "^\\s*(\\w+)\\s*:\\s*\\{.*\\}\\s*$";
+    public static final String FULLDIRECTIVEPATTERN = "^\\s*(\\w+)\\s*:\\s*(\\{.*\\})\\s*$";
     /**
      * The empty directive matching pattern.
      */
     public static final String EMPTYDIRECTIVEPATTERN = "^\\s*(\\w+)\\s*$";
-    
+    /**
+     * The full directive matching pattern, with support for conditionals.
+     */
+    public static final String FULLDIRECTIVECONDITIONALPATTERN = "^\\s*(\\w+)\\s*:\\s*(\\{.*\\})\\s+(if|while|until)\\s+(\\S.*)$";
+    /**
+     * The empty directive matching pattern, with support for conditionals.
+     */
+    public static final String EMPTYDIRECTIVECONDITIONALPATTERN = "^\\s*(\\w+)\\s+(if|while|until)\\s+(\\S.*)$";
+    /**
+     * The matching pattern for arara triggers.
+     */
+    public static final String ARARATRIGGER = "^\\s*arara\\s+(\\w+)\\s*(\\S.*){0,1}$";
+    /**
+     * The database name.
+     */
+    public static final String ARARADATABASE = "arara.xml";
+    /**
+     * The hash function used in the evaluation phase.
+     */
+    public static final HashFunction HASHFUNCTION = Hashing.crc32();
+    /**
+     * The default value for the maximum number of loops per conditional.
+     */
+    public static final long MAXLOOPS = 10;
 }
