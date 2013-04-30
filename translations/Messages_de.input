@@ -36,7 +36,7 @@
 # e-mail: marco.daniel@mada-nada.de
 
 # Log_WelcomeMessage = Welcome to arara {0}!
-Log_WelcomeMessage =
+Log_WelcomeMessage = Willkommen zu arara {0}!
 
 # Log_ProcessingFile = Processing file ''{0}'', please wait.
 Log_ProcessingFile = Bearbeitung der Datei ''{0}'', bitte warten.
@@ -99,10 +99,10 @@ Help_Timeout = Deklariere die Zeitbeschränkung je Anweisung (in Millisekunden).
 Help_Language = Lege die Sprache der Anwendung fest.
 
 # Help_DryRun = go through all the motions of running a command, but with no actual calls
-Help_DryRun =
+Help_DryRun = Gehe durch alle definierten Anweisungen ohne sie auszuführen. 
 
 # Help_MaximumNumberOfLoops = set the maximum number of loops
-Help_MaximumNumberOfLoops =
+Help_MaximumNumberOfLoops = Setze die maximale Anzahl an Schleifendurchgängen. 
 
 # Header_Slogan = The cool TeX automation tool
 Header_Slogan = Das coole TeX Automatisierungstool
@@ -231,19 +231,19 @@ Error_MissingCommandElementsRule = Uh-oh, die Aufgabe ''{0}'' (Referenzierung au
 Error_CommandRuntimeErrorRule = Es tut mir Leid, aber das Kommando, welches in der Aufgabe ''{0}'' (Referenzierung auf Datei ''{0}.yaml'' im Pfad ''{1}'') genutzt wird, hat eine ungültige Variable/Methode im Regelsinn: ''{2}''
 
 # Error_XMLFileNotFound = I''m sorry, but I could not find ''{0}'' in the current directory.
-Error_XMLFileNotFound =
+Error_XMLFileNotFound =  Es tut mir Leid, aber ich konnte die ''{0}'' im aktuellen Verzeichnis nicht finden.
 
 # Error_XMLBadEncoding = I''m sorry, but apparently ''{0}'' has a bad encoding. Delete the file and try again.
-Error_XMLBadEncoding =
+Error_XMLBadEncoding = Es tut mir Leid, aber anscheinend hat ''{0}'' eine schlechte Zeichencodierung. Lösche die Datei und versuche es erneut.
 
 # Error_XMLMalformedFile = I''m sorry, but ''{0}'' seems to be malformed. Delete the file and try again.
-Error_XMLMalformedFile =
+Error_XMLMalformedFile = Es tut mir Leid, aber ''{0}'' scheint deformiert zu sein. Lösche die Datei und versuche es erneut.
 
 # Error_XMLAccess = I''m sorry, but I could not access ''{0}''. Please check the directory permissions and try again.
-Error_XMLAccess =
+Error_XMLAccess = Es tut mir Leid, aber ich konnte nicht auf ''{0}'' zugreifen. Bitte prüfe die Verzeichnisrechte und versuche es erneut.
 
 # Error_ConditionalNotBoolean = I'm sorry, but the following conditional does not resolve to a boolean value. Please rewrite it and try again:
-Error_ConditionalNotBoolean =
+Error_ConditionalNotBoolean = Es tut mir Leid, aber die folgende Bedingung kann nicht zu einem Boole'schen Wert aufgelöst werden. Bitte schreibe es um und versuche es erneut.
 
 # Error_ConditionalRuntimeError = I''m sorry, but one of the conditionals has an unavailable variable in the evaluation context: ''{0}''
-Error_ConditionalRuntimeError =
+Error_ConditionalRuntimeError = Es tut mir Leid, aber eine der Bedingungen hat eine nicht verfügbare Variable in der Auswertung: ''{0}''
