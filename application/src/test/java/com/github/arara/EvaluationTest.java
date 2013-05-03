@@ -4,6 +4,7 @@ package com.github.arara;
 import com.github.arara.exception.AraraException;
 import com.github.arara.utils.ConditionalEvaluator;
 import com.github.arara.utils.ConditionalMethods;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -66,12 +67,17 @@ public class EvaluationTest extends TestCase {
      * @throws NoSuchMethodException Throw exception in case of error.
      * @throws InvocationTargetException Throw exception in case of error.
      */
-    public void testFilenames() throws IllegalAccessException, IllegalArgumentException, NoSuchMethodException, InvocationTargetException {
+    public void testFilenames() throws IllegalAccessException, IllegalArgumentException, NoSuchMethodException, InvocationTargetException, NoSuchFieldException {
 
         // create access for private method via reflection
         Method method = ConditionalMethods.class.getDeclaredMethod("discoverName", String.class, String.class);
         method.setAccessible(true);
 
+        // create acess for private field via reflection
+        Field field = ConditionalMethods.class.getDeclaredField("absolutePath");
+        field.setAccessible(true);
+        field.set(null, "");
+        
         // list of results
         List<String> results = new ArrayList<String>();
         results.add((String) method.invoke(this, "tex", "foo"));
@@ -80,7 +86,7 @@ public class EvaluationTest extends TestCase {
         results.add((String) method.invoke(this, ".gitignore", "foo"));
 
         // expected results
-        List<String> expected = Arrays.asList("foo.tex", "file.type", "file", ".gitignore");
+        List<String> expected = Arrays.asList("/foo.tex", "/file.type", "/file", "/.gitignore");
         assertEquals(results, expected);
     }
 }

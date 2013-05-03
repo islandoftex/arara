@@ -16,7 +16,7 @@ public class AraraConstants {
     /**
      * The arara version.
      */
-    public static final String VERSION = "4.0RC2";
+    public static final String VERSION = "4.0RC3";
     /**
      * The number of characters per line in messages.
      */

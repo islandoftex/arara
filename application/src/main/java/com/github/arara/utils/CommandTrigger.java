@@ -176,9 +176,12 @@ public class CommandTrigger {
                         System.out.println("");
                     }
 
-                    // we have no conditional, so there's no
-                    // reason to be in this loop
-                    if (currentAraraCommand.getConditional().isEmpty()) {
+                    // we have no conditional or the conditional was an IF,
+                    // so there's no reason to be in this loop
+                    if (currentAraraCommand.getConditional().isEmpty() ||
+                            currentAraraCommand.getConditional().getType() == AraraConditionalType.IF) {
+                        
+                        // stop, hammertime!
                         break;
                     }
 
