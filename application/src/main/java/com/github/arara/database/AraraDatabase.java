@@ -4,9 +4,11 @@ package com.github.arara.database;
 import com.github.arara.exception.AraraException;
 import com.github.arara.utils.AraraConstants;
 import com.github.arara.utils.AraraLocalization;
+import com.github.arara.utils.AraraUtils;
 import com.github.arara.utils.ConditionalMethods;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -30,6 +32,9 @@ public class AraraDatabase {
     // the localization class
     /** Constant <code>localization</code> */
     final static AraraLocalization localization = AraraLocalization.getInstance();
+    // the absolute path reference
+    /** Constant <code>absolutePath</code> */
+    private static String absolutePath;
 
     /**
      * Loads the XML file and maps the content to a hashmap.
@@ -44,7 +49,7 @@ public class AraraDatabase {
         try {
             
             // get an input from the XML file
-            FileInputStream inputStream = new FileInputStream(AraraConstants.ARARADATABASE);
+            FileInputStream inputStream = new FileInputStream(absolutePath.concat(File.separator).concat(AraraConstants.ARARADATABASE));
             Reader reader = new InputStreamReader(inputStream, "UTF-8");
             
             // create the mapping
@@ -96,7 +101,7 @@ public class AraraDatabase {
         try {
             
             // get the writers
-            FileOutputStream outputStream = new FileOutputStream(AraraConstants.ARARADATABASE);
+            FileOutputStream outputStream = new FileOutputStream(absolutePath.concat(File.separator).concat(AraraConstants.ARARADATABASE));
             OutputStreamWriter writer = new OutputStreamWriter(outputStream, "UTF-8");
             
             // create the mapping
@@ -137,6 +142,17 @@ public class AraraDatabase {
         
         // return the result from a static method of
         // another helper class
-        return ConditionalMethods.exists(AraraConstants.ARARADATABASE);
+        return ConditionalMethods.exists(absolutePath.concat(File.separator).concat(AraraConstants.ARARADATABASE));
+    }
+    
+    /**
+     * Set the absolute path based on the current file processed by arara.
+     * 
+     * @param file The current file processed by arara.
+     */
+    public static void setAbsolutePath(File file) {
+        
+        // set the absolute path reference
+        AraraDatabase.absolutePath = AraraUtils.getAbsolutePath(file);
     }
 }

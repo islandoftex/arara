@@ -43,6 +43,9 @@ public class ConditionalEvaluator {
             map.put("exists", ConditionalMethods.class.getMethod("exists", String.class));
             map.put("changed", ConditionalMethods.class.getMethod("changed", String.class));
             map.put("contains", ConditionalMethods.class.getMethod("contains", String.class, String.class));
+            map.put("missing", ConditionalMethods.class.getMethod("missing", String.class));
+            map.put("unchanged", ConditionalMethods.class.getMethod("unchanged", String.class));
+            map.put("empty", ConditionalMethods.class.getMethod("empty", String.class));
 
         } catch (NoSuchMethodException nsme) {
             // this will never happen
@@ -60,7 +63,7 @@ public class ConditionalEvaluator {
                 throw new AraraException(localization.getMessage("Error_ConditionalNotBoolean").concat("\n\n").concat(conditional));
 
             } else {
-
+                
                 // we have a boolean value, so
                 // let's return it
                 return ((Boolean) result).booleanValue();

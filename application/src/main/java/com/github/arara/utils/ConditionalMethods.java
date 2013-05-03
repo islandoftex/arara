@@ -25,6 +25,9 @@ public class ConditionalMethods {
     // the file basename reference
     /** Constant <code>basenameReference</code> */
     private static String basenameReference;
+    // the absolute path reference
+    /** Constant <code>absolutePath</code> */
+    private static String absolutePath;
 
     /**
      * Returns a logic value indicating if the provided file reference exists.
@@ -36,7 +39,7 @@ public class ConditionalMethods {
 
         // discover the filename
         filename = discoverName(filename, basenameReference);
-
+        
         // return the call to an inner method
         return (new File(filename)).exists();
     }
@@ -170,31 +173,56 @@ public class ConditionalMethods {
      */
     private static String discoverName(String value, String prefix) {
         
-        // if we don't have a dot, we are
-        // dealing with extensions
-        if (value.lastIndexOf(".") == -1) {
+        // check if we don' have a separator
+        // in the value
+        if (!value.contains(File.separator)) {
             
-            // concat prefix with value
-            // and return
-            return prefix.concat(".").concat(value);
-            
-        } else {
-            
-            // we have a dot
-            
-            // if the dot is in the end, simply
-            // return the value without the last
-            // dot
-            if (value.endsWith(".")) {
-                
-                // return it
-                return value.substring(0, value.length() - 1);
-                
+            // if we don't have a dot, we are
+            // dealing with extensions
+            if (value.lastIndexOf(".") == -1) {
+
+                // concat prefix with value
+                // and return
+                return absolutePath.concat(File.separator).concat(prefix).concat(".").concat(value);
+
             } else {
+
+                // we have a dot
+
+                // if the dot is in the end, simply
+                // return the value without the last
+                // dot
+                if (value.endsWith(".")) {
+
+                    // return it
+                    return absolutePath.concat(File.separator).concat(value.substring(0, value.length() - 1));
+
+                } else {
+
+                    // return it as it is
+                    return absolutePath.concat(File.separator).concat(value);
+                }
+            }
+            
+        }
+        else {
+            
+            // we do have a separator, let's proceed
+            
+            // if it's in the beginning
+            if (value.startsWith(File.separator)) {
                 
-                // return it as it is
+                // we have an absolute path, simply return
                 return value;
             }
+            else {
+                
+                // the separator is somewhere else,
+                // simply append it to the absolute
+                // path
+                return absolutePath.concat(File.separator).concat(value);
+            }
+            
         }
     }
 
@@ -271,6 +299,66 @@ public class ConditionalMethods {
             // return
             return false;
         }
+    }
+    
+    /**
+     * Set the absolute path reference.
+     * 
+     * @param file The current file processed by arara.
+     */
+    public static void setAbsolutePath(File file) {
+        
+        // get the absolute path
+        ConditionalMethods.absolutePath = AraraUtils.getAbsolutePath(file);
+    }
+    
+    /**
+     * Checks if the provided file is missing.
+     * 
+     * @param filename The filename to be checked.
+     * @return A boolean value indicating if the file exists.
+     */
+    public static boolean missing(String filename) {
+        
+        // simply invert the call to the
+        // opposite method        
+        return !exists(filename);
+        
+    }
+    
+    /**
+     * Checks if the provided file is not changed since the last verification.
+     * 
+     * @param filename The filename to be checked.
+     * @return A boolean value indicating if the file is not changed.
+     * @throws AraraException In case of error, an exception is thrown.
+     */
+    public static boolean unchanged(String filename) throws AraraException {
+        
+        // simply invert the call to the
+        // opposite method
+        return !changed(filename);
+        
+    }
+    
+    /**
+     * Checks if the provided file is empty.
+     * 
+     * @param filename The filename to be checked.
+     * @return A boolean value indicating if the file is empty.
+     */
+    public static boolean empty(String filename) {
+        
+        // discover the filename
+        filename = discoverName(filename, basenameReference);
+        
+        // create a new file reference
+        // based on the filename
+        File file = new File(filename);
+        
+        // file must exist, has to be a file
+        // and the length must be zero
+        return file.exists() && file.isFile() && (file.length() == 0);
     }
     
 }

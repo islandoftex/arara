@@ -1,6 +1,7 @@
 package com.github.arara;
 
 // needed imports
+import com.github.arara.database.AraraDatabase;
 import com.github.arara.model.AraraDirective;
 import com.github.arara.utils.*;
 import java.io.File;
@@ -70,6 +71,10 @@ public class Arara {
 
             // create a new file reference
             file = new File(commandLine.getFile());
+            
+            // set the path to the helper classes
+            ConditionalMethods.setAbsolutePath(file);
+            AraraDatabase.setAbsolutePath(file);
 
             // welcome message
             logger.info(localization.getMessage("Log_WelcomeMessage", AraraConstants.VERSION));

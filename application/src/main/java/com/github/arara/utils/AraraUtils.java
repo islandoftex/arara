@@ -365,4 +365,21 @@ public class AraraUtils {
         }
     }
     
+    /**
+     * Gets the absolute path for the provided file without the file reference.
+     * 
+     * @param file The file.
+     * @return The absolute path without the file reference.
+     */
+    public static String getAbsolutePath(File file) {
+        
+        // get the absolute path
+        String path = file.getAbsolutePath();
+        
+        // remove the reference to the file
+        // and return the absolute path
+        return path.substring(0, path.lastIndexOf(File.separator));
+        
+    }
+    
 }
