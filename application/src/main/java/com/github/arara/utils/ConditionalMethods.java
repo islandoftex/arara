@@ -209,8 +209,8 @@ public class ConditionalMethods {
             
             // we do have a separator, let's proceed
             
-            // if it's in the beginning
-            if (value.startsWith(File.separator)) {
+            // check if we have an absolute path
+            if ((new File(value)).isAbsolute()) {
                 
                 // we have an absolute path, simply return
                 return value;
