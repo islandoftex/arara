@@ -5,7 +5,7 @@
 # requires arara 3.0+
 identifier: makeindex
 name: MakeIndex
-command: <arara> makeindex @{german} @{style} @{options} "@{getBasename(file)}.idx"
+command: <arara> makeindex @{german} @{style} "@{getBasename(file)}.@{extension}"
 arguments: 
 - identifier: style
   flag: <arara> -s @{parameters.style}
@@ -13,4 +13,8 @@ arguments:
   flag: <arara> @{isTrue(parameters.german,"-g")}
 - identifier: options
   flag: <arara> @{parameters.options}
+- identifier: extension
+  flag: <arara> @{parameters.options}
+  default: idx
+
 
