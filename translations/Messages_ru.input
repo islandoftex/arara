@@ -36,7 +36,7 @@
 # e-mail: ulyanov.sergey@gmail.com
 
 # Log_WelcomeMessage = Welcome to arara {0}!
-Log_WelcomeMessage =
+Log_WelcomeMessage = Добро пожаловать в arara {0}!
 
 # Log_ProcessingFile = Processing file ''{0}'', please wait.
 Log_ProcessingFile = Обработка файла ''{0}'', пожалуйста, подождите.
@@ -99,10 +99,10 @@ Help_Timeout = установить время ожидания выполнен
 Help_Language = установить язык приложения
 
 # Help_DryRun = go through all the motions of running a command, but with no actual calls
-Help_DryRun =
+Help_DryRun = пройти через все инструкции выполнения команды, но без реальных вызовов
 
 # Help_MaximumNumberOfLoops = set the maximum number of loops
-Help_MaximumNumberOfLoops =
+Help_MaximumNumberOfLoops = установить максимальное число циклов
 
 # Header_Slogan = The cool TeX automation tool
 Header_Slogan = Крутой инструмент автоматизации TeX
@@ -231,19 +231,19 @@ Error_MissingCommandElementsRule = Ой-ой, в задаче ''{0}'' (ссыл�
 Error_CommandRuntimeErrorRule = К сожалению, команда, установленная для задачи ''{0}'' (ссылающейся на файл ''{0}.yaml'', расположенный в ''{1}'') имеет недоступную переменную / метод в контексте правила: ''{2}''
 
 # Error_XMLFileNotFound = I''m sorry, but I could not find ''{0}'' in the current directory.
-Error_XMLFileNotFound =
+Error_XMLFileNotFound = К сожалению, я не смог найти ''{0}'' в текущем каталоге.
 
 # Error_XMLBadEncoding = I''m sorry, but apparently ''{0}'' has a bad encoding. Delete the file and try again.
-Error_XMLBadEncoding =
+Error_XMLBadEncoding = К сожалению, видимо ''{0}'' имеет неверную кодировку. Удалите файл и попытайтесь еще раз.
 
 # Error_XMLMalformedFile = I''m sorry, but ''{0}'' seems to be malformed. Delete the file and try again.
-Error_XMLMalformedFile =
+Error_XMLMalformedFile = К сожалению, ''{0}'' выглядет некорректным. Удалите файл и попытайтесь еще раз.
 
 # Error_XMLAccess = I''m sorry, but I could not access ''{0}''. Please check the directory permissions and try again.
-Error_XMLAccess =
+Error_XMLAccess = К сожалению, невозможно получить доступ к ''{0}''. Пожалуйста, проверьте права дирректории и попытайтесь еще раз.
 
 # Error_ConditionalNotBoolean = I'm sorry, but the following conditional does not resolve to a boolean value. Please rewrite it and try again:
-Error_ConditionalNotBoolean =
+Error_ConditionalNotBoolean = К сожалению, следующее условие не приводится к логическому значению. Пожалуйста, перепишите его и попробуйте еще раз:
 
 # Error_ConditionalRuntimeError = I''m sorry, but one of the conditionals has an unavailable variable in the evaluation context: ''{0}''
-Error_ConditionalRuntimeError =
+Error_ConditionalRuntimeError = К сожалению, одно из условий содержит неизвестную переменную в контексте выполнения: ''{0}''
