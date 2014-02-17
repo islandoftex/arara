@@ -1,1 +1,32 @@
-/home/cmhughes/Documents/yamlfiles/animate.yaml
+!config
+# Make animated .gif file from .pdf
+# author: Chris Hughes
+# last edited by: cmh, June 6th 2013
+# requires arara 3.0+
+#
+# Sample usage: 
+#
+# % arara: animate
+# % arara: animate: {density: 200}
+# % arara: animate: {density: 200, delay: 20}
+#
+# This rule is really just a shortcut for commands like the following
+#
+#  convert -delay 10 -loop 0 -density 300 myfile.pdf myfile.gif
+#
+# which will output myfile.gif
+#
+identifier: animate
+name: animate
+commands: 
+- <arara> @{ isWindows( "cmd /c convert", "convert" ) } -delay @{delay} -loop @{loop} -density @{density} "@{ getBasename(file) }.pdf" "@{ getBasename(file) }.gif"
+arguments:
+- identifier: delay
+  flag: <arara> @{parameters.delay}
+  default: 10
+- identifier: loop
+  flag: <arara> @{parameters.loop}
+  default: 0
+- identifier: density
+  flag: <arara> @{parameters.density}
+  default: 300
