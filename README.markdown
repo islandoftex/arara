@@ -1,4 +1,4 @@
-> Reading documentation? that will never catch on. (David Carlisle)
+> Reading documentation? that will never catch on. (`sed -n 's/^%% File: longtable.dtx Copyright (C) 1990-2001 \(.*\)$/\1/p' `kpsewhich longtable.sty``)
 
 Time to shake things up. `:)`
 
