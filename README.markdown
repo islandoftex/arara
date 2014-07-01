@@ -1,6 +1,12 @@
-> **Note:** `arara 3.0` is now available on CTAN and TeX Live! If you want to use the installers, please take a look at the `releases/` directory. Sadly, GitHub got rid of the *Downloads* section, so I had to include the installers as a normal commit.
+> Reading documentation? that will never catch on. (David Carlisle)
 
-> **Attention:** we are already testing the upcoming `arara 4.0`!
+Time to shake things up. `:)`
+
+![New logo](http://i.imgur.com/2WKyJZ9.png)
+
+I am already working on a new version of `arara`. According to my numbers, it will be version `6.0` (I might explain *why* in the documentation later on). A lot of new features, improvements and changes are on their way. And also ducks.
+
+Note that there will soon be a repository cleanup. For now, this is just a friendly announcement. `:)`
 
 # arara
 
