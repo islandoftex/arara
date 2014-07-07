@@ -12,6 +12,9 @@ Note that there will soon be a repository cleanup. For now, this is just a frien
 
 `arara` is a TeX automation tool based on rules and directives. It gives you subsidies to enhance your TeX experience.
 
+## Installation
+You can find installers for the linux and windows versions inside the [releases](https://github.com/drozzy/arara/tree/master/releases) directory.
+
 ## License
 
 This application is licensed under the [New BSD License](http://www.opensource.org/licenses/bsd-license.php).Please note that the New BSD License has been verified as a GPL-compatible free software license by the [Free Software Foundation](http://www.fsf.org/), and has been vetted as an open source license by the [Open Source Initiative](http://www.opensource.org/).
