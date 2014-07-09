@@ -1,12 +1,14 @@
-> Reading documentation? that will never catch on. (`sed -n 's/^%% File: longtable.dtx Copyright (C) 1990-2001 \(.*\)$/\1/p' kpsewhich longtable.sty`)
-
 Time to shake things up. `:)`
 
 ![New logo](http://i.imgur.com/2WKyJZ9.png)
 
 I am already working on a new version of `arara`. According to my numbers, it will be version `6.0` (I might explain *why* in the documentation later on). A lot of new features, improvements and changes are on their way. And also ducks.
 
-Note that there will soon be a repository cleanup. For now, this is just a friendly announcement. `:)`
+Big repository cleanup. If you need access to the old codebase, make sure to take a look in [here](https://github.com/cereda/arara/releases). Sadly, I jave to update things at a slow pace, but hopefully everything will be in place soon. `:)`
+
+Binary releases are now powered by Bintray and not available in here anymore. You can [click here](https://bintray.com/cereda/arara/installers/_latestVersion) or use the button below to get access to the current `3.0` release.
+
+[ ![Download](https://api.bintray.com/packages/cereda/arara/installers/images/download.png) ](https://bintray.com/cereda/arara/installers/_latestVersion)
 
 # arara
 
