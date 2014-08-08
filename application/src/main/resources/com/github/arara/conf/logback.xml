@@ -1,0 +1,13 @@
+<configuration>
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>${araraLogName}.log</file>
+    <append>false</append>
+    <encoder>
+      <charset>UTF-8</charset>
+      <pattern>%date{dd MMM yyyy HH:mm:ss.SSS} %-5level %logger{0} - %msg%n</pattern>
+    </encoder>
+  </appender>
+  <root level="ALL">
+    <appender-ref ref="FILE" />
+  </root>
+</configuration>
