@@ -1,6 +1,6 @@
 ![arara](http://i.imgur.com/2WKyJZ9.png)
 
-I am already working on a new version of `arara`. According to my numbers, it will be version `6.0` (I might explain *why* in the documentation later on). A lot of new features, improvements and changes are on their way. And also ducks.
+I am already working on a new version of `arara`. According to my numbers, it will be version `4.0`. A lot of new features, improvements and changes are on their way. And also ducks.
 
 Big repository cleanup. If you need access to the old codebase, make sure to take a look in [here](https://github.com/cereda/arara/releases). Sadly, I have to update things at a slow pace, but hopefully everything will be in place soon. `:)` **Update:** I brought the `3.0` codebase to front just to have the most stable version available for browsing.
 
