@@ -1,11 +1,11 @@
-#JAVA-Part
+# For Java
 *.class
 
-## Package Files 
+## For packages
 *.war
 *.ear
 
-## LaTeX-Part
+## For LaTeX
 *.acn
 *.acr
 *.alg
@@ -38,9 +38,7 @@
 *.vrb
 *.xdy
 
-## TEMP files
-
+## Temporary stuff
 *.*~
-
 .DS_Store
 /application/target/

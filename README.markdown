@@ -4,11 +4,9 @@
 
 ![Road to V4](http://i.imgur.com/jdc2eGu.png)
 
-I am proud to annouce that the new version of `arara` is almost ready! Time soften some rough edges and test rules. Soon I will commit all changes to this very own repository, then it will be time to work on the user manual and a proper CTAN release. `:)`
+I am proud to annouce that the new version of `arara` is almost ready! Time soften some rough edges and test rules. The new code is now available, now I will port all rules to V4. Then it will be time to work on the user manual and a proper CTAN release. `:)`
 
 We are now officially on the road to V4!
-
-Big repository cleanup. If you need access to the old codebase, make sure to take a look in [here](https://github.com/cereda/arara/releases). **Update:** I brought the `3.0` codebase to front just to have the most stable version available for browsing.
 
 Binary releases are now powered by Bintray and not available in here anymore. You can [click here](https://bintray.com/cereda/arara/installers/_latestVersion) or use the button below to get access to the current `3.0` release. Note that you need Java to run both the installer and `arara` itself.
 
