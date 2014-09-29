@@ -141,8 +141,8 @@ public class Methods {
             map.put("changed", Methods.class.getMethod("changed", File.class));
             map.put("unchanged", Methods.class.getMethod("unchanged", String.class));
             map.put("unchanged", Methods.class.getMethod("unchanged", File.class));
-            map.put("contains", Methods.class.getMethod("contains", String.class, String.class));
-            map.put("contains", Methods.class.getMethod("contains", File.class, String.class));
+            map.put("found", Methods.class.getMethod("found", String.class, String.class));
+            map.put("found", Methods.class.getMethod("found", File.class, String.class));
         } catch (Exception exception) {
             // quack, quack, quack
         }
@@ -761,7 +761,7 @@ public class Methods {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
-    public static boolean contains(String extension, String regex)
+    public static boolean found(String extension, String regex)
             throws AraraException {
         return CommonUtils.checkRegex(extension, regex);
     }
@@ -774,7 +774,7 @@ public class Methods {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
-    public static boolean contains(File file, String regex) 
+    public static boolean found(File file, String regex) 
             throws AraraException {
         return CommonUtils.checkRegex(file, regex);
     }

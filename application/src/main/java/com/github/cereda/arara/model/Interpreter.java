@@ -388,6 +388,8 @@ public class Interpreter {
 
         Map<String, Object> context = new HashMap<String, Object>();
         context.put("parameters", directive.getParameters());
+        context.put("file", directive.getParameters().get("file"));
+        context.put("reference", directive.getParameters().get("reference"));
         Methods.addRuleMethods(context);
 
         for (Argument argument : arguments) {
