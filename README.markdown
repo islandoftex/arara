@@ -4,7 +4,7 @@
 
 ![Road to V4](http://i.imgur.com/jdc2eGu.png)
 
-I am proud to annouce that the new version of `arara` is almost ready! Time soften some rough edges and test rules. The new code is now available, now I will port all rules to V4. Then it will be time to work on the user manual and a proper CTAN release. `:)`
+I am proud to annouce that the new version of `arara` is almost ready! Time soften some rough edges and test rules. The new code is now available, and the majority of the rules are already ported to V4. Then it will be time to work on the user manual and a proper CTAN release. `:)`
 
 We are now officially on the road to V4!
 
