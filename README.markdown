@@ -8,6 +8,8 @@ I am proud to annouce that the new version of `arara` is almost ready! Time soft
 
 We are now officially on the road to V4!
 
+[![Build Status](https://travis-ci.org/cereda/arara.svg?branch=master)](https://travis-ci.org/cereda/arara)
+
 Binary releases are now powered by Bintray and not available in here anymore. You can [click here](https://bintray.com/cereda/arara/installers/_latestVersion) or use the button below to get access to the current `3.0` release. Note that you need Java to run both the installer and `arara` itself.
 
 [ ![Download](https://api.bintray.com/packages/cereda/arara/installers/images/download.png) ](https://bintray.com/cereda/arara/installers/_latestVersion)
