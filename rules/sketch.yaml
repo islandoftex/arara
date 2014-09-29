@@ -1,10 +1,29 @@
 !config
-# Sketch rule for arara
-# author: Sergey Ulyanov
-# requires arara 3.0+
+# Arara, the cool TeX automation tool
+# Copyright (c) 2012, Paulo Roberto Massa Cereda 
+# All rights reserved.
+#
+# This rule is part of arara.
 identifier: sketch
 name: Sketch
-command: <arara> sketch @{options} "@{file}" -o "@{getBasename(file)}.tex"
+authors:
+- Sergey Ulyanov
+- Paulo Cereda
+commands:
+- name: The Sketch software
+  command: >
+    @{
+        output = getBasename(file).concat('.tex');
+        return getCommand('sketch', options, file, '-o', output)
+    }
 arguments:
 - identifier: options
-  flag: <arara> @{parameters.options}
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.')
+        }
+    }

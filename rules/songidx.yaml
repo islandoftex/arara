@@ -1,11 +1,22 @@
- !config
-# songidx rule for arara
-# author: Francesco Endrici
-# requires arara 3.0
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2012, Paulo Roberto Massa Cereda 
+# All rights reserved.
+#
+# This rule is part of arara.
 identifier: songidx
 name: SongIDX
-command: <arara> songidx "@{input}.sxd"
+authors:
+- Francesco Endrici
+- Paulo Cereda
+commands:
+- name: The SongIDX program
+  command: >
+    @{
+        value = getBasename(input).concat('.sxd');
+        return getCommand('songidx', value);
+    }
 arguments:
 - identifier: input
-  flag: <arara> @{parameters.input}
-
+  flag: '@{parameters.input}'
+  required: true

@@ -1,32 +1,36 @@
 !config
-# Make animated .gif file from .pdf
-# author: Chris Hughes
-# last edited by: cmh, June 6th 2013
-# requires arara 3.0+
+# Arara, the cool TeX automation tool
+# Copyright (c) 2012, Paulo Roberto Massa Cereda 
+# All rights reserved.
 #
-# Sample usage: 
-#
-# % arara: animate
-# % arara: animate: {density: 200}
-# % arara: animate: {density: 200, delay: 20}
-#
-# This rule is really just a shortcut for commands like the following
-#
-#  convert -delay 10 -loop 0 -density 300 myfile.pdf myfile.gif
-#
-# which will output myfile.gif
-#
+# This rule is part of arara.
 identifier: animate
-name: animate
-commands: 
-- <arara> @{ isWindows( "cmd /c convert", "convert" ) } -delay @{delay} -loop @{loop} -density @{density} "@{ getBasename(file) }.pdf" "@{ getBasename(file) }.gif"
+name: Animate
+authors:
+- Chris Hughes
+- Paulo Cereda
+commands:
+- name: The Convert program
+  command: >
+    @{
+        prefix = [];
+        input = getBasename(file).concat('.pdf');
+        output = getBasename(file).concat('.gif');
+        if (isUnix()) {
+            prefix = [ 'convert' ];
+        }
+        else {
+            prefix = [ 'cmd', '/c', 'convert' ];
+        }
+        return getCommand(prefix, '-delay', delay, '-loop', loop, '-density', density, input, output);
+    }
 arguments:
 - identifier: delay
-  flag: <arara> @{parameters.delay}
+  flag: "@{parameters.delay}"
   default: 10
 - identifier: loop
-  flag: <arara> @{parameters.loop}
+  flag: "@{parameters.loop}"
   default: 0
 - identifier: density
-  flag: <arara> @{parameters.density}
+  flag: "@{parameters.density}"
   default: 300

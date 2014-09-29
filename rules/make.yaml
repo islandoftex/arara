@@ -1,12 +1,34 @@
 !config
-# Make rule for arara
-# author: Marco Daniel
-# last edited by: Paulo Cereda
-# requires arara 3.0+
+# Arara, the cool TeX automation tool
+# Copyright (c) 2012, Paulo Roberto Massa Cereda 
+# All rights reserved.
+#
+# This rule is part of arara.
 identifier: make
 name: Make
-command: <arara> make @{task}
-arguments: 
-- identifier: task
-  flag: <arara> @{parameters.task}
-
+authors:
+- Marco Daniel
+- Paulo Cereda
+commands:
+- name: The Make program
+  command: >
+    @{
+        if (target != '') {
+            if (isList(target)) {
+                tasks = [];
+                for (entry : target) {
+                    tasks.add(getCommand('make', entry));
+                }
+                return tasks;
+            }
+            else {
+                return getCommand('make', target);
+            }
+        }
+        else {
+            return getCommand('make');
+        }
+    }
+arguments:
+- identifier: target
+  flag: "@{parameters.target}"

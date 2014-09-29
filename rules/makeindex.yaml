@@ -1,20 +1,39 @@
 !config
-# MakeIndex rule for arara
-# author: Marco Daniel
-# last edited by: Paulo Cereda
-# requires arara 3.0+
+# Arara, the cool TeX automation tool
+# Copyright (c) 2012, Paulo Roberto Massa Cereda 
+# All rights reserved.
+#
+# This rule is part of arara.
 identifier: makeindex
 name: MakeIndex
-command: <arara> makeindex @{german} @{style} "@{getBasename(file)}.@{extension}"
-arguments: 
-- identifier: style
-  flag: <arara> -s @{parameters.style}
+authors:
+- Marco Daniel
+- Paulo Cereda
+commands:
+- name: The MakeIndex software
+  command: >
+    @{
+        value = getBasename(file).concat('.').concat(extension);
+        return getCommand('makeindex', german, style, value);
+    }
+arguments:
 - identifier: german
-  flag: <arara> @{isTrue(parameters.german,"-g")}
-- identifier: options
-  flag: <arara> @{parameters.options}
+  flag: >
+    @{
+        isTrue(parameters.german, '-g')
+    }
+- identifier: style
+  flag: "@{ [ '-s', parameters.style ] }"
 - identifier: extension
-  flag: <arara> @{parameters.options}
+  flag: "@{parameters.extension}"
   default: idx
-
-
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.')
+        }
+    }

@@ -1,10 +1,28 @@
 !config
-# BibTeX rule for arara
-# author: Marco Daniel
-# requires arara 3.0+
+# Arara, the cool TeX automation tool
+# Copyright (c) 2012, Paulo Roberto Massa Cereda 
+# All rights reserved.
+#
+# This rule is part of arara.
 identifier: bibtex
 name: BibTeX
-command: <arara> bibtex @{options} "@{getBasename(file)}.aux"
-arguments: 
+authors:
+- Marco Daniel
+- Paulo Cereda
+commands:
+- name: The BibTeX reference management software
+  command: >
+    @{
+        return getCommand('bibtex', options, getBasename(file))
+    }
+arguments:
 - identifier: options
-  flag: <arara> @{parameters.options}
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.')
+        }
+    }

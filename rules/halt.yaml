@@ -1,10 +1,18 @@
 !config
-# Halt rule for arara
-# author: Paulo Cereda
-# requires arara 4.0+
-# note: this rule uses an arara trigger
+# Arara, the cool TeX automation tool
+# Copyright (c) 2012, Paulo Roberto Massa Cereda 
+# All rights reserved.
+#
+# This rule is part of arara.
 identifier: halt
 name: Halt
-command: <arara> arara halt
+authors:
+- Heiko Oberdiek
+- Paulo Cereda
+commands:
+- name: The halt trigger
+  command: >
+    @{
+        return getTrigger('halt');
+    }
 arguments: []
-

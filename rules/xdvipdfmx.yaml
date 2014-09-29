@@ -1,13 +1,39 @@
 !config
-# DVIPS rule for arara
-# author: Marco Daniel
-# requires arara 3.0+
-identifier: dvipdfmx
+# Arara, the cool TeX automation tool
+# Copyright (c) 2012, Paulo Roberto Massa Cereda 
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: xdvipdfmx
 name: XDVIPDFMX
-command: <arara> xdvipdfmx "@{getBasename(file)}.dvi" -o "@{output}.ps" @{options}
+authors:
+- Marco Daniel
+- Paulo Cereda
+commands:
+- name: The XDVIPDFMX program
+  command: >
+    @{
+        base = getBasename(file).concat('.dvi');
+        out = getBasename(output).concat('.ps');
+        return getCommand('xdvipdfmx', base, '-o', out, options);
+    }
 arguments:
 - identifier: output
-  flag: <arara> @{parameters.output}
-  default: <arara> @{getBasename(file)}
+  flag: >
+    @{
+        parameters.output
+    }
+  default: >
+    @{
+        getBasename(file)
+    }
 - identifier: options
-  flag: <arara> @{parameters.options}
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.')
+        }
+    }

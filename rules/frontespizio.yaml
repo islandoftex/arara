@@ -1,18 +1,70 @@
 !config
-# Frontespizio rule for arara
-# author: Francesco Endrici
-# author: Enrico Gregorio
-# requires arara 3.0+
+# Arara, the cool TeX automation tool
+# Copyright (c) 2012, Paulo Roberto Massa Cereda 
+# All rights reserved.
+#
+# This rule is part of arara.
 identifier: frontespizio
 name: Frontespizio
+authors:
+- Francesco Endrici
+- Enrico Gregorio
+- Paulo Cereda
 commands:
-- <arara> @{engine} "@{getBasename(file)}"
-- <arara> @{engine} "@{getBasename(file)}-frn"
-- <arara> @{dvips}
-- <arara> @{engine} "@{getBasename(file)}"
-arguments: 
+- name: The engine
+  command: >
+    @{
+        return getCommand(engine, action, shell, file);
+    }
+- name: The frontispiece
+  command: >
+    @{
+        base = getBasename(file).concat('-frn');
+        return getCommand(engine, action, shell, base);
+    }
+- name: The DVIPS program
+  command: >
+    @{
+        base = getBasename(file).concat('-frn');
+        eps = base.concat('.eps');
+        return isTrue(engine == 'latex', getCommand('dvips', '-o', eps, base), '');
+    }
+- name: The engine
+  command: >
+    @{
+        return getCommand(engine, action, shell, file);
+    }
+arguments:
 - identifier: engine
-  flag: <arara> @{parameters.engine}
+  flag: >
+    @{
+        if ([ 'pdflatex', 'latex', 'xelatex', 'lualatex' ].contains(parameters.engine)) {
+            return parameters.engine;
+        }
+        else {
+            throwError('The provided engine is not valid');
+        }
+    }
   default: pdflatex
-- identifier: dvips
-  default: <arara> @{ isTrue(parameters.engine == 'latex', 'dvips -o "' + getBasename(file) + '-frn.eps" "'+ getBasename(file) + '-frn"') }
+- identifier: shell
+  flag: "@{isTrue(parameters.shell, '--shell-escape', '--no-shell-escape')}"
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.')
+        }
+    }
+- identifier: action
+  flag: >
+    @{
+        if ([ 'batchmode', 'nonstopmode', 'scrollmode', 'errorstopmode' ].contains(parameters.action)) {
+            return parameters.action;
+        }
+        else {
+            throwError('The provided action value is not valid.');
+        }
+    }

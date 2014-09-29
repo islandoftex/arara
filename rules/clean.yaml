@@ -1,11 +1,49 @@
 !config
-# Clean rule for arara
-# author: Paulo Cereda
-# requires arara 3.0+
+# Arara, the cool TeX automation tool
+# Copyright (c) 2012, Paulo Roberto Massa Cereda 
+# All rights reserved.
+#
+# This rule is part of arara.
 identifier: clean
-name: CleaningTool
-command: <arara> @{remove}
+name: Clean
+authors:
+- Marco Daniel
+- Paulo Cereda
+commands:
+- name: Cleaning feature
+  command: >
+    @{
+        prefix = [];
+        if (isUnix()) {
+            prefix = [ 'rm', '-f' ];
+        }
+        else {
+            prefix = [ 'cmd', '/c' ];
+        }
+        
+        if (extensions == '') {
+            if (getOriginalFile() == file) {
+                throwError('I cannot remove the main file reference.');
+            }
+            return getCommand(prefix, file);
+        }
+        else {
+            base = getBasename(file);
+            removals = [];
+            foreach(extension : extensions) {
+                removals.add(getCommand(prefix, base.concat('.').concat(extension)));
+            }
+            return removals;
+        }
+    }
 arguments:
-- identifier: remove
-  default: <arara> @{isFalse(file == getOriginalFile(), isWindows("cmd /c del", "rm -f").concat(' "').concat(file).concat('"'))}
-
+- identifier: extensions
+  flag: >
+    @{
+        if (isList(parameters.extensions)) {
+            return parameters.extensions;
+        }
+        else {
+            throwError('I was expecting a list of extensions.')
+        }
+    }

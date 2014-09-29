@@ -1,0 +1,56 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2012, Paulo Roberto Massa Cereda 
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: dvipdf
+name: DVIPDF
+authors:
+- Marco Daniel
+- Paulo Cereda
+commands:
+- name: The DVIPS program
+  command: >
+    @{
+        base = getBasename(file).concat('.dvi');
+        out = getBasename(file).concat('.ps');
+        return getCommand('dvips', base, '-o', out, options1);
+    }
+- name: The PS2PDF program
+  command: >
+    @{
+        base = getBasename(file).concat('.ps');
+        out = getBasename(output).concat('.pdf');
+        return getCommand('ps2pdf', options2, base, '-o', out);
+    }
+arguments:
+- identifier: output
+  flag: >
+    @{
+        parameters.output
+    }
+  default: >
+    @{
+        getBasename(file)
+    }
+- identifier: options1
+  flag: >
+    @{
+        if (isList(parameters.options1)) {
+            return parameters.options1;
+        }
+        else {
+            throwError('I was expecting a list of options.')
+        }
+    }
+- identifier: options2
+  flag: >
+    @{
+        if (isList(parameters.options2)) {
+            return parameters.options2;
+        }
+        else {
+            throwError('I was expecting a list of options.')
+        }
+    }
