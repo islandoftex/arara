@@ -100,6 +100,8 @@ public class DisplayUtils {
     public static void printEntryResult(boolean value) {
         ConfigurationController.getInstance().put("display.line", false);
         ConfigurationController.getInstance().put("display.result", true);
+        ConfigurationController.getInstance()
+                .put("execution.status", value ? 0 : 1);
         logger.info(
                 messages.getMessage(
                         Messages.LOG_INFO_TASK_RESULT
@@ -213,6 +215,7 @@ public class DisplayUtils {
      */
     public static void printException(AraraException exception) {
         ConfigurationController.getInstance().put("display.exception", true);
+        ConfigurationController.getInstance().put("execution.status", 2);
         boolean display = false;
         if (ConfigurationController.getInstance().contains("display.line")) {
             display = (Boolean) ConfigurationController.

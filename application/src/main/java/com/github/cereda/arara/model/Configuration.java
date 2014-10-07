@@ -130,6 +130,7 @@ public class Configuration {
         mapping.put("execution.language", new Language("en"));
         mapping.put("execution.logging", false);
         mapping.put("execution.dryrun", false);
+        mapping.put("execution.status", 0);
         mapping.put("application.copyright.year", "2012");
         mapping.put("execution.filetypes", ConfigurationUtils.
                 getDefaultFileTypes());

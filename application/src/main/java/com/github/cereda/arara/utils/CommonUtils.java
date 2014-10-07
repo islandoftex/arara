@@ -747,5 +747,14 @@ public class CommonUtils {
         }
         return values.get(value.toLowerCase());
     }
+    
+    /**
+     * Returns the exit status of the application.
+     * @return An integer representing the exit status of the application.
+     */
+    public static int getExitStatus() {
+        return (Integer) ConfigurationController.
+                getInstance().get("execution.status");
+    }
 
 }

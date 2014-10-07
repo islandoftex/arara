@@ -42,6 +42,7 @@ import com.github.cereda.arara.model.Extractor;
 import com.github.cereda.arara.model.Interpreter;
 import com.github.cereda.arara.model.Parser;
 import com.github.cereda.arara.model.StopWatch;
+import com.github.cereda.arara.utils.CommonUtils;
 import com.github.cereda.arara.utils.DirectiveUtils;
 import com.github.cereda.arara.utils.DisplayUtils;
 import java.util.List;
@@ -187,6 +188,16 @@ public class Arara {
         // when the command line parsing returns false as result (it makes
         // no sense to print the execution time for a help message, I guess)
         DisplayUtils.printTime();
+        
+        // gets the application exit status; the rule here is:
+        // 0 : everything went just fine (note that the dry-run mode always
+        //     makes arara exit with 0, unless it is an error in the directive
+        //     builder itself).
+        // 1 : one of the tasks failed, so the execution ended abruptly. This
+        //     means the error relies on the command line call, not with arara.
+        // 2 : arara just handled an exception, meaning that something bad
+        //     just happened and might require user intervention.
+        System.exit(CommonUtils.getExitStatus());
     }
 
 }
