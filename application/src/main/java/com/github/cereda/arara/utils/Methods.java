@@ -122,6 +122,7 @@ public class Methods {
             map.put("isList", Methods.class.getMethod("isList", Object.class));
             map.put("isMap", Methods.class.getMethod("isMap", Object.class));
             map.put("isBoolean", Methods.class.getMethod("isBoolean", Object.class));
+            map.put("isVerboseMode", Methods.class.getMethod("isVerboseMode"));
         } catch (Exception exception) {
             // quack, quack, quack
         }
@@ -860,6 +861,15 @@ public class Methods {
      */
     public static boolean isBoolean(Object object) {
         return checkClass(Boolean.class, object);
+    }
+    
+    /**
+     * Checks if the execution is in verbose mode.
+     * @return A boolean value indicating if the execution is in verbose mode.
+     */
+    public static boolean isVerboseMode() {
+        return (Boolean) ConfigurationController.
+                getInstance().get("execution.verbose");
     }
 
 }
