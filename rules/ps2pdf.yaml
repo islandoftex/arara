@@ -15,7 +15,7 @@ commands:
     @{
         base = getBasename(file).concat('.ps');
         out = getBasename(output).concat('.pdf');
-        return getCommand('ps2pdf', options, base, '-o', out);
+        return getCommand('ps2pdf', options, base, out);
     }
 arguments:
 - identifier: output
