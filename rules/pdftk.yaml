@@ -1,0 +1,112 @@
+!config
+# pdftk rule for arara
+identifier: pdftk
+name: PDFtk
+authors:
+- Nicola Talbot
+- Paulo Cereda
+commands:
+- name: PDFtk
+  command: >
+   @{
+      return getCommand('pdftk', file, input_pw, action, options, output, encrypt, allow, owner_pw, user_pw, flatten, drop_xfa, keep, verbose, ask)
+    }
+arguments:
+- identifier: action
+  flag: >
+   @{
+      if (['cat', 'shuffle', 'burst', 'generate_fdf',
+           'fill_form', 'background', 'multibackground',
+           'stamp', 'multistamp', 'dump_data', 'dump_data_utf8',
+           'dump_data_fields', 'dump_data_fields_utf8',
+           'update_info', 'update_info_utf8',
+           'attach_files', 'unpack_files'].contains(parameters.action[0]))
+      {
+         return parameters.action;
+      }
+      else
+      {
+         throwError('The provided action value is not valid');
+      }
+    }
+- identifier: verbose
+  flag: >
+    @{
+       return isTrue(parameters.verbose, 'verbose')
+     }
+- identifier: flatten
+  flag: >
+    @{
+       return isTrue(parameters.flatten, 'flatten')
+     }
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options))
+        {
+            return parameters.options;
+        }
+        else
+        {
+            throwError('I was expecting a list of options.')
+        }
+    }
+- identifier: output
+  flag: >
+    @{
+       return ['output', parameters.output]
+    }
+- identifier: input_pw
+  flag: >
+    @{
+       return ['input_pw', parameters.input_pw]
+    }
+- identifier: owner_pw
+  flag: >
+    @{
+       return ['owner_pw', parameters.owner_pw]
+    }
+- identifier: user_pw
+  flag: >
+    @{
+       return ['user_pw', parameters.user_pw]
+    }
+- identifier: allow
+  flag: >
+    @{
+       return ['allow', parameters.allow]
+    }
+- identifier: encrypt
+  flag: >
+    @{
+      if (['40bit', '128bit'].contains(parameters.encrypt))
+      {
+         return "encrypt_".concat(parameters.encrypt);
+      }
+      else
+      {
+         throwError('The provided encryption value is not valid');
+      }
+    }
+- identifier: keep
+  flag: >
+    @{
+      if (['first', 'final'].contains(parameters.keep))
+      {
+         return "keep_".concat(parameters.keep).concat("_id");
+      }
+      else
+      {
+         throwError('The provided keep value is not valid');
+      }
+    }
+- identifier: ask
+  flag: >
+    @{
+       return isTrue(parameters.ask, 'do_ask', 'dont_ask')
+     }
+- identifier: drop_xfa
+  flag: >
+    @{
+       return isTrue(parameters.drop_xfa, 'drop_xfa')
+     }

@@ -1,0 +1,104 @@
+!config
+identifier: datatooltk
+name: DatatoolTk
+authors:
+- Nicola Talbot
+- Paulo Cereda
+commands:
+- name: The DatatoolTk software
+  command: >
+    @{
+        return getCommand('datatooltk', options, output, csv, sql, input, sqldb, sqluser, name, probsoln, sort, sortcase, seed, shuffle, sep, delim, csvheader, noconsole, debug, owneronly, maptex, xls, sheet, filterop, filters, truncate)
+    }
+arguments:
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.');
+        }
+    }
+- identifier: output
+  flag: "@{[ '--output', parameters.output ]}"
+- identifier: csv
+  flag: "@{[ '--csv', parameters.csv ]}"
+- identifier: sep
+  flag: "@{[ '--sep, parameters.sep ]}"
+- identifier: delim
+  flag: "@{[ '--delim', parameters.delim ]}"
+- identifier: name
+  flag: "@{[ '--name', parameters.name ]}"
+- identifier: sql
+  flag: "@{[ '--sql', parameters.sql ]}"
+- identifier: sqldb
+  flag: "@{[ '--sqldb', parameters.sqldb ]}"
+- identifier: sqluser
+  flag: "@{[ '--sqluser', parameters.sqluser ]}"
+- identifier: noconsole
+  flag: "@{[ '--noconsole-action', parameters.noconsole ]}"
+  default: "@{[ '--noconsole-action', 'gui']}"
+- identifier: probsoln
+  flag: "@{[ '--probsoln', parameters.probsoln ]}"
+- identifier: input
+  flag: "@{[ '--in', parameters.input ]}"
+- identifier: sort
+  flag: "@{[ '--sort', parameters.sort ]}"
+- identifier: sortcase
+  flag: "@{isTrue(parameters.sortcase, '--sort-case-sensitive', '--sort-case-insensitive')}"
+- identifier: seed
+  flag: "@{[ '--seed, parameters.seed ]}"
+- identifier: shuffle
+  flag: "@{isTrue(parameters.shuffle, '--shuffle', '--noshuffle')}"
+- identifier: csvheader
+  flag: "@{isTrue(parameters.csvheader, '--csvheader', '--nocsvheader')}"
+- identifier: debug
+  flag: "@{isTrue(parameters.debug, '--debug', '--nodebug')}"
+- identifier: owneronly
+  flag: "@{isTrue(parameters.owneronly, '--owner-only', '--noowner-only')}"
+- identifier: maptex
+  flag: "@{isTrue(parameters.maptex, '--map-tex-specials', '--nomap-tex-specials')}"
+- identifier: xls
+  flag: "@{[ '--xls', parameters.xls ]}"
+- identifier: sheet
+  flag: "@{[ '--sheet', parameters.sheet ]}"
+- identifier: filterop
+  flag: >
+    @{
+       if (['and', 'or'].contains(parameters.filterop))
+       {
+          return "--filter-"+parameters.filterop;
+       }
+       else
+       {
+          throwError('The provided filterop value is not valid');
+       }
+    }
+- identifier: filters
+  flag: >
+    @{
+        if (isList(parameters.filters)) {
+          elements = [];
+          foreach (element : parameters.filters)
+          {
+             if (isList(element) && element.size() == 3)
+             {
+                element.add(0, '--filter');
+                elements.add(element);
+             }
+             else
+             {
+                throwError('I was expecting a filter list [<label>, <op>, <value>] ');
+             }
+          }
+
+          return elements;
+        }
+        else {
+            throwError('I was expecting filters: [ [<label>, <op>, <value>], ..., [<label>, <op>, <value>] ].');
+        }
+    }
+- identifier: truncate
+  flag: "@{[ '--truncate', parameters.truncate ]}"
