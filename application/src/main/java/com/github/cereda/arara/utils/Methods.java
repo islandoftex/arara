@@ -144,6 +144,7 @@ public class Methods {
             map.put("unchanged", Methods.class.getMethod("unchanged", File.class));
             map.put("found", Methods.class.getMethod("found", String.class, String.class));
             map.put("found", Methods.class.getMethod("found", File.class, String.class));
+            map.put("toFile", Methods.class.getMethod("toFile", String.class));
         } catch (Exception exception) {
             // quack, quack, quack
         }
@@ -870,6 +871,15 @@ public class Methods {
     public static boolean isVerboseMode() {
         return (Boolean) ConfigurationController.
                 getInstance().get("execution.verbose");
+    }
+    
+    /**
+     * Returns a file object based on the provided name.
+     * @param name The file name.
+     * @return A file object.
+     */
+    public static File toFile(String name) {
+        return new File(name);
     }
 
 }
