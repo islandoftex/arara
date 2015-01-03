@@ -10,6 +10,8 @@ We are now officially on the road to V4!
 
 [![Build Status](https://travis-ci.org/cereda/arara.svg?branch=master)](https://travis-ci.org/cereda/arara)
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/cereda/arara?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Binary releases are now powered by Bintray and not available in here anymore. You can [click here](https://bintray.com/cereda/arara/installers/_latestVersion) or use the button below to get access to the current `3.0` release. Note that you need Java to run both the installer and `arara` itself.
 
 [ ![Download](https://api.bintray.com/packages/cereda/arara/installers/images/download.png) ](https://bintray.com/cereda/arara/installers/_latestVersion)
