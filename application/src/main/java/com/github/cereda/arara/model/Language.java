@@ -71,6 +71,10 @@ public class Language {
                 "English",
                 new Locale("en")
         ));
+        languages.put("de", new Pair<String, Locale>(
+                "German",
+                new Locale("de")
+        ));
     }
 
     /**
