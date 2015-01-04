@@ -373,7 +373,30 @@ public class DisplayUtils {
                 CommonUtils.calculateFileSize(file),
                 CommonUtils.getLastModifiedInformation(file)
         );
-        logger.info(messages.getMessage(Messages.LOG_INFO_WELCOME_MESSAGE, version));
+        logger.info(messages.getMessage(
+                Messages.LOG_INFO_WELCOME_MESSAGE,
+                version
+        ));
+        logger.info(displaySeparator());
+        logger.info(String.format("::: Java %s, %s",
+                CommonUtils.getSystemProperty("java.version",
+                        "[unknown version]"),
+                CommonUtils.getSystemProperty("java.vendor",
+                        "[unknown vendor]")
+        ));
+        logger.info(String.format("::: %s",
+                CommonUtils.getSystemProperty("java.home",
+                        "[unknown location]")
+        ));
+        logger.info(String.format("::: %s, %s, %s",
+                CommonUtils.getSystemProperty("os.name",
+                        "[unknown OS name]"),
+                CommonUtils.getSystemProperty("os.arch",
+                        "[unknown OS arch]"),
+                CommonUtils.getSystemProperty("os.version",
+                        "[unknown OS version]")
+        ));
+        logger.info(displaySeparator());
         logger.info(line);
         wrapText(line);
         addNewLine();
@@ -433,7 +456,7 @@ public class DisplayUtils {
      * @return A string containing the output separator with the provided text.
      */
     public static String displayOutputSeparator(String message) {
-        return StringUtils.center("".concat(message).concat(" "),
+        return StringUtils.center(" ".concat(message).concat(" "),
                 getWidth(), "-");
     }
 
