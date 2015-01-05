@@ -70,6 +70,7 @@
 
 \newmdenv[
    nobreak,
+   hidealllines=true,
    middlelinewidth=.8pt,
    frametitlefont=\normalfont\sffamily\small\bfseries\color{araracolour},
    font=\small\em,
@@ -80,8 +81,8 @@
    skipbelow=\topsep,
    singleextra={%
       \path let \p1=(P), \p2=(O) in ($(\x2,0)+0.5*(2,\y1)$) node[scale=0.5,overlay] {\rubberduck};
-      \draw[line width=.8pt,white,] ($(O|-P)+(.2cm,0)$) -- ($(P)-(.2cm,0)$); 
-      \draw[line width=.8pt,white,] ($(O)+(.2cm,0)$) -- ($(P|-O)-(.2cm,0)$);
+      \draw[line width=.8pt,araracolour,] ($(O)+(.2cm,0)$)  -- (O) -- (O|-P) -- ($(O|-P)+(.2cm,0)$); 
+      \draw[line width=.8pt,araracolour,] ($(P|-O)-(.2cm,0)$) -- (P|-O) -- (P) -- ($(P)-(.2cm,0)$);
    },%
 ]{remark}
 
