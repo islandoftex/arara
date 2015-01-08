@@ -8,7 +8,7 @@
 
 The `arara` team is working on the new 4.0 version. The code is ready and we are now focusing on rules, translations and the documentation itself. It might take a while since a lot of things have changed since version 3.0, so the manual has to be completely rewritten. Hopefully, we will release it soon. `:)`
 
-- *Current TL version:* 3.0 (codebase is available in the [releases](https://github.com/cereda/arara/releases)) section)
+- *Current TL version:* 3.0 (codebase is available in the [releases](https://github.com/cereda/arara/releases) section)
 - *Development/upcoming version:* 4.0 (the repository itself holds the last changes)
 
 ## Build status
@@ -29,6 +29,10 @@ More JVM's might be added soon. It is worth noting that `arara` is designed and 
 We use a [Gitter](https://gitter.im) chatroom for discussing things related to `arara`. You are more than welcome to come join the fun and say *hi!* to us. We also have the [issues](https://github.com/cereda/arara/issues) section in our repository as a valid channel to report problems, bugs and suggest improvements. 
 
 *Our Gitter chatroom:* [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/cereda/arara?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+## Localization
+
+Would you like to make `arara` speak your own language? Splendid! We would love to have you in the team! Just send us an e-mail, join our dedicated chatroom or open an issue about it. The localization process is quite straightforward, we can help you! `:)` Any language is welcome!
 
 ## Downloads
 
