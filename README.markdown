@@ -45,3 +45,10 @@ If you want to try out the development version, you need to build it from source
 ## License
 
 This application is licensed under the [New BSD License](http://www.opensource.org/licenses/bsd-license.php).Please note that the New BSD License has been verified as a GPL-compatible free software license by the [Free Software Foundation](http://www.fsf.org/), and has been vetted as an open source license by the [Open Source Initiative](http://www.opensource.org/).
+
+### The core team
+
+- ![Brazil](http://i.imgur.com/If4PQTk.png) Paulo Roberto Massa Cereda
+- ![Germany](http://i.imgur.com/GovD283.png) Marco Daniel
+- ![United Kingdom](http://i.imgur.com/Lvp73Wo.png) Brent Longborough
+- ![United Kingdom](http://i.imgur.com/Lvp73Wo.png) Nicola Louise Cecilia Talbot
