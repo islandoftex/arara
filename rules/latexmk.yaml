@@ -1,0 +1,24 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2012, Paulo Roberto Massa Cereda 
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: latexmk
+name: LaTeXmk
+authors:
+- Marco Daniel
+- Paulo Cereda
+commands:
+- name: Tool LaTeXmk
+  command: >
+    @{
+        return getCommand('latexmk', options )
+    }
+arguments:
+- identifier: options
+  mandatory: yes;
+  flag: >
+    @{
+       return parameters.options;
+    }

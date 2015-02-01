@@ -4,8 +4,8 @@
 # All rights reserved.
 #
 # This rule is part of arara.
-identifier: dvipdf
-name: DVIPDF
+identifier: dvipspdf
+name: DVIPSPDF
 authors:
 - Marco Daniel
 - Paulo Cereda

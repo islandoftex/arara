@@ -13,17 +13,17 @@ commands:
 - name: PDFLaTeX engine
   command: >
     @{
-        return getCommand('pdflatex', action, draft, shell, synctex, options, file)
+        return getCommand('pdflatex', interaction, draft, shell, synctex, options, file)
     }
 arguments:
-- identifier: action
+- identifier: interaction
   flag: >
     @{
-        if ([ 'batchmode', 'nonstopmode', 'scrollmode', 'errorstopmode' ].contains(parameters.action)) {
-            return parameters.action;
+        if ([ 'batchmode', 'nonstopmode', 'scrollmode', 'errorstopmode' ].contains(parameters.interaction)) {
+            return parameters.interaction;
         }
         else {
-            throwError('The provided action value is not valid.');
+            throwError('The provided interaction value is not valid.');
         }
     }
 - identifier: shell

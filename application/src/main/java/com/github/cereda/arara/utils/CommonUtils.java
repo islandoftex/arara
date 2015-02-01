@@ -756,5 +756,21 @@ public class CommonUtils {
         return (Integer) ConfigurationController.
                 getInstance().get("execution.status");
     }
+    
+    /**
+     * Gets the system property according to the provided key, or resort to the
+     * fallback value if an exception is thrown or if the key is invalid.
+     * @param key The system property key.
+     * @param fallback The fallback value.
+     * @return A string containing the system property value or the fallback.
+     */
+    public static String getSystemProperty(String key, String fallback) {
+        try {
+            String result = System.getProperty(key, fallback);
+            return result.equals("") ? fallback : result;
+        } catch (Exception exception) {
+            return fallback;
+        }
+    }
 
 }

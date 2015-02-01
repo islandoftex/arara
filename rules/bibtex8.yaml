@@ -1,0 +1,28 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2012, Paulo Roberto Massa Cereda 
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: bibtex8
+name: BibTeX8
+authors:
+- Marco Daniel
+- Paulo Cereda
+commands:
+- name: An 8-bit Implementation of BibTeX 0.99 with a Very Large Capacity
+  command: >
+    @{
+        return getCommand('bibtex8', options, getBasename(file))
+    }
+arguments:
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.')
+        }
+    }
