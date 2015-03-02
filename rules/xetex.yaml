@@ -20,7 +20,7 @@ arguments:
   flag: >
     @{
         if ([ 'batchmode', 'nonstopmode', 'scrollmode', 'errorstopmode' ].contains(parameters.interaction)) {
-            return parameters.interaction;
+            return '--interaction='.concat(parameters.interaction);
         }
         else {
             throwError('The provided interaction value is not valid.');
