@@ -18,7 +18,7 @@ commands:
             prefix = [ 'rm', '-f' ];
         }
         else {
-            prefix = [ 'cmd', '/c' ];
+            prefix = [ 'cmd', '/c', 'del' ];
         }
         
         if (extensions == '') {
