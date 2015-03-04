@@ -1,6 +1,6 @@
 /**
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -58,7 +58,7 @@ public class DisplayUtils {
     // language controller
     private static final LanguageController messages =
             LanguageController.getInstance();
-    
+
     // get the logger context from a factory
     private static final Logger logger =
             LoggerFactory.getLogger(DisplayUtils.class);
@@ -122,9 +122,9 @@ public class DisplayUtils {
      */
     private static void buildLongResult(boolean value) {
         int width = getWidth();
-        System.out.println(StringUtils.leftPad(
+        System.out.println("\n".concat(StringUtils.leftPad(
                 " ".concat(getResult(value)), width, "-"
-        ));
+        )));
     }
 
     /**
