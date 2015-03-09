@@ -378,6 +378,9 @@ public class DisplayUtils {
                 version
         ));
         logger.info(displaySeparator());
+        logger.info(String.format("::: arara @ %s",
+                getApplicationPath()
+        ));
         logger.info(String.format("::: Java %s, %s",
                 CommonUtils.getSystemProperty("java.version",
                         "[unknown version]"),
@@ -466,6 +469,19 @@ public class DisplayUtils {
      */
     public static String displaySeparator() {
         return StringUtils.repeat("-", getWidth());
+    }
+    
+    /**
+     * Gets the application path.
+     * @return A string containing the application path.
+     */
+    private static String getApplicationPath() {
+        try {
+            return ConfigurationUtils.getApplicationPath();
+        }
+        catch (AraraException ae) {
+            return "[unknown application path]";
+        }
     }
 
 }
