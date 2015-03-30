@@ -772,5 +772,19 @@ public class CommonUtils {
             return fallback;
         }
     }
+    
+    /**
+     * Gets the preamble content, converting a single string into a list of
+     * strings, based on new lines.
+     * @return A list of strings representing the preamble content.
+     */
+    public static List<String> getPreambleContent() {
+        return new ArrayList<String>(
+                Arrays.asList(
+                        ((String) ConfigurationController.getInstance().
+                                get("execution.preamble.content")
+                        ).split("\n"))
+        );
+    }
 
 }

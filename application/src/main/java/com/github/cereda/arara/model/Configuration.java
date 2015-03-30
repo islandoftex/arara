@@ -142,6 +142,9 @@ public class Configuration {
                         )
                 )
         );
+        
+        mapping.put("execution.preambles", new HashMap<String, String>());
+        mapping.put("execution.preamble.active", false);
 
         // get the configuration controller and
         // set every map key to it
@@ -215,6 +218,12 @@ public class Configuration {
                 );
             }
         }
+        
+        if (resource.getPreambles() != null) {
+            controller.put("execution.preambles",
+                    resource.getPreambles());
+        }
+        
     }
 
 }

@@ -39,6 +39,7 @@ import com.github.cereda.arara.controller.LoggingController;
 import com.github.cereda.arara.utils.CommonUtils;
 import com.github.cereda.arara.utils.DisplayUtils;
 import java.util.Locale;
+import java.util.Map;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -74,6 +75,11 @@ public class Parser {
     private Option timeout;
     private Option language;
     private Option loops;
+    private Option preamble;
+
+    public Parser() {
+        this.arguments = null;
+    }
 
     // the application messages obtained from the
     // language controller
@@ -112,6 +118,8 @@ public class Parser {
         language.setArgName("code");
         loops = new Option("m", "max-loops", true, "");
         loops.setArgName("number");
+        preamble = new Option("p", "preamble", true, "");
+        preamble.setArgName("name");
 
         // add all options to the options
         // group, so they are recognized
@@ -125,6 +133,7 @@ public class Parser {
         options.addOption(timeout);
         options.addOption(language);
         options.addOption(loops);
+        options.addOption(preamble);
 
         // update all descriptions based
         // on the localized messages
@@ -235,6 +244,29 @@ public class Parser {
                 ConfigurationController.getInstance().
                         put("execution.logging", true);
             }
+            
+            if (line.hasOption("preamble")) {
+                @SuppressWarnings("unchecked")
+                Map<String, String> preambles = (Map<String, String>) 
+                        ConfigurationController.getInstance().
+                        get("execution.preambles");
+                if (preambles.containsKey(line.getOptionValue("preamble"))) {
+                    ConfigurationController.getInstance().
+                        put("execution.preamble.active", true);
+                    ConfigurationController.getInstance().
+                        put("execution.preamble.content",
+                                preambles.get(line.getOptionValue("preamble"))
+                        );
+                }
+                else {
+                    throw new AraraException(
+                            messages.getMessage(
+                                    Messages.ERROR_PARSER_INVALID_PREAMBLE,
+                                    line.getOptionValue("preamble")
+                            )
+                    );
+                }
+            }
 
             CommonUtils.discoverFile(reference);
             LoggingController.enableLogging((Boolean) ConfigurationController.
@@ -258,7 +290,8 @@ public class Parser {
         StringBuilder builder = new StringBuilder();
         builder.append("arara [file [--dry-run] [--log] ");
         builder.append("[--verbose] [--timeout N] [--max-loops N] ");
-        builder.append("[--language L] | --help | --version]");
+        builder.append("[--language L] [ --preamble P ] | --help ");
+        builder.append("| --version]");
         formatter.printHelp(builder.toString(), options);
     }
 
@@ -266,8 +299,10 @@ public class Parser {
      * Prints the application version.
      */
     private void printVersion() {
-        String year = (String) ConfigurationController.getInstance().get("application.copyright.year");
-        String number = (String) ConfigurationController.getInstance().get("application.version");
+        String year = (String) ConfigurationController.getInstance().
+                get("application.copyright.year");
+        String number = (String) ConfigurationController.getInstance().
+                get("application.version");
         StringBuilder builder = new StringBuilder();
         builder.append("arara ");
         builder.append(number);
@@ -275,7 +310,9 @@ public class Parser {
         builder.append("Copyright (c) ").append(year).append(", ");
         builder.append("Paulo Roberto Massa Cereda");
         builder.append("\n");
-        builder.append(messages.getMessage(Messages.INFO_PARSER_ALL_RIGHTS_RESERVED));
+        builder.append(messages.getMessage(
+                Messages.INFO_PARSER_ALL_RIGHTS_RESERVED)
+        );
         builder.append("\n");
         System.out.println(builder.toString());
     }
@@ -330,6 +367,11 @@ public class Parser {
         loops.setDescription(
                 messages.getMessage(
                         Messages.INFO_PARSER_LOOPS_DESCRIPTION
+                )
+        );
+        preamble.setDescription(
+                messages.getMessage(
+                        Messages.INFO_PARSER_PREAMBLE
                 )
         );
     }

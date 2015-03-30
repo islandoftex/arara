@@ -35,10 +35,12 @@ package com.github.cereda.arara.model;
 
 import com.github.cereda.arara.controller.ConfigurationController;
 import com.github.cereda.arara.controller.LanguageController;
+import com.github.cereda.arara.utils.CommonUtils;
 import com.github.cereda.arara.utils.DirectiveUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
 
@@ -70,8 +72,14 @@ public class Extractor {
                 getInstance().get("directives.charset");
 
         try {
+            List<String> content = new ArrayList<String>();
+            if (((Boolean) ConfigurationController.
+                    getInstance().get("execution.preamble.active")) == true) {
+                content = CommonUtils.getPreambleContent();
+            }
             List<String> lines = FileUtils.readLines(file, charset.name());
-            return DirectiveUtils.extractDirectives(lines);
+            content.addAll(lines);
+            return DirectiveUtils.extractDirectives(content);
         } catch (IOException ioexception) {
             throw new AraraException(
                     messages.getMessage(

@@ -37,6 +37,7 @@ import com.github.cereda.arara.utils.CommonUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Transformer;
 
@@ -71,6 +72,9 @@ public class Resource {
     
     // log name
     private String logname;
+
+    // map of preambles
+    private Map<String, String> preambles;
 
     /**
      * Gets the rule paths.
@@ -207,6 +211,22 @@ public class Resource {
      */
     public void setLogname(String logname) {
         this.logname = logname;
+    }
+
+    /**
+     * Gets the map of preambles.
+     * @return Map of preambles.
+     */
+    public Map<String, String> getPreambles() {
+        return preambles;
+    }
+
+    /**
+     * Sets the map of preambles.
+     * @param preambles Map of preambles.
+     */
+    public void setPreambles(Map<String, String> preambles) {
+        this.preambles = preambles;
     }
 
 }
