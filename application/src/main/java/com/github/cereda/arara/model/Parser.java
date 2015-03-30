@@ -371,7 +371,7 @@ public class Parser {
         );
         preamble.setDescription(
                 messages.getMessage(
-                        Messages.INFO_PARSER_PREAMBLE
+                        Messages.INFO_PARSER_PREAMBLE_DESCRIPTION
                 )
         );
     }
