@@ -407,6 +407,10 @@ public class DisplayUtils {
                 CommonUtils.getSystemProperty("user.dir",
                         "[unknown user's working directory]")
         ));
+        logger.info(String.format("::: CF @ %s",
+                (String) ConfigurationController.
+                        getInstance().get("execution.configuration.name")
+        ));
         logger.info(displaySeparator());
         logger.info(line);
         wrapText(line);

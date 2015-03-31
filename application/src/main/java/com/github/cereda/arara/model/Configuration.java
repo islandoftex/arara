@@ -81,6 +81,13 @@ public class Configuration {
         File file = ConfigurationUtils.getConfigFile();
         if (file != null) {
             
+            // set the configuration file name for
+            // logging purposes
+            ConfigurationController.getInstance().
+                    put("execution.configuration.name",
+                            CommonUtils.getCanonicalPath(file)
+                    );
+            
             // then validate it and update the
             // configuration accordingly
             Resource resource = ConfigurationUtils.validateConfiguration(file);
@@ -145,6 +152,7 @@ public class Configuration {
         
         mapping.put("execution.preambles", new HashMap<String, String>());
         mapping.put("execution.preamble.active", false);
+        mapping.put("execution.configuration.name", "[none]");
 
         // get the configuration controller and
         // set every map key to it

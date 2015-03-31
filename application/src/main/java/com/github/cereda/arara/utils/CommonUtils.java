@@ -632,7 +632,7 @@ public class CommonUtils {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
-    private static String getCanonicalPath(File file) throws AraraException {
+    public static String getCanonicalPath(File file) throws AraraException {
         try {
             return file.getCanonicalPath();
         } catch (IOException exception) {
