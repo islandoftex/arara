@@ -98,6 +98,18 @@ public class ConfigurationUtils {
                 ".arararc.yaml",
                 "arararc.yaml"
         );
+        
+        // look for configuration files in the user's working directory first
+        for (String name : names) {
+            String path = CommonUtils.buildPath(SystemUtils.USER_DIR, name);
+            File file = new File(path);
+            if (file.exists()) {
+                return file;
+            }
+        }
+        
+        // if no configuration files are found in the user's working directory,
+        // try to look up in a global directory, that is, the user home
         for (String name : names) {
             String path = CommonUtils.buildPath(SystemUtils.USER_HOME, name);
             File file = new File(path);

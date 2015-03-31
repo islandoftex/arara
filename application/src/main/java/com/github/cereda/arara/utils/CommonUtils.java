@@ -779,12 +779,18 @@ public class CommonUtils {
      * @return A list of strings representing the preamble content.
      */
     public static List<String> getPreambleContent() {
-        return new ArrayList<String>(
-                Arrays.asList(
-                        ((String) ConfigurationController.getInstance().
-                                get("execution.preamble.content")
-                        ).split("\n"))
-        );
+        if (((Boolean) ConfigurationController.
+                    getInstance().get("execution.preamble.active")) == true) {
+            return new ArrayList<String>(
+                    Arrays.asList(
+                            ((String) ConfigurationController.getInstance().
+                                    get("execution.preamble.content")
+                            ).split("\n"))
+            );
+        }
+        else {
+            return new ArrayList<String>();
+        }
     }
 
 }

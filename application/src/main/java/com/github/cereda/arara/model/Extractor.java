@@ -40,7 +40,6 @@ import com.github.cereda.arara.utils.DirectiveUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
 
@@ -72,11 +71,7 @@ public class Extractor {
                 getInstance().get("directives.charset");
 
         try {
-            List<String> content = new ArrayList<String>();
-            if (((Boolean) ConfigurationController.
-                    getInstance().get("execution.preamble.active")) == true) {
-                content = CommonUtils.getPreambleContent();
-            }
+            List<String> content = CommonUtils.getPreambleContent();
             List<String> lines = FileUtils.readLines(file, charset.name());
             content.addAll(lines);
             return DirectiveUtils.extractDirectives(content);
