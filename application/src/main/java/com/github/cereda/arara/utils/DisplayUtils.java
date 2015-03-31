@@ -399,6 +399,14 @@ public class DisplayUtils {
                 CommonUtils.getSystemProperty("os.version",
                         "[unknown OS version]")
         ));
+        logger.info(String.format("::: user.home @ %s",
+                CommonUtils.getSystemProperty("user.home",
+                        "[unknown user's home directory]")
+        ));
+        logger.info(String.format("::: user.dir @ %s",
+                CommonUtils.getSystemProperty("user.dir",
+                        "[unknown user's working directory]")
+        ));
         logger.info(displaySeparator());
         logger.info(line);
         wrapText(line);
