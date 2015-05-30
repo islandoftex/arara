@@ -4,6 +4,20 @@
 
 `arara` is a TeX automation tool based on rules and directives. It gives you subsidies to enhance your TeX experience. The tool is an effort to provide a concise way to automate the daily TeX workflow for users and also package writers. Users might write their own rules when the provided ones do not suffice.
 
+## Basic use
+
+To use `arara`, you need to tell it what to do. Unlike most other tools, you give `arara` these 'directives' in the document itself – usually near the top.  So to run `pdflatex` once on your document, you should say something like:
+
+```tex
+% arara: pdflatex
+\documentclass{article}
+\begin{document}
+Hello, world!
+\end{document}
+```
+
+Now when you run `arara my-file`, that directive (`% arara: ...`) will be seen and carried out as described by the `pdflatex` rule.  You can read more about rules and directives in the manual. In addition to documenting all of the rules that come standard with `arara`, its manual gives a detailed explanation of how `arara` works, how to create and use your own rules, and how to integrate the tool into the common TeX IDEs.
+
 ## Current status
 
 The `arara` team is working on the new 4.0 version. The code is ready and we are now focusing on rules, translations and the documentation itself. It might take a while since a lot of things have changed since version 3.0, so the manual has to be completely rewritten. Hopefully, we will release it soon. `:)`
