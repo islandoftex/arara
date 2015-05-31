@@ -45,6 +45,18 @@ import org.zeroturnaround.exec.ProcessExecutor;
  * @since 4.0
  */
 public class SystemCallController {
+
+    /**
+     * Implements a private command interface.
+     */
+    private interface Command {
+        
+        /**
+         * Executes the command body.
+         * @return An object.
+         */
+        public Object execute();
+    }
     
     // the controller itself, since we have a singleton;
     // this is the reference instance, instantiated once
@@ -57,15 +69,54 @@ public class SystemCallController {
     // to the map getter, so it could be easily manipulated
     private final Map<String, Object> map;
     
+    // the commands map will allow the system call map being
+    // populated only on demand, that is, if the key is not
+    // found, this map will provide the corresponding method
+    // and update the value
+    private final Map<String, Command> commands;
+    
     /**
      * Private constructor. Called once when the singleton is created.
      */
     private SystemCallController() {
         
-        // create the new map instance and perform
-        // all system calls only once
+        // create the new map instance to be
+        // populated on demand
         map = new HashMap<String, Object>();
-        map.put("cygwin", isCygwin());
+        
+        // create the new map of commands and
+        // add the corresponding system calls
+        commands = new HashMap<String, Command>();
+        
+        // add the check for a Cygwin
+        // environment in here
+        commands.put("cygwin", new Command() {
+            
+            /**
+             * Implements the body of the command. In this particular
+             * instance, it checks if we are inside a Cygwin environment.
+             * @return A boolean value indicating if we are inside a Cygwin
+             * environment.
+             */
+            public Object execute() {
+                try {
+
+                    // execute a new system call to 'uname -s', read the output
+                    // as an UTF-8 string, lowercase it and check if it starts
+                    // with the 'cygwin' string; if so, we are inside Cygwin
+                    return (
+                            new ProcessExecutor().command("uname", "-s").
+                                    readOutput(true).execute().outputUTF8()
+                            ).toLowerCase().startsWith("cygwin");
+
+                } catch (Exception exception) {
+
+                    // gracefully fallback in case of any nasty and evil
+                    // exception, e.g, if the command is unavailable
+                    return false;
+                }
+            }
+        });
     }
     
     /**
@@ -76,32 +127,7 @@ public class SystemCallController {
     public static SystemCallController getInstance() {
         return instance;
     }
-    
-    /**
-     * Checks if the result of the 'uname -s' system call indicates if this
-     * application is being executed under a Cygwin environment.
-     * @return A boolean value indicating if we are running under a Cygwin
-     * environment.
-     */
-    private boolean isCygwin() {
-        try {
-            
-            // execute a new system call to 'uname -s', read the output as
-            // an UTF-8 string, lowercase it and check if it starts with the
-            // 'cygwin' string; if so, we are inside Cygwin
-            return (
-                    new ProcessExecutor().command("uname", "-s").
-                            readOutput(true).execute().outputUTF8()
-                    ).toLowerCase().startsWith("cygwin");
-            
-        } catch (Exception exception) {
-            
-            // gracefully fallback in case of any nasty and evil
-            // exception, e.g, if the command is unavailable
-            return false;
-        }
-    }
-    
+     
     /**
      * Gets the object indexed by the provided key. This method actually holds
      * the map method of the very same name.
@@ -109,6 +135,18 @@ public class SystemCallController {
      * @return The object indexed by the provided map key.
      */
     public Object get(String key) {
+        
+        // if key is not found, meaning that
+        // the value wasn't required before
+        if (!map.containsKey(key)) {
+            
+            // perform the system call and
+            // populate the corresponding value
+            map.put(key, commands.get(key).execute());
+        }
+        
+        // simply return the corresponding
+        // value based on the provided key
         return map.get(key);
     }
     
