@@ -2,7 +2,7 @@
 
 <!--
   - Arara, the cool TeX automation tool
-  - Copyright (c) 2012, Paulo Roberto Massa Cereda 
+  - Copyright (c) 2012, Paulo Roberto Massa Cereda
   - All rights reserved.
   -
   - Redistribution and  use in source  and binary forms, with  or without
@@ -35,24 +35,24 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    
+
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.cereda</groupId>
     <artifactId>arara</artifactId>
     <version>4.0</version>
     <packaging>jar</packaging>
-    
+
     <name>arara</name>
     <url>https://github.com/cereda/arara</url>
     <description>Arara is a TeX automation tool based on rules and directives.</description>
     <inceptionYear>2012</inceptionYear>
-    
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.5</maven.compiler.source>
         <maven.compiler.target>1.5</maven.compiler.target>
     </properties>
-    
+
     <issueManagement>
         <system>GitHub</system>
         <url>https://github.com/cereda/arara/issues</url>
@@ -65,28 +65,28 @@
             <distribution>repo</distribution>
             <comments>New BSD License</comments>
         </license>
-    </licenses> 
-    
+    </licenses>
+
     <scm>
         <connection>scm:git:https://github.com/cereda/arara.git</connection>
         <developerConnection>scm:git:https://github.com/cereda/arara.git</developerConnection>
         <url>https://github.com/cereda/arara</url>
     </scm>
-    
+
     <developers>
-    
+
         <developer>
             <name>Paulo Roberto Massa Cereda</name>
             <email>cereda@users.sf.net</email>
             <id>cereda</id>
-            <url>http://tex.stackexchange.com/users/3094</url>   
+            <url>http://tex.stackexchange.com/users/3094</url>
             <roles>
                 <role>Lead developer</role>
                 <role>Creator</role>
                 <role>Duck enthusiast</role>
             </roles>
         </developer>
-        
+
         <developer>
             <name>Marco Daniel</name>
             <email>marco.daniel@mada-nada.de</email>
@@ -96,9 +96,9 @@
                 <role>Contributor</role>
                 <role>Tester</role>
                 <role>Fast driver</role>
-            </roles>           
+            </roles>
         </developer>
-        
+
         <developer>
             <name>Brent Longborough</name>
             <email>brent@longborough.org</email>
@@ -111,7 +111,7 @@
                 <role>Haskell fanatic</role>
             </roles>
         </developer>
-        
+
         <developer>
             <name>Nicola Talbot</name>
             <email>nicola.lc.talbot@gmail.com</email>
@@ -124,13 +124,13 @@
                 <role>Hat enthusiast</role>
             </roles>
         </developer>
-        
+
     </developers>
 
     <build>
-        
+
         <finalName>arara-${project.version}</finalName>
-        
+
         <plugins>
 
             <plugin>
@@ -143,7 +143,7 @@
                     <compilerArgument>-Xlint:unchecked</compilerArgument>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.4.1</version>
@@ -158,7 +158,7 @@
                     </archive>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -171,7 +171,7 @@
                     <level>private</level>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -186,7 +186,7 @@
                     </archive>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -204,105 +204,105 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>2.3</version>
             </plugin>
-            
+
         </plugins>
 
     </build>
 
     <dependencies>
-        
+
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>2.6</version>
         </dependency>
-        
+
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.2</version>
         </dependency>
-        
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.10</version>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>com.e-movimento.tinytools</groupId>
             <artifactId>privilegedaccessor</artifactId>
             <version>1.2.2</version>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.simpleframework</groupId>
             <artifactId>simple-xml</artifactId>
             <version>2.7.1</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
             <version>4.0</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.zeroturnaround</groupId>
             <artifactId>zt-exec</artifactId>
-            <version>1.7</version>
+            <version>1.8</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
             <version>1.14</version>
         </dependency>
-        
+
         <dependency>
             <groupId>commons-cli</groupId>
             <artifactId>commons-cli</artifactId>
             <version>1.2</version>
         </dependency>
-        
+
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.1.2</version>
         </dependency>
-        
+
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
             <version>1.1.2</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.7</version>
         </dependency>
-        
+
         <dependency>
             <groupId>ch.qos.cal10n</groupId>
             <artifactId>cal10n-api</artifactId>
             <version>0.8.1</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.mvel</groupId>
             <artifactId>mvel2</artifactId>
             <version>2.2.1.Final</version>
         </dependency>
-        
+
     </dependencies>
-    
+
 </project>
