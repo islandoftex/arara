@@ -102,6 +102,7 @@ public class Methods {
             map.put("isIrix", Methods.class.getMethod("isIrix"));
             map.put("isOS2", Methods.class.getMethod("isOS2"));
             map.put("isSolaris", Methods.class.getMethod("isSolaris"));
+            map.put("isCygwin", Methods.class.getMethod("isCygwin"));
             map.put("isWindows", Methods.class.getMethod("isWindows", Object.class, Object.class));
             map.put("isLinux", Methods.class.getMethod("isLinux", Object.class, Object.class));
             map.put("isMac", Methods.class.getMethod("isMac", Object.class, Object.class));
@@ -110,6 +111,7 @@ public class Methods {
             map.put("isIrix", Methods.class.getMethod("isIrix", Object.class, Object.class));
             map.put("isOS2", Methods.class.getMethod("isOS2", Object.class, Object.class));
             map.put("isSolaris", Methods.class.getMethod("isSolaris", Object.class, Object.class));
+            map.put("isCygwin", Methods.class.getMethod("isCygwin", Object.class, Object.class));
             map.put("replicatePattern", Methods.class.getMethod("replicatePattern", String.class, List.class));
             map.put("buildString", Methods.class.getMethod("buildString", Object[].class));
             map.put("addQuotes", Methods.class.getMethod("addQuotes", Object.class));
@@ -485,6 +487,16 @@ public class Methods {
     public static boolean isWindows() throws AraraException {
         return CommonUtils.checkOS("windows");
     }
+    
+    /**
+     * Checks if we are inside a Cygwin environment.
+     * @return A boolean value.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    public static boolean isCygwin() throws AraraException {
+        return CommonUtils.checkOS("cygwin");
+    }
 
     /**
      * Checks if Linux is the underlying operating system.
@@ -567,6 +579,18 @@ public class Methods {
     public static Object isWindows(Object yes, Object no)
             throws AraraException {
         return CommonUtils.checkOS("windows") ? yes : no;
+    }
+    
+    /**
+     * Checks if we are inside a Cygwin environment.
+     * @param yes Object to return if true.
+     * @param no Object to return if false.
+     * @return One of the two objects.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    public static Object isCygwin(Object yes, Object no) throws AraraException {
+        return CommonUtils.checkOS("cygwin") ? yes : no;
     }
 
     /**

@@ -35,6 +35,7 @@ package com.github.cereda.arara.utils;
 
 import com.github.cereda.arara.controller.ConfigurationController;
 import com.github.cereda.arara.controller.LanguageController;
+import com.github.cereda.arara.controller.SystemCallController;
 import com.github.cereda.arara.model.AraraException;
 import com.github.cereda.arara.model.Argument;
 import com.github.cereda.arara.model.Database;
@@ -737,6 +738,8 @@ public class CommonUtils {
         values.put("irix", SystemUtils.IS_OS_IRIX);
         values.put("os2", SystemUtils.IS_OS_OS2);
         values.put("solaris", SystemUtils.IS_OS_SOLARIS);
+        values.put("cygwin", (Boolean) SystemCallController.
+                getInstance().get("cygwin"));
         if (!values.containsKey(value.toLowerCase())) {
             throw new AraraException(
                     messages.getMessage(
