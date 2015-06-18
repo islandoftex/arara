@@ -373,23 +373,64 @@ public class LanguageUtils {
                     ).concat("\n")
             );
             
+            // print legend for a simple message
+            System.out.println(StringUtils.center(
+                    "S: Simple message, single quotes should not be doubled",
+                    60)
+            );
+            
+            // print legend for a parametrized
+            System.out.println(StringUtils.center(
+                    "P: Parametrized message, single quotes must be doubled",
+                    60).concat("\n")
+            );
+            
+            // print a line separator
+            System.out.println(StringUtils.repeat("-", 60));
+            
             // print each language and its
             // corresponding lines
             for (LanguageReport report : fix) {
-                System.out.println(
-                        WordUtils.wrap(
-                                String.format(
-                                        "- %s :: %s",
-                                        report.getReference().getName(),
-                                        StringUtils.join(
-                                                report.getLines(),
-                                                ", "
-                                        )
-                                ),
-                        60)
+                
+                // build the beginning of the line
+                String line = String.format(
+                        "- %s ",
+                        report.getReference().getName()
                 );
+
+                // build the first batch
+                String batch = pump(report.getLines(), 2);
+
+                // generate the line by concatenating
+                // the beginning and batch
+                line = line.concat(
+                        StringUtils.repeat(
+                                " ",
+                                60 - line.length() - batch.length()
+                        )
+                ).concat(batch);
+
+                // print the line
+                System.out.println(line);
+                
+                // get the next batch, if any
+                batch = pump(report.getLines(), 2);
+                
+                // repeat while there
+                // are other batches
+                while (!batch.isEmpty()) {
+                    
+                    // print current line
+                    System.out.println(StringUtils.leftPad(batch, 60));
+                    
+                    // get the next batch and let
+                    // the condition handle it
+                    batch = pump(report.getLines(), 2);
+                }
+                
+                // print a line separator
+                System.out.println(StringUtils.repeat("-", 60));
             }
-            
         }
         
     }
@@ -442,6 +483,48 @@ public class LanguageUtils {
         // never reach it
         return null;
         
+    }
+    
+    /**
+     * Pumps the elements to a string representation according to the provided
+     * number of times.
+     * @param lines The list of pairs.
+     * @param number The number of times for elements to be pumped.
+     * @return A string representation.
+     */
+    private static String pump(List<Pair<Integer,
+            Character>> lines, int number) {
+        
+        // local counter, acting as a
+        // safe check for elements
+        int i = 0;
+        
+        // if there is nothing else to
+        // be pumped, return an empty string
+        if (lines.isEmpty()) {
+            return "";
+        }
+        
+        // at first, the result is an
+        // empty string
+        String result = "";
+        
+        // let's get the correct number of elements
+        // or return the result as it is in case of
+        // less elements than expected
+        while ((i < number) && (!lines.isEmpty())) {
+            
+            // build the result, removing the first
+            // element in the provided list
+            result = result.concat(
+                    String.valueOf(lines.remove(0))
+            ).concat(" ");
+            i++;
+        }
+        
+        // return the trimmed element, so the trailing
+        // space added in the previous loop is gone
+        return result.trim();
     }
     
 }
