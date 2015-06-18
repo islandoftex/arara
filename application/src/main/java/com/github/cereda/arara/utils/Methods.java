@@ -125,6 +125,8 @@ public class Methods {
             map.put("isMap", Methods.class.getMethod("isMap", Object.class));
             map.put("isBoolean", Methods.class.getMethod("isBoolean", Object.class));
             map.put("isVerboseMode", Methods.class.getMethod("isVerboseMode"));
+            map.put("showMessage", MessageUtils.class.getMethod("showMessage", int.class, String.class, String.class));
+            map.put("showMessage", MessageUtils.class.getMethod("showMessage", int.class, int.class, String.class, String.class));
         } catch (Exception exception) {
             // quack, quack, quack
         }
@@ -147,6 +149,12 @@ public class Methods {
             map.put("found", Methods.class.getMethod("found", String.class, String.class));
             map.put("found", Methods.class.getMethod("found", File.class, String.class));
             map.put("toFile", Methods.class.getMethod("toFile", String.class));
+            map.put("showDropdown", MessageUtils.class.getMethod("showDropdown", int.class, String.class, String.class, Object[].class));
+            map.put("showDropdown", MessageUtils.class.getMethod("showDropdown", int.class, int.class, String.class, String.class, Object[].class));
+            map.put("showInput", MessageUtils.class.getMethod("showInput", int.class, String.class, String.class));
+            map.put("showInput", MessageUtils.class.getMethod("showInput", int.class, int.class, String.class, String.class));
+            map.put("showOptions", MessageUtils.class.getMethod("showOptions", int.class, String.class, String.class, Object[].class));
+            map.put("showOptions", MessageUtils.class.getMethod("showOptions", int.class, int.class, String.class, String.class, Object[].class));
         } catch (Exception exception) {
             // quack, quack, quack
         }
