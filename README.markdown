@@ -62,7 +62,11 @@ This application is licensed under the [New BSD License](http://www.opensource.o
 
 ### The core team
 
-- ![Brazil](http://i.imgur.com/If4PQTk.png) Paulo Roberto Massa Cereda *(benevolent `arara` Dictator and Pope, wacky bloke, duck enthusiast, writes coffee and drinks code)*
-- ![Germany](http://i.imgur.com/GovD283.png) Marco Daniel *(Cardinal Camerlengo of the Holy Bird, next one in succession, insanely fast driver, writes rules for everything)*
-- ![United Kingdom](http://i.imgur.com/Lvp73Wo.png) Brent Longborough *(Cardinal Prefect of the Keming Inquisition, Pope's confessor, `memoir` fanboy, photography enthusiast, regular expression evangelist)*
-- ![United Kingdom](http://i.imgur.com/Lvp73Wo.png) Nicola Louise Cecilia Talbot *(Cardinal Prefect of the Congregation for Holy Rules and the Discipline of the Directives, hat enthusiast, fixes Pope's code)*
+- ![Brazil](http://i.imgur.com/If4PQTk.png) Paulo Roberto Massa Cereda
+- ![Germany](http://i.imgur.com/GovD283.png) Marco Daniel
+- ![United Kingdom](http://i.imgur.com/Lvp73Wo.png) Brent Longborough
+- ![United Kingdom](http://i.imgur.com/Lvp73Wo.png) Nicola Louise Cecilia Talbot
+
+![Quack](http://i.imgur.com/hKsnp9f.png)
+
+*No ducks were hurt in the making of this tool*
