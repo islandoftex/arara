@@ -173,7 +173,7 @@ public class LanguageUtils {
         
         // flag that holds the
         // current analysis
-        boolean check;
+        int check;
         
         // check every line of the language file
         for (String line : lines) {
@@ -202,10 +202,10 @@ public class LanguageUtils {
                 
                 // we found an error,
                 // report it
-                if (!check) {
+                if (check != 0) {
                     
-                    // add line to the report
-                    report.addLine(number);
+                    // add line and error type to the report
+                    report.addLine(number, (check == 1 ? 'P' : 'S'));
                     
                 }
                 
@@ -226,16 +226,16 @@ public class LanguageUtils {
     /**
      * Checks if the provided message follows the simple format.
      * @param text Message.
-     * @return A logic value.
+     * @return An integer value.
      */
-    private static boolean checkMessage(String text) {
+    private static int checkMessage(String text) {
         int i = 0;
         char c;
         for (int j = 0; j < text.length(); j++) {
             c = text.charAt(j);
             if (c == '\'') {
                 if (i == 1) {
-                    return false;
+                    return 2;
                 }
                 else {
                     i = 1;
@@ -245,15 +245,15 @@ public class LanguageUtils {
                 i = 0;
             }
         }
-        return true;
+        return 0;
     }
     
     /**
      * Checks if the provided message follows the parametrized format.
      * @param text Message.
-     * @return A logic value.
+     * @return An integer value.
      */
-    private static boolean checkParametrizedMessage(String text) {
+    private static int checkParametrizedMessage(String text) {
         int i = 0;
         char c;
         for (int j = 0; j < text.length(); j++) {
@@ -264,7 +264,7 @@ public class LanguageUtils {
             else {
                 if (i != 0) {
                     if ( i != 2) {
-                        return false;
+                        return 1;
                     }
                     else {
                        i = 0;
@@ -272,7 +272,7 @@ public class LanguageUtils {
                 }
             }
         }
-        return true;
+        return 0;
     }
     
     /**

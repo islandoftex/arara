@@ -39,8 +39,9 @@ public class LanguageReport {
     // the file reference
     private File reference;
     
-    // list of problematic lines
-    private final List<Integer> lines;
+    // list of problematic lines and
+    // their corresponding error types
+    private final List<Pair<Integer, Character>> lines;
     
     // total of checked lines
     private int total;
@@ -64,7 +65,7 @@ public class LanguageReport {
      * Gets the problematic lines.
      * @return Problematic lines as list.
      */
-    public List<Integer> getLines() {
+    public List<Pair<Integer, Character>> getLines() {
         return lines;
     }
 
@@ -79,9 +80,13 @@ public class LanguageReport {
     /**
      * Add the line to the list of lines.
      * @param line Line.
+     * @param character Character.
      */
-    public void addLine(int line) {
-        lines.add(line);
+    public void addLine(int line, char character) {
+        Pair<Integer, Character> pair = new Pair<>();
+        pair.setFirst(line);
+        pair.setSecond(character);
+        lines.add(pair);
     }
 
     /**
