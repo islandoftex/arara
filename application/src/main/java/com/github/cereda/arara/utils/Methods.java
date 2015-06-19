@@ -125,8 +125,8 @@ public class Methods {
             map.put("isMap", Methods.class.getMethod("isMap", Object.class));
             map.put("isBoolean", Methods.class.getMethod("isBoolean", Object.class));
             map.put("isVerboseMode", Methods.class.getMethod("isVerboseMode"));
-            map.put("showMessage", MessageUtils.class.getMethod("showMessage", int.class, String.class, String.class));
-            map.put("showMessage", MessageUtils.class.getMethod("showMessage", int.class, int.class, String.class, String.class));
+            map.put("showMessage", Methods.class.getMethod("showMessage", int.class, String.class, String.class));
+            map.put("showMessage", Methods.class.getMethod("showMessage", int.class, int.class, String.class, String.class));
         } catch (Exception exception) {
             // quack, quack, quack
         }
@@ -149,12 +149,12 @@ public class Methods {
             map.put("found", Methods.class.getMethod("found", String.class, String.class));
             map.put("found", Methods.class.getMethod("found", File.class, String.class));
             map.put("toFile", Methods.class.getMethod("toFile", String.class));
-            map.put("showDropdown", MessageUtils.class.getMethod("showDropdown", int.class, String.class, String.class, Object[].class));
-            map.put("showDropdown", MessageUtils.class.getMethod("showDropdown", int.class, int.class, String.class, String.class, Object[].class));
-            map.put("showInput", MessageUtils.class.getMethod("showInput", int.class, String.class, String.class));
-            map.put("showInput", MessageUtils.class.getMethod("showInput", int.class, int.class, String.class, String.class));
-            map.put("showOptions", MessageUtils.class.getMethod("showOptions", int.class, String.class, String.class, Object[].class));
-            map.put("showOptions", MessageUtils.class.getMethod("showOptions", int.class, int.class, String.class, String.class, Object[].class));
+            map.put("showDropdown", Methods.class.getMethod("showDropdown", int.class, String.class, String.class, Object[].class));
+            map.put("showDropdown", Methods.class.getMethod("showDropdown", int.class, int.class, String.class, String.class, Object[].class));
+            map.put("showInput", Methods.class.getMethod("showInput", int.class, String.class, String.class));
+            map.put("showInput", Methods.class.getMethod("showInput", int.class, int.class, String.class, String.class));
+            map.put("showOptions", Methods.class.getMethod("showOptions", int.class, String.class, String.class, Object[].class));
+            map.put("showOptions", Methods.class.getMethod("showOptions", int.class, int.class, String.class, String.class, Object[].class));
         } catch (Exception exception) {
             // quack, quack, quack
         }
@@ -912,6 +912,108 @@ public class Methods {
      */
     public static File toFile(String name) {
         return new File(name);
+    }
+    
+    /**
+     * Shows the message.
+     * @param width Integer value, in pixels.
+     * @param type Type of message.
+     * @param title Title of the message.
+     * @param text Text of the message.
+     */
+    public static void showMessage(int width, int type,
+            String title, String text) {
+        MessageUtils.showMessage(width, type, title, text);
+    }
+    
+    /**
+     * Shows the message. It relies on the default width.
+     * @param type Type of message.
+     * @param title Title of the message.
+     * @param text Text of the message.
+     */
+    public static void showMessage(int type, String title, String text) {
+        MessageUtils.showMessage(type, title, text);
+    }
+    
+    /**
+     * Shows a message with options presented as an array of buttons.
+     * @param width Integer value, in pixels.
+     * @param type Type of message.
+     * @param title Title of the message.
+     * @param text Text of the message.
+     * @param buttons An array of objects to be presented as buttons.
+     * @return The index of the selected button, starting from 1.
+     */
+    public static int showOptions(int width, int type, String title,
+            String text, Object... buttons) {
+        return MessageUtils.showOptions(width, type, title, text, buttons);
+    }
+    
+    /**
+     * Shows a message with options presented as an array of buttons. It relies
+     * on the default width.
+     * @param type Type of message.
+     * @param title Title of the message.
+     * @param text Text of the message.
+     * @param buttons An array of objects to be presented as buttons.
+     * @return  The index of the selected button, starting from 1.
+     */
+    public static int showOptions(int type, String title,
+            String text, Object... buttons) {
+        return MessageUtils.showOptions(type, title, text, buttons);
+    }
+    
+    /**
+     * Shows a message with a text input.
+     * @param width Integer value, in pixels.
+     * @param type Type of message.
+     * @param title Title of the message.
+     * @param text Text of the message.
+     * @return The string representing the input text.
+     */
+    public static String showInput(int width, int type,
+            String title, String text) {
+        return MessageUtils.showInput(width, type, title, text);
+    }
+    
+    /**
+     * Shows a message with a text input. It relies on the default width.
+     * @param type Type of message.
+     * @param title Title of the message.
+     * @param text Text of the message.
+     * @return The string representing the input text.
+     */
+    public static String showInput(int type, String title, String text) {
+        return MessageUtils.showInput(type, title, text);
+    }
+    
+    /**
+     * Shows a message with options presented as a dropdown list of elements.
+     * @param width Integer value, in pixels.
+     * @param type Type of message.
+     * @param title Title of the message.
+     * @param text Text of the message.
+     * @param elements An array of objects representing the elements.
+     * @return The index of the selected element, starting from 1.
+     */
+    public static int showDropdown(int width, int type, String title,
+            String text, Object... elements) {
+        return MessageUtils.showDropdown(width, type, title, text, elements);
+    }
+    
+    /**
+     * Shows a message with options presented as a dropdown list of elements. It
+     * relies on the default width.
+     * @param type Type of message.
+     * @param title Title of the message.
+     * @param text Text of the message.
+     * @param elements An array of objects representing the elements.
+     * @return The index of the selected element, starting from 1.
+     */
+    public static int showDropdown(int type, String title,
+            String text, Object... elements) {
+        return MessageUtils.showDropdown(type, title, text, elements);
     }
 
 }
