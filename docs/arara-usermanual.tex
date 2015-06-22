@@ -1,0 +1,189 @@
+\documentclass[a4paper,twoside,12pt]{memoir}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{arara}
+
+\addbibresource{references.bib}
+\newcommand{\araraversion}{4.0}
+
+\begin{document}
+
+\begin{titlingpage}
+
+\vspace*{2em}
+
+\begin{center}
+\scalebox{1.15}{\araralogo}
+
+\vspace{2em}
+
+{\Huge\slogan}
+
+\vspace{6em}
+
+{\Huge\sffamily\bfseries User Manual}
+
+\vspace{6em}
+
+{\large
+\tabcolsep=1em
+\begin{tabular}{cc}
+	\tableauthor{Paulo R.\ M.\ Cereda}{cereda@users.sf.net}\\[1.5em]
+	\tableauthors{Marco Daniel}{marco.daniel@mada-nada.de}{Brent Longborough}{brent@longborough.org}\\[1.5em]
+	\tableauthor{Nicola L.\ C.\ Talbot}{http://www.dickimaw-books.com/}
+\end{tabular}}
+
+\vfill
+
+{\LARGE\sffamily\bfseries Version \araraversion}
+
+\end{center}
+
+\end{titlingpage}
+
+\chapterstyle{madsen}
+\pagestyle{headings} 
+\frontmatter
+\nouppercaseheads
+
+\cleardoublepage
+
+\vspace*{25em}
+
+\begin{flushright}
+\em No birds were harmed in the making of this manual.
+\end{flushright}
+
+\chapter*{Foreword}
+\label{chap:foreword}
+
+\epigraph{That deserves no less than a ``Holy guacamole!''.}{\textsc{Gonzalo Medina}}
+
+\emph{Foreword here.}
+
+\vfill
+
+\begin{flushright}
+Nicola Louise Cecilia Talbot\\
+\emph{on behalf of the \arara team}
+\end{flushright}
+
+\chapter*{Prologue}
+\label{chap:prologue}
+
+\epigraph{Moral of the story: never read the documentation, bad things happen.}{\textsc{David Carlisle}}
+
+\emph{Prologue here.}
+
+\vfill
+
+\begin{flushright}
+Paulo Roberto Massa Cereda\\
+\emph{on behalf of the \arara team}
+\end{flushright}
+
+\chapter*{Release information}
+\label{chap:releaseinformation}
+
+\epigraph{Are there programming languages other than \TeX?}{\textsc{Enrico Gregorio}}
+
+\emph{Release information here}
+
+\chapter*{Licenses}
+\label{chap:licenses}
+
+\epigraph{Anything that prevents you from being friendly, a good neighbour, is a terror tactic.}{\textsc{Richard Stallman}}
+
+\noindent\arara is licensed under the \href{http://www.opensource.org/licenses/bsd-license.php}{New BSD License}. It is important to observe that the New BSD License has been verified as a GPL-compatible free software license by the \href{http://www.fsf.org/}{Free Software Foundation}, and has been vetted as an open source license by the \href{http://www.opensource.org/}{Open Source Initiative}.
+
+\ornamentline
+
+\begin{center}
+\scalebox{0.5}{\araralogo}
+
+\slogan
+\end{center}
+
+\vspace{0.5em}
+
+\noindent Copyright \copyright{} 2012, Paulo Roberto Massa Cereda
+
+\noindent All rights reserved.
+
+\vspace{1em}
+
+\noindent Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+\begin{itemize}
+\item Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+\item Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+\end{itemize}
+
+\noindent This software is provided by the copyright holders and contributors ``as is'' and any express or implied warranties, including, but not limited to, the implied warranties of merchantability and fitness for a particular purpose are disclaimed. In no event shall the copyright holder or contributors be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, procurement of substitute goods or services; loss of use, data, or profits; or business interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage.
+
+\ornamentline
+
+\begin{center}
+\rubberduck
+\end{center}
+
+\noindent This lovely rubber duck which appears throughout the \arara user manual is provided by \href{http://reblim.com}{Rebecca Lim} under a \href{https://creativecommons.org/licenses/by/3.0/us/}{Creative Commons Attribution 3.0} license. The drawing source is freely available at \href{https://thenounproject.com/term/rubber-duck/25368/}{The Noun Project}. Thank you very much, Rebecca!
+
+\ornamentline
+
+\vspace{1em}
+
+\noindent\arara has two helper tools available in the \href{https://github.com/cereda/arara}{official repository} which are licensed under the \href{http://opensource.org/licenses/MIT}{MIT License}. The tools were written in order to ease the deployment of rules and language files.
+
+\vspace{1.5em}
+
+\noindent{\sffamily\bfseries Language and rule checkers}
+
+\noindent Copyright \copyright{} 2015, Paulo Roberto Massa Cereda
+
+\noindent All rights reserved.
+
+\vspace{1em}
+
+\noindent Permission is hereby granted, free of charge, to any person obtaining a  copy  of this  software  and  associated documentation  files  (the ``software''), to  deal in the software without  restriction, including without limitation the rights to  use, copy, modify,  merge, publish, distribute, sublicense,  and/or sell  copies of  the Software,  and to permit persons to whom the Software  is furnished to do so, subject to the following conditions:
+
+\vspace{1em}
+
+\noindent The above copyright notice and this permission notice shall be included in all copies or substantial portions of the software.
+
+\vspace{1em}
+
+\noindent The software is provided ``as is'', without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.
+
+\ornamentline
+
+\cleardoublepage
+
+\vspace*{25em}
+
+\begin{flushright}
+\em To Marco's son Niclas.
+\end{flushright}
+
+\cleardoublepage
+
+\tableofcontents*
+
+\cleardoublepage
+
+\listoffigures*
+
+\cleardoublepage
+
+\listoftables*
+
+\cleardoublepage
+
+\listofcodes*
+
+\mainmatter
+
+\emph{Here comes the manual.}
+
+\end{document}
