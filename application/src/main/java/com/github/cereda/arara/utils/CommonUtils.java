@@ -54,11 +54,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.MissingFormatArgumentException;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 
@@ -793,6 +795,108 @@ public class CommonUtils {
         }
         else {
             return new ArrayList<String>();
+        }
+    }
+    
+    /**
+     * Generates a list of filenames from the provided command based on a list
+     * of extensions for each underlying operating system.
+     * @param command A string representing the command.
+     * @return A list of filenames.
+     */
+    private static List<String> appendExtensions(String command) {
+        
+        // the resulting list, to hold the
+        // filenames generated from the
+        // provided command
+        List<String> result = new ArrayList<String>();
+        
+        // list of extensions, specific for
+        // each operating system (in fact, it
+        // is more Windows specific)
+        List<String> extensions;
+        
+        // the application is running on
+        // Windows, so let's look for the
+        // following extensions in order
+        if (SystemUtils.IS_OS_WINDOWS) {
+            
+            // this list is actually a sublist from
+            // the original Windows PATHEXT environment
+            // variable which holds the list of executable
+            // extensions that Windows supports
+            extensions = Arrays.asList(".com", ".exe", ".bat", ".cmd");
+        }
+        else {
+            
+            // no Windows, so the default
+            // extension will be just an
+            // empty string
+            extensions = Arrays.asList("");
+        }
+        
+        // for each and every extension in the
+        // list, let's build the corresponding
+        // filename and add to the result
+        for (String extension : extensions) {
+            result.add(command.concat(extension));
+        }
+        
+        // return the resulting list
+        // holding the filenames
+        return result;
+    }
+    
+    /**
+     * Checks if the provided command name is reachable from the system path.
+     * @param command A string representing the command.
+     * @return A logic value.
+     */
+    public static boolean isOnPath(String command) {
+        try {
+            
+            // first and foremost, let's build the list
+            // of filenames based on the underlying
+            // operating system
+            List<String> filenames = appendExtensions(command);
+            
+            // break the path into several parts
+            // based on the path separator symbol
+            StringTokenizer tokenizer = new StringTokenizer(
+                    System.getenv("PATH"),
+                    File.pathSeparator
+            );
+            
+            // iterate through every part of the
+            // path looking for each filename
+            while (tokenizer.hasMoreTokens()) {
+                
+                // if the search does not return an empty
+                // list, one of the filenames got a match,
+                // and the command is available somewhere
+                // in the system path
+                if (
+                        !FileUtils.listFiles(
+                                new File(tokenizer.nextToken()),
+                                new NameFileFilter(filenames),
+                                null
+                        ).isEmpty()) {
+                    
+                    // command is found somewhere,
+                    // so it is on path
+                    return true;
+                }
+            }
+            
+            // nothing was found,
+            // command is not on path
+            return false;
+        }
+        catch (Exception exception) {
+            
+            // an exception was raised, simply
+            // return and forget about it
+            return false;
         }
     }
 

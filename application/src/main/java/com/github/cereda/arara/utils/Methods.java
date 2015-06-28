@@ -127,6 +127,7 @@ public class Methods {
             map.put("isVerboseMode", Methods.class.getMethod("isVerboseMode"));
             map.put("showMessage", Methods.class.getMethod("showMessage", int.class, String.class, String.class));
             map.put("showMessage", Methods.class.getMethod("showMessage", int.class, int.class, String.class, String.class));
+            map.put("isOnPath", Methods.class.getMethod("isOnPath", String.class));
         } catch (Exception exception) {
             // quack, quack, quack
         }
@@ -1014,6 +1015,15 @@ public class Methods {
     public static int showDropdown(int type, String title,
             String text, Object... elements) {
         return MessageUtils.showDropdown(type, title, text, elements);
+    }
+    
+    /**
+     * Checks if the provided command name is reachable from the system path.
+     * @param command A string representing the command.
+     * @return A logic value.
+     */
+    public static boolean isOnPath(String command) {
+        return CommonUtils.isOnPath(command);
     }
 
 }
