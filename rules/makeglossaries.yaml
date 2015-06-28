@@ -14,7 +14,14 @@ commands:
 - name: The MakeGlossaries software
   command: >
     @{
-        return getCommand('makeglossaries', options, getBasename(file));
+        if (isOnPath("perl"))
+        {
+           return  getCommand('makeglossaries', options, getBasename(file));
+        }
+        else
+        {
+           return  getCommand('makeglossaries.lua', options, getBasename(file));
+        }
     }
 arguments:
 - identifier: options
