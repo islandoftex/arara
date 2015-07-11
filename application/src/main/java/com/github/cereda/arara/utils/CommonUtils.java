@@ -900,4 +900,30 @@ public class CommonUtils {
         }
     }
 
+    /**
+     * Gets the full base name of a file.
+     * @param file The file.
+     * @return The corresponding full base name.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    public static String getFullBasename(File file) throws AraraException {
+        
+        // if the provided file does not contain a
+        // file separator, fallback to the usual
+        // base name lookup
+        if (!file.toString().contains(File.separator)) {
+            return getBasename(file);
+        }
+        else {
+            
+            // we need to get the parent file, get the
+            // canonical path and build the corresponding
+            // full base name path
+            File parent = file.getParentFile();
+            String path = getCanonicalPath(parent == null ? file : parent);
+            return buildPath(path, getBasename(file));
+        }
+    }
+
 }

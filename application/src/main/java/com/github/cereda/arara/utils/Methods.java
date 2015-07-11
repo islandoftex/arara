@@ -90,6 +90,8 @@ public class Methods {
             map.put("isFalse", Methods.class.getMethod("isFalse", boolean.class, Object.class, Object.class));
             map.put("getBasename", Methods.class.getMethod("getBasename", File.class));
             map.put("getBasename", Methods.class.getMethod("getBasename", String.class));
+            map.put("getFullBasename", Methods.class.getMethod("getFullBasename", File.class));
+            map.put("getFullBasename", Methods.class.getMethod("getFullBasename", String.class));
             map.put("getFiletype", Methods.class.getMethod("getFiletype", File.class));
             map.put("getFiletype", Methods.class.getMethod("getFiletype", String.class));
             map.put("throwError", Methods.class.getMethod("throwError", String.class));
@@ -1025,5 +1027,38 @@ public class Methods {
     public static boolean isOnPath(String command) {
         return CommonUtils.isOnPath(command);
     }
+    
+    /**
+     * Gets the full basename.
+     * @param file The file.
+     * @return The full basename of the provided file.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    public static String getFullBasename(File file) throws AraraException {
+        if (file.isFile()) {
+            return CommonUtils.getFullBasename(file);
+        } else {
+            throw new AraraException(
+                    CommonUtils.getRuleErrorHeader().concat(
+                            messages.getMessage(
+                                    Messages.ERROR_BASENAME_NOT_A_FILE,
+                                    file.getName()
+                            )
+                    )
+            );
+        }
+    }
 
+    /**
+     * Gets the full basename.
+     * @param name The string.
+     * @return The full basename.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    public static String getFullBasename(String name) throws AraraException {
+        return getFullBasename(new File(name));
+    }
+    
 }
