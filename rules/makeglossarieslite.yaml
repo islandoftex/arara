@@ -4,17 +4,17 @@
 # All rights reserved.
 #
 # This rule is part of arara.
-identifier: makeglossaries
-name: MakeGlossaries
+identifier: makeglossarieslite
+name: MakeGlossariesLite
 authors:
 - Marco Daniel
 - Nicola Talbot
 - Paulo Cereda
 commands:
-- name: The MakeGlossaries software
+- name: The MakeGlossariesLite software
   command: >
     @{
-        return  getCommand('makeglossaries', options, getBasename(file));
+       return  getCommand('makeglossaries-lite.lua', options, getBasename(file));
     }
 arguments:
 - identifier: options
