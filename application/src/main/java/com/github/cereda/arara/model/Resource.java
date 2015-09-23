@@ -72,10 +72,13 @@ public class Resource {
     
     // log name
     private String logname;
+    
+    // header flag
+    private boolean header;
 
     // map of preambles
     private Map<String, String> preambles;
-
+    
     /**
      * Gets the rule paths.
      * @return The rule paths.
@@ -227,6 +230,22 @@ public class Resource {
      */
     public void setPreambles(Map<String, String> preambles) {
         this.preambles = preambles;
+    }
+
+    /**
+     * Gets the logical value of the header flag.
+     * @return Logical value of the header flag.
+     */
+    public boolean isHeader() {
+        return header;
+    }
+
+    /**
+     * Sets the logical value of the header flag.
+     * @param header The header flag.
+     */
+    public void setHeader(boolean header) {
+        this.header = header;
     }
 
 }

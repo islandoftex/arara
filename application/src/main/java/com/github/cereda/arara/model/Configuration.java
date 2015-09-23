@@ -153,6 +153,7 @@ public class Configuration {
         mapping.put("execution.preambles", new HashMap<String, String>());
         mapping.put("execution.preamble.active", false);
         mapping.put("execution.configuration.name", "[none]");
+        mapping.put("execution.header", false);
 
         // get the configuration controller and
         // set every map key to it
@@ -198,6 +199,7 @@ public class Configuration {
 
         controller.put("execution.verbose", resource.isVerbose());
         controller.put("execution.logging", resource.isLogging());
+        controller.put("execution.header", resource.isHeader());
 
         if (resource.getDbname() != null) {
             controller.put("execution.database.name",

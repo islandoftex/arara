@@ -76,6 +76,7 @@ public class Parser {
     private Option language;
     private Option loops;
     private Option preamble;
+    private Option onlyheader;
 
     public Parser() {
         this.arguments = null;
@@ -120,6 +121,7 @@ public class Parser {
         loops.setArgName("number");
         preamble = new Option("p", "preamble", true, "");
         preamble.setArgName("name");
+        onlyheader = new Option("H", "header", false, "");
 
         // add all options to the options
         // group, so they are recognized
@@ -134,6 +136,7 @@ public class Parser {
         options.addOption(language);
         options.addOption(loops);
         options.addOption(preamble);
+        options.addOption(onlyheader);
 
         // update all descriptions based
         // on the localized messages
@@ -267,6 +270,11 @@ public class Parser {
                     );
                 }
             }
+            
+            if (line.hasOption("header")) {
+                ConfigurationController.getInstance().
+                        put("execution.header", true);
+            }
 
             CommonUtils.discoverFile(reference);
             LoggingController.enableLogging((Boolean) ConfigurationController.
@@ -290,8 +298,8 @@ public class Parser {
         StringBuilder builder = new StringBuilder();
         builder.append("arara [file [--dry-run] [--log] ");
         builder.append("[--verbose] [--timeout N] [--max-loops N] ");
-        builder.append("[--language L] [ --preamble P ] | --help ");
-        builder.append("| --version]");
+        builder.append("[--language L] [ --preamble P ] ");
+        builder.append("[--header] | --help | --version]");
         formatter.printHelp(builder.toString(), options);
     }
 
@@ -372,6 +380,11 @@ public class Parser {
         preamble.setDescription(
                 messages.getMessage(
                         Messages.INFO_PARSER_PREAMBLE_DESCRIPTION
+                )
+        );
+        onlyheader.setDescription(
+                messages.getMessage(
+                        Messages.INFO_PARSER_ONLY_HEADER
                 )
         );
     }

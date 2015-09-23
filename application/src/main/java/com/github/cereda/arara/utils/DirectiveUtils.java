@@ -82,8 +82,11 @@ public class DirectiveUtils {
     public static List<Directive> extractDirectives(List<String> lines)
             throws AraraException {
 
+        boolean header = (Boolean) ConfigurationController.
+                getInstance().get("execution.header");
         String regex = (String) ConfigurationController.
                 getInstance().get("execution.file.pattern");
+        String validation = regex;
         regex = regex.concat((String) ConfigurationController.
                 getInstance().get("application.pattern"));
         Pattern pattern = Pattern.compile(regex);
@@ -108,6 +111,13 @@ public class DirectiveUtils {
                                 line.trim()
                         )
                 );
+            }
+            else {
+                if (header) {
+                    if (!checkLinePattern(validation, lines.get(i))) {
+                        break;
+                    }
+                }
             }
         }
 
@@ -410,6 +420,22 @@ public class DirectiveUtils {
         logger.info(DisplayUtils.displaySeparator());
 
         return result;
+    }
+    
+    /**
+     * Checks if the provided line contains the corresponding line pattern.
+     * @param regex Corresponding line pattern.
+     * @param line Provided line.
+     * @return Logical value indicating if the provided line contains the
+     * corresponding line pattern, based on the file type.
+     */
+    private static boolean checkLinePattern(String regex, String line) {
+        if (line.trim().equals("")) {
+            return true;
+        }
+        else {
+            return Pattern.compile(regex).matcher(line).find();
+        }
     }
 
 }
