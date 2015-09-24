@@ -86,7 +86,7 @@ public class DirectiveUtils {
                 getInstance().get("execution.header");
         String regex = (String) ConfigurationController.
                 getInstance().get("execution.file.pattern");
-        String validation = regex;
+        Pattern linecheck = Pattern.compile(regex);
         regex = regex.concat((String) ConfigurationController.
                 getInstance().get("application.pattern"));
         Pattern pattern = Pattern.compile(regex);
@@ -114,7 +114,7 @@ public class DirectiveUtils {
             }
             else {
                 if (header) {
-                    if (!checkLinePattern(validation, lines.get(i))) {
+                    if (!checkLinePattern(linecheck, lines.get(i))) {
                         break;
                     }
                 }
@@ -423,19 +423,15 @@ public class DirectiveUtils {
     }
     
     /**
-     * Checks if the provided line contains the corresponding line pattern.
-     * @param regex Corresponding line pattern.
+     * Checks if the provided line contains the corresponding pattern, based on
+     * the file type, or an empty line.
+     * @param pattern Pattern to be matched, based on the file type.
      * @param line Provided line.
      * @return Logical value indicating if the provided line contains the
-     * corresponding line pattern, based on the file type.
+     * corresponding pattern, based on the file type, or an empty line.
      */
-    private static boolean checkLinePattern(String regex, String line) {
-        if (line.trim().equals("")) {
-            return true;
-        }
-        else {
-            return Pattern.compile(regex).matcher(line).find();
-        }
+    private static boolean checkLinePattern(Pattern pattern, String line) {
+        return line.trim().equals("") ? true : pattern.matcher(line).find();
     }
 
 }
