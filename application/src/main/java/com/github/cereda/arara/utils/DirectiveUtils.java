@@ -431,7 +431,8 @@ public class DirectiveUtils {
      * corresponding pattern, based on the file type, or an empty line.
      */
     private static boolean checkLinePattern(Pattern pattern, String line) {
-        return line.trim().equals("") ? true : pattern.matcher(line).find();
+        return CommonUtils.checkEmptyString(line.trim()) ||
+                pattern.matcher(line).find();
     }
 
 }
