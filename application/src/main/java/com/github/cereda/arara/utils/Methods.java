@@ -38,6 +38,7 @@ import com.github.cereda.arara.controller.LanguageController;
 import com.github.cereda.arara.model.AraraException;
 import com.github.cereda.arara.model.Command;
 import com.github.cereda.arara.model.Messages;
+import com.github.cereda.arara.model.Pair;
 import com.github.cereda.arara.model.Session;
 import com.github.cereda.arara.model.Trigger;
 import java.io.File;
@@ -130,6 +131,7 @@ public class Methods {
             map.put("showMessage", Methods.class.getMethod("showMessage", int.class, String.class, String.class));
             map.put("showMessage", Methods.class.getMethod("showMessage", int.class, int.class, String.class, String.class));
             map.put("isOnPath", Methods.class.getMethod("isOnPath", String.class));
+            map.put("unsafelyExecuteSystemCommand", Methods.class.getMethod("unsafelyExecuteSystemCommand", Command.class));
         } catch (Exception exception) {
             // quack, quack, quack
         }
@@ -1061,4 +1063,17 @@ public class Methods {
         return getFullBasename(new File(name));
     }
     
+    /**
+     * Unsafely executes a system command from the underlying operating system
+     * and returns a pair containing the exit status and the command output as a
+     * string.
+     * @param command The system command to be executed.
+     * @return A pair containing the exit status and the system command output
+     * as a string.
+     */
+    public static Pair<Integer, String>
+        unsafelyExecuteSystemCommand(Command command) {
+        return UnsafeUtils.executeSystemCommand(command);
+    }
+
 }
