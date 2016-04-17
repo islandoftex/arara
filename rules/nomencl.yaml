@@ -21,6 +21,7 @@ commands:
 arguments:
 - identifier: style
   flag: "@{ [ '-s', parameters.style ] }"
+  default: "@{ [ '-s', 'nomencl.ist' ] }"
 - identifier: options
   flag: >
     @{
