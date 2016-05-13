@@ -14,13 +14,18 @@ commands:
   command: >
     @{
         value = getBasename(file).concat('.').concat(extension);
-        return getCommand('makeindex', german, style, value);
+        return getCommand('makeindex', german, style, letter, options, value);
     }
 arguments:
 - identifier: german
   flag: >
     @{
         isTrue(parameters.german, '-g')
+    }
+- identifier: letter
+  flag: >
+    @{
+        isTrue(parameters.letter, '-l')
     }
 - identifier: style
   flag: "@{ [ '-s', parameters.style ] }"
