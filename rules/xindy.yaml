@@ -33,12 +33,26 @@ arguments:
         {
           foreach (element : parameters.modules)
           {
-            elements.add(['-M', element]);
+            if (element.equals("basename"))
+            {
+               elements.add(['-M', getBasename(file)]);
+            }
+            else
+            {
+               elements.add(['-M', element]);
+            }
           }
         }
         else 
         {
-           elements.add(['-M', parameters.modules]);
+           if (parameters.modules.equals("basename"))
+           {
+              elements.add(['-M', getBasename(file)]);
+           }
+           else
+           {
+              elements.add(['-M', parameters.modules]);
+           }
         }
 
         return elements;
@@ -54,6 +68,7 @@ arguments:
   flag: "@{ [ '-o', parameters.output ] }"
 - identifier: log
   flag: "@{ [ '-t', parameters.log ] }"
+  default: "@{[ '-t', getBasename(file).concat('.ilg')]}"
 - identifier: markup
   flag: "@{ [ '-I', parameters.markup ] }"
 - identifier: options
