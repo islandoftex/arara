@@ -1,0 +1,68 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2012, Paulo Roberto Massa Cereda 
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: texindy
+name: TeXindy
+authors:
+- Nicola Talbot
+commands:
+- name: The TeXindy software
+  command: >
+    @{
+        value = getBasename(file).concat('.').concat(extension);
+        return getCommand('texindy', quiet, debug, markup, modules,
+         codepage, language, log, output, options, value);
+    }
+arguments:
+- identifier: quiet
+  flag: >
+    @{
+        isTrue(parameters.quiet, '-q')
+    }
+- identifier: debug
+  flag: "@{ [ '-d', parameters.debug ] }"
+- identifier: modules
+  flag: >
+    @{
+        elements = [];
+
+        if (isList(parameters.modules))
+        {
+          foreach (element : parameters.modules)
+          {
+            elements.add(['-M', element]);
+          }
+        }
+        else 
+        {
+           elements.add(['-M', parameters.modules]);
+        }
+
+        return elements;
+    }
+- identifier: codepage
+  flag: "@{ [ '-C', parameters.codepage ] }"
+- identifier: language
+  flag: "@{ [ '-L', parameters.language ] }"
+- identifier: extension
+  flag: "@{parameters.extension}"
+  default: idx
+- identifier: output
+  flag: "@{ [ '-o', parameters.output ] }"
+- identifier: log
+  flag: "@{ [ '-t', parameters.log ] }"
+- identifier: markup
+  flag: "@{ [ '-I', parameters.markup ] }"
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.')
+        }
+    }
