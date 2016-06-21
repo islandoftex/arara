@@ -1,0 +1,40 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2012, Paulo Roberto Massa Cereda 
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: velocity
+name: Velocity
+authors:
+- Paulo Cereda
+commands:
+- name: The Velocity engine
+  command: >
+    @{
+        mergeVelocityTemplate(isEmpty(input, reference, toFile(input)), toFile(output), context);
+        return true;
+    }
+arguments:
+- identifier: context
+  flag: >
+    @{
+        if (isMap(parameters.context)) {
+            return parameters.context;
+        }
+        else {
+            throwError('I was expecting a context map.');
+        }
+    }
+  required: true
+- identifier: output
+  flag: >
+    @{
+        return parameters.output;
+    }
+  required: true
+- identifier: input
+  flag: >
+    @{
+        return parameters.input;
+    }

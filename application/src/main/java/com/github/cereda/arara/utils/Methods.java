@@ -132,6 +132,7 @@ public class Methods {
             map.put("showMessage", Methods.class.getMethod("showMessage", int.class, int.class, String.class, String.class));
             map.put("isOnPath", Methods.class.getMethod("isOnPath", String.class));
             map.put("unsafelyExecuteSystemCommand", Methods.class.getMethod("unsafelyExecuteSystemCommand", Command.class));
+            map.put("mergeVelocityTemplate", Methods.class.getMethod("mergeVelocityTemplate", File.class, File.class, Map.class));
         } catch (Exception exception) {
             // quack, quack, quack
         }
@@ -1074,6 +1075,20 @@ public class Methods {
     public static Pair<Integer, String>
         unsafelyExecuteSystemCommand(Command command) {
         return UnsafeUtils.executeSystemCommand(command);
+    }
+        
+    /**
+     * Merges the provided template with a context map and writes the result in
+     * an output file. This method relies on Apache Velocity.
+     * @param input The input file.
+     * @param output The output file.
+     * @param map The context map.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    public static void mergeVelocityTemplate(File input, File output,
+            Map<String, Object> map) throws AraraException {
+        VelocityUtils.mergeVelocityTemplate(input, output, map);
     }
 
 }
