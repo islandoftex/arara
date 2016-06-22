@@ -161,7 +161,7 @@ public class Methods {
             map.put("showInput", Methods.class.getMethod("showInput", int.class, int.class, String.class, String.class));
             map.put("showOptions", Methods.class.getMethod("showOptions", int.class, String.class, String.class, Object[].class));
             map.put("showOptions", Methods.class.getMethod("showOptions", int.class, int.class, String.class, String.class, Object[].class));
-            map.put("identity", Methods.class.getMethod("identity"));
+            map.put("currentFile", Methods.class.getMethod("currentFile"));
         } catch (Exception exception) {
             // quack, quack, quack
         }
@@ -1099,7 +1099,7 @@ public class Methods {
      * different reference.
      * @return A file reference for the current directive.
      */
-    public static File identity() {
+    public static File currentFile() {
         return (File) ConfigurationController.getInstance().
                 get("execution.directive.reference");
     }
