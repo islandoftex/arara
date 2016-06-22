@@ -118,6 +118,10 @@ public class Interpreter {
                     put("execution.directive.lines",
                             directive.getLineNumbers()
                     );
+            ConfigurationController.getInstance().
+                    put("execution.directive.reference",
+                            directive.getParameters().get("reference")
+                    );
 
             Rule rule = parseRule(file, directive);
             Map<String, Object> parameters = parseArguments(rule, directive);

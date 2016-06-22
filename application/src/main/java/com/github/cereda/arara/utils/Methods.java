@@ -161,6 +161,7 @@ public class Methods {
             map.put("showInput", Methods.class.getMethod("showInput", int.class, int.class, String.class, String.class));
             map.put("showOptions", Methods.class.getMethod("showOptions", int.class, String.class, String.class, Object[].class));
             map.put("showOptions", Methods.class.getMethod("showOptions", int.class, int.class, String.class, String.class, Object[].class));
+            map.put("identity", Methods.class.getMethod("identity"));
         } catch (Exception exception) {
             // quack, quack, quack
         }
@@ -1089,6 +1090,18 @@ public class Methods {
     public static void mergeVelocityTemplate(File input, File output,
             Map<String, Object> map) throws AraraException {
         VelocityUtils.mergeVelocityTemplate(input, output, map);
+    }
+    
+    /**
+     * Gets the file reference for the current directive. It is important to
+     * observe that version 4.0 of arara replicates the directive when 'files'
+     * is detected amongst the parameters, so each instance will have a
+     * different reference.
+     * @return A file reference for the current directive.
+     */
+    public static File identity() {
+        return (File) ConfigurationController.getInstance().
+                get("execution.directive.reference");
     }
 
 }
