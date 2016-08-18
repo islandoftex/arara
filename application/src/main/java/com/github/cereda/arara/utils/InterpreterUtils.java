@@ -130,6 +130,11 @@ public class InterpreterUtils {
         ProcessExecutor executor = new ProcessExecutor();
         if (CommonUtils.checkClass(Command.class, command)) {
             executor = executor.command(((Command) command).getElements());
+            if (((Command) command).hasWorkingDirectory()) {
+                executor = executor.directory(
+                        ((Command) command).getWorkingDirectory()
+                );
+            }
         } else {
             executor = executor.commandSplit((String) command);
         }

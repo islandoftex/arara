@@ -34,6 +34,7 @@
 package com.github.cereda.arara.model;
 
 import com.github.cereda.arara.utils.CommonUtils;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,6 +50,10 @@ public class Command {
     // a list of elements which are components
     // of a command and represented as strings
     private final List<String> elements;
+    
+    // an optional file acting as a reference
+    // for the default working directory
+    private File workingDirectory;
 
     /**
      * Constructor.
@@ -79,6 +84,30 @@ public class Command {
      */
     public List<String> getElements() {
         return elements;
+    }
+
+    /**
+     * Sets the working directory.
+     * @param workingDirectory A file representing the working directory.
+     */
+    public void setWorkingDirectory(File workingDirectory) {
+        this.workingDirectory = workingDirectory;
+    }
+
+    /**
+     * Gets the working directory, if any.
+     * @return A file representing the working directory.
+     */
+    public File getWorkingDirectory() {
+        return workingDirectory;
+    }
+    
+    /**
+     * Checks if a working directory was defined.
+     * @return A logic value indicating if a working directory was defined.
+     */
+    public boolean hasWorkingDirectory() {
+        return workingDirectory != null;
     }
 
     /**

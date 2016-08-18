@@ -133,6 +133,10 @@ public class Methods {
             map.put("isOnPath", Methods.class.getMethod("isOnPath", String.class));
             map.put("unsafelyExecuteSystemCommand", Methods.class.getMethod("unsafelyExecuteSystemCommand", Command.class));
             map.put("mergeVelocityTemplate", Methods.class.getMethod("mergeVelocityTemplate", File.class, File.class, Map.class));
+            map.put("getCommandWithWorkingDirectory", Methods.class.getMethod("getCommandWithWorkingDirectory", String.class, List.class));
+            map.put("getCommandWithWorkingDirectory", Methods.class.getMethod("getCommandWithWorkingDirectory", String.class, Object[].class));
+            map.put("getCommandWithWorkingDirectory", Methods.class.getMethod("getCommandWithWorkingDirectory", File.class, List.class));
+            map.put("getCommandWithWorkingDirectory", Methods.class.getMethod("getCommandWithWorkingDirectory", File.class, Object[].class));
         } catch (Exception exception) {
             // quack, quack, quack
         }
@@ -836,6 +840,62 @@ public class Methods {
      */
     public static Command getCommand(Object... elements) {
         return new Command(elements);
+    }
+    
+    /**
+     * Gets the command based on an array of objects and with the provided
+     * working directory as string.
+     * @param path String path representing the working directory.
+     * @param elements Array of elements.
+     * @return A command.
+     */
+    public static Command getCommandWithWorkingDirectory(String path,
+            Object... elements) {
+        Command command = new Command(elements);
+        command.setWorkingDirectory(new File(path));
+        return command;
+    }
+    
+    /**
+     * Gets the command based on an array of objects and with the provided
+     * working directory as file.
+     * @param file File representing the working directory.
+     * @param elements Array of elements.
+     * @return A command.
+     */
+    public static Command getCommandWithWorkingDirectory(File file,
+            Object... elements) {
+        Command command = new Command(elements);
+        command.setWorkingDirectory(file);
+        return command;
+    }
+    
+    /**
+     * Gets the command based on a list of strings and with the provided
+     * working directory as string.
+     * @param path String path representing the working directory.
+     * @param elements List of strings.
+     * @return A command.
+     */
+    public static Command getCommandWithWorkingDirectory(String path,
+            List<String> elements) {
+        Command command = new Command(elements);
+        command.setWorkingDirectory(new File(path));
+        return command;
+    }
+    
+    /**
+     * Gets the command based on a list of strings and with the provided
+     * working directory as file.
+     * @param file File representing the working directory.
+     * @param elements List of strings.
+     * @return A command.
+     */
+    public static Command getCommandWithWorkingDirectory(File file,
+            List<String> elements) {
+        Command command = new Command(elements);
+        command.setWorkingDirectory(file);
+        return command;
     }
 
     /**
