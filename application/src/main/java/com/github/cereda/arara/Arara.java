@@ -141,10 +141,10 @@ public class Arara {
 
                 // arara features now a cool stopwatch, so we can see how
                 // much time has passed since everything started; start(),
-                // for obvious reasons, start the stopwatch and keeps track
+                // for obvious reasons, starts the stopwatch and keeps track
                 // of time for us; internally, this class makes use of
                 // nano time, so we might get an interesting precision here
-                // (although timinig is not a serious business in here, it's
+                // (although timing is not a serious business in here, it's
                 // just a cool addition)
                 StopWatch.start();
 
