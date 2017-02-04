@@ -1,0 +1,45 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2012, Paulo Roberto Massa Cereda 
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: bib2gls
+name: Bib2Gls
+authors:
+- Nicola Talbot
+- Paulo Cereda
+commands:
+- name: The Bib2Gls software
+  command: >
+    @{
+       return getCommand('bib2gls', dir, group, interpret, options, getBasename(file));
+    }
+arguments:
+- identifier: dir
+  flag: >
+   @{
+       return ['--dir', parameters.dir]
+    }
+- identifier: group
+  flag: >
+   @{
+       isTrue(parameters.group, '--group', '--no-group')
+    }
+- identifier: interpret
+  flag: >
+   @{
+       isTrue(parameters.interpret, '--interpret', '--no-interpret')
+    }
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options))
+        {
+            return parameters.options
+        }
+        else
+        {
+            throwError('I was expecting a list of options.')
+        }
+    }
