@@ -52,7 +52,7 @@ Would you like to make `arara` speak your own language? Splendid! We would love 
 
 Binary releases are powered by Bintray and not available in the repository anymore. You can [click here](https://bintray.com/cereda/arara/installers/_latestVersion) or use the button below to get access to the current 3.0 release. Note that you need Java to run both the installer and `arara` itself.
 
-*Download:* [![Download](https://api.bintray.com/packages/cereda/arara/installers/images/download.png)](https://bintray.com/cereda/arara/installers/_latestVersion)
+*Download:* [ ![Download](https://api.bintray.com/packages/cereda/arara/installers/images/download.svg?version=3.0) ](https://bintray.com/cereda/arara/installers/3.0/link)
 
 If you want to try out the development version, you need to build it from source. It is actually a straightforward process: just clone this repository, go to the `application/` directory and run `mvn assembly:assembly` (you need [Apache Maven](http://maven.apache.org/) for this); you'll get the resulting `.jar` file in a `target/` directory. Have fun!
 
