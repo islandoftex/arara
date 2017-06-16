@@ -75,6 +75,10 @@ public class Language {
                 "German",
                 new Locale("de")
         ));
+        languages.put("nl", new Pair<String, Locale>(
+                "Dutch",
+                new Locale("nl")
+        ));
         languages.put("qn", new Pair<String, Locale>(
                 "Broad Norfolk",
                 new Locale("en", "QN")
