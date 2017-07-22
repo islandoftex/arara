@@ -42,3 +42,5 @@
 *.*~
 .DS_Store
 /application/target/
+/tools/langchecker/target/
+/tools/rulechecker/target/
