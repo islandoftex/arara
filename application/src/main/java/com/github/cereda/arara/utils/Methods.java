@@ -166,6 +166,10 @@ public class Methods {
             map.put("showOptions", Methods.class.getMethod("showOptions", int.class, String.class, String.class, Object[].class));
             map.put("showOptions", Methods.class.getMethod("showOptions", int.class, int.class, String.class, String.class, Object[].class));
             map.put("currentFile", Methods.class.getMethod("currentFile"));
+            map.put("loadClass", Methods.class.getMethod("loadClass", File.class, String.class));
+            map.put("loadClass", Methods.class.getMethod("loadClass", String.class, String.class));
+            map.put("loadObject", Methods.class.getMethod("loadObject", File.class, String.class));
+            map.put("loadObject", Methods.class.getMethod("loadObject", String.class, String.class));
         } catch (Exception exception) {
             // quack, quack, quack
         }
@@ -1162,6 +1166,46 @@ public class Methods {
     public static File currentFile() {
         return (File) ConfigurationController.getInstance().
                 get("execution.directive.reference");
+    }
+    
+    /**
+     * Loads a class from the provided file, potentially a Java archive.
+     * @param file File containing the Java bytecode (namely, a JAR).
+     * @param name The canonical name of the class.
+     * @return A pair representing the status and the class.
+     */    
+    public static Pair<Integer, Class> loadClass(File file, String name) {
+        return ClassLoadingUtils.loadClass(file, name);
+    }
+    
+    /**
+     * Loads a class from the provided string reference, representing a file.
+     * @param ref String reference representing a file.
+     * @param name The canonical name of the class.
+     * @return A pair representing the status and the class.
+     */
+    public static Pair<Integer, Class> loadClass(String ref, String name) {
+        return ClassLoadingUtils.loadClass(new File(ref), name);
+    }
+    
+    /**
+     * Loads a class from the provided file, instantiating it.
+     * @param file File containing the Java bytecode (namely, a JAR).
+     * @param name The canonical name of the class.
+     * @return A pair representing the status and the class object.
+     */
+    public static Pair<Integer, Object> loadObject(File file, String name) {
+        return ClassLoadingUtils.loadObject(file, name);
+    }
+    
+    /**
+     * Loads a class from the provided string reference, instantiating it.
+     * @param ref String reference representing a file.
+     * @param name The canonical name of the class.
+     * @return A pair representing the status and the class object.
+     */
+    public static Pair<Integer, Object> loadObject(String ref, String name) {
+        return ClassLoadingUtils.loadObject(new File(ref), name);
     }
 
 }
