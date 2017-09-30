@@ -1,11 +1,9 @@
 before_script: "cd application"
-dist: trusty
 language: java
 jdk:
+- oraclejdk9
 - oraclejdk8
-- oraclejdk7
 - openjdk7
-- openjdk6
 notifications:
   webhooks:
     urls:
