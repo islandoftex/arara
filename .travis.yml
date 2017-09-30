@@ -1,7 +1,6 @@
 before_script: "cd application"
 language: java
 jdk:
-- oraclejdk9
 - oraclejdk8
 - openjdk7
 notifications:
