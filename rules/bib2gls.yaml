@@ -13,13 +13,18 @@ commands:
 - name: The Bib2Gls software
   command: >
     @{
-       return getCommand('bib2gls', dir, group, interpret, options, getBasename(file));
+       return getCommand('bib2gls', dir, trans, group, interpret, options, getBasename(file));
     }
 arguments:
 - identifier: dir
   flag: >
    @{
        return ['--dir', parameters.dir]
+    }
+- identifier: trans
+  flag: >
+   @{
+       return ['--log-file', getBasename(file)+"."+parameters.trans]
     }
 - identifier: group
   flag: >
