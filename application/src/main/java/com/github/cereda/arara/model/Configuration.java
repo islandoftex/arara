@@ -1,6 +1,6 @@
 /**
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2017, Paulo Roberto Massa Cereda 
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -138,7 +138,7 @@ public class Configuration {
         mapping.put("execution.logging", false);
         mapping.put("execution.dryrun", false);
         mapping.put("execution.status", 0);
-        mapping.put("application.copyright.year", "2012");
+        mapping.put("application.copyright.year", "2012-2017");
         mapping.put("execution.filetypes", ConfigurationUtils.
                 getDefaultFileTypes());
         mapping.put("execution.rule.paths",
