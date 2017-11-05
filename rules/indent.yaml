@@ -22,6 +22,8 @@ arguments:
   flag: "@{isTrue(parameters.overwrite, '-w')}"
 - identifier: trace
   flag: "@{isTrue(parameters.trace, '-t')}"
+- identifier: modifylinebreaks
+  flag: "@{isTrue(parameters.trace, '-m')}"
 - identifier: settings
   flag: >
     @{
