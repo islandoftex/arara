@@ -13,7 +13,7 @@ commands:
 - name: The latexindent.pl script
   command: >
     @{
-        return getCommand('latexindent', silent, trace, settings, cruft, overwrite, output, file);
+        return getCommand('latexindent', silent, trace, settings, cruft, overwrite, output, file, modifylinebreaks, logfile);
     }
 arguments:
 - identifier: silent
@@ -22,6 +22,8 @@ arguments:
   flag: "@{isTrue(parameters.overwrite, '-w')}"
 - identifier: trace
   flag: "@{isTrue(parameters.trace, '-t')}"
+- identifier: modifylinebreaks
+  flag: "@{isTrue(parameters.trace, '-m')}"
 - identifier: settings
   flag: >
     @{
@@ -36,6 +38,8 @@ arguments:
     }
 - identifier: cruft
   flag: "-c=@{parameters.cruft}"
+- identifier: logfile
+  flag: "@{[ '-g', name.log ]}"
 - identifier: output
   flag: "@{[ '-o', parameters.output ]}"
 - identifier: where
