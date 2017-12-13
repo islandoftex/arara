@@ -13,7 +13,8 @@ commands:
 - name: The Bib2Gls software
   command: >
     @{
-       return getCommand('bib2gls', dir, trans, group, interpret, options, getBasename(file));
+       return getCommand('bib2gls', dir, trans, group, interpret, breakspace,
+        trimfields, recordcount, options, getBasename(file));
     }
 arguments:
 - identifier: dir
@@ -35,6 +36,21 @@ arguments:
   flag: >
    @{
        isTrue(parameters.interpret, '--interpret', '--no-interpret')
+    }
+- identifier: breakspace
+  flag: >
+   @{
+       isTrue(parameters.breakspace, '--break-space', '--no-break-space')
+    }
+- identifier: trimfields
+  flag: >
+   @{
+       isTrue(parameters.trimfields, '--trim-fields', '--no-trim-fields')
+    }
+- identifier: recordcount
+  flag: >
+   @{
+       isTrue(parameters.recordcount, '--record-count', '--no-record-count')
     }
 - identifier: options
   flag: >
