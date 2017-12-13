@@ -73,4 +73,20 @@ public class Pair<T, V> {
         return secondElement;
     }
     
+    /**
+     * A shorter version for getting the first element.
+     * @return The first element.
+     */
+    public T first() {
+        return getFirstElement();
+    }
+    
+    /**
+     * A shorter version for getting the second element.
+     * @return The second element.
+     */
+    public V second() {
+        return getSecondElement();
+    }
+    
 }
