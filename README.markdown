@@ -16,13 +16,15 @@ Hello, world!
 \end{document}
 ```
 
-Now when you run `arara my-file`, that directive (`% arara: ...`) will be seen and carried out as described by the `pdflatex` rule.  You can read more about rules and directives in the manual. In addition to documenting all of the rules that come standard with `arara`, its manual gives a detailed explanation of how `arara` works, how to create and use your own rules, and how to integrate the tool into the common TeX IDEs.
+Now when you run `arara my-file`, that directive (`% arara: ...`) will be seen and carried out as described by the `pdflatex` rule.  You can read more about rules and directives in the [user manual](http://mirrors.ctan.org/support/arara/doc/arara-usermanual.pdf). In addition to documenting all of the rules that come standard with `arara`, its manual gives a detailed explanation of how `arara` works, how to create and use your own rules, and how to integrate the tool into the common TeX IDEs.
+
+> The documentation link presented above points to the official user manual of `arara` 3.0a in PDF format, available directly from the Comprehensive TeX Archive Network (CTAN). See next section for a note on the documentation status for the upcoming version 4.0 (still in progress).
 
 ## Current status
 
 The `arara` team is working on the new 4.0 version. The code is ready and we are now focusing on rules, translations and the documentation itself. It might take a while since a lot of things have changed since version 3.0, so the manual has to be completely rewritten. Hopefully, we will release it soon. `:)`
 
-- *Current TL version:* 3.0 (codebase is available in the [releases](https://github.com/cereda/arara/releases) section)
+- *Current TL version:* 3.0a (codebase is available in the [releases](https://github.com/cereda/arara/releases) section)
 - *Development/upcoming version:* 4.0 (the repository itself holds the last changes)
 
 ## Build status
