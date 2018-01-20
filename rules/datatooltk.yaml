@@ -8,7 +8,10 @@ commands:
 - name: The DatatoolTk software
   command: >
     @{
-        return getCommand('datatooltk', options, output, csv, sql, input, sqldb, sqluser, name, probsoln, sort, sortcase, seed, shuffle, sep, delim, csvheader, noconsole, debug, owneronly, maptex, xls, ods, sheet, filterop, filters, truncate)
+        return getCommand('datatooltk', options, output, csv, sql, input, 
+          sqldb, sqluser, name, probsoln, sort, sortlocale, sortcase, seed, 
+          shuffle, sep, delim, csvheader, noconsole, debug, owneronly, maptex, 
+          xls, ods, sheet, filterop, filters, truncate)
     }
 arguments:
 - identifier: options
@@ -46,6 +49,8 @@ arguments:
   flag: "@{[ '--in', parameters.input ]}"
 - identifier: sort
   flag: "@{[ '--sort', parameters.sort ]}"
+- identifier: sortlocale
+  flag: "@{[ '--sort-locale', parameters.sortlocale ]}"
 - identifier: sortcase
   flag: "@{isTrue(parameters.sortcase, '--sort-case-sensitive', '--sort-case-insensitive')}"
 - identifier: seed
