@@ -39,7 +39,7 @@ arguments:
 - identifier: cruft
   flag: "-c=@{parameters.cruft}"
 - identifier: logfile
-  flag: "@{[ '-g', name.log ]}"
+  flag: "@{[ '-g', parameters.logfile ]}"
 - identifier: output
   flag: "@{[ '-o', parameters.output ]}"
 - identifier: where
