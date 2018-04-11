@@ -2,6 +2,7 @@
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
+\usepackage[margin=2.5cm]{geometry}
 \usepackage{arara}
 
 \addbibresource{references.bib}
@@ -10,11 +11,10 @@
 \begin{document}
 
 \begin{titlingpage}
-
 \vspace*{2em}
 
 \begin{center}
-\scalebox{1.15}{\araralogo}
+\scalebox{1.15}{\em add new logo here}
 
 \vspace{2em}
 
@@ -22,24 +22,69 @@
 
 \vspace{6em}
 
-{\Huge\sffamily\bfseries User Manual}
+\begin{tcolorbox}[
+  boxrule=0pt,
+  colback=araracolour,
+  top=1em,
+  bottom=1em
+]
+  \color{white}
+  \centering
+  \Huge
+  \sffamily
+  \bfseries User manual
+\end{tcolorbox}
 
 \vspace{6em}
 
-{\large
-\tabcolsep=1em
-\begin{tabular}{cc}
-	\tableauthor{Paulo R.\ M.\ Cereda}{cereda@users.sf.net}\\[1.5em]
-	\tableauthors{Marco Daniel}{marco.daniel@mada-nada.de}{Brent Longborough}{brent@longborough.org}\\[1.5em]
-	\tableauthor{Nicola L.\ C.\ Talbot}{http://www.dickimaw-books.com/}
+{\tabcolsep=2em
+\em
+
+\begin{tabular}{cccc}
+  \begin{tikzpicture}[scale=.7]
+    \duck[
+      cap,
+      cricket
+    ]
+  \end{tikzpicture} &
+  \begin{tikzpicture}[scale=.7]
+    \duck[
+      tshirt=lightgray,
+      jacket=blue!50!black,
+      tie=blue!80!black,
+      shorthair
+    ]
+  \end{tikzpicture} &
+  \begin{tikzpicture}[scale=.7]
+    \duck[
+      glasses,
+      recedinghair,
+      jacket=gray
+    ]
+  \end{tikzpicture} &
+  \begin{tikzpicture}[scale=.7]
+    \duck[
+      longhair,
+      hat=red!50!black
+    ]
+  \end{tikzpicture}\\[.5em]
+Paulo & Marco & Brent & Nicola\\
+Cereda & Daniel & Longborough & Talbot
 \end{tabular}}
+
+\vspace{2em}
+
+\url{https://github.com/cereda/arara}
 
 \vfill
 
-{\LARGE\sffamily\bfseries Version \araraversion}
+{\color{araracolour}
+\LARGE
+\sffamily
+\bfseries
+Version \araraversion}
 
 \end{center}
-
 \end{titlingpage}
 
 \chapterstyle{madsen}
@@ -95,20 +140,10 @@ Paulo Roberto Massa Cereda\\
 
 \epigraph{Anything that prevents you from being friendly, a good neighbour, is a terror tactic.}{\textsc{Richard Stallman}}
 
-\noindent\arara\ is licensed under the \href{http://www.opensource.org/licenses/bsd-license.php}{New BSD License}. It is important to observe that the New BSD License has been verified as a GPL-compatible free software license by the \href{http://www.fsf.org/}{Free Software Foundation}, and has been vetted as an open source license by the \href{http://www.opensource.org/}{Open Source Initiative}.
+\arara\ is licensed under the \href{http://www.opensource.org/licenses/bsd-license.php}{New BSD License}. It is important to observe that the New BSD License has been verified as a GPL-compatible free software license by the \href{http://www.fsf.org/}{Free Software Foundation}, and has been vetted as an open source license by the \href{http://www.opensource.org/}{Open Source Initiative}.
 
-{\setlength{\parindent}{0pt}
-\ornamentline
-
-\begin{center}
-\scalebox{0.5}{\araralogo}
-
-\slogan
-\end{center}
-
-\vspace{0.5em}
-
-Copyright \copyright{} 2012, Paulo Roberto Massa Cereda
+\begin{messagebox}{{arara, the cool \TeX\ automation tool}}{teal}{\icinfo}{white}
+Copyright \textcopyright\ 2012--2018, Paulo Roberto Massa Cereda
 
 All rights reserved.
 
@@ -122,26 +157,12 @@ Redistribution and use in source and binary forms, with or without modification,
 \end{itemize}
 
 This software is provided by the copyright holders and contributors ``as is'' and any express or implied warranties, including, but not limited to, the implied warranties of merchantability and fitness for a particular purpose are disclaimed. In no event shall the copyright holder or contributors be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, procurement of substitute goods or services; loss of use, data, or profits; or business interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage.
-
-\ornamentline
-
-\begin{center}
-\rubberduck
-\end{center}
-
-This lovely rubber duck which appears throughout the \arara\ user manual is provided by \href{http://reblim.com}{Rebecca Lim} under a \href{https://creativecommons.org/licenses/by/3.0/us/}{Creative Commons Attribution 3.0} license. The drawing source is freely available at \href{https://thenounproject.com/term/rubber-duck/25368/}{The Noun Project}. Thank you very much, Rebecca!
-
-\ornamentline
-
-\vspace{1em}
+\end{messagebox}
 
 \arara\ has two helper tools available in the \href{https://github.com/cereda/arara}{official repository} which are licensed under the \href{http://opensource.org/licenses/MIT}{MIT License}. The tools were written in order to ease the deployment of rules and language files.
 
-\vspace{1.5em}
-
-{\sffamily\bfseries\textcolor{araracolour}{Language and rule checkers}}
-
-Copyright \copyright{} 2015, Paulo Roberto Massa Cereda
+\begin{messagebox}{{Language and rule checkers}}{teal}{\icinfo}{white}
+Copyright \textcopyright\ 2015--2018, Paulo Roberto Massa Cereda
 
 All rights reserved.
 
@@ -156,8 +177,7 @@ The above copyright notice and this permission notice shall be included in all c
 \vspace{1em}
 
 The software is provided ``as is'', without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.
-
-\ornamentline}
+\end{messagebox}
 
 \cleardoublepage
 
@@ -179,11 +199,10 @@ The software is provided ``as is'', without warranty of any kind, express or imp
 
 \listoftables*
 
-\cleardoublepage
-
-\listofcodes*
-
 \mainmatter
+
+\chapter{Introduction}
+\label{chap:introduction}
 
 \emph{Here comes the manual.}
 
