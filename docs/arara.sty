@@ -44,7 +44,9 @@
 \tcbuselibrary{breakable}
 \tcbuselibrary{listings}
 
-\RequirePackage{newtxtext,newtxmath}
+%\RequirePackage{newtxtext,newtxmath}
+%\RequirePackage{bookman}
+\RequirePackage{txfonts}
 \RequirePackage[regular]{sourcecodepro}
 \RequirePackage{textcomp}
 
@@ -55,23 +57,6 @@
   refsection=chapter,
   citereset=chapter
 ]{biblatex}
-
-\captionnamefont{\bfseries}
-\renewcommand{\booknamefont}{\huge\sffamily\bfseries}
-\renewcommand{\booknumfont}{\huge\sffamily\bfseries}
-\renewcommand{\booktitlefont}{\Huge\sffamily\bfseries}
-\renewcommand{\partnumfont}{\huge\sffamily\bfseries}
-\renewcommand{\partnamefont}{\huge\sffamily\bfseries}
-\renewcommand{\parttitlefont}{\Huge\sffamily\bfseries}
-\renewcommand{\chapnamefont}{\huge\sffamily\bfseries}
-\renewcommand{\chapnumfont}{\huge\sffamily\bfseries}
-\renewcommand{\chaptitlefont}{\Huge\sffamily\bfseries}
-\renewcommand{\secheadstyle}{\Large\sffamily\bfseries}
-\renewcommand{\subsecheadstyle}{\large\sffamily\bfseries}
-\renewcommand{\subsubsecheadstyle}{\normalsize\sffamily\bfseries}
-\renewcommand{\paraheadstyle}{\normalsize\sffamily\bfseries}
-\renewcommand{\subparaheadstyle}{\normalsize\sffamily\bfseries}
-\renewcommand{\cftpartnumwidth}{25pt}
 
 \RequirePackage{enumitem}
 \setlist[description]{font=\sffamily\bfseries,style=nextline,leftmargin=2em}
