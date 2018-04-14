@@ -116,7 +116,13 @@ Paulo Roberto Massa Cereda\\
 
 \vfill
 
-\begin{messagebox}{{{\fontfamily{fco}\selectfont\bfseries arara} --- the cool \TeX\ automation tool}}{araracolour}{\icinfo}{white}
+\begin{messagebox}{New BSD License}{araracolour}{\icinfo}{white}
+\scalebox{2}{\Huge\arara}
+
+{\footnotesize\slogan}
+
+\vspace{1em}
+
 Copyright \textcopyright\ 2012--2018, Paulo Roberto Massa Cereda
 
 All rights reserved.
@@ -155,9 +161,80 @@ This software is provided by the copyright holders and contributors ``as is'' an
 
 \mainmatter
 
+\part{The application}
+\label{part:application}
+
 \chapter{Introduction}
 \label{chap:introduction}
 
-\emph{Here comes the manual.}
+Hello there, welcome to \arara! I am glad you were not
+intimidated by the threatening message in the prologue.
+This chapter is actually a quick introduction to what
+you can (and cannot) expect from \arara. Do not be
+afraid, it will be easy to digest, I promise.
+
+\section{What is this tool?}
+\label{sec:whatisarara}
+
+Good question! \arara\ is a \TeX\ automation tool based
+on rules and directives. It is, in some aspects, similar
+to other well-known tools like \verb|latexmk| and
+\verb|rubber|. The key difference might be the fact that
+\arara\ aims at explicit instructions in the source code
+in order to determine what to do instead of relying on
+other resources, such as log file analysis. It is a
+different approach for an automation tool, and we have
+both advantages and disadvantages of such design.
+Let us talk about disadvantages first.
+
+Since we need to explicitly tell \arara\ what we want it
+to do, it might not be intuitive for casual users. Tools
+like \verb|latexmk| and \verb|rubber| rely on a analysis
+scheme in which the document is generated with a simple
+call to
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ latexmk -pdf mydoc.tex
+$ rubber --pdf mydoc.tex
+\end{codebox}
+
+\noindent while a similar call to our beloved tool does absolutely nothing:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ arara mydoc.tex
+  __ _ _ __ __ _ _ __ __ _ 
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+Processing 'mydoc.tex' (size: 69 bytes, last modified: 04/14/2018
+14:08:45), please wait.
+
+It looks like no directives were found in the provided file. Make
+sure to include at least one directive and try again.
+
+Total: 0.00 seconds
+\end{codebox}
+
+%it's not wrong, it's by design:
+%\arara needs to know what you want. We do this by adding a directive in our |.tex| file, as shown
+%in line~1 of Code~\ref{code:hellolatex}. Don't worry with the terms now, we will come back to the
+%concepts later on in this manual, in Chapter~\ref{chap:importantconcepts}.
+%
+%\begin{code}[htbp]
+%\caption{\mycmd{mydoc.tex}}
+%\label{code:hellolatex}
+%\begin{latex}
+%% (*@@*)arara: pdflatex
+%\documentclass{article}
+%
+%\begin{document}
+%Hello world.
+%\end{document}
+%\end{latex}
+%\end{code}
+%
+
+%\emph{Here comes the manual.}
 
 \end{document}

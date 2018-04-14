@@ -281,7 +281,8 @@
   toptitle=0.2em,
   bottomtitle=.2em,
   coltitle=#4,
-  before skip=1em
+  before skip=1em,
+  after skip=1.4em
 }
 
 % 1 -> title
@@ -308,6 +309,19 @@
   listing options={
     numbers=left,
     numberstyle=\scriptsize\sffamily\color{#2},
-    basicstyle=\small\ttfamily,
-  }
+    basicstyle=\footnotesize\ttfamily,
+  },
+  after skip=1.4em
 }
+
+\renewcommand{\secheadstyle}{\Large\normalfont\em}
+\renewcommand{\subsecheadstyle}{\large\normalfont\em}
+\renewcommand{\subsubsecheadstyle}{\normalsize\normalfont\em}
+\renewcommand{\paraheadstyle}{\normalsize\normalfont\em}
+\renewcommand{\subparaheadstyle}{\normalsize\normalfont\em}
+\renewcommand{\partnumfont}{\huge\normalfont\em}
+\renewcommand{\partnamefont}{\huge\normalfont\em}
+\renewcommand{\parttitlefont}{\Huge\normalfont\em}
+\renewcommand{\booktitlefont}{\huge\normalfont\em}
+\renewcommand{\booknamefont}{\huge\normalfont\em}
+\renewcommand{\booknumfont}{\huge\normalfont\em}
