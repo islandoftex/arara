@@ -35,7 +35,8 @@
 \RequirePackage{tikz}
 \RequirePackage{xcolor}
 
-\definecolor{araracolour}{rgb}{0.09, 0.45, 0.27}
+\definecolor{okcolour}{rgb}{0.09, 0.45, 0.27}
+\definecolor{araracolour}{rgb}{0, 0.72, 0.28}
 \definecolor{warningcolour}{rgb}{0.75, 0.09, 0}
 \definecolor{attentioncolour}{rgb}{0.82, 0.86, 0.07}
 
@@ -45,8 +46,8 @@
 \tcbuselibrary{listings}
 
 %\RequirePackage{newtxtext,newtxmath}
-%\RequirePackage{bookman}
-\RequirePackage{txfonts}
+\RequirePackage{bookman}
+%\RequirePackage{txfonts}
 \RequirePackage[regular]{sourcecodepro}
 \RequirePackage{textcomp}
 
@@ -319,9 +320,30 @@
 \renewcommand{\subsubsecheadstyle}{\normalsize\normalfont\em}
 \renewcommand{\paraheadstyle}{\normalsize\normalfont\em}
 \renewcommand{\subparaheadstyle}{\normalsize\normalfont\em}
-\renewcommand{\partnumfont}{\huge\normalfont\em}
-\renewcommand{\partnamefont}{\huge\normalfont\em}
+\renewcommand{\partnumfont}{\Large\fontfamily{fco}\selectfont\bfseries}
+\renewcommand{\partnamefont}{\Large\fontfamily{fco}\selectfont\bfseries}
 \renewcommand{\parttitlefont}{\Huge\normalfont\em}
 \renewcommand{\booktitlefont}{\huge\normalfont\em}
 \renewcommand{\booknamefont}{\huge\normalfont\em}
 \renewcommand{\booknumfont}{\huge\normalfont\em}
+\renewcommand{\printpartname}{\centering\includegraphics[scale=.3]{../logos/bird.pdf}\par\partnamefont \textcolor{araracolour}{part}}
+\renewcommand{\printpartnum}{\partnumfont\textcolor{araracolour}{\numtoname{\c@part}}}
+
+\renewcommand{\midpartskip}{\par\vskip 3.0\onelineskip}
+
+\makechapterstyle{araraheadings}{%
+  \setlength{\beforechapskip}{2\onelineskip}%
+  \setlength{\afterchapskip}{1.5\onelineskip%
+                            \@plus .1\onelineskip%
+                            \@minus 0.167\onelineskip}%
+  \renewcommand*{\chapnamefont}{\normalfont}%
+  \renewcommand*{\printchaptername}{%
+    \centering\includegraphics[scale=.15]{../logos/bird.pdf}\par}%
+  \renewcommand*{\chapnumfont}{\fontfamily{fco}\selectfont\bfseries}%
+  \renewcommand*{\printchapternum}{\centering \chapnumfont \ifanappendix
+    \thechapter \else \textcolor{araracolour}{\numtoname{\c@chapter}}\fi}%
+  \renewcommand*{\chaptitlefont}{\normalfont\itshape\huge\centering}%
+  \renewcommand*{\printchapternonum}{%
+    \centering\includegraphics[scale=.15]{../logos/bird.pdf}\par%
+    \vskip\midchapskip}%
+}

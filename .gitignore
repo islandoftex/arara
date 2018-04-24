@@ -37,6 +37,10 @@
 *.toc
 *.vrb
 *.xdy
+*.bcf
+*.listing
+*.run.xml
+*.synctex*
 
 ## Temporary stuff
 *.*~
