@@ -13,8 +13,11 @@ commands:
 - name: The Bib2Gls software
   command: >
     @{
-       return getCommand('bib2gls', dir, trans, group, interpret, breakspace,
-        trimfields, recordcount, options, getBasename(file));
+       return getCommand('bib2gls', dir, trans, group, interpret,
+         breakspace, trimfields, recordcount, recordcountunit, 
+         cite, verbose, merge, locale, uniscript, packages, 
+         ignore, custom, mapformats,
+         options, getBasename(file));
     }
 arguments:
 - identifier: dir
@@ -26,6 +29,11 @@ arguments:
   flag: >
    @{
        return ['--log-file', getBasename(file)+"."+parameters.trans]
+    }
+- identifier: locale
+  flag: >
+   @{
+       return ['--locale', parameters.locale]
     }
 - identifier: group
   flag: >
@@ -51,6 +59,115 @@ arguments:
   flag: >
    @{
        isTrue(parameters.recordcount, '--record-count', '--no-record-count')
+    }
+- identifier: recordcountunit
+  flag: >
+   @{
+       isTrue(parameters.recordcountunit, '--record-count-unit', '--no-record-count-unit')
+    }
+- identifier: cite
+  flag: >
+   @{
+       isTrue(parameters.cite, '--cite-as-record', '--no-cite-as-record')
+    }
+- identifier: verbose
+  flag: >
+   @{
+       isTrue(parameters.verbose, '--verbose', '--no-verbose')
+    }
+- identifier: merge
+  flag: >
+   @{
+       isTrue(parameters.merge, '--merge-wrglossary-records', '--no-merge-wrglossary-records')
+    }
+- identifier: uniscript
+  flag: >
+   @{
+       isTrue(parameters.uniscript, '--support-unicode-script', '--no-support-unicode-script')
+    }
+- identifier: packages
+  flag: >
+    @{
+        if (isList(parameters.packages))
+        {
+           elements = [];
+
+           foreach (element : parameters.packages)
+           {
+              element.add(0, '--packages');
+              elements.add(element);
+           }
+
+           return elements;
+        }
+        else
+        {
+            throwError('I was expecting a list of package names.')
+        }
+    }
+- identifier: ignore
+  flag: >
+    @{
+        if (isList(parameters.ignore))
+        {
+           elements = [];
+
+           foreach (element : parameters.ignore)
+           {
+              element.add(0, '--ignore-packages');
+              elements.add(element);
+           }
+
+           return elements;
+        }
+        else
+        {
+            throwError('I was expecting a list of package names.')
+        }
+    }
+- identifier: custom
+  flag: >
+    @{
+        if (isList(parameters.custom))
+        {
+           elements = [];
+
+           foreach (element : parameters.custom)
+           {
+              element.add(0, '--custom-packages');
+              elements.add(element);
+           }
+
+           return elements;
+        }
+        else
+        {
+            throwError('I was expecting a list of package names.')
+        }
+    }
+- identifier: mapformats
+  flag: >
+    @{
+        if (isList(parameters.mapformats)) {
+          elements = [];
+          foreach (element : parameters.mapformats)
+          {
+             if (isList(element) && element.size() == 2)
+             {
+                elements.add('--map-format');
+                elements.add(element.get(0)+':'+element.get(1));
+             }
+             else
+             {
+                throwError('I was expecting a map format list [<key>, <value>] ');
+             }
+          }
+
+          return elements;
+        }
+        else {
+            throwError('I was expecting mapformats: [ [<label>, <op>, <value>], ..., [<label>, <op>, <value>] ].');
+        }
     }
 - identifier: options
   flag: >
