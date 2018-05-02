@@ -35,6 +35,8 @@
 \RequirePackage{tikz}
 \RequirePackage{xcolor}
 
+\usetikzlibrary{patterns}
+
 \definecolor{okcolour}{rgb}{0.09, 0.45, 0.27}
 \definecolor{araracolour}{rgb}{0, 0.72, 0.28}
 \definecolor{warningcolour}{rgb}{0.75, 0.09, 0}
@@ -69,6 +71,8 @@
   urlcolor={araracolour},
   pdfpagelabels
 ]{hyperref}
+
+\RequirePackage{ccicons}
 
 \newcommand*\arara{{\normalfont\fontfamily{fco}\selectfont\color{araracolour}\bfseries ar\kern-.03emar\kern-.03ema}}
 \newcommand*\slogan{{\normalfont\fontfamily{fco}\selectfont\color{araracolour}\bfseries The cool \TeX\ automation tool}}
