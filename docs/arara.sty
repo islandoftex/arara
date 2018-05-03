@@ -74,8 +74,9 @@
 
 \RequirePackage{ccicons}
 
-\newcommand*\arara{{\normalfont\fontfamily{fco}\selectfont\color{araracolour}\bfseries ar\kern-.03emar\kern-.03ema}}
-\newcommand*\slogan{{\normalfont\fontfamily{fco}\selectfont\color{araracolour}\bfseries The cool \TeX\ automation tool}}
+\newcommand{\araratext}[1]{{\normalfont\fontfamily{fco}\selectfont\color{araracolour}\bfseries#1}}
+\newcommand*\arara{\araratext{ar\kern-.03emar\kern-.03ema}}
+\newcommand*\slogan{\araratext{The cool \TeX\ automation tool}}
 
 \newcommand{\icattention}[1]{%
   \begin{scope}[
