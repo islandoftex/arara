@@ -320,6 +320,13 @@
   after skip=1.4em
 }
 
+\RequirePackage{enumitem}
+
+\newlist{linedescription}{enumerate}{1}
+\setlist[linedescription]{font=\bfseries, leftmargin=2cm, label*=line \arabic*.}
+\newlist{keywords}{description}{1}
+\setlist[keywords]{font=\normalfont\ttfamily, leftmargin=2cm, style=nextline}
+
 \renewcommand{\secheadstyle}{\Large\normalfont\em}
 \renewcommand{\subsecheadstyle}{\large\normalfont\em}
 \renewcommand{\subsubsecheadstyle}{\normalsize\normalfont\em}
