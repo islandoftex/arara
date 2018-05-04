@@ -320,8 +320,25 @@
   after skip=1.4em
 }
 
-\RequirePackage{enumitem}
+\newtcbox{\abox}[1][teal]{
+  on line,
+  arc=3pt,
+  colback=#1!10,
+  tcbox raise=-1.1mm,
+  colframe=#1,
+  before upper={
+    \vphantom{dp}
+  },
+  boxrule=1pt,
+  fontupper=\footnotesize\ttfamily\color{#1},
+  boxsep=0pt,
+  left=2pt,
+  right=2pt,
+  top=1.6pt,
+  bottom=0.8pt
+}
 
+\RequirePackage{enumitem}
 \newlist{linedescription}{enumerate}{1}
 \setlist[linedescription]{font=\bfseries, leftmargin=2cm, label*=line \arabic*.}
 \newlist{keywords}{description}{1}
