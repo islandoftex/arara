@@ -1,3 +1,4 @@
+% !TeX root = ../arara-manual.tex
 \chapter{YAML}
 \label{chap:yaml}
 
@@ -17,7 +18,7 @@ According to the \href{http://yaml.org/spec/1.2/spec.html}{specification}, YAML 
 This chapter only covers the relevant parts of the YAML format for a consistent use with \arara. For advanced topics, I highly recommend the complete format specification, available online.
 
 \section{Collections}
-\label{sec:collections}
+\label{sec:yamlcollections}
 
 According to the specification, YAML's block collections use indentation for scope and begin each entry on its own line. Block sequences indicate each entry with a dash and space. Mappings use a colon and space to mark each \emph{key: value} pair. Comments begin with an octothorpe. \arara\ relies solely on mappings and a few scalars to sequences at some point. Let us see an example of a sequence:
 
@@ -63,13 +64,13 @@ developers:
 The previous code can be easily represented in flow style by using square and curly brackets to represent sequences and attribute maps.
 
 \section{Scalars}
-\label{sec:scalars}
+\label{sec:yamlscalars}
 
 % TODO: fix section reference
 Scalar content can be written in block notation, using a literal style, indicated by a vertical bar, where \emph{all line breaks are significant}. Alternatively, they can be written with the folded style, denoted by a greater-than sign, where \emph{each line break is folded to a space} unless it ends an empty or a more-indented line. It is mportant to note that \arara\ intensively uses both styles (as seen in Section~\ref{foo}, page~\pageref{foo}). Let us see an example:
 
 \begin{codebox}{Scalar content in literal and folded styles}{teal}{\icnote}{white}
-logo:
+logo: |
   This is the arara logo
   in its ASCII glory! 
     __ _ _ __ __ _ _ __ __ _ 
@@ -94,7 +95,7 @@ When detection would fail, YAML requires that the indentation level for the cont
 YAML's flow scalars include the plain style and two quoted styles. The double-quoted style provides escape sequences. The single-quoted style is useful when escaping is not needed. All flow scalars can span multiple lines. Note that line breaks are always folded. Since \arara\ uses MVEL as its underlying scripting language (Section~\ref{foo}, page~\pageref{foo}), it might be advisable to quote scalars when starting with forbidden symbols in YAML.
 
 \section{Tags}
-\label{sec:tags}
+\label{sec:yamltags}
 
 According to the specification, in YAML, untagged nodes are given a type depending on the application. The examples covered in this primer use the \abox{seq}, \abox{map} and \abox{str} types from the fail safe schema. Explicit typing is denoted with a tag using the exclamation point symbol. Global tags are usually uniform resource identifiers and may be specified in a tag shorthand notation using a handle. Application-specific local tags may also be used. For \arara, there is a special schema used for both rules and configuration files, so in those cases, make sure to add \abox{config} as global tag:
 
@@ -106,6 +107,6 @@ According to the specification, in YAML, untagged nodes are given a type dependi
 In particular, rules and configuration files of \arara\ are properly covered in Section~\ref{foo}, page~\pageref{foo}. For now, it suffices to say that the \abox{config} global tag is necessary to provide the correct mapping of values inside our tool.
 
 \section{Further reading}
-\label{sec:furtherreading}
+\label{sec:yamlfurtherreading}
 
 This chapter does not cover all features of the YAML format, so further reading is advisable. I highly recommend the \href{http://yaml.org/spec/1.2/spec.html}{official YAML specification}, currently covering the third version of the format.
