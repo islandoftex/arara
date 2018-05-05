@@ -2,7 +2,7 @@
 \chapter{MVEL}
 \label{chap:mvel}
 
-According to the \href{https://en.wikipedia.org/wiki/MVEL}{Wikipedia entry}, the MVFLEX Expression Language (MVEL) is a hybrid, dynamic, statically typed, embeddable expression language and runtime for the Java platform. Originally started as a utility language for an application framework, the project is now developed completely independently. \arara\ relies on such scripting language in two circumstances:
+According to the \href{https://en.wikipedia.org/wiki/MVEL}{Wikipedia entry}, the MVFLEX Expression Language (hereafter referred as MVEL) is a hybrid, dynamic, statically typed, embeddable expression language and runtime for the Java platform. Originally started as a utility language for an application framework, the project is now developed completely independently. \arara\ relies on such scripting language in two circumstances:
 
 \begin{enumerate}
 % TODO: fix section reference
@@ -94,7 +94,7 @@ One important aspect about inline arrays is their special ability to be coerced 
 math.sum({ 1, 2, 3, 4 });
 \end{codebox}
 
-In this case, the scripting language will see that the target method accepts an integer array and automatically type the provided untyped array as such. This is an important feature exploited by \arara\ when calling methods within the rule scope.
+In this case, the scripting language will see that the target method accepts an integer array and automatically type the provided untyped array as such. This is an important feature exploited by \arara\ when calling methods within the rule or conditional scope.
 
 \section{Property navigation}
 \label{sec:propertynavigation}
@@ -119,7 +119,7 @@ user["foobar"]
 user.get("foobar")
 \end{codebox}
 
-It is advisable to favour such access styles over their Java counterparts when writing rules for \arara. The clean syntax offer subsidies for a more readable code.
+It is advisable to favour such access styles over their Java counterparts when writing rules and conditionals for \arara. The clean syntax offer subsidies for a more readable code.
 
 \section{Flow control}
 \label{sec:mvelflowcontrol}
@@ -238,3 +238,7 @@ My favourite team is @{ person.name == 'Enrico'
 
 The previous code features a basic form of orb tag named \emph{expression orb}. It contains a expression (or a sequence of expressions) which will be evaluated to a certain value, as seen earlier on, when discussing the \emph{last value out} principle. In the example, the value to be returned will be a string containing a football team name (the result is of course based on the comparison outcome).
 
+\section{Further reading}
+\label{sec:mvelfurtherreading}
+
+This chapter does not cover all features of the MVEL expression language, so further reading is advisable. I highly recommend the \href{http://mvel.documentnode.com/}{MVEL language guide} currently covering version 2.0 of the language.
