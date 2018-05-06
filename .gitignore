@@ -41,6 +41,7 @@
 *.listing
 *.run.xml
 *.synctex*
+docs/arara-manual.pdf
 
 ## Temporary stuff
 *.*~
