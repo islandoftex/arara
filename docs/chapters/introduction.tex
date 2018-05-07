@@ -2,12 +2,12 @@
 \chapter{Introduction}
 \label{chap:introduction}
 
-Hello there, welcome to \arara, the cool \TeX\ automation tool! This chapter is actually a quick introduction to what you can (and cannot) expect from \arara. Do not be afraid, it will be easy to digest, I promise.
+Hello there, welcome to \arara, the cool \TeX\ automation tool! This chapter is actually a quick introduction to what you can (and cannot) expect from \arara. For now, concepts will be informally presented and will be detailed later on in the next chapters.
 
 \section{What is this tool?}
 \label{sec:whatisthistool}
 
-Good question! \arara\ is a \TeX\ automation tool based on rules and directives. It is, in some aspects, similar to other well-known tools like \verb|latexmk| and \verb|rubber|. The key difference might be the fact that \arara\ aims at explicit instructions in the source code in order to determine what to do instead of relying on other resources, such as log file analysis. It is a different approach for an automation tool, and we have both advantages and disadvantages of such design. Let us use the following file \abox{hello.tex} as an example:
+Good question! \arara\ is a \TeX\ automation tool based on rules and directives. It is, in some aspects, similar to other well-known tools like \verb|latexmk| and \verb|rubber|. The key difference (and probably the selling point) might be the fact that \arara\ aims at explicit instructions in the source code (in the form of comments) in order to determine what to do instead of relying on other resources, such as log file analysis. It is a different approach for an automation tool, and we have both advantages and disadvantages of such design. Let us use the following file \abox{hello.tex} as an example:
 
 \begin{codebox}{\texttt{hello.tex}}{teal}{\icnote}{white}
 \documentclass{article}
@@ -24,7 +24,7 @@ $ latexmk -pdf mydoc.tex
 $ rubber --pdf mydoc.tex
 \end{codebox}
 
-Now, if one tries to invoke \abox{arara} on \abox{hello.tex}, I am afraid \emph{nothing} will be generated; the truth is, \arara\ does not know what to do with your file (and the tool will raise an error message complaining about this issue):
+The mentioned tools perform an analysis on the file and decide what has to be done. However, if one tries to invoke \abox{arara} on \abox{hello.tex}, I am afraid \emph{nothing} will be generated; the truth is, \arara\ does not know what to do with your file, and the tool will even raise an error message complaining about this issue:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ arara hello.tex
@@ -42,13 +42,13 @@ sure to include at least one directive and try again.
 Total: 0.00 seconds
 \end{codebox}
 
-What a rude bird! But do not despair, this behaviour is not wrong at all, it is completely by design: \arara\ needs to know what you want. And for that purpose, you need to tell the tool what to do.
+Quite surprising. However, this behaviour is not wrong at all, it is completely by design: \arara\ needs to know what you want. And for that purpose, you need to tell the tool what to do.
 
 \begin{messagebox}{A very important concept}{attentioncolour}{\icattention}{black}
 That is the major difference of \arara\ when compared to other tools: \emph{it is not an automatic process and the tool does not employ any guesswork on its own}. You are in control of your documents; \arara\ will not do anything unless you \emph{teach it how to do a task and explicitly tell it to execute the task}.
 \end{messagebox}
 
-Now, how does one tell \arara\ to do a task? That is the actually the easy part, provided that you have everything up and running. We accomplish the task by adding a directive line somewhere in our \abox{hello.tex} file (preferably in the first lines):
+Now, how does one tell \arara\ to do a task? That is the actually the easy part, provided that you have everything up and running. We accomplish the task by adding a special comment line, hereafter known as \emph{directive}, somewhere in our \abox{hello.tex} file (preferably in the first lines):
 
 \begin{codebox}{\texttt{hello.tex} with a directive}{teal}{\icnote}{white}
 % arara: pdflatex
@@ -60,7 +60,7 @@ Hello world!
 \end{codebox}
 
 % TODO fix reference
-For now, do not worry too much about the terms, we will come back to then later on in Chapter~\ref{foo} (page~\pageref{foo}). It suffices to say that \arara\ expects you to provide a list of tasks, and you achieve this by inserting special comments in your source file. Let us see how \arara\ behaves with this updated code:
+For now, do not worry too much about the terms, we will come back to then later on in Chapter~\ref{foo} (page~\pageref{foo}). It suffices to say that \arara\ expects \emph{you} to provide a list of tasks, and this is done by inserting special comments in the source file. Let us see how \arara\ behaves with this updated code:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ arara hello.tex 
@@ -77,18 +77,18 @@ Processing 'hello.tex' (size: 86 bytes, last modified: 05/03/2018
 Total: 0.73 seconds
 \end{codebox}
 
-Hurrah, we finally got our document properly compiled with a \TeX\ engine by the inner workings of our beloved tool, resulting in an expected \abox{hello.pdf} file in the same fashion tools like \abox{latexmk} and \abox{rubber} generate. But, as you are about to discover, \arara\ works practically in other side of the expectrum: you need to tell it how and when to do a task.
+Hurrah, we finally got our document properly compiled with a \TeX\ engine by the inner workings of our beloved tool, resulting in an expected \abox{hello.pdf} file in the same fashion tools like \abox{latexmk} and \abox{rubber} generate. Observe that \arara\ works practically in other side of the expectrum: you need to tell it how and when to do a task.
 
 \section{Core concepts}
 \label{sec:coreconcepts}
 
-When adding a directive in our source code, we are explicitly telling the tool what we want it to do, but I am afraid that is not sufficient at all. So far, \arara\ knows \emph{what} to do, but now it needs to know \emph{how} the task should be done. If we want \arara\ to run \abox{pdflatex} on \abox{hello.tex}, we need to have a list of instructions telling our tool how to run that specific application. This particular list is referred as \emph{rule} in our context. 
+When adding a directive in our source code, we are explicitly telling the tool what we want it to do, but I am afraid that is not sufficient at all. So far, \arara\ knows \emph{what} to do, but now it needs to know \emph{how} the task should be done. If we want \arara\ to run \abox{pdflatex} on \abox{hello.tex}, we need to have instructions telling our tool how to run that specific application. This particular sequence of instructions is referred as \emph{rule} in our context. 
 
 \begin{messagebox}{Note on rules}{attentioncolour}{\icattention}{black}
 Although the core team provides a lot of rules shipped with \arara\ out of the box, with the possibility of extending the set by adding more rules, some users might find this decision rather annoying, since other tools have most of their rules hardcoded, making the automation process even more transparent. However, since \arara\ does not rely on a specific automation or compilation scheme, it becomes more extensible. The use of directives in the source code make the automation steps more fluent, which allows the specification of complex workflows very easily.
 \end{messagebox}
 
-Despite the inherited verbosity on automation steps might not being suitable for small documents, \arara\ really shines when you have a document which needs full control of the automation process (for instance, a thesis).
+Despite the inherited verbosity of automation steps not being suitable for small documents, \arara\ really shines when you have a document which needs full control of the automation process (for instance, a thesis or a manual). Complex workflows are easily tackled by our tool.
 
 Rules and directives are the core concepts of \arara: the first dictates how a task is done, and the latter is the proper instance of the associated rule on the current document, that is, when and where the commands must be executed.
 
@@ -122,10 +122,12 @@ An \arara\ directive is usually defined in a line of its own, started with a com
 Our example has one directive, referencing \abox{pdflatex}. It is important to observe that the \abox{pdflatex} identifier \emph{does not represent the command to be executed}, but \emph{the name of the rule associated with that directive}.
 
 \begin{messagebox}{New feature in version 4.0}{araracolour}{\icinfo}{white}
-\textbf{Multiline directives} -- Later on, we will discover that a directive can also span several lines in order to provide a better code organization. For now, let us assume a typical directive occupies only one line.
+% TODO fix reference
+\textbf{Multiline directives} -- Later on in Section~\ref{foo} (page~\pageref{foo}), we will discover that a directive can also span several lines in order to provide a better code organization. For now, let us assume a typical directive occupies only one line.
 \end{messagebox}
 
-Once \arara\ finds a directive, it will look for the associated \emph{rule}. In our example, it will look for a rule named \abox{pdflatex} which will evidently run the \abox{pdflatex} command line application.
+% TODO fix reference
+Once \arara\ finds a directive, it will look for the associated \emph{rule}. In our example, it will look for a rule named \abox{pdflatex} which will evidently run the \abox{pdflatex} command line application. Rules are YAML files named according to their identifiers followed by the \abox{.yaml} extension and follow a strict structure. This concept is covered in Section~\ref{foo} (page~\pageref{foo}).
 
 \begin{messagebox}{New feature in version 4.0}{araracolour}{\icattention}{white}
 \textbf{REPL workflow} -- \arara\ now employs a REPL workflow for rules and directives. In previous versions, directives were extracted, their corresponding rules were analized, commands were built and added to a queue before any proper execution or evaluation. I decided to change this workflow, so now \arara\ evaluates each rule on demand, that is, there is no \emph{a priori} checking. A rule will \emph{always} reflect the current state, including potential side effects from previous executed rules. 
