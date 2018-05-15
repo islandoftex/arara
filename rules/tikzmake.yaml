@@ -1,0 +1,34 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2012, Paulo Roberto Massa Cereda 
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: tikzmake
+name: TikZmake
+authors:
+- Robbie Smith
+- Paulo Cereda
+commands:
+- name: TikZ list-and-make engine
+  command: >
+    @{
+        makefile = getBasename(file).concat('.makefile');
+        return getCommand('make', force, options, '-f', makefile);
+    }
+arguments:
+- identifier: force
+  flag: >
+    @{
+        isTrue(parameters.force, '--always-make')
+    }
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.')
+        }
+    }
