@@ -36,10 +36,13 @@ package com.github.cereda.arara.model;
 import com.github.cereda.arara.utils.CommonUtils;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Transformer;
+import org.apache.commons.lang.SystemUtils;
+import org.mvel2.templates.TemplateRuntime;
 
 /**
  * Implements the configuration resource model.
@@ -85,10 +88,26 @@ public class Resource {
      */
     public List<String> getPaths() {
         if (paths != null) {
+            
+            final Map<String, Object> map = new HashMap<String, Object>();
+            Map<String, Object> user = new HashMap<String, Object>();
+            user.put("home", SystemUtils.USER_HOME);
+            user.put("dir", SystemUtils.USER_DIR);
+            user.put("name", SystemUtils.USER_NAME);
+            map.put("user", user);
+            
             Collection<String> result = CollectionUtils.collect(
                     paths, new Transformer<String, String>() {
                 public String transform(String input) {
-                    return CommonUtils.removeKeyword(input);
+                    String path = CommonUtils.removeKeyword(input);
+                    try {
+                        path = (String) TemplateRuntime.eval(path, map);
+                    }
+                    catch (RuntimeException nothandled) {
+                        // do nothing, gracefully fallback to
+                        // the default, unparsed path
+                    }
+                    return path;
                 }
             });
             paths = new ArrayList<String>(result);
