@@ -14,7 +14,7 @@ commands:
   command: >
     @{
         makefile = getBasename(file).concat('.makefile');
-        return getCommand('make', force, options, '-f', makefile);
+        return getCommand('make', force, jobs, options, '-f', makefile);
     }
 arguments:
 - identifier: force
@@ -22,6 +22,8 @@ arguments:
     @{
         isTrue(parameters.force, '--always-make')
     }
+- identifier: jobs
+  flag: '-j@{parameters.jobs}'
 - identifier: options
   flag: >
     @{
