@@ -154,6 +154,7 @@ public class Configuration {
         mapping.put("execution.preamble.active", false);
         mapping.put("execution.configuration.name", "[none]");
         mapping.put("execution.header", false);
+        mapping.put("ui.lookandfeel", "none");
 
         // get the configuration controller and
         // set every map key to it
@@ -232,6 +233,11 @@ public class Configuration {
         if (resource.getPreambles() != null) {
             controller.put("execution.preambles",
                     resource.getPreambles());
+        }
+        
+        if (resource.getLaf() != null) {
+            controller.put("ui.lookandfeel",
+                    resource.getLaf());
         }
         
     }

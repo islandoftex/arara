@@ -33,6 +33,7 @@
  */
 package com.github.cereda.arara.utils;
 
+import com.github.cereda.arara.controller.ConfigurationController;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
@@ -53,18 +54,31 @@ public class MessageUtils {
     // close as possible to the system
     static {
         
-        // let's try it, in case it fails,
-        // rely to the default look and feel
-        try {
+        // get the current look and feel
+        String laf = (String) ConfigurationController.
+                getInstance().get("ui.lookandfeel");
+        
+        // check if one is actually set
+        if (!laf.equals("none")) {
+        
+            // use a special keyword to indicate
+            // the use of a system look and feel
+            if (laf.equals("system")) {
+                laf = UIManager.getSystemLookAndFeelClassName();
+            }
             
-            // get the system look and feel name
-            // and try to set it as default
-            UIManager.setLookAndFeel(
-                    UIManager.getSystemLookAndFeelClassName()
-            );
-        }
-        catch (Exception exception) {
-            // quack, quack, quack
+            // let's try it, in case it fails,
+            // rely to the default look and feel
+            try {
+
+                // get the system look and feel name
+                // and try to set it as default
+                UIManager.setLookAndFeel(laf);
+            }
+            catch (Exception exception) {
+                // quack, quack, quack
+            }
+            
         }
     }
     

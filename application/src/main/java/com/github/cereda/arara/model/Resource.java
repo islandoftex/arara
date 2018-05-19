@@ -82,6 +82,9 @@ public class Resource {
     // map of preambles
     private Map<String, String> preambles;
     
+    // look and feel
+    private String laf;
+    
     /**
      * Gets the rule paths.
      * @return The rule paths.
@@ -266,5 +269,23 @@ public class Resource {
     public void setHeader(boolean header) {
         this.header = header;
     }
+
+    /**
+     * Gets the look and feel reference.
+     * @return The look and feel reference.
+     */
+    public String getLaf() {
+        return laf;
+    }
+
+    /**
+     * Sets the look and feel reference.
+     * @param laf The look and feel reference.
+     */
+    public void setLaf(String laf) {
+        this.laf = laf;
+    }
+    
+    
 
 }
