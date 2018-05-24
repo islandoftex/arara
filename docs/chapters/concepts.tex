@@ -29,16 +29,41 @@ Total: 0.09 seconds
 % TODO fix reference
 Once a rule is defined, \arara\ automatically provides an access layer to that rule through directives in the source code, a concept to be formally introduced later on, in Section~\ref{foo}. Observe that a directive reflects a particular instance of a rule of the same name (i.e, a \abox{foo} directive in a certain source code is an instance of the \abox{foo} rule).
 
-A rule is a plain text file written in the YAML format, formally introduced in Chapter~\ref{foo} (page~\pageref{foo}). I opted for this format because back then it was cleaner and more intuitive to use than other markup languages such as XML, besides of course being a data serialization standard for programming languages.
+In short, a rule is a plain text file written in the YAML format, introduced in Chapter~\ref{foo} (page~\pageref{foo}). I opted for this format because back then it was cleaner and more intuitive to use than other markup languages such as XML, besides of course being a data serialization standard for programming languages.
 
 \begin{messagebox}{Animal jokes}{araracolour}{\icok}{white}
 As a bonus, the acronym \emph{YAML} rhymes with the word \emph{camel}, so \arara\ is heavily environmentally friendly. Speaking of camels, there is the programming reference as well, since this amusing animal is usually associated with Perl and friends.
 \end{messagebox}
 
-The default rules, that is, the rules shipped with \arara, are placed inside a special subdirectory named \abox{rules/} inside a special directory named \abox{ARARA\_HOME} (the place where our tool is installed). We will learn later on that we can add an arbitrary number of paths for storing our own rules, in order of priority, so do not worry too much with the location of the default rules, although it is important to understand and acknowledge their existance.
+% TODO fix reference
+The default rules, that is, the rules shipped with \arara, are placed inside a special subdirectory named \abox{rules/} inside another special directory named \abox{ARARA\_HOME} (the place where our tool is installed). We will learn later on, in Section~\ref{foo} (page~\pageref{foo}), that we can add an arbitrary number of paths for storing our own rules, in order of priority, so do not worry too much with the location of the default rules, although it is important to understand and acknowledge their existance.
 
-% The basic structure of an
-%\arara\ rule is:
+The following list describes the basic structure of an \arara\ rule by presenting the proper elements (or keys, if we consider the proper YAML nomenclature). Observe that elements marked as \abox[araracolour]{M} are mandatory (i.e, the rule \emph{has} to have them in order to work). Similarly, elements marked as \abox[araracolour]{O} are optional, so you can safely ignore them when writing a rule for our tool.
+
+\begin{description}
+\item[\describe{M}{!config}] This keyword is mandatory and must be the first line of any \arara\ rule. It denotes the object mapping metadata to be internally used by the tool. Actually, the tool is not too demanding on using it (in fact, you could suppress it entirely and \arara\ will not complain), but it is considered good practice to start all rules with a \abox{!config} keyword regardless.
+
+\item[\describe{M}{identifier}] This key acts as a unique identifier for the rule (as expected). It is highly recommended to use lowercase letters without spaces, accents or punctuation symbols, as good practice (again). As a convention, if you have an identifier named \abox{pdflatex}, the rule filename must be \abox{pdflatex.yaml} (like our own instance). Please note that, although \abox{.yml} is known to be a valid YAML extension as well, \arara\ only considers files ending with the \abox{.yaml} extension. This is a deliberate decision.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+identifier: pdflatex
+\end{codebox}
+
+\item[\describe{M}{name}] This key holds the name of the task as a plain string. When running \arara, this value will be displayed in the output. We like to call \emph{task} an instantiated rule (through a directive). Task names are displayed enclosed in parenthesis.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+name: PDFLaTeX
+\end{codebox}
+
+\item[\describe{O}{authors}] We do love blaming people, so \arara\ features a special key to name the rule authors (if any) so you can write stern electronic communications to them! This key holds a list of strings. If the rule has just one author, add it as the first (and only) element of the list.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+authors:
+- Marco Daniel
+- Paulo Cereda
+\end{codebox}
+
 %
 %\begin{codebox}{Basic rule struture}{teal}{\icnote}{white}
 %!config
@@ -51,27 +76,10 @@ The default rules, that is, the rules shipped with \arara, are placed inside a s
 %arguments: []
 %\end{codebox}
 %
-%Let us break down the structure into parts, so it will be easier for us to grasp the elements, hopefully. The indices correspond to the line numbering scheme in the previous code.
+
+%\item 
 %
-%\begin{linedescription}
-%\item The \verb|!config| keyword is mandatory and must be
-%the first line of any \arara\ rule. It denotes the object
-%mapping metadata to be internally used by the tool. 
-%
-%\item A comment line starts with the \verb|#| symbol.
-%
-%\item The \verb|identifier| key acts as a unique identifier
-%for the rule (as expected). It is highly recommended to use
-%lowercase letters without spaces, accents or punctuation symbols.
-%As a convention, if you have an identifier named \verb|pdflatex|,
-%the rule filename must be \verb|pdflatex.yaml| (like our own
-%instance).
-%
-%\item The \verb|name| key holds the name of the task. When
-%running \arara, this value will be displayed in the output.
-%In our example, the tool will display \verb|PDFLaTeX| as task
-%name in the output when dealing with this task. Task names are
-%displayed enclosed in parenthesis.
+%\item 
 %
 %\item The \verb|commands| key is introduced in version 4.0 of
 %\arara\ and denotes a potential list of subtasks. A task may
