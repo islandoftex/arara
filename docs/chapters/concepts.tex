@@ -38,7 +38,7 @@ As a bonus, the acronym \emph{YAML} rhymes with the word \emph{camel}, so \arara
 % TODO fix reference
 The default rules, that is, the rules shipped with \arara, are placed inside a special subdirectory named \abox{rules/} inside another special directory named \abox{ARARA\_HOME} (the place where our tool is installed). We will learn later on, in Section~\ref{foo} (page~\pageref{foo}), that we can add an arbitrary number of paths for storing our own rules, in order of priority, so do not worry too much with the location of the default rules, although it is important to understand and acknowledge their existance.
 
-The following list describes the basic structure of an \arara\ rule by presenting the proper elements (or keys, if we consider the proper YAML nomenclature). Observe that elements marked as \abox[araracolour]{M} are mandatory (i.e, the rule \emph{has} to have them in order to work). Similarly, elements marked as \abox[araracolour]{O} are optional, so you can safely ignore them when writing a rule for our tool. A key preceded by \rbox{context$\rightarrow$} indicates a context and should be properly defined inside it.
+The following list describes the basic structure of an \arara\ rule by presenting the proper elements (or keys, if we consider the proper YAML nomenclature). Observe that elements marked as \rbox[araracolour]{M} are mandatory (i.e, the rule \emph{has} to have them in order to work). Similarly, elements marked as \rbox[araracolour]{O} are optional, so you can safely ignore them when writing a rule for our tool. A key preceded by \rbox{context$\rightarrow$} indicates a context and should be properly defined inside it.
 
 \begin{description}
 \item[\describe{M}{!config}] This keyword is mandatory and must be the first line of any \arara\ rule. It denotes the object mapping metadata to be internally used by the tool. Actually, the tool is not too demanding on using it (in fact, you could suppress it entirely and \arara\ will not complain), but it is considered good practice to start all rules with a \abox{!config} keyword regardless.
@@ -69,7 +69,7 @@ authors:
 Dear reader, note that rules from version 4.0 are incompatible with older versions of \arara. If you are migrating from old versions to version 4.0, we need to replace \abox{command} by \abox{commands} and specifying a contextual element, as seen in the following descriptions. Please refer to Section~\ref{foo} (page~\pageref{foo}) for a comprehensible migration guide.
 \end{messagebox}
 
-The keys used in this specification are defined inside the \rbox{commands$\rightarrow$} context and presented as follows.
+In order to properly set a subtask, the keys used in this specification are defined inside the \rbox{commands$\rightarrow$} context and presented as follows.
 
 \begin{description}
 \item[\describecontext{O}{commands}{name}] This key holds the name of the subtask as a plain string. When running \arara, this value will be displayed in the output. Subtask names are displayed after the main task name. By the way, did you notice that this key is entirely optional? That means that a subtask can simply be unnamed, if you decide so. However, such practice is not recommended, as is always good to have a visual description of what \arara\ is running at the moment, so name your subtasks properly.
