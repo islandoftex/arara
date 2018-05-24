@@ -336,8 +336,29 @@
   bottom=0.8pt
 }
 
+\newtcbox{\rbox}[1][teal]{
+  on line,
+  arc=3pt,
+  colback=#1,
+  tcbox raise=-1.1mm,
+  colframe=#1,
+  before upper={
+    \vphantom{dp}
+  },
+  boxrule=1pt,
+  fontupper=\footnotesize\ttfamily\color{#1!10},
+  boxsep=0pt,
+  left=2pt,
+  right=2pt,
+  top=1.6pt,
+  bottom=0.8pt
+}
+
 \newcommand{\describe}[2]{\abox[araracolour]{\normalfont\ttfamily#1}~%
 \abox{\normalfont\ttfamily#2}}
+
+\newcommand{\describecontext}[3]{\abox[araracolour]{\normalfont\ttfamily#1}~%
+\rbox{\normalfont\ttfamily#2$\rightarrow$}~\abox{\normalfont\ttfamily#3}}
 
 \renewcommand{\secheadstyle}{\Large\normalfont\em}
 \renewcommand{\subsecheadstyle}{\large\normalfont\em}
