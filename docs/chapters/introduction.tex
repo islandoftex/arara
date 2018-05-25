@@ -130,27 +130,8 @@ Our example has one directive, referencing \abox{pdflatex}. It is important to o
 Once \arara\ finds a directive, it will look for the associated \emph{rule}. In our example, it will look for a rule named \abox{pdflatex} which will evidently run the \abox{pdflatex} command line application. Rules are YAML files named according to their identifiers followed by the \abox{.yaml} extension and follow a strict structure. This concept is covered in Section~\ref{foo} (page~\pageref{foo}).
 
 \begin{messagebox}{New feature in version 4.0}{araracolour}{\icattention}{white}
-\textbf{REPL workflow} -- \arara\ now employs a REPL workflow for rules and directives. In previous versions, directives were extracted, their corresponding rules were analized, commands were built and added to a queue before any proper execution or evaluation. I decided to change this workflow, so now \arara\ evaluates each rule on demand, that is, there is no \emph{a priori} checking. A rule will \emph{always} reflect the current state, including potential side effects from previous executed rules. See workflows in Figure~\ref{fig:workflows}
+\textbf{REPL workflow} -- \arara\ now employs a REPL workflow for rules and directives. In previous versions, directives were extracted, their corresponding rules were analized, commands were built and added to a queue before any proper execution or evaluation. I decided to change this workflow, so now \arara\ evaluates each rule on demand, that is, there is no \emph{a priori} checking. A rule will \emph{always} reflect the current state, including potential side effects from previous executed rules.
 \end{messagebox}
-
-\begin{figure}[htbp]
-\begin{minipage}[t]{0.50\textwidth}
-\centering
-Previous versions
-
-\vspace{1em}
-\includegraphics[scale=1]{figures/v3diagram.pdf}
-\end{minipage}%
-\begin{minipage}[t]{0.50\textwidth}
-\centering
-Current version
-
-\vspace{1em}
-\includegraphics[scale=1]{figures/v4diagram.pdf}
-\end{minipage}
-\caption{Workflows of rules and directives in different versions of \arara. Observe that the new one adopts a REPL strategy, such that a rule will always reflect the current state, including potential side effects from previous executed rules.}
-\label{fig:workflows} 
-\end{figure}
 
 Now, we have a queue of pairs $(\textit{directive}, \textit{rule})$ to process. For each pair, \arara\ will map the directive to its corresponding rule, evaluate it and run the proper command. The execution chain requires that command $i$ was successfully executed to then proceed to command $i+1$, and so forth. This is also by design: \arara\ will halt the execution if any of the commands in the queue had raised an error. How does one know if a command was successfully executed? \arara\ checks the corresponding \emph{exit status} available after a command execution. In general, a successfull execution yields 0 as its exit status.
 
