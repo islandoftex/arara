@@ -36,7 +36,7 @@ As a bonus, the acronym \emph{YAML} rhymes with the word \emph{camel}, so \arara
 \end{messagebox}
 
 % TODO fix reference
-The default rules, that is, the rules shipped with \arara, are placed inside a special subdirectory named \abox{rules/} inside another special directory named \abox{ARARA\_HOME} (the place where our tool is installed). We will learn later on, in Section~\ref{foo} (page~\pageref{foo}), that we can add an arbitrary number of paths for storing our own rules, in order of priority, so do not worry too much with the location of the default rules, although it is important to understand and acknowledge their existance.
+The default rules, that is, the rules shipped with \arara, are placed inside a special subdirectory named \abox[araracolour]{rules/} inside another special directory named \abox[araracolour]{ARARA\_HOME} (the place where our tool is installed). We will learn later on, in Section~\ref{foo} (page~\pageref{foo}), that we can add an arbitrary number of paths for storing our own rules, in order of priority, so do not worry too much with the location of the default rules, although it is important to understand and acknowledge their existance.
 
 The following list describes the basic structure of an \arara\ rule by presenting the proper elements (or keys, if we consider the proper YAML nomenclature). Observe that elements marked as \rbox[araracolour]{M} are mandatory (i.e, the rule \emph{has} to have them in order to work). Similarly, elements marked as \rbox[araracolour]{O} are optional, so you can safely ignore them when writing a rule for our tool. A key preceded by \rbox{context$\rightarrow$} indicates a context and should be properly defined inside it.
 
@@ -65,7 +65,7 @@ authors:
 
 \item[\describe{M}{commands}] This key is introduced in version 4.0 of \arara\ and denotes a potential list of commands. From the user perspective, each command is called \emph{subtask} within a task (rule and directive) context. A task may represent only a single command (a single subtask), as well as a sequence of commands (subtasks). For instance, the \abox{frontespizio} rule requires at least two commands. So, as a means of normalizing the representation, a task composed of a single command (single subtask) is defined as the only element of such list, as opposed to previous versions of \arara, which had an specific key to hold just one command.
 
-\begin{messagebox}{Incompatibilities with older versions}{attentioncolour}{\icerror}{black}
+\begin{messagebox}{Incompatibility with older versions}{attentioncolour}{\icerror}{black}
 Dear reader, note that rules from version 4.0 are incompatible with older versions of \arara. If you are migrating from old versions to version 4.0, we need to replace \abox{command} by \abox{commands} and specifying a contextual element, as seen in the following descriptions. Please refer to Section~\ref{foo} (page~\pageref{foo}) for a comprehensible migration guide.
 \end{messagebox}
 
@@ -74,154 +74,174 @@ In order to properly set a subtask, the keys used in this specification are defi
 \begin{description}
 \item[\describecontext{O}{commands}{name}] This key holds the name of the subtask as a plain string. When running \arara, this value will be displayed in the output. Subtask names are displayed after the main task name. By the way, did you notice that this key is entirely optional? That means that a subtask can simply be unnamed, if you decide so. However, such practice is not recommended, as is always good to have a visual description of what \arara\ is running at the moment, so name your subtasks properly.
 
-\item[\describecontext{M}{commands}{command}] 
-\end{description}
+\item[\describecontext{M}{commands}{command}] This key holds the action to be performed, typically a system command. In previous versions, \arara\ would rely solely on a string. For this version on, as a means to enhance the user experience (and also fix serious blockers when handling spaces in file names, as seen in \href{https://github.com/cereda/arara/issues}{previous issues} reported in the repository), the tool offers four types of returned values:
+
+\begin{itemize}[label={--}]
+\item A plain string: this is the default (and only) behaviour in older versions of \arara. The plain string is processed as it is by the underlying execution engine. However, automatic argument parsing poses as a complex issue, so this approach, although supported, is not recommended anymore.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+command: 'ls'
+\end{codebox}
+
+% TODO fix reference
+It is important to observe that you can use either a plain string directly or using an orb tag with an explicit \abox{return} command (as seen in Section~\ref{foo}, page~\pageref{foo}). Personally, I favour the explict indication for a quick understanding.
+
+% TODO fix reference
+\item A \abox{Command} object: \arara\ 4.0 features a new approach for handling system commands based on a high level structure with explict argument parsing named \abox{Command} (for our curious users, it is a plain Java object). In order to use this approach, we need to rely on orb tags and use a helper method named \mtbox{getCommand} to obtain the desired result. We will detail this method later on, in Section~\ref{foo} (page~\pageref{foo}). We highly recommend the adoption of this approach for rule writing instead of using plain strings.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+command: "@{ return getCommand('ls') }"
+\end{codebox}
+
+% TODO fix reference
+\item A boolean value: it is also possible to exploit the expressive power of the underlying scripting language available in the rule context (see Chapter~\ref{foo}, in page~\pageref{foo}, for more details) for writing complex code. In this particular case, since the computation is being done by \arara\ itself and not the underlying operating system, there will not be a command to be executed, so simply return a boolean value -- either an explicit \abox{true} or \abox{false} value or a logical expression -- to indicate whether the computation was successfull.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+command: "@{ return 1 == 1 }"
+\end{codebox}
+
+\item A \abox{Trigger} object: this is surely the least common type of returned value and it is mentioned here just for documentation purposes. In simple terms, a \abox{Trigger} object constitutes a special command that changes the internal workings of \arara\ at runtime. We have not worked much on this concept, so there is only one trigger available, seen in action in the official \abox{halt} rule. In order to use this approach, we need to rely on orb tags and use a helper method named \mtbox{getTrigger} to obtain the desired result.
+\end{itemize}
+
+It is also worth mentioning that \arara\ also supports lists of commands represented as plain strings, \abox{Command} or \abox{Trigger} objects, boolean values or a mix of them. This is useful if your rule has to decide whether more actions are required in order to accomplish a task. In this case, our tool will take care of the list and execute each element in the specified order.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+command: "@{ return [ 'ls', 'ls', 'ls' ] }"
+\end{codebox}
+
+As an example, please refer to the official \abox{clean} rule for a real scenario where a list of commands is successfully employed: for each provided extension, the rule creates a new cleaning command and adds it to a list of removals to be processed later.
+
+\begin{messagebox}{Plain string is deprecated}{attentioncolour}{\icattention}{black}
+It took me a lot of effort to find out that handling plain strings and employing guesswork to parse arguments are the root of several issues reported by users. Therefore, this approach is being marked as \emph{deprecated} and will be removed in future versions.
+\end{messagebox}
+
+% TODO fix reference
+There are at least two variables available in the \abox{command} context and are described as follows (note that MVEL variables and orb tags are discussed in Chapter~\ref{foo}). A variable will be denoted by \varbox{variable} in this list. For each rule argument (defined later on), there will be a corresponding variable in the \abox{command} context, directly accessed through its unique identifier.
+
+\begin{description}
+\item[\varbox{file}] This variable holds the file name, without any path reference, as a plain string. It is usually composed by the base name and the extension. This variable is available since the first release of \arara.
+
+\item[\varbox{reference}] This variable is introduced in version 4.0 of \arara\ and holds the canonical, absolute path representation of the \varbox{file} variable as a \abox{File} object. This is useful if there is a need of understanding the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \abox{File} class.
 \end{description}
 
-%
-%\begin{codebox}{Basic rule struture}{teal}{\icnote}{white}
-%!config
-%# Hello, I am a comment
-%identifier: pdflatex
-%name: PDFLaTeX
-%commands:
-%- name: PDFLaTeX engine
-%  command: pdflatex @{file}
-%arguments: []
-%\end{codebox}
-%
+\begin{messagebox}{Quote handling}{araracolour}{\icinfo}{white}
+\setlength{\parskip}{1em}
+The YAML format disallows key values starting with \abox{@} without proper quoting. This is the reason we had to use double quotes for the value and internally using single quotes for the command string. Also, we could use the other way around, or even using only one type and then escaping them when needed. This is excessively verbose but needed due to the format requirement. Thankfully, \arara\ offers two solutions for removing the quoting verbosity when writing commands.
 
-%\item 
-%
-%\item 
-%
-%\item The \verb|commands| key is introduced in version 4.0 of
-%\arara\ and denotes a potential list of subtasks. A task may
-%represent only a single command, as well as a sequence of
-%commands (for example, the \verb|frontespizio| rule requires
-%at least two commands). So, as a means of normalizing the
-%representation, a task composed of a single command (like
-%the one in our example) is defined as the only element
-%of such list. The keys used inside this list specification
-%are defined as follows. A list element is denoted by \verb|-|
-%(hyphen).
-%
-%\item The \verb|name| key has no relation with the previously
-%presented key of the same name. In this specific context,
-%this key holds the subtask name. When running \arara\, this
-%value will be displayed in the output right after the
-%task name.
-%
-%\item The \verb|command| key contains the system command to be
-%executed. You can use virtually any type of command,
-%interactive or noninteractive. But beware: if \arara\ is
-%running in silent mode, which is the default behaviour,
-%an interactive command wich might require the user
-%input will be halted and the execution will fail.
-%Do not despair, you can use a special \verb|--verbose|
-%flag with \arara\ in order to interact with such
-%commands -- we will talk about flags later on. You probably
-%noticed a strange element \verb|@{file}| in the
-%\verb|command| line: this element is called \emph{orb tag}.
-%For now, just admit these elements exist. We will come back
-%to them later on, I promise.
-%
-%\item The \verb|arguments| key denotes a list of arguments
-%for the subtask command. In our example, we have an empty
-%list, denoted by \verb|[]|. You can define as many arguments
-%as your subtask requires.
-%\end{linedescription}
-%
-%For more complex rules, we might want to use arguments.
-%The following code presents a new rule which makes use
-%of them instead of an empty list as the previous code:
-%
-%\begin{codebox}{Adding rule arguments}{teal}{\icnote}{white}
-%!config
-%identifier: copy
-%name: Copy
-%commands:
-%- name: Copy operation
-%  command: copy @{from} @{to}
-%arguments:
-%- identifier: from
-%  flag: '@{parameters.from}'
-%- identifier: to
-%  flag: '@{parameters.to}'
-%\end{codebox}
-%
-%For every argument in the \verb|arguments| list, we have a
-%\verb|-| mark (hyphen) and proper indentation. Let us break down the relevant parts of this new rule:
-%
-%\begin{linedescription}[start=8]
-%\item The \verb|identifier| key acts as a unique identifier
-%for the current argument. It is highly recommended to use
-%lowercase letters without spaces, accents or punctuation
-%symbols.
-%
-%\item The \verb|flag| key represents the argument value.
-%Note that we have other orb tags in the argument
-%definitions, \verb|@{parameters.from}| and
-%\verb|@{parameters.to}|; we will discuss them later on. Just
-%to give some context, \verb|parameters| is a special variable
-%which maps the elements available in the directive being
-%evaluated. For example, if we have \verb|from: a| in a
-%directive, \verb|parameters.from|  will resolve to \verb|a|.
-%The argument \verb|flag| value is only applied if, and only
-%if, there is an explicit directive argument. Say, if
-%\verb|from| is not defined as a directive argument, the
-%\verb|flag| value of argument \verb|from| will be
-%resolved to an empty string.
-%\end{linedescription}
-%
-%\begin{messagebox}{Overriding the default resolution of nonexistent arguments}{araracolour}{\icinfo}{white}
-%If a certain argument does not exist in the directive, its
-%rule counterpart will be resolved to an empty string, as the
-%default resolution. As a means to overriding this behaviour
-%when a directive argument is not specified, use the \verb|default| key within the argument specification.
-%\end{messagebox}
-%
-%When a rule argument just needs a default value regardless of
-%a user-specified value, you can safely ignore the \verb|flag|
-%key and rely on the \verb|default| one. Similarly, if you need
-%to map a directive argument into a rule argument without falling 
-%back to a default value different than an empty string, 
-%just use the \verb|flag| key. Now, if you need mapping and 
-%fallback, stick with both keys. Just keep in mind that at least 
-%one of them must exist!
-%
-%\begin{messagebox}{New feature in version 4.0}{araracolour}{\icinfo}{white}
-%\textbf{Required arguments} -- Sometimes, we might end up with
-%a rule in need of mandatory arguments. For instance, the
-%two arguments of our \verb|copy| should be mandatory, as it makes
-%no sense to have optional values for a copy operation. In this
-%case, add a \verb|required| key to the relevant argument and set 
-%the corresponding value to \verb|true| (a boolean value). Setting
-%such value to \verb|false| would fallback to the default
-%behaviour.
-%\end{messagebox}
-%
-%All subtasks in a rule are checked against their corresponding
-%exit status. If an abnormal execution is detected, \arara\ will
-%instantly halt.
-%
-%For now, we need to keep in mind that \arara\ uses rules to tell
-%it how to do a certain task (and subtasks). In the next sections,
-%when more concepts are presented, we will come back to this
-%subject. Just a taste of things to come, as we mentioned before
-%already: directives are mapped to rules through orb tags. Do not
-%worry, I will explain how things work.
-%
-%\begin{messagebox}{There are better ways of writing a rule}{attentioncolour}{\icattention}{black}
-%This section covered the simplest way of writing an \arara\ rule,
-%solely for didactic (and also historical) reasons. Keep in mind that there are far better and ways to achieve consistent rules. We
-%need to discuss more about the basics before entering into
-%advanced topics.
-%\end{messagebox}
-%
-%\section{Directives}
-%\label{sec:directives}
-%
+The first solution is used in previous versions and it still works like a charm in modern days. We need to precede our command with a special keyword \abox{<arara>} which will be removed afterwards. This solution works on virtually every key in the rule context, so it is a bonus. The new code will look like this:
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+command: <arara> @{ return getCommand('ls') }
+\end{codebox}
+
+% TODO fix reference
+The second approach is more of a YAML feature rather than a tool exclusive, although we have to do a couple of checkings under the hood in order to ensure the correct execution. The idea here is to use the scalar content in folded style, as seen in Section~\ref{foo} (page~\pageref{foo}). The new code will look like this:
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+command: >
+  @{
+    return getCommand('ls')
+  }
+\end{codebox}
+
+Mind the indentation, as YAML requires it to properly identify blocks. I personally recommend this approach for longer code, as it provides a better visual representation. You will see the second solution all around the default rules, but feel free to use the one you feel more comfortable.
+\end{messagebox}
+
+\item[\describecontext{O}{commands}{exit}] This key holds a special purpose in \arara\ 4.0, as it represents a custom exit status evaluation for the corresponding command. In general, a successful execution has zero as an exit status, but sometimes we end up with tools or situations that we need to override this checking for whatever reason. For this purpose, simply write a MVEL expression \emph{without orb tags} as plain string and use the special variable \varbox{value} if you need the actual exit status returned by the command, available at runtime. For example, if the command returns a non-zero value indicating a successful execution, we can write this key as:
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+exit: value > 0
+\end{codebox}
+
+If the execution should be marked as successful by \arara\ regardless of the actual exit status, you can simply write \abox{true} as the key value and this rule will never fail, for obvious reasons.
+\end{description}
+
+For instance, consider a full example of the \abox{commands} key, defined with only one command, presented as follows. The hyphen denotes a list element, so mind the indentation for correctly specifying the component keys. Also, note that, in this case, the \abox{exit} key was completely optional, as it does the default checking, and it was included for didactic purposes.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+commands:
+- name: The PDFLaTeX engine
+  command: >
+    @{
+      return getCommand('pdflatex', file)
+    }
+  exit: value == 0
+\end{codebox}
+
+\item[\describe{M}{arguments}] This key holds a list of arguments for the current rule, if any. The arguments specified in this list will be available to the user later on for potential completion through directives. Once instantiated, they will become proper variables in the \abox{command} contexts. This key is mandatory, so even if your rule does not have arguments, you need to specify a list regardless. In this case, use the empty list notation:
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+arguments: []
+\end{codebox}
+
+In order to properly set an argument, the keys used in this specification are defined inside the \rbox{arguments$\rightarrow$} context and presented as follows.
+
+\begin{description}
+\item[\describecontext{M}{arguments}{identifier}] This key acts as a unique identifier for the argument. It is highly recommended to use lowercase letters without spaces, accents or punctuation symbols, as a good practice. This key will be used later on to set the corresponding value in the directive context.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+identifier: shell
+\end{codebox}
+
+\item[\describecontext{O}{arguments}{flag}] This key holds a plain string and is evaluated when the corresponding argument is defined in the directive context.  After being evaluated, the result will be stored in a variable of the same name to be later accessed in the \abox{command} context. In the scenario where the argument is not defined in the directive, the variable will hold an empty string.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+flag: >
+  @{
+      isTrue(parameters.shell, '--shell-escape',
+             '--no-shell-escape')
+  }
+\end{codebox}
+
+% TODO fix reference
+There is one variable available in the \abox{flag} context and is described as follows. Note that are also several helper methods available in the rule context (for instance, \mtbox{isTrue} presented in the previous example) which provide interesting features for rule writing. They are detailed later on, in Section~\ref{foo} (page~\pageref{foo}).
+
+\begin{description}
+\item[\varbox{parameters}] This variable holds a map of directive parameters available at runtime. For each argument identifier listed in the \abox{arguments} list in the rule context, there will be an entry in this variable. This is useful to get the actual values provided during execution and take proper actions. If a parameter is not set in the directive context, the reference will still exist in the map, but it will be mapped to an empty string.
+\end{description}
+
+In the previous example, observe that the MVEL expression defined in the \abox{flag} key checks if the user provided an affirmative value regarding shell escape, through comparing \varbox{parameters.shell} with a set of predefined affirmative values. In any case, the corresponding command flag is defined as result of such evaluation.
+
+\item[\describecontext{O}{arguments}{default}] As default behaviour, if a parameter is not set in the directive context, the reference will be mapped to an empty string. This key exists for the exact purpose of overriding such behaviour and expects a plain string as value.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+default: ''
+\end{codebox}
+
+\item[\describecontext{O}{arguments}{required}] There might be certain scenarios in which a rule could make use of required arguments (for instance, a copy operation in which source and target must be provided). The \abox{required} key acts as a boolean switch to indicate whether the corresponding argument should be mandatory. In this case, set the key value to \abox{true} and the argument turns required. Later on at runtime, \arara\ will throw an error if a required parameter is missing in the directive.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+required: false
+\end{codebox}
+
+Note that setting the \abox{required} key value to \abox{false} corresponds to omitting the key completely in the rule context, which resorts to the default behaviour (i.e, all arguments are optional).
+\end{description}
+
+\begin{messagebox}{Note on argument keys}{attentioncolour}{\icattention}{black}
+As seen previously, both \abox{flag} and \abox{default} are marked as optional, but at least one of them must occur in the argument specification, otherwise \arara\ will throw an error, as it makes no sense to have no argument handling at all. Please make sure to specify at least one of them!
+\end{messagebox}
+
+For instance, consider a full example of the \abox{arguments} key, defined with only one argument, presented as follows. The hyphen denotes a list element, so mind the indentation for correctly specifying the component keys. Also, note that, in this case, keys \abox{required} and \abox{default} were completely optional, and they were included for didactic purposes.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+arguments:
+- identifier: shell
+  flag: >
+    @{
+        isTrue(parameters.shell, '--shell-escape',
+               '--no-shell-escape')
+    }
+  required: false
+  default: ''
+\end{codebox}
+\end{description}
+
+% TODO fix reference
+This is the rule structure in the YAML format used by \arara. Keep in mind that all subtasks in a rule are checked against their corresponding exit status. If an abnormal execution is detected, the tool will instantly halt and the rule will fail. Even \arara\ itself will return an exit code different than zero when this situation happens (detailed in Section~\ref{foo}, in page~\pageref{foo}).
+
+\section{Directives}
+\label{sec:directives}
+
 %A \emph{directive} is a special comment inserted in the
 %source file in which you indicate how \arara\ should
 %behave. You can insert as many directives as you

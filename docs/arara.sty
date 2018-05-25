@@ -47,11 +47,8 @@
 \tcbuselibrary{breakable}
 \tcbuselibrary{listings}
 
-%\RequirePackage{newtxtext,newtxmath}
 \RequirePackage{bookman}
-%\RequirePackage{txfonts}
 \RequirePackage[regular]{sourcecodepro}
-\RequirePackage{textcomp}
 
 \RequirePackage[
   backend=biber,
@@ -354,6 +351,8 @@
   bottom=0.8pt
 }
 
+\newcommand{\varbox}[1]{\rbox[araracolour]{\normalfont\ttfamily$\diamondsuit$~#1}}
+\newcommand{\mtbox}[1]{\rbox{\normalfont\ttfamily$\diamondsuit$~#1}}
 \newcommand{\describe}[2]{\rbox[araracolour]{\normalfont\ttfamily#1}~%
 \abox{\normalfont\ttfamily#2}}
 \newcommand{\describecontext}[3]{\rbox[araracolour]{\normalfont\ttfamily#1}~%
