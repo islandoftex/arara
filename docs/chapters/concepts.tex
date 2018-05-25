@@ -242,32 +242,27 @@ This is the rule structure in the YAML format used by \arara. Keep in mind that 
 \section{Directives}
 \label{sec:directives}
 
-%A \emph{directive} is a special comment inserted in the
-%source file in which you indicate how \arara\ should
-%behave. You can insert as many directives as you
-%want and in any position of the file. The tool will
-%read the whole file and extract the directives.
+A \emph{directive} is a special comment inserted in the source file in which you indicate how \arara\ should behave. You can insert as many directives as you want and in any position of the file. The tool will read the whole file and extract the directives.
+
+
+\begin{messagebox}{New features in version 4.0}{araracolour}{\icinfo}{white}
+\setlength{\parskip}{1em}
+% TODO fix reference
+\textbf{Partial directive extraction} -- From version 4.0 of \arara\ on, it is now possible to extract directives only available in the file preamble, i.e, all lines from the beginning that are comments until reaching the first line that is not a comment (excluding blank lines). To this end, a new command line flag is introduced in Section~\ref{foo} (page~\pageref{foo}).
+
+% TODO fix reference
+\textbf{Predefined preambles} -- Common preambles can be predefined and used with files that require the same automation steps, then \arara\ can be invoked based on such specifications. This feature is covered in Section~\ref{foo} (page~\pageref{foo}).
+\end{messagebox}
+
+% TODO fix reference
+%There are two types of directives in \arara.
 %
-%\begin{messagebox}{New features in version 4.0}{araracolour}{\icinfo}{white}
-%\textbf{Partial directive extraction} -- From version 4.0 on,
-%it is now possible to extract directives only available in the
-%file preamble, that is, all lines from the beginning that are
-%comments until reaching the first line that is not a comment.
-%To this end, a new command line flag is introduced. We will
-%discuss this feature later on.
+%\begin{description}
+%\item[empty directive]
 %
-%\vspace{1em}
+%\end{description}
 %
-%\textbf{Predefined preambles} -- It is now possible to set up
-%a common preamble to be used with files that require the same
-%automation steps, then \arara\ can be invoked based on such
-%specifications. We will discuss this feature later on.
-%\end{messagebox}
-%
-%There are two types of directives in \arara. The first one has
-%already been mentioned, it has only the rule name (which refers 
-%to the \verb|identifier| key from the rule of the same name). It 
-%is called \emph{empty directive}:
+%The first one has already been mentioned in Chapter~\ref{foo} (page~\pageref{foo}), it has only the rule name (which refers to the \abox{identifier} key from the rule of the same name).
 %
 %\begin{codebox}{Empty directive}{teal}{\icnote}{white}
 %% arara: pdflatex
