@@ -325,7 +325,7 @@
     \vphantom{dp}
   },
   boxrule=1pt,
-  fontupper=\footnotesize\ttfamily\color{#1},
+  fontupper=\footnotesize\normalfont\ttfamily\color{#1},
   boxsep=0pt,
   left=2pt,
   right=2pt,
@@ -343,7 +343,7 @@
     \vphantom{dp}
   },
   boxrule=1pt,
-  fontupper=\footnotesize\ttfamily\color{#1!10},
+  fontupper=\footnotesize\normalfont\ttfamily\color{#1!10},
   boxsep=0pt,
   left=2pt,
   right=2pt,
@@ -351,12 +351,15 @@
   bottom=0.8pt
 }
 
-\newcommand{\varbox}[1]{\rbox[araracolour]{\normalfont\ttfamily$\diamondsuit$~#1}}
-\newcommand{\mtbox}[1]{\rbox{\normalfont\ttfamily$\diamondsuit$~#1}}
-\newcommand{\describe}[2]{\rbox[araracolour]{\normalfont\ttfamily#1}~%
-\abox{\normalfont\ttfamily#2}}
-\newcommand{\describecontext}[3]{\rbox[araracolour]{\normalfont\ttfamily#1}~%
-\rbox{\normalfont\ttfamily#2$\rightarrow$}~\abox{\normalfont\ttfamily#3}}
+\newcommand{\varbox}[1]{\rbox[araracolour]{$\diamondsuit$\,#1}}
+\newcommand{\mtbox}[1]{\rbox{$\diamondsuit$\,#1}}
+\newcommand{\cdbox}[1]{\rbox{$\star$\,#1}}
+\newcommand{\describe}[2]{\rbox[araracolour]{#1}~%
+\abox{#2}}
+\newcommand{\describecontext}[3]{\rbox[araracolour]{#1}~%
+\rbox{#2$\rightarrow$}~\abox{#3}}
+\newcommand{\describeconditional}[2]{\rbox[araracolour]%
+{\normalfont\itshape\,\,#1\enspace}~\cdbox{#2}}
 
 \renewcommand{\secheadstyle}{\Large\normalfont\em}
 \renewcommand{\subsecheadstyle}{\large\normalfont\em}

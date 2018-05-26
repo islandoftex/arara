@@ -183,6 +183,12 @@ In order to properly set an argument, the keys used in this specification are de
 identifier: shell
 \end{codebox}
 
+It is important to mention that not all names are valid as argument identifiers. \arara\ has restrictions on three names, described as follows, which cannot be used.
+
+\begin{messagebox}{Reserved names for rule arguments}{attentioncolour}{\icattention}{black}
+Our tool has three names reserved for internal use: \abox{file}, \abox{files}, and \abox{reference}. Do not use them as argument identifiers!
+\end{messagebox}
+
 \item[\describecontext{O}{arguments}{flag}] This key holds a plain string and is evaluated when the corresponding argument is defined in the directive context.  After being evaluated, the result will be stored in a variable of the same name to be later accessed in the \abox{command} context. In the scenario where the argument is not defined in the directive, the variable will hold an empty string.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -244,7 +250,6 @@ This is the rule structure in the YAML format used by \arara. Keep in mind that 
 
 A \emph{directive} is a special comment inserted in the source file in which you indicate how \arara\ should behave. You can insert as many directives as you want and in any position of the file. The tool will read the whole file and extract the directives.
 
-
 \begin{messagebox}{New features in version 4.0}{araracolour}{\icinfo}{white}
 \setlength{\parskip}{1em}
 % TODO fix reference
@@ -254,134 +259,123 @@ A \emph{directive} is a special comment inserted in the source file in which you
 \textbf{Predefined preambles} -- Common preambles can be predefined and used with files that require the same automation steps, then \arara\ can be invoked based on such specifications. This feature is covered in Section~\ref{foo} (page~\pageref{foo}).
 \end{messagebox}
 
+
+There are two types of directives in \arara\ which determine the way the corresponding rules will be instantiated. They are listed as follows. Note that directives are always preceeded by the \rbox{arara:} pattern.
+
+\begin{description}
 % TODO fix reference
-%There are two types of directives in \arara.
-%
-%\begin{description}
-%\item[empty directive]
-%
-%\end{description}
-%
-%The first one has already been mentioned in Chapter~\ref{foo} (page~\pageref{foo}), it has only the rule name (which refers to the \abox{identifier} key from the rule of the same name).
-%
-%\begin{codebox}{Empty directive}{teal}{\icnote}{white}
-%% arara: pdflatex
-%\end{codebox}
-%
-%Sometimes, however, we need to provide additional information to 
-%the rule. That is reason for the second type, the 
-%\emph{parametrized directive}, to exist. As the name indicates, 
-%we have directive arguments! They are mapped by their identifiers
-%and not by their positions. The syntax for a parametrized 
-%directive is:
-%
-%\begin{codebox}{Parametrized directive}{teal}{\icnote}{white}
-%% arara: pdflatex: { shell: yes }
-%\end{codebox}
-%
-%Each argument is defined according to the rule mapped by the 
-%directive. This means you cannot use an argument \verb|foo| in a 
-%directive \verb|bar| if the rule \verb|bar| does not offer 
-%support for it (that is, \verb|bar| has to have \verb|foo| 
-%defined as argument in its list of arguments inside the rule 
-%scope, as seen in the previous section). The syntax for
-%an argument is:
-%
-%\begin{codebox}{Argument syntax}{teal}{\icnote}{white}
-%key : value
-%\end{codebox}
-%
-%Suppose we would like to enable shell escape for \verb|pdflatex| 
-%when compiling a \verb|hello.tex| file. We can achieve that by 
-%providing a parametrized directive, like this one:
-%
-%\begin{codebox}{\texttt{hello.tex} with a parametrized directive}{teal}{\icnote}{white}
-%% arara: pdflatex: { shell: yes }
-%
-%\documentclass{article}
-%\begin{document}
-%Hello world!
-%\end{document}
-%\end{codebox}
-%
-%Of course, the \verb|shell| argument is defined in the
-%\verb|pdflatex| rule scope, otherwise \arara\ would raise
-%an error about an invalid argument key. If we try to
-%inject a nonexistent \verb|foo| argument in the previous 
-%parametrized directive, we will get this message:
-%
-%\begin{codebox}{Terminal}{teal}{\icnote}{white}
-%  __ _ _ __ __ _ _ __ __ _ 
-% / _` | '__/ _` | '__/ _` |
-%| (_| | | | (_| | | | (_| |
-% \__,_|_|  \__,_|_|  \__,_|
-%
-%Processing 'hello.tex' (size: 103 bytes, last modified:
-%05/03/2018 15:40:16), please wait.
-%
-%I have spotted an error in rule 'pdflatex' located at
-%'/opt/paulo/arara/rules'. I found these unknown keys
-%in the directive: (foo). This should be an easy fix,
-%just remove them from your map.
-%
-%Total: 0.21 seconds
-%\end{codebox}
-%
-%As the message suggests, we need to remove the unknown argument 
-%key from our directive or rewrite the rule in order to include 
-%it. The first option is, of course, easier.
-%
-%\begin{messagebox}{Helpful messages}{araracolour}{\icinfo}{white}
-%Make sure to read all messages \arara\ raises, they will help 
-%you!
-%\end{messagebox}
-%
-%Sometimes, directives can span several columns of a line, 
-%particularly the ones with several arguments. From \arara\ 4.0 
-%on, we can split a directive into multiple lines by adding
-%\verb|% arara: -->| to each line which should compose the
-%directive:
-%
-%\begin{codebox}{Multiline directive}{teal}{\icnote}{white}
-%% arara: pdflatex: {
-%% arara: --> shell: yes,
-%% arara: --> synctex: yes
-%% arara: --> }
-%\end{codebox}
-%
-%It is important to observe that there is no need of them to be
-%in contiguous lines, that is, provided that the syntax for
-%parametrized directives hold for the line composition, lines can
-%be distributed all over the code.
-%
-%\begin{messagebox}{New feature in version 4.0}{araracolour}{\icinfo}{white}
-%\textbf{Conditionals} -- From version 4.0 on, \arara\ provides
-%logical expressions processed at runtime to determine whether
-%and  how a directive should be processed. This is a huge 
-%improvement towards better user experience.
-%\end{messagebox}
-%
-%One of the most awaited features that version 4.0 introduces is 
-%the support of conditionals, that is, logical expressions 
-%processed at runtime in order to determine whether and how the 
-%directive should be processed. The following types are allowed:
+\item[empty directive] This type of directive has already been mentioned in Chapter~\ref{foo} (page~\pageref{foo}), it has only the rule name (which refers to the \abox{identifier} key from the rule of the same name). All rule arguments are mapped to empty strings, except the ones with \abox{default} values.
+
+\begin{codebox}{Empty directive}{teal}{\icnote}{white}
+% arara: pdflatex
+\end{codebox}
+
+\item[parametrized directive] This type of directive also has the rule name (which refers to the \abox{identifier} key from the rule of the same name), and also contains a map of parameters in order to provide additional information to the corresponding rule. This map is defined in the YAML format, based on the inline style.
+
+\begin{codebox}{Parametrized directive}{teal}{\icnote}{white}
+% arara: pdflatex: { shell: yes }
+\end{codebox}
+
+% TODO fix reference
+Observe that \arara\ relies on named parameters, so they are mapped by their corresponding argument identifiers and not by their positions. The syntax for a parameter is described as follows. Please refer to the map definition in Chapter~\ref{foo}, page~\pageref{foo}.
+
+\begin{codebox}{Parameter syntax}{teal}{\icnote}{white}
+key : value
+\end{codebox}
+
+Note that virtually any type of data can be used as parameter value, so lists, integers, booleans, sets and other maps are available as well. However, there must be the correct handling of such types in the rule context.
+\end{description}
+
+When handling parametrized directives, \arara\ always checks if directive parameters and rule arguments match. If we try to inject a nonexistent parameter in a parametrized directive, the tool will raise an error about it:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+  __ _ _ __ __ _ _ __ __ _ 
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+Processing 'hello.tex' (size: 103 bytes, last modified:
+05/03/2018 15:40:16), please wait.
+
+I have spotted an error in rule 'pdflatex' located at
+'/opt/paulo/arara/rules'. I found these unknown keys
+in the directive: (foo). This should be an easy fix,
+just remove them from your map.
+
+Total: 0.21 seconds
+\end{codebox}
+
+As the message suggests, we need to remove the unknown parameter key from our directive or rewrite the rule in order to include it as an argument. The first option is, of course, easier.
+
+\begin{messagebox}{New feature in version 4.0}{araracolour}{\icinfo}{white}
+\textbf{Helpful messages} -- It is a staple of \arara\ to have friendly and helpful messages. From version 4.0 on, we decided to make messages even friendlier and include suggestions for correcting errors or improving usage. So, whenever possible, make sure to read all messages our tool provides, they will help you!
+\end{messagebox}
+
+Sometimes, directives can span several columns of a line, particularly the ones with several parameters. From \arara\ 4.0 on, we can split a directive into multiple lines by using the \rbox{arara: {-}{-}>} mark (also known as \emph{arrow notation} during development) to each line which should compose the directive. We call it a \emph{multiline directive}. Let us see an example:
+
+\begin{codebox}{Multiline directive}{teal}{\icnote}{white}
+% arara: pdflatex: {
+% arara: --> shell: yes,
+% arara: --> synctex: yes
+% arara: --> }
+\end{codebox}
+
+% TODO fix reference
+It is important to observe that there is no need of them to be in contiguous lines, i.e, provided that the syntax for parametrized directives hold for the line composition, lines can be distributed all over the code. In fact, the log file (when enabled) will contain a list of all line numbers that compose a directive. This feature is discussed later on, in Section~\ref{foo} (page~\pageref{foo}).
+
+\begin{messagebox}{Keep lines together}{araracolour}{\icinfo}{white}
+Although it is possible to spread lines of a multiline directive all over the code, it is considered good practice to keep them together for easier reading and editing. In any case, you can always see which lines compose a directive by inspecting the log file.
+\end{messagebox}
+
+\arara\ 4.0 provides logical expressions, written in the MVEL language, and special operators processed at runtime in order to determine whether and how a directive should be processed. This feature is named \emph{directive conditional}, or simply \emph{conditional} as an abbreviation. The following list describes all conditional operators available in the directive context.
+
+\begin{description}
+\item[\describeconditional{a priori}{if}] The associated MVEL expression is evaluated beforehand, and the directive is interpreted if, and only if, the result of such evaluation is true. This directive, when the conditional holds true, is executed at most once.
+
+\begin{codebox}{Conditional}{teal}{\icnote}{white}
+% arara: pdflatex if missing('pdf') || changed('tex')
+\end{codebox}
+
+\item[\describeconditional{a posteriori}{until}] The directive is interpreted the first time, then the associated MVEL expression evaluation is done. While the result holds false, the directive is interpreted again and again. There are no guarantees of proper halting.
+
+\begin{codebox}{Conditional}{teal}{\icnote}{white}
+% arara: pdflatex until !found('log', 'undefined references')
+\end{codebox}
+
+\item[\describeconditional{a priori}{unless}] Technically an inverted \cdbox{if} conditional, the associated MVEL expression is evaluated beforehand, and the directive is interpreted if, and only if, the result is false. This directive, when the conditional holds false, is executed at most once.
+
+\begin{codebox}{Conditional}{teal}{\icnote}{white}
+% arara: pdflatex unless unchanged('tex') && exists('pdf')
+\end{codebox}
+
+\item[\describeconditional{a priori}{while}] The associated MVEL expression is evaluated beforehand, the directive is interpreted if, and only if, the result is true, and the process is repeated while the result still holds true. There are no guarantees of proper halting.
+
+\begin{codebox}{Conditional}{teal}{\icnote}{white}
+% arara: pdflatex while missing('pdf') ||
+% arara: --> found('log', 'undefined references')
+\end{codebox}
+\end{description}
+
+% TODO fix reference
+Several methods are available in the directive context in order to ease the writing of conditionals, such as \mtbox{missing}, \mtbox{changed}, \mtbox{found}, \mtbox{unchanged}, and \mtbox{exists} featured in the previous examples. They will be properly detailed later on, in Section~\ref{foo} (page~\pageref{foo}).
+
+\begin{messagebox}{No infinite loops}{araracolour}{\icinfo}{white}
+% TODO fix reference
+Although there are no conceptual guarantees for proper halting of unbounded loops, we have provided a technical solution for potentially infinite iterations: \arara\ has a predefined maximum number of loops. The default value is set to 10, but it can be overriden either in the configuration file or with a command line flag. We discuss this feature later on, in Sections~\ref{foo} and~\ref{foo} (pages~\pageref{foo} and~\pageref{foo}, respectively).
+\end{messagebox}
+
 %
 %\begin{keywords}
-%\item[if] evaluated beforehand, the directive is interpreted
-%if and only if the result is true.
+%\item[if] 
 %
-%\item[unless] evaluated beforehand, the directive
-%is interpreted if and only if the result is false.
+%\item[unless] 
 %
 %\item[until] directive is interpreted the first time,
 %then the evaluation is done; while the result
 %is false, the directive is interpreted again and
 %again.
 %
-%\item[while] evaluated beforehand, the directive is
-%interpreted if and only if the result is true,
-%and the process is repeated while the result
-%still holds true.
+%\item[while] e
 %\end{keywords}
 %
 %We will discuss this special feature later on, including methods
