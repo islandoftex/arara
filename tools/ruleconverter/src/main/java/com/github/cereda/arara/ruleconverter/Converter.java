@@ -24,6 +24,7 @@
  */
 package com.github.cereda.arara.ruleconverter;
 
+import com.github.cereda.arara.ruleconverter.model.OArgument;
 import com.github.cereda.arara.ruleconverter.model.ORule;
 import java.io.File;
 import org.apache.commons.lang3.StringUtils;
@@ -162,6 +163,22 @@ public class Converter {
                         + "you sure this YAML file is a valid arara rule? "
                         + "Please, refer to the user manual and fix the "
                         + "rule. Sadly, I cannot help you on this issue.");
+            }
+            
+            // iterate through arguments and
+            // check if at least one key is set
+            for (OArgument a : rule.getArguments()) {
+                if ((a.getFlag() == null) && (a.getDefault() == null)) {
+                    
+                    // throw an exception about
+                    // missing argument keys
+                    throw new Exception("I noticed the provided rule contains "
+                            + "an argument that has no flag and default "
+                            + "keys! Are you sure this YAML file is a valid "
+                            + "arara rule? Make sure at least one key is set. "
+                            + "Please, refer to the user manual and fix the "
+                            + "rule. Sadly, I cannot help you on this issue.");
+                }
             }
 
             // get the output reference

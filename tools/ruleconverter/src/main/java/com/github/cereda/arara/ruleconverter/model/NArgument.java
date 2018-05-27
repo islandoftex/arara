@@ -38,6 +38,9 @@ public class NArgument {
     
     // argument flag
     private String flag;
+    
+    // argument fallback
+    private String fallback;
 
     /**
      * Constructor.
@@ -75,6 +78,22 @@ public class NArgument {
      */
     public void setFlag(String flag) {
         this.flag = flag;
+    }
+    
+    /**
+     * Getter.
+     * @return The fallback. 
+     */
+    public String getDefault() {
+        return fallback;
+    }
+    
+    /**
+     * Setter.
+     * @param fallback The fallback.
+     */
+    public void setDefault(String fallback) {
+        this.fallback = fallback;
     }
 
 }

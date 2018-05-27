@@ -40,6 +40,8 @@ import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.error.MarkedYAMLException;
+import org.yaml.snakeyaml.introspector.Property;
+import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
@@ -107,7 +109,19 @@ public class Utils {
         for (OArgument a : from.getArguments()) {
             NArgument argument = new NArgument();
             argument.setIdentifier(a.getIdentifier());
-            argument.setFlag(a.getFlag());
+            
+            // set the argument flag
+            // if exists in the definition
+            if (a.getFlag() != null) {
+                argument.setFlag(a.getFlag());
+            }
+            
+            // set the argument fallback
+            // if exists in the definition
+            if (a.getDefault() != null) {
+                argument.setDefault(a.getDefault());
+            }
+            
             arguments.add(argument);
         }
 
@@ -183,7 +197,23 @@ public class Utils {
             // we need to create a representer
             // in order to properly handle
             // the configuration tag
-            Representer representer = new Representer();
+            Representer representer = new Representer() {
+                @Override
+                protected NodeTuple representJavaBeanProperty(Object bean,
+                        Property property, Object value, Tag tag) {
+                    if (value == null) {
+                        return null;
+                    }
+                    else {
+                        return super.representJavaBeanProperty(
+                                bean,
+                                property,
+                                value,
+                                tag
+                        );
+                    }
+                }
+            };
             representer.addClassTag(NRule.class, new Tag("!config"));
             
             // as we are dumping the format to
