@@ -38,12 +38,26 @@ import org.apache.commons.lang3.text.WordUtils;
  */
 public class Converter {
 
+    /**
+     * Main method.
+     * @param args Command line arguments.
+     */
     public static void main(String[] args) {
+        
+        // draw the application logo
+        // in the command line
         System.out.println(logo());
 
+        // let us try the conversion of
+        // an older format to a new one
         try {
 
+            // the application requires
+            // exactly one argument
             if (args.length != 1) {
+                
+                // throw an exception about the
+                // wrong number of arguments
                 throw new Exception("This tool expects the YAML rule from "
                         + "previous versions of arara. Please, provide "
                         + "a proper YAML file containing the old rule as "
@@ -52,16 +66,28 @@ public class Converter {
                         + "format.");
             }
 
+            // get the input file
+            // from the argument
             File input = new File(args[0]);
 
+            // the input file
+            // must exist!
             if (!input.exists()) {
+                
+                // thow an exception about
+                // a missing input file
                 throw new Exception("I am sorry to inform you that the "
                         + "provided file does not exist! Please, make sure "
                         + "to provide a valid YAML file containing the old "
                         + "rule as a parameter and try again.");
             }
 
+            // check if the file is
+            // actually a file
             if (!input.isFile()) {
+                
+                // throw an exception about
+                // the file being a directory
                 throw new Exception("I am sorry to inform you that the "
                         + "provided reference is actually a directory! I "
                         + "am prepared to handle one file at a time. "
@@ -70,16 +96,28 @@ public class Converter {
                         + "try again.");
             }
 
+            // check if the provided file
+            // has the correct YAML extension
             if (!input.getName().endsWith(".yaml")) {
+                
+                // throw an exception about
+                // the wrong file extension
                 throw new Exception("I am sorry to inform you that the "
                         + "provided file does not have a proper '.yaml' "
                         + "extension. Please, make sure your YAML file "
                         + "has the correct extension and try again.");
             }
 
+            // get the rule in
+            // the old format
             ORule rule = Utils.read(input);
 
+            // the rule must
+            // have an identifier
             if (rule.getIdentifier() == null) {
+                
+                // throw an exception about
+                // a missing identifier
                 throw new Exception("I noticed the provided rule does not "
                         + "have an identifier! Are you sure this YAML file "
                         + "is a valid arara rule? Please, refer to the "
@@ -87,7 +125,12 @@ public class Converter {
                         + "help you on this issue.");
             }
 
+            // the rule must
+            // have a name
             if (rule.getName() == null) {
+                
+                // throw an exception about
+                // a missing name
                 throw new Exception("I noticed the provided rule does not "
                         + "have a name! Are you sure this YAML file is a "
                         + "valid arara rule? Please, refer to the user "
@@ -95,7 +138,12 @@ public class Converter {
                         + "you on this issue.");
             }
 
+            // the rule must have a
+            // list of arguments
             if (rule.getArguments() == null) {
+                
+                // throw an exception about the
+                // missing list of arguments
                 throw new Exception("I noticed the provided rule does not "
                         + "have a proper argument list! Are you sure this "
                         + "YAML file is a valid arara rule? Please, refer "
@@ -103,7 +151,12 @@ public class Converter {
                         + "cannot help you on this issue.");
             }
 
+            // the rule must have either one
+            // command or a list of commands
             if ((rule.getCommand() == null) && (rule.getCommands() == null)) {
+                
+                // throw an exception about the
+                // missing command or commands
                 throw new Exception("I noticed the provided rule does not "
                         + "have either a command or a list of commands! Are "
                         + "you sure this YAML file is a valid arara rule? "
@@ -111,15 +164,25 @@ public class Converter {
                         + "rule. Sadly, I cannot help you on this issue.");
             }
 
+            // get the output reference
+            // from the input file
             File output = Utils.getOutput(input);
+            
+            // notify the user about the
+            // beginning of the conversion
             System.out.println(wrap("The provided YAML rule looks OK. I will "
                     + "try my best to convert it to the new version 4.0 "
                     + "format adopted by arara. The new rule name will be "
                     + "written in the same directory of the original one and "
-                    + "will have a '_v4' suffix to it."));
+                    + "will have a '_v4' suffix to it. Keep in mind that the "
+                    + "base name must match the identifier!"));
 
+            // write the new rule based
+            // on the new format
             Utils.write(Utils.update(rule), output);
 
+            // cool, the conversion
+            // was successful!
             System.out.println();
             System.out.println(StringUtils.rightPad("YAY! ", 60, "-"));
             System.out.println(wrap("Good news, everybody! The provided YAML "
@@ -129,17 +192,29 @@ public class Converter {
                     + "crossed! Take a closer look at the manual and update "
                     + "your rule to use the new enhancements of arara. Have "
                     + "a great time!"));
-
+            
         } catch (Exception exception) {
+            
+            // something wrong has happened,
+            // so let us print the message
             System.out.println(StringUtils.rightPad("OH NO! ", 60, "-"));
             System.err.println(wrap(exception.getMessage()));
         }
     }
 
+    /**
+     * Wraps the text.
+     * @param text The text.
+     * @return The wrapped text.
+     */
     private static String wrap(String text) {
         return WordUtils.wrap(text, 60, "\n", true);
     }
 
+    /**
+     * Draws the application logo.
+     * @return A string containing the application logo.
+     */
     private static String logo() {
         StringBuilder sb = new StringBuilder();
         sb.append("         _                                _\n");

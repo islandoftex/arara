@@ -35,51 +35,103 @@ import java.util.List;
  */
 public class ORule {
 
+    // the rule identifier
     private String identifier;
+    
+    // the rule name
     private String name;
+
+    // the rule command
     private String command;
+    
+    // the list of commands
     private List<String> commands;
+    
+    // the list of arguments
     private List<OArgument> arguments;
 
+    /**
+     * Constructor.
+     */
     public ORule() {
     }
 
+    /**
+     * Getter.
+     * @return The identifier. 
+     */
     public String getIdentifier() {
         return identifier;
     }
 
+    /**
+     * Setter.
+     * @param identifier The identifier.
+     */
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
 
+    /**
+     * Getter.
+     * @return The name.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Setter.
+     * @param name The name.
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Getter.
+     * @return The command.
+     */
     public String getCommand() {
         return command;
     }
 
+    /**
+     * Setter.
+     * @param command The command.
+     */
     public void setCommand(String command) {
         this.command = command;
     }
 
+    /**
+     * Getter.
+     * @return The list of commands.
+     */
     public List<String> getCommands() {
         return commands;
     }
 
+    /**
+     * Setter.
+     * @param commands The list of commands.
+     */
     public void setCommands(List<String> commands) {
         this.commands = commands;
     }
 
+    /**
+     * Getter.
+     * @return The list of arguments.
+     */
     public List<OArgument> getArguments() {
         return arguments;
     }
 
+    /**
+     * Setter.
+     * @param arguments The list of arguments.
+     */
     public void setArguments(List<OArgument> arguments) {
         this.arguments = arguments;
     }

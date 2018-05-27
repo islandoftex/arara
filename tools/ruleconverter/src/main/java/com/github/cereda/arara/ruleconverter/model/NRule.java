@@ -35,42 +35,84 @@ import java.util.List;
  */
 public class NRule {
 
+    // the rule identifier
     private String identifier;
+    
+    // the rule name
     private String name;
+    
+    // the list of commands
     private List<NCommand> commands;
+    
+    // the list of arguments
     private List<NArgument> arguments;
 
+    /**
+     * Constructor.
+     */
     public NRule() {
     }
-
+    
+    /**
+     * Getter.
+     * @return The identifier.
+     */
     public String getIdentifier() {
         return identifier;
     }
 
+    /**
+     * Setter.
+     * @param identifier The identifier.
+     */
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
 
+    /**
+     * Getter.
+     * @return The name. 
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Setter.
+     * @param name The name.
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Getter.
+     * @return The list of commands. 
+     */
     public List<NCommand> getCommands() {
         return commands;
     }
 
+    /**
+     * Setter.
+     * @param commands The list of commands.
+     */
     public void setCommands(List<NCommand> commands) {
         this.commands = commands;
     }
 
+    /**
+     * Getter.
+     * @return The list of arguments. 
+     */
     public List<NArgument> getArguments() {
         return arguments;
     }
 
+    /**
+     * Setter.
+     * @param arguments The list of arguments.
+     */
     public void setArguments(List<NArgument> arguments) {
         this.arguments = arguments;
     }

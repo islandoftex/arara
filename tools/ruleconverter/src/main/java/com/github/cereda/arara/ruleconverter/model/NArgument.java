@@ -33,24 +33,46 @@ package com.github.cereda.arara.ruleconverter.model;
  */
 public class NArgument {
 
+    // argument identifier
     private String identifier;
+    
+    // argument flag
     private String flag;
 
+    /**
+     * Constructor.
+     */
     public NArgument() {
     }
 
+    /**
+     * Getter.
+     * @return The identifier.
+     */
     public String getIdentifier() {
         return identifier;
     }
 
+    /**
+     * Setter.
+     * @param identifier The identifier.
+     */
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
 
+    /**
+     * Getter.
+     * @return The flag. 
+     */
     public String getFlag() {
         return flag;
     }
 
+    /**
+     * Setter.
+     * @param flag The flag.
+     */
     public void setFlag(String flag) {
         this.flag = flag;
     }

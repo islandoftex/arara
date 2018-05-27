@@ -33,15 +33,27 @@ package com.github.cereda.arara.ruleconverter.model;
  */
 public class NCommand {
 
+    // the command
     private String command;
 
+    /**
+     * Constructor.
+     */
     public NCommand() {
     }
 
+    /**
+     * Getter.
+     * @return The command.
+     */
     public String getCommand() {
         return command;
     }
 
+    /**
+     * Setter.
+     * @param command The command.
+     */
     public void setCommand(String command) {
         this.command = command;
     }
