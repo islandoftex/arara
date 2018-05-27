@@ -364,24 +364,46 @@ Several methods are available in the directive context in order to ease the writ
 Although there are no conceptual guarantees for proper halting of unbounded loops, we have provided a technical solution for potentially infinite iterations: \arara\ has a predefined maximum number of loops. The default value is set to 10, but it can be overriden either in the configuration file or with a command line flag. We discuss this feature later on, in Sections~\ref{foo} and~\ref{foo} (pages~\pageref{foo} and~\pageref{foo}, respectively).
 \end{messagebox}
 
-%
-%\begin{keywords}
-%\item[if] 
-%
-%\item[unless] 
-%
-%\item[until] directive is interpreted the first time,
-%then the evaluation is done; while the result
-%is false, the directive is interpreted again and
-%again.
-%
-%\item[while] e
-%\end{keywords}
-%
-%We will discuss this special feature later on, including methods
-%available in the directive scope in order to ease the writing
-%of conditionals, as it would be highly advisable to have
-%orb tags covered beforehand.
-%
-%\section{Orb tags}
-%\label{sec:orbtags}
+% TODO fix reference
+All directives, regardless of their type, are internally mapped with both \abox{file} and \abox{reference} parameters, discussed earlier on, in Section~\ref{foo} (page~\pageref{foo}), as special variables in the rule context. When inspecting the log file, you will find all map keys and values for each extracted directive (actually, there is an entire log section devoted to detailing directives found in the code). This feature is covered in Section~\ref{foo}, page~\pageref{foo}. See, for instance, the report of the directive extraction and normalization process performed by \arara\ when inspecting \abox{doc2.tex}, available in the log file. Note that timestamps were deliberately removed in order to declutter the output, and line breaks were included as to easily spot the log entries.
+
+\begin{codebox}{\texttt{doc2.tex}}{teal}{\icnote}{white}
+% arara: pdflatex
+% arara: pdflatex: { shell: yes }
+\documentclass{article}
+
+\begin{document}
+Hello world.
+\end{document}
+\end{codebox}
+
+\begin{codebox}{An excerpt of the log file (directive section)}{teal}{\icnote}{white}
+Directive: { identifier: pdflatex, parameters:
+{reference=/home/paulo/doc2.tex, file=doc2.tex},
+conditional: { NONE }, lines: [1] }
+
+Directive: { identifier: pdflatex, parameters:
+{shell=yes, file=doc2.tex, reference=/home/paulo/doc2.tex},
+conditional: { NONE }, lines: [2] }
+\end{codebox}
+
+% TODO fix reference
+The directive context also features another special parameter named \abox{files} which expects a non-empty list of file names as plain string values. For each element of this list, \arara\ will replicate the current directive and point the element being iterated as current \abox{file} and \abox{reference} values (being the latter resolved to a proper absolute, canonical path of the former). See, for instance, the report of the directive extraction and normalization process performed by \arara\ when inspecting \abox{doc3.tex}, available in the log file.
+
+\begin{codebox}{\texttt{doc3.tex}}{teal}{\icnote}{white}
+% arara: pdflatex: { files: [ doc1.tex, doc2.tex ] }
+Hello world.
+\bye
+\end{codebox}
+
+\begin{codebox}{An excerpt of the log file (directive section)}{teal}{\icnote}{white}
+Directive: { identifier: pdflatex, parameters:
+{reference=/home/paulo/doc1.tex, file=doc1.tex},
+conditional: { NONE }, lines: [1] }
+
+Directive: { identifier: pdflatex, parameters:
+{reference=/home/paulo/doc2.tex, file=doc2.tex},
+conditional: { NONE }, lines: [1] }
+\end{codebox}
+
+Even when a directive is interpreted with a file other than the one being processed by \arara\ (through the magic of the \abox{files} parameter), it is possible to use helper methods in the rule context to get access to the original file and reference. Such methods are detailed later on, in Section~\ref{foo} (page~\pageref{foo}).
