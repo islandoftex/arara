@@ -406,4 +406,202 @@ Directive: { identifier: pdflatex, parameters:
 conditional: { NONE }, lines: [1] }
 \end{codebox}
 
+% TODO fix reference
 Even when a directive is interpreted with a file other than the one being processed by \arara\ (through the magic of the \abox{files} parameter), it is possible to use helper methods in the rule context to get access to the original file and reference. Such methods are detailed later on, in Section~\ref{foo} (page~\pageref{foo}).
+
+\section{Migration guide}
+\label{sec:migrationguide}
+
+\begin{messagebox}{A note to users}{araracolour}{\icattention}{white}
+If this is your first time using \arara\ or you do not have custom rules in the old format, you can safely ignore this section. All rules shipped with our tool are already written in the new format.
+\end{messagebox}
+
+% TODO fix reference
+As previously discussed in Section~\ref{foo} (page~\pageref{foo}), version 4.0 of \arara\ introduces a new rule format. As a result, user-defined rules in the old format are incompatible with the new version of our tool and thus have to be updated. In short, we need to replace \abox{command} by \abox{commands} and specify a contextual element. As an example, consider the following hypothetical rule \abox{ls} written in the old format:
+
+\begin{codebox}{A rule in the old format}{teal}{\icnote}{white}
+!config
+identifier: ls
+name: LS
+command: ls @{details}
+arguments:
+- identifier: details
+  flag: '@{ isTrue(parameters.details, "-l", "") }'
+\end{codebox}
+
+This rule does nothing too important, it simply runs the system command \abox{ls} which lists the contents of the current directory. However, when we try to run \arara\ on a file which contains a directive referencing this rule, we get the following error in the terminal:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+  __ _ _ __ __ _ _ __ __ _ 
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+Processing 'doc4.tex' (size: 31 bytes, last modified: 05/27/2018
+21:05:57), please wait.
+
+I have spotted an error in rule 'ls' located at '/home/paulo'. I
+could not parse the rule, something bad happened. Apparently, the
+provided YAML file is invalid. I will do my best to help you in
+any way I can. There are more details available on this
+exception:
+
+DETAILS ---------------------------------------------------------
+Cannot create property=command for
+JavaBean=com.github.cereda.arara.model.Rule@29774679
+ in
+'reader', line 1, column 1:
+    !config
+    ^
+Unable to find
+property 'command' on class: com.github.cereda.arara.model.Rule
+
+in 'reader', line 4, column 10:
+    command: ls @{details}
+      
+      ^
+
+
+Total: 0.03 seconds
+\end{codebox}
+
+The previous terminal output shows the usual error \arara\ raises when a rule in the old format is used, and thus the corresponding YAML file is considered invalid. In order to fix the rule, we need to move the \abox{command} key inside a \rbox{commands$\rightarrow$} context as a list element, as seen as follows.
+
+\begin{codebox}{A rule converted into the new format}{teal}{\icnote}{white}
+!config
+identifier: ls
+name: LS
+commands:
+- command: ls @{details}
+arguments:
+- identifier: details
+  flag: '@{ isTrue(parameters.details, "-l", "") }'
+\end{codebox}
+
+Note that this fix is sufficient to make the rule valid in the new format. Also, it is interesting to observe that the subtask will be unnamed during the execution, as there is no corresponding \abox{name} key  in the list element.
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+(LS) Unnamed task ....................................... SUCCESS
+\end{codebox}
+
+Now, let us consider an example containing a list of commands, also based on the old format. The \abox{ls} rule was updated to include two runs of the system command of the same name in the current directory:
+
+\begin{codebox}{A rule in the old format}{teal}{\icnote}{white}
+!config
+identifier: ls
+name: LS
+commands:
+- ls @{details}
+- ls @{details}
+arguments:
+- identifier: details
+  flag: '@{ isTrue(parameters.details, "-l", "") }'
+\end{codebox}
+
+Observe that the old format directly represents commands as a list of plain strings. When trying to run \arara\ on a file which contains a directive referencing the updated \abox{ls} rule, we get the following error in the terminal:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+  __ _ _ __ __ _ _ __ __ _ 
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+Processing 'doc4.tex' (size: 31 bytes, last modified: 05/27/2018
+21:05:57), please wait.
+
+I have spotted an error in rule 'ls' located at '/home/paulo'. I
+could not parse the rule, something bad happened. Apparently, the
+provided YAML file is invalid. I will do my best to help you in
+any way I can. There are more details available on this
+exception:
+
+DETAILS ---------------------------------------------------------
+Cannot create property=commands for
+JavaBean=com.github.cereda.arara.model.Rule@91161c7
+ in 'reader',
+line 1, column 1:
+    !config
+    ^
+No single argument
+constructor found for class
+com.github.cereda.arara.model.RuleCommand
+ in 'reader', line 5,
+column 1:
+    - ls @{details}
+    ^
+
+
+Total: 0.02 seconds
+\end{codebox}
+
+The previous terminal output shows a slightly different message, but the error is practically the same to the one \arara\ raised before when a rule in the old format was used. The difference relies on the missing rule property being set at the moment, but the idea remains the same. In order to fix the rule, we need to preceed every list element in the \rbox{commands$\rightarrow$} context with the \abox{command} key, as seen as follows.
+
+\begin{codebox}{A rule converted into the new format}{teal}{\icnote}{white}
+!config
+identifier: ls
+name: LS
+commands:
+- command: ls @{details}
+- command: ls @{details}
+arguments:
+- identifier: details
+  flag: '@{ isTrue(parameters.details, "-l", "") }'
+\end{codebox}
+
+This fix is sufficient to make the rule valid in the new format. Also, as mentioned before, it is interesting to observe that the subtasks will be unnamed during the execution, as there are no corresponding \abox{name} keys in the list elements.
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+(LS) Unnamed task ....................................... SUCCESS
+(LS) Unnamed task ....................................... SUCCESS
+\end{codebox}
+
+There is a helper tool available in the \href{https://github.com/cereda/arara/releases/tag/4.0}{release section} of our project repository that attempts to automatically convert rules in the old format to the new one. If you want to try it, download the \rbox{rc.jar} file from the repository and put it in the same directory where the old rules are located. You can also provide a full path instead. It is important to note that, although the tool might indicate a successful conversion, there are no guarantees that the resulting rule is fully compliant with the new format, due to potential changes in the internal workings of \arara, so your mileage may vary. In general, it should work. The rule converter is written in Java and requires a virtual machine to run. The tool has a straightforward workflow and takes just one parameter referring to the rule to be converted. The entire process should happen without intervention. When invoked without the file name, this is the expected output:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+[paulo@cambridge ~] $ java -jar rc.jar
+         _                                _
+ ___ _ _| |___    ___ ___ ___ _ _ ___ ___| |_ ___ ___
+|  _| | | | -_|  |  _| . |   | | | -_|  _|  _| -_|  _|
+|_| |___|_|___|  |___|___|_|_|\_/|___|_| |_| |___|_|
+
+version 1.0 (rules < 4.0)
+
+OH NO! -----------------------------------------------------
+This tool expects the YAML rule from previous versions of
+arara. Please, provide a proper YAML file containing the old
+rule as a parameter and try again. I will do my best to
+convert the rule to the new version 4.0 format.
+\end{codebox}
+
+Let us invoke the tool with the first version of our hypothetical \abox{ls} rule, still in the old format. The tool removes all comments from the original file, if any, and constructs a new file with a \rbox{\_v4} suffix attached to name. The original file is preserved. Just keep in mind that the new rule must be renamed afterwards, as the base name and the corresponding \abox{identifier} key must match. The output is presented as follows.
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+[paulo@cambridge ~] $ java -jar rc.jar ls.yaml
+         _                                _
+ ___ _ _| |___    ___ ___ ___ _ _ ___ ___| |_ ___ ___
+|  _| | | | -_|  |  _| . |   | | | -_|  _|  _| -_|  _|
+|_| |___|_|___|  |___|___|_|_|\_/|___|_| |_| |___|_|
+
+version 1.0 (rules < 4.0)
+
+The provided YAML rule looks OK. I will try my best to
+convert it to the new version 4.0 format adopted by arara.
+The new rule name will be written in the same directory of
+the original one and will have a '_v4' suffix to it. Keep in
+mind that the base name must match the identifier!
+
+YAY! -------------------------------------------------------
+Good news, everybody! The provided YAML rule was updated
+successfully to the new version 4.0 format of arara! Of
+course, there are no guarantees this new rule will work out
+of the box, so fingers crossed! Take a closer look at the
+manual and update your rule to use the new enhancements of
+arara. Have a great time!
+\end{codebox}
+
+% TODO fix reference
+The resulting rule is identical to the one manually converted in this section. Just note that, when creating the file, the resulting YAML file might write the keys in alphabetical order. That means that, although both files semantically represent the same rule, the positions of keys differ. However, that poses no issue at all, as long as keys are correctly defined. Also, it is important to note that, due to a conversion policy of the underlying YAML library, folded scalars in the old format are transcribed as literal scalars in the new format. We could force a folded style as default, but the resulting rule would be unnecessarily verbose, so we opted for the simpler, cleaner solution. As a direct consequence, we strongly recommend a subsequent verification and potential fix of existing literal scalars into folded ones, if any. Please refer to Section~\ref{foo} (page~\pageref{foo}) for more details on scalars.
+
+\begin{messagebox}{Replace plain strings in commands}{araracolour}{\icattention}{white}
+As plain strings are known to be problematic when defining commands, they are marked as deprecated in version 4.0 of \arara\ and will likely be removed in future releases. Since you are migrating from an old format to a new one, please consider replacing plain strings in command by proper \abox{Command} objects. The helper methods available in the rule context, including the indispensable \mtbox{getCommand} method, for obvious reasons, are detailed in Section~\ref{foo}, in page~\pageref{foo}. It is highly advisable to update your rules on this regard, if applicable.
+\end{messagebox}
