@@ -215,7 +215,7 @@ public class Converter {
             // something wrong has happened,
             // so let us print the message
             System.out.println(StringUtils.rightPad("OH NO! ", 60, "-"));
-            System.err.println(wrap(exception.getMessage()));
+            System.out.println(wrap(exception.getMessage()));
         }
     }
 
