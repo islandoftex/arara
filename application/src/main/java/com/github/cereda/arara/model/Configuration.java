@@ -121,6 +121,7 @@ public class Configuration {
         mapping.put("execution.timeout.value", 0L);
         mapping.put("execution.timeout.unit", TimeUnit.MILLISECONDS);
         mapping.put("application.version", "4.0");
+        mapping.put("application.revision", "1");
         mapping.put("directives.linebreak.pattern", "^\\s*-->\\s(.*)$");
 
         String directive = "^\\s*(\\w+)\\s*(:\\s*(\\{.*\\})\\s*)?";

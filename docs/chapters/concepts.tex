@@ -558,7 +558,7 @@ This fix is sufficient to make the rule valid in the new format. Also, as mentio
 There is a helper tool available in the \href{https://github.com/cereda/arara/releases/tag/4.0}{release section} of our project repository that attempts to automatically convert rules in the old format to the new one. If you want to try it, download the \rbox{rc.jar} file from the repository and put it in the same directory where the old rules are located. You can also provide a full path instead. It is important to note that, although the tool might indicate a successful conversion, there are no guarantees that the resulting rule is fully compliant with the new format, due to potential changes in the internal workings of \arara, so your mileage may vary. In general, it should work. The rule converter is written in Java and requires a virtual machine to run. The tool has a straightforward workflow and takes just one parameter referring to the rule to be converted. The entire process should happen without intervention. When invoked without the file name, this is the expected output:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
-[paulo@cambridge ~] $ java -jar rc.jar
+$ java -jar rc.jar
          _                                _
  ___ _ _| |___    ___ ___ ___ _ _ ___ ___| |_ ___ ___
 |  _| | | | -_|  |  _| . |   | | | -_|  _|  _| -_|  _|
@@ -576,7 +576,7 @@ convert the rule to the new version 4.0 format.
 Let us invoke the tool with the first version of our hypothetical \abox{ls} rule, still in the old format. The tool removes all comments from the original file, if any, and constructs a new file with a \rbox{\_v4} suffix attached to name. The original file is preserved. Just keep in mind that the new rule must be renamed afterwards, as the base name and the corresponding \abox{identifier} key must match. The output is presented as follows.
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
-[paulo@cambridge ~] $ java -jar rc.jar ls.yaml
+$ java -jar rc.jar ls.yaml
          _                                _
  ___ _ _| |___    ___ ___ ___ _ _ ___ ___| |_ ___ ___
 |  _| | | | -_|  |  _| . |   | | | -_|  _|  _| -_|  _|

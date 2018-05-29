@@ -42,6 +42,7 @@ The list of tasks was also redesigned to be fully justified, and each entry disp
 (PDFLaTeX) PDFLaTeX engine .............................. SUCCESS
 \end{codebox}
 
+% TODO fix reference
 As previously mentioned in Section~\ref{foo} (page~\pageref{foo}), if a task fails, \arara\ will halt the entire execution at once and immediately report back to the user. This is an example of how a failed task looks like:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
@@ -78,3 +79,39 @@ It is important to observe that, when in verbose mode, \arara\ can offer proper 
 
 \section{Options}
 \label{sec:options}
+
+In order to run \arara\ on your \TeX\ file, the simplest possible way is to provide the file name to the tool in your favourite command interpreter session, provided that the file has at least one directive:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ arara doc6.tex
+\end{codebox}
+
+The tool has a set of command line options (also known as flags or switches) that modify the underlying execution behaviour or enhance the execution workflow. If you do not provide any parameters, \arara\ will display the tool usage:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ arara
+  __ _ _ __ __ _ _ __ __ _ 
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+arara 4.0
+Copyright (c) 2012-2017, Paulo Roberto Massa Cereda
+All rights reserved
+
+usage: arara [file [--dry-run] [--log] [--verbose] [--timeout N]
+             [--max-loops N] [--language L] [ --preamble P ] [--header] |
+             --help | --version]
+ -h,--help                 print the help message
+ -H,--header               extract directives only in the file header
+ -l,--log                  generate a log output
+ -L,--language <code>      set the application language
+ -m,--max-loops <number>   set the maximum number of loops
+ -n,--dry-run              go through all the motions of running a
+                           command, but with no actual calls
+ -p,--preamble <name>      set the file preamble based on the
+                           configuration file
+ -t,--timeout <number>     set the execution timeout (in milliseconds)
+ -V,--version              print the application version
+ -v,--verbose              print the command output
+\end{codebox}

@@ -40,7 +40,6 @@ import com.github.cereda.arara.utils.CommonUtils;
 import com.github.cereda.arara.utils.DisplayUtils;
 import java.util.Locale;
 import java.util.Map;
-import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -312,9 +311,14 @@ public class Parser {
                 get("application.copyright.year");
         String number = (String) ConfigurationController.getInstance().
                 get("application.version");
+        String revision = (String) ConfigurationController.getInstance().
+                get("application.revision");
         StringBuilder builder = new StringBuilder();
         builder.append("arara ");
         builder.append(number);
+        builder.append(" (revision ");
+        builder.append(revision);
+        builder.append(")");
         builder.append("\n");
         builder.append("Copyright (c) ").append(year).append(", ");
         builder.append("Paulo Roberto Massa Cereda");
