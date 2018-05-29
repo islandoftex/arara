@@ -252,6 +252,37 @@ Note that the rule authors are displayed (so they can be blamed in case anything
 It is very important to observe that conditionals are not evaluated when our tool is executed in the \opbox{{-}dry-run} mode, although they are properly listed. Also, when a rule returns a boolean value, the code is executed regardless of this mode.
 \end{messagebox}
 
-\item[\describeop{p}{{-}preamble}]
+\item[\describeopp{p}{{-}preamble}{name}] Some \TeX\ documents require the same automation steps, e.g, a set of articles. To this end, as to avoid repeating the same preamble over and over in this specific scenario, \arara\ has the possibility of setting predefined preambles in a special section of the configuration file under unique key for later use. This command line option prepends the predefined preamble referenced by the \prbox{name} key to the current document and then proceeds to extract directives, as usual. For instance:
 
+\begin{codebox}{Preamble}{teal}{\icnote}{white}
+twopdftex: |
+  % arara: pdftex
+  % arara: pdftex
+\end{codebox}
+
+\begin{codebox}{\texttt{doc9.tex}}{teal}{\icnote}{white}
+Hello world.
+\bye
+\end{codebox}
+
+In this example, we have a preamble named \abox{twopdftex} and a \TeX\ file named \rbox{doc9.tex} with no directives. Of course, our tool will complain about missing directives, unless we deliberately inject the two directives from the predefined preamble into the current execution:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ arara -p twopdftex doc9.tex
+  __ _ _ __ __ _ _ __ __ _ 
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+Processing 'doc9.tex' (size: 18 bytes, last modified: 05/29/2018
+14:39:21), please wait.
+
+(PDFTeX) PDFTeX engine .................................. SUCCESS
+(PDFTeX) PDFTeX engine .................................. SUCCESS
+
+Total: 0.96 seconds
+
+\end{codebox}
+
+It is important to note that this is just a directive-based preamble and nothing else, so a line other than a directive is discarded. Line breaks and conditionals are supported. The preamble specification in the configuration file is detailed in Section~\ref{foo} (page~\pageref{foo}). 
 \end{description}

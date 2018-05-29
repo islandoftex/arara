@@ -43,7 +43,7 @@ The following list describes the basic structure of an \arara\ rule by presentin
 \begin{description}
 \item[\describe{M}{!config}] This keyword is mandatory and must be the first line of any \arara\ rule. It denotes the object mapping metadata to be internally used by the tool. Actually, the tool is not too demanding on using it (in fact, you could suppress it entirely and \arara\ will not complain), but it is considered good practice to start all rules with a \abox{!config} keyword regardless.
 
-\item[\describe{M}{identifier}] This key acts as a unique identifier for the rule (as expected). It is highly recommended to use lowercase letters without spaces, accents or punctuation symbols, as good practice (again). As a convention, if you have an identifier named \abox{pdflatex}, the rule filename must be \abox{pdflatex.yaml} (like our own instance). Please note that, although \abox{.yml} is known to be a valid YAML extension as well, \arara\ only considers files ending with the \abox{.yaml} extension. This is a deliberate decision.
+\item[\describe{M}{identifier}] This key acts as a unique identifier for the rule (as expected). It is highly recommended to use lowercase letters without spaces, accents or punctuation symbols, as good practice (again). As a convention, if you have an identifier named \abox{pdflatex}, the rule filename must be \rbox{pdflatex.yaml} (like our own instance). Please note that, although \rbox{.yml} is known to be a valid YAML extension as well, \arara\ only considers files ending with the \rbox{.yaml} extension. This is a deliberate decision.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 identifier: pdflatex
@@ -365,7 +365,7 @@ Although there are no conceptual guarantees for proper halting of unbounded loop
 \end{messagebox}
 
 % TODO fix reference
-All directives, regardless of their type, are internally mapped with both \abox{file} and \abox{reference} parameters, discussed earlier on, in Section~\ref{foo} (page~\pageref{foo}), as special variables in the rule context. When inspecting the log file, you will find all map keys and values for each extracted directive (actually, there is an entire log section devoted to detailing directives found in the code). This feature is covered in Section~\ref{foo}, page~\pageref{foo}. See, for instance, the report of the directive extraction and normalization process performed by \arara\ when inspecting \abox{doc2.tex}, available in the log file. Note that timestamps were deliberately removed in order to declutter the output, and line breaks were included as to easily spot the log entries.
+All directives, regardless of their type, are internally mapped with both \abox{file} and \abox{reference} parameters, discussed earlier on, in Section~\ref{foo} (page~\pageref{foo}), as special variables in the rule context. When inspecting the log file, you will find all map keys and values for each extracted directive (actually, there is an entire log section devoted to detailing directives found in the code). This feature is covered in Section~\ref{foo}, page~\pageref{foo}. See, for instance, the report of the directive extraction and normalization process performed by \arara\ when inspecting \rbox{doc2.tex}, available in the log file. Note that timestamps were deliberately removed in order to declutter the output, and line breaks were included as to easily spot the log entries.
 
 \begin{codebox}{\texttt{doc2.tex}}{teal}{\icnote}{white}
 % arara: pdflatex
@@ -388,7 +388,7 @@ conditional: { NONE }, lines: [2] }
 \end{codebox}
 
 % TODO fix reference
-The directive context also features another special parameter named \abox{files} which expects a non-empty list of file names as plain string values. For each element of this list, \arara\ will replicate the current directive and point the element being iterated as current \abox{file} and \abox{reference} values (being the latter resolved to a proper absolute, canonical path of the former). See, for instance, the report of the directive extraction and normalization process performed by \arara\ when inspecting \abox{doc3.tex}, available in the log file.
+The directive context also features another special parameter named \abox{files} which expects a non-empty list of file names as plain string values. For each element of this list, \arara\ will replicate the current directive and point the element being iterated as current \abox{file} and \abox{reference} values (being the latter resolved to a proper absolute, canonical path of the former). See, for instance, the report of the directive extraction and normalization process performed by \arara\ when inspecting \rbox{doc3.tex}, available in the log file.
 
 \begin{codebox}{\texttt{doc3.tex}}{teal}{\icnote}{white}
 % arara: pdflatex: { files: [ doc1.tex, doc2.tex ] }
