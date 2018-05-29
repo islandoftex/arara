@@ -372,3 +372,17 @@ Total: 0.69 seconds
 \end{itemize}
 
 It is highly recommended to use complete file names with our tool, as to make sure the correct file is being processed. If your command line interpreter features tab completion, you can use it to automatically fill partially typed file names from your working directory.
+
+\begin{messagebox}{Exit status support}{araracolour}{\icok}{white}
+\arara\ follows the good practices of software development and provides three values for exit status, so our tool can be programmatically used in scripts and other complex workflows.
+
+\vspace{1em}
+
+{\centering
+\def\arraystretch{1.5}
+\begin{tabular}{ll}
+\rbox[araracolour]{\hphantom{x}0\hphantom{x}} & Successful execution \\
+\rbox[araracolour]{\hphantom{x}1\hphantom{x}} & One of the rules failed \\
+\rbox[araracolour]{\hphantom{x}2\hphantom{x}} & An exception was raised
+\end{tabular}\par}
+\end{messagebox}
