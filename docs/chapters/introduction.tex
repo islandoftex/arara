@@ -7,24 +7,24 @@ Hello there, welcome to \arara, the cool \TeX\ automation tool! This chapter is 
 \section{What is this tool?}
 \label{sec:whatisthistool}
 
-Good question! \arara\ is a \TeX\ automation tool based on rules and directives. It is, in some aspects, similar to other well-known tools like \verb|latexmk| and \verb|rubber|. The key difference (and probably the selling point) might be the fact that \arara\ aims at explicit instructions in the source code (in the form of comments) in order to determine what to do instead of relying on other resources, such as log file analysis. It is a different approach for an automation tool, and we have both advantages and disadvantages of such design. Let us use the following file \abox{hello.tex} as an example:
+Good question! \arara\ is a \TeX\ automation tool based on rules and directives. It is, in some aspects, similar to other well-known tools like \verb|latexmk| and \verb|rubber|. The key difference (and probably the selling point) might be the fact that \arara\ aims at explicit instructions in the source code (in the form of comments) in order to determine what to do instead of relying on other resources, such as log file analysis. It is a different approach for an automation tool, and we have both advantages and disadvantages of such design. Let us use the following file \rbox{hello.tex} as an example:
 
-\begin{codebox}{\texttt{hello.tex}}{teal}{\icnote}{white}
+\begin{ncodebox}{Source file}{teal}{\icnote}{white}{hello.tex}
 \documentclass{article}
 
 \begin{document}
 Hello world!
 \end{document}
-\end{codebox}
+\end{ncodebox}
 
-How would one successfully compile \abox{hello.tex} with \abox{latexmk} and \abox{rubber}, for instance? It is quite straightforward: it is just a matter of providing the file to the tool and letting it do the hard work:
+How would one successfully compile \rbox{hello.tex} with \rbox{latexmk} and \rbox{rubber}, for instance? It is quite straightforward: it is just a matter of providing the file to the tool and letting it do the hard work:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ latexmk -pdf mydoc.tex
 $ rubber --pdf mydoc.tex
 \end{codebox}
 
-The mentioned tools perform an analysis on the file and decide what has to be done. However, if one tries to invoke \abox{arara} on \abox{hello.tex}, I am afraid \emph{nothing} will be generated; the truth is, \arara\ does not know what to do with your file, and the tool will even raise an error message complaining about this issue:
+The mentioned tools perform an analysis on the file and decide what has to be done. However, if one tries to invoke \rbox{arara} on \rbox{hello.tex}, I am afraid \emph{nothing} will be generated; the truth is, \arara\ does not know what to do with your file, and the tool will even raise an error message complaining about this issue:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ arara hello.tex
@@ -48,16 +48,16 @@ Quite surprising. However, this behaviour is not wrong at all, it is completely 
 That is the major difference of \arara\ when compared to other tools: \emph{it is not an automatic process and the tool does not employ any guesswork on its own}. You are in control of your documents; \arara\ will not do anything unless you \emph{teach it how to do a task and explicitly tell it to execute the task}.
 \end{messagebox}
 
-Now, how does one tell \arara\ to do a task? That is the actually the easy part, provided that you have everything up and running. We accomplish the task by adding a special comment line, hereafter known as \emph{directive}, somewhere in our \abox{hello.tex} file (preferably in the first lines):
+Now, how does one tell \arara\ to do a task? That is the actually the easy part, provided that you have everything up and running. We accomplish the task by adding a special comment line, hereafter known as \emph{directive}, somewhere in our \rbox{hello.tex} file (preferably in the first lines):
 
-\begin{codebox}{\texttt{hello.tex} with a directive}{teal}{\icnote}{white}
+\begin{ncodebox}{Source file}{teal}{\icnote}{white}{hello.tex}
 % arara: pdflatex
 \documentclass{article}
 
 \begin{document}
 Hello world!
 \end{document}
-\end{codebox}
+\end{ncodebox}
 
 % TODO fix reference
 For now, do not worry too much about the terms, we will come back to then later on in Chapter~\ref{foo} (page~\pageref{foo}). It suffices to say that \arara\ expects \emph{you} to provide a list of tasks, and this is done by inserting special comments in the source file. Let us see how \arara\ behaves with this updated code:

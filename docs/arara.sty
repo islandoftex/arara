@@ -317,6 +317,50 @@
   after skip=1.4em
 }
 
+\newcommand{\addname}[2]{%
+  \begin{scope}[
+    y=0.80pt,
+    x=0.80pt,
+    yscale=-1.000000,
+    xscale=1.000000,
+    inner sep=0pt,
+    outer sep=0pt,
+    shift={([xshift=-0.8em, yshift=3.6em]frame.north east)},
+  ]
+  \node [anchor=east] {\rbox[#2]{#1}};
+  \end{scope}
+}
+
+% 1 -> title
+% 2 -> frame colour
+% 3 -> icon description
+% 4 -> title colour
+% 5 -> code name
+\newtcblisting{ncodebox}[5]{
+  adjusted title=#1,
+  adjusted title after break={\centering #1 (ctd.)},
+  halign title=center,
+  fonttitle=\bfseries\sffamily,
+  enhanced,
+  drop lifted shadow,
+  colback=#2!5,
+  colframe=#2,
+  breakable,
+  overlay={#3{#2}\addname{#5}{#2}},
+  toptitle=0.2em,
+  bottomtitle=.2em,
+  coltitle=#4,
+  before skip=1em,
+  left=8mm,
+  listing only,
+  listing options={
+    numbers=left,
+    numberstyle=\scriptsize\sffamily\color{#2},
+    basicstyle=\footnotesize\ttfamily,
+  },
+  after skip=1.4em
+}
+
 \newtcbox{\abox}[1][teal]{
   on line,
   arc=3pt,

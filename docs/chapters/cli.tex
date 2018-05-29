@@ -123,13 +123,13 @@ The available options for our tool are detailed as follows. Each option contains
 
 \item[\describeop{H}{header}] This option changes the mechanics of how \arara\ extracts the directives from the code. The tool always reads the entire file and extracts every single directive found throughout the code. However, by activating this switch, \arara\ will extract all directives from the beginning of the file until it reaches a line that is not empty or a comment (hence the option name). Consider the following example:
 
-\begin{codebox}{\texttt{doc7.tex}}{teal}{\icnote}{white}
+\begin{ncodebox}{Source file}{teal}{\icnote}{white}{doc7.tex}
 % arara: pdftex
 Hello world.
 \bye
 
 % arara: pdftex
-\end{codebox}
+\end{ncodebox}
 
 % TODO fix reference
 When running \arara\ without this option, two directives will be extracted (the ones found in lines 1 and 5). However, if executed with \opbox{{-}header}, the tool will only extract one directive (from line 1), as it will stop the extraction process as soon as it reaches line 2. This option can also be activated by default in the configuration file (see Section~\ref{foo}, page~\pageref{foo}).
@@ -260,10 +260,10 @@ twopdftex: |
   % arara: pdftex
 \end{codebox}
 
-\begin{codebox}{\texttt{doc9.tex}}{teal}{\icnote}{white}
+\begin{ncodebox}{Source file}{teal}{\icnote}{white}{doc9.tex}
 Hello world.
 \bye
-\end{codebox}
+\end{ncodebox}
 
 In this example, we have a preamble named \abox{twopdftex} and a \TeX\ file named \rbox{doc9.tex} with no directives. Of course, our tool will complain about missing directives, unless we deliberately inject the two directives from the predefined preamble into the current execution:
 

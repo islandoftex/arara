@@ -7,7 +7,7 @@ Time for our first contact with \arara! I must strees that is very important to 
 \section{Rules}
 \label{sec:rule}
 
-A \emph{rule} is a formal description of how \arara\ handles a certain task. For instance, if we want to use \abox{pdflatex} with our tool, we should have a rule for that. Directives are mapped to rules, so a call to a nonexistent rule \abox{foo}, for instance, will indeed raise an error:
+A \emph{rule} is a formal description of how \arara\ handles a certain task. For instance, if we want to use \rbox{pdflatex} with our tool, we should have a rule for that. Directives are mapped to rules, so a call to a nonexistent rule \abox{foo}, for instance, will indeed raise an error:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
   __ _ _ __ __ _ _ __ __ _ 
@@ -367,7 +367,7 @@ Although there are no conceptual guarantees for proper halting of unbounded loop
 % TODO fix reference
 All directives, regardless of their type, are internally mapped with both \abox{file} and \abox{reference} parameters, discussed earlier on, in Section~\ref{foo} (page~\pageref{foo}), as special variables in the rule context. When inspecting the log file, you will find all map keys and values for each extracted directive (actually, there is an entire log section devoted to detailing directives found in the code). This feature is covered in Section~\ref{foo}, page~\pageref{foo}. See, for instance, the report of the directive extraction and normalization process performed by \arara\ when inspecting \rbox{doc2.tex}, available in the log file. Note that timestamps were deliberately removed in order to declutter the output, and line breaks were included as to easily spot the log entries.
 
-\begin{codebox}{\texttt{doc2.tex}}{teal}{\icnote}{white}
+\begin{ncodebox}{Source file}{teal}{\icnote}{white}{doc2.tex}
 % arara: pdflatex
 % arara: pdflatex: { shell: yes }
 \documentclass{article}
@@ -375,7 +375,7 @@ All directives, regardless of their type, are internally mapped with both \abox{
 \begin{document}
 Hello world.
 \end{document}
-\end{codebox}
+\end{ncodebox}
 
 \begin{codebox}{An excerpt of the log file (directive section)}{teal}{\icnote}{white}
 Directive: { identifier: pdflatex, parameters:
@@ -390,11 +390,11 @@ conditional: { NONE }, lines: [2] }
 % TODO fix reference
 The directive context also features another special parameter named \abox{files} which expects a non-empty list of file names as plain string values. For each element of this list, \arara\ will replicate the current directive and point the element being iterated as current \abox{file} and \abox{reference} values (being the latter resolved to a proper absolute, canonical path of the former). See, for instance, the report of the directive extraction and normalization process performed by \arara\ when inspecting \rbox{doc3.tex}, available in the log file.
 
-\begin{codebox}{\texttt{doc3.tex}}{teal}{\icnote}{white}
+\begin{ncodebox}{Source file}{teal}{\icnote}{white}{doc3.tex}
 % arara: pdflatex: { files: [ doc1.tex, doc2.tex ] }
 Hello world.
 \bye
-\end{codebox}
+\end{ncodebox}
 
 \begin{codebox}{An excerpt of the log file (directive section)}{teal}{\icnote}{white}
 Directive: { identifier: pdflatex, parameters:
