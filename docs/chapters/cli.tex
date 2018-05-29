@@ -2,3 +2,55 @@
 \chapter{Command line}
 \label{chap:commandline}
 
+\arara\ is a command line tool. It can be used in a plethora of command interpreter implementations, from bash to a Windows prompt, provided that the Java runtime environment is accessible within the current session. This chapter covers the user interface design, as well as options (also known as flags or switches) that modify the underlying application behaviour.
+
+\section{User interface design}
+\label{sec:userinterfacedesign}
+
+The goal of a user interface design is to make the interaction as simple and efficient as possible. Good user interface design facilitates finishing the task at hand without drawing unnecessary attention to itself. For \arara\ 4.0, we redesigned the interface in order to look more pleasant to the eye, after all, we work with \TeX\ and friends:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+  __ _ _ __ __ _ _ __ __ _ 
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+Processing 'doc5.tex' (size: 307 bytes, last modified: 05/29/2018
+08:57:30), please wait.
+
+(PDFLaTeX) PDFLaTeX engine .............................. SUCCESS
+(BibTeX) The BibTeX reference management software ....... SUCCESS
+(PDFLaTeX) PDFLaTeX engine .............................. SUCCESS
+(PDFLaTeX) PDFLaTeX engine .............................. SUCCESS
+
+Total: 1.45 seconds
+\end{codebox}
+
+First of all, we have the nice application logo, displayed using ASCII art. The entire layout is based on monospaced font spacing, usually used in terminal prompts. Hopefully, we expect you to be using a monospaced font, otherwise the visual effect will not be so pleasant. First and foremost, \arara\ displays details about the file being processed, including size and modification status:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+Processing 'doc5.tex' (size: 307 bytes, last modified: 05/29/2018
+08:57:30), please wait.
+\end{codebox}
+
+The list of tasks was also redesigned to be fully justified, and each entry displays both task and subtask names (the former being displayed enclosed in parentheses), besides of course the usual execution result:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+(PDFLaTeX) PDFLaTeX engine .............................. SUCCESS
+(BibTeX) The BibTeX reference management software ....... SUCCESS
+(PDFLaTeX) PDFLaTeX engine .............................. SUCCESS
+(PDFLaTeX) PDFLaTeX engine .............................. SUCCESS
+\end{codebox}
+
+As previously mentioned in Section~\ref{foo} (page~\pageref{foo}), if a task fails, \arara\ will halt the entire execution at once and immediately report back to the user. This is an example of how a failed task looks like:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+(PDFLaTeX) PDFLaTeX engine .............................. FAILURE
+\end{codebox}
+
+Also, observe that \arara\ displays the execution time before terminating, in seconds. The execution time has a very simple precision, as it is meant to be easily readable, and should not be considered for command profiling.
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+Total: 1.45 seconds
+\end{codebox}
+
