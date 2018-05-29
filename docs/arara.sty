@@ -49,6 +49,8 @@
 
 \RequirePackage{bookman}
 \RequirePackage[regular]{sourcecodepro}
+\RequirePackage{amssymb}
+\RequirePackage{amsfonts}
 
 \RequirePackage[
   backend=biber,
@@ -353,6 +355,8 @@
 
 \newcommand{\varbox}[1]{\rbox[araracolour]{$\diamondsuit$\,#1}}
 \newcommand{\mtbox}[1]{\rbox{$\diamondsuit$\,#1}}
+\newcommand{\prbox}[1]{\rbox[attentioncolour]{\color{black}$\rhd$\,#1}}
+\newcommand{\opbox}[1]{\rbox[cyan]{\color{black}{-}#1}}
 \newcommand{\cdbox}[1]{\rbox{$\star$\,#1}}
 \newcommand{\describe}[2]{\rbox[araracolour]{#1}~%
 \abox{#2}}
@@ -360,6 +364,8 @@
 \rbox{#2$\rightarrow$}~\abox{#3}}
 \newcommand{\describeconditional}[2]{\rbox[araracolour]%
 {\normalfont\itshape\,\,#1\enspace}~\cdbox{#2}}
+\newcommand{\describeop}[2]{\opbox{#1}~\opbox{{-}#2}}
+\newcommand{\describeopp}[3]{\describeop{#1}{#2}~\prbox{#3}}
 
 \renewcommand{\secheadstyle}{\Large\normalfont\em}
 \renewcommand{\subsecheadstyle}{\large\normalfont\em}

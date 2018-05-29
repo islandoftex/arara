@@ -86,7 +86,7 @@ In order to run \arara\ on your \TeX\ file, the simplest possible way is to prov
 $ arara doc6.tex
 \end{codebox}
 
-The tool has a set of command line options (also known as flags or switches) that modify the underlying execution behaviour or enhance the execution workflow. If you do not provide any parameters, \arara\ will display the tool usage:
+The tool has a set of command line options (also known as flags or switches) that modify the underlying execution behaviour or enhance the execution workflow. If you do not provide any parameters, \arara\ will display the tool usage and the available options:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ arara
@@ -95,13 +95,13 @@ $ arara
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
 
-arara 4.0
+arara 4.0 (revision 1)
 Copyright (c) 2012-2017, Paulo Roberto Massa Cereda
 All rights reserved
 
 usage: arara [file [--dry-run] [--log] [--verbose] [--timeout N]
-             [--max-loops N] [--language L] [ --preamble P ] [--header] |
-             --help | --version]
+             [--max-loops N] [--language L] [ --preamble P ]
+             [--header] | --help | --version]
  -h,--help                 print the help message
  -H,--header               extract directives only in the file header
  -l,--log                  generate a log output
@@ -115,3 +115,143 @@ usage: arara [file [--dry-run] [--log] [--verbose] [--timeout N]
  -V,--version              print the application version
  -v,--verbose              print the command output
 \end{codebox}
+
+The available options for our tool are detailed as follows. Each option contains short and long variations, which are denoted by \opbox{o} and \opbox{{-}option} in the command line, respectivelly. Additionally, when a parameter is required by the current option, it will be denoted by \prbox{parameter} in the description.
+
+\begin{description}
+\item[\describeop{h}{help}] As the name indicates, this option prints the help message containing the tool usage and the list of all available options. The tool exits afterwards. When running \arara\ without any options or a file to be processed, this is the default behaviour. This option has higher priority over the others.
+
+\item[\describeop{H}{header}] This option changes the mechanics of how \arara\ extracts the directives from the code. The tool always reads the entire file and extracts every single directive found throughout the code. However, by activating this switch, \arara\ will extract all directives from the beginning of the file until it reaches a line that is not empty or a comment (hence the option name). Consider the following example:
+
+\begin{codebox}{\texttt{doc7.tex}}{teal}{\icnote}{white}
+% arara: pdftex
+Hello world.
+\bye
+
+% arara: pdftex
+\end{codebox}
+
+% TODO fix reference
+When running \arara\ without this option, two directives will be extracted (the ones found in lines 1 and 5). However, if executed with \opbox{{-}header}, the tool will only extract one directive (from line 1), as it will stop the extraction process as soon as it reaches line 2. This option can also be activated by default in the configuration file (see Section~\ref{foo}, page~\pageref{foo}).
+
+% TODO fix reference
+\item[\describeop{l}{log}] This option enables the logging feature of our tool. All streams from all system commands will be logged and, at the end of the execution, a consolidated log file named \rbox{arara.log} will be generated. This option can also be activated by default in the configuration file (see Section~\ref{foo}, page~\pageref{foo}). Refer to Section~\ref{foo}, in page~\pageref{foo}, for more details on the logging feature.
+
+\item[\describeopp{L}{language}{code}] This option sets the language of the current execution on \arara\ according to the language code \prbox{code} value provided as parameter. The language code tries to follow the ISO 639 norm, standardized nomenclature used to classify languages. For example, this is our tool speaking Dutch:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ arara -L nl doc5.tex
+
+  __ _ _ __ __ _ _ __ __ _ 
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+Verwerken van 'doc5.tex' (grootte: 307 bytes, laatst gewijzigd:
+05/29/2018 11:50:32), een ogenblik geduld.
+
+(PDFLaTeX) PDFLaTeX engine ............................ SUCCESVOL
+(BibTeX) The BibTeX reference management software ..... SUCCESVOL
+(PDFLaTeX) PDFLaTeX engine ............................ SUCCESVOL
+(PDFLaTeX) PDFLaTeX engine ............................ SUCCESVOL
+
+Totaal: 1,59 seconden
+\end{codebox}
+
+\begin{messagebox}{Mea navis volitans anguillis plena est}{araracolour}{\icok}{white}
+At time of writing, \arara\ is able to speak English, German, Dutch, Italian and Brazilian Portuguese out of the box. There is also a special dialect named Broad Norfolk, spoken by those living in the county of Norfolk in England.
+
+\vspace{1em}
+
+{\centering
+\def\arraystretch{1.5}
+\setlength\tabcolsep{1em}
+\begin{tabular}{lll}
+\rbox[araracolour]{\hphantom{x}en\hphantom{x}} English &
+\rbox[araracolour]{\hphantom{x}de\hphantom{x}} German &
+\rbox[araracolour]{\hphantom{x}qn\hphantom{x}} Broad Norfolk \\
+\rbox[araracolour]{\hphantom{x}it\hphantom{x}} Italian &
+\rbox[araracolour]{\hphantom{x}nl\hphantom{x}} Dutch &
+\rbox[araracolour]{ptbr} Portuguese (BR)
+\end{tabular}\par}
+
+\vspace{1.4em}
+
+Would you like to make \arara\ speak your own language? Splendid! We would love to have you in the team! Just send us an electronic mail, join our \href{https://gitter.im/cereda/arara}{dedicated chatroom} or \href{https://github.com/cereda/arara/issues}{open an issue} about it. The localization process is quite straightforward, we can help you. Any language is welcome!
+\end{messagebox}
+
+% TODO fix reference
+This option can also be specified in the configuration file (see Section~\ref{foo}, page~\pageref{foo}). However, one can always override this setting by running the tool with an explicit \opbox{L} option.
+
+% TODO fix reference
+\item[\describeopp{m}{{-}max-loops}{number}] As a means to avoid infinite iterations, \arara\ has a predefined maximum number of loops, current set to 10, as a technical solution (seen in Section~\ref{foo}, page~\pageref{foo}). For instance, consider the following directive:
+
+\begin{codebox}{A naughty directive}{teal}{\icnote}{white}
+% arara: pdftex while true
+\end{codebox}
+
+The \opbox{{-}max-loops} option is used to redefine the maximum number of loops our tool will allow for potential infinite iterations. Any positive integer can be used as \prbox{number} value for this option. An execution of the previous directive with a lower maximum number of loops is shown as follows:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ arara -m 2 doc8.tex 
+  __ _ _ __ __ _ _ __ __ _ 
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+Processing 'doc8.tex' (size: 45 bytes, last modified: 05/29/2018
+12:32:14), please wait.
+
+(PDFTeX) PDFTeX engine .................................. SUCCESS
+(PDFTeX) PDFTeX engine .................................. SUCCESS
+
+Total: 0.58 seconds
+\end{codebox}
+
+% TODO fix reference
+This option can also be specified in the configuration file (see Section~\ref{foo}, page~\pageref{foo}). However, one can always override this setting by running the tool with an explicit \opbox{m} option.
+
+\item[\describeop{n}{{-}dry-run}] This option makes \arara\ go through all the motions of running tasks and subtasks, but with no actual calls. It is a very useful feature for testing the sequence of underlying system commands to be performed on a file. For instance, consider the following execution:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ arara -n doc5.tex 
+  __ _ _ __ __ _ _ __ __ _ 
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+Processing 'doc5.tex' (size: 307 bytes, last modified: 05/29/2018
+11:50:32), please wait.
+
+[DR] (PDFLaTeX) PDFLaTeX engine
+-----------------------------------------------------------------
+Authors: Marco Daniel, Paulo Cereda
+About to run: [ pdflatex, doc5.tex ]
+
+[DR] (BibTeX) The BibTeX reference management software
+-----------------------------------------------------------------
+Authors: Marco Daniel, Paulo Cereda
+About to run: [ bibtex, doc5 ]
+
+[DR] (PDFLaTeX) PDFLaTeX engine
+-----------------------------------------------------------------
+Authors: Marco Daniel, Paulo Cereda
+About to run: [ pdflatex, doc5.tex ]
+
+[DR] (PDFLaTeX) PDFLaTeX engine
+-----------------------------------------------------------------
+Authors: Marco Daniel, Paulo Cereda
+About to run: [ pdflatex, doc5.tex ]
+
+Total: 0.27 seconds
+\end{codebox}
+
+Note that the rule authors are displayed (so they can be blamed in case anything goes wrong), as well as the system command to be executed. It is an interesting approach to see everything that will happen to your document and in which order.
+
+\begin{messagebox}{Conditionals and boolean values}{attentioncolour}{\icattention}{black}
+It is very important to observe that conditionals are not evaluated when our tool is executed in the \opbox{{-}dry-run} mode, although they are properly listed. Also, when a rule returns a boolean value, the code is executed regardless of this mode.
+\end{messagebox}
+
+\item[\describeop{p}{{-}preamble}]
+
+\end{description}
