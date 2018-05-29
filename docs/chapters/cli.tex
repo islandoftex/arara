@@ -48,9 +48,33 @@ As previously mentioned in Section~\ref{foo} (page~\pageref{foo}), if a task fai
 (PDFLaTeX) PDFLaTeX engine .............................. FAILURE
 \end{codebox}
 
-Also, observe that \arara\ displays the execution time before terminating, in seconds. The execution time has a very simple precision, as it is meant to be easily readable, and should not be considered for command profiling.
+Also, observe that our tool displays the execution time before terminating, in seconds. The execution time has a very simple precision, as it is meant to be easily readable, and should not be considered for command profiling.
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 Total: 1.45 seconds
 \end{codebox}
 
+The tool has two execution modes: \emph{silent}, which is the default, and \emph{verbose}, which prints as much information about tasks as possible. When in silent mode, \arara\ will simply display the task and subtask names, as well as the execution result. Nothing more is added to the output. For instance:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+(BibTeX) The BibTeX reference management software ....... SUCCESS
+\end{codebox}
+
+When executed in verbose mode, \arara\ will display the underlying system command output as well, when applied. In version 4.0 of our tool, this mode was also entirely redesigned in order to avoid unnecessary clutter, so it would be easier to spot each task. For instance:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+-----------------------------------------------------------------
+(BibTeX) The BibTeX reference management software
+-----------------------------------------------------------------
+This is BibTeX, Version 0.99d (TeX Live 2017)
+The top-level auxiliary file: doc5.aux
+The style file: plain.bst
+Database file #1: mybib.bib
+
+--------------------------------------------------------- SUCCESS
+\end{codebox}
+
+It is important to observe that, when in verbose mode, \arara\ can offer proper interaction when a certain system command requires user intervention. However, when in silent mode, the tool will simply discard this requirement and the command will almost surely fail.
+
+\section{Options}
+\label{sec:options}
