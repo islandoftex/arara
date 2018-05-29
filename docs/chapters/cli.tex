@@ -338,7 +338,37 @@ Our tool natively recognizes five file types based on their extensions, namely \
 \begin{itemize}[label={--}]
 \item First and foremost, if the provided file name already contains a valid extension, the tool attempts an exact match. If the file exists, it will be selected. This is the best approach if your working directory contain other files sharing the same base name.
 
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ arara doc11.tex
+  __ _ _ __ __ _ _ __ __ _ 
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+Processing 'doc11.tex' (size: 34 bytes, last modified: 05/29/2018
+19:40:35), please wait.
+
+(PDFTeX) PDFTeX engine .................................. SUCCESS
+
+Total: 0.69 seconds
+\end{codebox}
+
 \item If the provided file name has an unsupported extension or no extension at all, the tool iterates through the list of default extensions, appending the current element to the file name and attempting an exact match. If the file exists, it will be selected.
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ arara doc11
+  __ _ _ __ __ _ _ __ __ _ 
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+Processing 'doc11.tex' (size: 34 bytes, last modified: 05/29/2018
+19:40:35), please wait.
+
+(PDFTeX) PDFTeX engine .................................. SUCCESS
+
+Total: 0.69 seconds
+\end{codebox}
 \end{itemize}
 
 It is highly recommended to use complete file names with our tool, as to make sure the correct file is being processed. If your command line interpreter features tab completion, you can use it to automatically fill partially typed file names from your working directory.
