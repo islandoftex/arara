@@ -43,7 +43,7 @@ The following list describes the basic structure of an \arara\ rule by presentin
 \begin{description}
 \item[\describe{M}{!config}] This keyword is mandatory and must be the first line of any \arara\ rule. It denotes the object mapping metadata to be internally used by the tool. Actually, the tool is not too demanding on using it (in fact, you could suppress it entirely and \arara\ will not complain), but it is considered good practice to start all rules with a \abox{!config} keyword regardless.
 
-\item[\describe{M}{identifier}] This key acts as a unique identifier for the rule (as expected). It is highly recommended to use lowercase letters without spaces, accents or punctuation symbols, as good practice (again). As a convention, if you have an identifier named \abox{pdflatex}, the rule filename must be \rbox{pdflatex.yaml} (like our own instance). Please note that, although \rbox{.yml} is known to be a valid YAML extension as well, \arara\ only considers files ending with the \rbox{.yaml} extension. This is a deliberate decision.
+\item[\describe{M}{identifier}] This key acts as a unique identifier for the rule (as expected). It is highly recommended to use lowercase letters without spaces, accents or punctuation symbols, as good practice (again). As a convention, if you have an identifier named \abox{pdflatex}, the rule filename must be \rbox{pdflatex.yaml} (like our own instance). Please note that, although \rbox{yml} is known to be a valid YAML extension as well, \arara\ only considers files ending with the \rbox{yaml} extension. This is a deliberate decision.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 identifier: pdflatex

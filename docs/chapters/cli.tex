@@ -332,3 +332,13 @@ You can combine options, use long or short variations interchangeably and write 
 \section{File name lookup}
 \label{sec:filenamelookup}
 
+% TODO fix reference
+Our tool natively recognizes five file types based on their extensions, namely \rbox{tex}, \rbox{dtx}, \rbox{ltx}, \rbox{drv}, and \rbox{ins}, in this particular order. Other extensions can be added through a proper mapping in the configuration file, as well as modifying the lookup order. This feature is detailed later on, in Section~\ref{foo} (page~\pageref{foo}). \arara\ employs the following scheme for file name lookup:
+
+\begin{itemize}[label={--}]
+\item First and foremost, if the provided file name already contains a valid extension, the tool attempts an exact match. If the file exists, it will be selected. This is the best approach if your working directory contain other files sharing the same base name.
+
+\item If the provided file name has an unsupported extension or no extension at all, the tool iterates through the list of default extensions, appending the current element to the file name and attempting an exact match. If the file exists, it will be selected.
+\end{itemize}
+
+It is highly recommended to use complete file names with our tool, as to make sure the correct file is being processed. If your command line interpreter features tab completion, you can use it to automatically fill partially typed file names from your working directory.
