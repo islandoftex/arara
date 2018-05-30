@@ -2,6 +2,38 @@
 \chapter{Configuration file}
 \label{chap:configurationfile}
 
+\arara\ provides a persistent model of modifying the underlying execution behaviour or enhance the execution workflow through the concept of a configuration file. This chapter provides the basic structure of such file, as well as details on the file lookup in the operating system.
+
+\section{File lookup}
+\label{sec:filelookup}
+
+Our tool looks for the presence of at least one of four very specific files before execution. These files are presented as follows. Observe that the directories must have the correct permissions for proper lookup and access. The lookup order is also presented.
+
+\vspace{1em}
+
+{\centering
+\begin{tabular}{cccc}
+{\footnotesize\textit{attempt 1}} &
+{\footnotesize\textit{attempt 2}} &
+{\footnotesize\textit{attempt 3}} &
+{\footnotesize\textit{attempt 4}} \\
+\rbox{.araraconfig.yaml} &
+\rbox{araraconfig.yaml} &
+\rbox{.arararc.yaml} &
+\rbox{arararc.yaml}
+\end{tabular}
+\par}
+
+\vspace{1.4em}
+
+From version 4.0 on, \arara\ provides two approaches regarding the location of a configuration file which dictate how the execution should behave and happen from a user perspective. They are described as follows.
+
+\begin{description}
+\item[global configuration file]
+
+\item[local configuration file]
+\end{description}
+
 %\begin{codebox}{Terminal}{teal}{\icnote}{white}
 %\end{codebox}
 
