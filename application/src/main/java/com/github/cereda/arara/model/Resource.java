@@ -275,7 +275,7 @@ public class Resource {
      * @return The look and feel reference.
      */
     public String getLaf() {
-        return laf;
+        return CommonUtils.removeKeyword(laf);
     }
 
     /**

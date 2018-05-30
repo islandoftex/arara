@@ -43,6 +43,16 @@ If the logging feature is properly enabled, \arara\ will indicate in the corresp
 \section{Basic structure}
 \label{sec:basicstructure}
 
+The following list describes the basic structure of an \arara\ configuration file by presenting the proper elements (or keys, if we consider the proper YAML nomenclature). Observe that elements marked as \rbox[araracolour]{M} are mandatory (i.e, the configuration file \emph{has} to have them in order to work). Similarly, elements marked as \rbox[araracolour]{O} are optional, so you can safely ignore them when writing a configuration file for our tool.
+
+\begin{description}
+\item[\describe{M}{!config}] This keyword is mandatory and must be the first line of a configuration file. It denotes the object mapping metadata to be internally used by the tool. Actually, the tool is not too demanding on using it (in fact, you could suppress it entirely and \arara\ will not complain), but it is considered good practice to start a configuration file with a \abox{!config} keyword regardless.
+
+\item[\describecf{O}{string list}{paths}]
+
+%\item[\describecf{O}{boolean}{verbose}\hfill {\normalfont\itshape default:} \rbox{false}]
+\end{description}
+
 % optional, but at least one should happen
 
 %\begin{codebox}{Terminal}{teal}{\icnote}{white}
