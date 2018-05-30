@@ -1,5 +1,9 @@
 !config
-# pdftk rule for arara
+# Arara, the cool TeX automation tool
+# Copyright (c) 2018, Paulo Roberto Massa Cereda 
+# All rights reserved.
+#
+# This rule is part of arara.
 identifier: pdftk
 name: PDFtk
 authors:

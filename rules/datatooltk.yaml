@@ -1,4 +1,9 @@
 !config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2018, Paulo Roberto Massa Cereda 
+# All rights reserved.
+#
+# This rule is part of arara.
 identifier: datatooltk
 name: DatatoolTk
 authors:
