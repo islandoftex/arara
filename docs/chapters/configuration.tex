@@ -38,7 +38,12 @@ From version 4.0 on, \arara\ provides two approaches regarding the location of a
 A configuration file should never be empty, otherwise \arara\ will complain about it. Make sure to populate it with at least one key, or do not write a configuration file at all. The available options are described in Section~\ref{foo}, page~\pageref{foo}.
 \end{messagebox}
 
-% see which CF is used: log file
+If the logging feature is properly enabled, \arara\ will indicate in the corresponding \rbox{arara.log} file whether a configuration file was used during the execution and, if so, the corresponding canonical, absolute path. Logging is detailed later on, in Section~\ref{foo} (page~\pageref{foo}).
+
+\section{Basic structure}
+\label{sec:basicstructure}
+
+% optional, but at least one should happen
 
 %\begin{codebox}{Terminal}{teal}{\icnote}{white}
 %\end{codebox}
