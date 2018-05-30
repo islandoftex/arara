@@ -35,9 +35,11 @@ From version 4.0 on, \arara\ provides two approaches regarding the location of a
 \end{description}
 
 \begin{messagebox}{Beware of empty configuration files}{attentioncolour}{\icattention}{black}
+% TODO fix reference
 A configuration file should never be empty, otherwise \arara\ will complain about it. Make sure to populate it with at least one key, or do not write a configuration file at all. The available options are described in Section~\ref{foo}, page~\pageref{foo}.
 \end{messagebox}
 
+% TODO fix reference
 If the logging feature is properly enabled, \arara\ will indicate in the corresponding \rbox{arara.log} file whether a configuration file was used during the execution and, if so, the corresponding canonical, absolute path. Logging is detailed later on, in Section~\ref{foo} (page~\pageref{foo}).
 
 \section{Basic structure}
@@ -48,9 +50,76 @@ The following list describes the basic structure of an \arara\ configuration fil
 \begin{description}
 \item[\describe{M}{!config}] This keyword is mandatory and must be the first line of a configuration file. It denotes the object mapping metadata to be internally used by the tool. Actually, the tool is not too demanding on using it (in fact, you could suppress it entirely and \arara\ will not complain), but it is considered good practice to start a configuration file with a \abox{!config} keyword regardless.
 
-\item[\describecf{O}{string list}{paths}]
+\item[\describecf{O}{string list}{paths}] When looking for rules, \arara\ always searches the default rule path, which consists of a special subdirectory named \abox[araracolour]{rules/} inside another special directory named \abox[araracolour]{ARARA\_HOME} (the place where our tool is installed). If no rule is found, the execution halts with an error. The \abox{paths} key specifies a list of directories, represented as plain strings, in which our tool should search for rules. The default path is appended to the list. Then the search happens from the first to the last element, in order.
 
-%\item[\describecf{O}{boolean}{verbose}\hfill {\normalfont\itshape default:} \rbox{false}]
+\begin{codebox}{Example}{teal}{\icnote}{white}
+paths:
+- '/home/paulo/rules'
+- '/opt/paulo/rules'
+\end{codebox}
+
+% TODO fix reference
+There are three variables available in the \abox{paths} context and are described as follows (note that MVEL variables and orb tags are discussed in Chapter~\ref{foo}). A variable will be denoted by \varbox{variable} in this list.
+
+\begin{description}
+\item[\varbox{user.home}] This variable, as the name implies, holds the value of the absolute, canonical path of \abox[araracolour]{USER\_HOME} which is the home directory of the current user, as plain string. Note that the specifics of the home directory (such as name and location) are defined by the operating system involved.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+paths:
+- '@{user.home}/rules'
+\end{codebox}
+
+\item[\varbox{user.dir}] This variable, as the name implies, holds the value of the absolute, canonical path of \abox[araracolour]{USER\_DIR} which is the working directory associated with the current execution, as plain string. Note that the working directory approach requires a user execution strategy to ensure the correct path value.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+paths:
+- '@{user.dir}/rules'
+\end{codebox}
+
+\item[\varbox{user.name}] This variable, as the name implies, holds the value of the current user account name, as plain string. On certain operating systems, this value is used to build the home directory structure.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+paths:
+- '/home/@{user.name}/rules'
+\end{codebox}
+
+% TODO fix reference
+Observe that the \varbox{user} variable actually holds a map containing three keys (resulting in a map within a map). However, for didatic purposes, it is easier to use the property navigation feature of MVEL, detailed in Section~\ref{foo} (page~\pageref{foo}), and consider the map references as three independent variables. You can use property navigation styles interchangeably. Note that you can also precede the path with the special keyword \abox{<arara>} and save some quotes (see Section~\ref{foo}, page~\pageref{foo}). In this specific scenario, the special keyword will be automatically removed afterwards.
+
+\begin{messagebox}{Avoid folded and literal styles for scalars in a path}{attentioncolour}{\icattention}{black}
+Do not use folded or literal styles for scalars in a path! The orb tag resolution for a path in plain string should be kept as simple as possible, so \emph{always} use the inline style.
+\end{messagebox}
+
+\item[\describecf{O}{string}{language}\hfill {\normalfont\itshape default:} \rbox{en}] This variable sets the language of all subsequent executions of \arara\ according to the provided language code value, as plain string. The default language is set to English. Also, it is very important to observe that the \opbox{{-}language} command line option can override this setting.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+language: nl
+\end{codebox}
+
+\item[\describecf{O}{integer}{loops}\hfill {\normalfont\itshape default:} \rbox{10}] This variable redefines the maximum number of loops \arara\ will allow for potentially infinite iterations. Any positive integer can be used as value for this variable. Also, it is very important to observe that the \opbox{{-}max-loops} command line option can override this setting.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+loops: 30
+\end{codebox}
+
+\item[\describecf{O}{boolean}{verbose}\hfill {\normalfont\itshape default:} \rbox{false}] This variable activates or deactivates the verbose mode of \arara\ as default mode, according to the associated boolean value. Also, it is very important to observe that the \opbox{{-}verbose} command line option can override this setting if, and only if, this variable holds \rbox{false} as value.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+verbose: true
+\end{codebox}
+
+\item[\describecf{O}{boolean}{logging}\hfill {\normalfont\itshape default:} \rbox{false}] This variable activates or deactivates the logging feature of \arara as the default behaviour, according to the associated boolean value. Also, it is very important to observe that the \opbox{{-}log} command line option can override this setting if, and only if, this variable holds \rbox{false} as value.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+logging: true
+\end{codebox}
+
+\item[\describecf{O}{boolean}{header}\hfill {\normalfont\itshape default:} \rbox{false}] This variable modifies the directive extraction, according to the associated boolean value. If enabled, \arara\ will extract all directives from the beginning of the file until it reaches a line that is not empty and it is not a comment. Otherwise, the tool will resort to the default behaviour and extract all directives from the entire file. It is very important to observe that the \opbox{{-}header} command line option can override this setting if, and only if, this variable holds \rbox{false} as value.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+header: false
+\end{codebox}
 \end{description}
 
 % optional, but at least one should happen

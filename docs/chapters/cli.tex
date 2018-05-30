@@ -121,7 +121,7 @@ The available options for our tool are detailed as follows. Each option contains
 \begin{description}
 \item[\describeop{h}{help}] As the name indicates, this option prints the help message containing the tool usage and the list of all available options. The tool exits afterwards. When running \arara\ without any options or a file to be processed, this is the default behaviour. This option has the highest priority over the others.
 
-\item[\describeop{H}{header}] This option changes the mechanics of how \arara\ extracts the directives from the code. The tool always reads the entire file and extracts every single directive found throughout the code. However, by activating this switch, \arara\ will extract all directives from the beginning of the file until it reaches a line that is not empty or a comment (hence the option name). Consider the following example:
+\item[\describeop{H}{header}] This option changes the mechanics of how \arara\ extracts the directives from the code. The tool always reads the entire file and extracts every single directive found throughout the code. However, by activating this switch, \arara\ will extract all directives from the beginning of the file until it reaches a line that is not empty and it is not a comment (hence the option name). Consider the following example:
 
 \begin{ncodebox}{Source file}{teal}{\icnote}{white}{doc7.tex}
 % arara: pdftex
@@ -137,7 +137,7 @@ When running \arara\ without this option, two directives will be extracted (the 
 % TODO fix reference
 \item[\describeop{l}{log}] This option enables the logging feature of our tool. All streams from all system commands will be logged and, at the end of the execution, a consolidated log file named \rbox{arara.log} will be generated. This option can also be activated by default in the configuration file (see Section~\ref{foo}, page~\pageref{foo}). Refer to Section~\ref{foo}, in page~\pageref{foo}, for more details on the logging feature.
 
-\item[\describeopp{L}{language}{code}] This option sets the language of the current execution on \arara\ according to the language code \prbox{code} value provided as parameter. The language code tries to follow the ISO 639 norm, standardized nomenclature used to classify languages. For example, this is our tool speaking Dutch:
+\item[\describeopp{L}{language}{code}] This option sets the language of the current execution of \arara\ according to the language code \prbox{code} value provided as parameter. The language code tries to follow the ISO 639 norm, standardized nomenclature used to classify languages. For example, this is our tool speaking Dutch:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ arara -L nl doc5.tex
@@ -190,7 +190,7 @@ This option can also be specified in the configuration file (see Section~\ref{fo
 % arara: pdftex while true
 \end{codebox}
 
-The \opbox{{-}max-loops} option is used to redefine the maximum number of loops our tool will allow for potential infinite iterations. Any positive integer can be used as \prbox{number} value for this option. An execution of the previous directive with a lower maximum number of loops is shown as follows:
+The \opbox{{-}max-loops} option is used to redefine the maximum number of loops our tool will allow for potentially infinite iterations. Any positive integer can be used as \prbox{number} value for this option. An execution of the previous directive with a lower maximum number of loops is shown as follows:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ arara -m 2 doc8.tex 
