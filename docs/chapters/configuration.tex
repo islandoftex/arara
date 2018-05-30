@@ -34,6 +34,12 @@ From version 4.0 on, \arara\ provides two approaches regarding the location of a
 \item[local configuration file] For this approach, the configuration file should be located at \abox[araracolour]{USER\_DIR} which is the working directory associated with the current execution. Such directory can also be interpreted as the one relative to the processed file. This approach offers a project-based solution for complex workflows, e.g, a thesis or a book. However, \arara\ must be executed within the working directory, or the local configuration file lookup will fail. Observe that this approach has the highest lookup priority, which means that it will always supersede a global configuration.
 \end{description}
 
+\begin{messagebox}{Beware of empty configuration files}{attentioncolour}{\icattention}{black}
+A configuration file should never be empty, otherwise \arara\ will complain about it. Make sure to populate it with at least one key, or do not write a configuration file at all. The available options are described in Section~\ref{foo}, page~\pageref{foo}.
+\end{messagebox}
+
+
+
 %\begin{codebox}{Terminal}{teal}{\icnote}{white}
 %\end{codebox}
 
