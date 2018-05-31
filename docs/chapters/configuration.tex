@@ -109,7 +109,7 @@ loops: 30
 verbose: true
 \end{codebox}
 
-\item[\describecf{O}{boolean}{logging}\hfill {\normalfont\itshape default:} \rbox{false}] This variable activates or deactivates the logging feature of \arara as the default behaviour, according to the associated boolean value. Also, it is very important to observe that the \opbox{{-}log} command line option can override this setting if, and only if, this variable holds \rbox{false} as value.
+\item[\describecf{O}{boolean}{logging}\hfill {\normalfont\itshape default:} \rbox{false}] This variable activates or deactivates the logging feature of \arara\ as the default behaviour, according to the associated boolean value. Also, it is very important to observe that the \opbox{{-}log} command line option can override this setting if, and only if, this variable holds \rbox{false} as value.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 logging: true
@@ -149,7 +149,6 @@ Look and feel values other than the default provided by Java offer a more pleasa
 
 {\centering
 \def\arraystretch{1.5}
-%\setlength\tabcolsep{1em}
 \begin{tabular}{ll}
 \rbox[araracolour]{\hphantom{xx}none\hphantom{xx}} & Default look and feel\\
 \rbox[araracolour]{\hphantom{x}system\hphantom{x}} & System look and feel\\
@@ -160,10 +159,23 @@ Look and feel values other than the default provided by Java offer a more pleasa
 The system look and feel, of course, offers the best option of all since it mimics the native appearance of graphical applications in the underlying system. However, some systems might encounter slow rendering times when this option is used, so your milleage might vary.
 \end{messagebox}
 
-\item[\describecf{O}{string map}{preambles}]
+% TODO fix reference
+\item[\describecf{O}{string map}{preambles}] This variable holds a string map containing predefined preambles for later use with the \opbox{{-}preamble} option (see Section~\ref{foo}, on page~\pageref{foo}). Note that each map key must be unique. Additionally, it it is highly recommended to use lowercase letters without spaces, accents or punctuation symbols, as key values. Only directives, line breaks and conditionals are recognized.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+preambles:
+  twopdftex: |
+    % arara: pdftex
+    % arara: pdftex
+\end{codebox}
+
+\begin{messagebox}{Literal style when defining a preamble}{attentioncolour}{\icattention}{black}
+When defining preambles in the configuration file, \emph{always} use the literal style for scalar blocks. The reason for this requirement is the proper retention of line breaks, which are significant when parsing the strings into proper directive lines. Using the folded style in this particular scenario will almost surely be problematic.
+\end{messagebox}
+
+\item[\describecf{O}{file type list}{filetypes}]
 \end{description}
 
-% preambles
 % filetypes
 
 % optional, but at least one should happen
