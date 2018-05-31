@@ -128,12 +128,43 @@ logname: mylog
 \end{codebox}
 
 % TODO fix reference
-\item[\describecf{O}{string}{dbname}\hfill {\normalfont\itshape default:} \rbox{arara}] This variable modifies the default XML database file name, according to the associated plain string value, plus the \rbox{xml} extension. The value cannot be empty or contain invalid characters. There is no orb tag evaluation in this specific context, only a plain string value. This databased is used by file hashing operations, detailed in Section~\ref{foo}, on page~\pageref{foo}.
+\item[\describecf{O}{string}{dbname}\hfill {\normalfont\itshape default:} \rbox{arara}] This variable modifies the default XML database file name, according to the associated plain string value, plus the \rbox{xml} extension. The value cannot be empty or contain invalid characters. There is no orb tag evaluation in this specific context, only a plain string value. This database is used by file hashing operations, detailed in Section~\ref{foo}, on page~\pageref{foo}.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 dbname: mydb
 \end{codebox}
+
+% TODO fix reference
+\item[\describecf{O}{string}{laf}\hfill {\normalfont\itshape default:} \rbox{none}] This variable modifies the default look and feel class reference, i.e,  the appearance of GUI widgets provided by our tool, according to the associated plain string value. The value cannot be empty or contain invalid characters. There is no orb tag evaluation in this specific context, only a plain string value. This look and feel setting is used by UI methods, detailed in Section~\ref{foo}, on page~\pageref{foo}. Note that this value is used by the underlying Java runtime environment, so a full qualified class name is expected.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+laf: 'javax.swing.plaf.nimbus.NimbusLookAndFeel'
+\end{codebox}
+
+\begin{messagebox}{Special keywords for the look and feel setting}{araracolour}{\icok}{white}
+% TODO fix reference
+Look and feel values other than the default provided by Java offer a more pleasant visual experience to the user, so if your rules or directives employ UI methods (detailed in Section~\ref{foo}, on page~\pageref{foo}), it might be interesting to provide a value to the \rbox{laf} key. At the time of writing, \arara\ provides two special keywords that are translated to the corresponding fully qualified Java class names:
+
+\vspace{1em}
+
+{\centering
+\def\arraystretch{1.5}
+%\setlength\tabcolsep{1em}
+\begin{tabular}{ll}
+\rbox[araracolour]{\hphantom{xx}none\hphantom{xx}} & Default look and feel\\
+\rbox[araracolour]{\hphantom{x}system\hphantom{x}} & System look and feel\\
+\end{tabular}\par}
+
+\vspace{1.4em}
+
+The system look and feel, of course, offers the best option of all since it mimics the native appearance of graphical applications in the underlying system. However, some systems might encounter slow rendering times when this option is used, so your milleage might vary.
+\end{messagebox}
+
+\item[\describecf{O}{string map}{preambles}]
 \end{description}
+
+% preambles
+% filetypes
 
 % optional, but at least one should happen
 
