@@ -71,6 +71,7 @@ public class Parser {
     private Option help;
     private Option log;
     private Option verbose;
+    private Option silent;
     private Option dryrun;
     private Option timeout;
     private Option language;
@@ -112,6 +113,7 @@ public class Parser {
         help = new Option("h", "help", false, "");
         log = new Option("l", "log", false, "");
         verbose = new Option("v", "verbose", false, "");
+        silent = new Option("s", "silent", false, "");
         dryrun = new Option("n", "dry-run", false, "");
         timeout = new Option("t", "timeout", true, "");
         timeout.setArgName("number");
@@ -131,6 +133,7 @@ public class Parser {
         options.addOption(help);
         options.addOption(log);
         options.addOption(verbose);
+        options.addOption(silent);
         options.addOption(dryrun);
         options.addOption(timeout);
         options.addOption(language);
@@ -235,6 +238,11 @@ public class Parser {
                 ConfigurationController.getInstance().
                         put("execution.verbose", true);
             }
+            
+            if (line.hasOption("silent")) {
+                ConfigurationController.getInstance().
+                        put("execution.verbose", false);
+            }
 
             if (line.hasOption("dry-run")) {
                 ConfigurationController.getInstance().
@@ -297,9 +305,9 @@ public class Parser {
         HelpFormatter formatter = new HelpFormatter();
         StringBuilder builder = new StringBuilder();
         builder.append("arara [file [--dry-run] [--log] ");
-        builder.append("[--verbose] [--timeout N] [--max-loops N] ");
-        builder.append("[--language L] [ --preamble P ] ");
-        builder.append("[--header] | --help | --version]");
+        builder.append("[--verbose | --silent] [--timeout N] ");
+        builder.append("[--max-loops N] [--language L] ");
+        builder.append("[ --preamble P ] [--header] | --help | --version]");
         formatter.printHelp(builder.toString(), options);
     }
 
@@ -360,6 +368,11 @@ public class Parser {
         verbose.setDescription(
                 messages.getMessage(
                         Messages.INFO_PARSER_VERBOSE_MODE_DESCRIPTION
+                )
+        );
+        silent.setDescription(
+                messages.getMessage(
+                        Messages.INFO_PARSER_SILENT_MODE_DESCRIPTION
                 )
         );
         dryrun.setDescription(
