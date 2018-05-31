@@ -326,15 +326,38 @@ If left unattended, this particular execution would never finish (and probably c
 
 % TODO fix reference
 \item[\describeop{v}{verbose}] This option enables the verbose mode of \arara, as seen in Section~\ref{foo} (page~\pageref{foo}). It also enables all streams to be flushed directly to the terminal, including potential user input interactions (the exact opposite of silent mode). This option can also be activated by default in the configuration file (see Section~\ref{foo}, page~\pageref{foo}).
+
+\item[\describeop{s}{silent}] This option disables the verbose mode of \arara\ (thus activating the default silent mode), if previously enabled by a proper configuration file (see Section~\ref{foo}, on page~\pageref{foo}). It is important to note that this command line option has higher priority over the \opbox{{-}verbose} counterpart.
 \end{description}
 
-You can combine options, use long or short variations interchangeably and write them in any order, provided that a file name is given at some point in the command line. Use the provided features in order to enhance and optimize your automation workflow.
+You can combine options, use long or short variations interchangeably and write them in any order, provided that a file name is given at some point in the command line, otherwise the usage will be printed. Use the provided features in order to enhance and optimize your automation workflow.
 
 \section{File name lookup}
 \label{sec:filenamelookup}
 
 % TODO fix reference
-Our tool natively recognizes five file types based on their extensions, namely \rbox{tex}, \rbox{dtx}, \rbox{ltx}, \rbox{drv}, and \rbox{ins}, in this particular order. Other extensions can be added through a proper mapping in the configuration file, as well as modifying the lookup order. This feature is detailed later on, in Section~\ref{foo} (page~\pageref{foo}). \arara\ employs the following scheme for file name lookup:
+\arara, as a command line application, provides support for a restricted range of file types. In particular, the tool recognizes five file types based on their extensions. These types are presented as follows, as well as the lookup order.
+
+\vspace{1em}
+
+{\centering
+\setlength\tabcolsep{1em}
+\begin{tabular}{ccccc}
+{\footnotesize\textit{attempt 1}} &
+{\footnotesize\textit{attempt 2}} &
+{\footnotesize\textit{attempt 3}} &
+{\footnotesize\textit{attempt 4}} &
+{\footnotesize\textit{attempt 5}} \\
+\rbox{\hphantom{xx}tex\hphantom{xx}} &
+\rbox{\hphantom{xx}dtx\hphantom{xx}} &
+\rbox{\hphantom{xx}ltx\hphantom{xx}} &
+\rbox{\hphantom{xx}drv\hphantom{xx}} &
+\rbox{\hphantom{xx}ins\hphantom{xx}}
+\end{tabular}\par}
+
+\vspace{1.4em}
+
+Note that other extensions can be added through a proper mapping in the configuration file, as well as modifying the lookup order. This feature is detailed later on, in Section~\ref{foo} (page~\pageref{foo}). \arara\ employs the following scheme for file name lookup:
 
 \begin{itemize}[label={--}]
 \item First and foremost, if the provided file name already contains a valid extension, the tool attempts an exact match. If the file exists, it will be selected. This is the best approach if your working directory contain other files sharing the same base name.
