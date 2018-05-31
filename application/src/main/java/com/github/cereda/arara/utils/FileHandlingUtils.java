@@ -112,7 +112,7 @@ public class FileHandlingUtils {
             // a list of strings
             return FileUtils.readLines(file, "UTF-8");
 
-        } catch (IOException e) {
+        } catch (IOException nothandled) {
 
             // if something bad happens,
             // gracefully fallback to
