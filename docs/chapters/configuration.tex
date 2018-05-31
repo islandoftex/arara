@@ -120,6 +120,19 @@ logging: true
 \begin{codebox}{Example}{teal}{\icnote}{white}
 header: false
 \end{codebox}
+
+\item[\describecf{O}{string}{logname}\hfill {\normalfont\itshape default:} \rbox{arara}] This variable modifies the default log file name, according to the associated plain string value, plus the \rbox{log} extension. The value cannot be empty or contain invalid characters. There is no orb tag evaluation in this specific context, only a plain string value. The log file will be written by our tool if, and only if, the \opbox{{-}log} command line option is used.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+logname: mylog
+\end{codebox}
+
+% TODO fix reference
+\item[\describecf{O}{string}{dbname}\hfill {\normalfont\itshape default:} \rbox{arara}] This variable modifies the default XML database file name, according to the associated plain string value, plus the \rbox{xml} extension. The value cannot be empty or contain invalid characters. There is no orb tag evaluation in this specific context, only a plain string value. This databased is used by file hashing operations, detailed in Section~\ref{foo}, on page~\pageref{foo}.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+dbname: mydb
+\end{codebox}
 \end{description}
 
 % optional, but at least one should happen

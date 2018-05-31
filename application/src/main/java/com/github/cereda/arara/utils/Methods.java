@@ -137,6 +137,16 @@ public class Methods {
             map.put("getCommandWithWorkingDirectory", Methods.class.getMethod("getCommandWithWorkingDirectory", String.class, Object[].class));
             map.put("getCommandWithWorkingDirectory", Methods.class.getMethod("getCommandWithWorkingDirectory", File.class, List.class));
             map.put("getCommandWithWorkingDirectory", Methods.class.getMethod("getCommandWithWorkingDirectory", File.class, Object[].class));
+            map.put("listFilesByExtensions", Methods.class.getMethod("listFilesByExtensions", File.class, List.class, boolean.class));
+            map.put("listFilesByExtensions", Methods.class.getMethod("listFilesByExtensions", String.class, List.class, boolean.class));
+            map.put("listFilesByPatterns", Methods.class.getMethod("listFilesByPatterns", File.class, List.class, boolean.class));
+            map.put("listFilesByPatterns", Methods.class.getMethod("listFilesByPatterns", String.class, List.class, boolean.class));
+            map.put("writeToFile", Methods.class.getMethod("writeToFile", File.class, String.class, boolean.class));
+            map.put("writeToFile", Methods.class.getMethod("writeToFile", File.class, List.class, boolean.class));
+            map.put("writeToFile", Methods.class.getMethod("writeToFile", String.class, String.class, boolean.class));
+            map.put("writeToFile", Methods.class.getMethod("writeToFile", String.class, List.class, boolean.class));
+            map.put("readFromFile", Methods.class.getMethod("readFromFile", File.class));
+            map.put("readFromFile", Methods.class.getMethod("readFromFile", String.class));
         } catch (Exception exception) {
             // quack, quack, quack
         }
@@ -1207,5 +1217,140 @@ public class Methods {
     public static Pair<Integer, Object> loadObject(String ref, String name) {
         return ClassLoadingUtils.loadObject(new File(ref), name);
     }
+    
+    /**
+     * List all files from the provided directory according to the list of
+     * extensions. The leading dot must be omitted, unless it is part of the
+     * extension.
+     * @param directory The provided directory.
+     * @param extensions The list of extensions.
+     * @param recursive A flag indicating whether the search is recursive.
+     * @return A list of files.
+     */
+    public static List<File> listFilesByExtensions(File directory,
+            List<String> extensions, boolean recursive) {
+        return FileSearchingUtils.listFilesByExtensions(
+                directory,
+                extensions,
+                recursive
+        );
+    }
 
+    /**
+     * List all files from the provided string path according to the list of
+     * extensions. The leading dot must be omitted, unless it is part of the
+     * extension.
+     * @param path The provided path as plain string.
+     * @param extensions The list of extensions.
+     * @param recursive A flag indicating whether the search is recursive.
+     * @return A list of files.
+     */
+    public static List<File> listFilesByExtensions(String path,
+            List<String> extensions, boolean recursive) {
+        return FileSearchingUtils.listFilesByExtensions(
+                new File(path),
+                extensions,
+                recursive
+        );
+    }
+    
+    /**
+     * List all files from the provided directory matching the list of file
+     * name patterns. Such list can contain wildcards.
+     * @param directory The provided directory.
+     * @param patterns The list of file name patterns.
+     * @param recursive A flag indicating whether the search is recursive.
+     * @return A list of files.
+     */
+    public static List<File> listFilesByPatterns(File directory,
+            List<String> patterns, boolean recursive) {
+        return FileSearchingUtils.listFilesByPatterns(
+                directory,
+                patterns,
+                recursive
+        );
+    }
+    
+    /**
+     * List all files from the provided path matching the list of file
+     * name patterns. Such list can contain wildcards.
+     * @param path The provided path as plain string.
+     * @param patterns The list of file name patterns.
+     * @param recursive A flag indicating whether the search is recursive.
+     * @return A list of files.
+     */
+    public static List<File> listFilesByPatterns(String path,
+            List<String> patterns, boolean recursive) {
+        return FileSearchingUtils.listFilesByPatterns(
+                new File(path),
+                patterns,
+                recursive
+        );
+    }
+    
+    /**
+     * Writes the string to a file, using UTF-8 as default encoding.
+     * @param file The file.
+     * @param text The string to be written.
+     * @param append A flag whether to append the content.
+     * @return A logical value indicating whether it was successful.
+     */
+    public static boolean writeToFile(File file, String text, boolean append) {
+        return FileHandlingUtils.writeToFile(file, text, append);
+    }
+    
+    /**
+     * Writes the string to a file, using UTF-8 as default encoding.
+     * @param path The path.
+     * @param text The string to be written.
+     * @param append A flag whether to append the content.
+     * @return A logical value indicating whether it was successful.
+     */
+    public static boolean writeToFile(String path, String text,
+            boolean append) {
+        return FileHandlingUtils.writeToFile(new File(path), text, append);
+    }
+    
+    /**
+     * Writes the string list to a file, using UTF-8 as default encoding.
+     * @param file The file.
+     * @param lines The string list to be written.
+     * @param append A flag whether to append the content.
+     * @return A logical value indicating whether it was successful.
+     */
+    public static boolean writeToFile(File file, List<String> lines,
+            boolean append) {
+        return FileHandlingUtils.writeToFile(file, lines, append);
+    }
+    
+    /**
+     * Writes the string list to a file, using UTF-8 as default encoding.
+     * @param path The path.
+     * @param lines The string list to be written.
+     * @param append A flag whether to append the content.
+     * @return A logical value indicating whether it was successful.
+     */
+    public static boolean writeToFile(String path, List<String> lines,
+            boolean append) {
+        return FileHandlingUtils.writeToFile(new File(path), lines, append);
+    }
+    
+    /**
+     * Reads the provided file into a list of strings.
+     * @param file The file.
+     * @return A list of strings.
+     */
+    public static List<String> readFromFile(File file) {
+        return FileHandlingUtils.readFromFile(file);
+    }
+    
+    /**
+     * Reads the provided file into a list of strings.
+     * @param path The path.
+     * @return A list of strings.
+     */
+    public static List<String> readFromFile(String path) {
+        return FileHandlingUtils.readFromFile(new File(path));
+    }
+    
 }

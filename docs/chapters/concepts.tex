@@ -94,7 +94,7 @@ command: "@{ return getCommand('ls') }"
 \end{codebox}
 
 % TODO fix reference
-\item A boolean value: it is also possible to exploit the expressive power of the underlying scripting language available in the rule context (see Chapter~\ref{foo}, in page~\pageref{foo}, for more details) for writing complex code. In this particular case, since the computation is being done by \arara\ itself and not the underlying operating system, there will not be a command to be executed, so simply return a boolean value -- either an explicit \abox{true} or \abox{false} value or a logical expression -- to indicate whether the computation was successfull.
+\item A boolean value: it is also possible to exploit the expressive power of the underlying scripting language available in the rule context (see Chapter~\ref{foo}, on page~\pageref{foo}, for more details) for writing complex code. In this particular case, since the computation is being done by \arara\ itself and not the underlying operating system, there will not be a command to be executed, so simply return a boolean value -- either an explicit \abox{true} or \abox{false} value or a logical expression -- to indicate whether the computation was successfull.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command: "@{ return 1 == 1 }"
@@ -243,7 +243,7 @@ arguments:
 \end{description}
 
 % TODO fix reference
-This is the rule structure in the YAML format used by \arara. Keep in mind that all subtasks in a rule are checked against their corresponding exit status. If an abnormal execution is detected, the tool will instantly halt and the rule will fail. Even \arara\ itself will return an exit code different than zero when this situation happens (detailed in Section~\ref{foo}, in page~\pageref{foo}).
+This is the rule structure in the YAML format used by \arara. Keep in mind that all subtasks in a rule are checked against their corresponding exit status. If an abnormal execution is detected, the tool will instantly halt and the rule will fail. Even \arara\ itself will return an exit code different than zero when this situation happens (detailed in Section~\ref{foo}, on page~\pageref{foo}).
 
 \section{Directives}
 \label{sec:directives}
@@ -604,7 +604,7 @@ The resulting rule is identical to the one manually converted in this section. J
 
 \begin{messagebox}{Replace plain strings in commands}{araracolour}{\icattention}{white}
 % TODO fix reference
-As plain strings are known to be problematic when defining commands, they are marked as deprecated in version 4.0 of \arara\ and will likely be removed in future releases. Since you are migrating from an old format to a new one, please consider replacing plain strings in command by proper \abox{Command} objects. The helper methods available in the rule context, including the indispensable \mtbox{getCommand} method, for obvious reasons, are detailed in Section~\ref{foo}, in page~\pageref{foo}. It is highly advisable to update your rules on this regard, if applicable.
+As plain strings are known to be problematic when defining commands, they are marked as deprecated in version 4.0 of \arara\ and will likely be removed in future releases. Since you are migrating from an old format to a new one, please consider replacing plain strings in command by proper \abox{Command} objects. The helper methods available in the rule context, including the indispensable \mtbox{getCommand} method, for obvious reasons, are detailed in Section~\ref{foo}, on page~\pageref{foo}. It is highly advisable to update your rules on this regard, if applicable.
 \end{messagebox}
 
 This section pretty much covered the basics for correctly migrating rules in the old format to the new one. Of course, it is highly advisable to make use of the new features available in \arara\ 4.0 for achieving better results. If you need any help, please do not hesitating in contacting us. See Section~\ref{foo} (page~\pageref{foo}) for more details on how to get help.
