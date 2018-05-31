@@ -8,16 +8,21 @@ identifier: latexmk
 name: LaTeXmk
 authors:
 - Marco Daniel
+- Brent Longborough
 - Paulo Cereda
 commands:
 - name: Tool LaTeXmk
   command: >
     @{
-        return getCommand('latexmk', options)
+        if (isNotEmpty(clean)) {
+            return getCommand('latexmk', clean, options);
+        }
+        else {
+            return getCommand('latexmk', isEmpty(program, engine, program), options, file);
+        }
     }
 arguments:
 - identifier: options
-  mandatory: yes;
   flag: >
     @{
        if (isList(parameters.options)) {
@@ -26,4 +31,31 @@ arguments:
         else {
             throwError('I was expecting a list of options.')
         }
+    }
+- identifier: clean
+  flag: >
+    @{
+        if ([ 'all', 'partial' ].contains(parameters.clean)) {
+            return isTrue(parameters.clean == 'all' , '-C', '-c');
+        }
+        else {
+            throwError('The provided clean value is not valid.');
+        }
+    }
+- identifier: engine
+  flag: >
+    @{
+        if ([ 'latex', 'pdflatex', 'xelatex', 'lualatex' ].contains(parameters.engine)) {
+            flags = [ 'latex' : '-dvi', 'pdflatex' : '-pdf',
+                      'xelatex' : '-xelatex', 'lualatex' : '-lualatex' ];
+            return flags[parameters.engine];
+        }
+        else {
+            throwError('The provided engine value is not valid.');
+        }
+    }
+- identifier: program
+  flag: >
+    @{
+        return '-latex='.concat(parameters.program)
     }
