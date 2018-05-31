@@ -99,9 +99,9 @@ arara 4.0 (revision 1)
 Copyright (c) 2012-2017, Paulo Roberto Massa Cereda
 All rights reserved
 
-usage: arara [file [--dry-run] [--log] [--verbose] [--timeout N]
-             [--max-loops N] [--language L] [ --preamble P ]
-             [--header] | --help | --version]
+usage: arara [file [--dry-run] [--log] [--verbose | --silent]
+             [--timeout N] [--max-loops N] [--language L]
+             [ --preamble P ] [--header] | --help | --version]
  -h,--help                 print the help message
  -H,--header               extract directives only in the file header
  -l,--log                  generate a log output
@@ -111,6 +111,7 @@ usage: arara [file [--dry-run] [--log] [--verbose] [--timeout N]
                            command, but with no actual calls
  -p,--preamble <name>      set the file preamble based on the
                            configuration file
+ -s,--silent               hide the command output
  -t,--timeout <number>     set the execution timeout (in milliseconds)
  -V,--version              print the application version
  -v,--verbose              print the command output
