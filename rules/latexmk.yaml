@@ -13,12 +13,17 @@ commands:
 - name: Tool LaTeXmk
   command: >
     @{
-        return getCommand('latexmk', options )
+        return getCommand('latexmk', options)
     }
 arguments:
 - identifier: options
   mandatory: yes;
   flag: >
     @{
-       return parameters.options;
+       if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.')
+        }
     }
