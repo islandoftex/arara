@@ -367,6 +367,8 @@ public class DisplayUtils {
                 getInstance().get("execution.reference");
         String version = (String) ConfigurationController.
                 getInstance().get("application.version");
+        String revision = (String) ConfigurationController.
+                getInstance().get("application.revision");
         String line = messages.getMessage(
                 Messages.INFO_DISPLAY_FILE_INFORMATION,
                 file.getName(),
@@ -375,7 +377,8 @@ public class DisplayUtils {
         );
         logger.info(messages.getMessage(
                 Messages.LOG_INFO_WELCOME_MESSAGE,
-                version
+                version,
+                revision
         ));
         logger.info(displaySeparator());
         logger.info(String.format("::: arara @ %s",

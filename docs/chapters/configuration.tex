@@ -36,7 +36,7 @@ From version 4.0 on, \arara\ provides two approaches regarding the location of a
 
 \begin{messagebox}{Beware of empty configuration files}{attentioncolour}{\icattention}{black}
 % TODO fix reference
-A configuration file should never be empty, otherwise \arara\ will complain about it. Make sure to populate it with at least one key, or do not write a configuration file at all. The available options are described in Section~\ref{foo}, page~\pageref{foo}.
+A configuration file should never be empty, otherwise \arara\ will complain about it. Make sure to populate it with at least one key, or do not write a configuration file at all. The available keys are described in Section~\ref{foo}, page~\pageref{foo}.
 \end{messagebox}
 
 % TODO fix reference
@@ -185,6 +185,7 @@ extension: c
 \item[\describecontextt{M}{O}{filetypes}{pattern}] This key holds the directive lookup pattern as a regular expression (which is, of course, represented as a plain string). When introducing a new file type, \arara\ must know how to interpret each line and how to properly find and extract directives, hence this key. Observe that this key is marked as optional and mandatory. The reason for such unusual indication highly depends on the current scenario and presents as follows.
 
 \begin{itemize}[label={--}]
+% TODO fix reference
 \item The \abox{pattern} key is entirely \emph{optional} for known file types (presented in Section~\ref{foo}, on page~\pageref{foo}, and henceforth named \emph{default} file types), in case you just want to modify the file name lookup order. It is important to observe that default file types already have their directive lookup patterns set, which incidentally are the same, presented as follows.
 
 \begin{codebox}{Default regular expression pattern for known file types}{teal}{\icnote}{white}
@@ -199,6 +200,7 @@ pattern: ^\s*//\s*
 \end{itemize}
 \end{description}
 
+% TODO fix reference
 For instance, let us reverse the default file name lookup order presented in Section~\ref{foo} (page~\pageref{foo}). Since the default lookup patterns will be preserved, the corresponding \abox{pattern} keys can be safely omitted. Now it is just a matter of rearranging the entries in the desired order, presented as follows.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -251,9 +253,15 @@ filetypes:
 \end{codebox}
 
 \begin{messagebox}{Do not escape backslashes}{attentioncolour}{\icattention}{black}
-When writing a file type pattern, there is no need for escaping backslashes as one does in a typical programming language (including MVEL expressions). In this specific scenario, key values are represented as plain, literal strings. However, make sure to write valid regular expressions and escape special characters whenever needed.
+\setlength{\parskip}{1em}
+When writing a file type pattern, there is no need for escaping backslashes as one does for strings in a typical programming language (including MVEL expressions). In this specific scenario, key values are represented as plain, literal strings.
+
+However, please note that character escaping might be required by the underlying regular expression in some scenarios (i.e, a literal dot in the pattern). It is highly recommended to consult a proper regular expression documentation for a comprehensive overview.
 \end{messagebox}
 \end{description}
+
+% TODO fix reference
+Since \arara\ allows four different names for configuration files, as well as global and local approaches, it is highly advisable to run our tool with the \opbox{{-}log} command line option enabled, in order to easily identify which file was considered for that specific execution. The logging feature is discussed later on, in Chapter~\ref{foo} (page~\pageref{foo}).
 
 % optional, but at least one should happen
 
