@@ -91,51 +91,51 @@ Observe that the \varbox{user} variable actually holds a map containing three ke
 Do not use folded or literal styles for scalars in a path! The orb tag resolution for a path in plain string should be kept as simple as possible, so \emph{always} use the inline style.
 \end{messagebox}
 
-\item[\describecf{O}{string}{language}\hfill {\normalfont\itshape default:} \rbox{en}] This variable sets the language of all subsequent executions of \arara\ according to the provided language code value, as plain string. The default language is set to English. Also, it is very important to observe that the \opbox{{-}language} command line option can override this setting.
+\item[\describecf{O}{string}{language}\hfill {\normalfont\itshape default:} \rbox{en}] This key sets the language of all subsequent executions of \arara\ according to the provided language code value, as plain string. The default language is set to English. Also, it is very important to observe that the \opbox{{-}language} command line option can override this setting.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 language: nl
 \end{codebox}
 
-\item[\describecf{O}{integer}{loops}\hfill {\normalfont\itshape default:} \rbox{10}] This variable redefines the maximum number of loops \arara\ will allow for potentially infinite iterations. Any positive integer can be used as value for this variable. Also, it is very important to observe that the \opbox{{-}max-loops} command line option can override this setting.
+\item[\describecf{O}{integer}{loops}\hfill {\normalfont\itshape default:} \rbox{10}] This key redefines the maximum number of loops \arara\ will allow for potentially infinite iterations. Any positive integer can be used as value for this variable. Also, it is very important to observe that the \opbox{{-}max-loops} command line option can override this setting.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 loops: 30
 \end{codebox}
 
-\item[\describecf{O}{boolean}{verbose}\hfill {\normalfont\itshape default:} \rbox{false}] This variable activates or deactivates the verbose mode of \arara\ as default mode, according to the associated boolean value. Also, it is very important to observe that the \opbox{{-}verbose} command line option can override this setting if, and only if, this variable holds \rbox{false} as value. Similarly, the \opbox{{-}silent} command line option can override this setting if, and only if, this variable holds \rbox{true} as value.
+\item[\describecf{O}{boolean}{verbose}\hfill {\normalfont\itshape default:} \rbox{false}] This key activates or deactivates the verbose mode of \arara\ as default mode, according to the associated boolean value. Also, it is very important to observe that the \opbox{{-}verbose} command line option can override this setting if, and only if, this variable holds \rbox{false} as value. Similarly, the \opbox{{-}silent} command line option can override this setting if, and only if, this variable holds \rbox{true} as value.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 verbose: true
 \end{codebox}
 
-\item[\describecf{O}{boolean}{logging}\hfill {\normalfont\itshape default:} \rbox{false}] This variable activates or deactivates the logging feature of \arara\ as the default behaviour, according to the associated boolean value. Also, it is very important to observe that the \opbox{{-}log} command line option can override this setting if, and only if, this variable holds \rbox{false} as value.
+\item[\describecf{O}{boolean}{logging}\hfill {\normalfont\itshape default:} \rbox{false}] This key activates or deactivates the logging feature of \arara\ as the default behaviour, according to the associated boolean value. Also, it is very important to observe that the \opbox{{-}log} command line option can override this setting if, and only if, this variable holds \rbox{false} as value.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 logging: true
 \end{codebox}
 
-\item[\describecf{O}{boolean}{header}\hfill {\normalfont\itshape default:} \rbox{false}] This variable modifies the directive extraction, according to the associated boolean value. If enabled, \arara\ will extract all directives from the beginning of the file until it reaches a line that is not empty and it is not a comment. Otherwise, the tool will resort to the default behaviour and extract all directives from the entire file. It is very important to observe that the \opbox{{-}header} command line option can override this setting if, and only if, this variable holds \rbox{false} as value.
+\item[\describecf{O}{boolean}{header}\hfill {\normalfont\itshape default:} \rbox{false}] This key modifies the directive extraction, according to the associated boolean value. If enabled, \arara\ will extract all directives from the beginning of the file until it reaches a line that is not empty and it is not a comment. Otherwise, the tool will resort to the default behaviour and extract all directives from the entire file. It is very important to observe that the \opbox{{-}header} command line option can override this setting if, and only if, this variable holds \rbox{false} as value.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 header: false
 \end{codebox}
 
-\item[\describecf{O}{string}{logname}\hfill {\normalfont\itshape default:} \rbox{arara}] This variable modifies the default log file name, according to the associated plain string value, plus the \rbox{log} extension. The value cannot be empty or contain invalid characters. There is no orb tag evaluation in this specific context, only a plain string value. The log file will be written by our tool if, and only if, the \opbox{{-}log} command line option is used.
+\item[\describecf{O}{string}{logname}\hfill {\normalfont\itshape default:} \rbox{arara}] This key modifies the default log file name, according to the associated plain string value, plus the \rbox{log} extension. The value cannot be empty or contain invalid characters. There is no orb tag evaluation in this specific context, only a plain string value. The log file will be written by our tool if, and only if, the \opbox{{-}log} command line option is used.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 logname: mylog
 \end{codebox}
 
 % TODO fix reference
-\item[\describecf{O}{string}{dbname}\hfill {\normalfont\itshape default:} \rbox{arara}] This variable modifies the default XML database file name, according to the associated plain string value, plus the \rbox{xml} extension. The value cannot be empty or contain invalid characters. There is no orb tag evaluation in this specific context, only a plain string value. This database is used by file hashing operations, detailed in Section~\ref{foo}, on page~\pageref{foo}.
+\item[\describecf{O}{string}{dbname}\hfill {\normalfont\itshape default:} \rbox{arara}] This key modifies the default XML database file name, according to the associated plain string value, plus the \rbox{xml} extension. The value cannot be empty or contain invalid characters. There is no orb tag evaluation in this specific context, only a plain string value. This database is used by file hashing operations, detailed in Section~\ref{foo}, on page~\pageref{foo}.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 dbname: mydb
 \end{codebox}
 
 % TODO fix reference
-\item[\describecf{O}{string}{laf}\hfill {\normalfont\itshape default:} \rbox{none}] This variable modifies the default look and feel class reference, i.e,  the appearance of GUI widgets provided by our tool, according to the associated plain string value. The value cannot be empty or contain invalid characters. There is no orb tag evaluation in this specific context, only a plain string value. This look and feel setting is used by UI methods, detailed in Section~\ref{foo}, on page~\pageref{foo}. Note that this value is used by the underlying Java runtime environment, so a full qualified class name is expected.
+\item[\describecf{O}{string}{laf}\hfill {\normalfont\itshape default:} \rbox{none}] This key modifies the default look and feel class reference, i.e,  the appearance of GUI widgets provided by our tool, according to the associated plain string value. The value cannot be empty or contain invalid characters. There is no orb tag evaluation in this specific context, only a plain string value. This look and feel setting is used by UI methods, detailed in Section~\ref{foo}, on page~\pageref{foo}. Note that this value is used by the underlying Java runtime environment, so a full qualified class name is expected.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 laf: 'javax.swing.plaf.nimbus.NimbusLookAndFeel'
@@ -160,7 +160,7 @@ The system look and feel, of course, offers the best option of all since it mimi
 \end{messagebox}
 
 % TODO fix reference
-\item[\describecf{O}{string map}{preambles}] This variable holds a string map containing predefined preambles for later use with the \opbox{{-}preamble} option (see Section~\ref{foo}, on page~\pageref{foo}). Note that each map key must be unique. Additionally, it it is highly recommended to use lowercase letters without spaces, accents or punctuation symbols, as key values. Only directives, line breaks and conditionals are recognized.
+\item[\describecf{O}{string map}{preambles}] This key holds a string map containing predefined preambles for later use with the \opbox{{-}preamble} option (see Section~\ref{foo}, on page~\pageref{foo}). Note that each map key must be unique. Additionally, it it is highly recommended to use lowercase letters without spaces, accents or punctuation symbols, as key values. Only directives, line breaks and conditionals are recognized.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 preambles:
@@ -173,10 +173,87 @@ preambles:
 When defining preambles in the configuration file, \emph{always} use the literal style for scalar blocks. The reason for this requirement is the proper retention of line breaks, which are significant when parsing the strings into proper directive lines. Using the folded style in this particular scenario will almost surely be problematic.
 \end{messagebox}
 
-\item[\describecf{O}{file type list}{filetypes}]
+\item[\describecf{O}{file type list}{filetypes}] This key holds a list of file types supported by \arara\ when searching for a file name, as well as their corresponding directive lookup patterns. In order to properly set a file type, the keys used in this specification are defined inside the \rbox{filetypes$\rightarrow$} context and presented as follows.
+
+\begin{description}
+\item[\describecontext{M}{filetypes}{extension}] This key, as the name implies, holds the file extension, represented as a plain string and without the leading dot (unless it is part of the extesion). An extension is an identifier specified as a suffix to the file name and indicates a characteristic of the corresponding content or intended use. Observe that this key is mandatory when specifying a file type, as our tool does not support files without a proper extension.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+extension: c
+\end{codebox}
+
+\item[\describecontextt{M}{O}{filetypes}{pattern}] This key holds the directive lookup pattern as a regular expression (which is, of course, represented as a plain string). When introducing a new file type, \arara\ must know how to interpret each line and how to properly find and extract directives, hence this key. Observe that this key is marked as optional and mandatory. The reason for such unusual indication highly depends on the current scenario and presents as follows.
+
+\begin{itemize}[label={--}]
+\item The \abox{pattern} key is entirely \emph{optional} for known file types (presented in Section~\ref{foo}, on page~\pageref{foo}, and henceforth named \emph{default} file types), in case you just want to modify the file name lookup order. It is important to observe that default file types already have their directive lookup patterns set, which incidentally are the same, presented as follows.
+
+\begin{codebox}{Default regular expression pattern for known file types}{teal}{\icnote}{white}
+^\s*%\s+
+\end{codebox}
+
+\item The \abox{pattern} key is \emph{mandatory} for new file types and for overriding existing patterns for default file types. Make sure to provide a valid regular expression as key value. It is very important to note that, regardless of the underlying pattern (default or provided through this key), the special \rbox{arara:} keyword is immutable and thus included by our tool in every directive lookup pattern.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+pattern: ^\s*//\s*
+\end{codebox}
+\end{itemize}
 \end{description}
 
-% filetypes
+For instance, let us reverse the default file name lookup order presented in Section~\ref{foo} (page~\pageref{foo}). Since the default lookup patterns will be preserved, the corresponding \abox{pattern} keys can be safely omitted. Now it is just a matter of rearranging the entries in the desired order, presented as follows.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+filetypes:
+- extension: ins
+- extension: drv
+- extension: ltx
+- extension: dtx
+- extension: tex
+\end{codebox}
+
+If a default file type is included in the \abox{filetypes} list but others from the same tier are left out, these file types not on the list will implicitly have the lowest priority over the explicit list element during the file name lookup, although still respecting their original lookup order modulo the specified file type. For instance, consider the following list:
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+filetypes:
+- extension: ins
+- extension: drv
+\end{codebox}
+
+According to the previous example, three out of five default file types were deliberately left out of the \abox{filetypes} list. As expected, the two default file types provided to this list will have the highest priority during the file name lookup. It is important to note that \arara\ will always honour the original lookup order for omitted default file types, yet favouring the explicit elements. The following list is semantically equivalent to the previous example.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+filetypes:
+- extension: ins
+- extension: drv
+- extension: tex
+- extension: dtx
+- extension: ltx
+\end{codebox}
+
+The following example introduces the definition of a new file type to support \rbox{c} files. Observe that, for this specific scenario, the \abox{pattern} key is mandatory, as previously discussed. The resulting list is presented as follows, including the corresponding regular expression pattern.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+filetypes:
+- extension: c
+  pattern: ^\s*//\s*
+\end{codebox}
+
+It is important to note that, if no default file type is explicitly specified, as seen in previous example, the original list of default file types will have the highest priority over the \abox{filetypes} values during the file name lookup. The following list is semantically equivalent to the previous example.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+filetypes:
+- extension: tex
+- extension: dtx
+- extension: ltx
+- extension: drv
+- extension: ins
+- extension: c
+  pattern: ^\s*//\s*
+\end{codebox}
+
+\begin{messagebox}{Do not escape backslashes}{attentioncolour}{\icattention}{black}
+When writing a file type pattern, there is no need for escaping backslashes as one does in a typical programming language (including MVEL expressions). In this specific scenario, key values are represented as plain, literal strings. However, make sure to write valid regular expressions and escape special characters whenever needed.
+\end{messagebox}
+\end{description}
 
 % optional, but at least one should happen
 
