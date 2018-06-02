@@ -412,8 +412,16 @@
 {\normalfont\itshape\,\,#1\enspace}~\cdbox{#2}}
 \newcommand{\describeop}[2]{\opbox{#1}~\opbox{{-}#2}}
 \newcommand{\describeopp}[3]{\describeop{#1}{#2}~\prbox{#3}}
-\newcommand{\describecf}[3]{\rbox[araracolour]{#1}~%
+\newcommand{\describecf}[4]{\rbox[araracolour]{#1}~%
+\rbox{\normalfont\itshape\,\,#2\enspace}~\abox{#3}%
+\hfill{\normalfont\itshape default:} \rbox{#4}}
+\newcommand{\describecfn}[3]{\rbox[araracolour]{#1}~%
 \rbox{\normalfont\itshape\,\,#2\enspace}~\abox{#3}}
+\newcommand{\rrbox}[1]{\rbox[araracolour]{$\triangle$\,#1}}
+\newcommand{\ctbox}[1]{\rbox[cyan]{#1}}
+\newcommand{\prmbox}[2]{\prbox{#1}\hfill\rrbox{#2}}
+\newcommand{\mdbox}[3]{\ctbox{#1}~\mtbox{#2}\hfill\rrbox{#3}}
+\newcommand{\mddbox}[4]{\ctbox{#1}~\mdbox{#2}{#3}{#4}}
 
 \renewcommand{\secheadstyle}{\Large\normalfont\em}
 \renewcommand{\subsecheadstyle}{\large\normalfont\em}

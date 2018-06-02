@@ -50,7 +50,7 @@ The following list describes the basic structure of an \arara\ configuration fil
 \begin{description}
 \item[\describe{M}{!config}] This keyword is mandatory and must be the first line of a configuration file. It denotes the object mapping metadata to be internally used by the tool. Actually, the tool is not too demanding on using it (in fact, you could suppress it entirely and \arara\ will not complain), but it is considered good practice to start a configuration file with a \abox{!config} keyword regardless.
 
-\item[\describecf{O}{string list}{paths}] When looking for rules, \arara\ always searches the default rule path, which consists of a special subdirectory named \abox[araracolour]{rules/} inside another special directory named \abox[araracolour]{ARARA\_HOME} (the place where our tool is installed). If no rule is found, the execution halts with an error. The \abox{paths} key specifies a list of directories, represented as plain strings, in which our tool should search for rules. The default path is appended to the list. Then the search happens from the first to the last element, in order.
+\item[\describecfn{O}{string list}{paths}] When looking for rules, \arara\ always searches the default rule path, which consists of a special subdirectory named \abox[araracolour]{rules/} inside another special directory named \abox[araracolour]{ARARA\_HOME} (the place where our tool is installed). If no rule is found, the execution halts with an error. The \abox{paths} key specifies a list of directories, represented as plain strings, in which our tool should search for rules. The default path is appended to the list. Then the search happens from the first to the last element, in order.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 paths:
@@ -91,51 +91,51 @@ Observe that the \varbox{user} variable actually holds a map containing three ke
 Do not use folded or literal styles for scalars in a path! The orb tag resolution for a path in plain string should be kept as simple as possible, so \emph{always} use the inline style.
 \end{messagebox}
 
-\item[\describecf{O}{string}{language}\hfill {\normalfont\itshape default:} \rbox{en}] This key sets the language of all subsequent executions of \arara\ according to the provided language code value, as plain string. The default language is set to English. Also, it is very important to observe that the \opbox{{-}language} command line option can override this setting.
+\item[\describecf{O}{string}{language}{en}] This key sets the language of all subsequent executions of \arara\ according to the provided language code value, as plain string. The default language is set to English. Also, it is very important to observe that the \opbox{{-}language} command line option can override this setting.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 language: nl
 \end{codebox}
 
-\item[\describecf{O}{integer}{loops}\hfill {\normalfont\itshape default:} \rbox{10}] This key redefines the maximum number of loops \arara\ will allow for potentially infinite iterations. Any positive integer can be used as value for this variable. Also, it is very important to observe that the \opbox{{-}max-loops} command line option can override this setting.
+\item[\describecf{O}{integer}{loops}{10}] This key redefines the maximum number of loops \arara\ will allow for potentially infinite iterations. Any positive integer can be used as value for this variable. Also, it is very important to observe that the \opbox{{-}max-loops} command line option can override this setting.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 loops: 30
 \end{codebox}
 
-\item[\describecf{O}{boolean}{verbose}\hfill {\normalfont\itshape default:} \rbox{false}] This key activates or deactivates the verbose mode of \arara\ as default mode, according to the associated boolean value. Also, it is very important to observe that the \opbox{{-}verbose} command line option can override this setting if, and only if, this variable holds \rbox{false} as value. Similarly, the \opbox{{-}silent} command line option can override this setting if, and only if, this variable holds \rbox{true} as value.
+\item[\describecf{O}{boolean}{verbose}{false}] This key activates or deactivates the verbose mode of \arara\ as default mode, according to the associated boolean value. Also, it is very important to observe that the \opbox{{-}verbose} command line option can override this setting if, and only if, this variable holds \rbox{false} as value. Similarly, the \opbox{{-}silent} command line option can override this setting if, and only if, this variable holds \rbox{true} as value.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 verbose: true
 \end{codebox}
 
-\item[\describecf{O}{boolean}{logging}\hfill {\normalfont\itshape default:} \rbox{false}] This key activates or deactivates the logging feature of \arara\ as the default behaviour, according to the associated boolean value. Also, it is very important to observe that the \opbox{{-}log} command line option can override this setting if, and only if, this variable holds \rbox{false} as value.
+\item[\describecf{O}{boolean}{logging}{false}] This key activates or deactivates the logging feature of \arara\ as the default behaviour, according to the associated boolean value. Also, it is very important to observe that the \opbox{{-}log} command line option can override this setting if, and only if, this variable holds \rbox{false} as value.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 logging: true
 \end{codebox}
 
-\item[\describecf{O}{boolean}{header}\hfill {\normalfont\itshape default:} \rbox{false}] This key modifies the directive extraction, according to the associated boolean value. If enabled, \arara\ will extract all directives from the beginning of the file until it reaches a line that is not empty and it is not a comment. Otherwise, the tool will resort to the default behaviour and extract all directives from the entire file. It is very important to observe that the \opbox{{-}header} command line option can override this setting if, and only if, this variable holds \rbox{false} as value.
+\item[\describecf{O}{boolean}{header}{false}] This key modifies the directive extraction, according to the associated boolean value. If enabled, \arara\ will extract all directives from the beginning of the file until it reaches a line that is not empty and it is not a comment. Otherwise, the tool will resort to the default behaviour and extract all directives from the entire file. It is very important to observe that the \opbox{{-}header} command line option can override this setting if, and only if, this variable holds \rbox{false} as value.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 header: false
 \end{codebox}
 
-\item[\describecf{O}{string}{logname}\hfill {\normalfont\itshape default:} \rbox{arara}] This key modifies the default log file name, according to the associated plain string value, plus the \rbox{log} extension. The value cannot be empty or contain invalid characters. There is no orb tag evaluation in this specific context, only a plain string value. The log file will be written by our tool if, and only if, the \opbox{{-}log} command line option is used.
+\item[\describecf{O}{string}{logname}{arara}] This key modifies the default log file name, according to the associated plain string value, plus the \rbox{log} extension. The value cannot be empty or contain invalid characters. There is no orb tag evaluation in this specific context, only a plain string value. The log file will be written by our tool if, and only if, the \opbox{{-}log} command line option is used.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 logname: mylog
 \end{codebox}
 
 % TODO fix reference
-\item[\describecf{O}{string}{dbname}\hfill {\normalfont\itshape default:} \rbox{arara}] This key modifies the default XML database file name, according to the associated plain string value, plus the \rbox{xml} extension. The value cannot be empty or contain invalid characters. There is no orb tag evaluation in this specific context, only a plain string value. This database is used by file hashing operations, detailed in Section~\ref{foo}, on page~\pageref{foo}.
+\item[\describecf{O}{string}{dbname}{arara}] This key modifies the default XML database file name, according to the associated plain string value, plus the \rbox{xml} extension. The value cannot be empty or contain invalid characters. There is no orb tag evaluation in this specific context, only a plain string value. This database is used by file hashing operations, detailed in Section~\ref{foo}, on page~\pageref{foo}.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 dbname: mydb
 \end{codebox}
 
 % TODO fix reference
-\item[\describecf{O}{string}{laf}\hfill {\normalfont\itshape default:} \rbox{none}] This key modifies the default look and feel class reference, i.e,  the appearance of GUI widgets provided by our tool, according to the associated plain string value. The value cannot be empty or contain invalid characters. There is no orb tag evaluation in this specific context, only a plain string value. This look and feel setting is used by UI methods, detailed in Section~\ref{foo}, on page~\pageref{foo}. Note that this value is used by the underlying Java runtime environment, so a full qualified class name is expected.
+\item[\describecf{O}{string}{laf}{none}] This key modifies the default look and feel class reference, i.e,  the appearance of GUI widgets provided by our tool, according to the associated plain string value. The value cannot be empty or contain invalid characters. There is no orb tag evaluation in this specific context, only a plain string value. This look and feel setting is used by UI methods, detailed in Section~\ref{foo}, on page~\pageref{foo}. Note that this value is used by the underlying Java runtime environment, so a full qualified class name is expected.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 laf: 'javax.swing.plaf.nimbus.NimbusLookAndFeel'
@@ -160,7 +160,7 @@ The system look and feel, of course, offers the best option of all since it mimi
 \end{messagebox}
 
 % TODO fix reference
-\item[\describecf{O}{string map}{preambles}] This key holds a string map containing predefined preambles for later use with the \opbox{{-}preamble} option (see Section~\ref{foo}, on page~\pageref{foo}). Note that each map key must be unique. Additionally, it it is highly recommended to use lowercase letters without spaces, accents or punctuation symbols, as key values. Only directives, line breaks and conditionals are recognized.
+\item[\describecfn{O}{string map}{preambles}] This key holds a string map containing predefined preambles for later use with the \opbox{{-}preamble} option (see Section~\ref{foo}, on page~\pageref{foo}). Note that each map key must be unique. Additionally, it it is highly recommended to use lowercase letters without spaces, accents or punctuation symbols, as key values. Only directives, line breaks and conditionals are recognized.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 preambles:
@@ -173,7 +173,7 @@ preambles:
 When defining preambles in the configuration file, \emph{always} use the literal style for scalar blocks. The reason for this requirement is the proper retention of line breaks, which are significant when parsing the strings into proper directive lines. Using the folded style in this particular scenario will almost surely be problematic.
 \end{messagebox}
 
-\item[\describecf{O}{file type list}{filetypes}] This key holds a list of file types supported by \arara\ when searching for a file name, as well as their corresponding directive lookup patterns. In order to properly set a file type, the keys used in this specification are defined inside the \rbox{filetypes$\rightarrow$} context and presented as follows.
+\item[\describecfn{O}{file type list}{filetypes}] This key holds a list of file types supported by \arara\ when searching for a file name, as well as their corresponding directive lookup patterns. In order to properly set a file type, the keys used in this specification are defined inside the \rbox{filetypes$\rightarrow$} context and presented as follows.
 
 \begin{description}
 \item[\describecontext{M}{filetypes}{extension}] This key, as the name implies, holds the file extension, represented as a plain string and without the leading dot (unless it is part of the extesion). An extension is an identifier specified as a suffix to the file name and indicates a characteristic of the corresponding content or intended use. Observe that this key is mandatory when specifying a file type, as our tool does not support files without a proper extension.

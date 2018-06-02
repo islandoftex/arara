@@ -3,7 +3,7 @@
 \label{chap:logging}
 
 % TODO fix reference
-A log file is a special type of file that records events that occur in a software run. \arara\ provides such feature through the \opbox{{-}log} command line option (Section~\ref{foo}, page~\pageref{foo}) or the equivalent key in the configuration file (Section~\ref{foo}, page~\pageref{foo}). This chapter covers the basic structure of a typical log file provided by our tool, including the important blocks that can be used to identify potential issues. The following example is used to illustrate the logging feature:
+The logging feature of \arara, as discussed earlier on, is activated through either the \opbox{{-}log} command line option (Section~\ref{foo}, page~\pageref{foo}) or the equivalent key in the configuration file (Section~\ref{foo}, page~\pageref{foo}). This chapter covers the basic structure of a typical log file provided by our tool, including the important blocks that can be used to identify potential issues. The following example is used to illustrate this feature:
 
 \begin{ncodebox}{Source file}{teal}{\icnote}{white}{doc12.tex}
 % arara: pdftex
@@ -12,12 +12,12 @@ Hello world.
 \bye
 \end{ncodebox}
 
-When running the tool on the previous example with the \opbox{{-}log} command line option (otherwise, the logging framework will not provide a file at all), we will obtain the expected \rbox{arara.log} log file containing the most significant events that happened during this particular execution, as well as details regarding the underlying operating system. Note that timestamps were deliberated removed from the log entries in order to declutter the output, and line breaks were included as to easily spot each entry,
+When running our tool on the previous example with the \opbox{{-}log} command line option (otherwise, the logging framework will not provide a file at all), we will obtain the expected \rbox{arara.log} log file containing the most significant events that happened during this particular execution, as well as details regarding the underlying operating system. The content of such file is discussed as follows. Note that timestamps were deliberated removed from the log entries in order to declutter the output, and line breaks were included as to easily spot each entry,
 
 \section{System information}
 \label{sec:systeminformation}
 
-The very first entry to appear in the log file is the current version of \arara\ followed by a revision number. The revision number acts as a counter for the last review on the major version. The counter starts at 1 to denote the first release in the version 4.0 series. The revision number is also important to indicate possible new features introduced later on in the application.
+The very first entry to appear in the log file is the current version of \arara\ followed by a revision number. The revision number acts as a counter for the last review on the major version. The counter starts at 1 to denote the first release in the version 4.0 series. The revision number is also important to indicate possible new features introduced later on, in the application.
 
 \begin{codebox}{Log file}{teal}{\icnote}{white}
 Welcome to arara 4.0 (revision 1)!
@@ -37,7 +37,7 @@ The following entries in the log file are the absolute path of the current deplo
 
 \begin{messagebox}{A privacy note}{araracolour}{\icok}{white}
 \setlength{\parskip}{1em}
-I understand that the previous entries containing information about the underlying operating system might pose as a privacy threat to some users. However, it is worth noting that \arara\ does not share any sensitive information about your system, the entries are listed in the log file for debugging purposes only, locally in your computer.
+I understand that the previous entries containing information about the underlying operating system might pose as a privacy threat to some users. However, it is worth noting that \arara\ does not share any sensitive information about your system, as entries are listed in the log file for debugging purposes only, locally in your computer.
 
 From experience, these entries greatly help our users to track down errors in the execution, as well as learning more about the underlying operating system. However, be mindful of sharing your log file! Since the log file contains structured blocks, it is highly advisable to selectively choose the ones relevant to the current discussion.
 \end{messagebox}
@@ -54,7 +54,7 @@ Processing 'doc12.tex' (size: 74 bytes, last modified:
 06/02/2018 05:36:40), please wait.
 \end{codebox}
 
-The next entries refer to finding potential directive patterns in the code, including multiline support. All matching patterns contain the corresponding line numbers. Note that these numbers might refer to incorrect lines in the code when the \opbox{{-}preamble} command line option is used.
+The next entries refer to finding potential directive patterns in the code, including multiline support. All matching patterns contain the corresponding line numbers. Note that these numbers might refer to incorrect lines in the code if the \opbox{{-}preamble} command line option is used.
 
 \begin{codebox}{Log file}{teal}{\icnote}{white}
 I found a potential pattern in line 1: pdftex
@@ -100,7 +100,7 @@ Note, however, that potential errors in directive conditionals, as well as simil
 \section{Rule interpretation}
 \label{sec:ruleinterpretation}
 
-Once all directives are normalized, \arara\ proceeds to interpret the potential conditionals, if any, and the corresponding rules. Note that the conditional type dictates whether the rule should be interpreted first or not. For each rule, the tool informs the identifier and the absolute path of the corresponding YAML file. In our scenario, the rule is part of the default rule pack released with our tool:
+Once all directives are normalized, \arara\ proceeds to interpret the potential conditionals, if any, and the corresponding rules. Note that, when available, the conditional type dictates whether the rule should be interpreted first or not. For each rule, the tool informs the identifier and the absolute path of the corresponding YAML file. In this specific scenario, the rule is part of the default rule pack released with our tool:
 
 \begin{codebox}{Log file}{teal}{\icnote}{white}
 I am ready to interpret rule 'pdftex'.
@@ -108,14 +108,14 @@ Rule location: '/opt/paulo/arara/rules'
 \end{codebox}
 
 % TODO fix reference
-For each task (or subtask, as it is part of a rule task) defined in the rule context, \arara\ will interpret it and return the corresponding system command. The return types can be found in Section~\ref{foo}, on page~\pageref{foo}. In our scenario, there is just one task associated with the \rbox{pdftex} rule. Both task name and system command are informed:
+For each task (or subtask, as it is part of a rule task) defined in the rule context, \arara\ will interpret it and return the corresponding system command. The return types can be found in Section~\ref{foo}, on page~\pageref{foo}. In this specific scenario, there is just one task associated with the \rbox{pdftex} rule. Both task name and system command are informed:
 
 \begin{codebox}{Log file}{teal}{\icnote}{white}
 I am ready to interpret task 'PDFTeX engine' from rule 'PDFTeX'.
 System command: [ pdftex, doc12.tex ]
 \end{codebox}
 
-After proper task interpretation, the underlying execution library of \arara\ executes the provided system command and includes the output from both output and error streams to an \emph{output buffer} block inside the log file.
+After proper task interpretation, the underlying execution library of \arara\ executes the provided system command and includes the output from both output and error streams in an \emph{output buffer} block inside the log file.
 
 \begin{codebox}{Log file}{teal}{\icnote}{white}
 ---------------------- BEGIN OUTPUT BUFFER ----------------------
