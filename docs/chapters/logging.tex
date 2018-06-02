@@ -2,6 +2,57 @@
 \chapter{Logging}
 \label{chap:logging}
 
+A log file is a special type of file that records events that occur in a software run. To this end, \arara\ provides such feature through the \opbox{{-}log} command line option (Section~\ref{foo}, page~\pageref{foo}) or the equivalent key in the configuration file (Section~\ref{foo}, page~\pageref{foo}). This chapter covers the basic structure of a typical log file provided by our tool, including the important sections that can be used to identify potential issues. The following example is used to illustrate the logging feature:
+
+\begin{ncodebox}{Source file}{teal}{\icnote}{white}{doc12.tex}
+% arara: pdftex
+% arara: clean: { extensions: [ log ] }
+Hello world.
+\bye
+\end{ncodebox}
+
+When running the tool on the previous example with the \opbox{{-}log} command line option (otherwise, the logging framework will not provide a file at all), we will obtain the expected \rbox{arara.log} log file containing the most significant events that happened during this particular execution. Note that the timestamps were deliberated removed from the log entries in order to declutter the output, and line breaks were included as to easily spot each entry,
+
+\section{System information}
+\label{sec:systeminformation}
+
+The very first entry to appear in the log file is the current version of \arara\ followed by a revision number. The revision number acts as a counter for the last review on the major version. The counter starts at 1 to denote the first release in the version 4.0 series. The revision number is also important to indicate possible new features introduced later on in the application.
+
+\begin{codebox}{Log file}{teal}{\icnote}{white}
+Welcome to arara 4.0 (revision 1)!
+\end{codebox}
+
+The following entries in the log file are the absolute path of the current deployment of \arara\ (line 1), details about the current Java virtual machine (namely, vendor and absolute path, in lines 2 and 3, respectively), the underlying operating system information (namely, system name, architecture and eventually the kernel version, in line 4), home and working directories (lines 5 and 6, respectively), and the absolute path of the applied configuration file, if any (line 7). This section is very important to help tracking possible issues related to the underlying operating system and the tool configuration itself.
+
+\begin{codebox}{Log file}{teal}{\icnote}{white}
+::: arara @ /opt/paulo/arara
+::: Java 1.8.0_171, Oracle Corporation
+::: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.171-4.b10.fc28.x86_64/jre
+::: Linux, amd64, 4.16.12-300.fc28.x86_64
+::: user.home @ /home/paulo
+::: user.dir @ /home/paulo/Testes
+::: CF @ [none]
+\end{codebox}
+
+\begin{messagebox}{A privacy note}{araracolour}{\icok}{white}
+\setlength{\parskip}{1em}
+I understand that the previous entries containing information about the underlying operating system might pose as a privacy threat to some users. However, it is worth noting that \arara\ does not share any sensitive information about your system, the entries are listed in the log file for debugging purposes only, locally in your computer.
+
+From experience, these entries greatly help our users to track down errors in the execution, as well as learning more about the underlying operating system. However, be mindful of sharing your log file! Since the log file contains structured sections, it is highly advisable to selectively choose the ones relevant to the current discussion.
+\end{messagebox}
+
+It is important to observe that localized messages are also applied to the log file. If a language other than English is selected, either through the \opbox{{-}language} command line option or the equivalent key in the configuration file, the logging framework will honour the current setting and entries will be available in the specified language. Having a log file on your own language might mitigate the traumatic experience of error tracking for \TeX\ newbies.
+
+\section{Directive extraction}
+\label{sec:directiveextraction}
+
+The following section in the log file refers to file information and directive extration. First, as the terminal output counterpart, the tool will display details about the file being processed, including size and modification status:
+
+\begin{codebox}{Log file}{teal}{\icnote}{white}
+Processing 'doc12.tex' (size: 74 bytes, last modified:
+06/02/2018 05:36:40), please wait.
+\end{codebox}
+
 %\begin{codebox}{Terminal}{teal}{\icnote}{white}
 %\end{codebox}
 
