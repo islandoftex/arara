@@ -3,7 +3,7 @@
 \label{chap:logging}
 
 % TODO fix reference
-A log file is a special type of file that records events that occur in a software run. To this end, \arara\ provides such feature through the \opbox{{-}log} command line option (Section~\ref{foo}, page~\pageref{foo}) or the equivalent key in the configuration file (Section~\ref{foo}, page~\pageref{foo}). This chapter covers the basic structure of a typical log file provided by our tool, including the important sections that can be used to identify potential issues. The following example is used to illustrate the logging feature:
+A log file is a special type of file that records events that occur in a software run. \arara\ provides such feature through the \opbox{{-}log} command line option (Section~\ref{foo}, page~\pageref{foo}) or the equivalent key in the configuration file (Section~\ref{foo}, page~\pageref{foo}). This chapter covers the basic structure of a typical log file provided by our tool, including the important sections that can be used to identify potential issues. The following example is used to illustrate the logging feature:
 
 \begin{ncodebox}{Source file}{teal}{\icnote}{white}{doc12.tex}
 % arara: pdftex
@@ -12,7 +12,7 @@ Hello world.
 \bye
 \end{ncodebox}
 
-When running the tool on the previous example with the \opbox{{-}log} command line option (otherwise, the logging framework will not provide a file at all), we will obtain the expected \rbox{arara.log} log file containing the most significant events that happened during this particular execution. Note that the timestamps were deliberated removed from the log entries in order to declutter the output, and line breaks were included as to easily spot each entry,
+When running the tool on the previous example with the \opbox{{-}log} command line option (otherwise, the logging framework will not provide a file at all), we will obtain the expected \rbox{arara.log} log file containing the most significant events that happened during this particular execution, as well as details regarding the underlying operating system. Note that timestamps were deliberated removed from the log entries in order to declutter the output, and line breaks were included as to easily spot each entry,
 
 \section{System information}
 \label{sec:systeminformation}
@@ -61,7 +61,7 @@ I found a potential pattern in line 1: pdftex
 I found a potential pattern in line 2: clean: { extensions: [ log ] }
 \end{codebox}
 
-When all matching patterns are collected from the code in the previous phase, \arara\ composes the directives accordingly, including potential parameters and conditionals. Observe that all directives have an associated list of line numbers from which they were originally composed.
+When all matching patterns are collected from the code in the previous phase, \arara\ composes the directives accordingly, including potential parameters and conditionals. Observe that all directives have an associated list of line numbers from which they were originally composed. This phase is known as \emph{directive extraction}.
 
 \begin{codebox}{Log file}{teal}{\icnote}{white}
 I found a potential directive: Directive: { identifier: pdftex,
@@ -70,14 +70,19 @@ I found a potential directive: Directive: { identifier: clean,
 parameters: {extensions=[log]}, conditional: { NONE }, lines: [2] }
 \end{codebox}
 
+In this phase, directives are correctly extracted and composed, but yet to be validated regarding invalid or reserved parameter keys. The tool then proceeds to validate parameters and normalize such directives.
+
+\section{Directive normalization}
+\label{sec:directivenormalization}
+
 % TODO fix reference
-Once all directives are properly composed, the tool checks for potential inconsistences, such as invalid or reserved parameter keys. Then all directives are validated and internally mapped with both \abox{file} and \abox{reference} parameters, as previously described in Section~\ref{foo}, on page~\pageref{foo}. Note that potential errors on directive conditionals can only be caught at runtime.
+Once all directives are properly composed, the tool checks for potential inconsistences, such as invalid or reserved parameter keys. Then all directives are validated and internally mapped with special parameters, as previously described in Section~\ref{foo}, on page~\pageref{foo}.
 
 \begin{codebox}{Log file}{teal}{\icnote}{white}
 All directives were validated. We are good to go.
 \end{codebox}
 
-After validation, all directives are listed in a special section in the log file, including potential parameters and conditionals. Note that, in this phase, the special parameters are already included, regardless of the directive type. This particular section can be specially used for debugging purposes, since it contains all details regarding directives.
+After validation, all directives are listed in a special section in the log file, including potential parameters and conditionals. This phase is known as \emph{directive normalization}. Note that the special parameters are already included, regardless of the directive type.  This particular section can be used specially for debugging purposes, since it contains all details regarding directives.
 
 \begin{codebox}{Log file}{teal}{\icnote}{white}
 -------------------------- DIRECTIVES ---------------------------
@@ -90,7 +95,12 @@ conditional: { NONE }, lines: [2] }
 -----------------------------------------------------------------
 \end{codebox}
 
+Note, however, that potential errors in directive conditionals, as well as similar inconsistencies in the corresponding rules, can only be caught at runtime. The next phase covers proper interpretation based on the provided directives.
 
+\section{Rule interpretation}
+\label{sec:ruleinterpretation}
+
+Once directives are normalized, \arara\ proceeds to interpret 
 
 %\begin{codebox}{Terminal}{teal}{\icnote}{white}
 %\end{codebox}
