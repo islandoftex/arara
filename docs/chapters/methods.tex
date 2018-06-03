@@ -2,15 +2,16 @@
 \chapter{Methods}
 \label{chap:methods}
 
+\arara\ features several helper methods available in directive conditional and rule contexts which provide interesting features for enhancing the user experience, as well as improving the automation itself. This chapter provides a list of such methods. It is important to observe that virtually all classes from the Java runtime environment can be used within MVEL expressions, so your milleage might vary.
+
+\begin{messagebox}{A note on writing code}{araracolour}{\icok}{white}
+As seen in Section~\ref{foo}, on page~\pageref{foo}, Java and MVEL code be used interchangeably in the same expressions, including instantiation of classes into objects and invocation of methods. However, be mindful of explicitly importing Java packages and classes through the classic \rbox{import} statement, as MVEL does not automatically handle imports, or an exception will surely be raised. Alternatively, you can provide the full qualified name to classes as well.
+\end{messagebox}
+
+Methods are listed with their complete signatures, including potential  parameters and corresponding types. Also, the return type of a method is denoted by \rrbox{type} and refers to a typical Java data type (either class or primitive). Do not worry too much, as there are illustrative examples. A method available in the directive conditional context will be marked by \ctbox{C} next to the corresponding signature. Similarly, an entry marked by \ctbox{R} denotes that the corresponding method is available in the rule context.
+
 %\begin{description}
-%\item[\mdbox{R}{writeToFile}{String}] \mbox{}
-%\item[\mddbox{C}{R}{writeToFile}{String}] \mbox{}
-%
-%\begin{description}
-%\item[\prmbox{file}{File}] A file reference.
-%\item[\prmbox{lines}{List<String>}] A string reference.
-%\item[\prmbox{append}{boolean}] A boolean value.
-%\end{description}
+%\item[\mdbox{R}{getCommandWithWorkingDirectory(String s, Object[] o)}{String}]
 %\end{description}
 
 %\begin{}{Source file}{teal}{\icnote}{white}{}
