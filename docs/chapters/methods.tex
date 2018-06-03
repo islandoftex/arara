@@ -5,14 +5,49 @@
 \arara\ features several helper methods available in directive conditional and rule contexts which provide interesting features for enhancing the user experience, as well as improving the automation itself. This chapter provides a list of such methods. It is important to observe that virtually all classes from the Java runtime environment can be used within MVEL expressions, so your milleage might vary.
 
 \begin{messagebox}{A note on writing code}{araracolour}{\icok}{white}
-As seen in Section~\ref{foo}, on page~\pageref{foo}, Java and MVEL code be used interchangeably in the same expressions, including instantiation of classes into objects and invocation of methods. However, be mindful of explicitly importing Java packages and classes through the classic \rbox{import} statement, as MVEL does not automatically handle imports, or an exception will surely be raised. Alternatively, you can provide the full qualified name to classes as well.
+As seen in Section~\ref{foo}, on page~\pageref{foo}, Java and MVEL code be used interchangeably within expressions and orb tags, including instantiation of classes into objects and invocation of methods. However, be mindful of explicitly importing Java packages and classes through the classic \rbox{import} statement, as MVEL does not automatically handle imports, or an exception will surely be raised. Alternatively, you can provide the full qualified name to classes as well.
 \end{messagebox}
 
 Methods are listed with their complete signatures, including potential  parameters and corresponding types. Also, the return type of a method is denoted by \rrbox{type} and refers to a typical Java data type (either class or primitive). Do not worry too much, as there are illustrative examples. A method available in the directive conditional context will be marked by \ctbox{C} next to the corresponding signature. Similarly, an entry marked by \ctbox{R} denotes that the corresponding method is available in the rule context.
 
-%\begin{description}
-%\item[\mdbox{R}{getCommandWithWorkingDirectory(String s, Object[] o)}{String}]
-%\end{description}
+\section{Files}
+\label{sec:files}
+
+This section introduces methods related to file handling, searching and hashing. It is important to observe that no exception is thrown in case of an anomalous method call. In this particular scenario, the methods return empty references, when applied.
+
+\begin{description}
+\item[\mdbox{R}{getOriginalFile()}{String}] This method returns the original file name, as plain string, regardless of a potential override through the special \abox{files} parameter in the directive mapping, as seen in Section~\ref{foo}, on page~\pageref{foo}.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+if (file == getOriginalFile()) {
+    System.out.println("The 'file' variable
+       was not overriden.");
+}
+\end{codebox}
+
+\item[\mdbox{R}{getOriginalReference()}{File}] This method returns the original file reference, as a \rbox{File} object, regardless of a potential reference override indirectly through the special \abox{files} parameter in the directive mapping, as seen in Section~\ref{foo}, on page~\pageref{foo}.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+if (reference.equals(getOriginalFile())) {
+    System.out.println("The 'reference' variable
+       was not overriden.");
+}
+\end{codebox}
+
+\item[\mddbox{C}{R}{currentFile()}{File}] This method returns the file reference, as a \rbox{File} object, for the current directive. It is important to observe that, from version 4.0 on, \arara\ replicates the directive when the special \abox{files} parameter is detected amongst the parameters, so each instance will have a different reference.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: pdflatex if currentFile().getName() == 'doc13.tex'
+\end{codebox}
+
+\item[\mddbox{C}{R}{toFile(String reference)}{File}] This method returns a file (or directory) reference, as a \rbox{File} object, based on the provided string. Note that such string can refer to either a relative entry or a complete, absolute path. It is worth mentioning that, in Java, despite the curious name, a \rbox{File} object can be assigned to either a file or a directory.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+f = toFile('thesis.tex');
+\end{codebox}
+
+
+\end{description}
 
 %\begin{}{Source file}{teal}{\icnote}{white}{}
 %\end{ncodebox}
