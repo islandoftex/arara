@@ -88,4 +88,12 @@ public class LocalizationTest {
         assertEquals(0, check(new Locale("en", "QN")));
     }
     
+    /**
+     * Verifies the Dutch localization (provided by Marijn).
+     */
+    @Test
+    public void verifyDutch() {
+        assertEquals(0, check(new Locale("nl")));
+    }
+    
 }
