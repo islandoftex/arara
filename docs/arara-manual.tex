@@ -4,10 +4,29 @@
 \usepackage[utf8]{inputenc}
 \usepackage[margin=2.5cm]{geometry}
 \usepackage{arara}
+\usepackage[sort=none,postpunc=dot]{glossaries-extra}
 
 \addbibresource{references.bib}
 \newcommand{\araraversion}{4.0}
 \newcommand{\todo}[1]{\fbox{\em#1}}
+
+\glssetcategoryattribute{abbreviation}{glossdesc}{firstuc}
+\setabbreviationstyle{short-nolong-desc}
+\renewcommand{\glsxtrshortdescname}{%
+ \protect\glsabbrvfont{\the\glsshorttok} (\the\glslongtok)%
+}
+
+\newabbreviation
+ [description={a simple computer programming environment that takes
+  a single expression (input), evaluates it and results the result}]
+ {REPL}{REPL}{Read-Eval-Print Loop}
+% Should the hyphens be en-dashes? I've seen it as Read--Eval--Print
+% in some places.
+
+\newabbreviation
+ [description={human-friendly data, commonly used for configuration
+files but also used for data storage or transmission}]
+ {YAML}{YAML}{YAML Ain't Markup Language}
 
 \begin{document}
 
@@ -92,20 +111,22 @@ Version \araraversion}
 
 \mainmatter
 
-\part[A primer on formats and scripting]{A primer on\\ formats and scripting}
-\label{part:primer}
-
-\include{chapters/yaml}
-\include{chapters/mvel}
+\include{chapters/introduction}
 
 \part{The application}
 \label{part:application}
 
-\include{chapters/introduction}
 \include{chapters/concepts}
 \include{chapters/cli}
 \include{chapters/configuration}
 \include{chapters/logging}
 \include{chapters/methods}
 
+\part[A primer on formats and scripting]{A primer on\\ formats and scripting}
+\label{part:primer}
+
+\include{chapters/yaml}
+\include{chapters/mvel}
+
+\printunsrtglossary
 \end{document}
