@@ -69,6 +69,162 @@ basename = getFullBasename(toFile('/home/paulo/thesis.tex'));
 \begin{codebox}{Example}{teal}{\icnote}{white}
 basename = getFullBasename('/home/paulo/thesis.tex');
 \end{codebox}
+
+\item[\mdbox{R}{getFiletype(File file)}{String}] This method returns the file type (i.e, the associated extension specified as a suffix to the name, typically delimited with a full stop) of the provided \rbox{File} reference, as a string. This method will throw an exception if the provided reference is not a proper file. An empty string is returned if, and only if, the provided file name has no associated extension.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+extension = getFiletype(toFile('thesis.pdf'));
+\end{codebox}
+
+\item[\mdbox{R}{getFiletype(String name)}{String}] This method returns the file type (i.e, the associated extension specified as a suffix to the name, typically delimited with a full stop) of the provided \rbox{String} reference, as a string. An empty string is returned if, and only if, the provided file name has no associated extension.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+extension = getFiletype('thesis.pdf');
+\end{codebox}
+
+\item[\mddbox{C}{R}{exists(File file)}{boolean}] This method, as the name implies, returns a boolean value according to whether the provided \rbox{File} reference exists. Observe that the provided reference can be either a file or a directory.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: bibtex if exists(toFile('references.bib'))
+\end{codebox}
+
+\item[\mddbox{C}{R}{exists(String extension)}{boolean}] This method returns a boolean value according to whether the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the provided \rbox{String} extension exists. This method eases the checking of files which share the current file name modulo extension (e.g, log and auxiliary files). Note that the provided string refers to the extension, not the file name.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: pdftex if exists('tex')
+\end{codebox}
+
+\item[\mddbox{C}{R}{missing(File file)}{boolean}] This method, as the name implies, returns a boolean value according to whether the provided \rbox{File} reference does not exist. It is important to observe that the provided reference can be either a file or a directory.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: pdftex if missing(toFile('thesis.pdf'))
+\end{codebox}
+
+\item[\mddbox{C}{R}{missing(String extension)}{boolean}] This method returns a boolean value according to whether the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the provided \rbox{String} extension does not exist. This method eases the checking of files which share the current file name modulo extension (e.g, log and auxiliary files). Note that the provided string refers to the extension, not the file name.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: pdftex if missing('pdf')
+\end{codebox}
+
+\item[\mddbox{C}{R}{changed(File file)}{boolean}] This method returns a boolean value according to whether the provided \rbox{File} reference has changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a XML database file named \rbox{arara.xml} located at the same directory of the current file (the database name can be overriden in the configuration file, as discussed in Section~\ref{foo}, on page~\pageref{foo}). The method semantics (including the return values) is presented as follows.
+
+\vspace{1em}
+
+{\centering\small
+\setlength\tabcolsep{0.8em}
+\begin{tabular}{@{}ccccc@{}}
+\toprule
+\emph{file exists?} & \emph{entry exists?} &
+\emph{has changed?} & \emph{DB action} &
+\emph{result} \\
+\midrule
+\cbyes & \cbyes & \cbyes & update & \cbyes \\
+\cbyes & \cbyes & \cbno & --- & \cbno \\
+\cbyes & \cbno & --- & insert & \cbyes \\
+\cbno & \cbno & --- & --- & \cbno \\
+\cbno & \cbyes & --- & remove & \cbyes \\
+\bottomrule
+\end{tabular}\par}
+
+\vspace{1.4em}
+
+It is important to observe that this method \emph{always} performs a database operation, either an insertion, removal or update on the corresponding entry. When using \mtbox{changed} within a logical expression, make sure the evaluation order is correct, specially regarding the use of short-circuiting operations. In some scenarios, order does matter.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: pdflatex if changed(toFile('thesis.tex'))
+\end{codebox}
+
+\begin{messagebox}{Short-circuit evaluation}{araracolour}{\icok}{white}
+According to the \href{https://en.wikipedia.org/wiki/Short-circuit_evaluation}{Wikipedia entry}, a \emph{short-circuit evaluation} is the semantics of some boolean operators in some programming languages in which the second argument is executed or evaluated only if the first argument does not suffice to determine the value of the expression. In Java (and consequently MVEL), both short-circuit and standard boolean operators are available.
+\end{messagebox}
+
+\begin{messagebox}{CRC as a hashing algorithm}{attentioncolour}{\icattention}{black}
+\arara\ internally relies on a CRC32 implementation for file hashing. This particular choice, although not designed for hashing, offers an interesting tradeoff between speed and quality. Besides, since it is not computationally expensive as strong algorithms such as MD5 and SHA1, CRC32 can be used for hashing typical \TeX\ documents and plain text files with little to no collisions.
+\end{messagebox}
+
+\item[\mddbox{C}{R}{changed(String extension)}{boolean}] This method returns a boolean value according to whether the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the provided \rbox{String} extension has changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a XML database file named \rbox{arara.xml} located at the same directory of the current file (the database name can be overriden in the configuration file, as discussed in Section~\ref{foo}, on page~\pageref{foo}). The method semantics (including the return values) is presented as follows.
+
+\vspace{1em}
+
+{\centering\small
+\setlength\tabcolsep{0.8em}
+\begin{tabular}{@{}ccccc@{}}
+\toprule
+\emph{file exists?} & \emph{entry exists?} &
+\emph{has changed?} & \emph{DB action} &
+\emph{result} \\
+\midrule
+\cbyes & \cbyes & \cbyes & update & \cbyes \\
+\cbyes & \cbyes & \cbno & --- & \cbno \\
+\cbyes & \cbno & --- & insert & \cbyes \\
+\cbno & \cbno & --- & --- & \cbno \\
+\cbno & \cbyes & --- & remove & \cbyes \\
+\bottomrule
+\end{tabular}\par}
+
+\vspace{1.4em}
+
+It is important to observe that this method \emph{always} performs a database operation, either an insertion, removal or update on the corresponding entry. When using \mtbox{changed} within a logical expression, make sure the evaluation order is correct, specially regarding the use of short-circuiting operations. In some scenarios, order does matter.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: pdflatex if changed('tex')
+\end{codebox}
+
+\item[\mddbox{C}{R}{unchanged(File file)}{boolean}] This method returns a boolean value according to whether the provided \rbox{File} reference has not changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a XML database file named \rbox{arara.xml} located at the same directory of the current file (the database name can be overriden in the configuration file, as discussed in Section~\ref{foo}, on page~\pageref{foo}). The method semantics (including the return values) is presented as follows.
+
+\vspace{1em}
+
+{\centering\small
+\setlength\tabcolsep{0.8em}
+\begin{tabular}{@{}ccccc@{}}
+\toprule
+\emph{file exists?} & \emph{entry exists?} &
+\emph{has changed?} & \emph{DB action} &
+\emph{result} \\
+\midrule
+\cbyes & \cbyes & \cbyes & update & \cbno \\
+\cbyes & \cbyes & \cbno & --- & \cbyes \\
+\cbyes & \cbno & --- & insert & \cbno \\
+\cbno & \cbno & --- & --- & \cbyes \\
+\cbno & \cbyes & --- & remove & \cbno \\
+\bottomrule
+\end{tabular}\par}
+
+\vspace{1.4em}
+
+It is important to observe that this method \emph{always} performs a database operation, either an insertion, removal or update on the corresponding entry. When using \mtbox{unchanged} within a logical expression, make sure the evaluation order is correct, specially regarding the use of short-circuiting operations. In some scenarios, order does matter.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: pdflatex if !unchanged(toFile('thesis.tex'))
+\end{codebox}
+
+\item[\mddbox{C}{R}{unchanged(String extension)}{boolean}] This method returns a boolean value according to whether the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the provided \rbox{String} extension has not changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a XML database file named \rbox{arara.xml} located at the same directory of the current file (the database name can be overriden in the configuration file, as discussed in Section~\ref{foo}, on page~\pageref{foo}). The method semantics (including the return values) is presented as follows.
+
+\vspace{1em}
+
+{\centering\small
+\setlength\tabcolsep{0.8em}
+\begin{tabular}{@{}ccccc@{}}
+\toprule
+\emph{file exists?} & \emph{entry exists?} &
+\emph{has changed?} & \emph{DB action} &
+\emph{result} \\
+\midrule
+\cbyes & \cbyes & \cbyes & update & \cbno \\
+\cbyes & \cbyes & \cbno & --- & \cbyes \\
+\cbyes & \cbno & --- & insert & \cbno \\
+\cbno & \cbno & --- & --- & \cbyes \\
+\cbno & \cbyes & --- & remove & \cbno \\
+\bottomrule
+\end{tabular}\par}
+
+\vspace{1.4em}
+
+It is important to observe that this method \emph{always} performs a database operation, either an insertion, removal or update on the corresponding entry. When using \mtbox{unchanged} within a logical expression, make sure the evaluation order is correct, specially regarding the use of short-circuiting operations. In some scenarios, order does matter.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: pdflatex if !unchanged('tex')
+\end{codebox}
 \end{description}
 
 %\begin{}{Source file}{teal}{\icnote}{white}{}
