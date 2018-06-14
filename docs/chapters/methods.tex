@@ -37,7 +37,7 @@ if (reference.equals(getOriginalFile())) {
 \item[\mddbox{C}{R}{currentFile()}{File}] This method returns the file reference, as a \rbox{File} object, for the current directive. It is important to observe that, from version 4.0 on, \arara\ replicates the directive when the special \abox{files} parameter is detected amongst the parameters, so each instance will have a different reference.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% arara: pdflatex if currentFile().getName() == 'doc13.tex'
+% arara: pdflatex if currentFile().getName() == 'thesis.tex'
 \end{codebox}
 
 \item[\mddbox{C}{R}{toFile(String reference)}{File}] This method returns a file (or directory) reference, as a \rbox{File} object, based on the provided string. Note that such string can refer to either a relative entry or a complete, absolute path. It is worth mentioning that, in Java, despite the curious name, a \rbox{File} object can be assigned to either a file or a directory.
@@ -46,7 +46,29 @@ if (reference.equals(getOriginalFile())) {
 f = toFile('thesis.tex');
 \end{codebox}
 
+\item[\mdbox{R}{getBasename(File file)}{String}] This method returns the base name (i.e, the name without the associated extension) of the provided \rbox{File} reference, as a string. Observe that this method ignores a potential path reference when extracting the base name. For a complete base name extraction with full path support, please refer to the \mtbox{getFullBasename} methods. Also, this method will throw an exception if the provided reference is not a proper file.
 
+\begin{codebox}{Example}{teal}{\icnote}{white}
+basename = getBasename(toFile('thesis.tex'));
+\end{codebox}
+
+\item[\mdbox{R}{getBasename(String name)}{String}] This method returns the base name (i.e, the name without the associated extension) of the provided \rbox{String} reference, as a string. Observe that this method ignores a potential path reference when extracting the base name. For a complete base name extraction with full path support, please refer to the \mtbox{getFullBasename} methods.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+basename = getBasename('thesis.tex');
+\end{codebox}
+
+\item[\mdbox{R}{getFullBasename(File file)}{String}] This method returns the full base name (i.e, the name without the associated extension, as well as the potential path reference) of the provided \rbox{File} reference, as a string. This method will throw an exception if the provided reference is not a proper file.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+basename = getFullBasename(toFile('/home/paulo/thesis.tex'));
+\end{codebox}
+
+\item[\mdbox{R}{getFullBasename(String name)}{String}] This method returns the full base name (i.e, the name without the associated extension, as well as the potential path reference) of the provided \rbox{String} reference, as a string. As the path discovery requires an underlying file conversion, this method will throw an exception if the provided reference is not a proper file.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+basename = getFullBasename('/home/paulo/thesis.tex');
+\end{codebox}
 \end{description}
 
 %\begin{}{Source file}{teal}{\icnote}{white}{}
