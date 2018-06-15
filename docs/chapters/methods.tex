@@ -5,6 +5,7 @@
 \arara\ features several helper methods available in directive conditional and rule contexts which provide interesting features for enhancing the user experience, as well as improving the automation itself. This chapter provides a list of such methods. It is important to observe that virtually all classes from the Java runtime environment can be used within MVEL expressions, so your milleage might vary.
 
 \begin{messagebox}{A note on writing code}{araracolour}{\icok}{white}
+% TODO fix reference
 As seen in Section~\ref{foo}, on page~\pageref{foo}, Java and MVEL code be used interchangeably within expressions and orb tags, including instantiation of classes into objects and invocation of methods. However, be mindful of explicitly importing Java packages and classes through the classic \rbox{import} statement, as MVEL does not automatically handle imports, or an exception will surely be raised. Alternatively, you can provide the full qualified name to classes as well.
 \end{messagebox}
 
@@ -16,6 +17,7 @@ Methods are listed with their complete signatures, including potential  paramete
 This section introduces methods related to file handling, searching and hashing. It is important to observe that no exception is thrown in case of an anomalous method call. In this particular scenario, the methods return empty references, when applied.
 
 \begin{description}
+% TODO fix reference
 \item[\mdbox{R}{getOriginalFile()}{String}] This method returns the original file name, as plain string, regardless of a potential override through the special \abox{files} parameter in the directive mapping, as seen in Section~\ref{foo}, on page~\pageref{foo}.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -25,6 +27,7 @@ if (file == getOriginalFile()) {
 }
 \end{codebox}
 
+% TODO fix reference
 \item[\mdbox{R}{getOriginalReference()}{File}] This method returns the original file reference, as a \rbox{File} object, regardless of a potential reference override indirectly through the special \abox{files} parameter in the directive mapping, as seen in Section~\ref{foo}, on page~\pageref{foo}.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -106,6 +109,7 @@ extension = getFiletype('thesis.pdf');
 % arara: pdftex if missing('pdf')
 \end{codebox}
 
+% TODO fix reference
 \item[\mddbox{C}{R}{changed(File file)}{boolean}] This method returns a boolean value according to whether the provided \rbox{File} reference has changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a XML database file named \rbox{arara.xml} located at the same directory of the current file (the database name can be overriden in the configuration file, as discussed in Section~\ref{foo}, on page~\pageref{foo}). The method semantics (including the return values) is presented as follows.
 
 \vspace{1em}
@@ -142,6 +146,7 @@ According to the \href{https://en.wikipedia.org/wiki/Short-circuit_evaluation}{W
 \arara\ internally relies on a CRC32 implementation for file hashing. This particular choice, although not designed for hashing, offers an interesting tradeoff between speed and quality. Besides, since it is not computationally expensive as strong algorithms such as MD5 and SHA1, CRC32 can be used for hashing typical \TeX\ documents and plain text files with little to no collisions.
 \end{messagebox}
 
+% TODO fix reference
 \item[\mddbox{C}{R}{changed(String extension)}{boolean}] This method returns a boolean value according to whether the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the provided \rbox{String} extension has changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a XML database file named \rbox{arara.xml} located at the same directory of the current file (the database name can be overriden in the configuration file, as discussed in Section~\ref{foo}, on page~\pageref{foo}). The method semantics (including the return values) is presented as follows.
 
 \vspace{1em}
@@ -170,6 +175,7 @@ It is important to observe that this method \emph{always} performs a database op
 % arara: pdflatex if changed('tex')
 \end{codebox}
 
+% TODO fix reference
 \item[\mddbox{C}{R}{unchanged(File file)}{boolean}] This method returns a boolean value according to whether the provided \rbox{File} reference has not changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a XML database file named \rbox{arara.xml} located at the same directory of the current file (the database name can be overriden in the configuration file, as discussed in Section~\ref{foo}, on page~\pageref{foo}). The method semantics (including the return values) is presented as follows.
 
 \vspace{1em}
@@ -198,6 +204,7 @@ It is important to observe that this method \emph{always} performs a database op
 % arara: pdflatex if !unchanged(toFile('thesis.tex'))
 \end{codebox}
 
+% TODO fix reference
 \item[\mddbox{C}{R}{unchanged(String extension)}{boolean}] This method returns a boolean value according to whether the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the provided \rbox{String} extension has not changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a XML database file named \rbox{arara.xml} located at the same directory of the current file (the database name can be overriden in the configuration file, as discussed in Section~\ref{foo}, on page~\pageref{foo}). The method semantics (including the return values) is presented as follows.
 
 \vspace{1em}
