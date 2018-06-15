@@ -456,8 +456,8 @@
     \vskip\midchapskip}%
 }
 
-\newcommand{\cbyes}{%
-\begin{tikzpicture}[
+\newcommand{\cbyes}[1]{%
+\raisebox{#1pt}{\begin{tikzpicture}[
   y=0.80pt,
   x=0.80pt,
   yscale=-1.000000,
@@ -539,10 +539,10 @@
       ]
       \end{scope}
   \end{scope}
-\end{tikzpicture}}
+\end{tikzpicture}}}
 
-\newcommand{\cbno}{%
-\begin{tikzpicture}[
+\newcommand{\cbno}[1]{%
+\raisebox{#1pt}{\begin{tikzpicture}[
   y=0.80pt,
   x=0.80pt,
   yscale=-1.000000,
@@ -622,4 +622,4 @@
     ]
     \end{scope}
   \end{scope}
-\end{tikzpicture}}
+\end{tikzpicture}}}

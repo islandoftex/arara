@@ -118,11 +118,11 @@ extension = getFiletype('thesis.pdf');
 \emph{has changed?} & \emph{DB action} &
 \emph{result} \\
 \midrule
-\cbyes & \cbyes & \cbyes & update & \cbyes \\
-\cbyes & \cbyes & \cbno & --- & \cbno \\
-\cbyes & \cbno & --- & insert & \cbyes \\
-\cbno & \cbno & --- & --- & \cbno \\
-\cbno & \cbyes & --- & remove & \cbyes \\
+\cbyes{-2} & \cbyes{-2} & \cbyes{-2} & update & \cbyes{-2} \\
+\cbyes{-2} & \cbyes{-2} & \cbno{-2} & --- & \cbno{-2} \\
+\cbyes{-2} & \cbno{-2} & --- & insert & \cbyes{-2} \\
+\cbno{-2} & \cbno{-2} & --- & --- & \cbno{-2} \\
+\cbno{-2} & \cbyes{-2} & --- & remove & \cbyes{-2} \\
 \bottomrule
 \end{tabular}\par}
 
@@ -154,11 +154,11 @@ According to the \href{https://en.wikipedia.org/wiki/Short-circuit_evaluation}{W
 \emph{has changed?} & \emph{DB action} &
 \emph{result} \\
 \midrule
-\cbyes & \cbyes & \cbyes & update & \cbyes \\
-\cbyes & \cbyes & \cbno & --- & \cbno \\
-\cbyes & \cbno & --- & insert & \cbyes \\
-\cbno & \cbno & --- & --- & \cbno \\
-\cbno & \cbyes & --- & remove & \cbyes \\
+\cbyes{-2} & \cbyes{-2} & \cbyes{-2} & update & \cbyes{-2} \\
+\cbyes{-2} & \cbyes{-2} & \cbno{-2} & --- & \cbno{-2} \\
+\cbyes{-2} & \cbno{-2} & --- & insert & \cbyes{-2} \\
+\cbno{-2} & \cbno{-2} & --- & --- & \cbno{-2} \\
+\cbno{-2} & \cbyes{-2} & --- & remove & \cbyes{-2} \\
 \bottomrule
 \end{tabular}\par}
 
@@ -182,11 +182,11 @@ It is important to observe that this method \emph{always} performs a database op
 \emph{has changed?} & \emph{DB action} &
 \emph{result} \\
 \midrule
-\cbyes & \cbyes & \cbyes & update & \cbno \\
-\cbyes & \cbyes & \cbno & --- & \cbyes \\
-\cbyes & \cbno & --- & insert & \cbno \\
-\cbno & \cbno & --- & --- & \cbyes \\
-\cbno & \cbyes & --- & remove & \cbno \\
+\cbyes{-2} & \cbyes{-2} & \cbyes{-2} & update & \cbno{-2} \\
+\cbyes{-2} & \cbyes{-2} & \cbno{-2} & --- & \cbyes{-2} \\
+\cbyes{-2} & \cbno{-2} & --- & insert & \cbno{-2} \\
+\cbno{-2} & \cbno{-2} & --- & --- & \cbyes{-2} \\
+\cbno{-2} & \cbyes{-2} & --- & remove & \cbno{-2} \\
 \bottomrule
 \end{tabular}\par}
 
@@ -210,11 +210,11 @@ It is important to observe that this method \emph{always} performs a database op
 \emph{has changed?} & \emph{DB action} &
 \emph{result} \\
 \midrule
-\cbyes & \cbyes & \cbyes & update & \cbno \\
-\cbyes & \cbyes & \cbno & --- & \cbyes \\
-\cbyes & \cbno & --- & insert & \cbno \\
-\cbno & \cbno & --- & --- & \cbyes \\
-\cbno & \cbyes & --- & remove & \cbno \\
+\cbyes{-2} & \cbyes{-2} & \cbyes{-2} & update & \cbno{-2} \\
+\cbyes{-2} & \cbyes{-2} & \cbno{-2} & --- & \cbyes{-2} \\
+\cbyes{-2} & \cbno{-2} & --- & insert & \cbno{-2} \\
+\cbno{-2} & \cbno{-2} & --- & --- & \cbyes{-2} \\
+\cbno{-2} & \cbyes{-2} & --- & remove & \cbno{-2} \\
 \bottomrule
 \end{tabular}\par}
 
@@ -311,20 +311,20 @@ As the methods presented in this section have transparent error handling, the wr
 \section{Conditional flow}
 \label{sec:conditionalflow}
 
-This section introduces methods related to conditional flow based on natural boolean values, i.e, words that semantically represent truth and falsehood. Such concepts provide a friendly representation of boolean values and ease the use of switches in conditionals. The tool relies on the following values:
+This section introduces methods related to conditional flow based on \emph{natural boolean values}, i.e, words that semantically represent truth and falsehood signs. Such concept provides a friendly representation of boolean values and eases the use of switches in directive parameters. The tool relies on the following set of natural boolean values:
 
 \vspace{1em}
 
 {\centering
 \setlength\tabcolsep{0.2em}
 \begin{tabular}{ccccccccccc}
-\raisebox{-2pt}{\cbyes} &
+\cbyes{-2} &
 \rbox[araracolour]{\hphantom{w}yes\hphantom{w}} &
 \rbox[araracolour]{\hphantom{w}true\hphantom{w}} &
 \rbox[araracolour]{\hphantom{w}1\hphantom{w}} &
 \rbox[araracolour]{\hphantom{w}on\hphantom{w}} &
 \hspace{2em} &
-\raisebox{-2pt}{\cbno} &
+\cbno{-2} &
 \rbox[warningcolour]{\hphantom{w}no\hphantom{w}} &
 \rbox[warningcolour]{\hphantom{w}false\hphantom{w}} &
 \rbox[warningcolour]{\hphantom{w}0\hphantom{w}} &
@@ -333,7 +333,21 @@ This section introduces methods related to conditional flow based on natural boo
 
 \vspace{1.4em}
 
-It is important to observe that, from version 4.0 on, \arara\ throws an exception if a value different than the default natural booleans is provided to the methods described in this section.
+All elements from the provided set of natural boolean values can be used interchangeably in directive parameters. It is important to observe that, from version 4.0 on, \arara\ throws an exception if a value absent from the set is provided to the methods described in this section.
+
+\begin{description}
+\item[\mdbox{R}{isTrue(String string)}{boolean}] This method returns a boolean value according to whether the provided \rbox{String} value is contained in the set of natural boolean values. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = isTrue('yes');
+\end{codebox}
+
+\item[\mdbox{R}{isFalse(String string)}{boolean}] This method returns a boolean value according to whether the provided \rbox{String} value is not contained in the set of natural boolean values. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = isFalse('off');
+\end{codebox}
+\end{description}
 
 %\begin{}{Source file}{teal}{\icnote}{white}{}
 %\end{ncodebox}
