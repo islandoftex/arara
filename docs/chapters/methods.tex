@@ -304,9 +304,36 @@ files = listFilesByPatterns(toFile('/home/paulo/Documents'),
 files = listFilesByPatterns('/home/paulo/Documents',
         [ '*.tex', 'foo?.txt' ], false);
 \end{codebox}
-
-
 \end{description}
+
+As the methods presented in this section have transparent error handling, the writing of rules and conditionals becomes more fluent and not too complex for the typical user.
+
+\section{Conditional flow}
+\label{sec:conditionalflow}
+
+This section introduces methods related to conditional flow based on natural boolean values, i.e, words that semantically represent truth and falsehood. Such concepts provide a friendly representation of boolean values and ease the use of switches in conditionals. The tool relies on the following values:
+
+\vspace{1em}
+
+{\centering
+\setlength\tabcolsep{0.2em}
+\begin{tabular}{ccccccccccc}
+\raisebox{-2pt}{\cbyes} &
+\rbox[araracolour]{\hphantom{w}yes\hphantom{w}} &
+\rbox[araracolour]{\hphantom{w}true\hphantom{w}} &
+\rbox[araracolour]{\hphantom{w}1\hphantom{w}} &
+\rbox[araracolour]{\hphantom{w}on\hphantom{w}} &
+\hspace{2em} &
+\raisebox{-2pt}{\cbno} &
+\rbox[warningcolour]{\hphantom{w}no\hphantom{w}} &
+\rbox[warningcolour]{\hphantom{w}false\hphantom{w}} &
+\rbox[warningcolour]{\hphantom{w}0\hphantom{w}} &
+\rbox[warningcolour]{\hphantom{w}off\hphantom{w}}
+\end{tabular}\par}
+
+\vspace{1.4em}
+
+It is important to observe that, from version 4.0 on, \arara\ throws an exception if a value different than the default natural booleans is provided to the methods described in this section.
 
 %\begin{}{Source file}{teal}{\icnote}{white}{}
 %\end{ncodebox}
