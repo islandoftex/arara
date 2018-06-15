@@ -343,18 +343,158 @@ This section introduces methods related to conditional flow based on \emph{natur
 All elements from the provided set of natural boolean values can be used interchangeably in directive parameters. It is important to observe that, from version 4.0 on, \arara\ throws an exception if a value absent from the set is provided to the methods described in this section.
 
 \begin{description}
-\item[\mdbox{R}{isTrue(String string)}{boolean}] This method returns a boolean value according to whether the provided \rbox{String} value is contained in the set of natural boolean values. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent.
+\item[\mdbox{R}{isTrue(String string)}{boolean}] This method returns a boolean value according to whether the provided \rbox{String} value is contained in the set of natural boolean values. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the provided value is an empty string, the method returns false.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 result = isTrue('yes');
 \end{codebox}
 
-\item[\mdbox{R}{isFalse(String string)}{boolean}] This method returns a boolean value according to whether the provided \rbox{String} value is not contained in the set of natural boolean values. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent.
+\item[\mdbox{R}{isFalse(String string)}{boolean}] This method returns a boolean value according to whether the provided \rbox{String} value is not contained in the set of natural boolean values. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the provided value is an empty string, the method returns false.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 result = isFalse('off');
 \end{codebox}
+
+\item[\mdbox{R}{isTrue(String string, Object yes)}{Object}] This method checks if the first parameter is contained in the set of natural boolean values. If the result holds true, the second parameter is returned. Otherwise, an empty string is returned. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the first parameter is an empty string, the method returns false.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = isTrue('on', [ 'ls', '-la' ]);
+\end{codebox}
+
+\item[\mdbox{R}{isFalse(String string, Object yes)}{Object}] This method checks if the first parameter is not contained in the set of natural boolean values. If the result holds true, the second parameter is returned. Otherwise, an empty string is returned. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the first parameter is an empty string, the method returns false.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = isFalse('0', 'pwd');
+\end{codebox}
+
+\item[\mdbox{R}{isTrue(String string, Object yes, Object no)}{Object}] This method checks if the first parameter is contained in the set of natural boolean values. If the result holds true, the second parameter is returned. Otherwise, the third parameter is returned. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the first parameter is an empty string, the method returns false.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = isTrue('on', [ 'ls', '-la' ], 'pwd');
+\end{codebox}
+
+\item[\mdbox{R}{isFalse(String string, Object yes, Object no)}{Object}] This method checks if the first parameter is not contained in the set of natural boolean values. If the result holds true, the second parameter is returned. Otherwise, the third parameter is returned. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the first parameter is an empty string, the method returns false.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = isFalse('0', 'pwd', 'ps');
+\end{codebox}
+
+\item[\mdbox{R}{\parbox{0.45\textwidth}{isTrue(String string, Object yes,\\\hspace*{1em} Object no, Object fallback)}}{Object}] This method checks if the first parameter is contained in the set of natural boolean values. If the result holds true, the second parameter is returned. Otherwise, the third parameter is returned. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the first parameter is an empty string, the method returns the fourth parameter as default value.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = isTrue('on', 'ls', 'pwd', 'who');
+\end{codebox}
+
+\item[\mdbox{R}{\parbox{0.46\textwidth}{isFalse(String string, Object yes,\\\hspace*{1em} Object no, Object fallback)}}{Object}] This method checks if the first parameter is not contained in the set of natural boolean values. If the result holds true, the second parameter is returned. Otherwise, the third parameter is returned. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the first parameter is an empty string, the method returns the fourth parameter as default value.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = isFalse('0', 'pwd', 'ps', 'ls');
+\end{codebox}
+
+\item[\mdbox{R}{isTrue(boolean value, Object yes)}{Object}] This method evaluates the first parameter as a boolean expression. If the result holds true, the second parameter is returned. Otherwise, an empty string is returned.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = isTrue(1 == 1, 'yes');
+\end{codebox}
+
+\item[\mdbox{R}{isFalse(boolean value, Object yes)}{Object}] This method evaluates the first parameter as a boolean expression. If the result holds false, the second parameter is returned. Otherwise, an empty string is returned.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = isFalse(1 != 1, 'yes');
+\end{codebox}
+
+\item[\mdbox{R}{isTrue(boolean value, Object yes, Object no)}{Object}] This method evaluates the first parameter as a boolean expression. If the result holds true, the second parameter is returned. Otherwise, the third parameter is returned.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = isTrue(1 == 1, 'yes', 'no');
+\end{codebox}
+
+\item[\mdbox{R}{isFalse(boolean value, Object yes, Object no)}{Object}] This method evaluates the first parameter as a boolean expression. If the result holds false, the second parameter is returned. Otherwise, the third parameter is returned.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = isFalse(1 != 1, 'yes', 'no');
+\end{codebox}
 \end{description}
+
+Supported by the concept of natural boolean values, the methods presented in this section ease the use of switches in directive parameters and can be adopted as valid alternatives for traditional conditional flows, when applied.
+
+\section{Strings}
+\label{sec:strings}
+
+String manipulation constitutes one of the foundations of rule interpretation in our tool. This section introduces methods for handling such types, as a means to offer high level constructs for users.
+
+\begin{description}
+\item[\mdbox{R}{isEmpty(String string)}{boolean}] This method returns a boolean value according to whether the provided \rbox{String} value is empty, i.e, the string length is equal to zero.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = isEmpty('not empty');
+\end{codebox}
+
+\item[\mdbox{R}{isNotEmpty(String string)}{boolean}] This method returns a boolean value according to whether the provided \rbox{String} value is not empty, i.e, the string length is greater than zero.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = isNotEmpty('not empty');
+\end{codebox}
+
+\item[\mdbox{R}{isEmpty(String string, Object yes)}{boolean}] This method checks if the first parameter is empty, i.e, if the string length is equal to zero. If the result holds true, the second parameter is returned. Otherwise, an empty string is returned.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = isEmpty('not empty', 'ps');
+\end{codebox}
+
+\item[\mdbox{R}{isNotEmpty(String string, Object yes)}{boolean}] This method checks if the first parameter is not empty, i.e, if the string length is greater than zero. If the result holds true, the second parameter is returned. Otherwise, an empty string is returned.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = isNotEmpty('not empty', 'ls');
+\end{codebox}
+
+\item[\mdbox{R}{isEmpty(String string, Object yes, Object no)}{boolean}] This method checks if the first parameter is empty, i.e, if the string length is equal to zero. If the result holds true, the second parameter is returned. Otherwise, the third parameter is returned.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = isEmpty('not empty', 'ps', 'ls');
+\end{codebox}
+
+\item[\mdbox{R}{isNotEmpty(String string, Object yes, Object no)}{boolean}] This method checks if the first parameter is not empty, i.e, if the string length is greater than zero. If the result holds true, the second parameter is returned. Otherwise, the third parameter is returned.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = isNotEmpty('not empty', 'ls', 'ps');
+\end{codebox}
+
+\item[\mdbox{R}{buildString(Object... objects)}{String}] This method returns a string based on the provided array of objects, separating each element by one blank space. It is important to observe that empty values are not considered. Also, note that the object array is denoted by a  comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = buildString('a', 'b', 'c', 'd');
+\end{codebox}
+
+\item[\mdbox{R}{trimSpaces(String string)}{String}] This method trims spaces from the provided parameter, i.e, leading and trailing spaces in the \rbox{String} reference are removed, and returns the resulting string. It is important to observe that superfluous spaces along the string are not removed at all.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = trimSpaces('   hello world   ');
+\end{codebox}
+
+\item[\mdbox{R}{addQuotes(String string)}{String}] This method returns the provided parameter enclosed in double quotes, as a plain string. It is important to observe that there is no automatic quote handling.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = addQuotes('to be or not to be');
+\end{codebox}
+
+\item[\mdbox{R}{replicatePattern(String pattern, List<Object> values)}{List<Object>}] This method replicates the provided pattern to each element of the second parameter and returns the resulting list. The pattern must contain exactly one placeholder. For instance, \rbox{\%s} denotes a string representation of the provided argument. Please refer to the \rbox{Formatter} class reference in the \href{https://docs.oracle.com/javase/7/docs/api/java/util/Formatter.html}{Java documentation} for more information on placeholders. This method raises an exception if an invalid pattern is applied.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+names = replicatePattern('My name is %s', [ 'Brent', 'Nicola' ]);
+\end{codebox}
+
+\item[\mddbox{C}{R}{found(File file, String regex)}{boolean}] This method returns a boolean value according to whether the content of the provided \rbox{File} reference contains at least one match of the provided \rbox{String} regular expression. It is important to observe that this method raises an exception if an invalid regular expression is provided as parameter or if the provided file reference does not exist.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: pdflatex while found(toFile('article.tex'),
+% arara: --> 'undefined references')
+\end{codebox}
+
+\item[\mddbox{C}{R}{found(String extension, String regex)}{boolean}] This method returns a boolean value according to whether the content of the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the provided \rbox{String} extension contains at least one match of the provided \rbox{String} regular expression. It is important to observe that this method raises an exception if an invalid regular expression is provided as parameter or if the provided file reference does not exist.
+\end{description}
+
+The string manipulation methods presented in this section constitute an interesting and straightforward approach to handling directive parameters without the usual verbosity in writing typical Java constructs.
 
 %\begin{}{Source file}{teal}{\icnote}{white}{}
 %\end{ncodebox}
