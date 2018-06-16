@@ -492,12 +492,169 @@ names = replicatePattern('My name is %s', [ 'Brent', 'Nicola' ]);
 \end{codebox}
 
 \item[\mddbox{C}{R}{found(String extension, String regex)}{boolean}] This method returns a boolean value according to whether the content of the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the provided \rbox{String} extension contains at least one match of the provided \rbox{String} regular expression. It is important to observe that this method raises an exception if an invalid regular expression is provided as parameter or if the provided file reference does not exist.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: pdflatex while found('tex', 'undefined references')
+\end{codebox}
 \end{description}
 
 The string manipulation methods presented in this section constitute an interesting and straightforward approach to handling directive parameters without the usual verbosity in writing typical Java constructs.
 
 \section{Operating systems}
 \label{sec:operatingsystems}
+
+This section introduces methods related to the underlying operating system detection, as a means to provide a straightforward approach to writing cross-platform rules.
+
+\begin{description}
+\item[\mdbox{R}{isWindows()}{boolean}] This method returns a boolean value according to whether the underlying operating system vendor is Microsoft Windows.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+if (isWindows()) { System.out.println('Running Windows.'); }
+\end{codebox}
+
+\item[\mdbox{R}{isLinux()}{boolean}] This method returns a boolean value according to whether the underlying operating system vendor is a Linux instance.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+if (isLinux()) { System.out.println('Running Linux.'); }
+\end{codebox}
+
+\item[\mdbox{R}{isMac()}{boolean}] This method returns a boolean value according to whether the underlying operating system vendor is Mac OS.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+if (isMac()) { System.out.println('Running Mac OS.'); }
+\end{codebox}
+
+\item[\mdbox{R}{isUnix()}{boolean}] This method returns a boolean value according to whether the underlying operating system vendor is any Unix variation.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+if (isUnix()) { System.out.println('Running Unix.'); }
+\end{codebox}
+
+\item[\mdbox{R}{isAIX()}{boolean}] This method returns a boolean value according to whether the underlying operating system vendor is AIX.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+if (isAIX()) { System.out.println('Running AIX.'); }
+\end{codebox}
+
+\item[\mdbox{R}{isIrix()}{boolean}] This method returns a boolean value according to whether the underlying operating system vendor is Irix.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+if (isIrix()) { System.out.println('Running Irix.'); }
+\end{codebox}
+
+\item[\mdbox{R}{isOS2()}{boolean}] This method returns a boolean value according to whether the underlying operating system vendor is OS2 Warp.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+if (isOS2()) { System.out.println('Running OS2 Warp.'); }
+\end{codebox}
+
+\item[\mdbox{R}{isSolaris()}{boolean}] This method returns a boolean value according to whether the underlying operating system vendor is Solaris.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+if (isSolaris()) { System.out.println('Running Solaris.'); }
+\end{codebox}
+
+\item[\mdbox{R}{isCygwin()}{boolean}] This method returns a boolean value according to whether the underlying operating system vendor is Microsoft Windows and \arara\ is being executed inside a Cygwin environment.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+if (isCygwin()) { System.out.println('Running Cygwin.'); }
+\end{codebox}
+
+\item[\mdbox{R}{isWindows(Object yes, Object no)}{boolean}] This method checks if the underlying operating system vendor is Microsoft Windows. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+command = isWindows('del', 'rm');
+\end{codebox}
+
+\item[\mdbox{R}{isLinux(Object yes, Object no)}{boolean}] This method checks if the underlying operating system vendor is a Linux instance. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+command = isLinux('rm', 'del');
+\end{codebox}
+
+\item[\mdbox{R}{isMac(Object yes, Object no)}{boolean}] This method checks if the underlying operating system vendor is Mac OS. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+command = isMac('ls', 'dir');
+\end{codebox}
+
+\item[\mdbox{R}{isUnix(Object yes, Object no)}{boolean}] This method checks if the underlying operating system vendor is any Unix variation. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+command = isUnix('tree', 'dir');
+\end{codebox}
+
+\item[\mdbox{R}{isAIX(Object yes, Object no)}{boolean}] This method checks if the underlying operating system vendor is AIX. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+command = isAIX('pwd', 'ls');
+\end{codebox}
+
+\item[\mdbox{R}{isIrix(Object yes, Object no)}{boolean}] This method checks if the underlying operating system vendor is Irix. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+command = isIrix('ls', 'pwd');
+\end{codebox}
+
+\item[\mdbox{R}{isOS2(Object yes, Object no)}{boolean}] This method checks if the underlying operating system vendor is OS2 Warp. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+command = isOS2('ls', 'cd');
+\end{codebox}
+
+\item[\mdbox{R}{isSolaris(Object yes, Object no)}{boolean}] This method checks if the underlying operating system vendor is Solaris. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+command = isSolaris('ls', 'cat');
+\end{codebox}
+
+\item[\mdbox{R}{isCygwin(Object yes, Object no)}{boolean}] This method checks if the underlying operating system vendor is Microsoft Windows and if \arara\ is being executed inside a Cygwin environment. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+command = isCygwin('ls', 'dir');
+\end{codebox}
+\end{description}
+
+The methods presented in the section provide useful information to help users write cross-platform rules and thus enhance the automation experience based on specific features of the underlying operating system.
+
+\section{Type checking}
+\label{sec:typechecking}
+
+In certain scenarios, a plain string representation of directive parameters might be inadequate or insufficient given the rule requirements. To this end, this section introduces methods related to type checking as a means to provide support and verification for common data types.
+
+\begin{description}
+\item[\mdbox{R}{isString(Object object)}{boolean}] This method returns a boolean value according to whether the provided \rbox{Object} object is a string or any extended type.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = isString('foo');
+\end{codebox}
+
+\item[\mdbox{R}{isList(Object object)}{boolean}] This method returns a boolean value according to whether the provided \rbox{Object} object is a list or any extended type.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = isList([ 1, 2, 3 ]);
+\end{codebox}
+
+\item[\mdbox{R}{isMap(Object object)}{boolean}] This method returns a boolean value according to whether the provided \rbox{Object} object is a map or any extended type.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = isMap([ 'Paulo' : 'Palmeiras', 'Carla' : 'Inter' ]);
+\end{codebox}
+
+\item[\mdbox{R}{isBoolean(Object object)}{boolean}] This method returns a boolean value according to whether the provided \rbox{Object} object is a boolean or any extended type.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = isBoolean(false);
+\end{codebox}
+
+\item[\mdbox{R}{checkClass(Class clazz, Object object)}{boolean}] This method returns a boolean value according to whether the provided \rbox{Object} object is an instance or a subtype of the provided \rbox{Class} class. It is interesting to note that all methods presented in this section internally rely on \mtbox{checkClass} for type checking.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = checkClass(List.class, [ 'a', 'b' ]);
+\end{codebox}
+\end{description}
+
+The methods presented in this section cover the most common types used in directive parameters and should suffice for expressing the rule requirements. If a general approach is needed, please refer to the \mtbox{checkClass} method for checking virtually any type available in the Java environment.
 
 %\begin{}{Source file}{teal}{\icnote}{white}{}
 %\end{ncodebox}
