@@ -659,7 +659,72 @@ The methods presented in this section cover the most common types used in direct
 \section{Classes and objects}
 \label{sec:classesandobjects}
 
+From version 4.0 on, \arara\ can be extended at runtime with code from JVM languages, such as Groovy, Scala, Clojure and Kotlin. The tool can load classes from \rbox{class} and \rbox{jar} files and even instantiate them. This section introduces methods related to classloading and object instantiation.
 
+\begin{messagebox}{Ordered pairs}{araracolour}{\icok}{white}
+According to the \href{https://en.wikipedia.org/wiki/Ordered_pair}{Wikipedia entry}, in mathematics, an \emph{ordered pair} $(a, b)$ is a pair of objects. The order in which the objects appear in the pair is significant: the ordered pair $(a, b)$ is different from the ordered pair $(b, a)$ unless $a = b$. In the ordered pair $(a, b)$, the object $a$ is called the \emph{first} entry, and the object $b$ the \emph{second} entry of the pair. \arara\ relies on such concept with the helper \rbox{Pair<A, B>} class, in which \rbox{A} and \rbox{B} denote the component classes, i.e, the types associated to the pair elements. In order to access the pair entries, the class provides two methods:
+
+\begin{description}
+\item[\mtbox{first()}\hfill\rrbox{A}] This method, as the name implies, returns the first entry of the ordered pair, as a \rbox{A} object. It is important to observe that, from the MVEL context, as the method constitutes a property accessor (namely, a getter), the parentheses can be safely omitted.
+
+\item[\mtbox{second()}\hfill\rrbox{B}] This method, as the name implies, returns the second entry of the ordered pair, as a \rbox{B} object. It is important to observe that, from the MVEL context, as the method constitutes a property accessor (namely, a getter), the parentheses can be safely omitted.
+\end{description}
+
+Keep in mind that the entries in the \rbox{Pair} class, once defined, cannot be modified to other values. The initial values are set during instantiation and, therefore, only entry getters are available to the user during the object life cycle. 
+\end{messagebox}
+
+\begin{messagebox}{Status for classloading and instantiation}{araracolour}{\icok}{white}
+The classloading and instantiation methods provided by \arara\ typically return a pair composed of an integer value and a class or object reference. This integer value acts as a status of the underlying operation itself and might indicate potential issues. The possible values are:
+
+\vspace{1em}
+
+{\centering
+\def\arraystretch{1.5}
+\begin{tabular}{lllll}
+\rbox[araracolour]{\hphantom{x}0\hphantom{x}} & Successful execution & \hspace{1.5em} &
+\rbox[araracolour]{\hphantom{x}3\hphantom{x}} & Class was not found \\
+\rbox[araracolour]{\hphantom{x}1\hphantom{x}} & File does not exist & &
+\rbox[araracolour]{\hphantom{x}4\hphantom{x}} & Access policy violation \\
+\rbox[araracolour]{\hphantom{x}2\hphantom{x}} & File URL is incorrect & &
+\rbox[araracolour]{\hphantom{x}5\hphantom{x}} & Instantiation exception
+\end{tabular}\par}
+
+\vspace{1.4em}
+
+Please make sure to \emph{always} check the returned integer status when using classloading and instantiation methods in directive and rule contexts. This feature is quite powerful yet tricky and subtle! 
+\end{messagebox}
+
+\begin{description}
+\item[\mddbox{C}{R}{loadClass(File file, String name)}{Pair<Integer, Class>}] This method loads a class based on the canonical name from the provided \rbox{File} reference and returns an ordered pair containing the status and the class reference itself. The file must contain the Java bytecode, either directly accessible from a \rbox{class} file or packaged inside a \rbox{jar} file. If an exception is raised, this method returns the \rbox{Object} class reference as second entry of the pair.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = loadClass(toFile('mymath.jar'),
+         'com.github.cereda.mymath.Arithmetic');
+\end{codebox}
+
+\item[\mddbox{C}{R}{loadClass(String reference, String name)}{Pair<Integer, Class>}] This method loads a class based on the canonical name from the provided \rbox{String} reference and returns an ordered pair containing the status and the class reference itself. The file must contain the Java bytecode, either directly accessible from a \rbox{class} file or packaged inside a \rbox{jar} file.  If an exception is raised, this method returns the \rbox{Object} class reference as second entry of the pair.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = loadClass('mymath.jar',
+         'com.github.cereda.mymath.Arithmetic');
+\end{codebox}
+
+\item[\mddbox{C}{R}{loadObject(File file, String name)}{Pair<Integer, Object>}] This method loads a class based on the canonical name from the provided \rbox{File} reference and returns an ordered pair containing the status and a proper corresponding object instantation. The file must contain the Java bytecode, either directly accessible from a \rbox{class} file or packaged inside a \rbox{jar} file. If an exception is raised, this method returns a \rbox{Object} object as second entry of the pair.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = loadObject(toFile('mymath.jar'),
+         'com.github.cereda.mymath.Trigonometric');
+\end{codebox}
+
+\item[\mddbox{C}{R}{loadObject(String reference, String name)}{Pair<Integer, Object>}] This method loads a class based on the canonical name from the provided \rbox{String} reference and returns an ordered pair containing the status and a proper corresponding object instantation. The file must contain the Java bytecode, either directly accessible from a \rbox{class} file or packaged inside a \rbox{jar} file. If an exception is raised, this method returns a \rbox{Object} object as second entry of the pair.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = loadObject('mymath.jar',
+         'com.github.cereda.mymath.Trigonometric');
+\end{codebox}
+\end{description}
+
+This section presented classloading and instantion methods which may significantly enhance the expressiveness of rules and directives. However, make sure to use such feature with great care and attention.
 
 %\begin{}{Source file}{teal}{\icnote}{white}{}
 %\end{ncodebox}
