@@ -726,6 +726,139 @@ result = loadObject('mymath.jar',
 
 This section presented classloading and instantion methods which may significantly enhance the expressiveness of rules and directives. However, make sure to use such feature with great care and attention.
 
+\section{Dialog boxes}
+\label{sec:dialogboxes}
+
+% TODO fix reference
+A \emph{dialog box} is a graphical control element, typically a small window, that communicates information to the user and prompts them for a response. This section introduces UI methods related to such interactions.
+
+\begin{messagebox}{UI elements}{araracolour}{\icok}{white}
+The graphical elements are provided by the Swing toolkit from the Java runtime environment. Note that the default look and feel class reference can be modified through a key in the configuration file, as seen in Section~\ref{foo}, on page~\pageref{foo}. It is important to observe that the methods presented in this section require a graphical interface. If \arara\ is being executed in a headless environment (i.e, an environment with no graphical display available), an exception will be thrown when trying to use such UI methods in either directive or rule contexts.
+\end{messagebox}
+
+Each dialog box provided by the UI methods of \arara\ requires the specification of an associated icon. An \emph{icon} is a pictogram displayed on a computer screen in order to help the user quickly identify the message by conveying its meaning through a visual resemblance to a physical object. Our tool features five icons, illustrated as follows, to be used with dialog boxes. Observe that each icon is associated with a unique integer value which is provided later on to the actual method call. Also, it is worth mentioning that the visual appearance of such icons is based on the underlying Java virtual machine and the current look and feel, so your milleage might vary.
+
+\vspace{1em}
+
+{\centering
+\begin{tabularx}{0.8\textwidth}{YYYYY}
+\uierror{cyan} &
+\uiinfo{cyan} &
+\uiwarning{cyan} &
+\uiquestion{cyan} &
+\uiplain{cyan} \\
+{\footnotesize\emph{error}} &
+{\footnotesize\emph{information}} &
+{\footnotesize\emph{attention}} &
+{\footnotesize\emph{question}} &
+{\footnotesize\emph{plain}} \\
+\rbox[cyan]{\hphantom{ww}1\hphantom{ww}} &
+\rbox[cyan]{\hphantom{ww}2\hphantom{ww}} &
+\rbox[cyan]{\hphantom{ww}3\hphantom{ww}} &
+\rbox[cyan]{\hphantom{ww}4\hphantom{ww}} &
+\rbox[cyan]{\hphantom{ww}5\hphantom{ww}}
+\end{tabularx}\par}
+
+\vspace{1.4em}
+
+As good practice, make sure to provide descriptive messages to be placed in dialog boxes in order to ease and enhance the user experience. It is also highly advisable to always provide an associated icon, so avoid the plain option whenever possible.
+
+\begin{messagebox}{Message text width}{araracolour}{\icok}{white}
+\arara\ sets the default message text width to 250 pixels. Feel free to override this value according to your needs. Please refer to the appropriate method signatures for specifying a new width.
+\end{messagebox}
+
+The UI method signatures are followed by a visual representation of the provided dialog box. For the sake of simplicity, each parameter index refers to the associated number in the figure.
+
+\begin{description}
+\item[\mdbox{R}{showMessage(int width, int icon, String title, String text)}{void}]\uimethod{messagebox1}
+
+This method shows a message box according to the provided parameters. The dialog box is disposed when the user either presses the confirmation button or closes the window. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+showMessage(250, 2, 'My title', 'My message');
+\end{codebox}
+
+\item[\mdbox{R}{showMessage(int icon, String title, String text)}{void}]\uimethod{messagebox2}
+
+This method shows a message box according to the provided parameters. The dialog box is disposed when the user either presses the confirmation button or closes the window. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+showMessage(2, 'My title', 'My message');
+\end{codebox}
+
+\item[\mddbox{C}{R}{\parbox{0.62\textwidth}{showOptions(int width, int icon, String title,\\\hspace*{1em} String text, Object... options)}}{int}]\uimethod{optionbox1}
+
+This method shows a message box according to the provided parameters, including options represented as an array of \rbox{Object} objects. This array is represented in the dialog box as a list of buttons. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the natural index of the selected button, starting from \rbox{1}. If no button is pressed (e.g, the window is closed), \rbox{0} is returned. Note that the object array is denoted by a  comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: pdflatex if showOptions(250, 4, 'Important!',
+% arara: --> 'Do you like ice cream?', 'Yes!', 'No!') == 1
+\end{codebox}
+
+\begin{messagebox}{Button orientation}{attentioncolour}{\icattention}{black}
+Keep in mind that your window manager might render the button orientation differently than the original arrangement specified in your array of objects. For instance, I had a window manager that rendered the buttons in the reverse order. However, note that the visual appearance should not interfere with the programming logic! The indices shall remain the same, pristine as ever, regardless of the actual rendering. Trust your code, not your eyes.
+\end{messagebox}
+
+\item[\mddbox{C}{R}{\parbox{0.49\textwidth}{showOptions(int icon, String title,\\\hspace*{1em} String text, Object... options)}}{int}]\uimethod{optionbox2}
+
+This method shows a message box according to the provided parameters, including options represented as an array of \rbox{Object} objects. This array is represented in the dialog box as a list of buttons. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the natural index of the selected button, starting from \rbox{1}. If no button is pressed (e.g, the window is closed), \rbox{0} is returned. Note that the object array is denoted by a  comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: pdflatex if showOptions(4, 'Important!',
+% arara: --> 'Do you like ice cream?', 'Yes!', 'No!') == 1
+\end{codebox}
+
+\item[\mddbox{C}{R}{\parbox{0.62\textwidth}{showDropdown(int width, int icon, String title,\\\hspace*{1em} String text, Object... options)}}{int}]\uimethod{dropdown1}
+
+This method shows a dialog box according to the provided parameters, including options represented as an array of \rbox{Object} objects. This array is represented in the dialog box as a dropdown list. The first element from the array is automatically selected. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the natural index of the selected item, starting from \rbox{1}. If the user cancels the dialog or closes the window, \rbox{0} is returned.  Note that the object array is denoted by a comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: pdflatex if showDropdown(250, 4, 'Important!',
+% arara: --> 'Who deserves the tick?', 'David Carlisle',
+% arara: --> 'Enrico Gregorio', 'Joseph Wright',
+% arara: --> 'Heiko Oberdiek') == 2
+\end{codebox}
+
+\begin{messagebox}{Combo boxes and dropdown lists}{attentioncolour}{\icattention}{black}
+According to the \href{https://en.wikipedia.org/wiki/Combo_box}{Wikipedia entry}, a \emph{combo box} is a combination of a dropdown list or list box and a single line editable textbox, allowing the user to either type a value directly or select a value from the list. The term is sometimes used to mean a dropdown list, but in Java, the term is definitely not a synonym! A dropdown list is sometimes clarified with terms such as non-editable combo box to distinguish it from the original definition of a combo box.
+\end{messagebox}
+
+\item[\mddbox{C}{R}{\parbox{0.49\textwidth}{showDropdown(int icon, String title,\\\hspace*{1em} String text, Object... options)}}{int}]\uimethod{dropdown2}
+
+This method shows a dialog box according to the provided parameters, including options represented as an array of \rbox{Object} objects. This array is represented in the dialog box as a dropdown list. The first element from the array is automatically selected. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the natural index of the selected item, starting from \rbox{1}. If the user cancels the dialog or closes the window, \rbox{0} is returned.  Note that the object array is denoted by a comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: pdflatex if showDropdown(4, 'Important!',
+% arara: --> 'Who deserves the tick?', 'David Carlisle',
+% arara: --> 'Enrico Gregorio', 'Joseph Wright',
+% arara: --> 'Heiko Oberdiek') == 2
+\end{codebox}
+
+\begin{messagebox}{Swing toolkit}{araracolour}{\icok}{white}
+According to the \href{https://en.wikipedia.org/wiki/Swing_(Java)}{Wikipedia entry}, the Swing toolkit was developed to provide a more sophisticated set of GUI components than the earlier  AWT widget system. Swing provides a look and feel that emulates the look and feel of several platforms, and also supports a pluggable look and feel that allows applications to have a look and feel unrelated to the underlying platform. It has more powerful and flexible components than AWT. In addition to familiar components such as buttons, check boxes and labels, Swing provides several advanced components. such as scroll panes, trees, tables, and lists.
+\end{messagebox}
+
+\item[\mdbox{R}{showInput(int width, int icon, String title, String text)}{String}]\uimethod{inputbox1}
+
+This method shows an input dialog box according to the provided parameters. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the content of the input text field, as a trimmed \rbox{String} object. If the user cancels the dialog or closes the window, an empty string is returned. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: pdflatex if showInput(250, 4, 'Important!',
+% arara: --> 'Who wrote arara?') == 'Paulo'
+\end{codebox}
+
+\item[\mdbox{R}{showInput(int icon, String title, String text)}{String}]\uimethod{inputbox2}
+
+This method shows an input dialog box according to the provided parameters. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the content of the input text field, as a trimmed \rbox{String} object. If the user cancels the dialog or closes the window, an empty string is returned. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: pdflatex if showInput(4, 'Important!',
+% arara: --> 'Who wrote arara?') == 'Paulo'
+\end{codebox}
+\end{description}
+
+The UI methods presented in this section can be used for writing \TeX\ tutorials and assisted compilation workflows based on user interactions, including visual input and feeback through dialog boxes.
+
 %\begin{}{Source file}{teal}{\icnote}{white}{}
 %\end{ncodebox}
 
