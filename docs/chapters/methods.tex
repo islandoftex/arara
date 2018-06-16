@@ -518,7 +518,7 @@ if (isWindows()) { System.out.println('Running Windows.'); }
 if (isLinux()) { System.out.println('Running Linux.'); }
 \end{codebox}
 
-\item[\mdbox{R}{isMac()}{boolean}] This method returns a boolean value according to whether the underlying operating system vendor is Mac OS.
+\item[\mdbox{R}{isMac()}{boolean}] This method returns a boolean value according to whether the underlying operating system vendor is Apple Mac OS.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 if (isMac()) { System.out.println('Running Mac OS.'); }
@@ -530,25 +530,25 @@ if (isMac()) { System.out.println('Running Mac OS.'); }
 if (isUnix()) { System.out.println('Running Unix.'); }
 \end{codebox}
 
-\item[\mdbox{R}{isAIX()}{boolean}] This method returns a boolean value according to whether the underlying operating system vendor is AIX.
+\item[\mdbox{R}{isAIX()}{boolean}] This method returns a boolean value according to whether the underlying operating system vendor is IBM AIX.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 if (isAIX()) { System.out.println('Running AIX.'); }
 \end{codebox}
 
-\item[\mdbox{R}{isIrix()}{boolean}] This method returns a boolean value according to whether the underlying operating system vendor is Irix.
+\item[\mdbox{R}{isIrix()}{boolean}] This method returns a boolean value according to whether the underlying operating system vendor is Silicon Graphics Irix.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 if (isIrix()) { System.out.println('Running Irix.'); }
 \end{codebox}
 
-\item[\mdbox{R}{isOS2()}{boolean}] This method returns a boolean value according to whether the underlying operating system vendor is OS2 Warp.
+\item[\mdbox{R}{isOS2()}{boolean}] This method returns a boolean value according to whether the underlying operating system vendor is IBM OS/2 Warp.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-if (isOS2()) { System.out.println('Running OS2 Warp.'); }
+if (isOS2()) { System.out.println('Running OS/2 Warp.'); }
 \end{codebox}
 
-\item[\mdbox{R}{isSolaris()}{boolean}] This method returns a boolean value according to whether the underlying operating system vendor is Solaris.
+\item[\mdbox{R}{isSolaris()}{boolean}] This method returns a boolean value according to whether the underlying operating system vendor is Oracle Solaris.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 if (isSolaris()) { System.out.println('Running Solaris.'); }
@@ -572,7 +572,7 @@ command = isWindows('del', 'rm');
 command = isLinux('rm', 'del');
 \end{codebox}
 
-\item[\mdbox{R}{isMac(Object yes, Object no)}{boolean}] This method checks if the underlying operating system vendor is Mac OS. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
+\item[\mdbox{R}{isMac(Object yes, Object no)}{boolean}] This method checks if the underlying operating system vendor is Apple Mac OS. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command = isMac('ls', 'dir');
@@ -584,25 +584,25 @@ command = isMac('ls', 'dir');
 command = isUnix('tree', 'dir');
 \end{codebox}
 
-\item[\mdbox{R}{isAIX(Object yes, Object no)}{boolean}] This method checks if the underlying operating system vendor is AIX. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
+\item[\mdbox{R}{isAIX(Object yes, Object no)}{boolean}] This method checks if the underlying operating system vendor is IBM AIX. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command = isAIX('pwd', 'ls');
 \end{codebox}
 
-\item[\mdbox{R}{isIrix(Object yes, Object no)}{boolean}] This method checks if the underlying operating system vendor is Irix. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
+\item[\mdbox{R}{isIrix(Object yes, Object no)}{boolean}] This method checks if the underlying operating system vendor is Silicon Graphics Irix. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command = isIrix('ls', 'pwd');
 \end{codebox}
 
-\item[\mdbox{R}{isOS2(Object yes, Object no)}{boolean}] This method checks if the underlying operating system vendor is OS2 Warp. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
+\item[\mdbox{R}{isOS2(Object yes, Object no)}{boolean}] This method checks if the underlying operating system vendor is IBM OS/2 Warp. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command = isOS2('ls', 'cd');
 \end{codebox}
 
-\item[\mdbox{R}{isSolaris(Object yes, Object no)}{boolean}] This method checks if the underlying operating system vendor is Solaris. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
+\item[\mdbox{R}{isSolaris(Object yes, Object no)}{boolean}] This method checks if the underlying operating system vendor is Oracle Solaris. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command = isSolaris('ls', 'cat');
@@ -655,6 +655,11 @@ result = checkClass(List.class, [ 'a', 'b' ]);
 \end{description}
 
 The methods presented in this section cover the most common types used in directive parameters and should suffice for expressing the rule requirements. If a general approach is needed, please refer to the \mtbox{checkClass} method for checking virtually any type available in the Java environment.
+
+\section{Classes and objects}
+\label{sec:classesandobjects}
+
+
 
 %\begin{}{Source file}{teal}{\icnote}{white}{}
 %\end{ncodebox}
