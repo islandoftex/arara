@@ -838,7 +838,7 @@ This method shows a dialog box according to the provided parameters, including o
 According to the \href{https://en.wikipedia.org/wiki/Swing_(Java)}{Wikipedia entry}, the Swing toolkit was developed to provide a more sophisticated set of GUI components than the earlier  AWT widget system. Swing provides a look and feel that emulates the look and feel of several platforms, and also supports a pluggable look and feel that allows applications to have a look and feel unrelated to the underlying platform. It has more powerful and flexible components than AWT. In addition to familiar components such as buttons, check boxes and labels, Swing provides several advanced components. such as scroll panes, trees, tables, and lists.
 \end{messagebox}
 
-\item[\mdbox{R}{showInput(int width, int icon, String title, String text)}{String}]\uimethod{inputbox1}
+\item[\mddbox{C}{R}{showInput(int width, int icon, String title, String text)}{String}]\uimethod{inputbox1}
 
 This method shows an input dialog box according to the provided parameters. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the content of the input text field, as a trimmed \rbox{String} object. If the user cancels the dialog or closes the window, an empty string is returned. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
 
@@ -847,7 +847,7 @@ This method shows an input dialog box according to the provided parameters. The 
 % arara: --> 'Who wrote arara?') == 'Paulo'
 \end{codebox}
 
-\item[\mdbox{R}{showInput(int icon, String title, String text)}{String}]\uimethod{inputbox2}
+\item[\mddbox{C}{R}{showInput(int icon, String title, String text)}{String}]\uimethod{inputbox2}
 
 This method shows an input dialog box according to the provided parameters. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the content of the input text field, as a trimmed \rbox{String} object. If the user cancels the dialog or closes the window, an empty string is returned. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
 
@@ -923,6 +923,67 @@ This description is, in some aspects, very much alike a typical \rbox{Command} c
 
 So far, the tool provides only one trigger, seen in action in one of the official rules, under the name \rbox{halt} and with no parameters. This particular trigger halts the current interpretation workflow, such that subsequent directives are ignored. We have not worked much on triggers yet, and the concept is mentioned here for documentation purposes only.
 \end{messagebox}
+
+\begin{description}
+\item[\mdbox{R}{getCommand(List<String> elements)}{Command}] This method, as the name implies, returns a \rbox{Command} object according to the provided list of \rbox{String} elements. If the list is empty, the tool will ignore the execution.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+return getCommand([ 'ls', '-l' ]);
+\end{codebox}
+
+\item[\mdbox{R}{getCommand(Object... elements)}{Command}] This method, as the name implies, returns a \rbox{Command} object according to the provided array of \rbox{Object} elements. If the array is empty, the tool will ignore the execution. Note that the object array is denoted by a comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+return getCommand('pdflatex', '--shell-escape', 'thesis.tex');
+\end{codebox}
+
+\item[\mdbox{R}{getTrigger(String name)}{Trigger}] This method, as the name implies, returns a \rbox{Trigger} object according to the provided \rbox{String} reference as function name. It is important to observe that this particular trigger instance does not have parameters.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+return getTrigger('halt');
+\end{codebox}
+
+\item[\mdbox{R}{getTrigger(String name, Object... parameters)}{Trigger}] This method, as the name implies, returns a proper \rbox{Trigger} object according to the provided \rbox{String} reference as function name and the \rbox{Object} array as associated parameters. Note that the object array is denoted by a comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+return getTrigger('multiply', 12, 34, 65);
+\end{codebox}
+
+\item[\mdbox{R}{\parbox{0.62\textwidth}{getCommandWithWorkingDirectory(File directory,\\\hspace*{1em} List<String> elements)}}{Command}] This method, as the name implies, sets the working directory based on the provided \rbox{File} reference and returns a proper \rbox{Command} object according to the provided list of \rbox{String} elements. If the list is empty, the tool will ignore the execution.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+return getCommandWithWorkingDirectory(toFile('/home/paulo'),
+       [ 'ls', '-l' ]);
+\end{codebox}
+
+\item[\mdbox{R}{\parbox{0.58\textwidth}{getCommandWithWorkingDirectory(String path,\\\hspace*{1em} List<String> elements)}}{Command}] This method, as the name implies, sets the working directory based on the provided \rbox{String} reference and returns a proper \rbox{Command} object according to the provided list of \rbox{String} elements. If the list is empty, the tool will ignore the execution.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+return getCommandWithWorkingDirectory('/home/paulo',
+       [ 'ls', '-l' ]);
+\end{codebox}
+
+\item[\mdbox{R}{\parbox{0.62\textwidth}{getCommandWithWorkingDirectory(File directory,\\\hspace*{1em} Object... elements)}}{Command}] This method, as the name implies, sets the working directory based on the provided \rbox{File} reference and returns a proper \rbox{Command} object according to the provided array of \rbox{Object} elements. If the array is empty, the tool will ignore the execution. Note that the object array is denoted by a comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+return getCommandWithWorkingDirectory(toFile('/home/paulo'),
+       'pdflatex', '--shell-escape', 'thesis.tex');
+\end{codebox}
+
+\item[\mdbox{R}{\parbox{0.58\textwidth}{getCommandWithWorkingDirectory(String path,\\\hspace*{1em} Object... elements)}}{Command}] This method, as the name implies, sets the working directory based on the provided \rbox{String} reference and returns a proper \rbox{Command} object according to the provided array of \rbox{Object} elements. If the array is empty, the tool will ignore the execution. Note that the object array is denoted by a comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+return getCommandWithWorkingDirectory('/home/paulo',
+       'pdflatex', '--shell-escape', 'thesis.tex');
+\end{codebox}
+\end{description}
+
+The methods presented in this section constitute the foundations of underlying system command execution. In particular, whenever possible, it is highly advisable to use \rbox{Command} objects through proper \mtbox{getCommand} method calls, as the plain string approach used in previous versions of our tool is marked as deprecated and will be removed in future versions. 
+
+\section{Others}
+\label{sec:others}
+
+
 
 %\begin{}{Source file}{teal}{\icnote}{white}{}
 %\end{ncodebox}
