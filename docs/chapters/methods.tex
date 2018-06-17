@@ -862,6 +862,44 @@ The UI methods presented in this section can be used for writing \TeX\ tutorials
 \section{Commands and triggers}
 \label{sec:commandsandtriggers}
 
+From version 4.0 on, \arara\ features the \rbox{Command} object, a new approach for handling system commands based on a high level structure with explicit argument parsing. Similarly, there is also the mystical \rbox{Trigger} object that constitutes a very special command that changes the inner workings of our tool at runtime. This section introduces methods for generating such objects.
+
+\begin{messagebox}{The anatomy of a command}{araracolour}{\icok}{white}
+\setlength{\parskip}{1em}
+From the user perspective, a \rbox{Command} object is simply a good old list of \rbox{Object} objects, in which the list head (i.e, the first element) is the underlying system command, and the list tail (i.e, the remaining elements), if any, contains the associated command line arguments. For instance:
+
+{\centering
+\setlength\tabcolsep{0.2em}
+\begin{tabular}{cccc}
+{\footnotesize\em head} &
+\multicolumn{3}{c}{\footnotesize\em tail (associated command line arguments)} \\
+\rbox[cyan]{pdflatex} &
+\rbox[araracolour]{{-}-shell-escape} &
+\rbox[araracolour]{{-}-synctex=1} &
+\rbox[araracolour]{thesis.tex}
+\end{tabular}\par}
+
+\vspace{0.4em}
+
+From the previous example, it is important to observe that a potential file name quoting is not necessary. The underlying system command execution library handles the provided arguments accordingly. 
+
+Behind the scenes, however, \arara\ employs a different workflow when constructing a \rbox{Command} object. The tool sets the working directory path for the current command to \abox[araracolour]{USER\_DIR} which is based on the current execution. The working directory path can be explicitly set through specific method calls, described later on in this section.
+
+The list of objects is then completely flattened and all elements are mapped to their string representations through corresponding \mtbox{toString} calls. Finally, the proper \rbox{Command} object is constructed. Keep in mind that, although a command takes a list (or even an array) of objects, which can be of any type, the internal representation is \emph{always} a list of strings.
+\end{messagebox}
+
+A list of objects might contain nested lists, i.e, a list within another list. As previously mentioned, \arara\ employs \emph{list flattening} when handling a list of objects during a \rbox{Command} object instantation. As a means to illustrate this handy feature, consider the following list of integers:
+
+\begin{codebox}{A list with nested lists}{teal}{\icnote}{white}
+[ 1, 2, [ 3, 4 ], 5, [ [ 6, 7 ], 8 ], 9, [ [ 10 ] ]
+\end{codebox}
+
+Note that the previous list of integers contains nested lists. When applying list flattening, \arara\ recursively adds the elements of nested lists to the original list and then removes the nested occurrences. Please refer to the source code for implementation details. The new flattened list is presented as follows.
+
+\begin{codebox}{A flattened list}{teal}{\icnote}{white}
+[ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
+\end{codebox}
+
 %\begin{}{Source file}{teal}{\icnote}{white}{}
 %\end{ncodebox}
 
