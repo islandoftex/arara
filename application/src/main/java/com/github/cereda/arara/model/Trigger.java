@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 /**
- * Implements the trigger model. Nightingale provides triggers, which are a way
+ * Implements the trigger model. The tool provides triggers, which are a way
  * to alter its internal behaviour according to a list of parameters.
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
@@ -100,7 +100,6 @@ public class Trigger {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
-
     public void process() throws AraraException {
 
         Map<String, Callable<Object>> mapping =
