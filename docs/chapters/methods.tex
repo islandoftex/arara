@@ -788,7 +788,7 @@ showMessage(2, 'My title', 'My message');
 
 \item[\mddbox{C}{R}{\parbox{0.62\textwidth}{showOptions(int width, int icon, String title,\\\hspace*{1em} String text, Object... options)}}{int}]\uimethod{optionbox1}
 
-This method shows a message box according to the provided parameters, including options represented as an array of \rbox{Object} objects. This array is represented in the dialog box as a list of buttons. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the natural index of the selected button, starting from \rbox{1}. If no button is pressed (e.g, the window is closed), \rbox{0} is returned. Note that the object array is denoted by a  comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
+This method shows a message box according to the provided parameters, including options represented as an array of \rbox{Object} objects. This array is portrayed in the dialog box as a list of buttons. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the natural index of the selected button, starting from \rbox{1}. If no button is pressed (e.g, the window is closed), \rbox{0} is returned. Note that the object array is denoted by a  comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 % arara: pdflatex if showOptions(250, 4, 'Important!',
@@ -801,7 +801,7 @@ Keep in mind that your window manager might render the button orientation differ
 
 \item[\mddbox{C}{R}{\parbox{0.49\textwidth}{showOptions(int icon, String title,\\\hspace*{1em} String text, Object... options)}}{int}]\uimethod{optionbox2}
 
-This method shows a message box according to the provided parameters, including options represented as an array of \rbox{Object} objects. This array is represented in the dialog box as a list of buttons. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the natural index of the selected button, starting from \rbox{1}. If no button is pressed (e.g, the window is closed), \rbox{0} is returned. Note that the object array is denoted by a  comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
+This method shows a message box according to the provided parameters, including options represented as an array of \rbox{Object} objects. This array is portrayed in the dialog box as a list of buttons. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the natural index of the selected button, starting from \rbox{1}. If no button is pressed (e.g, the window is closed), \rbox{0} is returned. Note that the object array is denoted by a  comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 % arara: pdflatex if showOptions(4, 'Important!',
@@ -810,7 +810,7 @@ This method shows a message box according to the provided parameters, including 
 
 \item[\mddbox{C}{R}{\parbox{0.62\textwidth}{showDropdown(int width, int icon, String title,\\\hspace*{1em} String text, Object... options)}}{int}]\uimethod{dropdown1}
 
-This method shows a dialog box according to the provided parameters, including options represented as an array of \rbox{Object} objects. This array is represented in the dialog box as a dropdown list. The first element from the array is automatically selected. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the natural index of the selected item, starting from \rbox{1}. If the user cancels the dialog or closes the window, \rbox{0} is returned.  Note that the object array is denoted by a comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
+This method shows a dialog box according to the provided parameters, including options represented as an array of \rbox{Object} objects. This array is portrayed in the dialog box as a dropdown list. The first element from the array is automatically selected. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the natural index of the selected item, starting from \rbox{1}. If the user cancels the dialog or closes the window, \rbox{0} is returned.  Note that the object array is denoted by a comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 % arara: pdflatex if showDropdown(250, 4, 'Important!',
@@ -825,7 +825,7 @@ According to the \href{https://en.wikipedia.org/wiki/Combo_box}{Wikipedia entry}
 
 \item[\mddbox{C}{R}{\parbox{0.49\textwidth}{showDropdown(int icon, String title,\\\hspace*{1em} String text, Object... options)}}{int}]\uimethod{dropdown2}
 
-This method shows a dialog box according to the provided parameters, including options represented as an array of \rbox{Object} objects. This array is represented in the dialog box as a dropdown list. The first element from the array is automatically selected. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the natural index of the selected item, starting from \rbox{1}. If the user cancels the dialog or closes the window, \rbox{0} is returned.  Note that the object array is denoted by a comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
+This method shows a dialog box according to the provided parameters, including options represented as an array of \rbox{Object} objects. This array is portrayed in the dialog box as a dropdown list. The first element from the array is automatically selected. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the natural index of the selected item, starting from \rbox{1}. If the user cancels the dialog or closes the window, \rbox{0} is returned.  Note that the object array is denoted by a comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 % arara: pdflatex if showDropdown(4, 'Important!',
@@ -899,6 +899,17 @@ Note that the previous list of integers contains nested lists. When applying lis
 \begin{codebox}{A flattened list}{teal}{\icnote}{white}
 [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
 \end{codebox}
+
+List flattening and string mapping confer expressiveness and flexibility to the \rbox{Command} object construction, as users can virtually use any data type to describe the underlying rule logic and yet obtain a consistent representation.
+
+\begin{messagebox}{The anatomy of a trigger}{araracolour}{\icok}{white}
+\setlength{\parskip}{1em}
+A \rbox{Trigger} object constitutes a special command that changes the internal workings of \arara\ at runtime. It is a highly experimental feature. A trigger is basically a function call defined in terms of a \rbox{String} reference representing the actual function name followed by an optional list of \rbox{Object} arguments.
+
+This description is, in some aspects, very much alike a typical \rbox{Command} construction. However, a trigger is less forgiving on data types and does not apply transformations on the provided list of arguments. Therefore, the argument types \emph{must match} the trigger signature.
+
+
+\end{messagebox}
 
 %\begin{}{Source file}{teal}{\icnote}{white}{}
 %\end{ncodebox}
