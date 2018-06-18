@@ -22,7 +22,7 @@ commands:
         else {
             prefix = [ 'cmd', '/c', 'convert' ];
         }
-        return getCommand(prefix, '-delay', delay, '-loop', loop, '-density', density, input, output);
+        return getCommand(prefix, '-delay', delay, '-loop', loop, '-density', density, options, input, output);
     }
 arguments:
 - identifier: delay
@@ -34,3 +34,13 @@ arguments:
 - identifier: density
   flag: "@{parameters.density}"
   default: 300
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.')
+        }
+    }
