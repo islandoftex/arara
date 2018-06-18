@@ -1046,8 +1046,19 @@ result = unsafelyExecuteSystemCommand(getCommand('ls'));
 Please \emph{do not abuse} this method! Keep in mind that this particular feature is included for very specific scenarios in which the command streams are needed ahead of time for proper decision making.
 \end{messagebox}
 
-\item[\mdbox{R}{\parbox{0.62\textwidth}{mergeVelocityTemplate(File input, File output,\\\hspace*{1em} Map<String, Object> map)}}{void}]
+\item[\mdbox{R}{\parbox{0.62\textwidth}{mergeVelocityTemplate(File input, File output,\\\hspace*{1em} Map<String, Object> map)}}{void}] This method, as the name implies, merges the provided \rbox{File} template reference written in the Velocity Template Language 1.7 specification with the \rbox{Map} data object in order to produce a corresponding \rbox{File} output. It is important to observe that this method will raise an exception if the provided input file does not exist or if there is an error with the underlying template language.
 
+\begin{codebox}{Example}{teal}{\icnote}{white}
+mergeVelocityTemplate(toFile('input.txt'), toFile('output.txt'),
+     [ 'name' : 'Paulo', 'country' : 'Brazil' ])
+\end{codebox}
+
+\begin{messagebox}{Velocity Template Language 1.7}{attentioncolour}{\icattention}{black}
+\setlength{\parskip}{1em}
+As of 2017, the Apache Foundation has released the new 2.0 version for the Velocity Template Language. However, this particular version introduces behavioural and syntactic changes that may cause problems with older versions.
+
+In order to maintain compatibility with older Java virtual machines, \arara\ works with the \href{http://velocity.apache.org/engine/1.7/vtl-reference.html}{VTL 1.7 specification}, so it is highly recommended to strictly adhere to this reference when writing templates for the corresponding method or the official \rbox{velocity} rule.
+\end{messagebox}
 \end{description}
 
 %\begin{}{Source file}{teal}{\icnote}{white}{}
