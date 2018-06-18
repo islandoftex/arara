@@ -1048,6 +1048,11 @@ Please \emph{do not abuse} this method! Keep in mind that this particular featur
 
 \item[\mdbox{R}{\parbox{0.62\textwidth}{mergeVelocityTemplate(File input, File output,\\\hspace*{1em} Map<String, Object> map)}}{void}] This method, as the name implies, merges the provided \rbox{File} template reference written in the Velocity Template Language 1.7 specification with the \rbox{Map} data object in order to produce a corresponding \rbox{File} output. It is important to observe that this method will raise an exception if the provided input file does not exist or if there is an error with the underlying template language.
 
+\begin{ncodebox}{Source file}{teal}{\icnote}{white}{input.txt}
+Hello, my name is ${name} and
+I am from ${country}!
+\end{ncodebox}
+
 \begin{codebox}{Example}{teal}{\icnote}{white}
 mergeVelocityTemplate(toFile('input.txt'), toFile('output.txt'),
      [ 'name' : 'Paulo', 'country' : 'Brazil' ])
@@ -1060,6 +1065,8 @@ As of 2017, the Apache Foundation has released the new 2.0 version for the Veloc
 In order to maintain compatibility with older Java virtual machines, \arara\ works with the \href{http://velocity.apache.org/engine/1.7/vtl-reference.html}{VTL 1.7 specification}, so it is highly recommended to strictly adhere to this reference when writing templates for the corresponding method or the official \rbox{velocity} rule.
 \end{messagebox}
 \end{description}
+
+The methods presented in this section provide interesting features for persistent data sharing, error handling, early command execution, and templating. It is important to note that more classes, objects and methods can be incorporated into \arara\ through classloading and object instantiation, extending the features and enhancing the overall user experience.
 
 %\begin{}{Source file}{teal}{\icnote}{white}{}
 %\end{ncodebox}
