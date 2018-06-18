@@ -296,7 +296,7 @@ files = listFilesByExtensions('/home/paulo/Documents',
 \item[\mdbox{R}{\parbox{0.59\textwidth}{listFilesByPatterns(File file,\\\hspace*{1em} List<String> patterns, boolean recursive)}}{List<File>}] This methods performs a file search operation based on the provided parameters. In this case, the method list all files from the provided \rbox{File} reference according to the \rbox{List<String>} patterns as a list of strings, and returns a \rbox{List<File>} object representing all matching files. The pattern specification is presented as follows. The third parameter holds a \rbox{boolean} value and acts as a switch indicating whether the search must be recursive, i.e, whether all subdirectories must be searched as well. If the reference is not a proper directory or an exception is raised due to access permission constraints, the \mtbox{listFilesByPatterns} method returns an empty list. It is very important to observe that this file search operation might be slow depending on the provided directory. It is highly advisable to not rely on recursive searches whenever possible.
 
 \begin{messagebox}{Patterns for file search operations}{araracolour}{\icattention}{white}
-\arara\ employs wildcard filters as patterns for file search operations. Testing is case-sensitive by default. The wildcard matcher uses the characters \rbox[araracolour]{?} and \rbox[araracolour]{*} to represent a single or multiple wildcard characters. This is the same as often found on typical terminals.
+\arara\ employs wildcard filters as patterns for file search operations. Testing is case sensitive by default. The wildcard matcher uses the characters \rbox[araracolour]{?} and \rbox[araracolour]{*} to represent a single or multiple wildcard characters. This is the same as often found on typical terminals.
 \end{messagebox}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -986,8 +986,69 @@ The methods presented in this section constitute the foundations of underlying s
 This section introduces assorted methods provided by \arara\ as a means to improve the automation itself with expressive rules and enhance the user experience. Such methods are properly described as follows.
 
 \begin{messagebox}{Session}{araracolour}{\icok}{white}
+Rules are designed under the \emph{encapsulation} notion, such that the direct access to internal workings of such structures is restricted. However, as a means to support framework awareness, \arara\ provides a mechanism for data sharing across rule contexts, implemented as a \rbox{Session} object. In practical terms, this particular object is a global, persistent map composed of \rbox{String} keys and \rbox{Object} values available throughout the entire execution. The public methods are described as follows:
 
+\begin{description}
+\item[\mtbox{insert(String key, Object value)}\hfill\rrbox{void}] This method, as the name implies, inserts an object into the session, indexed by the provided key. Observe that, if the session previously contained a mapping for the provided key, the old value is replaced by the specified value.
+
+\item[\mtbox{remove(String key)}\hfill\rrbox{void}] This method, as the name implies, removes  the mapping for the provided key from the session. Be mindful that an attempt to remove a mapping for a nonexistent key will raise an exception.
+
+\item[\mtbox{exists(String key)}\hfill\rrbox{boolean}] This method, as the name implies, returns a boolean value according to whether the session contains a mapping for the provided key. It is highly advisable to use this method before attempting to remove a mapping from the session.
+
+\item[\mtbox{obtain(String key)}\hfill\rrbox{Object}] This method, as the name implies, returns the object value to which the specified key is mapped. Be mindful that an attempt to return a value for a nonexistent key will raise an exception.
+
+\item[\mtbox{forget()}\hfill\rrbox{void}] This method, as the name implies, removes all of the existing mappings from the session. The session object will be effectively empty after this call returns.
+\end{description}
+
+It is important to observe that the \rbox{Session} object provided by our tool follows the \emph{singleton} pattern, i.e, a software design pattern that restricts the instantiation of a class to one object. Therefore, the same session is consistently shared across rule contexts.
 \end{messagebox}
+
+\begin{description}
+\item[\mdbox{R}{getSession()}{Session}] This method, as the name implies, returns the \rbox{Session} object for data sharing across rule contexts. Keep in mind that a session cannot contain duplicate keys. Each key can map to at most one value.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+name = getSession().obtain('name');
+\end{codebox}
+
+\item[\mdbox{R}{throwError(String message)}{void}] This method deliberately throws an error to be intercepted later on during execution. Consider using such method for an explicit notification about unexpected or unsought scenarios, e.g, wrong parameter types or values. The raised error has an associated message which is displayed in the terminal and added to the log file.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+options = 'not a list';
+if (!isList(options)) {
+    throwError('I was expecting a list.');
+}
+\end{codebox}
+
+% TODO fix reference
+\item[\mdbox{R}{isVerboseMode()}{boolean}] This method, as the name implies, returns a boolean value according to whether \arara\ is being executed in verbose mode, enabled through either the \opbox{{-}verbose} command line option or the corresponding key in the configuration file (detailed in Sections~\ref{foo} and~\ref{foo}, respectively). Note that the logical negation of such method indicates whether the tool is being executed in silent mode.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+verbose = isVerboseMode();
+\end{codebox}
+
+\item[\mdbox{R}{isOnPath(String name)}{boolean}] This method, as the name implies, returns a boolean value according to whether the provided \rbox{String} reference representing a command name is reachable from the system path.  For portability reasons, there is no need to provide extensions to Microsoft Windows command names, as \arara\ will look for common patterns. This behaviour is expected and by design. However, be mindful that the search is case sensitive.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = isOnPath('pdftex');
+\end{codebox}
+
+\begin{messagebox}{Path inspection}{araracolour}{\icok}{white}
+According to the \href{https://en.wikipedia.org/wiki/PATH_(variable)}{Wikipedia entry}, \abox[araracolour]{PATH} is an environment variable on Unix-like operating systems and Microsoft Windows, specifying a set of directories where executable programs are located. \arara\ performs a file search operation based on all directories specified in the system path, filtering files by name (and extensions, when in Microsoft Windows). When an exact match is found, the search is concluded. Notwithstanding the great effort, it is very important to note that there is no guarantee that our tool will be able to correctly reach the command in all scenarios.
+\end{messagebox}
+
+\item[\mdbox{R}{unsafelyExecuteSystemCommand(Command command)}{Pair<Integer, String>}] This method, which has a very spooky name, unsafely executes the provided \rbox{Command} reference and returns an ordered pair containing the exit status and the command output. Note that, if an exception is raised during the command execution, \rbox{-99} is assigned as exit status and an empty string is defined as command output. Please make sure to always check the returned integer status when using this method.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+result = unsafelyExecuteSystemCommand(getCommand('ls'));
+\end{codebox}
+
+\begin{messagebox}{Hic sunt leones}{attentioncolour}{\icattention}{black}
+Please \emph{do not abuse} this method! Keep in mind that this particular feature is included for very specific scenarios in which the command streams are needed ahead of time for proper decision making.
+\end{messagebox}
+
+\item[\mdbox{R}{\parbox{0.62\textwidth}{mergeVelocityTemplate(File input, File output,\\\hspace*{1em} Map<String, Object> map)}}{void}]
+
+\end{description}
 
 %\begin{}{Source file}{teal}{\icnote}{white}{}
 %\end{ncodebox}
