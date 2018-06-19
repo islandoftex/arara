@@ -13,7 +13,9 @@ commands:
 - name: The latexindent.pl script
   command: >
     @{
-        return getCommand('latexindent', silent, trace, ttrace, screenlog, settings, cruft, overwrite, output, file, modifylinebreaks, options, logfile);
+        return getCommand('latexindent', silent, trace, ttrace, screenlog,
+               settings, cruft, overwrite, output, file, modifylinebreaks,
+               options, logfile);
     }
 arguments:
 - identifier: silent
@@ -62,7 +64,7 @@ arguments:
             return parameters.options;
         }
         else {
-            throwError('I was expecting a list of options.')
+            throwError('I was expecting a list of options.');
         }
     }
 

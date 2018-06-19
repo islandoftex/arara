@@ -14,10 +14,9 @@ commands:
   command: >
     @{
        return getCommand('bib2gls', dir, trans, group, interpret,
-         breakspace, trimfields, recordcount, recordcountunit, 
-         cite, verbose, merge, locale, uniscript, packages, 
-         ignore, custom, mapformats,
-         options, getBasename(file));
+              breakspace, trimfields, recordcount, recordcountunit, 
+              cite, verbose, merge, locale, uniscript, packages, 
+              ignore, custom, mapformats, options, getBasename(file));
     }
 arguments:
 - identifier: dir
@@ -102,7 +101,7 @@ arguments:
         }
         else
         {
-            throwError('I was expecting a list of package names.')
+            throwError('I was expecting a list of package names.');
         }
     }
 - identifier: ignore
@@ -122,7 +121,7 @@ arguments:
         }
         else
         {
-            throwError('I was expecting a list of package names.')
+            throwError('I was expecting a list of package names.');
         }
     }
 - identifier: custom
@@ -142,7 +141,7 @@ arguments:
         }
         else
         {
-            throwError('I was expecting a list of package names.')
+            throwError('I was expecting a list of package names.');
         }
     }
 - identifier: mapformats
@@ -174,10 +173,10 @@ arguments:
     @{
         if (isList(parameters.options))
         {
-            return parameters.options
+            return parameters.options;
         }
         else
         {
-            throwError('I was expecting a list of options.')
+            throwError('I was expecting a list of options.');
         }
     }

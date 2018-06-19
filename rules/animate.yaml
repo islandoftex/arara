@@ -22,7 +22,8 @@ commands:
         else {
             prefix = [ 'cmd', '/c', program ];
         }
-        return getCommand(prefix, '-delay', delay, '-loop', loop, '-density', density, options, input, output);
+        return getCommand(prefix, '-delay', delay, '-loop',
+               loop, '-density', density, options, input, output);
     }
 arguments:
 - identifier: delay
@@ -44,6 +45,6 @@ arguments:
             return parameters.options;
         }
         else {
-            throwError('I was expecting a list of options.')
+            throwError('I was expecting a list of options.');
         }
     }

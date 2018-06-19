@@ -16,7 +16,7 @@ commands:
         return getCommand('datatooltk', options, output, csv, sql, input, 
           sqldb, sqluser, name, probsoln, sort, sortlocale, sortcase, seed, 
           shuffle, sep, delim, csvheader, noconsole, debug, owneronly, maptex, 
-          xls, ods, sheet, filterop, filters, truncate)
+          xls, ods, sheet, filterop, filters, truncate);
     }
 arguments:
 - identifier: options

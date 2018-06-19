@@ -14,7 +14,7 @@ commands:
 - name: The engine
   command: >
     @{
-        return getCommand(engine, action, shell, file);
+        return getCommand(engine, action, shell, file)
     }
 - name: The frontispiece
   command: >
@@ -55,7 +55,7 @@ arguments:
             return parameters.options;
         }
         else {
-            throwError('I was expecting a list of options.')
+            throwError('I was expecting a list of options.');
         }
     }
 - identifier: action

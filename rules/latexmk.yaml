@@ -29,7 +29,7 @@ arguments:
             return parameters.options;
         }
         else {
-            throwError('I was expecting a list of options.')
+            throwError('I was expecting a list of options.');
         }
     }
 - identifier: clean

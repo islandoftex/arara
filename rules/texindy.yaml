@@ -14,7 +14,7 @@ commands:
     @{
         value = getBasename(file).concat('.').concat(extension);
         return getCommand('texindy', quiet, debug, markup, modules,
-         codepage, language, log, output, options, value);
+               codepage, language, log, output, options, value);
     }
 arguments:
 - identifier: quiet
@@ -78,6 +78,6 @@ arguments:
             return parameters.options;
         }
         else {
-            throwError('I was expecting a list of options.')
+            throwError('I was expecting a list of options.');
         }
     }

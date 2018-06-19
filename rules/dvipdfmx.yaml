@@ -21,11 +21,11 @@ arguments:
 - identifier: output
   flag: >
     @{
-        return parameters.output;
+        parameters.output
     }
   default: >
     @{
-        return file;
+        file
     }
 - identifier: options
   flag: >
@@ -34,6 +34,6 @@ arguments:
             return parameters.options;
         }
         else {
-            throwError('I was expecting a list of options.')
+            throwError('I was expecting a list of options.');
         }
     }

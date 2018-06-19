@@ -47,6 +47,6 @@ arguments:
             return parameters.extensions;
         }
         else {
-            throwError('I was expecting a list of extensions.')
+            throwError('I was expecting a list of extensions.');
         }
     }

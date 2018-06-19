@@ -14,7 +14,7 @@ commands:
 - name: The MakeGlossariesLite software
   command: >
     @{
-       return  getCommand('makeglossaries-lite', options, getBasename(file));
+       return  getCommand('makeglossaries-lite', options, getBasename(file))
     }
 arguments:
 - identifier: options
@@ -24,6 +24,6 @@ arguments:
             return parameters.options;
         }
         else {
-            throwError('I was expecting a list of options.')
+            throwError('I was expecting a list of options.');
         }
     }

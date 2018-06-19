@@ -32,7 +32,7 @@ arguments:
     }
   default: >
     @{
-        getBasename(file)
+        file
     }
 - identifier: options1
   flag: >
@@ -41,7 +41,7 @@ arguments:
             return parameters.options1;
         }
         else {
-            throwError('I was expecting a list of options.')
+            throwError('I was expecting a list of options.');
         }
     }
 - identifier: options2
@@ -51,6 +51,6 @@ arguments:
             return parameters.options2;
         }
         else {
-            throwError('I was expecting a list of options.')
+            throwError('I was expecting a list of options.');
         }
     }
