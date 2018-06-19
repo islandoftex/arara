@@ -166,7 +166,7 @@ arguments:
           return elements;
         }
         else {
-            throwError('I was expecting mapformats: [ [<label>, <value>], ..., [<label>, <value>] ].');
+            throwError('I was expecting mapformats: [ [<key>, <value>], ..., [<key>, <value>] ].');
         }
     }
 - identifier: options

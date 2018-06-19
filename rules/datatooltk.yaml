@@ -97,7 +97,7 @@ arguments:
           {
              if (isList(element) && element.size() == 3)
              {
-                element.add(0, '--filter');
+                elements.add('--filter');
                 elements.add(element);
              }
              else
