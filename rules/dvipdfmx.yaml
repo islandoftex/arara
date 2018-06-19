@@ -21,11 +21,11 @@ arguments:
 - identifier: output
   flag: >
     @{
-        parameters.output
+        return parameters.output;
     }
   default: >
     @{
-        getBasename(file)
+        return file;
     }
 - identifier: options
   flag: >

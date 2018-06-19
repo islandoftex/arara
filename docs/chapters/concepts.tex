@@ -200,19 +200,34 @@ flag: >
 \end{codebox}
 
 % TODO fix reference
-There is one variable available in the \abox{flag} context and is described as follows. Note that are also several helper methods available in the rule context (for instance, \mtbox{isTrue} presented in the previous example) which provide interesting features for rule writing. They are detailed later on, in Section~\ref{foo} (page~\pageref{foo}).
+There are three variables available in the \abox{flag} context, described as follows. Note that are also several helper methods available in the rule context (for instance, \mtbox{isTrue} presented in the previous example) which provide interesting features for rule writing. They are detailed later on, in Section~\ref{foo} (page~\pageref{foo}).
 
 \begin{description}
 \item[\varbox{parameters}] This variable holds a map of directive parameters available at runtime. For each argument identifier listed in the \abox{arguments} list in the rule context, there will be an entry in this variable. This is useful to get the actual values provided during execution and take proper actions. If a parameter is not set in the directive context, the reference will still exist in the map, but it will be mapped to an empty string.
+
+\item[\varbox{file}] This variable holds the file name, without any path reference, as a plain string. It is usually composed by the base name and the extension. This variable is available since the first release of \arara.
+
+\item[\varbox{reference}] This variable is introduced in version 4.0 of \arara\ and holds the canonical, absolute path representation of the \varbox{file} variable as a \abox{File} object. This is useful if there is a need of understanding the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \abox{File} class.
 \end{description}
 
 In the previous example, observe that the MVEL expression defined in the \abox{flag} key checks if the user provided an affirmative value regarding shell escape, through comparing \varbox{parameters.shell} with a set of predefined affirmative values. In any case, the corresponding command flag is defined as result of such evaluation.
 
-\item[\describecontext{O}{arguments}{default}] As default behaviour, if a parameter is not set in the directive context, the reference will be mapped to an empty string. This key exists for the exact purpose of overriding such behaviour and expects a plain string as value.
+\item[\describecontext{O}{arguments}{default}] As default behaviour, if a parameter is not set in the directive context, the reference will be mapped to an empty string. This key exists for the exact purpose of overriding such behaviour.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 default: ''
 \end{codebox}
+
+% TODO fix reference
+There are three variables available in the \abox{default} context, described as follows. Note that are also several helper methods available in the rule context (for instance, \mtbox{isTrue} presented in the previous example) which provide interesting features for rule writing. They are detailed later on, in Section~\ref{foo} (page~\pageref{foo}).
+
+\begin{description}
+\item[\varbox{parameters}] This variable holds a map of directive parameters available at runtime. For each argument identifier listed in the \abox{arguments} list in the rule context, there will be an entry in this variable. This is useful to get the actual values provided during execution and take proper actions. If a parameter is not set in the directive context, the reference will still exist in the map, but it will be mapped to an empty string.
+
+\item[\varbox{file}] This variable holds the file name, without any path reference, as a plain string. It is usually composed by the base name and the extension. This variable is available since the first release of \arara.
+
+\item[\varbox{reference}] This variable is introduced in version 4.0 of \arara\ and holds the canonical, absolute path representation of the \varbox{file} variable as a \abox{File} object. This is useful if there is a need of understanding the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \abox{File} class.
+\end{description}
 
 \item[\describecontext{O}{arguments}{required}] There might be certain scenarios in which a rule could make use of required arguments (for instance, a copy operation in which source and target must be provided). The \abox{required} key acts as a boolean switch to indicate whether the corresponding argument should be mandatory. In this case, set the key value to \abox{true} and the argument turns required. Later on at runtime, \arara\ will throw an error if a required parameter is missing in the directive.
 
@@ -224,7 +239,7 @@ Note that setting the \abox{required} key value to \abox{false} corresponds to o
 \end{description}
 
 \begin{messagebox}{Note on argument keys}{attentioncolour}{\icattention}{black}
-As seen previously, both \abox{flag} and \abox{default} are marked as optional, but at least one of them must occur in the argument specification, otherwise \arara\ will throw an error, as it makes no sense to have no argument handling at all. Please make sure to specify at least one of them!
+As seen previously, both \abox{flag} and \abox{default} are marked as optional, but at least one of them must occur in the argument specification, otherwise \arara\ will throw an error, as it makes no sense to have no argument handling at all. Please make sure to specify at least one of them for a consistent behaviour!
 \end{messagebox}
 
 For instance, consider a full example of the \abox{arguments} key, defined with only one argument, presented as follows. The hyphen denotes a list element, so mind the indentation for correctly specifying the component keys. Also, note that, in this case, keys \abox{required} and \abox{default} were completely optional, and they were included for didactic purposes.
@@ -234,7 +249,8 @@ arguments:
 - identifier: shell
   flag: >
     @{
-        isTrue(parameters.shell, '--shell-escape',
+        isTrue(parameters.shell,
+               '--shell-escape',
                '--no-shell-escape')
     }
   required: false
