@@ -2,7 +2,7 @@
 \chapter{The official rule pack}
 \label{chap:theofficialrulepack}
 
-\arara\ ships with a pack of default rules, placed inside a special subdirectory named \abox[araracolour]{rules/} inside another special directory named \abox[araracolour]{ARARA\_HOME} (the place where our tool is installed). This chapter introduces the official rules, including proper listings and descriptions of associated parameters whenever applied. Note that such rules work out of the shelf, without any special installation, configuration or modification.
+\arara\ ships with a pack of default rules, placed inside a special subdirectory named \abox[araracolour]{rules/} inside another special directory named \abox[araracolour]{ARARA\_HOME} (the place where our tool is installed). This chapter introduces the official rules, including proper listings and descriptions of associated parameters whenever applied. Note that such rules work out of the shelf, without any special installation, configuration or modification. An option marked by \rbox[araracolour]{S} after the corresponding identifier indicates a natural boolean switch.
 
 \begin{messagebox}{Can my rule be distributed within the official pack?}{araracolour}{\icok}{white}
 % TODO fix reference
@@ -32,4 +32,63 @@ The best solution to avoid possible future name conflicts, according to the Imag
 \item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
 \end{description}
 
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% TODO
+\end{codebox}
+
+\item[\rulebox{bib2gls}{Nicola Talbot, Paulo Cereda}] This rule executes the \rbox{bib2gls} command line application which extract glossary information stored in a \rbox{bib} file and converts it into glossary entry definitions in resource files.
+
+\begin{description}
+\item[\abox{dir}] This option sets the directory used for writing auxiliary files. Note that this option does not change the current working directory.
+
+\item[\abox{trans}] This option sets the name of the transcript file. By default, the name is the same as the \rbox{aux} file but with a \rbox{glg} extension.
+
+\item[\abox{locale}] This option specifies the preferred language resource file. Please keep in mind that the provided value must be a valid IETF language tag.
+
+\item[\rpsbox{group}] This option sets whether \rbox{bib2gls} will try to determine the letter group for each entry and add it to a new field called \rbox{group} when sorting. Be mindful that some \rbox{sort} options ignore this setting.
+
+\item[\rpsbox{interpret}] This option sets whether the interpreter mode of \rbox{bib2gls} is enabled. If the interpreter is off, the transcript file will not be parsed.
+
+\item[\rpsbox{breakspace}] This option sets whether the interpreter will treat a tilde character as a normal space. The default behaviour treats it as non-breakable.
+
+\item[\rpsbox{trimfields}] This option sets whether \rbox{bib2gls} will trim leading and trailing spaces from field values. The default behaviour does not trim spaces.
+
+\item[\rpsbox{recordcount}] This option sets whether the record counting will be enabled. If activated, \rbox{bib2gls} will add record count fields to entries.
+
+\item[\rpsbox{recordcountunit}] This option sets whether \rbox{bib2gls} will add unit record count fields to entries. These fields can then be used with special commands.
+
+\item[\rpsbox{cite}] This option sets whether \rbox{bib2gls} will treat citation instances found in the \rbox{aux} file as though it was actually an ignored record.
+
+\item[\rpsbox{verbose}] This option sets whether \rbox{bib2gls} will be executed in verbose mode. When enabled, the application will write extra information to the terminal and transcript file. The default behaviour runs in silent mode.
+
+\item[\rpsbox{merge}] This option sets whether the program will merge \rbox{wrglossary} counter records. If disabled, one may end up with duplicate page numbers in the list of entry locations, but linking to different parts of the page.
+
+\item[\rpsbox{uniscript}] This option sets whether text superscript and subscript will use the corresponding Unicode characters if available.
+
+\item[\abox{packages}] This option instructs the interpreter to assume the packages from the provided list have been used by the document.
+
+\item[\abox{ignore}] This option instructs \rbox{bib2gls} to skip the check for any package from the provided list when parsing the corresponding log file.
+
+\item[\abox{custom}] This option instructs the interpreter to parse the package files from the provided list. The package files need to be quite simple.
+
+\item[\abox{mapformats}] This option takes a list and sets up the rule of precedence for partial location matches. Each element from the provided list must be another list of exactly two entries representing a conflict resolution.
+
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
 \end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% TODO
+\end{codebox}
+
+\end{description}
+
+
+
+%\begin{}{Source file}{teal}{\icnote}{white}{}
+%\end{ncodebox}
+
+%\begin{codebox}{}{teal}{\icnote}{white}
+%\end{codebox}
+
+%\begin{messagebox}{}{araracolour}{\icok}{white}
+%\end{messagebox}
