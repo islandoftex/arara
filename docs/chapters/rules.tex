@@ -119,6 +119,17 @@ The best solution to avoid possible future name conflicts, according to the Imag
 \begin{codebox}{Example}{teal}{\icnote}{white}
 % TODO
 \end{codebox}
+
+\item[\rulebox{clean}{Marco Daniel, Paulo Cereda}] This rule removes the provided file reference through the underlying system command, which can be \rbox{rm} in a Unix environment or \rbox{del} in Microsoft Windows. As a security lock, this rule will always throw an error if \mtbox{currentFile} is equal to \mtbox{getOriginalFile}, so the main file reference cannot be removed. It is highly recommended to use the special \abox{files} parameter to indicate removal candidates. Alternatively, a list of file extensions can be provided as well. Be mindful that the security lock also applies to file removals based on extensions.
+
+\begin{description}
+\item[\abox{extensions}] This option, as the name indicates, takes a list of extensions and constructs a new list of removals commands according to the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with each extension from the original list as suffixes. Keep in mind that, if the special \abox{files} parameter is used with this option, the resulting list will contain the cartesian product of file base names and extensions.
+
+\begin{messagebox}{Better safe than sorry!}{attentioncolour}{\icattention}{black}
+% TODO fix reference
+When in doubt, always remember that the \opbox{{-}dry-run} command line option is your friend! As seen in Section~\ref{foo}, on page~\pageref{foo}, this option makes \arara\ go through all the motions of running tasks and subtasks, but with no actual calls. It is a very useful feature for testing the sequence of removal commands without actually losing your files! Also, as good practice, always write plain, simple, understandable \rbox{clean} directives and use as many as needed in your \TeX\ documents.
+\end{messagebox}
+\end{description}
 \end{description}
 
 
