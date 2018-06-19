@@ -31,6 +31,9 @@ commands:
             base = getBasename(file);
             removals = [];
             foreach(extension : extensions) {
+                if (base.concat('.').concat(extension) == getOriginalFile()) {
+                    throwError('I cannot remove the main file reference.');
+                }
                 removals.add(getCommand(prefix, base.concat('.').concat(extension)));
             }
             return removals;
