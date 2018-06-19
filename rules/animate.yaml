@@ -17,10 +17,10 @@ commands:
         input = getBasename(file).concat('.pdf');
         output = getBasename(file).concat('.gif');
         if (isUnix()) {
-            prefix = [ 'convert' ];
+            prefix = [ program ];
         }
         else {
-            prefix = [ 'cmd', '/c', 'convert' ];
+            prefix = [ 'cmd', '/c', program ];
         }
         return getCommand(prefix, '-delay', delay, '-loop', loop, '-density', density, options, input, output);
     }
@@ -34,6 +34,9 @@ arguments:
 - identifier: density
   flag: "@{parameters.density}"
   default: 300
+- identifier: program
+  flag: "@{parameters.program}"
+  default: convert
 - identifier: options
   flag: >
     @{
