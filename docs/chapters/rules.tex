@@ -80,7 +80,7 @@ The best solution to avoid possible future name conflicts, according to the Imag
 % TODO
 \end{codebox}
 
-\item[\rulebox{biber}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{biber}, the backend bibliography processor for \rbox{biblatex}, on the corresponding base name of the \mtbox{currentFile()} reference (i.e, the name without the associated extension) as a string.
+\item[\rulebox{biber}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{biber}, the backend bibliography processor for \rbox{biblatex}, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string.
 
 \begin{description}
 \item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
@@ -90,7 +90,7 @@ The best solution to avoid possible future name conflicts, according to the Imag
 % TODO
 \end{codebox}
 
-\item[\rulebox{bibtex8}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{bibtex8}, an enhanced, portable C version of \rbox{bibtex}, on the corresponding base name of the \mtbox{currentFile()} reference (i.e, the name without the associated extension) as a string. It is important to note that this tool can read a character set file containing encoding details.
+\item[\rulebox{bibtex8}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{bibtex8}, an enhanced, portable C version of \rbox{bibtex}, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string. It is important to note that this tool can read a character set file containing encoding details.
 
 \begin{description}
 \item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
@@ -100,7 +100,7 @@ The best solution to avoid possible future name conflicts, according to the Imag
 % TODO
 \end{codebox}
 
-\item[\rulebox{bibtexu}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{bibtexu} program, an enhanced version of \rbox{bibtex} with Unicode support and language features, on the corresponding base name of the \mtbox{currentFile()} reference (i.e, the name without the associated extension) as a string.
+\item[\rulebox{bibtexu}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{bibtexu} program, an enhanced version of \rbox{bibtex} with Unicode support and language features, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string.
 
 \begin{description}
 \item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
@@ -110,7 +110,7 @@ The best solution to avoid possible future name conflicts, according to the Imag
 % TODO
 \end{codebox}
 
-\item[\rulebox{bibtex}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{bibtex} program, a reference management software, on the corresponding base name of the \mtbox{currentFile()} reference (i.e, the name without the associated extension) as a string.
+\item[\rulebox{bibtex}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{bibtex} program, a reference management software, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string.
 
 \begin{description}
 \item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
@@ -130,6 +130,35 @@ The best solution to avoid possible future name conflicts, according to the Imag
 When in doubt, always remember that the \opbox{{-}dry-run} command line option is your friend! As seen in Section~\ref{foo}, on page~\pageref{foo}, this option makes \arara\ go through all the motions of running tasks and subtasks, but with no actual calls. It is a very useful feature for testing the sequence of removal commands without actually losing your files! Also, as good practice, always write plain, simple, understandable \rbox{clean} directives and use as many as needed in your \TeX\ documents.
 \end{messagebox}
 \end{description}
+
+\item[\rulebox{csplain}{Paulo Cereda}] This rule runs the \rbox{csplain} engine, a conservative extension of Knuth's plain \TeX\ with direct processing characters and hyphenation patterns for Czech and Slovak, on the provided \mtbox{currentFile} reference.
+
+\begin{description}
+\item[\abox{interaction}] This option alters the underlying engine behaviour. When such option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
+
+\begin{description}
+\item[\povalue{batchmode}] In this mode, nothing is printed on the terminal, and errors are scrolled as if the \rbox{return} key is hit at every error. Missing files that \TeX\ tries to input or request from keyboard input cause the job to abort.
+
+\item[\povalue{nonstopmode}] In this mode, the diagnostic message will appear on the terminal, but there is no possibility of user interaction just like in batch mode, previously described.
+
+\item[\povalue{scrollmode}] In this mode, as the name indicates, \TeX\ will stop only for missing files to input or if proper keyboard input is necessary. \TeX\ fixes errors itself.
+
+\item[\povalue{errorstopmode}] In this mode, \TeX\ will stop at each error, asking for proper user intervention. This is the most user interactive mode available.
+\end{description}
+
+\item[\rpsbox{shell}] This option sets whether the possibility of running underlying system commands from within \TeX\ is activated.
+
+\item[\rpsbox{synctex}] This option sets whether \rbox{synctex}, an input and output synchronization feature that allows navigation from source to typeset material and vice versa, available in most \TeX\ engines, is actived.
+
+\item[\rpsbox{draft}] This option sets whether the draft mode, i.e, a mode that produces no output, so the engine can check the syntax, is activated.
+
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% TODO
+\end{codebox}
+
 \end{description}
 
 
