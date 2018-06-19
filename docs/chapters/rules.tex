@@ -5,10 +5,31 @@
 \arara\ ships with a pack of default rules, placed inside a special subdirectory named \abox[araracolour]{rules/} inside another special directory named \abox[araracolour]{ARARA\_HOME} (the place where our tool is installed). This chapter introduces the official rules, including proper listings and descriptions of associated parameters whenever applied. Note that such rules work out of the shelf, without any special installation, configuration or modification.
 
 \begin{messagebox}{Can my rule be distributed within the official pack?}{araracolour}{\icok}{white}
+% TODO fix reference
 As seen in Section~\ref{foo}, on page~\pageref{foo}, the default rule path can be extended to include a list of directories in which our tool should search for rules. However, if you believe your rule is comprehensive enough and deserves to be in the official pack, please contact us! We will be more  than happy to discuss the inclusion of your rule in forthcoming updates.
 \end{messagebox}
 
 \begin{description}
 \item[\rulebox{animate}{Chris Hughes, Paulo Cereda}]
 This rule creates an animated \rbox{gif} file from the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{pdf} suffix, using the \rbox{convert} command line utility from the ImageMagick suite.
+
+\begin{description}
+\item[\rpbox{delay}{10}] This option regulates the number of ticks before the display of the next image sequence, acting as a pause between still frames.
+
+\item[\rpbox{loop}{0}] This option regulates the number of repetions for the animation. When set to zero, the animation repeats itself an infinite number of times.
+
+\item[\rpbox{density}{300}] This option specifies the horizontal and vertical canvas resolution while rendering vector formats into a proper raster image.
+
+\item[\rpbox{program}{convert}] This option specifies the command utility path as a means to avoid potential clashes with underlying operating system commands.
+
+\begin{messagebox}{Microsoft Windows woes}{attentioncolour}{\icattention}{black}
+\setlength{\parskip}{1em}
+According to the \href{http://www.imagemagick.org/Usage/windows/}{ImageMagick website}, the Windows installation routine adds the program directory to the system path, such that one can call command line tools directly from the command prompt, without providing a path name. However, \rbox{convert} is also the name of Windows system tool, located in the system directory, which converts file systems from one format to another.
+
+The best solution to avoid possible future name conflicts, according to the ImageMagick team, is to call such command line tools by their full path in any script. Therefore, the \rbox{convert} rule provides the \abox{program} option for this specific scenario.
+\end{messagebox}
+
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\end{description}
+
 \end{description}
