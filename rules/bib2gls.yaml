@@ -94,7 +94,7 @@ arguments:
 
            foreach (element : parameters.packages)
            {
-              element.add(0, '--packages');
+              elements.add('--packages');
               elements.add(element);
            }
 
@@ -114,7 +114,7 @@ arguments:
 
            foreach (element : parameters.ignore)
            {
-              element.add(0, '--ignore-packages');
+              elements.add('--ignore-packages');
               elements.add(element);
            }
 
@@ -134,7 +134,7 @@ arguments:
 
            foreach (element : parameters.custom)
            {
-              element.add(0, '--custom-packages');
+              elements.add('--custom-packages');
               elements.add(element);
            }
 
@@ -166,7 +166,7 @@ arguments:
           return elements;
         }
         else {
-            throwError('I was expecting mapformats: [ [<label>, <op>, <value>], ..., [<label>, <op>, <value>] ].');
+            throwError('I was expecting mapformats: [ [<label>, <value>], ..., [<label>, <value>] ].');
         }
     }
 - identifier: options
