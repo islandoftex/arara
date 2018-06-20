@@ -485,7 +485,25 @@ spreadsheet import functions also use this setting.
 % TODO
 \end{codebox}
 
-\item[\rulebox{makeglossarieslite}{Marco Daniel, Nicola Talbot, Paulo Cereda}]
+\item[\rulebox{makeglossarieslite}{Marco Daniel, Nicola Talbot, Paulo Cereda}] This rule runs \rbox{makeglossaries-lite}, a lightweight Lua script designed for use with \TeX\ documents that work with the \rbox{glossaries} package. All the information required to be passed to the relevant indexing application should also be contained in the auxiliary file. The script takes the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as mandatory argument.
+
+\begin{description}
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual script call. An error is thrown if any data structure other than a proper list is provided as value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% TODO
+\end{codebox}
+
+\item[\rulebox{makeglossaries}{Marco Daniel, Nicola Talbot, Paulo Cereda}] This rule runs \rbox{makeglossaries}, an efficient Perl script designed for use with \TeX\ documents that work with the \rbox{glossaries} package. All the information required to be passed to the relevant indexing application should also be contained in the auxiliary file. The script takes the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as mandatory argument.
+
+\begin{description}
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual script call. An error is thrown if any data structure other than a proper list is provided as value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% TODO
+\end{codebox}
 
 \end{description}
 
