@@ -369,6 +369,39 @@ spreadsheet import functions also use this setting.
 % TODO
 \end{codebox}
 
+\item[\rulebox{latexmk}{Marco Daniel, Brent Longborough, Paulo Cereda}] This rule runs \rbox{latexmk}, a fantastic command line tool for fully automated \TeX\ document generation, on the provided \mtbox{currentFile} reference.
+
+\begin{description}
+\item[\abox{clean}] This option, as the name indicates, removes all temporary files generated after a sequence of intermediate calls for document generation. Two possible values are available:
+
+\begin{description}
+\item[\povalue{all}] This value, as the name indicates, removes all temporary, intermediate files, as well as resulting, final formats such as PostScript and Portable Document File. Only relevant source files are kept.
+
+\item[\povalue{partial}] This value, as the name indicates, removes all temporary, intermediate files and keeps the resulting, final formats such as PostScript and Portable Document File.
+\end{description}
+
+\item[\abox{engine}] This option, as the name indicates, sets the underlying \TeX\ engine of \rbox{latexmk} to be used for the compilation sequence. Possible values are:
+
+\begin{description}
+\item[\povalue{latex}] This value, as the name indicates, sets the underlying \TeX\ engine of the script to \rbox{latex} for the compilation sequence.
+
+\item[\povalue{pdflatex}] This value, as the name indicates, sets the underlying \TeX\ engine of the script to \rbox{pdflatex} for the compilation sequence.
+
+\item[\povalue{xelatex}] This value, as the name indicates, sets the underlying \TeX\ engine of the script to \rbox{xelatex} for the compilation sequence.
+
+\item[\povalue{lualatex}] This value, as the name indicates, sets the underlying \TeX\ engine of the script to \rbox{lualatex} for the compilation sequence.
+\end{description}
+
+\item[\abox{program}] This option, as the name suggests, sets the \TeX\ engine according to the provided value. It is important to note that this option has higher priority over \abox{engine} values, so the latter will be discarded.
+
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual script call. An error is thrown if any data structure other than a proper list is provided as value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% TODO
+\end{codebox}
+
+
 
 \end{description}
 
