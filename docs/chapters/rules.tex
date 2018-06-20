@@ -159,8 +159,76 @@ When in doubt, always remember that the \opbox{{-}dry-run} command line option i
 % TODO
 \end{codebox}
 
-\item[\rulebox{datatooltk}{Nicola Talbot, Paulo Cereda}]
+\item[\rulebox{datatooltk}{Nicola Talbot, Paulo Cereda}] This rule runs \rbox{datatooltk}, an application that cre­ates \rbox{data­tool} databases in raw for­mat from several structured data formats, in batch mode.
 
+\begin{description}
+\item[\abox{output}] This option provides the datase name to be saved as output. To guard against accidentally overwriting a document file, \rbox{datatooltk} now forbids the \rbox{tex} extension for output files.
+
+\item[\abox{csv}] This option, as the name indicates, imports data from the \rbox{csv} file reference provided as a plain string value.
+
+\item[\abox{sep}] This option specifies the character used to separate values in the \rbox{csv} file. Defaults to a comma.
+
+\item[\abox{delim}] This option specifies the character used to delimit values in the \rbox{csv} file. Defaults to a double quote.
+
+\item[\abox{name}] This option, as the name indicates, sets the label reference of the newly created database according to the provided value.
+
+\item[\abox{sql}] This option imports data from an SQL database where the provided value refers to a proper \rbox{select} SQL statement.
+
+\item[\abox{sqldb}] This option, as the name indicates, sets the name of the SQL database according to the provided value.
+
+\item[\abox{sqluser}] This option, as the name indicates, sets the name of the SQL user according to the provided value.
+
+\item[\rpbox{noconsole}{gui}] This action dictates the password request action if such information was not provided earlier. If there is no console available, the action is determined by the following values:
+
+\begin{description}
+\item[\povalue{error}] As the name indicates, this action issues an error when no password was previously provided through the proper option.
+
+\item[\povalue{stdin}] This action requests the password via the standard input stream, which is less secure than using a console.
+
+\item[\povalue{gui}] This action displays a dialog box in which the user can enter the password for the SQL database.
+\end{description}
+
+\item[\abox{probsoln}] This option, as the name indicates, imports data in the \rbox{probsoln} format from the file name provided as value.
+
+\item[\abox{input}] This option, as the name indicates, imports data in the \rbox{datatool} format from the file name provided as value.
+
+\item[\abox{sort}] This option, as the name indicates, sorts the database according to the column whose label is provided as value.
+
+\item[\abox{sortlocale}] This option, as the name indicates, sorts the database according to alphabetical order rules of the locale provided as value.
+
+\item[\rpsbox{sortcase}] This option sets whether strings will be sorted using case sensitive comparison. The default behaviour is case insensitive.
+
+\item[\abox{seed}] This option, as the name indicates, sets the random generator seed to the provided value. The seed is cleared if an empty value is provided.
+
+\item[\rpsbox{shuffle}] This option sets whether the database will be properly shuffled. Shuffle is always performed after sort, regardless of the option order.
+
+\item[\rpsbox{csvheader}] This option sets whether the \rbox{csv} file has a header row. The
+spreadsheet import functions also use this setting.
+
+\item[\rpsbox{debug}] This option, as the name indicates, sets whether the debug mode of \rbox{datatooltk} is activated. The debug mode is disabled by default.
+
+\item[\rpsbox{owneronly}] This option sets whether read and write permissions when saving \rbox{dbtex} files should be defined for the owner only. This option has no effect on some operating systems.
+
+\item[\rpsbox{maptex}] This option sets whether \TeX\ special characters will be properly mapped when importing data from \rbox{csv} files or SQL databases.
+
+\item[\abox{xls}] This option, as the name indicates, imports data from a Microsoft Excel \rbox{xls} file reference provided as a plain string value.
+
+\item[\abox{ods}] This option, as the name indicates, imports data from an Open Document Spreadsheet \rbox{ods} file reference provided as a plain string value.
+
+\item[\abox{sheet}] This option specifies the sheet to select from the Excel workbook or Open Document Spreadsheet. This may either be an index or the name of the sheet.
+
+\item[\abox{filterop}] This option specifies the logical operator to be associated with a given filter. Filtering is always performed. after sorting and shuffling. Possible values are:
+
+\begin{description}
+\item[\povalue{or}\hfill\hphantom{w}] This value, as the name indicates, use the logical \rbox{or} operator when filtering. This is the default behaviour. Note that this value has no effect if only one filter is supplied.
+
+\item[\povalue{and}] This value, as the name indicates, use the logical \rbox{and} operator when filtering. Note that this value has no effect if only one filter is supplied.
+\end{description}
+
+\item[\abox{filters}] This option takes a list and sets up a sequence of filters. Each element from the provided list must be another list of exactly three entries representing a key, an operator and a value, respectively.
+
+\item[\abox{truncate}] This option truncates the database to the number of rows provided as value. Truncation is always performed after any sorting, shuffling and filtering, but before column removal.
+\end{description}
 \end{description}
 
 
