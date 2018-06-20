@@ -234,10 +234,10 @@ spreadsheet import functions also use this setting.
 % TODO
 \end{codebox}
 
-\item[\rulebox{dvipdfmx}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{dvipdfmx}, an extended version of \rbox{dvipdfm} cre­ated to sup­port multibyte char­ac­ter en­cod­ings and large char­ac­ter sets for East Asian lan­guages, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{dvi} suffix, generating a PostScript \rbox{ps} file.
+\item[\rulebox{dvipdfmx}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{dvipdfmx}, an extended version of \rbox{dvipdfm} cre­ated to sup­port multibyte char­ac­ter en­cod­ings and large char­ac­ter sets for East Asian lan­guages, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{dvi} suffix, generating a Portable Document Format \rbox{pdf} file.
 
 \begin{description}
-\item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{ps} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as default value.
+\item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{pdf} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as default value.
 
 \item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
 \end{description}
@@ -246,10 +246,10 @@ spreadsheet import functions also use this setting.
 % TODO
 \end{codebox}
 
-\item[\rulebox{dvipdfm}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{dvipdfm}, a command line utility that translates Device Independent file formats into PostScript, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{dvi} suffix, generating a PostScript \rbox{ps} file.
+\item[\rulebox{dvipdfm}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{dvipdfm}, a command line utility for file format translation, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{dvi} suffix, generating a Portable Document Format \rbox{pdf} file.
 
 \begin{description}
-\item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{ps} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as default value.
+\item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{pdf} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as default value.
 
 \item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
 \end{description}
@@ -266,6 +266,18 @@ spreadsheet import functions also use this setting.
 \item[\abox{options1}] This option, as the name indicates, takes a list of raw command line options and appends it to the \rbox{dvips} program call. An error is thrown if any data structure other than a proper list is provided as value.
 
 \item[\abox{options2}] This option, as the name indicates, takes a list of raw command line options and appends it to the \rbox{ps2pdf} program call. An error is thrown if any data structure other than a proper list is provided as value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% TODO
+\end{codebox}
+
+\item[\rulebox{dvips}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{dvips} on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{dvi} suffix, generating a PostScript \rbox{ps} file.
+
+\begin{description}
+\item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{ps} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as default value.
+
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}

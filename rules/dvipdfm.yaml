@@ -14,7 +14,7 @@ commands:
   command: >
     @{
         base = getBasename(file).concat('.dvi');
-        out = getBasename(output).concat('.ps');
+        out = getBasename(output).concat('.pdf');
         return getCommand('dvipdfm', base, '-o', out, options);
     }
 arguments:
