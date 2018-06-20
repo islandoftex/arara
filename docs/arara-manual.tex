@@ -16,21 +16,31 @@
  \protect\glsabbrvfont{\the\glsshorttok} (\the\glslongtok)%
 }
 
+% No automated sorting. The list is just in order of definition.
+% If the list gets too long, we can switch to using bib2gls.
+ \newabbreviation
+ [description={an organisation that develops and promotes Internet standards}]
+ {IETF}{IETF}{Internet Engineering Task Force}
+
+ \newabbreviation
+ [description={a hybrid, dynamic, statically typed, embeddable
+ expression language and runtime for the Java platform}]
+ {MVEL}{MVEL}{MVFLEX Expression Language}
+
 \newabbreviation
  [description={a simple computer programming environment that takes
   a single expression (input), evaluates it and results the result}]
  {REPL}{REPL}{Read--Eval--Print Loop}
 
 \newabbreviation
+ [description={a database language}]
+ {SQL}{SQL}{Structured Query Language}
+
+\newabbreviation
  [description={human-friendly data, commonly used for configuration
 files but also used for data storage or transmission}]
  {YAML}{YAML}{YAML Ain't Markup Language}
  
- \newabbreviation
- [description={a hybrid, dynamic, statically typed, embeddable
- expression language and runtime for the Java platform}]
- {MVEL}{MVEL}{MVFLEX Expression Language}
-
 \begin{document}
 
 \begin{titlingpage}
