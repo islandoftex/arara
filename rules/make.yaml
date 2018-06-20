@@ -13,17 +13,12 @@ commands:
 - name: The Make program
   command: >
     @{
-        if (target != '') {
-            if (isList(target)) {
-                tasks = [];
-                for (entry : target) {
-                    tasks.add(getCommand('make', entry));
-                }
-                return tasks;
+        if (isNotEmpty(target)) {
+            tasks = [];
+            for (entry : target) {
+                tasks.add(getCommand('make', entry));
             }
-            else {
-                return getCommand('make', target);
-            }
+            return tasks;
         }
         else {
             return getCommand('make');
@@ -31,4 +26,12 @@ commands:
     }
 arguments:
 - identifier: target
-  flag: "@{parameters.target}"
+  flag: >
+    @{
+       if (isList(parameters.target)) {
+           return parameters.target;
+       }
+       else {
+           throwError('I was expecting a list of targets.');
+       }
+    }
