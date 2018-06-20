@@ -517,6 +517,34 @@ spreadsheet import functions also use this setting.
 % TODO
 \end{codebox}
 
+\item[\rulebox{makeindex}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{makeindex}, a gen­eral pur­pose hi­er­ar­chical in­dex gen­er­a­tor, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{idx} suffix, generating an index as a special \rbox{ind} file.
+
+\begin{description}
+\item[\abox{style}] This option, as the name indicates, sets the underlying index style file. Make sure to provide a valid \rbox{ist} file when using this option.
+
+\item[\rpsbox{german}] This option, as the name indicates, sets whether German word ordering should be used when generating the index, accordingo to the rules set forth in DIN 5007.
+
+\item[\abox{order}] This option, as the name indicates, sets the default ordering scheme for the \rbox{makeindex} program. Two possible values are available:
+
+\begin{description}
+\item[\povalue{letter}] This value, as the name indicates, activates the letter ordering scheme. In such scheme, a blank space does not precede any letter in the alphabet. 
+
+\item[\povalue{word}] This value, as the name indicates, activates the word ordering scheme. In such scheme, a blank space precedes any letter in the alphabet.
+\end{description}
+
+\item[\rpbox{input}{idx}] This option, as the name indicates, sets the default extension for the input file, according to the provided value. Later, such value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
+
+\item[\rpbox{output}{ind}] This option, as the name indicates, sets the default extension for the output file, according to the provided value. Later, such value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
+
+\item[\rpbox{log}{ilg}] This option, as the name indicates, sets the default extension for the log file, according to the provided value. Later, such value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
+
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% TODO
+\end{codebox}
+
 \item[\rulebox{nomencl}{Marco Daniel, Nicola Talbot, Paulo Cereda}] This rule runs \rbox{makeindex} in order to automatically generate a nomenclature list from \TeX\ documents that work with the \rbox{nomencl} package. The program itself is a gen­eral pur­pose hi­er­ar­chical in­dex gen­er­a­tor and takes the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{nlo} suffix and a special style file in order to generate the nomenclature list as a special \rbox{nls} file.
 
 \begin{description}
