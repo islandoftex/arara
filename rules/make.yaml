@@ -16,12 +16,12 @@ commands:
         if (isNotEmpty(target)) {
             tasks = [];
             for (entry : target) {
-                tasks.add(getCommand('make', entry));
+                tasks.add(getCommand('make', entry, options));
             }
             return tasks;
         }
         else {
-            return getCommand('make');
+            return getCommand('make', options);
         }
     }
 arguments:
@@ -34,4 +34,14 @@ arguments:
        else {
            throwError('I was expecting a list of targets.');
        }
+    }
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.');
+        }
     }
