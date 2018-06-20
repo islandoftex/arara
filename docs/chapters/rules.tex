@@ -505,6 +505,30 @@ spreadsheet import functions also use this setting.
 % TODO
 \end{codebox}
 
+\item[\rulebox{make}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{make}, a build automation tool that automatically builds executable programs and libraries from source code, according to a special file which specifies how to derive the target program.
+
+\begin{description}
+\item[\abox{targets}] This option takes a list of targets. Note that \rbox{make} updates a target if it depends on files that have been modified since the target was last modified, or if the target does not exist.
+
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% TODO
+\end{codebox}
+
+\item[\rulebox{nomencl}{Marco Daniel, Nicola Talbot, Paulo Cereda}] This rule runs \rbox{makeindex} in order to automatically generate a nomenclature list from \TeX\ documents that work with the \rbox{nomencl} package. The program itself is a gen­eral pur­pose hi­er­ar­chical in­dex gen­er­a­tor and takes the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{nlo} suffix and a special style file in order to generate the nomenclature list as a special \rbox{nls} file.
+
+\begin{description}
+\item[\rpbox{style}{nomencl.ist}] This option, as the name indicates, sets the underlying index style file. The default value is set to the one automatically provided by the \rbox{nomencl} package, so it is highly recommended to not override it.
+
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% TODO
+\end{codebox}
+
 \end{description}
 
 
