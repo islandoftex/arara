@@ -32,8 +32,6 @@ arguments:
           throwError('You provided an invalid value for trace.');
       }
     }
-- identifier: ttrace
-  flag: "@{isTrue(parameters.ttrace, '-tt')}"
 - identifier: screenlog
   flag: "@{isTrue(parameters.screenlog, '-sl')}"
 - identifier: modifylinebreaks
