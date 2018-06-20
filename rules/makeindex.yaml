@@ -13,25 +13,51 @@ commands:
 - name: The MakeIndex software
   command: >
     @{
-        value = getBasename(file).concat('.').concat(extension);
-        return getCommand('makeindex', german, style, letter, options, value);
+        base = getBasename(file);
+        
+        infile = base.concat('.').concat(input);
+        outfile = [ '-o', base.concat('.').concat(output) ];
+        logfile = [ '-t', base.concat('.').concat(log) ];
+        
+        return getCommand('makeindex', german, style, order, options,
+                          logfile, infile, outfile);
     }
 arguments:
+- identifier: input
+  flag: >
+    @{
+      parameters.input
+    }
+  default: idx
+- identifier: output
+  flag: >
+    @{
+      parameters.output
+    }
+  default: ind
+- identifier: log
+  flag: >
+    @{
+      parameters.log
+    }
+  default: ilg
 - identifier: german
   flag: >
     @{
         isTrue(parameters.german, '-g')
     }
-- identifier: letter
+- identifier: order
   flag: >
     @{
-        isTrue(parameters.letter, '-l')
+        if ([ 'letter', 'word' ].contains(parameters.order)) {
+            return isTrue(parameters.order == 'letter', '-l', '');
+        }
+        else {
+            throwError('The provided order is invalid.');
+        }
     }
 - identifier: style
   flag: "@{ [ '-s', parameters.style ] }"
-- identifier: extension
-  flag: "@{parameters.extension}"
-  default: idx
 - identifier: options
   flag: >
     @{
