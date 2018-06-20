@@ -23,7 +23,15 @@ arguments:
 - identifier: overwrite
   flag: "@{isTrue(parameters.overwrite, '-w')}"
 - identifier: trace
-  flag: "@{isTrue(parameters.trace, '-t')}"
+  flag: >
+    @{
+      if ([ 'default', 'complete' ].contains(parameters.trace)) {
+          return isTrue(parameters.trace == 'default', '-t', '-tt');
+      }
+      else {
+          throwError('You provided an invalid value for trace.');
+      }
+    }
 - identifier: ttrace
   flag: "@{isTrue(parameters.ttrace, '-tt')}"
 - identifier: screenlog

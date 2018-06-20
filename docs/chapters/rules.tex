@@ -316,6 +316,20 @@ spreadsheet import functions also use this setting.
 \item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual \TeX\ engine call. An error is thrown if any data structure other than a proper list is provided as value.
 \end{description}
 
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% TODO
+\end{codebox}
+
+% TODO fix reference
+\item[\rulebox{halt}{Heiko Oberdiek, Paulo Cereda}] This rule, as the name suggests, calls the \rbox{halt} trigger, which stops the current interpretation workflow, such that subsequent directives are ignored. This rule contains no associated options. Please refer to Section~\ref{foo}, on page~\pageref{foo}, for more information on triggers.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% TODO
+\end{codebox}
+
+\item[\rulebox{indent}{Chris Hughes, Paulo Cereda}] This rule runs \rbox{latexindent}, a Perl script that indents \TeX\ files according to an indentation scheme, on the provided \mtbox{currentFile} reference. Environments, including those with alignment delimiters, and commands, including those that can split braces and brackets across lines, are usually handled correctly by the script.
+
+
 \end{description}
 
 
