@@ -641,7 +641,13 @@ spreadsheet import functions also use this setting.
 % TODO
 \end{codebox}
 
-\item[\rulebox{pdftk}{Nicola Talbot, Paulo Cereda}]
+\item[\rulebox{ps2pdf}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{ps2pdf}, a command line utility that converts PostScript to Portable Document File, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{ps} suffix.
+
+\begin{description}
+\item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{pdf} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as default value.
+
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\end{description}
 
 \end{description}
 
