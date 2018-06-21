@@ -10,13 +10,32 @@ authors:
 - Francesco Endrici
 - Paulo Cereda
 commands:
-- name: The SongIDX program
+- name: The SongIDX Lua script
   command: >
     @{
         infile = getBasename(input).concat('.sxd');
-        return getCommand('songidx', infile);
+        return getCommand('texlua', script, options, infile);
     }
 arguments:
 - identifier: input
-  flag: '@{parameters.input}'
+  flag: >
+    @{
+        parameters.input
+    }
   required: true
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.');
+        }
+    }
+- identifier: script
+  flag: >
+    @{
+        parameters.script
+    }
+  default: songidx.lua
