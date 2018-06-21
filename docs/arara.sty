@@ -53,6 +53,7 @@
 \RequirePackage{kmath}
 \RequirePackage{bookman}
 \RequirePackage[regular]{sourcecodepro}
+\RequirePackage{adforn}
 
 \RequirePackage[
   backend=biber,
@@ -440,7 +441,9 @@
 \renewcommand{\booknumfont}{\huge\normalfont\em}
 \renewcommand{\printpartname}{\centering\includegraphics[scale=.3]{../logos/bird.pdf}\par\partnamefont \textcolor{araracolour}{part}}
 \renewcommand{\printpartnum}{\partnumfont\textcolor{araracolour}{\numtoname{\c@part}}}
-%\renewcommand{\cftpartnumwidth}{25pt}
+\cftpagenumbersoff{part}
+\renewcommand\partnumberline[1]{\hfil\hspace\@tocrmarg {\normalfont\normalsize\adforn{16}}\quad#1\hspace{0.5em}---\hspace{0.5em}}
+\renewcommand*{\cftpartafterpnum}{\quad\adforn{44}}
 
 \renewcommand{\midpartskip}{\par\vskip 3.0\onelineskip}
 
