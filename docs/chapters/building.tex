@@ -2,6 +2,35 @@
 \chapter{Building from source}
 \label{chap:buildingfromsource}
 
+\arara\ is a Java application licensed under the \href{http://www.opensource.org/licenses/bsd-license.php}{New BSD License}, a verified GPL-compatible free software license, and the source code is available in the project repository at \href{https://github.com/cereda/arara}{GitHub}. This chapter provides detailed instructions on how to build our tool from source.
+
+\section{Requirements}
+\label{sec:requirements}
+
+In order to build our tool from source, we need to ensure that our development environment has the minimum requirements for a proper compilation. Make sure the following items are contemplated:
+
+\begin{itemize}[label={\cbyes{-2}}]
+\item On account of our project being hosted at \href{https://github.com}{GitHub}, an online source code repository, we highly recommend the installation of \rbox{git}, a version control system for tracking changes in computer files and coordinating work on those files among multiple people. Alternatively, you can directly obtain the source code by requesting a \href{https://github.com/cereda/arara/archive/master.zip}{source code download} in the repository. In order to check if \rbox{git} is available in your operating system, run the following command in the terminal (version numbers might vary):
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ git --version
+git version 2.17.1
+\end{codebox}
+
+Please refer to \href{https://git-scm.com/}{project website} in order to obtain specific installation instructions for your operating system. In general, most recent Unix systems have \rbox{git} installed out of the shelf.
+
+\item Our tool is written in the Java programming language, so we need a proper Java Development Kit,  a collection of programming tools for the Java platform. Our source code is known to be compliant with several vendors, including Oracle, OpenJDK, and Azul Systems. In order to check if your operating system has the proper tools, run the following command in the terminal (version numbers might vary):
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ javac -version
+javac 1.8.0_171
+\end{codebox}
+
+The previous command, as the name suggests, refers to the \rbox{javac} tool, which is the Java compiler itself. The most common Java Development Kit out there is from \href{http://www.oracle.com/technetwork/java/javase/downloads/index.html}{Oracle}. However, several Linux distributions (as well as some developers, yours truly included) favour the OpenJDK vendor, so your milleage may vary. Please refer to the corresponding website of the vendor of your choice in order to obtain specific installation instructions for your operating system.
+
+
+\end{itemize}
+
 %\begin{}{Source file}{teal}{\icnote}{white}{}
 %\end{ncodebox}
 
