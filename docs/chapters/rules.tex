@@ -641,12 +641,37 @@ spreadsheet import functions also use this setting.
 % TODO
 \end{codebox}
 
-\item[\rulebox{ps2pdf}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{ps2pdf}, a command line utility that converts PostScript to Portable Document File, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{ps} suffix.
+\item[\rulebox{ps2pdf}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{ps2pdf}, a tool that converts PostScript to Portable Document File, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{ps} suffix.
 
 \begin{description}
 \item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{pdf} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as default value.
 
 \item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% TODO
+\end{codebox}
+
+% TODO fix reference
+\item[\rulebox{sketch}{Sergey Ulyanov, Paulo Cereda}] This rule runs \rbox{sketch}, a system for producing line drawings of solid objects and scenes, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{sk} suffix. Note that one needs to add support for this particular file type, as seen in Section~\ref{foo}, on page~\pageref{foo}.
+
+\begin{description}
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% TODO
+\end{codebox}
+
+\item[\rulebox{songidx}{Francesco Endrici, Paulo Cereda}] This rule runs \rbox{songidx}, a song index generation script for the \rbox{songs} package, on the file reference provided as parameter, generating a proper index as a special \rbox{sbx} file. It is very important to observe that, at the time of writing, this script is not available out of the shelf in \TeX\ Live or MiK\TeX\ distributions, so a manual deployment is required. The script execution is performed by the underlying \rbox{texlua} interpreter.
+
+\begin{description}
+\item[\abox{input}] This required option, as the name indicates, sets the input name for the song index file specified within the \TeX\ document. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used.
+
+\item[\rpbox{script}{songidx.lua}] This option, as the name indicates, sets the script path. The default value is set to the script name, so either make sure \rbox{songidx.lua} is located in the same directory of your \TeX\ document or provide the correct location (preferably a full path).
+
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual script call. An error is thrown if any data structure other than a proper list is provided as value.
 \end{description}
 
 \end{description}
