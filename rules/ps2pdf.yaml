@@ -13,9 +13,9 @@ commands:
 - name: The PS2PDF program
   command: >
     @{
-        base = getBasename(file).concat('.ps');
-        out = getBasename(output).concat('.pdf');
-        return getCommand('ps2pdf', options, base, out);
+        infile = getBasename(file).concat('.ps');
+        outfile = getBasename(output).concat('.pdf');
+        return getCommand('ps2pdf', options, infile, outfile);
     }
 arguments:
 - identifier: output
