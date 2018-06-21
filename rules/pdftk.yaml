@@ -13,7 +13,9 @@ commands:
 - name: PDFtk
   command: >
    @{
-      return getCommand('pdftk', file, input_pw, action, options, output, encrypt, allow, owner_pw, user_pw, flatten, drop_xfa, keep, verbose, ask)
+      return getCommand('pdftk', file, input_pw, action, options, output,
+                        encrypt, allow, owner_pw, user_pw, flatten,
+                        drop_xfa, keep, verbose, ask);
     }
 arguments:
 - identifier: action
