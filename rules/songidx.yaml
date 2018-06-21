@@ -13,8 +13,8 @@ commands:
 - name: The SongIDX program
   command: >
     @{
-        value = getBasename(input).concat('.sxd');
-        return getCommand('songidx', value);
+        infile = getBasename(input).concat('.sxd');
+        return getCommand('songidx', infile);
     }
 arguments:
 - identifier: input
