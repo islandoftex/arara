@@ -12,7 +12,8 @@ commands:
 - name: The Velocity engine
   command: >
     @{
-        mergeVelocityTemplate(isEmpty(input, reference, toFile(input)), toFile(output), context);
+        mergeVelocityTemplate(isEmpty(input, reference, toFile(input)),
+                              toFile(output), context);
         return true;
     }
 arguments:
