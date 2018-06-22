@@ -28,11 +28,6 @@ arguments:
     @{
         isTrue(parameters.quiet, '-q')
     }
-- identifier: debug
-  flag: >
-    @{
-        [ '-d', parameters.debug ]
-    }
 - identifier: modules
   flag: >
     @{
