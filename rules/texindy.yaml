@@ -56,7 +56,12 @@ arguments:
 - identifier: markup
   flag: >
     @{
-       [ '-I', parameters.markup ]
+       if ([ 'latex', 'xelatex', 'omega' ].contains(parameters.markup)) {
+           return [ '-I', parameters.markup ];
+       }
+       else {
+           throwError('The provided markup is invalid.');
+       }
     }
 - identifier: input
   flag: >
