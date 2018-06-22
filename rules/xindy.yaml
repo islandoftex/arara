@@ -8,13 +8,19 @@ identifier: xindy
 name: Xindy
 authors:
 - Nicola Talbot
+- Paulo Cereda
 commands:
 - name: The Xindy software
   command: >
     @{
-        value = getBasename(file).concat('.').concat(extension);
+        base = getBasename(file);
+        
+        infile = base.concat('.').concat(input);
+        outfile = [ '-o', base.concat('.').concat(output) ];
+        logfile = [ '-t', base.concat('.').concat(log) ];
+        
         return getCommand('xindy', quiet, debug, markup, modules,
-         codepage, language, log, output, options, value);
+               codepage, language, logfile, outfile, options, infile);
     }
 arguments:
 - identifier: quiet
@@ -23,54 +29,58 @@ arguments:
         isTrue(parameters.quiet, '-q')
     }
 - identifier: debug
-  flag: "@{ [ '-d', parameters.debug ] }"
+  flag: >
+    @{
+        [ '-d', parameters.debug ]
+    }
 - identifier: modules
   flag: >
     @{
         elements = [];
-
-        if (isList(parameters.modules))
-        {
-          foreach (element : parameters.modules)
-          {
-            if (element.equals("basename"))
-            {
-               elements.add(['-M', getBasename(file)]);
+        if (isList(parameters.modules)) {
+            foreach (module : parameters.modules) {
+                elements.add('-M');
+                elements.add(module);
             }
-            else
-            {
-               elements.add(['-M', element]);
-            }
-          }
+            return elements;
         }
-        else 
-        {
-           if (parameters.modules.equals("basename"))
-           {
-              elements.add(['-M', getBasename(file)]);
-           }
-           else
-           {
-              elements.add(['-M', parameters.modules]);
-           }
+        else {
+            throwError('I was expecting a list of options.');
         }
-
-        return elements;
     }
 - identifier: codepage
-  flag: "@{ [ '-C', parameters.codepage ] }"
+  flag: >
+    @{
+        [ '-C', parameters.codepage ]
+    }
 - identifier: language
-  flag: "@{ [ '-L', parameters.language ] }"
-- identifier: extension
-  flag: "@{parameters.extension}"
+  flag: >
+    @{
+       [ '-L', parameters.language ]
+    }
+- identifier: markup
+  flag: >
+    @{
+       [ '-I', parameters.markup ]
+    }
+- identifier: input
+  flag: >
+    @{
+      parameters.input
+    }
   default: idx
 - identifier: output
-  flag: "@{ [ '-o', parameters.output ] }"
+  flag: >
+    @{
+      parameters.output
+    }
+  default: ind
 - identifier: log
-  flag: "@{ [ '-t', parameters.log ] }"
-  default: "@{[ '-t', getBasename(file).concat('.ilg')]}"
-- identifier: markup
-  flag: "@{ [ '-I', parameters.markup ] }"
+  flag: >
+    @{
+      parameters.log
+    }
+  default: ilg
 - identifier: options
   flag: >
     @{
