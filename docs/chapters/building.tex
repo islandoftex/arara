@@ -28,6 +28,21 @@ javac 1.8.0_171
 
 The previous command, as the name suggests, refers to the \rbox{javac} tool, which is the Java compiler itself. The most common Java Development Kit out there is from \href{http://www.oracle.com/technetwork/java/javase/downloads/index.html}{Oracle}. However, several Linux distributions (as well as some developers, yours truly included) favour the OpenJDK vendor, so your milleage may vary. Please refer to the corresponding website of the vendor of your choice in order to obtain specific installation instructions for your operating system.
 
+\item As a means to provide a straightforward and simplified compilation workflow, \arara\ relies on Apache Maven, a software project management and comprehension tool. Based on the concept of a project object model, Maven can manage builds, reporting and documentation from a central piece of information. In order to check if \rbox{mvn}, the Maven binary, is available in your operating system, run the following command in the terminal (version numbers might vary):
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ mvn --version
+Apache Maven 3.5.2 (Red Hat 3.5.2-5)
+Maven home: /usr/share/maven
+Java version: 1.8.0_171, vendor: Oracle Corporation
+Java home: /usr/lib/jvm/java-1.8.0-openjdk-
+    1.8.0.171-4.b10.fc28.x86_64/jre
+Default locale: pt_BR, platform encoding: UTF-8
+OS name: "linux", version: "4.16.16-300.fc28.x86_64",
+    arch: "amd64", family: "unix"
+\end{codebox}
+
+Please refer to \href{https://maven.apache.org/}{project website} in order to obtain specific installation instructions for your operating system. In general, most recent Linux distributions have the Maven binary, as well the proper associated dependencies, available in their corresponding repositories.
 
 \end{itemize}
 
