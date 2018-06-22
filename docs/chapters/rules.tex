@@ -688,7 +688,39 @@ spreadsheet import functions also use this setting.
 % TODO
 \end{codebox}
 
-% TODO texindy
+\item[\rulebox{texindy}{Nicola Talbot, Paulo Cereda}] This rule runs \rbox{texindy}, a variant of the \rbox{xindy} indexing system focused on \LaTeX\ documents, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{idx} suffix, generating an index as a special \rbox{ind} file.
+
+\begin{description}
+\item[\rpsbox{quiet}] This option, as the name indicates, sets whether the tool will output progress messages. It is important to observe that \rbox{texindy} always outputs error messages, regardless of this option.
+
+\item[\abox{codepage}] This option, as the name indicates, specifies the encoding to be used for letter group headings. Additionally, it specifies the encoding used internally for sorting, but that does not matter for the final result.
+
+\item[\abox{language}] This option, as the name indicates, specifies the language that dictates the rules for index sorting. These rules are encoded in a module.
+
+\item[\abox{markup}] This option, as the name indicates, specifies the input markup for the raw index. The following values are available:
+
+\begin{description}
+\item[\povalue{latex}] This value, as the name implies, is emitted by default from the \LaTeX\ kernel, and the raw input is encoded in the \LaTeX\ Internal Character Representation format.
+
+\item[\povalue{xelatex}] This value, as the name implies, acts like the previous \rbox[cyan]{latex} markup option, but without \rbox{inputenc} usage. Raw input is encoded in the UTF-8 format.
+
+\item[\povalue{omega}] This value, as the name implies, acts like the previous \rbox[cyan]{latex} markup option, but with Omega's special notation as encoding for characters not in the ASCII set.
+\end{description}
+
+\item[\abox{modules}] This option, as the name indicates, takes a list of module names. Modules are searched in the usual application path. An error is thrown if any data structure other than a proper list is provided as value.
+
+\item[\rpbox{input}{idx}] This option, as the name indicates, sets the default extension for the input file, according to the provided value. Later, such value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
+
+\item[\rpbox{output}{ind}] This option, as the name indicates, sets the default extension for the output file, according to the provided value. Later, such value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
+
+\item[\rpbox{log}{ilg}] This option, as the name indicates, sets the default extension for the log file, according to the provided value. Later, such value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
+
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% TODO
+\end{codebox}
 
 \item[\rulebox{tex}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{tex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in a device independent format.
 
@@ -806,7 +838,39 @@ spreadsheet import functions also use this setting.
 % TODO
 \end{codebox}
 
-% TODO xindy
+\item[\rulebox{xindy}{Nicola Talbot, Paulo Cereda}] This rule runs \rbox{xindy}, a flexible and powerful indexing system, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{idx} suffix, generating an index as a special \rbox{ind} file.
+
+\begin{description}
+\item[\rpsbox{quiet}] This option, as the name indicates, sets whether the tool will output progress messages. It is important to observe that \rbox{xindy} always outputs error messages, regardless of this option.
+
+\item[\abox{codepage}] This option, as the name indicates, specifies the encoding to be used for letter group headings. Additionally, it specifies the encoding used internally for sorting, but that does not matter for the final result.
+
+\item[\abox{language}] This option, as the name indicates, specifies the language that dictates the rules for index sorting. These rules are encoded in a module.
+
+\item[\abox{markup}] This option, as the name indicates, specifies the input markup for the raw index. The following values are available:
+
+\begin{description}
+\item[\povalue{latex}] This value, as the name implies, is emitted by default from the \LaTeX\ kernel, and the raw input is encoded in the \LaTeX\ Internal Character Representation format.
+
+\item[\povalue{xelatex}] This value, as the name implies, acts like the previous \rbox[cyan]{latex} markup option, but without \rbox{inputenc} usage. Raw input is encoded in the UTF-8 format.
+
+\item[\povalue{omega}] This value, as the name implies, acts like the previous \rbox[cyan]{latex} markup option, but with Omega's special notation as encoding for characters not in the ASCII set.
+\end{description}
+
+\item[\abox{modules}] This option, as the name indicates, takes a list of module names. Modules are searched in the usual application path. An error is thrown if any data structure other than a proper list is provided as value.
+
+\item[\rpbox{input}{idx}] This option, as the name indicates, sets the default extension for the input file, according to the provided value. Later, such value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
+
+\item[\rpbox{output}{ind}] This option, as the name indicates, sets the default extension for the output file, according to the provided value. Later, such value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
+
+\item[\rpbox{log}{ilg}] This option, as the name indicates, sets the default extension for the log file, according to the provided value. Later, such value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
+
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% TODO
+\end{codebox}
 \end{description}
 
 It is highly advisable to browse the relevant documentation about packages and tools described in this chapter as a means to learn more about features and corresponding advanced usage. For \TeX\ Live users, we recommend the use of \rbox{texdoc}, a command line program to find and view documentation. For example, this manual can be viewed through the following command:
