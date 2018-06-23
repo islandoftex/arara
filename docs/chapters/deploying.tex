@@ -12,6 +12,124 @@ Be mindful that, from version 4.0 on, the team decided to not release cross-plat
 \section{Directory structure}
 \label{sec:directorystructure}
 
+% TODO fix reference
+From the early development stages, our tool employs a very straightforward directory structure. In short, we provide the \abox[araracolour]{ARARA\_HOME} alias to the directory path in which the \rbox[araracolour]{arara.jar} Java archive file is located. This particular file is the heart and soul of our tool and dictates the default rule search path, which is a special directory named \abox[araracolour]{rules/} available from the same level. This directory contains all rules specified in the YAML format, as seen in Section~\ref{foo}, on page~\pageref{foo}. The structure overview is presented as follows.
+
+\vspace{1em} 
+
+{\centering\begin{forest}
+for tree={
+  grow'=0,
+  edge={araracolour},
+  anchor=base west
+},
+forked edges,
+[{\abox[araracolour]{ARARA\_HOME}}
+  [{\rbox[araracolour]{arara.jar}}]
+  [{\abox[araracolour]{rules/}},s sep=1mm
+    [{\rbox[araracolour]{animate.yaml}}]
+    [{\rbox[araracolour]{bib2gls.yaml}}]
+    [{\color{araracolour}\ldots},no edge]
+    [{\rbox[araracolour]{xetex.yaml}}]
+    [{\rbox[araracolour]{xindy.yaml}}]
+  ]
+]
+\end{forest}\par}
+
+\vspace{1.4em}
+
+Provided that this specific directory structure is honoured, the tool is ready for use out of the shelf. In fact, the official \arara\ package available in the \href{https://github.com/cereda/arara/releases}{release section} of our project repository, as well as the \href{https://bintray.com/cereda/arara}{Bintray} software distribution service, exactly mirrors this structure. Once the package is properly downloaded, we simply need to extract it into a proper \abox[araracolour]{ARARA\_HOME} location.
+
+\section{Defining a location}
+\label{sec:definingalocation}
+
+First and foremost, we need to obtain \rbox{arara-4.0.zip} from either our project repository at GitHub or at the Bintray service mirror. As the name indicates, this is a compressed file format, so we need to extract it into a proper location. Run the following command in the terminal:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ unzip arara-4.0.zip
+\end{codebox}
+
+As a result of the previous command, we obtained a directory named \abox[araracolour]{arara} with the exact structure presented in Section~\ref{foo} in our working directory. Now we need to decide where \arara\ should reside in your system. For example, I usually deploy my tools inside the \abox[araracolour]{/opt/paulo} path, so I need to run the following command in the terminal (please note that my personal directory already has the proper permissions, so I do not need superuser privileges):
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ mv arara /opt/paulo/
+\end{codebox}
+
+The tool has found a comfortable home inside my system! Observe that the full path of the \abox[araracolour]{ARARA\_HOME} reference points out to \abox[araracolour]{/opt/paulo/arara} since this is my deployment location of choice. The resulting structure overview, from the root directory, is presented as follows:
+
+\vspace{1em} 
+
+{\centering\begin{forest}
+for tree={
+  grow'=0,
+  edge={araracolour},
+  anchor=base west
+},
+forked edges,
+[{\abox[araracolour]{/}},s sep=1mm
+  [{\abox[araracolour]{bin/}}]
+  [{\abox[araracolour]{boot/}}]
+  [{\color{araracolour}\ldots},no edge]
+  [{\abox[araracolour]{opt/}},s sep=1mm
+    [{\abox[araracolour]{paulo/}}
+      [{\abox[araracolour]{arara/}}
+        [{\rbox[araracolour]{arara.jar}}]
+        [{\abox[araracolour]{rules/}},s sep=1mm
+          [{\rbox[araracolour]{animate.yaml}}]
+          [{\rbox[araracolour]{bib2gls.yaml}}]
+          [{\color{araracolour}\ldots},no edge]
+          [{\rbox[araracolour]{xetex.yaml}}]
+          [{\rbox[araracolour]{xindy.yaml}}]
+        ]
+      ]
+    ]
+    [{\color{araracolour}\ldots},no edge]
+    [{\abox[araracolour]{texbin/}}]
+  ]
+  [{\color{araracolour}\ldots},no edge]
+  [{\abox[araracolour]{usr/}}]
+  [{\abox[araracolour]{var/}}]
+]
+\end{forest}\par}
+
+\vspace{1.4em}
+
+If you built our tool from source (as indicated in Section~\ref{foo}, on page~\pageref{foo}), make sure to construct the provided directory structure previously presented. We can test the deployment by running the following command in the terminal (please note the full path):
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ java -jar /opt/paulo/arara/arara.jar
+  __ _ _ __ __ _ _ __ __ _ 
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+arara 4.0 (revision 1)
+Copyright (c) 2012-2018, Paulo Roberto Massa Cereda
+All rights reserved
+
+usage: arara [file [--dry-run] [--log] [--verbose | --silent]
+             [--timeout N] [--max-loops N] [--language L]
+             [ --preamble P ] [--header] | --help | --version]
+ -h,--help                 print the help message
+ -H,--header               extract directives only in the file header
+ -l,--log                  generate a log output
+ -L,--language <code>      set the application language
+ -m,--max-loops <number>   set the maximum number of loops
+ -n,--dry-run              go through all the motions of running a
+                           command, but with no actual calls
+ -p,--preamble <name>      set the file preamble based on the
+                           configuration file
+ -s,--silent               hide the command output
+ -t,--timeout <number>     set the execution timeout (in milliseconds)
+ -V,--version              print the application version
+ -v,--verbose              print the command output
+\end{codebox}
+
+Please observe that, provided that the underlying operating system has an appropriate Java virtual machine installed, \arara\ can be used as a portable, standalone application. Portable applications can be stored on any data storage device, including internal mass storage, a file share, cloud storage or external storage such as USB drives and floppy disks.
+
+\section{Linking the tool}
+\label{sec:linkingthetool}
+
 
 
 %\begin{}{Source file}{teal}{\icnote}{white}{}
