@@ -94,7 +94,7 @@ forked edges,
 
 \vspace{1.4em}
 
-If you built our tool from source (as indicated in Section~\ref{foo}, on page~\pageref{foo}), make sure to construct the provided directory structure previously presented. We can test the deployment by running the following command in the terminal (please note the full path):
+If the tool was built from source (as indicated in Section~\ref{foo}, on page~\pageref{foo}), make sure to construct the provided directory structure previously presented. We can test the deployment by running the following command in the terminal (please note the full path):
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ java -jar /opt/paulo/arara/arara.jar
@@ -127,10 +127,63 @@ usage: arara [file [--dry-run] [--log] [--verbose | --silent]
 
 Please observe that, provided that the underlying operating system has an appropriate Java virtual machine installed, \arara\ can be used as a portable, standalone application. Portable applications can be stored on any data storage device, including external devices such as USB drives and floppy disks.
 
-\section{Linking the tool}
-\label{sec:linkingthetool}
+\section{Tool wrapping}
+\label{sec:toolwrapping}
 
+\arara\ is now properly deployed in our system, but we still need to provide the full path of \rbox{arara.jar} to the Java virtual machine in order to make our tool work. This section provides three approaches regarding the creation of a \emph{wrapper}, a shell feature that embeds a system command or utility, that accepts and passes a set of parameters to that command.
 
+\begin{description}
+\item[shell alias] An \emph{alias} is a command available in various shells which enables a replacement of a word by another string. It is mainly used for abbreviating a system command, or for adding default arguments to a regularly used command. In order to create a shell alias for our tool, open \rbox{.bashrc} (a script that is executed whenever a new terminal session starts in interactive mode) in your favourite editor and add the following line, preferably at the end:
+
+\begin{codebox}{Source code}{teal}{\icnote}{white}
+alias arara='java -jar /opt/paulo/arara/arara.jar'
+\end{codebox}
+
+Save the file and restart your terminal. It is important to observe that the given full path must be properly quoted if it contains spaces. There is no need to provide explicit parameters, as an alias simply acts as an inline string replacement.
+
+\item[shell function] A \emph{shell function} is, as the name suggests, a subroutine, a code block that implements a set of operations as a means to performs a specified task. Im order to create a shell function for out tool, open \rbox{.bashrc} (a script that is executed whenever a new terminal session starts in interactive mode) in your favourite editor and add the following line, preferably at the end:
+
+\begin{codebox}{Source code}{teal}{\icnote}{white}
+arara() {
+    java -jar /opt/paulo/arara/arara.jar "$@"
+}
+\end{codebox}
+
+Save the file and restart your terminal. It is important to observe that the given full path must be properly quoted if it contains spaces. Note that the \rbox{\$@} symbol used in the function body represents a special shell variable that stores all the actual parameters in a list of strings.
+
+\begin{messagebox}{Alias or function?}{attentioncolour}{\icattention}{black}
+In general, an alias should effectively not do more than change the default options of a command, as it constitutes a mere string replacement. A function should be used when you need to do something more complex than an alias. In our particular case, as the underlying logic is pretty straightforward, both approaches are valid.
+\end{messagebox}
+
+\item[script file] A \emph{script} is typically referred as a computer program designed to be run by an interpreter. In our context, a script merely sets up the environment and runs a system command. In order to provide a script for our tool, open your favourite editor and create the following file:
+
+\begin{ncodebox}{Source file}{teal}{\icnote}{white}{arara}
+#!/bin/bash
+jarpath=/opt/paulo/arara/arara.jar
+java -jar "$jarpath" "$@"
+\end{ncodebox}
+
+It is important to observe that the given full path must be properly quoted if it contains spaces. Note that the \rbox{\$@} symbol used in the script body represents a special shell variable that stores all the actual parameters in a list of strings. This script file will act as the entry point for our tool. Now, we need to make it executable (i.e, set the corresponding execute permission) by running the following command in the terminal:
+
+\begin{codebox}{Source code}{teal}{\icnote}{white}
+$ chmod +x arara
+\end{codebox}
+
+Now we need to move this newly executable script file to one of the directories set forth in the \abox[araracolour]{PATH} environment variable, where executable commands are located. For illustrative purposes only, let us move the script file to the \abox[araracolour]{/usr/local/bin/} directory, a location originally designed for programs that a normal user may run. Run the following command in the terminal (note the need for superuser privileges):
+
+\begin{codebox}{Source code}{teal}{\icnote}{white}
+$ sudo mv arara /usr/local/bin/
+\end{codebox}
+
+Alternatively, the script can be placed inside a especial directory named \abox[araracolour]{bin/} from the home directory of the current user, which is usually added by default to the system path. Observe that, in this particular case, superuser privileges are not required, as the operation is kept at the current user level. Run the following command in the terminal instead (please note that the provided path refers to my home directory):
+
+\begin{codebox}{Source code}{teal}{\icnote}{white}
+$ mv arara /home/paulo/bin/
+\end{codebox}
+
+There is no need to restart your terminal, as the reference becomes available as soon as it is moved to the new location. Note that a shell script can provide a convenient variation of a system command where special environment settings, command options, or post-processing apply automatically, but in a way that allows the new script to still act as a fully normal Unix command.
+
+\end{description}
 
 %\begin{}{Source file}{teal}{\icnote}{white}{}
 %\end{ncodebox}
