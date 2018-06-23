@@ -77,11 +77,84 @@ This operation is way faster than the previous one, for obvious reasons. Unix te
 $ cd arara/application
 \end{codebox}
 
-%\begin{}{Source file}{teal}{\icnote}{white}{}
-%\end{ncodebox}
+The previous command should take us inside the \abox[araracolour]{application/} directory of our project, where the source code and the corresponding build file are located. Let us make sure we are in the correct location by running the following command in the terminal:
 
-%\begin{codebox}{}{teal}{\icnote}{white}
-%\end{codebox}
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ ls
+pom.xml  src
+\end{codebox}
 
-%\begin{messagebox}{}{araracolour}{\icok}{white}
-%\end{messagebox}
+Great, we are in the correct location! From the previous output, let us inspect the directory contents. The \abox[araracolour]{src/} directory, as the name suggests, contains the source code organized in an established package structure, whereas \rbox{pom.xml} is the corresponding build file written in the Project Object Model format, a special XML file that contains information about the project and configuration details used by Apache Maven to build the project. In order to build our tool, run the following command in the terminal:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ mvn compile assembly:single
+\end{codebox}
+
+Apache Maven is based around the central concept of a build life cycle. The \rbox{compile} phase, as the name suggests, compiles the source code of the project using the underlying Java compiler. From the previous command, bound to this particular build phase, note that there is an \rbox{assembly:single} plug-in goal which aggregates the project output along with its dependencies and other files into a single distributable archive. An \emph{assembly} is a group of files, directories and dependencies that are assembled into an archive format and distributed. In our case, the resulting file will be a typical Java archive file, with the \rbox{jar} extension. The first Maven build will take a couple of seconds (or minutes, depending on your Internet connection), as the tool will download all dependencies and required plug-ins for proper compilation and packaging. Subsequent builds will be significantly faster. Finally, after some time, Maven will output the following message as result (please note that the entire compilation and packaging only took 10 seconds on my development machine due to an existing local cache):
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+[INFO] ---------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ---------------------------------------------------------
+[INFO] Total time: 10.371 s
+[INFO] Finished at: 2018-06-22T18:38:02-03:00
+[INFO] Final Memory: 39M/184M
+[INFO] ---------------------------------------------------------
+\end{codebox}
+
+On account of a successful build in our previous interaction, there is now a newly created \abox[araracolour]{target/} directory containing compiled classes, a established package structure and, at last but not least, our assembly. Now, let us move the resulting Java archive file from that particular directory to \abox[araracolour]{application/} which is our current directory. It is important to note that the aforementioned assembly plug-in adds the \rbox{jar-with-dependencies} reference to the file name in order to differentiate a proper assembly from a typical Java archive file. Run the following command in the terminal (please note that the Java archive file was also renamed during the move operation):
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ mv target/arara-4.0-jar-with-dependencies.jar arara.jar
+\end{codebox}
+
+% TODO fix reference
+Now, our current directory contains the final \rbox{arara.jar} Java archive file properly built from source. This file can be safely distributed and deployed, as seen later on in Section~\ref{foo}, on page~\pageref{foo}. You can also test the resulting file by running the following command in the terminal:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ java -jar arara.jar
+  __ _ _ __ __ _ _ __ __ _ 
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+arara 4.0 (revision 1)
+Copyright (c) 2012-2018, Paulo Roberto Massa Cereda
+All rights reserved
+
+usage: arara [file [--dry-run] [--log] [--verbose | --silent]
+             [--timeout N] [--max-loops N] [--language L]
+             [ --preamble P ] [--header] | --help | --version]
+ -h,--help                 print the help message
+ -H,--header               extract directives only in the file header
+ -l,--log                  generate a log output
+ -L,--language <code>      set the application language
+ -m,--max-loops <number>   set the maximum number of loops
+ -n,--dry-run              go through all the motions of running a
+                           command, but with no actual calls
+ -p,--preamble <name>      set the file preamble based on the
+                           configuration file
+ -s,--silent               hide the command output
+ -t,--timeout <number>     set the execution timeout (in milliseconds)
+ -V,--version              print the application version
+ -v,--verbose              print the command output
+\end{codebox}
+
+The following optional Maven phase is used to handle the project cleaning, including the complete removal of the \abox[araracolour]{target/} directory. As a result, the project is then restored to the initial state without any generated Java bytecode. Run the following command in the terminal:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ mvn clean
+\end{codebox}
+
+This section covered the compilation details for building \arara\ from source. The aforementioned steps are straightforward and can be automated in order to generate snapshots and daily builds. Happy compilation!
+
+\begin{messagebox}{While you wait\ldots}{araracolour}{\icok}{white}
+\begin{minipage}{0.5\textwidth}
+The first Maven build can take several minutes, depending on your Internet connection. While you wait, have a cup of coffee, plant a tree, write a letter, talk to a friend, help an elder, sing, whistle, eat chocolate, spend time with your parents, read a book, exercise, hug your pet, watch the sunrise, smile, have an ice cream, laugh, be friendly. Always make a difference, my friend. Life goes by in a blink of an eye!
+\end{minipage}\hspace{1em}
+\begin{minipage}{0.45\textwidth}
+\vspace{.8em}
+{\centering\includegraphics[width=0.9\textwidth]{figures/ducks.png}\par}
+\vspace{.8em}
+\end{minipage}
+\end{messagebox}
