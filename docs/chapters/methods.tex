@@ -5,8 +5,7 @@
 \arara\ features several helper methods available in directive conditional and rule contexts which provide interesting features for enhancing the user experience, as well as improving the automation itself. This chapter provides a list of such methods. It is important to observe that virtually all classes from the Java runtime environment can be used within MVEL expressions, so your milleage might vary.
 
 \begin{messagebox}{A note on writing code}{araracolour}{\icok}{white}
-% TODO fix reference
-As seen in Section~\ref{foo}, on page~\pageref{foo}, Java and MVEL code be used interchangeably within expressions and orb tags, including instantiation of classes into objects and invocation of methods. However, be mindful of explicitly importing Java packages and classes through the classic \rbox{import} statement, as MVEL does not automatically handle imports, or an exception will surely be raised. Alternatively, you can provide the full qualified name to classes as well.
+As seen in Chapter~\ref{chap:mvel}, on page~\pageref{chap:mvel}, Java and MVEL code be used interchangeably within expressions and orb tags, including instantiation of classes into objects and invocation of methods. However, be mindful of explicitly importing Java packages and classes through the classic \rbox{import} statement, as MVEL does not automatically handle imports, or an exception will surely be raised. Alternatively, you can provide the full qualified name to classes as well.
 \end{messagebox}
 
 Methods are listed with their complete signatures, including potential  parameters and corresponding types. Also, the return type of a method is denoted by \rrbox{type} and refers to a typical Java data type (either class or primitive). Do not worry too much, as there are illustrative examples. A method available in the directive conditional context will be marked by \ctbox{C} next to the corresponding signature. Similarly, an entry marked by \ctbox{R} denotes that the corresponding method is available in the rule context.
@@ -17,8 +16,7 @@ Methods are listed with their complete signatures, including potential  paramete
 This section introduces methods related to file handling, searching and hashing. It is important to observe that no exception is thrown in case of an anomalous method call. In this particular scenario, the methods return empty references, when applied.
 
 \begin{description}
-% TODO fix reference
-\item[\mdbox{R}{getOriginalFile()}{String}] This method returns the original file name, as plain string, regardless of a potential override through the special \abox{files} parameter in the directive mapping, as seen in Section~\ref{foo}, on page~\pageref{foo}.
+\item[\mdbox{R}{getOriginalFile()}{String}] This method returns the original file name, as plain string, regardless of a potential override through the special \abox{files} parameter in the directive mapping, as seen in Section~\ref{sec:directives}, on page~\pageref{sec:directives}.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 if (file == getOriginalFile()) {
@@ -27,8 +25,7 @@ if (file == getOriginalFile()) {
 }
 \end{codebox}
 
-% TODO fix reference
-\item[\mdbox{R}{getOriginalReference()}{File}] This method returns the original file reference, as a \rbox{File} object, regardless of a potential reference override indirectly through the special \abox{files} parameter in the directive mapping, as seen in Section~\ref{foo}, on page~\pageref{foo}.
+\item[\mdbox{R}{getOriginalReference()}{File}] This method returns the original file reference, as a \rbox{File} object, regardless of a potential reference override indirectly through the special \abox{files} parameter in the directive mapping, as seen in Section~\ref{sec:directives}, on page~\pageref{sec:directives}.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 if (reference.equals(getOriginalFile())) {
@@ -109,8 +106,7 @@ extension = getFiletype('thesis.pdf');
 % arara: pdftex if missing('pdf')
 \end{codebox}
 
-% TODO fix reference
-\item[\mddbox{C}{R}{changed(File file)}{boolean}] This method returns a boolean value according to whether the provided \rbox{File} reference has changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a XML database file named \rbox{arara.xml} located at the same directory of the current file (the database name can be overriden in the configuration file, as discussed in Section~\ref{foo}, on page~\pageref{foo}). The method semantics (including the return values) is presented as follows.
+\item[\mddbox{C}{R}{changed(File file)}{boolean}] This method returns a boolean value according to whether the provided \rbox{File} reference has changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a XML database file named \rbox{arara.xml} located at the same directory of the current file (the database name can be overriden in the configuration file, as discussed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). The method semantics (including the return values) is presented as follows.
 
 \vspace{1em}
 
@@ -146,8 +142,7 @@ According to the \href{https://en.wikipedia.org/wiki/Short-circuit_evaluation}{W
 \arara\ internally relies on a CRC32 implementation for file hashing. This particular choice, although not designed for hashing, offers an interesting tradeoff between speed and quality. Besides, since it is not computationally expensive as strong algorithms such as MD5 and SHA1, CRC32 can be used for hashing typical \TeX\ documents and plain text files with little to no collisions.
 \end{messagebox}
 
-% TODO fix reference
-\item[\mddbox{C}{R}{changed(String extension)}{boolean}] This method returns a boolean value according to whether the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the provided \rbox{String} extension has changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a XML database file named \rbox{arara.xml} located at the same directory of the current file (the database name can be overriden in the configuration file, as discussed in Section~\ref{foo}, on page~\pageref{foo}). The method semantics (including the return values) is presented as follows.
+\item[\mddbox{C}{R}{changed(String extension)}{boolean}] This method returns a boolean value according to whether the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the provided \rbox{String} extension has changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a XML database file named \rbox{arara.xml} located at the same directory of the current file (the database name can be overriden in the configuration file, as discussed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). The method semantics (including the return values) is presented as follows.
 
 \vspace{1em}
 
@@ -175,8 +170,7 @@ It is important to observe that this method \emph{always} performs a database op
 % arara: pdflatex if changed('tex')
 \end{codebox}
 
-% TODO fix reference
-\item[\mddbox{C}{R}{unchanged(File file)}{boolean}] This method returns a boolean value according to whether the provided \rbox{File} reference has not changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a XML database file named \rbox{arara.xml} located at the same directory of the current file (the database name can be overriden in the configuration file, as discussed in Section~\ref{foo}, on page~\pageref{foo}). The method semantics (including the return values) is presented as follows.
+\item[\mddbox{C}{R}{unchanged(File file)}{boolean}] This method returns a boolean value according to whether the provided \rbox{File} reference has not changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a XML database file named \rbox{arara.xml} located at the same directory of the current file (the database name can be overriden in the configuration file, as discussed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). The method semantics (including the return values) is presented as follows.
 
 \vspace{1em}
 
@@ -204,8 +198,7 @@ It is important to observe that this method \emph{always} performs a database op
 % arara: pdflatex if !unchanged(toFile('thesis.tex'))
 \end{codebox}
 
-% TODO fix reference
-\item[\mddbox{C}{R}{unchanged(String extension)}{boolean}] This method returns a boolean value according to whether the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the provided \rbox{String} extension has not changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a XML database file named \rbox{arara.xml} located at the same directory of the current file (the database name can be overriden in the configuration file, as discussed in Section~\ref{foo}, on page~\pageref{foo}). The method semantics (including the return values) is presented as follows.
+\item[\mddbox{C}{R}{unchanged(String extension)}{boolean}] This method returns a boolean value according to whether the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the provided \rbox{String} extension has not changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a XML database file named \rbox{arara.xml} located at the same directory of the current file (the database name can be overriden in the configuration file, as discussed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). The method semantics (including the return values) is presented as follows.
 
 \vspace{1em}
 
@@ -729,11 +722,10 @@ This section presented classloading and instantion methods which may significant
 \section{Dialog boxes}
 \label{sec:dialogboxes}
 
-% TODO fix reference
 A \emph{dialog box} is a graphical control element, typically a small window, that communicates information to the user and prompts them for a response. This section introduces UI methods related to such interactions.
 
 \begin{messagebox}{UI elements}{araracolour}{\icok}{white}
-The graphical elements are provided by the Swing toolkit from the Java runtime environment. Note that the default look and feel class reference can be modified through a key in the configuration file, as seen in Section~\ref{foo}, on page~\pageref{foo}. It is important to observe that the methods presented in this section require a graphical interface. If \arara\ is being executed in a headless environment (i.e, an environment with no graphical display available), an exception will be thrown when trying to use such UI methods in either directive or rule contexts.
+The graphical elements are provided by the Swing toolkit from the Java runtime environment. Note that the default look and feel class reference can be modified through a key in the configuration file, as seen in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}. It is important to observe that the methods presented in this section require a graphical interface. If \arara\ is being executed in a headless environment (i.e, an environment with no graphical display available), an exception will be thrown when trying to use such UI methods in either directive or rule contexts.
 \end{messagebox}
 
 Each dialog box provided by the UI methods of \arara\ requires the specification of an associated icon. An \emph{icon} is a pictogram displayed on a computer screen in order to help the user quickly identify the message by conveying its meaning through a visual resemblance to a physical object. Our tool features five icons, illustrated as follows, to be used with dialog boxes. Observe that each icon is associated with a unique integer value which is provided later on to the actual method call. Also, it is worth mentioning that the visual appearance of such icons is based on the underlying Java virtual machine and the current look and feel, so your milleage might vary.
@@ -1019,8 +1011,7 @@ if (!isList(options)) {
 }
 \end{codebox}
 
-% TODO fix reference
-\item[\mdbox{R}{isVerboseMode()}{boolean}] This method, as the name implies, returns a boolean value according to whether \arara\ is being executed in verbose mode, enabled through either the \opbox{{-}verbose} command line option or the corresponding key in the configuration file (detailed in Sections~\ref{foo} and~\ref{foo}, respectively). Note that the logical negation of such method indicates whether the tool is being executed in silent mode.
+\item[\mdbox{R}{isVerboseMode()}{boolean}] This method, as the name implies, returns a boolean value according to whether \arara\ is being executed in verbose mode, enabled through either the \opbox{{-}verbose} command line option or the corresponding key in the configuration file (detailed in Sections~\ref{sec:options} and~\ref{sec:basicstructure}, respectively). Note that the logical negation of such method indicates whether the tool is being executed in silent mode.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 verbose = isVerboseMode();

@@ -59,8 +59,7 @@ Hello world!
 \end{document}
 \end{ncodebox}
 
-% TODO fix reference
-For now, do not worry too much about the terms, we will come back to then later on in Chapter~\ref{foo} (page~\pageref{foo}). It suffices to say that \arara\ expects \emph{you} to provide a list of tasks, and this is done by inserting special comments in the source file. Let us see how \arara\ behaves with this updated code:
+For now, do not worry too much about the terms, we will come back to then later on in Chapter~\ref{chap:importantconcepts} (page~\pageref{chap:importantconcepts}). It suffices to say that \arara\ expects \emph{you} to provide a list of tasks, and this is done by inserting special comments in the source file. Let us see how \arara\ behaves with this updated code:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ arara hello.tex 
@@ -106,8 +105,7 @@ The tool name was chosen as an homage to a Brazilian bird of the same name, whic
 \end{minipage}
 \end{messagebox}
 
-% TODO fix reference
-Now that we informally introduced rules and directives, let us take a look on how \arara\ actually works given those two elements. The whole idea is pretty straightforward, and I promise to revisit these concepts later on in this manual for an comprehensive explanation (more precisely, on Chapter~\ref{foo}).
+Now that we informally introduced rules and directives, let us take a look on how \arara\ actually works given those two elements. The whole idea is pretty straightforward, and I promise to revisit these concepts later on in this manual for an comprehensive explanation (more precisely, on Chapter~\ref{chap:importantconcepts}).
 
 First and foremost, we need to add at least one instruction in the source code to tell \arara\ what to do. This instruction is named \emph{directive} and it will be parsed during the preparation phase. Observe that \arara\ will tell you if no directive was found in a file, as seen in our first interaction with the tool.
 
@@ -122,12 +120,10 @@ An \arara\ directive is usually defined in a line of its own, started with a com
 Our example has one directive, referencing \abox{pdflatex}. It is important to observe that the \abox{pdflatex} identifier \emph{does not represent the command to be executed}, but \emph{the name of the rule associated with that directive}.
 
 \begin{messagebox}{New feature in version 4.0}{araracolour}{\icinfo}{white}
-% TODO fix reference
-\textbf{Multiline directives} -- Later on in Section~\ref{foo} (page~\pageref{foo}), we will discover that a directive can also span several lines in order to provide a better code organization. For now, let us assume a typical directive occupies only one line.
+\textbf{Multiline directives} -- Later on in Section~\ref{sec:directives} (page~\pageref{sec:directives}), we will discover that a directive can also span several lines in order to provide a better code organization. For now, let us assume a typical directive occupies only one line.
 \end{messagebox}
 
-% TODO fix reference
-Once \arara\ finds a directive, it will look for the associated \emph{rule}. In our example, it will look for a rule named \abox{pdflatex} which will evidently run the \abox{pdflatex} command line application. Rules are YAML files named according to their identifiers followed by the \abox{yaml} extension and follow a strict structure. This concept is covered in Section~\ref{foo} (page~\pageref{foo}).
+Once \arara\ finds a directive, it will look for the associated \emph{rule}. In our example, it will look for a rule named \abox{pdflatex} which will evidently run the \abox{pdflatex} command line application. Rules are YAML files named according to their identifiers followed by the \abox{yaml} extension and follow a strict structure. This concept is covered in Section~\ref{sec:rule} (page~\pageref{sec:rule}).
 
 \begin{messagebox}{New feature in version 4.0}{araracolour}{\icattention}{white}
 \textbf{\gls{REPL} workflow} -- \arara\ now employs a \gls{REPL} workflow for rules and directives. In previous versions, directives were extracted, their corresponding rules were analized, commands were built and added to a queue before any proper execution or evaluation. I decided to change this workflow, so now \arara\ evaluates each rule on demand, that is, there is no \emph{a priori} checking. A rule will \emph{always} reflect the current state, including potential side effects from previous executed rules.
@@ -139,8 +135,7 @@ Now, we have a queue of pairs $(\textit{directive}, \textit{rule})$ to process. 
 \textbf{Custom exit status checking} -- In previous versions, there was no way of customizing the exit status checking of a command. A command was successful if, and only if, its resulting exit status was 0 and no other value. From now on, we can define any value, or even forget about it and make it always return a valid status regardless of execution (for instance, in a rule that always is successful -- see, for instance, the \abox{clean}  rule).
 \end{messagebox}
 
-% TODO fix reference
-That is pretty much how \arara\ works: directives in the source code are mapped to rules. These pairs are added to a queue. The queue is then executed and the status is reported. More details about the expansion process are presented in Chapter~\ref{foo} (page~\pageref{foo}). In short, we teach \arara\ to do a task by providing a rule, and tell it to execute it through directives in the source code.
+That is pretty much how \arara\ works: directives in the source code are mapped to rules. These pairs are added to a queue. The queue is then executed and the status is reported. More details about the expansion process are presented in Chapter~\ref{chap:importantconcepts} (page~\pageref{chap:importantconcepts}). In short, we teach \arara\ to do a task by providing a rule, and tell it to execute it through directives in the source code.
 
 \section{Operating system remarks}
 \label{sec:operatingsystemremarks}
@@ -151,8 +146,7 @@ The application is written using the Java language, so \arara\ runs on top of a 
 Dear reader, beware of outdated software, mainly Java virtual machines! Although \arara\ offers support for older virtual machines, try your best to keep your software updated as frequently as possible. The legacy support exists only for historical reasons, and also due to the sheer fact that we know some people that still runs \arara\ on very old hardware. If you are not in this particular scenario, get the latest virtual machine.
 \end{messagebox}
 
-% TODO fix references
-In Chapter~\ref{foo} (page~\pageref{foo}), we provide instructions on how to build \arara\ from sources using Apache Maven. Even if you use multiple operating systems, \arara\ should behave the same, including the rules. There are helper functions available in order to provide support for system-specific rule based on the underlying operating system.
+In Chapter~\ref{chap:buildingfromsource} (page~\pageref{chap:buildingfromsource}), we provide instructions on how to build \arara\ from sources using Apache Maven. Even if you use multiple operating systems, \arara\ should behave the same, including the rules. There are helper functions available in order to provide support for system-specific rule based on the underlying operating system.
 
 \section{Support}
 \label{sec:support}

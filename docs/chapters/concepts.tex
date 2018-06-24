@@ -26,17 +26,15 @@ Perhaps a misspelled word? I was looking for a file named
 Total: 0.09 seconds
 \end{codebox}
 
-% TODO fix reference
-Once a rule is defined, \arara\ automatically provides an access layer to that rule through directives in the source code, a concept to be formally introduced later on, in Section~\ref{foo}. Observe that a directive reflects a particular instance of a rule of the same name (i.e, a \abox{foo} directive in a certain source code is an instance of the \abox{foo} rule).
+Once a rule is defined, \arara\ automatically provides an access layer to that rule through directives in the source code, a concept to be formally introduced later on, in Section~\ref{sec:directives}. Observe that a directive reflects a particular instance of a rule of the same name (i.e, a \abox{foo} directive in a certain source code is an instance of the \abox{foo} rule).
 
-In short, a rule is a plain text file written in the YAML format, introduced in Chapter~\ref{foo} (page~\pageref{foo}). I opted for this format because back then it was cleaner and more intuitive to use than other markup languages such as XML, besides of course being a data serialization standard for programming languages.
+In short, a rule is a plain text file written in the YAML format, introduced in Chapter~\ref{chap:yaml} (page~\pageref{chap:yaml}). I opted for this format because back then it was cleaner and more intuitive to use than other markup languages such as XML, besides of course being a data serialization standard for programming languages.
 
 \begin{messagebox}{Animal jokes}{araracolour}{\icok}{white}
 As a bonus, the acronym \emph{YAML} rhymes with the word \emph{camel}, so \arara\ is heavily environmentally friendly. Speaking of camels, there is the programming reference as well, since this amusing animal is usually associated with Perl and friends.
 \end{messagebox}
 
-% TODO fix reference
-The default rules, that is, the rules shipped with \arara, are placed inside a special subdirectory named \abox[araracolour]{rules/} inside another special directory named \abox[araracolour]{ARARA\_HOME} (the place where our tool is installed). We will learn later on, in Section~\ref{foo} (page~\pageref{foo}), that we can add an arbitrary number of paths for storing our own rules, in order of priority, so do not worry too much with the location of the default rules, although it is important to understand and acknowledge their existance.
+The default rules, that is, the rules shipped with \arara, are placed inside a special subdirectory named \abox[araracolour]{rules/} inside another special directory named \abox[araracolour]{ARARA\_HOME} (the place where our tool is installed). We will learn later on, in Section~\ref{sec:basicstructure} (page~\pageref{sec:basicstructure}), that we can add an arbitrary number of paths for storing our own rules, in order of priority, so do not worry too much with the location of the default rules, although it is important to understand and acknowledge their existance.
 
 The following list describes the basic structure of an \arara\ rule by presenting the proper elements (or keys, if we consider the proper YAML nomenclature). Observe that elements marked as \rbox[araracolour]{M} are mandatory (i.e, the rule \emph{has} to have them in order to work). Similarly, elements marked as \rbox[araracolour]{O} are optional, so you can safely ignore them when writing a rule for our tool. A key preceded by \rbox{context$\rightarrow$} indicates a context and should be properly defined inside it.
 
@@ -66,7 +64,7 @@ authors:
 \item[\describe{M}{commands}] This key is introduced in version 4.0 of \arara\ and denotes a potential list of commands. From the user perspective, each command is called \emph{subtask} within a task (rule and directive) context. A task may represent only a single command (a single subtask), as well as a sequence of commands (subtasks). For instance, the \abox{frontespizio} rule requires at least two commands. So, as a means of normalizing the representation, a task composed of a single command (single subtask) is defined as the only element of such list, as opposed to previous versions of \arara, which had an specific key to hold just one command.
 
 \begin{messagebox}{Incompatibility with older versions}{attentioncolour}{\icerror}{black}
-Dear reader, note that rules from version 4.0 are incompatible with older versions of \arara. If you are migrating from old versions to version 4.0, we need to replace \abox{command} by \abox{commands} and specifying a contextual element, as seen in the following descriptions. Please refer to Section~\ref{foo} (page~\pageref{foo}) for a comprehensible migration guide.
+Dear reader, note that rules from version 4.0 are incompatible with older versions of \arara. If you are migrating from old versions to version 4.0, we need to replace \abox{command} by \abox{commands} and specifying a contextual element, as seen in the following descriptions. Please refer to Section~\ref{sec:migrationguide} (page~\pageref{sec:migrationguide}) for a comprehensible migration guide.
 \end{messagebox}
 
 In order to properly set a subtask, the keys used in this specification are defined inside the \rbox{commands$\rightarrow$} context and presented as follows.
@@ -83,18 +81,15 @@ In order to properly set a subtask, the keys used in this specification are defi
 command: 'ls'
 \end{codebox}
 
-% TODO fix reference
-It is important to observe that you can use either a plain string directly or using an orb tag with an explicit \abox{return} command (as seen in Section~\ref{foo}, page~\pageref{foo}). Personally, I favour the explict indication for a quick understanding.
+It is important to observe that you can use either a plain string directly or using an orb tag with an explicit \abox{return} command (as seen in Section~\ref{sec:mvelbasicusage}, page~\pageref{sec:mvelbasicusage}). Personally, I favour the explict indication for a quick understanding.
 
-% TODO fix reference
-\item A \abox{Command} object: \arara\ 4.0 features a new approach for handling system commands based on a high level structure with explict argument parsing named \abox{Command} (for our curious users, it is a plain Java object). In order to use this approach, we need to rely on orb tags and use a helper method named \mtbox{getCommand} to obtain the desired result. We will detail this method later on, in Section~\ref{foo} (page~\pageref{foo}). We highly recommend the adoption of this approach for rule writing instead of using plain strings.
+\item A \abox{Command} object: \arara\ 4.0 features a new approach for handling system commands based on a high level structure with explict argument parsing named \abox{Command} (for our curious users, it is a plain Java object). In order to use this approach, we need to rely on orb tags and use a helper method named \mtbox{getCommand} to obtain the desired result. We will detail this method later on, in Section~\ref{sec:commandsandtriggers} (page~\pageref{sec:commandsandtriggers}). We highly recommend the adoption of this approach for rule writing instead of using plain strings.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command: "@{ return getCommand('ls') }"
 \end{codebox}
 
-% TODO fix reference
-\item A boolean value: it is also possible to exploit the expressive power of the underlying scripting language available in the rule context (see Chapter~\ref{foo}, on page~\pageref{foo}, for more details) for writing complex code. In this particular case, since the computation is being done by \arara\ itself and not the underlying operating system, there will not be a command to be executed, so simply return a boolean value -- either an explicit \abox{true} or \abox{false} value or a logical expression -- to indicate whether the computation was successfull.
+\item A boolean value: it is also possible to exploit the expressive power of the underlying scripting language available in the rule context (see Chapter~\ref{chap:mvel}, on page~\pageref{chap:mvel}, for more details) for writing complex code. In this particular case, since the computation is being done by \arara\ itself and not the underlying operating system, there will not be a command to be executed, so simply return a boolean value -- either an explicit \abox{true} or \abox{false} value or a logical expression -- to indicate whether the computation was successfull.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command: "@{ return 1 == 1 }"
@@ -115,8 +110,7 @@ As an example, please refer to the official \abox{clean} rule for a real scenari
 It took me a lot of effort to find out that handling plain strings and employing guesswork to parse arguments are the root of several issues reported by users. Therefore, this approach is being marked as \emph{deprecated} and will be removed in future versions.
 \end{messagebox}
 
-% TODO fix reference
-There are at least two variables available in the \abox{command} context and are described as follows (note that \gls{MVEL} variables and orb tags are discussed in Chapter~\ref{foo}). A variable will be denoted by \varbox{variable} in this list. For each rule argument (defined later on), there will be a corresponding variable in the \abox{command} context, directly accessed through its unique identifier.
+There are at least two variables available in the \abox{command} context and are described as follows (note that \gls{MVEL} variables and orb tags are discussed in Chapter~\ref{chap:mvel}). A variable will be denoted by \varbox{variable} in this list. For each rule argument (defined later on), there will be a corresponding variable in the \abox{command} context, directly accessed through its unique identifier.
 
 \begin{description}
 \item[\varbox{file}] This variable holds the file name, without any path reference, as a plain string. It is usually composed by the base name and the extension. This variable is available since the first release of \arara.
@@ -134,8 +128,7 @@ The first solution is used in previous versions and it still works like a charm 
 command: <arara> @{ return getCommand('ls') }
 \end{codebox}
 
-% TODO fix reference
-The second approach is more of a YAML feature rather than a tool exclusive, although we have to do a couple of checkings under the hood in order to ensure the correct execution. The idea here is to use the scalar content in folded style, as seen in Section~\ref{foo} (page~\pageref{foo}). The new code will look like this:
+The second approach is more of a YAML feature rather than a tool exclusive, although we have to do a couple of checkings under the hood in order to ensure the correct execution. The idea here is to use the scalar content in folded style, as seen in Section~\ref{sec:yamlscalars} (page~\pageref{sec:yamlscalars}). The new code will look like this:
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command: >
@@ -199,8 +192,7 @@ flag: >
   }
 \end{codebox}
 
-% TODO fix reference
-There are three variables available in the \abox{flag} context, described as follows. Note that are also several helper methods available in the rule context (for instance, \mtbox{isTrue} presented in the previous example) which provide interesting features for rule writing. They are detailed later on, in Section~\ref{foo} (page~\pageref{foo}).
+There are three variables available in the \abox{flag} context, described as follows. Note that are also several helper methods available in the rule context (for instance, \mtbox{isTrue} presented in the previous example) which provide interesting features for rule writing. They are detailed later on, in Chapter~\ref{chap:methods} (page~\pageref{chap:methods}).
 
 \begin{description}
 \item[\varbox{parameters}] This variable holds a map of directive parameters available at runtime. For each argument identifier listed in the \abox{arguments} list in the rule context, there will be an entry in this variable. This is useful to get the actual values provided during execution and take proper actions. If a parameter is not set in the directive context, the reference will still exist in the map, but it will be mapped to an empty string.
@@ -218,8 +210,7 @@ In the previous example, observe that the MVEL expression defined in the \abox{f
 default: ''
 \end{codebox}
 
-% TODO fix reference
-There are three variables available in the \abox{default} context, described as follows. Note that are also several helper methods available in the rule context (for instance, \mtbox{isTrue} presented in the previous example) which provide interesting features for rule writing. They are detailed later on, in Section~\ref{foo} (page~\pageref{foo}).
+There are three variables available in the \abox{default} context, described as follows. Note that are also several helper methods available in the rule context (for instance, \mtbox{isTrue} presented in the previous example) which provide interesting features for rule writing. They are detailed later on, in Chapter~\ref{chap:methods} (page~\pageref{chap:methods}).
 
 \begin{description}
 \item[\varbox{parameters}] This variable holds a map of directive parameters available at runtime. For each argument identifier listed in the \abox{arguments} list in the rule context, there will be an entry in this variable. This is useful to get the actual values provided during execution and take proper actions. If a parameter is not set in the directive context, the reference will still exist in the map, but it will be mapped to an empty string.
@@ -258,8 +249,7 @@ arguments:
 \end{codebox}
 \end{description}
 
-% TODO fix reference
-This is the rule structure in the YAML format used by \arara. Keep in mind that all subtasks in a rule are checked against their corresponding exit status. If an abnormal execution is detected, the tool will instantly halt and the rule will fail. Even \arara\ itself will return an exit code different than zero when this situation happens (detailed in Section~\ref{foo}, on page~\pageref{foo}).
+This is the rule structure in the YAML format used by \arara. Keep in mind that all subtasks in a rule are checked against their corresponding exit status. If an abnormal execution is detected, the tool will instantly halt and the rule will fail. Even \arara\ itself will return an exit code different than zero when this situation happens (detailed in Chapter~\ref{chap:commandline}, on page~\pageref{chap:commandline}).
 
 \section{Directives}
 \label{sec:directives}
@@ -268,19 +258,16 @@ A \emph{directive} is a special comment inserted in the source file in which you
 
 \begin{messagebox}{New features in version 4.0}{araracolour}{\icinfo}{white}
 \setlength{\parskip}{1em}
-% TODO fix reference
-\textbf{Partial directive extraction} -- From version 4.0 of \arara\ on, it is now possible to extract directives only available in the file preamble, i.e, all lines from the beginning that are comments until reaching the first line that is not a comment (excluding blank lines). To this end, a new command line flag is introduced in Section~\ref{foo} (page~\pageref{foo}).
+\textbf{Partial directive extraction} -- From version 4.0 of \arara\ on, it is now possible to extract directives only available in the file preamble, i.e, all lines from the beginning that are comments until reaching the first line that is not a comment (excluding blank lines). To this end, a new command line flag is introduced in Section~\ref{sec:basicstructure} (page~\pageref{sec:basicstructure}).
 
-% TODO fix reference
-\textbf{Predefined preambles} -- Common preambles can be predefined and used with files that require the same automation steps, then \arara\ can be invoked based on such specifications. This feature is covered in Section~\ref{foo} (page~\pageref{foo}).
+\textbf{Predefined preambles} -- Common preambles can be predefined and used with files that require the same automation steps, then \arara\ can be invoked based on such specifications. This feature is covered in Section~\ref{sec:basicstructure} (page~\pageref{sec:basicstructure}).
 \end{messagebox}
 
 
 There are two types of directives in \arara\ which determine the way the corresponding rules will be instantiated. They are listed as follows. Note that directives are always preceeded by the \rbox{arara:} pattern.
 
 \begin{description}
-% TODO fix reference
-\item[empty directive] This type of directive has already been mentioned in Chapter~\ref{foo} (page~\pageref{foo}), it has only the rule name (which refers to the \abox{identifier} key from the rule of the same name). All rule arguments are mapped to empty strings, except the ones with \abox{default} values.
+\item[empty directive] This type of directive has already been mentioned in Chapter~\ref{chap:introduction} (page~\pageref{chap:introduction}), it has only the rule name (which refers to the \abox{identifier} key from the rule of the same name). All rule arguments are mapped to empty strings, except the ones with \abox{default} values.
 
 \begin{codebox}{Empty directive}{teal}{\icnote}{white}
 % arara: pdflatex
@@ -292,8 +279,7 @@ There are two types of directives in \arara\ which determine the way the corresp
 % arara: pdflatex: { shell: yes }
 \end{codebox}
 
-% TODO fix reference
-Observe that \arara\ relies on named parameters, so they are mapped by their corresponding argument identifiers and not by their positions. The syntax for a parameter is described as follows. Please refer to the map definition in Chapter~\ref{foo}, page~\pageref{foo}.
+Observe that \arara\ relies on named parameters, so they are mapped by their corresponding argument identifiers and not by their positions. The syntax for a parameter is described as follows. Please refer to the map definition in Section~\ref{sec:yamlcollections}, page~\pageref{sec:yamlcollections}.
 
 \begin{codebox}{Parameter syntax}{teal}{\icnote}{white}
 key : value
@@ -336,8 +322,7 @@ Sometimes, directives can span several columns of a line, particularly the ones 
 % arara: --> }
 \end{codebox}
 
-% TODO fix reference
-It is important to observe that there is no need of them to be in contiguous lines, i.e, provided that the syntax for parametrized directives hold for the line composition, lines can be distributed all over the code. In fact, the log file (when enabled) will contain a list of all line numbers that compose a directive. This feature is discussed later on, in Section~\ref{foo} (page~\pageref{foo}).
+It is important to observe that there is no need of them to be in contiguous lines, i.e, provided that the syntax for parametrized directives hold for the line composition, lines can be distributed all over the code. In fact, the log file (when enabled) will contain a list of all line numbers that compose a directive. This feature is discussed later on, in Section~\ref{sec:directiveextraction} (page~\pageref{sec:directiveextraction}).
 
 \begin{messagebox}{Keep lines together}{araracolour}{\icinfo}{white}
 Although it is possible to spread lines of a multiline directive all over the code, it is considered good practice to keep them together for easier reading and editing. In any case, you can always see which lines compose a directive by inspecting the log file.
@@ -372,16 +357,13 @@ Although it is possible to spread lines of a multiline directive all over the co
 \end{codebox}
 \end{description}
 
-% TODO fix reference
-Several methods are available in the directive context in order to ease the writing of conditionals, such as \mtbox{missing}, \mtbox{changed}, \mtbox{found}, \mtbox{unchanged}, and \mtbox{exists} featured in the previous examples. They will be properly detailed later on, in Section~\ref{foo} (page~\pageref{foo}).
+Several methods are available in the directive context in order to ease the writing of conditionals, such as \mtbox{missing}, \mtbox{changed}, \mtbox{found}, \mtbox{unchanged}, and \mtbox{exists} featured in the previous examples. They will be properly detailed later on, in Section~\ref{sec:files} (page~\pageref{sec:files}).
 
 \begin{messagebox}{No infinite loops}{araracolour}{\icinfo}{white}
-% TODO fix reference
-Although there are no conceptual guarantees for proper halting of unbounded loops, we have provided a technical solution for potentially infinite iterations: \arara\ has a predefined maximum number of loops. The default value is set to 10, but it can be overriden either in the configuration file or with a command line flag. We discuss this feature later on, in Sections~\ref{foo} and~\ref{foo} (pages~\pageref{foo} and~\pageref{foo}, respectively).
+Although there are no conceptual guarantees for proper halting of unbounded loops, we have provided a technical solution for potentially infinite iterations: \arara\ has a predefined maximum number of loops. The default value is set to 10, but it can be overriden either in the configuration file or with a command line flag. We discuss this feature later on, in Sections~\ref{sec:options} and~\ref{sec:basicstructure} (pages~\pageref{sec:options} and~\pageref{sec:basicstructure}, respectively).
 \end{messagebox}
 
-% TODO fix reference
-All directives, regardless of their type, are internally mapped with both \abox{file} and \abox{reference} parameters, discussed earlier on, in Section~\ref{foo} (page~\pageref{foo}), as special variables in the rule context. When inspecting the log file, you will find all map keys and values for each extracted directive (actually, there is an entire log section devoted to detailing directives found in the code). This feature is covered in Section~\ref{foo}, page~\pageref{foo}. See, for instance, the report of the directive extraction and normalization process performed by \arara\ when inspecting \rbox{doc2.tex}, available in the log file. Note that timestamps were deliberately removed in order to declutter the output, and line breaks were included as to easily spot the log entries.
+All directives, regardless of their type, are internally mapped with both \abox{file} and \abox{reference} parameters, discussed earlier on, in Section~\ref{sec:coreconcepts} (page~\pageref{sec:coreconcepts}), as special variables in the rule context. When inspecting the log file, you will find all map keys and values for each extracted directive (actually, there is an entire log section devoted to detailing directives found in the code). This feature is covered in Section~\ref{sec:directivenormalization}, page~\pageref{sec:directivenormalization}. See, for instance, the report of the directive extraction and normalization process performed by \arara\ when inspecting \rbox{doc2.tex}, available in the log file. Note that timestamps were deliberately removed in order to declutter the output, and line breaks were included as to easily spot the log entries.
 
 \begin{ncodebox}{Source file}{teal}{\icnote}{white}{doc2.tex}
 % arara: pdflatex
@@ -403,7 +385,6 @@ Directive: { identifier: pdflatex, parameters:
 conditional: { NONE }, lines: [2] }
 \end{codebox}
 
-% TODO fix reference
 The directive context also features another special parameter named \abox{files} which expects a non-empty list of file names as plain string values. For each element of this list, \arara\ will replicate the current directive and point the element being iterated as current \abox{file} and \abox{reference} values (being the latter resolved to a proper absolute, canonical path of the former). See, for instance, the report of the directive extraction and normalization process performed by \arara\ when inspecting \rbox{doc3.tex}, available in the log file.
 
 \begin{ncodebox}{Source file}{teal}{\icnote}{white}{doc3.tex}
@@ -422,8 +403,7 @@ Directive: { identifier: pdflatex, parameters:
 conditional: { NONE }, lines: [1] }
 \end{codebox}
 
-% TODO fix reference
-Even when a directive is interpreted with a file other than the one being processed by \arara\ (through the magic of the \abox{files} parameter), it is possible to use helper methods in the rule context to get access to the original file and reference. Such methods are detailed later on, in Section~\ref{foo} (page~\pageref{foo}).
+Even when a directive is interpreted with a file other than the one being processed by \arara\ (through the magic of the \abox{files} parameter), it is possible to use helper methods in the rule context to get access to the original file and reference. Such methods are detailed later on, in Section~\ref{sec:files} (page~\pageref{sec:files}).
 
 \section{Migration guide}
 \label{sec:migrationguide}
@@ -432,8 +412,7 @@ Even when a directive is interpreted with a file other than the one being proces
 If this is your first time using \arara\ or you do not have custom rules in the old format, you can safely ignore this section. All rules shipped with our tool are already written in the new format.
 \end{messagebox}
 
-% TODO fix reference
-As previously discussed in Section~\ref{foo} (page~\pageref{foo}), version 4.0 of \arara\ introduces a new rule format. As a result, user-defined rules in the old format are incompatible with the new version of our tool and thus have to be updated. In short, we need to replace \abox{command} by \abox{commands} and specify a contextual element. As an example, consider the following hypothetical rule \abox{ls} written in the old format:
+As previously discussed in Section~\ref{sec:rule} (page~\pageref{sec:rule}), version 4.0 of \arara\ introduces a new rule format. As a result, user-defined rules in the old format are incompatible with the new version of our tool and thus have to be updated. In short, we need to replace \abox{command} by \abox{commands} and specify a contextual element. As an example, consider the following hypothetical rule \abox{ls} written in the old format:
 
 \begin{codebox}{A rule in the old format}{teal}{\icnote}{white}
 !config
@@ -615,12 +594,10 @@ manual and update your rule to use the new enhancements of
 arara. Have a great time!
 \end{codebox}
 
-% TODO fix reference
-The resulting rule is identical to the one manually converted in this section. Just note that, when creating the file, the resulting YAML file might write the keys in alphabetical order. That means that, although both files semantically represent the same rule, the positions of keys differ. However, that poses no issue at all, as long as keys are correctly defined. Also, it is important to note that, due to a conversion policy of the underlying YAML library, folded scalars in the old format are transcribed as literal scalars in the new format. We could force a folded style as default, but the resulting rule would be unnecessarily verbose, so we opted for the simpler, cleaner solution. As a direct consequence, we strongly recommend a subsequent verification and potential fix of existing literal scalars into folded ones, if any. Please refer to Section~\ref{foo} (page~\pageref{foo}) for more details on scalars.
+The resulting rule is identical to the one manually converted in this section. Just note that, when creating the file, the resulting YAML file might write the keys in alphabetical order. That means that, although both files semantically represent the same rule, the positions of keys differ. However, that poses no issue at all, as long as keys are correctly defined. Also, it is important to note that, due to a conversion policy of the underlying YAML library, folded scalars in the old format are transcribed as literal scalars in the new format. We could force a folded style as default, but the resulting rule would be unnecessarily verbose, so we opted for the simpler, cleaner solution. As a direct consequence, we strongly recommend a subsequent verification and potential fix of existing literal scalars into folded ones, if any. Please refer to Section~\ref{sec:yamlscalars} (page~\pageref{sec:yamlscalars}) for more details on scalars.
 
 \begin{messagebox}{Replace plain strings in commands}{araracolour}{\icattention}{white}
-% TODO fix reference
-As plain strings are known to be problematic when defining commands, they are marked as deprecated in version 4.0 of \arara\ and will likely be removed in future releases. Since you are migrating from an old format to a new one, please consider replacing plain strings in command by proper \abox{Command} objects. The helper methods available in the rule context, including the indispensable \mtbox{getCommand} method, for obvious reasons, are detailed in Section~\ref{foo}, on page~\pageref{foo}. It is highly advisable to update your rules on this regard, if applicable.
+As plain strings are known to be problematic when defining commands, they are marked as deprecated in version 4.0 of \arara\ and will likely be removed in future releases. Since you are migrating from an old format to a new one, please consider replacing plain strings in command by proper \abox{Command} objects. The helper methods available in the rule context, including the indispensable \mtbox{getCommand} method, for obvious reasons, are detailed in Section~\ref{sec:commandsandtriggers}, on page~\pageref{sec:commandsandtriggers}. It is highly advisable to update your rules on this regard, if applicable.
 \end{messagebox}
 
-This section pretty much covered the basics for correctly migrating rules in the old format to the new one. Of course, it is highly advisable to make use of the new features available in \arara\ 4.0 for achieving better results. If you need any help, please do not hesitating in contacting us. See Section~\ref{foo} (page~\pageref{foo}) for more details on how to get help.
+This section pretty much covered the basics for correctly migrating rules in the old format to the new one. Of course, it is highly advisable to make use of the new features available in \arara\ 4.0 for achieving better results. If you need any help, please do not hesitating in contacting us. See Section~\ref{sec:support} (page~\pageref{sec:support}) for more details on how to get help.

@@ -5,14 +5,11 @@
 According to the \href{http://yaml.org/spec/1.2/spec.html}{specification}, YAML (a recursive acronym for \emph{YAML Ain't Markup Language}) is a human-friendly, cross language, Unicode-based data serialization language designed around the common native data type of programming languages. \arara\ uses this format in three circumstances:
 
 \begin{enumerate}
-% TODO: fix section reference
-\item\emph{Parametrized directives}, as the set of attribute/value pairs (namely, argument name and corresponding value) is represented by a map. This particular type of directive is formally introduced in Section~\ref{foo} (page~\pageref{foo}).
+\item\emph{Parametrized directives}, as the set of attribute/value pairs (namely, argument name and corresponding value) is represented by a map. This particular type of directive is formally introduced in Section~\ref{sec:directives} (page~\pageref{sec:directives}).
 
-% TODO: fix section reference
-\item\emph{Rules}, as their entire structure is represented by a set of specific keys and their corresponding values (a proper YAML document). A rule follows a very strict model, detailed in Section~\ref{foo} (page~\pageref{foo}).
+\item\emph{Rules}, as their entire structure is represented by a set of specific keys and their corresponding values (a proper YAML document). A rule follows a very strict model, detailed in Section~\ref{sec:rule} (page~\pageref{sec:rule}).
 
-% TODO: fix section reference
-\item\emph{Configuration files}, as the general settings are represented by a set of specific keys and their corresponding values (a proper YAML document). Configuration files are covered in Section~\ref{foo} (page~\pageref{foo}).
+\item\emph{Configuration files}, as the general settings are represented by a set of specific keys and their corresponding values (a proper YAML document). Configuration files are covered in Chapter~\ref{chap:configurationfile} (page~\pageref{chap:configurationfile}).
 \end{enumerate}
 
 This chapter only covers the relevant parts of the YAML format for a consistent use with \arara. For advanced topics, I highly recommend the complete format specification, available online.
@@ -44,8 +41,7 @@ developer:
  country: Brazil
 \end{codebox}
 
-% TODO: fix section reference
-Similarly, the flow mapping uses curly braces. Observe that this is the form adopted by a parametrized directive (see syntax on Section~\ref{foo}, page~\pageref{foo}):
+Similarly, the flow mapping uses curly braces. Observe that this is the form adopted by a parametrized directive (see syntax on Section~\ref{sec:directives}, page~\pageref{sec:directives}):
 
 \begin{codebox}{An attribute map in YAML (flow mapping)}{teal}{\icnote}{white}
 developer: { name: Paulo, country: Brazil }
@@ -66,8 +62,7 @@ The previous code can be easily represented in flow style by using square and cu
 \section{Scalars}
 \label{sec:yamlscalars}
 
-% TODO: fix section reference
-Scalar content can be written in block notation, using a literal style, indicated by a vertical bar, where \emph{all line breaks are significant}. Alternatively, they can be written with the folded style, denoted by a greater-than sign, where \emph{each line break is folded to a space} unless it ends an empty or a more-indented line. It is mportant to note that \arara\ intensively uses both styles (as seen in Section~\ref{foo}, page~\pageref{foo}). Let us see an example:
+Scalar content can be written in block notation, using a literal style, indicated by a vertical bar, where \emph{all line breaks are significant}. Alternatively, they can be written with the folded style, denoted by a greater-than sign, where \emph{each line break is folded to a space} unless it ends an empty or a more-indented line. It is mportant to note that \arara\ intensively uses both styles (as seen in Section~\ref{sec:rule}, page~\pageref{sec:rule}). Let us see an example:
 
 \begin{codebox}{Scalar content in literal and folded styles}{teal}{\icnote}{white}
 logo: |
@@ -91,8 +86,7 @@ According to the YAML specification, the indentation level of a block scalar is 
 When detection would fail, YAML requires that the indentation level for the content be given using an explicit indentation indicator. This level is specified as the integer number of the additional indentation spaces used for the content, relative to its parent node. It would be the case if we want to represent our logo without the preceding text.
 \end{messagebox}
 
-% TODO: fix section reference
-YAML's flow scalars include the plain style and two quoted styles. The double-quoted style provides escape sequences. The single-quoted style is useful when escaping is not needed. All flow scalars can span multiple lines. Note that line breaks are always folded. Since \arara\ uses MVEL as its underlying scripting language (Section~\ref{foo}, page~\pageref{foo}), it might be advisable to quote scalars when starting with forbidden symbols in YAML.
+YAML's flow scalars include the plain style and two quoted styles. The double-quoted style provides escape sequences. The single-quoted style is useful when escaping is not needed. All flow scalars can span multiple lines. Note that line breaks are always folded. Since \arara\ uses MVEL as its underlying scripting language (Chapter~\ref{chap:mvel}, page~\pageref{chap:mvel}), it might be advisable to quote scalars when starting with forbidden symbols in YAML.
 
 \section{Tags}
 \label{sec:yamltags}
@@ -103,8 +97,7 @@ According to the specification, in YAML, untagged nodes are given a type dependi
 !config
 \end{codebox}
 
-% TODO: fix section reference
-In particular, rules and configuration files of \arara\ are properly covered in Section~\ref{foo}, page~\pageref{foo}. For now, it suffices to say that the \abox{config} global tag is necessary to provide the correct mapping of values inside our tool.
+In particular, rules and configuration files of \arara\ are properly covered in Section~\ref{sec:rule} and Chapter~\ref{chap:configurationfile}, pages~\pageref{sec:rule} and~\pageref{chap:configurationfile}, respectively. For now, it suffices to say that the \abox{config} global tag is necessary to provide the correct mapping of values inside our tool.
 
 \section{Further reading}
 \label{sec:yamlfurtherreading}

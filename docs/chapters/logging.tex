@@ -2,8 +2,7 @@
 \chapter{Logging}
 \label{chap:logging}
 
-% TODO fix reference
-The logging feature of \arara, as discussed earlier on, is activated through either the \opbox{{-}log} command line option (Section~\ref{foo}, page~\pageref{foo}) or the equivalent key in the configuration file (Section~\ref{foo}, page~\pageref{foo}). This chapter covers the basic structure of a typical log file provided by our tool, including the important blocks that can be used to identify potential issues. The following example is used to illustrate this feature:
+The logging feature of \arara, as discussed earlier on, is activated through either the \opbox{{-}log} command line option (Section~\ref{sec:options}, page~\pageref{sec:options}) or the equivalent key in the configuration file (Section~\ref{sec:basicstructure}, page~\pageref{sec:basicstructure}). This chapter covers the basic structure of a typical log file provided by our tool, including the important blocks that can be used to identify potential issues. The following example is used to illustrate this feature:
 
 \begin{ncodebox}{Source file}{teal}{\icnote}{white}{doc12.tex}
 % arara: pdftex
@@ -75,8 +74,7 @@ In this phase, directives are correctly extracted and composed, but yet to be va
 \section{Directive normalization}
 \label{sec:directivenormalization}
 
-% TODO fix reference
-Once all directives are properly composed, the tool checks for potential inconsistences, such as invalid or reserved parameter keys. Then all directives are validated and internally mapped with special parameters, as previously described in Section~\ref{foo}, on page~\pageref{foo}.
+Once all directives are properly composed, the tool checks for potential inconsistences, such as invalid or reserved parameter keys. Then all directives are validated and internally mapped with special parameters, as previously described in Section~\ref{sec:directivenormalization}, on page~\pageref{sec:directivenormalization}.
 
 \begin{codebox}{Log file}{teal}{\icnote}{white}
 All directives were validated. We are good to go.
@@ -107,8 +105,7 @@ I am ready to interpret rule 'pdftex'.
 Rule location: '/opt/paulo/arara/rules'
 \end{codebox}
 
-% TODO fix reference
-For each task (or subtask, as it is part of a rule task) defined in the rule context, \arara\ will interpret it and return the corresponding system command. The return types can be found in Section~\ref{foo}, on page~\pageref{foo}. In this specific scenario, there is just one task associated with the \rbox{pdftex} rule. Both task name and system command are informed:
+For each task (or subtask, as it is part of a rule task) defined in the rule context, \arara\ will interpret it and return the corresponding system command. The return types can be found in Section~\ref{sec:rule}, on page~\pageref{sec:rule}. In this specific scenario, there is just one task associated with the \rbox{pdftex} rule. Both task name and system command are informed:
 
 \begin{codebox}{Log file}{teal}{\icnote}{white}
 I am ready to interpret task 'PDFTeX engine' from rule 'PDFTeX'.

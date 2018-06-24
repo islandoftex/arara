@@ -35,12 +35,10 @@ From version 4.0 on, \arara\ provides two approaches regarding the location of a
 \end{description}
 
 \begin{messagebox}{Beware of empty configuration files}{attentioncolour}{\icattention}{black}
-% TODO fix reference
-A configuration file should never be empty, otherwise \arara\ will complain about it. Make sure to populate it with at least one key, or do not write a configuration file at all. The available keys are described in Section~\ref{foo}, page~\pageref{foo}.
+A configuration file should never be empty, otherwise \arara\ will complain about it. Make sure to populate it with at least one key, or do not write a configuration file at all. The available keys are described in Section~\ref{sec:basicstructure}, page~\pageref{sec:basicstructure}.
 \end{messagebox}
 
-% TODO fix reference
-If the logging feature is properly enabled, \arara\ will indicate in the corresponding \rbox{arara.log} file whether a configuration file was used during the execution and, if so, the corresponding canonical, absolute path. Logging is detailed later on, in Section~\ref{foo} (page~\pageref{foo}).
+If the logging feature is properly enabled, \arara\ will indicate in the corresponding \rbox{arara.log} file whether a configuration file was used during the execution and, if so, the corresponding canonical, absolute path. Logging is detailed later on, in Chapter~\ref{chap:logging} (page~\pageref{chap:logging}).
 
 \section{Basic structure}
 \label{sec:basicstructure}
@@ -58,8 +56,7 @@ paths:
 - '/opt/paulo/rules'
 \end{codebox}
 
-% TODO fix reference
-There are three variables available in the \abox{paths} context and are described as follows (note that MVEL variables and orb tags are discussed in Chapter~\ref{foo}). A variable will be denoted by \varbox{variable} in this list.
+There are three variables available in the \abox{paths} context and are described as follows (note that MVEL variables and orb tags are discussed in Chapter~\ref{sec:mvelbasicusage}). A variable will be denoted by \varbox{variable} in this list.
 
 \begin{description}
 \item[\varbox{user.home}] This variable, as the name implies, holds the value of the absolute, canonical path of \abox[araracolour]{USER\_HOME} which is the home directory of the current user, as plain string. Note that the specifics of the home directory (such as name and location) are defined by the operating system involved.
@@ -84,8 +81,7 @@ paths:
 - '/home/@{user.name}/rules'
 \end{codebox}
 
-% TODO fix reference
-Observe that the \varbox{user} variable actually holds a map containing three keys (resulting in a map within a map). However, for didatic purposes, it is easier to use the property navigation feature of MVEL, detailed in Section~\ref{foo} (page~\pageref{foo}), and consider the map references as three independent variables. You can use property navigation styles interchangeably. Note that you can also precede the path with the special keyword \abox{<arara>} and save some quotes (see Section~\ref{foo}, page~\pageref{foo}). In this specific scenario, the special keyword will be automatically removed afterwards.
+Observe that the \varbox{user} variable actually holds a map containing three keys (resulting in a map within a map). However, for didatic purposes, it is easier to use the property navigation feature of MVEL, detailed in Section~\ref{sec:propertynavigation} (page~\pageref{sec:propertynavigation}), and consider the map references as three independent variables. You can use property navigation styles interchangeably. Note that you can also precede the path with the special keyword \abox{<arara>} and save some quotes (see Section~\ref{sec:rule}, page~\pageref{sec:rule}). In this specific scenario, the special keyword will be automatically removed afterwards.
 
 \begin{messagebox}{Avoid folded and literal styles for scalars in a path}{attentioncolour}{\icattention}{black}
 Do not use folded or literal styles for scalars in a path! The orb tag resolution for a path in plain string should be kept as simple as possible, so \emph{always} use the inline style.
@@ -127,23 +123,20 @@ header: false
 logname: mylog
 \end{codebox}
 
-% TODO fix reference
-\item[\describecf{O}{string}{dbname}{arara}] This key modifies the default XML database file name, according to the associated plain string value, plus the \rbox{xml} extension. The value cannot be empty or contain invalid characters. There is no orb tag evaluation in this specific context, only a plain string value. This database is used by file hashing operations, detailed in Section~\ref{foo}, on page~\pageref{foo}.
+\item[\describecf{O}{string}{dbname}{arara}] This key modifies the default XML database file name, according to the associated plain string value, plus the \rbox{xml} extension. The value cannot be empty or contain invalid characters. There is no orb tag evaluation in this specific context, only a plain string value. This database is used by file hashing operations, detailed in Section~\ref{sec:files}, on page~\pageref{sec:files}.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 dbname: mydb
 \end{codebox}
 
-% TODO fix reference
-\item[\describecf{O}{string}{laf}{none}] This key modifies the default look and feel class reference, i.e,  the appearance of GUI widgets provided by our tool, according to the associated plain string value. The value cannot be empty or contain invalid characters. There is no orb tag evaluation in this specific context, only a plain string value. This look and feel setting is used by UI methods, detailed in Section~\ref{foo}, on page~\pageref{foo}. Note that this value is used by the underlying Java runtime environment, so a full qualified class name is expected.
+\item[\describecf{O}{string}{laf}{none}] This key modifies the default look and feel class reference, i.e,  the appearance of GUI widgets provided by our tool, according to the associated plain string value. The value cannot be empty or contain invalid characters. There is no orb tag evaluation in this specific context, only a plain string value. This look and feel setting is used by UI methods, detailed in Section~\ref{sec:dialogboxes}, on page~\pageref{sec:dialogboxes}. Note that this value is used by the underlying Java runtime environment, so a full qualified class name is expected.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 laf: 'javax.swing.plaf.nimbus.NimbusLookAndFeel'
 \end{codebox}
 
 \begin{messagebox}{Special keywords for the look and feel setting}{araracolour}{\icok}{white}
-% TODO fix reference
-Look and feel values other than the default provided by Java offer a more pleasant visual experience to the user, so if your rules or directives employ UI methods (detailed in Section~\ref{foo}, on page~\pageref{foo}), it might be interesting to provide a value to the \rbox{laf} key. At the time of writing, \arara\ provides two special keywords that are translated to the corresponding fully qualified Java class names:
+Look and feel values other than the default provided by Java offer a more pleasant visual experience to the user, so if your rules or directives employ UI methods (detailed in Section~\ref{sec:dialogboxes}, on page~\pageref{sec:dialogboxes}), it might be interesting to provide a value to the \rbox{laf} key. At the time of writing, \arara\ provides two special keywords that are translated to the corresponding fully qualified Java class names:
 
 \vspace{1em}
 
@@ -159,8 +152,7 @@ Look and feel values other than the default provided by Java offer a more pleasa
 The system look and feel, of course, offers the best option of all since it mimics the native appearance of graphical applications in the underlying system. However, some systems might encounter slow rendering times when this option is used, so your milleage might vary.
 \end{messagebox}
 
-% TODO fix reference
-\item[\describecfn{O}{string map}{preambles}] This key holds a string map containing predefined preambles for later use with the \opbox{{-}preamble} option (see Section~\ref{foo}, on page~\pageref{foo}). Note that each map key must be unique. Additionally, it it is highly recommended to use lowercase letters without spaces, accents or punctuation symbols, as key values. Only directives, line breaks and conditionals are recognized.
+\item[\describecfn{O}{string map}{preambles}] This key holds a string map containing predefined preambles for later use with the \opbox{{-}preamble} option (see Section~\ref{sec:options}, on page~\pageref{sec:options}). Note that each map key must be unique. Additionally, it it is highly recommended to use lowercase letters without spaces, accents or punctuation symbols, as key values. Only directives, line breaks and conditionals are recognized.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 preambles:
@@ -185,8 +177,7 @@ extension: c
 \item[\describecontextt{M}{O}{filetypes}{pattern}] This key holds the directive lookup pattern as a regular expression (which is, of course, represented as a plain string). When introducing a new file type, \arara\ must know how to interpret each line and how to properly find and extract directives, hence this key. Observe that this key is marked as optional and mandatory. The reason for such unusual indication highly depends on the current scenario and presents as follows.
 
 \begin{itemize}[label={--}]
-% TODO fix reference
-\item The \abox{pattern} key is entirely \emph{optional} for known file types (presented in Section~\ref{foo}, on page~\pageref{foo}, and henceforth named \emph{default} file types), in case you just want to modify the file name lookup order. It is important to observe that default file types already have their directive lookup patterns set, which incidentally are the same, presented as follows.
+\item The \abox{pattern} key is entirely \emph{optional} for known file types (presented in Section~\ref{sec:filenamelookup}, on page~\pageref{sec:filenamelookup}, and henceforth named \emph{default} file types), in case you just want to modify the file name lookup order. It is important to observe that default file types already have their directive lookup patterns set, which incidentally are the same, presented as follows.
 
 \begin{codebox}{Default regular expression pattern for known file types}{teal}{\icnote}{white}
 ^\s*%\s+
@@ -200,8 +191,7 @@ pattern: ^\s*//\s*
 \end{itemize}
 \end{description}
 
-% TODO fix reference
-For instance, let us reverse the default file name lookup order presented in Section~\ref{foo} (page~\pageref{foo}). Since the default lookup patterns will be preserved, the corresponding \abox{pattern} keys can be safely omitted. Now it is just a matter of rearranging the entries in the desired order, presented as follows.
+For instance, let us reverse the default file name lookup order presented in Section~\ref{sec:filenamelookup} (page~\pageref{sec:filenamelookup}). Since the default lookup patterns will be preserved, the corresponding \abox{pattern} keys can be safely omitted. Now it is just a matter of rearranging the entries in the desired order, presented as follows.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 filetypes:
@@ -260,5 +250,4 @@ However, please note that character escaping might be required by the underlying
 \end{messagebox}
 \end{description}
 
-% TODO fix reference
-Since \arara\ allows four different names for configuration files, as well as global and local approaches, it is highly advisable to run our tool with the \opbox{{-}log} command line option enabled, in order to easily identify which file was considered for that specific execution. The logging feature is discussed later on, in Chapter~\ref{foo} (page~\pageref{foo}).
+Since \arara\ allows four different names for configuration files, as well as global and local approaches, it is highly advisable to run our tool with the \opbox{{-}log} command line option enabled, in order to easily identify which file was considered for that specific execution. The logging feature is discussed later on, in Chapter~\ref{chap:logging} (page~\pageref{chap:logging}).

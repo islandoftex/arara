@@ -42,8 +42,7 @@ The list of tasks was also redesigned to be fully justified, and each entry disp
 (PDFLaTeX) PDFLaTeX engine .............................. SUCCESS
 \end{codebox}
 
-% TODO fix reference
-As previously mentioned in Section~\ref{foo} (page~\pageref{foo}), if a task fails, \arara\ will halt the entire execution at once and immediately report back to the user. This is an example of how a failed task looks like:
+As previously mentioned in Section~\ref{sec:rule} (page~\pageref{sec:rule}), if a task fails, \arara\ will halt the entire execution at once and immediately report back to the user. This is an example of how a failed task looks like:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 (PDFLaTeX) PDFLaTeX engine .............................. FAILURE
@@ -117,7 +116,7 @@ usage: arara [file [--dry-run] [--log] [--verbose | --silent]
  -v,--verbose              print the command output
 \end{codebox}
 
-The available options for our tool are detailed as follows. Each option contains short and long variations, which are denoted by \opbox{o} and \opbox{{-}option} in the command line, respectivelly. Additionally, when a parameter is required by the current option, it will be denoted by \prbox{parameter} in the description.
+The available options for our tool are detailed as follows. Each option contains short and long variations, which are denoted by \opbox{o} and \opbox{{-}option} in the command line, respectively. Additionally, when a parameter is required by the current option, it will be denoted by \prbox{parameter} in the description.
 
 \begin{description}
 \item[\describeop{h}{help}] As the name indicates, this option prints the help message containing the tool usage and the list of all available options. The tool exits afterwards. When running \arara\ without any options or a file to be processed, this is the default behaviour. This option has the highest priority over the others.
@@ -132,11 +131,9 @@ Hello world.
 % arara: pdftex
 \end{ncodebox}
 
-% TODO fix reference
-When running \arara\ without this option, two directives will be extracted (the ones found in lines 1 and 5). However, if executed with \opbox{{-}header}, the tool will only extract one directive (from line 1), as it will stop the extraction process as soon as it reaches line 2. This option can also be activated by default in the configuration file (see Section~\ref{foo}, page~\pageref{foo}).
+When running \arara\ without this option, two directives will be extracted (the ones found in lines 1 and 5). However, if executed with \opbox{{-}header}, the tool will only extract one directive (from line 1), as it will stop the extraction process as soon as it reaches line 2. This option can also be activated by default in the configuration file (see Section~\ref{sec:basicstructure}, page~\pageref{sec:basicstructure}).
 
-% TODO fix reference
-\item[\describeop{l}{log}] This option enables the logging feature of our tool. All streams from all system commands will be logged and, at the end of the execution, a consolidated log file named \rbox{arara.log} will be generated. This option can also be activated by default in the configuration file (see Section~\ref{foo}, page~\pageref{foo}). Refer to Section~\ref{foo}, on page~\pageref{foo}, for more details on the logging feature.
+\item[\describeop{l}{log}] This option enables the logging feature of our tool. All streams from all system commands will be logged and, at the end of the execution, a consolidated log file named \rbox{arara.log} will be generated. This option can also be activated by default in the configuration file (see Section~\ref{sec:basicstructure}, page~\pageref{sec:basicstructure}). Refer to Chapter~\ref{chap:logging}, on page~\pageref{chap:logging}, for more details on the logging feature.
 
 \item[\describeopp{L}{language}{code}] This option sets the language of the current execution of \arara\ according to the language code \prbox{code} value provided as parameter. The language code tries to follow the ISO 639 norm, standardized nomenclature used to classify languages. For example, this is our tool speaking Dutch:
 
@@ -181,11 +178,9 @@ At time of writing, \arara\ is able to speak English, German, Dutch, Italian and
 Would you like to make \arara\ speak your own language? Splendid! We would love to have you in the team! Just send us an electronic mail, join our \href{https://gitter.im/cereda/arara}{dedicated chatroom} or \href{https://github.com/cereda/arara/issues}{open an issue} about it. The localization process is quite straightforward, we can help you. Any language is welcome!
 \end{messagebox}
 
-% TODO fix reference
-This option can also be specified in the configuration file (see Section~\ref{foo}, page~\pageref{foo}). However, one can always override this setting by running the tool with an explicit \opbox{L} option.
+This option can also be specified in the configuration file (see Section~\ref{sec:basicstructure}, page~\pageref{sec:basicstructure}). However, one can always override this setting by running the tool with an explicit \opbox{L} option.
 
-% TODO fix reference
-\item[\describeopp{m}{max-loops}{number}] As a means to avoid infinite iterations, \arara\ has a predefined maximum number of loops, current set to 10, as a technical solution (seen in Section~\ref{foo}, page~\pageref{foo}). For instance, consider the following directive:
+\item[\describeopp{m}{max-loops}{number}] As a means to avoid infinite iterations, \arara\ has a predefined maximum number of loops, current set to 10, as a technical solution (seen in Section~\ref{sec:directives}, page~\pageref{sec:directives}). For instance, consider the following directive:
 
 \begin{codebox}{A naughty directive}{teal}{\icnote}{white}
 % arara: pdftex while true
@@ -209,8 +204,7 @@ Processing 'doc8.tex' (size: 45 bytes, last modified: 05/29/2018
 Total: 0.58 seconds
 \end{codebox}
 
-% TODO fix reference
-This option can also be specified in the configuration file (see Section~\ref{foo}, page~\pageref{foo}). However, one can always override this setting by running the tool with an explicit \opbox{m} option.
+This option can also be specified in the configuration file (see Section~\ref{sec:basicstructure}, page~\pageref{sec:basicstructure}). However, one can always override this setting by running the tool with an explicit \opbox{m} option.
 
 \item[\describeop{n}{dry-run}] This option makes \arara\ go through all the motions of running tasks and subtasks, but with no actual calls. It is a very useful feature for testing the sequence of underlying system commands to be performed on a file. For instance, consider the following execution:
 
@@ -284,8 +278,7 @@ Processing 'doc9.tex' (size: 18 bytes, last modified: 05/29/2018
 Total: 0.96 seconds
 \end{codebox}
 
-% TODO fix reference
-It is important to note that this is just a directive-based preamble and nothing else, so a line other than a directive is discarded. Line breaks and conditionals are supported. Trying to exploit this area for other purposes will not work. The preamble specification in the configuration file is detailed in Section~\ref{foo} (page~\pageref{foo}). 
+It is important to note that this is just a directive-based preamble and nothing else, so a line other than a directive is discarded. Line breaks and conditionals are supported. Trying to exploit this area for other purposes will not work. The preamble specification in the configuration file is detailed in Section~\ref{sec:basicstructure} (page~\pageref{sec:basicstructure}). 
 
 \item[\describeopp{t}{timeout}{number}] This option sets an execution timeout for every task, in milliseconds. If the timeout is reached before the task ends, \arara\ will kill it and halt the execution. Any positive integer can be used as \prbox{number} value for this option. Of course, use a sensible value to give proper time for a task to be executed. For instance, consider the following recursive call:
 
@@ -324,10 +317,9 @@ If left unattended, this particular execution would never finish (and probably c
 
 \item[\describeop{V}{version}] This option, as the name indicates, prints the current version. It also prints the current revision and a list of libraries with their corresponding licenses. Finally, it simply exits the application. Note that this option has the second highest priority over the others.
 
-% TODO fix reference
-\item[\describeop{v}{verbose}] This option enables the verbose mode of \arara, as seen in Section~\ref{foo} (page~\pageref{foo}). It also enables all streams to be flushed directly to the terminal, including potential user input interactions (the exact opposite of silent mode). This option can also be activated by default in the configuration file (see Section~\ref{foo}, page~\pageref{foo}).
+\item[\describeop{v}{verbose}] This option enables the verbose mode of \arara, as seen in Section~\ref{sec:userinterfacedesign} (page~\pageref{sec:userinterfacedesign}). It also enables all streams to be flushed directly to the terminal, including potential user input interactions (the exact opposite of silent mode). This option can also be activated by default in the configuration file (see Section~\ref{sec:basicstructure}, page~\pageref{sec:basicstructure}).
 
-\item[\describeop{s}{silent}] This option disables the verbose mode of \arara\ (thus activating the default silent mode), if previously enabled by a proper configuration file (see Section~\ref{foo}, on page~\pageref{foo}). It is important to note that this command line option has higher priority over the \opbox{{-}verbose} counterpart.
+\item[\describeop{s}{silent}] This option disables the verbose mode of \arara\ (thus activating the default silent mode), if previously enabled by a proper configuration file (see Chapter~\ref{chap:configurationfile}, on page~\pageref{chap:configurationfile}). It is important to note that this command line option has higher priority over the \opbox{{-}verbose} counterpart.
 \end{description}
 
 You can combine options, use long or short variations interchangeably and write them in any order, provided that a file name is given at some point in the command line, otherwise the usage will be printed. Use the provided features in order to enhance and optimize your automation workflow.
@@ -356,8 +348,7 @@ You can combine options, use long or short variations interchangeably and write 
 
 \vspace{1.4em}
 
-% TODO fix reference
-Note that other extensions can be added through a proper mapping in the configuration file, as well as modifying the lookup order. This feature is detailed later on, in Section~\ref{foo} (page~\pageref{foo}). \arara\ employs the following scheme for file name lookup:
+Note that other extensions can be added through a proper mapping in the configuration file, as well as modifying the lookup order. This feature is detailed later on, in Section~\ref{sec:basicstructure} (page~\pageref{sec:basicstructure}). \arara\ employs the following scheme for file name lookup:
 
 \begin{itemize}[label={--}]
 \item First and foremost, if the provided file name already contains a valid extension, the tool attempts an exact match. If the file exists, it will be selected. This is the best approach if your working directory contain other files sharing the same base name.
