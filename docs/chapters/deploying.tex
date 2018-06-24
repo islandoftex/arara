@@ -182,8 +182,40 @@ $ mv arara /home/paulo/bin/
 \end{codebox}
 
 There is no need to restart your terminal, as the reference becomes available as soon as it is moved to the new location. Note that a shell script can provide a convenient variation of a system command where special environment settings, command options, or post-processing apply automatically, but in a way that allows the new script to still act as a fully normal Unix command.
-
 \end{description}
+
+Regardless of the adopted approach, there should be an \rbox{arara} wrapper available as an actual Unix command in your shell session. In order to test the wrapper, run the following command in the terminal:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ arara
+  __ _ _ __ __ _ _ __ __ _ 
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+arara 4.0 (revision 1)
+Copyright (c) 2012-2018, Paulo Roberto Massa Cereda
+All rights reserved
+
+usage: arara [file [--dry-run] [--log] [--verbose | --silent]
+             [--timeout N] [--max-loops N] [--language L]
+             [ --preamble P ] [--header] | --help | --version]
+ -h,--help                 print the help message
+ -H,--header               extract directives only in the file header
+ -l,--log                  generate a log output
+ -L,--language <code>      set the application language
+ -m,--max-loops <number>   set the maximum number of loops
+ -n,--dry-run              go through all the motions of running a
+                           command, but with no actual calls
+ -p,--preamble <name>      set the file preamble based on the
+                           configuration file
+ -s,--silent               hide the command output
+ -t,--timeout <number>     set the execution timeout (in milliseconds)
+ -V,--version              print the application version
+ -v,--verbose              print the command output
+\end{codebox}
+
+It is important to observe that the wrapper initiative presented in this section might cause a potential name clash with existing \TeX\ Live or MiK\TeX\ binaries and symbolic links. In this particular scenario, make sure to inspect the command location as a means to ensure a correct execution.
 
 %\begin{}{Source file}{teal}{\icnote}{white}{}
 %\end{ncodebox}
