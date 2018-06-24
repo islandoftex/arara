@@ -5,9 +5,9 @@
 According to the \href{https://en.wikipedia.org/wiki/MVEL}{Wikipedia entry}, the MVFLEX Expression Language (hereafter referred as MVEL) is a hybrid, dynamic, statically typed, embeddable expression language and runtime for the Java platform. Originally started as a utility language for an application framework, the project is now developed completely independently. \arara\ relies on such scripting language in two circumstances:
 
 \begin{enumerate}
-\item\emph{Rules}, as nominal attributes gathered from directives are used to build complex command invocations and additional computations. A rule follows a very strict model, detailed in Section~\ref{sec:rule} (page~\pageref{sec:rule}).
+\item\emph{Rules}, as nominal attributes gathered from directives are used to build complex command invocations and additional computations. A rule follows a very strict model, detailed in Section~\ref{sec:rule}, on page~\pageref{sec:rule}.
 
-\item\emph{Conditionals}, as logical expressions must be evaluated in order to decide whether and how a directive should be interpreted. Conditionals are detailed in Section~\ref{sec:directives} (page~\pageref{sec:directives}).
+\item\emph{Conditionals}, as logical expressions must be evaluated in order to decide whether and how a directive should be interpreted. Conditionals are detailed in Section~\ref{sec:directives}, on page~\pageref{sec:directives}.
 \end{enumerate}
 
 This chapter only covers the relevant parts of the MVEL language for a consistent use with \arara. For advanced topics, I highly recommend the official language guide for MVEL 2.0, available online.
@@ -21,13 +21,13 @@ The following primer is provided by the \href{https://mvel.documentnode.com/}{of
 user.name
 \end{codebox}
 
-In this expression, we have a single identifier \abox{user.name}, which by itself is a property expression, in that the only purpose of such expression is to extract a property out of a variable or context object, namely \abox{user}. Property expressions are widely used by \arara: directive parameters are converted to a map inside the corresponding rule scope. For instance, a parameter \abox{foo} in a directive will be mapped as \abox{parameters.foo} inside a rule during interpretation. This topic is detailed in Section~\ref{sec:directives} (page~\pageref{sec:directives}). The scripting language can also be used for evaluating a boolean expression:
+In this expression, we have a single identifier \rbox{user.name}, which by itself is a property expression, in that the only purpose of such expression is to extract a property out of a variable or context object, namely \rbox{user}. Property expressions are widely used by \arara, as directive parameters are converted to a map inside the corresponding rule scope. For instance, a parameter \rbox{foo} in a directive will be mapped as \rbox{parameters.foo} inside a rule during interpretation. This topic is detailed in Section~\ref{sec:directives}, on page~\pageref{sec:directives}. The scripting language can also be used for evaluating a boolean expression:
 
 \begin{codebox}{Boolean expression evaluation}{teal}{\icnote}{white}
 user.name == 'John Doe'
 \end{codebox}
 
-This expression yields a boolean result, either \abox{true} or \abox{false} based on a comparation operation. Like a typical programming language, MVEL supports the full gambit of operator precedence rules, including the ability to use bracketing to control execution order:
+This expression yields a boolean result, either \rbox{true} or \rbox{false} based on a comparation operation. Like a typical programming language, MVEL supports the full gambit of operator precedence rules, including the ability to use bracketing to control execution order:
 
 \begin{codebox}{Execution order control through bracketing}{teal}{\icnote}{white}
 (user.name == 'John Doe') && ((x * 2) - 1) > 20
@@ -39,7 +39,7 @@ You may write scripts with an arbitrary number of statements using semicolon to 
 statement1; statement2; statement3
 \end{codebox}
 
-It is important to observe that MVEL expressions use a \emph{last value out} principle. This means, that although MVEL supports the \abox{return} keyword, it can be safely omitted. For example:
+It is important to observe that MVEL expressions use a \emph{last value out} principle. This means, that although MVEL supports the \rbox{return} keyword, it can be safely omitted. For example:
 
 \begin{codebox}{Automatic return}{teal}{\icnote}{white}
 foo = 10;
@@ -47,7 +47,7 @@ bar = (foo = foo * 2) + 10;
 foo;
 \end{codebox}
 
-In this particular example, the expression automatically returns the value of \abox{foo} as it is the last value of the expression. It is functionally identical to:
+In this particular example, the expression automatically returns the value of \rbox{foo} as it is the last value of the expression. It is functionally identical to:
 
 \begin{codebox}{Explicit return}{teal}{\icnote}{white}
 foo = 10;
@@ -55,7 +55,7 @@ bar = (foo = foo * 2) + 10;
 return foo;
 \end{codebox}
 
-Personally, I like to explicitly add a \abox{return} statement, as it provides a visual indication of the expression exit point. All rules released with \arara\ favour this writing style. However, feel free to choose any writing style you want, as long as the resulting code is consistent.
+Personally, I like to explicitly add a \rbox{return} statement, as it provides a visual indication of the expression exit point. All rules released with \arara\ favour this writing style. However, feel free to choose any writing style you want, as long as the resulting code is consistent.
 
 The type coercion system of MVEL is applied in cases where two incomparable types are presented by attempting to coerce the right value to that of the type of the left value, and then vice-versa. For example:
 
@@ -63,7 +63,7 @@ The type coercion system of MVEL is applied in cases where two incomparable type
 "123" == 123;
 \end{codebox}
 
-Surprisingly, the evaluation of such expression holds \abox{true} in MVEL because the underlying type coercion system will coerce the untyped number \abox{123} to a string \abox{123} in order to perform the comparison.
+Surprisingly, the evaluation of such expression holds \rbox{true} in MVEL because the underlying type coercion system will coerce the untyped number \rbox{123} to a string \rbox{123} in order to perform the comparison.
 
 \section{Inline lists, maps and arrays}
 \label{sec:mvelinlinelistsmapsandarrays}
@@ -86,7 +86,7 @@ Note that attributes are composed by a key, a colon and the corresponding value.
 { "Jim", "Bob", "Smith" }
 \end{codebox}
 
-One important aspect about inline arrays is their special ability to be coerced to other array types. When you declare an inline array, it is untyped at first and later coerced to the type needed in context. For instance, consider the following code, in which \abox{sum} takes an array of integers:
+One important aspect about inline arrays is their special ability to be coerced to other array types. When you declare an inline array, it is untyped at first and later coerced to the type needed in context. For instance, consider the following code, in which \rbox{sum} takes an array of integers:
 
 \begin{codebox}{Array coercion}{teal}{\icnote}{white}
 math.sum({ 1, 2, 3, 4 });
@@ -143,7 +143,7 @@ As seen in the previous code, the syntax is very similar to the ones found in ty
 answer == true ? "yes" : "no";
 \end{codebox}
 
-The \abox{foreach} statement accepts two parameters separated by a colon, being the first the local variable holding the current element, and the second the collection or array to be iterated. For example:
+The \rbox{foreach} statement accepts two parameters separated by a colon, being the first the local variable holding the current element, and the second the collection or array to be iterated. For example:
 
 \begin{codebox}{Iteration statement}{teal}{\icnote}{white}
 foreach (name : people) {
@@ -151,7 +151,7 @@ foreach (name : people) {
 }
 \end{codebox}
 
-As expected, MVEL also implements the standard C \abox{for} loop. Observe that newer versions of MVEL allow an abreviation of \abox{foreach} to the usual \abox{for} statement, as syntactic sugar. In order to explicitly indicate a collection iteration, we usually use \abox{foreach} in the default rules for \arara, but both statements behave exactly the same from a semantic point of view. 
+As expected, MVEL also implements the standard C \rbox{for} loop. Observe that newer versions of MVEL allow an abreviation of \rbox{foreach} to the usual \rbox{for} statement, as syntactic sugar. In order to explicitly indicate a collection iteration, we usually use \rbox{foreach} in the default rules for \arara, but both statements behave exactly the same from a semantic point of view. 
 
 \begin{codebox}{Iteration statement}{teal}{\icnote}{white}
 for (int i = 0; i < 100; i++) { 
@@ -159,7 +159,7 @@ for (int i = 0; i < 100; i++) {
 }
 \end{codebox}
 
-The scripting language also provides two versions of the \abox{do} statement: one with \abox{while} and one with \abox{until} (being the latter the exact inverse of the former):
+The scripting language also provides two versions of the \rbox{do} statement: one with \rbox{while} and one with \rbox{until} (being the latter the exact inverse of the former):
 
 \begin{codebox}{Iteration statement}{teal}{\icnote}{white}
 do {
@@ -173,7 +173,7 @@ do {
 } until (x == null);
 \end{codebox}
 
-At last, MVEL also implements the standard \abox{while}, with the significant addition of a \abox{until} counterpart (for inverted logic):
+At last, MVEL also implements the standard \rbox{while}, with the significant addition of a \rbox{until} counterpart (for inverted logic):
 
 \begin{codebox}{Iteration statement}{teal}{\icnote}{white}
 while (isTrue()) {
@@ -187,18 +187,18 @@ until (isFalse()) {
 }
 \end{codebox}
 
-Since \abox{while} and \abox{until} are unbounded (that is, the number of iterations required to solve a problem may be unpredictable), we usually tend to avoid using such statements when writing rules for \arara.
+Since \rbox{while} and \rbox{until} are unbounded (i.e, the number of iterations required to solve a problem may be unpredictable), we usually tend to avoid using such statements when writing rules for \arara.
 
 \section{Projections and folds}
 \label{sec:mvelprojectionsandfolds}
 
-Projections are a way of representing collections. According to the official documentation, using a very simple syntax, one can inspect very complex object models inside collections in MVEL using the \abox{in} operator. For example:
+Projections are a way of representing collections. According to the official documentation, using a very simple syntax, one can inspect very complex object models inside collections in MVEL using the \rbox{in} operator. For example:
 
 \begin{codebox}{Projection and fold}{teal}{\icnote}{white}
 names = (user.name in users);
 \end{codebox}
 
-As seen in the previous code, \abox{names} holds all values from the \abox{name} property of each element, represented locally by a placeholder \abox{user}, from the collection \abox{users} being inspected. This feature can even perform nested operations.
+As seen in the previous code, \rbox{names} holds all values from the \rbox{name} property of each element, represented locally by a placeholder \rbox{user}, from the collection \rbox{users} being inspected. This feature can even perform nested operations.
 
 \section{Assignments}
 \label{sec:mvelassignments}
@@ -216,7 +216,7 @@ Unlike Java, however, the scripting language provides automatic type conversion 
 String num = 1;
 \end{codebox}
 
-For dynamically typed variables, in order to perform a type conversion, it is just a matter of explicitly casting the value to the desired type. In the following example, an explicit string cast is assigned to the \abox{num} variable:
+For dynamically typed variables, in order to perform a type conversion, it is just a matter of explicitly casting the value to the desired type. In the following example, an explicit string cast is assigned to the \rbox{num} variable:
 
 \begin{codebox}{Assignment}{teal}{\icnote}{white}
 num = (String) 1;

@@ -875,7 +875,7 @@ From the user perspective, a \rbox{Command} object is simply a good old list of 
 
 From the previous example, it is important to observe that a potential file name quoting is not necessary. The underlying system command execution library handles the provided arguments accordingly. 
 
-Behind the scenes, however, \arara\ employs a different workflow when constructing a \rbox{Command} object. The tool sets the working directory path for the current command to \abox[araracolour]{USER\_DIR} which is based on the current execution. The working directory path can be explicitly set through specific method calls, described later on in this section.
+Behind the scenes, however, \arara\ employs a different workflow when constructing a \rbox{Command} object. The tool sets the working directory path for the current command to \abox[araracolour]{USER\_DIR} which is based on the current execution. The working directory path can be explicitly set through specific method calls, described later on, in this section.
 
 The list of objects is then completely flattened and all elements are mapped to their string representations through corresponding \mtbox{toString} calls. Finally, the proper \rbox{Command} object is constructed. Keep in mind that, although a command takes a list (or even an array) of objects, which can be of any type, the internal representation is \emph{always} a list of strings.
 \end{messagebox}

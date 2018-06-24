@@ -7,7 +7,7 @@ Time for our first contact with \arara! I must stress that is very important to 
 \section{Rules}
 \label{sec:rule}
 
-A \emph{rule} is a formal description of how \arara\ handles a certain task. For instance, if we want to use \rbox{pdflatex} with our tool, we should have a rule for that. Directives are mapped to rules, so a call to a nonexistent rule \abox{foo}, for instance, will indeed raise an error:
+A \emph{rule} is a formal description of how \arara\ handles a certain task. For instance, if we want to use \rbox{pdflatex} with our tool, we should have a rule for that. Directives are mapped to rules, so a call to a nonexistent rule \rbox{foo}, for instance, will indeed raise an error:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
   __ _ _ __ __ _ _ __ __ _ 
@@ -26,22 +26,22 @@ Perhaps a misspelled word? I was looking for a file named
 Total: 0.09 seconds
 \end{codebox}
 
-Once a rule is defined, \arara\ automatically provides an access layer to that rule through directives in the source code, a concept to be formally introduced later on, in Section~\ref{sec:directives}. Observe that a directive reflects a particular instance of a rule of the same name (i.e, a \abox{foo} directive in a certain source code is an instance of the \abox{foo} rule).
+Once a rule is defined, \arara\ automatically provides an access layer to that rule through directives in the source code, a concept to be formally introduced later on, in Section~\ref{sec:directives}. Observe that a directive reflects a particular instance of a rule of the same name (i.e, a \rbox{foo} directive in a certain source code is an instance of the \rbox{foo} rule).
 
-In short, a rule is a plain text file written in the YAML format, introduced in Chapter~\ref{chap:yaml} (page~\pageref{chap:yaml}). I opted for this format because back then it was cleaner and more intuitive to use than other markup languages such as XML, besides of course being a data serialization standard for programming languages.
+In short, a rule is a plain text file written in the YAML format, introduced in Chapter~\ref{chap:yaml}, on page~\pageref{chap:yaml}. I opted for this format because back then it was cleaner and more intuitive to use than other markup languages such as XML, besides of course being a data serialization standard for programming languages.
 
 \begin{messagebox}{Animal jokes}{araracolour}{\icok}{white}
 As a bonus, the acronym \emph{YAML} rhymes with the word \emph{camel}, so \arara\ is heavily environmentally friendly. Speaking of camels, there is the programming reference as well, since this amusing animal is usually associated with Perl and friends.
 \end{messagebox}
 
-The default rules, that is, the rules shipped with \arara, are placed inside a special subdirectory named \abox[araracolour]{rules/} inside another special directory named \abox[araracolour]{ARARA\_HOME} (the place where our tool is installed). We will learn later on, in Section~\ref{sec:basicstructure} (page~\pageref{sec:basicstructure}), that we can add an arbitrary number of paths for storing our own rules, in order of priority, so do not worry too much with the location of the default rules, although it is important to understand and acknowledge their existance.
+The default rules, i.e, the rules shipped with \arara, are placed inside a special subdirectory named \abox[araracolour]{rules/} inside another special directory named \abox[araracolour]{ARARA\_HOME} (the place where our tool is installed). We will learn later on, in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}, that we can add an arbitrary number of paths for storing our own rules, in order of priority, so do not worry too much with the location of the default rules, although it is important to understand and acknowledge their existance.
 
 The following list describes the basic structure of an \arara\ rule by presenting the proper elements (or keys, if we consider the proper YAML nomenclature). Observe that elements marked as \rbox[araracolour]{M} are mandatory (i.e, the rule \emph{has} to have them in order to work). Similarly, elements marked as \rbox[araracolour]{O} are optional, so you can safely ignore them when writing a rule for our tool. A key preceded by \rbox{context$\rightarrow$} indicates a context and should be properly defined inside it.
 
 \begin{description}
 \item[\describe{M}{!config}] This keyword is mandatory and must be the first line of any \arara\ rule. It denotes the object mapping metadata to be internally used by the tool. Actually, the tool is not too demanding on using it (in fact, you could suppress it entirely and \arara\ will not complain), but it is considered good practice to start all rules with a \abox{!config} keyword regardless.
 
-\item[\describe{M}{identifier}] This key acts as a unique identifier for the rule (as expected). It is highly recommended to use lowercase letters without spaces, accents or punctuation symbols, as good practice (again). As a convention, if you have an identifier named \abox{pdflatex}, the rule filename must be \rbox{pdflatex.yaml} (like our own instance). Please note that, although \rbox{yml} is known to be a valid YAML extension as well, \arara\ only considers files ending with the \rbox{yaml} extension. This is a deliberate decision.
+\item[\describe{M}{identifier}] This key acts as a unique identifier for the rule (as expected). It is highly recommended to use lowercase letters without spaces, accents or punctuation symbols, as good practice (again). As a convention, if you have an identifier named \rbox{pdflatex}, the rule filename must be \rbox{pdflatex.yaml} (like our own instance). Please note that, although \rbox{yml} is known to be a valid YAML extension as well, \arara\ only considers files ending with the \rbox{yaml} extension. This is a deliberate decision.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 identifier: pdflatex
@@ -61,10 +61,10 @@ authors:
 - Paulo Cereda
 \end{codebox}
 
-\item[\describe{M}{commands}] This key is introduced in version 4.0 of \arara\ and denotes a potential list of commands. From the user perspective, each command is called \emph{subtask} within a task (rule and directive) context. A task may represent only a single command (a single subtask), as well as a sequence of commands (subtasks). For instance, the \abox{frontespizio} rule requires at least two commands. So, as a means of normalizing the representation, a task composed of a single command (single subtask) is defined as the only element of such list, as opposed to previous versions of \arara, which had an specific key to hold just one command.
+\item[\describe{M}{commands}] This key is introduced in version 4.0 of \arara\ and denotes a potential list of commands. From the user perspective, each command is called \emph{subtask} within a task (rule and directive) context. A task may represent only a single command (a single subtask), as well as a sequence of commands (subtasks). For instance, the \rbox{frontespizio} rule requires at least two commands. So, as a means of normalizing the representation, a task composed of a single command (single subtask) is defined as the only element of such list, as opposed to previous versions of \arara, which had an specific key to hold just one command.
 
 \begin{messagebox}{Incompatibility with older versions}{attentioncolour}{\icerror}{black}
-Dear reader, note that rules from version 4.0 are incompatible with older versions of \arara. If you are migrating from old versions to version 4.0, we need to replace \abox{command} by \abox{commands} and specifying a contextual element, as seen in the following descriptions. Please refer to Section~\ref{sec:migrationguide} (page~\pageref{sec:migrationguide}) for a comprehensible migration guide.
+Dear reader, note that rules from version 4.0 are incompatible with older versions of \arara. If you are migrating from old versions to version 4.0, we need to replace \abox{command} by \abox{commands} and specifying a contextual element, as seen in the following descriptions. Please refer to Section~\ref{sec:migrationguide}, on page~\pageref{sec:migrationguide}, for a comprehensible migration guide.
 \end{messagebox}
 
 In order to properly set a subtask, the keys used in this specification are defined inside the \rbox{commands$\rightarrow$} context and presented as follows.
@@ -81,30 +81,30 @@ In order to properly set a subtask, the keys used in this specification are defi
 command: 'ls'
 \end{codebox}
 
-It is important to observe that you can use either a plain string directly or using an orb tag with an explicit \abox{return} command (as seen in Section~\ref{sec:mvelbasicusage}, page~\pageref{sec:mvelbasicusage}). Personally, I favour the explict indication for a quick understanding.
+It is important to observe that you can use either a plain string directly or using an orb tag with an explicit \rbox{return} command (as seen in Section~\ref{sec:mvelbasicusage}, on page~\pageref{sec:mvelbasicusage}). Personally, I favour the explict indication for a quick understanding.
 
-\item A \abox{Command} object: \arara\ 4.0 features a new approach for handling system commands based on a high level structure with explict argument parsing named \abox{Command} (for our curious users, it is a plain Java object). In order to use this approach, we need to rely on orb tags and use a helper method named \mtbox{getCommand} to obtain the desired result. We will detail this method later on, in Section~\ref{sec:commandsandtriggers} (page~\pageref{sec:commandsandtriggers}). We highly recommend the adoption of this approach for rule writing instead of using plain strings.
+\item A \rbox{Command} object: \arara\ 4.0 features a new approach for handling system commands based on a high level structure with explict argument parsing named \rbox{Command} (for our curious users, it is a plain Java object). In order to use this approach, we need to rely on orb tags and use a helper method named \mtbox{getCommand} to obtain the desired result. We will detail this method later on, in Section~\ref{sec:commandsandtriggers}, on page~\pageref{sec:commandsandtriggers}. We highly recommend the adoption of this approach for rule writing instead of using plain strings.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command: "@{ return getCommand('ls') }"
 \end{codebox}
 
-\item A boolean value: it is also possible to exploit the expressive power of the underlying scripting language available in the rule context (see Chapter~\ref{chap:mvel}, on page~\pageref{chap:mvel}, for more details) for writing complex code. In this particular case, since the computation is being done by \arara\ itself and not the underlying operating system, there will not be a command to be executed, so simply return a boolean value -- either an explicit \abox{true} or \abox{false} value or a logical expression -- to indicate whether the computation was successfull.
+\item A boolean value: it is also possible to exploit the expressive power of the underlying scripting language available in the rule context (see Chapter~\ref{chap:mvel}, on page~\pageref{chap:mvel}, for more details) for writing complex code. In this particular case, since the computation is being done by \arara\ itself and not the underlying operating system, there will not be a command to be executed, so simply return a boolean value -- either an explicit \rbox{true} or \rbox{false} value or a logical expression -- to indicate whether the computation was successfull.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command: "@{ return 1 == 1 }"
 \end{codebox}
 
-\item A \abox{Trigger} object: this is surely the least common type of returned value and it is mentioned here just for documentation purposes. In simple terms, a \abox{Trigger} object constitutes a special command that changes the internal workings of \arara\ at runtime. We have not worked much on this concept, so there is only one trigger available, seen in action in the official \abox{halt} rule. In order to use this approach, we need to rely on orb tags and use a helper method named \mtbox{getTrigger} to obtain the desired result.
+\item A \rbox{Trigger} object: this is surely the least common type of returned value and it is mentioned here just for documentation purposes. In simple terms, a \rbox{Trigger} object constitutes a special command that changes the internal workings of \arara\ at runtime. We have not worked much on this concept, so there is only one trigger available, seen in action in the official \rbox{halt} rule. In order to use this approach, we need to rely on orb tags and use a helper method named \mtbox{getTrigger} to obtain the desired result.
 \end{itemize}
 
-It is also worth mentioning that \arara\ also supports lists of commands represented as plain strings, \abox{Command} or \abox{Trigger} objects, boolean values or a mix of them. This is useful if your rule has to decide whether more actions are required in order to accomplish a task. In this case, our tool will take care of the list and execute each element in the specified order.
+It is also worth mentioning that \arara\ also supports lists of commands represented as plain strings, \rbox{Command} or \rbox{Trigger} objects, boolean values or a mix of them. This is useful if your rule has to decide whether more actions are required in order to accomplish a task. In this case, our tool will take care of the list and execute each element in the specified order.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command: "@{ return [ 'ls', 'ls', 'ls' ] }"
 \end{codebox}
 
-As an example, please refer to the official \abox{clean} rule for a real scenario where a list of commands is successfully employed: for each provided extension, the rule creates a new cleaning command and adds it to a list of removals to be processed later.
+As an example, please refer to the official \rbox{clean} rule for a real scenario where a list of commands is successfully employed: for each provided extension, the rule creates a new cleaning command and adds it to a list of removals to be processed later.
 
 \begin{messagebox}{Plain string is deprecated}{attentioncolour}{\icattention}{black}
 It took me a lot of effort to find out that handling plain strings and employing guesswork to parse arguments are the root of several issues reported by users. Therefore, this approach is being marked as \emph{deprecated} and will be removed in future versions.
@@ -115,20 +115,20 @@ There are at least two variables available in the \abox{command} context and are
 \begin{description}
 \item[\varbox{file}] This variable holds the file name, without any path reference, as a plain string. It is usually composed by the base name and the extension. This variable is available since the first release of \arara.
 
-\item[\varbox{reference}] This variable is introduced in version 4.0 of \arara\ and holds the canonical, absolute path representation of the \varbox{file} variable as a \abox{File} object. This is useful if there is a need of understanding the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \abox{File} class.
+\item[\varbox{reference}] This variable is introduced in version 4.0 of \arara\ and holds the canonical, absolute path representation of the \varbox{file} variable as a \rbox{File} object. This is useful if there is a need of understanding the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \rbox{File} class.
 \end{description}
 
 \begin{messagebox}{Quote handling}{araracolour}{\icinfo}{white}
 \setlength{\parskip}{1em}
-The YAML format disallows key values starting with \abox{@} without proper quoting. This is the reason we had to use double quotes for the value and internally using single quotes for the command string. Also, we could use the other way around, or even using only one type and then escaping them when needed. This is excessively verbose but needed due to the format requirement. Thankfully, \arara\ offers two solutions for removing the quoting verbosity when writing commands.
+The YAML format disallows key values starting with \rbox{@} without proper quoting. This is the reason we had to use double quotes for the value and internally using single quotes for the command string. Also, we could use the other way around, or even using only one type and then escaping them when needed. This is excessively verbose but needed due to the format requirement. Thankfully, \arara\ offers two solutions for removing the quoting verbosity when writing commands.
 
-The first solution is used in previous versions and it still works like a charm in modern days. We need to precede our command with a special keyword \abox{<arara>} which will be removed afterwards. This solution works on virtually every key in the rule context, so it is a bonus. The new code will look like this:
+The first solution is used in previous versions and it still works like a charm in modern days. We need to precede our command with a special keyword \rbox{<arara>} which will be removed afterwards. This solution works on virtually every key in the rule context, so it is a bonus. The new code will look like this:
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command: <arara> @{ return getCommand('ls') }
 \end{codebox}
 
-The second approach is more of a YAML feature rather than a tool exclusive, although we have to do a couple of checkings under the hood in order to ensure the correct execution. The idea here is to use the scalar content in folded style, as seen in Section~\ref{sec:yamlscalars} (page~\pageref{sec:yamlscalars}). The new code will look like this:
+The second approach is more of a YAML feature rather than a tool exclusive, although we have to do a couple of checkings under the hood in order to ensure the correct execution. The idea here is to use the scalar content in folded style, as seen in Section~\ref{sec:yamlscalars}, on page~\pageref{sec:yamlscalars}. The new code will look like this:
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command: >
@@ -146,7 +146,7 @@ Mind the indentation, as YAML requires it to properly identify blocks. I persona
 exit: value > 0
 \end{codebox}
 
-If the execution should be marked as successful by \arara\ regardless of the actual exit status, you can simply write \abox{true} as the key value and this rule will never fail, for obvious reasons.
+If the execution should be marked as successful by \arara\ regardless of the actual exit status, you can simply write \rbox{true} as the key value and this rule will never fail, for obvious reasons.
 \end{description}
 
 For instance, consider a full example of the \abox{commands} key, defined with only one command, presented as follows. The hyphen denotes a list element, so mind the indentation for correctly specifying the component keys. Also, note that, in this case, the \abox{exit} key was completely optional, as it does the default checking, and it was included for didactic purposes.
@@ -192,14 +192,14 @@ flag: >
   }
 \end{codebox}
 
-There are three variables available in the \abox{flag} context, described as follows. Note that are also several helper methods available in the rule context (for instance, \mtbox{isTrue} presented in the previous example) which provide interesting features for rule writing. They are detailed later on, in Chapter~\ref{chap:methods} (page~\pageref{chap:methods}).
+There are three variables available in the \abox{flag} context, described as follows. Note that are also several helper methods available in the rule context (for instance, \mtbox{isTrue} presented in the previous example) which provide interesting features for rule writing. They are detailed later on, in Chapter~\ref{chap:methods}, on page~\pageref{chap:methods}.
 
 \begin{description}
 \item[\varbox{parameters}] This variable holds a map of directive parameters available at runtime. For each argument identifier listed in the \abox{arguments} list in the rule context, there will be an entry in this variable. This is useful to get the actual values provided during execution and take proper actions. If a parameter is not set in the directive context, the reference will still exist in the map, but it will be mapped to an empty string.
 
 \item[\varbox{file}] This variable holds the file name, without any path reference, as a plain string. It is usually composed by the base name and the extension. This variable is available since the first release of \arara.
 
-\item[\varbox{reference}] This variable is introduced in version 4.0 of \arara\ and holds the canonical, absolute path representation of the \varbox{file} variable as a \abox{File} object. This is useful if there is a need of understanding the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \abox{File} class.
+\item[\varbox{reference}] This variable is introduced in version 4.0 of \arara\ and holds the canonical, absolute path representation of the \varbox{file} variable as a \rbox{File} object. This is useful if there is a need of understanding the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \rbox{File} class.
 \end{description}
 
 In the previous example, observe that the MVEL expression defined in the \abox{flag} key checks if the user provided an affirmative value regarding shell escape, through comparing \varbox{parameters.shell} with a set of predefined affirmative values. In any case, the corresponding command flag is defined as result of such evaluation.
@@ -210,23 +210,23 @@ In the previous example, observe that the MVEL expression defined in the \abox{f
 default: ''
 \end{codebox}
 
-There are three variables available in the \abox{default} context, described as follows. Note that are also several helper methods available in the rule context (for instance, \mtbox{isTrue} presented in the previous example) which provide interesting features for rule writing. They are detailed later on, in Chapter~\ref{chap:methods} (page~\pageref{chap:methods}).
+There are three variables available in the \abox{default} context, described as follows. Note that are also several helper methods available in the rule context (for instance, \mtbox{isTrue} presented in the previous example) which provide interesting features for rule writing. They are detailed later on, in Chapter~\ref{chap:methods}, on page~\pageref{chap:methods}.
 
 \begin{description}
 \item[\varbox{parameters}] This variable holds a map of directive parameters available at runtime. For each argument identifier listed in the \abox{arguments} list in the rule context, there will be an entry in this variable. This is useful to get the actual values provided during execution and take proper actions. If a parameter is not set in the directive context, the reference will still exist in the map, but it will be mapped to an empty string.
 
 \item[\varbox{file}] This variable holds the file name, without any path reference, as a plain string. It is usually composed by the base name and the extension. This variable is available since the first release of \arara.
 
-\item[\varbox{reference}] This variable is introduced in version 4.0 of \arara\ and holds the canonical, absolute path representation of the \varbox{file} variable as a \abox{File} object. This is useful if there is a need of understanding the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \abox{File} class.
+\item[\varbox{reference}] This variable is introduced in version 4.0 of \arara\ and holds the canonical, absolute path representation of the \varbox{file} variable as a \rbox{File} object. This is useful if there is a need of understanding the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \rbox{File} class.
 \end{description}
 
-\item[\describecontext{O}{arguments}{required}] There might be certain scenarios in which a rule could make use of required arguments (for instance, a copy operation in which source and target must be provided). The \abox{required} key acts as a boolean switch to indicate whether the corresponding argument should be mandatory. In this case, set the key value to \abox{true} and the argument turns required. Later on at runtime, \arara\ will throw an error if a required parameter is missing in the directive.
+\item[\describecontext{O}{arguments}{required}] There might be certain scenarios in which a rule could make use of required arguments (for instance, a copy operation in which source and target must be provided). The \abox{required} key acts as a boolean switch to indicate whether the corresponding argument should be mandatory. In this case, set the key value to \rbox{true} and the argument turns required. Later on at runtime, \arara\ will throw an error if a required parameter is missing in the directive.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 required: false
 \end{codebox}
 
-Note that setting the \abox{required} key value to \abox{false} corresponds to omitting the key completely in the rule context, which resorts to the default behaviour (i.e, all arguments are optional).
+Note that setting the \abox{required} key value to \rbox{false} corresponds to omitting the key completely in the rule context, which resorts to the default behaviour (i.e, all arguments are optional).
 \end{description}
 
 \begin{messagebox}{Note on argument keys}{attentioncolour}{\icattention}{black}
@@ -258,16 +258,16 @@ A \emph{directive} is a special comment inserted in the source file in which you
 
 \begin{messagebox}{New features in version 4.0}{araracolour}{\icinfo}{white}
 \setlength{\parskip}{1em}
-\textbf{Partial directive extraction} -- From version 4.0 of \arara\ on, it is now possible to extract directives only available in the file preamble, i.e, all lines from the beginning that are comments until reaching the first line that is not a comment (excluding blank lines). To this end, a new command line flag is introduced in Section~\ref{sec:basicstructure} (page~\pageref{sec:basicstructure}).
+\textbf{Partial directive extraction} -- From version 4.0 of \arara\ on, it is now possible to extract directives only available in the file preamble, i.e, all lines from the beginning that are comments until reaching the first line that is not a comment (excluding blank lines). To this end, a new command line flag is introduced in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}.
 
-\textbf{Predefined preambles} -- Common preambles can be predefined and used with files that require the same automation steps, then \arara\ can be invoked based on such specifications. This feature is covered in Section~\ref{sec:basicstructure} (page~\pageref{sec:basicstructure}).
+\textbf{Predefined preambles} -- Common preambles can be predefined and used with files that require the same automation steps, then \arara\ can be invoked based on such specifications. This feature is covered in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}.
 \end{messagebox}
 
 
 There are two types of directives in \arara\ which determine the way the corresponding rules will be instantiated. They are listed as follows. Note that directives are always preceeded by the \rbox{arara:} pattern.
 
 \begin{description}
-\item[empty directive] This type of directive has already been mentioned in Chapter~\ref{chap:introduction} (page~\pageref{chap:introduction}), it has only the rule name (which refers to the \abox{identifier} key from the rule of the same name). All rule arguments are mapped to empty strings, except the ones with \abox{default} values.
+\item[empty directive] This type of directive has already been mentioned in Chapter~\ref{chap:introduction}, on page~\pageref{chap:introduction}, it has only the rule name (which refers to the \abox{identifier} key from the rule of the same name). All rule arguments are mapped to empty strings, except the ones with \abox{default} values.
 
 \begin{codebox}{Empty directive}{teal}{\icnote}{white}
 % arara: pdflatex
@@ -279,7 +279,7 @@ There are two types of directives in \arara\ which determine the way the corresp
 % arara: pdflatex: { shell: yes }
 \end{codebox}
 
-Observe that \arara\ relies on named parameters, so they are mapped by their corresponding argument identifiers and not by their positions. The syntax for a parameter is described as follows. Please refer to the map definition in Section~\ref{sec:yamlcollections}, page~\pageref{sec:yamlcollections}.
+Observe that \arara\ relies on named parameters, so they are mapped by their corresponding argument identifiers and not by their positions. The syntax for a parameter is described as follows. Please refer to the map definition in Section~\ref{sec:yamlcollections}, on page~\pageref{sec:yamlcollections}.
 
 \begin{codebox}{Parameter syntax}{teal}{\icnote}{white}
 key : value
@@ -322,7 +322,7 @@ Sometimes, directives can span several columns of a line, particularly the ones 
 % arara: --> }
 \end{codebox}
 
-It is important to observe that there is no need of them to be in contiguous lines, i.e, provided that the syntax for parametrized directives hold for the line composition, lines can be distributed all over the code. In fact, the log file (when enabled) will contain a list of all line numbers that compose a directive. This feature is discussed later on, in Section~\ref{sec:directiveextraction} (page~\pageref{sec:directiveextraction}).
+It is important to observe that there is no need of them to be in contiguous lines, i.e, provided that the syntax for parametrized directives hold for the line composition, lines can be distributed all over the code. In fact, the log file (when enabled) will contain a list of all line numbers that compose a directive. This feature is discussed later on, in Section~\ref{sec:directiveextraction}, on page~\pageref{sec:directiveextraction}.
 
 \begin{messagebox}{Keep lines together}{araracolour}{\icinfo}{white}
 Although it is possible to spread lines of a multiline directive all over the code, it is considered good practice to keep them together for easier reading and editing. In any case, you can always see which lines compose a directive by inspecting the log file.
@@ -357,13 +357,13 @@ Although it is possible to spread lines of a multiline directive all over the co
 \end{codebox}
 \end{description}
 
-Several methods are available in the directive context in order to ease the writing of conditionals, such as \mtbox{missing}, \mtbox{changed}, \mtbox{found}, \mtbox{unchanged}, and \mtbox{exists} featured in the previous examples. They will be properly detailed later on, in Section~\ref{sec:files} (page~\pageref{sec:files}).
+Several methods are available in the directive context in order to ease the writing of conditionals, such as \mtbox{missing}, \mtbox{changed}, \mtbox{found}, \mtbox{unchanged}, and \mtbox{exists} featured in the previous examples. They will be properly detailed later on, in Section~\ref{sec:files}, on page~\pageref{sec:files}.
 
 \begin{messagebox}{No infinite loops}{araracolour}{\icinfo}{white}
-Although there are no conceptual guarantees for proper halting of unbounded loops, we have provided a technical solution for potentially infinite iterations: \arara\ has a predefined maximum number of loops. The default value is set to 10, but it can be overriden either in the configuration file or with a command line flag. We discuss this feature later on, in Sections~\ref{sec:options} and~\ref{sec:basicstructure} (pages~\pageref{sec:options} and~\pageref{sec:basicstructure}, respectively).
+Although there are no conceptual guarantees for proper halting of unbounded loops, we have provided a technical solution for potentially infinite iterations: \arara\ has a predefined maximum number of loops. The default value is set to 10, but it can be overriden either in the configuration file or with a command line flag. We discuss this feature later on, in Sections~\ref{sec:options} and~\ref{sec:basicstructure}, on pages~\pageref{sec:options} and~\pageref{sec:basicstructure}, respectively.
 \end{messagebox}
 
-All directives, regardless of their type, are internally mapped with both \abox{file} and \abox{reference} parameters, discussed earlier on, in Section~\ref{sec:coreconcepts} (page~\pageref{sec:coreconcepts}), as special variables in the rule context. When inspecting the log file, you will find all map keys and values for each extracted directive (actually, there is an entire log section devoted to detailing directives found in the code). This feature is covered in Section~\ref{sec:directivenormalization}, page~\pageref{sec:directivenormalization}. See, for instance, the report of the directive extraction and normalization process performed by \arara\ when inspecting \rbox{doc2.tex}, available in the log file. Note that timestamps were deliberately removed in order to declutter the output, and line breaks were included as to easily spot the log entries.
+All directives, regardless of their type, are internally mapped with both \abox{file} and \abox{reference} parameters, discussed earlier on, in Section~\ref{sec:coreconcepts}, on page~\pageref{sec:coreconcepts}, as special variables in the rule context. When inspecting the log file, you will find all map keys and values for each extracted directive (actually, there is an entire log section devoted to detailing directives found in the code). This feature is covered in Section~\ref{sec:directivenormalization}, on page~\pageref{sec:directivenormalization}. See, for instance, the report of the directive extraction and normalization process performed by \arara\ when inspecting \rbox{doc2.tex}, available in the log file. Note that timestamps were deliberately removed in order to declutter the output, and line breaks were included as to easily spot the log entries.
 
 \begin{ncodebox}{Source file}{teal}{\icnote}{white}{doc2.tex}
 % arara: pdflatex
@@ -403,7 +403,7 @@ Directive: { identifier: pdflatex, parameters:
 conditional: { NONE }, lines: [1] }
 \end{codebox}
 
-Even when a directive is interpreted with a file other than the one being processed by \arara\ (through the magic of the \abox{files} parameter), it is possible to use helper methods in the rule context to get access to the original file and reference. Such methods are detailed later on, in Section~\ref{sec:files} (page~\pageref{sec:files}).
+Even when a directive is interpreted with a file other than the one being processed by \arara\ (through the magic of the \abox{files} parameter), it is possible to use helper methods in the rule context to get access to the original file and reference. Such methods are detailed later on, in Section~\ref{sec:files}, on page~\pageref{sec:files}.
 
 \section{Migration guide}
 \label{sec:migrationguide}
@@ -412,7 +412,7 @@ Even when a directive is interpreted with a file other than the one being proces
 If this is your first time using \arara\ or you do not have custom rules in the old format, you can safely ignore this section. All rules shipped with our tool are already written in the new format.
 \end{messagebox}
 
-As previously discussed in Section~\ref{sec:rule} (page~\pageref{sec:rule}), version 4.0 of \arara\ introduces a new rule format. As a result, user-defined rules in the old format are incompatible with the new version of our tool and thus have to be updated. In short, we need to replace \abox{command} by \abox{commands} and specify a contextual element. As an example, consider the following hypothetical rule \abox{ls} written in the old format:
+As previously discussed in Section~\ref{sec:rule}, on page~\pageref{sec:rule}, version 4.0 of \arara\ introduces a new rule format. As a result, user-defined rules in the old format are incompatible with the new version of our tool and thus have to be updated. In short, we need to replace \abox{command} by \abox{commands} and specify a contextual element. As an example, consider the following hypothetical rule \rbox{ls} written in the old format:
 
 \begin{codebox}{A rule in the old format}{teal}{\icnote}{white}
 !config
@@ -424,7 +424,7 @@ arguments:
   flag: '@{ isTrue(parameters.details, "-l", "") }'
 \end{codebox}
 
-This rule does nothing too important, it simply runs the system command \abox{ls} which lists the contents of the current directory. However, when we try to run \arara\ on a file which contains a directive referencing this rule, we get the following error in the terminal:
+This rule does nothing too important, it simply runs the system command \rbox{ls} which lists the contents of the current directory. However, when we try to run \arara\ on a file which contains a directive referencing this rule, we get the following error in the terminal:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
   __ _ _ __ __ _ _ __ __ _ 
@@ -479,7 +479,7 @@ Note that this fix is sufficient to make the rule valid in the new format. Also,
 (LS) Unnamed task ....................................... SUCCESS
 \end{codebox}
 
-Now, let us consider an example containing a list of commands, also based on the old format. The \abox{ls} rule was updated to include two runs of the system command of the same name in the current directory:
+Now, let us consider an example containing a list of commands, also based on the old format. The \rbox{ls} rule was updated to include two runs of the system command of the same name in the current directory:
 
 \begin{codebox}{A rule in the old format}{teal}{\icnote}{white}
 !config
@@ -493,7 +493,7 @@ arguments:
   flag: '@{ isTrue(parameters.details, "-l", "") }'
 \end{codebox}
 
-Observe that the old format directly represents commands as a list of plain strings. When trying to run \arara\ on a file which contains a directive referencing the updated \abox{ls} rule, we get the following error in the terminal:
+Observe that the old format directly represents commands as a list of plain strings. When trying to run \arara\ on a file which contains a directive referencing the updated \rbox{ls} rule, we get the following error in the terminal:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
   __ _ _ __ __ _ _ __ __ _ 
@@ -568,7 +568,7 @@ rule as a parameter and try again. I will do my best to
 convert the rule to the new version 4.0 format.
 \end{codebox}
 
-Let us invoke the tool with the first version of our hypothetical \abox{ls} rule, still in the old format. The tool removes all comments from the original file, if any, and constructs a new file with a \rbox{\_v4} suffix attached to name. The original file is preserved. Just keep in mind that the new rule must be renamed afterwards, as the base name and the corresponding \abox{identifier} key must match. The output is presented as follows.
+Let us invoke the tool with the first version of our hypothetical \rbox{ls} rule, still in the old format. The tool removes all comments from the original file, if any, and constructs a new file with a \rbox{\_v4} suffix attached to name. The original file is preserved. Just keep in mind that the new rule must be renamed afterwards, as the base name and the corresponding \abox{identifier} key must match. The output is presented as follows.
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ java -jar rc.jar ls.yaml
@@ -594,10 +594,10 @@ manual and update your rule to use the new enhancements of
 arara. Have a great time!
 \end{codebox}
 
-The resulting rule is identical to the one manually converted in this section. Just note that, when creating the file, the resulting YAML file might write the keys in alphabetical order. That means that, although both files semantically represent the same rule, the positions of keys differ. However, that poses no issue at all, as long as keys are correctly defined. Also, it is important to note that, due to a conversion policy of the underlying YAML library, folded scalars in the old format are transcribed as literal scalars in the new format. We could force a folded style as default, but the resulting rule would be unnecessarily verbose, so we opted for the simpler, cleaner solution. As a direct consequence, we strongly recommend a subsequent verification and potential fix of existing literal scalars into folded ones, if any. Please refer to Section~\ref{sec:yamlscalars} (page~\pageref{sec:yamlscalars}) for more details on scalars.
+The resulting rule is identical to the one manually converted in this section. Just note that, when creating the file, the resulting YAML file might write the keys in alphabetical order. That means that, although both files semantically represent the same rule, the positions of keys differ. However, that poses no issue at all, as long as keys are correctly defined. Also, it is important to note that, due to a conversion policy of the underlying YAML library, folded scalars in the old format are transcribed as literal scalars in the new format. We could force a folded style as default, but the resulting rule would be unnecessarily verbose, so we opted for the simpler, cleaner solution. As a direct consequence, we strongly recommend a subsequent verification and potential fix of existing literal scalars into folded ones, if any. Please refer to Section~\ref{sec:yamlscalars}, on page~\pageref{sec:yamlscalars}, for more details on scalars.
 
 \begin{messagebox}{Replace plain strings in commands}{araracolour}{\icattention}{white}
-As plain strings are known to be problematic when defining commands, they are marked as deprecated in version 4.0 of \arara\ and will likely be removed in future releases. Since you are migrating from an old format to a new one, please consider replacing plain strings in command by proper \abox{Command} objects. The helper methods available in the rule context, including the indispensable \mtbox{getCommand} method, for obvious reasons, are detailed in Section~\ref{sec:commandsandtriggers}, on page~\pageref{sec:commandsandtriggers}. It is highly advisable to update your rules on this regard, if applicable.
+As plain strings are known to be problematic when defining commands, they are marked as deprecated in version 4.0 of \arara\ and will likely be removed in future releases. Since you are migrating from an old format to a new one, please consider replacing plain strings in command by proper \rbox{Command} objects. The helper methods available in the rule context, including the indispensable \mtbox{getCommand} method, for obvious reasons, are detailed in Section~\ref{sec:commandsandtriggers}, on page~\pageref{sec:commandsandtriggers}. It is highly advisable to update your rules on this regard, if applicable.
 \end{messagebox}
 
-This section pretty much covered the basics for correctly migrating rules in the old format to the new one. Of course, it is highly advisable to make use of the new features available in \arara\ 4.0 for achieving better results. If you need any help, please do not hesitating in contacting us. See Section~\ref{sec:support} (page~\pageref{sec:support}) for more details on how to get help.
+This section pretty much covered the basics for correctly migrating rules in the old format to the new one. Of course, it is highly advisable to make use of the new features available in \arara\ 4.0 for achieving better results. If you need any help, please do not hesitating in contacting us. See Section~\ref{sec:support}, on page~\pageref{sec:support}, for more details on how to get help.
