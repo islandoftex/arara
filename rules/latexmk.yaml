@@ -18,7 +18,8 @@ commands:
             return getCommand('latexmk', clean, options);
         }
         else {
-            return getCommand('latexmk', isEmpty(program, engine, program), options, file);
+            return getCommand('latexmk', isEmpty(program, engine,
+                   program), options, file);
         }
     }
 arguments:
@@ -45,7 +46,8 @@ arguments:
 - identifier: engine
   flag: >
     @{
-        if ([ 'latex', 'pdflatex', 'xelatex', 'lualatex' ].contains(parameters.engine)) {
+        if ([ 'latex', 'pdflatex', 'xelatex',
+              'lualatex' ].contains(parameters.engine)) {
             flags = [ 'latex' : '-dvi', 'pdflatex' : '-pdf',
                       'xelatex' : '-xelatex', 'lualatex' : '-lualatex' ];
             return flags[parameters.engine];

@@ -14,9 +14,10 @@ commands:
   command: >
     @{
         return getCommand('datatooltk', options, output, csv, sql, input, 
-          sqldb, sqluser, name, probsoln, sort, sortlocale, sortcase, seed, 
-          shuffle, sep, delim, csvheader, noconsole, debug, owneronly, maptex, 
-          xls, ods, sheet, filterop, filters, truncate);
+               sqldb, sqluser, name, probsoln, sort, sortlocale, sortcase,
+               seed, shuffle, sep, delim, csvheader, noconsole, debug,
+               owneronly, maptex, xls, ods, sheet, filterop, filters,
+               truncate);
     }
 arguments:
 - identifier: options
@@ -30,62 +31,134 @@ arguments:
         }
     }
 - identifier: output
-  flag: "@{[ '--output', parameters.output ]}"
+  flag: >
+    @{
+        [ '--output', parameters.output ]
+    }
 - identifier: csv
-  flag: "@{[ '--csv', parameters.csv ]}"
+  flag: >
+    @{
+        [ '--csv', parameters.csv ]
+    }
 - identifier: sep
-  flag: "@{[ '--sep, parameters.sep ]}"
+  flag: >
+    @{
+        [ '--sep, parameters.sep ]
+    }
 - identifier: delim
-  flag: "@{[ '--delim', parameters.delim ]}"
+  flag: >
+    @{
+        [ '--delim', parameters.delim ]
+    }
 - identifier: name
-  flag: "@{[ '--name', parameters.name ]}"
+  flag: >
+    @{
+        [ '--name', parameters.name ]
+    }
 - identifier: sql
-  flag: "@{[ '--sql', parameters.sql ]}"
+  flag: >
+    @{
+        [ '--sql', parameters.sql ]
+    }
 - identifier: sqldb
-  flag: "@{[ '--sqldb', parameters.sqldb ]}"
+  flag: >
+    @{
+        [ '--sqldb', parameters.sqldb ]
+    }
 - identifier: sqluser
-  flag: "@{[ '--sqluser', parameters.sqluser ]}"
+  flag: >
+    @{
+        [ '--sqluser', parameters.sqluser ]
+    }
 - identifier: noconsole
-  flag: "@{[ '--noconsole-action', parameters.noconsole ]}"
-  default: "@{[ '--noconsole-action', 'gui']}"
+  flag: >
+    @{
+        [ '--noconsole-action', parameters.noconsole ]
+    }
+  default: >
+    @{
+        [ '--noconsole-action', 'gui']
+    }
 - identifier: probsoln
-  flag: "@{[ '--probsoln', parameters.probsoln ]}"
+  flag: >
+    @{
+        [ '--probsoln', parameters.probsoln ]
+    }
 - identifier: input
-  flag: "@{[ '--in', parameters.input ]}"
+  flag: >
+    @{
+        [ '--in', parameters.input ]
+    }
 - identifier: sort
-  flag: "@{[ '--sort', parameters.sort ]}"
+  flag: >
+    @{
+        [ '--sort', parameters.sort ]
+    }
 - identifier: sortlocale
-  flag: "@{[ '--sort-locale', parameters.sortlocale ]}"
+  flag: >
+    @{
+        [ '--sort-locale', parameters.sortlocale ]
+    }
 - identifier: sortcase
-  flag: "@{isTrue(parameters.sortcase, '--sort-case-sensitive', '--sort-case-insensitive')}"
+  flag: >
+    @{
+        isTrue(parameters.sortcase, '--sort-case-sensitive',
+               '--sort-case-insensitive')
+    }
 - identifier: seed
-  flag: "@{[ '--seed, parameters.seed ]}"
+  flag: >
+    @{
+        [ '--seed, parameters.seed ]
+    }
 - identifier: shuffle
-  flag: "@{isTrue(parameters.shuffle, '--shuffle', '--noshuffle')}"
+  flag: >
+    @{
+        isTrue(parameters.shuffle, '--shuffle', '--noshuffle')
+    }
 - identifier: csvheader
-  flag: "@{isTrue(parameters.csvheader, '--csvheader', '--nocsvheader')}"
+  flag: >
+    @{
+        isTrue(parameters.csvheader, '--csvheader', '--nocsvheader')
+    }
 - identifier: debug
-  flag: "@{isTrue(parameters.debug, '--debug', '--nodebug')}"
+  flag: >
+    @{
+        isTrue(parameters.debug, '--debug', '--nodebug')
+    }
 - identifier: owneronly
-  flag: "@{isTrue(parameters.owneronly, '--owner-only', '--noowner-only')}"
+  flag: >
+    @{
+        isTrue(parameters.owneronly, '--owner-only', '--noowner-only')
+    }
 - identifier: maptex
-  flag: "@{isTrue(parameters.maptex, '--map-tex-specials', '--nomap-tex-specials')}"
+  flag: >
+    @{
+        isTrue(parameters.maptex, '--map-tex-specials',
+               '--nomap-tex-specials')
+    }
 - identifier: xls
-  flag: "@{[ '--xls', parameters.xls ]}"
+  flag: >
+    @{
+        [ '--xls', parameters.xls ]
+    }
 - identifier: ods
-  flag: "@{[ '--ods', parameters.ods ]}"
+  flag: >
+    @{
+        [ '--ods', parameters.ods ]
+    }
 - identifier: sheet
-  flag: "@{[ '--sheet', parameters.sheet ]}"
+  flag: >
+    @{
+        [ '--sheet', parameters.sheet ]
+    }
 - identifier: filterop
   flag: >
     @{
-       if (['and', 'or'].contains(parameters.filterop))
-       {
-          return "--filter-"+parameters.filterop;
+       if (['and', 'or'].contains(parameters.filterop)) {
+          return "--filter-" + parameters.filterop;
        }
-       else
-       {
-          throwError('The provided filterop value is not valid');
+       else {
+          throwError('The provided filterop value is not valid.');
        }
     }
 - identifier: filters
@@ -93,24 +166,25 @@ arguments:
     @{
         if (isList(parameters.filters)) {
           elements = [];
-          foreach (element : parameters.filters)
-          {
-             if (isList(element) && element.size() == 3)
-             {
+          foreach (element : parameters.filters) {
+             if (isList(element) && element.size() == 3) {
                 elements.add('--filter');
                 elements.add(element);
              }
-             else
-             {
-                throwError('I was expecting a filter list [<label>, <op>, <value>] ');
+             else {
+                throwError('I was expecting a filter ' +
+                           'list [<label>, <op>, <value>]');
              }
           }
-
           return elements;
         }
         else {
-            throwError('I was expecting filters: [ [<label>, <op>, <value>], ..., [<label>, <op>, <value>] ].');
+            throwError('I was expecting filters: [ [<label>, <op>, <value>], ' +
+                       '..., [<label>, <op>, <value>] ].');
         }
     }
 - identifier: truncate
-  flag: "@{[ '--truncate', parameters.truncate ]}"
+  flag: >
+    @{
+        [ '--truncate', parameters.truncate ]
+    }

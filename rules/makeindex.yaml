@@ -14,11 +14,9 @@ commands:
   command: >
     @{
         base = getBasename(file);
-        
         infile = base.concat('.').concat(input);
         outfile = [ '-o', base.concat('.').concat(output) ];
         logfile = [ '-t', base.concat('.').concat(log) ];
-        
         return getCommand('makeindex', german, style, order, options,
                           logfile, infile, outfile);
     }

@@ -23,7 +23,10 @@ arguments:
         isTrue(parameters.force, '--always-make')
     }
 - identifier: jobs
-  flag: '-j@{parameters.jobs}'
+  flag: >
+    @{
+        return '-j'.concat(parameters.jobs)
+    }
 - identifier: options
   flag: >
     @{

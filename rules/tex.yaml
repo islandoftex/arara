@@ -13,13 +13,14 @@ commands:
 - name: TeX engine
   command: >
     @{
-        return getCommand('tex', interaction, shell, options, file)
+        return getCommand('tex', interaction, shell, options, file);
     }
 arguments:
 - identifier: interaction
   flag: >
     @{
-        if ([ 'batchmode', 'nonstopmode', 'scrollmode', 'errorstopmode' ].contains(parameters.interaction)) {
+        if ([ 'batchmode', 'nonstopmode', 'scrollmode',
+              'errorstopmode' ].contains(parameters.interaction)) {
             return '--interaction='.concat(parameters.interaction);
         }
         else {

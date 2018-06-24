@@ -13,13 +13,15 @@ commands:
 - name: LaTeX engine
   command: >
     @{
-        return getCommand('latex', interaction, draft, shell, synctex, options, file)
+        return getCommand('latex', interaction, draft, shell,
+               synctex, options, file);
     }
 arguments:
 - identifier: interaction
   flag: >
     @{
-        if ([ 'batchmode', 'nonstopmode', 'scrollmode', 'errorstopmode' ].contains(parameters.interaction)) {
+        if ([ 'batchmode', 'nonstopmode', 'scrollmode',
+              'errorstopmode' ].contains(parameters.interaction)) {
             return '--interaction='.concat(parameters.interaction);
         }
         else {

@@ -62,7 +62,8 @@ arguments:
 - identifier: recordcountunit
   flag: >
    @{
-       isTrue(parameters.recordcountunit, '--record-count-unit', '--no-record-count-unit')
+       isTrue(parameters.recordcountunit, '--record-count-unit',
+              '--no-record-count-unit')
     }
 - identifier: cite
   flag: >
@@ -77,70 +78,57 @@ arguments:
 - identifier: merge
   flag: >
    @{
-       isTrue(parameters.merge, '--merge-wrglossary-records', '--no-merge-wrglossary-records')
+       isTrue(parameters.merge, '--merge-wrglossary-records',
+              '--no-merge-wrglossary-records')
     }
 - identifier: uniscript
   flag: >
    @{
-       isTrue(parameters.uniscript, '--support-unicode-script', '--no-support-unicode-script')
+       isTrue(parameters.uniscript, '--support-unicode-script',
+              '--no-support-unicode-script')
     }
 - identifier: packages
   flag: >
     @{
-        if (isList(parameters.packages))
-        {
+        if (isList(parameters.packages)) {
            elements = [];
-
-           foreach (element : parameters.packages)
-           {
+           foreach (element : parameters.packages) {
               elements.add('--packages');
               elements.add(element);
            }
-
            return elements;
         }
-        else
-        {
+        else {
             throwError('I was expecting a list of package names.');
         }
     }
 - identifier: ignore
   flag: >
     @{
-        if (isList(parameters.ignore))
-        {
+        if (isList(parameters.ignore)) {
            elements = [];
-
-           foreach (element : parameters.ignore)
-           {
+           foreach (element : parameters.ignore) {
               elements.add('--ignore-packages');
               elements.add(element);
            }
-
            return elements;
         }
-        else
-        {
+        else {
             throwError('I was expecting a list of package names.');
         }
     }
 - identifier: custom
   flag: >
     @{
-        if (isList(parameters.custom))
-        {
+        if (isList(parameters.custom)) {
            elements = [];
-
-           foreach (element : parameters.custom)
-           {
+           foreach (element : parameters.custom) {
               elements.add('--custom-packages');
               elements.add(element);
            }
-
            return elements;
         }
-        else
-        {
+        else {
             throwError('I was expecting a list of package names.');
         }
     }
@@ -149,34 +137,30 @@ arguments:
     @{
         if (isList(parameters.mapformats)) {
           elements = [];
-          foreach (element : parameters.mapformats)
-          {
-             if (isList(element) && element.size() == 2)
-             {
+          foreach (element : parameters.mapformats) {
+             if (isList(element) && element.size() == 2) {
                 elements.add('--map-format');
-                elements.add(element.get(0)+':'+element.get(1));
+                elements.add(element.get(0) + ':' + element.get(1));
              }
-             else
-             {
-                throwError('I was expecting a map format list [<key>, <value>] ');
+             else {
+                throwError('I was expecting a map ' +
+                           'format list [<key>, <value>] ');
              }
           }
-
           return elements;
         }
         else {
-            throwError('I was expecting mapformats: [ [<key>, <value>], ..., [<key>, <value>] ].');
+            throwError('I was expecting mapformats: [ [<key>, <value>], ' +
+                       '..., [<key>, <value>] ].');
         }
     }
 - identifier: options
   flag: >
     @{
-        if (isList(parameters.options))
-        {
+        if (isList(parameters.options)) {
             return parameters.options;
         }
-        else
-        {
+        else {
             throwError('I was expecting a list of options.');
         }
     }

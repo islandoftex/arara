@@ -27,16 +27,28 @@ commands:
     }
 arguments:
 - identifier: delay
-  flag: "@{parameters.delay}"
+  flag: >
+    @{
+        parameters.delay
+    }
   default: 10
 - identifier: loop
-  flag: "@{parameters.loop}"
+  flag: >
+    @{
+        parameters.loop
+    }
   default: 0
 - identifier: density
-  flag: "@{parameters.density}"
+  flag: >
+    @{
+        parameters.density
+    }
   default: 300
 - identifier: program
-  flag: "@{parameters.program}"
+  flag: >
+    @{
+        parameters.program
+    }
   default: convert
 - identifier: options
   flag: >

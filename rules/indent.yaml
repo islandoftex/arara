@@ -19,9 +19,15 @@ commands:
     }
 arguments:
 - identifier: silent
-  flag: "@{isTrue(parameters.silent, '-s')}"
+  flag: >
+    @{
+        isTrue(parameters.silent, '-s')
+    }
 - identifier: overwrite
-  flag: "@{isTrue(parameters.overwrite, '-w')}"
+  flag: >
+    @{
+        isTrue(parameters.overwrite, '-w')
+    }
 - identifier: trace
   flag: >
     @{
@@ -33,27 +39,43 @@ arguments:
       }
     }
 - identifier: screenlog
-  flag: "@{isTrue(parameters.screenlog, '-sl')}"
+  flag: >
+    @{
+        isTrue(parameters.screenlog, '-sl')
+    }
 - identifier: modifylinebreaks
-  flag: "@{isTrue(parameters.modifylinebreaks, '-m')}"
+  flag: >
+    @{
+        isTrue(parameters.modifylinebreaks, '-m')
+    }
 - identifier: settings
   flag: >
     @{
       check = parameters.containsKey('where');
       location = check ? parameters.where : '';
       if ([ 'local', 'onlydefault' ].contains(parameters.settings)) {
-          return isTrue(parameters.settings == 'local', isTrue(check, '-l='.concat(location), '-l'), '-d');
+          return isTrue(parameters.settings == 'local', isTrue(check,
+                 '-l='.concat(location), '-l'), '-d');
       }
       else {
           throwError('You provided an invalid value for settings.');
       }
     }
 - identifier: cruft
-  flag: "-c=@{parameters.cruft}"
+  flag: >
+    @{
+        '-c='.concat(parameters.cruft)
+    }
 - identifier: logfile
-  flag: "@{[ '-g', parameters.logfile ]}"
+  flag: >
+    @{
+        [ '-g', parameters.logfile ]
+    }
 - identifier: output
-  flag: "@{[ '-o', parameters.output ]}"
+  flag: >
+    @{
+        [ '-o', parameters.output ]
+    }
 - identifier: where
   flag: >
     @{
@@ -73,4 +95,3 @@ arguments:
             throwError('I was expecting a list of options.');
         }
     }
-

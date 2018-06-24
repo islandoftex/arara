@@ -13,7 +13,7 @@ commands:
 - name: The Biber reference management software
   command: >
     @{
-        return getCommand('biber', options, getBasename(file))
+        return getCommand('biber', options, getBasename(file));
     }
 arguments:
 - identifier: options

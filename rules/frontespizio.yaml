@@ -27,7 +27,8 @@ commands:
     @{
         base = getBasename(file).concat('-frn');
         eps = base.concat('.eps');
-        return isTrue(engine == 'latex', getCommand('dvips', '-o', eps, base), '');
+        return isTrue(engine == 'latex', getCommand('dvips', '-o',
+               eps, base), '');
     }
 - name: The engine
   command: >
@@ -38,7 +39,8 @@ arguments:
 - identifier: engine
   flag: >
     @{
-        if ([ 'pdflatex', 'latex', 'xelatex', 'lualatex' ].contains(parameters.engine)) {
+        if ([ 'pdflatex', 'latex', 'xelatex',
+              'lualatex' ].contains(parameters.engine)) {
             return parameters.engine;
         }
         else {
@@ -47,7 +49,10 @@ arguments:
     }
   default: pdflatex
 - identifier: shell
-  flag: "@{isTrue(parameters.shell, '--shell-escape', '--no-shell-escape')}"
+  flag: >
+    @{
+        isTrue(parameters.shell, '--shell-escape', '--no-shell-escape')
+    }
 - identifier: options
   flag: >
     @{
@@ -61,7 +66,8 @@ arguments:
 - identifier: interaction
   flag: >
     @{
-        if ([ 'batchmode', 'nonstopmode', 'scrollmode', 'errorstopmode' ].contains(parameters.interaction)) {
+        if ([ 'batchmode', 'nonstopmode', 'scrollmode',
+              'errorstopmode' ].contains(parameters.interaction)) {
             return '--interaction='.concat(parameters.interaction);
         }
         else {

@@ -13,13 +13,15 @@ commands:
 - name: XeLaTeX engine
   command: >
     @{
-        return getCommand('xelatex', interaction, shell, synctex, options, file)
+        return getCommand('xelatex', interaction, shell,
+               synctex, options, file);
     }
 arguments:
 - identifier: interaction
   flag: >
     @{
-        if ([ 'batchmode', 'nonstopmode', 'scrollmode', 'errorstopmode' ].contains(parameters.interaction)) {
+        if ([ 'batchmode', 'nonstopmode', 'scrollmode',
+              'errorstopmode' ].contains(parameters.interaction)) {
             return '--interaction='.concat(parameters.interaction);
         }
         else {
@@ -43,6 +45,6 @@ arguments:
             return parameters.options;
         }
         else {
-            throwError('I was expecting a list of options.')
+            throwError('I was expecting a list of options.');
         }
     }
