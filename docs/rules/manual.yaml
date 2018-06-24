@@ -1,0 +1,41 @@
+!config
+identifier: manual
+name: The arara manual
+authors:
+- Paulo Cereda
+commands:
+- name: The PDFLaTeX engine
+  command: >
+    @{
+        return getCommand('pdflatex', file);
+    }
+- name: The PDFLaTeX engine
+  command: >
+    @{
+        return getCommand('pdflatex', file);
+    }
+- name: File cleanup
+  command: >
+    @{
+        matches = listFilesByExtensions('.',
+                  [ 'aux' ], true);
+        prefix = [];
+        if (isUnix()) {
+            prefix = [ 'rm', '-f' ];
+        }
+        else {
+            prefix = [ 'cmd', '/c', 'del' ];
+        }
+        removals = [];
+        extensions = [ 'listing', 'log', 'toc',
+                       'out', 'synctex.gz' ];
+        foreach (extension : extensions) {
+            removals.add(getCommand(prefix, getBasename(file)
+                     .concat('.').concat(extension)));
+        }
+        foreach (match : matches) {
+            removals.add(getCommand(prefix, match.getCanonicalPath()));
+        }
+        return removals;
+    }
+arguments: []
