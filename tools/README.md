@@ -1,6 +1,6 @@
 # Language checker
 
-![Version](https://img.shields.io/badge/current%20version-1.0-blue.svg?style=flat-square)
+![Version](https://img.shields.io/badge/current_version-1.0-blue.svg?style=flat-square)
 ![Language](https://img.shields.io/badge/language-Java-blue.svg?style=flat-square)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
@@ -29,7 +29,7 @@ $ java -jar langchecker.jar localization/
 
 # Rule checker
 
-![Version](https://img.shields.io/badge/current%20version-1.0-blue.svg?style=flat-square)
+![Version](https://img.shields.io/badge/current_version-1.0-blue.svg?style=flat-square)
 ![Language](https://img.shields.io/badge/language-Java-blue.svg?style=flat-square)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
@@ -90,7 +90,7 @@ $ java -jar rulechecker.jar rules/
 
 # Rule converter
 
-![Version](https://img.shields.io/badge/current%20version-1.0-blue.svg?style=flat-square)
+![Version](https://img.shields.io/badge/current_version-1.0-blue.svg?style=flat-square)
 ![Language](https://img.shields.io/badge/language-Java-blue.svg?style=flat-square)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
