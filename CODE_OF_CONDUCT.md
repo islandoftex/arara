@@ -1,5 +1,7 @@
 # Contributor covenant code of conduct
 
+![Last update](https://img.shields.io/badge/last%20updated-June%2025%2C%202018-blue.svg?style=flat-square)
+
 ## Our pledge
 
 In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge
