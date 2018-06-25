@@ -32,7 +32,7 @@ The best solution to avoid possible future name conflicts, according to the Imag
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: animate: { delay: 15, density: 150 }
 \end{codebox}
 
 \item[\rulebox{bib2gls}{Nicola Talbot, Paulo Cereda}] This rule executes the \rbox{bib2gls} command line application which extract glossary information stored in a \rbox{bib} file and converts it into glossary entry definitions in resource files.
@@ -76,7 +76,8 @@ The best solution to avoid possible future name conflicts, according to the Imag
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: bib2gls: { group: true }
+% arara: --> if found('aux', 'glsxtr@resource')
 \end{codebox}
 
 \item[\rulebox{biber}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{biber}, the backend bibliography processor for \rbox{biblatex}, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string.
@@ -229,7 +230,9 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: datatooltk: {
+% arara: --> output: books.dbtex,
+% arara: --> csv: booklist.csv }
 \end{codebox}
 
 \item[\rulebox{dvipdfmx}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{dvipdfmx}, an extended version of \rbox{dvipdfm} cre­ated to sup­port multibyte char­ac­ter en­cod­ings and large char­ac­ter sets for East Asian lan­guages, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{dvi} suffix, generating a Portable Document Format \rbox{pdf} file.
@@ -499,7 +502,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: makeglossaries if found('aux', '@istfilename')
 \end{codebox}
 
 \item[\rulebox{make}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{make}, a build automation tool that automatically builds executable programs and libraries from source code, according to a special file which specifies how to derive the target program.
