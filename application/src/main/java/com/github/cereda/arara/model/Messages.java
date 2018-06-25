@@ -45,9 +45,11 @@ import ch.qos.cal10n.LocaleData;
  */
 @BaseName("com.github.cereda.arara.localization.messages")
 @LocaleData({
-    @Locale(value = "en", charset = "UTF-8"),
     @Locale(value = "de", charset = "UTF-8"),
-    @Locale(value = "en_QN", charset = "UTF-8")
+    @Locale(value = "en", charset = "UTF-8"),
+    @Locale(value = "en_QN", charset = "UTF-8"),
+    @Locale(value = "nl", charset = "UTF-8"),
+    @Locale(value = "pt_BR", charset = "UTF-8")
 })
 public enum Messages {
 

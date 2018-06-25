@@ -83,6 +83,10 @@ public class Language {
                 "Broad Norfolk",
                 new Locale("en", "QN")
         ));
+        languages.put("ptbr", new Pair<String, Locale>(
+                "Brazilian Portuguese",
+                new Locale("pt", "BR")
+        ));
     }
 
     /**

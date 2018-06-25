@@ -96,4 +96,12 @@ public class LocalizationTest {
         assertEquals(0, check(new Locale("nl")));
     }
     
+    /**
+     * Verifies the Brazilian Portuguese localization (provided by Paulo).
+     */
+    @Test
+    public void verifyBrazilianPortuguese() {
+        assertEquals(0, check(new Locale("pt", "BR")));
+    }
+    
 }
