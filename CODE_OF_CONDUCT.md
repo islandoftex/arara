@@ -1,6 +1,6 @@
 # Contributor covenant code of conduct
 
-![Last update](https://img.shields.io/badge/last%20updated-June%2025%2C%202018-blue.svg?style=flat-square)
+![Last update](https://img.shields.io/badge/last%20updated-June_25%2C_2018-blue.svg?style=flat-square)
 
 ## Our pledge
 
