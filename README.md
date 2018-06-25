@@ -1,4 +1,4 @@
-![arara](https://i.stack.imgur.com/O9Wkf.png)
+![arara](https://i.stack.imgur.com/GQWQi.png)
 
 # arara
 
