@@ -87,7 +87,7 @@ The best solution to avoid possible future name conflicts, according to the Imag
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: biber: { options: [ '--wraplines' ] }
 \end{codebox}
 
 \item[\rulebox{bibtex8}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{bibtex8}, an enhanced, portable C version of \rbox{bibtex}, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string. It is important to note that this tool can read a character set file containing encoding details.
@@ -97,7 +97,7 @@ The best solution to avoid possible future name conflicts, according to the Imag
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: bibtex8: { options: [ '--trace', '--huge' ] }
 \end{codebox}
 
 \item[\rulebox{bibtexu}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{bibtexu} program, an enhanced version of \rbox{bibtex} with Unicode support and language features, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string.
@@ -107,7 +107,7 @@ The best solution to avoid possible future name conflicts, according to the Imag
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: bibtexu: { options: [ '--language', 'fr' ] }
 \end{codebox}
 
 \item[\rulebox{bibtex}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{bibtex} program, a reference management software, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string.
@@ -117,7 +117,8 @@ The best solution to avoid possible future name conflicts, according to the Imag
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: bibtex: { options: [ '-terse' ] }
+% arara: --> if exists(toFile('references.bib'))
 \end{codebox}
 
 \item[\rulebox{clean}{Marco Daniel, Paulo Cereda}] This rule removes the provided file reference through the underlying system command, which can be \rbox{rm} in a Unix environment or \rbox{del} in Microsoft Windows. As a security lock, this rule will always throw an error if \mtbox{currentFile} is equal to \mtbox{getOriginalFile}, so the main file reference cannot be removed. It is highly recommended to use the special \abox{files} parameter to indicate removal candidates. Alternatively, a list of file extensions can be provided as well. Be mindful that the security lock also applies to file removals based on extensions.
@@ -129,6 +130,10 @@ The best solution to avoid possible future name conflicts, according to the Imag
 When in doubt, always remember that the \opbox{{-}dry-run} command line option is your friend! As seen in Section~\ref{sec:options}, on page~\pageref{sec:options}, this option makes \arara\ go through all the motions of running tasks and subtasks, but with no actual calls. It is a very useful feature for testing the sequence of removal commands without actually losing your files! Also, as good practice, always write plain, simple, understandable \rbox{clean} directives and use as many as needed in your \TeX\ documents.
 \end{messagebox}
 \end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: clean: { extensions: [ aux, log ] }
+\end{codebox}
 
 \item[\rulebox{csplain}{Paulo Cereda}] This rule runs the \rbox{csplain} \TeX\ engine, a conservative extension of Knuth's plain \TeX\ with direct processing characters and hyphenation patterns for Czech and Slovak, on the provided \mtbox{currentFile} reference.
 
@@ -155,7 +160,7 @@ When in doubt, always remember that the \opbox{{-}dry-run} command line option i
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: csplain: { interaction: batchmode, shell: yes }
 \end{codebox}
 
 \item[\rulebox{datatooltk}{Nicola Talbot, Paulo Cereda}] This rule runs \rbox{datatooltk}, an application that creates \rbox{data­tool} databases in raw for­mat from several structured data formats, in batch mode.
@@ -244,7 +249,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: dvipdfmx: { options: [ '-K', '40' ] }
 \end{codebox}
 
 \item[\rulebox{dvipdfm}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{dvipdfm}, a command line utility for file format translation, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{dvi} suffix, generating a Portable Document Format \rbox{pdf} file.
@@ -256,7 +261,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: dvipdfm: { output: thesis }
 \end{codebox}
 
 \item[\rulebox{dvipspdf}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{dvips} in order to obtain a corresponding \rbox{ps} file from the initial \rbox{dvi} reference, and then runs \rbox{ps2pdf} on the previously generated \rbox{ps} file in order to obtain a \rbox{pdf} file. Note that all base names are acquired from the \mtbox{currentFile} reference (i.e, the name without the associated extension) and used to construct the resulting files.
@@ -270,7 +275,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: dvipspdf: { output: article }
 \end{codebox}
 
 \item[\rulebox{dvips}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{dvips} on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{dvi} suffix, generating a PostScript \rbox{ps} file.
@@ -282,7 +287,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: dvips: { output: thesis }
 \end{codebox}
 
 \item[\rulebox{frontespizio}{Francesco Endrici, Enrico Gregorio, Paulo Cereda}] This rule automates the steps required by the \rbox{frontespizio} package in order to help Italian user generate frontispiece to their thesis. First and foremost, the frontispiece is generated. If \rbox{latex} is used an underlying engine, there is an additional intermediate conversion step to a proper \rbox{eps} file. Finally, the final document is compiled.
@@ -318,13 +323,14 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: frontespizio: { engine: xelatex,
+% arara: --> shell: yes, interaction: nonstopmode }
 \end{codebox}
 
 \item[\rulebox{halt}{Heiko Oberdiek, Paulo Cereda}] This rule, as the name suggests, calls the \rbox{halt} trigger, which stops the current interpretation workflow, such that subsequent directives are ignored. This rule contains no associated options. Please refer to Section~\ref{sec:commandsandtriggers}, on page~\pageref{sec:commandsandtriggers}, for more information on triggers.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: halt
 \end{codebox}
 
 \item[\rulebox{indent}{Chris Hughes, Paulo Cereda}] This rule runs \rbox{latexindent}, a Perl script that indents \TeX\ files according to an indentation scheme, on the provided \mtbox{currentFile} reference. Environments, including those with alignment delimiters, and commands, including those that can split braces and brackets across lines, are usually handled correctly by the script.
@@ -366,7 +372,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: indent: { overwrite: yes }
 \end{codebox}
 
 \item[\rulebox{latexmk}{Marco Daniel, Brent Longborough, Paulo Cereda}] This rule runs \rbox{latexmk}, a fantastic command line tool for fully automated \TeX\ document generation, on the provided \mtbox{currentFile} reference.
@@ -398,7 +404,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: latexmk: { engine: pdflatex }
 \end{codebox}
 
 \item[\rulebox{latex}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{latex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in a device independent format.
@@ -426,7 +432,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: latex: { interaction: scrollmode, draft: yes }
 \end{codebox}
 
 \item[\rulebox{lualatex}{Marco Daniel, Paulo Cereda}] This rule runs the new \rbox{lualatex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document File format, as expected.
@@ -454,7 +460,8 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: lualatex: { interaction: errorstopmode,
+% arara: --> synctex: yes }
 \end{codebox}
 
 \item[\rulebox{luatex}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{luatex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document File format, as expected.
@@ -482,7 +489,8 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: luatex: { interaction: batchmode,
+% arara: --> shell: yes, draft: yes }
 \end{codebox}
 
 \item[\rulebox{makeglossarieslite}{Marco Daniel, Nicola Talbot, Paulo Cereda}] This rule runs \rbox{makeglossaries-lite}, a lightweight Lua script designed for use with \TeX\ documents that work with the \rbox{glossaries} package. All the information required to be passed to the relevant indexing application should also be contained in the auxiliary file. The script takes the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as mandatory argument.
@@ -492,7 +500,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: makeglossarieslite if found('aux', '@istfilename')
 \end{codebox}
 
 \item[\rulebox{makeglossaries}{Marco Daniel, Nicola Talbot, Paulo Cereda}] This rule runs \rbox{makeglossaries}, an efficient Perl script designed for use with \TeX\ documents that work with the \rbox{glossaries} package. All the information required to be passed to the relevant indexing application should also be contained in the auxiliary file. The script takes the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as mandatory argument.
@@ -514,7 +522,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: make: { targets: [ compile, package ] }
 \end{codebox}
 
 \item[\rulebox{makeindex}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{makeindex}, a gen­eral pur­pose hi­er­ar­chical in­dex gen­er­a­tor, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{idx} suffix, generating an index as a special \rbox{ind} file.
@@ -542,7 +550,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: makeindex: { style: book.ist }
 \end{codebox}
 
 \item[\rulebox{nomencl}{Marco Daniel, Nicola Talbot, Paulo Cereda}] This rule runs \rbox{makeindex} in order to automatically generate a nomenclature list from \TeX\ documents that work with the \rbox{nomencl} package. The program itself is a gen­eral pur­pose hi­er­ar­chical in­dex gen­er­a­tor and takes the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{nlo} suffix and a special style file in order to generate the nomenclature list as a special \rbox{nls} file.
@@ -554,7 +562,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: nomencl
 \end{codebox}
 
 \item[\rulebox{pdfcsplain}{Paulo Cereda}] This rule runs the \rbox{pdfcsplain} \TeX\ engine, a conservative extension of Knuth's plain \TeX\ with direct processing characters and hyphenation patterns for Czech and Slovak, on the provided \mtbox{currentFile} reference.
@@ -582,7 +590,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: pdfcsplain: { shell: yes, synctex: yes }
 \end{codebox}
 
 \item[\rulebox{pdflatex}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{pdflatex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document File format, as expected.
@@ -610,7 +618,8 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: pdflatex: { interaction: batchmode }
+% arara: --> if missing('pdf') || changed('tex')
 \end{codebox}
 
 \item[\rulebox{pdftex}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{pdftex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document File format, as expected.
@@ -638,7 +647,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: pdftex: { draft: yes }
 \end{codebox}
 
 \item[\rulebox{pdftk}{Nicola Talbot, Paulo Cereda}] This rule runs \rbox{pdftk}, a command line tool for manipulating Portable Document Format documents, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{pdf} suffix.
@@ -648,7 +657,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: pdftk: { options: [ burst ] }
 \end{codebox}
 
 \item[\rulebox{ps2pdf}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{ps2pdf}, a tool that converts PostScript to Portable Document File, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{ps} suffix.
@@ -660,7 +669,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: ps2pdf: { output: article }
 \end{codebox}
 
 \item[\rulebox{sketch}{Sergey Ulyanov, Paulo Cereda}] This rule runs \rbox{sketch}, a system for producing line drawings of solid objects and scenes, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{sk} suffix. Note that one needs to add support for this particular file type, as seen in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}.
@@ -670,7 +679,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: sketch
 \end{codebox}
 
 \item[\rulebox{songidx}{Francesco Endrici, Paulo Cereda}] This rule runs \rbox{songidx}, a song index generation script for the \rbox{songs} package, on the file reference provided as parameter, generating a proper index as a special \rbox{sbx} file. It is very important to observe that, at the time of writing, this script is not available out of the shelf in \TeX\ Live or MiK\TeX\ distributions, so a manual deployment is required. The script execution is performed by the underlying \rbox{texlua} interpreter.
@@ -684,7 +693,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: songidx: { input: songs }
 \end{codebox}
 
 \item[\rulebox{texindy}{Nicola Talbot, Paulo Cereda}] This rule runs \rbox{texindy}, a variant of the \rbox{xindy} indexing system focused on \LaTeX\ documents, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{idx} suffix, generating an index as a special \rbox{ind} file.
@@ -718,7 +727,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: texindy: { markup: latex }
 \end{codebox}
 
 \item[\rulebox{tex}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{tex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in a device independent format.
@@ -742,7 +751,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: tex: { shell: yes }
 \end{codebox}
 
 \item[\rulebox{tikzmake}{Robbie Smith, Paulo Cereda}] This rule runs \rbox{make} on a very specific build file generated by the \rbox{tikzmake} package, as a means to simplify the externalization of Ti{\itshape k}Z pictures. This build file corresponds to the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{makefile} suffix.
@@ -756,7 +765,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: tikzmake: { force: yes, jobs: 2 }
 \end{codebox}
 
 \item[\rulebox{velocity}{Paulo Cereda}] This rule, as the name suggests, calls the \mtbox{mergeVelocityTemplate} method, merging an input template file written according to the Velocity Template Language 1.7 specification with the provided \rbox{Map} data object in order to produce a corresponding \rbox{File} output. Be mindful that this particular rule returns \rbox{true} if, and only if, the aforementioned method is successfully executed. Otherwise, an exception is raised.
@@ -770,7 +779,8 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: velocity: { input: input.txt, output: output.txt,
+% arara: --> context: { name: Paulo, country: Brazil } }
 \end{codebox}
 
 \item[\rulebox{xdvipdfmx}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{dvipdfmx}, the back end for the \rbox{xetex} \TeX\ engine (and not intended to be invoked directly), on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{dvi} suffix, generating a Portable Document Format \rbox{pdf} file.
@@ -782,7 +792,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: xdvipdfmx: { output: thesis }
 \end{codebox}
 
 \item[\rulebox{xelatex}{Marco Daniel, Paulo Cereda}] This rule runs the new \rbox{xelatex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document File format, as expected.
@@ -808,7 +818,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: xelatex: { shell: yes, synctex: yes }
 \end{codebox}
 
 \item[\rulebox{xetex}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{xetex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document File format, as expected.
@@ -834,7 +844,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: xelatex: { interaction: scrollmode, synctex: yes }
 \end{codebox}
 
 \item[\rulebox{xindy}{Nicola Talbot, Paulo Cereda}] This rule runs \rbox{xindy}, a flexible and powerful indexing system, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{idx} suffix, generating an index as a special \rbox{ind} file.
@@ -868,7 +878,7 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% TODO
+% arara: xindy: { markup: xelatex }
 \end{codebox}
 \end{description}
 
