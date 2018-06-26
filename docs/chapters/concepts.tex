@@ -2,12 +2,14 @@
 \chapter{Important concepts}
 \label{chap:importantconcepts}
 
+% (Me being slightly pedantic.) With the document reshuffle, this first sentence isn't quite true as the reader has had a little contact in the introduction.
+% Perhaps "Time for our first proper contact with \arara!" or perhaps just delete.
 Time for our first contact with \arara! I must stress that is very important to understand a few concepts in which \arara\ relies before we proceed to the usage itself. Do not worry, these concepts are easy to follow, yet they are vital to the comprehension of the application and the logic behind it.
 
 \section{Rules}
 \label{sec:rule}
 
-A \emph{rule} is a formal description of how \arara\ handles a certain task. For instance, if we want to use \rbox{pdflatex} with our tool, we should have a rule for that. Directives are mapped to rules, so a call to a nonexistent rule \rbox{foo}, for instance, will indeed raise an error:
+A \emph{rule} is a formal description of how \arara\ handles a certain task. For instance, if we want to use \rbox{pdflatex} with our tool, we should have a rule for that. Directives are mapped to rules, so a call to a non-existent rule \rbox{foo}, for instance, will indeed raise an error:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
   __ _ _ __ __ _ _ __ __ _ 
@@ -28,26 +30,30 @@ Total: 0.09 seconds
 
 Once a rule is defined, \arara\ automatically provides an access layer to that rule through directives in the source code, a concept to be formally introduced later on, in Section~\ref{sec:directives}. Observe that a directive reflects a particular instance of a rule of the same name (i.e, a \rbox{foo} directive in a certain source code is an instance of the \rbox{foo} rule).
 
-In short, a rule is a plain text file written in the YAML format, introduced in Chapter~\ref{chap:yaml}, on page~\pageref{chap:yaml}. I opted for this format because back then it was cleaner and more intuitive to use than other markup languages such as XML, besides of course being a data serialization standard for programming languages.
+In short, a rule is a plain text file written in the \gls{YAML} format, described in Chapter~\ref{chap:yaml}, on page~\pageref{chap:yaml}. I opted for this format because back then it was cleaner and more intuitive to use than other markup languages such as XML, besides of course being a data serialization standard for programming languages.
 
 \begin{messagebox}{Animal jokes}{araracolour}{\icok}{white}
 As a bonus, the acronym \emph{YAML} rhymes with the word \emph{camel}, so \arara\ is heavily environmentally friendly. Speaking of camels, there is the programming reference as well, since this amusing animal is usually associated with Perl and friends.
 \end{messagebox}
 
-The default rules, i.e, the rules shipped with \arara, are placed inside a special subdirectory named \abox[araracolour]{rules/} inside another special directory named \abox[araracolour]{ARARA\_HOME} (the place where our tool is installed). We will learn later on, in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}, that we can add an arbitrary number of paths for storing our own rules, in order of priority, so do not worry too much with the location of the default rules, although it is important to understand and acknowledge their existance.
+The default rules, i.e, the rules shipped with \arara, are placed inside a special subdirectory named \abox[araracolour]{rules/} inside another special directory named \abox[araracolour]{ARARA\_HOME} (the place where our tool is installed). We will learn later on, in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}, that we can add an arbitrary number of paths for storing our own rules, in order of priority, so do not worry too much about the location of the default rules, although it is important to understand and acknowledge their existence.
 
-The following list describes the basic structure of an \arara\ rule by presenting the proper elements (or keys, if we consider the proper YAML nomenclature). Observe that elements marked as \rbox[araracolour]{M} are mandatory (i.e, the rule \emph{has} to have them in order to work). Similarly, elements marked as \rbox[araracolour]{O} are optional, so you can safely ignore them when writing a rule for our tool. A key preceded by \rbox{context$\rightarrow$} indicates a context and should be properly defined inside it.
+The following list describes the basic structure of an \arara\ rule by presenting the proper elements (or keys, if we consider the proper \gls{YAML} nomenclature). Observe that elements marked as \rbox[araracolour]{M} are mandatory (i.e, the rule \emph{has} to have them in order to work). Similarly, elements marked as \rbox[araracolour]{O} are optional, so you can safely ignore them when writing a rule for our tool. A key preceded by \rbox{context$\rightarrow$} indicates a context and should be properly defined inside it.
 
 \begin{description}
 \item[\describe{M}{!config}] This keyword is mandatory and must be the first line of any \arara\ rule. It denotes the object mapping metadata to be internally used by the tool. Actually, the tool is not too demanding on using it (in fact, you could suppress it entirely and \arara\ will not complain), but it is considered good practice to start all rules with a \abox{!config} keyword regardless.
 
-\item[\describe{M}{identifier}] This key acts as a unique identifier for the rule (as expected). It is highly recommended to use lowercase letters without spaces, accents or punctuation symbols, as good practice (again). As a convention, if you have an identifier named \rbox{pdflatex}, the rule filename must be \rbox{pdflatex.yaml} (like our own instance). Please note that, although \rbox{yml} is known to be a valid YAML extension as well, \arara\ only considers files ending with the \rbox{yaml} extension. This is a deliberate decision.
+\item[\describe{M}{identifier}] This key acts as a unique identifier for the rule (as expected). It is highly recommended to use lowercase letters without spaces, accents or punctuation symbols, as good practice (again). As a convention, if you have an identifier named \rbox{pdflatex}, the rule filename must be \rbox{pdflatex.yaml} (like our own instance). Please note that, although \rbox{yml} is known to be a valid \gls{YAML} extension as well, \arara\ only considers files ending with the \rbox{yaml} extension. This is a deliberate decision.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 identifier: pdflatex
 \end{codebox}
 
 \item[\describe{M}{name}] This key holds the name of the task as a plain string. When running \arara, this value will be displayed in the output. We like to call \emph{task} an instantiated rule (through a directive). Task names are displayed enclosed in parenthesis.
+% The world ordering seems a little off in the penultimate sentence above.
+% Suggestions:
+%  [Minor single-sentence edit] A \emph{task} is an instantiated rule (through a directive).
+%  [Full paragraph edit] This key holds the name of the \emph{task} (a rule instantiated through a directive) as a plain string. When running \arara, this value will be displayed in the output enclosed in parentheses.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 name: PDFLaTeX
@@ -61,35 +67,35 @@ authors:
 - Paulo Cereda
 \end{codebox}
 
-\item[\describe{M}{commands}] This key is introduced in version 4.0 of \arara\ and denotes a potential list of commands. From the user perspective, each command is called \emph{subtask} within a task (rule and directive) context. A task may represent only a single command (a single subtask), as well as a sequence of commands (subtasks). For instance, the \rbox{frontespizio} rule requires at least two commands. So, as a means of normalizing the representation, a task composed of a single command (single subtask) is defined as the only element of such list, as opposed to previous versions of \arara, which had an specific key to hold just one command.
+\item[\describe{M}{commands}] This key is introduced in version 4.0 of \arara\ and denotes a potential list of commands. From the user perspective, each command is called a \emph{subtask} within a task (rule and directive) context. A task may represent only a single command (a single subtask), as well as a sequence of commands (subtasks). For instance, the \rbox{frontespizio} rule requires at least two commands. So, as a means of normalizing the representation, a task composed of a single command (single subtask) is defined as the only element of the list, as opposed to previous versions of \arara, which had a specific key to hold just one command.
 
 \begin{messagebox}{Incompatibility with older versions}{attentioncolour}{\icerror}{black}
-Dear reader, note that rules from version 4.0 are incompatible with older versions of \arara. If you are migrating from old versions to version 4.0, we need to replace \abox{command} by \abox{commands} and specifying a contextual element, as seen in the following descriptions. Please refer to Section~\ref{sec:migrationguide}, on page~\pageref{sec:migrationguide}, for a comprehensible migration guide.
+Dear reader, note that rules from version 4.0 are incompatible with older versions of \arara. If you are migrating from old versions to version 4.0, we need to replace \abox{command} by \abox{commands} and specify a contextual element, as seen in the following descriptions. Please refer to Section~\ref{sec:migrationguide}, on page~\pageref{sec:migrationguide}, for a comprehensible migration guide.
 \end{messagebox}
 
 In order to properly set a subtask, the keys used in this specification are defined inside the \rbox{commands$\rightarrow$} context and presented as follows.
 
 \begin{description}
-\item[\describecontext{O}{commands}{name}] This key holds the name of the subtask as a plain string. When running \arara, this value will be displayed in the output. Subtask names are displayed after the main task name. By the way, did you notice that this key is entirely optional? That means that a subtask can simply be unnamed, if you decide so. However, such practice is not recommended, as is always good to have a visual description of what \arara\ is running at the moment, so name your subtasks properly.
+\item[\describecontext{O}{commands}{name}] This key holds the name of the subtask as a plain string. When running \arara, this value will be displayed in the output. Subtask names are displayed after the main task name. By the way, did you notice that this key is entirely optional? That means that a subtask can simply be unnamed, if you decide so. However, such practice is not recommended, as it's always good to have a visual description of what \arara\ is running at the moment, so name your subtasks properly.
 
 \item[\describecontext{M}{commands}{command}] This key holds the action to be performed, typically a system command. In previous versions, \arara\ would rely solely on a string. For this version on, as a means to enhance the user experience (and also fix serious blockers when handling spaces in file names, as seen in \href{https://github.com/cereda/arara/issues}{previous issues} reported in the repository), the tool offers four types of returned values:
 
 \begin{itemize}[label={--}]
-\item A plain string: this is the default (and only) behaviour in older versions of \arara. The plain string is processed as it is by the underlying execution engine. However, automatic argument parsing poses as a complex issue, so this approach, although supported, is not recommended any more.
+\item A plain string: this is the default (and only) behaviour in older versions of \arara. The plain string is processed as it is by the underlying execution engine. However, automatic argument parsing is problematic, so this approach, although supported, is not recommended any more.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command: 'ls'
 \end{codebox}
 
-It is important to observe that you can use either a plain string directly or using an orb tag with an explicit \rbox{return} command (as seen in Section~\ref{sec:mvelbasicusage}, on page~\pageref{sec:mvelbasicusage}). Personally, I favour the explict indication for a quick understanding.
+It is important to observe that you can use either a plain string directly or use an orb tag with an explicit \rbox{return} command (as seen in Section~\ref{sec:mvelbasicusage}, on page~\pageref{sec:mvelbasicusage}). Personally, I favour the explicit indication for a quick understanding.
 
-\item A \rbox{Command} object: \arara\ 4.0 features a new approach for handling system commands based on a high level structure with explict argument parsing named \rbox{Command} (for our curious users, it is a plain Java object). In order to use this approach, we need to rely on orb tags and use a helper method named \mtbox{getCommand} to obtain the desired result. We will detail this method later on, in Section~\ref{sec:commandsandtriggers}, on page~\pageref{sec:commandsandtriggers}. We highly recommend the adoption of this approach for rule writing instead of using plain strings.
+\item A \rbox{Command} object: \arara\ 4.0 features a new approach for handling system commands based on a high level structure with explicit argument parsing named \rbox{Command} (for our curious users, it is a plain Java object). In order to use this approach, we need to rely on orb tags and use a helper method named \mtbox{getCommand} to obtain the desired result. We will detail this method later on, in Section~\ref{sec:commandsandtriggers}, on page~\pageref{sec:commandsandtriggers}. We highly recommend the adoption of this approach for rule writing instead of using plain strings.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command: "@{ return getCommand('ls') }"
 \end{codebox}
 
-\item A boolean value: it is also possible to exploit the expressive power of the underlying scripting language available in the rule context (see Chapter~\ref{chap:mvel}, on page~\pageref{chap:mvel}, for more details) for writing complex code. In this particular case, since the computation is being done by \arara\ itself and not the underlying operating system, there will not be a command to be executed, so simply return a boolean value -- either an explicit \rbox{true} or \rbox{false} value or a logical expression -- to indicate whether the computation was successfull.
+\item A boolean value: it is also possible to exploit the expressive power of the underlying scripting language available in the rule context (see Chapter~\ref{chap:mvel}, on page~\pageref{chap:mvel}, for more details) for writing complex code. In this particular case, since the computation is being done by \arara\ itself and not the underlying operating system, there will not be a command to be executed, so simply return a boolean value -- either an explicit \rbox{true} or \rbox{false} value or a logical expression -- to indicate whether the computation was successful.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command: "@{ return 1 == 1 }"
@@ -113,14 +119,14 @@ It took me a lot of effort to find out that handling plain strings and employing
 There are at least two variables available in the \abox{command} context and are described as follows (note that \gls{MVEL} variables and orb tags are discussed in Chapter~\ref{chap:mvel}). A variable will be denoted by \varbox{variable} in this list. For each rule argument (defined later on), there will be a corresponding variable in the \abox{command} context, directly accessed through its unique identifier.
 
 \begin{description}
-\item[\varbox{file}] This variable holds the file name, without any path reference, as a plain string. It is usually composed by the base name and the extension. This variable is available since the first release of \arara.
+\item[\varbox{file}] This variable holds the file name, without any path reference, as a plain string. It is usually composed from the base name and the extension. This variable is available since the first release of \arara.
 
-\item[\varbox{reference}] This variable is introduced in version 4.0 of \arara\ and holds the canonical, absolute path representation of the \varbox{file} variable as a \rbox{File} object. This is useful if there is a need of understanding the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \rbox{File} class.
+\item[\varbox{reference}] This variable is introduced in version 4.0 of \arara\ and holds the canonical, absolute path representation of the \varbox{file} variable as a \rbox{File} object. This is useful if it's necessary to understand the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \rbox{File} class.
 \end{description}
 
 \begin{messagebox}{Quote handling}{araracolour}{\icinfo}{white}
 \setlength{\parskip}{1em}
-The YAML format disallows key values starting with \rbox{@} without proper quoting. This is the reason we had to use double quotes for the value and internally using single quotes for the command string. Also, we could use the other way around, or even using only one type and then escaping them when needed. This is excessively verbose but needed due to the format requirement. Thankfully, \arara\ offers two solutions for removing the quoting verbosity when writing commands.
+The \gls{YAML} format disallows key values starting with \rbox{@} without proper quoting. This is the reason we had to use double quotes for the value and internally using single quotes for the command string. Also, we could use the other way around, or even using only one type and then escaping them when needed. This is excessively verbose but needed due to the format requirement. Thankfully, \arara\ offers two solutions for removing the quoting verbosity when writing commands.
 
 The first solution is used in previous versions and it still works like a charm in modern days. We need to precede our command with a special keyword \rbox{<arara>} which will be removed afterwards. This solution works on virtually every key in the rule context, so it is a bonus. The new code will look like this:
 
@@ -128,7 +134,7 @@ The first solution is used in previous versions and it still works like a charm 
 command: <arara> @{ return getCommand('ls') }
 \end{codebox}
 
-The second approach is more of a YAML feature rather than a tool exclusive, although we have to do a couple of checkings under the hood in order to ensure the correct execution. The idea here is to use the scalar content in folded style, as seen in Section~\ref{sec:yamlscalars}, on page~\pageref{sec:yamlscalars}. The new code will look like this:
+The second approach is more of a \gls{YAML} feature rather than a tool exclusive, although we have to do a couple of checks under the hood in order to ensure the correct execution. The idea here is to use the scalar content in folded style, as seen in Section~\ref{sec:yamlscalars}, on page~\pageref{sec:yamlscalars}. The new code will look like this:
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command: >
@@ -137,10 +143,10 @@ command: >
   }
 \end{codebox}
 
-Mind the indentation, as YAML requires it to properly identify blocks. I personally recommend this approach for longer code, as it provides a better visual representation. You will see the second solution all around the default rules, but feel free to use the one you feel more comfortable.
+Mind the indentation, as \gls{YAML} requires it to properly identify blocks. I personally recommend this approach for longer code, as it provides a better visual representation. You will see the second solution all around the default rules, but feel free to use the one you feel more comfortable with.
 \end{messagebox}
 
-\item[\describecontext{O}{commands}{exit}] This key holds a special purpose in \arara\ 4.0, as it represents a custom exit status evaluation for the corresponding command. In general, a successful execution has zero as an exit status, but sometimes we end up with tools or situations that we need to override this checking for whatever reason. For this purpose, simply write a MVEL expression \emph{without orb tags} as plain string and use the special variable \varbox{value} if you need the actual exit status returned by the command, available at runtime. For example, if the command returns a non-zero value indicating a successful execution, we can write this key as:
+\item[\describecontext{O}{commands}{exit}] This key holds a special purpose in \arara\ 4.0, as it represents a custom exit status evaluation for the corresponding command. In general, a successful execution has zero as an exit status, but sometimes we end up with tools or situations where we need to override this check for whatever reason. For this purpose, simply write a \gls{MVEL} expression \emph{without orb tags} as plain string and use the special variable \varbox{value} if you need the actual exit status returned by the command, available at runtime. For example, if the command returns a non-zero value indicating a successful execution, we can write this key as:
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 exit: value > 0
