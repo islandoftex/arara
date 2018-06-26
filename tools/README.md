@@ -1,8 +1,8 @@
 # Language checker
 
-![Version](https://img.shields.io/badge/current_version-1.0-blue.svg?style=flat-square)
-![Language](https://img.shields.io/badge/language-Java-blue.svg?style=flat-square)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+![Version: 1.0](https://img.shields.io/badge/current_version-1.0-blue.svg?style=flat-square)
+![Language: Java](https://img.shields.io/badge/language-Java-blue.svg?style=flat-square)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 The `langchecker` tool, as the name implies, serves a very specific purpose: check all language
 files in the provided directory for typing inconsistencies, such as misplaced single quotes.
@@ -29,9 +29,9 @@ $ java -jar langchecker.jar localization/
 
 # Rule checker
 
-![Version](https://img.shields.io/badge/current_version-1.0-blue.svg?style=flat-square)
-![Language](https://img.shields.io/badge/language-Java-blue.svg?style=flat-square)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+![Version: 1.0](https://img.shields.io/badge/current_version-1.0-blue.svg?style=flat-square)
+![Language: Java](https://img.shields.io/badge/language-Java-blue.svg?style=flat-square)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 The `rulechecker` tool extracts special annotation metadata from rules
 in the provided directory as a means to identify and report unfixed issues.
@@ -90,9 +90,9 @@ $ java -jar rulechecker.jar rules/
 
 # Rule converter
 
-![Version](https://img.shields.io/badge/current_version-1.0-blue.svg?style=flat-square)
-![Language](https://img.shields.io/badge/language-Java-blue.svg?style=flat-square)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+![Version: 1.0](https://img.shields.io/badge/current_version-1.0-blue.svg?style=flat-square)
+![Language: Java](https://img.shields.io/badge/language-Java-blue.svg?style=flat-square)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 The `ruleconverter` tool attempts to automatically convert rules in the old version 3.0 format
 to the new version 4.0 one. It is important to note that, although the tool might indicate a
