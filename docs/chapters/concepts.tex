@@ -115,7 +115,7 @@ There are at least two variables available in the \abox{command} context and are
 \begin{description}
 \item[\varbox{file}] This variable holds the file name, without any path reference, as a plain string. It is usually composed from the base name and the extension. This variable is available since the first release of \arara.
 
-\item[\varbox{reference}] This variable is introduced in version 4.0 of \arara\ and holds the canonical, absolute path representation of the \varbox{file} variable as a \rbox{File} object. This is useful if it's necessary to understand the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \rbox{File} class.
+\item[\varbox{reference}] This variable is introduced in version 4.0 of \arara\ and holds the canonical, absolute path representation of the \varbox{file} variable as a \rbox{File} object. This is useful if it's necessary to know the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \rbox{File} class.
 \end{description}
 
 \begin{messagebox}{Quote handling}{araracolour}{\icinfo}{white}
@@ -197,12 +197,12 @@ There are three variables available in the \abox{flag} context, described as fol
 \begin{description}
 \item[\varbox{parameters}] This variable holds a map of directive parameters available at runtime. For each argument identifier listed in the \abox{arguments} list in the rule context, there will be an entry in this variable. This is useful to get the actual values provided during execution and take proper actions. If a parameter is not set in the directive context, the reference will still exist in the map, but it will be mapped to an empty string.
 
-\item[\varbox{file}] This variable holds the file name, without any path reference, as a plain string. It is usually composed by the base name and the extension. This variable is available since the first release of \arara.
+\item[\varbox{file}] This variable holds the file name, without any path reference, as a plain string. It is usually composed from the base name and the extension. This variable is available since the first release of \arara.
 
-\item[\varbox{reference}] This variable is introduced in version 4.0 of \arara\ and holds the canonical, absolute path representation of the \varbox{file} variable as a \rbox{File} object. This is useful if there is a need of understanding the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \rbox{File} class.
+\item[\varbox{reference}] This variable is introduced in version 4.0 of \arara\ and holds the canonical, absolute path representation of the \varbox{file} variable as a \rbox{File} object. This is useful if it's necessary to know the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \rbox{File} class.
 \end{description}
 
-In the previous example, observe that the MVEL expression defined in the \abox{flag} key checks if the user provided an affirmative value regarding shell escape, through comparing \varbox{parameters.shell} with a set of predefined affirmative values. In any case, the corresponding command flag is defined as result of such evaluation.
+In the previous example, observe that the \gls{MVEL} expression defined in the \abox{flag} key checks if the user provided an affirmative value regarding shell escape, through comparing \varbox{parameters.shell} with a set of predefined affirmative values. In any case, the corresponding command flag is defined as result of such evaluation.
 
 \item[\describecontext{O}{arguments}{default}] As default behaviour, if a parameter is not set in the directive context, the reference will be mapped to an empty string. This key exists for the exact purpose of overriding such behaviour.
 
@@ -215,12 +215,12 @@ There are three variables available in the \abox{default} context, described as 
 \begin{description}
 \item[\varbox{parameters}] This variable holds a map of directive parameters available at runtime. For each argument identifier listed in the \abox{arguments} list in the rule context, there will be an entry in this variable. This is useful to get the actual values provided during execution and take proper actions. If a parameter is not set in the directive context, the reference will still exist in the map, but it will be mapped to an empty string.
 
-\item[\varbox{file}] This variable holds the file name, without any path reference, as a plain string. It is usually composed by the base name and the extension. This variable is available since the first release of \arara.
+\item[\varbox{file}] This variable holds the file name, without any path reference, as a plain string. It is usually composed from the base name and the extension. This variable is available since the first release of \arara.
 
-\item[\varbox{reference}] This variable is introduced in version 4.0 of \arara\ and holds the canonical, absolute path representation of the \varbox{file} variable as a \rbox{File} object. This is useful if there is a need of understanding the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \rbox{File} class.
+\item[\varbox{reference}] This variable is introduced in version 4.0 of \arara\ and holds the canonical, absolute path representation of the \varbox{file} variable as a \rbox{File} object. This is useful if it's necessary to know the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \rbox{File} class.
 \end{description}
 
-\item[\describecontext{O}{arguments}{required}] There might be certain scenarios in which a rule could make use of required arguments (for instance, a copy operation in which source and target must be provided). The \abox{required} key acts as a boolean switch to indicate whether the corresponding argument should be mandatory. In this case, set the key value to \rbox{true} and the argument turns required. Later on at runtime, \arara\ will throw an error if a required parameter is missing in the directive.
+\item[\describecontext{O}{arguments}{required}] There might be certain scenarios in which a rule could make use of required arguments (for instance, a copy operation in which source and target must be provided). The \abox{required} key acts as a boolean switch to indicate whether the corresponding argument should be mandatory. In this case, set the key value to \rbox{true} and the argument becomes required. Later on at runtime, \arara\ will throw an error if a required parameter is missing in the directive.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 required: false
@@ -249,7 +249,7 @@ arguments:
 \end{codebox}
 \end{description}
 
-This is the rule structure in the YAML format used by \arara. Keep in mind that all subtasks in a rule are checked against their corresponding exit status. If an abnormal execution is detected, the tool will instantly halt and the rule will fail. Even \arara\ itself will return an exit code different than zero when this situation happens (detailed in Chapter~\ref{chap:commandline}, on page~\pageref{chap:commandline}).
+This is the rule structure in the \gls{YAML} format used by \arara. Keep in mind that all subtasks in a rule are checked against their corresponding exit status. If an abnormal execution is detected, the tool will instantly halt and the rule will fail. Even \arara\ itself will return an exit code different than zero when this situation happens (detailed in Chapter~\ref{chap:commandline}, on page~\pageref{chap:commandline}).
 
 \section{Directives}
 \label{sec:directives}
@@ -264,7 +264,7 @@ A \emph{directive} is a special comment inserted in the source file in which you
 \end{messagebox}
 
 
-There are two types of directives in \arara\ which determine the way the corresponding rules will be instantiated. They are listed as follows. Note that directives are always preceeded by the \rbox{arara:} pattern.
+There are two types of directives in \arara\ which determine the way the corresponding rules will be instantiated. They are listed as follows. Note that directives are always preceded by the \rbox{arara:} pattern.
 
 \begin{description}
 \item[empty directive] This type of directive has already been mentioned in Chapter~\ref{chap:introduction}, on page~\pageref{chap:introduction}, it has only the rule name (which refers to the \abox{identifier} key from the rule of the same name). All rule arguments are mapped to empty strings, except the ones with \abox{default} values.
@@ -273,7 +273,7 @@ There are two types of directives in \arara\ which determine the way the corresp
 % arara: pdflatex
 \end{codebox}
 
-\item[parametrized directive] This type of directive also has the rule name (which refers to the \abox{identifier} key from the rule of the same name), and also contains a map of parameters in order to provide additional information to the corresponding rule. This map is defined in the YAML format, based on the inline style.
+\item[parametrized directive] This type of directive also has the rule name (which refers to the \abox{identifier} key from the rule of the same name), and also contains a map of parameters in order to provide additional information to the corresponding rule. This map is defined in the \gls{YAML} format, based on the inline style.
 
 \begin{codebox}{Parametrized directive}{teal}{\icnote}{white}
 % arara: pdflatex: { shell: yes }
@@ -288,7 +288,7 @@ key : value
 Note that virtually any type of data can be used as parameter value, so lists, integers, booleans, sets and other maps are available as well. However, there must be the correct handling of such types in the rule context.
 \end{description}
 
-When handling parametrized directives, \arara\ always checks if directive parameters and rule arguments match. If we try to inject a nonexistent parameter in a parametrized directive, the tool will raise an error about it:
+When handling parametrized directives, \arara\ always checks if directive parameters and rule arguments match. If we try to inject a non-existent parameter in a parametrized directive, the tool will raise an error about it:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
   __ _ _ __ __ _ _ __ __ _ 
@@ -328,28 +328,28 @@ It is important to observe that there is no need of them to be in contiguous lin
 Although it is possible to spread lines of a multiline directive all over the code, it is considered good practice to keep them together for easier reading and editing. In any case, you can always see which lines compose a directive by inspecting the log file.
 \end{messagebox}
 
-\arara\ 4.0 provides logical expressions, written in the MVEL language, and special operators processed at runtime in order to determine whether and how a directive should be processed. This feature is named \emph{directive conditional}, or simply \emph{conditional} as an abbreviation. The following list describes all conditional operators available in the directive context.
+\arara\ 4.0 provides logical expressions, written in the \gls{MVEL} language, and special operators processed at runtime in order to determine whether and how a directive should be processed. This feature is named \emph{directive conditional}, or simply \emph{conditional} as an abbreviation. The following list describes all conditional operators available in the directive context.
 
 \begin{description}
-\item[\describeconditional{a priori}{if}] The associated MVEL expression is evaluated beforehand, and the directive is interpreted if, and only if, the result of such evaluation is true. This directive, when the conditional holds true, is executed at most once.
+\item[\describeconditional{a priori}{if}] The associated \gls{MVEL} expression is evaluated beforehand, and the directive is interpreted if, and only if, the result of such evaluation is true. This directive, when the conditional holds true, is executed at most once.
 
 \begin{codebox}{Conditional}{teal}{\icnote}{white}
 % arara: pdflatex if missing('pdf') || changed('tex')
 \end{codebox}
 
-\item[\describeconditional{a posteriori}{until}] The directive is interpreted the first time, then the associated MVEL expression evaluation is done. While the result holds false, the directive is interpreted again and again. There are no guarantees of proper halting.
+\item[\describeconditional{a posteriori}{until}] The directive is interpreted the first time, then the associated \gls{MVEL} expression evaluation is done. While the result holds false, the directive is interpreted again and again. There are no guarantees of proper halting.
 
 \begin{codebox}{Conditional}{teal}{\icnote}{white}
 % arara: pdflatex until !found('log', 'undefined references')
 \end{codebox}
 
-\item[\describeconditional{a priori}{unless}] Technically an inverted \cdbox{if} conditional, the associated MVEL expression is evaluated beforehand, and the directive is interpreted if, and only if, the result is false. This directive, when the conditional holds false, is executed at most once.
+\item[\describeconditional{a priori}{unless}] Technically an inverted \cdbox{if} conditional, the associated \gls{MVEL} expression is evaluated beforehand, and the directive is interpreted if, and only if, the result is false. This directive, when the conditional holds false, is executed at most once.
 
 \begin{codebox}{Conditional}{teal}{\icnote}{white}
 % arara: pdflatex unless unchanged('tex') && exists('pdf')
 \end{codebox}
 
-\item[\describeconditional{a priori}{while}] The associated MVEL expression is evaluated beforehand, the directive is interpreted if, and only if, the result is true, and the process is repeated while the result still holds true. There are no guarantees of proper halting.
+\item[\describeconditional{a priori}{while}] The associated \gls{MVEL} expression is evaluated beforehand, the directive is interpreted if, and only if, the result is true, and the process is repeated while the result still holds true. There are no guarantees of proper halting.
 
 \begin{codebox}{Conditional}{teal}{\icnote}{white}
 % arara: pdflatex while missing('pdf') ||
@@ -360,10 +360,10 @@ Although it is possible to spread lines of a multiline directive all over the co
 Several methods are available in the directive context in order to ease the writing of conditionals, such as \mtbox{missing}, \mtbox{changed}, \mtbox{found}, \mtbox{unchanged}, and \mtbox{exists} featured in the previous examples. They will be properly detailed later on, in Section~\ref{sec:files}, on page~\pageref{sec:files}.
 
 \begin{messagebox}{No infinite loops}{araracolour}{\icinfo}{white}
-Although there are no conceptual guarantees for proper halting of unbounded loops, we have provided a technical solution for potentially infinite iterations: \arara\ has a predefined maximum number of loops. The default value is set to 10, but it can be overriden either in the configuration file or with a command line flag. We discuss this feature later on, in Sections~\ref{sec:options} and~\ref{sec:basicstructure}, on pages~\pageref{sec:options} and~\pageref{sec:basicstructure}, respectively.
+Although there are no conceptual guarantees for proper halting of unbounded loops, we have provided a technical solution for potentially infinite iterations: \arara\ has a predefined maximum number of loops. The default value is set to 10, but it can be overridden either in the configuration file or with a command line flag. We discuss this feature later on, in Sections~\ref{sec:options} and~\ref{sec:basicstructure}, on pages~\pageref{sec:options} and~\pageref{sec:basicstructure}, respectively.
 \end{messagebox}
 
-All directives, regardless of their type, are internally mapped with both \abox{file} and \abox{reference} parameters, discussed earlier on, in Section~\ref{sec:coreconcepts}, on page~\pageref{sec:coreconcepts}, as special variables in the rule context. When inspecting the log file, you will find all map keys and values for each extracted directive (actually, there is an entire log section devoted to detailing directives found in the code). This feature is covered in Section~\ref{sec:directivenormalization}, on page~\pageref{sec:directivenormalization}. See, for instance, the report of the directive extraction and normalization process performed by \arara\ when inspecting \rbox{doc2.tex}, available in the log file. Note that timestamps were deliberately removed in order to declutter the output, and line breaks were included as to easily spot the log entries.
+All directives, regardless of their type, are internally mapped with both \abox{file} and \abox{reference} parameters, discussed earlier on, in Section~\ref{sec:coreconcepts}, on page~\pageref{sec:coreconcepts}, as special variables in the rule context. When inspecting the log file, you will find all map keys and values for each extracted directive (actually, there is an entire log section devoted to detailing directives found in the code). This feature is covered in Section~\ref{sec:directivenormalization}, on page~\pageref{sec:directivenormalization}. See, for instance, the report of the directive extraction and normalization process performed by \arara\ when inspecting \rbox{doc2.tex}, available in the log file. Note that timestamps were deliberately removed in order to declutter the output, and line breaks were included in order to easily spot the log entries.
 
 \begin{ncodebox}{Source file}{teal}{\icnote}{white}{doc2.tex}
 % arara: pdflatex
@@ -387,6 +387,7 @@ conditional: { NONE }, lines: [2] }
 
 The directive context also features another special parameter named \abox{files} which expects a non-empty list of file names as plain string values. For each element of this list, \arara\ will replicate the current directive and point the element being iterated as current \abox{file} and \abox{reference} values (being the latter resolved to a proper absolute, canonical path of the former). See, for instance, the report of the directive extraction and normalization process performed by \arara\ when inspecting \rbox{doc3.tex}, available in the log file.
 
+%Paulo: Should the directive be pdftex not pdflatex?
 \begin{ncodebox}{Source file}{teal}{\icnote}{white}{doc3.tex}
 % arara: pdflatex: { files: [ doc1.tex, doc2.tex ] }
 Hello world.
