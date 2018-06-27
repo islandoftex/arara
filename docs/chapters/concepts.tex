@@ -387,9 +387,8 @@ conditional: { NONE }, lines: [2] }
 
 The directive context also features another special parameter named \abox{files} which expects a non-empty list of file names as plain string values. For each element of this list, \arara\ will replicate the current directive and point the element being iterated as current \abox{file} and \abox{reference} values (being the latter resolved to a proper absolute, canonical path of the former). See, for instance, the report of the directive extraction and normalization process performed by \arara\ when inspecting \rbox{doc3.tex}, available in the log file.
 
-%Paulo: Should the directive be pdftex not pdflatex?
 \begin{ncodebox}{Source file}{teal}{\icnote}{white}{doc3.tex}
-% arara: pdflatex: { files: [ doc1.tex, doc2.tex ] }
+% arara: pdftex: { files: [ doc1.tex, doc2.tex ] }
 Hello world.
 \bye
 \end{ncodebox}
