@@ -388,7 +388,7 @@ conditional: { NONE }, lines: [2] }
 The directive context also features another special parameter named \abox{files} which expects a non-empty list of file names as plain string values. For each element of this list, \arara\ will replicate the current directive and point the element being iterated as current \abox{file} and \abox{reference} values (being the latter resolved to a proper absolute, canonical path of the former). See, for instance, the report of the directive extraction and normalization process performed by \arara\ when inspecting \rbox{doc3.tex}, available in the log file.
 
 \begin{ncodebox}{Source file}{teal}{\icnote}{white}{doc3.tex}
-% arara: pdftex: { files: [ doc1.tex, doc2.tex ] }
+% arara: pdflatex: { files: [ doc1.tex, doc2.tex ] }
 Hello world.
 \bye
 \end{ncodebox}
@@ -402,6 +402,8 @@ Directive: { identifier: pdflatex, parameters:
 {reference=/home/paulo/doc2.tex, file=doc2.tex},
 conditional: { NONE }, lines: [1] }
 \end{codebox}
+
+In this case \rbox{doc3.tex} is a plain \TeX\ file, but \rbox{pdflatex} is actually being called on two \LaTeX\ documents, first \rbox{doc1.tex} and then \rbox{doc2.tex}.
 
 Even when a directive is interpreted with a file other than the one being processed by \arara\ (through the magic of the \abox{files} parameter), it is possible to use helper methods in the rule context to get access to the original file and reference. Such methods are detailed later on, in Section~\ref{sec:files}, on page~\pageref{sec:files}.
 
