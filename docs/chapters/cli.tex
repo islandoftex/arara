@@ -26,6 +26,11 @@ Processing 'doc5.tex' (size: 307 bytes, last modified: 05/29/2018
 Total: 1.45 seconds
 \end{codebox}
 
+% The third sentence doesn't sound quite right.
+% Suggestions:
+%  Hopefully you follow this custom, otherwise the visual effect won't be so pleasant.
+%  Hopefully you follow the conventional use of a monospaced font in your terminal, otherwise the visual effect won't be so pleasant.
+
 First of all, we have the nice application logo, displayed using ASCII art. The entire layout is based on monospaced font spacing, usually used in terminal prompts. Hopefully, we expect you to be using a monospaced font, otherwise the visual effect will not be so pleasant. First and foremost, \arara\ displays details about the file being processed, including size and modification status:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
@@ -74,7 +79,7 @@ Database file #1: mybib.bib
 --------------------------------------------------------- SUCCESS
 \end{codebox}
 
-It is important to observe that, when in verbose mode, \arara\ can offer proper interaction when a certain system command requires user intervention. However, when in silent mode, the tool will simply discard this requirement and the command will almost surely fail.
+It is important to observe that, when in verbose mode, \arara\ can offer proper interaction if the system command requires user intervention. However, when in silent mode, the tool will simply discard this requirement and the command will almost surely fail.
 
 \section{Options}
 \label{sec:options}
@@ -135,7 +140,7 @@ When running \arara\ without this option, two directives will be extracted (the 
 
 \item[\describeop{l}{log}] This option enables the logging feature of our tool. All streams from all system commands will be logged and, at the end of the execution, a consolidated log file named \rbox{arara.log} will be generated. This option can also be activated by default in the configuration file (see Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). Refer to Chapter~\ref{chap:logging}, on page~\pageref{chap:logging}, for more details on the logging feature.
 
-\item[\describeopp{L}{language}{code}] This option sets the language of the current execution of \arara\ according to the language code \prbox{code} value provided as parameter. The language code tries to follow the ISO 639 norm, standardized nomenclature used to classify languages. For example, this is our tool speaking Dutch:
+\item[\describeopp{L}{language}{code}] This option sets the language of the current execution of \arara\ according to the language code identified by the \prbox{code} value provided as the parameter. The language code tries to follow the ISO 639 norm, standardized nomenclature used to classify languages. For example, this is our tool speaking Dutch:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ arara -L nl doc5.tex
@@ -180,13 +185,13 @@ Would you like to make \arara\ speak your own language? Splendid! We would love 
 
 This option can also be specified in the configuration file (see Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). However, one can always override this setting by running the tool with an explicit \opbox{L} option.
 
-\item[\describeopp{m}{max-loops}{number}] As a means to avoid infinite iterations, \arara\ has a predefined maximum number of loops, current set to 10, as a technical solution (seen in Section~\ref{sec:directives}, on page~\pageref{sec:directives}). For instance, consider the following directive:
+\item[\describeopp{m}{max-loops}{number}] As a means to avoid infinite iterations, \arara\ has a predefined maximum number of loops, with the default set to 10, as a technical solution (seen in Section~\ref{sec:directives}, on page~\pageref{sec:directives}). For instance, consider the following directive:
 
 \begin{codebox}{A naughty directive}{teal}{\icnote}{white}
 % arara: pdftex while true
 \end{codebox}
 
-The \opbox{{-}max-loops} option is used to redefine the maximum number of loops our tool will allow for potentially infinite iterations. Any positive integer can be used as \prbox{number} value for this option. An execution of the previous directive with a lower maximum number of loops is shown as follows:
+The \opbox{{-}max-loops} option is used to redefine the maximum number of loops our tool will allow for potentially infinite iterations. Any positive integer can be used as the \prbox{number} value for this option. An execution of the previous directive with a lower maximum number of loops is shown as follows:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ arara -m 2 doc8.tex 
@@ -247,7 +252,7 @@ Note that the rule authors are displayed (so they can be blamed in case anything
 It is very important to observe that conditionals are not evaluated when our tool is executed in the \opbox{{-}dry-run} mode, although they are properly listed. Also, when a rule returns a boolean value, the code is executed regardless of this mode.
 \end{messagebox}
 
-\item[\describeopp{p}{preamble}{name}] Some \TeX\ documents require the same automation steps, e.g, a set of articles. To this end, as to avoid repeating the same preamble over and over in this specific scenario, \arara\ has the possibility of setting predefined preambles in a special section of the configuration file under unique key for later use. This command line option prepends the predefined preamble referenced by the \prbox{name} key to the current document and then proceeds to extract directives, as usual. For instance:
+\item[\describeopp{p}{preamble}{name}] Some \TeX\ documents require the same automation steps, e.g, a set of articles. To this end, so as to avoid repeating the same preamble over and over in this specific scenario, \arara\ has the possibility of setting predefined preambles in a special section of the configuration file identified by a unique key for later use. This command line option prepends the predefined preamble referenced by the \prbox{name} key to the current document and then proceeds to extract directives, as usual. For instance:
 
 \begin{codebox}{Preamble}{teal}{\icnote}{white}
 twopdftex: |
@@ -280,7 +285,7 @@ Total: 0.96 seconds
 
 It is important to note that this is just a directive-based preamble and nothing else, so a line other than a directive is discarded. Line breaks and conditionals are supported. Trying to exploit this area for other purposes will not work. The preamble specification in the configuration file is detailed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}. 
 
-\item[\describeopp{t}{timeout}{number}] This option sets an execution timeout for every task, in milliseconds. If the timeout is reached before the task ends, \arara\ will kill it and halt the execution. Any positive integer can be used as \prbox{number} value for this option. Of course, use a sensible value to give proper time for a task to be executed. For instance, consider the following recursive call:
+\item[\describeopp{t}{timeout}{number}] This option sets an execution timeout for every task, in milliseconds. If the timeout is reached before the task ends, \arara\ will kill it and halt the execution. Any positive integer can be used as the \prbox{number} value for this option. Of course, use a sensible value to allow proper time for a task to be executed. For instance, consider the following recursive call:
 
 \begin{ncodebox}{Source file}{teal}{\icnote}{white}{doc10.tex}
 % arara: pdftex
@@ -320,6 +325,7 @@ If left unattended, this particular execution would never finish (and probably c
 \item[\describeop{v}{verbose}] This option enables the verbose mode of \arara, as seen in Section~\ref{sec:userinterfacedesign}, on page~\pageref{sec:userinterfacedesign}. It also enables all streams to be flushed directly to the terminal, including potential user input interactions (the exact opposite of silent mode). This option can also be activated by default in the configuration file (see Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}).
 
 \item[\describeop{s}{silent}] This option disables the verbose mode of \arara\ (thus activating the default silent mode), if previously enabled by a proper configuration file (see Chapter~\ref{chap:configurationfile}, on page~\pageref{chap:configurationfile}). It is important to note that this command line option has higher priority over the \opbox{{-}verbose} counterpart.
+% It might be worth clarifying here that --silent doesn't completely stop all messages from being written to STDOUT, just the messages normally produced by the system commands called by the subtasks. The normal arara messages are still displayed.
 \end{description}
 
 You can combine options, use long or short variations interchangeably and write them in any order, provided that a file name is given at some point in the command line, otherwise the usage will be printed. Use the provided features in order to enhance and optimize your automation workflow.
@@ -351,7 +357,7 @@ You can combine options, use long or short variations interchangeably and write 
 Note that other extensions can be added through a proper mapping in the configuration file, as well as modifying the lookup order. This feature is detailed later on, in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}. \arara\ employs the following scheme for file name lookup:
 
 \begin{itemize}[label={--}]
-\item First and foremost, if the provided file name already contains a valid extension, the tool attempts an exact match. If the file exists, it will be selected. This is the best approach if your working directory contain other files sharing the same base name.
+\item First and foremost, if the provided file name already contains a valid extension, the tool attempts an exact match. If the file exists, it will be selected. This is the best approach if your working directory contains other files sharing the same base name.
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ arara doc11.tex
@@ -386,7 +392,7 @@ Total: 0.69 seconds
 \end{codebox}
 \end{itemize}
 
-It is highly recommended to use complete file names with our tool, as to make sure the correct file is being processed. If your command line interpreter features tab completion, you can use it to automatically fill partially typed file names from your working directory.
+It is highly recommended to use complete file names with our tool, in order to ensure the correct file is being processed. If your command line interpreter features tab completion, you can use it to automatically fill partially typed file names from your working directory.
 
 \begin{messagebox}{Exit status support}{araracolour}{\icok}{white}
 \arara\ follows the good practices of software development and provides three values for exit status, so our tool can be programmatically used in scripts and other complex workflows.
