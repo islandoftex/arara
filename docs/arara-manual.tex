@@ -43,6 +43,9 @@
 \newcommand{\todo}[1]{\fbox{\em#1}}
 
 \glssetcategoryattribute{abbreviation}{glossdesc}{firstuc}
+\glssetcategoryattribute{general}{glossname}{firstuc}
+\glssetcategoryattribute{general}{glossdesc}{firstuc}
+
 \setabbreviationstyle{short-nolong-desc}
 \renewcommand{\glsxtrshortdescname}{%
  \protect\glsabbrvfont{\the\glsshorttok} (\the\glslongtok)%
@@ -50,6 +53,11 @@
 
 % No automated sorting. The list is just in order of definition.
 % If the list gets too long, we can switch to using bib2gls.
+ \newabbreviation
+ [description={an interface that allows users to interact
+through graphical components, such as buttons and menus}]
+ {GUI}{GUI}{Graphical User Interface}
+
  \newabbreviation
  [description={an organisation that develops and promotes Internet standards}]
  {IETF}{IETF}{Internet Engineering Task Force}
@@ -59,6 +67,10 @@
  expression language and runtime for the Java platform}]
  {MVEL}{MVEL}{MVFLEX Expression Language}
 
+\newglossaryentry{orb-tag}{name={orb tag},
+ description={a dynamic element of an \gls{MVEL} template which is
+ evaluated at runtime}}
+
 \newabbreviation
  [description={a simple computer programming environment that takes
   a single expression (input), evaluates it and results the result}]
@@ -67,6 +79,12 @@
 \newabbreviation
  [description={a database language}]
  {SQL}{SQL}{Structured Query Language}
+
+\newabbreviation
+ [description={a markup language that defines a set of rules for
+encoding documents in a format that is both human-readable and
+machine-readable}]
+ {XML}{XML}{Extensible Markup Language}
 
 \newabbreviation
  [description={human-friendly data, commonly used for configuration

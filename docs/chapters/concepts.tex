@@ -28,7 +28,7 @@ Total: 0.09 seconds
 
 Once a rule is defined, \arara\ automatically provides an access layer to that rule through directives in the source code, a concept to be formally introduced later on, in Section~\ref{sec:directives}. Observe that a directive reflects a particular instance of a rule of the same name (i.e, a \rbox{foo} directive in a certain source code is an instance of the \rbox{foo} rule).
 
-In short, a rule is a plain text file written in the \gls{YAML} format, described in Chapter~\ref{chap:yaml}, on page~\pageref{chap:yaml}. I opted for this format because back then it was cleaner and more intuitive to use than other markup languages such as XML, besides of course being a data serialization standard for programming languages.
+In short, a rule is a plain text file written in the \gls{YAML} format, described in Chapter~\ref{chap:yaml}, on page~\pageref{chap:yaml}. I opted for this format because back then it was cleaner and more intuitive to use than other markup languages such as \gls{XML}, besides of course being a data serialization standard for programming languages.
 
 \begin{messagebox}{Animal jokes}{araracolour}{\icok}{white}
 As a bonus, the acronym \emph{YAML} rhymes with the word \emph{camel}, so \arara\ is heavily environmentally friendly. Speaking of camels, there is the programming reference as well, since this amusing animal is usually associated with Perl and friends.
@@ -81,9 +81,9 @@ In order to properly set a subtask, the keys used in this specification are defi
 command: 'ls'
 \end{codebox}
 
-It is important to observe that you can use either a plain string directly or use an orb tag with an explicit \rbox{return} command (as seen in Section~\ref{sec:mvelbasicusage}, on page~\pageref{sec:mvelbasicusage}). Personally, I favour the explicit indication for a quick understanding.
+It is important to observe that you can use either a plain string directly or use an \gls{orb-tag} with an explicit \rbox{return} command (as seen in Section~\ref{sec:mvelbasicusage}, on page~\pageref{sec:mvelbasicusage}). Personally, I favour the explicit indication for a quick understanding.
 
-\item A \rbox{Command} object: \arara\ 4.0 features a new approach for handling system commands based on a high level structure with explicit argument parsing named \rbox{Command} (for our curious users, it is a plain Java object). In order to use this approach, we need to rely on orb tags and use a helper method named \mtbox{getCommand} to obtain the desired result. We will detail this method later on, in Section~\ref{sec:commandsandtriggers}, on page~\pageref{sec:commandsandtriggers}. We highly recommend the adoption of this approach for rule writing instead of using plain strings.
+\item A \rbox{Command} object: \arara\ 4.0 features a new approach for handling system commands based on a high level structure with explicit argument parsing named \rbox{Command} (for our curious users, it is a plain Java object). In order to use this approach, we need to rely on \glspl{orb-tag} and use a helper method named \mtbox{getCommand} to obtain the desired result. We will detail this method later on, in Section~\ref{sec:commandsandtriggers}, on page~\pageref{sec:commandsandtriggers}. We highly recommend the adoption of this approach for rule writing instead of using plain strings.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command: "@{ return getCommand('ls') }"
@@ -95,7 +95,7 @@ command: "@{ return getCommand('ls') }"
 command: "@{ return 1 == 1 }"
 \end{codebox}
 
-\item A \rbox{Trigger} object: this is surely the least common type of returned value and it is mentioned here just for documentation purposes. In simple terms, a \rbox{Trigger} object constitutes a special command that changes the internal workings of \arara\ at runtime. We have not worked much on this concept, so there is only one trigger available, seen in action in the official \rbox{halt} rule. In order to use this approach, we need to rely on orb tags and use a helper method named \mtbox{getTrigger} to obtain the desired result.
+\item A \rbox{Trigger} object: this is surely the least common type of returned value and it is mentioned here just for documentation purposes. In simple terms, a \rbox{Trigger} object constitutes a special command that changes the internal workings of \arara\ at runtime. We have not worked much on this concept, so there is only one trigger available, seen in action in the official \rbox{halt} rule. In order to use this approach, we need to rely on \glspl{orb-tag} and use a helper method named \mtbox{getTrigger} to obtain the desired result.
 \end{itemize}
 
 It is also worth mentioning that \arara\ also supports lists of commands represented as plain strings, \rbox{Command} or \rbox{Trigger} objects, boolean values or a mix of them. This is useful if your rule has to decide whether more actions are required in order to accomplish a task. In this case, our tool will take care of the list and execute each element in the specified order.
@@ -110,7 +110,7 @@ As an example, please refer to the official \rbox{clean} rule for a real scenari
 It took me a lot of effort to find out that handling plain strings and employing guesswork to parse arguments are the root of several issues reported by users. Therefore, this approach is being marked as \emph{deprecated} and will be removed in future versions.
 \end{messagebox}
 
-There are at least two variables available in the \abox{command} context and are described as follows (note that \gls{MVEL} variables and orb tags are discussed in Chapter~\ref{chap:mvel}). A variable will be denoted by \varbox{variable} in this list. For each rule argument (defined later on), there will be a corresponding variable in the \abox{command} context, directly accessed through its unique identifier.
+There are at least two variables available in the \abox{command} context and are described as follows (note that \gls{MVEL} variables and \glspl{orb-tag} are discussed in Chapter~\ref{chap:mvel}). A variable will be denoted by \varbox{variable} in this list. For each rule argument (defined later on), there will be a corresponding variable in the \abox{command} context, directly accessed through its unique identifier.
 
 \begin{description}
 \item[\varbox{file}] This variable holds the file name, without any path reference, as a plain string. It is usually composed from the base name and the extension. This variable is available since the first release of \arara.
@@ -140,7 +140,7 @@ command: >
 Mind the indentation, as \gls{YAML} requires it to properly identify blocks. I personally recommend this approach for longer code, as it provides a better visual representation. You will see the second solution all around the default rules, but feel free to use the one you feel more comfortable with.
 \end{messagebox}
 
-\item[\describecontext{O}{commands}{exit}] This key holds a special purpose in \arara\ 4.0, as it represents a custom exit status evaluation for the corresponding command. In general, a successful execution has zero as an exit status, but sometimes we end up with tools or situations where we need to override this check for whatever reason. For this purpose, simply write a \gls{MVEL} expression \emph{without orb tags} as plain string and use the special variable \varbox{value} if you need the actual exit status returned by the command, available at runtime. For example, if the command returns a non-zero value indicating a successful execution, we can write this key as:
+\item[\describecontext{O}{commands}{exit}] This key holds a special purpose in \arara\ 4.0, as it represents a custom exit status evaluation for the corresponding command. In general, a successful execution has zero as an exit status, but sometimes we end up with tools or situations where we need to override this check for whatever reason. For this purpose, simply write a \gls{MVEL} expression \emph{without \glspl{orb-tag}} as plain string and use the special variable \varbox{value} if you need the actual exit status returned by the command, available at runtime. For example, if the command returns a non-zero value indicating a successful execution, we can write this key as:
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 exit: value > 0
