@@ -11,7 +11,7 @@ Hello world.
 \bye
 \end{ncodebox}
 
-When running our tool on the previous example with the \opbox{{-}log} command line option (otherwise, the logging framework will not provide a file at all), we will obtain the expected \rbox{arara.log} log file containing the most significant events that happened during this particular execution, as well as details regarding the underlying operating system. The content of such file is discussed as follows. Note that timestamps were deliberated removed from the log entries in order to declutter the output, and line breaks were included as to easily spot each entry,
+When running our tool on the previous example with the \opbox{{-}log} command line option (otherwise, the logging framework will not provide a file at all), we will obtain the expected \rbox{arara.log} log file containing the most significant events that happened during this particular execution, as well as details regarding the underlying operating system. The contents of this file are discussed below. Note that timestamps were deliberated removed from the log entries in order to declutter the output, and line breaks were included in order to easily spot each entry.
 
 \section{System information}
 \label{sec:systeminformation}
@@ -22,7 +22,7 @@ The very first entry to appear in the log file is the current version of \arara\
 Welcome to arara 4.0 (revision 1)!
 \end{codebox}
 
-The following entries in the log file are the absolute path of the current deployment of \arara\ (line 1), details about the current Java virtual machine (namely, vendor and absolute path, in lines 2 and 3, respectively), the underlying operating system information (namely, system name, architecture and eventually the kernel version, in line 4), home and working directories (lines 5 and 6, respectively), and the absolute path of the applied configuration file, if any (line 7). This block is very important to help tracking possible issues related to the underlying operating system and the tool configuration itself.
+The following entries in the log file are the absolute path of the current deployment of \arara\ (line 1), details about the current Java virtual machine (namely, vendor and absolute path, in lines 2 and 3, respectively), the underlying operating system information (namely, system name, architecture and eventually the kernel version, in line 4), home and working directories (lines 5 and 6, respectively), and the absolute path of the applied configuration file, if any (line 7). This block is very important to help with tracking possible issues related to the underlying operating system and the tool configuration itself.
 
 \begin{codebox}{Log file}{teal}{\icnote}{white}
 ::: arara @ /opt/paulo/arara
@@ -41,12 +41,12 @@ I understand that the previous entries containing information about the underlyi
 From experience, these entries greatly help our users to track down errors in the execution, as well as learning more about the underlying operating system. However, be mindful of sharing your log file! Since the log file contains structured blocks, it is highly advisable to selectively choose the ones relevant to the current discussion.
 \end{messagebox}
 
-It is important to observe that localized messages are also applied to the log file. If a language other than English is selected, either through the \opbox{{-}language} command line option or the equivalent key in the configuration file, the logging framework will honour the current setting and entries will be available in the specified language. Having a log file on your own language might mitigate the traumatic experience of error tracking for \TeX\ newbies.
+It is important to observe that localized messages are also applied to the log file. If a language other than English is selected, either through the \opbox{{-}language} command line option or the equivalent key in the configuration file, the logging framework will honour the current setting and entries will be available in the specified language. Having a log file in your own language might mitigate the traumatic experience of error tracking for \TeX\ newbies.
 
 \section{Directive extraction}
 \label{sec:directiveextraction}
 
-The following block in the log file refers to file information and directive extration. First, as the terminal output counterpart, the tool will display details about the file being processed, including size and modification status:
+The following block in the log file refers to file information and directive extraction. First, as with the terminal output counterpart, the tool will display details about the file being processed, including size and modification status:
 
 \begin{codebox}{Log file}{teal}{\icnote}{white}
 Processing 'doc12.tex' (size: 74 bytes, last modified:
@@ -69,12 +69,12 @@ I found a potential directive: Directive: { identifier: clean,
 parameters: {extensions=[log]}, conditional: { NONE }, lines: [2] }
 \end{codebox}
 
-In this phase, directives are correctly extracted and composed, but yet to be validated regarding invalid or reserved parameter keys. The tool then proceeds to validate parameters and normalize such directives.
+In this phase, directives are correctly extracted and composed, but are yet to be validated regarding invalid or reserved parameter keys. The tool then proceeds to validate parameters and normalize such directives.
 
 \section{Directive normalization}
 \label{sec:directivenormalization}
 
-Once all directives are properly composed, the tool checks for potential inconsistences, such as invalid or reserved parameter keys. Then all directives are validated and internally mapped with special parameters, as previously described in Section~\ref{sec:directivenormalization}, on page~\pageref{sec:directivenormalization}.
+Once all directives are properly composed, the tool checks for potential inconsistencies, such as invalid or reserved parameter keys. Then all directives are validated and internally mapped with special parameters, as previously described in Section~\ref{sec:directivenormalization}, on page~\pageref{sec:directivenormalization}.
 
 \begin{codebox}{Log file}{teal}{\icnote}{white}
 All directives were validated. We are good to go.
@@ -98,14 +98,14 @@ Note, however, that potential errors in directive conditionals, as well as simil
 \section{Rule interpretation}
 \label{sec:ruleinterpretation}
 
-Once all directives are normalized, \arara\ proceeds to interpret the potential conditionals, if any, and the corresponding rules. Note that, when available, the conditional type dictates whether the rule should be interpreted first or not. For each rule, the tool informs the identifier and the absolute path of the corresponding YAML file. In this specific scenario, the rule is part of the default rule pack released with our tool:
+Once all directives are normalized, \arara\ proceeds to interpret the potential conditionals, if any, and the corresponding rules. Note that, when available, the conditional type dictates whether the rule should be interpreted first or not. For each rule, the tool informs the identifier and the absolute path of the corresponding \gls{YAML} file. In this specific scenario, the rule is part of the default rule pack released with our tool:
 
 \begin{codebox}{Log file}{teal}{\icnote}{white}
 I am ready to interpret rule 'pdftex'.
 Rule location: '/opt/paulo/arara/rules'
 \end{codebox}
 
-For each task (or subtask, as it is part of a rule task) defined in the rule context, \arara\ will interpret it and return the corresponding system command. The return types can be found in Section~\ref{sec:rule}, on page~\pageref{sec:rule}. In this specific scenario, there is just one task associated with the \rbox{pdftex} rule. Both task name and system command are informed:
+For each task (or subtask, as it is part of a rule task) defined in the rule context, \arara\ will interpret it and return the corresponding system command. The return types can be found in Section~\ref{sec:rule}, on page~\pageref{sec:rule}. In this specific scenario, there is just one task associated with the \rbox{pdftex} rule. Both task name and system command are shown:
 
 \begin{codebox}{Log file}{teal}{\icnote}{white}
 I am ready to interpret task 'PDFTeX engine' from rule 'PDFTeX'.
@@ -130,13 +130,13 @@ Transcript written on doc12.log.
 ----------------------- END OUTPUT BUFFER -----------------------
 \end{codebox}
 
-Observe that the previous output buffer block contains the relevant information about the \rbox{pdftex} execution on the provided file. It is possible to write a shell script to extract these blocks from the log file, as a means to provide individual information on each execution. Finally, the task result is informed:
+Observe that the above output buffer block contains the relevant information about the \rbox{pdftex} execution on the provided file. It is possible to write a shell script to extract these blocks from the log file, as a means to provide individual information on each execution. Finally, the task result is shown:
 
 \begin{codebox}{Log file}{teal}{\icnote}{white}
 Task result: SUCCESS
 \end{codebox}
 
-The execution proceeds to the next directive in the list and then interprets the \rbox{clean} rule. The same steps previously described are applied in this scenario. Also note that the output buffer block is deliberately empty due to the nature of the underlying system command, as removal commands such as \rbox{rm} do not provide output at all when succeeded.
+The execution proceeds to the next directive in the list and then interprets the \rbox{clean} rule. The same steps previously described are applied in this scenario. Also note that the output buffer block is deliberately empty due to the nature of the underlying system command, as removal commands such as \rbox{rm} do not provide output at all when successful.
 
 \begin{codebox}{Log file}{teal}{\icnote}{white}
 I am ready to interpret rule 'clean'.
@@ -150,10 +150,10 @@ Task result: SUCCESS
 \end{codebox}
 
 \begin{messagebox}{Empty output buffer}{attentioncolour}{\icattention}{black}
-If the system command is simply a boolean value, the corresponding block will remain empty. Also note that not all commands from the underlying operating system path provide proper stream output, so the output buffer block might be empty on certain corner scenarios. This is the case, for example, of the provided \rbox{clean} rule.
+If the system command is simply a boolean value, the corresponding block will remain empty. Also note that not all commands from the underlying operating system path provide proper stream output, so the output buffer block might be empty in certain corner scenarios. This is the case, for example, of the provided \rbox{clean} rule.
 \end{messagebox}
 
-Finally, as the last entry in the log file, the tool informs the execution time, in seconds. As previously mentioned, the execution time has a very simple precision ans should not be considered for command profiling.
+Finally, as the last entry in the log file, the tool shows the execution time, in seconds. As previously mentioned, the execution time has a very simple precision and should not be considered for command profiling.
 
 \begin{codebox}{Log file}{teal}{\icnote}{white}
 Total: 0.33 seconds
