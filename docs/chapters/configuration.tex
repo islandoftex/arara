@@ -174,11 +174,7 @@ When defining preambles in the configuration file, \emph{always} use the literal
 extension: c
 \end{codebox}
 
-\item[\describecontextt{M}{O}{filetypes}{pattern}] This key holds the directive lookup pattern as a regular expression (which is, of course, represented as a plain string). When introducing a new file type, \arara\ must know how to interpret each line and how to properly find and extract directives, hence this key. Observe that this key is marked as optional and mandatory. The reason for such an unusual indication highly depends on the current scenario and presents as follows.
-% 'and presents as follows' doesn't sound quite right. 
-% Suggestions:
-%   and is illustrated as follows
-%   as shown below
+\item[\describecontextt{M}{O}{filetypes}{pattern}] This key holds the directive lookup pattern as a regular expression (which is, of course, represented as a plain string). When introducing a new file type, \arara\ must know how to interpret each line and how to properly find and extract directives, hence this key. Observe that this key is marked as optional and mandatory. The reason for such an unusual indication highly depends on the current scenario and is illustrated as follows.
 
 \begin{itemize}[label={--}]
 \item The \abox{pattern} key is entirely \emph{optional} for known file types (presented in Section~\ref{sec:filenamelookup}, on page~\pageref{sec:filenamelookup}, and henceforth named \emph{default} file types), in case you just want to modify the file name lookup order. It is important to observe that default file types already have their directive lookup patterns set, which incidentally are the same, presented as follows.
