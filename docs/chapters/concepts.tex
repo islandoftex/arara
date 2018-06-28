@@ -462,7 +462,7 @@ in 'reader', line 4, column 10:
 Total: 0.03 seconds
 \end{codebox}
 
-The previous terminal output shows the usual error \arara\ raises when a rule in the old format is used, and thus the corresponding YAML file is considered invalid. In order to fix the rule, we need to move the \abox{command} key inside a \rbox{commands$\rightarrow$} context as a list element, as seen as follows.
+The above terminal output shows the usual error \arara\ raises when a rule in the old format is used, and thus the corresponding \gls{YAML} file is considered invalid. In order to fix the rule, we need to move the \abox{command} key inside a \rbox{commands$\rightarrow$} context as a list element, as seen as follows.
 
 \begin{codebox}{A rule converted into the new format}{teal}{\icnote}{white}
 !config
@@ -531,7 +531,7 @@ column 1:
 Total: 0.02 seconds
 \end{codebox}
 
-The previous terminal output shows a slightly different message, but the error is practically the same to the one \arara\ raised before when a rule in the old format was used. The difference relies on the missing rule property being set at the moment, but the idea remains the same. In order to fix the rule, we need to preceed every list element in the \rbox{commands$\rightarrow$} context with the \abox{command} key, as seen as follows.
+The above terminal output shows a slightly different message, but the error is practically the same to the one \arara\ raised before when a rule in the old format was used. The difference relies on the missing rule property being set at the moment, but the idea remains the same. In order to fix the rule, we need to precede every list element in the \rbox{commands$\rightarrow$} context with the \abox{command} key, as seen as follows.
 
 \begin{codebox}{A rule converted into the new format}{teal}{\icnote}{white}
 !config
@@ -570,7 +570,7 @@ rule as a parameter and try again. I will do my best to
 convert the rule to the new version 4.0 format.
 \end{codebox}
 
-Let us invoke the tool with the first version of our hypothetical \rbox{ls} rule, still in the old format. The tool removes all comments from the original file, if any, and constructs a new file with a \rbox{\_v4} suffix attached to name. The original file is preserved. Just keep in mind that the new rule must be renamed afterwards, as the base name and the corresponding \abox{identifier} key must match. The output is presented as follows.
+Let us invoke the tool with the first version of our hypothetical \rbox{ls} rule, still in the old format. The tool removes all comments from the original file, if any, and constructs a new file with a \rbox{\_v4} suffix attached to the name. The original file is preserved. Just keep in mind that the new rule must be renamed afterwards, as the base name and the corresponding \abox{identifier} key must match. The output is presented as follows.
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ java -jar rc.jar ls.yaml
@@ -596,7 +596,7 @@ manual and update your rule to use the new enhancements of
 arara. Have a great time!
 \end{codebox}
 
-The resulting rule is identical to the one manually converted in this section. Just note that, when creating the file, the resulting YAML file might write the keys in alphabetical order. That means that, although both files semantically represent the same rule, the positions of keys differ. However, that poses no issue at all, as long as keys are correctly defined. Also, it is important to note that, due to a conversion policy of the underlying YAML library, folded scalars in the old format are transcribed as literal scalars in the new format. We could force a folded style as default, but the resulting rule would be unnecessarily verbose, so we opted for the simpler, cleaner solution. As a direct consequence, we strongly recommend a subsequent verification and potential fix of existing literal scalars into folded ones, if any. Please refer to Section~\ref{sec:yamlscalars}, on page~\pageref{sec:yamlscalars}, for more details on scalars.
+The resulting rule is identical to the one manually converted in this section. Just note that, when creating the file, the resulting \gls{YAML} file might write the keys in alphabetical order. That means that, although both files semantically represent the same rule, the positions of the keys differ. However, that poses no issue at all, as long as the keys are correctly defined. Also, it is important to note that, due to a conversion policy of the underlying \gls{YAML} library, folded scalars in the old format are transcribed as literal scalars in the new format. We could force a folded style as default, but the resulting rule would be unnecessarily verbose, so we opted for the simpler, cleaner solution. As a direct consequence, we strongly recommend a subsequent verification and potential fix of existing literal scalars into folded ones, if any. Please refer to Section~\ref{sec:yamlscalars}, on page~\pageref{sec:yamlscalars}, for more details on scalars.
 
 \begin{messagebox}{Replace plain strings in commands}{araracolour}{\icattention}{white}
 As plain strings are known to be problematic when defining commands, they are marked as deprecated in version 4.0 of \arara\ and will likely be removed in future releases. Since you are migrating from an old format to a new one, please consider replacing plain strings in command by proper \rbox{Command} objects. The helper methods available in the rule context, including the indispensable \mtbox{getCommand} method, for obvious reasons, are detailed in Section~\ref{sec:commandsandtriggers}, on page~\pageref{sec:commandsandtriggers}. It is highly advisable to update your rules on this regard, if applicable.
