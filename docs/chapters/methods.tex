@@ -335,6 +335,19 @@ This section introduces methods related to conditional flow based on \emph{natur
 
 All elements from the provided set of natural boolean values can be used interchangeably in directive parameters. It is important to observe that, from version 4.0 on, \arara\ throws an exception if a value absent from the set is provided to the methods described in this section.
 
+% Sorry, I'm going to be a bit pedantic here.
+% Above, you've defined the allowed set of boolean values: yes, true, 1, on and no, false, 0, off.
+% Below, for isTrue, you have "is contained in the set of natural boolean values"
+% Strictly speaking, this implies that isTrue returns true if the argument is any of the allowed boolean values listed above, which includes the false sub-set, and so gives the impression that isTrue("false") returns true.
+% I recommend that for the isTrue methods, replace
+%   is contained in the set of natural boolean values
+% with
+%   is contained in the sub-set of natural true boolean values
+% and for the isFalse methods, replace
+%   is not contained in the set of natural boolean values
+% with
+%   is contained in the sub-set of natural false boolean values
+
 \begin{description}
 \item[\mdbox{R}{isTrue(String string)}{boolean}] This method returns a boolean value according to whether the provided \rbox{String} value is contained in the set of natural boolean values. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the provided value is an empty string, the method returns false.
 
