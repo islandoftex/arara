@@ -2,10 +2,10 @@
 \chapter{Methods}
 \label{chap:methods}
 
-\arara\ features several helper methods available in directive conditional and rule contexts which provide interesting features for enhancing the user experience, as well as improving the automation itself. This chapter provides a list of such methods. It is important to observe that virtually all classes from the Java runtime environment can be used within MVEL expressions, so your milleage might vary.
+\arara\ features several helper methods available in directive conditional and rule contexts which provide interesting features for enhancing the user experience, as well as improving the automation itself. This chapter provides a list of such methods. It is important to observe that virtually all classes from the Java runtime environment can be used within \gls{MVEL} expressions, so your mileage might vary.
 
 \begin{messagebox}{A note on writing code}{araracolour}{\icok}{white}
-As seen in Chapter~\ref{chap:mvel}, on page~\pageref{chap:mvel}, Java and MVEL code be used interchangeably within expressions and orb tags, including instantiation of classes into objects and invocation of methods. However, be mindful of explicitly importing Java packages and classes through the classic \rbox{import} statement, as MVEL does not automatically handle imports, or an exception will surely be raised. Alternatively, you can provide the full qualified name to classes as well.
+As seen in Chapter~\ref{chap:mvel}, on page~\pageref{chap:mvel}, Java and \gls{MVEL} code be used interchangeably within expressions and \glspl{orb-tag}, including instantiation of classes into objects and invocation of methods. However, be mindful of explicitly importing Java packages and classes through the classic \rbox{import} statement, as \gls{MVEL} does not automatically handle imports, or an exception will surely be raised. Alternatively, you can provide the full qualified name to classes as well.
 \end{messagebox}
 
 Methods are listed with their complete signatures, including potential  parameters and corresponding types. Also, the return type of a method is denoted by \rrbox{type} and refers to a typical Java data type (either class or primitive). Do not worry too much, as there are illustrative examples. A method available in the directive conditional context will be marked by \ctbox{C} next to the corresponding signature. Similarly, an entry marked by \ctbox{R} denotes that the corresponding method is available in the rule context.
@@ -21,7 +21,7 @@ This section introduces methods related to file handling, searching and hashing.
 \begin{codebox}{Example}{teal}{\icnote}{white}
 if (file == getOriginalFile()) {
     System.out.println("The 'file' variable
-       was not overriden.");
+       was not overridden.");
 }
 \end{codebox}
 
@@ -30,7 +30,7 @@ if (file == getOriginalFile()) {
 \begin{codebox}{Example}{teal}{\icnote}{white}
 if (reference.equals(getOriginalFile())) {
     System.out.println("The 'reference' variable
-       was not overriden.");
+       was not overridden.");
 }
 \end{codebox}
 
@@ -40,7 +40,7 @@ if (reference.equals(getOriginalFile())) {
 % arara: pdflatex if currentFile().getName() == 'thesis.tex'
 \end{codebox}
 
-\item[\mddbox{C}{R}{toFile(String reference)}{File}] This method returns a file (or directory) reference, as a \rbox{File} object, based on the provided string. Note that such string can refer to either a relative entry or a complete, absolute path. It is worth mentioning that, in Java, despite the curious name, a \rbox{File} object can be assigned to either a file or a directory.
+\item[\mddbox{C}{R}{toFile(String reference)}{File}] This method returns a file (or directory) reference, as a \rbox{File} object, based on the provided string. Note that the string can refer to either a relative entry or a complete, absolute path. It is worth mentioning that, in Java, despite the curious name, a \rbox{File} object can be assigned to either a file or a directory.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 f = toFile('thesis.tex');
@@ -106,7 +106,7 @@ extension = getFiletype('thesis.pdf');
 % arara: pdftex if missing('pdf')
 \end{codebox}
 
-\item[\mddbox{C}{R}{changed(File file)}{boolean}] This method returns a boolean value according to whether the provided \rbox{File} reference has changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a XML database file named \rbox{arara.xml} located at the same directory of the current file (the database name can be overriden in the configuration file, as discussed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). The method semantics (including the return values) is presented as follows.
+\item[\mddbox{C}{R}{changed(File file)}{boolean}] This method returns a boolean value according to whether the provided \rbox{File} reference has changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a \gls{XML} database file named \rbox{arara.xml} located in the same directory as the current file (the database name can be overridden in the configuration file, as discussed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). The method semantics (including the return values) is presented as follows.
 
 \vspace{1em}
 
@@ -135,14 +135,14 @@ It is important to observe that this method \emph{always} performs a database op
 \end{codebox}
 
 \begin{messagebox}{Short-circuit evaluation}{araracolour}{\icok}{white}
-According to the \href{https://en.wikipedia.org/wiki/Short-circuit_evaluation}{Wikipedia entry}, a \emph{short-circuit evaluation} is the semantics of some boolean operators in some programming languages in which the second argument is executed or evaluated only if the first argument does not suffice to determine the value of the expression. In Java (and consequently MVEL), both short-circuit and standard boolean operators are available.
+According to the \href{https://en.wikipedia.org/wiki/Short-circuit_evaluation}{Wikipedia entry}, a \emph{short-circuit evaluation} is the semantics of some boolean operators in some programming languages in which the second argument is executed or evaluated only if the first argument does not suffice to determine the value of the expression. In Java (and consequently \gls{MVEL}), both short-circuit and standard boolean operators are available.
 \end{messagebox}
 
 \begin{messagebox}{CRC as a hashing algorithm}{attentioncolour}{\icattention}{black}
-\arara\ internally relies on a CRC32 implementation for file hashing. This particular choice, although not designed for hashing, offers an interesting tradeoff between speed and quality. Besides, since it is not computationally expensive as strong algorithms such as MD5 and SHA1, CRC32 can be used for hashing typical \TeX\ documents and plain text files with little to no collisions.
+\arara\ internally relies on a CRC32 implementation for file hashing. This particular choice, although not designed for hashing, offers an interesting trade-off between speed and quality. Besides, since it is not computationally expensive as strong algorithms such as MD5 and SHA1, CRC32 can be used for hashing typical \TeX\ documents and plain text files with little to no collisions.
 \end{messagebox}
 
-\item[\mddbox{C}{R}{changed(String extension)}{boolean}] This method returns a boolean value according to whether the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the provided \rbox{String} extension has changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a XML database file named \rbox{arara.xml} located at the same directory of the current file (the database name can be overriden in the configuration file, as discussed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). The method semantics (including the return values) is presented as follows.
+\item[\mddbox{C}{R}{changed(String extension)}{boolean}] This method returns a boolean value according to whether the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the provided \rbox{String} extension has changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a \gls{XML} database file named \rbox{arara.xml} located in the same directory as the current file (the database name can be overridden in the configuration file, as discussed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). The method semantics (including the return values) is presented as follows.
 
 \vspace{1em}
 
@@ -170,7 +170,7 @@ It is important to observe that this method \emph{always} performs a database op
 % arara: pdflatex if changed('tex')
 \end{codebox}
 
-\item[\mddbox{C}{R}{unchanged(File file)}{boolean}] This method returns a boolean value according to whether the provided \rbox{File} reference has not changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a XML database file named \rbox{arara.xml} located at the same directory of the current file (the database name can be overriden in the configuration file, as discussed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). The method semantics (including the return values) is presented as follows.
+\item[\mddbox{C}{R}{unchanged(File file)}{boolean}] This method returns a boolean value according to whether the provided \rbox{File} reference has not changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a \gls{XML} database file named \rbox{arara.xml} located in the same directory as the current file (the database name can be overridden in the configuration file, as discussed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). The method semantics (including the return values) is presented as follows.
 
 \vspace{1em}
 
@@ -198,7 +198,7 @@ It is important to observe that this method \emph{always} performs a database op
 % arara: pdflatex if !unchanged(toFile('thesis.tex'))
 \end{codebox}
 
-\item[\mddbox{C}{R}{unchanged(String extension)}{boolean}] This method returns a boolean value according to whether the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the provided \rbox{String} extension has not changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a XML database file named \rbox{arara.xml} located at the same directory of the current file (the database name can be overriden in the configuration file, as discussed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). The method semantics (including the return values) is presented as follows.
+\item[\mddbox{C}{R}{unchanged(String extension)}{boolean}] This method returns a boolean value according to whether the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the provided \rbox{String} extension has not changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a \gls{XML} database file named \rbox{arara.xml} located in the same directory as the current file (the database name can be overridden in the configuration file, as discussed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). The method semantics (including the return values) is presented as follows.
 
 \vspace{1em}
 
@@ -226,34 +226,34 @@ It is important to observe that this method \emph{always} performs a database op
 % arara: pdflatex if !unchanged('tex')
 \end{codebox}
 
-\item[\mdbox{R}{writeToFile(File file, String text, boolean append)}{boolean}] This method performs a write operation based on the provided parameters. In this case, the method writes the \rbox{String} text to the \rbox{File} reference and returns a boolean value according to whether such operation was successful. The third parameter holds a \rbox{boolean} value and acts as a switch indicating whether the text should be appended to the existing content of the provided file. Keep in mind that the existing content of a file is always overwritten if such switch is disabled. Also, note that the switch has no effect if the file is being created at that moment. It is important to observe that this method does not raise any exception.
+\item[\mdbox{R}{writeToFile(File file, String text, boolean append)}{boolean}] This method performs a write operation based on the provided parameters. In this case, the method writes the \rbox{String} text to the \rbox{File} reference and returns a boolean value according to whether the operation was successful. The third parameter holds a \rbox{boolean} value and acts as a switch indicating whether the text should be appended to the existing content of the provided file. Keep in mind that the existing content of a file is always overwritten if this switch is disabled. Also, note that the switch has no effect if the file is being created at that moment. It is important to observe that this method does not raise any exception.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 result = writeToFile(toFile('foo.txt'), 'hello world', false);
 \end{codebox}
 
 \begin{messagebox}{Read and write operations in Unicode}{attentioncolour}{\icattention}{black}
-\arara\ \emph{always} uses Unicode as encoding format for read and write operations. This decision is deliberate as a means to offer a consistent representation and handling of text. Unicode can be implemented by different character encodings. In our case, the tool relies on UTF-8, which uses one byte for the first 128 code points, and up to 4 bytes for other characters. The first 128 Unicode code points are the ASCII characters, which means that any ASCII text is also a UTF-8 text.
+\arara\ \emph{always} uses Unicode as the encoding format for read and write operations. This decision is deliberate as a means to offer a consistent representation and handling of text. Unicode can be implemented by different character encodings. In our case, the tool relies on UTF-8, which uses one byte for the first 128 code points, and up to 4 bytes for other characters. The first 128 Unicode code points are the ASCII characters, which means that any ASCII text is also UTF-8 text.
 \end{messagebox}
 
 \begin{messagebox}{File system permissions}{attentioncolour}{\icattention}{black}
 Most file systems have methods to assign permissions or access rights to specific users and groups of users. These permissions control the ability of the users to view, change, navigate, and execute the contents of the file system. Keep in mind that read and write operations depend on such permissions.
 \end{messagebox}
 
-\item[\mdbox{R}{writeToFile(String reference, String text, boolean append)}{boolean}] This method performs a write operation based on the provided parameters. In this case, the method writes the \rbox{String} text to the \rbox{String} reference and returns a boolean value according to whether such operation was successful. The third parameter holds a \rbox{boolean} value and acts as a switch indicating whether the text should be appended to the existing content of the provided file. Keep in mind that the existing content of a file is always overwritten if such switch is disabled. Also, note that the switch has no effect if the file is being created at that moment. It is important to observe that this method does not raise any exception.
+\item[\mdbox{R}{writeToFile(String reference, String text, boolean append)}{boolean}] This method performs a write operation based on the provided parameters. In this case, the method writes the \rbox{String} text to the \rbox{String} reference and returns a boolean value according to whether the operation was successful. The third parameter holds a \rbox{boolean} value and acts as a switch indicating whether the text should be appended to the existing content of the provided file. Keep in mind that the existing content of a file is always overwritten if this switch is disabled. Also, note that the switch has no effect if the file is being created at that moment. It is important to observe that this method does not raise any exception.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 result = writeToFile('foo.txt', 'hello world', false);
 \end{codebox}
 
-\item[\mdbox{R}{writeToFile(File file, List<String> lines, boolean append)}{boolean}] This method performs a write operation based on the provided parameters. In this case, the method writes the \rbox{List<String>} lines to the \rbox{File} reference and returns a boolean value according to whether such operation was successful. The third parameter holds a \rbox{boolean} value and acts as a switch indicating whether the text should be appended to the existing content of the provided file. Keep in mind that the existing content of a file is always overwritten if such switch is disabled. Also, note that the switch has no effect if the file is being created at that moment. It is important to observe that this method does not raise any exception.
+\item[\mdbox{R}{writeToFile(File file, List<String> lines, boolean append)}{boolean}] This method performs a write operation based on the provided parameters. In this case, the method writes the \rbox{List<String>} lines to the \rbox{File} reference and returns a boolean value according to whether the operation was successful. The third parameter holds a \rbox{boolean} value and acts as a switch indicating whether the text should be appended to the existing content of the provided file. Keep in mind that the existing content of a file is always overwritten if this switch is disabled. Also, note that the switch has no effect if the file is being created at that moment. It is important to observe that this method does not raise any exception.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 result = writeToFile(toFile('foo.txt'),
          [ 'hello world', 'how are you?' ], false);
 \end{codebox}
 
-\item[\mdbox{R}{\parbox{0.51\textwidth}{writeToFile(String reference,\\\hspace*{1em} List<String> lines, boolean append)}}{boolean}] This method performs a write operation based on the provided parameters. In this case, the method writes the \rbox{List<String>} lines to the \rbox{String} reference and returns a boolean value according to whether such operation was successful. The third parameter holds a \rbox{boolean} value and acts as a switch indicating whether the text should be appended to the existing content of the provided file. Keep in mind that the existing content of a file is always overwritten if such switch is disabled. Also, note that the switch has no effect if the file is being created at that moment. It is important to observe that this method does not raise any exception.
+\item[\mdbox{R}{\parbox{0.51\textwidth}{writeToFile(String reference,\\\hspace*{1em} List<String> lines, boolean append)}}{boolean}] This method performs a write operation based on the provided parameters. In this case, the method writes the \rbox{List<String>} lines to the \rbox{String} reference and returns a boolean value according to whether the operation was successful. The third parameter holds a \rbox{boolean} value and acts as a switch indicating whether the text should be appended to the existing content of the provided file. Keep in mind that the existing content of a file is always overwritten if this switch is disabled. Also, note that the switch has no effect if the file is being created at that moment. It is important to observe that this method does not raise any exception.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 result = writeToFile('foo.txt', [ 'hello world',
@@ -272,21 +272,21 @@ lines = readFromFile(toFile('foo.txt'));
 lines = readFromFile('foo.txt');
 \end{codebox}
 
-\item[\mdbox{R}{\parbox{0.61\textwidth}{listFilesByExtensions(File file,\\\hspace*{1em} List<String> extensions, boolean recursive)}}{List<File>}] This methods performs a file search operation based on the provided parameters. In this case, the method list all files from the provided \rbox{File} reference according to the \rbox{List<String>} extensions as a list of strings, and returns a \rbox{List<File>} object representing all matching files. The leading full stop in each extension must be omitted, unless it is part of the search pattern. The third parameter holds a \rbox{boolean} value and acts as a switch indicating whether the search must be recursive, i.e, whether all subdirectories must be searched as well. If the reference is not a proper directory or an exception is raised due to access permission constraints, the \mtbox{listFilesByExtensions} method returns an empty list.
+\item[\mdbox{R}{\parbox{0.61\textwidth}{listFilesByExtensions(File file,\\\hspace*{1em} List<String> extensions, boolean recursive)}}{List<File>}] This method performs a file search operation based on the provided parameters. In this case, the method list all files from the provided \rbox{File} reference according to the \rbox{List<String>} extensions as a list of strings, and returns a \rbox{List<File>} object representing all matching files. The leading full stop in each extension must be omitted, unless it is part of the search pattern. The third parameter holds a \rbox{boolean} value and acts as a switch indicating whether the search must be recursive, i.e, whether all subdirectories must be searched as well. If the reference is not a proper directory or an exception is raised due to access permission constraints, the \mtbox{listFilesByExtensions} method returns an empty list.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 files = listFilesByExtensions(toFile('/home/paulo/Documents'),
         [ 'aux', 'log' ], false);
 \end{codebox}
 
-\item[\mdbox{R}{\parbox{0.61\textwidth}{listFilesByExtensions(String reference,\\\hspace*{1em} List<String> extensions, boolean recursive)}}{List<File>}] This methods performs a file search operation based on the provided parameters. In this case, the method list all files from the provided \rbox{String} reference according to the \rbox{List<String>} extensions as a list of strings, and returns a \rbox{List<File>} object representing all matching files. The leading full stop in each extension must be omitted, unless it is part of the search pattern. The third parameter holds a \rbox{boolean} value and acts as a switch indicating whether the search must be recursive, i.e, whether all subdirectories must be searched as well. If the reference is not a proper directory or an exception is raised due to access permission constraints, the \mtbox{listFilesByExtensions} method returns an empty list.
+\item[\mdbox{R}{\parbox{0.61\textwidth}{listFilesByExtensions(String reference,\\\hspace*{1em} List<String> extensions, boolean recursive)}}{List<File>}] This method performs a file search operation based on the provided parameters. In this case, the method list all files from the provided \rbox{String} reference according to the \rbox{List<String>} extensions as a list of strings, and returns a \rbox{List<File>} object representing all matching files. The leading full stop in each extension must be omitted, unless it is part of the search pattern. The third parameter holds a \rbox{boolean} value and acts as a switch indicating whether the search must be recursive, i.e, whether all subdirectories must be searched as well. If the reference is not a proper directory or an exception is raised due to access permission constraints, the \mtbox{listFilesByExtensions} method returns an empty list.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 files = listFilesByExtensions('/home/paulo/Documents',
         [ 'aux', 'log' ], false);
 \end{codebox}
 
-\item[\mdbox{R}{\parbox{0.59\textwidth}{listFilesByPatterns(File file,\\\hspace*{1em} List<String> patterns, boolean recursive)}}{List<File>}] This methods performs a file search operation based on the provided parameters. In this case, the method list all files from the provided \rbox{File} reference according to the \rbox{List<String>} patterns as a list of strings, and returns a \rbox{List<File>} object representing all matching files. The pattern specification is presented as follows. The third parameter holds a \rbox{boolean} value and acts as a switch indicating whether the search must be recursive, i.e, whether all subdirectories must be searched as well. If the reference is not a proper directory or an exception is raised due to access permission constraints, the \mtbox{listFilesByPatterns} method returns an empty list. It is very important to observe that this file search operation might be slow depending on the provided directory. It is highly advisable to not rely on recursive searches whenever possible.
+\item[\mdbox{R}{\parbox{0.59\textwidth}{listFilesByPatterns(File file,\\\hspace*{1em} List<String> patterns, boolean recursive)}}{List<File>}] This method performs a file search operation based on the provided parameters. In this case, the method lists all files from the provided \rbox{File} reference according to the \rbox{List<String>} patterns as a list of strings, and returns a \rbox{List<File>} object representing all matching files. The pattern specification is described below. The third parameter holds a \rbox{boolean} value and acts as a switch indicating whether the search must be recursive, i.e, whether all subdirectories must be searched as well. If the reference is not a proper directory or an exception is raised due to access permission constraints, the \mtbox{listFilesByPatterns} method returns an empty list. It is very important to observe that this file search operation might be slow depending on the provided directory. It is highly advisable to not rely on recursive searches whenever possible.
 
 \begin{messagebox}{Patterns for file search operations}{araracolour}{\icattention}{white}
 \arara\ employs wildcard filters as patterns for file search operations. Testing is case sensitive by default. The wildcard matcher uses the characters \rbox[araracolour]{?} and \rbox[araracolour]{*} to represent a single or multiple wildcard characters. This is the same as often found on typical terminals.
@@ -298,7 +298,7 @@ files = listFilesByPatterns(toFile('/home/paulo/Documents'),
 \end{codebox}
 
 
-\item[\mdbox{R}{\parbox{0.59\textwidth}{listFilesByPatterns(String reference,\\\hspace*{1em} List<String> patterns, boolean recursive)}}{List<File>}] This methods performs a file search operation based on the provided parameters. In this case, the method list all files from the provided \rbox{String} reference according to the \rbox{List<String>} patterns as a list of strings, and returns a \rbox{List<File>} object representing all matching files. The pattern specification follows a wildcard filter. The third parameter holds a \rbox{boolean} value and acts as a switch indicating whether the search must be recursive, i.e, whether all subdirectories must be searched as well. If the reference is not a proper directory or an exception is raised due to access permission constraints, the \mtbox{listFilesByPatterns} method returns an empty list. It is very important to observe that this file search operation might be slow depending on the provided directory. It is highly advisable to not rely on recursive searches whenever possible.
+\item[\mdbox{R}{\parbox{0.59\textwidth}{listFilesByPatterns(String reference,\\\hspace*{1em} List<String> patterns, boolean recursive)}}{List<File>}] This method performs a file search operation based on the provided parameters. In this case, the method lists all files from the provided \rbox{String} reference according to the \rbox{List<String>} patterns as a list of strings, and returns a \rbox{List<File>} object representing all matching files. The pattern specification follows a wildcard filter. The third parameter holds a \rbox{boolean} value and acts as a switch indicating whether the search must be recursive, i.e, whether all subdirectories must be searched as well. If the reference is not a proper directory or an exception is raised due to access permission constraints, the \mtbox{listFilesByPatterns} method returns an empty list. It is very important to observe that this file search operation might be slow depending on the provided directory. It is highly advisable to not rely on recursive searches whenever possible.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 files = listFilesByPatterns('/home/paulo/Documents',
