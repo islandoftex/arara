@@ -335,63 +335,50 @@ This section introduces methods related to conditional flow based on \emph{natur
 
 All elements from the provided set of natural boolean values can be used interchangeably in directive parameters. It is important to observe that, from version 4.0 on, \arara\ throws an exception if a value absent from the set is provided to the methods described in this section.
 
-% Sorry, I'm going to be a bit pedantic here.
-% Above, you've defined the allowed set of boolean values: yes, true, 1, on and no, false, 0, off.
-% Below, for isTrue, you have "is contained in the set of natural boolean values"
-% Strictly speaking, this implies that isTrue returns true if the argument is any of the allowed boolean values listed above, which includes the false sub-set, and so gives the impression that isTrue("false") returns true.
-% I recommend that for the isTrue methods, replace
-%   is contained in the set of natural boolean values
-% with
-%   is contained in the sub-set of natural true boolean values
-% and for the isFalse methods, replace
-%   is not contained in the set of natural boolean values
-% with
-%   is contained in the sub-set of natural false boolean values
-
 \begin{description}
-\item[\mdbox{R}{isTrue(String string)}{boolean}] This method returns a boolean value according to whether the provided \rbox{String} value is contained in the set of natural boolean values. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the provided value is an empty string, the method returns false.
+\item[\mdbox{R}{isTrue(String string)}{boolean}] This method returns a boolean value according to whether the provided \rbox{String} value is contained in the sub-set of natural true boolean values. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the provided value is an empty string, the method returns false.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 result = isTrue('yes');
 \end{codebox}
 
-\item[\mdbox{R}{isFalse(String string)}{boolean}] This method returns a boolean value according to whether the provided \rbox{String} value is not contained in the set of natural boolean values. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the provided value is an empty string, the method returns false.
+\item[\mdbox{R}{isFalse(String string)}{boolean}] This method returns a boolean value according to whether the provided \rbox{String} value is contained in the sub-set of natural false boolean values. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the provided value is an empty string, the method returns false.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 result = isFalse('off');
 \end{codebox}
 
-\item[\mdbox{R}{isTrue(String string, Object yes)}{Object}] This method checks if the first parameter is contained in the set of natural boolean values. If the result holds true, the second parameter is returned. Otherwise, an empty string is returned. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the first parameter is an empty string, the method returns false.
+\item[\mdbox{R}{isTrue(String string, Object yes)}{Object}] This method checks if the first parameter is contained in the sub-set of natural true boolean values. If the result holds true, the second parameter is returned. Otherwise, an empty string is returned. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the first parameter is an empty string, the method returns false.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 result = isTrue('on', [ 'ls', '-la' ]);
 \end{codebox}
 
-\item[\mdbox{R}{isFalse(String string, Object yes)}{Object}] This method checks if the first parameter is not contained in the set of natural boolean values. If the result holds true, the second parameter is returned. Otherwise, an empty string is returned. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the first parameter is an empty string, the method returns false.
+\item[\mdbox{R}{isFalse(String string, Object yes)}{Object}] This method checks if the first parameter is contained in the sub-set of natural false boolean values. If the result holds true, the second parameter is returned. Otherwise, an empty string is returned. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the first parameter is an empty string, the method returns false.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 result = isFalse('0', 'pwd');
 \end{codebox}
 
-\item[\mdbox{R}{isTrue(String string, Object yes, Object no)}{Object}] This method checks if the first parameter is contained in the set of natural boolean values. If the result holds true, the second parameter is returned. Otherwise, the third parameter is returned. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the first parameter is an empty string, the method returns false.
+\item[\mdbox{R}{isTrue(String string, Object yes, Object no)}{Object}] This method checks if the first parameter is contained in the sub-set of natural true boolean values. If the result holds true, the second parameter is returned. Otherwise, the third parameter is returned. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the first parameter is an empty string, the method returns false.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 result = isTrue('on', [ 'ls', '-la' ], 'pwd');
 \end{codebox}
 
-\item[\mdbox{R}{isFalse(String string, Object yes, Object no)}{Object}] This method checks if the first parameter is not contained in the set of natural boolean values. If the result holds true, the second parameter is returned. Otherwise, the third parameter is returned. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the first parameter is an empty string, the method returns false.
+\item[\mdbox{R}{isFalse(String string, Object yes, Object no)}{Object}] This method checks if the first parameter is contained in the sub-set of natural false boolean values. If the result holds true, the second parameter is returned. Otherwise, the third parameter is returned. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the first parameter is an empty string, the method returns false.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 result = isFalse('0', 'pwd', 'ps');
 \end{codebox}
 
-\item[\mdbox{R}{\parbox{0.45\textwidth}{isTrue(String string, Object yes,\\\hspace*{1em} Object no, Object fallback)}}{Object}] This method checks if the first parameter is contained in the set of natural boolean values. If the result holds true, the second parameter is returned. Otherwise, the third parameter is returned. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the first parameter is an empty string, the method returns the fourth parameter as default value.
+\item[\mdbox{R}{\parbox{0.45\textwidth}{isTrue(String string, Object yes,\\\hspace*{1em} Object no, Object fallback)}}{Object}] This method checks if the first parameter is contained in the sub-set of natural true boolean values. If the result holds true, the second parameter is returned. Otherwise, the third parameter is returned. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the first parameter is an empty string, the method returns the fourth parameter as default value.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 result = isTrue('on', 'ls', 'pwd', 'who');
 \end{codebox}
 
-\item[\mdbox{R}{\parbox{0.46\textwidth}{isFalse(String string, Object yes,\\\hspace*{1em} Object no, Object fallback)}}{Object}] This method checks if the first parameter is not contained in the set of natural boolean values. If the result holds true, the second parameter is returned. Otherwise, the third parameter is returned. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the first parameter is an empty string, the method returns the fourth parameter as default value.
+\item[\mdbox{R}{\parbox{0.46\textwidth}{isFalse(String string, Object yes,\\\hspace*{1em} Object no, Object fallback)}}{Object}] This method checks if the first parameter is contained in the sub-set of natural false boolean values. If the result holds true, the second parameter is returned. Otherwise, the third parameter is returned. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the first parameter is an empty string, the method returns the fourth parameter as default value.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 result = isFalse('0', 'pwd', 'ps', 'ls');
