@@ -1,3 +1,53 @@
+# CTAN builder
+
+![Version: 1.0](https://img.shields.io/badge/current_version-1.0-blue.svg?style=flat-square)
+![Language: Java](https://img.shields.io/badge/language-Java-blue.svg?style=flat-square)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+
+The `ctanbuilder` tool, as the name implies, builds a proper CTAN release based on a directory 
+containing the `arara` project. Be mindful that the entire process requires external tools from
+the underlying operating system and may take several minutes to complete. For instance:
+
+```
+$ java -jar ctanbuilder.jar ~/arara/
+ ______ _______ _______ _______   __           __ __     __             
+|      |_     _|   _   |    |  | |  |--.--.--.|__|  |.--|  |.-----.----.
+|   ---| |   | |       |       | |  _  |  |  ||  |  ||  _  ||  -__|   _|
+|______| |___| |___|___|__|____| |_____|_____||__|__||_____||_____|__|  
+
+Please wait while I try to build the CTAN release of arara. Be mindful
+that the entire process requires external tools and may take several
+minutes to complete. There we go...
+
+Checking if the provided directory is valid ...................... SUCCESS
+
+Let me test if your operating system provides the required tools to build
+a CTAN release for arara. Please, wait...
+
+--------------------------------------------------------------------------
+                 System tools from your operating system                  
+--------------------------------------------------------------------------
+Apache Maven (mvn) ............................................... SUCCESS
+Java virtual machine (java) ...................................... SUCCESS
+Java compiler (javac) ............................................ SUCCESS
+Zip archive utility (zip) ........................................ SUCCESS
+Unzip archive extraction utility (unzip) ......................... SUCCESS
+--------------------------------------------------------------------------
+
+[...]
+
+--------------------------------------------------------------------------
+                      File sizes (friendly display)                       
+--------------------------------------------------------------------------
+arara.zip ......................................................... 13 MB
+arara.tds.zip .....................................................  6 MB
+--------------------------------------------------------------------------
+
+Done! The current working directory should contain the TDS file and the
+final archive file for a proper CTAN submission! Have fun!
+
+```
+
 # Language checker
 
 ![Version: 1.0](https://img.shields.io/badge/current_version-1.0-blue.svg?style=flat-square)
