@@ -45,7 +45,6 @@ arara.tds.zip .....................................................  6 MB
 
 Done! The current working directory should contain the TDS file and the
 final archive file for a proper CTAN submission! Have fun!
-
 ```
 
 # Language checker
