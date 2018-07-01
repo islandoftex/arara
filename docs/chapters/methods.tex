@@ -459,10 +459,7 @@ result = isNotEmpty('not empty', 'ls', 'ps');
 result = buildString('a', 'b', 'c', 'd');
 \end{codebox}
 
-\item[\mdbox{R}{trimSpaces(String string)}{String}] This method trims spaces from the provided parameter, i.e, leading and trailing spaces in the \rbox{String} reference are removed, and returns the resulting string. It is important to observe that superfluous spaces along the string are not removed at all.
-% Not sure about "along the string". It doesn't sound quite right.
-% Perhaps "inside the string" or "within the string"
-% or (instead of superfluous) "non-boundary spaces inside the string"
+\item[\mdbox{R}{trimSpaces(String string)}{String}] This method trims spaces from the provided parameter, i.e, leading and trailing spaces in the \rbox{String} reference are removed, and returns the resulting string. It is important to observe that non-boundary spaces inside the string are not removed at all.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 result = trimSpaces('   hello world   ');
@@ -482,9 +479,8 @@ names = replicatePattern('My name is %s', [ 'Brent', 'Nicola' ]);
 
 \item[\mddbox{C}{R}{found(File file, String regex)}{boolean}] This method returns a boolean value according to whether the content of the provided \rbox{File} reference contains at least one match of the provided \rbox{String} regular expression. It is important to observe that this method raises an exception if an invalid regular expression is provided as the parameter or if the provided file reference does not exist.
 
-% Wouldn't it be more normal to check the .log file for "undefined references"?
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% arara: pdflatex while found(toFile('article.tex'),
+% arara: pdflatex while found(toFile('article.log'),
 % arara: --> 'undefined references')
 \end{codebox}
 
@@ -557,8 +553,7 @@ if (isSolaris()) { System.out.println('Running Solaris.'); }
 if (isCygwin()) { System.out.println('Running Cygwin.'); }
 \end{codebox}
 
-% Don't the following methods return Object rather than boolean?
-\item[\mdbox{R}{isWindows(Object yes, Object no)}{boolean}] This method checks if the underlying operating system vendor is Microsoft Windows. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
+\item[\mdbox{R}{isWindows(Object yes, Object no)}{Object}] This method checks if the underlying operating system vendor is Microsoft Windows. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command = isWindows('del', 'rm');
