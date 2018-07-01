@@ -104,4 +104,12 @@ public class LocalizationTest {
         assertEquals(0, check(new Locale("pt", "BR")));
     }
     
+    /**
+     * Verifies the Italian localization (provided by Enrico).
+     */
+    @Test
+    public void verifyItalian() {
+        assertEquals(0, check(new Locale("it")));
+    }
+    
 }

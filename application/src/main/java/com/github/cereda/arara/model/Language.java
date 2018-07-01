@@ -87,6 +87,10 @@ public class Language {
                 "Brazilian Portuguese",
                 new Locale("pt", "BR")
         ));
+        languages.put("it", new Pair<String, Locale>(
+                "Italian",
+                new Locale("it")
+        ));
     }
 
     /**
