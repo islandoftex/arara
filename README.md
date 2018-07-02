@@ -22,10 +22,9 @@ Hello, world!
 \end{document}
 ```
 
-Now when you run `arara myfile`, that directive (`% arara: ...`) will be seen and carried out as described by the `pdflatex` rule.  You can read more about rules and directives in the [user manual](http://mirrors.ctan.org/support/arara/doc/arara-usermanual.pdf). In addition to documenting all of the rules that come standard with `arara`, its manual gives a detailed explanation of how `arara` works, how to create and use your own rules, and how to integrate the tool into the common TeX IDEs.
+Now when you run `arara myfile`, that directive (`% arara: ...`) will be seen and carried out as described by the `pdflatex` rule.  You can read more about rules and directives in the user manual available in our [releases](https://github.com/cereda/arara/releases) section. In addition to documenting all of the rules that come standard with `arara`, the manual gives a detailed explanation of how `arara` works, as well as how to create and use your own rules.
 
 ## Versions
-
 
 ![Current version: 4.0](https://img.shields.io/badge/current_version-4.0-blue.svg?style=flat-square)
 ![Development version: 5.0](https://img.shields.io/badge/development_version-5.0-red.svg?style=flat-square)
