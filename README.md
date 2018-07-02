@@ -57,7 +57,7 @@ Would you like to make `arara` speak your own language? Splendid! We would love 
 
 ## Downloads
 
-[![Download from GitHub](https://img.shields.io/badge/release-4.0-blue.svg?style=flat-square)](https://github.com/cereda/arara/releases)
+[![Download from GitHub](https://img.shields.io/badge/github-4.0-blue.svg?style=flat-square)](https://github.com/cereda/arara/releases)
 [![Download from Bintray](https://img.shields.io/badge/bintray-4.0-blue.svg?style=flat-square)](https://bintray.com/cereda/arara)
 
 From the 4.0 series on, the team decided to not release cross-platform installers any more. Our tool is available out of the shelf on all major TeX distributions, including TeX Live and MiKTeX, which makes manual installation unnecessary given the significant coverage of such distributions. Chances are you already have `arara` in your system!
