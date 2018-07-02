@@ -61,7 +61,7 @@ Would you like to make `arara` speak your own language? Splendid! We would love 
 
 From the 4.0 series on, the team decided to not release cross-platform installers any more. Our tool is available out of the shelf on all major TeX distributions, including TeX Live and MiKTeX, which makes manual installation unnecessary given the significant coverage of such distributions. Chances are you already have `arara` in your system!
 
-You can obtain the official package available in the [release](https://github.com/cereda/arara/releases) section of our project repository, as well as the [Bintray](https://bintray.com/cereda/arara) software distribution service. Please refer to the documentation on how to manually deploy our tool.
+You can obtain the official package available in the [releases](https://github.com/cereda/arara/releases) section of our project repository, as well as the [Bintray](https://bintray.com/cereda/arara) software distribution service. Please refer to the documentation on how to manually deploy our tool.
 
 ## License
 
