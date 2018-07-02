@@ -2,6 +2,7 @@
 
 ![Version: 1.0](https://img.shields.io/badge/current_version-1.0-blue.svg?style=flat-square)
 ![Language: Java](https://img.shields.io/badge/language-Java-blue.svg?style=flat-square)
+![Minimum JRE: 7.0](https://img.shields.io/badge/minimum_JRE-7.0-blue.svg?style=flat-square)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 The `ctanbuilder` tool, as the name implies, builds a proper CTAN release based on a directory 
@@ -51,6 +52,7 @@ final archive file for a proper CTAN submission! Have fun!
 
 ![Version: 1.0](https://img.shields.io/badge/current_version-1.0-blue.svg?style=flat-square)
 ![Language: Java](https://img.shields.io/badge/language-Java-blue.svg?style=flat-square)
+![Minimum JRE: 7.0](https://img.shields.io/badge/minimum_JRE-7.0-blue.svg?style=flat-square)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 The `langchecker` tool, as the name implies, serves a very specific purpose: check all language
@@ -80,6 +82,7 @@ $ java -jar langchecker.jar localization/
 
 ![Version: 1.0](https://img.shields.io/badge/current_version-1.0-blue.svg?style=flat-square)
 ![Language: Java](https://img.shields.io/badge/language-Java-blue.svg?style=flat-square)
+![Minimum JRE: 7.0](https://img.shields.io/badge/minimum_JRE-7.0-blue.svg?style=flat-square)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 The `rulechecker` tool extracts special annotation metadata from rules
@@ -141,6 +144,7 @@ $ java -jar rulechecker.jar rules/
 
 ![Version: 1.0](https://img.shields.io/badge/current_version-1.0-blue.svg?style=flat-square)
 ![Language: Java](https://img.shields.io/badge/language-Java-blue.svg?style=flat-square)
+![Minimum JRE: 7.0](https://img.shields.io/badge/minimum_JRE-7.0-blue.svg?style=flat-square)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 The `ruleconverter` tool attempts to automatically convert rules in the old version 3.0 format
