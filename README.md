@@ -13,7 +13,7 @@
 
 ## Basic use
 
-To use `arara`, you need to tell it what to do. Unlike most other tools, you give `arara` these 'directives' in the document itself – usually near the top.  So to run `pdflatex` once on your document, you should say something like:
+To use `arara`, you need to tell it what to do. Unlike most other tools, you give `arara` these _directives_ in the document itself – usually near the top.  So to run `pdflatex` once on your document, you should say something like:
 
 ```tex
 % arara: pdflatex
@@ -23,16 +23,17 @@ Hello, world!
 \end{document}
 ```
 
-Now when you run `arara my-file`, that directive (`% arara: ...`) will be seen and carried out as described by the `pdflatex` rule.  You can read more about rules and directives in the [user manual](http://mirrors.ctan.org/support/arara/doc/arara-usermanual.pdf). In addition to documenting all of the rules that come standard with `arara`, its manual gives a detailed explanation of how `arara` works, how to create and use your own rules, and how to integrate the tool into the common TeX IDEs.
+Now when you run `arara myfile`, that directive (`% arara: ...`) will be seen and carried out as described by the `pdflatex` rule.  You can read more about rules and directives in the [user manual](http://mirrors.ctan.org/support/arara/doc/arara-usermanual.pdf). In addition to documenting all of the rules that come standard with `arara`, its manual gives a detailed explanation of how `arara` works, how to create and use your own rules, and how to integrate the tool into the common TeX IDEs.
 
-> The documentation link presented above points to the official user manual of `arara` 3.0a in PDF format, available directly from the Comprehensive TeX Archive Network (CTAN). See next section for a note on the documentation status for the upcoming version 4.0 (still in progress).
+## Versions
 
-## Current status
 
-The `arara` team is working on the new 4.0 version. The code is ready and we are now focusing on rules, translations and the documentation itself. It might take a while since a lot of things have changed since version 3.0, so the manual has to be completely rewritten. Hopefully, we will release it soon. `:)`
+![Current version: 4.0](https://img.shields.io/badge/current_version-4.0-blue.svg?style=flat-square)
+![Development version: 5.0](https://img.shields.io/badge/development_version-5.0-red.svg?style=flat-square)
 
-- *Current TL version:* 3.0a (codebase is available in the [releases](https://github.com/cereda/arara/releases) section)
-- *Development/upcoming version:* 4.0 (the repository itself holds the last changes)
+The stable major version of `arara` is the 4.0 series (note that revision numbers may vary). Please refer to the development branch for more information on the upcoming 5.0 series release. The master branch always refers to the stable version (including potential revisions).
+
+For historical purposes, the source code for older versions of `arara` is available in the [releases](https://github.com/cereda/arara/releases) section of our repository.
 
 ## Build status
 
