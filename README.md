@@ -68,9 +68,6 @@ You can obtain the official package available in the [release](https://github.co
 
 This application is licensed under the [New BSD License](http://www.opensource.org/licenses/bsd-license.php).Please note that the New BSD License has been verified as a GPL-compatible free software license by the [Free Software Foundation](http://www.fsf.org/), and has been vetted as an open source license by the [Open Source Initiative](http://www.opensource.org/).
 
-### The core team
+# The team
 
-- ![Brazil](http://i.imgur.com/If4PQTk.png) Paulo Roberto Massa Cereda
-- ![Germany](http://i.imgur.com/GovD283.png) Marco Daniel
-- ![United Kingdom](http://i.imgur.com/Lvp73Wo.png) Brent Longborough
-- ![United Kingdom](http://i.imgur.com/Lvp73Wo.png) Nicola Louise Cecilia Talbot
+`arara`, the cool TeX automation tool, is brought to you by Paulo Cereda, Marco Daniel, Brent Longborough and Nicola Talbot. If you want to support TeX development by a donation, the best way to do this is donating to the [TeX Users Group](https://www.tug.org/donate.html).
