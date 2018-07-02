@@ -57,6 +57,9 @@ Would you like to make `arara` speak your own language? Splendid! We would love 
 
 ## Downloads
 
+[![Download from GitHub](https://img.shields.io/badge/release-4.0-blue.svg?style=flat-square)](https://github.com/cereda/arara/releases)
+[![Download from Bintray](https://img.shields.io/badge/bintray-4.0-blue.svg?style=flat-square)](https://bintray.com/cereda/arara)
+
 From the 4.0 series on, the team decided to not release cross-platform installers any more. Our tool is available out of the shelf on all major TeX distributions, including TeX Live and MiKTeX, which makes manual installation unnecessary given the significant coverage of such distributions. Chances are you already have `arara` in your system!
 
 You can obtain the official package available in the [release](https://github.com/cereda/arara/releases) section of our project repository, as well as the [Bintray](https://bintray.com/cereda/arara) software distribution service. Please refer to the documentation on how to manually deploy our tool.
@@ -71,7 +74,3 @@ This application is licensed under the [New BSD License](http://www.opensource.o
 - ![Germany](http://i.imgur.com/GovD283.png) Marco Daniel
 - ![United Kingdom](http://i.imgur.com/Lvp73Wo.png) Brent Longborough
 - ![United Kingdom](http://i.imgur.com/Lvp73Wo.png) Nicola Louise Cecilia Talbot
-
-![Quack](http://i.imgur.com/hKsnp9f.png)
-
-*No ducks were hurt in the making of this tool*
