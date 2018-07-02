@@ -53,7 +53,7 @@ We use a [Gitter](https://gitter.im/cereda/arara) chatroom for discussing things
 
 Would you like to make `arara` speak your own language? Splendid! We would love to have you in the team! Just send us an e-mail, join our dedicated chatroom or open an issue about it. The localization process is quite straightforward, we can help you! Any language is welcome!
 
-A big thanks to our translators Marco Daniel, Clemens Niederberger, Ulrike Fischer, Gert Fischer, Enrico Gregorio and Marijn Schraagen! Thank you, friends!
+A big thanks to our translators Marco Daniel, Clemens Niederberger, Ulrike Fischer, Gert Fischer, Enrico Gregorio and Marijn Schraagen for the awesome localization work!
 
 ## Downloads
 
