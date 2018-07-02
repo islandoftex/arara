@@ -36,18 +36,17 @@ For historical purposes, the source code for older versions of `arara` is availa
 
 ## Build status
 
-![Version: 4.0](https://img.shields.io/badge/version-4.0-blue.svg?style=flat-square)
+[![Version: 4.0](https://img.shields.io/badge/version-4.0-blue.svg?style=flat-square)](https://travis-ci.org/cereda/arara/)
 ![Travis CI for 4.0](https://img.shields.io/travis/cereda/arara.svg?style=flat-square)
 ![Version: 5.0](https://img.shields.io/badge/version-5.0-red.svg?style=flat-square)
-![Travis CI for 5.0](https://img.shields.io/travis/cereda/arara/develoopment.svg?style=flat-square)
+![Travis CI for 5.0](https://img.shields.io/travis/cereda/arara/development.svg?style=flat-square)
 
 `arara` uses [Travis CI](https://travis-ci.org) as a hosted continuous integration service. For each and every commit, we can see in real time the build status of our application checked against a range of Java VM vendors. It is worth noting that the current series is designed and built to be Java 5.0 compliant, so if you have an old JVM, it is almost sure that you will be able to run `arara` in it without any problems.
 
 ## Support
 
-[![Gitter chatroom](https://img.shields.io/badge/gitter-join_chat-blue.svg?style=flat-square)](https://opensource.org/licenses/bsd-license)
-[![GitHub open issues](https://img.shields.io/github/issues-raw/cereda/arara.svg?style=flat-square)](https://gitter.im/cereda/arara)
-![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/cereda/arara.svg?style=flat-square)
+[![Gitter chatroom](https://img.shields.io/badge/gitter-join_chat-blue.svg?style=flat-square)](https://gitter.im/cereda/arara)
+[![GitHub issues](https://img.shields.io/badge/github-issues-blue.svg?style=flat-square)](https://github.com/cereda/arara/issues)
 
 We use a [Gitter](https://gitter.im/cereda/arara) chatroom for discussing things related to `arara`. You are more than welcome to come join the fun and say *hi!* to us. We also have the [issues](https://github.com/cereda/arara/issues) section in our repository as a valid channel to report problems, bugs and suggest improvements. 
 
