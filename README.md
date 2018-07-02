@@ -33,20 +33,16 @@ Now when you run `arara myfile`, that directive (`% arara: ...`) will be seen an
 
 The stable major version of `arara` is the 4.0 series (note that revision numbers may vary). Please refer to the development branch for more information on the upcoming 5.0 series release. The master branch always refers to the stable version (including potential revisions).
 
-For historical purposes, the source code for older versions of `arara` is available in the [releases](https://github.com/cereda/arara/releases) section of our repository.
+For historical purposes, the source code for older versions of `arara` is available in the [releases](https://github.com/cereda/arara/releases) section of our repository. However, be mindful that such versions are unsupported.
 
 ## Build status
 
-`arara` uses [Travis CI](https://travis-ci.org) as a hosted continuous integration service. For each and every commit, we can see in real time the build status of our application checked against the following Java VM vendors:
+![Version: 4.0](https://img.shields.io/badge/version-4.0-blue.svg?style=flat-square)
+![Travis](https://img.shields.io/travis/cereda/arara.svg?style=flat-square)
+![Version: 5.0](https://img.shields.io/badge/version-5.0-red.svg?style=flat-square)
+![Travis](https://img.shields.io/travis/cereda/arara/develoopment.svg?style=flat-square)
 
-- OpenJDK 6.0
-- OpenJDK 7.0
-- Oracle Java 7.0
-- Oracle Java 8.0
-
-More JVM's might be added soon. It is worth noting that `arara` is designed and built to be Java 5.0 compliant, so if you have an old JVM, it is almost sure that you will be able to run our beloved tool in it without any problems.
-
-*Current build status:* [![Build Status](https://travis-ci.org/cereda/arara.svg?branch=master)](https://travis-ci.org/cereda/arara)
+`arara` uses [Travis CI](https://travis-ci.org) as a hosted continuous integration service. For each and every commit, we can see in real time the build status of our application checked against a range of Java VM vendors. It is worth noting that the current series is designed and built to be Java 5.0 compliant, so if you have an old JVM, it is almost sure that you will be able to run `arara` in it without any problems.
 
 ## Support
 
