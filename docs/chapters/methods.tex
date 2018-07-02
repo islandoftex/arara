@@ -702,14 +702,14 @@ result = loadClass('mymath.jar',
          'com.github.cereda.mymath.Arithmetic');
 \end{codebox}
 
-\item[\mddbox{C}{R}{loadObject(File file, String name)}{Pair<Integer, Object>}] This method loads a class based on the canonical name from the provided \rbox{File} reference and returns an ordered pair containing the status and a proper corresponding object instantation. The file must contain the Java bytecode, either directly accessible from a \rbox{class} file or packaged inside a \rbox{jar} file. If an exception is raised, this method returns an \rbox{Object} object as second entry of the pair.
+\item[\mddbox{C}{R}{loadObject(File file, String name)}{Pair<Integer, Object>}] This method loads a class based on the canonical name from the provided \rbox{File} reference and returns an ordered pair containing the status and a proper corresponding object instantiation. The file must contain the Java bytecode, either directly accessible from a \rbox{class} file or packaged inside a \rbox{jar} file. If an exception is raised, this method returns an \rbox{Object} object as second entry of the pair.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 result = loadObject(toFile('mymath.jar'),
          'com.github.cereda.mymath.Trigonometric');
 \end{codebox}
 
-\item[\mddbox{C}{R}{loadObject(String reference, String name)}{Pair<Integer, Object>}] This method loads a class based on the canonical name from the provided \rbox{String} reference and returns an ordered pair containing the status and a proper corresponding object instantation. The file must contain the Java bytecode, either directly accessible from a \rbox{class} file or packaged inside a \rbox{jar} file. If an exception is raised, this method returns an \rbox{Object} object as second entry of the pair.
+\item[\mddbox{C}{R}{loadObject(String reference, String name)}{Pair<Integer, Object>}] This method loads a class based on the canonical name from the provided \rbox{String} reference and returns an ordered pair containing the status and a proper corresponding object instantiation. The file must contain the Java bytecode, either directly accessible from a \rbox{class} file or packaged inside a \rbox{jar} file. If an exception is raised, this method returns an \rbox{Object} object as second entry of the pair.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 result = loadObject('mymath.jar',
@@ -728,7 +728,7 @@ A \emph{dialog box} is a graphical control element, typically a small window, th
 The graphical elements are provided by the Swing toolkit from the Java runtime environment. Note that the default look and feel class reference can be modified through a key in the configuration file, as seen in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}. It is important to observe that the methods presented in this section require a graphical interface. If \arara\ is being executed in a headless environment (i.e, an environment with no graphical display available), an exception will be thrown when trying to use such UI methods in either directive or rule contexts.
 \end{messagebox}
 
-Each dialog box provided by the UI methods of \arara\ requires the specification of an associated icon. An \emph{icon} is a pictogram displayed on a computer screen in order to help the user quickly identify the message by conveying its meaning through a visual resemblance to a physical object. Our tool features five icons, illustrated as follows, to be used with dialog boxes. Observe that each icon is associated with a unique integer value which is provided later on to the actual method call. Also, it is worth mentioning that the visual appearance of such icons is based on the underlying Java virtual machine and the current look and feel, so your milleage might vary.
+Each dialog box provided by the UI methods of \arara\ requires the specification of an associated icon. An \emph{icon} is a pictogram displayed on a computer screen in order to help the user quickly identify the message by conveying its meaning through a visual resemblance to a physical object. Our tool features five icons, illustrated below, to be used with dialog boxes. Observe that each icon is associated with a unique integer value which is provided later on to the actual method call. Also, it is worth mentioning that the visual appearance of such icons is based on the underlying Java virtual machine and the current look and feel, so your mileage might vary.
 
 \vspace{1em}
 
@@ -764,7 +764,7 @@ The UI method signatures are followed by a visual representation of the provided
 \begin{description}
 \item[\mdbox{R}{showMessage(int width, int icon, String title, String text)}{void}]\uimethod{messagebox1}
 
-This method shows a message box according to the provided parameters. The dialog box is disposed when the user either presses the confirmation button or closes the window. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
+This method shows a message box according to the provided parameters. The dialog box is disposed when the user either presses the confirmation button or closes the window. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time includes the idle period as well.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 showMessage(250, 2, 'My title', 'My message');
@@ -772,7 +772,7 @@ showMessage(250, 2, 'My title', 'My message');
 
 \item[\mdbox{R}{showMessage(int icon, String title, String text)}{void}]\uimethod{messagebox2}
 
-This method shows a message box according to the provided parameters. The dialog box is disposed when the user either presses the confirmation button or closes the window. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
+This method shows a message box according to the provided parameters. The dialog box is disposed when the user either presses the confirmation button or closes the window. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time includes the idle period as well.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 showMessage(2, 'My title', 'My message');
@@ -780,7 +780,7 @@ showMessage(2, 'My title', 'My message');
 
 \item[\mddbox{C}{R}{\parbox{0.62\textwidth}{showOptions(int width, int icon, String title,\\\hspace*{1em} String text, Object... options)}}{int}]\uimethod{optionbox1}
 
-This method shows a message box according to the provided parameters, including options represented as an array of \rbox{Object} objects. This array is portrayed in the dialog box as a list of buttons. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the natural index of the selected button, starting from \rbox{1}. If no button is pressed (e.g, the window is closed), \rbox{0} is returned. Note that the object array is denoted by a  comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
+This method shows a message box according to the provided parameters, including options represented as an array of \rbox{Object} objects. This array is portrayed in the dialog box as a list of buttons. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the natural index of the selected button, starting from \rbox{1}. If no button is pressed (e.g, the window is closed), \rbox{0} is returned. Note that the object array is denoted by a  comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time includes the idle period as well.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 % arara: pdflatex if showOptions(250, 4, 'Important!',
@@ -793,7 +793,7 @@ Keep in mind that your window manager might render the button orientation differ
 
 \item[\mddbox{C}{R}{\parbox{0.49\textwidth}{showOptions(int icon, String title,\\\hspace*{1em} String text, Object... options)}}{int}]\uimethod{optionbox2}
 
-This method shows a message box according to the provided parameters, including options represented as an array of \rbox{Object} objects. This array is portrayed in the dialog box as a list of buttons. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the natural index of the selected button, starting from \rbox{1}. If no button is pressed (e.g, the window is closed), \rbox{0} is returned. Note that the object array is denoted by a  comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
+This method shows a message box according to the provided parameters, including options represented as an array of \rbox{Object} objects. This array is portrayed in the dialog box as a list of buttons. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the natural index of the selected button, starting from \rbox{1}. If no button is pressed (e.g, the window is closed), \rbox{0} is returned. Note that the object array is denoted by a  comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time includes the idle period as well.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 % arara: pdflatex if showOptions(4, 'Important!',
@@ -802,7 +802,7 @@ This method shows a message box according to the provided parameters, including 
 
 \item[\mddbox{C}{R}{\parbox{0.62\textwidth}{showDropdown(int width, int icon, String title,\\\hspace*{1em} String text, Object... options)}}{int}]\uimethod{dropdown1}
 
-This method shows a dialog box according to the provided parameters, including options represented as an array of \rbox{Object} objects. This array is portrayed in the dialog box as a dropdown list. The first element from the array is automatically selected. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the natural index of the selected item, starting from \rbox{1}. If the user cancels the dialog or closes the window, \rbox{0} is returned.  Note that the object array is denoted by a comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
+This method shows a dialog box according to the provided parameters, including options represented as an array of \rbox{Object} objects. This array is portrayed in the dialog box as a dropdown list. The first element from the array is automatically selected. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the natural index of the selected item, starting from \rbox{1}. If the user cancels the dialog or closes the window, \rbox{0} is returned.  Note that the object array is denoted by a comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time includes the idle period as well.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 % arara: pdflatex if showDropdown(250, 4, 'Important!',
@@ -817,7 +817,7 @@ According to the \href{https://en.wikipedia.org/wiki/Combo_box}{Wikipedia entry}
 
 \item[\mddbox{C}{R}{\parbox{0.49\textwidth}{showDropdown(int icon, String title,\\\hspace*{1em} String text, Object... options)}}{int}]\uimethod{dropdown2}
 
-This method shows a dialog box according to the provided parameters, including options represented as an array of \rbox{Object} objects. This array is portrayed in the dialog box as a dropdown list. The first element from the array is automatically selected. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the natural index of the selected item, starting from \rbox{1}. If the user cancels the dialog or closes the window, \rbox{0} is returned.  Note that the object array is denoted by a comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
+This method shows a dialog box according to the provided parameters, including options represented as an array of \rbox{Object} objects. This array is portrayed in the dialog box as a dropdown list. The first element from the array is automatically selected. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the natural index of the selected item, starting from \rbox{1}. If the user cancels the dialog or closes the window, \rbox{0} is returned.  Note that the object array is denoted by a comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time includes the idle period as well.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 % arara: pdflatex if showDropdown(4, 'Important!',
@@ -827,12 +827,12 @@ This method shows a dialog box according to the provided parameters, including o
 \end{codebox}
 
 \begin{messagebox}{Swing toolkit}{araracolour}{\icok}{white}
-According to the \href{https://en.wikipedia.org/wiki/Swing_(Java)}{Wikipedia entry}, the Swing toolkit was developed to provide a more sophisticated set of GUI components than the earlier  AWT widget system. Swing provides a look and feel that emulates the look and feel of several platforms, and also supports a pluggable look and feel that allows applications to have a look and feel unrelated to the underlying platform. It has more powerful and flexible components than AWT. In addition to familiar components such as buttons, check boxes and labels, Swing provides several advanced components. such as scroll panes, trees, tables, and lists.
+According to the \href{https://en.wikipedia.org/wiki/Swing_(Java)}{Wikipedia entry}, the Swing toolkit was developed to provide a more sophisticated set of \gls{GUI} components than the earlier  AWT widget system. Swing provides a look and feel that emulates the look and feel of several platforms, and also supports a pluggable look and feel that allows applications to have a look and feel unrelated to the underlying platform. It has more powerful and flexible components than AWT. In addition to familiar components such as buttons, check boxes and labels, Swing provides several advanced components, such as scroll panes, trees, tables, and lists.
 \end{messagebox}
 
 \item[\mddbox{C}{R}{showInput(int width, int icon, String title, String text)}{String}]\uimethod{inputbox1}
 
-This method shows an input dialog box according to the provided parameters. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the content of the input text field, as a trimmed \rbox{String} object. If the user cancels the dialog or closes the window, an empty string is returned. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
+This method shows an input dialog box according to the provided parameters. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the content of the input text field, as a trimmed \rbox{String} object. If the user cancels the dialog or closes the window, an empty string is returned. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time includes the idle period as well.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 % arara: pdflatex if showInput(250, 4, 'Important!',
@@ -841,7 +841,7 @@ This method shows an input dialog box according to the provided parameters. The 
 
 \item[\mddbox{C}{R}{showInput(int icon, String title, String text)}{String}]\uimethod{inputbox2}
 
-This method shows an input dialog box according to the provided parameters. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the content of the input text field, as a trimmed \rbox{String} object. If the user cancels the dialog or closes the window, an empty string is returned. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time consider the idle period as well.
+This method shows an input dialog box according to the provided parameters. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the content of the input text field, as a trimmed \rbox{String} object. If the user cancels the dialog or closes the window, an empty string is returned. It is important to observe that \arara\ temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time includes the idle period as well.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 % arara: pdflatex if showInput(4, 'Important!',
@@ -849,7 +849,7 @@ This method shows an input dialog box according to the provided parameters. The 
 \end{codebox}
 \end{description}
 
-The UI methods presented in this section can be used for writing \TeX\ tutorials and assisted compilation workflows based on user interactions, including visual input and feeback through dialog boxes.
+The UI methods presented in this section can be used for writing \TeX\ tutorials and assisted compilation workflows based on user interactions, including visual input and feedback through dialog boxes.
 
 \section{Commands and triggers}
 \label{sec:commandsandtriggers}
@@ -875,18 +875,18 @@ From the user perspective, a \rbox{Command} object is simply a good old list of 
 
 From the previous example, it is important to observe that a potential file name quoting is not necessary. The underlying system command execution library handles the provided arguments accordingly. 
 
-Behind the scenes, however, \arara\ employs a different workflow when constructing a \rbox{Command} object. The tool sets the working directory path for the current command to \abox[araracolour]{USER\_DIR} which is based on the current execution. The working directory path can be explicitly set through specific method calls, described later on, in this section.
+Behind the scenes, however, \arara\ employs a different workflow when constructing a \rbox{Command} object. The tool sets the working directory path for the current command to \abox[araracolour]{USER\_DIR} which is based on the current execution. The working directory path can be explicitly set through specific method calls, described later on in this section.
 
 The list of objects is then completely flattened and all elements are mapped to their string representations through corresponding \mtbox{toString} calls. Finally, the proper \rbox{Command} object is constructed. Keep in mind that, although a command takes a list (or even an array) of objects, which can be of any type, the internal representation is \emph{always} a list of strings.
 \end{messagebox}
 
-A list of objects might contain nested lists, i.e, a list within another list. As previously mentioned, \arara\ employs \emph{list flattening} when handling a list of objects during a \rbox{Command} object instantation. As a means to illustrate this handy feature, consider the following list of integers:
+A list of objects might contain nested lists, i.e, a list within another list. As previously mentioned, \arara\ employs \emph{list flattening} when handling a list of objects during a \rbox{Command} object instantiation. As a means to illustrate this handy feature, consider the following list of integers:
 
 \begin{codebox}{A list with nested lists}{teal}{\icnote}{white}
 [ 1, 2, [ 3, 4 ], 5, [ [ 6, 7 ], 8 ], 9, [ [ 10 ] ]
 \end{codebox}
 
-Note that the previous list of integers contains nested lists. When applying list flattening, \arara\ recursively adds the elements of nested lists to the original list and then removes the nested occurrences. Please refer to the source code for implementation details. The new flattened list is presented as follows.
+Note that the above list of integers contains nested lists. When applying list flattening, \arara\ recursively adds the elements of nested lists to the original list and then removes the nested occurrences. Please refer to the source code for implementation details. The new flattened list is presented as follows.
 
 \begin{codebox}{A flattened list}{teal}{\icnote}{white}
 [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
@@ -911,7 +911,7 @@ A \rbox{Trigger} object constitutes a special command that changes the internal 
 
 \vspace{0.4em}
 
-This description is, in some aspects, very much alike a typical \rbox{Command} construction. However, a trigger is less forgiving on data types and does not apply transformations on the provided list of arguments. Therefore, the argument types \emph{must match} the trigger signature.
+This description is, in some aspects, very much like a typical \rbox{Command} construction. However, a trigger is less forgiving on data types and does not apply transformations on the provided list of arguments. Therefore, the argument types \emph{must match} the trigger signature.
 
 So far, the tool provides only one trigger, seen in action in one of the official rules, under the name \rbox{halt} and with no parameters. This particular trigger halts the current interpretation workflow, such that subsequent directives are ignored. We have not worked much on triggers yet, and the concept is mentioned here for documentation purposes only.
 \end{messagebox}
@@ -1057,4 +1057,4 @@ In order to maintain compatibility with older Java virtual machines, \arara\ wor
 \end{messagebox}
 \end{description}
 
-The methods presented in this section provide interesting features for persistent data sharing, error handling, early command execution, and templating. It is important to note that more classes, objects and methods can be incorporated into \arara\ through classloading and object instantiation, extending the features and enhancing the overall user experience.
+The methods presented in this section provide interesting features for persistent data sharing, error handling, early command execution, and templating. It is important to note that more classes, objects and methods can be incorporated into \arara\ through class loading and object instantiation, extending the features and enhancing the overall user experience.
