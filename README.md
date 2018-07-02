@@ -37,7 +37,7 @@ For historical purposes, the source code for older versions of `arara` is availa
 
 [![Version: 4.0](https://img.shields.io/badge/version-4.0-blue.svg?style=flat-square)](https://travis-ci.org/cereda/arara/)
 ![Travis CI for 4.0](https://img.shields.io/travis/cereda/arara.svg?style=flat-square)
-![Version: 5.0](https://img.shields.io/badge/version-5.0-red.svg?style=flat-square)
+[![Version: 5.0](https://img.shields.io/badge/version-5.0-red.svg?style=flat-square)](https://travis-ci.org/cereda/arara/branches)
 ![Travis CI for 5.0](https://img.shields.io/travis/cereda/arara/development.svg?style=flat-square)
 
 `arara` uses [Travis CI](https://travis-ci.org) as a hosted continuous integration service. For each and every commit, we can see in real time the build status of our application checked against a range of Java VM vendors. It is worth noting that the current series is designed and built to be Java 5.0 compliant, so if you have an old JVM, it is almost sure that you will be able to run `arara` in it without any problems.
