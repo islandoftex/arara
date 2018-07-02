@@ -46,7 +46,7 @@ For historical purposes, the source code for older versions of `arara` is availa
 ## Support
 
 [![Gitter chatroom](https://img.shields.io/badge/gitter-join_chat-blue.svg?style=flat-square)](https://opensource.org/licenses/bsd-license)
-[![GitHub issues](https://img.shields.io/github/issues-raw/cereda/arara.svg?style=flat-square)](https://gitter.im/cereda/arara)
+[![GitHub open issues](https://img.shields.io/github/issues-raw/cereda/arara.svg?style=flat-square)](https://gitter.im/cereda/arara)
 ![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/cereda/arara.svg?style=flat-square)
 
 We use a [Gitter](https://gitter.im/cereda/arara) chatroom for discussing things related to `arara`. You are more than welcome to come join the fun and say *hi!* to us. We also have the [issues](https://github.com/cereda/arara/issues) section in our repository as a valid channel to report problems, bugs and suggest improvements. 
