@@ -53,15 +53,13 @@ We use a [Gitter](https://gitter.im/cereda/arara) chatroom for discussing things
 
 ## Localization
 
-Would you like to make `arara` speak your own language? Splendid! We would love to have you in the team! Just send us an e-mail, join our dedicated chatroom or open an issue about it. The localization process is quite straightforward, we can help you! `:)` Any language is welcome!
+Would you like to make `arara` speak your own language? Splendid! We would love to have you in the team! Just send us an e-mail, join our dedicated chatroom or open an issue about it. The localization process is quite straightforward, we can help you! Any language is welcome!
 
 ## Downloads
 
-Binary releases are powered by Bintray and not available in the repository anymore. You can [click here](https://bintray.com/cereda/arara/installers/_latestVersion) or use the button below to get access to the current 3.0 release. Note that you need Java to run both the installer and `arara` itself.
+From the 4.0 series on, the team decided to not release cross-platform installers any more. Our tool is available out of the shelf on all major TeX distributions, including TeX Live and MiKTeX, which makes manual installation unnecessary given the significant coverage of such distributions. Chances are you already have `arara` in your system!
 
-*Download:* [ ![Download](https://api.bintray.com/packages/cereda/arara/installers/images/download.svg?version=3.0) ](https://bintray.com/cereda/arara/installers/3.0/link)
-
-If you want to try out the development version, you need to build it from source. It is actually a straightforward process: just clone this repository, go to the `application/` directory and run `mvn assembly:assembly` (you need [Apache Maven](http://maven.apache.org/) for this); you'll get the resulting `.jar` file in a `target/` directory. Have fun!
+You can obtain the official package available in the [release](https://github.com/cereda/arara/releases) section of our project repository, as well as the [Bintray](https://bintray.com/cereda/arara) software distribution service. Please refer to the documentation on how to manually deploy our tool.
 
 ## License
 
