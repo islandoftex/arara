@@ -50,3 +50,4 @@ docs/arara-manual.pdf
 /tools/langchecker/target/
 /tools/rulechecker/target/
 /tools/ruleconverter/target/
+/tools/ctanbuilder/target/
