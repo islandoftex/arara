@@ -1,0 +1,25 @@
+all: arara.zip
+	@echo "Please wait while I generate the release file from 'arara.zip'"
+	@echo
+	@echo -n "(1/6) Creating temporary directory .................. "
+	@mkdir tmp
+	@echo "SUCCESS"
+	@echo -n "(2/6) Copying file to temporary directory ........... "
+	@cp arara.zip tmp/
+	@echo "SUCCESS"
+	@echo -n "(3/6) Extracting archive file ....................... "
+	@cd tmp/ && unzip arara.zip > /dev/null
+	@echo "SUCCESS"
+	@echo -n "(4/6) Creating new release file ..................... "
+	@cd tmp/arara/scripts/ && \
+		zip -r arara-4.0.zip arara.jar rules/ > /dev/null
+	@echo "SUCCESS"
+	@echo -n "(5/6) Copying release file to top level ............. "
+	@cp tmp/arara/scripts/arara-4.0.zip arara-4.0.zip
+	@echo "SUCCESS"
+	@echo -n "(6/6) Removing temporary directory .................. "
+	@rm -rf tmp/
+	@echo "SUCCESS"
+	@echo
+	@echo "Done!"
+
