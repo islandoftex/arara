@@ -8,7 +8,7 @@
 ![Minimum JRE: 5.0](https://img.shields.io/badge/minimum_JRE-5.0-blue.svg?style=flat-square)
 [![License: New BSD](https://img.shields.io/badge/license-New_BSD-blue.svg?style=flat-square)](https://opensource.org/licenses/bsd-license)
 
-`arara` is a TeX automation tool based on rules and directives. It gives you subsidies to enhance your TeX experience. The tool is an effort to provide a concise way to automate the daily TeX workflow for users and also package writers. Users might write their own rules when the provided ones do not suffice.
+`arara` is a TeX automation tool based on rules and directives. It gives you way to enhance your TeX experience. The tool is an effort to provide a concise way to automate the daily TeX workflow for users and also package writers. Users might write their own rules when the provided ones do not suffice.
 
 ## Basic use
 
