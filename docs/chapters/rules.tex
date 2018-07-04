@@ -2,7 +2,7 @@
 \chapter{The official rule pack}
 \label{chap:theofficialrulepack}
 
-\arara\ ships with a pack of default rules, placed inside a special subdirectory named \abox[araracolour]{rules/} inside another special directory named \abox[araracolour]{ARARA\_HOME} (the place where our tool is installed). This chapter introduces the official rules, including proper listings and descriptions of associated parameters whenever applied. Note that such rules work out of the shelf, without any special installation, configuration or modification. An option marked by \rbox[araracolour]{S} after the corresponding identifier indicates a natural boolean switch. Similarly, the occurrence of a \rqbox\ mark indicates that the corresponding option is required.
+\arara\ ships with a pack of default rules, placed inside a special subdirectory named \abox[araracolour]{rules/} inside another special directory named \abox[araracolour]{ARARA\_HOME} (the place where our tool is installed). This chapter introduces the official rules, including proper listings and descriptions of associated parameters whenever applied. Note that such rules work off the shelf, without any special installation, configuration or modification. An option marked by \rbox[araracolour]{S} after the corresponding identifier indicates a natural boolean switch. Similarly, the occurrence of an \rqbox\ mark indicates that the corresponding option is required.
 
 \begin{messagebox}{Can my rule be distributed within the official pack?}{araracolour}{\icok}{white}
 As seen in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}, the default rule path can be extended to include a list of directories in which our tool should search for rules. However, if you believe your rule is comprehensive enough and deserves to be in the official pack, please contact us! We will be more  than happy to discuss the inclusion of your rule in forthcoming updates.
@@ -35,34 +35,35 @@ The best solution to avoid possible future name conflicts, according to the Imag
 % arara: animate: { delay: 15, density: 150 }
 \end{codebox}
 
-\item[\rulebox{bib2gls}{Nicola Talbot, Paulo Cereda}] This rule executes the \rbox{bib2gls} command line application which extract glossary information stored in a \rbox{bib} file and converts it into glossary entry definitions in resource files.
+\item[\rulebox{bib2gls}{Nicola Talbot, Paulo Cereda}] This rule executes the \rbox{bib2gls} command line application which extracts glossary information stored in a \rbox{bib} file and converts it into glossary entry definitions in resource files.
 
 \begin{description}
 \item[\abox{dir}] This option sets the directory used for writing auxiliary files. Note that this option does not change the current working directory.
 
 \item[\abox{trans}] This option sets the name of the transcript file. By default, the name is the same as the \rbox{aux} file but with a \rbox{glg} extension.
 
-\item[\abox{locale}] This option specifies the preferred language resource file. Please keep in mind that the provided value must be a valid \gls{IETF} language tag.
+\item[\abox{locale}] This option specifies the preferred language resource file. Please keep in mind that the provided value must be a valid \gls{IETF} language tag. If omitted, the default is obtained by \rbox{bib2gls} from the \gls{JVM}.
 
-\item[\rpsbox{group}] This option sets whether \rbox{bib2gls} will try to determine the letter group for each entry and add it to a new field called \rbox{group} when sorting. Be mindful that some \rbox{sort} options ignore this setting.
+% Is there a way of marking it up the default value for switches, as for \rpbox?
+\item[\rpsbox{group}] This option sets whether \rbox{bib2gls} will try to determine the letter group for each entry and add it to a new field called \rbox{group} when sorting. Be mindful that some \rbox{sort} options ignore this setting. The default value is off.
 
-\item[\rpsbox{interpret}] This option sets whether the interpreter mode of \rbox{bib2gls} is enabled. If the interpreter is off, the transcript file will not be parsed.
+\item[\rpsbox{interpret}] This option sets whether the interpreter mode of \rbox{bib2gls} is enabled. If the interpreter is on, \rbox{bib2gls} will attempt to convert any \LaTeX\ markup in the sort value to the closest matching Unicode characters. If the interpreter is off, the \rbox{log} file will not be parsed for recognised packages. The default value is on.
 
 \item[\rpsbox{breakspace}] This option sets whether the interpreter will treat a tilde character as a normal space. The default behaviour treats it as non-breakable.
 
 \item[\rpsbox{trimfields}] This option sets whether \rbox{bib2gls} will trim leading and trailing spaces from field values. The default behaviour does not trim spaces.
 
-\item[\rpsbox{recordcount}] This option sets whether the record counting will be enabled. If activated, \rbox{bib2gls} will add record count fields to entries.
+\item[\rpsbox{recordcount}] This option sets whether the record counting will be enabled. If activated, \rbox{bib2gls} will add record count fields to entries. The default behaviour is off.
 
-\item[\rpsbox{recordcountunit}] This option sets whether \rbox{bib2gls} will add unit record count fields to entries. These fields can then be used with special commands.
+\item[\rpsbox{recordcountunit}] This option sets whether \rbox{bib2gls} will add unit record count fields to entries. These fields can then be used with special commands. The default behaviour is off.
 
-\item[\rpsbox{cite}] This option sets whether \rbox{bib2gls} will treat citation instances found in the \rbox{aux} file as though it was actually an ignored record.
+\item[\rpsbox{cite}] This option sets whether \rbox{bib2gls} will treat citation instances found in the \rbox{aux} file as though it was actually an ignored record. The default behaviour is off.
 
 \item[\rpsbox{verbose}] This option sets whether \rbox{bib2gls} will be executed in verbose mode. When enabled, the application will write extra information to the terminal and transcript file. The default behaviour runs in silent mode.
 
-\item[\rpsbox{merge}] This option sets whether the program will merge \rbox{wrglossary} counter records. If disabled, one may end up with duplicate page numbers in the list of entry locations, but linking to different parts of the page.
+\item[\rpsbox{merge}] This option sets whether the program will merge \rbox{wrglossary} counter records. If disabled, one may end up with duplicate page numbers in the list of entry locations, but linking to different parts of the page. The default is on.
 
-\item[\rpsbox{uniscript}] This option sets whether text superscript and subscript will use the corresponding Unicode characters if available.
+\item[\rpsbox{uniscript}] This option sets whether text superscript and subscript will use the corresponding Unicode characters if available. The default is on.
 
 \item[\abox{packages}] This option instructs the interpreter to assume the packages from the provided list have been used by the document.
 
