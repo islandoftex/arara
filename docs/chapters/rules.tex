@@ -44,7 +44,6 @@ The best solution to avoid possible future name conflicts, according to the Imag
 
 \item[\abox{locale}] This option specifies the preferred language resource file. Please keep in mind that the provided value must be a valid \gls{IETF} language tag. If omitted, the default is obtained by \rbox{bib2gls} from the \gls{JVM}.
 
-% Is there a way of marking it up the default value for switches, as for \rpbox?
 \item[\rpsbox{group}] This option sets whether \rbox{bib2gls} will try to determine the letter group for each entry and add it to a new field called \rbox{group} when sorting. Be mindful that some \rbox{sort} options ignore this setting. The default value is off.
 
 \item[\rpsbox{interpret}] This option sets whether the interpreter mode of \rbox{bib2gls} is enabled. If the interpreter is on, \rbox{bib2gls} will attempt to convert any \LaTeX\ markup in the sort value to the closest matching Unicode characters. If the interpreter is off, the \rbox{log} file will not be parsed for recognised packages. The default value is on.
