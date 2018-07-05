@@ -40,29 +40,29 @@ The best solution to avoid possible future name conflicts, according to the Imag
 \begin{description}
 \item[\abox{dir}] This option sets the directory used for writing auxiliary files. Note that this option does not change the current working directory.
 
-\item[\abox{trans}] This option sets the name of the transcript file. By default, the name is the same as the \rbox{aux} file but with a \rbox{glg} extension.
+\item[\abox{trans}] This option sets the extension of the transcript file created by \rbox{bib2gls}. The value should be just the file extension without the leading dot.
 
-\item[\abox{locale}] This option specifies the preferred language resource file. Please keep in mind that the provided value must be a valid \gls{IETF} language tag. If omitted, the default is obtained by \rbox{bib2gls} from the \gls{JVM}.
+\item[\abox{locale}] This option specifies the preferred language resource file. Please keep in mind that the provided value must be a valid \gls{IETF} language tag.
 
-\item[\rpsbox{group}] This option sets whether \rbox{bib2gls} will try to determine the letter group for each entry and add it to a new field called \rbox{group} when sorting. Be mindful that some \rbox{sort} options ignore this setting. The default value is off.
+\item[\rpsbox{group}] This option sets whether \rbox{bib2gls} will try to determine the letter group for each entry and add it to a new field called \rbox{group} when sorting. Be mindful that some \rbox{sort} options ignore this setting.
 
-\item[\rpsbox{interpret}] This option sets whether the interpreter mode of \rbox{bib2gls} is enabled. If the interpreter is on, \rbox{bib2gls} will attempt to convert any \LaTeX\ markup in the sort value to the closest matching Unicode characters. If the interpreter is off, the \rbox{log} file will not be parsed for recognised packages. The default value is on.
+\item[\rpsbox{interpret}] This option sets whether the interpreter mode of \rbox{bib2gls} is enabled. If the interpreter is on, \rbox{bib2gls} will attempt to convert any \LaTeX\ markup in the sort value to the closest matching Unicode characters. If the interpreter is off, the \rbox{log} file will not be parsed for recognised packages.
 
-\item[\rpsbox{breakspace}] This option sets whether the interpreter will treat a tilde character as a normal space. The default behaviour treats it as non-breakable.
+\item[\rpsbox{breakspace}] This option sets whether the interpreter will treat a tilde character as a normal space.
 
-\item[\rpsbox{trimfields}] This option sets whether \rbox{bib2gls} will trim leading and trailing spaces from field values. The default behaviour does not trim spaces.
+\item[\rpsbox{trimfields}] This option sets whether \rbox{bib2gls} will trim leading and trailing spaces from field values.
 
-\item[\rpsbox{recordcount}] This option sets whether the record counting will be enabled. If activated, \rbox{bib2gls} will add record count fields to entries. The default behaviour is off.
+\item[\rpsbox{recordcount}] This option sets whether the record counting will be enabled. If activated, \rbox{bib2gls} will add record count fields to entries.
 
-\item[\rpsbox{recordcountunit}] This option sets whether \rbox{bib2gls} will add unit record count fields to entries. These fields can then be used with special commands. The default behaviour is off.
+\item[\rpsbox{recordcountunit}] This option sets whether \rbox{bib2gls} will add unit record count fields to entries. These fields can then be used with special commands.
 
-\item[\rpsbox{cite}] This option sets whether \rbox{bib2gls} will treat citation instances found in the \rbox{aux} file as though it was actually an ignored record. The default behaviour is off.
+\item[\rpsbox{cite}] This option sets whether \rbox{bib2gls} will treat citation instances found in the \rbox{aux} file as though it was actually an ignored record.
 
-\item[\rpsbox{verbose}] This option sets whether \rbox{bib2gls} will be executed in verbose mode. When enabled, the application will write extra information to the terminal and transcript file. The default behaviour runs in silent mode.
+\item[\rpsbox{verbose}] This option sets whether \rbox{bib2gls} will be executed in verbose mode. When enabled, the application will write extra information to the terminal and transcript file. This option is unrelated to \arara's verbose mode.
 
-\item[\rpsbox{merge}] This option sets whether the program will merge \rbox{wrglossary} counter records. If disabled, one may end up with duplicate page numbers in the list of entry locations, but linking to different parts of the page. The default is on.
+\item[\rpsbox{merge}] This option sets whether the program will merge \rbox{wrglossary} counter records. If disabled, one may end up with duplicate page numbers in the list of entry locations, but linking to different parts of the page.
 
-\item[\rpsbox{uniscript}] This option sets whether text superscript and subscript will use the corresponding Unicode characters if available. The default is on.
+\item[\rpsbox{uniscript}] This option sets whether text superscript and subscript will use the corresponding Unicode characters if available.
 
 \item[\abox{packages}] This option instructs the interpreter to assume the packages from the provided list have been used by the document.
 
