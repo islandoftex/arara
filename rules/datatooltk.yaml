@@ -44,7 +44,7 @@ arguments:
 - identifier: sep
   flag: >
     @{
-        [ '--sep, parameters.sep ]
+        [ '--sep', parameters.sep ]
     }
 - identifier: delim
   flag: >
@@ -109,7 +109,7 @@ arguments:
 - identifier: seed
   flag: >
     @{
-        [ '--seed, parameters.seed ]
+        [ '--seed', parameters.seed ]
     }
 - identifier: shuffle
   flag: >
