@@ -35,6 +35,7 @@ arguments:
     @{
         [ '--output', parameters.output ]
     }
+  required: true
 - identifier: csv
   flag: >
     @{
