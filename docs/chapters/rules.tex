@@ -35,7 +35,7 @@ The best solution to avoid possible future name conflicts, according to the Imag
 % arara: animate: { delay: 15, density: 150 }
 \end{codebox}
 
-\item[\rulebox{bib2gls}{Nicola Talbot, Paulo Cereda}] This rule executes the \rbox{bib2gls} command line application which extracts glossary information stored in a \rbox{bib} file and converts it into glossary entry definitions in resource files.
+\item[\rulebox{bib2gls}{Nicola Talbot, Paulo Cereda}] This rule executes the \rbox{bib2gls} command line application which extracts glossary information stored in a \rbox{bib} file and converts it into glossary entry definitions in resource files. This rule passes the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as the mandatory argument.
 
 \begin{description}
 \item[\abox{dir}] This option sets the directory used for writing auxiliary files. Note that this option does not change the current working directory.
@@ -163,10 +163,10 @@ When in doubt, always remember that the \opbox{{-}dry-run} command line option i
 % arara: csplain: { interaction: batchmode, shell: yes }
 \end{codebox}
 
-\item[\rulebox{datatooltk}{Nicola Talbot, Paulo Cereda}] This rule runs \rbox{datatooltk}, an application that creates \rbox{data­tool} databases in raw for­mat from several structured data formats, in batch mode.
+\item[\rulebox{datatooltk}{Nicola Talbot, Paulo Cereda}] This rule runs \rbox{datatooltk}, an application that creates \rbox{data­tool} databases in raw for­mat from several structured data formats, in batch mode. This rule requires \abox{output} and one of the import options.
 
 \begin{description}
-\item[\abox{output}] This option provides the database name to be saved as output. To guard against accidentally overwriting a document file, \rbox{datatooltk} now forbids the \rbox{tex} extension for output files.
+\item[\abox{output}] This option provides the database name to be saved as output. To guard against accidentally overwriting a document file, \rbox{datatooltk} now forbids the \rbox{tex} extension for output files. This option is required.
 
 \item[\abox{csv}] This option, as the name indicates, imports data from the \rbox{csv} file reference provided as a plain string value.
 
@@ -196,11 +196,11 @@ When in doubt, always remember that the \opbox{{-}dry-run} command line option i
 
 \item[\abox{input}] This option, as the name indicates, imports data in the \rbox{datatool} format from the file name provided as value.
 
-\item[\abox{sort}] This option, as the name indicates, sorts the database according to the column whose label is provided as value.
+\item[\abox{sort}] This option, as the name indicates, sorts the database according to the column whose label is provided as value. The value may be preceded by \rbox{+} or \rbox{-} to indicate ascending or descending order, respectively. If the sign is omitted, ascending is assumed.
 
-\item[\abox{sortlocale}] This option, as the name indicates, sorts the database according to alphabetical order rules of the locale provided as value.
+\item[\abox{sortlocale}] This option, as the name indicates, sorts the database according to alphabetical order rules of the locale provided as value. If the value is set to \rbox{none} strings are sorted according to non-locale letter order.
 
-\item[\rpsbox{sortcase}] This option sets whether strings will be sorted using case sensitive comparison. The default behaviour is case insensitive.
+\item[\rpsbox{sortcase}] This option sets whether strings will be sorted using case-sensitive comparison for non-locale letter ordering. The default behaviour is case-insensitive.
 
 \item[\abox{seed}] This option, as the name indicates, sets the random generator seed to the provided value. The seed is cleared if an empty value is provided.
 
@@ -224,14 +224,14 @@ spreadsheet import functions also use this setting.
 \item[\abox{filterop}] This option specifies the logical operator to be associated with a given filter. Filtering is always performed after sorting and shuffling. Possible values are:
 
 \begin{description}
-\item[\povalue{or}\hfill\hphantom{w}] This value, as the name indicates, use the logical \rbox{or} operator when filtering. This is the default behaviour. Note that this value has no effect if only one filter is supplied.
+\item[\povalue{or}\hfill\hphantom{w}] This value, as the name indicates, uses the logical \rbox{or} operator when filtering. This is the default behaviour. Note that this value has no effect if only one filter is supplied.
 
-\item[\povalue{and}] This value, as the name indicates, use the logical \rbox{and} operator when filtering. Note that this value has no effect if only one filter is supplied.
+\item[\povalue{and}] This value, as the name indicates, uses the logical \rbox{and} operator when filtering. Note that this value has no effect if only one filter is supplied.
 \end{description}
 
 \item[\abox{filters}] This option takes a list and sets up a sequence of filters. Each element from the provided list must be another list of exactly three entries representing a key, an operator and a value, respectively.
 
-\item[\abox{truncate}] This option truncates the database to the number of rows provided as value. Truncation is always performed after any sorting, shuffling and filtering, but before column removal.
+\item[\abox{truncate}] This option truncates the database to the number of rows provided as the value. Truncation is always performed after any sorting, shuffling and filtering, but before column removal.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
