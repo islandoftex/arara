@@ -28,7 +28,7 @@ According to the \href{http://www.imagemagick.org/Usage/windows/}{ImageMagick we
 The best solution to avoid possible future name conflicts, according to the ImageMagick team, is to call such command line tools by their full path in any script. Therefore, the \rbox{convert} rule provides the \abox{program} option for this specific scenario.
 \end{messagebox}
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -72,7 +72,7 @@ The best solution to avoid possible future name conflicts, according to the Imag
 
 \item[\abox{mapformats}] This option takes a list and sets up the rule of precedence for partial location matches. Each element from the provided list must be another list of exactly two entries representing a conflict resolution.
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -83,7 +83,7 @@ The best solution to avoid possible future name conflicts, according to the Imag
 \item[\rulebox{biber}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{biber}, the backend bibliography processor for \rbox{biblatex}, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string.
 
 \begin{description}
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -93,7 +93,7 @@ The best solution to avoid possible future name conflicts, according to the Imag
 \item[\rulebox{bibtex}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{bibtex} program, a reference management software, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string.
 
 \begin{description}
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -104,7 +104,7 @@ The best solution to avoid possible future name conflicts, according to the Imag
 \item[\rulebox{bibtex8}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{bibtex8}, an enhanced, portable C version of \rbox{bibtex}, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string. It is important to note that this tool can read a character set file containing encoding details.
 
 \begin{description}
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -114,7 +114,7 @@ The best solution to avoid possible future name conflicts, according to the Imag
 \item[\rulebox{bibtexu}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{bibtexu} program, an enhanced version of \rbox{bibtex} with Unicode support and language features, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string.
 
 \begin{description}
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -124,7 +124,7 @@ The best solution to avoid possible future name conflicts, according to the Imag
 \item[\rulebox{clean}{Marco Daniel, Paulo Cereda}] This rule removes the provided file reference through the underlying system command, which can be \rbox{rm} in a Unix environment or \rbox{del} in Microsoft Windows. As a security lock, this rule will always throw an error if \mtbox{currentFile} is equal to \mtbox{getOriginalFile}, so the main file reference cannot be removed. It is highly recommended to use the special \abox{files} parameter to indicate removal candidates. Alternatively, a list of file extensions can be provided as well. Be mindful that the security lock also applies to file removals based on extensions.
 
 \begin{description}
-\item[\abox{extensions}] This option, as the name indicates, takes a list of extensions and constructs a new list of removals commands according to the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with each extension from the original list as suffixes. Keep in mind that, if the special \abox{files} parameter is used with this option, the resulting list will contain the cartesian product of file base names and extensions. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{extensions}] This option, as the name indicates, takes a list of extensions and constructs a new list of removals commands according to the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with each extension from the original list as suffixes. Keep in mind that, if the special \abox{files} parameter is used with this option, the resulting list will contain the cartesian product of file base names and extensions. An error is thrown if any data structure other than a proper list is provided as the value.
 
 \begin{messagebox}{Better safe than sorry!}{attentioncolour}{\icattention}{black}
 When in doubt, always remember that the \opbox{{-}dry-run} command line option is your friend! As seen in Section~\ref{sec:options}, on page~\pageref{sec:options}, this option makes \arara\ go through all the motions of running tasks and subtasks, but with no actual calls. It is a very useful feature for testing the sequence of removal commands without actually losing your files! Also, as good practice, always write plain, simple, understandable \rbox{clean} directives and use as many as needed in your \TeX\ documents.
@@ -152,11 +152,11 @@ When in doubt, always remember that the \opbox{{-}dry-run} command line option i
 
 \item[\rpsbox{shell}] This option sets whether the possibility of running underlying system commands from within \TeX\ is activated.
 
-\item[\rpsbox{synctex}] This option sets whether \rbox{synctex}, an input and output synchronization feature that allows navigation from source to typeset material and vice versa, available in most \TeX\ engines, is actived.
+\item[\rpsbox{synctex}] This option sets whether \rbox{synctex}, an input and output synchronization feature that allows navigation from source to typeset material and vice versa, available in most \TeX\ engines, is activated.
 
 \item[\rpsbox{draft}] This option sets whether the draft mode, i.e, a mode that produces no output, so the engine can check the syntax, is activated.
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -192,13 +192,13 @@ When in doubt, always remember that the \opbox{{-}dry-run} command line option i
 \item[\povalue{gui}] This action displays a dialog box in which the user can enter the password for the \gls{SQL} database.
 \end{description}
 
-\item[\abox{probsoln}] This option, as the name indicates, imports data in the \rbox{probsoln} format from the file name provided as value.
+\item[\abox{probsoln}] This option, as the name indicates, imports data in the \rbox{probsoln} format from the file name provided as the value.
 
-\item[\abox{input}] This option, as the name indicates, imports data in the \rbox{datatool} format from the file name provided as value.
+\item[\abox{input}] This option, as the name indicates, imports data in the \rbox{datatool} format from the file name provided as the value.
 
-\item[\abox{sort}] This option, as the name indicates, sorts the database according to the column whose label is provided as value. The value may be preceded by \rbox{+} or \rbox{-} to indicate ascending or descending order, respectively. If the sign is omitted, ascending is assumed.
+\item[\abox{sort}] This option, as the name indicates, sorts the database according to the column whose label is provided as the value. The value may be preceded by \rbox{+} or \rbox{-} to indicate ascending or descending order, respectively. If the sign is omitted, ascending is assumed.
 
-\item[\abox{sortlocale}] This option, as the name indicates, sorts the database according to alphabetical order rules of the locale provided as value. If the value is set to \rbox{none} strings are sorted according to non-locale letter order.
+\item[\abox{sortlocale}] This option, as the name indicates, sorts the database according to alphabetical order rules of the locale provided as the value. If the value is set to \rbox{none} strings are sorted according to non-locale letter order.
 
 \item[\rpsbox{sortcase}] This option sets whether strings will be sorted using case-sensitive comparison for non-locale letter ordering. The default behaviour is case-insensitive.
 
@@ -243,9 +243,9 @@ spreadsheet import functions also use this setting.
 \item[\rulebox{dvipdfm}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{dvipdfm}, a command line utility for file format translation, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{dvi} suffix, generating a Portable Document Format \rbox{pdf} file.
 
 \begin{description}
-\item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{pdf} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as default value.
+\item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{pdf} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as the default value.
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -255,9 +255,9 @@ spreadsheet import functions also use this setting.
 \item[\rulebox{dvipdfmx}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{dvipdfmx}, an extended version of \rbox{dvipdfm} created to support multibyte character encodings and large character sets for East Asian languages, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{dvi} suffix, generating a Portable Document Format \rbox{pdf} file.
 
 \begin{description}
-\item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{pdf} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as default value.
+\item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{pdf} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as the default value.
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -267,9 +267,9 @@ spreadsheet import functions also use this setting.
 \item[\rulebox{dvips}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{dvips} on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{dvi} suffix, generating a PostScript \rbox{ps} file.
 
 \begin{description}
-\item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{ps} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as default value.
+\item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{ps} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as the default value.
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -279,18 +279,18 @@ spreadsheet import functions also use this setting.
 \item[\rulebox{dvipspdf}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{dvips} in order to obtain a corresponding \rbox{ps} file from the initial \rbox{dvi} reference, and then runs \rbox{ps2pdf} on the previously generated \rbox{ps} file in order to obtain a \rbox{pdf} file. Note that all base names are acquired from the \mtbox{currentFile} reference (i.e, the name without the associated extension) and used to construct the resulting files.
 
 \begin{description}
-\item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{pdf} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as default value.
+\item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{pdf} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as the default value.
 
-\item[\abox{options1}] This option, as the name indicates, takes a list of raw command line options and appends it to the \rbox{dvips} program call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options1}] This option, as the name indicates, takes a list of raw command line options and appends it to the \rbox{dvips} program call. An error is thrown if any data structure other than a proper list is provided as the value.
 
-\item[\abox{options2}] This option, as the name indicates, takes a list of raw command line options and appends it to the \rbox{ps2pdf} program call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options2}] This option, as the name indicates, takes a list of raw command line options and appends it to the \rbox{ps2pdf} program call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 % arara: dvipspdf: { output: article }
 \end{codebox}
 
-\item[\rulebox{frontespizio}{Francesco Endrici, Enrico Gregorio, Paulo Cereda}] This rule automates the steps required by the \rbox{frontespizio} package in order to help Italian user generate frontispiece to their thesis. First and foremost, the frontispiece is generated. If \rbox{latex} is used an underlying engine, there is an additional intermediate conversion step to a proper \rbox{eps} file. Finally, the final document is compiled.
+\item[\rulebox{frontespizio}{Francesco Endrici, Enrico Gregorio, Paulo Cereda}] This rule automates the steps required by the \rbox{frontespizio} package in order to help Italian users generate the frontispiece to their thesis. First and foremost, the frontispiece is generated. If \rbox{latex} is used as the underlying engine, there is an additional intermediate conversion step to a proper \rbox{eps} file. Finally, the final document is compiled.
 
 \begin{description}
 \item[\rpbox{engine}{pdflatex}] This option, as the name indicates, sets the underlying \TeX\ engine to be used for both compilations (the frontispiece and the document itself). Possible values are:
@@ -307,7 +307,8 @@ spreadsheet import functions also use this setting.
 
 \item[\rpsbox{shell}] This option sets whether the possibility of running underlying system commands from within the selected \TeX\ engine is activated.
 
-\item[\abox{interaction}] This option alters the underlying engine behaviour. When such option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
+% Does it need clarifying that the prompt for user interaction will only occur in arara's verbose mode? Similarly for the other rules with this option
+\item[\abox{interaction}] This option alters the underlying engine behaviour. If this option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
 
 \begin{description}
 \item[\povalue{batchmode}] In this mode, nothing is printed on the terminal, and errors are scrolled as if the \rbox{return} key is hit at every error. Missing files that \TeX\ tries to input or request from keyboard input cause the job to abort.
@@ -319,7 +320,7 @@ spreadsheet import functions also use this setting.
 \item[\povalue{errorstopmode}] In this mode, \TeX\ will stop at each error, asking for proper user intervention. This is the most user interactive mode available.
 \end{description}
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual \TeX\ engine call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual \TeX\ engine call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -358,7 +359,7 @@ spreadsheet import functions also use this setting.
 
 \item[\abox{output}] This option, as the name indicates, sets the name of the output file. Please note that this option has higher priority over some switches, so options like \abox{overwrite} will be ignored by the underlying script.
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual script call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual script call. An error is thrown if any data structure other than a proper list is provided as the value.
 
 \item[\abox{settings}] This option, as the name indicates, dictates the indentation settings to be applied in the current script execution. Two possible values are available:
 
@@ -368,7 +369,7 @@ spreadsheet import functions also use this setting.
 \item[\povalue{onlydefault}] This value, as the name indicates, ignores any local configuration, so the script will resort to the default indentation behaviour.
 \end{description}
 
-\item[\abox{where}] This option, as the name indicates, sets the file location containing the indentation settings according to the provided value. This option can only be used if, and only if, \rbox[cyan]{local} is set as value for the \abox{settings} option, otherwise the rule will throw an error.
+\item[\abox{where}] This option, as the name indicates, sets the file location containing the indentation settings according to the provided value. This option can only be used if, and only if, \rbox[cyan]{local} is set as the value for the \abox{settings} option, otherwise the rule will throw an error.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -378,7 +379,7 @@ spreadsheet import functions also use this setting.
 \item[\rulebox{latex}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{latex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in a device independent format.
 
 \begin{description}
-\item[\abox{interaction}] This option alters the underlying engine behaviour. When such option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
+\item[\abox{interaction}] This option alters the underlying engine behaviour. If this option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
 
 \begin{description}
 \item[\povalue{batchmode}] In this mode, nothing is printed on the terminal, and errors are scrolled as if the \rbox{return} key is hit at every error. Missing files that \TeX\ tries to input or request from keyboard input cause the job to abort.
@@ -392,11 +393,11 @@ spreadsheet import functions also use this setting.
 
 \item[\rpsbox{shell}] This option sets whether the possibility of running underlying system commands from within \TeX\ is activated.
 
-\item[\rpsbox{synctex}] This option sets whether \rbox{synctex}, an input and output synchronization feature that allows navigation from source to typeset material and vice versa, available in most \TeX\ engines, is actived.
+\item[\rpsbox{synctex}] This option sets whether \rbox{synctex}, an input and output synchronization feature that allows navigation from source to typeset material and vice versa, available in most \TeX\ engines, is activated.
 
 \item[\rpsbox{draft}] This option sets whether the draft mode, i.e, a mode that produces no output, so the engine can check the syntax, is activated.
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -428,7 +429,7 @@ spreadsheet import functions also use this setting.
 
 \item[\abox{program}] This option, as the name suggests, sets the \TeX\ engine according to the provided value. It is important to note that this option has higher priority over \abox{engine} values, so the latter will be discarded.
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual script call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual script call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -438,7 +439,7 @@ spreadsheet import functions also use this setting.
 \item[\rulebox{lualatex}{Marco Daniel, Paulo Cereda}] This rule runs the new \rbox{lualatex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document File format, as expected.
 
 \begin{description}
-\item[\abox{interaction}] This option alters the underlying engine behaviour. When such option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
+\item[\abox{interaction}] This option alters the underlying engine behaviour. If this option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
 
 \begin{description}
 \item[\povalue{batchmode}] In this mode, nothing is printed on the terminal, and errors are scrolled as if the \rbox{return} key is hit at every error. Missing files that \TeX\ tries to input or request from keyboard input cause the job to abort.
@@ -452,11 +453,11 @@ spreadsheet import functions also use this setting.
 
 \item[\rpsbox{shell}] This option sets whether the possibility of running underlying system commands from within \TeX\ is activated.
 
-\item[\rpsbox{synctex}] This option sets whether \rbox{synctex}, an input and output synchronization feature that allows navigation from source to typeset material and vice versa, available in most \TeX\ engines, is actived.
+\item[\rpsbox{synctex}] This option sets whether \rbox{synctex}, an input and output synchronization feature that allows navigation from source to typeset material and vice versa, available in most \TeX\ engines, is activated.
 
 \item[\rpsbox{draft}] This option sets whether the draft mode, i.e, a mode that produces no output, so the engine can check the syntax, is activated.
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -467,7 +468,7 @@ spreadsheet import functions also use this setting.
 \item[\rulebox{luatex}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{luatex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document File format, as expected.
 
 \begin{description}
-\item[\abox{interaction}] This option alters the underlying engine behaviour. When such option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
+\item[\abox{interaction}] This option alters the underlying engine behaviour. If this option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
 
 \begin{description}
 \item[\povalue{batchmode}] In this mode, nothing is printed on the terminal, and errors are scrolled as if the \rbox{return} key is hit at every error. Missing files that \TeX\ tries to input or request from keyboard input cause the job to abort.
@@ -481,11 +482,11 @@ spreadsheet import functions also use this setting.
 
 \item[\rpsbox{shell}] This option sets whether the possibility of running underlying system commands from within \TeX\ is activated.
 
-\item[\rpsbox{synctex}] This option sets whether \rbox{synctex}, an input and output synchronization feature that allows navigation from source to typeset material and vice versa, available in most \TeX\ engines, is actived.
+\item[\rpsbox{synctex}] This option sets whether \rbox{synctex}, an input and output synchronization feature that allows navigation from source to typeset material and vice versa, available in most \TeX\ engines, is activated.
 
 \item[\rpsbox{draft}] This option sets whether the draft mode, i.e, a mode that produces no output, so the engine can check the syntax, is activated.
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -498,27 +499,27 @@ spreadsheet import functions also use this setting.
 \begin{description}
 \item[\abox{targets}] This option takes a list of targets. Note that \rbox{make} updates a target if it depends on files that have been modified since the target was last modified, or if the target does not exist.
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 % arara: make: { targets: [ compile, package ] }
 \end{codebox}
 
-\item[\rulebox{makeglossaries}{Marco Daniel, Nicola Talbot, Paulo Cereda}] This rule runs \rbox{makeglossaries}, an efficient Perl script designed for use with \TeX\ documents that work with the \rbox{glossaries} package. All the information required to be passed to the relevant indexing application should also be contained in the auxiliary file. The script takes the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as mandatory argument.
+\item[\rulebox{makeglossaries}{Marco Daniel, Nicola Talbot, Paulo Cereda}] This rule runs \rbox{makeglossaries}, an efficient Perl script designed for use with \TeX\ documents that work with the \rbox{glossaries} package. All the information required to be passed to the relevant indexing application should also be contained in the auxiliary file. The script takes the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as the mandatory argument.
 
 \begin{description}
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual script call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual script call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 % arara: makeglossaries if found('aux', '@istfilename')
 \end{codebox}
 
-\item[\rulebox{makeglossarieslite}{Marco Daniel, Nicola Talbot, Paulo Cereda}] This rule runs \rbox{makeglossaries-lite}, a lightweight Lua script designed for use with \TeX\ documents that work with the \rbox{glossaries} package. All the information required to be passed to the relevant indexing application should also be contained in the auxiliary file. The script takes the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as mandatory argument.
+\item[\rulebox{makeglossarieslite}{Marco Daniel, Nicola Talbot, Paulo Cereda}] This rule runs \rbox{makeglossaries-lite}, a lightweight Lua script designed for use with \TeX\ documents that work with the \rbox{glossaries} package. All the information required to be passed to the relevant indexing application should also be contained in the auxiliary file. The script takes the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as the mandatory argument.
 
 \begin{description}
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual script call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual script call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -530,7 +531,7 @@ spreadsheet import functions also use this setting.
 \begin{description}
 \item[\abox{style}] This option, as the name indicates, sets the underlying index style file. Make sure to provide a valid \rbox{ist} file when using this option.
 
-\item[\rpsbox{german}] This option, as the name indicates, sets whether German word ordering should be used when generating the index, accordingo to the rules set forth in DIN 5007.
+\item[\rpsbox{german}] This option, as the name indicates, sets whether German word ordering should be used when generating the index, according to the rules set forth in DIN 5007.
 
 \item[\abox{order}] This option, as the name indicates, sets the default ordering scheme for the \rbox{makeindex} program. Two possible values are available:
 
@@ -540,13 +541,13 @@ spreadsheet import functions also use this setting.
 \item[\povalue{word}] This value, as the name indicates, activates the word ordering scheme. In such scheme, a blank space precedes any letter in the alphabet.
 \end{description}
 
-\item[\rpbox{input}{idx}] This option, as the name indicates, sets the default extension for the input file, according to the provided value. Later, such value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
+\item[\rpbox{input}{idx}] This option, as the name indicates, sets the default extension for the input file, according to the provided value. Later, this value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
 
-\item[\rpbox{output}{ind}] This option, as the name indicates, sets the default extension for the output file, according to the provided value. Later, such value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
+\item[\rpbox{output}{ind}] This option, as the name indicates, sets the default extension for the output file, according to the provided value. Later, this value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
 
-\item[\rpbox{log}{ilg}] This option, as the name indicates, sets the default extension for the log file, according to the provided value. Later, such value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
+\item[\rpbox{log}{ilg}] This option, as the name indicates, sets the default extension for the log file, according to the provided value. Later, this value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -558,7 +559,7 @@ spreadsheet import functions also use this setting.
 \begin{description}
 \item[\rpbox{style}{nomencl.ist}] This option, as the name indicates, sets the underlying index style file. The default value is set to the one automatically provided by the \rbox{nomencl} package, so it is highly recommended to not override it.
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -568,7 +569,7 @@ spreadsheet import functions also use this setting.
 \item[\rulebox{pdfcsplain}{Paulo Cereda}] This rule runs the \rbox{pdfcsplain} \TeX\ engine, a conservative extension of Knuth's plain \TeX\ with direct processing characters and hyphenation patterns for Czech and Slovak, on the provided \mtbox{currentFile} reference.
 
 \begin{description}
-\item[\abox{interaction}] This option alters the underlying engine behaviour. When such option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
+\item[\abox{interaction}] This option alters the underlying engine behaviour. If this option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
 
 \begin{description}
 \item[\povalue{batchmode}] In this mode, nothing is printed on the terminal, and errors are scrolled as if the \rbox{return} key is hit at every error. Missing files that \TeX\ tries to input or request from keyboard input cause the job to abort.
@@ -582,11 +583,11 @@ spreadsheet import functions also use this setting.
 
 \item[\rpsbox{shell}] This option sets whether the possibility of running underlying system commands from within \TeX\ is activated.
 
-\item[\rpsbox{synctex}] This option sets whether \rbox{synctex}, an input and output synchronization feature that allows navigation from source to typeset material and vice versa, available in most \TeX\ engines, is actived.
+\item[\rpsbox{synctex}] This option sets whether \rbox{synctex}, an input and output synchronization feature that allows navigation from source to typeset material and vice versa, available in most \TeX\ engines, is activated.
 
 \item[\rpsbox{draft}] This option sets whether the draft mode, i.e, a mode that produces no output, so the engine can check the syntax, is activated.
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -596,7 +597,7 @@ spreadsheet import functions also use this setting.
 \item[\rulebox{pdflatex}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{pdflatex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document File format, as expected.
 
 \begin{description}
-\item[\abox{interaction}] This option alters the underlying engine behaviour. When such option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
+\item[\abox{interaction}] This option alters the underlying engine behaviour. If this option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
 
 \begin{description}
 \item[\povalue{batchmode}] In this mode, nothing is printed on the terminal, and errors are scrolled as if the \rbox{return} key is hit at every error. Missing files that \TeX\ tries to input or request from keyboard input cause the job to abort.
@@ -610,11 +611,11 @@ spreadsheet import functions also use this setting.
 
 \item[\rpsbox{shell}] This option sets whether the possibility of running underlying system commands from within \TeX\ is activated.
 
-\item[\rpsbox{synctex}] This option sets whether \rbox{synctex}, an input and output synchronization feature that allows navigation from source to typeset material and vice versa, available in most \TeX\ engines, is actived.
+\item[\rpsbox{synctex}] This option sets whether \rbox{synctex}, an input and output synchronization feature that allows navigation from source to typeset material and vice versa, available in most \TeX\ engines, is activated.
 
 \item[\rpsbox{draft}] This option sets whether the draft mode, i.e, a mode that produces no output, so the engine can check the syntax, is activated.
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -625,7 +626,7 @@ spreadsheet import functions also use this setting.
 \item[\rulebox{pdftex}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{pdftex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document File format, as expected.
 
 \begin{description}
-\item[\abox{interaction}] This option alters the underlying engine behaviour. When such option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
+\item[\abox{interaction}] This option alters the underlying engine behaviour. If this option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
 
 \begin{description}
 \item[\povalue{batchmode}] In this mode, nothing is printed on the terminal, and errors are scrolled as if the \rbox{return} key is hit at every error. Missing files that \TeX\ tries to input or request from keyboard input cause the job to abort.
@@ -639,11 +640,11 @@ spreadsheet import functions also use this setting.
 
 \item[\rpsbox{shell}] This option sets whether the possibility of running underlying system commands from within \TeX\ is activated.
 
-\item[\rpsbox{synctex}] This option sets whether \rbox{synctex}, an input and output synchronization feature that allows navigation from source to typeset material and vice versa, available in most \TeX\ engines, is actived.
+\item[\rpsbox{synctex}] This option sets whether \rbox{synctex}, an input and output synchronization feature that allows navigation from source to typeset material and vice versa, available in most \TeX\ engines, is activated.
 
 \item[\rpsbox{draft}] This option sets whether the draft mode, i.e, a mode that produces no output, so the engine can check the syntax, is activated.
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -653,7 +654,7 @@ spreadsheet import functions also use this setting.
 \item[\rulebox{pdftk}{Nicola Talbot, Paulo Cereda}] This rule runs \rbox{pdftk}, a command line tool for manipulating Portable Document Format documents, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{pdf} suffix.
 
 \begin{description}
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -663,9 +664,9 @@ spreadsheet import functions also use this setting.
 \item[\rulebox{ps2pdf}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{ps2pdf}, a tool that converts PostScript to Portable Document File, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{ps} suffix.
 
 \begin{description}
-\item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{pdf} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as default value.
+\item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{pdf} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as the default value.
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -675,21 +676,21 @@ spreadsheet import functions also use this setting.
 \item[\rulebox{sketch}{Sergey Ulyanov, Paulo Cereda}] This rule runs \rbox{sketch}, a system for producing line drawings of solid objects and scenes, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{sk} suffix. Note that one needs to add support for this particular file type, as seen in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}.
 
 \begin{description}
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 % arara: sketch
 \end{codebox}
 
-\item[\rulebox{songidx}{Francesco Endrici, Paulo Cereda}] This rule runs \rbox{songidx}, a song index generation script for the \rbox{songs} package, on the file reference provided as parameter, generating a proper index as a special \rbox{sbx} file. It is very important to observe that, at the time of writing, this script is not available out of the shelf in \TeX\ Live or MiK\TeX\ distributions, so a manual deployment is required. The script execution is performed by the underlying \rbox{texlua} interpreter.
+\item[\rulebox{songidx}{Francesco Endrici, Paulo Cereda}] This rule runs \rbox{songidx}, a song index generation script for the \rbox{songs} package, on the file reference provided as parameter, generating a proper index as a special \rbox{sbx} file. It is very important to observe that, at the time of writing, this script is not available off the shelf in \TeX\ Live or MiK\TeX\ distributions, so a manual deployment is required. The script execution is performed by the underlying \rbox{texlua} interpreter.
 
 \begin{description}
 \item[\abox{input}~\rqbox] This required option, as the name indicates, sets the input name for the song index file specified within the \TeX\ document. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used.
 
 \item[\rpbox{script}{songidx.lua}] This option, as the name indicates, sets the script path. The default value is set to the script name, so either make sure \rbox{songidx.lua} is located in the same directory of your \TeX\ document or provide the correct location (preferably a full path).
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual script call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual script call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -699,7 +700,7 @@ spreadsheet import functions also use this setting.
 \item[\rulebox{tex}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{tex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in a device independent format.
 
 \begin{description}
-\item[\abox{interaction}] This option alters the underlying engine behaviour. When such option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
+\item[\abox{interaction}] This option alters the underlying engine behaviour. If this option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
 
 \begin{description}
 \item[\povalue{batchmode}] In this mode, nothing is printed on the terminal, and errors are scrolled as if the \rbox{return} key is hit at every error. Missing files that \TeX\ tries to input or request from keyboard input cause the job to abort.
@@ -713,7 +714,7 @@ spreadsheet import functions also use this setting.
 
 \item[\rpsbox{shell}] This option sets whether the possibility of running underlying system commands from within \TeX\ is activated.
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -739,15 +740,15 @@ spreadsheet import functions also use this setting.
 \item[\povalue{omega}] This value, as the name implies, acts like the previous \rbox[cyan]{latex} markup option, but with Omega's special notation as encoding for characters not in the ASCII set.
 \end{description}
 
-\item[\abox{modules}] This option, as the name indicates, takes a list of module names. Modules are searched in the usual application path. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{modules}] This option, as the name indicates, takes a list of module names. Modules are searched in the usual application path. An error is thrown if any data structure other than a proper list is provided as the value.
 
-\item[\rpbox{input}{idx}] This option, as the name indicates, sets the default extension for the input file, according to the provided value. Later, such value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
+\item[\rpbox{input}{idx}] This option, as the name indicates, sets the default extension for the input file, according to the provided value. Later, this value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
 
-\item[\rpbox{output}{ind}] This option, as the name indicates, sets the default extension for the output file, according to the provided value. Later, such value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
+\item[\rpbox{output}{ind}] This option, as the name indicates, sets the default extension for the output file, according to the provided value. Later, this value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
 
-\item[\rpbox{log}{ilg}] This option, as the name indicates, sets the default extension for the log file, according to the provided value. Later, such value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
+\item[\rpbox{log}{ilg}] This option, as the name indicates, sets the default extension for the log file, according to the provided value. Later, this value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -761,7 +762,7 @@ spreadsheet import functions also use this setting.
 
 \item[\abox{jobs}] This option, as the name indicates, specifies the number of jobs (commands) to run simultaneously. Note that the provided value must be a positive integer. The default number of job slots is one, which means serial execution.
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -783,12 +784,12 @@ spreadsheet import functions also use this setting.
 % arara: --> context: { name: Paulo, country: Brazil } }
 \end{codebox}
 
-\item[\rulebox{xdvipdfmx}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{dvipdfmx}, the back end for the \rbox{xetex} \TeX\ engine (and not intended to be invoked directly), on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{dvi} suffix, generating a Portable Document Format \rbox{pdf} file.
+\item[\rulebox{xdvipdfmx}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{xdvipdfmx}, the back end for the \rbox{xetex} \TeX\ engine (and not intended to be invoked directly), on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{dvi} suffix, generating a Portable Document Format \rbox{pdf} file.
 
 \begin{description}
-\item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{pdf} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as default value.
+\item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{pdf} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as the default value.
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -798,7 +799,7 @@ spreadsheet import functions also use this setting.
 \item[\rulebox{xelatex}{Marco Daniel, Paulo Cereda}] This rule runs the new \rbox{xelatex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document File format, as expected.
 
 \begin{description}
-\item[\abox{interaction}] This option alters the underlying engine behaviour. When such option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
+\item[\abox{interaction}] This option alters the underlying engine behaviour. If this option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
 
 \begin{description}
 \item[\povalue{batchmode}] In this mode, nothing is printed on the terminal, and errors are scrolled as if the \rbox{return} key is hit at every error. Missing files that \TeX\ tries to input or request from keyboard input cause the job to abort.
@@ -812,9 +813,9 @@ spreadsheet import functions also use this setting.
 
 \item[\rpsbox{shell}] This option sets whether the possibility of running underlying system commands from within \TeX\ is activated.
 
-\item[\rpsbox{synctex}] This option sets whether \rbox{synctex}, an input and output synchronization feature that allows navigation from source to typeset material and vice versa, available in most \TeX\ engines, is actived.
+\item[\rpsbox{synctex}] This option sets whether \rbox{synctex}, an input and output synchronization feature that allows navigation from source to typeset material and vice versa, available in most \TeX\ engines, is activated.
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -824,7 +825,7 @@ spreadsheet import functions also use this setting.
 \item[\rulebox{xetex}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{xetex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document File format, as expected.
 
 \begin{description}
-\item[\abox{interaction}] This option alters the underlying engine behaviour. When such option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
+\item[\abox{interaction}] This option alters the underlying engine behaviour. If this option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
 
 \begin{description}
 \item[\povalue{batchmode}] In this mode, nothing is printed on the terminal, and errors are scrolled as if the \rbox{return} key is hit at every error. Missing files that \TeX\ tries to input or request from keyboard input cause the job to abort.
@@ -838,13 +839,13 @@ spreadsheet import functions also use this setting.
 
 \item[\rpsbox{shell}] This option sets whether the possibility of running underlying system commands from within \TeX\ is activated.
 
-\item[\rpsbox{synctex}] This option sets whether \rbox{synctex}, an input and output synchronization feature that allows navigation from source to typeset material and vice versa, available in most \TeX\ engines, is actived.
+\item[\rpsbox{synctex}] This option sets whether \rbox{synctex}, an input and output synchronization feature that allows navigation from source to typeset material and vice versa, available in most \TeX\ engines, is activated.
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% arara: xelatex: { interaction: scrollmode, synctex: yes }
+% arara: xetex: { interaction: scrollmode, synctex: yes }
 \end{codebox}
 
 \item[\rulebox{xindy}{Nicola Talbot, Paulo Cereda}] This rule runs \rbox{xindy}, a flexible and powerful indexing system, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{idx} suffix, generating an index as a special \rbox{ind} file.
@@ -864,17 +865,19 @@ spreadsheet import functions also use this setting.
 \item[\povalue{xelatex}] This value, as the name implies, acts like the previous \rbox[cyan]{latex} markup option, but without \rbox{inputenc} usage. Raw input is encoded in the UTF-8 format.
 
 \item[\povalue{omega}] This value, as the name implies, acts like the previous \rbox[cyan]{latex} markup option, but with Omega's special notation as encoding for characters not in the ASCII set.
+
+\item[\povalue{xindy}] This value, as the name implies, uses the \rbox{xindy} input markup as specified in the \rbox{xindy} manual.
 \end{description}
 
-\item[\abox{modules}] This option, as the name indicates, takes a list of module names. Modules are searched in the usual application path. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{modules}] This option, as the name indicates, takes a list of module names. Modules are searched in the usual application path. An error is thrown if any data structure other than a proper list is provided as the value.
 
-\item[\rpbox{input}{idx}] This option, as the name indicates, sets the default extension for the input file, according to the provided value. Later, such value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
+\item[\rpbox{input}{idx}] This option, as the name indicates, sets the default extension for the input file, according to the provided value. Later, this value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
 
-\item[\rpbox{output}{ind}] This option, as the name indicates, sets the default extension for the output file, according to the provided value. Later, such value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
+\item[\rpbox{output}{ind}] This option, as the name indicates, sets the default extension for the output file, according to the provided value. Later, this value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
 
-\item[\rpbox{log}{ilg}] This option, as the name indicates, sets the default extension for the log file, according to the provided value. Later, such value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
+\item[\rpbox{log}{ilg}] This option, as the name indicates, sets the default extension for the log file, according to the provided value. Later, this value will be concatenated as a suffix for the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension).
 
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
