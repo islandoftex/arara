@@ -54,7 +54,7 @@ arguments:
 - identifier: markup
   flag: >
     @{
-       if ([ 'latex', 'xelatex', 'omega' ].contains(parameters.markup)) {
+       if ([ 'latex', 'xelatex', 'omega', 'xindy' ].contains(parameters.markup)) {
            return [ '-I', parameters.markup ];
        }
        else {
