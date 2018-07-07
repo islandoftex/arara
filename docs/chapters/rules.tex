@@ -90,6 +90,17 @@ The best solution to avoid possible future name conflicts, according to the Imag
 % arara: biber: { options: [ '--wraplines' ] }
 \end{codebox}
 
+\item[\rulebox{bibtex}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{bibtex} program, a reference management software, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string.
+
+\begin{description}
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: bibtex: { options: [ '-terse' ] }
+% arara: --> if exists(toFile('references.bib'))
+\end{codebox}
+
 \item[\rulebox{bibtex8}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{bibtex8}, an enhanced, portable C version of \rbox{bibtex}, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string. It is important to note that this tool can read a character set file containing encoding details.
 
 \begin{description}
@@ -108,17 +119,6 @@ The best solution to avoid possible future name conflicts, according to the Imag
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 % arara: bibtexu: { options: [ '--language', 'fr' ] }
-\end{codebox}
-
-\item[\rulebox{bibtex}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{bibtex} program, a reference management software, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string.
-
-\begin{description}
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
-\end{description}
-
-\begin{codebox}{Example}{teal}{\icnote}{white}
-% arara: bibtex: { options: [ '-terse' ] }
-% arara: --> if exists(toFile('references.bib'))
 \end{codebox}
 
 \item[\rulebox{clean}{Marco Daniel, Paulo Cereda}] This rule removes the provided file reference through the underlying system command, which can be \rbox{rm} in a Unix environment or \rbox{del} in Microsoft Windows. As a security lock, this rule will always throw an error if \mtbox{currentFile} is equal to \mtbox{getOriginalFile}, so the main file reference cannot be removed. It is highly recommended to use the special \abox{files} parameter to indicate removal candidates. Alternatively, a list of file extensions can be provided as well. Be mindful that the security lock also applies to file removals based on extensions.
@@ -240,6 +240,18 @@ spreadsheet import functions also use this setting.
 % arara: --> csv: booklist.csv }
 \end{codebox}
 
+\item[\rulebox{dvipdfm}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{dvipdfm}, a command line utility for file format translation, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{dvi} suffix, generating a Portable Document Format \rbox{pdf} file.
+
+\begin{description}
+\item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{pdf} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as default value.
+
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: dvipdfm: { output: thesis }
+\end{codebox}
+
 \item[\rulebox{dvipdfmx}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{dvipdfmx}, an extended version of \rbox{dvipdfm} created to support multibyte character encodings and large character sets for East Asian languages, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{dvi} suffix, generating a Portable Document Format \rbox{pdf} file.
 
 \begin{description}
@@ -252,16 +264,16 @@ spreadsheet import functions also use this setting.
 % arara: dvipdfmx: { options: [ '-K', '40' ] }
 \end{codebox}
 
-\item[\rulebox{dvipdfm}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{dvipdfm}, a command line utility for file format translation, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{dvi} suffix, generating a Portable Document Format \rbox{pdf} file.
+\item[\rulebox{dvips}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{dvips} on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{dvi} suffix, generating a PostScript \rbox{ps} file.
 
 \begin{description}
-\item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{pdf} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as default value.
+\item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{ps} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as default value.
 
 \item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% arara: dvipdfm: { output: thesis }
+% arara: dvips: { output: thesis }
 \end{codebox}
 
 \item[\rulebox{dvipspdf}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{dvips} in order to obtain a corresponding \rbox{ps} file from the initial \rbox{dvi} reference, and then runs \rbox{ps2pdf} on the previously generated \rbox{ps} file in order to obtain a \rbox{pdf} file. Note that all base names are acquired from the \mtbox{currentFile} reference (i.e, the name without the associated extension) and used to construct the resulting files.
@@ -276,18 +288,6 @@ spreadsheet import functions also use this setting.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 % arara: dvipspdf: { output: article }
-\end{codebox}
-
-\item[\rulebox{dvips}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{dvips} on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{dvi} suffix, generating a PostScript \rbox{ps} file.
-
-\begin{description}
-\item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{ps} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as default value.
-
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
-\end{description}
-
-\begin{codebox}{Example}{teal}{\icnote}{white}
-% arara: dvips: { output: thesis }
 \end{codebox}
 
 \item[\rulebox{frontespizio}{Francesco Endrici, Enrico Gregorio, Paulo Cereda}] This rule automates the steps required by the \rbox{frontespizio} package in order to help Italian user generate frontispiece to their thesis. First and foremost, the frontispiece is generated. If \rbox{latex} is used an underlying engine, there is an additional intermediate conversion step to a proper \rbox{eps} file. Finally, the final document is compiled.
@@ -375,6 +375,34 @@ spreadsheet import functions also use this setting.
 % arara: indent: { overwrite: yes }
 \end{codebox}
 
+\item[\rulebox{latex}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{latex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in a device independent format.
+
+\begin{description}
+\item[\abox{interaction}] This option alters the underlying engine behaviour. When such option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
+
+\begin{description}
+\item[\povalue{batchmode}] In this mode, nothing is printed on the terminal, and errors are scrolled as if the \rbox{return} key is hit at every error. Missing files that \TeX\ tries to input or request from keyboard input cause the job to abort.
+
+\item[\povalue{nonstopmode}] In this mode, the diagnostic message will appear on the terminal, but there is no possibility of user interaction just like in batch mode, previously described.
+
+\item[\povalue{scrollmode}] In this mode, as the name indicates, \TeX\ will stop only for missing files to input or if proper keyboard input is necessary. \TeX\ fixes errors itself.
+
+\item[\povalue{errorstopmode}] In this mode, \TeX\ will stop at each error, asking for proper user intervention. This is the most user interactive mode available.
+\end{description}
+
+\item[\rpsbox{shell}] This option sets whether the possibility of running underlying system commands from within \TeX\ is activated.
+
+\item[\rpsbox{synctex}] This option sets whether \rbox{synctex}, an input and output synchronization feature that allows navigation from source to typeset material and vice versa, available in most \TeX\ engines, is actived.
+
+\item[\rpsbox{draft}] This option sets whether the draft mode, i.e, a mode that produces no output, so the engine can check the syntax, is activated.
+
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: latex: { interaction: scrollmode, draft: yes }
+\end{codebox}
+
 \item[\rulebox{latexmk}{Marco Daniel, Brent Longborough, Paulo Cereda}] This rule runs \rbox{latexmk}, a fantastic command line tool for fully automated \TeX\ document generation, on the provided \mtbox{currentFile} reference.
 
 \begin{description}
@@ -405,34 +433,6 @@ spreadsheet import functions also use this setting.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 % arara: latexmk: { engine: pdflatex }
-\end{codebox}
-
-\item[\rulebox{latex}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{latex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in a device independent format.
-
-\begin{description}
-\item[\abox{interaction}] This option alters the underlying engine behaviour. When such option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
-
-\begin{description}
-\item[\povalue{batchmode}] In this mode, nothing is printed on the terminal, and errors are scrolled as if the \rbox{return} key is hit at every error. Missing files that \TeX\ tries to input or request from keyboard input cause the job to abort.
-
-\item[\povalue{nonstopmode}] In this mode, the diagnostic message will appear on the terminal, but there is no possibility of user interaction just like in batch mode, previously described.
-
-\item[\povalue{scrollmode}] In this mode, as the name indicates, \TeX\ will stop only for missing files to input or if proper keyboard input is necessary. \TeX\ fixes errors itself.
-
-\item[\povalue{errorstopmode}] In this mode, \TeX\ will stop at each error, asking for proper user intervention. This is the most user interactive mode available.
-\end{description}
-
-\item[\rpsbox{shell}] This option sets whether the possibility of running underlying system commands from within \TeX\ is activated.
-
-\item[\rpsbox{synctex}] This option sets whether \rbox{synctex}, an input and output synchronization feature that allows navigation from source to typeset material and vice versa, available in most \TeX\ engines, is actived.
-
-\item[\rpsbox{draft}] This option sets whether the draft mode, i.e, a mode that produces no output, so the engine can check the syntax, is activated.
-
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
-\end{description}
-
-\begin{codebox}{Example}{teal}{\icnote}{white}
-% arara: latex: { interaction: scrollmode, draft: yes }
 \end{codebox}
 
 \item[\rulebox{lualatex}{Marco Daniel, Paulo Cereda}] This rule runs the new \rbox{lualatex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document File format, as expected.
@@ -493,14 +493,16 @@ spreadsheet import functions also use this setting.
 % arara: --> shell: yes, draft: yes }
 \end{codebox}
 
-\item[\rulebox{makeglossarieslite}{Marco Daniel, Nicola Talbot, Paulo Cereda}] This rule runs \rbox{makeglossaries-lite}, a lightweight Lua script designed for use with \TeX\ documents that work with the \rbox{glossaries} package. All the information required to be passed to the relevant indexing application should also be contained in the auxiliary file. The script takes the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as mandatory argument.
+\item[\rulebox{make}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{make}, a build automation tool that automatically builds executable programs and libraries from source code, according to a special file which specifies how to derive the target program.
 
 \begin{description}
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual script call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{targets}] This option takes a list of targets. Note that \rbox{make} updates a target if it depends on files that have been modified since the target was last modified, or if the target does not exist.
+
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% arara: makeglossarieslite if found('aux', '@istfilename')
+% arara: make: { targets: [ compile, package ] }
 \end{codebox}
 
 \item[\rulebox{makeglossaries}{Marco Daniel, Nicola Talbot, Paulo Cereda}] This rule runs \rbox{makeglossaries}, an efficient Perl script designed for use with \TeX\ documents that work with the \rbox{glossaries} package. All the information required to be passed to the relevant indexing application should also be contained in the auxiliary file. The script takes the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as mandatory argument.
@@ -513,16 +515,14 @@ spreadsheet import functions also use this setting.
 % arara: makeglossaries if found('aux', '@istfilename')
 \end{codebox}
 
-\item[\rulebox{make}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{make}, a build automation tool that automatically builds executable programs and libraries from source code, according to a special file which specifies how to derive the target program.
+\item[\rulebox{makeglossarieslite}{Marco Daniel, Nicola Talbot, Paulo Cereda}] This rule runs \rbox{makeglossaries-lite}, a lightweight Lua script designed for use with \TeX\ documents that work with the \rbox{glossaries} package. All the information required to be passed to the relevant indexing application should also be contained in the auxiliary file. The script takes the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as mandatory argument.
 
 \begin{description}
-\item[\abox{targets}] This option takes a list of targets. Note that \rbox{make} updates a target if it depends on files that have been modified since the target was last modified, or if the target does not exist.
-
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual script call. An error is thrown if any data structure other than a proper list is provided as value.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% arara: make: { targets: [ compile, package ] }
+% arara: makeglossarieslite if found('aux', '@istfilename')
 \end{codebox}
 
 \item[\rulebox{makeindex}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{makeindex}, a gen­eral pur­pose hi­er­ar­chical in­dex gen­er­a­tor, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{idx} suffix, generating an index as a special \rbox{ind} file.
@@ -696,6 +696,30 @@ spreadsheet import functions also use this setting.
 % arara: songidx: { input: songs }
 \end{codebox}
 
+\item[\rulebox{tex}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{tex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in a device independent format.
+
+\begin{description}
+\item[\abox{interaction}] This option alters the underlying engine behaviour. When such option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
+
+\begin{description}
+\item[\povalue{batchmode}] In this mode, nothing is printed on the terminal, and errors are scrolled as if the \rbox{return} key is hit at every error. Missing files that \TeX\ tries to input or request from keyboard input cause the job to abort.
+
+\item[\povalue{nonstopmode}] In this mode, the diagnostic message will appear on the terminal, but there is no possibility of user interaction just like in batch mode, previously described.
+
+\item[\povalue{scrollmode}] In this mode, as the name indicates, \TeX\ will stop only for missing files to input or if proper keyboard input is necessary. \TeX\ fixes errors itself.
+
+\item[\povalue{errorstopmode}] In this mode, \TeX\ will stop at each error, asking for proper user intervention. This is the most user interactive mode available.
+\end{description}
+
+\item[\rpsbox{shell}] This option sets whether the possibility of running underlying system commands from within \TeX\ is activated.
+
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: tex: { shell: yes }
+\end{codebox}
+
 \item[\rulebox{texindy}{Nicola Talbot, Paulo Cereda}] This rule runs \rbox{texindy}, a variant of the \rbox{xindy} indexing system focused on \LaTeX\ documents, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{idx} suffix, generating an index as a special \rbox{ind} file.
 
 \begin{description}
@@ -728,30 +752,6 @@ spreadsheet import functions also use this setting.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 % arara: texindy: { markup: latex }
-\end{codebox}
-
-\item[\rulebox{tex}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{tex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in a device independent format.
-
-\begin{description}
-\item[\abox{interaction}] This option alters the underlying engine behaviour. When such option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
-
-\begin{description}
-\item[\povalue{batchmode}] In this mode, nothing is printed on the terminal, and errors are scrolled as if the \rbox{return} key is hit at every error. Missing files that \TeX\ tries to input or request from keyboard input cause the job to abort.
-
-\item[\povalue{nonstopmode}] In this mode, the diagnostic message will appear on the terminal, but there is no possibility of user interaction just like in batch mode, previously described.
-
-\item[\povalue{scrollmode}] In this mode, as the name indicates, \TeX\ will stop only for missing files to input or if proper keyboard input is necessary. \TeX\ fixes errors itself.
-
-\item[\povalue{errorstopmode}] In this mode, \TeX\ will stop at each error, asking for proper user intervention. This is the most user interactive mode available.
-\end{description}
-
-\item[\rpsbox{shell}] This option sets whether the possibility of running underlying system commands from within \TeX\ is activated.
-
-\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as value.
-\end{description}
-
-\begin{codebox}{Example}{teal}{\icnote}{white}
-% arara: tex: { shell: yes }
 \end{codebox}
 
 \item[\rulebox{tikzmake}{Robbie Smith, Paulo Cereda}] This rule runs \rbox{make} on a very specific build file generated by the \rbox{tikzmake} package, as a means to simplify the externalization of Ti{\itshape k}Z pictures. This build file corresponds to the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{makefile} suffix.
