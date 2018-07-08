@@ -7,8 +7,7 @@
 \section{Requirements}
 \label{sec:requirements}
 
-% "contemplated" doesn't sound right. Perhaps "considered" or "available"
-In order to build our tool from source, we need to ensure that our development environment has the minimum requirements for a proper compilation. Make sure the following items are contemplated:
+In order to build our tool from source, we need to ensure that our development environment has the minimum requirements for a proper compilation. Make sure the following items are available:
 
 \begin{itemize}[label={\cbyes{-2}}]
 \item On account of our project being hosted at \href{https://github.com}{GitHub}, an online source code repository, we highly recommend the installation of \rbox{git}, a version control system for tracking changes in computer files and coordinating work on those files among multiple people. Alternatively, you can directly obtain the source code by requesting a \href{https://github.com/cereda/arara/archive/master.zip}{source code download} in the repository. In order to check if \rbox{git} is available in your operating system, run the following command in the terminal (version numbers might vary):
@@ -48,8 +47,7 @@ Please refer to the Maven \href{https://maven.apache.org/}{project website} in o
 \item For a proper repository cloning, as well as the first Maven build, an active Internet connection is required. In particular, Maven dynamically downloads Java libraries and plug-ins from one or more online repositories and stores them in a local cache. Be mindful that subsequent builds can occur offline, provided that the local Maven cache exists.
 \end{itemize}
 
-% again "contemplated" doesn't sound right here
-\arara\ can be easily built from source, provided that the aforementioned requirements are contemplated. The next section presents the compilation details, from repository cloning to a proper Java archive generation.
+\arara\ can be easily built from source, provided that the aforementioned requirements are available. The next section presents the compilation details, from repository cloning to a proper Java archive generation.
 
 \begin{messagebox}{One tool to rule them all}{araracolour}{\icok}{white}
 \setlength{\parskip}{1em}
@@ -62,7 +60,9 @@ Personally, I prefer the packaged versions provided by my favourite Linux distri
 \label{sec:compilingthetool}
 
 First and foremost, we need to clone the project repository into our development environment, so we can build our tool from source. Run the following command in the terminal:
+
 % mkdir / cd first? (In case reader doesn't realise and tries it in their home directory? They might not read the next paragraph before trying the command.)
+% P: good idea, any suggestions on how to guide the user on this regard? I am quite lost... :)
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ git clone https://github.com/cereda/arara
