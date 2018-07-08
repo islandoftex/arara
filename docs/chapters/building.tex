@@ -7,6 +7,7 @@
 \section{Requirements}
 \label{sec:requirements}
 
+% "contemplated" doesn't sound right. Perhaps "considered" or "available"
 In order to build our tool from source, we need to ensure that our development environment has the minimum requirements for a proper compilation. Make sure the following items are contemplated:
 
 \begin{itemize}[label={\cbyes{-2}}]
@@ -17,7 +18,7 @@ $ git --version
 git version 2.17.1
 \end{codebox}
 
-Please refer to \href{https://git-scm.com/}{project website} in order to obtain specific installation instructions for your operating system. In general, most recent Unix systems have \rbox{git} installed out of the shelf.
+Please refer to the \rbox{git} \href{https://git-scm.com/}{project website} in order to obtain specific installation instructions for your operating system. In general, most recent Unix systems have \rbox{git} installed out of the shelf.
 
 \item Our tool is written in the Java programming language, so we need a proper Java Development Kit,  a collection of programming tools for the Java platform. Our source code is known to be compliant with several vendors, including Oracle, OpenJDK, and Azul Systems. In order to check if your operating system has the proper tools, run the following command in the terminal (version numbers might vary):
 
@@ -26,7 +27,7 @@ $ javac -version
 javac 1.8.0_171
 \end{codebox}
 
-The previous command, as the name suggests, refers to the \rbox{javac} tool, which is the Java compiler itself. The most common Java Development Kit out there is from \href{http://www.oracle.com/technetwork/java/javase/downloads/index.html}{Oracle}. However, several Linux distributions (as well as some developers, yours truly included) favour the OpenJDK vendor, so your milleage may vary. Please refer to the corresponding website of the vendor of your choice in order to obtain specific installation instructions for your operating system.
+The previous command, as the name suggests, refers to the \rbox{javac} tool, which is the Java compiler itself. The most common Java Development Kit out there is from \href{http://www.oracle.com/technetwork/java/javase/downloads/index.html}{Oracle}. However, several Linux distributions (as well as some developers, yours truly included) favour the OpenJDK vendor, so your mileage may vary. Please refer to the corresponding website of the vendor of your choice in order to obtain specific installation instructions for your operating system.
 
 \item As a means to provide a straightforward and simplified compilation workflow, \arara\ relies on Apache Maven, a software project management and comprehension tool. Based on the concept of a project object model, Maven can manage builds, reporting and documentation from a central piece of information. In order to check if \rbox{mvn}, the Maven binary, is available in your operating system, run the following command in the terminal (version numbers might vary):
 
@@ -42,16 +43,17 @@ OS name: "linux", version: "4.16.16-300.fc28.x86_64",
     arch: "amd64", family: "unix"
 \end{codebox}
 
-Please refer to \href{https://maven.apache.org/}{project website} in order to obtain specific installation instructions for your operating system. In general, most recent Linux distributions have the Maven binary, as well the proper associated dependencies, available in their corresponding repositories.
+Please refer to the Maven \href{https://maven.apache.org/}{project website} in order to obtain specific installation instructions for your operating system. In general, most recent Linux distributions have the Maven binary, as well the proper associated dependencies, available in their corresponding repositories.
 
 \item For a proper repository cloning, as well as the first Maven build, an active Internet connection is required. In particular, Maven dynamically downloads Java libraries and plug-ins from one or more online repositories and stores them in a local cache. Be mindful that subsequent builds can occur offline, provided that the local Maven cache exists.
 \end{itemize}
 
+% again "contemplated" doesn't sound right here
 \arara\ can be easily built from source, provided that the aforementioned requirements are contemplated. The next section presents the compilation details, from repository cloning to a proper Java archive generation.
 
 \begin{messagebox}{One tool to rule them all}{araracolour}{\icok}{white}
 \setlength{\parskip}{1em}
-For the brave, there is the \href{https://sdkman.io/}{Software Development Kit Manager}, an interesting tool for managing parallel versions of multiple software development kits on most Unix based systems. In particular, this tool provides out of the shelf support for several Java Development Kit vendors and versions, as well as most recent versions Apache Maven.
+For the brave, there is the \href{https://sdkman.io/}{Software Development Kit Manager}, an interesting tool for managing parallel versions of multiple software development kits on most Unix based systems. In particular, this tool provides off the shelf support for several Java Development Kit vendors and versions, as well as most recent versions Apache Maven.
 
 Personally, I prefer the packaged versions provided by my favourite Linux distribution (Fedora), but this tool is a very interesting alternative to set up a development environment with little to no effort.
 \end{messagebox}
@@ -60,6 +62,7 @@ Personally, I prefer the packaged versions provided by my favourite Linux distri
 \label{sec:compilingthetool}
 
 First and foremost, we need to clone the project repository into our development environment, so we can build our tool from source. Run the following command in the terminal:
+% mkdir / cd first? (In case reader doesn't realise and tries it in their home directory? They might not read the next paragraph before trying the command.)
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ git clone https://github.com/cereda/arara
