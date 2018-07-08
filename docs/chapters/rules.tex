@@ -290,6 +290,30 @@ spreadsheet import functions also use this setting.
 % arara: dvipspdf: { output: article }
 \end{codebox}
 
+\item[\rulebox{etex}{Marco Daniel, Paulo Cereda, Nicola Talbot}] This rule runs the \rbox{etex} extended (plain) \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in a device independent format.
+
+\begin{description}
+\item[\abox{interaction}] This option alters the underlying engine behaviour. If this option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
+
+\begin{description}
+\item[\povalue{batchmode}] In this mode, nothing is printed on the terminal, and errors are scrolled as if the \rbox{return} key is hit at every error. Missing files that \TeX\ tries to input or request from keyboard input cause the job to abort.
+
+\item[\povalue{nonstopmode}] In this mode, the diagnostic message will appear on the terminal, but there is no possibility of user interaction just like in batch mode, previously described.
+
+\item[\povalue{scrollmode}] In this mode, as the name indicates, \TeX\ will stop only for missing files to input or if proper keyboard input is necessary. \TeX\ fixes errors itself.
+
+\item[\povalue{errorstopmode}] In this mode, \TeX\ will stop at each error, asking for proper user intervention. This is the most user interactive mode available.
+\end{description}
+
+\item[\rpsbox{shell}] This option sets whether the possibility of running underlying system commands from within \TeX\ is activated.
+
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: etex: { shell: yes }
+\end{codebox}
+
 \item[\rulebox{frontespizio}{Francesco Endrici, Enrico Gregorio, Paulo Cereda}] This rule automates the steps required by the \rbox{frontespizio} package in order to help Italian users generate the frontispiece to their thesis. First and foremost, the frontispiece is generated. If \rbox{latex} is used as the underlying engine, there is an additional intermediate conversion step to a proper \rbox{eps} file. Finally, the final document is compiled.
 
 \begin{description}

@@ -1,0 +1,45 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2018, Paulo Roberto Massa Cereda 
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: etex
+name: eTeX
+authors:
+- Marco Daniel
+- Paulo Cereda
+- Nicola Talbot
+commands:
+- name: Extended TeX engine
+  command: >
+    @{
+        return getCommand('etex', interaction, shell, options, file);
+    }
+arguments:
+- identifier: interaction
+  flag: >
+    @{
+        if ([ 'batchmode', 'nonstopmode', 'scrollmode',
+              'errorstopmode' ].contains(parameters.interaction)) {
+            return '--interaction='.concat(parameters.interaction);
+        }
+        else {
+            throwError('The provided interaction value is not valid.');
+        }
+    }
+- identifier: shell
+  flag: >
+    @{
+        isTrue(parameters.shell, '--shell-escape', '--no-shell-escape')
+    }
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.');
+        }
+    }
