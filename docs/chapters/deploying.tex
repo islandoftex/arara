@@ -5,13 +5,13 @@
 As previously mentioned, \arara\ runs on top of a Java virtual machine, available on all major operating systems -- in some cases, you might need to install the proper virtual machine. This chapter provides detailed instructions on how to properly deploy the tool in your computer from either the official package available in our project repository or a personal build generated from source (as seen in Section~\ref{sec:compilingthetool}, on page~\pageref{sec:compilingthetool}).
 
 \begin{messagebox}{No more installers}{araracolour}{\icok}{white}
-Be mindful that, from version 4.0 on, the team decided to not release cross-platform installers any more. Our tool is available out of the shelf on all major \TeX\ distributions, including \TeX\ Live and MiK\TeX, which makes manual installation unnecessary given the significant coverage of such distributions. Chances are you already have \arara\ in your system!
+Be mindful that, from version 4.0 on, the team decided to not release cross-platform installers any more. Our tool is available off the shelf on all major \TeX\ distributions, including \TeX\ Live and MiK\TeX, which makes manual installation unnecessary given the significant coverage of such distributions. Chances are you already have \arara\ in your system!
 \end{messagebox}
 
 \section{Directory structure}
 \label{sec:directorystructure}
 
-From the early development stages, our tool employs a very straightforward directory structure. In short, we provide the \abox[araracolour]{ARARA\_HOME} alias to the directory path in which the \rbox[araracolour]{arara.jar} Java archive file is located. This particular file is the heart and soul of our tool and dictates the default rule search path, which is a special directory named \abox[araracolour]{rules/} available from the same level. This directory contains all rules specified in the YAML format, as seen in Section~\ref{sec:rule}, on page~\pageref{sec:rule}. The structure overview is presented as follows.
+From the early development stages, our tool employs a very straightforward directory structure. In short, we provide the \abox[araracolour]{ARARA\_HOME} alias to the directory path in which the \rbox[araracolour]{arara.jar} Java archive file is located. This particular file is the heart and soul of our tool and dictates the default rule search path, which is a special directory named \abox[araracolour]{rules/} available from the same level. This directory contains all rules specified in the \gls{YAML} format, as seen in Section~\ref{sec:rule}, on page~\pageref{sec:rule}. The structure overview is presented as follows.
 
 \vspace{1em} 
 
@@ -36,7 +36,7 @@ forked edges,
 
 \vspace{1.4em}
 
-Provided that this specific directory structure is honoured, the tool is ready for use out of the shelf. In fact, the official \arara\ package available in the \href{https://github.com/cereda/arara/releases}{release section} of our project repository, as well as the \href{https://bintray.com/cereda/arara}{Bintray} software distribution service, exactly mirrors this structure. Once the package is properly downloaded, we simply need to extract it into a proper \abox[araracolour]{ARARA\_HOME} location.
+Provided that this specific directory structure is honoured, the tool is ready for use off the shelf. In fact, the official \arara\ package available in the \href{https://github.com/cereda/arara/releases}{release section} of our project repository, as well as the \href{https://bintray.com/cereda/arara}{Bintray} software distribution service, exactly mirrors this structure. Once the package is properly downloaded, we simply need to extract it into a proper \abox[araracolour]{ARARA\_HOME} location.
 
 \section{Defining a location}
 \label{sec:definingalocation}
@@ -47,7 +47,7 @@ First and foremost, we need to obtain \rbox{arara-4.0.zip} from either our proje
 $ unzip arara-4.0.zip
 \end{codebox}
 
-As a result of the previous command, we obtained a directory named \abox[araracolour]{arara} with the exact structure presented in Section~\ref{sec:directorystructure} in our working directory. Now we need to decide where \arara\ should reside in your system. For example, I usually deploy my tools inside the \abox[araracolour]{/opt/paulo} path, so I need to run the following command in the terminal (please note that my personal directory already has the proper permissions, so I do not need superuser privileges):
+As a result of the previous command, we obtained a directory named \abox[araracolour]{arara} with the exact structure presented in Section~\ref{sec:directorystructure} in our working directory. Now we need to decide where \arara\ should reside in our system. For example, I usually deploy my tools inside the \abox[araracolour]{/opt/paulo} path, so I need to run the following command in the terminal (please note that my personal directory already has the proper permissions, so I do not need superuser privileges):
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ mv arara /opt/paulo/
@@ -139,7 +139,7 @@ alias arara='java -jar /opt/paulo/arara/arara.jar'
 
 Save the file and restart your terminal. It is important to observe that the given full path must be properly quoted if it contains spaces. There is no need to provide explicit parameters, as an alias simply acts as an inline string replacement.
 
-\item[shell function] A \emph{shell function} is, as the name suggests, a subroutine, a code block that implements a set of operations as a means to performs a specified task. Im order to create a shell function for out tool, open \rbox{.bashrc} (a script that is executed whenever a new terminal session starts in interactive mode) in your favourite editor and add the following line, preferably at the end:
+\item[shell function] A \emph{shell function} is, as the name suggests, a subroutine, a code block that implements a set of operations as a means to performs a specified task. In order to create a shell function for our tool, open \rbox{.bashrc} (a script that is executed whenever a new terminal session starts in interactive mode) in your favourite editor and add the following line, preferably at the end:
 
 \begin{codebox}{Source code}{teal}{\icnote}{white}
 arara() {
@@ -153,7 +153,7 @@ Save the file and restart your terminal. It is important to observe that the giv
 In general, an alias should effectively not do more than change the default options of a command, as it constitutes a mere string replacement. A function should be used when you need to do something more complex than an alias. In our particular case, as the underlying logic is pretty straightforward, both approaches are valid.
 \end{messagebox}
 
-\item[script file] A \emph{script} is typically referred as a computer program designed to be run by an interpreter. In our context, a script merely sets up the environment and runs a system command. In order to provide a script for our tool, open your favourite editor and create the following file:
+\item[script file] A \emph{script} is a computer program designed to be run by an interpreter. In our context, the script merely sets up the environment and runs a system command. In order to provide a script for our tool, open your favourite editor and create the following file called \rbox{arara} (no extension):
 
 \begin{ncodebox}{Source file}{teal}{\icnote}{white}{arara}
 #!/bin/bash
@@ -173,8 +173,9 @@ Now we need to move this newly executable script file to one of the directories 
 $ sudo mv arara /usr/local/bin/
 \end{codebox}
 
-Alternatively, the script can be placed inside a especial directory named \abox[araracolour]{bin/} from the home directory of the current user, which is usually added by default to the system path. Observe that, in this particular case, superuser privileges are not required, as the operation is kept at the current user level. Run the following command in the terminal instead (please note that the provided path refers to my home directory):
+Alternatively, the script can be placed inside a special directory named \abox[araracolour]{bin/} from the home directory of the current user, which is usually added by default to the system path. Observe that, in this particular case, superuser privileges are not required, as the operation is kept at the current user level. Run the following command in the terminal instead (please note that the provided path refers to my home directory):
 
+% perhaps it would be better to just use ~/bin ?
 \begin{codebox}{Source code}{teal}{\icnote}{white}
 $ mv arara /home/paulo/bin/
 \end{codebox}
@@ -214,3 +215,4 @@ usage: arara [file [--dry-run] [--log] [--verbose | --silent]
 \end{codebox}
 
 It is important to observe that the wrapper initiative presented in this section might cause a potential name clash with existing \TeX\ Live or MiK\TeX\ binaries and symbolic links. In this particular scenario, make sure to inspect the command location as a means to ensure a correct execution.
+% perhaps mention `which arara`?
