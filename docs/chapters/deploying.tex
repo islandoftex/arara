@@ -173,7 +173,7 @@ Now we need to move this newly executable script file to one of the directories 
 $ sudo mv arara /usr/local/bin/
 \end{codebox}
 
-Alternatively, the script can be placed inside a special directory named \abox[araracolour]{bin/} from the home directory of the current user, which is usually added by default to the system path. Observe that, in this particular case, superuser privileges are not required, as the operation is kept at the current user level. Run the following command in the terminal instead (please note that the provided path refers to my home directory):
+Alternatively, the script can be placed inside a special directory named \abox[araracolour]{bin/} from the home directory of the current user, which is usually added by default to the system path. Observe that, in this particular case, superuser privileges are not required, as the operation is kept at the current user level. Run the following command in the terminal instead (please note that the \rbox{\textasciitilde} symbol is a shell feature called \href{http://www.gnu.org/software/bash/manual/html_node/Tilde-Expansion.html}{tilde expansion} and refers to the home directory of the current user):
 
 \begin{codebox}{Source code}{teal}{\icnote}{white}
 $ mv arara ~/bin/
