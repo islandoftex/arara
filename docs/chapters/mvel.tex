@@ -2,7 +2,7 @@
 \chapter{MVEL}
 \label{chap:mvel}
 
-According to the \href{https://en.wikipedia.org/wiki/MVEL}{Wikipedia entry}, the MVFLEX Expression Language (hereafter referred as MVEL) is a hybrid, dynamic, statically typed, embeddable expression language and runtime for the Java platform. Originally started as a utility language for an application framework, the project is now developed completely independently. \arara\ relies on such scripting language in two circumstances:
+According to the \href{https://en.wikipedia.org/wiki/MVEL}{Wikipedia entry}, the MVFLEX Expression Language (hereafter referred as \gls{MVEL}) is a hybrid, dynamic, statically typed, embeddable expression language and runtime for the Java platform. Originally started as a utility language for an application framework, the project is now developed completely independently. \arara\ relies on this scripting language in two circumstances:
 
 \begin{enumerate}
 \item\emph{Rules}, as nominal attributes gathered from directives are used to build complex command invocations and additional computations. A rule follows a very strict model, detailed in Section~\ref{sec:rule}, on page~\pageref{sec:rule}.
@@ -10,7 +10,7 @@ According to the \href{https://en.wikipedia.org/wiki/MVEL}{Wikipedia entry}, the
 \item\emph{Conditionals}, as logical expressions must be evaluated in order to decide whether and how a directive should be interpreted. Conditionals are detailed in Section~\ref{sec:directives}, on page~\pageref{sec:directives}.
 \end{enumerate}
 
-This chapter only covers the relevant parts of the MVEL language for a consistent use with \arara. For advanced topics, I highly recommend the official language guide for MVEL 2.0, available online.
+This chapter only covers the relevant parts of the \gls{MVEL} language for a consistent use with \arara. For advanced topics, I highly recommend the official language guide for \gls{MVEL} 2.0, available online.
 
 \section{Basic usage}
 \label{sec:mvelbasicusage}
@@ -21,13 +21,13 @@ The following primer is provided by the \href{https://mvel.documentnode.com/}{of
 user.name
 \end{codebox}
 
-In this expression, we have a single identifier \rbox{user.name}, which by itself is a property expression, in that the only purpose of such expression is to extract a property out of a variable or context object, namely \rbox{user}. Property expressions are widely used by \arara, as directive parameters are converted to a map inside the corresponding rule scope. For instance, a parameter \rbox{foo} in a directive will be mapped as \rbox{parameters.foo} inside a rule during interpretation. This topic is detailed in Section~\ref{sec:directives}, on page~\pageref{sec:directives}. The scripting language can also be used for evaluating a boolean expression:
+In this expression, we have a single identifier \rbox{user.name}, which by itself is a property expression, in that the only purpose of such an expression is to extract a property out of a variable or context object, namely \rbox{user}. Property expressions are widely used by \arara, as directive parameters are converted to a map inside the corresponding rule scope. For instance, a parameter \rbox{foo} in a directive will be mapped as \rbox{parameters.foo} inside a rule during interpretation. This topic is detailed in Section~\ref{sec:directives}, on page~\pageref{sec:directives}. The scripting language can also be used for evaluating a boolean expression:
 
 \begin{codebox}{Boolean expression evaluation}{teal}{\icnote}{white}
 user.name == 'John Doe'
 \end{codebox}
 
-This expression yields a boolean result, either \rbox{true} or \rbox{false} based on a comparation operation. Like a typical programming language, MVEL supports the full gambit of operator precedence rules, including the ability to use bracketing to control execution order:
+This expression yields a boolean result, either \rbox{true} or \rbox{false} based on a comparison operation. Like a typical programming language, \gls{MVEL} supports the full gambit of operator precedence rules, including the ability to use bracketing to control execution order:
 
 \begin{codebox}{Execution order control through bracketing}{teal}{\icnote}{white}
 (user.name == 'John Doe') && ((x * 2) - 1) > 20
