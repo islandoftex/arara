@@ -59,16 +59,20 @@ Personally, I prefer the packaged versions provided by my favourite Linux distri
 \section{Compiling the tool}
 \label{sec:compilingthetool}
 
-First and foremost, we need to clone the project repository into our development environment, so we can build our tool from source. Run the following command in the terminal:
+First and foremost, we need to clone the project repository into our development environment, so we can build our tool from source. The cloning will create a directory named \abox[araracolour]{arara/} within the current working directory, so remember to first ensure that you are in the appropriate directory. For example:
 
-% mkdir / cd first? (In case reader doesn't realise and tries it in their home directory? They might not read the next paragraph before trying the command.)
-% P: good idea, any suggestions on how to guide the user on this regard? I am quite lost... :)
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ mkdir git-projects
+$ cd git-projects
+\end{codebox}
+
+Run the following command in the terminal to clone the \arara\ project:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ git clone https://github.com/cereda/arara
 \end{codebox}
 
-Wait a couple of seconds (or minutes, depending on your Internet connection) while the previous command clones the project repository hosted at GitHub into a directory named \abox[araracolour]{arara/} within the working directory. Be mindful that this operation pulls down every version of every file for the history of the project. Fortunately, the version control system has the notion of a \emph{shallow clone}, which is a more succinctly meaningful way of describing a local repository with history truncated to a particular depth during the clone operation. If you want to get only the latest revision of everything in our repository, run the following command in the terminal:
+Wait a couple of seconds (or minutes, depending on your Internet connection) while the previous command clones the project repository hosted at GitHub. Be mindful that this operation pulls down every version of every file for the history of the project. Fortunately, the version control system has the notion of a \emph{shallow clone}, which is a more succinctly meaningful way of describing a local repository with history truncated to a particular depth during the clone operation. If you want to get only the latest revision of everything in our repository, run the following command in the terminal:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ git clone https://github.com/cereda/arara --depth 1
