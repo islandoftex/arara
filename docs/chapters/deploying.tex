@@ -175,9 +175,8 @@ $ sudo mv arara /usr/local/bin/
 
 Alternatively, the script can be placed inside a special directory named \abox[araracolour]{bin/} from the home directory of the current user, which is usually added by default to the system path. Observe that, in this particular case, superuser privileges are not required, as the operation is kept at the current user level. Run the following command in the terminal instead (please note that the provided path refers to my home directory):
 
-% perhaps it would be better to just use ~/bin ?
 \begin{codebox}{Source code}{teal}{\icnote}{white}
-$ mv arara /home/paulo/bin/
+$ mv arara ~/bin/
 \end{codebox}
 
 There is no need to restart your terminal, as the reference becomes available as soon as it is moved to the new location. Note that a shell script can provide a convenient variation of a system command where special environment settings, command options, or post-processing apply automatically, but in a way that allows the new script to still act as a fully normal Unix command.
