@@ -37,7 +37,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[margin=2.5cm]{geometry}
 \usepackage{arara}
-\usepackage[sort=none,postpunc=dot]{glossaries-extra}
+\usepackage[record,postpunc=dot]{glossaries-extra}
 
 \newcommand{\araraversion}{4.0}
 \newcommand{\todo}[1]{\fbox{\em#1}}
@@ -68,7 +68,8 @@ through graphical components, such as buttons and menus}]
 
  \newabbreviation
  [description={a hybrid, dynamic, statically typed, embeddable
- expression language and runtime for the Java platform}]
+ expression language and runtime for the Java platform},
+ location={(See Chapter~\ref{chap:mvel}.)}]
  {MVEL}{MVEL}{MVFLEX Expression Language}
 
 \newglossaryentry{orb-tag}{name={orb tag},
@@ -92,7 +93,8 @@ machine-readable}]
 
 \newabbreviation
  [description={human-friendly data, commonly used for configuration
-files but also used for data storage or transmission}]
+files but also used for data storage or transmission},
+ location={(See Chapter~\ref{chap:yaml}.)}]
  {YAML}{YAML}{YAML Ain't Markup Language}
  
 \begin{document}

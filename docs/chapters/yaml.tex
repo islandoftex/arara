@@ -2,22 +2,22 @@
 \chapter{YAML}
 \label{chap:yaml}
 
-According to the \href{http://yaml.org/spec/1.2/spec.html}{specification}, YAML (a recursive acronym for \emph{YAML Ain't Markup Language}) is a human-friendly, cross language, Unicode-based data serialization language designed around the common native data type of programming languages. \arara\ uses this format in three circumstances:
+According to the \href{http://yaml.org/spec/1.2/spec.html}{specification}, \gls{YAML} (a recursive acronym for \emph{YAML Ain't Markup Language}) is a human-friendly, cross language, Unicode-based data serialization language designed around the common native data type of programming languages. \arara\ uses this format in three circumstances:
 
 \begin{enumerate}
 \item\emph{Parametrized directives}, as the set of attribute/value pairs (namely, argument name and corresponding value) is represented by a map. This particular type of directive is formally introduced in Section~\ref{sec:directives}, on page~\pageref{sec:directives}.
 
-\item\emph{Rules}, as their entire structure is represented by a set of specific keys and their corresponding values (a proper YAML document). A rule follows a very strict model, detailed in Section~\ref{sec:rule}, on page~\pageref{sec:rule}.
+\item\emph{Rules}, as their entire structure is represented by a set of specific keys and their corresponding values (a proper \gls{YAML} document). A rule follows a very strict model, detailed in Section~\ref{sec:rule}, on page~\pageref{sec:rule}.
 
-\item\emph{Configuration files}, as the general settings are represented by a set of specific keys and their corresponding values (a proper YAML document). Configuration files are covered in Chapter~\ref{chap:configurationfile}, on page~\pageref{chap:configurationfile}.
+\item\emph{Configuration files}, as the general settings are represented by a set of specific keys and their corresponding values (a proper \gls{YAML} document). Configuration files are covered in Chapter~\ref{chap:configurationfile}, on page~\pageref{chap:configurationfile}.
 \end{enumerate}
 
-This chapter only covers the relevant parts of the YAML format for a consistent use with \arara. For advanced topics, I highly recommend the complete format specification, available online.
+This chapter only covers the relevant parts of the \gls{YAML} format for a consistent use with \arara. For advanced topics, I highly recommend the complete format specification, available online.
 
 \section{Collections}
 \label{sec:yamlcollections}
 
-According to the specification, YAML's block collections use indentation for scope and begin each entry on its own line. Block sequences indicate each entry with a dash and space. Mappings use a colon and space to mark each \emph{key: value} pair. Comments begin with an octothorpe. \arara\ relies solely on mappings and a few scalars to sequences at some point. Let us see an example of a sequence:
+According to the specification, \gls{YAML}['s] block collections use indentation for scope and begin each entry on its own line. Block sequences indicate each entry with a dash and space. Mappings use a colon and space to mark each \emph{key: value} pair. Comments begin with an octothorpe \rbox{\#}. \arara\ relies solely on mappings and a few scalars to sequences at some point. Let us see an example of a sequence:
 
 \begin{codebox}{A sequence of scalars in YAML}{teal}{\icnote}{white}
 team:
@@ -27,13 +27,13 @@ team:
 - Nicola Talbot
 \end{codebox}
 
-It is quite straightforward: \abox{team} holds a sequence of four scalars. YAML also has flow styles, using explicit indicators rather than indentation to denote scope. The flow sequence is written as a comma-separated list within square brackets:
+It is quite straightforward: \abox{team} holds a sequence of four scalars. \gls{YAML} also has flow styles, using explicit indicators rather than indentation to denote scope. The flow sequence is written as a comma-separated list within square brackets:
 
 \begin{codebox}{A sequence of scalars in YAML}{teal}{\icnote}{white}
 primes: [ 2, 3, 5, 7, 11 ]
 \end{codebox}
 
-Attribute maps are easily represented by nesting entries, respecting indentation. For instance, consider a map \abox{developer} containing two keys, \abox{name} and \abox{country}. The YAML representation is presented as follows:
+Attribute maps are easily represented by nesting entries, respecting indentation. For instance, consider a map \abox{developer} containing two keys, \abox{name} and \abox{country}. The \gls{YAML} representation is presented as follows:
 
 \begin{codebox}{An attribute map in YAML}{teal}{\icnote}{white}
 developer:
@@ -81,17 +81,17 @@ As seen in the previous code, \abox{logo} holds the ASCII logo of our tool, resp
 
 \begin{messagebox}{Block indentation indicator}{attentioncolour}{\icattention}{black}
 \setlength{\parskip}{1em}
-According to the YAML specification, the indentation level of a block scalar is typically detected from its first non-empty line. It is an error for any of the leading empty lines to contain more spaces than the first non-empty line, hence the ASCII logo could not be represented, as it starts with a space.
+According to the \gls{YAML} specification, the indentation level of a block scalar is typically detected from its first non-empty line. It is an error for any of the leading empty lines to contain more spaces than the first non-empty line, hence the ASCII logo could not be represented, as it starts with a space.
 
-When detection would fail, YAML requires that the indentation level for the content be given using an explicit indentation indicator. This level is specified as the integer number of the additional indentation spaces used for the content, relative to its parent node. It would be the case if we want to represent our logo without the preceding text.
+When detection would fail, \gls{YAML} requires that the indentation level for the content be given using an explicit indentation indicator. This level is specified as the integer number of the additional indentation spaces used for the content, relative to its parent node. It would be the case if we want to represent our logo without the preceding text.
 \end{messagebox}
 
-YAML's flow scalars include the plain style and two quoted styles. The double-quoted style provides escape sequences. The single-quoted style is useful when escaping is not needed. All flow scalars can span multiple lines. Note that line breaks are always folded. Since \arara\ uses MVEL as its underlying scripting language (Chapter~\ref{chap:mvel}, on page~\pageref{chap:mvel}), it might be advisable to quote scalars when starting with forbidden symbols in YAML.
+\gls{YAML}['s] flow scalars include the plain style and two quoted styles. The double-quoted style provides escape sequences. The single-quoted style is useful when escaping is not needed. All flow scalars can span multiple lines. Note that line breaks are always folded. Since \arara\ uses \gls{MVEL} as its underlying scripting language (Chapter~\ref{chap:mvel}, on page~\pageref{chap:mvel}), it might be advisable to quote scalars when starting with forbidden symbols in \gls{YAML}.
 
 \section{Tags}
 \label{sec:yamltags}
 
-According to the specification, in YAML, untagged nodes are given a type depending on the application. The examples covered in this primer use the \rbox{seq}, \rbox{map} and \rbox{str} types from the fail safe schema. Explicit typing is denoted with a tag using the exclamation point symbol. Global tags are usually uniform resource identifiers and may be specified in a tag shorthand notation using a handle. Application-specific local tags may also be used. For \arara, there is a special schema used for both rules and configuration files, so in those cases, make sure to add \abox{!config} as global tag:
+According to the specification, in \gls{YAML}, untagged nodes are given a type depending on the application. The examples covered in this primer use the \rbox{seq}, \rbox{map} and \rbox{str} types from the fail safe schema. Explicit typing is denoted with a tag using the exclamation point symbol. Global tags are usually uniform resource identifiers and may be specified in a tag shorthand notation using a handle. Application-specific local tags may also be used. For \arara, there is a special schema used for both rules and configuration files, so in those cases, make sure to add \abox{!config} as global tag:
 
 \begin{codebox}{Global tag for rules and configuration files}{teal}{\icnote}{white}
 !config
@@ -102,4 +102,4 @@ In particular, rules and configuration files of \arara\ are properly covered in 
 \section{Further reading}
 \label{sec:yamlfurtherreading}
 
-This chapter does not cover all features of the YAML format, so further reading is advisable. I highly recommend the \href{http://yaml.org/spec/1.2/spec.html}{official YAML specification}, currently covering the third version of the format.
+This chapter does not cover all features of the \gls{YAML} format, so further reading is advisable. I highly recommend the \href{http://yaml.org/spec/1.2/spec.html}{official YAML specification}, currently covering the third version of the format.
