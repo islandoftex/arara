@@ -213,5 +213,11 @@ usage: arara [file [--dry-run] [--log] [--verbose | --silent]
  -v,--verbose              print the command output
 \end{codebox}
 
-It is important to observe that the wrapper initiative presented in this section might cause a potential name clash with existing \TeX\ Live or MiK\TeX\ binaries and symbolic links. In this particular scenario, make sure to inspect the command location as a means to ensure a correct execution.
-% perhaps mention `which arara`?
+It is important to observe that the wrapper initiative presented in this section might cause a potential name clash with existing \TeX\ Live or MiK\TeX\ binaries and symbolic links. In this particular scenario, make sure to inspect the command location as a means to ensure a correct execution. To this end, run the following command in the terminal:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ which arara
+/usr/local/bin/arara
+\end{codebox}
+
+The \rbox{which} command shows the full path of the executable name provided as parameter. This particular utility does this by searching for an executable or script in the directories listed in the \abox[araracolour]{PATH} environment variable. Be mindful that aliases and shell functions are listed as well.
