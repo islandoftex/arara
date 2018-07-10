@@ -31,7 +31,7 @@ Now when you run `arara myfile`, that directive (`% arara: ...`) will be seen an
 
 The stable major version of `arara` is the 4.0 series (note that revision numbers may vary). Please refer to the development branch for more information on the upcoming 5.0 series release. The master branch always refers to the stable version (including potential revisions).
 
-For historical purposes, the source code for older versions of `arara` is available in the [releases](https://github.com/cereda/arara/releases) section of our repository. However, be mindful that such versions are unsupported.
+For historical purposes, the source code for older versions of `arara` is available in the [releases](https://github.com/cereda/arara/releases) section of our repository. However, be mindful that these versions are unsupported.
 
 ## Build status
 
@@ -66,7 +66,7 @@ You can obtain the official package available in the [releases](https://github.c
 
 ## License
 
-This application is licensed under the [New BSD License](http://www.opensource.org/licenses/bsd-license.php).Please note that the New BSD License has been verified as a GPL-compatible free software license by the [Free Software Foundation](http://www.fsf.org/), and has been vetted as an open source license by the [Open Source Initiative](http://www.opensource.org/).
+This application is licensed under the [New BSD License](http://www.opensource.org/licenses/bsd-license.php). Please note that the New BSD License has been verified as a GPL-compatible free software license by the [Free Software Foundation](http://www.fsf.org/), and has been vetted as an open source license by the [Open Source Initiative](http://www.opensource.org/).
 
 ## The team
 
