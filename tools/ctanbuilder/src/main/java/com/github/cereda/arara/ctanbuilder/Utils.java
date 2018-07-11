@@ -59,11 +59,18 @@ public class Utils {
      * @param file The file reference.
      * @throws Exception The file could not be written.
      */
-    static void createScript(File file) throws Exception {
+    public static void createScript(File file) throws Exception {
         List<String> lines = new ArrayList<>();
         lines.add("#!/bin/bash");
-        lines.add("jarpath=`kpsewhich --progname=arara "
+        lines.add("kernel=`uname -s`");
+        lines.add("if test \"${kernel#*CYGWIN}\" != \"$kernel\"");
+        lines.add("then");
+        lines.add("    jarpath=`cygpath -w $(kpsewhich --progname=arara "
+                + "--format=texmfscripts arara.jar)`");
+        lines.add("else");
+        lines.add("    jarpath=`kpsewhich --progname=arara "
                 + "--format=texmfscripts arara.jar`");
+        lines.add("fi");
         lines.add("java -jar \"$jarpath\" \"$@\"");
         try {
             FileUtils.writeLines(file, lines);
