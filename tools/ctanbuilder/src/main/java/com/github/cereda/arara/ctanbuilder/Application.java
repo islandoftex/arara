@@ -116,10 +116,6 @@ public class Application {
             Utils.exists(Utils.Type.DIRECTORY, root, "rules");
             Utils.status(true);
 
-            Utils.task("The application logos");
-            Utils.exists(Utils.Type.DIRECTORY, root, "logos");
-            Utils.status(true);
-
             Utils.task("The README file");
             Utils.exists(Utils.Type.FILE, root, "README.md");
             Utils.status(true);
@@ -157,11 +153,6 @@ public class Application {
                     "doc", "support"));
             Utils.status(true);
 
-            Utils.task("Copying the application logos");
-            Utils.copyDirectory(Utils.file(root, "logos"),
-                    Utils.file(tmp, "doc", "support"));
-            Utils.status(true);
-
             Utils.task("Renaming the documentation directory");
             Utils.file(tmp, "doc", "support", "docs").
                     renameTo(Utils.file(tmp, "doc", "support", "arara"));
@@ -185,10 +176,6 @@ public class Application {
 
             Utils.task("Removing the application binary");
             Utils.file(tmp, "doc", "support", "arara", "arara.jar").delete();
-            Utils.status(true);
-
-            Utils.task("Removing the logos directory");
-            Utils.removeDirectory(Utils.file(tmp, "doc", "support", "logos"));
             Utils.status(true);
 
             Utils.title("Building the scripts directory");
