@@ -17,7 +17,7 @@ commands:
         infile = base.concat('.').concat(input);
         outfile = [ '-o', base.concat('.').concat(output) ];
         logfile = [ '-t', base.concat('.').concat(log) ];
-        return getCommand('xindy', quiet, debug, markup, modules,
+        return getCommand('xindy', quiet, markup, modules,
                codepage, language, logfile, outfile, options, infile);
     }
 arguments:
