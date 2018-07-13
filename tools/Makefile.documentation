@@ -1,0 +1,21 @@
+all: arara.zip
+	@echo "Please wait while I get the documentation file from 'arara.zip'"
+	@echo
+	@echo -n "(1/5) Creating temporary directory .................. "
+	@mkdir tmp
+	@echo "SUCCESS"
+	@echo -n "(2/5) Copying file to temporary directory ........... "
+	@cp arara.zip tmp/
+	@echo "SUCCESS"
+	@echo -n "(3/5) Extracting archive file ....................... "
+	@cd tmp/ && unzip arara.zip > /dev/null
+	@echo "SUCCESS"
+	@echo -n "(4/5) Copying the documentation file ................ "
+	@cp tmp/arara/doc/arara-manual.pdf arara-manual.pdf
+	@echo "SUCCESS"
+	@echo -n "(5/5) Removing temporary directory .................. "
+	@rm -rf tmp/
+	@echo "SUCCESS"
+	@echo
+	@echo "Done!"
+
