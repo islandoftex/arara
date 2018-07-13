@@ -13,7 +13,7 @@ commands:
 - name: The latexindent.pl script
   command: >
     @{
-        return getCommand('latexindent', silent, trace, ttrace, screenlog,
+        return getCommand('latexindent', silent, trace, screenlog,
                settings, cruft, overwrite, output, file, modifylinebreaks,
                options, logfile);
     }
