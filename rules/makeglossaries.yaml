@@ -14,7 +14,64 @@ commands:
 - name: The MakeGlossaries software
   command: >
     @{
-        return  getCommand('makeglossaries', options, getBasename(file));
+        if (isEmpty(clean))
+        {
+           return getCommand('makeglossaries', options, getBasename(file));
+        }
+        else {
+           prefix = [];
+           if (isUnix()) {
+               prefix = [ 'rm', '-f' ];
+           }
+           else {
+               prefix = [ 'cmd', '/c', 'del' ];
+           }
+
+           base = getBasename(file);
+           removals = [];
+
+           java.io.BufferedReader reader = new java.io.BufferedReader(
+              new java.io.FileReader(base.concat('.').concat('aux')));
+
+           java.util.regex.Pattern glsPattern = 
+                java.util.regex.Pattern.compile(
+                 "\\\\@newglossary\\{.*\\}\\{(.*)\\}\\{(.*)\\}\\{(.*)\\}");
+
+           java.util.regex.Pattern istPattern = 
+             (clean == 'partial' ? null :
+              java.util.regex.Pattern.compile("\\\\@istfilename\\{(.*)\\}"));
+
+           while ((line = reader.readLine()) != null)
+           {
+              matcher = glsPattern.matcher(line);
+
+              if (matcher.matches())
+              {
+                 foreach(extension: [matcher.group(1), matcher.group(2), matcher.group(3)])
+                 {
+                    if (base.concat('.').concat(extension) == getOriginalFile()) {
+                        throwError('I cannot remove the main file reference.');
+                    }
+
+                    removals.add(getCommand(prefix, base.concat('.').concat(extension)));
+                 }
+              }
+              else if (istPattern != null)
+              {
+                 matcher = istPattern.matcher(line);
+
+                 if (matcher.matches())
+                 {
+                    removals.add(getCommand(prefix, matcher.group(1)));
+                    istPattern = null;
+                 }
+              }
+           }
+
+           reader.close();
+
+           return removals;
+        }
     }
 arguments:
 - identifier: options
@@ -25,5 +82,15 @@ arguments:
         }
         else {
             throwError('I was expecting a list of options.');
+        }
+    }
+- identifier: clean
+  flag: >
+    @{
+        if ([ 'all', 'partial' ].contains(parameters.clean)) {
+           return parameters.clean;
+        }
+        else {
+            throwError('The provided clean value is not valid.');
         }
     }
