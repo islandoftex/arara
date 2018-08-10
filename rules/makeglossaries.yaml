@@ -30,8 +30,9 @@ commands:
            base = getBasename(file);
            removals = [];
 
-           java.io.BufferedReader reader = new java.io.BufferedReader(
-              new java.io.FileReader(base.concat('.').concat('aux')));
+           removals.add(getCommand(prefix, base.concat(".glsdefs")));
+
+           lines = readFromFile(base.concat('.').concat('aux'));
 
            java.util.regex.Pattern glsPattern = 
                 java.util.regex.Pattern.compile(
@@ -41,7 +42,7 @@ commands:
              (clean == 'partial' ? null :
               java.util.regex.Pattern.compile("\\\\@istfilename\\{(.*)\\}"));
 
-           while ((line = reader.readLine()) != null)
+           foreach (line: lines)
            {
               matcher = glsPattern.matcher(line);
 
@@ -49,10 +50,6 @@ commands:
               {
                  foreach(extension: [matcher.group(1), matcher.group(2), matcher.group(3)])
                  {
-                    if (base.concat('.').concat(extension) == getOriginalFile()) {
-                        throwError('I cannot remove the main file reference.');
-                    }
-
                     removals.add(getCommand(prefix, base.concat('.').concat(extension)));
                  }
               }
@@ -67,8 +64,6 @@ commands:
                  }
               }
            }
-
-           reader.close();
 
            return removals;
         }
