@@ -13,10 +13,58 @@ commands:
 - name: The Bib2Gls software
   command: >
     @{
-       return getCommand('bib2gls', dir, trans, group, interpret,
-              breakspace, trimfields, recordcount, recordcountunit, 
-              cite, verbose, merge, locale, uniscript, packages, 
-              ignore, custom, mapformats, options, getBasename(file));
+       if (isNotEmpty(clean))
+       {
+           prefix = [];
+           if (isUnix()) {
+               prefix = [ 'rm', '-f', '-v' ];
+           }
+           else {
+               prefix = [ 'cmd', '/c', 'del' ];
+           }
+
+           base = getBasename(file);
+           removals = [];
+
+           lines = readFromFile(base.concat('.').concat('aux'));
+
+           java.util.regex.Pattern resourcePattern =
+                java.util.regex.Pattern.compile(
+                 "\\\\glsxtr@resource\\{.*\\}\\{([^\\}]+)\\}");
+
+           if (isNotEmpty(trans))
+           {
+              if (trans == getOriginalFile())
+              {
+                 throwError('I cannot remove the main file reference.');
+              }
+
+              removals.add(getCommand(prefix, trans));
+           }
+           else
+           {
+              removals.add(getCommand(prefix, base.concat('.glg')));
+           }
+
+           foreach (line: lines)
+           {
+              matcher = resourcePattern.matcher(line);
+
+              if (matcher.matches())
+              {
+                 removals.add(getCommand(prefix, matcher.group(1).concat('.glstex')));
+              }
+           }
+
+           return removals;
+       }
+       else
+       {
+          return getCommand('bib2gls', dir, trans, group, interpret,
+                 breakspace, trimfields, recordcount, recordcountunit, 
+                 cite, verbose, merge, locale, uniscript, packages, 
+                 ignore, custom, mapformats, options, getBasename(file));
+       }
     }
 arguments:
 - identifier: dir
@@ -27,6 +75,17 @@ arguments:
 - identifier: trans
   flag: >
    @{
+       if (trans == 'tex' || trans == 'ltx' || trans == 'cls' 
+            || trans == 'sty' || trans == 'bib' || trans == 'dtx'
+            || trans == 'ins' || trans == 'def' || trans == 'ldf')
+       {
+          # These extensions are all forbidden by bib2gls, but
+          # including a check here in case the 'clean' option is
+          # used.
+
+          throwError('Forbidden transcript extension');
+       }
+
        return ['--log-file', getBasename(file)+"."+parameters.trans]
     }
 - identifier: locale
@@ -163,4 +222,9 @@ arguments:
         else {
             throwError('I was expecting a list of options.');
         }
+    }
+- identifier: clean
+  flag: >
+    @{
+       return isTrue(parameters.clean, 'true', '');
     }
