@@ -75,9 +75,11 @@ arguments:
 - identifier: trans
   flag: >
    @{
-       if (trans == 'tex' || trans == 'ltx' || trans == 'cls' 
-            || trans == 'sty' || trans == 'bib' || trans == 'dtx'
-            || trans == 'ins' || trans == 'def' || trans == 'ldf')
+       if (parameters.trans == 'tex' || parameters.trans == 'ltx'
+        || parameters.trans == 'cls' || parameters.trans == 'sty'
+        || parameters.trans == 'bib' || parameters.trans == 'dtx'
+        || parameters.trans == 'ins' || parameters.trans == 'def'
+        || parameters.trans == 'ldf')
        {
           throwError('Forbidden transcript extension');
        }
