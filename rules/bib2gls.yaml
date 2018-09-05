@@ -79,10 +79,6 @@ arguments:
             || trans == 'sty' || trans == 'bib' || trans == 'dtx'
             || trans == 'ins' || trans == 'def' || trans == 'ldf')
        {
-          # These extensions are all forbidden by bib2gls, but
-          # including a check here in case the 'clean' option is
-          # used.
-
           throwError('Forbidden transcript extension');
        }
 
