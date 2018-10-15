@@ -133,8 +133,8 @@ public class Application {
             Utils.title("Creating the TeX Directory Structure (TDS) archive");
 
             Utils.task("Compiling the application from source");
-            Utils.execute(Utils.file(root, "application"), "mvn", "compile",
-                    "assembly:single");
+            Utils.execute(Utils.file(root, "application"), "mvn", "--file",
+                    "pom.java5.xml", "compile", "assembly:single");
             Utils.status(true);
 
             Utils.task("Creating the temporary directory");
