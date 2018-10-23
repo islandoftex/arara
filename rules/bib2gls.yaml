@@ -75,12 +75,8 @@ arguments:
 - identifier: trans
   flag: >
    @{
-       if (parameters.trans == 'tex' || parameters.trans == 'ltx'
-        || parameters.trans == 'cls' || parameters.trans == 'sty'
-        || parameters.trans == 'bib' || parameters.trans == 'dtx'
-        || parameters.trans == 'ins' || parameters.trans == 'def'
-        || parameters.trans == 'ldf')
-       {
+       if ([ 'tex', 'ltx', 'cls', 'sty', 'bib',
+             'dtx', 'ins', 'def', 'ldf' ].contains(parameters.trans)) {
           throwError('Forbidden transcript extension');
        }
 
