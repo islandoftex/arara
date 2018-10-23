@@ -30,7 +30,7 @@ Now when you run `arara myfile`, that directive (`% arara: ...`) will be seen an
 ![Current version: 4.0](https://img.shields.io/badge/current_version-4.0-blue.svg?style=flat-square)
 ![Development version: 5.0](https://img.shields.io/badge/development_version-5.0-red.svg?style=flat-square)
 
-The stable major version of `arara` is the 4.0 series (note that revision numbers may vary). Please refer to the development branch for more information on the upcoming 5.0 series release. The master branch always refers to the stable version (including potential revisions). The CTAN packaging for the current version is 4.0.3 (for internal use).
+The stable major version of `arara` is the 4.0 series (note that revision numbers may vary). Please refer to the development branch for more information on the upcoming 5.0 series release. The master branch always refers to the stable version (including potential revisions). The CTAN packaging for the current version is 4.0.5 (for internal use).
 
 For historical purposes, the source code for older versions of `arara` is available in the [releases](https://github.com/cereda/arara/releases) section of our repository. However, be mindful that these versions are unsupported.
 
