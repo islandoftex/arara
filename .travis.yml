@@ -3,10 +3,3 @@ language: java
 jdk:
 - oraclejdk8
 - openjdk7
-notifications:
-  webhooks:
-    urls:
-      - https://webhooks.gitter.im/e/35e9046155cbdc0687d9
-    on_success: always  # options: [always|never|change] default: always
-    on_failure: always  # options: [always|never|change] default: always
-    on_start: false     # default: false
