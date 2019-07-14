@@ -393,6 +393,16 @@ spreadsheet import functions also use this setting.
 \end{description}
 
 \item[\abox{where}] This option, as the name indicates, sets the file location containing the indentation settings according to the provided value. This option can only be used if, and only if, \rbox[cyan]{local} is set as the value for the \abox{settings} option, otherwise the rule will throw an error.
+
+\item[\abox{replacement}] This option, as the name indicates, implements the replacement mode switches. Three possible values are available:
+
+\begin{description}
+\item[\povalue{full}] This value, as the name indicates, performs indentation and replacements, not respecting verbatim code blocks.
+
+\item[\povalue{noverb}] This value, as the name indicates, performs indentation and replacements, and will respect verbatim code blocks.
+
+\item[\povalue{noindent}] This value, as the name implies, will not perform indentation, and will perform replacements not respecting verbatim code blocks.
+\end{description}
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
