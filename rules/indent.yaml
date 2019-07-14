@@ -15,7 +15,7 @@ commands:
     @{
         return getCommand('latexindent', silent, trace, screenlog,
                settings, cruft, overwrite, output, file, modifylinebreaks,
-               options, logfile);
+               replacement, options, logfile);
     }
 arguments:
 - identifier: silent
@@ -85,6 +85,18 @@ arguments:
           throwError('This key requires a local setting.');
       }
     }
+- identifier: replacement
+  flag: >
+    @{
+      opts = [ 'full' : '-r', 'noverb' : '-rv', 'noindent' : '-rr' ];
+      if (opts.keySet().contains(parameters.replacement)) {
+          return opts[parameters.replacement];
+      }
+      else {
+          throwError('You provided an invalid value for replacement.');
+      }
+    }
+
 - identifier: options
   flag: >
     @{
