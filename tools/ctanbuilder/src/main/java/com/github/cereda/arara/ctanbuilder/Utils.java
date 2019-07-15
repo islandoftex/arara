@@ -61,17 +61,27 @@ public class Utils {
      */
     public static void createScript(File file) throws Exception {
         List<String> lines = new ArrayList<>();
-        lines.add("#!/bin/bash");
-        lines.add("kernel=`uname -s`");
-        lines.add("if test \"${kernel#*CYGWIN}\" != \"$kernel\"");
-        lines.add("then");
-        lines.add("    jarpath=`cygpath -w $(kpsewhich --progname=arara "
-                + "--format=texmfscripts arara.jar)`");
-        lines.add("else");
-        lines.add("    jarpath=`kpsewhich --progname=arara "
-                + "--format=texmfscripts arara.jar`");
+        lines.add("#!/bin/sh");
+        lines.add("# Public domain. Originally written by "
+                + "Norbert Preining and Karl Berry, 2018.");
+        lines.add("# Note from Paulo: this script provides "
+                + "better Cygwin support than our original");
+        lines.add("# approach, so the team decided to use it "
+                + "as a proper wrapper for arara as well.");
+        lines.add("");
+        lines.add("scriptname=`basename \"$0\"`");
+        lines.add("jar=\"$scriptname.jar\"");
+        lines.add("jarpath=`kpsewhich --progname=\"$scriptname\" "
+                + "--format=texmfscripts \"$jar\"`");
+        lines.add("");
+        lines.add("kernel=`uname -s 2>/dev/null`");
+        lines.add("if echo \"$kernel\" | grep CYGWIN >/dev/null; then");
+        lines.add("  CYGWIN_ROOT=`cygpath -w /`");
+        lines.add("  export CYGWIN_ROOT");
+        lines.add("  jarpath=`cygpath -w \"$jarpath\"`");
         lines.add("fi");
-        lines.add("java -jar \"$jarpath\" \"$@\"");
+        lines.add("");
+        lines.add("exec java -jar \"$jarpath\" \"$@\"");
         try {
             FileUtils.writeLines(file, lines);
         } catch (IOException nothandled) {
