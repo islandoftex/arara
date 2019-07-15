@@ -290,6 +290,16 @@ spreadsheet import functions also use this setting.
 % arara: dvipspdf: { output: article }
 \end{codebox}
 
+\item[\rulebox{dvisvgm}{samcarter}] This rule runs \rbox{dvisvgm} in order to obtain a corresponding \rbox{svg} file, a vector graphics format based on XML, from the initial \rbox{dvi} reference. It is important to observe that the base name is acquired from the \mtbox{currentFile} reference (i.e, the name without the associated extension) and used to construct the resulting file.
+
+\begin{description}
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: dvisvgm
+\end{codebox}
+
 \item[\rulebox{etex}{Marco Daniel, Paulo Cereda, Nicola Talbot}] This rule runs the \rbox{etex} extended (plain) \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in a device independent format.
 
 \begin{description}
