@@ -1,0 +1,23 @@
+!config
+identifier: dvisvgm
+name: DVISVGM
+authors:
+- samcarter
+commands:
+- name: The dvisvgm program
+  command: >
+    @{
+        base = getBasename(file).concat('.dvi');
+        return getCommand('dvisvgm', base, options);
+    }
+arguments:
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.');
+        }
+    }
