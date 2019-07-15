@@ -53,6 +53,7 @@
 \RequirePackage{amsfonts}
 \RequirePackage{kmath}
 \RequirePackage{bookman}
+\RequirePackage{comfortaa}
 \RequirePackage[regular]{sourcecodepro}
 
 \RequirePackage{adforn}
@@ -74,7 +75,7 @@
   pdfpagelabels
 ]{hyperref}
 
-\newcommand{\araratext}[1]{{\normalfont\fontfamily{fco}\selectfont\color{araracolour}\bfseries#1}}
+\newcommand{\araratext}[1]{{\normalfont\comfortaa\color{araracolour}\bfseries#1}}
 \newcommand*\arara{\araratext{ar\kern-.03emar\kern-.03ema}}
 \newcommand*\slogan{\araratext{The cool \TeX\ automation tool}}
 
@@ -430,8 +431,8 @@
 \renewcommand{\subsubsecheadstyle}{\normalsize\normalfont\em}
 \renewcommand{\paraheadstyle}{\normalsize\normalfont\em}
 \renewcommand{\subparaheadstyle}{\normalsize\normalfont\em}
-\renewcommand{\partnumfont}{\Large\fontfamily{fco}\selectfont\bfseries}
-\renewcommand{\partnamefont}{\Large\fontfamily{fco}\selectfont\bfseries}
+\renewcommand{\partnumfont}{\Large\comfortaa\bfseries}
+\renewcommand{\partnamefont}{\Large\comfortaa\bfseries}
 \renewcommand{\parttitlefont}{\Huge\normalfont\em}
 \renewcommand{\booktitlefont}{\huge\normalfont\em}
 \renewcommand{\booknamefont}{\huge\normalfont\em}
@@ -454,7 +455,7 @@
   \renewcommand*{\chapnamefont}{\normalfont}%
   \renewcommand*{\printchaptername}{%
     \centering\includegraphics[scale=.15]{logos/bird.pdf}\par}%
-  \renewcommand*{\chapnumfont}{\fontfamily{fco}\selectfont\bfseries}%
+  \renewcommand*{\chapnumfont}{\comfortaa\bfseries}%
   \renewcommand*{\printchapternum}{\centering \chapnumfont \ifanappendix
     \thechapter \else \textcolor{araracolour}{\numtoname{\c@chapter}}\fi}%
   \renewcommand*{\chaptitlefont}{\normalfont\itshape\huge\centering}%
