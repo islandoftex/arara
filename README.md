@@ -7,7 +7,7 @@
 ![Language: Java](https://img.shields.io/badge/language-Java-blue.svg?style=flat-square)
 ![Minimum JRE: 5.0](https://img.shields.io/badge/minimum_JRE-5.0-blue.svg?style=flat-square)
 [![License: New BSD](https://img.shields.io/badge/license-New_BSD-blue.svg?style=flat-square)](https://opensource.org/licenses/bsd-license)
-![CTAN packaging: 4.0.5](https://img.shields.io/badge/CTAN_packaging-4.0.5-blue.svg?style=flat-square)
+![CTAN packaging: 4.0.6](https://img.shields.io/badge/CTAN_packaging-4.0.6-blue.svg?style=flat-square)
 
 `arara` is a TeX automation tool based on rules and directives. It gives you a way to enhance your TeX experience. The tool is an effort to provide a concise way to automate the daily TeX workflow for users and also package writers. Users might write their own rules when the provided ones do not suffice.
 
@@ -30,7 +30,7 @@ Now when you run `arara myfile`, that directive (`% arara: ...`) will be seen an
 ![Current version: 4.0](https://img.shields.io/badge/current_version-4.0-blue.svg?style=flat-square)
 ![Development version: 5.0](https://img.shields.io/badge/development_version-5.0-red.svg?style=flat-square)
 
-The stable major version of `arara` is the 4.0 series (note that revision numbers may vary). Please refer to the development branch for more information on the upcoming 5.0 series release. The master branch always refers to the stable version (including potential revisions). The CTAN packaging for the current version is 4.0.5 (for internal use).
+The stable major version of `arara` is the 4.0 series (note that revision numbers may vary). Please refer to the development branch for more information on the upcoming 5.0 series release. The master branch always refers to the stable version (including potential revisions). The CTAN packaging for the current version is 4.0.6 (for internal use).
 
 For historical purposes, the source code for older versions of `arara` is available in the [releases](https://github.com/cereda/arara/releases) section of our repository. However, be mindful that these versions are unsupported.
 
