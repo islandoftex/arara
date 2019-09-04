@@ -199,7 +199,7 @@ public class Arara {
         //     just happened and might require user intervention.
         System.exit(CommonUtils.getExitStatus());
 
-        // I owe David Carlisle $10
+        // I owe David Carlisle $100
     }
 
 }
