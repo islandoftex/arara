@@ -1,5 +1,9 @@
 before_script: "cd application"
 language: java
+dist: trusty
 jdk:
-- oraclejdk8
 - openjdk7
+- openjdk8
+- oraclejdk8
+- oraclejdk9
+- oraclejdk11
