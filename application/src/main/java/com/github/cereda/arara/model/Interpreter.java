@@ -1,6 +1,6 @@
 /**
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2018, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -60,13 +60,13 @@ public class Interpreter {
 
     // the application messages obtained from the
     // language controller
-    private static final LanguageController messages =
-            LanguageController.getInstance();
-    
+    private static final LanguageController messages
+            = LanguageController.getInstance();
+
     // the class logger obtained from
     // the logger factory
-    private static final Logger logger =
-            LoggerFactory.getLogger(Interpreter.class);
+    private static final Logger logger
+            = LoggerFactory.getLogger(Interpreter.class);
 
     // list of directives to be
     // interpreted in here
@@ -128,8 +128,8 @@ public class Interpreter {
             Methods.addRuleMethods(parameters);
 
             String name = rule.getName();
-            List<String> authors = rule.getAuthors() == null ?
-                    new ArrayList<String>() : rule.getAuthors();
+            List<String> authors = rule.getAuthors() == null
+                    ? new ArrayList<String>() : rule.getAuthors();
             ConfigurationController.getInstance().
                     put("execution.rule.arguments",
                             InterpreterUtils.getRuleArguments(rule)
@@ -187,11 +187,11 @@ public class Interpreter {
                                         String.valueOf(current))) {
 
                                     DisplayUtils.printEntry(name,
-                                            command.getName() == null ?
-                                                    messages.getMessage(
-                                                            Messages.INFO_LABEL_UNNAMED_TASK
-                                                    )
-                                                    : command.getName()
+                                            command.getName() == null
+                                            ? messages.getMessage(
+                                                    Messages.INFO_LABEL_UNNAMED_TASK
+                                            )
+                                            : command.getName()
                                     );
                                     boolean success = true;
 
@@ -223,72 +223,100 @@ public class Interpreter {
                                         Trigger trigger = (Trigger) current;
                                         trigger.process();
                                     } else {
-                                        Object representation =
-                                                CommonUtils.checkClass(
-                                                        Command.class,
-                                                        current
-                                                ) ?
-                                                current 
-                                                : String.valueOf(current);
-                                        logger.info(
-                                                messages.getMessage(
-                                                        Messages.LOG_INFO_SYSTEM_COMMAND,
-                                                        representation
-                                                )
-                                        );
+                                        if (CommonUtils.checkClass(
+                                                Boolean.class, current)) {
+                                            success = (Boolean) current;
+                                            logger.info(
+                                                    messages.getMessage(
+                                                            Messages.LOG_INFO_BOOLEAN_MODE,
+                                                            String.valueOf(success)
+                                                    )
+                                            );
 
-                                        if (((Boolean) ConfigurationController.
-                                                getInstance().
-                                                get("execution.dryrun")) == false) {
-                                            int code = InterpreterUtils.
-                                                    run(representation);
-                                            Object check = null;
-                                            try {
-                                                Map<String, Object> context =
-                                                        new HashMap<String, Object>();
-                                                context.put("value", code);
-                                                check = TemplateRuntime.eval(
-                                                        "@{ ".concat(
-                                                                command.getExit() == null ?
-                                                                        "value == 0"
-                                                                        : command.getExit()).concat(" }"),
-                                                        context);
-                                            } catch (RuntimeException exception) {
-                                                throw new AraraException(
-                                                        CommonUtils.getRuleErrorHeader().
-                                                                concat(
-                                                                        messages.getMessage(
-                                                                                Messages.ERROR_INTERPRETER_EXIT_RUNTIME_ERROR
-                                                                        )
-                                                                ),
-                                                        exception
-                                                );
-                                            }
-                                            if (CommonUtils.
-                                                    checkClass(
-                                                            Boolean.class,
-                                                            check)) {
-                                                success = (Boolean) check;
-                                            } else {
-                                                throw new AraraException(
-                                                        CommonUtils.getRuleErrorHeader().concat(
-                                                                messages.getMessage(
-                                                                        Messages.ERROR_INTERPRETER_WRONG_EXIT_CLOSURE_RETURN
-                                                                )
+                                            if (((Boolean) ConfigurationController.
+                                                    getInstance().
+                                                    get("execution.dryrun")) == true) {
+
+                                                DisplayUtils.printAuthors(authors);
+                                                DisplayUtils.wrapText(
+                                                        messages.getMessage(
+                                                                Messages.INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE,
+                                                                success
                                                         )
+                                                );
+                                                DisplayUtils.printConditional(
+                                                        directive.getConditional()
                                                 );
                                             }
                                         } else {
-                                            DisplayUtils.printAuthors(authors);
-                                            DisplayUtils.wrapText(
+
+                                            Object representation
+                                                    = CommonUtils.checkClass(
+                                                            Command.class,
+                                                            current
+                                                    )
+                                                    ? current
+                                                    : String.valueOf(current);
+                                            logger.info(
                                                     messages.getMessage(
-                                                            Messages.INFO_INTERPRETER_DRYRUN_MODE_SYSTEM_COMMAND,
+                                                            Messages.LOG_INFO_SYSTEM_COMMAND,
                                                             representation
                                                     )
                                             );
-                                            DisplayUtils.printConditional(
-                                                    directive.getConditional()
-                                            );
+
+                                            if (((Boolean) ConfigurationController.
+                                                    getInstance().
+                                                    get("execution.dryrun")) == false) {
+                                                int code = InterpreterUtils.
+                                                        run(representation);
+                                                Object check = null;
+                                                try {
+                                                    Map<String, Object> context
+                                                            = new HashMap<String, Object>();
+                                                    context.put("value", code);
+                                                    check = TemplateRuntime.eval(
+                                                            "@{ ".concat(
+                                                                    command.getExit() == null
+                                                                    ? "value == 0"
+                                                                    : command.getExit()).concat(" }"),
+                                                            context);
+                                                } catch (RuntimeException exception) {
+                                                    throw new AraraException(
+                                                            CommonUtils.getRuleErrorHeader().
+                                                                    concat(
+                                                                            messages.getMessage(
+                                                                                    Messages.ERROR_INTERPRETER_EXIT_RUNTIME_ERROR
+                                                                            )
+                                                                    ),
+                                                            exception
+                                                    );
+                                                }
+                                                if (CommonUtils.
+                                                        checkClass(
+                                                                Boolean.class,
+                                                                check)) {
+                                                    success = (Boolean) check;
+                                                } else {
+                                                    throw new AraraException(
+                                                            CommonUtils.getRuleErrorHeader().concat(
+                                                                    messages.getMessage(
+                                                                            Messages.ERROR_INTERPRETER_WRONG_EXIT_CLOSURE_RETURN
+                                                                    )
+                                                            )
+                                                    );
+                                                }
+                                            } else {
+                                                DisplayUtils.printAuthors(authors);
+                                                DisplayUtils.wrapText(
+                                                        messages.getMessage(
+                                                                Messages.INFO_INTERPRETER_DRYRUN_MODE_SYSTEM_COMMAND,
+                                                                representation
+                                                        )
+                                                );
+                                                DisplayUtils.printConditional(
+                                                        directive.getConditional()
+                                                );
+                                            }
                                         }
                                     }
 
@@ -397,8 +425,8 @@ public class Interpreter {
         Methods.addRuleMethods(context);
 
         for (Argument argument : arguments) {
-            if ((argument.isRequired()) &&
-                    (!directive.getParameters().containsKey(
+            if ((argument.isRequired())
+                    && (!directive.getParameters().containsKey(
                             argument.getIdentifier()))) {
                 throw new AraraException(
                         CommonUtils.getRuleErrorHeader().concat(
@@ -421,7 +449,7 @@ public class Interpreter {
                                     concat(messages.getMessage(
                                             Messages.ERROR_INTERPRETER_DEFAULT_VALUE_RUNTIME_ERROR
                                     )
-                            ),
+                                    ),
                             exception
                     );
                 }
@@ -429,8 +457,8 @@ public class Interpreter {
                 mapping.put(argument.getIdentifier(), "");
             }
 
-            if ((argument.getFlag() != null) &&
-                    (directive.getParameters().containsKey(
+            if ((argument.getFlag() != null)
+                    && (directive.getParameters().containsKey(
                             argument.getIdentifier()))) {
 
                 try {
@@ -451,7 +479,7 @@ public class Interpreter {
                 }
             }
         }
-        
+
         return mapping;
     }
 
