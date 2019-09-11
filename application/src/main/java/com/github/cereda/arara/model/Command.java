@@ -1,6 +1,6 @@
 /**
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2018, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -116,7 +116,12 @@ public class Command {
      */
     @Override
     public String toString() {
-        return CommonUtils.getCollectionElements(elements, "[ ", " ]", ", ");
+        return CommonUtils.getCollectionElements(elements, "[ ", " ]", ", ").
+                concat(
+                        hasWorkingDirectory()
+                        ? " @ " + workingDirectory.toString()
+                        : ""
+                );
     }
 
 }
