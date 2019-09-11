@@ -1037,6 +1037,12 @@ result = unsafelyExecuteSystemCommand(getCommand('ls'));
 Please \emph{do not abuse} this method! Keep in mind that this particular feature is included for very specific scenarios in which the command streams are needed ahead of time for proper decision making.
 \end{messagebox}
 
+\item[\mdbox{R}{isSubdirectory(File directory)}{boolean}] This method checks whether the provided \rbox{File} reference is a valid subdirectory under the project hierarchy, return a corresponding boolean value. This is a check to impose a possible restriction in the rule scope, so that users can change down to subdirectories in their projects but not up, outside of the root directory.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+valid = isSubdirectory(toFile('chapters/'));
+\end{codebox}
+
 \item[\mdbox{R}{\parbox{0.62\textwidth}{mergeVelocityTemplate(File input, File output,\\\hspace*{1em} Map<String, Object> map)}}{void}] This method, as the name implies, merges the provided \rbox{File} template reference written in the Velocity Template Language 1.7 specification with the \rbox{Map} data object in order to produce a corresponding \rbox{File} output. It is important to observe that this method will raise an exception if the provided input file does not exist or if there is an error with the underlying template language.
 
 \begin{ncodebox}{Source file}{teal}{\icnote}{white}{input.txt}
