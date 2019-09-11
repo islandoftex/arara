@@ -1,6 +1,6 @@
 /**
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2018, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -147,6 +147,7 @@ public class Methods {
             map.put("writeToFile", Methods.class.getMethod("writeToFile", String.class, List.class, boolean.class));
             map.put("readFromFile", Methods.class.getMethod("readFromFile", File.class));
             map.put("readFromFile", Methods.class.getMethod("readFromFile", String.class));
+            map.put("isSubdirectory", Methods.class.getMethod("isSubdirectory", File.class));
         } catch (Exception exception) {
             // quack, quack, quack
         }
@@ -1351,6 +1352,17 @@ public class Methods {
      */
     public static List<String> readFromFile(String path) {
         return FileHandlingUtils.readFromFile(new File(path));
+    }
+    
+    /**
+     * Checks whether a directory is under the project directory.
+     * @param directory The directory to be inspected.
+     * @return Logical value indicating whether the directoy is under root.
+     * @throws AraraException There was a problem with path retrieval.
+     */
+    public static boolean isSubdirectory(File directory)
+            throws AraraException {
+        return CommonUtils.isSubDirectory(directory, getOriginalReference());
     }
     
 }
