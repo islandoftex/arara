@@ -1,6 +1,6 @@
 /**
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2018, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -121,7 +121,7 @@ public class Configuration {
         mapping.put("execution.timeout.value", 0L);
         mapping.put("execution.timeout.unit", TimeUnit.MILLISECONDS);
         mapping.put("application.version", "4.0");
-        mapping.put("application.revision", "1");
+        mapping.put("application.revision", "2");
         mapping.put("directives.linebreak.pattern", "^\\s*-->\\s(.*)$");
 
         String directive = "^\\s*(\\w+)\\s*(:\\s*(\\{.*\\})\\s*)?";
@@ -139,7 +139,7 @@ public class Configuration {
         mapping.put("execution.logging", false);
         mapping.put("execution.dryrun", false);
         mapping.put("execution.status", 0);
-        mapping.put("application.copyright.year", "2012-2018");
+        mapping.put("application.copyright.year", "2012-2019");
         mapping.put("execution.filetypes", ConfigurationUtils.
                 getDefaultFileTypes());
         mapping.put("execution.rule.paths",
