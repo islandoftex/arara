@@ -1,6 +1,6 @@
 /**
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2018, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -923,6 +923,31 @@ public class CommonUtils {
             File parent = file.getParentFile();
             String path = getCanonicalPath(parent == null ? file : parent);
             return buildPath(path, getBasename(file));
+        }
+    }
+    
+    /**
+     * Checks whether a directory is under a root directory.
+     * @param f1 Directory to be inspected.
+     * @param f2 Root directory.
+     * @return Logical value indicating whether the directoy is under root.
+     * @throws AraraException There was a problem with path retrieval.
+     */
+    public static boolean isSubDirectory(File f1, File f2)
+            throws AraraException {
+        if (f1.isDirectory()) {
+            return getCanonicalPath(f1).
+                    startsWith(
+                            getParentCanonicalPath(f2).concat(File.separator)
+                    );
+        }
+        else {
+            throw new AraraException(
+                    messages.getMessage(
+                            Messages.ERROR_ISSUBDIRECTORY_NOT_A_DIRECTORY,
+                            f1.getName()
+                    )
+            );
         }
     }
 
