@@ -48,68 +48,6 @@ Done! The current working directory should contain the TDS file and the
 final archive file for a proper CTAN submission! Have fun!
 ```
 
-# Rule checker
-
-![Version: 1.0](https://img.shields.io/badge/current_version-1.0-blue.svg?style=flat-square)
-![Language: Java](https://img.shields.io/badge/language-Java-blue.svg?style=flat-square)
-![Minimum JRE: 7.0](https://img.shields.io/badge/minimum_JRE-7.0-blue.svg?style=flat-square)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-
-The `rulechecker` tool extracts special annotation metadata from rules
-in the provided directory as a means to identify and report unfixed issues.
-The tool can also remove metadata and prepare rules for release. For instance:
-
-```
-$ java -jar rulechecker.jar rules/
-         _            _           _           
- ___ _ _| |___    ___| |_ ___ ___| |_ ___ ___ 
-|  _| | | | -_|  |  _|   | -_|  _| '_| -_|  _|
-|_| |___|_|___|  |___|_|_|___|___|_,_|___|_|  
-
-------------------- Task coverage report -------------------
-
-- xelatex.yaml ..................................... 100,00%
-- frontespizio.yaml ................................ 100,00%
-- tikzmake.yaml .................................... 100,00%
-- clean.yaml ....................................... 100,00%
-- texindy.yaml ..................................... 100,00%
-- pdflatex.yaml .................................... 100,00%
-- dvipdfm.yaml ..................................... 100,00%
-- datatooltk.yaml .................................. 100,00%
-- xindy.yaml ....................................... 100,00%
-- dvipspdf.yaml .................................... 100,00%
-- latexmk.yaml ..................................... 100,00%
-- bibtex8.yaml ..................................... 100,00%
-- dvips.yaml ....................................... 100,00%
-- dvipdfmx.yaml .................................... 100,00%
-- halt.yaml ........................................ 100,00%
-- sketch.yaml ...................................... 100,00%
-- pdftk.yaml ....................................... 100,00%
-- biber.yaml ....................................... 100,00%
-- luatex.yaml ...................................... 100,00%
-- bibtex.yaml ...................................... 100,00%
-- pdftex.yaml ...................................... 100,00%
-- songidx.yaml ..................................... 100,00%
-- make.yaml ........................................ 100,00%
-- animate.yaml ..................................... 100,00%
-- indent.yaml ...................................... 100,00%
-- makeglossarieslite.yaml .......................... 100,00%
-- velocity.yaml .................................... 100,00%
-- bib2gls.yaml ..................................... 100,00%
-- makeindex.yaml ................................... 100,00%
-- makeglossaries.yaml .............................. 100,00%
-- xetex.yaml ....................................... 100,00%
-- xdvipdfmx.yaml ................................... 100,00%
-- nomencl.yaml ..................................... 100,00%
-- csplain.yaml ..................................... 100,00%
-- tex.yaml ......................................... 100,00%
-- lualatex.yaml .................................... 100,00%
-- bibtexu.yaml ..................................... 100,00%
-- latex.yaml ....................................... 100,00%
-- pdfcsplain.yaml .................................. 100,00%
-- ps2pdf.yaml ...................................... 100,00%
-```
-
 # Rule converter
 
 ![Version: 1.0](https://img.shields.io/badge/current_version-1.0-blue.svg?style=flat-square)
