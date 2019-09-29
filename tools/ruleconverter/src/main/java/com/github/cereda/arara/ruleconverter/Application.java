@@ -37,7 +37,7 @@ import org.apache.commons.lang3.text.WordUtils;
  * @version 1.0
  * @since 1.0
  */
-public class Converter {
+public class Application {
 
     /**
      * Main method.
