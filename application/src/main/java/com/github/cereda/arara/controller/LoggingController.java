@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -36,8 +36,9 @@ package com.github.cereda.arara.controller;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
-import java.io.InputStream;
 import org.slf4j.LoggerFactory;
+
+import java.io.InputStream;
 
 /**
  * Implements the logging controller. This class actually sets the logging
@@ -63,18 +64,18 @@ public class LoggingController {
                 (LoggerContext) LoggerFactory.getILoggerFactory();
 
         try {
-            
+
             // get a new configuration and set
             // the context
             JoranConfigurator configurator = new JoranConfigurator();
             configurator.setContext(loggerContext);
             loggerContext.reset();
-            
+
             // if enabled, the log entries will be
             // appended to a file, otherwise it will
             // remain silent
             if (enable) {
-                
+
                 // set the file name and configure
                 // the logging controller to append
                 // entries to the file

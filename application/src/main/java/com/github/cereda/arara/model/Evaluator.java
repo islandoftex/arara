@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -37,13 +37,15 @@ import com.github.cereda.arara.controller.ConfigurationController;
 import com.github.cereda.arara.controller.LanguageController;
 import com.github.cereda.arara.utils.CommonUtils;
 import com.github.cereda.arara.utils.Methods;
+import org.mvel2.templates.TemplateRuntime;
+
 import java.util.HashMap;
 import java.util.Map;
-import org.mvel2.templates.TemplateRuntime;
 
 /**
  * Implements the evaluator model, on which a conditional can be analyzed and
  * processed.
+ *
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
@@ -54,18 +56,18 @@ public class Evaluator {
     // loops arara will accept; it's like
     // reaching infinity
     private final long loops;
-    
+
     // the counter for the current execution, it
     // helps us keep track of the number of times
     // this evaluation has happened, and also to
     // prevent potential infinite loops
     private long counter;
-    
+
     // a flag that indicates the
     // evaluation to halt regardless
     // of the the result
     private boolean halt;
-    
+
     // the application messages obtained from the
     // language controller
     private static final LanguageController messages =
@@ -84,17 +86,18 @@ public class Evaluator {
 
     /**
      * Evaluate the provided conditional.
+     *
      * @param conditional The conditional object.
      * @return A boolean value indicating if the conditional holds.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public boolean evaluate(Conditional conditional) throws AraraException {
-        
+
         // when in dry-run mode, arara
         // always ignore conditional evaluations
-        if (((Boolean) ConfigurationController.
-                getInstance().get("execution.dryrun")) == true) {
+        if ((Boolean) ConfigurationController.getInstance()
+                .get("execution.dryrun")) {
             return false;
         }
 
@@ -118,11 +121,11 @@ public class Evaluator {
         if (((conditional.getType() == Conditional.ConditionalType.WHILE) &&
                 (counter > loops)) ||
                 ((conditional.getType() == Conditional.ConditionalType.UNTIL) &&
-                (counter >= loops))) {
+                        (counter >= loops))) {
             return false;
         } else {
 
-            Map<String, Object> context = new HashMap<String, Object>();
+            Map<String, Object> context = new HashMap<>();
             Methods.addConditionalMethods(context);
 
             try {

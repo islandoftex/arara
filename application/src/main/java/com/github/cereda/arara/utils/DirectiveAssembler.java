@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -50,7 +50,7 @@ public class DirectiveAssembler {
     // lines composed the resulting
     // potential directive
     private final List<Integer> lineNumbers;
-    
+
     // this variable holds the textual
     // representation of the directive
     private String text;
@@ -59,11 +59,11 @@ public class DirectiveAssembler {
      * Constructor.
      */
     public DirectiveAssembler() {
-        lineNumbers = new ArrayList<Integer>();
+        lineNumbers = new ArrayList<>();
         text = "";
     }
 
-     /**
+    /**
      * Checks if an append operation is allowed.
      * @return A boolean value indicating if an append operation is allowed.
      */

@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -34,6 +34,7 @@
 package com.github.cereda.arara.utils;
 
 import com.github.cereda.arara.model.Pair;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -65,45 +66,45 @@ public class ClassLoadingUtils {
         if (!file.exists()) {
             status = 1;
         } else {
-            
+
             // classloading involves defining
             // a classloader and fetching the
             // desired class from it, based on
             // the provided file archive
             try {
-                
+
                 // creates a new classloader with
                 // the provided file (potentially
                 // a JAR file)
                 URLClassLoader classloader = new URLClassLoader(
                         new URL[]{
-                            file.toURI().toURL()
+                                file.toURI().toURL()
                         },
                         ClassLoadingUtils.class.getClassLoader()
                 );
-                
+
                 // fetches the class from the
                 // instantiated classloader
                 value = Class.forName(name, true, classloader);
-                
+
             } catch (MalformedURLException nothandled1) {
-                
+
                 // the file URL is incorrect,
                 // update status accordingly
                 status = 2;
-                
+
             } catch (ClassNotFoundException nothandled2) {
-                
+
                 // the class was not found,
                 // update status accordingly
                 status = 3;
-                
+
             }
         }
 
         // return a new pair based on the
         // current status and class holder
-        return new Pair<Integer, Class>(status, value);
+        return new Pair<>(status, value);
     }
 
     /**
@@ -127,40 +128,40 @@ public class ClassLoadingUtils {
         // exists, otherwise simply
         // ignore instantiation
         if (status == 0) {
-            
+
             // object instantiation relies
             // on the default constructor
             // (without arguments), class
             // must implement it
-            
+
             // OBS: constructors with arguments
             // must be invoked through reflection
             try {
-                
+
                 // get the class reference from
                 // the pair and instantiate it
                 // by invoking the default
                 // constructor (without arguments)
                 value = pair.getSecondElement().newInstance();
-                
+
             } catch (IllegalAccessException nothandled1) {
-                
+
                 // the object instantiation violated
                 // an access policy, status is updated
                 status = 4;
-                
+
             } catch (InstantiationException nothandled2) {
-                
+
                 // an instantiation exception has
                 // occurred, status is updated
                 status = 5;
-                
+
             }
         }
 
         // return a new pair based on the
         // current status and object holder
-        return new Pair<Integer, Object>(status, value);
+        return new Pair<>(status, value);
     }
 
 }

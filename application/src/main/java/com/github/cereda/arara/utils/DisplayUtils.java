@@ -1,4 +1,4 @@
-/**
+/*
  * Arara, the cool TeX automation tool
  * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
@@ -39,15 +39,17 @@ import com.github.cereda.arara.model.AraraException;
 import com.github.cereda.arara.model.Conditional;
 import com.github.cereda.arara.model.Messages;
 import com.github.cereda.arara.model.StopWatch;
-import java.io.File;
-import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.util.List;
+
 /**
  * Implements display utilitary methods.
+ *
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
@@ -65,6 +67,7 @@ public class DisplayUtils {
 
     /**
      * Displays the short version of the current entry in the terminal.
+     *
      * @param name Rule name.
      * @param task Task name.
      */
@@ -86,6 +89,7 @@ public class DisplayUtils {
 
     /**
      * Displays the short version of the current entry result in the terminal.
+     *
      * @param value The boolean value to be displayed.
      */
     private static void buildShortResult(boolean value) {
@@ -95,6 +99,7 @@ public class DisplayUtils {
 
     /**
      * Displays the current entry result in the terminal.
+     *
      * @param value The boolean value to be displayed.
      */
     public static void printEntryResult(boolean value) {
@@ -118,6 +123,7 @@ public class DisplayUtils {
 
     /**
      * Displays a long version of the current entry result in the terminal.
+     *
      * @param value The boolean value to be displayed
      */
     private static void buildLongResult(boolean value) {
@@ -129,6 +135,7 @@ public class DisplayUtils {
 
     /**
      * Displays the current entry in the terminal.
+     *
      * @param name The rule name.
      * @param task The task name.
      */
@@ -155,13 +162,14 @@ public class DisplayUtils {
 
     /**
      * Gets the length of the longest result match.
+     *
      * @return An integer value representing the longest result match.
      */
     private static int getLongestMatch() {
         String[] values = new String[]{
-            messages.getMessage(Messages.INFO_LABEL_ON_SUCCESS),
-            messages.getMessage(Messages.INFO_LABEL_ON_FAILURE),
-            messages.getMessage(Messages.INFO_LABEL_ON_ERROR)
+                messages.getMessage(Messages.INFO_LABEL_ON_SUCCESS),
+                messages.getMessage(Messages.INFO_LABEL_ON_FAILURE),
+                messages.getMessage(Messages.INFO_LABEL_ON_ERROR)
         };
         int max = values[0].length();
         for (String value : values) {
@@ -174,6 +182,7 @@ public class DisplayUtils {
 
     /**
      * Displays a long version of the current entry in the terminal.
+     *
      * @param name Rule name.
      * @param task Task name.
      */
@@ -183,16 +192,15 @@ public class DisplayUtils {
         } else {
             ConfigurationController.getInstance().put("display.rolling", true);
         }
-        StringBuilder line = new StringBuilder();
-        line.append("(").append(name).append(") ");
-        line.append(task);
         System.out.println(displaySeparator());
-        System.out.println(StringUtils.abbreviate(line.toString(), getWidth()));
+        System.out.println(StringUtils.abbreviate("(" + name + ") " +
+                task, getWidth()));
         System.out.println(displaySeparator());
     }
 
     /**
      * Displays a dry-run version of the current entry in the terminal.
+     *
      * @param name The rule name.
      * @param task The task name.
      */
@@ -202,15 +210,14 @@ public class DisplayUtils {
         } else {
             ConfigurationController.getInstance().put("display.rolling", true);
         }
-        StringBuilder line = new StringBuilder();
-        line.append("[DR] (").append(name).append(") ");
-        line.append(task);
-        System.out.println(StringUtils.abbreviate(line.toString(), getWidth()));
+        System.out.println(StringUtils.abbreviate("[DR] (" + name + ") " +
+                task, getWidth()));
         System.out.println(displaySeparator());
     }
 
     /**
      * Displays the exception in the terminal.
+     *
      * @param exception The exception object.
      */
     public static void printException(AraraException exception) {
@@ -222,8 +229,8 @@ public class DisplayUtils {
                     getInstance().get("display.line");
         }
         if (ConfigurationController.getInstance().contains("display.result")) {
-            if (((Boolean) ConfigurationController.
-                    getInstance().get("display.result")) == true) {
+            if ((Boolean) ConfigurationController.
+                    getInstance().get("display.result")) {
                 addNewLine();
             }
         }
@@ -257,11 +264,12 @@ public class DisplayUtils {
 
     /**
      * Gets the string representation of the provided boolean value.
+     *
      * @param value The boolean value.
      * @return The string representation.
      */
     private static String getResult(boolean value) {
-        return (value == true ?
+        return (value ?
                 messages.getMessage(
                         Messages.INFO_LABEL_ON_SUCCESS
                 )
@@ -293,6 +301,7 @@ public class DisplayUtils {
 
     /**
      * Gets the default terminal width defined in the settings.
+     *
      * @return An integer representing the terminal width.
      */
     private static int getWidth() {
@@ -303,6 +312,7 @@ public class DisplayUtils {
     /**
      * Displays the provided text wrapped nicely according to the default
      * terminal width.
+     *
      * @param text The text to be displayed.
      */
     public static void wrapText(String text) {
@@ -311,6 +321,7 @@ public class DisplayUtils {
 
     /**
      * Checks if the execution is in dry-run mode.
+     *
      * @return A boolean value indicating if the execution is in dry-run mode.
      */
     private static boolean isDryRunMode() {
@@ -320,6 +331,7 @@ public class DisplayUtils {
 
     /**
      * Checks if the execution is in verbose mode.
+     *
      * @return A boolean value indicating if the execution is in verbose mode.
      */
     private static boolean isVerboseMode() {
@@ -329,6 +341,7 @@ public class DisplayUtils {
 
     /**
      * Displays the rule authors in the terminal.
+     *
      * @param authors The list of authors.
      */
     public static void printAuthors(List<String> authors) {
@@ -339,23 +352,21 @@ public class DisplayUtils {
         String text = authors.isEmpty() ?
                 messages.getMessage(Messages.INFO_LABEL_NO_AUTHORS)
                 : CommonUtils.getCollectionElements(
-                        CommonUtils.trimSpaces(authors), "", "", ", ");
+                CommonUtils.trimSpaces(authors), "", "", ", ");
         line.append(" ").append(text);
         wrapText(line.toString());
     }
 
     /**
      * Displays the current conditional in the terminal.
+     *
      * @param conditional The conditional object.
      */
     public static void printConditional(Conditional conditional) {
         if (conditional.getType() != Conditional.ConditionalType.NONE) {
-            StringBuilder line = new StringBuilder();
-            line.append(messages.getMessage(Messages.INFO_LABEL_CONDITIONAL));
-            line.append(" (");
-            line.append(String.valueOf(conditional.getType()));
-            line.append(") ").append(conditional.getCondition());
-            wrapText(line.toString());
+            wrapText(messages.getMessage(Messages.INFO_LABEL_CONDITIONAL) +
+                    " (" + conditional.getType() + ") " +
+                    conditional.getCondition());
         }
     }
 
@@ -410,9 +421,8 @@ public class DisplayUtils {
                 CommonUtils.getSystemProperty("user.dir",
                         "[unknown user's working directory]")
         ));
-        logger.info(String.format("::: CF @ %s",
-                (String) ConfigurationController.
-                        getInstance().get("execution.configuration.name")
+        logger.info(String.format("::: CF @ %s", ConfigurationController
+                .getInstance().get("execution.configuration.name")
         ));
         logger.info(displaySeparator());
         logger.info(line);
@@ -427,7 +437,7 @@ public class DisplayUtils {
         if (ConfigurationController.getInstance().contains("display.time")) {
             if ((ConfigurationController.getInstance().contains("display.line"))
                     || (ConfigurationController.getInstance().
-                            contains("display.exception"))) {
+                    contains("display.exception"))) {
                 addNewLine();
             }
             String text = messages.getMessage(
@@ -441,12 +451,10 @@ public class DisplayUtils {
      * Displays the application logo in the terminal.
      */
     public static void printLogo() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("  __ _ _ __ __ _ _ __ __ _ ").append("\n");
-        builder.append(" / _` | '__/ _` | '__/ _` |").append("\n");
-        builder.append("| (_| | | | (_| | | | (_| |").append("\n");
-        builder.append(" \\__,_|_|  \\__,_|_|  \\__,_|");
-        System.out.println(builder.toString());
+        System.out.println("  __ _ _ __ __ _ _ __ __ _ " + "\n" +
+                " / _` | '__/ _` | '__/ _` |" + "\n" +
+                "| (_| | | | (_| | | | (_| |" + "\n" +
+                " \\__,_|_|  \\__,_|_|  \\__,_|");
         addNewLine();
     }
 
@@ -470,6 +478,7 @@ public class DisplayUtils {
 
     /**
      * Gets the output separator with the provided text.
+     *
      * @param message The provided text.
      * @return A string containing the output separator with the provided text.
      */
@@ -478,23 +487,24 @@ public class DisplayUtils {
                 getWidth(), "-");
     }
 
-     /**
+    /**
      * Gets the line separator.
+     *
      * @return A string containing the line separator.
      */
     public static String displaySeparator() {
         return StringUtils.repeat("-", getWidth());
     }
-    
+
     /**
      * Gets the application path.
+     *
      * @return A string containing the application path.
      */
     private static String getApplicationPath() {
         try {
             return ConfigurationUtils.getApplicationPath();
-        }
-        catch (AraraException ae) {
+        } catch (AraraException ae) {
             return "[unknown application path]";
         }
     }

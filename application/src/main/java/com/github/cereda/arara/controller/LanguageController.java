@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -35,6 +35,7 @@ package com.github.cereda.arara.controller;
 
 import ch.qos.cal10n.IMessageConveyor;
 import ch.qos.cal10n.MessageConveyor;
+
 import java.util.Locale;
 
 /**
@@ -51,7 +52,7 @@ public class LanguageController {
     // this is the reference instance, instantiated once
     private static final LanguageController instance =
             new LanguageController();
-    
+
     // the message conveyor helps us to get localized messages
     // according to the provided locale
     private IMessageConveyor conveyor;

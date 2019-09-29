@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -36,36 +36,24 @@ package com.github.cereda.arara.utils;
 import com.github.cereda.arara.controller.ConfigurationController;
 import com.github.cereda.arara.controller.LanguageController;
 import com.github.cereda.arara.controller.SystemCallController;
-import com.github.cereda.arara.model.AraraException;
-import com.github.cereda.arara.model.Argument;
-import com.github.cereda.arara.model.Database;
-import com.github.cereda.arara.model.FileType;
-import com.github.cereda.arara.model.Messages;
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.MissingFormatArgumentException;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.github.cereda.arara.model.*;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.Transformer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Implements common utilitary methods.
+ *
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
@@ -79,18 +67,15 @@ public class CommonUtils {
 
     /**
      * Checks if the input string is equal to a valid boolean value.
+     *
      * @param value The input string.
      * @return A boolean value represented by the provided string.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static boolean checkBoolean(String value) throws AraraException {
-        List<String> yes = Arrays.asList(
-                new String[]{"yes", "true", "1", "on"}
-        );
-        List<String> no = Arrays.asList(
-                new String[]{"no", "false", "0", "off"}
-        );
+        List<String> yes = Arrays.asList("yes", "true", "1", "on");
+        List<String> no = Arrays.asList("no", "false", "0", "off");
         if (!union(yes, no).contains(value.toLowerCase())) {
             throw new AraraException(
                     messages.getMessage(
@@ -105,20 +90,22 @@ public class CommonUtils {
 
     /**
      * Provides a union set operation between two lists.
-     * @param <T> The list type.
+     *
+     * @param <T>   The list type.
      * @param list1 The first list.
      * @param list2 The second list.
      * @return The union of those two lists.
      */
     private static <T> List<T> union(List<T> list1, List<T> list2) {
-        Set<T> elements = new HashSet<T>();
+        Set<T> elements = new HashSet<>();
         elements.addAll(list1);
         elements.addAll(list2);
-        return new ArrayList<T>(elements);
+        return new ArrayList<>(elements);
     }
 
     /**
      * Build a system-dependant path based on the path and the file.
+     *
      * @param path A string representing the path to be prepended.
      * @param file A string representing the file to be appended.
      * @return The full path as a string.
@@ -130,6 +117,7 @@ public class CommonUtils {
 
     /**
      * Checks if the provided string is empty. It does not handle a null value.
+     *
      * @param string A string.
      * @return A boolean value indicating if the string is empty.
      */
@@ -139,6 +127,7 @@ public class CommonUtils {
 
     /**
      * Removes the keyword from the beginning of the provided string.
+     *
      * @param line A string to be analyzed.
      * @return The provided string without the keyword.
      */
@@ -147,7 +136,7 @@ public class CommonUtils {
             Pattern pattern = Pattern.compile("^(\\s)*<arara>\\s");
             Matcher matcher = pattern.matcher(line);
             if (matcher.find()) {
-                line = (line.substring(matcher.end(), line.length()));
+                line = (line.substring(matcher.end()));
             }
             line = line.trim();
         }
@@ -157,9 +146,10 @@ public class CommonUtils {
     /**
      * Discovers the file through string reference lookup and sets the
      * configuration accordingly.
+     *
      * @param reference The string reference.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static void discoverFile(String reference) throws AraraException {
         File file = lookupFile(reference);
@@ -176,10 +166,11 @@ public class CommonUtils {
 
     /**
      * Performs a file lookup based on a string reference.
+     *
      * @param reference The file reference as a string.
      * @return The file as result of the lookup operation.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     private static File lookupFile(String reference) throws AraraException {
         @SuppressWarnings("unchecked")
@@ -189,7 +180,7 @@ public class CommonUtils {
         String name = file.getName();
         String parent = getParentCanonicalPath(file);
         String path = buildPath(parent, name);
-        
+
         // direct search, so we are considering
         // the reference as a complete name
         for (FileType type : types) {
@@ -209,7 +200,7 @@ public class CommonUtils {
                 }
             }
         }
-        
+
         // indirect search; in this case, we are considering
         // that the file reference has an implict extension,
         // so we need to add it and look again
@@ -232,16 +223,16 @@ public class CommonUtils {
 
     /**
      * Gets the parent canonical path of a file.
+     *
      * @param file The file.
      * @return The parent canonical path of a file.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static String getParentCanonicalPath(File file)
             throws AraraException {
         try {
-            String path = file.getCanonicalFile().getParent();
-            return path;
+            return file.getCanonicalFile().getParent();
         } catch (IOException exception) {
             throw new AraraException(
                     messages.getMessage(
@@ -254,10 +245,11 @@ public class CommonUtils {
 
     /**
      * Gets the canonical file from a file.
+     *
      * @param file The file.
      * @return The canonical file.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static File getCanonicalFile(String file) throws AraraException {
         try {
@@ -274,7 +266,8 @@ public class CommonUtils {
 
     /**
      * Checks if the provided object is from a certain class.
-     * @param clazz The class.
+     *
+     * @param clazz  The class.
      * @param object The object.
      * @return A boolean value indicating if the provided object is from a
      * certain class.
@@ -286,6 +279,7 @@ public class CommonUtils {
     /**
      * Helper method to flatten a potential list of lists into a list of
      * objects.
+     *
      * @param list First list.
      * @param flat Second list.
      */
@@ -301,17 +295,19 @@ public class CommonUtils {
 
     /**
      * Flattens a potential list of lists into a list of objects.
+     *
      * @param list The list to be flattened.
      * @return The flattened list.
      */
     public static List<Object> flatten(List<?> list) {
-        List<Object> result = new ArrayList<Object>();
+        List<Object> result = new ArrayList<>();
         flatten(list, result);
         return result;
     }
 
     /**
      * Gets the list of file types, in order.
+     *
      * @return A string representation of the list of file types, in order.
      */
     public static String getFileTypesList() {
@@ -323,45 +319,40 @@ public class CommonUtils {
 
     /**
      * Gets a string representation of a collection.
+     *
      * @param collection The collection.
-     * @param open The opening string.
-     * @param close The closing string.
-     * @param separator The element separator.
+     * @param open       The opening string.
+     * @param close      The closing string.
+     * @param separator  The element separator.
      * @return A string representation of the provided collection.
      */
     public static String getCollectionElements(Collection collection,
-            String open, String close, String separator) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(open);
-        builder.append(StringUtils.join(collection, separator));
-        builder.append(close);
-        return builder.toString();
+                                               String open, String close, String separator) {
+        return open + StringUtils.join(collection, separator) + close;
     }
 
     /**
      * Gets a set of strings containing unknown keys from a map and a list. It
      * is a set difference from the keys in the map and the entries in the list.
+     *
      * @param parameters The map of parameters.
-     * @param arguments The list of arguments.
+     * @param arguments  The list of arguments.
      * @return A set of strings representing unknown keys from a map and a list.
      */
     public static Set<String> getUnknownKeys(Map<String, Object> parameters,
-            List<Argument> arguments) {
+                                             List<Argument> arguments) {
         Collection<String> found = parameters.keySet();
         Collection<String> expected = CollectionUtils.collect(
-                arguments, new Transformer<Argument, String>() {
-            public String transform(Argument argument) {
-                return argument.getIdentifier();
-            }
-        });
+                arguments, Argument::getIdentifier);
         Collection<String> difference = CollectionUtils.
                 subtract(found, expected);
-        return new HashSet<String>(difference);
+        return new HashSet<>(difference);
     }
 
     /**
      * Gets the rule error header, containing the identifier and the path, if
      * any.
+     *
      * @return A string representation of the rule error header, containing the
      * identifier and the path, if any.
      */
@@ -386,21 +377,19 @@ public class CommonUtils {
 
     /**
      * Trims spaces from every string of a list of strings.
+     *
      * @param input The list of strings.
      * @return A new list of strings, with each element trimmed.
      */
     public static List<String> trimSpaces(List<String> input) {
         Collection<String> result = CollectionUtils.collect(
-                input, new Transformer<String, String>() {
-            public String transform(String input) {
-                return input.trim();
-            }
-        });
-        return new ArrayList<String>(result);
+                input, String::trim);
+        return new ArrayList<>(result);
     }
 
     /**
      * Gets a human readable representation of a file size.
+     *
      * @param file The file.
      * @return A string representation of the file size.
      */
@@ -410,6 +399,7 @@ public class CommonUtils {
 
     /**
      * Gets the date the provided file was last modified.
+     *
      * @param file The file.
      * @return A string representation of the date the provided file was last
      * modified.
@@ -421,15 +411,16 @@ public class CommonUtils {
 
     /**
      * Gets a list of all rule paths.
+     *
      * @return A list of all rule paths.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static List<String> getAllRulePaths() throws AraraException {
         @SuppressWarnings("unchecked")
         List<String> paths = (List<String>) ConfigurationController.
                 getInstance().get("execution.rule.paths");
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         for (String path : paths) {
             File location = new File(InterpreterUtils.construct(path, "quack"));
             result.add(getParentCanonicalPath(location));
@@ -437,10 +428,11 @@ public class CommonUtils {
         return result;
     }
 
-     /**
+    /**
      * Gets the reference of the current file in execution. Note that this
      * method might return a value different than the main file provided in
      * the command line.
+     *
      * @return A reference of the current file in execution. Might be different
      * than the main file provided in the command line.
      */
@@ -451,10 +443,11 @@ public class CommonUtils {
 
     /**
      * Calculates the CRC32 checksum of the provided file.
+     *
      * @param file The file.
      * @return A string containing the CRC32 checksum of the provided file.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static String calculateHash(File file) throws AraraException {
         try {
@@ -472,6 +465,7 @@ public class CommonUtils {
 
     /**
      * Gets the file type of a file.
+     *
      * @param file The file.
      * @return The corresponding file type.
      */
@@ -481,17 +475,19 @@ public class CommonUtils {
 
     /**
      * Gets the file type of a string representing the file.
+     *
      * @param name A string representing the file.
      * @return The corresponding file type.
      */
     public static String getFiletype(String name) {
         name = name.lastIndexOf(".") != -1 ?
-                name.substring(name.lastIndexOf(".") + 1, name.length()) : "";
+                name.substring(name.lastIndexOf(".") + 1) : "";
         return name;
     }
 
     /**
      * Gets the base name of a file.
+     *
      * @param file The file.
      * @return The corresponding base name.
      */
@@ -501,6 +497,7 @@ public class CommonUtils {
 
     /**
      * Gets the base name of a string representing the file.
+     *
      * @param name A string representing the file.
      * @return The corresponding base name.
      */
@@ -512,6 +509,7 @@ public class CommonUtils {
 
     /**
      * Encloses the provided object in double quotes.
+     *
      * @param object The object.
      * @return A string representation of the provided object enclosed in double
      * quotes.
@@ -523,12 +521,13 @@ public class CommonUtils {
     /**
      * Generates a string based on a list of objects, separating each one of
      * them by one space.
+     *
      * @param objects A list of objects.
      * @return A string based on the list of objects, separating each one of
      * them by one space. Empty values are not considered.
      */
     public static String generateString(Object... objects) {
-        List<String> values = new ArrayList<String>();
+        List<String> values = new ArrayList<>();
         for (Object object : objects) {
             if (!CommonUtils.checkEmptyString(String.valueOf(object))) {
                 values.add(String.valueOf(object));
@@ -539,6 +538,7 @@ public class CommonUtils {
 
     /**
      * Checks if a file exists.
+     *
      * @param file The file.
      * @return A boolean value indicating if the file exists.
      */
@@ -548,10 +548,11 @@ public class CommonUtils {
 
     /**
      * Checks if a file exists based on its extension.
+     *
      * @param extension The extension.
      * @return A boolean value indicating if the file exists.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static boolean exists(String extension) throws AraraException {
         File file = new File(getPath(extension));
@@ -560,11 +561,12 @@ public class CommonUtils {
 
     /**
      * Checks if a file has changed since the last verification.
+     *
      * @param file The file.
      * @return A boolean value indicating if the file has changed since the last
      * verification.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static boolean hasChanged(File file) throws AraraException {
         Database database = DatabaseUtils.load();
@@ -603,11 +605,12 @@ public class CommonUtils {
     /**
      * Checks if the file has changed since the last verification based on the
      * provided extension.
+     *
      * @param extension The provided extension.
      * @return A boolean value indicating if the file has changed since the last
      * verification.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static boolean hasChanged(String extension) throws AraraException {
         File file = new File(getPath(extension));
@@ -616,10 +619,11 @@ public class CommonUtils {
 
     /**
      * Gets the full file path based on the provided extension.
+     *
      * @param extension The extension.
      * @return A string containing the full file path.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     private static String getPath(String extension) throws AraraException {
         String name = getBasename(getCurrentReference());
@@ -630,10 +634,11 @@ public class CommonUtils {
 
     /**
      * Gets the canonical path from the provided file.
+     *
      * @param file The file.
      * @return The canonical path from the provided file.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static String getCanonicalPath(File file) throws AraraException {
         try {
@@ -651,12 +656,13 @@ public class CommonUtils {
     /**
      * Checks if the file based on the provided extension contains the provided
      * regex.
+     *
      * @param extension The file extension.
-     * @param regex The regex.
+     * @param regex     The regex.
      * @return A boolean value indicating if the file contains the provided
      * regex.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static boolean checkRegex(String extension, String regex)
             throws AraraException {
@@ -666,12 +672,13 @@ public class CommonUtils {
 
     /**
      * Checks if the file contains the provided regex.
-     * @param file The file.
+     *
+     * @param file  The file.
      * @param regex The regex.
      * @return A boolean value indicating if the file contains the provided
      * regex.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static boolean checkRegex(File file, String regex)
             throws AraraException {
@@ -696,16 +703,17 @@ public class CommonUtils {
     /**
      * Replicates a string pattern based on a list of objects, generating a list
      * as result.
+     *
      * @param pattern The string pattern.
-     * @param values The list of objects to be merged with the pattern.
+     * @param values  The list of objects to be merged with the pattern.
      * @return A list containing the string pattern replicated to each object
      * from the list.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static List<Object> replicateList(String pattern,
-            List<Object> values) throws AraraException {
-        List<Object> result = new ArrayList<Object>();
+                                             List<Object> values) throws AraraException {
+        List<Object> result = new ArrayList<>();
         for (Object value : values) {
             try {
                 result.add(String.format(pattern, value));
@@ -724,14 +732,15 @@ public class CommonUtils {
     /**
      * Checks if the provided operating system string holds according to the
      * underlying operating system.
+     *
      * @param value A string representing an operating system.
      * @return A boolean value indicating if the provided string refers to the
      * underlying operating system.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static boolean checkOS(String value) throws AraraException {
-        Map<String, Boolean> values = new HashMap<String, Boolean>();
+        Map<String, Boolean> values = new HashMap<>();
         values.put("windows", SystemUtils.IS_OS_WINDOWS);
         values.put("linux", SystemUtils.IS_OS_LINUX);
         values.put("mac", SystemUtils.IS_OS_MAC_OSX);
@@ -752,20 +761,22 @@ public class CommonUtils {
         }
         return values.get(value.toLowerCase());
     }
-    
+
     /**
      * Returns the exit status of the application.
+     *
      * @return An integer representing the exit status of the application.
      */
     public static int getExitStatus() {
         return (Integer) ConfigurationController.
                 getInstance().get("execution.status");
     }
-    
+
     /**
      * Gets the system property according to the provided key, or resort to the
      * fallback value if an exception is thrown or if the key is invalid.
-     * @param key The system property key.
+     *
+     * @param key      The system property key.
      * @param fallback The fallback value.
      * @return A string containing the system property value or the fallback.
      */
@@ -777,100 +788,101 @@ public class CommonUtils {
             return fallback;
         }
     }
-    
+
     /**
      * Gets the preamble content, converting a single string into a list of
      * strings, based on new lines.
+     *
      * @return A list of strings representing the preamble content.
      */
     public static List<String> getPreambleContent() {
-        if (((Boolean) ConfigurationController.
-                    getInstance().get("execution.preamble.active")) == true) {
-            return new ArrayList<String>(
+        if ((Boolean) ConfigurationController.
+                getInstance().get("execution.preamble.active")) {
+            return new ArrayList<>(
                     Arrays.asList(
                             ((String) ConfigurationController.getInstance().
                                     get("execution.preamble.content")
                             ).split("\n"))
             );
-        }
-        else {
-            return new ArrayList<String>();
+        } else {
+            return new ArrayList<>();
         }
     }
-    
+
     /**
      * Generates a list of filenames from the provided command based on a list
      * of extensions for each underlying operating system.
+     *
      * @param command A string representing the command.
      * @return A list of filenames.
      */
     private static List<String> appendExtensions(String command) {
-        
+
         // the resulting list, to hold the
         // filenames generated from the
         // provided command
-        List<String> result = new ArrayList<String>();
-        
+        List<String> result = new ArrayList<>();
+
         // list of extensions, specific for
         // each operating system (in fact, it
         // is more Windows specific)
         List<String> extensions;
-        
+
         // the application is running on
         // Windows, so let's look for the
         // following extensions in order
         if (SystemUtils.IS_OS_WINDOWS) {
-            
+
             // this list is actually a sublist from
             // the original Windows PATHEXT environment
             // variable which holds the list of executable
             // extensions that Windows supports
             extensions = Arrays.asList(".com", ".exe", ".bat", ".cmd");
-        }
-        else {
-            
+        } else {
+
             // no Windows, so the default
             // extension will be just an
             // empty string
-            extensions = Arrays.asList("");
+            extensions = Collections.singletonList("");
         }
-        
+
         // for each and every extension in the
         // list, let's build the corresponding
         // filename and add to the result
         for (String extension : extensions) {
             result.add(command.concat(extension));
         }
-        
+
         // return the resulting list
         // holding the filenames
         return result;
     }
-    
+
     /**
      * Checks if the provided command name is reachable from the system path.
+     *
      * @param command A string representing the command.
      * @return A logic value.
      */
     public static boolean isOnPath(String command) {
         try {
-            
+
             // first and foremost, let's build the list
             // of filenames based on the underlying
             // operating system
             List<String> filenames = appendExtensions(command);
-            
+
             // break the path into several parts
             // based on the path separator symbol
             StringTokenizer tokenizer = new StringTokenizer(
                     System.getenv("PATH"),
                     File.pathSeparator
             );
-            
+
             // iterate through every part of the
             // path looking for each filename
             while (tokenizer.hasMoreTokens()) {
-                
+
                 // if the search does not return an empty
                 // list, one of the filenames got a match,
                 // and the command is available somewhere
@@ -881,19 +893,18 @@ public class CommonUtils {
                                 new NameFileFilter(filenames),
                                 null
                         ).isEmpty()) {
-                    
+
                     // command is found somewhere,
                     // so it is on path
                     return true;
                 }
             }
-            
+
             // nothing was found,
             // command is not on path
             return false;
-        }
-        catch (Exception exception) {
-            
+        } catch (Exception exception) {
+
             // an exception was raised, simply
             // return and forget about it
             return false;
@@ -902,21 +913,21 @@ public class CommonUtils {
 
     /**
      * Gets the full base name of a file.
+     *
      * @param file The file.
      * @return The corresponding full base name.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static String getFullBasename(File file) throws AraraException {
-        
+
         // if the provided file does not contain a
         // file separator, fallback to the usual
         // base name lookup
         if (!file.toString().contains(File.separator)) {
             return getBasename(file);
-        }
-        else {
-            
+        } else {
+
             // we need to get the parent file, get the
             // canonical path and build the corresponding
             // full base name path
@@ -925,9 +936,10 @@ public class CommonUtils {
             return buildPath(path, getBasename(file));
         }
     }
-    
+
     /**
      * Checks whether a directory is under a root directory.
+     *
      * @param f1 Directory to be inspected.
      * @param f2 Root directory.
      * @return Logical value indicating whether the directoy is under root.
@@ -940,8 +952,7 @@ public class CommonUtils {
                     startsWith(
                             getParentCanonicalPath(f2).concat(File.separator)
                     );
-        }
-        else {
+        } else {
             throw new AraraException(
                     messages.getMessage(
                             Messages.ERROR_ISSUBDIRECTORY_NOT_A_DIRECTORY,

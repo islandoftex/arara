@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -33,9 +33,10 @@
  */
 package com.github.cereda.arara.model;
 
-import java.util.HashMap;
 import org.simpleframework.xml.ElementMap;
 import org.simpleframework.xml.Root;
+
+import java.util.HashMap;
 
 /**
  * The XML database model, which keeps track on file changes. I am using the
@@ -58,7 +59,7 @@ public class Database {
      * Constructor. It creates a new map.
      */
     public Database() {
-        map = new HashMap<String, String>();
+        map = new HashMap<>();
     }
 
     /**

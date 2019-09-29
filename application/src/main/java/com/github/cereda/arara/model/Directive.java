@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -38,6 +38,7 @@ import java.util.Map;
 
 /**
  * Implements the directive model.
+ *
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
@@ -47,16 +48,16 @@ public class Directive {
     // the directive identifier, it is resolved
     // to the rule identifier later on
     private String identifier;
-    
+
     // a map containing the parameters; they
     // are validated later on in order to
     // ensure they are valid
     private Map<String, Object> parameters;
-    
+
     // a conditional containing the type and
     // the expression to be evaluated later on
     private Conditional conditional;
-    
+
     // a list contained all line numbers from
     // the main file which built the current
     // directive
@@ -64,6 +65,7 @@ public class Directive {
 
     /**
      * Gets the directive identifier.
+     *
      * @return A string representing the directive identifier.
      */
     public String getIdentifier() {
@@ -72,6 +74,7 @@ public class Directive {
 
     /**
      * Sets the directive identifier.
+     *
      * @param identifier A string representing the directive identifier.
      */
     public void setIdentifier(String identifier) {
@@ -80,6 +83,7 @@ public class Directive {
 
     /**
      * Gets the directive parameters.
+     *
      * @return A map containing the directive parameters.
      */
     public Map<String, Object> getParameters() {
@@ -88,6 +92,7 @@ public class Directive {
 
     /**
      * Sets the directive parameters.
+     *
      * @param parameters A map containing the directive parameters.
      */
     public void setParameters(Map<String, Object> parameters) {
@@ -96,6 +101,7 @@ public class Directive {
 
     /**
      * Gets the conditional object from the current directive.
+     *
      * @return The conditional object from the current directive.
      */
     public Conditional getConditional() {
@@ -104,6 +110,7 @@ public class Directive {
 
     /**
      * Sets the conditional object from the current directive.
+     *
      * @param conditional The conditional object from the current directive.
      */
     public void setConditional(Conditional conditional) {
@@ -112,6 +119,7 @@ public class Directive {
 
     /**
      * Gets the list containing all line numbers from the current directive.
+     *
      * @return A list containing all line numbers from the current directive.
      */
     public List<Integer> getLineNumbers() {
@@ -120,8 +128,9 @@ public class Directive {
 
     /**
      * Sets the list containing all line numbers from the current directive.
+     *
      * @param lineNumbers A list containing all line numbers from the current
-     * directive.
+     *                    directive.
      */
     public void setLineNumbers(List<Integer> lineNumbers) {
         this.lineNumbers = lineNumbers;
@@ -129,18 +138,17 @@ public class Directive {
 
     /**
      * Provides a textual representation of the current directive.
+     *
      * @return A string containing a textual representation of the current
      * directive.
      */
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Directive: { ");
-        builder.append("identifier: ").append(identifier).append(", ");
-        builder.append("parameters: ").append(parameters).append(", ");
-        builder.append("conditional: ").append(conditional).append(", ");
-        builder.append("lines: ").append(lineNumbers).append(" }");
-        return builder.toString();
+        return "Directive: { " +
+                "identifier: " + identifier + ", " +
+                "parameters: " + parameters + ", " +
+                "conditional: " + conditional + ", " +
+                "lines: " + lineNumbers + " }";
     }
 
 }

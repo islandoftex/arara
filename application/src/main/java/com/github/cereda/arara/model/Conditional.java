@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -51,20 +51,20 @@ public class Conditional {
         // evaluated beforehand, directive is interpreted
         // if and only if the result is true
         IF,
-        
+
         // there is no evaluation, directive is interpreted,
         // no extra effort is needed
         NONE,
-        
+
         // evaluated beforehand, directive is interpreted
         // if and only if the result is false
         UNLESS,
-        
+
         // directive is interpreted the first time, then the
         // evaluation is done; while the result is false,
         // the directive is interpreted again and again
         UNTIL,
-        
+
         // evaluated beforehand, directive is interpreted if
         // and oly if the result is true, and the process is
         // repeated while the result still holds true
@@ -75,7 +75,7 @@ public class Conditional {
     // default fallback, as seen in the constructor,
     // is set to NONE, that is, no conditional at all
     private ConditionalType type;
-    
+
     // the expression to be evaluated according to its
     // type; the default fallback, as seen in the
     // constructor, is set to an empty string
@@ -104,7 +104,7 @@ public class Conditional {
     public void setType(ConditionalType type) {
         this.type = type;
     }
-    
+
     /**
      * Gets the condition, that is, the expression to be evaluated.
      * @return A string representing the condition.

@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -38,12 +38,14 @@ import com.github.cereda.arara.controller.LanguageController;
 import com.github.cereda.arara.model.AraraException;
 import com.github.cereda.arara.model.Database;
 import com.github.cereda.arara.model.Messages;
-import java.io.File;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
+import java.io.File;
+
 /**
  * Implements database utilitary methods.
+ *
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
@@ -57,9 +59,10 @@ public class DatabaseUtils {
 
     /**
      * Loads the XML file representing the database.
+     *
      * @return The database object.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static Database load() throws AraraException {
         if (!exists()) {
@@ -68,8 +71,7 @@ public class DatabaseUtils {
             File file = new File(getPath());
             try {
                 Serializer serializer = new Persister();
-                Database database = serializer.read(Database.class, file);
-                return database;
+                return serializer.read(Database.class, file);
             } catch (Exception exception) {
                 throw new AraraException(
                         messages.getMessage(
@@ -84,9 +86,10 @@ public class DatabaseUtils {
 
     /**
      * Saves the database on a XML file.
+     *
      * @param database The database object.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static void save(Database database) throws AraraException {
         File file = new File(getPath());
@@ -106,9 +109,10 @@ public class DatabaseUtils {
 
     /**
      * Checks if the XML file representing the database exists.
+     *
      * @return A boolean value indicating if the XML file exists.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     private static boolean exists() throws AraraException {
         File file = new File(getPath());
@@ -117,9 +121,10 @@ public class DatabaseUtils {
 
     /**
      * Gets the path to the XML file representing the database.
+     *
      * @return A string representing the path to the XML file.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     private static String getPath() throws AraraException {
         String name = ((String) ConfigurationController.
@@ -130,6 +135,7 @@ public class DatabaseUtils {
 
     /**
      * Gets the main file reference.
+     *
      * @return The main file reference.
      */
     private static File getReference() {

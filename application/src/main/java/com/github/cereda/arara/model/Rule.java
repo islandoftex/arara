@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -34,14 +34,15 @@
 package com.github.cereda.arara.model;
 
 import com.github.cereda.arara.utils.CommonUtils;
+import org.apache.commons.collections4.CollectionUtils;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.Transformer;
 
 /**
  * Implements the rule model.
+ *
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
@@ -50,21 +51,22 @@ public class Rule {
 
     // the rule identifier
     private String identifier;
-    
+
     // the rule name
     private String name;
-    
+
     // the list of authors
     private List<String> authors;
-    
+
     // the list of commands
     private List<RuleCommand> commands;
-    
+
     // the list of arguments
     private List<Argument> arguments;
 
     /**
      * Gets the rule identifier.
+     *
      * @return The rule identifier.
      */
     public String getIdentifier() {
@@ -73,6 +75,7 @@ public class Rule {
 
     /**
      * Sets the rule identifier.
+     *
      * @param identifier The rule identifier.
      */
     public void setIdentifier(String identifier) {
@@ -81,6 +84,7 @@ public class Rule {
 
     /**
      * Gets the rule identifier.
+     *
      * @return The rule identifier.
      */
     public String getName() {
@@ -89,6 +93,7 @@ public class Rule {
 
     /**
      * Sets the rule name.
+     *
      * @param name The rule name.
      */
     public void setName(String name) {
@@ -97,23 +102,21 @@ public class Rule {
 
     /**
      * Gets the list of authors.
+     *
      * @return A list of authors.
      */
     public List<String> getAuthors() {
         if (authors != null) {
             Collection<String> result = CollectionUtils.collect(
-                    authors, new Transformer<String, String>() {
-                public String transform(String input) {
-                    return CommonUtils.removeKeyword(input);
-                }
-            });
-            authors = new ArrayList<String>(result);
+                    authors, CommonUtils::removeKeyword);
+            authors = new ArrayList<>(result);
         }
         return authors;
     }
 
     /**
      * Sets the list of authors.
+     *
      * @param authors The list of authors.
      */
     public void setAuthors(List<String> authors) {
@@ -122,6 +125,7 @@ public class Rule {
 
     /**
      * Gets the list of commands.
+     *
      * @return The list of commands.
      */
     public List<RuleCommand> getCommands() {
@@ -130,6 +134,7 @@ public class Rule {
 
     /**
      * Sets the list of commands.
+     *
      * @param commands The list of commands.
      */
     public void setCommands(List<RuleCommand> commands) {
@@ -138,6 +143,7 @@ public class Rule {
 
     /**
      * Gets the list of arguments.
+     *
      * @return The list of arguments.
      */
     public List<Argument> getArguments() {
@@ -146,6 +152,7 @@ public class Rule {
 
     /**
      * Sets the list of arguments.
+     *
      * @param arguments The list of arguments.
      */
     public void setArguments(List<Argument> arguments) {

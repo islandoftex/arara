@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -35,11 +35,8 @@ package com.github.cereda.arara.model;
 
 import com.github.cereda.arara.controller.LanguageController;
 import com.github.cereda.arara.utils.CommonUtils;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+
+import java.util.*;
 
 /**
  * Implements the language model.
@@ -52,11 +49,11 @@ public class Language {
     // the language code, based on
     // ISO 639-1 and language variants
     private final String code;
-    
+
     // map containing all languages
     // supported by nightingale
     private static final Map<String, Pair<String, Locale>> languages =
-            new HashMap<String, Pair<String, Locale>>();
+            new HashMap<>();
 
     // the application messages obtained from the
     // language controller
@@ -67,27 +64,27 @@ public class Language {
      * Initialize the language model. All supported languages are added in here.
      */
     public static void init() {
-        languages.put("en", new Pair<String, Locale>(
+        languages.put("en", new Pair<>(
                 "English",
                 new Locale("en")
         ));
-        languages.put("de", new Pair<String, Locale>(
+        languages.put("de", new Pair<>(
                 "German",
                 new Locale("de")
         ));
-        languages.put("nl", new Pair<String, Locale>(
+        languages.put("nl", new Pair<>(
                 "Dutch",
                 new Locale("nl")
         ));
-        languages.put("qn", new Pair<String, Locale>(
+        languages.put("qn", new Pair<>(
                 "Broad Norfolk",
                 new Locale("en", "QN")
         ));
-        languages.put("ptbr", new Pair<String, Locale>(
+        languages.put("ptbr", new Pair<>(
                 "Brazilian Portuguese",
                 new Locale("pt", "BR")
         ));
-        languages.put("it", new Pair<String, Locale>(
+        languages.put("it", new Pair<>(
                 "Italian",
                 new Locale("it")
         ));
@@ -134,7 +131,7 @@ public class Language {
      * @return String representing the list of available languages.
      */
     public static String getLanguagesList() {
-        List<String> entries = new ArrayList<String>();
+        List<String> entries = new ArrayList<>();
         for (String key : languages.keySet()) {
             entries.add(languages.get(key).
                     getFirstElement().

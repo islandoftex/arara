@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -35,22 +35,8 @@ package com.github.cereda.arara.utils;
 
 import com.github.cereda.arara.Arara;
 import com.github.cereda.arara.controller.LanguageController;
-import com.github.cereda.arara.model.AraraException;
-import com.github.cereda.arara.model.FileType;
-import com.github.cereda.arara.model.FileTypeResource;
-import com.github.cereda.arara.model.Messages;
-import com.github.cereda.arara.model.Resource;
-import java.io.File;
-import java.io.FileReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.Predicate;
+import com.github.cereda.arara.model.*;
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -58,8 +44,15 @@ import org.yaml.snakeyaml.error.MarkedYAMLException;
 import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.*;
+
 /**
  * Implements configuration utilitary methods.
+ *
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
@@ -73,9 +66,10 @@ public class ConfigurationUtils {
 
     /**
      * Gets the list of default file types provided by nightingale, in order.
+     *
      * @return The list of default file types, in order.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static List<FileType> getDefaultFileTypes() throws AraraException {
         return Arrays.asList(
@@ -89,6 +83,7 @@ public class ConfigurationUtils {
 
     /**
      * Gets the configuration file located at the user home directory, if any.
+     *
      * @return The file reference to the external configuration, if any.
      */
     public static File getConfigFile() {
@@ -98,7 +93,7 @@ public class ConfigurationUtils {
                 ".arararc.yaml",
                 "arararc.yaml"
         );
-        
+
         // look for configuration files in the user's working directory first
         for (String name : names) {
             String path = CommonUtils.buildPath(SystemUtils.USER_DIR, name);
@@ -107,7 +102,7 @@ public class ConfigurationUtils {
                 return file;
             }
         }
-        
+
         // if no configuration files are found in the user's working directory,
         // try to look up in a global directory, that is, the user home
         for (String name : names) {
@@ -122,10 +117,11 @@ public class ConfigurationUtils {
 
     /**
      * Validates the configuration file.
+     *
      * @param file The configuration file.
      * @return The configuration file as a resource.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static Resource validateConfiguration(File file)
             throws AraraException {
@@ -138,12 +134,8 @@ public class ConfigurationUtils {
                     Resource.class);
             if (resource.getFiletypes() != null) {
                 List<FileTypeResource> filetypes = resource.getFiletypes();
-                if (CollectionUtils.exists(filetypes,
-                        new Predicate<FileTypeResource>() {
-                    public boolean evaluate(FileTypeResource filetype) {
-                        return (filetype.getExtension() == null);
-                    }
-                })) {
+                if (IterableUtils.matchesAny(filetypes,
+                        filetype -> (filetype.getExtension() == null))) {
                     throw new AraraException(
                             messages.getMessage(
                                     Messages.ERROR_CONFIGURATION_FILETYPE_MISSING_EXTENSION
@@ -170,40 +162,42 @@ public class ConfigurationUtils {
 
     /**
      * Normalize a list of rule paths, removing all duplicates.
+     *
      * @param paths The list of rule paths.
      * @return A list of normalized paths, without duplicates.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static List<String> normalizePaths(List<String> paths)
             throws AraraException {
         paths.add(CommonUtils.buildPath(getApplicationPath(), "rules"));
-        Set<String> set = new LinkedHashSet<String>(paths);
-        List<String> result = new ArrayList<String>(set);
+        Set<String> set = new LinkedHashSet<>(paths);
+        List<String> result = new ArrayList<>(set);
         return result;
     }
 
     /**
      * Normalize a list of file types, removing all duplicates.
+     *
      * @param types The list of file types.
      * @return A list of normalized file types, without duplicates.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static List<FileType> normalizeFileTypes(List<FileType> types)
             throws AraraException {
         types.addAll(getDefaultFileTypes());
-        Set<FileType> set = new LinkedHashSet<FileType>(types);
-        List<FileType> result = new ArrayList<FileType>(set);
-        return result;
+        Set<FileType> set = new LinkedHashSet<>(types);
+        return new ArrayList<>(set);
     }
 
     /**
      * Gets the canonical absolute application path.
+     *
      * @return The string representation of the canonical absolute application
      * path.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static String getApplicationPath() throws AraraException {
         try {
@@ -224,6 +218,7 @@ public class ConfigurationUtils {
 
     /**
      * Cleans the file name to avoid invalid entries.
+     *
      * @param name The file name.
      * @return A cleaned file name.
      */

@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -45,10 +45,10 @@ public class RuleCommand {
 
     // the command name
     private String name;
-    
+
     // the command instruction
     private String command;
-    
+
     // the exit status expression
     private String exit;
 

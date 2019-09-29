@@ -1,4 +1,4 @@
-/**
+/*
  * Arara, the cool TeX automation tool
  * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
@@ -59,20 +59,14 @@ public class UnsafeUtils {
         try {
 
             // create a process result with the provided
-            // command, capturing the output         
-            ProcessResult result = command.hasWorkingDirectory()
-                    ? new ProcessExecutor(
-                            command.getElements()
-                    ).directory(
-                            command.getWorkingDirectory()
-                    ).readOutput(true).execute()
-                    : new ProcessExecutor(
-                            command.getElements()
-                    ).readOutput(true).execute();
+            // command, capturing the output
+            ProcessResult result = new ProcessExecutor(
+                    command.getElements()
+            ).readOutput(true).execute();
 
             // return the pair containing the exit status
             // and the output string as UTF-8
-            return new Pair<Integer, String>(
+            return new Pair<>(
                     result.getExitValue(),
                     result.outputUTF8()
             );
@@ -81,10 +75,11 @@ public class UnsafeUtils {
 
             // quack, quack, do nothing, just
             // return a default error code
+
             // if something goes wrong, the default
             // error branch returns an exit status of
             // -99 and an empty string
-            return new Pair<Integer, String>(-99, "");
+            return new Pair<>(-99, "");
 
         }
     }

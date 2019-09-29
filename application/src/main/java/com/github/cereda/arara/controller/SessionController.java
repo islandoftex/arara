@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -50,7 +50,7 @@ public class SessionController {
     // this is the reference instance, instantiated once
     private static final SessionController instance =
             new SessionController();
-    
+
     // the session map which holds the execution session;
     // the idea here is to provide wrappers to the map
     // methods, so it could be easily manipulated
@@ -60,7 +60,7 @@ public class SessionController {
      * Private constructor. Called once when the singleton is created.
      */
     private SessionController() {
-        map = new HashMap<String, Object>();
+        map = new HashMap<>();
     }
 
     /**

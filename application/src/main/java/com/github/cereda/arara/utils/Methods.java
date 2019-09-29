@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -35,12 +35,8 @@ package com.github.cereda.arara.utils;
 
 import com.github.cereda.arara.controller.ConfigurationController;
 import com.github.cereda.arara.controller.LanguageController;
-import com.github.cereda.arara.model.AraraException;
-import com.github.cereda.arara.model.Command;
-import com.github.cereda.arara.model.Messages;
-import com.github.cereda.arara.model.Pair;
-import com.github.cereda.arara.model.Session;
-import com.github.cereda.arara.model.Trigger;
+import com.github.cereda.arara.model.*;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -57,7 +53,7 @@ public class Methods {
     // the language controller
     private static final LanguageController messages =
             LanguageController.getInstance();
-    
+
     // the session controller
     private static final Session session = new Session();
 
@@ -271,7 +267,7 @@ public class Methods {
      * higher levels.
      */
     public static boolean isTrue(String string) throws AraraException {
-        return isEmpty(string) ? false : CommonUtils.checkBoolean(string);
+        return !isEmpty(string) && CommonUtils.checkBoolean(string);
     }
 
     /**
@@ -282,7 +278,7 @@ public class Methods {
      * higher levels.
      */
     public static boolean isFalse(String string) throws AraraException {
-        return isEmpty(string) ? false : !CommonUtils.checkBoolean(string);
+        return !isEmpty(string) && !CommonUtils.checkBoolean(string);
     }
 
     /**
@@ -350,7 +346,7 @@ public class Methods {
      * higher levels.
      */
     public static Object isTrue(String string, Object yes, Object no,
-            Object fallback) throws AraraException {
+                                Object fallback) throws AraraException {
         return isEmpty(string) ? fallback : (isTrue(string) ? yes : no);
     }
 
@@ -365,7 +361,7 @@ public class Methods {
      * higher levels.
      */
     public static Object isFalse(String string, Object yes, Object no,
-            Object fallback) throws AraraException {
+                                 Object fallback) throws AraraException {
         return isEmpty(string) ? fallback : (isFalse(string) ? yes : no);
     }
 
@@ -491,7 +487,7 @@ public class Methods {
      * higher levels.
      */
     public static List<Object> replicatePattern(String pattern,
-            List<Object> values) throws AraraException {
+                                                List<Object> values) throws AraraException {
         return CommonUtils.replicateList(pattern, values);
     }
 
@@ -521,7 +517,7 @@ public class Methods {
     public static boolean isWindows() throws AraraException {
         return CommonUtils.checkOS("windows");
     }
-    
+
     /**
      * Checks if we are inside a Cygwin environment.
      * @return A boolean value.
@@ -614,7 +610,7 @@ public class Methods {
             throws AraraException {
         return CommonUtils.checkOS("windows") ? yes : no;
     }
-    
+
     /**
      * Checks if we are inside a Cygwin environment.
      * @param yes Object to return if true.
@@ -834,7 +830,7 @@ public class Methods {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
-    public static boolean found(File file, String regex) 
+    public static boolean found(File file, String regex)
             throws AraraException {
         return CommonUtils.checkRegex(file, regex);
     }
@@ -856,7 +852,7 @@ public class Methods {
     public static Command getCommand(Object... elements) {
         return new Command(elements);
     }
-    
+
     /**
      * Gets the command based on an array of objects and with the provided
      * working directory as string.
@@ -865,12 +861,12 @@ public class Methods {
      * @return A command.
      */
     public static Command getCommandWithWorkingDirectory(String path,
-            Object... elements) {
+                                                         Object... elements) {
         Command command = new Command(elements);
         command.setWorkingDirectory(new File(path));
         return command;
     }
-    
+
     /**
      * Gets the command based on an array of objects and with the provided
      * working directory as file.
@@ -879,12 +875,12 @@ public class Methods {
      * @return A command.
      */
     public static Command getCommandWithWorkingDirectory(File file,
-            Object... elements) {
+                                                         Object... elements) {
         Command command = new Command(elements);
         command.setWorkingDirectory(file);
         return command;
     }
-    
+
     /**
      * Gets the command based on a list of strings and with the provided
      * working directory as string.
@@ -893,12 +889,12 @@ public class Methods {
      * @return A command.
      */
     public static Command getCommandWithWorkingDirectory(String path,
-            List<String> elements) {
+                                                         List<String> elements) {
         Command command = new Command(elements);
         command.setWorkingDirectory(new File(path));
         return command;
     }
-    
+
     /**
      * Gets the command based on a list of strings and with the provided
      * working directory as file.
@@ -907,7 +903,7 @@ public class Methods {
      * @return A command.
      */
     public static Command getCommandWithWorkingDirectory(File file,
-            List<String> elements) {
+                                                         List<String> elements) {
         Command command = new Command(elements);
         command.setWorkingDirectory(file);
         return command;
@@ -977,7 +973,7 @@ public class Methods {
     public static boolean isBoolean(Object object) {
         return checkClass(Boolean.class, object);
     }
-    
+
     /**
      * Checks if the execution is in verbose mode.
      * @return A boolean value indicating if the execution is in verbose mode.
@@ -986,7 +982,7 @@ public class Methods {
         return (Boolean) ConfigurationController.
                 getInstance().get("execution.verbose");
     }
-    
+
     /**
      * Returns a file object based on the provided name.
      * @param name The file name.
@@ -995,7 +991,7 @@ public class Methods {
     public static File toFile(String name) {
         return new File(name);
     }
-    
+
     /**
      * Shows the message.
      * @param width Integer value, in pixels.
@@ -1004,10 +1000,10 @@ public class Methods {
      * @param text Text of the message.
      */
     public static void showMessage(int width, int type,
-            String title, String text) {
+                                   String title, String text) {
         MessageUtils.showMessage(width, type, title, text);
     }
-    
+
     /**
      * Shows the message. It relies on the default width.
      * @param type Type of message.
@@ -1017,7 +1013,7 @@ public class Methods {
     public static void showMessage(int type, String title, String text) {
         MessageUtils.showMessage(type, title, text);
     }
-    
+
     /**
      * Shows a message with options presented as an array of buttons.
      * @param width Integer value, in pixels.
@@ -1028,10 +1024,10 @@ public class Methods {
      * @return The index of the selected button, starting from 1.
      */
     public static int showOptions(int width, int type, String title,
-            String text, Object... buttons) {
+                                  String text, Object... buttons) {
         return MessageUtils.showOptions(width, type, title, text, buttons);
     }
-    
+
     /**
      * Shows a message with options presented as an array of buttons. It relies
      * on the default width.
@@ -1039,13 +1035,13 @@ public class Methods {
      * @param title Title of the message.
      * @param text Text of the message.
      * @param buttons An array of objects to be presented as buttons.
-     * @return  The index of the selected button, starting from 1.
+     * @return The index of the selected button, starting from 1.
      */
     public static int showOptions(int type, String title,
-            String text, Object... buttons) {
+                                  String text, Object... buttons) {
         return MessageUtils.showOptions(type, title, text, buttons);
     }
-    
+
     /**
      * Shows a message with a text input.
      * @param width Integer value, in pixels.
@@ -1055,10 +1051,10 @@ public class Methods {
      * @return The string representing the input text.
      */
     public static String showInput(int width, int type,
-            String title, String text) {
+                                   String title, String text) {
         return MessageUtils.showInput(width, type, title, text);
     }
-    
+
     /**
      * Shows a message with a text input. It relies on the default width.
      * @param type Type of message.
@@ -1069,7 +1065,7 @@ public class Methods {
     public static String showInput(int type, String title, String text) {
         return MessageUtils.showInput(type, title, text);
     }
-    
+
     /**
      * Shows a message with options presented as a dropdown list of elements.
      * @param width Integer value, in pixels.
@@ -1080,10 +1076,10 @@ public class Methods {
      * @return The index of the selected element, starting from 1.
      */
     public static int showDropdown(int width, int type, String title,
-            String text, Object... elements) {
+                                   String text, Object... elements) {
         return MessageUtils.showDropdown(width, type, title, text, elements);
     }
-    
+
     /**
      * Shows a message with options presented as a dropdown list of elements. It
      * relies on the default width.
@@ -1094,10 +1090,10 @@ public class Methods {
      * @return The index of the selected element, starting from 1.
      */
     public static int showDropdown(int type, String title,
-            String text, Object... elements) {
+                                   String text, Object... elements) {
         return MessageUtils.showDropdown(type, title, text, elements);
     }
-    
+
     /**
      * Checks if the provided command name is reachable from the system path.
      * @param command A string representing the command.
@@ -1106,7 +1102,7 @@ public class Methods {
     public static boolean isOnPath(String command) {
         return CommonUtils.isOnPath(command);
     }
-    
+
     /**
      * Gets the full basename.
      * @param file The file.
@@ -1139,7 +1135,7 @@ public class Methods {
     public static String getFullBasename(String name) throws AraraException {
         return getFullBasename(new File(name));
     }
-    
+
     /**
      * Unsafely executes a system command from the underlying operating system
      * and returns a pair containing the exit status and the command output as a
@@ -1149,10 +1145,10 @@ public class Methods {
      * as a string.
      */
     public static Pair<Integer, String>
-        unsafelyExecuteSystemCommand(Command command) {
+    unsafelyExecuteSystemCommand(Command command) {
         return UnsafeUtils.executeSystemCommand(command);
     }
-        
+
     /**
      * Merges the provided template with a context map and writes the result in
      * an output file. This method relies on Apache Velocity.
@@ -1163,10 +1159,10 @@ public class Methods {
      * higher levels.
      */
     public static void mergeVelocityTemplate(File input, File output,
-            Map<String, Object> map) throws AraraException {
+                                             Map<String, Object> map) throws AraraException {
         VelocityUtils.mergeVelocityTemplate(input, output, map);
     }
-    
+
     /**
      * Gets the file reference for the current directive. It is important to
      * observe that version 4.0 of arara replicates the directive when 'files'
@@ -1178,17 +1174,17 @@ public class Methods {
         return (File) ConfigurationController.getInstance().
                 get("execution.directive.reference");
     }
-    
+
     /**
      * Loads a class from the provided file, potentially a Java archive.
      * @param file File containing the Java bytecode (namely, a JAR).
      * @param name The canonical name of the class.
      * @return A pair representing the status and the class.
-     */    
+     */
     public static Pair<Integer, Class> loadClass(File file, String name) {
         return ClassLoadingUtils.loadClass(file, name);
     }
-    
+
     /**
      * Loads a class from the provided string reference, representing a file.
      * @param ref String reference representing a file.
@@ -1198,7 +1194,7 @@ public class Methods {
     public static Pair<Integer, Class> loadClass(String ref, String name) {
         return ClassLoadingUtils.loadClass(new File(ref), name);
     }
-    
+
     /**
      * Loads a class from the provided file, instantiating it.
      * @param file File containing the Java bytecode (namely, a JAR).
@@ -1208,7 +1204,7 @@ public class Methods {
     public static Pair<Integer, Object> loadObject(File file, String name) {
         return ClassLoadingUtils.loadObject(file, name);
     }
-    
+
     /**
      * Loads a class from the provided string reference, instantiating it.
      * @param ref String reference representing a file.
@@ -1218,7 +1214,7 @@ public class Methods {
     public static Pair<Integer, Object> loadObject(String ref, String name) {
         return ClassLoadingUtils.loadObject(new File(ref), name);
     }
-    
+
     /**
      * List all files from the provided directory according to the list of
      * extensions. The leading dot must be omitted, unless it is part of the
@@ -1229,7 +1225,7 @@ public class Methods {
      * @return A list of files.
      */
     public static List<File> listFilesByExtensions(File directory,
-            List<String> extensions, boolean recursive) {
+                                                   List<String> extensions, boolean recursive) {
         return FileSearchingUtils.listFilesByExtensions(
                 directory,
                 extensions,
@@ -1247,14 +1243,14 @@ public class Methods {
      * @return A list of files.
      */
     public static List<File> listFilesByExtensions(String path,
-            List<String> extensions, boolean recursive) {
+                                                   List<String> extensions, boolean recursive) {
         return FileSearchingUtils.listFilesByExtensions(
                 new File(path),
                 extensions,
                 recursive
         );
     }
-    
+
     /**
      * List all files from the provided directory matching the list of file
      * name patterns. Such list can contain wildcards.
@@ -1264,14 +1260,14 @@ public class Methods {
      * @return A list of files.
      */
     public static List<File> listFilesByPatterns(File directory,
-            List<String> patterns, boolean recursive) {
+                                                 List<String> patterns, boolean recursive) {
         return FileSearchingUtils.listFilesByPatterns(
                 directory,
                 patterns,
                 recursive
         );
     }
-    
+
     /**
      * List all files from the provided path matching the list of file
      * name patterns. Such list can contain wildcards.
@@ -1281,14 +1277,14 @@ public class Methods {
      * @return A list of files.
      */
     public static List<File> listFilesByPatterns(String path,
-            List<String> patterns, boolean recursive) {
+                                                 List<String> patterns, boolean recursive) {
         return FileSearchingUtils.listFilesByPatterns(
                 new File(path),
                 patterns,
                 recursive
         );
     }
-    
+
     /**
      * Writes the string to a file, using UTF-8 as default encoding.
      * @param file The file.
@@ -1299,7 +1295,7 @@ public class Methods {
     public static boolean writeToFile(File file, String text, boolean append) {
         return FileHandlingUtils.writeToFile(file, text, append);
     }
-    
+
     /**
      * Writes the string to a file, using UTF-8 as default encoding.
      * @param path The path.
@@ -1308,10 +1304,10 @@ public class Methods {
      * @return A logical value indicating whether it was successful.
      */
     public static boolean writeToFile(String path, String text,
-            boolean append) {
+                                      boolean append) {
         return FileHandlingUtils.writeToFile(new File(path), text, append);
     }
-    
+
     /**
      * Writes the string list to a file, using UTF-8 as default encoding.
      * @param file The file.
@@ -1320,10 +1316,10 @@ public class Methods {
      * @return A logical value indicating whether it was successful.
      */
     public static boolean writeToFile(File file, List<String> lines,
-            boolean append) {
+                                      boolean append) {
         return FileHandlingUtils.writeToFile(file, lines, append);
     }
-    
+
     /**
      * Writes the string list to a file, using UTF-8 as default encoding.
      * @param path The path.
@@ -1332,10 +1328,10 @@ public class Methods {
      * @return A logical value indicating whether it was successful.
      */
     public static boolean writeToFile(String path, List<String> lines,
-            boolean append) {
+                                      boolean append) {
         return FileHandlingUtils.writeToFile(new File(path), lines, append);
     }
-    
+
     /**
      * Reads the provided file into a list of strings.
      * @param file The file.
@@ -1344,7 +1340,7 @@ public class Methods {
     public static List<String> readFromFile(File file) {
         return FileHandlingUtils.readFromFile(file);
     }
-    
+
     /**
      * Reads the provided file into a list of strings.
      * @param path The path.
@@ -1353,7 +1349,7 @@ public class Methods {
     public static List<String> readFromFile(String path) {
         return FileHandlingUtils.readFromFile(new File(path));
     }
-    
+
     /**
      * Checks whether a directory is under the project directory.
      * @param directory The directory to be inspected.
@@ -1364,5 +1360,5 @@ public class Methods {
             throws AraraException {
         return CommonUtils.isSubDirectory(directory, getOriginalReference());
     }
-    
+
 }

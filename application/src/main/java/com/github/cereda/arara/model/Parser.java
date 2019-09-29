@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -38,18 +38,14 @@ import com.github.cereda.arara.controller.LanguageController;
 import com.github.cereda.arara.controller.LoggingController;
 import com.github.cereda.arara.utils.CommonUtils;
 import com.github.cereda.arara.utils.DisplayUtils;
+import org.apache.commons.cli.*;
+
 import java.util.Locale;
 import java.util.Map;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 
 /**
  * Implements the command line parser.
+ *
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
@@ -90,8 +86,9 @@ public class Parser {
 
     /**
      * Constructor.
+     *
      * @param arguments Array of strings representing the command line
-     * arguments.
+     *                  arguments.
      */
     public Parser(String[] arguments) {
         this.arguments = arguments;
@@ -99,10 +96,11 @@ public class Parser {
 
     /**
      * Parses the command line arguments.
+     *
      * @return A boolean value indicating if the parsing should allow the
      * application to look for directives in the provided main file.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public boolean parse() throws AraraException {
 
@@ -238,7 +236,7 @@ public class Parser {
                 ConfigurationController.getInstance().
                         put("execution.verbose", true);
             }
-            
+
             if (line.hasOption("silent")) {
                 ConfigurationController.getInstance().
                         put("execution.verbose", false);
@@ -255,21 +253,20 @@ public class Parser {
                 ConfigurationController.getInstance().
                         put("execution.logging", true);
             }
-            
+
             if (line.hasOption("preamble")) {
                 @SuppressWarnings("unchecked")
-                Map<String, String> preambles = (Map<String, String>) 
+                Map<String, String> preambles = (Map<String, String>)
                         ConfigurationController.getInstance().
-                        get("execution.preambles");
+                                get("execution.preambles");
                 if (preambles.containsKey(line.getOptionValue("preamble"))) {
                     ConfigurationController.getInstance().
-                        put("execution.preamble.active", true);
+                            put("execution.preamble.active", true);
                     ConfigurationController.getInstance().
-                        put("execution.preamble.content",
-                                preambles.get(line.getOptionValue("preamble"))
-                        );
-                }
-                else {
+                            put("execution.preamble.content",
+                                    preambles.get(line.getOptionValue("preamble"))
+                            );
+                } else {
                     throw new AraraException(
                             messages.getMessage(
                                     Messages.ERROR_PARSER_INVALID_PREAMBLE,
@@ -278,7 +275,7 @@ public class Parser {
                     );
                 }
             }
-            
+
             if (line.hasOption("header")) {
                 ConfigurationController.getInstance().
                         put("execution.header", true);
@@ -303,12 +300,10 @@ public class Parser {
      */
     private void printUsage() {
         HelpFormatter formatter = new HelpFormatter();
-        StringBuilder builder = new StringBuilder();
-        builder.append("arara [file [--dry-run] [--log] ");
-        builder.append("[--verbose | --silent] [--timeout N] ");
-        builder.append("[--max-loops N] [--language L] ");
-        builder.append("[ --preamble P ] [--header] | --help | --version]");
-        formatter.printHelp(builder.toString(), options);
+        formatter.printHelp("arara [file [--dry-run] [--log] " +
+                "[--verbose | --silent] [--timeout N] " +
+                "[--max-loops N] [--language L] " +
+                "[ --preamble P ] [--header] | --help | --version]", options);
     }
 
     /**
@@ -321,21 +316,10 @@ public class Parser {
                 get("application.version");
         String revision = (String) ConfigurationController.getInstance().
                 get("application.revision");
-        StringBuilder builder = new StringBuilder();
-        builder.append("arara ");
-        builder.append(number);
-        builder.append(" (revision ");
-        builder.append(revision);
-        builder.append(")");
-        builder.append("\n");
-        builder.append("Copyright (c) ").append(year).append(", ");
-        builder.append("Paulo Roberto Massa Cereda");
-        builder.append("\n");
-        builder.append(messages.getMessage(
-                Messages.INFO_PARSER_ALL_RIGHTS_RESERVED)
-        );
-        builder.append("\n");
-        System.out.println(builder.toString());
+        System.out.println("arara " + number + " (revision " + revision + ")\n" +
+                "Copyright (c) " + year + ", " + "Paulo Roberto Massa Cereda\n" +
+                messages.getMessage(Messages
+                        .INFO_PARSER_ALL_RIGHTS_RESERVED) + "\n");
     }
 
     /**

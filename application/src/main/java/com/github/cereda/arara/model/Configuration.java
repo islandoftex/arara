@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -37,19 +37,16 @@ import com.github.cereda.arara.controller.ConfigurationController;
 import com.github.cereda.arara.controller.LanguageController;
 import com.github.cereda.arara.utils.CommonUtils;
 import com.github.cereda.arara.utils.ConfigurationUtils;
+
 import java.io.File;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Implements the configuration model, which holds the default settings and can
  * load the configuration file.
+ *
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
@@ -63,8 +60,9 @@ public class Configuration {
 
     /**
      * Loads the application configuration.
+     *
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static void load() throws AraraException {
 
@@ -80,14 +78,14 @@ public class Configuration {
         // get the configuration file, if any
         File file = ConfigurationUtils.getConfigFile();
         if (file != null) {
-            
+
             // set the configuration file name for
             // logging purposes
             ConfigurationController.getInstance().
                     put("execution.configuration.name",
                             CommonUtils.getCanonicalPath(file)
                     );
-            
+
             // then validate it and update the
             // configuration accordingly
             Resource resource = ConfigurationUtils.validateConfiguration(file);
@@ -104,18 +102,19 @@ public class Configuration {
 
     /**
      * Resets the configuration to initial settings.
+     *
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     private static void reset() throws AraraException {
 
         // put everything in a map to be
         // later assigned to the configuration
         // controller, which holds the settings
-        Map<String, Object> mapping = new HashMap<String, Object>();
+        Map<String, Object> mapping = new HashMap<>();
 
         mapping.put("execution.loops", 10L);
-        mapping.put("directives.charset", Charset.forName("UTF-8"));
+        mapping.put("directives.charset", StandardCharsets.UTF_8);
         mapping.put("execution.errors.halt", true);
         mapping.put("execution.timeout", false);
         mapping.put("execution.timeout.value", 0L);
@@ -143,14 +142,14 @@ public class Configuration {
         mapping.put("execution.filetypes", ConfigurationUtils.
                 getDefaultFileTypes());
         mapping.put("execution.rule.paths",
-                Arrays.asList(
+                Collections.singletonList(
                         CommonUtils.buildPath(
                                 ConfigurationUtils.getApplicationPath(),
                                 "rules"
                         )
                 )
         );
-        
+
         mapping.put("execution.preambles", new HashMap<String, String>());
         mapping.put("execution.preamble.active", false);
         mapping.put("execution.configuration.name", "[none]");
@@ -168,9 +167,10 @@ public class Configuration {
 
     /**
      * Update the configuration based on the provided map.
-     * @param data Map containing the new configuration settings.
+     *
+     * @param resource Map containing the new configuration settings.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     private static void update(Resource resource) throws AraraException {
 
@@ -185,7 +185,7 @@ public class Configuration {
 
         if (resource.getFiletypes() != null) {
             List<FileTypeResource> resources = resource.getFiletypes();
-            List<FileType> filetypes = new ArrayList<FileType>();
+            List<FileType> filetypes = new ArrayList<>();
             for (FileTypeResource type : resources) {
                 if (type.getPattern() != null) {
                     filetypes.add(
@@ -230,17 +230,17 @@ public class Configuration {
                 );
             }
         }
-        
+
         if (resource.getPreambles() != null) {
             controller.put("execution.preambles",
                     resource.getPreambles());
         }
-        
+
         if (resource.getLaf() != null) {
             controller.put("ui.lookandfeel",
                     resource.getLaf());
         }
-        
+
     }
 
 }

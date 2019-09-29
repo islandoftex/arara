@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -35,10 +35,10 @@ package com.github.cereda.arara.utils;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import org.apache.commons.io.IOUtils;
 
 /**
  * Implements a stream splitter.
+ *
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
@@ -52,6 +52,7 @@ public class TeeOutputStream extends OutputStream {
 
     /**
      * Constructor.
+     *
      * @param outputStreams An array of output streams.
      */
     public TeeOutputStream(OutputStream... outputStreams) {
@@ -60,6 +61,7 @@ public class TeeOutputStream extends OutputStream {
 
     /**
      * Writes the provided integer to each stream.
+     *
      * @param b The provided integer
      * @throws IOException An IO exception.
      */
@@ -73,7 +75,8 @@ public class TeeOutputStream extends OutputStream {
     /**
      * Writes the provided byte array to each stream, with the provided offset
      * and length.
-     * @param b The byte array.
+     *
+     * @param b      The byte array.
      * @param offset The offset.
      * @param length The length.
      * @throws IOException An IO exception.
@@ -87,6 +90,7 @@ public class TeeOutputStream extends OutputStream {
 
     /**
      * Flushes every stream.
+     *
      * @throws IOException An IO exception.
      */
     @Override
@@ -102,8 +106,12 @@ public class TeeOutputStream extends OutputStream {
     @Override
     public void close() {
         for (OutputStream ostream : streams) {
-            IOUtils.closeQuietly(ostream);
+            try {
+                ostream.close();
+            } catch (IOException ignored) {
+                // do nothing on purpose
+            }
         }
     }
-    
+
 }

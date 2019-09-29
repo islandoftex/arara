@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -34,6 +34,7 @@
 package com.github.cereda.arara.model;
 
 import com.github.cereda.arara.utils.CommonUtils;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,7 +51,7 @@ public class Command {
     // a list of elements which are components
     // of a command and represented as strings
     private final List<String> elements;
-    
+
     // an optional file acting as a reference
     // for the default working directory
     private File workingDirectory;
@@ -60,7 +61,7 @@ public class Command {
      * @param values An array of objects.
      */
     public Command(Object... values) {
-        elements = new ArrayList<String>();
+        elements = new ArrayList<>();
         List result = CommonUtils.flatten(Arrays.asList(values));
         for (Object value : result) {
             String element = String.valueOf(value);
@@ -101,7 +102,7 @@ public class Command {
     public File getWorkingDirectory() {
         return workingDirectory;
     }
-    
+
     /**
      * Checks if a working directory was defined.
      * @return A logic value indicating if a working directory was defined.
@@ -119,8 +120,8 @@ public class Command {
         return CommonUtils.getCollectionElements(elements, "[ ", " ]", ", ").
                 concat(
                         hasWorkingDirectory()
-                        ? " @ " + workingDirectory.toString()
-                        : ""
+                                ? " @ " + workingDirectory.toString()
+                                : ""
                 );
     }
 

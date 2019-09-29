@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -43,7 +43,7 @@ public class Pair<T, V> {
 
     // first element of the pair
     private final T firstElement;
-    
+
     // second element of the pair
     private final V secondElement;
 
@@ -72,7 +72,7 @@ public class Pair<T, V> {
     public V getSecondElement() {
         return secondElement;
     }
-    
+
     /**
      * A shorter version for getting the first element.
      * @return The first element.
@@ -80,7 +80,7 @@ public class Pair<T, V> {
     public T first() {
         return getFirstElement();
     }
-    
+
     /**
      * A shorter version for getting the second element.
      * @return The second element.
@@ -88,5 +88,5 @@ public class Pair<T, V> {
     public V second() {
         return getSecondElement();
     }
-    
+
 }

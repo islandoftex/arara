@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -37,11 +37,12 @@ import com.github.cereda.arara.controller.ConfigurationController;
 import com.github.cereda.arara.controller.LanguageController;
 import com.github.cereda.arara.utils.CommonUtils;
 import com.github.cereda.arara.utils.DirectiveUtils;
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
-import org.apache.commons.io.FileUtils;
 
 /**
  * It extracts directives from the provided main file.

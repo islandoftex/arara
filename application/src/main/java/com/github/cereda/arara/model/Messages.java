@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -39,18 +39,19 @@ import ch.qos.cal10n.LocaleData;
 
 /**
  * This enumeration contains all application messages.
+ *
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
  */
 @BaseName("com.github.cereda.arara.localization.messages")
 @LocaleData({
-    @Locale(value = "de", charset = "UTF-8"),
-    @Locale(value = "en", charset = "UTF-8"),
-    @Locale(value = "en_QN", charset = "UTF-8"),
-    @Locale(value = "it", charset = "UTF-8"),
-    @Locale(value = "nl", charset = "UTF-8"),
-    @Locale(value = "pt_BR", charset = "UTF-8")
+        @Locale(value = "de", charset = "UTF-8"),
+        @Locale(value = "en", charset = "UTF-8"),
+        @Locale(value = "en_QN", charset = "UTF-8"),
+        @Locale(value = "it", charset = "UTF-8"),
+        @Locale(value = "nl", charset = "UTF-8"),
+        @Locale(value = "pt_BR", charset = "UTF-8")
 })
 public enum Messages {
 
@@ -169,5 +170,5 @@ public enum Messages {
     LOG_INFO_VALIDATED_DIRECTIVES,
     LOG_INFO_WELCOME_MESSAGE,
     ERROR_CONFIGURATION_FILETYPE_MISSING_EXTENSION
-    
+
 }

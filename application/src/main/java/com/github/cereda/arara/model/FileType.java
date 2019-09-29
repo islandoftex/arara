@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -35,10 +35,11 @@ package com.github.cereda.arara.model;
 
 import com.github.cereda.arara.controller.LanguageController;
 import com.github.cereda.arara.utils.CommonUtils;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Implements the file type model.
@@ -51,7 +52,7 @@ public class FileType {
     // string representing the
     // file extension
     private String extension;
-    
+
     // string representing the
     // file pattern to be used
     // as directive lookup
@@ -65,7 +66,7 @@ public class FileType {
     // a map containing all file
     // types that arara accepts
     private static final Map<String, String> types =
-            new HashMap<String, String>();
+            new HashMap<>();
 
     /**
      * Initializes the file type class by setting the default file types and
@@ -156,7 +157,7 @@ public class FileType {
     public String getPattern() {
         return pattern;
     }
-    
+
     /**
      * Provides a textual representation of the current file type object.
      * @return A string containing a textual representation of the current file

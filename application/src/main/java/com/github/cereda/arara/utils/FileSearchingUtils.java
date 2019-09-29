@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -33,13 +33,14 @@
  */
 package com.github.cereda.arara.utils;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Implements file searching utilitary methods.
@@ -59,7 +60,7 @@ public class FileSearchingUtils {
      * @return A list of files.
      */
     public static List<File> listFilesByExtensions(File directory,
-            List<String> extensions, boolean recursive) {
+                                                   List<String> extensions, boolean recursive) {
         try {
 
             // convert the provided extension
@@ -69,7 +70,7 @@ public class FileSearchingUtils {
 
             // return the result of the
             // provided search
-            return new ArrayList<File>(
+            return new ArrayList<>(
                     FileUtils.listFiles(directory, array, recursive)
             );
         } catch (Exception nothandled) {
@@ -77,7 +78,7 @@ public class FileSearchingUtils {
             // if something bad happens,
             // gracefully fallback to
             // an empty file list
-            return new ArrayList<File>();
+            return new ArrayList<>();
         }
     }
 
@@ -90,13 +91,13 @@ public class FileSearchingUtils {
      * @return A list of files.
      */
     public static List<File> listFilesByPatterns(File directory,
-            List<String> patterns, boolean recursive) {
+                                                 List<String> patterns, boolean recursive) {
         try {
 
             // return the result of the provided
             // search, with the wildcard filter
             // and a potential recursive search
-            return new ArrayList<File>(
+            return new ArrayList<>(
                     FileUtils.listFiles(
                             directory,
                             new WildcardFileFilter(patterns),
@@ -110,7 +111,7 @@ public class FileSearchingUtils {
             // if something bad happens,
             // gracefully fallback to
             // an empty file list
-            return new ArrayList<File>();
+            return new ArrayList<>();
         }
     }
 

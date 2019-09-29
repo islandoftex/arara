@@ -9,22 +9,22 @@ plugins {
 
 dependencies {
   implementation("ch.qos.cal10n:cal10n-api:0.8.1")
-  implementation("ch.qos.logback:logback-classic:1.1.2") {
+  implementation("ch.qos.logback:logback-classic:1.2.3") {
     exclude("org.slf4j:slf4j-api")
   }
-  implementation("ch.qos.logback:logback-core:1.1.2")
-  implementation("commons-cli:commons-cli:1.3.1")
-  implementation("commons-io:commons-io:2.2")
+  implementation("ch.qos.logback:logback-core:1.2.3")
+  implementation("commons-cli:commons-cli:1.4")
+  implementation("commons-io:commons-io:2.6")
   implementation("commons-lang:commons-lang:2.6")
-  implementation("org.apache.commons:commons-collections4:4.0")
+  implementation("org.apache.commons:commons-collections4:4.4")
   implementation("org.apache.velocity:velocity:1.7") {
     exclude("commons-lang:commons-lang")
   }
-  implementation("org.mvel:mvel2:2.2.8.Final")
+  implementation("org.mvel:mvel2:2.4.4.Final")
   implementation("org.simpleframework:simple-xml:2.7.1")
-  implementation("org.slf4j:slf4j-api:1.7.7")
-  implementation("org.yaml:snakeyaml:1.17")
-  implementation("org.zeroturnaround:zt-exec:1.9") {
+  implementation("org.slf4j:slf4j-api:1.7.28")
+  implementation("org.yaml:snakeyaml:1.25")
+  implementation("org.zeroturnaround:zt-exec:1.11") {
     exclude("commons-io:commons-io")
     exclude("org.slf4j:slf4j-api")
   }

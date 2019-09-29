@@ -1,4 +1,4 @@
-/**
+/*
  * Arara, the cool TeX automation tool
  * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
@@ -35,16 +35,11 @@ package com.github.cereda.arara;
 
 import com.github.cereda.arara.controller.LanguageController;
 import com.github.cereda.arara.controller.LoggingController;
-import com.github.cereda.arara.model.AraraException;
-import com.github.cereda.arara.model.Configuration;
-import com.github.cereda.arara.model.Directive;
-import com.github.cereda.arara.model.Extractor;
-import com.github.cereda.arara.model.Interpreter;
-import com.github.cereda.arara.model.Parser;
-import com.github.cereda.arara.model.StopWatch;
+import com.github.cereda.arara.model.*;
 import com.github.cereda.arara.utils.CommonUtils;
 import com.github.cereda.arara.utils.DirectiveUtils;
 import com.github.cereda.arara.utils.DisplayUtils;
+
 import java.util.List;
 
 /**

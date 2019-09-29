@@ -1,4 +1,4 @@
-/**
+/*
  * Arara, the cool TeX automation tool
  * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
@@ -35,23 +35,17 @@ package com.github.cereda.arara.model;
 
 import com.github.cereda.arara.controller.ConfigurationController;
 import com.github.cereda.arara.controller.LanguageController;
-import com.github.cereda.arara.utils.CommonUtils;
-import com.github.cereda.arara.utils.DisplayUtils;
-import com.github.cereda.arara.utils.InterpreterUtils;
-import com.github.cereda.arara.utils.Methods;
-import com.github.cereda.arara.utils.RuleUtils;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.github.cereda.arara.utils.*;
 import org.mvel2.templates.TemplateRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.util.*;
+
 /**
  * Interprets the list of directives.
+ *
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
@@ -74,6 +68,7 @@ public class Interpreter {
 
     /**
      * Sets the list of directives.
+     *
      * @param directives The list of directives.
      */
     public void setDirectives(List<Directive> directives) {
@@ -83,8 +78,9 @@ public class Interpreter {
     /**
      * Executes each directive, throwing an exception if something bad has
      * happened.
+     *
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public void execute() throws AraraException {
 
@@ -129,7 +125,7 @@ public class Interpreter {
 
             String name = rule.getName();
             List<String> authors = rule.getAuthors() == null
-                    ? new ArrayList<String>() : rule.getAuthors();
+                    ? new ArrayList<>() : rule.getAuthors();
             ConfigurationController.getInstance().
                     put("execution.rule.arguments",
                             InterpreterUtils.getRuleArguments(rule)
@@ -150,7 +146,7 @@ public class Interpreter {
                     List<RuleCommand> commands = rule.getCommands();
                     for (RuleCommand command : commands) {
                         String closure = command.getCommand();
-                        Object result = null;
+                        Object result;
                         try {
                             result = TemplateRuntime.eval(closure, parameters);
                         } catch (RuntimeException exception) {
@@ -164,7 +160,7 @@ public class Interpreter {
                             );
                         }
 
-                        List<Object> execution = new ArrayList<Object>();
+                        List<Object> execution = new ArrayList<>();
                         if (CommonUtils.checkClass(List.class, result)) {
                             execution = CommonUtils.flatten((List<?>) result);
                         } else {
@@ -188,21 +184,21 @@ public class Interpreter {
 
                                     DisplayUtils.printEntry(name,
                                             command.getName() == null
-                                            ? messages.getMessage(
+                                                    ? messages.getMessage(
                                                     Messages.INFO_LABEL_UNNAMED_TASK
                                             )
-                                            : command.getName()
+                                                    : command.getName()
                                     );
                                     boolean success = true;
 
                                     if (CommonUtils.checkClass(
                                             Trigger.class, current)) {
-                                        if (((Boolean) ConfigurationController.
+                                        if (!((Boolean) ConfigurationController.
                                                 getInstance().
-                                                get("execution.dryrun")) == false) {
-                                            if (((Boolean) ConfigurationController.
+                                                get("execution.dryrun"))) {
+                                            if ((Boolean) ConfigurationController.
                                                     getInstance().
-                                                    get("execution.verbose")) == true) {
+                                                    get("execution.verbose")) {
                                                 DisplayUtils.wrapText(
                                                         messages.getMessage(
                                                                 Messages.INFO_INTERPRETER_VERBOSE_MODE_TRIGGER_MODE
@@ -233,10 +229,9 @@ public class Interpreter {
                                                     )
                                             );
 
-                                            if (((Boolean) ConfigurationController.
+                                            if ((Boolean) ConfigurationController.
                                                     getInstance().
-                                                    get("execution.dryrun")) == true) {
-
+                                                    get("execution.dryrun")) {
                                                 DisplayUtils.printAuthors(authors);
                                                 DisplayUtils.wrapText(
                                                         messages.getMessage(
@@ -252,9 +247,9 @@ public class Interpreter {
 
                                             Object representation
                                                     = CommonUtils.checkClass(
-                                                            Command.class,
-                                                            current
-                                                    )
+                                                    Command.class,
+                                                    current
+                                            )
                                                     ? current
                                                     : String.valueOf(current);
                                             logger.info(
@@ -264,21 +259,21 @@ public class Interpreter {
                                                     )
                                             );
 
-                                            if (((Boolean) ConfigurationController.
+                                            if (!((Boolean) ConfigurationController.
                                                     getInstance().
-                                                    get("execution.dryrun")) == false) {
+                                                    get("execution.dryrun"))) {
                                                 int code = InterpreterUtils.
                                                         run(representation);
-                                                Object check = null;
+                                                Object check;
                                                 try {
                                                     Map<String, Object> context
-                                                            = new HashMap<String, Object>();
+                                                            = new HashMap<>();
                                                     context.put("value", code);
                                                     check = TemplateRuntime.eval(
                                                             "@{ ".concat(
                                                                     command.getExit() == null
-                                                                    ? "value == 0"
-                                                                    : command.getExit()).concat(" }"),
+                                                                            ? "value == 0"
+                                                                            : command.getExit()).concat(" }"),
                                                             context);
                                                 } catch (RuntimeException exception) {
                                                     throw new AraraException(
@@ -325,8 +320,8 @@ public class Interpreter {
                                     if (((Boolean) ConfigurationController.
                                             getInstance().get("trigger.halt"))
                                             || (((Boolean) ConfigurationController.
-                                                    getInstance().
-                                                    get("execution.errors.halt")
+                                            getInstance().
+                                            get("execution.errors.halt")
                                             && !success))) {
                                         return;
                                     }
@@ -341,11 +336,12 @@ public class Interpreter {
 
     /**
      * Gets the rule according to the provided directive.
+     *
      * @param directive The provided directive.
      * @return The absolute canonical path of the rule, given the provided
      * directive.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     private File getRule(Directive directive) throws AraraException {
         File file = InterpreterUtils.buildRulePath(directive.getIdentifier());
@@ -369,11 +365,12 @@ public class Interpreter {
 
     /**
      * Parses the rule against the provided directive.
-     * @param file The file representing the rule.
+     *
+     * @param file      The file representing the rule.
      * @param directive The directive to be analyzed.
      * @return A rule object.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     private Rule parseRule(File file, Directive directive)
             throws AraraException {
@@ -382,12 +379,13 @@ public class Interpreter {
 
     /**
      * Parses the rule arguments against the provided directive.
-     * @param rule The rule object.
+     *
+     * @param rule      The rule object.
      * @param directive The directive.
      * @return A map containing all arguments resolved according to the
      * directive parameters.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     private Map<String, Object> parseArguments(Rule rule, Directive directive)
             throws AraraException {
@@ -414,11 +412,11 @@ public class Interpreter {
             );
         }
 
-        Map<String, Object> mapping = new HashMap<String, Object>();
+        Map<String, Object> mapping = new HashMap<>();
         mapping.put("file", directive.getParameters().get("file"));
         mapping.put("reference", directive.getParameters().get("reference"));
 
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, Object> context = new HashMap<>();
         context.put("parameters", directive.getParameters());
         context.put("file", directive.getParameters().get("file"));
         context.put("reference", directive.getParameters().get("reference"));
@@ -427,7 +425,7 @@ public class Interpreter {
         for (Argument argument : arguments) {
             if ((argument.isRequired())
                     && (!directive.getParameters().containsKey(
-                            argument.getIdentifier()))) {
+                    argument.getIdentifier()))) {
                 throw new AraraException(
                         CommonUtils.getRuleErrorHeader().concat(
                                 messages.getMessage(
@@ -448,7 +446,7 @@ public class Interpreter {
                             CommonUtils.getRuleErrorHeader().
                                     concat(messages.getMessage(
                                             Messages.ERROR_INTERPRETER_DEFAULT_VALUE_RUNTIME_ERROR
-                                    )
+                                            )
                                     ),
                             exception
                     );
@@ -459,7 +457,7 @@ public class Interpreter {
 
             if ((argument.getFlag() != null)
                     && (directive.getParameters().containsKey(
-                            argument.getIdentifier()))) {
+                    argument.getIdentifier()))) {
 
                 try {
                     Object result = TemplateRuntime.eval(

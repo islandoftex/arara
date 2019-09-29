@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -35,18 +35,7 @@ package com.github.cereda.arara.utils;
 
 import com.github.cereda.arara.controller.ConfigurationController;
 import com.github.cereda.arara.controller.LanguageController;
-import com.github.cereda.arara.model.AraraException;
-import com.github.cereda.arara.model.Conditional;
-import com.github.cereda.arara.model.Directive;
-import com.github.cereda.arara.model.Messages;
-import com.github.cereda.arara.model.Pair;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.github.cereda.arara.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.DumperOptions;
@@ -55,8 +44,17 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.error.MarkedYAMLException;
 import org.yaml.snakeyaml.representer.Representer;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Implements directive utilitary methods.
+ *
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
@@ -67,18 +65,19 @@ public class DirectiveUtils {
     // language controller
     private static final LanguageController messages =
             LanguageController.getInstance();
-    
+
     // get the logger context from a factory
     private static final Logger logger =
             LoggerFactory.getLogger(DirectiveUtils.class);
 
     /**
      * Extracts a list of directives from a list of strings.
+     *
      * @param lines List of strings.
      * @return A list of directives.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */    
+     *                        higher levels.
+     */
     public static List<Directive> extractDirectives(List<String> lines)
             throws AraraException {
 
@@ -91,17 +90,15 @@ public class DirectiveUtils {
                 getInstance().get("application.pattern"));
         Pattern pattern = Pattern.compile(regex);
         List<Pair<Integer, String>> pairs =
-                new ArrayList<Pair<Integer, String>>();
+                new ArrayList<>();
         Matcher matcher;
         for (int i = 0; i < lines.size(); i++) {
             matcher = pattern.matcher(lines.get(i));
             if (matcher.find()) {
                 String line = lines.get(i).substring(
-                        matcher.end(),
-                        lines.get(i).length()
-                );
+                        matcher.end());
                 Pair<Integer, String> pair =
-                        new Pair<Integer, String>(i + 1, line);
+                        new Pair<>(i + 1, line);
                 pairs.add(pair);
 
                 logger.info(
@@ -111,8 +108,7 @@ public class DirectiveUtils {
                                 line.trim()
                         )
                 );
-            }
-            else {
+            } else {
                 if (header) {
                     if (!checkLinePattern(linecheck, lines.get(i))) {
                         break;
@@ -130,7 +126,7 @@ public class DirectiveUtils {
         }
 
         List<DirectiveAssembler> assemblers
-                = new ArrayList<DirectiveAssembler>();
+                = new ArrayList<>();
         DirectiveAssembler assembler = new DirectiveAssembler();
         regex = (String) ConfigurationController.getInstance().
                 get("directives.linebreak.pattern");
@@ -162,7 +158,7 @@ public class DirectiveUtils {
             assemblers.add(assembler);
         }
 
-        List<Directive> directives = new ArrayList<Directive>();
+        List<Directive> directives = new ArrayList<>();
         for (DirectiveAssembler current : assemblers) {
             directives.add(generateDirective(current));
         }
@@ -172,10 +168,11 @@ public class DirectiveUtils {
 
     /**
      * Generates a directive from a directive assembler.
+     *
      * @param assembler The directive assembler.
      * @return The corresponding directive.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static Directive generateDirective(DirectiveAssembler assembler)
             throws AraraException {
@@ -220,6 +217,7 @@ public class DirectiveUtils {
 
     /**
      * Gets the conditional type based on the input string.
+     *
      * @param text The input string.
      * @return The conditional type.
      */
@@ -245,6 +243,7 @@ public class DirectiveUtils {
 
     /**
      * Gets the condition from the input string.
+     *
      * @param text The input string.
      * @return A string representing the condition.
      */
@@ -254,17 +253,18 @@ public class DirectiveUtils {
 
     /**
      * Gets the parameters from the input string.
-     * @param text The input string.
+     *
+     * @param text    The input string.
      * @param numbers The list of line numbers.
      * @return A map containing the directive parameters.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     private static Map<String, Object> getParameters(String text,
-            List<Integer> numbers) throws AraraException {
+                                                     List<Integer> numbers) throws AraraException {
 
         if (text == null) {
-            return new HashMap<String, Object>();
+            return new HashMap<>();
         }
 
         Yaml yaml = new Yaml(
@@ -295,15 +295,16 @@ public class DirectiveUtils {
 
     /**
      * Validates the list of directives, returning a new list.
+     *
      * @param directives The list of directives.
      * @return A new list of directives.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static List<Directive> validate(List<Directive> directives)
             throws AraraException {
 
-        ArrayList<Directive> result = new ArrayList<Directive>();
+        ArrayList<Directive> result = new ArrayList<>();
         for (Directive directive : directives) {
             Map<String, Object> parameters = directive.getParameters();
 
@@ -356,7 +357,7 @@ public class DirectiveUtils {
                         );
                     }
                     for (Object file : files) {
-                        Map<String, Object> map = new HashMap<String, Object>();
+                        Map<String, Object> map = new HashMap<>();
                         for (String key : parameters.keySet()) {
                             map.put(key, parameters.get(key));
                         }
@@ -421,12 +422,13 @@ public class DirectiveUtils {
 
         return result;
     }
-    
+
     /**
      * Checks if the provided line contains the corresponding pattern, based on
      * the file type, or an empty line.
+     *
      * @param pattern Pattern to be matched, based on the file type.
-     * @param line Provided line.
+     * @param line    Provided line.
      * @return Logical value indicating if the provided line contains the
      * corresponding pattern, based on the file type, or an empty line.
      */

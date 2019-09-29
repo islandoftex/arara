@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -35,6 +35,7 @@ package com.github.cereda.arara.model;
 
 import com.github.cereda.arara.controller.ConfigurationController;
 import com.github.cereda.arara.controller.LanguageController;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,7 @@ import java.util.concurrent.Callable;
 /**
  * Implements the trigger model. The tool provides triggers, which are a way
  * to alter its internal behaviour according to a list of parameters.
+ *
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
@@ -61,7 +63,8 @@ public class Trigger {
 
     /**
      * Constructor.
-     * @param action The action name.
+     *
+     * @param action     The action name.
      * @param parameters The list of parameters.
      */
     public Trigger(String action, List<Object> parameters) {
@@ -71,6 +74,7 @@ public class Trigger {
 
     /**
      * Gets the action name.
+     *
      * @return The action name.
      */
     public String getAction() {
@@ -79,6 +83,7 @@ public class Trigger {
 
     /**
      * Gets the list of parameters.
+     *
      * @return The list of parameters.
      */
     public List<Object> getParameters() {
@@ -87,6 +92,7 @@ public class Trigger {
 
     /**
      * Returns a textual representation of the current trigger.
+     *
      * @return A string containing a textual representation of the current
      * trigger.
      */
@@ -97,18 +103,17 @@ public class Trigger {
 
     /**
      * Processes the current trigger.
+     *
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public void process() throws AraraException {
 
         Map<String, Callable<Object>> mapping =
-                new HashMap<String, Callable<Object>>();
-        mapping.put("halt", new Callable<Object>() {
-            public Object call() {
-                ConfigurationController.getInstance().put("trigger.halt", true);
-                return null;
-            }
+                new HashMap<>();
+        mapping.put("halt", () -> {
+            ConfigurationController.getInstance().put("trigger.halt", true);
+            return null;
         });
         if (mapping.containsKey(action)) {
             try {

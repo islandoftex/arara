@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -48,7 +48,7 @@ public class Session {
     // session controller
     private static final SessionController session =
             SessionController.getInstance();
-    
+
     // the application messages obtained from the
     // language controller
     private static final LanguageController messages =

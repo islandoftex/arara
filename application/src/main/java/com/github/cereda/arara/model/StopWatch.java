@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -48,7 +48,7 @@ public class StopWatch {
     // and stopped
     private static long beginning = 0;
     private static long end = 0;
-    
+
     // a variable to indicate the
     // stopwatch is enabled; so far,
     // it hasn't started, then it is

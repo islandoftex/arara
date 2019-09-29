@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -35,12 +35,14 @@ package com.github.cereda.arara.utils;
 
 import com.github.cereda.arara.controller.ConfigurationController;
 import com.github.cereda.arara.controller.LanguageController;
-import com.github.cereda.arara.model.AraraException;
-import com.github.cereda.arara.model.Argument;
-import com.github.cereda.arara.model.Command;
-import com.github.cereda.arara.model.Conditional;
-import com.github.cereda.arara.model.Messages;
-import com.github.cereda.arara.model.Rule;
+import com.github.cereda.arara.model.*;
+import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zeroturnaround.exec.InvalidExitValueException;
+import org.zeroturnaround.exec.ProcessExecutor;
+import org.zeroturnaround.exec.listener.ShutdownHookProcessDestroyer;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -49,16 +51,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.Transformer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zeroturnaround.exec.InvalidExitValueException;
-import org.zeroturnaround.exec.ProcessExecutor;
-import org.zeroturnaround.exec.listener.ShutdownHookProcessDestroyer;
 
 /**
  * Implements interpreter utilitary methods.
+ *
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
@@ -69,35 +65,33 @@ public class InterpreterUtils {
     // language controller
     private static final LanguageController messages =
             LanguageController.getInstance();
-    
+
     // get the logger context from a factory
     private static final Logger logger =
             LoggerFactory.getLogger(InterpreterUtils.class);
 
     /**
      * Gets a list of all rule arguments.
+     *
      * @param rule The provided rule.
      * @return A list of strings containing all rule arguments.
      */
     public static List<String> getRuleArguments(Rule rule) {
         Collection<String> result = CollectionUtils.collect(
-                rule.getArguments(), new Transformer<Argument, String>() {
-            public String transform(Argument input) {
-                return input.getIdentifier();
-            }
-        });
-        return new ArrayList<String>(result);
+                rule.getArguments(), Argument::getIdentifier);
+        return new ArrayList<>(result);
     }
 
     /**
      * Checks if the current conditional has a prior evaluation.
+     *
      * @param conditional The current conditional object.
      * @return A boolean value indicating if the current conditional has a prior
      * evaluation.
      */
     public static boolean runPriorEvaluation(Conditional conditional) {
-        if (((Boolean) ConfigurationController.getInstance().
-                get("execution.dryrun")) == true) {
+        if ((Boolean) ConfigurationController.getInstance()
+                .get("execution.dryrun")) {
             return false;
         }
         switch (conditional.getType()) {
@@ -112,10 +106,11 @@ public class InterpreterUtils {
 
     /**
      * Runs the command in the underlying operating system.
+     *
      * @param command An object representing the command.
      * @return An integer value representing the exit code.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static int run(Object command) throws AraraException {
         boolean verbose = (Boolean) ConfigurationController.
@@ -213,10 +208,11 @@ public class InterpreterUtils {
     /**
      * Builds the rule path based on the rule name and returns the corresponding
      * file location.
+     *
      * @param name The rule name.
      * @return The rule file.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static File buildRulePath(String name) throws AraraException {
         @SuppressWarnings("unchecked")
@@ -233,11 +229,12 @@ public class InterpreterUtils {
 
     /**
      * Constructs the path given the current path and the rule name.
+     *
      * @param path The current path.
      * @param name The rule name.
      * @return The constructed path.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static String construct(String path, String name)
             throws AraraException {

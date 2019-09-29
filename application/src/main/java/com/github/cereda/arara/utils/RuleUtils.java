@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -37,23 +37,23 @@ import com.github.cereda.arara.controller.LanguageController;
 import com.github.cereda.arara.model.AraraException;
 import com.github.cereda.arara.model.Argument;
 import com.github.cereda.arara.model.Messages;
-import com.github.cereda.arara.model.RuleCommand;
 import com.github.cereda.arara.model.Rule;
-import java.io.File;
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.Predicate;
+import org.apache.commons.collections4.IterableUtils;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.error.MarkedYAMLException;
 import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
+import java.io.File;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
 /**
  * Implements rule utilitary methods.
+ *
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
@@ -68,18 +68,19 @@ public class RuleUtils {
     /**
      * Parses the provided file, checks the identifier and returns a rule
      * representation.
-     * @param file The rule file.
+     *
+     * @param file       The rule file.
      * @param identifier The directive identifier.
      * @return The rule object.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     public static Rule parseRule(File file, String identifier)
             throws AraraException {
         Representer representer = new Representer();
         representer.addClassTag(Rule.class, new Tag("!config"));
         Yaml yaml = new Yaml(new Constructor(Rule.class), representer);
-        Rule rule = null;
+        Rule rule;
         try {
             rule = yaml.loadAs(new FileReader(file), Rule.class);
         } catch (MarkedYAMLException yamlException) {
@@ -107,10 +108,11 @@ public class RuleUtils {
 
     /**
      * Validates the rule header according to the directive identifier.
-     * @param rule The rule object.
+     *
+     * @param rule       The rule object.
      * @param identifier The directive identifier.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     private static void validateHeader(Rule rule, String identifier)
             throws AraraException {
@@ -148,9 +150,10 @@ public class RuleUtils {
 
     /**
      * Validates the rule body.
+     *
      * @param rule The rule object.
      * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *                        higher levels.
      */
     private static void validateBody(Rule rule) throws AraraException {
         if (rule.getCommands() == null) {
@@ -162,12 +165,8 @@ public class RuleUtils {
                     )
             );
         } else {
-            if (CollectionUtils.exists(rule.getCommands(),
-                    new Predicate<RuleCommand>() {
-                public boolean evaluate(RuleCommand command) {
-                    return (command.getCommand() == null);
-                }
-            })) {
+            if (IterableUtils.matchesAny(rule.getCommands(),
+                    command -> (command.getCommand() == null))) {
                 throw new AraraException(CommonUtils.getRuleErrorHeader().
                         concat(
                                 messages.getMessage(
@@ -188,7 +187,7 @@ public class RuleUtils {
         } else {
             String[] keywords = new String[]{"file", "files", "reference"};
 
-            List<String> arguments = new ArrayList<String>();
+            List<String> arguments = new ArrayList<>();
             for (Argument argument : rule.getArguments()) {
                 if (argument.getIdentifier() != null) {
                     if ((argument.getFlag() != null) ||
@@ -228,7 +227,7 @@ public class RuleUtils {
             }
 
             int expected = arguments.size();
-            int found = (new HashSet<String>(arguments)).size();
+            int found = (new HashSet<>(arguments)).size();
             if (expected != found) {
                 throw new AraraException(
                         CommonUtils.getRuleErrorHeader().concat(

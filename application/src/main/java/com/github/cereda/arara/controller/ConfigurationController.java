@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -50,7 +50,7 @@ public class ConfigurationController {
     // this is the reference instance, instantiated once
     private static final ConfigurationController instance =
             new ConfigurationController();
-    
+
     // the configuration settings are stored in a map;
     // pretty much everything can be stored in this map,
     // as long as you know what to retrieve later on
@@ -60,7 +60,7 @@ public class ConfigurationController {
      * Private constructor. Called once for creating the proper singleton.
      */
     private ConfigurationController() {
-        map = new HashMap<String, Object>();
+        map = new HashMap<>();
     }
 
     /**

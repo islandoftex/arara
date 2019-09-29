@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012 -- 2019, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -33,11 +33,12 @@
  */
 package com.github.cereda.arara.utils;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.io.FileUtils;
 
 /**
  * Implements file handling utilitary methods.
@@ -81,7 +82,7 @@ public class FileHandlingUtils {
      * @return A logical value indicating whether it was successful.
      */
     public static boolean writeToFile(File file, List<String> lines,
-            boolean append) {
+                                      boolean append) {
         try {
 
             // try to write the provided
@@ -117,7 +118,7 @@ public class FileHandlingUtils {
             // if something bad happens,
             // gracefully fallback to
             // an empty file list
-            return new ArrayList<String>();
+            return new ArrayList<>();
         }
     }
 
