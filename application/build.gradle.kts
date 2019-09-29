@@ -4,6 +4,7 @@ import org.gradle.api.java.archives.internal.DefaultManifest
 
 plugins {
   application
+  `maven-publish`
   id("com.github.johnrengelman.shadow")
 }
 
@@ -58,6 +59,19 @@ val mainManifest: Manifest = DefaultManifest((project as ProjectInternal).fileRe
     }
 
 tasks {
+  register<Jar>("javadocJar") {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "Create JAR with javadoc documentation"
+    archiveClassifier.set("javadoc")
+    from(javadoc)
+  }
+  register<Jar>("sourcesJar") {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "Assembles sources JAR"
+    archiveClassifier.set("sources")
+    from(sourceSets["main"].allSource)
+  }
+
   named<JavaCompile>("compileJava") {
     if (java.sourceCompatibility > JavaVersion.VERSION_1_8) {
       inputs.property("moduleName", moduleName)
@@ -66,7 +80,7 @@ tasks {
           "--module-path", sourceSets["main"].compileClasspath.asPath)
     }
   }
-  named<Jar>("jar") {
+  withType<Jar>() {
     manifest.attributes.putAll(mainManifest.attributes)
   }
   named<ShadowJar>("shadowJar") {
@@ -85,3 +99,97 @@ tasks {
   }
 }
 tasks.named<Task>("assembleDist").configure { dependsOn("shadowJar") }
+
+publishing {
+  publications {
+    create<MavenPublication>("GitLab") {
+      groupId = project.group.toString()
+      artifactId = "arara"
+      version = project.version.toString()
+
+      pom {
+        name.set("arara")
+        description.set(
+            "Arara is a TeX automation tool based on rules and directives."
+        )
+        inceptionYear.set("2012")
+        url.set("https://github.com/cereda/arara")
+        organization {
+          name.set("Island of TeX")
+          url.set("https://gitlab.com/islandoftex")
+        }
+        licenses {
+          license {
+            name.set("New BSD License")
+            url.set("http://www.opensource.org/licenses/bsd-license.php")
+            distribution.set("repo")
+          }
+        }
+        developers {
+          developer {
+            name.set("Paulo Roberto Massa Cereda")
+            email.set("cereda@users.sf.net")
+            id.set("cereda")
+            url.set("https://tex.stackexchange.com/users/3094")
+            roles.set(listOf("Lead developer", "Creator", "Duck enthusiast"))
+          }
+          developer {
+            name.set("Marco Daniel")
+            email.set("marco.daniel@mada-nada.de")
+            id.set("marcodaniel")
+            url.set("https://tex.stackexchange.com/users/5239")
+            roles.set(listOf("Contributor", "Tester", "Fast driver"))
+          }
+          developer {
+            name.set("Brent Longborough")
+            email.set("brent@longborough.org")
+            id.set("brent")
+            url.set("https://tex.stackexchange.com/users/344")
+            roles.set(listOf("Developer", "Contributor", "Tester",
+                "Haskell fanatic"))
+          }
+          developer {
+            name.set("Nicola Talbot")
+            email.set("nicola.lc.talbot@gmail.com")
+            id.set("nlct")
+            url.set("https://tex.stackexchange.com/users/19862")
+            roles.set(listOf("Developer", "Contributor", "Tester",
+                "Hat enthusiast"))
+          }
+        }
+        scm {
+          connection.set("scm:git:https://github.com/cereda/arara.git")
+          developerConnection.set("scm:git:https://github.com/cereda/arara.git")
+          url.set("https://github.com/cereda/arara")
+        }
+        ciManagement {
+          system.set("GitLab")
+          url.set("https://gitlab.com/islandoftex/arara-v5/pipelines")
+        }
+        issueManagement {
+          system.set("GitHub")
+          url.set("https://github.com/cereda/arara/issues")
+        }
+      }
+
+      from(components["java"])
+      artifact(tasks["sourcesJar"])
+      artifact(tasks["javadocJar"])
+    }
+  }
+
+  repositories {
+    maven {
+      url = uri("https://gitlab.com/api/v4/projects/14349047/packages/maven")
+      credentials(HttpHeaderCredentials::class) {
+        if (project.hasProperty("jobToken")) {
+          name = "Job-Token"
+          value = project.property("jobToken").toString()
+        }
+      }
+      authentication {
+        create<HttpHeaderAuthentication>("header")
+      }
+    }
+  }
+}
