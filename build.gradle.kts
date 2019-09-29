@@ -1,4 +1,5 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
+import org.islandoftex.arara.build.CTANBuilderTask
 
 buildscript {
   repositories {
@@ -29,3 +30,5 @@ tasks.withType<DependencyUpdatesTask> {
     isStable.not()
   }
 }
+
+tasks.register("assembleCTAN", CTANBuilderTask::class.java)
