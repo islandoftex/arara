@@ -48,36 +48,6 @@ Done! The current working directory should contain the TDS file and the
 final archive file for a proper CTAN submission! Have fun!
 ```
 
-# Language checker
-
-![Version: 1.0](https://img.shields.io/badge/current_version-1.0-blue.svg?style=flat-square)
-![Language: Java](https://img.shields.io/badge/language-Java-blue.svg?style=flat-square)
-![Minimum JRE: 7.0](https://img.shields.io/badge/minimum_JRE-7.0-blue.svg?style=flat-square)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-
-The `langchecker` tool, as the name implies, serves a very specific purpose: check all language
-files in the provided directory for typing inconsistencies, such as misplaced single quotes.
-For instance:
-
-```
-$ java -jar langchecker.jar localization/
- _                    _           _           
-| |___ ___ ___    ___| |_ ___ ___| |_ ___ ___ 
-| | .'|   | . |  |  _|   | -_|  _| '_| -_|  _|
-|_|__,|_|_|_  |  |___|_|_|___|___|_,_|___|_|  
-          |___|                               
-
------------------ Language coverage report -----------------
-
-- messages_de.properties ........................... 100,00%
-- messages_en.properties ........................... 100,00%
-- messages_en_QN.properties ........................ 100,00%
-- messages_it.properties ........................... 100,00%
-- messages_nl.properties ........................... 100,00%
-- messages_pt_BR.properties ........................ 100,00%
-- messages.properties .............................. 100,00%
-```
-
 # Rule checker
 
 ![Version: 1.0](https://img.shields.io/badge/current_version-1.0-blue.svg?style=flat-square)

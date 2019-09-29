@@ -1,8 +1,8 @@
-/**
+/*
  * Language checker, a tool for Arara
  * Copyright (c) 2015, Paulo Roberto Massa Cereda
  * All rights reserved.
- * 
+ *
  * Permission is hereby granted, free  of charge, to any person obtaining
  * a  copy  of this  software  and  associated documentation  files  (the
  * "Software"), to  deal in  the Software without  restriction, including
@@ -10,10 +10,10 @@
  * distribute, sublicense,  and/or sell  copies of  the Software,  and to
  * permit persons to whom the Software  is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The  above  copyright  notice  and this  permission  notice  shall  be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE  SOFTWARE IS  PROVIDED  "AS  IS", WITHOUT  WARRANTY  OF ANY  KIND,
  * EXPRESS OR  IMPLIED, INCLUDING  BUT NOT LIMITED  TO THE  WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
@@ -22,14 +22,15 @@
  * TORT OR  OTHERWISE, ARISING  FROM, OUT  OF OR  IN CONNECTION  WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.github.cereda.arara.langchecker;
+package com.github.cereda.arara.localization;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Implements the language report model.
+ *
  * @author Paulo Roberto Massa Cereda
  * @version 1.0
  * @since 1.0
@@ -38,11 +39,11 @@ public class LanguageReport {
 
     // the file reference
     private File reference;
-    
+
     // list of problematic lines and
     // their corresponding error types
-    private final List<Pair<Integer, Character>> lines;
-    
+    private final Map<Integer, Character> lines = new HashMap<>();
+
     // total of checked lines
     private int total;
 
@@ -50,11 +51,11 @@ public class LanguageReport {
      * Constructor.
      */
     public LanguageReport() {
-        lines = new ArrayList<>();
     }
 
     /**
      * Gets the file reference.
+     *
      * @return The file reference.
      */
     public File getReference() {
@@ -63,34 +64,35 @@ public class LanguageReport {
 
     /**
      * Gets the problematic lines.
+     *
      * @return Problematic lines as list.
      */
-    public List<Pair<Integer, Character>> getLines() {
+    public Map<Integer, Character> getLines() {
         return lines;
     }
 
     /**
      * Sets the file reference.
+     *
      * @param reference The file reference.
      */
     public void setReference(File reference) {
         this.reference = reference;
     }
-    
+
     /**
      * Add the line to the list of lines.
-     * @param line Line.
+     *
+     * @param line      Line.
      * @param character Character.
      */
     public void addLine(int line, char character) {
-        Pair<Integer, Character> pair = new Pair<>();
-        pair.setFirst(line);
-        pair.setSecond(character);
-        lines.add(pair);
+        lines.put(line, character);
     }
 
     /**
      * Gets the total of lines.
+     *
      * @return Total of lines.
      */
     public int getTotal() {
@@ -99,23 +101,24 @@ public class LanguageReport {
 
     /**
      * Sets the total of lines.
+     *
      * @param total Total of lines.
      */
     public void setTotal(int total) {
         this.total = total;
     }
-    
+
     /**
      * Gets the language coverage.
+     *
      * @return The language coverage.
      */
     public float getCoverage() {
         if (lines.isEmpty()) {
-            return 100;
-        }
-        else {
-            return (float) (1 - (float) lines.size() / total) * 100;
+            return 100f;
+        } else {
+            return (1f - (float) lines.size() / total) * 100f;
         }
     }
-    
+
 }

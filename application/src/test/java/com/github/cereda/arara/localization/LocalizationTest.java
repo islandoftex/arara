@@ -1,6 +1,6 @@
-/**
+/*
  * Arara, the cool TeX automation tool
- * Copyright (c) 2012, Paulo Roberto Massa Cereda 
+ * Copyright (c) 2012, Paulo Roberto Massa Cereda
  * All rights reserved.
  *
  * Redistribution and  use in source  and binary forms, with  or without
@@ -31,39 +31,43 @@
  * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.cereda.arara.tests;
+package com.github.cereda.arara.localization;
 
 import ch.qos.cal10n.verifier.Cal10nError;
 import ch.qos.cal10n.verifier.IMessageKeyVerifier;
 import ch.qos.cal10n.verifier.MessageKeyVerifier;
 import com.github.cereda.arara.model.Messages;
+import org.junit.Test;
+
 import java.util.List;
 import java.util.Locale;
+
 import static org.junit.Assert.assertEquals;
-import org.junit.Test;
 
 /**
  * Tests the localizated messages, checking if all keys are set.
+ *
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
  */
 public class LocalizationTest {
-    
+
     /**
      * Helper method, checks the provided locale.
+     *
      * @param locale The locale.
      * @return The size of the error list.
      */
     private int check(Locale locale) {
         IMessageKeyVerifier verifier = new MessageKeyVerifier(Messages.class);
         List<Cal10nError> errors = verifier.verify(locale);
-        for(Cal10nError error : errors) {
+        for (Cal10nError error : errors) {
             System.err.println(error);
         }
         return errors.size();
     }
-    
+
     /**
      * Verifies the English localization (provided by Paulo).
      */
@@ -71,7 +75,7 @@ public class LocalizationTest {
     public void verifyEnglish() {
         assertEquals(0, check(new Locale("en")));
     }
-    
+
     /**
      * Verifies the German localization (provided by Marco).
      */
@@ -79,7 +83,7 @@ public class LocalizationTest {
     public void verifyGerman() {
         assertEquals(0, check(new Locale("de")));
     }
-    
+
     /**
      * Verifies the Broad Norfolk localization (provided by Nicola).
      */
@@ -87,7 +91,7 @@ public class LocalizationTest {
     public void verifyBroadNorfolk() {
         assertEquals(0, check(new Locale("en", "QN")));
     }
-    
+
     /**
      * Verifies the Dutch localization (provided by Marijn).
      */
@@ -95,7 +99,7 @@ public class LocalizationTest {
     public void verifyDutch() {
         assertEquals(0, check(new Locale("nl")));
     }
-    
+
     /**
      * Verifies the Brazilian Portuguese localization (provided by Paulo).
      */
@@ -103,7 +107,7 @@ public class LocalizationTest {
     public void verifyBrazilianPortuguese() {
         assertEquals(0, check(new Locale("pt", "BR")));
     }
-    
+
     /**
      * Verifies the Italian localization (provided by Enrico).
      */
@@ -111,5 +115,5 @@ public class LocalizationTest {
     public void verifyItalian() {
         assertEquals(0, check(new Locale("it")));
     }
-    
+
 }
