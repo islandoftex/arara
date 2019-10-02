@@ -15,6 +15,7 @@ allprojects {
 }
 
 plugins {
+  kotlin("jvm") version "1.3.50" apply false                        // Apache 2.0
   id("com.github.johnrengelman.shadow") version "5.0.0" apply false // Apache 2.0
   id("com.github.ben-manes.versions") version "0.25.0"              // Apache 2.0
 }

@@ -1,14 +1,18 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.java.archives.internal.DefaultManifest
+import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
 
 plugins {
   application
   `maven-publish`
+  kotlin("jvm")
   id("com.github.johnrengelman.shadow")
 }
 
+val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class).kotlinPluginVersion
 dependencies {
+  implementation(kotlin("stdlib", kotlinVersion))
   implementation("ch.qos.cal10n:cal10n-api:0.8.1")
   implementation("ch.qos.logback:logback-classic:1.2.3") {
     exclude("org.slf4j:slf4j-api")
@@ -41,6 +45,17 @@ val mainClass = "$moduleName.Arara"
 java {
   sourceCompatibility = JavaVersion.VERSION_1_8
   targetCompatibility = sourceCompatibility
+}
+
+sourceSets {
+  main {
+    java { setSrcDirs(listOf("src/main/kotlin")) }
+    resources { setSrcDirs(listOf("src/main/resources")) }
+  }
+  test {
+    java { setSrcDirs(listOf("src/test/kotlin")) }
+    resources { setSrcDirs(listOf("src/test/resources")) }
+  }
 }
 
 application {
