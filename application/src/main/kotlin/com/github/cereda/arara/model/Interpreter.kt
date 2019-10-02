@@ -101,8 +101,8 @@ class Interpreter {
             )
 
             val rule = parseRule(file, directive)
-            val parameters = parseArguments(rule, directive)
-            Methods.addRuleMethods(parameters.toMutableMap())
+            val parameters = parseArguments(rule, directive).toMutableMap()
+            parameters.putAll(Methods.getRuleMethods())
 
             val name = rule.name
             val authors = if (rule.authors == null)
@@ -121,9 +121,7 @@ class Interpreter {
             }
 
             if (available) {
-
                 do {
-
                     val commands = rule.commands
                     for (command in commands) {
                         val closure = command.command
@@ -359,7 +357,7 @@ class Interpreter {
         context["parameters"] = directive.parameters!!
         context["file"] = directive.parameters!!["file"]!!
         context["reference"] = directive.parameters!!["reference"]!!
-        Methods.addRuleMethods(context)
+        context.putAll(Methods.getRuleMethods())
 
         for (argument in arguments) {
             if (argument.isRequired && !directive.parameters!!.containsKey(

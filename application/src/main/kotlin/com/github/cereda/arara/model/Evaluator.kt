@@ -80,9 +80,11 @@ class Evaluator {
             return false
         }
 
+        // TODO: make exhaustive
         when (conditional.type) {
             Conditional.ConditionalType.NONE -> return false
-            Conditional.ConditionalType.IF, Conditional.ConditionalType.UNLESS -> if (!halt) {
+            Conditional.ConditionalType.IF,
+            Conditional.ConditionalType.UNLESS -> if (!halt) {
                 halt = true
             } else {
                 return false
@@ -99,8 +101,7 @@ class Evaluator {
                 && counter >= loops) {
             return false
         } else {
-            val context = mutableMapOf<String, Any>()
-            Methods.addConditionalMethods(context)
+            val context = Methods.getConditionalMethods()
 
             try {
                 val result = TemplateRuntime.eval("@{ " + conditional.condition + " }", context)
@@ -112,9 +113,9 @@ class Evaluator {
                     )
                 } else {
                     var value = result as Boolean
-                    when (conditional.type) {
-                        Conditional.ConditionalType.UNLESS, Conditional.ConditionalType.UNTIL -> value = !value
-                    }
+                    if (conditional.type == Conditional.ConditionalType.UNLESS ||
+                            conditional.type == Conditional.ConditionalType.UNTIL)
+                        value = !value
                     return value
                 }
             } catch (exception: RuntimeException) {

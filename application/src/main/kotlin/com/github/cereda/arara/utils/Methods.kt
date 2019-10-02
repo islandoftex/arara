@@ -37,7 +37,6 @@ import com.github.cereda.arara.controller.ConfigurationController
 import com.github.cereda.arara.controller.LanguageController
 import com.github.cereda.arara.model.*
 import java.io.File
-import java.util.*
 
 /**
  * Implements some auxiliary methods for runtime evaluation.
@@ -184,127 +183,49 @@ object Methods {
      *
      * @param map The map.
      */
-    fun addRuleMethods(map: MutableMap<String, Any>) {
-        addConditionalMethods(map)
+    fun getRuleMethods(): Map<String, Any> {
+        val methods = getConditionalMethods().toMutableMap()
         try {
-            // TODO: check signatures
-            map["getOriginalFile"] = Methods::class.java.getMethod("getOriginalFile")
-            map["getOriginalReference"] = Methods::class.java.getMethod("getOriginalReference")
-            map["isEmpty"] = Methods::class.java.getMethod("isEmpty", String::class.java)
-            map["isNotEmpty"] = Methods::class.java.getMethod("isNotEmpty", String::class.java)
-            map["isEmpty"] = Methods::class.java.getMethod("isEmpty", String::class.java, Any::class.java)
-            map["isNotEmpty"] = Methods::class.java.getMethod("isNotEmpty", String::class.java, Any::class.java)
-            map["isEmpty"] = Methods::class.java.getMethod("isEmpty", String::class.java, Any::class.java, Any::class.java)
-            map["isNotEmpty"] = Methods::class.java.getMethod("isNotEmpty", String::class.java, Any::class.java, Any::class.java)
-            map["isTrue"] = Methods::class.java.getMethod("isTrue", String::class.java)
-            map["isFalse"] = Methods::class.java.getMethod("isFalse", String::class.java)
-            map["isTrue"] = Methods::class.java.getMethod("isTrue", String::class.java, Any::class.java)
-            map["isFalse"] = Methods::class.java.getMethod("isFalse", String::class.java, Any::class.java)
-            map["isTrue"] = Methods::class.java.getMethod("isTrue", String::class.java, Any::class.java, Any::class.java)
-            map["isFalse"] = Methods::class.java.getMethod("isFalse", String::class.java, Any::class.java, Any::class.java)
-            map["isTrue"] = Methods::class.java.getMethod("isTrue", String::class.java, Any::class.java, Any::class.java, Any::class.java)
-            map["isFalse"] = Methods::class.java.getMethod("isFalse", String::class.java, Any::class.java, Any::class.java, Any::class.java)
-            map["trimSpaces"] = Methods::class.java.getMethod("trimSpaces", String::class.java)
-            map["isTrue"] = Methods::class.java.getMethod("isTrue", Boolean::class.javaPrimitiveType, Any::class.java)
-            map["isFalse"] = Methods::class.java.getMethod("isFalse", Boolean::class.javaPrimitiveType, Any::class.java)
-            map["isTrue"] = Methods::class.java.getMethod("isTrue", Boolean::class.javaPrimitiveType, Any::class.java, Any::class.java)
-            map["isFalse"] = Methods::class.java.getMethod("isFalse", Boolean::class.javaPrimitiveType, Any::class.java, Any::class.java)
-            map["getBasename"] = Methods::class.java.getMethod("getBasename", File::class.java)
-            map["getBasename"] = Methods::class.java.getMethod("getBasename", String::class.java)
-            map["getFullBasename"] = Methods::class.java.getMethod("getFullBasename", File::class.java)
-            map["getFullBasename"] = Methods::class.java.getMethod("getFullBasename", String::class.java)
-            map["getFiletype"] = Methods::class.java.getMethod("getFiletype", File::class.java)
-            map["getFiletype"] = Methods::class.java.getMethod("getFiletype", String::class.java)
-            map["throwError"] = Methods::class.java.getMethod("throwError", String::class.java)
-            map["getSession"] = Methods::class.java.getMethod("getSession")
-            map["isWindows"] = Methods::class.java.getMethod("isWindows")
-            map["isLinux"] = Methods::class.java.getMethod("isLinux")
-            map["isMac"] = Methods::class.java.getMethod("isMac")
-            map["isUnix"] = Methods::class.java.getMethod("isUnix")
-            map["isAIX"] = Methods::class.java.getMethod("isAIX")
-            map["isIrix"] = Methods::class.java.getMethod("isIrix")
-            map["isOS2"] = Methods::class.java.getMethod("isOS2")
-            map["isSolaris"] = Methods::class.java.getMethod("isSolaris")
-            map["isCygwin"] = Methods::class.java.getMethod("isCygwin")
-            map["isWindows"] = Methods::class.java.getMethod("isWindows", Any::class.java, Any::class.java)
-            map["isLinux"] = Methods::class.java.getMethod("isLinux", Any::class.java, Any::class.java)
-            map["isMac"] = Methods::class.java.getMethod("isMac", Any::class.java, Any::class.java)
-            map["isUnix"] = Methods::class.java.getMethod("isUnix", Any::class.java, Any::class.java)
-            map["isAIX"] = Methods::class.java.getMethod("isAIX", Any::class.java, Any::class.java)
-            map["isIrix"] = Methods::class.java.getMethod("isIrix", Any::class.java, Any::class.java)
-            map["isOS2"] = Methods::class.java.getMethod("isOS2", Any::class.java, Any::class.java)
-            map["isSolaris"] = Methods::class.java.getMethod("isSolaris", Any::class.java, Any::class.java)
-            map["isCygwin"] = Methods::class.java.getMethod("isCygwin", Any::class.java, Any::class.java)
-            map["replicatePattern"] = Methods::class.java.getMethod("replicatePattern", String::class.java, List::class.java)
-            map["buildString"] = Methods::class.java.getMethod("buildString", Array<Any>::class.java)
-            map["addQuotes"] = Methods::class.java.getMethod("addQuotes", Any::class.java)
-            map["getCommand"] = Methods::class.java.getMethod("getCommand", List::class.java)
-            map["getCommand"] = Methods::class.java.getMethod("getCommand", Array<Any>::class.java)
-            map["getTrigger"] = Methods::class.java.getMethod("getTrigger", String::class.java)
-            map["getTrigger"] = Methods::class.java.getMethod("getTrigger", String::class.java, Array<Any>::class.java)
-            map["checkClass"] = Methods::class.java.getMethod("checkClass", Class::class.java, Any::class.java)
-            map["isString"] = Methods::class.java.getMethod("isString", Any::class.java)
-            map["isList"] = Methods::class.java.getMethod("isList", Any::class.java)
-            map["isMap"] = Methods::class.java.getMethod("isMap", Any::class.java)
-            map["isBoolean"] = Methods::class.java.getMethod("isBoolean", Any::class.java)
-            map["isVerboseMode"] = Methods::class.java.getMethod("isVerboseMode")
-            map["showMessage"] = Methods::class.java.getMethod("showMessage", Int::class.javaPrimitiveType, String::class.java, String::class.java)
-            map["showMessage"] = Methods::class.java.getMethod("showMessage", Int::class.javaPrimitiveType, Int::class.javaPrimitiveType, String::class.java, String::class.java)
-            map["isOnPath"] = Methods::class.java.getMethod("isOnPath", String::class.java)
-            map["unsafelyExecuteSystemCommand"] = Methods::class.java.getMethod("unsafelyExecuteSystemCommand", Command::class.java)
-            map["mergeVelocityTemplate"] = Methods::class.java.getMethod("mergeVelocityTemplate", File::class.java, File::class.java, Map::class.java)
-            map["getCommandWithWorkingDirectory"] = Methods::class.java.getMethod("getCommandWithWorkingDirectory", String::class.java, List::class.java)
-            map["getCommandWithWorkingDirectory"] = Methods::class.java.getMethod("getCommandWithWorkingDirectory", String::class.java, Array<Any>::class.java)
-            map["getCommandWithWorkingDirectory"] = Methods::class.java.getMethod("getCommandWithWorkingDirectory", File::class.java, List::class.java)
-            map["getCommandWithWorkingDirectory"] = Methods::class.java.getMethod("getCommandWithWorkingDirectory", File::class.java, Array<Any>::class.java)
-            map["listFilesByExtensions"] = Methods::class.java.getMethod("listFilesByExtensions", File::class.java, List::class.java, Boolean::class.javaPrimitiveType)
-            map["listFilesByExtensions"] = Methods::class.java.getMethod("listFilesByExtensions", String::class.java, List::class.java, Boolean::class.javaPrimitiveType)
-            map["listFilesByPatterns"] = Methods::class.java.getMethod("listFilesByPatterns", File::class.java, List::class.java, Boolean::class.javaPrimitiveType)
-            map["listFilesByPatterns"] = Methods::class.java.getMethod("listFilesByPatterns", String::class.java, List::class.java, Boolean::class.javaPrimitiveType)
-            map["writeToFile"] = Methods::class.java.getMethod("writeToFile", File::class.java, String::class.java, Boolean::class.javaPrimitiveType)
-            map["writeToFile"] = Methods::class.java.getMethod("writeToFile", File::class.java, List::class.java, Boolean::class.javaPrimitiveType)
-            map["writeToFile"] = Methods::class.java.getMethod("writeToFile", String::class.java, String::class.java, Boolean::class.javaPrimitiveType)
-            map["writeToFile"] = Methods::class.java.getMethod("writeToFile", String::class.java, List::class.java, Boolean::class.javaPrimitiveType)
-            map["readFromFile"] = Methods::class.java.getMethod("readFromFile", File::class.java)
-            map["readFromFile"] = Methods::class.java.getMethod("readFromFile", String::class.java)
-            map["isSubdirectory"] = Methods::class.java.getMethod("isSubdirectory", File::class.java)
-        } catch (_: Exception) {
+            listOf("getOriginalFile", "getOriginalReference", "isEmpty",
+                    "isNotEmpty", "isTrue", "isFalse",
+                    "trimSpaces", "getBasename", "getFullBasename",
+                    "getFiletype", "throwError", "getSession",
+                    "isWindows", "isLinux", "isMac", "isUnix", "isAIX",
+                    "isIrix", "isOS2", "isSolaris", "isCygwin",
+                    "replicatePattern", "buildString", "addQuotes",
+                    "getCommand", "getTrigger", "checkClass", "isString",
+                    "isList", "isMap", "isBoolean", "isVerboseMode",
+                    "showMessage", "isOnPath", "unsafelyExecuteSystemCommand",
+                    "mergeVelocityTemplate", "getCommandWithWorkingDirectory",
+                    "listFilesByExtensions", "listFilesByPatterns",
+                    "writeToFile", "readFromFile", "isSubdirectory")
+                    .forEach { method ->
+                        methods[method] = Methods::class.java.methods
+                                .first { it.name == method }
+                    }
+        } catch (ex: Exception) {
             // quack, quack, quack
         }
+        return methods
     }
 
     /**
      * Adds conditional methods to the provided map.
-     *
-     * @param map The map.
      */
-    fun addConditionalMethods(map: MutableMap<String, Any>) {
+    fun getConditionalMethods(): Map<String, Any> {
+        val methods = mutableMapOf<String, Any>()
         try {
-            map["exists"] = Methods::class.java.getMethod("exists", String::class.java)
-            map["exists"] = Methods::class.java.getMethod("exists", File::class.java)
-            map["missing"] = Methods::class.java.getMethod("missing", String::class.java)
-            map["missing"] = Methods::class.java.getMethod("missing", File::class.java)
-            map["changed"] = Methods::class.java.getMethod("changed", String::class.java)
-            map["changed"] = Methods::class.java.getMethod("changed", File::class.java)
-            map["unchanged"] = Methods::class.java.getMethod("unchanged", String::class.java)
-            map["unchanged"] = Methods::class.java.getMethod("unchanged", File::class.java)
-            map["found"] = Methods::class.java.getMethod("found", String::class.java, String::class.java)
-            map["found"] = Methods::class.java.getMethod("found", File::class.java, String::class.java)
-            map["toFile"] = Methods::class.java.getMethod("toFile", String::class.java)
-            map["showDropdown"] = Methods::class.java.getMethod("showDropdown", Int::class.javaPrimitiveType, String::class.java, String::class.java, Array<Any>::class.java)
-            map["showDropdown"] = Methods::class.java.getMethod("showDropdown", Int::class.javaPrimitiveType, Int::class.javaPrimitiveType, String::class.java, String::class.java, Array<Any>::class.java)
-            map["showInput"] = Methods::class.java.getMethod("showInput", Int::class.javaPrimitiveType, String::class.java, String::class.java)
-            map["showInput"] = Methods::class.java.getMethod("showInput", Int::class.javaPrimitiveType, Int::class.javaPrimitiveType, String::class.java, String::class.java)
-            map["showOptions"] = Methods::class.java.getMethod("showOptions", Int::class.javaPrimitiveType, String::class.java, String::class.java, Array<Any>::class.java)
-            map["showOptions"] = Methods::class.java.getMethod("showOptions", Int::class.javaPrimitiveType, Int::class.javaPrimitiveType, String::class.java, String::class.java, Array<Any>::class.java)
-            map["currentFile"] = Methods::class.java.getMethod("currentFile")
-            map["loadClass"] = Methods::class.java.getMethod("loadClass", File::class.java, String::class.java)
-            map["loadClass"] = Methods::class.java.getMethod("loadClass", String::class.java, String::class.java)
-            map["loadObject"] = Methods::class.java.getMethod("loadObject", File::class.java, String::class.java)
-            map["loadObject"] = Methods::class.java.getMethod("loadObject", String::class.java, String::class.java)
-        } catch (exception: Exception) {
+            listOf("exists", "missing", "changed", "unchanged", "found",
+                    "toFile", "showDropdown", "showInput", "showOptions",
+                    "currentFile", "loadClass", "loadObject")
+                    .forEach { method ->
+                        methods[method] = Methods::class.java.methods
+                                .first { it.name == method }
+                    }
+        } catch (_: Exception) {
             // quack, quack, quack
         }
+        return methods
     }
 
     /**
