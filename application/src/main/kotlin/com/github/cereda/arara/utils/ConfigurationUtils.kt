@@ -58,7 +58,6 @@ import java.net.URLDecoder
  * @since 4.0
  */
 object ConfigurationUtils {
-
     // the application messages obtained from the
     // language controller
     private val messages = LanguageController

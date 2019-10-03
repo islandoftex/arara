@@ -50,6 +50,6 @@ class Database {
     // the key is the absolute canonical file and the value
     // is its corresponding CRC32 hash; the XML map is done
     // inline, so it does not clutter the output a lot
-    @ElementMap(entry = "hash", key = "file", attribute = true, inline = true)
+    @field:ElementMap(entry = "hash", key = "file", attribute = true, inline = true)
     var map: HashMap<String, String> = hashMapOf()
 }

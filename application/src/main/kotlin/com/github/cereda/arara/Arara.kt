@@ -46,7 +46,6 @@ object Arara {
      * Main method. This is the application entry point.
      * @param args A string array containing all command line arguments.
      */
-    // TODO: fix stopwatch
     @JvmStatic
     fun main(args: Array<String>) {
         // the first component to be initialized is the
@@ -55,7 +54,7 @@ object Arara {
         // trigger the static class startup
         LanguageController.init()
 
-        // the second component to be initalized is the
+        // the second component to be initialized is the
         // logging controller; note init() actually disables
         // the logging, so early exceptions won't generate
         // a lot of noise in the terminal
