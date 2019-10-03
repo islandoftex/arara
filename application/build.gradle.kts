@@ -49,7 +49,7 @@ java {
 
 sourceSets {
   main {
-    java { setSrcDirs(listOf("src/main/kotlin")) }
+    java { setSrcDirs(listOf("src/main/java", "src/main/kotlin")) }
     resources { setSrcDirs(listOf("src/main/resources")) }
   }
   test {
