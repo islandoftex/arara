@@ -19,7 +19,6 @@ dependencies {
   }
   implementation("ch.qos.logback:logback-core:1.2.3")
   implementation("commons-cli:commons-cli:1.4")
-  implementation("commons-io:commons-io:2.6")
   implementation("commons-lang:commons-lang:2.6")
   implementation("org.apache.velocity:velocity:1.7") {
     exclude("commons-lang:commons-lang")

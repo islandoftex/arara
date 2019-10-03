@@ -40,8 +40,6 @@ import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.model.Argument
 import com.github.cereda.arara.model.FileType
 import com.github.cereda.arara.model.Messages
-import org.apache.commons.io.FileUtils
-import org.apache.commons.io.filefilter.NameFileFilter
 import org.apache.commons.lang.SystemUtils
 import java.io.File
 import java.io.IOException
@@ -49,6 +47,10 @@ import java.nio.charset.Charset
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
+import java.util.zip.CRC32
+import kotlin.math.ln
+import kotlin.math.pow
+
 
 /**
  * Implements common utilitary methods.
@@ -384,13 +386,27 @@ object CommonUtils {
     }
 
     /**
+     * Gets a human readable representation of a size.
+     *
+     * @param size The byte size to be converted.
+     * @return A string representation of the size.
+     */
+    fun byteSizeToString(size: Long): String {
+        val unit = 1000
+        if (size < unit) return "$size B"
+        val exp = (ln(size.toDouble()) / ln(unit.toDouble())).toInt()
+        return "%.1f %sB".format(size / unit.toDouble().pow(exp.toDouble()),
+                "kMGTPE"[exp - 1])
+    }
+
+    /**
      * Gets a human readable representation of a file size.
      *
      * @param file The file.
      * @return A string representation of the file size.
      */
     fun calculateFileSize(file: File): String {
-        return FileUtils.byteCountToDisplaySize(file.length())
+        return byteSizeToString(file.length())
     }
 
     /**
@@ -416,7 +432,10 @@ object CommonUtils {
     @Throws(AraraException::class)
     fun calculateHash(file: File): String {
         try {
-            return String.format("%08x", FileUtils.checksumCRC32(file))
+            return String.format("%08x", CRC32().run {
+                update(file.readBytes())
+                value
+            })
         } catch (exception: IOException) {
             throw AraraException(
                     messages.getMessage(
@@ -651,7 +670,8 @@ object CommonUtils {
     fun checkRegex(file: File, regex: String): Boolean {
         val charset = ConfigurationController["directives.charset"] as Charset
         try {
-            val text = FileUtils.readFileToString(file, charset.name())
+            // TODO: do we call this on files > 2 GB?
+            val text = file.readText(charset)
             val pattern = Pattern.compile(regex)
             val matcher = pattern.matcher(text)
             return matcher.find()
@@ -804,15 +824,20 @@ object CommonUtils {
             // iterate through every part of the
             // path looking for each filename
             while (tokenizer.hasMoreTokens()) {
-
                 // if the search does not return an empty
                 // list, one of the filenames got a match,
                 // and the command is available somewhere
                 // in the system path
-                if (!FileUtils.listFiles(
-                                File(tokenizer.nextToken()),
-                                NameFileFilter(filenames), null
-                        ).isEmpty()) {
+                if (File(tokenizer.nextToken()).listFiles()!!
+                                .any {
+                                    filenames.contains(it.name) &&
+                                            !it.isDirectory
+                                }) {
+                    // TODO: check if test equals
+                    /*!FileUtils.listFiles(
+                            File(tokenizer.nextToken()),
+                            NameFileFilter(filenames), null
+                    ).isEmpty()*/
 
                     // command is found somewhere,
                     // so it is on path

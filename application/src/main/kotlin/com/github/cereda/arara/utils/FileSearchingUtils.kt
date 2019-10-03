@@ -33,11 +33,10 @@
  */
 package com.github.cereda.arara.utils
 
-import org.apache.commons.io.FileUtils
-import org.apache.commons.io.filefilter.FalseFileFilter
-import org.apache.commons.io.filefilter.TrueFileFilter
-import org.apache.commons.io.filefilter.WildcardFileFilter
 import java.io.File
+import java.io.FileFilter
+import java.nio.file.FileSystems
+import java.nio.file.Files
 
 /**
  * Implements file searching utilitary methods.
@@ -60,8 +59,18 @@ object FileSearchingUtils {
         return try {
             // return the result of the
             // provided search
-            FileUtils.listFiles(directory, extensions.toTypedArray(), recursive)
-                    .toList()
+            if (recursive)
+                Files.newDirectoryStream(directory.toPath())
+                        .map { it.toFile() }
+                        .filter { extensions.contains(it.extension) }
+                        .toList()
+            else
+                directory.listFiles(
+                        FileFilter { extensions.contains(it.extension) })!!
+                        .toList()
+            // TODO: check that it replaces
+            /*FileUtils.listFiles(directory, extensions.toTypedArray(), recursive)
+                    .toList()*/
         } catch (_: Exception) {
             // if something bad happens,
             // gracefully fallback to
@@ -81,23 +90,35 @@ object FileSearchingUtils {
      */
     fun listFilesByPatterns(directory: File,
                             patterns: List<String>, recursive: Boolean): List<File> {
-        try {
+        return try {
             // return the result of the provided
             // search, with the wildcard filter
             // and a potential recursive search
-            return FileUtils.listFiles(
+            val pathMatcher = patterns.map {
+                FileSystems.getDefault().getPathMatcher("glob:$it")
+            }
+            if (recursive)
+                Files.newDirectoryStream(directory.toPath()) { path ->
+                    pathMatcher.any { it.matches(path) }
+                }.map { it.toFile() }.toList()
+            else
+                directory.listFiles { file: File ->
+                    pathMatcher.any { it.matches(file.toPath()) }
+                }!!.toList()
+            // TODO: check if it replaces
+            /*FileUtils.listFiles(
                     directory,
                     WildcardFileFilter(patterns),
                     if (recursive)
                         TrueFileFilter.INSTANCE
                     else
                         FalseFileFilter.INSTANCE
-            ).toList()
+            ).toList()*/
         } catch (_: Exception) {
             // if something bad happens,
             // gracefully fallback to
             // an empty file list
-            return listOf()
+            listOf()
         }
     }
 }
