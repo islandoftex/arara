@@ -38,7 +38,10 @@ import com.github.cereda.arara.controller.LanguageController
 import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.model.Database
 import com.github.cereda.arara.model.Messages
-import org.simpleframework.xml.core.Persister
+import org.yaml.snakeyaml.Yaml
+import org.yaml.snakeyaml.constructor.Constructor
+import org.yaml.snakeyaml.nodes.Tag
+import org.yaml.snakeyaml.representer.Representer
 import java.io.File
 
 /**
@@ -54,7 +57,7 @@ object DatabaseUtils {
     private val messages = LanguageController
 
     /**
-     * Gets the path to the XML file representing the database as string.
+     * Gets the path to the YAML file representing the database as string.
      *
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
@@ -62,7 +65,7 @@ object DatabaseUtils {
     private val path: String
         @Throws(AraraException::class)
         get() {
-            val name = ConfigurationController["execution.database.name"] as String + ".xml"
+            val name = ConfigurationController["execution.database.name"] as String + ".yaml"
             val path = CommonUtils.getParentCanonicalPath(reference)
             return CommonUtils.buildPath(path, name)
         }
@@ -76,7 +79,7 @@ object DatabaseUtils {
         get() = ConfigurationController["execution.reference"] as File
 
     /**
-     * Loads the XML file representing the database.
+     * Loads the YAML file representing the database.
      *
      * @return The database object.
      * @throws AraraException Something wrong happened, to be caught in the
@@ -84,13 +87,15 @@ object DatabaseUtils {
      */
     @Throws(AraraException::class)
     fun load(): Database {
-        if (!exists()) {
-            return Database()
+        return if (!exists()) {
+            Database()
         } else {
             val file = File(path)
             try {
-                val serializer = Persister()
-                return serializer.read(Database::class.java, file)
+                val representer = Representer()
+                representer.addClassTag(Database::class.java, Tag("!database"))
+                Yaml(Constructor(Database::class.java), representer)
+                        .loadAs(file.readText(), Database::class.java)
             } catch (exception: Exception) {
                 throw AraraException(
                         messages.getMessage(
@@ -105,7 +110,7 @@ object DatabaseUtils {
     }
 
     /**
-     * Saves the database on a XML file.
+     * Saves the database on a YAML file.
      *
      * @param database The database object.
      * @throws AraraException Something wrong happened, to be caught in the
@@ -115,8 +120,11 @@ object DatabaseUtils {
     fun save(database: Database) {
         val file = File(path)
         try {
-            val serializer = Persister()
-            serializer.write(database, file)
+            val representer = Representer()
+            representer.addClassTag(Database::class.java, Tag("!database"))
+            file.writeText(
+                    Yaml(Constructor(Database::class.java), representer)
+                            .dump(database))
         } catch (exception: Exception) {
             throw AraraException(
                     messages.getMessage(
@@ -130,9 +138,9 @@ object DatabaseUtils {
     }
 
     /**
-     * Checks if the XML file representing the database exists.
+     * Checks if the YAML file representing the database exists.
      *
-     * @return A boolean value indicating if the XML file exists.
+     * @return A boolean value indicating if the YAML file exists.
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */

@@ -33,8 +33,6 @@
  */
 package com.github.cereda.arara.model
 
-import org.simpleframework.xml.ElementMap
-import org.simpleframework.xml.Root
 import java.util.*
 
 /**
@@ -44,12 +42,10 @@ import java.util.*
  * @version 4.0
  * @since 4.0
  */
-@Root(name = "status")
 class Database {
     // the whole database is implemented as a map, where
     // the key is the absolute canonical file and the value
     // is its corresponding CRC32 hash; the XML map is done
     // inline, so it does not clutter the output a lot
-    @field:ElementMap(entry = "hash", key = "file", attribute = true, inline = true)
     var map: HashMap<String, String> = hashMapOf()
 }

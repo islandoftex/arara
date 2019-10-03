@@ -24,7 +24,6 @@ dependencies {
     exclude("commons-lang:commons-lang")
   }
   implementation("org.mvel:mvel2:2.4.4.Final")
-  implementation("org.simpleframework:simple-xml:2.7.1")
   implementation("org.slf4j:slf4j-api:1.7.28")
   implementation("org.yaml:snakeyaml:1.25")
   implementation("org.zeroturnaround:zt-exec:1.11") {
