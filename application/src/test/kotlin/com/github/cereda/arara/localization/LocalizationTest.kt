@@ -35,8 +35,8 @@ package com.github.cereda.arara.localization
 
 import ch.qos.cal10n.verifier.MessageKeyVerifier
 import com.github.cereda.arara.model.Messages
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 import java.util.*
 
 /**

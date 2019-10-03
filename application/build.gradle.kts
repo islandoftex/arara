@@ -30,8 +30,8 @@ dependencies {
     exclude("commons-io:commons-io")
     exclude("org.slf4j:slf4j-api")
   }
-  testImplementation("junit:junit:4.12")
-  testImplementation("com.e-movimento.tinytools:privilegedaccessor:1.2.2")
+  testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.2")
+  testImplementation("org.junit.jupiter:junit-jupiter-engine:5.5.2")
 }
 
 version = "5.0.0-SNAPSHOT"
