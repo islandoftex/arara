@@ -35,7 +35,6 @@ package com.github.cereda.arara.model
 
 import com.github.cereda.arara.utils.CommonUtils
 import java.io.File
-import java.util.*
 
 /**
  * Implements a command model, containing a list of strings.

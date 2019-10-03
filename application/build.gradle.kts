@@ -21,7 +21,6 @@ dependencies {
   implementation("commons-cli:commons-cli:1.4")
   implementation("commons-io:commons-io:2.6")
   implementation("commons-lang:commons-lang:2.6")
-  implementation("org.apache.commons:commons-collections4:4.4")
   implementation("org.apache.velocity:velocity:1.7") {
     exclude("commons-lang:commons-lang")
   }

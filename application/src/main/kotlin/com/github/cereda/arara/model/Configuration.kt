@@ -38,7 +38,6 @@ import com.github.cereda.arara.controller.LanguageController
 import com.github.cereda.arara.utils.CommonUtils
 import com.github.cereda.arara.utils.ConfigurationUtils
 import java.nio.charset.StandardCharsets
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**

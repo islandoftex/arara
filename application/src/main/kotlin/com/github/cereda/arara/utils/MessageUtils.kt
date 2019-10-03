@@ -46,7 +46,7 @@ import javax.swing.UIManager
 object MessageUtils {
     // holds the default width for the
     // message body, in pixels
-    private val WIDTH = 250
+    private const val WIDTH = 250
 
     // let's start the UI manager and set
     // the default look and feel to be as

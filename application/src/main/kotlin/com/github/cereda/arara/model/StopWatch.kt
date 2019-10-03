@@ -78,7 +78,5 @@ object StopWatch {
      */
     fun stop() {
         end = System.nanoTime()
-        enabled = false
     }
-
 }

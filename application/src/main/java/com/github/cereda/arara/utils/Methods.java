@@ -39,7 +39,9 @@ import com.github.cereda.arara.model.*;
 import kotlin.Pair;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Implements some auxiliary methods for runtime evaluation.
@@ -65,86 +67,22 @@ public class Methods {
     public static Map<String, Object> getRuleMethods() {
         Map<String, Object> map = new HashMap<>(getConditionalMethods());
         try {
-            map.put("getOriginalFile", Methods.class.getMethod("getOriginalFile"));
-            map.put("getOriginalReference", Methods.class.getMethod("getOriginalReference"));
-            map.put("isEmpty", Methods.class.getMethod("isEmpty", String.class));
-            map.put("isNotEmpty", Methods.class.getMethod("isNotEmpty", String.class));
-            map.put("isEmpty", Methods.class.getMethod("isEmpty", String.class, Object.class));
-            map.put("isNotEmpty", Methods.class.getMethod("isNotEmpty", String.class, Object.class));
-            map.put("isEmpty", Methods.class.getMethod("isEmpty", String.class, Object.class, Object.class));
-            map.put("isNotEmpty", Methods.class.getMethod("isNotEmpty", String.class, Object.class, Object.class));
-            map.put("isTrue", Methods.class.getMethod("isTrue", String.class));
-            map.put("isFalse", Methods.class.getMethod("isFalse", String.class));
-            map.put("isTrue", Methods.class.getMethod("isTrue", String.class, Object.class));
-            map.put("isFalse", Methods.class.getMethod("isFalse", String.class, Object.class));
-            map.put("isTrue", Methods.class.getMethod("isTrue", String.class, Object.class, Object.class));
-            map.put("isFalse", Methods.class.getMethod("isFalse", String.class, Object.class, Object.class));
-            map.put("isTrue", Methods.class.getMethod("isTrue", String.class, Object.class, Object.class, Object.class));
-            map.put("isFalse", Methods.class.getMethod("isFalse", String.class, Object.class, Object.class, Object.class));
-            map.put("trimSpaces", Methods.class.getMethod("trimSpaces", String.class));
-            map.put("isTrue", Methods.class.getMethod("isTrue", boolean.class, Object.class));
-            map.put("isFalse", Methods.class.getMethod("isFalse", boolean.class, Object.class));
-            map.put("isTrue", Methods.class.getMethod("isTrue", boolean.class, Object.class, Object.class));
-            map.put("isFalse", Methods.class.getMethod("isFalse", boolean.class, Object.class, Object.class));
-            map.put("getBasename", Methods.class.getMethod("getBasename", File.class));
-            map.put("getBasename", Methods.class.getMethod("getBasename", String.class));
-            map.put("getFullBasename", Methods.class.getMethod("getFullBasename", File.class));
-            map.put("getFullBasename", Methods.class.getMethod("getFullBasename", String.class));
-            map.put("getFiletype", Methods.class.getMethod("getFiletype", File.class));
-            map.put("getFiletype", Methods.class.getMethod("getFiletype", String.class));
-            map.put("throwError", Methods.class.getMethod("throwError", String.class));
-            map.put("getSession", Methods.class.getMethod("getSession"));
-            map.put("isWindows", Methods.class.getMethod("isWindows"));
-            map.put("isLinux", Methods.class.getMethod("isLinux"));
-            map.put("isMac", Methods.class.getMethod("isMac"));
-            map.put("isUnix", Methods.class.getMethod("isUnix"));
-            map.put("isAIX", Methods.class.getMethod("isAIX"));
-            map.put("isIrix", Methods.class.getMethod("isIrix"));
-            map.put("isOS2", Methods.class.getMethod("isOS2"));
-            map.put("isSolaris", Methods.class.getMethod("isSolaris"));
-            map.put("isCygwin", Methods.class.getMethod("isCygwin"));
-            map.put("isWindows", Methods.class.getMethod("isWindows", Object.class, Object.class));
-            map.put("isLinux", Methods.class.getMethod("isLinux", Object.class, Object.class));
-            map.put("isMac", Methods.class.getMethod("isMac", Object.class, Object.class));
-            map.put("isUnix", Methods.class.getMethod("isUnix", Object.class, Object.class));
-            map.put("isAIX", Methods.class.getMethod("isAIX", Object.class, Object.class));
-            map.put("isIrix", Methods.class.getMethod("isIrix", Object.class, Object.class));
-            map.put("isOS2", Methods.class.getMethod("isOS2", Object.class, Object.class));
-            map.put("isSolaris", Methods.class.getMethod("isSolaris", Object.class, Object.class));
-            map.put("isCygwin", Methods.class.getMethod("isCygwin", Object.class, Object.class));
-            map.put("replicatePattern", Methods.class.getMethod("replicatePattern", String.class, List.class));
-            map.put("buildString", Methods.class.getMethod("buildString", Object[].class));
-            map.put("addQuotes", Methods.class.getMethod("addQuotes", Object.class));
-            map.put("getCommand", Methods.class.getMethod("getCommand", List.class));
-            map.put("getCommand", Methods.class.getMethod("getCommand", Object[].class));
-            map.put("getTrigger", Methods.class.getMethod("getTrigger", String.class));
-            map.put("getTrigger", Methods.class.getMethod("getTrigger", String.class, Object[].class));
-            map.put("checkClass", Methods.class.getMethod("checkClass", Class.class, Object.class));
-            map.put("isString", Methods.class.getMethod("isString", Object.class));
-            map.put("isList", Methods.class.getMethod("isList", Object.class));
-            map.put("isMap", Methods.class.getMethod("isMap", Object.class));
-            map.put("isBoolean", Methods.class.getMethod("isBoolean", Object.class));
-            map.put("isVerboseMode", Methods.class.getMethod("isVerboseMode"));
-            map.put("showMessage", Methods.class.getMethod("showMessage", int.class, String.class, String.class));
-            map.put("showMessage", Methods.class.getMethod("showMessage", int.class, int.class, String.class, String.class));
-            map.put("isOnPath", Methods.class.getMethod("isOnPath", String.class));
-            map.put("unsafelyExecuteSystemCommand", Methods.class.getMethod("unsafelyExecuteSystemCommand", Command.class));
-            map.put("mergeVelocityTemplate", Methods.class.getMethod("mergeVelocityTemplate", File.class, File.class, Map.class));
-            map.put("getCommandWithWorkingDirectory", Methods.class.getMethod("getCommandWithWorkingDirectory", String.class, List.class));
-            map.put("getCommandWithWorkingDirectory", Methods.class.getMethod("getCommandWithWorkingDirectory", String.class, Object[].class));
-            map.put("getCommandWithWorkingDirectory", Methods.class.getMethod("getCommandWithWorkingDirectory", File.class, List.class));
-            map.put("getCommandWithWorkingDirectory", Methods.class.getMethod("getCommandWithWorkingDirectory", File.class, Object[].class));
-            map.put("listFilesByExtensions", Methods.class.getMethod("listFilesByExtensions", File.class, List.class, boolean.class));
-            map.put("listFilesByExtensions", Methods.class.getMethod("listFilesByExtensions", String.class, List.class, boolean.class));
-            map.put("listFilesByPatterns", Methods.class.getMethod("listFilesByPatterns", File.class, List.class, boolean.class));
-            map.put("listFilesByPatterns", Methods.class.getMethod("listFilesByPatterns", String.class, List.class, boolean.class));
-            map.put("writeToFile", Methods.class.getMethod("writeToFile", File.class, String.class, boolean.class));
-            map.put("writeToFile", Methods.class.getMethod("writeToFile", File.class, List.class, boolean.class));
-            map.put("writeToFile", Methods.class.getMethod("writeToFile", String.class, String.class, boolean.class));
-            map.put("writeToFile", Methods.class.getMethod("writeToFile", String.class, List.class, boolean.class));
-            map.put("readFromFile", Methods.class.getMethod("readFromFile", File.class));
-            map.put("readFromFile", Methods.class.getMethod("readFromFile", String.class));
-            map.put("isSubdirectory", Methods.class.getMethod("isSubdirectory", File.class));
+            Method[] methods = Methods.class.getMethods();
+            Arrays.asList("getOriginalFile", "getOriginalReference", "isEmpty",
+                    "isNotEmpty", "isTrue", "isFalse",
+                    "trimSpaces", "getBasename", "getFullBasename",
+                    "getFiletype", "throwError", "getSession",
+                    "isWindows", "isLinux", "isMac", "isUnix", "isAIX",
+                    "isIrix", "isOS2", "isSolaris", "isCygwin",
+                    "replicatePattern", "buildString", "addQuotes",
+                    "getCommand", "getTrigger", "checkClass", "isString",
+                    "isList", "isMap", "isBoolean", "isVerboseMode",
+                    "showMessage", "isOnPath", "unsafelyExecuteSystemCommand",
+                    "mergeVelocityTemplate", "getCommandWithWorkingDirectory",
+                    "listFilesByExtensions", "listFilesByPatterns",
+                    "writeToFile", "readFromFile", "isSubdirectory").forEach(name ->
+                    map.put(name, Stream.of(methods).filter(
+                            m -> m.getName().equals(name)).findFirst().get()));
         } catch (Exception exception) {
             // quack, quack, quack
         }
@@ -159,28 +97,12 @@ public class Methods {
     public static Map<String, Object> getConditionalMethods() {
         Map<String, Object> map = new HashMap<>();
         try {
-            map.put("exists", Methods.class.getMethod("exists", String.class));
-            map.put("exists", Methods.class.getMethod("exists", File.class));
-            map.put("missing", Methods.class.getMethod("missing", String.class));
-            map.put("missing", Methods.class.getMethod("missing", File.class));
-            map.put("changed", Methods.class.getMethod("changed", String.class));
-            map.put("changed", Methods.class.getMethod("changed", File.class));
-            map.put("unchanged", Methods.class.getMethod("unchanged", String.class));
-            map.put("unchanged", Methods.class.getMethod("unchanged", File.class));
-            map.put("found", Methods.class.getMethod("found", String.class, String.class));
-            map.put("found", Methods.class.getMethod("found", File.class, String.class));
-            map.put("toFile", Methods.class.getMethod("toFile", String.class));
-            map.put("showDropdown", Methods.class.getMethod("showDropdown", int.class, String.class, String.class, Object[].class));
-            map.put("showDropdown", Methods.class.getMethod("showDropdown", int.class, int.class, String.class, String.class, Object[].class));
-            map.put("showInput", Methods.class.getMethod("showInput", int.class, String.class, String.class));
-            map.put("showInput", Methods.class.getMethod("showInput", int.class, int.class, String.class, String.class));
-            map.put("showOptions", Methods.class.getMethod("showOptions", int.class, String.class, String.class, Object[].class));
-            map.put("showOptions", Methods.class.getMethod("showOptions", int.class, int.class, String.class, String.class, Object[].class));
-            map.put("currentFile", Methods.class.getMethod("currentFile"));
-            map.put("loadClass", Methods.class.getMethod("loadClass", File.class, String.class));
-            map.put("loadClass", Methods.class.getMethod("loadClass", String.class, String.class));
-            map.put("loadObject", Methods.class.getMethod("loadObject", File.class, String.class));
-            map.put("loadObject", Methods.class.getMethod("loadObject", String.class, String.class));
+            Method[] methods = Methods.class.getMethods();
+            Arrays.asList("exists", "missing", "changed", "unchanged", "found",
+                    "toFile", "showDropdown", "showInput", "showOptions",
+                    "currentFile", "loadClass", "loadObject").forEach(name ->
+                    map.put(name, Stream.of(methods).filter(
+                            m -> m.getName().equals(name)).findFirst().get()));
         } catch (Exception exception) {
             // quack, quack, quack
         }
@@ -1006,7 +928,7 @@ public class Methods {
      * @param object The object.
      * @return A boolean value.
      */
-    public static boolean checkClass(Class clazz, Object object) {
+    public static boolean checkClass(Class<?> clazz, Object object) {
         return CommonUtils.INSTANCE.checkClass(clazz, object);
     }
 

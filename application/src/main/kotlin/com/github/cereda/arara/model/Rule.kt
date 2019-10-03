@@ -34,7 +34,6 @@
 package com.github.cereda.arara.model
 
 import com.github.cereda.arara.utils.CommonUtils
-import org.apache.commons.collections4.CollectionUtils
 
 /**
  * Implements the rule model.
@@ -56,9 +55,8 @@ class Rule {
     var authors: List<String>? = null
         get() {
             if (field != null) {
-                this.authors = CollectionUtils.collect<String, String>(field) {
-                    CommonUtils.removeKeyword(it)
-                }.toList()
+                this.authors = field!!
+                        .mapNotNull { CommonUtils.removeKeyword(it) }
             }
             return field
         }

@@ -86,7 +86,7 @@ class Conditional {
     override fun toString(): String {
         return "{ $type" +
                 if (type != ConditionalType.NONE)
-                    ", expression: ${condition!!.trim()}"
+                    ", expression: ${condition.trim()}"
                 else "" + " }"
     }
 

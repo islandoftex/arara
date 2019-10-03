@@ -35,7 +35,6 @@ package com.github.cereda.arara.model
 
 import com.github.cereda.arara.controller.ConfigurationController
 import com.github.cereda.arara.controller.LanguageController
-import java.util.*
 import java.util.concurrent.Callable
 
 /**

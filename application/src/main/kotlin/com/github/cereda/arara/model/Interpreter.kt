@@ -39,7 +39,6 @@ import com.github.cereda.arara.utils.*
 import org.mvel2.templates.TemplateRuntime
 import org.slf4j.LoggerFactory
 import java.io.File
-import java.util.*
 
 /**
  * Interprets the list of directives.
@@ -80,7 +79,7 @@ class Interpreter {
             )
 
             ConfigurationController.put("execution.file",
-                    directive.parameters!!["reference"]!!
+                    directive.parameters!!.getValue("reference")
             )
             val file = getRule(directive)
 
@@ -97,7 +96,7 @@ class Interpreter {
                     directive.lineNumbers!!
             )
             ConfigurationController.put("execution.directive.reference",
-                    directive.parameters!!["reference"]!!
+                    directive.parameters!!.getValue("reference")
             )
 
             val rule = parseRule(file, directive)
@@ -350,13 +349,13 @@ class Interpreter {
         }
 
         val mapping = mutableMapOf<String, Any>()
-        mapping["file"] = directive.parameters!!["file"]!!
-        mapping["reference"] = directive.parameters!!["reference"]!!
+        mapping["file"] = directive.parameters!!.getValue("file")
+        mapping["reference"] = directive.parameters!!.getValue("reference")
 
         val context = mutableMapOf<String, Any>()
         context["parameters"] = directive.parameters!!
-        context["file"] = directive.parameters!!["file"]!!
-        context["reference"] = directive.parameters!!["reference"]!!
+        context["file"] = directive.parameters!!.getValue("file")
+        context["reference"] = directive.parameters!!.getValue("reference")
         context.putAll(Methods.getRuleMethods())
 
         for (argument in arguments) {

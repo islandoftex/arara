@@ -446,11 +446,10 @@ object CommonUtils {
      */
     // TODO: isn't that only the extension?
     fun getFiletype(name: String): String {
-        var type: String = if (name.lastIndexOf(".") != -1)
+        return if (name.lastIndexOf(".") != -1)
             name.substring(name.lastIndexOf(".") + 1)
         else
             ""
-        return type
     }
 
     /**

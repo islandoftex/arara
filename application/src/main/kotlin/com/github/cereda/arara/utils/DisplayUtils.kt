@@ -104,19 +104,12 @@ object DisplayUtils {
      */
     // TODO: refactor
     private fun buildShortEntry(name: String, task: String) {
-        val width = width
-        var result = longestMatch
-        if (result >= width) {
-            result = 10
-        }
+        val result = if (longestMatch >= width)
+            10
+        else longestMatch
         val space = width - result - 1
-        var entry = StringBuilder()
-        entry.append("(").append(name).append(") ")
-        entry.append(task).append(" ")
-        val line = StringUtils.abbreviate(entry.toString(), space - 4)
-        entry = StringBuilder()
-        entry.append(StringUtils.rightPad(line, space, ".")).append(" ")
-        print(entry)
+        val line = StringUtils.abbreviate("($name) $task ", space - 4)
+        print(line.padEnd(space, '.') + " ")
     }
 
     /**
@@ -126,7 +119,7 @@ object DisplayUtils {
      */
     private fun buildShortResult(value: Boolean) {
         val result = longestMatch
-        println(StringUtils.leftPad(getResult(value), result))
+        println(getResult(value).padStart(result))
     }
 
     /**
@@ -160,9 +153,7 @@ object DisplayUtils {
      */
     private fun buildLongResult(value: Boolean) {
         val width = width
-        println("\n" + StringUtils.leftPad(
-                " " + getResult(value), width, "-"
-        ))
+        println("\n" + (" " + getResult(value)).padStart(width, '-'))
     }
 
     /**
@@ -292,22 +283,16 @@ object DisplayUtils {
      */
     private fun buildShortError() {
         val result = longestMatch
-        println(StringUtils.leftPad(
-                messages.getMessage(
-                        Messages.INFO_LABEL_ON_ERROR
-                ),
-                result
-        ))
+        println(messages.getMessage(Messages.INFO_LABEL_ON_ERROR)
+                .padStart(result))
     }
 
     /**
      * Displays the long version of an error in the terminal.
      */
     private fun buildLongError() {
-        val line = StringUtils.leftPad(
-                " " + messages.getMessage(Messages.INFO_LABEL_ON_ERROR),
-                width, "-")
-        println(line)
+        println((" " + messages.getMessage(Messages.INFO_LABEL_ON_ERROR))
+                .padStart(width, '-'))
     }
 
     /**
@@ -334,7 +319,7 @@ object DisplayUtils {
         val text = if (authors.isEmpty())
             messages.getMessage(Messages.INFO_LABEL_NO_AUTHORS)
         else
-            authors.map { it.trim() }.joinToString(", ")
+            authors.joinToString(", ") { it.trim() }
         line.append(" ").append(text)
         wrapText(line.toString())
     }
@@ -447,8 +432,7 @@ object DisplayUtils {
     private fun displayDetailsLine() {
         var line = messages.getMessage(
                 Messages.INFO_LABEL_ON_DETAILS) + " "
-        line = StringUtils.rightPad(
-                StringUtils.abbreviate(line, width), width, "-")
+        line = StringUtils.abbreviate(line, width).padEnd(width, '-')
         println(line)
     }
 
@@ -469,6 +453,6 @@ object DisplayUtils {
      * @return A string containing the line separator.
      */
     fun displaySeparator(): String {
-        return StringUtils.repeat("-", width)
+        return "-".repeat(width)
     }
 }

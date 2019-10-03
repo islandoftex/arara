@@ -33,7 +33,6 @@
  */
 package com.github.cereda.arara.localization
 
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Test
@@ -56,64 +55,53 @@ class LanguageCoverageTest {
     @Test
     fun checkLanguageCoverage() {
         // get all files
-        var files = listOf<File>()
-        try {
-            files = Files.list(Paths.get("src/main/resources/com/github/cereda/arara/localization"))
-                    .map { p: Path ->
-                        val f = p.toFile()
-                        if (f.name.endsWith("properties") && !f.isDirectory) f
-                        else null
-                    }
-                    .collect(Collectors.toList())
-                    .toList()
-                    .filterNotNull()
-        } catch (e: Exception) {
-            Assert.fail("Could not read directory.")
-        }
-
+        val files = Files.list(
+                Paths.get("src/main/resources/com/github/cereda/arara/localization"))
+                .map { p: Path ->
+                    val f = p.toFile()
+                    if (f.name.endsWith("properties") && !f.isDirectory) f
+                    else null
+                }
+                .collect(Collectors.toList())
+                .toList()
+                .filterNotNull()
         assertFalse(files.isEmpty())
-
-        // the resulting list of reports
-        val reports = mutableListOf<LanguageReport>()
-        files.forEach { file: File ->
-            try {
-                // read each file into a list
-                // of strings
-                val lines = Files.readAllLines(file.toPath())
-                // get the line analysis
-                val report = LanguageUtils.analyze(lines)
-                // set the file reference
-                report.reference = file
-                // add to the list
-                reports.add(report)
-            } catch (exception: IOException) {
-                Assert.fail("Fatal exception: an error was raised while "
-                        + "trying to read one of the languages. Please "
-                        + "make sure all languages in the provided "
-                        + "directory have read permission.")
-            }
-        }
 
         // for each report, print
         // the corresponding entry
-        for (language in reports) {
+        files.map { file: File ->
+            try {
+                // get the line analysis
+                val report = LanguageUtils.analyze(file.readLines())
+                // set the file reference
+                report.reference = file
+                // add to the list
+                report
+            } catch (exception: IOException) {
+                throw AssertionError(
+                        "Fatal exception: an error was raised while "
+                                + "trying to read one of the languages. Please "
+                                + "make sure all languages in the provided "
+                                + "directory have read permission.")
+            }
+        }.forEach { report ->
             // debug output
-            println(language.reference!!.name +
-                    "\t" + String.format(" %2.2f%%", language.coverage))
+            println(report.reference!!.name +
+                    "\t" + String.format(" %2.2f%%", report.coverage))
 
             // if there are problematic lines,
             // add the current language report
-            if (language.getLines().isNotEmpty()) {
+            if (report.getLines().isNotEmpty()) {
                 // legend: S = Simple message, single quotes should not be doubled
                 //         P = Parametrized message, single quotes must be doubled
 
                 // build the beginning of the line
-                println(language.reference!!.name)
+                println(report.reference!!.name)
                 // print error lines
-                println(language.getLines())
+                println(report.getLines())
             }
 
-            assertEquals(100.0f, language.coverage, 0f)
+            assertEquals(100.0f, report.coverage, 0f)
         }
     }
 }

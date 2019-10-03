@@ -49,8 +49,8 @@ class DirectiveResolver : Resolver() {
      * be used through an explicit conversion in the rule context.
      */
     override fun addImplicitResolvers() {
-        addImplicitResolver(Tag.MERGE, Resolver.MERGE, "<")
-        addImplicitResolver(Tag.NULL, Resolver.NULL, "~nN\u0000")
-        addImplicitResolver(Tag.NULL, Resolver.EMPTY, null)
+        addImplicitResolver(Tag.MERGE, MERGE, "<")
+        addImplicitResolver(Tag.NULL, NULL, "~nN\u0000")
+        addImplicitResolver(Tag.NULL, EMPTY, null)
     }
 }

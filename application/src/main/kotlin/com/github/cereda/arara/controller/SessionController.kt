@@ -33,8 +33,6 @@
  */
 package com.github.cereda.arara.controller
 
-import java.util.*
-
 /**
  * Implements a session controller. This class wraps a map that holds the
  * execution session, that is, a dirty maneuver to exchange pretty much any

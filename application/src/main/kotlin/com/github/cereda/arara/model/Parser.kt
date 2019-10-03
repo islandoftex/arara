@@ -238,7 +238,7 @@ class Parser(
 
             return true
 
-        } catch (pexception: ParseException) {
+        } catch (_: ParseException) {
             printVersion()
             printUsage()
             return false

@@ -70,12 +70,12 @@ object LanguageUtils {
                 checked++
 
                 // line is a parametrized message
-                if (line.contains("{0}")) {
+                check = if (line.contains("{0}")) {
                     // check the corresponding pattern
-                    check = checkParametrizedMessage(line)
+                    checkParametrizedMessage(line)
                 } else {
                     // check the corresponding pattern
-                    check = checkMessage(line)
+                    checkMessage(line)
                 }
 
                 // we found an error,
