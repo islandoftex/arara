@@ -138,7 +138,7 @@ object Configuration {
                 "rules"
         ))
 
-        mapping["execution.preambles"] = HashMap<String, String>()
+        mapping["execution.preambles"] = mutableMapOf<String, String>()
         mapping["execution.preamble.active"] = false
         mapping["execution.configuration.name"] = "[none]"
         mapping["execution.header"] = false

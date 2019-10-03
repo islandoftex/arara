@@ -156,7 +156,7 @@ object RuleUtils {
         } else {
             val keywords = arrayOf("file", "files", "reference")
 
-            val arguments = ArrayList<String>()
+            val arguments = mutableListOf<String>()
             for (argument in rule.arguments) {
                 if (argument.identifier != null) {
                     if (argument.flag != null || argument.default != null) {

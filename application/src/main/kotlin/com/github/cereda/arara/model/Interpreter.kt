@@ -228,7 +228,7 @@ class Interpreter {
                                                 val code = InterpreterUtils.run(representation)
                                                 val check: Any
                                                 try {
-                                                    val context = HashMap<String, Any>()
+                                                    val context = mutableMapOf<String, Any>()
                                                     context["value"] = code
                                                     check = TemplateRuntime.eval(
                                                             "@{ " + (if (command.exit == null)

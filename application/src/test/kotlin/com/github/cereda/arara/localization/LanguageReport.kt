@@ -34,7 +34,6 @@
 package com.github.cereda.arara.localization
 
 import java.io.File
-import java.util.HashMap
 
 /**
  * Implements the language report model.
@@ -47,40 +46,38 @@ import java.util.HashMap
  * Constructor.
  */
 class LanguageReport {
+    // the file reference
+    var reference: File? = null
 
-  // the file reference
-  var reference: File? = null
+    // list of problematic lines and
+    // their corresponding error types
+    private val lines = mutableMapOf<Int, Char>()
 
-  // list of problematic lines and
-  // their corresponding error types
-  private val lines = mutableMapOf<Int, Char>()
+    // total of checked lines
+    var total: Int = 0
 
-  // total of checked lines
-  var total: Int = 0
+    // language coverage
+    val coverage: Float
+        get() = if (lines.isEmpty()) {
+            100f
+        } else {
+            (1f - lines.size.toFloat() / total) * 100f
+        }
 
-  // language coverage
-  val coverage: Float
-    get() = if (lines.isEmpty()) {
-      100f
-    } else {
-      (1f - lines.size.toFloat() / total) * 100f
+    /**
+     * Gets the problematic lines.
+     *
+     * @return Problematic lines as list.
+     */
+    fun getLines(): Map<Int, Char> = lines
+
+    /**
+     * Add the line to the list of lines.
+     *
+     * @param line      Line.
+     * @param character Character.
+     */
+    fun addLine(line: Int, character: Char) {
+        lines[line] = character
     }
-
-  /**
-   * Gets the problematic lines.
-   *
-   * @return Problematic lines as list.
-   */
-  fun getLines(): Map<Int, Char> = lines
-
-  /**
-   * Add the line to the list of lines.
-   *
-   * @param line      Line.
-   * @param character Character.
-   */
-  fun addLine(line: Int, character: Char) {
-    lines[line] = character
-  }
-
 }

@@ -682,10 +682,9 @@ object CommonUtils {
     @Throws(AraraException::class)
     fun replicateList(pattern: String,
                       values: List<Any>): List<Any> {
-        val result = ArrayList<Any>()
-        for (value in values) {
+        return values.map { value ->
             try {
-                result.add(String.format(pattern, value))
+                String.format(pattern, value)
             } catch (exception: MissingFormatArgumentException) {
                 throw AraraException(
                         messages.getMessage(
@@ -696,7 +695,6 @@ object CommonUtils {
             }
 
         }
-        return result
     }
 
     /**
@@ -711,7 +709,7 @@ object CommonUtils {
      */
     @Throws(AraraException::class)
     fun checkOS(value: String): Boolean {
-        val values = HashMap<String, Boolean>()
+        val values = mutableMapOf<String, Boolean>()
         values["windows"] = SystemUtils.IS_OS_WINDOWS
         values["linux"] = SystemUtils.IS_OS_LINUX
         values["mac"] = SystemUtils.IS_OS_MAC_OSX

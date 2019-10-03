@@ -57,7 +57,7 @@ class Command {
      * @param values An array of objects.
      */
     constructor(vararg values: Any) {
-        elements = ArrayList()
+        elements = mutableListOf()
         val result = CommonUtils.flatten(values.toList())
         for (value in result) {
             val element = value.toString()

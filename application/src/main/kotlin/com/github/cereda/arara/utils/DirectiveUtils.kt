@@ -80,7 +80,7 @@ object DirectiveUtils {
         val linecheck = Pattern.compile(regex)
         regex += ConfigurationController["application.pattern"] as String
         var pattern = Pattern.compile(regex)
-        val pairs = ArrayList<Pair<Int, String>>()
+        val pairs = mutableListOf<Pair<Int, String>>()
         var matcher: Matcher
         for (i in lines.indices) {
             matcher = pattern.matcher(lines[i])
@@ -114,7 +114,7 @@ object DirectiveUtils {
             )
         }
 
-        val assemblers = ArrayList<DirectiveAssembler>()
+        val assemblers = mutableListOf<DirectiveAssembler>()
         var assembler = DirectiveAssembler()
         regex = ConfigurationController["directives.linebreak.pattern"] as String
         pattern = Pattern.compile(regex)
@@ -145,11 +145,7 @@ object DirectiveUtils {
             assemblers.add(assembler)
         }
 
-        val directives = ArrayList<Directive>()
-        for (current in assemblers) {
-            directives.add(generateDirective(current))
-        }
-        return directives
+        return assemblers.map { generateDirective(it) }
 
     }
 
@@ -234,7 +230,7 @@ object DirectiveUtils {
     private fun getParameters(text: String?,
                               numbers: List<Int>): Map<String, Any> {
         if (text == null) {
-            return HashMap()
+            return mutableMapOf()
         }
 
         val yaml = Yaml(

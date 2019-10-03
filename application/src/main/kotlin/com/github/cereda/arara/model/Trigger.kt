@@ -75,7 +75,7 @@ class Trigger(
      */
     @Throws(AraraException::class)
     fun process() {
-        val mapping = HashMap<String, Callable<Any?>>()
+        val mapping = mutableMapOf<String, Callable<Any?>>()
         mapping["halt"] = Callable<Any?> {
             ConfigurationController.put("trigger.halt", true)
             null

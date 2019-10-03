@@ -42,7 +42,6 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.*
 import java.util.stream.Collectors
 
 /**
@@ -75,7 +74,7 @@ class LanguageCoverageTest {
         assertFalse(files.isEmpty())
 
         // the resulting list of reports
-        val reports = ArrayList<LanguageReport>()
+        val reports = mutableListOf<LanguageReport>()
         files.forEach { file: File ->
             try {
                 // read each file into a list
