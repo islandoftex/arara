@@ -329,18 +329,6 @@ object CommonUtils {
     }
 
     /**
-     * Checks if the provided object is from a certain class.
-     *
-     * @param clazz  The class.
-     * @param object The object.
-     * @return A boolean value indicating if the provided object is from a
-     * certain class.
-     */
-    fun checkClass(clazz: Class<*>, `object`: Any): Boolean {
-        return clazz.isInstance(`object`)
-    }
-
-    /**
      * Helper method to flatten a potential list of lists into a list of
      * objects.
      *

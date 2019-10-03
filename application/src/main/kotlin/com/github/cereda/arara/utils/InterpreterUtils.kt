@@ -107,8 +107,8 @@ object InterpreterUtils {
         val unit = ConfigurationController["execution.timeout.unit"] as TimeUnit
         val buffer = ByteArrayOutputStream()
         var executor = ProcessExecutor()
-        if (CommonUtils.checkClass(Command::class.java, command)) {
-            executor = executor.command((command as Command).elements)
+        if (command is Command) {
+            executor = executor.command((command).elements)
             if (command.hasWorkingDirectory()) {
                 executor = executor.directory(
                         command.workingDirectory

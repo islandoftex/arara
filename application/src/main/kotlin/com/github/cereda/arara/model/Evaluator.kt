@@ -105,14 +105,14 @@ class Evaluator {
 
             try {
                 val result = TemplateRuntime.eval("@{ " + conditional.condition + " }", context)
-                if (!CommonUtils.checkClass(Boolean::class.java, result)) {
+                if (result !is Boolean) {
                     throw AraraException(
                             messages.getMessage(
                                     Messages.ERROR_EVALUATE_NOT_BOOLEAN_VALUE
                             )
                     )
                 } else {
-                    var value = result as Boolean
+                    var value = result
                     if (conditional.type == Conditional.ConditionalType.UNLESS ||
                             conditional.type == Conditional.ConditionalType.UNTIL)
                         value = !value

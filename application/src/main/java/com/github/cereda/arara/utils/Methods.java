@@ -922,14 +922,14 @@ public class Methods {
     }
 
     /**
-     * Checks if the object is an intance of the provided class.
+     * Checks if the object is an instance of the provided class.
      *
      * @param clazz  The class.
      * @param object The object.
      * @return A boolean value.
      */
     public static boolean checkClass(Class<?> clazz, Object object) {
-        return CommonUtils.INSTANCE.checkClass(clazz, object);
+        return clazz.isInstance(object);
     }
 
     /**

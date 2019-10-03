@@ -137,8 +137,8 @@ class Interpreter {
                         }
 
                         var execution = mutableListOf<Any>()
-                        if (CommonUtils.checkClass(List::class.java, result)) {
-                            execution = CommonUtils.flatten(result as List<*>)
+                        if (result is List<*>) {
+                            execution = CommonUtils.flatten(result)
                                     .toMutableList()
                         } else {
                             execution.add(result)
@@ -161,8 +161,7 @@ class Interpreter {
                                     )
                                     var success = true
 
-                                    if (CommonUtils.checkClass(
-                                                    Trigger::class.java, current)) {
+                                    if (current is Trigger) {
                                         if (!(ConfigurationController["execution.dryrun"] as Boolean)) {
                                             if (ConfigurationController["execution.verbose"] as Boolean) {
                                                 DisplayUtils.wrapText(
@@ -182,12 +181,10 @@ class Interpreter {
                                                     directive.conditional!!
                                             )
                                         }
-                                        val trigger = current as Trigger
-                                        trigger.process()
+                                        current.process()
                                     } else {
-                                        if (CommonUtils.checkClass(
-                                                        Boolean::class.java, current)) {
-                                            success = current as Boolean
+                                        if (current is Boolean) {
+                                            success = current
                                             logger.info(
                                                     messages.getMessage(
                                                             Messages.LOG_INFO_BOOLEAN_MODE,
@@ -208,11 +205,7 @@ class Interpreter {
                                                 )
                                             }
                                         } else {
-
-                                            val representation = if (CommonUtils.checkClass(
-                                                            Command::class.java,
-                                                            current
-                                                    ))
+                                            val representation = if (current is Command)
                                                 current
                                             else
                                                 current.toString()
@@ -244,8 +237,6 @@ class Interpreter {
                                                     )
                                                 }
 
-                                                // TODO: check equality with
-                                                // if (CommonUtils.checkClass(Boolean::class.java,check)) {
                                                 if (check is Boolean) {
                                                     success = check
                                                 } else {
