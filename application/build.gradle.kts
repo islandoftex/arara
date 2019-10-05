@@ -20,9 +20,6 @@ dependencies {
   }
   implementation("ch.qos.logback:logback-core:1.2.3")
   implementation("commons-cli:commons-cli:1.4")
-  implementation("org.apache.velocity:velocity:1.7") {
-    exclude("commons-lang:commons-lang")
-  }
   implementation("org.mvel:mvel2:2.4.4.Final")
   implementation("org.slf4j:slf4j-api:1.7.28")
   implementation("org.yaml:snakeyaml:1.25")

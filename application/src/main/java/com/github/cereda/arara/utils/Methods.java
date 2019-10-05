@@ -79,9 +79,9 @@ public class Methods {
                     "getCommand", "getTrigger", "checkClass", "isString",
                     "isList", "isMap", "isBoolean", "isVerboseMode",
                     "showMessage", "isOnPath", "unsafelyExecuteSystemCommand",
-                    "mergeVelocityTemplate", "getCommandWithWorkingDirectory",
-                    "listFilesByExtensions", "listFilesByPatterns",
-                    "writeToFile", "readFromFile", "isSubdirectory").forEach(name ->
+                    "getCommandWithWorkingDirectory", "listFilesByExtensions",
+                    "listFilesByPatterns", "writeToFile", "readFromFile",
+                    "isSubdirectory").forEach(name ->
                     map.put(name, Stream.of(methods).filter(
                             m -> m.getName().equals(name)).findFirst().get()));
         } catch (Exception exception) {
@@ -1159,21 +1159,6 @@ public class Methods {
      */
     public static Pair<Integer, String> unsafelyExecuteSystemCommand(Command command) {
         return UnsafeUtils.INSTANCE.executeSystemCommand(command);
-    }
-
-    /**
-     * Merges the provided template with a context map and writes the result in
-     * an output file. This method relies on Apache Velocity.
-     *
-     * @param input  The input file.
-     * @param output The output file.
-     * @param map    The context map.
-     * @throws AraraException Something wrong happened, to be caught in the
-     *                        higher levels.
-     */
-    public static void mergeVelocityTemplate(File input, File output,
-                                             Map<String, Object> map) throws AraraException {
-        VelocityUtils.INSTANCE.mergeVelocityTemplate(input, output, map);
     }
 
     /**
