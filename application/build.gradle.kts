@@ -2,6 +2,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.java.archives.internal.DefaultManifest
 import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   application
@@ -19,7 +20,6 @@ dependencies {
   }
   implementation("ch.qos.logback:logback-core:1.2.3")
   implementation("commons-cli:commons-cli:1.4")
-  implementation("commons-lang:commons-lang:2.6")
   implementation("org.apache.velocity:velocity:1.7") {
     exclude("commons-lang:commons-lang")
   }
@@ -92,6 +92,12 @@ tasks {
           "--module-path", sourceSets["main"].compileClasspath.asPath)
     }
   }
+  withType<KotlinCompile>() {
+    kotlinOptions {
+      jvmTarget = "1.8"
+    }
+  }
+  
   withType<Jar>() {
     archiveBaseName.set("arara")
     manifest.attributes.putAll(mainManifest.attributes)
@@ -109,6 +115,10 @@ tasks {
         )
       }
     }
+  }
+  
+  withType<Test>() {
+    useJUnitPlatform()
   }
 }
 tasks.named<Task>("assembleDist").configure { dependsOn("shadowJar") }

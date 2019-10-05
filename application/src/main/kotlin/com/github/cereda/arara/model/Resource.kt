@@ -34,7 +34,6 @@
 package com.github.cereda.arara.model
 
 import com.github.cereda.arara.utils.CommonUtils
-import org.apache.commons.lang.SystemUtils
 import org.mvel2.templates.TemplateRuntime
 
 /**
@@ -50,11 +49,11 @@ class Resource {
         get() {
             if (field != null) {
                 val user = mutableMapOf<String, Any>(
-                        "home" to SystemUtils.USER_HOME,
-                        "dir" to SystemUtils.USER_DIR,
-                        "name" to SystemUtils.USER_NAME)
+                        "home" to (CommonUtils.getSystemPropertyOrNull("user.home") ?: ""),
+                        "dir" to (CommonUtils.getSystemPropertyOrNull("user.dir") ?: ""),
+                        "name" to (CommonUtils.getSystemPropertyOrNull("user.name") ?: ""))
                 val map = mutableMapOf<String, Any>("user" to user)
-                
+
                 field = field!!.map { input ->
                     var path = CommonUtils.removeKeywordNotNull(input)
                     try {
@@ -73,8 +72,10 @@ class Resource {
     var filetypes: List<FileTypeResource> = listOf()
 
     // the application language
-    var language: String? = null
-        get() = CommonUtils.removeKeyword(field)
+    // default to English
+    // TODO: centralize default language
+    var language: String = "en"
+        get() = CommonUtils.removeKeywordNotNull(field)
 
     // maximum number of loops
     var loops: Long = 0
@@ -85,6 +86,9 @@ class Resource {
     // logging flag
     var isLogging: Boolean = false
 
+    // header flag
+    var isHeader: Boolean = false
+
     // database name
     var dbname: String? = null
         get() = CommonUtils.removeKeyword(field)
@@ -93,13 +97,12 @@ class Resource {
     var logname: String? = null
         get() = CommonUtils.removeKeyword(field)
 
-    // header flag
-    var isHeader: Boolean = false
-
     // map of preambles
     var preambles: Map<String, String> = mapOf()
 
     // look and feel
-    var laf: String? = null
-        get() = CommonUtils.removeKeyword(field)
+    // default to none
+    // TODO: centralize default LAF
+    var laf: String = "none"
+        get() = CommonUtils.removeKeywordNotNull(field)
 }

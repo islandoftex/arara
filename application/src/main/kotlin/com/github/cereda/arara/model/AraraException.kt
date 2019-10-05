@@ -67,12 +67,5 @@ class AraraException : Exception {
      * @return A boolean value indicating if the current object has an
      * underlying exception.
      */
-    fun hasException(): Boolean {
-        return if (exception != null) {
-            exception.message != null
-        } else {
-            false
-        }
-    }
-
+    fun hasException(): Boolean = exception?.message != null ?: false
 }

@@ -394,7 +394,7 @@ public class Methods {
      * @return The basename.
      */
     public static String getBasename(String filename) {
-        return CommonUtils.INSTANCE.getBasename(filename);
+        return CommonUtils.INSTANCE.getBasename(new File(filename));
     }
 
     /**
@@ -407,7 +407,7 @@ public class Methods {
      */
     public static String getFiletype(File file) throws AraraException {
         if (file.isFile()) {
-            return CommonUtils.INSTANCE.getFiletype(file);
+            return CommonUtils.INSTANCE.getFileExtension(file);
         } else {
             throw new AraraException(
                     CommonUtils.INSTANCE.getRuleErrorHeader().concat(
@@ -427,7 +427,7 @@ public class Methods {
      * @return The file type.
      */
     public static String getFiletype(String filename) {
-        return CommonUtils.INSTANCE.getFiletype(filename);
+        return CommonUtils.INSTANCE.getFileExtension(new File(filename));
     }
 
     /**
@@ -735,7 +735,7 @@ public class Methods {
      * @return A boolean value.
      */
     public static boolean exists(File filename) {
-        return CommonUtils.INSTANCE.exists(filename);
+        return filename.exists();
     }
 
     /**

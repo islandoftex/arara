@@ -185,6 +185,8 @@ object Configuration {
         controller.put("execution.verbose", resource.isVerbose)
         controller.put("execution.logging", resource.isLogging)
         controller.put("execution.header", resource.isHeader)
+        controller.put("execution.language", Language(resource.language))
+        controller.put("ui.lookandfeel", resource.laf)
 
         if (resource.dbname != null) {
             controller.put("execution.database.name",
@@ -194,11 +196,6 @@ object Configuration {
         if (resource.logname != null) {
             controller.put("execution.log.name",
                     ConfigurationUtils.cleanFileName(resource.logname!!))
-        }
-
-        if (resource.language != null) {
-            controller.put("execution.language",
-                    Language(resource.language!!))
         }
 
         val loops = resource.loops
@@ -218,12 +215,6 @@ object Configuration {
             controller.put("execution.preambles",
                     resource.preambles)
         }
-
-        if (resource.laf != null) {
-            controller.put("ui.lookandfeel",
-                    resource.laf!!)
-        }
-
     }
 
 }

@@ -39,7 +39,6 @@ import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.model.FileType
 import com.github.cereda.arara.model.Messages
 import com.github.cereda.arara.model.Resource
-import org.apache.commons.lang.SystemUtils
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.Constructor
 import org.yaml.snakeyaml.error.MarkedYAMLException
@@ -65,38 +64,26 @@ object ConfigurationUtils {
     // list of default file types provided by arara, in order.
     val defaultFileTypes: List<FileType>
         @Throws(AraraException::class)
-        get() = listOf(
-                FileType("tex"),
-                FileType("dtx"),
-                FileType("ltx"),
-                FileType("drv"),
-                FileType("ins")
-        )
+        get() = listOf("tex", "dtx", "ltx", "drv", "ins")
+                .map { FileType(it) }
 
     // look for configuration files in the user's working directory first
     // if no configuration files are found in the user's working directory,
     // try to look up in a global directory, that is, the user home
     val configFile: File?
         get() {
-            val names = listOf(
-                    ".araraconfig.yaml",
-                    "araraconfig.yaml",
-                    ".arararc.yaml",
-                    "arararc.yaml"
-            )
-            for (name in names) {
-                val path = CommonUtils.buildPath(SystemUtils.USER_DIR, name)
-                val file = File(path)
-                if (file.exists()) {
-                    return file
-                }
+            val names = listOf(".araraconfig.yaml",
+                    "araraconfig.yaml", ".arararc.yaml", "arararc.yaml")
+            CommonUtils.getSystemPropertyOrNull("user.dir")?.let { userDir ->
+                val first = names
+                        .map { File(CommonUtils.buildPath(userDir, it)) }
+                        .firstOrNull { it.exists() }
+                if (first != null)
+                    return first
             }
-            for (name in names) {
-                val path = CommonUtils.buildPath(SystemUtils.USER_HOME, name)
-                val file = File(path)
-                if (file.exists()) {
-                    return file
-                }
+            CommonUtils.getSystemPropertyOrNull("user.home")?.let { userHome ->
+                return names.map { File(CommonUtils.buildPath(userHome, it)) }
+                        .firstOrNull { it.exists() }
             }
             return null
         }
@@ -142,15 +129,12 @@ object ConfigurationUtils {
         try {
             val resource = yaml.loadAs(FileReader(file),
                     Resource::class.java)
-            if (resource.filetypes != null) {
-                val filetypes = resource.filetypes
-                if (filetypes.any { it.extension == null }) {
-                    throw AraraException(
-                            messages.getMessage(
-                                    Messages.ERROR_CONFIGURATION_FILETYPE_MISSING_EXTENSION
-                            )
-                    )
-                }
+            if (resource.filetypes.any { it.extension == null }) {
+                throw AraraException(
+                        messages.getMessage(
+                                Messages.ERROR_CONFIGURATION_FILETYPE_MISSING_EXTENSION
+                        )
+                )
             }
             return resource
         } catch (yamlException: MarkedYAMLException) {

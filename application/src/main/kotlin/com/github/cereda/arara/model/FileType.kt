@@ -35,8 +35,6 @@ package com.github.cereda.arara.model
 
 import com.github.cereda.arara.controller.LanguageController
 import com.github.cereda.arara.utils.CommonUtils
-import org.apache.commons.lang.builder.EqualsBuilder
-import org.apache.commons.lang.builder.HashCodeBuilder
 
 /**
  * Implements the file type model.
@@ -92,29 +90,18 @@ class FileType {
     }
 
     /**
-     * Implements the file type hash code. Note that only the file extension is
-     * considered.
-     * @return An integer representing the file type hash code.
-     */
-    override fun hashCode(): Int {
-        return HashCodeBuilder().append(extension).toHashCode()
-    }
-
-    /**
      * Implements the file type equals method, checking if one file type is
      * equal to another. Note that only the file extension is considered.
      * @param other The object to be analyzed.
      * @return A boolean value indicating if those two objects are equal.
      */
     override fun equals(other: Any?): Boolean {
-        if (other == null) {
-            return false
-        }
-        if (javaClass != other.javaClass) {
-            return false
-        }
-        val reference = other as FileType?
-        return EqualsBuilder().append(extension, reference!!.extension).isEquals
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as FileType
+        if (extension != other.extension) return false
+        return true
     }
 
     /**
@@ -124,6 +111,15 @@ class FileType {
      */
     override fun toString(): String {
         return ".$extension"
+    }
+
+    /**
+     * Implements the file type hash code. Note that only the file extension is
+     * considered.
+     * @return An integer representing the file type hash code.
+     */
+    override fun hashCode(): Int {
+        return extension?.hashCode() ?: 0
     }
 
     companion object {

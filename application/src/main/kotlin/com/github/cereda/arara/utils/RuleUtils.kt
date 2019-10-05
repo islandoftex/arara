@@ -43,7 +43,6 @@ import org.yaml.snakeyaml.error.MarkedYAMLException
 import org.yaml.snakeyaml.nodes.Tag
 import org.yaml.snakeyaml.representer.Representer
 import java.io.File
-import java.io.FileReader
 
 /**
  * Implements rule utilitary methods.
@@ -72,9 +71,8 @@ object RuleUtils {
         val representer = Representer()
         representer.addClassTag(Rule::class.java, Tag("!config"))
         val yaml = Yaml(Constructor(Rule::class.java), representer)
-        val rule: Rule
-        try {
-            rule = yaml.loadAs(FileReader(file), Rule::class.java)
+        val rule: Rule = try {
+            yaml.loadAs(file.readText(), Rule::class.java)
         } catch (yamlException: MarkedYAMLException) {
             throw AraraException(
                     CommonUtils.ruleErrorHeader + messages.getMessage(
@@ -105,19 +103,19 @@ object RuleUtils {
      */
     @Throws(AraraException::class)
     private fun validateHeader(rule: Rule, identifier: String) {
-        if (rule.identifier != null) {
+        if (rule.identifier != Rule.INVALID_RULE_IDENTIFIER) {
             if (rule.identifier != identifier) {
                 throw AraraException(CommonUtils.ruleErrorHeader +
                         messages.getMessage(
                                 Messages.ERROR_VALIDATEHEADER_WRONG_IDENTIFIER,
-                                rule.identifier!!,
+                                rule.identifier,
                                 identifier))
             }
         } else {
             throw AraraException(CommonUtils.ruleErrorHeader +
                     messages.getMessage(Messages.ERROR_VALIDATEHEADER_NULL_ID))
         }
-        if (rule.name == null) {
+        if (rule.name == Rule.INVALID_RULE_NAME) {
             throw AraraException(
                     CommonUtils.ruleErrorHeader + messages.getMessage(
                             Messages.ERROR_VALIDATEHEADER_NULL_NAME

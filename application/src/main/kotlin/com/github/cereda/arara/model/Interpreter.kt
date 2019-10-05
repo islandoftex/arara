@@ -104,13 +104,9 @@ class Interpreter {
             parameters.putAll(Methods.getRuleMethods())
 
             val name = rule.name
-            val authors = if (rule.authors == null)
-                listOf()
-            else
-                rule.authors
+            val authors = rule.authors
             ConfigurationController.put("execution.rule.arguments",
-                    InterpreterUtils.getRuleArguments(rule)
-            )
+                    InterpreterUtils.getRuleArguments(rule))
 
             val evaluator = Evaluator()
 
@@ -137,6 +133,7 @@ class Interpreter {
                         }
 
                         var execution = mutableListOf<Any>()
+                        // TODO: check nullability
                         if (result is List<*>) {
                             execution = CommonUtils.flatten(result)
                                     .toMutableList()
@@ -152,10 +149,8 @@ class Interpreter {
                                         )
                                 )
                             } else {
-
-                                if (current.toString().isNotEmpty()) {
-                                    // TODO: check null handling
-                                    DisplayUtils.printEntry(name ?: "NO NAME",
+                                if (current.toString().isNotBlank()) {
+                                    DisplayUtils.printEntry(name,
                                             command.name
                                                     ?: messages.getMessage(Messages.INFO_LABEL_UNNAMED_TASK)
                                     )
@@ -171,7 +166,7 @@ class Interpreter {
                                                 )
                                             }
                                         } else {
-                                            DisplayUtils.printAuthors(authors!!)
+                                            DisplayUtils.printAuthors(authors)
                                             DisplayUtils.wrapText(
                                                     messages.getMessage(
                                                             Messages.INFO_INTERPRETER_DRYRUN_MODE_TRIGGER_MODE
@@ -193,7 +188,7 @@ class Interpreter {
                                             )
 
                                             if (ConfigurationController["execution.dryrun"] as Boolean) {
-                                                DisplayUtils.printAuthors(authors!!)
+                                                DisplayUtils.printAuthors(authors)
                                                 DisplayUtils.wrapText(
                                                         messages.getMessage(
                                                                 Messages.INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE,
@@ -247,7 +242,7 @@ class Interpreter {
                                                     )
                                                 }
                                             } else {
-                                                DisplayUtils.printAuthors(authors!!)
+                                                DisplayUtils.printAuthors(authors)
                                                 DisplayUtils.wrapText(
                                                         messages.getMessage(
                                                                 Messages.INFO_INTERPRETER_DRYRUN_MODE_SYSTEM_COMMAND,

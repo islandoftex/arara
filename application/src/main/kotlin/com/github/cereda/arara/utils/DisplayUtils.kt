@@ -39,8 +39,6 @@ import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.model.Conditional
 import com.github.cereda.arara.model.Messages
 import com.github.cereda.arara.model.StopWatch
-import org.apache.commons.lang.StringUtils
-import org.apache.commons.lang.WordUtils
 import org.slf4j.LoggerFactory
 import java.io.File
 
@@ -102,13 +100,12 @@ object DisplayUtils {
      * @param name Rule name.
      * @param task Task name.
      */
-    // TODO: refactor
     private fun buildShortEntry(name: String, task: String) {
         val result = if (longestMatch >= width)
             10
         else longestMatch
         val space = width - result - 1
-        val line = StringUtils.abbreviate("($name) $task ", space - 4)
+        val line = "($name) $task ".abbreviate(space - 4)
         print(line.padEnd(space, '.') + " ")
     }
 
@@ -196,8 +193,7 @@ object DisplayUtils {
             ConfigurationController.put("display.rolling", true)
         }
         println(displaySeparator())
-        println(StringUtils.abbreviate("(" + name + ") " +
-                task, width))
+        println("($name) $task".abbreviate(width))
         println(displaySeparator())
     }
 
@@ -213,8 +209,7 @@ object DisplayUtils {
         } else {
             ConfigurationController.put("display.rolling", true)
         }
-        println(StringUtils.abbreviate("[DR] (" + name + ") " +
-                task, width))
+        println("[DR] ($name) $task".abbreviate(width))
         println(displaySeparator())
     }
 
@@ -302,7 +297,7 @@ object DisplayUtils {
      * @param text The text to be displayed.
      */
     fun wrapText(text: String) {
-        println(WordUtils.wrap(text, width))
+        println(text.wrap(width))
     }
 
     /**
@@ -311,17 +306,15 @@ object DisplayUtils {
      * @param authors The list of authors.
      */
     fun printAuthors(authors: List<String>) {
-        val line = StringBuilder()
-        line.append(if (authors.size == 1)
+        val line = if (authors.size == 1)
             messages.getMessage(Messages.INFO_LABEL_AUTHOR)
         else
-            messages.getMessage(Messages.INFO_LABEL_AUTHORS))
+            messages.getMessage(Messages.INFO_LABEL_AUTHORS)
         val text = if (authors.isEmpty())
             messages.getMessage(Messages.INFO_LABEL_NO_AUTHORS)
         else
             authors.joinToString(", ") { it.trim() }
-        line.append(" ").append(text)
-        wrapText(line.toString())
+        wrapText("$line $text")
     }
 
     /**
@@ -347,7 +340,7 @@ object DisplayUtils {
         val line = messages.getMessage(
                 Messages.INFO_DISPLAY_FILE_INFORMATION,
                 file.name,
-                CommonUtils.calculateFileSize(file),
+                CommonUtils.byteSizeToString(file.length()),
                 CommonUtils.getLastModifiedInformation(file)
         )
         logger.info(messages.getMessage(
@@ -356,20 +349,18 @@ object DisplayUtils {
                 revision
         ))
         logger.info(displaySeparator())
-        logger.info(String.format("::: arara @ %s",
-                applicationPath
-        ))
-        logger.info(String.format("::: Java %s, %s",
+        logger.info("::: arara @ $applicationPath")
+        logger.info("::: Java %s, %s".format(
                 CommonUtils.getSystemProperty("java.version",
                         "[unknown version]"),
                 CommonUtils.getSystemProperty("java.vendor",
                         "[unknown vendor]")
         ))
-        logger.info(String.format("::: %s",
+        logger.info("::: %s".format(
                 CommonUtils.getSystemProperty("java.home",
                         "[unknown location]")
         ))
-        logger.info(String.format("::: %s, %s, %s",
+        logger.info("::: %s, %s, %s".format(
                 CommonUtils.getSystemProperty("os.name",
                         "[unknown OS name]"),
                 CommonUtils.getSystemProperty("os.arch",
@@ -377,16 +368,16 @@ object DisplayUtils {
                 CommonUtils.getSystemProperty("os.version",
                         "[unknown OS version]")
         ))
-        logger.info(String.format("::: user.home @ %s",
+        logger.info("::: user.home @ %s".format(
                 CommonUtils.getSystemProperty("user.home",
                         "[unknown user's home directory]")
         ))
-        logger.info(String.format("::: user.dir @ %s",
+        logger.info("::: user.dir @ %s".format(
                 CommonUtils.getSystemProperty("user.dir",
                         "[unknown user's working directory]")
         ))
-        logger.info(String.format("::: CF @ %s", ConfigurationController["execution.configuration.name"]
-        ))
+        logger.info("::: CF @ %s".format(ConfigurationController
+                ["execution.configuration.name"]))
         logger.info(displaySeparator())
         logger.info(line)
         wrapText(line)
@@ -398,7 +389,8 @@ object DisplayUtils {
      */
     fun printTime() {
         if (ConfigurationController.contains("display.time")) {
-            if (ConfigurationController.contains("display.line") || ConfigurationController.contains("display.exception")) {
+            if (ConfigurationController.contains("display.line")
+                    || ConfigurationController.contains("display.exception")) {
                 addNewLine()
             }
             val text = messages.getMessage(
@@ -430,10 +422,9 @@ object DisplayUtils {
      * Displays a line containing details.
      */
     private fun displayDetailsLine() {
-        var line = messages.getMessage(
+        val line = messages.getMessage(
                 Messages.INFO_LABEL_ON_DETAILS) + " "
-        line = StringUtils.abbreviate(line, width).padEnd(width, '-')
-        println(line)
+        println(line.abbreviate(width).padEnd(width, '-'))
     }
 
     /**
@@ -443,8 +434,7 @@ object DisplayUtils {
      * @return A string containing the output separator with the provided text.
      */
     fun displayOutputSeparator(message: String): String {
-        return StringUtils.center(" $message ",
-                width, "-")
+        return " $message ".center(width, '-')
     }
 
     /**

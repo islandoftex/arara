@@ -40,7 +40,6 @@ import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.model.Argument
 import com.github.cereda.arara.model.FileType
 import com.github.cereda.arara.model.Messages
-import org.apache.commons.lang.SystemUtils
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
@@ -388,16 +387,6 @@ object CommonUtils {
     }
 
     /**
-     * Gets a human readable representation of a file size.
-     *
-     * @param file The file.
-     * @return A string representation of the file size.
-     */
-    fun calculateFileSize(file: File): String {
-        return byteSizeToString(file.length())
-    }
-
-    /**
      * Gets the date the provided file was last modified.
      *
      * @param file The file.
@@ -436,27 +425,13 @@ object CommonUtils {
     }
 
     /**
-     * Gets the file type of a file.
+     * Gets the extension of a file.
      *
      * @param file The file.
      * @return The corresponding file type.
      */
-    fun getFiletype(file: File): String {
-        return getFiletype(file.name)
-    }
-
-    /**
-     * Gets the file type of a string representing the file.
-     *
-     * @param name A string representing the file.
-     * @return The corresponding file type.
-     */
-    // TODO: isn't that only the extension?
-    fun getFiletype(name: String): String {
-        return if (name.lastIndexOf(".") != -1)
-            name.substring(name.lastIndexOf(".") + 1)
-        else
-            ""
+    fun getFileExtension(file: File): String {
+        return file.extension
     }
 
     /**
@@ -466,33 +441,17 @@ object CommonUtils {
      * @return The corresponding base name.
      */
     fun getBasename(file: File): String {
-        return getBasename(file.name)
-    }
-
-    /**
-     * Gets the base name of a string representing the file.
-     *
-     * @param name A string representing the file.
-     * @return The corresponding base name.
-     */
-    fun getBasename(name: String): String {
-        val index = if (name.lastIndexOf(".") != -1)
-            name.lastIndexOf(".")
-        else
-            name.length
-        return name.substring(0, index)
+        return file.nameWithoutExtension
     }
 
     /**
      * Encloses the provided object in double quotes.
      *
-     * @param object The object.
-     * @return A string representation of the provided object enclosed in double
+     * @param string The string.
+     * @return A string representation of the provided string enclosed in double
      * quotes.
      */
-    fun addQuotes(`object`: Any): String {
-        return "\"${`object`}\""
-    }
+    fun addQuotes(string: Any): String = "\"$string\""
 
     /**
      * Generates a string based on a list of objects, separating each one of
@@ -505,14 +464,6 @@ object CommonUtils {
     fun generateString(vararg objects: Any): String = objects
             .map { it.toString() }.filter { it.isNotEmpty() }
             .joinToString(" ")
-
-    /**
-     * Checks if a file exists.
-     *
-     * @param file The file.
-     * @return A boolean value indicating if the file exists.
-     */
-    fun exists(file: File): Boolean = file.exists()
 
     /**
      * Checks if a file exists based on its extension.
@@ -708,6 +659,14 @@ object CommonUtils {
      * Checks if the provided operating system string holds according to the
      * underlying operating system.
      *
+     * Supported operating systems:
+     *
+     *   * Windows
+     *   * Linux
+     *   * Mac OS X
+     *   * Unix (Linux || Mac OS)
+     *   * Cygwin
+     *
      * @param value A string representing an operating system.
      * @return A boolean value indicating if the provided string refers to the
      * underlying operating system.
@@ -716,15 +675,16 @@ object CommonUtils {
      */
     @Throws(AraraException::class)
     fun checkOS(value: String): Boolean {
+        fun checkOSProperty(key: String): Boolean =
+                getSystemPropertyOrNull("os.name")
+                        ?.toLowerCase()?.startsWith(key.toLowerCase()) ?: false
+
         val values = mutableMapOf<String, Boolean>()
-        values["windows"] = SystemUtils.IS_OS_WINDOWS
-        values["linux"] = SystemUtils.IS_OS_LINUX
-        values["mac"] = SystemUtils.IS_OS_MAC_OSX
-        values["unix"] = SystemUtils.IS_OS_UNIX
-        values["aix"] = SystemUtils.IS_OS_AIX
-        values["irix"] = SystemUtils.IS_OS_IRIX
-        values["os2"] = SystemUtils.IS_OS_OS2
-        values["solaris"] = SystemUtils.IS_OS_SOLARIS
+        values["windows"] = checkOSProperty("Windows")
+        values["linux"] = checkOSProperty("Linux")
+        values["mac"] = checkOSProperty("Mac OS X")
+        values["unix"] = checkOSProperty("Mac OS X") ||
+                checkOSProperty("Linux")
         values["cygwin"] = SystemCallController["cygwin"] as Boolean
         if (!values.containsKey(value.toLowerCase())) {
             throw AraraException(
@@ -756,6 +716,21 @@ object CommonUtils {
     }
 
     /**
+     * Access a system property.
+     *
+     * @param key The key of the property.
+     * @return The value of the system property or null if there is an
+     *   exception.
+     */
+    fun getSystemPropertyOrNull(key: String): String? {
+        return try {
+            System.getProperty(key)
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    /**
      * Generates a list of filenames from the provided command based on a list
      * of extensions for each underlying operating system.
      *
@@ -766,7 +741,7 @@ object CommonUtils {
         // list of extensions, specific for
         // each operating system (in fact, it
         // is more Windows specific)
-        val extensions = if (SystemUtils.IS_OS_WINDOWS) {
+        val extensions = if (checkOS("windows")) {
             // the application is running on
             // Windows, so let's look for the
             // following extensions in order

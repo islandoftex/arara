@@ -44,26 +44,25 @@ import com.github.cereda.arara.utils.CommonUtils
  */
 class Rule {
     // the rule identifier
-    var identifier: String? = null
-        get() = CommonUtils.removeKeyword(field)
+    var identifier: String = INVALID_RULE_IDENTIFIER
+        get() = CommonUtils.removeKeywordNotNull(field)
 
     // the rule name
-    var name: String? = null
-        get() = CommonUtils.removeKeyword(field)
+    var name: String = INVALID_RULE_NAME
+        get() = CommonUtils.removeKeywordNotNull(field)
 
     // the list of authors
-    var authors: List<String>? = null
-        get() {
-            if (field != null) {
-                this.authors = field!!
-                        .mapNotNull { CommonUtils.removeKeyword(it) }
-            }
-            return field
-        }
+    var authors: List<String> = listOf()
+        get() = field.mapNotNull { CommonUtils.removeKeyword(it) }
 
     // the list of commands
     var commands: List<RuleCommand> = listOf()
 
     // the list of arguments
     var arguments: List<Argument> = listOf()
+
+    companion object {
+        const val INVALID_RULE_IDENTIFIER = "INVALID_RULE"
+        const val INVALID_RULE_NAME = "INVALID_RULE"
+    }
 }
