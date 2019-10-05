@@ -34,35 +34,74 @@
 package com.github.cereda.arara.model
 
 import com.github.cereda.arara.localization.LanguageController
-import com.github.cereda.arara.controller.SessionController
 import com.github.cereda.arara.localization.Messages
 
 /**
- * Implements the session model.
+ * Implements the session.
+ *
+ * This class wraps a map that holds the execution session, that is, a dirty
+ * maneuver to exchange pretty much any data between commands and even rules.
+ *
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
  */
-class Session {
+object Session {
+    // the application messages obtained from the
+    // language controller
+    private val messages = LanguageController
+
+    // the session map which holds the execution session;
+    // the idea here is to provide wrappers to the map
+    // methods, so it could be easily manipulated
+    private val map = mutableMapOf<String, Any>()
+
     /**
-     * Inserts the object into the session, indexed by the provided key.
+     * Gets the object indexed by the provided key from the session. This method
+     * holds the map method of the very same name.
+     *
      * @param key The provided key.
-     * @param value The value to be inserted.
+     * @return The object indexed by the provided key.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
      */
-    fun insert(key: String, value: Any) {
-        SessionController.put(key, value)
+    @Throws(AraraException::class)
+    operator fun get(key: String): Any {
+        return if (contains(key)) {
+            map.getValue(key)
+        } else {
+            throw AraraException(
+                    messages.getMessage(
+                            Messages.ERROR_SESSION_OBTAIN_UNKNOWN_KEY,
+                            key
+                    )
+            )
+        }
     }
 
     /**
-     * Removes the entry indexed by the provided key from the session.
+     * Inserts (or overwrites) the object indexed by the provided key into the
+     * session. This method holds the map method of the very same name.
+     *
+     * @param key The provided key.
+     * @param value The value to be inserted.
+     */
+    fun put(key: String, value: Any) {
+        map[key] = value
+    }
+
+    /**
+     * Removes the entry indexed by the provided key from the session. This method
+     * holds the map method of the same name.
+     *
      * @param key The provided key.
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
     @Throws(AraraException::class)
     fun remove(key: String) {
-        if (SessionController.contains(key)) {
-            SessionController.remove(key)
+        if (contains(key)) {
+            map.remove(key)
         } else {
             throw AraraException(
                     messages.getMessage(
@@ -75,45 +114,20 @@ class Session {
 
     /**
      * Checks if the provided key exists in the session.
+     *
      * @param key The provided key.
      * @return A boolean value indicating if the provided key exists in the
      * session.
      */
-    fun exists(key: String): Boolean {
-        return SessionController.contains(key)
+    operator fun contains(key: String): Boolean {
+        return map.containsKey(key)
     }
 
     /**
-     * Clears the session.
+     * Clears the session (map). This method, as usual, holds the map method of
+     * the same name.
      */
-    fun forget() {
-        SessionController.clear()
-    }
-
-    /**
-     * Gets the object indexed by the provided key from the session.
-     * @param key The provided key.
-     * @return The object indexed by the provided key.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
-    @Throws(AraraException::class)
-    fun obtain(key: String): Any {
-        return if (SessionController.contains(key)) {
-            SessionController[key]
-        } else {
-            throw AraraException(
-                    messages.getMessage(
-                            Messages.ERROR_SESSION_OBTAIN_UNKNOWN_KEY,
-                            key
-                    )
-            )
-        }
-    }
-
-    companion object {
-        // the application messages obtained from the
-        // language controller
-        private val messages = LanguageController
+    fun clear() {
+        map.clear()
     }
 }

@@ -61,7 +61,7 @@ public class Methods {
             LanguageController.INSTANCE;
 
     // the session controller
-    private static final Session session = new Session();
+    private static final Session session = Session.INSTANCE;
 
     /**
      * Get rule methods.
