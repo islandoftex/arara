@@ -93,6 +93,7 @@ tasks {
     }
   }
   withType<Jar>() {
+    archiveBaseName.set("arara")
     manifest.attributes.putAll(mainManifest.attributes)
   }
   named<ShadowJar>("shadowJar") {

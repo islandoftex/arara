@@ -1,7 +1,10 @@
 *.*~
 *.iml
-docs/*.pdf
-docs/*.log
+docs/**/*.*
+!docs/**/*.tex
+!docs/figures/*.p*
+!docs/logos/*.pdf
+!docs/*.yaml
 .DS_Store
 .gradle
 .idea

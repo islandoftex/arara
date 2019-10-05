@@ -1,0 +1,83 @@
+variables:
+  # disable the Gradle daemon for Continuous Integration servers
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
+stages:
+  - build
+  - test
+  - doc
+
+.buildtemplate: &builddefinition
+  stage: build
+  script:
+    # create the executables for distribution
+    - gradle --build-cache assembleDist --info
+    - mkdir bin
+    - cp application/build/libs/*.jar bin/
+    - cp application/build/distributions/*.zip bin/
+    # create checksum file to make sure we're distributing the right thing
+    - cd bin
+    - md5sum *.{jar,zip} > checksums.txt
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME-snapshot"
+    paths:
+      - bin
+    expire_in: 1 week
+  cache:
+    key: "$CI_COMMIT_REF_NAME-$JAVA_VERSION"
+    policy: push
+    paths:
+      - build
+      - application/build
+      - .gradle
+
+build:linux:jdk8:
+  image: registry.gitlab.com/islandoftex/images/javafx-gradle:jdk8-latest
+  <<: *builddefinition
+
+build:linux:jdk11:
+  image: registry.gitlab.com/islandoftex/images/javafx-gradle:jdk11-latest
+  <<: *builddefinition
+
+.testtemplate: &testdefinition
+  stage: test
+  script:
+    - gradle test
+  cache:
+    key: "$CI_COMMIT_REF_NAME-$JAVA_VERSION"
+    policy: pull
+    paths:
+      - build
+      - application/build
+      - .gradle
+
+test:dependencies:
+  stage: test
+  needs: ["build:linux:jdk8"]
+  image: registry.gitlab.com/islandoftex/images/javafx-gradle:jdk8-latest
+  script:
+    - gradle dependencyUpdates
+
+test:linux:jdk8:
+  needs: ["build:linux:jdk8"]
+  image: registry.gitlab.com/islandoftex/images/javafx-gradle:jdk8-latest
+  <<: *testdefinition
+
+test:linux:jdk11:
+  needs: ["build:linux:jdk11"]
+  image: registry.gitlab.com/islandoftex/images/javafx-gradle:jdk11-latest
+  <<: *testdefinition
+
+build:doc:
+  stage: doc
+  needs: ["build:linux:jdk8"]
+  image: registry.gitlab.com/islandoftex/images/texlive:latest
+  script:
+    # build the manual
+    - cd docs
+    - java -jar ../bin/*-with-deps-*.jar -l -v arara-manual.tex
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME-doc"
+    paths:
+      - docs/*.pdf
+    expire_in: 1 week

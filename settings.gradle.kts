@@ -1,2 +1,2 @@
-rootProject.name = "Arara"
+rootProject.name = "arara"
 include("application", "docs")
