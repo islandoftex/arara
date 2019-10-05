@@ -33,8 +33,9 @@
  */
 package com.github.cereda.arara.model
 
-import com.github.cereda.arara.controller.LanguageController
+import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.controller.SessionController
+import com.github.cereda.arara.localization.Messages
 
 /**
  * Implements the session model.

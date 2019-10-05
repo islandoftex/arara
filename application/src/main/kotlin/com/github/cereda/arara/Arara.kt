@@ -33,19 +33,24 @@
  */
 package com.github.cereda.arara
 
-import com.github.cereda.arara.controller.LanguageController
+import com.github.cereda.arara.configuration.Configuration
+import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.controller.LoggingController
 import com.github.cereda.arara.model.*
 import com.github.cereda.arara.utils.CommonUtils
 import com.github.cereda.arara.utils.DirectiveUtils
 import com.github.cereda.arara.utils.DisplayUtils
 import kotlin.system.exitProcess
+import kotlin.time.ClockMark
+import kotlin.time.ExperimentalTime
+import kotlin.time.MonoClock
 
 object Arara {
     /**
      * Main method. This is the application entry point.
      * @param args A string array containing all command line arguments.
      */
+    @ExperimentalTime
     @JvmStatic
     fun main(args: Array<String>) {
         // the first component to be initialized is the
@@ -65,8 +70,16 @@ object Arara {
         // fixed-width fonts, otherwise the logo will be messed
         DisplayUtils.printLogo()
 
-        try {
+        // arara features now a cool stopwatch, so we can see how
+        // much time has passed since everything started; start(),
+        // for obvious reasons, starts the stopwatch and keeps track
+        // of time for us; internally, this class makes use of
+        // nano time, so we might get an interesting precision here
+        // (although timing is not a serious business in here, it's
+        // just a cool addition)
+        val executionStart: ClockMark = MonoClock.markNow()
 
+        try {
             // first of all, let's try to load a potential
             // configuration file located at the current
             // user's home directory; if there's a bad
@@ -125,15 +138,6 @@ object Arara {
                 // by arara
                 directives = DirectiveUtils.validate(directives)
 
-                // arara features now a cool stopwatch, so we can see how
-                // much time has passed since everything started; start(),
-                // for obvious reasons, starts the stopwatch and keeps track
-                // of time for us; internally, this class makes use of
-                // nano time, so we might get an interesting precision here
-                // (although timing is not a serious business in here, it's
-                // just a cool addition)
-                StopWatch.start()
-
                 // this is surely the golden heart of arara; this class
                 // implements a powerful interpreter that will handle all
                 // rules and their corresponding tasks
@@ -163,17 +167,11 @@ object Arara {
             DisplayUtils.printException(exception)
         }
 
-        // we are done here (with or without errors, that makes no difference
-        // at this point), so let's stop our stopwatch; now it's just an easy
-        // subtraction to be made (note that the values are internally
-        // represented as nanoseconds, but the result is printed as seconds)
-        StopWatch.stop()
-
         // this is the last command from arara; once the execution time is
         // available, print it; note that this notification is suppressed
         // when the command line parsing returns false as result (it makes
         // no sense to print the execution time for a help message, I guess)
-        DisplayUtils.printTime()
+        DisplayUtils.printTime(executionStart.elapsedNow().inSeconds)
 
         // gets the application exit status; the rule here is:
         // 0 : everything went just fine (note that the dry-run mode always

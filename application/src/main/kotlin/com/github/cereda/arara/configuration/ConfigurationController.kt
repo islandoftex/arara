@@ -31,7 +31,7 @@
  * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.cereda.arara.controller
+package com.github.cereda.arara.configuration
 
 /**
  * Implements the configuration controller. The idea here is to provide a map

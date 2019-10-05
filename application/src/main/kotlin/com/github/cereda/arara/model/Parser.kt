@@ -33,9 +33,11 @@
  */
 package com.github.cereda.arara.model
 
-import com.github.cereda.arara.controller.ConfigurationController
-import com.github.cereda.arara.controller.LanguageController
+import com.github.cereda.arara.configuration.ConfigurationController
+import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.controller.LoggingController
+import com.github.cereda.arara.localization.Language
+import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.utils.CommonUtils
 import com.github.cereda.arara.utils.DisplayUtils
 import org.apache.commons.cli.*
@@ -119,7 +121,7 @@ class Parser(
             val reference: String
             if (line.hasOption("language")) {
                 ConfigurationController.put("execution.language",
-                        Language(line.getOptionValue("language"))
+                    Language(line.getOptionValue("language"))
                 )
                 val locale = (ConfigurationController["execution.language"] as Language).locale
                 messages.setLocale(locale)

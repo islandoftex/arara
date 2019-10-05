@@ -31,14 +31,14 @@
  * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.cereda.arara.utils
+package com.github.cereda.arara.configuration
 
 import com.github.cereda.arara.Arara
-import com.github.cereda.arara.controller.LanguageController
+import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.model.FileType
-import com.github.cereda.arara.model.Messages
-import com.github.cereda.arara.model.Resource
+import com.github.cereda.arara.localization.Messages
+import com.github.cereda.arara.utils.CommonUtils
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.Constructor
 import org.yaml.snakeyaml.error.MarkedYAMLException
@@ -122,13 +122,13 @@ object ConfigurationUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun validateConfiguration(file: File): Resource {
+    fun loadLocalConfiguration(file: File): LocalConfiguration {
         val representer = Representer()
-        representer.addClassTag(Resource::class.java, Tag("!config"))
-        val yaml = Yaml(Constructor(Resource::class.java), representer)
+        representer.addClassTag(LocalConfiguration::class.java, Tag("!config"))
+        val yaml = Yaml(Constructor(LocalConfiguration::class.java), representer)
         try {
-            val resource = yaml.loadAs(FileReader(file),
-                    Resource::class.java)
+            val resource: LocalConfiguration = yaml.loadAs(FileReader(file),
+                    LocalConfiguration::class.java)
             if (resource.filetypes.any { it.extension == null }) {
                 throw AraraException(
                         messages.getMessage(

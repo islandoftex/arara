@@ -33,9 +33,9 @@
  */
 package com.github.cereda.arara.utils
 
-import com.github.cereda.arara.controller.LanguageController
+import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.model.AraraException
-import com.github.cereda.arara.model.Messages
+import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.Rule
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.Constructor

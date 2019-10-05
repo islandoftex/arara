@@ -33,7 +33,7 @@
  */
 package com.github.cereda.arara.utils
 
-import com.github.cereda.arara.controller.ConfigurationController
+import com.github.cereda.arara.configuration.ConfigurationController
 import javax.swing.JOptionPane
 import javax.swing.UIManager
 

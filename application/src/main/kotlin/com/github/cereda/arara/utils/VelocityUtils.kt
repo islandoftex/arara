@@ -33,9 +33,9 @@
  */
 package com.github.cereda.arara.utils
 
-import com.github.cereda.arara.controller.LanguageController
+import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.model.AraraException
-import com.github.cereda.arara.model.Messages
+import com.github.cereda.arara.localization.Messages
 import org.apache.velocity.VelocityContext
 import org.apache.velocity.app.VelocityEngine
 import org.apache.velocity.exception.MethodInvocationException

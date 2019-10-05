@@ -31,19 +31,21 @@
  * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.cereda.arara.model
+package com.github.cereda.arara.configuration
 
+import com.github.cereda.arara.model.FileTypeResource
 import com.github.cereda.arara.utils.CommonUtils
 import org.mvel2.templates.TemplateRuntime
 
 /**
- * Implements the configuration resource model.
+ * A local configuration which resembles configuration files in the working
+ * directory.
  *
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
  */
-class Resource {
+class LocalConfiguration {
     // rule paths
     var paths: List<String>? = null
         get() {

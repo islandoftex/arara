@@ -33,12 +33,13 @@
  */
 package com.github.cereda.arara.utils
 
-import com.github.cereda.arara.controller.ConfigurationController
-import com.github.cereda.arara.controller.LanguageController
+import com.github.cereda.arara.configuration.ConfigurationController
+import com.github.cereda.arara.configuration.ConfigurationUtils
+import com.github.cereda.arara.localization.Language
+import com.github.cereda.arara.localization.LanguageController
+import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.model.Conditional
-import com.github.cereda.arara.model.Messages
-import com.github.cereda.arara.model.StopWatch
 import org.slf4j.LoggerFactory
 import java.io.File
 
@@ -386,15 +387,20 @@ object DisplayUtils {
 
     /**
      * Displays the elapsed time in the terminal.
+     *
+     * @param seconds The elapsed seconds.
      */
-    fun printTime() {
+    fun printTime(seconds: Double) {
+        val language = ConfigurationController["execution.language"] as Language
+
         if (ConfigurationController.contains("display.time")) {
             if (ConfigurationController.contains("display.line")
                     || ConfigurationController.contains("display.exception")) {
                 addNewLine()
             }
             val text = messages.getMessage(
-                    Messages.INFO_DISPLAY_EXECUTION_TIME, StopWatch.time)
+                    Messages.INFO_DISPLAY_EXECUTION_TIME,
+                    "%1.2f".format(language.locale, seconds))
             logger.info(text)
             wrapText(text)
         }

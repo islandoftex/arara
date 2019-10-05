@@ -31,7 +31,7 @@
  * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.cereda.arara.model
+package com.github.cereda.arara.localization
 
 import ch.qos.cal10n.BaseName
 import ch.qos.cal10n.Locale

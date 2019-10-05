@@ -33,13 +33,13 @@
  */
 package com.github.cereda.arara.utils
 
-import com.github.cereda.arara.controller.ConfigurationController
-import com.github.cereda.arara.controller.LanguageController
+import com.github.cereda.arara.configuration.ConfigurationController
+import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.controller.SystemCallController
 import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.model.Argument
 import com.github.cereda.arara.model.FileType
-import com.github.cereda.arara.model.Messages
+import com.github.cereda.arara.localization.Messages
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset

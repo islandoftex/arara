@@ -31,9 +31,9 @@
  * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.cereda.arara.model
+package com.github.cereda.arara.localization
 
-import com.github.cereda.arara.controller.LanguageController
+import com.github.cereda.arara.model.AraraException
 import java.util.*
 
 /**
@@ -43,17 +43,7 @@ import java.util.*
  * @version 4.0
  * @since 4.0
  */
-class Language
-/**
- * Creates a new language object. It might raise an exception if the
- * provided language does not exist in the map.
- *
- * @param code The language code, based on ISO 639-1 and language variants.
- * @throws AraraException Something wrong happened, to be caught in the
- * higher levels.
- */
-@Throws(AraraException::class)
-constructor(code: String) {
+class Language(code: String) {
     // the language code, based on
     // ISO 639-1 and language variants
     private val code: String
@@ -64,7 +54,7 @@ constructor(code: String) {
      * @return A string representing the language name.
      */
     val name: String
-        get() = languages.getValue("code").first
+        get() = languages.getValue(code).first
 
     /**
      * Gets the language locale.
@@ -74,6 +64,7 @@ constructor(code: String) {
     val locale: Locale
         get() = languages.getValue(code).second
 
+    // throws an exception on invalid language
     init {
         if (languages.containsKey(code)) {
             this.code = code
@@ -88,7 +79,6 @@ constructor(code: String) {
     }
 
     companion object {
-
         // map containing all languages
         // supported by arara
         private val languages = mapOf(
@@ -103,7 +93,7 @@ constructor(code: String) {
         // the application messages obtained from the
         // language controller
         private val messages = LanguageController
-        
+
         // string representing the list of available languages
         // because they don't change initialized with the string
         val languagesList: String = "(" + languages.map { (key, value) ->

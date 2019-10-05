@@ -33,7 +33,8 @@
  */
 package com.github.cereda.arara.model
 
-import com.github.cereda.arara.controller.LanguageController
+import com.github.cereda.arara.localization.LanguageController
+import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.utils.CommonUtils
 
 /**

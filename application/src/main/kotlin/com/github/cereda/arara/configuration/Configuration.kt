@@ -31,12 +31,14 @@
  * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.cereda.arara.model
+package com.github.cereda.arara.configuration
 
-import com.github.cereda.arara.controller.ConfigurationController
-import com.github.cereda.arara.controller.LanguageController
+import com.github.cereda.arara.localization.LanguageController
+import com.github.cereda.arara.localization.Language
+import com.github.cereda.arara.localization.Messages
+import com.github.cereda.arara.model.AraraException
+import com.github.cereda.arara.model.FileType
 import com.github.cereda.arara.utils.CommonUtils
-import com.github.cereda.arara.utils.ConfigurationUtils
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeUnit
 
@@ -79,7 +81,7 @@ object Configuration {
 
             // then validate it and update the
             // configuration accordingly
-            val resource = ConfigurationUtils.validateConfiguration(file)
+            val resource = ConfigurationUtils.loadLocalConfiguration(file)
             update(resource)
         }
 
@@ -156,7 +158,7 @@ object Configuration {
      * higher levels.
      */
     @Throws(AraraException::class)
-    private fun update(resource: Resource) {
+    private fun update(resource: LocalConfiguration) {
         val controller = ConfigurationController
 
         if (resource.paths != null) {

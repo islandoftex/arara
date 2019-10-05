@@ -34,9 +34,10 @@
 package com.github.cereda.arara.localization
 
 import ch.qos.cal10n.verifier.MessageKeyVerifier
-import com.github.cereda.arara.model.Messages
+import com.github.cereda.arara.model.AraraException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.util.*
 
 /**
@@ -107,4 +108,11 @@ class LocalizationTest {
         assertEquals(0, check(Locale("it")).toLong())
     }
 
+    @Test
+    fun checkLocaleInstantiation() {
+        assertEquals("en", Language("en").locale.language)
+        assertThrows<AraraException> {
+            Language("quack")
+        }
+    }
 }

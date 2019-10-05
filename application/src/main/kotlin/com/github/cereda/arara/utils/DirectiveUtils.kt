@@ -33,12 +33,12 @@
  */
 package com.github.cereda.arara.utils
 
-import com.github.cereda.arara.controller.ConfigurationController
-import com.github.cereda.arara.controller.LanguageController
+import com.github.cereda.arara.configuration.ConfigurationController
+import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.model.Conditional
 import com.github.cereda.arara.model.Directive
-import com.github.cereda.arara.model.Messages
+import com.github.cereda.arara.localization.Messages
 import org.slf4j.LoggerFactory
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.Yaml
