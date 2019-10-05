@@ -34,12 +34,13 @@
 package com.github.cereda.arara.utils
 
 import com.github.cereda.arara.configuration.ConfigurationController
-import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.controller.SystemCallController
+import com.github.cereda.arara.localization.Language
+import com.github.cereda.arara.localization.LanguageController
+import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.model.Argument
 import com.github.cereda.arara.model.FileType
-import com.github.cereda.arara.localization.Messages
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
@@ -379,11 +380,12 @@ object CommonUtils {
      * @return A string representation of the size.
      */
     fun byteSizeToString(size: Long): String {
+        val language = ConfigurationController["execution.language"] as Language
         val unit = 1000
         if (size < unit) return "$size B"
         val exp = (ln(size.toDouble()) / ln(unit.toDouble())).toInt()
-        return "%.1f %sB".format(size / unit.toDouble().pow(exp.toDouble()),
-                "kMGTPE"[exp - 1])
+        return "%.1f %sB".format(language.locale, size / unit.toDouble()
+                .pow(exp.toDouble()), "kMGTPE"[exp - 1])
     }
 
     /**
