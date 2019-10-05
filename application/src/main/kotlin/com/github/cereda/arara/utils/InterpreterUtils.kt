@@ -36,7 +36,9 @@ package com.github.cereda.arara.utils
 import com.github.cereda.arara.configuration.ConfigurationController
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
-import com.github.cereda.arara.model.*
+import com.github.cereda.arara.model.AraraException
+import com.github.cereda.arara.ruleset.Command
+import com.github.cereda.arara.ruleset.Conditional
 import org.slf4j.LoggerFactory
 import org.zeroturnaround.exec.InvalidExitValueException
 import org.zeroturnaround.exec.ProcessExecutor
@@ -61,17 +63,6 @@ object InterpreterUtils {
 
     // get the logger context from a factory
     private val logger = LoggerFactory.getLogger(InterpreterUtils::class.java)
-
-    /**
-     * Gets a list of all rule arguments.
-     *
-     * @param rule The provided rule.
-     * @return A list of strings containing all rule arguments.
-     */
-    // TODO: should be a function of rule, shouldn't it?
-    fun getRuleArguments(rule: Rule): List<String> {
-        return rule.arguments.mapNotNull { it.identifier }
-    }
 
     /**
      * Checks if the current conditional has a prior evaluation.

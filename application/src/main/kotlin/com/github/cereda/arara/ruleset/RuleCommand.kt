@@ -31,62 +31,27 @@
  * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.cereda.arara.utils
+package com.github.cereda.arara.ruleset
+
+import com.github.cereda.arara.utils.CommonUtils
 
 /**
- * Implements a directive assembler in order to help build a directive from a
- * list of strings.
+ * Implements the rule command model.
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
  */
-class DirectiveAssembler {
-    // this variable holds a list of
-    // line numbers indicating which
-    // lines composed the resulting
-    // potential directive
-    private val lineNumbers = mutableListOf<Int>()
+class RuleCommand {
+    // the command name
+    var name: String? = null
+        get() = CommonUtils.removeKeyword(field)
 
-    // this variable holds the textual
-    // representation of the directive
-    private var text: String = ""
+    // the command instruction
+    var command: String? = null
+        get() = CommonUtils.removeKeyword(field)
 
-    /**
-     * Checks if an append operation is allowed.
-     * @return A boolean value indicating if an append operation is allowed.
-     */
-    val isAppendAllowed: Boolean
-        get() = lineNumbers.isNotEmpty()
+    // the exit status expression
+    var exit: String? = null
+        get() = CommonUtils.removeKeyword(field)
 
-    /**
-     * Adds a line number to the assembler.
-     * @param line An integer representing the line number.
-     */
-    fun addLineNumber(line: Int) {
-        lineNumbers.add(line)
-    }
-
-    /**
-     * Appends the provided line to the assembler text.
-     * @param line The provided line.
-     */
-    fun appendLine(line: String) {
-        text = text + " " + line.trim()
-    }
-
-    /**
-     * Gets the list of line numbers.
-     * @return The list of line numbers.
-     */
-    fun getLineNumbers(): List<Int> {
-        return lineNumbers
-    }
-
-    /**
-     * Gets the text.
-     * @return The assembler text, properly trimmed.
-     */
-    fun getText(): String {
-        return text.trim()
-    }
 }

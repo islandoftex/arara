@@ -36,7 +36,14 @@ package com.github.cereda.arara.model
 import com.github.cereda.arara.configuration.ConfigurationController
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
-import com.github.cereda.arara.utils.*
+import com.github.cereda.arara.ruleset.Command
+import com.github.cereda.arara.ruleset.Directive
+import com.github.cereda.arara.ruleset.Rule
+import com.github.cereda.arara.ruleset.RuleUtils
+import com.github.cereda.arara.utils.CommonUtils
+import com.github.cereda.arara.utils.DisplayUtils
+import com.github.cereda.arara.utils.InterpreterUtils
+import com.github.cereda.arara.utils.Methods
 import org.mvel2.templates.TemplateRuntime
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -48,20 +55,10 @@ import java.io.File
  * @version 4.0
  * @since 4.0
  */
-class Interpreter {
-    // list of directives to be
-    // interpreted in here
-    private var directives: List<Directive>? = null
-
-    /**
-     * Sets the list of directives.
-     *
-     * @param directives The list of directives.
-     */
-    fun setDirectives(directives: List<Directive>) {
-        this.directives = directives
-    }
-
+class Interpreter(
+        // list of directives to be
+        // interpreted in here
+        val directives: List<Directive>) {
     /**
      * Executes each directive, throwing an exception if something bad has
      * happened.
@@ -71,7 +68,7 @@ class Interpreter {
      */
     @Throws(AraraException::class)
     fun execute() {
-        for (directive in directives!!) {
+        for (directive in directives) {
             logger.info(
                     messages.getMessage(
                             Messages.LOG_INFO_INTERPRET_RULE,
@@ -106,8 +103,10 @@ class Interpreter {
 
             val name = rule.name
             val authors = rule.authors
+            
+            // save the identifiers of the rule's arguments for later use
             ConfigurationController.put("execution.rule.arguments",
-                    InterpreterUtils.getRuleArguments(rule))
+                    rule.arguments.mapNotNull { it.identifier })
 
             val evaluator = Evaluator()
 

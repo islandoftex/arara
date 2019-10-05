@@ -36,8 +36,9 @@ package com.github.cereda.arara.model
 import com.github.cereda.arara.configuration.ConfigurationController
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
+import com.github.cereda.arara.ruleset.Directive
 import com.github.cereda.arara.utils.CommonUtils
-import com.github.cereda.arara.utils.DirectiveUtils
+import com.github.cereda.arara.ruleset.DirectiveUtils
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset

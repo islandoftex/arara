@@ -31,63 +31,45 @@
  * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.cereda.arara.model
+package com.github.cereda.arara.ruleset
 
 /**
- * The conditional class, it represents the type of conditional available
- * for a directive and its corresponding expression to be evaluated.
+ * Implements the directive model.
+ *
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
  */
-class Conditional {
-    // the conditional type, specified above; the
-    // default fallback, as seen in the constructor,
-    // is set to NONE, that is, no conditional at all
-    var type: ConditionalType = ConditionalType.NONE
+class Directive {
+    // the directive identifier, it is resolved
+    // to the rule identifier later on
+    var identifier: String? = null
 
-    // the expression to be evaluated according to its
-    // type; the default fallback, as seen in the
-    // constructor, is set to an empty string
-    var condition: String = ""
+    // a map containing the parameters; they
+    // are validated later on in order to
+    // ensure they are valid
+    var parameters: Map<String, Any>? = null
 
-    // these are all types of conditionals arara
-    // is able to recognize; personally, I believe
-    // they are more than sufficient to cover the
-    // majority of test cases
-    enum class ConditionalType {
-        // evaluated beforehand, directive is interpreted
-        // if and only if the result is true
-        IF,
+    // a conditional containing the type and
+    // the expression to be evaluated later on
+    var conditional: Conditional? = null
 
-        // there is no evaluation, directive is interpreted,
-        // no extra effort is needed
-        NONE,
-
-        // evaluated beforehand, directive is interpreted
-        // if and only if the result is false
-        UNLESS,
-
-        // directive is interpreted the first time, then the
-        // evaluation is done; while the result is false,
-        // the directive is interpreted again and again
-        UNTIL,
-
-        // evaluated beforehand, directive is interpreted if
-        // and oly if the result is true, and the process is
-        // repeated while the result still holds true
-        WHILE
-    }
+    // a list contained all line numbers from
+    // the main file which built the current
+    // directive
+    var lineNumbers: List<Int>? = null
 
     /**
-     * Provides a textual representation of the conditional object.
-     * @return A string representation of this object.
+     * Provides a textual representation of the current directive.
+     *
+     * @return A string containing a textual representation of the current
+     * directive.
      */
     override fun toString(): String {
-        return "{ $type" +
-                if (type != ConditionalType.NONE)
-                    ", expression: ${condition.trim()}"
-                else "" + " }"
+        return "Directive: { " +
+                "identifier: " + identifier + ", " +
+                "parameters: " + parameters + ", " +
+                "conditional: " + conditional + ", " +
+                "lines: " + lineNumbers + " }"
     }
-
 }

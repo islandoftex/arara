@@ -31,38 +31,59 @@
  * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.cereda.arara.model
+package com.github.cereda.arara.ruleset
 
 import com.github.cereda.arara.utils.CommonUtils
+import java.io.File
 
 /**
- * Implements the rule model.
- *
+ * Implements a command model, containing a list of strings.
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
  */
-class Rule {
-    // the rule identifier
-    var identifier: String = INVALID_RULE_IDENTIFIER
-        get() = CommonUtils.removeKeywordNotNull(field)
+class Command {
+    // a list of elements which are components
+    // of a command and represented as strings
+    val elements: List<String>
 
-    // the rule name
-    var name: String = INVALID_RULE_NAME
-        get() = CommonUtils.removeKeywordNotNull(field)
+    // an optional file acting as a reference
+    // for the default working directory
+    var workingDirectory: File? = null
 
-    // the list of authors
-    var authors: List<String> = listOf()
-        get() = field.mapNotNull { CommonUtils.removeKeyword(it) }
-
-    // the list of commands
-    var commands: List<RuleCommand> = listOf()
-
-    // the list of arguments
-    var arguments: List<Argument> = listOf()
-
-    companion object {
-        const val INVALID_RULE_IDENTIFIER = "INVALID_RULE"
-        const val INVALID_RULE_NAME = "INVALID_RULE"
+    /**
+     * Constructor.
+     * @param values An array of objects.
+     */
+    constructor(vararg values: Any) {
+        elements = mutableListOf()
+        val result = CommonUtils.flatten(values.toList())
+        result.map { it.toString() }.filter { it.isNotEmpty() }
+                .forEach { elements.add(it) }
     }
+
+    /**
+     * Constructor.
+     * @param elements A list of strings.
+     */
+    constructor(elements: List<String>) {
+        this.elements = elements
+    }
+
+    /**
+     * Checks if a working directory was defined.
+     * @return A logic value indicating if a working directory was defined.
+     */
+    fun hasWorkingDirectory(): Boolean = workingDirectory != null
+
+    /**
+     * Provides a textual representation of the current command.
+     * @return A string representing the current command.
+     */
+    override fun toString(): String {
+        return "[ " + elements.joinToString(", ") + " ]" +
+                if (hasWorkingDirectory()) " @ " + workingDirectory!!.toString()
+                else ""
+    }
+
 }

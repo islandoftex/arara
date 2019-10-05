@@ -31,26 +31,32 @@
  * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.cereda.arara.utils
+package com.github.cereda.arara.ruleset
 
-import org.yaml.snakeyaml.nodes.Tag
-import org.yaml.snakeyaml.resolver.Resolver
+import com.github.cereda.arara.utils.CommonUtils
 
 /**
- * This class implements a directive resolver.
+ * The rule argument model.
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
  */
-class DirectiveResolver : Resolver() {
-    /**
-     * Adds implicit resolvers to the YAML model. For arara, I disabled
-     * boolean and numeric values to be automatically parsed. They still can
-     * be used through an explicit conversion in the rule context.
-     */
-    override fun addImplicitResolvers() {
-        addImplicitResolver(Tag.MERGE, MERGE, "<")
-        addImplicitResolver(Tag.NULL, NULL, "~nN\u0000")
-        addImplicitResolver(Tag.NULL, EMPTY, null)
-    }
+class Argument {
+    // the argument identifier
+    var identifier: String? = null
+        get() = CommonUtils.removeKeyword(field)
+
+    // a boolean indicating if the
+    // current argument is required
+    var isRequired: Boolean = false
+
+    // the flag to hold the argument
+    // value manipulation
+    var flag: String? = null
+        get() = CommonUtils.removeKeyword(field)
+
+    // the argument fallback if it is
+    // not defined in the directive
+    var default: String? = null
+        get() = CommonUtils.removeKeyword(field)
 }

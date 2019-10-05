@@ -31,45 +31,62 @@
  * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.cereda.arara.model
+package com.github.cereda.arara.ruleset
 
 /**
- * Implements the directive model.
- *
+ * Implements a directive assembler in order to help build a directive from a
+ * list of strings.
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
  */
-class Directive {
-    // the directive identifier, it is resolved
-    // to the rule identifier later on
-    var identifier: String? = null
+class DirectiveAssembler {
+    // this variable holds a list of
+    // line numbers indicating which
+    // lines composed the resulting
+    // potential directive
+    private val lineNumbers = mutableListOf<Int>()
 
-    // a map containing the parameters; they
-    // are validated later on in order to
-    // ensure they are valid
-    var parameters: Map<String, Any>? = null
-
-    // a conditional containing the type and
-    // the expression to be evaluated later on
-    var conditional: Conditional? = null
-
-    // a list contained all line numbers from
-    // the main file which built the current
-    // directive
-    var lineNumbers: List<Int>? = null
+    // this variable holds the textual
+    // representation of the directive
+    private var text: String = ""
 
     /**
-     * Provides a textual representation of the current directive.
-     *
-     * @return A string containing a textual representation of the current
-     * directive.
+     * Checks if an append operation is allowed.
+     * @return A boolean value indicating if an append operation is allowed.
      */
-    override fun toString(): String {
-        return "Directive: { " +
-                "identifier: " + identifier + ", " +
-                "parameters: " + parameters + ", " +
-                "conditional: " + conditional + ", " +
-                "lines: " + lineNumbers + " }"
+    val isAppendAllowed: Boolean
+        get() = lineNumbers.isNotEmpty()
+
+    /**
+     * Adds a line number to the assembler.
+     * @param line An integer representing the line number.
+     */
+    fun addLineNumber(line: Int) {
+        lineNumbers.add(line)
+    }
+
+    /**
+     * Appends the provided line to the assembler text.
+     * @param line The provided line.
+     */
+    fun appendLine(line: String) {
+        text = text + " " + line.trim()
+    }
+
+    /**
+     * Gets the list of line numbers.
+     * @return The list of line numbers.
+     */
+    fun getLineNumbers(): List<Int> {
+        return lineNumbers
+    }
+
+    /**
+     * Gets the text.
+     * @return The assembler text, properly trimmed.
+     */
+    fun getText(): String {
+        return text.trim()
     }
 }

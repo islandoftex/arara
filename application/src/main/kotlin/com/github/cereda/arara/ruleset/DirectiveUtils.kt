@@ -31,14 +31,14 @@
  * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.cereda.arara.utils
+package com.github.cereda.arara.ruleset
 
 import com.github.cereda.arara.configuration.ConfigurationController
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.model.AraraException
-import com.github.cereda.arara.model.Conditional
-import com.github.cereda.arara.model.Directive
 import com.github.cereda.arara.localization.Messages
+import com.github.cereda.arara.utils.CommonUtils
+import com.github.cereda.arara.utils.DisplayUtils
 import org.slf4j.LoggerFactory
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.Yaml

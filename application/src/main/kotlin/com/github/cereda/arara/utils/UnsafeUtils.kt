@@ -33,7 +33,7 @@
  */
 package com.github.cereda.arara.utils
 
-import com.github.cereda.arara.model.Command
+import com.github.cereda.arara.ruleset.Command
 import org.zeroturnaround.exec.ProcessExecutor
 
 /**

@@ -38,7 +38,7 @@ import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.controller.LoggingController
 import com.github.cereda.arara.model.*
 import com.github.cereda.arara.utils.CommonUtils
-import com.github.cereda.arara.utils.DirectiveUtils
+import com.github.cereda.arara.ruleset.DirectiveUtils
 import com.github.cereda.arara.utils.DisplayUtils
 import kotlin.system.exitProcess
 import kotlin.time.ClockMark
@@ -101,7 +101,6 @@ object Arara {
             // do their jobs and return false, since there's no point
             // of continuing processing with such flags)
             if (parser.parse()) {
-
                 // let's print the current file information; it is a
                 // basic display, just the file name, the size properly
                 // formatted as a human readable format, and the last
@@ -138,16 +137,6 @@ object Arara {
                 // by arara
                 directives = DirectiveUtils.validate(directives)
 
-                // this is surely the golden heart of arara; this class
-                // implements a powerful interpreter that will handle all
-                // rules and their corresponding tasks
-                val interpreter = Interpreter()
-
-                // once we have this bad boy ready, let's provide the list
-                // of directives previously extracted and validated; it is
-                // like loading a cannon, I guess
-                interpreter.setDirectives(directives)
-
                 // time to shine, now the interpreter class will interpret
                 // one directive at a time, get the corresponding rule,
                 // set the parameters, evaluate it, get the tasks, run them,
@@ -155,11 +144,9 @@ object Arara {
                 // arara, from this version on, will try to evaluate things
                 // progressively, so in case of an error, the previous tasks
                 // were already processed and potentially executed
-                interpreter.execute()
+                Interpreter(directives).execute()
             }
-
         } catch (exception: AraraException) {
-
             // something bad just happened, so arara will print the proper
             // exception and provide details on it, if available; the idea
             // here is to propagate an exception throughout the whole

@@ -39,7 +39,7 @@ import com.github.cereda.arara.localization.Language
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.AraraException
-import com.github.cereda.arara.model.Conditional
+import com.github.cereda.arara.ruleset.Conditional
 import org.slf4j.LoggerFactory
 import java.io.File
 

@@ -36,6 +36,7 @@ package com.github.cereda.arara.model
 import com.github.cereda.arara.configuration.ConfigurationController
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
+import com.github.cereda.arara.ruleset.Conditional
 import com.github.cereda.arara.utils.Methods
 import org.mvel2.templates.TemplateRuntime
 

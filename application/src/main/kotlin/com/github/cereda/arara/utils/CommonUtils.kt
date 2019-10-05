@@ -39,7 +39,7 @@ import com.github.cereda.arara.localization.Language
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.AraraException
-import com.github.cereda.arara.model.Argument
+import com.github.cereda.arara.ruleset.Argument
 import com.github.cereda.arara.model.FileType
 import java.io.File
 import java.io.IOException
