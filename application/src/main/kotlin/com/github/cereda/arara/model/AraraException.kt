@@ -40,14 +40,9 @@ package com.github.cereda.arara.model
  * @since 4.0
  */
 class AraraException : Exception {
-
     // the underlying exception,
     // used to hold more details
     // on what really happened
-    /**
-     * Gets the underlying exception.
-     * @return The underlying message.
-     */
     val exception: Exception?
 
     /**

@@ -44,7 +44,6 @@ import org.yaml.snakeyaml.nodes.Tag
 import org.yaml.snakeyaml.representer.Representer
 import java.io.File
 import java.io.FileReader
-import java.util.*
 
 /**
  * Implements rule utilitary methods.
@@ -136,67 +135,50 @@ object RuleUtils {
      */
     @Throws(AraraException::class)
     private fun validateBody(rule: Rule) {
-        if (rule.commands == null) {
+        if (rule.commands.any { it.command == null }) {
             throw AraraException(CommonUtils.ruleErrorHeader +
                     messages.getMessage(
-                            Messages.ERROR_VALIDATEBODY_NULL_COMMANDS_LIST))
-        } else {
-            if (rule.commands.any { it.command == null }) {
-                throw AraraException(CommonUtils.ruleErrorHeader +
-                        messages.getMessage(
-                                Messages.ERROR_VALIDATEBODY_NULL_COMMAND))
-            }
+                            Messages.ERROR_VALIDATEBODY_NULL_COMMAND))
         }
-        if (rule.arguments == null) {
-            throw AraraException(
-                    CommonUtils.ruleErrorHeader + messages.getMessage(
-                            Messages.ERROR_VALIDATEBODY_ARGUMENTS_LIST
-                    )
-            )
-        } else {
-            val keywords = arrayOf("file", "files", "reference")
 
-            val arguments = mutableListOf<String>()
-            for (argument in rule.arguments) {
-                if (argument.identifier != null) {
-                    if (argument.flag != null || argument.default != null) {
-                        arguments.add(argument.identifier!!)
-                    } else {
-                        throw AraraException(
-                                CommonUtils.ruleErrorHeader + messages.getMessage(
-                                        Messages.ERROR_VALIDATEBODY_MISSING_KEYS
-                                )
-                        )
-                    }
+        val arguments = mutableListOf<String>()
+        for (argument in rule.arguments) {
+            if (argument.identifier != null) {
+                if (argument.flag != null || argument.default != null) {
+                    arguments.add(argument.identifier!!)
                 } else {
                     throw AraraException(
                             CommonUtils.ruleErrorHeader + messages.getMessage(
-                                    Messages.ERROR_VALIDATEBODY_NULL_ARGUMENT_ID
+                                    Messages.ERROR_VALIDATEBODY_MISSING_KEYS
                             )
                     )
                 }
-            }
-
-            for (keyword in keywords) {
-                if (arguments.contains(keyword)) {
-                    throw AraraException(
-                            CommonUtils.ruleErrorHeader + messages.getMessage(
-                                    Messages.ERROR_VALIDATEBODY_ARGUMENT_ID_IS_RESERVED,
-                                    keyword
-                            )
-                    )
-                }
-            }
-
-            val expected = arguments.size
-            val found = HashSet(arguments).size
-            if (expected != found) {
+            } else {
                 throw AraraException(
                         CommonUtils.ruleErrorHeader + messages.getMessage(
-                                Messages.ERROR_VALIDATEBODY_DUPLICATE_ARGUMENT_IDENTIFIERS
+                                Messages.ERROR_VALIDATEBODY_NULL_ARGUMENT_ID
                         )
                 )
             }
+        }
+
+        arguments.intersect(listOf("file", "files", "reference")).forEach {
+            throw AraraException(
+                    CommonUtils.ruleErrorHeader + messages.getMessage(
+                            Messages.ERROR_VALIDATEBODY_ARGUMENT_ID_IS_RESERVED,
+                            it
+                    )
+            )
+        }
+
+        val expected = arguments.size
+        val found = arguments.toSet().size
+        if (expected != found) {
+            throw AraraException(
+                    CommonUtils.ruleErrorHeader + messages.getMessage(
+                            Messages.ERROR_VALIDATEBODY_DUPLICATE_ARGUMENT_IDENTIFIERS
+                    )
+            )
         }
     }
 }

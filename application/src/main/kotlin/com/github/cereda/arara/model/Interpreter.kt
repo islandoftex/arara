@@ -326,7 +326,6 @@ class Interpreter {
     @Throws(AraraException::class)
     private fun parseArguments(rule: Rule, directive: Directive): Map<String, Any> {
         val arguments = rule.arguments
-
         val unknown = CommonUtils.getUnknownKeys(directive.parameters!!, arguments)
                 .toMutableSet()
         unknown.remove("file")

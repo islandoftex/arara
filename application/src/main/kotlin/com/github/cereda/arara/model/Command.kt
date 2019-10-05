@@ -58,12 +58,8 @@ class Command {
     constructor(vararg values: Any) {
         elements = mutableListOf()
         val result = CommonUtils.flatten(values.toList())
-        for (value in result) {
-            val element = value.toString()
-            if (element.isNotEmpty()) {
-                elements.add(element)
-            }
-        }
+        result.map { it.toString() }.filter { it.isNotEmpty() }
+                .forEach { elements.add(it) }
     }
 
     /**

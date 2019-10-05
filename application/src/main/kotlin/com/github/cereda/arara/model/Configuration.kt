@@ -64,8 +64,6 @@ object Configuration {
         // initialize both file type and language models,
         // since we can track errors from there instead
         // of relying on a check on this level
-        // TODO: check if still working (removed init functions because
-        // the static variables should be initialized)
 
         // reset everything
         reset()
@@ -145,9 +143,8 @@ object Configuration {
 
         // get the configuration controller and
         // set every map key to it
-        val controller = ConfigurationController
         mapping.forEach { (key, value) ->
-            controller.put(key, value)
+            ConfigurationController.put(key, value)
         }
     }
 
@@ -168,7 +165,7 @@ object Configuration {
             controller.put("execution.rule.paths", paths)
         }
 
-        if (resource.filetypes != null && resource.filetypes.isNotEmpty()) {
+        if (resource.filetypes.isNotEmpty()) {
             val resources = resource.filetypes
             var filetypes = mutableListOf<FileType>()
             for (type in resources) {
@@ -217,7 +214,7 @@ object Configuration {
             }
         }
 
-        if (resource.preambles != null && resource.preambles.isNotEmpty()) {
+        if (resource.preambles.isNotEmpty()) {
             controller.put("execution.preambles",
                     resource.preambles)
         }
