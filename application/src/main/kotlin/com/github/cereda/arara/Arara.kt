@@ -35,7 +35,7 @@ package com.github.cereda.arara
 
 import com.github.cereda.arara.configuration.Configuration
 import com.github.cereda.arara.localization.LanguageController
-import com.github.cereda.arara.controller.LoggingController
+import com.github.cereda.arara.utils.LoggingUtils
 import com.github.cereda.arara.model.*
 import com.github.cereda.arara.utils.CommonUtils
 import com.github.cereda.arara.ruleset.DirectiveUtils
@@ -63,7 +63,7 @@ object Arara {
         // logging controller; note init() actually disables
         // the logging, so early exceptions won't generate
         // a lot of noise in the terminal
-        LoggingController.init()
+        LoggingUtils.init()
 
         // print the arara logo in the terminal; I just
         // hope people use this tool in a good terminal with

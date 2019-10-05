@@ -35,7 +35,7 @@ package com.github.cereda.arara.model
 
 import com.github.cereda.arara.configuration.ConfigurationController
 import com.github.cereda.arara.localization.LanguageController
-import com.github.cereda.arara.controller.LoggingController
+import com.github.cereda.arara.utils.LoggingUtils
 import com.github.cereda.arara.localization.Language
 import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.utils.CommonUtils
@@ -235,7 +235,7 @@ class Parser(
             }
 
             CommonUtils.discoverFile(reference)
-            LoggingController.enableLogging(ConfigurationController["execution.logging"] as Boolean)
+            LoggingUtils.enableLogging(ConfigurationController["execution.logging"] as Boolean)
             ConfigurationController.put("display.time", true)
 
             return true

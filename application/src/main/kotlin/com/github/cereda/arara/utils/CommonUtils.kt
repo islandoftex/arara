@@ -34,7 +34,6 @@
 package com.github.cereda.arara.utils
 
 import com.github.cereda.arara.configuration.ConfigurationController
-import com.github.cereda.arara.controller.SystemCallController
 import com.github.cereda.arara.localization.Language
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
@@ -687,7 +686,7 @@ object CommonUtils {
         values["mac"] = checkOSProperty("Mac OS X")
         values["unix"] = checkOSProperty("Mac OS X") ||
                 checkOSProperty("Linux")
-        values["cygwin"] = SystemCallController["cygwin"] as Boolean
+        values["cygwin"] = SystemCallUtils["cygwin"] as Boolean
         if (!values.containsKey(value.toLowerCase())) {
             throw AraraException(
                     messages.getMessage(

@@ -1161,7 +1161,7 @@ public class Methods {
      * as a string.
      */
     public static Pair<Integer, String> unsafelyExecuteSystemCommand(Command command) {
-        return UnsafeUtils.INSTANCE.executeSystemCommand(command);
+        return SystemCallUtils.INSTANCE.executeSystemCommand(command);
     }
 
     /**

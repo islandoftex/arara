@@ -31,7 +31,7 @@
  * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.cereda.arara.controller
+package com.github.cereda.arara.utils
 
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.joran.JoranConfigurator
@@ -48,11 +48,11 @@ import java.io.InputStream
  * @version 4.0
  * @since 4.0
  */
-object LoggingController {
+object LoggingUtils {
     // configuration resource as an input stream
     // the configuration is actually a XML file.
     private val resource: InputStream by lazy {
-        LoggingController::class.java
+        LoggingUtils::class.java
                 .getResourceAsStream("/com/github/cereda/arara/configuration/logback.xml")
     }
 
