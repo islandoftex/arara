@@ -337,7 +337,6 @@ object DisplayUtils {
     fun printFileInformation() {
         val file = ConfigurationController["execution.reference"] as File
         val version = ConfigurationController["application.version"] as String
-        val revision = ConfigurationController["application.revision"] as String
         val line = messages.getMessage(
                 Messages.INFO_DISPLAY_FILE_INFORMATION,
                 file.name,
@@ -346,8 +345,7 @@ object DisplayUtils {
         )
         logger.info(messages.getMessage(
                 Messages.LOG_INFO_WELCOME_MESSAGE,
-                version,
-                revision
+                version
         ))
         logger.info(displaySeparator())
         logger.info("::: arara @ $applicationPath")

@@ -111,8 +111,7 @@ object Configuration {
         mapping["execution.timeout"] = false
         mapping["execution.timeout.value"] = 0L
         mapping["execution.timeout.unit"] = TimeUnit.MILLISECONDS
-        mapping["application.version"] = "5.0"
-        mapping["application.revision"] = "0"
+        mapping["application.version"] = "5.0.0"
         mapping["directives.linebreak.pattern"] = "^\\s*-->\\s(.*)$"
 
         val directive = "^\\s*(\\w+)\\s*(:\\s*(\\{.*\\})\\s*)?"

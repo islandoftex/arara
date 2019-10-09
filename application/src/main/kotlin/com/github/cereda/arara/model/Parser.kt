@@ -121,7 +121,7 @@ class Parser(
             val reference: String
             if (line.hasOption("language")) {
                 ConfigurationController.put("execution.language",
-                    Language(line.getOptionValue("language"))
+                        Language(line.getOptionValue("language"))
                 )
                 val locale = (ConfigurationController["execution.language"] as Language).locale
                 messages.setLocale(locale)
@@ -265,9 +265,8 @@ class Parser(
     private fun printVersion() {
         val year = ConfigurationController["application.copyright.year"] as String
         val number = ConfigurationController["application.version"] as String
-        val revision = ConfigurationController["application.revision"] as String
-        println("arara " + number + " (revision " + revision + ")\n" +
-                "Copyright (c) " + year + ", " + "Paulo Roberto Massa Cereda\n" +
+        println("arara $number\n" +
+                "Copyright (c) $year, Paulo Roberto Massa Cereda\n" +
                 messages.getMessage(Messages
                         .INFO_PARSER_ALL_RIGHTS_RESERVED) + "\n")
     }
