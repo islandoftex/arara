@@ -1,0 +1,16 @@
+!config
+identifier: sessionrule
+name: Test rule for sessions
+commands:
+  - name: The echoer
+    command: >
+      @{
+          getSession().put('quack', 'Quack');
+          return getCommand('echo', 'Quack');
+      }
+  - name: The echoer mark II
+    command: >
+      @{
+          return getCommand('echo', 'Meow' + getSession().get('quack'));
+      }
+arguments: []

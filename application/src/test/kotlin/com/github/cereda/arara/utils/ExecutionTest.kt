@@ -11,14 +11,15 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 
-class InterpreterTest : ShouldSpec({
+class ExecutionTest : ShouldSpec({
     should("run sessions") {
         val output = ByteArrayOutputStream()
         System.setOut(PrintStream(output))
         System.setProperty("user.dir", "src/test/resources/sessions")
         Configuration.load()
         Parser(arrayOf("-v", "src/test/resources/sessions/session.tex")).parse()
-        val directives = DirectiveUtils.validate(Extractor.extract(File("src/test/resources/sessions/session.tex")))
+        val directives = DirectiveUtils.validate(Extractor.extract(
+                File("src/test/resources/sessions/session.tex")))
         Interpreter(directives).execute()
         output.toString(Charsets.UTF_8) shouldContain "MeowQuack"
     }
