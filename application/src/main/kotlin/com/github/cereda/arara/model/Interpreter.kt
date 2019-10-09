@@ -36,10 +36,7 @@ package com.github.cereda.arara.model
 import com.github.cereda.arara.configuration.ConfigurationController
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
-import com.github.cereda.arara.ruleset.Command
-import com.github.cereda.arara.ruleset.Directive
-import com.github.cereda.arara.ruleset.Rule
-import com.github.cereda.arara.ruleset.RuleUtils
+import com.github.cereda.arara.ruleset.*
 import com.github.cereda.arara.utils.CommonUtils
 import com.github.cereda.arara.utils.DisplayUtils
 import com.github.cereda.arara.utils.InterpreterUtils
@@ -68,16 +65,38 @@ class Interpreter(
      */
     @Throws(AraraException::class)
     fun execute() {
+        /**
+         * Gets the rule according to the provided directive.
+         *
+         * @param directive The provided directive.
+         * @return The absolute canonical path of the rule, given the provided
+         * directive.
+         * @throws AraraException Something wrong happened, to be caught in the
+         * higher levels.
+         */
+        @Throws(AraraException::class)
+        fun getRule(directive: Directive): File {
+            return InterpreterUtils.buildRulePath(directive.identifier)
+                    ?: throw AraraException(
+                            messages.getMessage(
+                                    Messages.ERROR_INTERPRETER_RULE_NOT_FOUND,
+                                    directive.identifier,
+                                    "(" + CommonUtils.allRulePaths
+                                            .joinToString("; ") + ")"
+                            )
+                    )
+        }
+
         for (directive in directives) {
             logger.info(
                     messages.getMessage(
                             Messages.LOG_INFO_INTERPRET_RULE,
-                            directive.identifier!!
+                            directive.identifier
                     )
             )
 
             ConfigurationController.put("execution.file",
-                    directive.parameters!!.getValue("reference")
+                    directive.parameters.getValue("reference")
             )
             val file = getRule(directive)
 
@@ -88,13 +107,13 @@ class Interpreter(
                     )
             )
 
-            ConfigurationController.put("execution.info.rule.id", directive.identifier!!)
+            ConfigurationController.put("execution.info.rule.id", directive.identifier)
             ConfigurationController.put("execution.info.rule.path", file.parent)
             ConfigurationController.put("execution.directive.lines",
-                    directive.lineNumbers!!
+                    directive.lineNumbers
             )
             ConfigurationController.put("execution.directive.reference",
-                    directive.parameters!!.getValue("reference")
+                    directive.parameters.getValue("reference")
             )
 
             val rule = parseRule(file, directive)
@@ -103,7 +122,7 @@ class Interpreter(
 
             val name = rule.name
             val authors = rule.authors
-            
+
             // save the identifiers of the rule's arguments for later use
             ConfigurationController.put("execution.rule.arguments",
                     rule.arguments.mapNotNull { it.identifier })
@@ -111,8 +130,8 @@ class Interpreter(
             val evaluator = Evaluator()
 
             var available = true
-            if (InterpreterUtils.runPriorEvaluation(directive.conditional!!)) {
-                available = evaluator.evaluate(directive.conditional!!)
+            if (InterpreterUtils.runPriorEvaluation(directive.conditional)) {
+                available = evaluator.evaluate(directive.conditional)
             }
 
             if (available) {
@@ -173,7 +192,7 @@ class Interpreter(
                                                     )
                                             )
                                             DisplayUtils.printConditional(
-                                                    directive.conditional!!
+                                                    directive.conditional
                                             )
                                         }
                                         current.process()
@@ -196,7 +215,7 @@ class Interpreter(
                                                         )
                                                 )
                                                 DisplayUtils.printConditional(
-                                                        directive.conditional!!
+                                                        directive.conditional
                                                 )
                                             }
                                         } else {
@@ -250,7 +269,7 @@ class Interpreter(
                                                         )
                                                 )
                                                 DisplayUtils.printConditional(
-                                                        directive.conditional!!
+                                                        directive.conditional
                                                 )
                                             }
                                         }
@@ -267,31 +286,9 @@ class Interpreter(
                             }
                         }
                     }
-                } while (evaluator.evaluate(directive.conditional!!))
+                } while (evaluator.evaluate(directive.conditional))
             }
         }
-    }
-
-    /**
-     * Gets the rule according to the provided directive.
-     *
-     * @param directive The provided directive.
-     * @return The absolute canonical path of the rule, given the provided
-     * directive.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
-    @Throws(AraraException::class)
-    private fun getRule(directive: Directive): File {
-        return InterpreterUtils.buildRulePath(directive.identifier!!)
-                ?: throw AraraException(
-                        messages.getMessage(
-                                Messages.ERROR_INTERPRETER_RULE_NOT_FOUND,
-                                directive.identifier!!,
-                                "(" + CommonUtils.allRulePaths
-                                        .joinToString("; ") + ")"
-                        )
-                )
     }
 
     /**
@@ -305,7 +302,7 @@ class Interpreter(
      */
     @Throws(AraraException::class)
     private fun parseRule(file: File, directive: Directive): Rule {
-        return RuleUtils.parseRule(file, directive.identifier!!)
+        return RuleUtils.parseRule(file, directive.identifier)
     }
 
     /**
@@ -321,7 +318,7 @@ class Interpreter(
     @Throws(AraraException::class)
     private fun parseArguments(rule: Rule, directive: Directive): Map<String, Any> {
         val arguments = rule.arguments
-        val unknown = CommonUtils.getUnknownKeys(directive.parameters!!, arguments)
+        val unknown = CommonUtils.getUnknownKeys(directive.parameters, arguments)
                 .toMutableSet()
         unknown.remove("file")
         unknown.remove("reference")
@@ -334,17 +331,17 @@ class Interpreter(
         }
 
         val mapping = mutableMapOf<String, Any>()
-        mapping["file"] = directive.parameters!!.getValue("file")
-        mapping["reference"] = directive.parameters!!.getValue("reference")
+        mapping["file"] = directive.parameters.getValue("file")
+        mapping["reference"] = directive.parameters.getValue("reference")
 
         val context = mutableMapOf<String, Any>()
-        context["parameters"] = directive.parameters!!
-        context["file"] = directive.parameters!!.getValue("file")
-        context["reference"] = directive.parameters!!.getValue("reference")
+        context["parameters"] = directive.parameters
+        context["file"] = directive.parameters.getValue("file")
+        context["reference"] = directive.parameters.getValue("reference")
         context.putAll(Methods.getRuleMethods())
 
         for (argument in arguments) {
-            if (argument.isRequired && !directive.parameters!!.containsKey(
+            if (argument.isRequired && !directive.parameters.containsKey(
                             argument.identifier)) {
                 throw AraraException(
                         CommonUtils.ruleErrorHeader + messages.getMessage(
@@ -371,7 +368,7 @@ class Interpreter(
                 mapping[argument.identifier!!] = ""
             }
 
-            if (argument.flag != null && directive.parameters!!.containsKey(
+            if (argument.flag != null && directive.parameters.containsKey(
                             argument.identifier!!)) {
 
                 try {

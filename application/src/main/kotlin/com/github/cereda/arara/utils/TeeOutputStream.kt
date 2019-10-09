@@ -43,14 +43,9 @@ import java.io.OutputStream
  * @version 4.0
  * @since 4.0
  */
-class TeeOutputStream
-/**
- * Constructor.
- *
- * @param outputStreams An array of output streams.
- */
-(vararg outputStreams: OutputStream) : OutputStream() {
-
+class TeeOutputStream(
+        // array of output streams
+        vararg outputStreams: OutputStream) : OutputStream() {
     // an array of streams in which
     // an object of this class will
     // split data
@@ -63,11 +58,7 @@ class TeeOutputStream
      * @throws IOException An IO exception.
      */
     @Throws(IOException::class)
-    override fun write(b: Int) {
-        for (ostream in streams) {
-            ostream.write(b)
-        }
-    }
+    override fun write(b: Int) = streams.forEach { it.write(b) }
 
     /**
      * Writes the provided byte array to each stream, with the provided offset
@@ -79,11 +70,8 @@ class TeeOutputStream
      * @throws IOException An IO exception.
      */
     @Throws(IOException::class)
-    override fun write(b: ByteArray, offset: Int, length: Int) {
-        for (ostream in streams) {
-            ostream.write(b, offset, length)
-        }
-    }
+    override fun write(b: ByteArray, offset: Int, length: Int) =
+            streams.forEach { it.write(b, offset, length) }
 
     /**
      * Flushes every stream.
@@ -91,24 +79,16 @@ class TeeOutputStream
      * @throws IOException An IO exception.
      */
     @Throws(IOException::class)
-    override fun flush() {
-        for (ostream in streams) {
-            ostream.flush()
-        }
-    }
+    override fun flush() = streams.forEach { it.flush() }
 
     /**
      * Closes every stream silently.
      */
-    override fun close() {
-        for (ostream in streams) {
-            try {
-                ostream.close()
-            } catch (ignored: IOException) {
-                // do nothing on purpose
-            }
-
+    override fun close() = streams.forEach {
+        try {
+            it.close()
+        } catch (ignored: IOException) {
+            // do nothing on purpose
         }
     }
-
 }

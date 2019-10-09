@@ -37,8 +37,10 @@ import com.github.cereda.arara.configuration.ConfigurationController
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.localization.Messages
+import com.github.cereda.arara.model.Interpreter
 import com.github.cereda.arara.utils.CommonUtils
 import com.github.cereda.arara.utils.DisplayUtils
+import com.github.cereda.arara.utils.InterpreterUtils
 import org.slf4j.LoggerFactory
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.Yaml
@@ -146,7 +148,6 @@ object DirectiveUtils {
         }
 
         return assemblers.map { generateDirective(it) }
-
     }
 
     /**
@@ -163,14 +164,15 @@ object DirectiveUtils {
         val pattern = Pattern.compile(regex)
         val matcher = pattern.matcher(assembler.getText())
         if (matcher.find()) {
-            val directive = Directive()
-            directive.identifier = matcher.group(1)
-            directive.parameters = getParameters(matcher.group(3), assembler.getLineNumbers())
-            val conditional = Conditional()
-            conditional.type = getType(matcher.group(5))
-            conditional.condition = getCondition(matcher.group(6))
-            directive.conditional = conditional
-            directive.lineNumbers = assembler.getLineNumbers()
+            val directive = Directive(
+                    identifier = matcher.group(1),
+                    parameters = getParameters(matcher.group(3), assembler.getLineNumbers()),
+                    conditional = Conditional(
+                            type = getType(matcher.group(5)),
+                            condition = matcher.group(6) ?: ""
+                    ),
+                    lineNumbers = assembler.getLineNumbers()
+            )
 
             logger.info(
                     messages.getMessage(
@@ -208,16 +210,6 @@ object DirectiveUtils {
     }
 
     /**
-     * Gets the condition from the input string.
-     *
-     * @param text The input string.
-     * @return A string representing the condition.
-     */
-    private fun getCondition(text: String?): String {
-        return text ?: ""
-    }
-
-    /**
      * Gets the parameters from the input string.
      *
      * @param text    The input string.
@@ -229,9 +221,8 @@ object DirectiveUtils {
     @Throws(AraraException::class)
     private fun getParameters(text: String?,
                               numbers: List<Int>): Map<String, Any> {
-        if (text == null) {
-            return mutableMapOf()
-        }
+        if (text == null)
+            return mapOf()
 
         val yaml = Yaml(
                 Constructor(),
@@ -267,13 +258,13 @@ object DirectiveUtils {
     fun validate(directives: List<Directive>): List<Directive> {
         val result = mutableListOf<Directive>()
         for (directive in directives) {
-            val parameters = directive.parameters!!.toMutableMap()
+            val parameters = directive.parameters.toMutableMap()
 
             if (parameters.containsKey("file")) {
                 throw AraraException(
                         messages.getMessage(
                                 Messages.ERROR_VALIDATE_FILE_IS_RESERVED,
-                                "(" + directive.lineNumbers!!.joinToString(", ") + ")"
+                                "(" + directive.lineNumbers.joinToString(", ") + ")"
                         )
                 )
             }
@@ -282,7 +273,7 @@ object DirectiveUtils {
                 throw AraraException(
                         messages.getMessage(
                                 Messages.ERROR_VALIDATE_REFERENCE_IS_RESERVED,
-                                "(" + directive.lineNumbers!!.joinToString(", ") + ")"
+                                "(" + directive.lineNumbers.joinToString(", ") + ")"
                         )
                 )
             }
@@ -296,7 +287,7 @@ object DirectiveUtils {
                         throw AraraException(
                                 messages.getMessage(
                                         Messages.ERROR_VALIDATE_EMPTY_FILES_LIST,
-                                        "(" + directive.lineNumbers!!.joinToString(", ") + ")"
+                                        "(" + directive.lineNumbers.joinToString(", ") + ")"
                                 )
                         )
                     }
@@ -308,21 +299,21 @@ object DirectiveUtils {
                         map["reference"] = representation
                         map["file"] = representation.name
 
-                        val addition = Directive()
-                        val conditional = Conditional()
-                        conditional.condition = directive.conditional!!.condition
-                        conditional.type = directive.conditional!!.type
-                        addition.identifier = directive.identifier
-                        addition.conditional = conditional
-                        addition.parameters = map
-                        addition.lineNumbers = directive.lineNumbers
-                        result.add(addition)
+                        result.add(Directive(
+                                identifier = directive.identifier,
+                                conditional = Conditional(
+                                        type = directive.conditional.type,
+                                        condition = directive.conditional.condition
+                                ),
+                                parameters = map,
+                                lineNumbers = directive.lineNumbers
+                        ))
                     }
                 } else {
                     throw AraraException(
                             messages.getMessage(
                                     Messages.ERROR_VALIDATE_FILES_IS_NOT_A_LIST,
-                                    "(" + directive.lineNumbers!!.joinToString(", ") + ")"
+                                    "(" + directive.lineNumbers.joinToString(", ") + ")"
                             )
                     )
                 }
@@ -330,8 +321,7 @@ object DirectiveUtils {
                 val representation = ConfigurationController["execution.reference"] as File
                 parameters["file"] = representation.name
                 parameters["reference"] = representation
-                directive.parameters = parameters
-                result.add(directive)
+                result.add(directive.copy(parameters = parameters))
             }
         }
 

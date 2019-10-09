@@ -40,25 +40,21 @@ package com.github.cereda.arara.ruleset
  * @version 4.0
  * @since 4.0
  */
-class Directive {
-    // the directive identifier, it is resolved
-    // to the rule identifier later on
-    var identifier: String? = null
-
-    // a map containing the parameters; they
-    // are validated later on in order to
-    // ensure they are valid
-    var parameters: Map<String, Any>? = null
-
-    // a conditional containing the type and
-    // the expression to be evaluated later on
-    var conditional: Conditional? = null
-
-    // a list contained all line numbers from
-    // the main file which built the current
-    // directive
-    var lineNumbers: List<Int>? = null
-
+data class Directive(
+        // the directive identifier, it is resolved 
+        // to the rule identifier later on
+        val identifier: String,
+        // a map containing the parameters; they
+        // are validated later on in order to
+        // ensure they are valid
+        val parameters: Map<String, Any>,
+        // a conditional containing the type and
+        // the expression to be evaluated later on
+        val conditional: Conditional,
+        // a list contained all line numbers from
+        // the main file which built the current
+        // directive
+        var lineNumbers: List<Int>) {
     /**
      * Provides a textual representation of the current directive.
      *

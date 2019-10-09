@@ -40,16 +40,15 @@ package com.github.cereda.arara.ruleset
  * @version 4.0
  * @since 4.0
  */
-class Conditional {
-    // the conditional type, specified above; the
-    // default fallback, as seen in the constructor,
-    // is set to NONE, that is, no conditional at all
-    var type: ConditionalType = ConditionalType.NONE
-
-    // the expression to be evaluated according to its
-    // type; the default fallback, as seen in the
-    // constructor, is set to an empty string
-    var condition: String = ""
+data class Conditional(
+        // the conditional type, specified above; the
+        // default fallback, as seen in the constructor,
+        // is set to NONE, that is, no conditional at all
+        val type: ConditionalType = ConditionalType.NONE,
+        // the expression to be evaluated according to its
+        // type; the default fallback, as seen in the
+        // constructor, is set to an empty string
+        var condition: String = "") {
 
     // these are all types of conditionals arara
     // is able to recognize; personally, I believe
@@ -89,5 +88,4 @@ class Conditional {
                     ", expression: ${condition.trim()}"
                 else "" + " }"
     }
-
 }
