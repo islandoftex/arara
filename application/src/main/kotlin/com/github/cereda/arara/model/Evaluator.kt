@@ -33,7 +33,7 @@
  */
 package com.github.cereda.arara.model
 
-import com.github.cereda.arara.configuration.ConfigurationController
+import com.github.cereda.arara.configuration.Configuration
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.ruleset.Conditional
@@ -52,7 +52,7 @@ class Evaluator {
     // this attribute holds the maximum number of
     // loops arara will accept; it's like
     // reaching infinity
-    private val loops: Long = ConfigurationController["execution.loops"] as Long
+    private val loops: Long = Configuration["execution.loops"] as Long
 
     // the counter for the current execution, it
     // helps us keep track of the number of times
@@ -77,7 +77,7 @@ class Evaluator {
     fun evaluate(conditional: Conditional): Boolean {
         // when in dry-run mode, arara
         // always ignore conditional evaluations
-        if (ConfigurationController["execution.dryrun"] as Boolean) {
+        if (Configuration["execution.dryrun"] as Boolean) {
             return false
         }
 

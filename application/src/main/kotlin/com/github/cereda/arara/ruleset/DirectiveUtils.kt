@@ -33,7 +33,7 @@
  */
 package com.github.cereda.arara.ruleset
 
-import com.github.cereda.arara.configuration.ConfigurationController
+import com.github.cereda.arara.configuration.Configuration
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.localization.Messages
@@ -77,10 +77,10 @@ object DirectiveUtils {
      */
     @Throws(AraraException::class)
     fun extractDirectives(lines: List<String>): List<Directive> {
-        val header = ConfigurationController["execution.header"] as Boolean
-        var regex = ConfigurationController["execution.file.pattern"] as String
+        val header = Configuration["execution.header"] as Boolean
+        var regex = Configuration["execution.file.pattern"] as String
         val linecheck = Pattern.compile(regex)
-        regex += ConfigurationController["application.pattern"] as String
+        regex += Configuration["application.pattern"] as String
         var pattern = Pattern.compile(regex)
         val pairs = mutableListOf<Pair<Int, String>>()
         var matcher: Matcher
@@ -118,7 +118,7 @@ object DirectiveUtils {
 
         val assemblers = mutableListOf<DirectiveAssembler>()
         var assembler = DirectiveAssembler()
-        regex = ConfigurationController["directives.linebreak.pattern"] as String
+        regex = Configuration["directives.linebreak.pattern"] as String
         pattern = Pattern.compile(regex)
         for ((first, second) in pairs) {
             matcher = pattern.matcher(second)
@@ -160,7 +160,7 @@ object DirectiveUtils {
      */
     @Throws(AraraException::class)
     fun generateDirective(assembler: DirectiveAssembler): Directive {
-        val regex = ConfigurationController["directives.pattern"] as String
+        val regex = Configuration["directives.pattern"] as String
         val pattern = Pattern.compile(regex)
         val matcher = pattern.matcher(assembler.getText())
         if (matcher.find()) {
@@ -318,7 +318,7 @@ object DirectiveUtils {
                     )
                 }
             } else {
-                val representation = ConfigurationController["execution.reference"] as File
+                val representation = Configuration["execution.reference"] as File
                 parameters["file"] = representation.name
                 parameters["reference"] = representation
                 result.add(directive.copy(parameters = parameters))

@@ -36,7 +36,7 @@ package com.github.cereda.arara.utils
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.joran.JoranConfigurator
 import ch.qos.logback.core.joran.spi.JoranException
-import com.github.cereda.arara.configuration.ConfigurationController
+import com.github.cereda.arara.configuration.Configuration
 import org.slf4j.LoggerFactory
 
 import java.io.InputStream
@@ -82,7 +82,7 @@ object LoggingUtils {
                 // set the file name and configure
                 // the logging controller to append
                 // entries to the file
-                val name = ConfigurationController["execution.log.name"] as String
+                val name = Configuration["execution.log.name"] as String
                 loggerContext.putProperty("name", name)
                 configurator.doConfigure(resource)
             }

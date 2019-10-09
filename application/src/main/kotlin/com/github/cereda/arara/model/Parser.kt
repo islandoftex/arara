@@ -33,7 +33,7 @@
  */
 package com.github.cereda.arara.model
 
-import com.github.cereda.arara.configuration.ConfigurationController
+import com.github.cereda.arara.configuration.Configuration
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.utils.LoggingUtils
 import com.github.cereda.arara.localization.Language
@@ -120,10 +120,10 @@ class Parser(
 
             val reference: String
             if (line.hasOption("language")) {
-                ConfigurationController.put("execution.language",
+                Configuration.put("execution.language",
                         Language(line.getOptionValue("language"))
                 )
-                val locale = (ConfigurationController["execution.language"] as Language).locale
+                val locale = (Configuration["execution.language"] as Language).locale
                 messages.setLocale(locale)
                 updateDescriptions()
             }
@@ -158,8 +158,8 @@ class Parser(
                                 )
                         )
                     } else {
-                        ConfigurationController.put("execution.timeout", true)
-                        ConfigurationController.put("execution.timeout.value", value)
+                        Configuration.put("execution.timeout", true)
+                        Configuration.put("execution.timeout.value", value)
                     }
                 } catch (nfexception: NumberFormatException) {
                     throw AraraException(
@@ -183,7 +183,7 @@ class Parser(
                                 )
                         )
                     } else {
-                        ConfigurationController.put("execution.loops", value)
+                        Configuration.put("execution.loops", value)
                     }
                 } catch (nfexception: NumberFormatException) {
                     throw AraraException(
@@ -196,27 +196,27 @@ class Parser(
             }
 
             if (line.hasOption("verbose")) {
-                ConfigurationController.put("execution.verbose", true)
+                Configuration.put("execution.verbose", true)
             }
 
             if (line.hasOption("silent")) {
-                ConfigurationController.put("execution.verbose", false)
+                Configuration.put("execution.verbose", false)
             }
 
             if (line.hasOption("dry-run")) {
-                ConfigurationController.put("execution.dryrun", true)
-                ConfigurationController.put("execution.errors.halt", false)
+                Configuration.put("execution.dryrun", true)
+                Configuration.put("execution.errors.halt", false)
             }
 
             if (line.hasOption("log")) {
-                ConfigurationController.put("execution.logging", true)
+                Configuration.put("execution.logging", true)
             }
 
             if (line.hasOption("preamble")) {
-                val preambles = ConfigurationController["execution.preambles"] as Map<String, String>
+                val preambles = Configuration["execution.preambles"] as Map<String, String>
                 if (preambles.containsKey(line.getOptionValue("preamble"))) {
-                    ConfigurationController.put("execution.preamble.active", true)
-                    ConfigurationController.put("execution.preamble.content",
+                    Configuration.put("execution.preamble.active", true)
+                    Configuration.put("execution.preamble.content",
                             // will never throw (see check above)
                             preambles.getValue(line.getOptionValue("preamble"))
                     )
@@ -231,12 +231,12 @@ class Parser(
             }
 
             if (line.hasOption("header")) {
-                ConfigurationController.put("execution.header", true)
+                Configuration.put("execution.header", true)
             }
 
             CommonUtils.discoverFile(reference)
-            LoggingUtils.enableLogging(ConfigurationController["execution.logging"] as Boolean)
-            ConfigurationController.put("display.time", true)
+            LoggingUtils.enableLogging(Configuration["execution.logging"] as Boolean)
+            Configuration.put("display.time", true)
 
             return true
 
@@ -263,8 +263,8 @@ class Parser(
      * Prints the application version.
      */
     private fun printVersion() {
-        val year = ConfigurationController["application.copyright.year"] as String
-        val number = ConfigurationController["application.version"] as String
+        val year = Configuration["application.copyright.year"] as String
+        val number = Configuration["application.version"] as String
         println("arara $number\n" +
                 "Copyright (c) $year, Paulo Roberto Massa Cereda\n" +
                 messages.getMessage(Messages

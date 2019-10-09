@@ -1,6 +1,6 @@
 package com.github.cereda.arara.utils
 
-import com.github.cereda.arara.configuration.ConfigurationController
+import com.github.cereda.arara.configuration.Configuration
 import com.github.cereda.arara.localization.Language
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
@@ -8,7 +8,7 @@ import java.io.File
 
 class CommonUtilsTest : ShouldSpec({
     should("format bytes correctly") {
-        ConfigurationController.put("execution.language", Language("en"))
+        Configuration.put("execution.language", Language("en"))
         mapOf(800 to "800 B",
                 1000 to "1.0 kB",
                 1024 to "1.0 kB",

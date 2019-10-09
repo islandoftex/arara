@@ -33,7 +33,7 @@
  */
 package com.github.cereda.arara.utils;
 
-import com.github.cereda.arara.configuration.ConfigurationController;
+import com.github.cereda.arara.configuration.Configuration;
 import com.github.cereda.arara.localization.LanguageController;
 import com.github.cereda.arara.localization.Messages;
 import com.github.cereda.arara.model.AraraException;
@@ -119,7 +119,7 @@ public class Methods {
      * @return The original file.
      */
     public static String getOriginalFile() {
-        File file = (File) ConfigurationController.INSTANCE.get("execution.reference");
+        File file = (File) Configuration.INSTANCE.get("execution.reference");
         return file.getName();
     }
 
@@ -129,7 +129,7 @@ public class Methods {
      * @return The original reference.
      */
     public static File getOriginalReference() {
-        return (File) ConfigurationController.INSTANCE.get("execution.reference");
+        return (File) Configuration.INSTANCE.get("execution.reference");
     }
 
     /**
@@ -982,7 +982,7 @@ public class Methods {
      * @return A boolean value indicating if the execution is in verbose mode.
      */
     public static boolean isVerboseMode() {
-        return (Boolean) ConfigurationController.
+        return (Boolean) Configuration.
                 INSTANCE.get("execution.verbose");
     }
 
@@ -1173,7 +1173,7 @@ public class Methods {
      * @return A file reference for the current directive.
      */
     public static File currentFile() {
-        return (File) ConfigurationController.INSTANCE.
+        return (File) Configuration.INSTANCE.
                 get("execution.directive.reference");
     }
 

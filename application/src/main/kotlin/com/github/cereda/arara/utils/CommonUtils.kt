@@ -33,7 +33,7 @@
  */
 package com.github.cereda.arara.utils
 
-import com.github.cereda.arara.configuration.ConfigurationController
+import com.github.cereda.arara.configuration.Configuration
 import com.github.cereda.arara.localization.Language
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
@@ -69,7 +69,7 @@ object CommonUtils {
      * @return A string representation of the list of file types, in order.
      */
     val fileTypesList: String
-        get() = "[ " + (ConfigurationController["execution.filetypes"]
+        get() = "[ " + (Configuration["execution.filetypes"]
                 as List<*>).joinToString(" | ") + " ]"
 
     /**
@@ -81,10 +81,10 @@ object CommonUtils {
      */
     val ruleErrorHeader: String
         get() {
-            return if (ConfigurationController.contains("execution.info.rule.id")
-                    && ConfigurationController.contains("execution.info.rule.path")) {
-                val id = ConfigurationController["execution.info.rule.id"] as String
-                val path = ConfigurationController["execution.info.rule.path"] as String
+            return if (Configuration.contains("execution.info.rule.id")
+                    && Configuration.contains("execution.info.rule.path")) {
+                val id = Configuration["execution.info.rule.id"] as String
+                val path = Configuration["execution.info.rule.path"] as String
                 messages.getMessage(
                         Messages.ERROR_RULE_IDENTIFIER_AND_PATH,
                         id,
@@ -105,7 +105,7 @@ object CommonUtils {
     val allRulePaths: List<String>
         @Throws(AraraException::class)
         get() {
-            val paths = ConfigurationController["execution.rule.paths"] as List<String>
+            val paths = Configuration["execution.rule.paths"] as List<String>
             return paths.map {
                 val location = File(InterpreterUtils.construct(it, "quack"))
                 getParentCanonicalPath(location)
@@ -121,7 +121,7 @@ object CommonUtils {
      * than the main file provided in the command line.
      */
     private val currentReference: File
-        get() = ConfigurationController["execution.file"] as File
+        get() = Configuration["execution.file"] as File
 
     /**
      * Returns the exit status of the application.
@@ -129,7 +129,7 @@ object CommonUtils {
      * @return An integer representing the exit status of the application.
      */
     val exitStatus: Int
-        get() = ConfigurationController["execution.status"] as Int
+        get() = Configuration["execution.status"] as Int
 
     /**
      * Gets the preamble content, converting a single string into a list of
@@ -138,8 +138,8 @@ object CommonUtils {
      * @return A list of strings representing the preamble content.
      */
     val preambleContent: List<String>
-        get() = if (ConfigurationController["execution.preamble.active"] as Boolean) {
-            (ConfigurationController["execution.preamble.content"] as String)
+        get() = if (Configuration["execution.preamble.active"] as Boolean) {
+            (Configuration["execution.preamble.content"] as String)
                     .split("\n")
                     .dropLastWhile { it.isEmpty() }
                     .toList()
@@ -242,7 +242,7 @@ object CommonUtils {
      */
     @Throws(AraraException::class)
     private fun lookupFile(reference: String): File? {
-        val types = ConfigurationController["execution.filetypes"] as List<FileType>
+        val types = Configuration["execution.filetypes"] as List<FileType>
         var file = File(reference)
         val name = file.name
         val parent = getParentCanonicalPath(file)
@@ -255,9 +255,9 @@ object CommonUtils {
                 file = File(path)
                 if (file.exists()) {
                     if (file.isFile) {
-                        ConfigurationController.put("execution.file.pattern",
+                        Configuration.put("execution.file.pattern",
                                 type.pattern!!)
-                        ConfigurationController.put("execution.reference", file)
+                        Configuration.put("execution.reference", file)
                         return file
                     }
                 }
@@ -272,8 +272,8 @@ object CommonUtils {
             file = File(path)
             if (file.exists()) {
                 if (file.isFile) {
-                    ConfigurationController.put("execution.file.pattern", type.pattern!!)
-                    ConfigurationController.put("execution.reference", file)
+                    Configuration.put("execution.file.pattern", type.pattern!!)
+                    Configuration.put("execution.reference", file)
                     return file
                 }
             }
@@ -379,7 +379,7 @@ object CommonUtils {
      * @return A string representation of the size.
      */
     fun byteSizeToString(size: Long): String {
-        val language = ConfigurationController["execution.language"] as Language
+        val language = Configuration["execution.language"] as Language
         val unit = 1000
         if (size < unit) return "$size B"
         val exp = (ln(size.toDouble()) / ln(unit.toDouble())).toInt()
@@ -608,7 +608,7 @@ object CommonUtils {
      */
     @Throws(AraraException::class)
     fun checkRegex(file: File, regex: String): Boolean {
-        val charset = ConfigurationController["directives.charset"] as Charset
+        val charset = Configuration["directives.charset"] as Charset
         try {
             // TODO: do we call this on files > 2 GB?
             val text = file.readText(charset)

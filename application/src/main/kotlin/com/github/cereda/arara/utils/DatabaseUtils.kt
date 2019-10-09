@@ -33,7 +33,7 @@
  */
 package com.github.cereda.arara.utils
 
-import com.github.cereda.arara.configuration.ConfigurationController
+import com.github.cereda.arara.configuration.Configuration
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.model.Database
@@ -65,7 +65,7 @@ object DatabaseUtils {
     private val path: String
         @Throws(AraraException::class)
         get() {
-            val name = ConfigurationController["execution.database.name"] as String + ".yaml"
+            val name = Configuration["execution.database.name"] as String + ".yaml"
             val path = CommonUtils.getParentCanonicalPath(reference)
             return CommonUtils.buildPath(path, name)
         }
@@ -76,7 +76,7 @@ object DatabaseUtils {
      * @return The main file reference.
      */
     private val reference: File
-        get() = ConfigurationController["execution.reference"] as File
+        get() = Configuration["execution.reference"] as File
 
     /**
      * Loads the YAML file representing the database.

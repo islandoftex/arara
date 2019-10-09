@@ -33,7 +33,7 @@
  */
 package com.github.cereda.arara.model
 
-import com.github.cereda.arara.configuration.ConfigurationController
+import com.github.cereda.arara.configuration.Configuration
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.ruleset.*
@@ -95,7 +95,7 @@ class Interpreter(
                     )
             )
 
-            ConfigurationController.put("execution.file",
+            Configuration.put("execution.file",
                     directive.parameters.getValue("reference")
             )
             val file = getRule(directive)
@@ -107,12 +107,12 @@ class Interpreter(
                     )
             )
 
-            ConfigurationController.put("execution.info.rule.id", directive.identifier)
-            ConfigurationController.put("execution.info.rule.path", file.parent)
-            ConfigurationController.put("execution.directive.lines",
+            Configuration.put("execution.info.rule.id", directive.identifier)
+            Configuration.put("execution.info.rule.path", file.parent)
+            Configuration.put("execution.directive.lines",
                     directive.lineNumbers
             )
-            ConfigurationController.put("execution.directive.reference",
+            Configuration.put("execution.directive.reference",
                     directive.parameters.getValue("reference")
             )
 
@@ -124,7 +124,7 @@ class Interpreter(
             val authors = rule.authors
 
             // save the identifiers of the rule's arguments for later use
-            ConfigurationController.put("execution.rule.arguments",
+            Configuration.put("execution.rule.arguments",
                     rule.arguments.mapNotNull { it.identifier })
 
             val evaluator = Evaluator()
@@ -176,8 +176,8 @@ class Interpreter(
                                     var success = true
 
                                     if (current is Trigger) {
-                                        if (!(ConfigurationController["execution.dryrun"] as Boolean)) {
-                                            if (ConfigurationController["execution.verbose"] as Boolean) {
+                                        if (!(Configuration["execution.dryrun"] as Boolean)) {
+                                            if (Configuration["execution.verbose"] as Boolean) {
                                                 DisplayUtils.wrapText(
                                                         messages.getMessage(
                                                                 Messages.INFO_INTERPRETER_VERBOSE_MODE_TRIGGER_MODE
@@ -206,7 +206,7 @@ class Interpreter(
                                                     )
                                             )
 
-                                            if (ConfigurationController["execution.dryrun"] as Boolean) {
+                                            if (Configuration["execution.dryrun"] as Boolean) {
                                                 DisplayUtils.printAuthors(authors)
                                                 DisplayUtils.wrapText(
                                                         messages.getMessage(
@@ -230,7 +230,7 @@ class Interpreter(
                                                     )
                                             )
 
-                                            if (!(ConfigurationController["execution.dryrun"] as Boolean)) {
+                                            if (!(Configuration["execution.dryrun"] as Boolean)) {
                                                 val code = InterpreterUtils.run(representation)
                                                 val check: Any
                                                 try {
@@ -277,8 +277,8 @@ class Interpreter(
 
                                     DisplayUtils.printEntryResult(success)
 
-                                    if (ConfigurationController["trigger.halt"] as Boolean
-                                            || ConfigurationController["execution.errors.halt"] as Boolean
+                                    if (Configuration["trigger.halt"] as Boolean
+                                            || Configuration["execution.errors.halt"] as Boolean
                                             && !success) {
                                         return
                                     }

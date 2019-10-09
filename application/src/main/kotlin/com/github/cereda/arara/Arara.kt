@@ -34,12 +34,16 @@
 package com.github.cereda.arara
 
 import com.github.cereda.arara.configuration.Configuration
-import com.github.cereda.arara.localization.LanguageController
-import com.github.cereda.arara.utils.LoggingUtils
-import com.github.cereda.arara.model.*
-import com.github.cereda.arara.utils.CommonUtils
+import com.github.cereda.arara.model.AraraException
+import com.github.cereda.arara.model.Extractor
+import com.github.cereda.arara.model.Interpreter
+import com.github.cereda.arara.model.Parser
 import com.github.cereda.arara.ruleset.DirectiveUtils
+import com.github.cereda.arara.utils.CommonUtils
 import com.github.cereda.arara.utils.DisplayUtils
+import com.github.cereda.arara.utils.LoggingUtils
+import java.io.File
+import java.nio.charset.Charset
 import kotlin.system.exitProcess
 import kotlin.time.ClockMark
 import kotlin.time.ExperimentalTime
@@ -54,12 +58,6 @@ object Arara {
     @JvmStatic
     fun main(args: Array<String>) {
         // the first component to be initialized is the
-        // language controller; note that init() actually
-        // has no body at all, but it's a dirty maneuver to
-        // trigger the static class startup
-        LanguageController.init()
-
-        // the second component to be initialized is the
         // logging controller; note init() actually disables
         // the logging, so early exceptions won't generate
         // a lot of noise in the terminal
@@ -111,31 +109,29 @@ object Arara {
                 DisplayUtils.printFileInformation()
 
                 // time to read the file and try to extract the directives;
-                // this class does a pretty good job on finding directives,
-                // including the multiline ones; it was a long awaited
-                // feature people were asking me to implement, so here
-                // it is!
-                val extractor = Extractor()
-
                 // extract() brings us a list of directives properly parsed
                 // and almost ready to be handled; note that no directives
                 // in the provided file will raise an exception; this is
                 // by design and I opted to not include a default fallback
                 // (although it wouldn't be so difficult to write one,
                 // I decided not to take the risk)
-                var directives = extractor.extract()
+                val extracted = Extractor.extract(
+                        Configuration["execution.reference"] as File,
+                        Configuration["directives.charset"]
+                                as Charset
+                )
 
-                // once we have our nice list of directives, it is time to
-                // actually validate them (for example, we have a couple of
-                // keywords that cannot be used as directive parameters);
-                // another interesting feature of the validate() method is
-                // to replicate a directive that has the 'files' keyword on
-                // it, since it's the whole point of having 'files' in the
-                // first place; if you check the log file, you will see
+                // it is time to validate the directives (for example, we have
+                // a couple of keywords that cannot be used as directive
+                // parameters); another interesting feature of the validate()
+                // method is to replicate a directive that has the 'files'
+                // keyword on it, since it's the whole point of having 'files'
+                // in the first place; if you check the log file, you will see
                 // that the list of extracted directives might differ from
                 // the final list of directives to be effectively processed
                 // by arara
-                directives = DirectiveUtils.validate(directives)
+                // TODO: rename validate, it doesn't only validate
+                val directives = DirectiveUtils.validate(extracted)
 
                 // time to shine, now the interpreter class will interpret
                 // one directive at a time, get the corresponding rule,

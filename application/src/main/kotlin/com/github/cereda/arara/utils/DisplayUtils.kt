@@ -33,7 +33,7 @@
  */
 package com.github.cereda.arara.utils
 
-import com.github.cereda.arara.configuration.ConfigurationController
+import com.github.cereda.arara.configuration.Configuration
 import com.github.cereda.arara.configuration.ConfigurationUtils
 import com.github.cereda.arara.localization.Language
 import com.github.cereda.arara.localization.LanguageController
@@ -71,19 +71,19 @@ object DisplayUtils {
      * The default terminal width defined in the settings.
      */
     private val width: Int
-        get() = ConfigurationController["application.width"] as Int
+        get() = Configuration["application.width"] as Int
 
     /**
      * Checks if the execution is in dry-run mode.
      */
     private val isDryRunMode: Boolean
-        get() = ConfigurationController["execution.dryrun"] as Boolean
+        get() = Configuration["execution.dryrun"] as Boolean
 
     /**
      * Checks if the execution is in verbose mode.
      */
     private val isVerboseMode: Boolean
-        get() = ConfigurationController["execution.verbose"] as Boolean
+        get() = Configuration["execution.verbose"] as Boolean
 
     /**
      * The application path.
@@ -126,9 +126,9 @@ object DisplayUtils {
      * @param value The boolean value to be displayed.
      */
     fun printEntryResult(value: Boolean) {
-        ConfigurationController.put("display.line", false)
-        ConfigurationController.put("display.result", true)
-        ConfigurationController
+        Configuration.put("display.line", false)
+        Configuration.put("display.result", true)
+        Configuration
                 .put("execution.status", if (value) 0 else 1)
         logger.info(
                 messages.getMessage(
@@ -168,8 +168,8 @@ object DisplayUtils {
                         name
                 )
         )
-        ConfigurationController.put("display.line", true)
-        ConfigurationController.put("display.result", false)
+        Configuration.put("display.line", true)
+        Configuration.put("display.result", false)
         if (!isDryRunMode) {
             if (!isVerboseMode) {
                 buildShortEntry(name, task)
@@ -188,10 +188,10 @@ object DisplayUtils {
      * @param task Task name.
      */
     private fun buildLongEntry(name: String, task: String) {
-        if (ConfigurationController.contains("display.rolling")) {
+        if (Configuration.contains("display.rolling")) {
             addNewLine()
         } else {
-            ConfigurationController.put("display.rolling", true)
+            Configuration.put("display.rolling", true)
         }
         println(displaySeparator())
         println("($name) $task".abbreviate(width))
@@ -205,10 +205,10 @@ object DisplayUtils {
      * @param task The task name.
      */
     private fun buildDryRunEntry(name: String, task: String) {
-        if (ConfigurationController.contains("display.rolling")) {
+        if (Configuration.contains("display.rolling")) {
             addNewLine()
         } else {
-            ConfigurationController.put("display.rolling", true)
+            Configuration.put("display.rolling", true)
         }
         println("[DR] ($name) $task".abbreviate(width))
         println(displaySeparator())
@@ -220,14 +220,14 @@ object DisplayUtils {
      * @param exception The exception object.
      */
     fun printException(exception: AraraException) {
-        ConfigurationController.put("display.exception", true)
-        ConfigurationController.put("execution.status", 2)
+        Configuration.put("display.exception", true)
+        Configuration.put("execution.status", 2)
         var display = false
-        if (ConfigurationController.contains("display.line")) {
-            display = ConfigurationController["display.line"] as Boolean
+        if (Configuration.contains("display.line")) {
+            display = Configuration["display.line"] as Boolean
         }
-        if (ConfigurationController.contains("display.result")) {
-            if (ConfigurationController["display.result"] as Boolean) {
+        if (Configuration.contains("display.result")) {
+            if (Configuration["display.result"] as Boolean) {
                 addNewLine()
             }
         }
@@ -335,8 +335,8 @@ object DisplayUtils {
      * Displays the file information in the terminal.
      */
     fun printFileInformation() {
-        val file = ConfigurationController["execution.reference"] as File
-        val version = ConfigurationController["application.version"] as String
+        val file = Configuration["execution.reference"] as File
+        val version = Configuration["application.version"] as String
         val line = messages.getMessage(
                 Messages.INFO_DISPLAY_FILE_INFORMATION,
                 file.name,
@@ -375,7 +375,7 @@ object DisplayUtils {
                 CommonUtils.getSystemProperty("user.dir",
                         "[unknown user's working directory]")
         ))
-        logger.info("::: CF @ %s".format(ConfigurationController
+        logger.info("::: CF @ %s".format(Configuration
                 ["execution.configuration.name"]))
         logger.info(displaySeparator())
         logger.info(line)
@@ -389,11 +389,11 @@ object DisplayUtils {
      * @param seconds The elapsed seconds.
      */
     fun printTime(seconds: Double) {
-        val language = ConfigurationController["execution.language"] as Language
+        val language = Configuration["execution.language"] as Language
 
-        if (ConfigurationController.contains("display.time")) {
-            if (ConfigurationController.contains("display.line")
-                    || ConfigurationController.contains("display.exception")) {
+        if (Configuration.contains("display.time")) {
+            if (Configuration.contains("display.line")
+                    || Configuration.contains("display.exception")) {
                 addNewLine()
             }
             val text = messages.getMessage(
@@ -408,10 +408,12 @@ object DisplayUtils {
      * Displays the application logo in the terminal.
      */
     fun printLogo() {
-        println("  __ _ _ __ __ _ _ __ __ _ " + "\n" +
-                " / _` | '__/ _` | '__/ _` |" + "\n" +
-                "| (_| | | | (_| | | | (_| |" + "\n" +
-                " \\__,_|_|  \\__,_|_|  \\__,_|")
+        println("""
+              __ _ _ __ __ _ _ __ __ _ 
+             / _` | '__/ _` | '__/ _` |
+            | (_| | | | (_| | | | (_| |
+             \__,_|_|  \__,_|_|  \__,_|
+        """.trimIndent())
         addNewLine()
     }
 

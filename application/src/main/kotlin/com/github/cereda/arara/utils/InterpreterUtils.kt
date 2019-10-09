@@ -33,7 +33,7 @@
  */
 package com.github.cereda.arara.utils
 
-import com.github.cereda.arara.configuration.ConfigurationController
+import com.github.cereda.arara.configuration.Configuration
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.AraraException
@@ -72,7 +72,7 @@ object InterpreterUtils {
      * evaluation.
      */
     fun runPriorEvaluation(conditional: Conditional): Boolean {
-        if (ConfigurationController["execution.dryrun"] as Boolean) {
+        if (Configuration["execution.dryrun"] as Boolean) {
             return false
         }
         return when (conditional.type) {
@@ -93,10 +93,10 @@ object InterpreterUtils {
      */
     @Throws(AraraException::class)
     fun run(command: Any): Int {
-        val verbose = ConfigurationController["execution.verbose"] as Boolean
-        val timeout = ConfigurationController["execution.timeout"] as Boolean
-        val value = ConfigurationController["execution.timeout.value"] as Long
-        val unit = ConfigurationController["execution.timeout.unit"] as TimeUnit
+        val verbose = Configuration["execution.verbose"] as Boolean
+        val timeout = Configuration["execution.timeout"] as Boolean
+        val value = Configuration["execution.timeout.value"] as Long
+        val unit = Configuration["execution.timeout.unit"] as TimeUnit
         val buffer = ByteArrayOutputStream()
         var executor = ProcessExecutor()
         if (command is Command) {
@@ -193,7 +193,7 @@ object InterpreterUtils {
      */
     @Throws(AraraException::class)
     fun buildRulePath(name: String): File? {
-        val paths = ConfigurationController["execution.rule.paths"] as List<String>
+        val paths = Configuration["execution.rule.paths"] as List<String>
         for (path in paths) {
             val location = File(construct(path, name))
             if (location.exists()) {
@@ -219,7 +219,7 @@ object InterpreterUtils {
         return if (location.isAbsolute) {
             CommonUtils.buildPath(path, fileName)
         } else {
-            val reference = ConfigurationController["execution.reference"] as File
+            val reference = Configuration["execution.reference"] as File
             val parent = CommonUtils.buildPath(
                     CommonUtils.getParentCanonicalPath(reference), path)
             CommonUtils.buildPath(parent, fileName)

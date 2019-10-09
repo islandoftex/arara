@@ -33,12 +33,11 @@
  */
 package com.github.cereda.arara.model
 
-import com.github.cereda.arara.configuration.ConfigurationController
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.ruleset.Directive
-import com.github.cereda.arara.utils.CommonUtils
 import com.github.cereda.arara.ruleset.DirectiveUtils
+import com.github.cereda.arara.utils.CommonUtils
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
@@ -49,24 +48,26 @@ import java.nio.charset.Charset
  * @version 4.0
  * @since 4.0
  */
-class Extractor {
+object Extractor {
+    // the application messages obtained from the
+    // language controller
+    private val messages = LanguageController
+
     /**
      * Extracts a list of directives from the provided main file, obtained from
      * the configuration controller.
+     * @param file The file to extract the directives from.
+     * @param charset The charset of the file.
      * @return A list of directives.
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun extract(): List<Directive> {
-        val file = ConfigurationController["execution.reference"] as File
-        val charset = ConfigurationController["directives.charset"] as Charset
-
+    fun extract(file: File, charset: Charset = Charsets.UTF_8):
+            List<Directive> {
         try {
-            val content = CommonUtils.preambleContent
-                    .toMutableList()
-            val lines = file.readLines(charset)
-            content.addAll(lines)
+            val content = CommonUtils.preambleContent.toMutableList()
+            content.addAll(file.readLines(charset))
             return DirectiveUtils.extractDirectives(content)
         } catch (ioexception: IOException) {
             throw AraraException(
@@ -78,11 +79,4 @@ class Extractor {
         }
 
     }
-
-    companion object {
-        // the application messages obtained from the
-        // language controller
-        private val messages = LanguageController
-    }
-
 }

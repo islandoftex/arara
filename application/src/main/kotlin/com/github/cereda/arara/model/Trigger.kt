@@ -33,7 +33,7 @@
  */
 package com.github.cereda.arara.model
 
-import com.github.cereda.arara.configuration.ConfigurationController
+import com.github.cereda.arara.configuration.Configuration
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
 import java.util.concurrent.Callable
@@ -77,7 +77,7 @@ class Trigger(
     fun process() {
         val mapping = mutableMapOf<String, Callable<Any?>>()
         mapping["halt"] = Callable<Any?> {
-            ConfigurationController.put("trigger.halt", true)
+            Configuration.put("trigger.halt", true)
             null
         }
         if (mapping.containsKey(action)) {
