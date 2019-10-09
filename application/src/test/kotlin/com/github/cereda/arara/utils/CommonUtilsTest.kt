@@ -2,25 +2,23 @@ package com.github.cereda.arara.utils
 
 import com.github.cereda.arara.configuration.ConfigurationController
 import com.github.cereda.arara.localization.Language
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
+import io.kotlintest.shouldBe
+import io.kotlintest.specs.ShouldSpec
 import java.io.File
 
-class CommonUtilsTest {
-    @Test
-    fun checkByteFormatting() {
+class CommonUtilsTest : ShouldSpec({
+    should("format bytes correctly") {
         ConfigurationController.put("execution.language", Language("en"))
         mapOf(800 to "800 B",
                 1000 to "1.0 kB",
                 1024 to "1.0 kB",
                 1000000 to "1.0 MB").forEach { (key, value) ->
-            assertEquals(value, CommonUtils.byteSizeToString(key.toLong()))
+            CommonUtils.byteSizeToString(key.toLong()) shouldBe value
         }
     }
 
-    @Test
-    fun checkCRCgeneration() {
-        assertEquals("17f430a5", CommonUtils.calculateHash(File("../LICENSE")))
-        assertEquals("536c426f", CommonUtils.calculateHash(File("../CODE_OF_CONDUCT.md")))
+    should("generate correct CRC sums") {
+        CommonUtils.calculateHash(File("../LICENSE")) shouldBe "17f430a5"
+        CommonUtils.calculateHash(File("../CODE_OF_CONDUCT.md")) shouldBe "536c426f"
     }
-}
+})
