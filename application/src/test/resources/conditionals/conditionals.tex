@@ -1,0 +1,6 @@
+% arara: echoone
+% arara: echotwo if exists('quack')
+% arara: echothree if (exists('quack') && found('quack', 'Duck'))
+% arara: echofour
+Quack
+\bye

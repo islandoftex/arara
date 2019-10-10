@@ -1,0 +1,10 @@
+!config
+identifier: echothree
+name: Test rule for conditionals 3
+commands:
+  - name: The echoer
+    command: >
+      @{
+          return getCommand('echo', 'QuackThree');
+      }
+arguments: []
