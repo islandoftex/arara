@@ -242,45 +242,36 @@ object CommonUtils {
     @Throws(AraraException::class)
     private fun lookupFile(reference: String): File? {
         val types = Arara.config[AraraSpec.Execution.fileTypes]
-        var file = File(reference)
+        val file = File(reference)
         val name = file.name
         val parent = getParentCanonicalPath(file)
-        var path = buildPath(parent, name)
 
         // direct search, so we are considering
         // the reference as a complete name
         // TODO: kotlinize (stream + filter)
-        for (type in types) {
-            if (path.endsWith("." + type.extension)) {
-                file = File(path)
-                if (file.exists()) {
-                    if (file.isFile) {
+        val testPath = buildPath(parent, name)
+        val testFile = File(testPath)
+        if (testFile.exists() && testFile.isFile) {
+            types.firstOrNull { testPath.endsWith("." + it.extension) }
+                    ?.let {
                         Arara.config[AraraSpec.Execution.filePattern] =
-                                type.pattern!!
-                        Arara.config[AraraSpec.Execution.reference] = file
-                        return file
+                                it.pattern!!
+                        Arara.config[AraraSpec.Execution.reference] = testFile
+                        return testFile
                     }
-                }
-            }
         }
 
         // indirect search; in this case, we are considering
         // that the file reference has an implicit extension,
         // so we need to add it and look again
-        // TODO: kotlinize
-        for (type in types) {
-            path = buildPath(parent, name + "." + type.extension)
-            file = File(path)
-            if (file.exists()) {
-                if (file.isFile) {
+        types.map { it to File(buildPath(parent, name + "." + it.extension)) }
+                .firstOrNull { it.second.exists() && it.second.isFile }
+                ?.let {
                     Arara.config[AraraSpec.Execution.filePattern] =
-                            type.pattern!!
-                    Arara.config[AraraSpec.Execution.reference] = file
+                            it.first.pattern!!
+                    Arara.config[AraraSpec.Execution.reference] = it.second
                     return file
                 }
-            }
-        }
-        
         return null
     }
 
@@ -538,10 +529,8 @@ object CommonUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun hasChanged(extension: String): Boolean {
-        val file = File(getPath(extension))
-        return hasChanged(file)
-    }
+    fun hasChanged(extension: String): Boolean =
+            hasChanged(File(getPath(extension)))
 
     /**
      * Gets the full file path based on the provided extension.
@@ -553,9 +542,8 @@ object CommonUtils {
      */
     @Throws(AraraException::class)
     private fun getPath(extension: String): String {
-        var name = getBasename(currentReference)
+        val name = getBasename(currentReference) + ".$extension"
         val path = getParentCanonicalPath(currentReference)
-        name = "$name.$extension"
         return buildPath(path, name)
     }
 
@@ -644,18 +632,15 @@ object CommonUtils {
     @Throws(AraraException::class)
     fun replicateList(pattern: String,
                       values: List<Any>): List<Any> {
-        return values.map { value ->
-            try {
-                String.format(pattern, value)
-            } catch (exception: MissingFormatArgumentException) {
-                throw AraraException(
-                        messages.getMessage(
-                                Messages.ERROR_REPLICATELIST_MISSING_FORMAT_ARGUMENTS_EXCEPTION
-                        ),
-                        exception
-                )
-            }
-
+        return try {
+            values.map { String.format(pattern, it) }
+        } catch (exception: MissingFormatArgumentException) {
+            throw AraraException(
+                    messages.getMessage(
+                            Messages.ERROR_REPLICATELIST_MISSING_FORMAT_ARGUMENTS_EXCEPTION
+                    ),
+                    exception
+            )
         }
     }
 
@@ -800,12 +785,6 @@ object CommonUtils {
                                     filenames.contains(it.name) &&
                                             !it.isDirectory
                                 }) {
-                    // TODO: check if test equals
-                    /*!FileUtils.listFiles(
-                            File(tokenizer.nextToken()),
-                            NameFileFilter(filenames), null
-                    ).isEmpty()*/
-
                     // command is found somewhere,
                     // so it is on path
                     return true

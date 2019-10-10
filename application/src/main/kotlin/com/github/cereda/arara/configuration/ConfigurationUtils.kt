@@ -35,9 +35,9 @@ package com.github.cereda.arara.configuration
 
 import com.github.cereda.arara.Arara
 import com.github.cereda.arara.localization.LanguageController
+import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.model.FileType
-import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.utils.CommonUtils
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.Constructor
@@ -61,11 +61,25 @@ object ConfigurationUtils {
     // language controller
     private val messages = LanguageController
 
+    // a map containing all file types that arara accepts
+    // and their corresponding patterns
+    val defaultFileTypePatterns = mapOf(
+            "tex" to "^\\s*%\\s+",
+            "dtx" to "^\\s*%\\s+",
+            "ltx" to "^\\s*%\\s+",
+            "drv" to "^\\s*%\\s+",
+            "ins" to "^\\s*%\\s+"
+    )
+
     // list of default file types provided by arara, in order.
     val defaultFileTypes: List<FileType>
         @Throws(AraraException::class)
         get() = listOf("tex", "dtx", "ltx", "drv", "ins")
-                .map { FileType(it) }
+                .map {
+                    FileType(it, defaultFileTypePatterns[it]
+                            ?: throw AraraException("File type not found in " +
+                                    "defaults (severe developer error)"))
+                }
 
     // look for configuration files in the user's working directory first
     // if no configuration files are found in the user's working directory,

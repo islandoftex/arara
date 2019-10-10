@@ -68,9 +68,6 @@ object FileSearchingUtils {
                 directory.listFiles(
                         FileFilter { extensions.contains(it.extension) })!!
                         .toList()
-            // TODO: check that it replaces
-            /*FileUtils.listFiles(directory, extensions.toTypedArray(), recursive)
-                    .toList()*/
         } catch (_: Exception) {
             // if something bad happens,
             // gracefully fallback to
@@ -105,15 +102,6 @@ object FileSearchingUtils {
                 directory.listFiles { file: File ->
                     pathMatcher.any { it.matches(file.toPath()) }
                 }!!.toList()
-            // TODO: check if it replaces
-            /*FileUtils.listFiles(
-                    directory,
-                    WildcardFileFilter(patterns),
-                    if (recursive)
-                        TrueFileFilter.INSTANCE
-                    else
-                        FalseFileFilter.INSTANCE
-            ).toList()*/
         } catch (_: Exception) {
             // if something bad happens,
             // gracefully fallback to

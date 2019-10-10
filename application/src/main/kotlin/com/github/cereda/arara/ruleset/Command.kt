@@ -49,6 +49,7 @@ class Command {
 
     // an optional file acting as a reference
     // for the default working directory
+    // TODO: initialize with application's working directory
     var workingDirectory: File? = null
 
     /**

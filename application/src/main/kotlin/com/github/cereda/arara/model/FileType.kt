@@ -33,61 +33,28 @@
  */
 package com.github.cereda.arara.model
 
-import com.github.cereda.arara.localization.LanguageController
-import com.github.cereda.arara.localization.Messages
-import com.github.cereda.arara.utils.CommonUtils
-
 /**
  * Implements the file type model.
+ * 
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0
  */
-class FileType {
-    // string representing the
-    // file extension
-    var extension: String? = null
-        private set
-
-    // string representing the
-    // file pattern to be used
-    // as directive lookup
-    var pattern: String? = null
-        private set
-
+data class FileType(
+        // string representing the
+        // file extension
+        val extension: String,
+        // string representing the
+        // file pattern to be used
+        // as directive lookup
+        val pattern: String) {
     /**
-     * Constructor. It takes both file extension and pattern lookup.
-     * @param extension The file extension.
-     * @param pattern The file pattern.
+     * Provides a textual representation of the current file type object.
+     * @return A string containing a textual representation of the current file
+     * type object.
      */
-    constructor(extension: String, pattern: String) {
-        this.extension = extension
-        this.pattern = pattern
-    }
-
-    /**
-     * Constructor. It takes the extension, but it might raise an exception if
-     * the extension is unknown. This constructor is used when you just want
-     * to reorganize the file lookup priority without the need of changing the
-     * default extensions.
-     * @param extension The file extension.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
-    @Throws(AraraException::class)
-    constructor(extension: String) {
-        if (types.containsKey(extension)) {
-            this.extension = extension
-            this.pattern = types[extension]
-        } else {
-            throw AraraException(
-                    messages.getMessage(
-                            Messages.ERROR_FILETYPE_UNKNOWN_EXTENSION,
-                            extension,
-                            CommonUtils.fileTypesList
-                    )
-            )
-        }
+    override fun toString(): String {
+        return ".$extension"
     }
 
     /**
@@ -105,14 +72,6 @@ class FileType {
         return true
     }
 
-    /**
-     * Provides a textual representation of the current file type object.
-     * @return A string containing a textual representation of the current file
-     * type object.
-     */
-    override fun toString(): String {
-        return ".$extension"
-    }
 
     /**
      * Implements the file type hash code. Note that only the file extension is
@@ -120,25 +79,6 @@ class FileType {
      * @return An integer representing the file type hash code.
      */
     override fun hashCode(): Int {
-        return extension?.hashCode() ?: 0
+        return extension.hashCode() ?: 0
     }
-
-    companion object {
-        // the application messages obtained from the
-        // language controller
-        private val messages = LanguageController
-
-        // a map containing all file
-        // types that arara accepts
-        // initialized by setting the default file types and
-        // their corresponding patterns.
-        private val types = mapOf(
-                "tex" to "^\\s*%\\s+",
-                "dtx" to "^\\s*%\\s+",
-                "ltx" to "^\\s*%\\s+",
-                "drv" to "^\\s*%\\s+",
-                "ins" to "^\\s*%\\s+"
-        )
-    }
-
 }

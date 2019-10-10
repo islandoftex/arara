@@ -135,7 +135,7 @@ object Configuration {
                 "rules"
         ))
 
-        Arara.config[AraraSpec.Execution.preambles] = mutableMapOf<String, String>()
+        Arara.config[AraraSpec.Execution.preambles] = mapOf()
         Arara.config[AraraSpec.Execution.preamblesActive] = false
         Arara.config[AraraSpec.Execution.configurationName] = "[none]"
         Arara.config[AraraSpec.Execution.header] = false
@@ -160,13 +160,19 @@ object Configuration {
         if (resource.filetypes.isNotEmpty()) {
             val resources = resource.filetypes
             var filetypes = mutableListOf<FileType>()
-            for (type in resources) {
+            resources.forEach { type ->
                 if (type.pattern != null) {
-                    filetypes.add(
-                            FileType(type.extension!!, type.pattern!!)
-                    )
+                    filetypes.add(FileType(type.extension!!, type.pattern!!))
                 } else {
-                    filetypes.add(FileType(type.extension!!))
+                    filetypes.add(FileType(type.extension!!,
+                            ConfigurationUtils.defaultFileTypePatterns[type
+                                    .extension!!] ?: throw AraraException(
+                                    messages.getMessage(
+                                            Messages.ERROR_FILETYPE_UNKNOWN_EXTENSION,
+                                            type.extension!!,
+                                            CommonUtils.fileTypesList
+                                    )
+                            )))
                 }
             }
             filetypes = ConfigurationUtils.normalizeFileTypes(filetypes)
@@ -201,6 +207,5 @@ object Configuration {
 
         if (resource.preambles.isNotEmpty())
             Arara.config[AraraSpec.Execution.preambles] = resource.preambles
-                    .toMutableMap()
     }
 }

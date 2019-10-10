@@ -54,18 +54,4 @@ data class Directive(
         // a list contained all line numbers from
         // the main file which built the current
         // directive
-        var lineNumbers: List<Int>) {
-    /**
-     * Provides a textual representation of the current directive.
-     *
-     * @return A string containing a textual representation of the current
-     * directive.
-     */
-    override fun toString(): String {
-        return "Directive: { " +
-                "identifier: " + identifier + ", " +
-                "parameters: " + parameters + ", " +
-                "conditional: " + conditional + ", " +
-                "lines: " + lineNumbers + " }"
-    }
-}
+        val lineNumbers: List<Int>)

@@ -30,7 +30,7 @@ object AraraSpec : ConfigSpec() {
                 ConfigurationUtils.applicationPath,
                 "rules"
         )))
-        val preambles by optional(mutableMapOf<String, String>())
+        val preambles by optional(mapOf<String, String>())
         val preamblesActive by optional(false)
         val preamblesContent by optional("")
 

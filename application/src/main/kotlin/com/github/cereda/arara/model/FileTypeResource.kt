@@ -41,6 +41,8 @@ import com.github.cereda.arara.utils.CommonUtils
  * @version 4.0
  * @since 4.0
  */
+// TODO: remove, `FileType` should be sufficient if we can ensure that
+// remove keyword is called on initialization
 class FileTypeResource {
     // the file extension
     var extension: String? = null
