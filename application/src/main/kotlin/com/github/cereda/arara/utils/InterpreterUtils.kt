@@ -33,7 +33,8 @@
  */
 package com.github.cereda.arara.utils
 
-import com.github.cereda.arara.configuration.Configuration
+import com.github.cereda.arara.Arara
+import com.github.cereda.arara.configuration.AraraSpec
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.AraraException
@@ -48,6 +49,8 @@ import java.io.File
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 /**
  * Implements interpreter utilitary methods.
@@ -72,14 +75,15 @@ object InterpreterUtils {
      * evaluation.
      */
     fun runPriorEvaluation(conditional: Conditional): Boolean {
-        if (Configuration["execution.dryrun"] as Boolean) {
-            return false
-        }
-        return when (conditional.type) {
-            Conditional.ConditionalType.IF,
-            Conditional.ConditionalType.WHILE,
-            Conditional.ConditionalType.UNLESS -> true
-            else -> false
+        return if (Arara.config[AraraSpec.Execution.dryrun]) {
+            false
+        } else {
+            when (conditional.type) {
+                Conditional.ConditionalType.IF,
+                Conditional.ConditionalType.WHILE,
+                Conditional.ConditionalType.UNLESS -> true
+                else -> false
+            }
         }
     }
 
@@ -91,12 +95,12 @@ object InterpreterUtils {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
+    @ExperimentalTime
     @Throws(AraraException::class)
     fun run(command: Any): Int {
-        val verbose = Configuration["execution.verbose"] as Boolean
-        val timeout = Configuration["execution.timeout"] as Boolean
-        val value = Configuration["execution.timeout.value"] as Long
-        val unit = Configuration["execution.timeout.unit"] as TimeUnit
+        val verbose = Arara.config[AraraSpec.Execution.verbose]
+        val timeout = Arara.config[AraraSpec.Execution.timeout]
+        val timeOutValue = Arara.config[AraraSpec.Execution.timeoutValue]
         val buffer = ByteArrayOutputStream()
         var executor = ProcessExecutor()
         if (command is Command) {
@@ -110,14 +114,15 @@ object InterpreterUtils {
             executor = executor.commandSplit(command as String)
         }
         if (timeout) {
-            if (value == 0L) {
+            if (timeOutValue == Duration.ZERO) {
                 throw AraraException(
                         messages.getMessage(
                                 Messages.ERROR_RUN_TIMEOUT_INVALID_RANGE
                         )
                 )
             }
-            executor = executor.timeout(value, unit)
+            executor = executor.timeout(timeOutValue.toLongNanoseconds(),
+                    TimeUnit.NANOSECONDS)
         }
         val tee: TeeOutputStream
         if (verbose) {
@@ -193,12 +198,10 @@ object InterpreterUtils {
      */
     @Throws(AraraException::class)
     fun buildRulePath(name: String): File? {
-        val paths = Configuration["execution.rule.paths"] as List<String>
-        for (path in paths) {
+        Arara.config[AraraSpec.Execution.rulePaths].forEach { path ->
             val location = File(construct(path, name))
-            if (location.exists()) {
+            if (location.exists())
                 return location
-            }
         }
         return null
     }
@@ -219,7 +222,7 @@ object InterpreterUtils {
         return if (location.isAbsolute) {
             CommonUtils.buildPath(path, fileName)
         } else {
-            val reference = Configuration["execution.reference"] as File
+            val reference = Arara.config[AraraSpec.Execution.reference]
             val parent = CommonUtils.buildPath(
                     CommonUtils.getParentCanonicalPath(reference), path)
             CommonUtils.buildPath(parent, fileName)

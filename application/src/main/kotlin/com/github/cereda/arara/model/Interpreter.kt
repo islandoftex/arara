@@ -33,10 +33,14 @@
  */
 package com.github.cereda.arara.model
 
-import com.github.cereda.arara.configuration.Configuration
+import com.github.cereda.arara.Arara
+import com.github.cereda.arara.configuration.AraraSpec
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
-import com.github.cereda.arara.ruleset.*
+import com.github.cereda.arara.ruleset.Command
+import com.github.cereda.arara.ruleset.Directive
+import com.github.cereda.arara.ruleset.Rule
+import com.github.cereda.arara.ruleset.RuleUtils
 import com.github.cereda.arara.utils.CommonUtils
 import com.github.cereda.arara.utils.DisplayUtils
 import com.github.cereda.arara.utils.InterpreterUtils
@@ -44,6 +48,7 @@ import com.github.cereda.arara.utils.Methods
 import org.mvel2.templates.TemplateRuntime
 import org.slf4j.LoggerFactory
 import java.io.File
+import kotlin.time.ExperimentalTime
 
 /**
  * Interprets the list of directives.
@@ -63,6 +68,7 @@ class Interpreter(
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
+    @ExperimentalTime
     @Throws(AraraException::class)
     fun execute() {
         /**
@@ -87,7 +93,7 @@ class Interpreter(
                     )
         }
 
-        for (directive in directives) {
+        directives.forEach { directive ->
             logger.info(
                     messages.getMessage(
                             Messages.LOG_INFO_INTERPRET_RULE,
@@ -95,9 +101,8 @@ class Interpreter(
                     )
             )
 
-            Configuration.put("execution.file",
-                    directive.parameters.getValue("reference")
-            )
+            Arara.config[AraraSpec.Execution.file] =
+                    directive.parameters.getValue("reference") as File
             val file = getRule(directive)
 
             logger.info(
@@ -107,14 +112,15 @@ class Interpreter(
                     )
             )
 
-            Configuration.put("execution.info.rule.id", directive.identifier)
-            Configuration.put("execution.info.rule.path", file.parent)
-            Configuration.put("execution.directive.lines",
+            Arara.config[AraraSpec.Execution.InfoSpec.ruleId] =
+                    directive.identifier
+            Arara.config[AraraSpec.Execution.InfoSpec.rulePath] =
+                    file.parent
+            Arara.config[AraraSpec.Execution.DirectiveSpec.lines] =
                     directive.lineNumbers
-            )
-            Configuration.put("execution.directive.reference",
-                    directive.parameters.getValue("reference")
-            )
+            Arara.config[AraraSpec.Execution.DirectiveSpec.reference] =
+                    directive.parameters.getValue("reference") as File
+            // TODO: same as ExecutionSpec.file, see above?
 
             val rule = parseRule(file, directive)
             val parameters = parseArguments(rule, directive).toMutableMap()
@@ -124,8 +130,9 @@ class Interpreter(
             val authors = rule.authors
 
             // save the identifiers of the rule's arguments for later use
-            Configuration.put("execution.rule.arguments",
-                    rule.arguments.mapNotNull { it.identifier })
+            // TODO: never used?!
+            Arara.config[AraraSpec.Execution.ruleArguments] =
+                    rule.arguments.mapNotNull { it.identifier }
 
             val evaluator = Evaluator()
 
@@ -176,8 +183,8 @@ class Interpreter(
                                     var success = true
 
                                     if (current is Trigger) {
-                                        if (!(Configuration["execution.dryrun"] as Boolean)) {
-                                            if (Configuration["execution.verbose"] as Boolean) {
+                                        if (!Arara.config[AraraSpec.Execution.dryrun]) {
+                                            if (Arara.config[AraraSpec.Execution.verbose]) {
                                                 DisplayUtils.wrapText(
                                                         messages.getMessage(
                                                                 Messages.INFO_INTERPRETER_VERBOSE_MODE_TRIGGER_MODE
@@ -206,7 +213,7 @@ class Interpreter(
                                                     )
                                             )
 
-                                            if (Configuration["execution.dryrun"] as Boolean) {
+                                            if (Arara.config[AraraSpec.Execution.dryrun]) {
                                                 DisplayUtils.printAuthors(authors)
                                                 DisplayUtils.wrapText(
                                                         messages.getMessage(
@@ -230,7 +237,7 @@ class Interpreter(
                                                     )
                                             )
 
-                                            if (!(Configuration["execution.dryrun"] as Boolean)) {
+                                            if (!Arara.config[AraraSpec.Execution.dryrun]) {
                                                 val code = InterpreterUtils.run(representation)
                                                 val check: Any
                                                 try {
@@ -277,11 +284,10 @@ class Interpreter(
 
                                     DisplayUtils.printEntryResult(success)
 
-                                    if (Configuration["trigger.halt"] as Boolean
-                                            || Configuration["execution.errors.halt"] as Boolean
-                                            && !success) {
+                                    if (Arara.config[AraraSpec.Trigger.halt]
+                                            || Arara.config[AraraSpec.Execution.haltOnErrors]
+                                            && !success)
                                         return
-                                    }
                                 }
                             }
                         }

@@ -33,14 +33,15 @@
  */
 package com.github.cereda.arara.configuration
 
+import com.github.cereda.arara.Arara
 import com.github.cereda.arara.localization.Language
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.model.FileType
 import com.github.cereda.arara.utils.CommonUtils
-import java.nio.charset.StandardCharsets
-import java.util.concurrent.TimeUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
 
 /**
  * Implements the configuration model, which holds the default settings and can
@@ -53,11 +54,6 @@ import java.util.concurrent.TimeUnit
  * @since 4.0
  */
 object Configuration {
-    // the configuration settings are stored in a map;
-    // pretty much everything can be stored in this map,
-    // as long as you know what to retrieve later on
-    private val map: MutableMap<String, Any> = mutableMapOf()
-
     // the application messages obtained from the
     // language controller
     private val messages = LanguageController
@@ -68,6 +64,7 @@ object Configuration {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
+    @ExperimentalTime
     @Throws(AraraException::class)
     fun load() {
         // initialize both file type and language models,
@@ -82,8 +79,8 @@ object Configuration {
         if (file != null) {
             // set the configuration file name for
             // logging purposes
-            map["execution.configuration.name"] = CommonUtils
-                    .getCanonicalPath(file)
+            Arara.config[AraraSpec.Execution.configurationName] =
+                    CommonUtils.getCanonicalPath(file)
 
             // then validate it and update the
             // configuration accordingly
@@ -94,7 +91,7 @@ object Configuration {
         // just to be sure, update the
         // current locale in order to
         // display localized messages
-        val locale = (map["execution.language"] as Language).locale
+        val locale = Arara.config[AraraSpec.Execution.language].locale
         LanguageController.setLocale(locale)
     }
 
@@ -104,44 +101,45 @@ object Configuration {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
+    @ExperimentalTime
     @Throws(AraraException::class)
     private fun reset() {
-        map["execution.loops"] = 10L
-        map["directives.charset"] = StandardCharsets.UTF_8
-        map["execution.errors.halt"] = true
-        map["execution.timeout"] = false
-        map["execution.timeout.value"] = 0L
-        map["execution.timeout.unit"] = TimeUnit.MILLISECONDS
-        map["application.version"] = "5.0.0"
-        map["directives.linebreak.pattern"] = "^\\s*-->\\s(.*)$"
+        // TODO: remove and replace with proper default values
+        Arara.config[AraraSpec.Execution.loops] = 10
+        Arara.config[AraraSpec.Directive.charset] = Charsets.UTF_8
+        Arara.config[AraraSpec.Execution.haltOnErrors] = true
+        Arara.config[AraraSpec.Execution.timeout] = false
+        Arara.config[AraraSpec.Execution.timeoutValue] = 0.milliseconds
+        Arara.config[AraraSpec.Application.version] = "5.0.0"
+        Arara.config[AraraSpec.Directive.linebreakPattern] = "^\\s*-->\\s(.*)$"
 
         val directive = "^\\s*(\\w+)\\s*(:\\s*(\\{.*\\})\\s*)?"
         val pattern = "(\\s+(if|while|until|unless)\\s+(\\S.*))?$"
 
-        map["directives.pattern"] = directive + pattern
-        map["application.pattern"] = "arara:\\s"
-        map["application.width"] = 65
-        map["execution.database.name"] = "arara"
-        map["execution.log.name"] = "arara"
-        map["execution.verbose"] = false
+        Arara.config[AraraSpec.Directive.directivePattern] = directive + pattern
+        Arara.config[AraraSpec.Application.namePattern] = "arara:\\s"
+        Arara.config[AraraSpec.Application.width] = 65
+        Arara.config[AraraSpec.Execution.databaseName] = "arara"
+        Arara.config[AraraSpec.Execution.logName] = "arara"
+        Arara.config[AraraSpec.Execution.verbose] = false
 
-        map["trigger.halt"] = false
-        map["execution.language"] = Language("en")
-        map["execution.logging"] = false
-        map["execution.dryrun"] = false
-        map["execution.status"] = 0
-        map["application.copyright.year"] = "2012-2019"
-        map["execution.filetypes"] = ConfigurationUtils.defaultFileTypes
-        map["execution.rule.paths"] = listOf(CommonUtils.buildPath(
+        Arara.config[AraraSpec.Trigger.halt] = false
+        Arara.config[AraraSpec.Execution.language] = Language("en")
+        Arara.config[AraraSpec.Execution.logging] = false
+        Arara.config[AraraSpec.Execution.dryrun] = false
+        Arara.config[AraraSpec.Execution.status] = 0
+        Arara.config[AraraSpec.Application.copyrightYear] = "2012-2019"
+        Arara.config[AraraSpec.Execution.fileTypes] = ConfigurationUtils.defaultFileTypes
+        Arara.config[AraraSpec.Execution.rulePaths] = listOf(CommonUtils.buildPath(
                 ConfigurationUtils.applicationPath,
                 "rules"
         ))
 
-        map["execution.preambles"] = mutableMapOf<String, String>()
-        map["execution.preamble.active"] = false
-        map["execution.configuration.name"] = "[none]"
-        map["execution.header"] = false
-        map["ui.lookandfeel"] = "none"
+        Arara.config[AraraSpec.Execution.preambles] = mutableMapOf<String, String>()
+        Arara.config[AraraSpec.Execution.preamblesActive] = false
+        Arara.config[AraraSpec.Execution.configurationName] = "[none]"
+        Arara.config[AraraSpec.Execution.header] = false
+        Arara.config[AraraSpec.UserInteraction.lookAndFeel] = "none"
     }
 
     /**
@@ -156,7 +154,7 @@ object Configuration {
         if (resource.paths != null) {
             var paths = resource.paths!!
             paths = ConfigurationUtils.normalizePaths(paths)
-            map["execution.rule.paths"] = paths
+            Arara.config[AraraSpec.Execution.rulePaths] = paths
         }
 
         if (resource.filetypes.isNotEmpty()) {
@@ -173,28 +171,27 @@ object Configuration {
             }
             filetypes = ConfigurationUtils.normalizeFileTypes(filetypes)
                     .toMutableList()
-            map["execution.filetypes"] = filetypes
+            Arara.config[AraraSpec.Execution.fileTypes] = filetypes
         }
 
-        map["execution.verbose"] = resource.isVerbose
-        map["execution.logging"] = resource.isLogging
-        map["execution.header"] = resource.isHeader
-        map["execution.language"] = Language(resource.language)
-        map["ui.lookandfeel"] = resource.laf
+        Arara.config[AraraSpec.Execution.verbose] = resource.isVerbose
+        Arara.config[AraraSpec.Execution.logging] = resource.isLogging
+        Arara.config[AraraSpec.Execution.header] = resource.isHeader
+        Arara.config[AraraSpec.Execution.language] =
+                Language(resource.language)
+        Arara.config[AraraSpec.UserInteraction.lookAndFeel] = resource.laf
 
-        if (resource.dbname != null) {
-            map["execution.database.name"] = ConfigurationUtils
-                    .cleanFileName(resource.dbname!!)
-        }
+        if (resource.dbname != null)
+            Arara.config[AraraSpec.Execution.databaseName] =
+                    ConfigurationUtils.cleanFileName(resource.dbname!!)
+        if (resource.logname != null)
+            Arara.config[AraraSpec.Execution.logName] =
+                    ConfigurationUtils.cleanFileName(resource.logname!!)
 
-        if (resource.logname != null) {
-            map["execution.log.name"] = ConfigurationUtils
-                    .cleanFileName(resource.logname!!)
-        }
-
-        val loops = resource.loops
+        val loops = resource.loops.toInt()
+        // TODO: check consistency (<=) with other test
         if (loops > 0) {
-            map["execution.loops"] = loops
+            Arara.config[AraraSpec.Execution.loops] = loops
         } else {
             if (loops < 0) {
                 throw AraraException(
@@ -206,36 +203,7 @@ object Configuration {
         }
 
         if (resource.preambles.isNotEmpty())
-            map["execution.preambles"] = resource.preambles
-    }
-
-    /**
-     * Returns the object indexed by the provided key. This method provides an
-     * easy access to the underlying map.
-     * @param key A string representing the key.
-     * @return An object indexed by the provided key.
-     */
-    operator fun get(key: String): Any {
-        return map.getValue(key)
-    }
-
-    /**
-     * Puts the object in the map and indexes it in the provided key. This
-     * method provides an easy access to the underlying map.
-     * @param key A string representing the key.
-     * @param value The object to be indexed by the provided key.
-     */
-    fun put(key: String, value: Any) {
-        map[key] = value
-    }
-
-    /**
-     * Checks if the map contains the provided key. This is actually a wrapper
-     * to the private map's method of the same name.
-     * @param key The key to be checked.
-     * @return A boolean value indicating if the map contains the provided key.
-     */
-    operator fun contains(key: String): Boolean {
-        return map.containsKey(key)
+            Arara.config[AraraSpec.Execution.preambles] = resource.preambles
+                    .toMutableMap()
     }
 }

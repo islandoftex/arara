@@ -33,15 +33,14 @@
  */
 package com.github.cereda.arara.utils
 
-import com.github.cereda.arara.configuration.Configuration
+import com.github.cereda.arara.Arara
+import com.github.cereda.arara.configuration.AraraSpec
 import com.github.cereda.arara.configuration.ConfigurationUtils
-import com.github.cereda.arara.localization.Language
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.ruleset.Conditional
 import org.slf4j.LoggerFactory
-import java.io.File
 
 /**
  * Implements display utilitary methods.
@@ -71,19 +70,19 @@ object DisplayUtils {
      * The default terminal width defined in the settings.
      */
     private val width: Int
-        get() = Configuration["application.width"] as Int
+        get() = Arara.config[AraraSpec.Application.width]
 
     /**
      * Checks if the execution is in dry-run mode.
      */
     private val isDryRunMode: Boolean
-        get() = Configuration["execution.dryrun"] as Boolean
+        get() = Arara.config[AraraSpec.Execution.dryrun]
 
     /**
      * Checks if the execution is in verbose mode.
      */
     private val isVerboseMode: Boolean
-        get() = Configuration["execution.verbose"] as Boolean
+        get() = Arara.config[AraraSpec.Execution.verbose]
 
     /**
      * The application path.
@@ -126,10 +125,9 @@ object DisplayUtils {
      * @param value The boolean value to be displayed.
      */
     fun printEntryResult(value: Boolean) {
-        Configuration.put("display.line", false)
-        Configuration.put("display.result", true)
-        Configuration
-                .put("execution.status", if (value) 0 else 1)
+        Arara.config[AraraSpec.UserInteraction.displayLine] = false
+        Arara.config[AraraSpec.UserInteraction.displayResult] = true
+        Arara.config[AraraSpec.Execution.status] = if (value) 0 else 1
         logger.info(
                 messages.getMessage(
                         Messages.LOG_INFO_TASK_RESULT
@@ -168,8 +166,8 @@ object DisplayUtils {
                         name
                 )
         )
-        Configuration.put("display.line", true)
-        Configuration.put("display.result", false)
+        Arara.config[AraraSpec.UserInteraction.displayLine] = true
+        Arara.config[AraraSpec.UserInteraction.displayResult] = false
         if (!isDryRunMode) {
             if (!isVerboseMode) {
                 buildShortEntry(name, task)
@@ -188,10 +186,10 @@ object DisplayUtils {
      * @param task Task name.
      */
     private fun buildLongEntry(name: String, task: String) {
-        if (Configuration.contains("display.rolling")) {
+        if (Arara.config[AraraSpec.UserInteraction.displayRolling]) {
             addNewLine()
         } else {
-            Configuration.put("display.rolling", true)
+            Arara.config[AraraSpec.UserInteraction.displayRolling] = true
         }
         println(displaySeparator())
         println("($name) $task".abbreviate(width))
@@ -205,10 +203,10 @@ object DisplayUtils {
      * @param task The task name.
      */
     private fun buildDryRunEntry(name: String, task: String) {
-        if (Configuration.contains("display.rolling")) {
+        if (Arara.config[AraraSpec.UserInteraction.displayRolling]) {
             addNewLine()
         } else {
-            Configuration.put("display.rolling", true)
+            Arara.config[AraraSpec.UserInteraction.displayRolling] = true
         }
         println("[DR] ($name) $task".abbreviate(width))
         println(displaySeparator())
@@ -220,17 +218,12 @@ object DisplayUtils {
      * @param exception The exception object.
      */
     fun printException(exception: AraraException) {
-        Configuration.put("display.exception", true)
-        Configuration.put("execution.status", 2)
-        var display = false
-        if (Configuration.contains("display.line")) {
-            display = Configuration["display.line"] as Boolean
-        }
-        if (Configuration.contains("display.result")) {
-            if (Configuration["display.result"] as Boolean) {
-                addNewLine()
-            }
-        }
+        Arara.config[AraraSpec.UserInteraction.displayException] = true
+        Arara.config[AraraSpec.Execution.status] = 2
+
+        val display = Arara.config[AraraSpec.UserInteraction.displayLine]
+        if (Arara.config[AraraSpec.UserInteraction.displayResult])
+            addNewLine()
         if (display) {
             if (!isDryRunMode) {
                 if (!isVerboseMode) {
@@ -335,8 +328,8 @@ object DisplayUtils {
      * Displays the file information in the terminal.
      */
     fun printFileInformation() {
-        val file = Configuration["execution.reference"] as File
-        val version = Configuration["application.version"] as String
+        val file = Arara.config[AraraSpec.Execution.reference]
+        val version = Arara.config[AraraSpec.Application.version]
         val line = messages.getMessage(
                 Messages.INFO_DISPLAY_FILE_INFORMATION,
                 file.name,
@@ -375,8 +368,8 @@ object DisplayUtils {
                 CommonUtils.getSystemProperty("user.dir",
                         "[unknown user's working directory]")
         ))
-        logger.info("::: CF @ %s".format(Configuration
-                ["execution.configuration.name"]))
+        logger.info("::: CF @ %s".format(Arara.config[AraraSpec.Execution
+                .configurationName]))
         logger.info(displaySeparator())
         logger.info(line)
         wrapText(line)
@@ -389,13 +382,13 @@ object DisplayUtils {
      * @param seconds The elapsed seconds.
      */
     fun printTime(seconds: Double) {
-        val language = Configuration["execution.language"] as Language
+        val language = Arara.config[AraraSpec.Execution.language]
 
-        if (Configuration.contains("display.time")) {
-            if (Configuration.contains("display.line")
-                    || Configuration.contains("display.exception")) {
+        if (Arara.config[AraraSpec.UserInteraction.displayTime]) {
+            if (Arara.config[AraraSpec.UserInteraction.displayLine] ||
+                    Arara.config[AraraSpec.UserInteraction.displayException])
                 addNewLine()
-            }
+            
             val text = messages.getMessage(
                     Messages.INFO_DISPLAY_EXECUTION_TIME,
                     "%1.2f".format(language.locale, seconds))

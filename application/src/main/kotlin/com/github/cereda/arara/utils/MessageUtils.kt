@@ -33,7 +33,8 @@
  */
 package com.github.cereda.arara.utils
 
-import com.github.cereda.arara.configuration.Configuration
+import com.github.cereda.arara.Arara
+import com.github.cereda.arara.configuration.AraraSpec
 import javax.swing.JOptionPane
 import javax.swing.UIManager
 
@@ -53,7 +54,7 @@ object MessageUtils {
     // close as possible to the system
     init {
         // get the current look and feel
-        var laf = Configuration["ui.lookandfeel"] as String
+        var laf = Arara.config[AraraSpec.UserInteraction.lookAndFeel]
 
         // check if one is actually set
         if (laf != "none") {

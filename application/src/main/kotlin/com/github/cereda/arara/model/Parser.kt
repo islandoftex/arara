@@ -33,14 +33,17 @@
  */
 package com.github.cereda.arara.model
 
-import com.github.cereda.arara.configuration.Configuration
-import com.github.cereda.arara.localization.LanguageController
-import com.github.cereda.arara.utils.LoggingUtils
+import com.github.cereda.arara.Arara
+import com.github.cereda.arara.configuration.AraraSpec
 import com.github.cereda.arara.localization.Language
+import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.utils.CommonUtils
 import com.github.cereda.arara.utils.DisplayUtils
+import com.github.cereda.arara.utils.LoggingUtils
 import org.apache.commons.cli.*
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
 
 /**
  * Implements the command line parser.
@@ -89,6 +92,7 @@ class Parser(
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
+    @ExperimentalTime
     @Throws(AraraException::class)
     fun parse(): Boolean {
         // add all options to the options
@@ -120,10 +124,10 @@ class Parser(
 
             val reference: String
             if (line.hasOption("language")) {
-                Configuration.put("execution.language",
+                Arara.config[AraraSpec.Execution.language] =
                         Language(line.getOptionValue("language"))
-                )
-                val locale = (Configuration["execution.language"] as Language).locale
+                val locale = Arara.config[AraraSpec.Execution.language]
+                        .locale
                 messages.setLocale(locale)
                 updateDescriptions()
             }
@@ -150,7 +154,7 @@ class Parser(
 
             if (line.hasOption("timeout")) {
                 try {
-                    val value = java.lang.Long.parseLong(line.getOptionValue("timeout"))
+                    val value = line.getOptionValue("timeout").toLong()
                     if (value <= 0) {
                         throw AraraException(
                                 messages.getMessage(
@@ -158,8 +162,9 @@ class Parser(
                                 )
                         )
                     } else {
-                        Configuration.put("execution.timeout", true)
-                        Configuration.put("execution.timeout.value", value)
+                        Arara.config[AraraSpec.Execution.timeout] = true
+                        Arara.config[AraraSpec.Execution.timeoutValue] =
+                                value.milliseconds
                     }
                 } catch (nfexception: NumberFormatException) {
                     throw AraraException(
@@ -173,9 +178,7 @@ class Parser(
 
             if (line.hasOption("max-loops")) {
                 try {
-                    val value = java.lang.Long.parseLong(
-                            line.getOptionValue("max-loops")
-                    )
+                    val value = line.getOptionValue("max-loops").toInt()
                     if (value <= 0) {
                         throw AraraException(
                                 messages.getMessage(
@@ -183,7 +186,7 @@ class Parser(
                                 )
                         )
                     } else {
-                        Configuration.put("execution.loops", value)
+                        Arara.config[AraraSpec.Execution.loops] = value
                     }
                 } catch (nfexception: NumberFormatException) {
                     throw AraraException(
@@ -195,31 +198,26 @@ class Parser(
 
             }
 
-            if (line.hasOption("verbose")) {
-                Configuration.put("execution.verbose", true)
-            }
-
-            if (line.hasOption("silent")) {
-                Configuration.put("execution.verbose", false)
-            }
+            if (line.hasOption("verbose"))
+                Arara.config[AraraSpec.Execution.verbose] = true
+            if (line.hasOption("silent"))
+                Arara.config[AraraSpec.Execution.verbose] = false
 
             if (line.hasOption("dry-run")) {
-                Configuration.put("execution.dryrun", true)
-                Configuration.put("execution.errors.halt", false)
+                Arara.config[AraraSpec.Execution.dryrun] = true
+                Arara.config[AraraSpec.Execution.haltOnErrors] = false
             }
 
-            if (line.hasOption("log")) {
-                Configuration.put("execution.logging", true)
-            }
+            if (line.hasOption("log"))
+                Arara.config[AraraSpec.Execution.logging] = true
 
             if (line.hasOption("preamble")) {
-                val preambles = Configuration["execution.preambles"] as Map<String, String>
+                val preambles = Arara.config[AraraSpec.Execution.preambles]
                 if (preambles.containsKey(line.getOptionValue("preamble"))) {
-                    Configuration.put("execution.preamble.active", true)
-                    Configuration.put("execution.preamble.content",
+                    Arara.config[AraraSpec.Execution.preamblesActive] = true
+                    Arara.config[AraraSpec.Execution.preamblesContent] =
                             // will never throw (see check above)
                             preambles.getValue(line.getOptionValue("preamble"))
-                    )
                 } else {
                     throw AraraException(
                             messages.getMessage(
@@ -230,22 +228,20 @@ class Parser(
                 }
             }
 
-            if (line.hasOption("header")) {
-                Configuration.put("execution.header", true)
-            }
+            if (line.hasOption("header"))
+                Arara.config[AraraSpec.Execution.header] = true
 
             CommonUtils.discoverFile(reference)
-            LoggingUtils.enableLogging(Configuration["execution.logging"] as Boolean)
-            Configuration.put("display.time", true)
+            LoggingUtils.enableLogging(Arara.config[AraraSpec.Execution
+                    .logging])
+            Arara.config[AraraSpec.UserInteraction.displayTime] = true
 
             return true
-
         } catch (_: ParseException) {
             printVersion()
             printUsage()
             return false
         }
-
     }
 
     /**
@@ -263,8 +259,8 @@ class Parser(
      * Prints the application version.
      */
     private fun printVersion() {
-        val year = Configuration["application.copyright.year"] as String
-        val number = Configuration["application.version"] as String
+        val year = Arara.config[AraraSpec.Application.copyrightYear]
+        val number = Arara.config[AraraSpec.Application.version]
         println("arara $number\n" +
                 "Copyright (c) $year, Paulo Roberto Massa Cereda\n" +
                 messages.getMessage(Messages
@@ -319,10 +315,8 @@ class Parser(
     }
 
     companion object {
-
         // the application messages obtained from the
         // language controller
         private val messages = LanguageController
     }
-
 }

@@ -33,16 +33,14 @@
  */
 package com.github.cereda.arara.utils
 
-import com.github.cereda.arara.configuration.Configuration
-import com.github.cereda.arara.localization.Language
+import com.github.cereda.arara.Arara
+import com.github.cereda.arara.configuration.AraraSpec
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.ruleset.Argument
-import com.github.cereda.arara.model.FileType
 import java.io.File
 import java.io.IOException
-import java.nio.charset.Charset
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
@@ -69,8 +67,8 @@ object CommonUtils {
      * @return A string representation of the list of file types, in order.
      */
     val fileTypesList: String
-        get() = "[ " + (Configuration["execution.filetypes"]
-                as List<*>).joinToString(" | ") + " ]"
+        get() = "[ " + Arara.config[AraraSpec.Execution.fileTypes]
+                .joinToString(" | ") + " ]"
 
     /**
      * Gets the rule error header, containing the identifier and the path, if
@@ -81,10 +79,10 @@ object CommonUtils {
      */
     val ruleErrorHeader: String
         get() {
-            return if (Configuration.contains("execution.info.rule.id")
-                    && Configuration.contains("execution.info.rule.path")) {
-                val id = Configuration["execution.info.rule.id"] as String
-                val path = Configuration["execution.info.rule.path"] as String
+            return if (Arara.config[AraraSpec.Execution.InfoSpec.ruleId] != null
+                    && Arara.config[AraraSpec.Execution.InfoSpec.rulePath] != null) {
+                val id = Arara.config[AraraSpec.Execution.InfoSpec.ruleId]!!
+                val path = Arara.config[AraraSpec.Execution.InfoSpec.rulePath]!!
                 messages.getMessage(
                         Messages.ERROR_RULE_IDENTIFIER_AND_PATH,
                         id,
@@ -105,7 +103,7 @@ object CommonUtils {
     val allRulePaths: List<String>
         @Throws(AraraException::class)
         get() {
-            val paths = Configuration["execution.rule.paths"] as List<String>
+            val paths = Arara.config[AraraSpec.Execution.rulePaths]
             return paths.map {
                 val location = File(InterpreterUtils.construct(it, "quack"))
                 getParentCanonicalPath(location)
@@ -120,8 +118,9 @@ object CommonUtils {
      * @return A reference of the current file in execution. Might be different
      * than the main file provided in the command line.
      */
+    // TODO: rename as it is pointing to file and not reference?
     private val currentReference: File
-        get() = Configuration["execution.file"] as File
+        get() = Arara.config[AraraSpec.Execution.file]
 
     /**
      * Returns the exit status of the application.
@@ -129,7 +128,7 @@ object CommonUtils {
      * @return An integer representing the exit status of the application.
      */
     val exitStatus: Int
-        get() = Configuration["execution.status"] as Int
+        get() = Arara.config[AraraSpec.Execution.status]
 
     /**
      * Gets the preamble content, converting a single string into a list of
@@ -138,8 +137,8 @@ object CommonUtils {
      * @return A list of strings representing the preamble content.
      */
     val preambleContent: List<String>
-        get() = if (Configuration["execution.preamble.active"] as Boolean) {
-            (Configuration["execution.preamble.content"] as String)
+        get() = if (Arara.config[AraraSpec.Execution.preamblesActive]) {
+            Arara.config[AraraSpec.Execution.preamblesContent]
                     .split("\n")
                     .dropLastWhile { it.isEmpty() }
                     .toList()
@@ -242,7 +241,7 @@ object CommonUtils {
      */
     @Throws(AraraException::class)
     private fun lookupFile(reference: String): File? {
-        val types = Configuration["execution.filetypes"] as List<FileType>
+        val types = Arara.config[AraraSpec.Execution.fileTypes]
         var file = File(reference)
         val name = file.name
         val parent = getParentCanonicalPath(file)
@@ -250,14 +249,15 @@ object CommonUtils {
 
         // direct search, so we are considering
         // the reference as a complete name
+        // TODO: kotlinize (stream + filter)
         for (type in types) {
             if (path.endsWith("." + type.extension)) {
                 file = File(path)
                 if (file.exists()) {
                     if (file.isFile) {
-                        Configuration.put("execution.file.pattern",
-                                type.pattern!!)
-                        Configuration.put("execution.reference", file)
+                        Arara.config[AraraSpec.Execution.filePattern] =
+                                type.pattern!!
+                        Arara.config[AraraSpec.Execution.reference] = file
                         return file
                     }
                 }
@@ -267,17 +267,20 @@ object CommonUtils {
         // indirect search; in this case, we are considering
         // that the file reference has an implicit extension,
         // so we need to add it and look again
+        // TODO: kotlinize
         for (type in types) {
             path = buildPath(parent, name + "." + type.extension)
             file = File(path)
             if (file.exists()) {
                 if (file.isFile) {
-                    Configuration.put("execution.file.pattern", type.pattern!!)
-                    Configuration.put("execution.reference", file)
+                    Arara.config[AraraSpec.Execution.filePattern] =
+                            type.pattern!!
+                    Arara.config[AraraSpec.Execution.reference] = file
                     return file
                 }
             }
         }
+        
         return null
     }
 
@@ -379,7 +382,7 @@ object CommonUtils {
      * @return A string representation of the size.
      */
     fun byteSizeToString(size: Long): String {
-        val language = Configuration["execution.language"] as Language
+        val language = Arara.config[AraraSpec.Execution.language]
         val unit = 1000
         if (size < unit) return "$size B"
         val exp = (ln(size.toDouble()) / ln(unit.toDouble())).toInt()
@@ -608,7 +611,7 @@ object CommonUtils {
      */
     @Throws(AraraException::class)
     fun checkRegex(file: File, regex: String): Boolean {
-        val charset = Configuration["directives.charset"] as Charset
+        val charset = Arara.config[AraraSpec.Directive.charset]
         try {
             // TODO: do we call this on files > 2 GB?
             val text = file.readText(charset)

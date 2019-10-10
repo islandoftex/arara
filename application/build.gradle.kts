@@ -1,6 +1,8 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.java.archives.internal.DefaultManifest
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -14,19 +16,15 @@ plugins {
 val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class).kotlinPluginVersion
 dependencies {
   implementation(kotlin("stdlib", kotlinVersion))
+  implementation("com.uchuhimo:konf-core:0.20.0")
   implementation("ch.qos.cal10n:cal10n-api:0.8.1")
-  implementation("ch.qos.logback:logback-classic:1.2.3") {
-    exclude("org.slf4j:slf4j-api")
-  }
+  implementation("ch.qos.logback:logback-classic:1.2.3")
   implementation("ch.qos.logback:logback-core:1.2.3")
   implementation("commons-cli:commons-cli:1.4")
   implementation("org.mvel:mvel2:2.4.4.Final")
   implementation("org.slf4j:slf4j-api:1.7.28")
   implementation("org.yaml:snakeyaml:1.25")
-  implementation("org.zeroturnaround:zt-exec:1.11") {
-    exclude("commons-io:commons-io")
-    exclude("org.slf4j:slf4j-api")
-  }
+  implementation("org.zeroturnaround:zt-exec:1.11")
 
   testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
 }
@@ -116,6 +114,12 @@ tasks {
 
   withType<Test>() {
     useJUnitPlatform()
+
+    testLogging {
+      exceptionFormat = TestExceptionFormat.FULL
+      events(TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR,
+          TestLogEvent.SKIPPED, TestLogEvent.PASSED, TestLogEvent.FAILED)
+    }
   }
 }
 tasks.named<Task>("assembleDist").configure { dependsOn("shadowJar") }

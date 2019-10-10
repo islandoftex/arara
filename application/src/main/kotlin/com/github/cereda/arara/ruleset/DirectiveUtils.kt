@@ -33,21 +33,19 @@
  */
 package com.github.cereda.arara.ruleset
 
-import com.github.cereda.arara.configuration.Configuration
+import com.github.cereda.arara.Arara
+import com.github.cereda.arara.configuration.AraraSpec
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.localization.Messages
-import com.github.cereda.arara.model.Interpreter
 import com.github.cereda.arara.utils.CommonUtils
 import com.github.cereda.arara.utils.DisplayUtils
-import com.github.cereda.arara.utils.InterpreterUtils
 import org.slf4j.LoggerFactory
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.Constructor
 import org.yaml.snakeyaml.error.MarkedYAMLException
 import org.yaml.snakeyaml.representer.Representer
-import java.io.File
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -77,10 +75,10 @@ object DirectiveUtils {
      */
     @Throws(AraraException::class)
     fun extractDirectives(lines: List<String>): List<Directive> {
-        val header = Configuration["execution.header"] as Boolean
-        var regex = Configuration["execution.file.pattern"] as String
+        val header = Arara.config[AraraSpec.Execution.header]
+        var regex = Arara.config[AraraSpec.Execution.filePattern]
         val linecheck = Pattern.compile(regex)
-        regex += Configuration["application.pattern"] as String
+        regex += Arara.config[AraraSpec.Application.namePattern]
         var pattern = Pattern.compile(regex)
         val pairs = mutableListOf<Pair<Int, String>>()
         var matcher: Matcher
@@ -118,7 +116,7 @@ object DirectiveUtils {
 
         val assemblers = mutableListOf<DirectiveAssembler>()
         var assembler = DirectiveAssembler()
-        regex = Configuration["directives.linebreak.pattern"] as String
+        regex = Arara.config[AraraSpec.Directive.linebreakPattern]
         pattern = Pattern.compile(regex)
         for ((first, second) in pairs) {
             matcher = pattern.matcher(second)
@@ -160,7 +158,7 @@ object DirectiveUtils {
      */
     @Throws(AraraException::class)
     fun generateDirective(assembler: DirectiveAssembler): Directive {
-        val regex = Configuration["directives.pattern"] as String
+        val regex = Arara.config[AraraSpec.Directive.directivePattern]
         val pattern = Pattern.compile(regex)
         val matcher = pattern.matcher(assembler.getText())
         if (matcher.find()) {
@@ -318,7 +316,7 @@ object DirectiveUtils {
                     )
                 }
             } else {
-                val representation = Configuration["execution.reference"] as File
+                val representation = Arara.config[AraraSpec.Execution.reference]
                 parameters["file"] = representation.name
                 parameters["reference"] = representation
                 result.add(directive.copy(parameters = parameters))

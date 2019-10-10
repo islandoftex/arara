@@ -33,11 +33,12 @@
  */
 package com.github.cereda.arara.utils
 
-import com.github.cereda.arara.configuration.Configuration
+import com.github.cereda.arara.Arara
+import com.github.cereda.arara.configuration.AraraSpec
 import com.github.cereda.arara.localization.LanguageController
+import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.model.Database
-import com.github.cereda.arara.localization.Messages
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.Constructor
 import org.yaml.snakeyaml.nodes.Tag
@@ -65,7 +66,8 @@ object DatabaseUtils {
     private val path: String
         @Throws(AraraException::class)
         get() {
-            val name = Configuration["execution.database.name"] as String + ".yaml"
+            val name = Arara.config[AraraSpec.Execution.databaseName] +
+                    ".yaml"
             val path = CommonUtils.getParentCanonicalPath(reference)
             return CommonUtils.buildPath(path, name)
         }
@@ -76,7 +78,7 @@ object DatabaseUtils {
      * @return The main file reference.
      */
     private val reference: File
-        get() = Configuration["execution.reference"] as File
+        get() = Arara.config[AraraSpec.Execution.reference]
 
     /**
      * Loads the YAML file representing the database.

@@ -33,6 +33,7 @@
  */
 package com.github.cereda.arara
 
+import com.github.cereda.arara.configuration.AraraSpec
 import com.github.cereda.arara.configuration.Configuration
 import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.model.Extractor
@@ -42,14 +43,18 @@ import com.github.cereda.arara.ruleset.DirectiveUtils
 import com.github.cereda.arara.utils.CommonUtils
 import com.github.cereda.arara.utils.DisplayUtils
 import com.github.cereda.arara.utils.LoggingUtils
-import java.io.File
-import java.nio.charset.Charset
+import com.uchuhimo.konf.Config
 import kotlin.system.exitProcess
 import kotlin.time.ClockMark
 import kotlin.time.ExperimentalTime
 import kotlin.time.MonoClock
 
 object Arara {
+    // TODO: watch config files
+    val config = Config { addSpec(AraraSpec) }
+            .from.env()
+            .from.systemProperties()
+
     /**
      * Main method. This is the application entry point.
      * @param args A string array containing all command line arguments.
@@ -116,9 +121,8 @@ object Arara {
                 // (although it wouldn't be so difficult to write one,
                 // I decided not to take the risk)
                 val extracted = Extractor.extract(
-                        Configuration["execution.reference"] as File,
-                        Configuration["directives.charset"]
-                                as Charset
+                        config[AraraSpec.Execution.reference],
+                        config[AraraSpec.Directive.charset]
                 )
 
                 // it is time to validate the directives (for example, we have
