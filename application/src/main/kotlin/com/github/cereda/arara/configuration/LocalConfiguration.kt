@@ -80,7 +80,7 @@ class LocalConfiguration {
         get() = CommonUtils.removeKeywordNotNull(field)
 
     // maximum number of loops
-    var loops: Long = 0
+    var loops: Long = 1
 
     // verbose flag
     var isVerbose: Boolean = false

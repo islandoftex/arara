@@ -189,17 +189,14 @@ object Configuration {
                     ConfigurationUtils.cleanFileName(resource.logname!!)
 
         val loops = resource.loops.toInt()
-        // TODO: check consistency (<=) with other test
-        if (loops > 0) {
-            Arara.config[AraraSpec.Execution.loops] = loops
+        if (loops <= 0) {
+            throw AraraException(
+                    messages.getMessage(
+                            Messages.ERROR_CONFIGURATION_LOOPS_INVALID_RANGE
+                    )
+            )
         } else {
-            if (loops < 0) {
-                throw AraraException(
-                        messages.getMessage(
-                                Messages.ERROR_CONFIGURATION_LOOPS_INVALID_RANGE
-                        )
-                )
-            }
+            Arara.config[AraraSpec.Execution.loops] = loops
         }
 
         if (resource.preambles.isNotEmpty())
