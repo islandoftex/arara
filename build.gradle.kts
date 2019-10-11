@@ -1,5 +1,6 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.islandoftex.arara.build.CTANBuilderTask
+import org.islandoftex.arara.build.TDSZipBuilderTask
 
 buildscript {
   repositories {
@@ -32,4 +33,7 @@ tasks.withType<DependencyUpdatesTask> {
   }
 }
 
-tasks.register("assembleCTAN", CTANBuilderTask::class.java)
+tasks.register("assembleTDSZip", TDSZipBuilderTask::class.java)
+tasks.register("assembleCTAN", CTANBuilderTask::class.java) {
+  dependsOn(":assembleTDSZip")
+}
