@@ -33,6 +33,7 @@
  */
 package com.github.cereda.arara.configuration
 
+import com.github.cereda.arara.Arara
 import com.github.cereda.arara.model.FileTypeResource
 import com.github.cereda.arara.utils.CommonUtils
 import org.mvel2.templates.TemplateRuntime
@@ -47,27 +48,25 @@ import org.mvel2.templates.TemplateRuntime
  */
 class LocalConfiguration {
     // rule paths
-    var paths: List<String>? = null
+    var paths: List<String> = listOf()
         get() {
-            if (field != null) {
-                val user = mutableMapOf<String, Any>(
-                        "home" to (CommonUtils.getSystemPropertyOrNull("user.home") ?: ""),
-                        "dir" to (CommonUtils.getSystemPropertyOrNull("user.dir") ?: ""),
-                        "name" to (CommonUtils.getSystemPropertyOrNull("user.name") ?: ""))
-                val map = mutableMapOf<String, Any>("user" to user)
+            val user = mutableMapOf<String, Any>(
+                    "home" to (CommonUtils.getSystemPropertyOrNull("user.home") ?: ""),
+                    "dir" to (CommonUtils.getSystemPropertyOrNull("user.dir") ?: ""),
+                    "name" to (CommonUtils.getSystemPropertyOrNull("user.name") ?: ""))
+            val map = mutableMapOf<String, Any>("user" to user)
 
-                field = field!!.map { input ->
-                    var path = CommonUtils.removeKeywordNotNull(input)
-                    try {
-                        path = TemplateRuntime.eval(path, map) as String
-                    } catch (_: RuntimeException) {
-                        // do nothing, gracefully fallback to
-                        // the default, unparsed path
-                    }
-                    path
+            // TODO: do we call this often?
+            return field.map { input ->
+                var path = CommonUtils.removeKeywordNotNull(input)
+                try {
+                    path = TemplateRuntime.eval(path, map) as String
+                } catch (_: RuntimeException) {
+                    // do nothing, gracefully fallback to
+                    // the default, unparsed path
                 }
+                path
             }
-            return field
         }
 
     // file types
@@ -76,7 +75,8 @@ class LocalConfiguration {
     // the application language
     // default to English
     // TODO: centralize default language
-    var language: String = "en"
+    var language: String = Arara.config[AraraSpec.Application
+            .defaultLanguageCode]
         get() = CommonUtils.removeKeywordNotNull(field)
 
     // maximum number of loops
@@ -92,19 +92,18 @@ class LocalConfiguration {
     var isHeader: Boolean = false
 
     // database name
-    var dbname: String? = null
-        get() = CommonUtils.removeKeyword(field)
+    var dbname: String = Arara.config[AraraSpec.Execution.databaseName]
+        get() = CommonUtils.removeKeywordNotNull(field)
 
     // log name
-    var logname: String? = null
-        get() = CommonUtils.removeKeyword(field)
+    var logname: String = Arara.config[AraraSpec.Execution.logName]
+        get() = CommonUtils.removeKeywordNotNull(field)
 
     // map of preambles
     var preambles: Map<String, String> = mapOf()
 
     // look and feel
     // default to none
-    // TODO: centralize default LAF
-    var laf: String = "none"
+    var laf: String = Arara.config[AraraSpec.UserInteraction.lookAndFeel]
         get() = CommonUtils.removeKeywordNotNull(field)
 }

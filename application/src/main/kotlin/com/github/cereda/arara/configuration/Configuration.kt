@@ -150,11 +150,9 @@ object Configuration {
      */
     @Throws(AraraException::class)
     private fun update(resource: LocalConfiguration) {
-        if (resource.paths != null) {
-            var paths = resource.paths!!
-            paths = ConfigurationUtils.normalizePaths(paths)
-            Arara.config[AraraSpec.Execution.rulePaths] = paths
-        }
+        if (resource.paths.isNotEmpty())
+            Arara.config[AraraSpec.Execution.rulePaths] =
+                    ConfigurationUtils.normalizePaths(resource.paths)
 
         if (resource.filetypes.isNotEmpty()) {
             val resources = resource.filetypes
@@ -186,12 +184,10 @@ object Configuration {
                 Language(resource.language)
         Arara.config[AraraSpec.UserInteraction.lookAndFeel] = resource.laf
 
-        if (resource.dbname != null)
-            Arara.config[AraraSpec.Execution.databaseName] =
-                    ConfigurationUtils.cleanFileName(resource.dbname!!)
-        if (resource.logname != null)
-            Arara.config[AraraSpec.Execution.logName] =
-                    ConfigurationUtils.cleanFileName(resource.logname!!)
+        Arara.config[AraraSpec.Execution.databaseName] =
+                ConfigurationUtils.cleanFileName(resource.dbname)
+        Arara.config[AraraSpec.Execution.logName] =
+                ConfigurationUtils.cleanFileName(resource.logname)
 
         val loops = resource.loops.toInt()
         if (loops <= 0) {

@@ -9,6 +9,14 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
 object AraraSpec : ConfigSpec() {
+    object Application : ConfigSpec() {
+        val defaultLanguageCode by optional("en")
+        val version by optional("5.0.0")
+        val copyrightYear by optional("2012–${LocalDate.now().year}")
+        val namePattern by optional("arara:\\s")
+        val width by optional(65)
+    }
+
     object Execution : ConfigSpec() {
         val loops by optional(10)
         val timeout by optional(false)
@@ -20,7 +28,8 @@ object AraraSpec : ConfigSpec() {
         val logName by optional("arara")
 
         val verbose by optional(false)
-        val language by optional(Language("en"))
+        val language by optional(Language(Application
+                .defaultLanguageCode.default))
         val logging by optional(false)
         val dryrun by optional(false)
         val status by optional(0)
@@ -40,22 +49,18 @@ object AraraSpec : ConfigSpec() {
         // initialized and tested
         val reference by optional(File("/tmp/"))
         val file by optional(File("/tmp/"))
+
         object InfoSpec : ConfigSpec() {
             val ruleId by optional<String?>(null)
             val rulePath by optional<String?>(null)
         }
+
         object DirectiveSpec : ConfigSpec() {
             val lines by optional(listOf<Int>())
         }
+
         val ruleArguments by optional(listOf<String>())
         val filePattern by optional("")
-    }
-
-    object Application : ConfigSpec() {
-        val version by optional("5.0.0")
-        val copyrightYear by optional("2012–${LocalDate.now().year}")
-        val namePattern by optional("arara:\\s")
-        val width by optional(65)
     }
 
     object Directive : ConfigSpec() {
