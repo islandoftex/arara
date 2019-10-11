@@ -118,9 +118,6 @@ class Interpreter(
                     file.parent
             Arara.config[AraraSpec.Execution.DirectiveSpec.lines] =
                     directive.lineNumbers
-            Arara.config[AraraSpec.Execution.DirectiveSpec.reference] =
-                    directive.parameters.getValue("reference") as File
-            // TODO: same as ExecutionSpec.file, see above?
 
             val rule = parseRule(file, directive)
             val parameters = parseArguments(rule, directive).toMutableMap()

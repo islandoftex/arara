@@ -1177,7 +1177,7 @@ public class Methods {
      */
     public static File currentFile() {
         return Arara.INSTANCE.getConfig().get(AraraSpec.Execution
-                .DirectiveSpec.INSTANCE.getReference());
+                .INSTANCE.getFile());
     }
 
     /**

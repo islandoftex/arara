@@ -46,7 +46,6 @@ object AraraSpec : ConfigSpec() {
         }
         object DirectiveSpec : ConfigSpec() {
             val lines by optional(listOf<Int>())
-            val reference by optional(File("/tmp/"))
         }
         val ruleArguments by optional(listOf<String>())
         val filePattern by optional("")
