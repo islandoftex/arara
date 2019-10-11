@@ -16,7 +16,6 @@ object AraraSpec : ConfigSpec() {
         val timeoutValue by optional(0.milliseconds)
         val haltOnErrors by optional(true)
 
-        val configFileName by optional("[none]")
         val databaseName by optional("arara")
         val logName by optional("arara")
 
@@ -61,7 +60,6 @@ object AraraSpec : ConfigSpec() {
     }
 
     object Directive : ConfigSpec() {
-        val charset by optional(Charsets.UTF_8)
         val linebreakPattern by optional("^\\s*-->\\s(.*)$")
 
         private val directive = "^\\s*(\\w+)\\s*(:\\s*(\\{.*\\})\\s*)?"

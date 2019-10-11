@@ -106,7 +106,6 @@ object Configuration {
     private fun reset() {
         // TODO: remove and replace with proper default values
         Arara.config[AraraSpec.Execution.loops] = 10
-        Arara.config[AraraSpec.Directive.charset] = Charsets.UTF_8
         Arara.config[AraraSpec.Execution.haltOnErrors] = true
         Arara.config[AraraSpec.Execution.timeout] = false
         Arara.config[AraraSpec.Execution.timeoutValue] = 0.milliseconds

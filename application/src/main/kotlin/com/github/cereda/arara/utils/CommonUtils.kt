@@ -248,14 +248,13 @@ object CommonUtils {
 
         // direct search, so we are considering
         // the reference as a complete name
-        // TODO: kotlinize (stream + filter)
         val testPath = buildPath(parent, name)
         val testFile = File(testPath)
         if (testFile.exists() && testFile.isFile) {
             types.firstOrNull { testPath.endsWith("." + it.extension) }
                     ?.let {
                         Arara.config[AraraSpec.Execution.filePattern] =
-                                it.pattern!!
+                                it.pattern
                         Arara.config[AraraSpec.Execution.reference] = testFile
                         return testFile
                     }
@@ -268,7 +267,7 @@ object CommonUtils {
                 .firstOrNull { it.second.exists() && it.second.isFile }
                 ?.let {
                     Arara.config[AraraSpec.Execution.filePattern] =
-                            it.first.pattern!!
+                            it.first.pattern
                     Arara.config[AraraSpec.Execution.reference] = it.second
                     return file
                 }
@@ -599,10 +598,9 @@ object CommonUtils {
      */
     @Throws(AraraException::class)
     fun checkRegex(file: File, regex: String): Boolean {
-        val charset = Arara.config[AraraSpec.Directive.charset]
         try {
             // TODO: do we call this on files > 2 GB?
-            val text = file.readText(charset)
+            val text = file.readText()
             val pattern = Pattern.compile(regex)
             val matcher = pattern.matcher(text)
             return matcher.find()
