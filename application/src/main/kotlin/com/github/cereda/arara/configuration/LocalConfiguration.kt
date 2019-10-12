@@ -51,9 +51,12 @@ class LocalConfiguration {
     var paths: List<String> = listOf()
         get() {
             val user = mutableMapOf<String, Any>(
-                    "home" to (CommonUtils.getSystemPropertyOrNull("user.home") ?: ""),
-                    "dir" to (CommonUtils.getSystemPropertyOrNull("user.dir") ?: ""),
-                    "name" to (CommonUtils.getSystemPropertyOrNull("user.name") ?: ""))
+                    "home" to (CommonUtils.getSystemPropertyOrNull("user.home")
+                            ?: ""),
+                    "dir" to (CommonUtils.getSystemPropertyOrNull("user.dir")
+                            ?: ""),
+                    "name" to (CommonUtils.getSystemPropertyOrNull("user.name")
+                            ?: ""))
             val map = mutableMapOf<String, Any>("user" to user)
 
             // TODO: do we call this often?
@@ -74,22 +77,21 @@ class LocalConfiguration {
 
     // the application language
     // default to English
-    // TODO: centralize default language
     var language: String = Arara.config[AraraSpec.Application
             .defaultLanguageCode]
         get() = CommonUtils.removeKeywordNotNull(field)
 
     // maximum number of loops
-    var loops: Long = 1
+    var loops: Int = Arara.config[AraraSpec.Execution.loops]
 
     // verbose flag
-    var isVerbose: Boolean = false
+    var isVerbose: Boolean = Arara.config[AraraSpec.Execution.verbose]
 
     // logging flag
-    var isLogging: Boolean = false
+    var isLogging: Boolean = Arara.config[AraraSpec.Execution.logging]
 
     // header flag
-    var isHeader: Boolean = false
+    var isHeader: Boolean = Arara.config[AraraSpec.Execution.header]
 
     // database name
     var dbname: String = Arara.config[AraraSpec.Execution.databaseName]
@@ -100,7 +102,8 @@ class LocalConfiguration {
         get() = CommonUtils.removeKeywordNotNull(field)
 
     // map of preambles
-    var preambles: Map<String, String> = mapOf()
+    var preambles: Map<String, String> = Arara.config[AraraSpec.Execution
+            .preambles]
 
     // look and feel
     // default to none
