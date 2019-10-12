@@ -818,21 +818,6 @@ spreadsheet import functions also use this setting.
 % arara: tikzmake: { force: yes, jobs: 2 }
 \end{codebox}
 
-\item[\rulebox{velocity}{Paulo Cereda}] This rule, as the name suggests, calls the \mtbox{mergeVelocityTemplate} method, merging an input template file written according to the Velocity Template Language 1.7 specification with the provided \rbox{Map} data object in order to produce a corresponding \rbox{File} output. Be mindful that this particular rule returns \rbox{true} if, and only if, the aforementioned method is successfully executed. Otherwise, an exception is raised.
-
-\begin{description}
-\item[\abox{input}] This option, as the name indicates, sets the input template file, written according to the Velocity Template Language 1.7 specification, as a proper \rbox{File} reference. Please note that the \mtbox{currentFile} reference is used as default input when this option is not set.
-
-\item[\abox{output}~\rqbox] This required option, as the name indicates, sets the output \rbox{File} reference. Be mindful that, if the reference exists, it will be overwritten without any warning.
-
-\item[\abox{context}~\rqbox] This required option, as the name indicates, sets the \rbox{Map} data object to be used as context to the method call, according to the provided value. An error is thrown if any data structure other than a proper map is specified.
-\end{description}
-
-\begin{codebox}{Example}{teal}{\icnote}{white}
-% arara: velocity: { input: input.txt, output: output.txt,
-% arara: --> context: { name: Paulo, country: Brazil } }
-\end{codebox}
-
 \item[\rulebox{xdvipdfmx}{Marco Daniel, Paulo Cereda}] This rule runs \rbox{xdvipdfmx}, the back end for the \rbox{xetex} \TeX\ engine (and not intended to be invoked directly), on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{dvi} suffix, generating a Portable Document Format \rbox{pdf} file.
 
 \begin{description}

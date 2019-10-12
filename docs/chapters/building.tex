@@ -28,7 +28,9 @@ javac 1.8.0_171
 
 The previous command, as the name suggests, refers to the \rbox{javac} tool, which is the Java compiler itself. The most common Java Development Kit out there is from \href{http://www.oracle.com/technetwork/java/javase/downloads/index.html}{Oracle}. However, several Linux distributions (as well as some developers, yours truly included) favour the OpenJDK vendor, so your mileage may vary. Please refer to the corresponding website of the vendor of your choice in order to obtain specific installation instructions for your operating system.
 
-\item As a means to provide a straightforward and simplified compilation workflow, \arara\ relies on Apache Maven, a software project management and comprehension tool. Based on the concept of a project object model, Maven can manage builds, reporting and documentation from a central piece of information. In order to check if \rbox{mvn}, the Maven binary, is available in your operating system, run the following command in the terminal (version numbers might vary):
+\item As a means to provide a straightforward and simplified compilation workflow, \arara\ relies on Gradle, a software project management and comprehension tool. Based on the concept of a project object model, Gradle can manage builds, reporting and documentation from a central piece of information. In order to check if \rbox{mvn}, the Maven binary, is available in your operating system, run the following command in the terminal (version numbers might vary):
+
+TODO: adjust to Gradle
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ mvn --version
@@ -78,18 +80,20 @@ Wait a couple of seconds (or minutes, depending on your Internet connection) whi
 $ git clone https://github.com/cereda/arara --depth 1
 \end{codebox}
 
-This operation is way faster than the previous one, for obvious reasons. Unix terminals typically start at \abox[araracolour]{USER\_HOME} as working directory, so, if you did not \rbox{cd} to another directory (as in the earlier example), the newly cloned \abox[araracolour]{arara/} directory is almost certain to be accessible from that level. Now, we need to navigate to a directory named \abox[araracolour]{application/} inside our project structure, where the source code and the corresponding build file are located. Run the following command in the terminal:
+This operation is way faster than the previous one, for obvious reasons. Unix terminals typically start at \abox[araracolour]{USER\_HOME} as working directory, so, if you did not \rbox{cd} to another directory (as in the earlier example), the newly cloned \abox[araracolour]{arara/} directory is almost certain to be accessible from that level. Now, we need to navigate to the directory named \abox[araracolour]{arara/}. Run the following command in the terminal:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
-$ cd arara/application
+$ cd arara
 \end{codebox}
 
-The previous command should take us inside the \abox[araracolour]{application/} directory of our project, where the source code and the corresponding build file are located. Let us make sure we are in the correct location by running the following command in the terminal:
+The previous command should take us inside the \abox[araracolour]{arara/} directory of our project, where the source code and the corresponding build file are located. Let us make sure we are in the correct location by running the following command in the terminal:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ ls
 pom.xml  src
 \end{codebox}
+
+TODO: change to current structure
 
 Great, we are in the correct location! From the previous output, let us inspect the directory contents. The \abox[araracolour]{src/} directory, as the name suggests, contains the source code organized in an established package structure, whereas \rbox{pom.xml} is the corresponding build file written in the Project Object Model format, a special XML file that contains information about the project and configuration details used by Apache Maven to build the project. In order to build our tool, run the following command in the terminal:
 

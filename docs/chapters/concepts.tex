@@ -94,11 +94,9 @@ command: "@{ return getCommand('ls') }"
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command: "@{ return 1 == 1 }"
 \end{codebox}
-
-\item A \rbox{Trigger} object: this is surely the least common type of returned value and it is mentioned here just for documentation purposes. In simple terms, a \rbox{Trigger} object constitutes a special command that changes the internal workings of \arara\ at runtime. We have not worked much on this concept, so there is only one trigger available, seen in action in the official \rbox{halt} rule. In order to use this approach, we need to rely on \glspl{orb-tag} and use a helper method named \mtbox{getTrigger} to obtain the desired result.
 \end{itemize}
 
-It is also worth mentioning that \arara\ also supports lists of commands represented as plain strings, \rbox{Command} or \rbox{Trigger} objects, boolean values or a mix of them. This is useful if your rule has to decide whether more actions are required in order to accomplish a task. In this case, our tool will take care of the list and execute each element in the specified order.
+It is also worth mentioning that \arara\ also supports lists of commands represented as plain strings, \rbox{Command} objects, boolean values or a mix of them. This is useful if your rule has to decide whether more actions are required in order to accomplish a task. In this case, our tool will take care of the list and execute each element in the specified order.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command: "@{ return [ 'ls', 'ls', 'ls' ] }"
@@ -414,192 +412,13 @@ Even when a directive is interpreted with a file other than the one being proces
 If this is your first time using \arara\ or you do not have custom rules in the old format, you can safely ignore this section. All rules shipped with our tool are already written in the new format.
 \end{messagebox}
 
-As previously discussed in Section~\ref{sec:rule}, on page~\pageref{sec:rule}, version 4.0 of \arara\ introduces a new rule format. As a result, user-defined rules in the old format are incompatible with the new version of our tool and thus have to be updated. In short, we need to replace \abox{command} by \abox{commands} and specify a contextual element. As an example, consider the following hypothetical rule \rbox{ls} written in the old format:
+TODO: discuss changes in version 5:
 
-\begin{codebox}{A rule in the old format}{teal}{\icnote}{white}
-!config
-identifier: ls
-name: LS
-command: ls @{details}
-arguments:
-- identifier: details
-  flag: '@{ isTrue(parameters.details, "-l", "") }'
-\end{codebox}
+\begin{itemize}
+  \item removed triggers
+  \item reduced available commands (methods)
+  \item removed string-based commands
+  \item removed velocity rule
+\end{itemize}
 
-This rule does nothing too important, it simply runs the system command \rbox{ls} which lists the contents of the current directory. However, when we try to run \arara\ on a file which contains a directive referencing this rule, we get the following error in the terminal:
-
-\begin{codebox}{Terminal}{teal}{\icnote}{white}
-  __ _ _ __ __ _ _ __ __ _ 
- / _` | '__/ _` | '__/ _` |
-| (_| | | | (_| | | | (_| |
- \__,_|_|  \__,_|_|  \__,_|
-
-Processing 'doc4.tex' (size: 31 bytes, last modified: 05/27/2018
-21:05:57), please wait.
-
-I have spotted an error in rule 'ls' located at '/home/paulo'. I
-could not parse the rule, something bad happened. Apparently, the
-provided YAML file is invalid. I will do my best to help you in
-any way I can. There are more details available on this
-exception:
-
-DETAILS ---------------------------------------------------------
-Cannot create property=command for
-JavaBean=com.github.cereda.arara.model.Rule@29774679
- in
-'reader', line 1, column 1:
-    !config
-    ^
-Unable to find
-property 'command' on class: com.github.cereda.arara.model.Rule
-
-in 'reader', line 4, column 10:
-    command: ls @{details}
-      
-      ^
-
-
-Total: 0.03 seconds
-\end{codebox}
-
-The above terminal output shows the usual error \arara\ raises when a rule in the old format is used, and thus the corresponding \gls{YAML} file is considered invalid. In order to fix the rule, we need to move the \abox{command} key inside a \rbox{commands$\rightarrow$} context as a list element, as seen as follows.
-
-\begin{codebox}{A rule converted into the new format}{teal}{\icnote}{white}
-!config
-identifier: ls
-name: LS
-commands:
-- command: ls @{details}
-arguments:
-- identifier: details
-  flag: '@{ isTrue(parameters.details, "-l", "") }'
-\end{codebox}
-
-Note that this fix is sufficient to make the rule valid in the new format. Also, it is interesting to observe that the subtask will be unnamed during the execution, as there is no corresponding \abox{name} key  in the list element.
-
-\begin{codebox}{Terminal}{teal}{\icnote}{white}
-(LS) Unnamed task ....................................... SUCCESS
-\end{codebox}
-
-Now, let us consider an example containing a list of commands, also based on the old format. The \rbox{ls} rule was updated to include two runs of the system command of the same name in the current directory:
-
-\begin{codebox}{A rule in the old format}{teal}{\icnote}{white}
-!config
-identifier: ls
-name: LS
-commands:
-- ls @{details}
-- ls @{details}
-arguments:
-- identifier: details
-  flag: '@{ isTrue(parameters.details, "-l", "") }'
-\end{codebox}
-
-Observe that the old format directly represents commands as a list of plain strings. When trying to run \arara\ on a file which contains a directive referencing the updated \rbox{ls} rule, we get the following error in the terminal:
-
-\begin{codebox}{Terminal}{teal}{\icnote}{white}
-  __ _ _ __ __ _ _ __ __ _ 
- / _` | '__/ _` | '__/ _` |
-| (_| | | | (_| | | | (_| |
- \__,_|_|  \__,_|_|  \__,_|
-
-Processing 'doc4.tex' (size: 31 bytes, last modified: 05/27/2018
-21:05:57), please wait.
-
-I have spotted an error in rule 'ls' located at '/home/paulo'. I
-could not parse the rule, something bad happened. Apparently, the
-provided YAML file is invalid. I will do my best to help you in
-any way I can. There are more details available on this
-exception:
-
-DETAILS ---------------------------------------------------------
-Cannot create property=commands for
-JavaBean=com.github.cereda.arara.model.Rule@91161c7
- in 'reader',
-line 1, column 1:
-    !config
-    ^
-No single argument
-constructor found for class
-com.github.cereda.arara.model.RuleCommand
- in 'reader', line 5,
-column 1:
-    - ls @{details}
-    ^
-
-
-Total: 0.02 seconds
-\end{codebox}
-
-The above terminal output shows a slightly different message, but the error is practically the same to the one \arara\ raised before when a rule in the old format was used. The difference relies on the missing rule property being set at the moment, but the idea remains the same. In order to fix the rule, we need to precede every list element in the \rbox{commands$\rightarrow$} context with the \abox{command} key, as seen as follows.
-
-\begin{codebox}{A rule converted into the new format}{teal}{\icnote}{white}
-!config
-identifier: ls
-name: LS
-commands:
-- command: ls @{details}
-- command: ls @{details}
-arguments:
-- identifier: details
-  flag: '@{ isTrue(parameters.details, "-l", "") }'
-\end{codebox}
-
-This fix is sufficient to make the rule valid in the new format. Also, as mentioned before, it is interesting to observe that the subtasks will be unnamed during the execution, as there are no corresponding \abox{name} keys in the list elements.
-
-\begin{codebox}{Terminal}{teal}{\icnote}{white}
-(LS) Unnamed task ....................................... SUCCESS
-(LS) Unnamed task ....................................... SUCCESS
-\end{codebox}
-
-There is a helper tool available in the \href{https://github.com/cereda/arara/releases/tag/4.0}{release section} of our project repository that attempts to automatically convert rules in the old format to the new one. If you want to try it, download the \rbox{rc.jar} file from the repository and put it in the same directory where the old rules are located. You can also provide a full path instead. It is important to note that, although the tool might indicate a successful conversion, there are no guarantees that the resulting rule is fully compliant with the new format, due to potential changes in the internal workings of \arara, so your mileage may vary. In general, it should work. The rule converter is written in Java and requires a virtual machine to run. The tool has a straightforward workflow and takes just one parameter referring to the rule to be converted. The entire process should happen without intervention. When invoked without the file name, this is the expected output:
-
-\begin{codebox}{Terminal}{teal}{\icnote}{white}
-$ java -jar rc.jar
-         _                                _
- ___ _ _| |___    ___ ___ ___ _ _ ___ ___| |_ ___ ___
-|  _| | | | -_|  |  _| . |   | | | -_|  _|  _| -_|  _|
-|_| |___|_|___|  |___|___|_|_|\_/|___|_| |_| |___|_|
-
-version 1.0 (rules < 4.0)
-
-OH NO! -----------------------------------------------------
-This tool expects the YAML rule from previous versions of
-arara. Please, provide a proper YAML file containing the old
-rule as a parameter and try again. I will do my best to
-convert the rule to the new version 4.0 format.
-\end{codebox}
-
-Let us invoke the tool with the first version of our hypothetical \rbox{ls} rule, still in the old format. The tool removes all comments from the original file, if any, and constructs a new file with a \rbox{\_v4} suffix attached to the name. The original file is preserved. Just keep in mind that the new rule must be renamed afterwards, as the base name and the corresponding \abox{identifier} key must match. The output is presented as follows.
-
-\begin{codebox}{Terminal}{teal}{\icnote}{white}
-$ java -jar rc.jar ls.yaml
-         _                                _
- ___ _ _| |___    ___ ___ ___ _ _ ___ ___| |_ ___ ___
-|  _| | | | -_|  |  _| . |   | | | -_|  _|  _| -_|  _|
-|_| |___|_|___|  |___|___|_|_|\_/|___|_| |_| |___|_|
-
-version 1.0 (rules < 4.0)
-
-The provided YAML rule looks OK. I will try my best to
-convert it to the new version 4.0 format adopted by arara.
-The new rule name will be written in the same directory of
-the original one and will have a '_v4' suffix to it. Keep in
-mind that the base name must match the identifier!
-
-YAY! -------------------------------------------------------
-Good news, everybody! The provided YAML rule was updated
-successfully to the new version 4.0 format of arara! Of
-course, there are no guarantees this new rule will work out
-of the box, so fingers crossed! Take a closer look at the
-manual and update your rule to use the new enhancements of
-arara. Have a great time!
-\end{codebox}
-
-The resulting rule is identical to the one manually converted in this section. Just note that, when creating the file, the resulting \gls{YAML} file might write the keys in alphabetical order. That means that, although both files semantically represent the same rule, the positions of the keys differ. However, that poses no issue at all, as long as the keys are correctly defined. Also, it is important to note that, due to a conversion policy of the underlying \gls{YAML} library, folded scalars in the old format are transcribed as literal scalars in the new format. We could force a folded style as default, but the resulting rule would be unnecessarily verbose, so we opted for the simpler, cleaner solution. As a direct consequence, we strongly recommend a subsequent verification and potential fix of existing literal scalars into folded ones, if any. Please refer to Section~\ref{sec:yamlscalars}, on page~\pageref{sec:yamlscalars}, for more details on scalars.
-
-\begin{messagebox}{Replace plain strings in commands}{araracolour}{\icattention}{white}
-As plain strings are known to be problematic when defining commands, they are marked as deprecated in version 4.0 of \arara\ and will likely be removed in future releases. Since you are migrating from an old format to a new one, please consider replacing plain strings in command by proper \rbox{Command} objects. The helper methods available in the rule context, including the indispensable \mtbox{getCommand} method, for obvious reasons, are detailed in Section~\ref{sec:commandsandtriggers}, on page~\pageref{sec:commandsandtriggers}. It is highly advisable to update your rules on this regard, if applicable.
-\end{messagebox}
-
-This section pretty much covered the basics for correctly migrating rules in the old format to the new one. Of course, it is highly advisable to make use of the new features available in \arara\ 4.0 for achieving better results. If you need any help, please do not hesitating in contacting us. See Section~\ref{sec:support}, on page~\pageref{sec:support}, for more details on how to get help.
+This section pretty much covered the basics for correctly migrating rules in the old format to the new one. Of course, it is highly advisable to make use of the new features available in \arara\ 5.0 for achieving better results. If you need any help, please do not hesitating in contacting us. See Section~\ref{sec:support}, on page~\pageref{sec:support}, for more details on how to get help.

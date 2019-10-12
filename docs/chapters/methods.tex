@@ -523,30 +523,6 @@ if (isMac()) { System.out.println('Running Mac OS.'); }
 if (isUnix()) { System.out.println('Running Unix.'); }
 \end{codebox}
 
-\item[\mdbox{R}{isAIX()}{boolean}] This method returns a boolean value according to whether the underlying operating system vendor is IBM AIX.
-
-\begin{codebox}{Example}{teal}{\icnote}{white}
-if (isAIX()) { System.out.println('Running AIX.'); }
-\end{codebox}
-
-\item[\mdbox{R}{isIrix()}{boolean}] This method returns a boolean value according to whether the underlying operating system vendor is Silicon Graphics Irix.
-
-\begin{codebox}{Example}{teal}{\icnote}{white}
-if (isIrix()) { System.out.println('Running Irix.'); }
-\end{codebox}
-
-\item[\mdbox{R}{isOS2()}{boolean}] This method returns a boolean value according to whether the underlying operating system vendor is IBM OS/2 Warp.
-
-\begin{codebox}{Example}{teal}{\icnote}{white}
-if (isOS2()) { System.out.println('Running OS/2 Warp.'); }
-\end{codebox}
-
-\item[\mdbox{R}{isSolaris()}{boolean}] This method returns a boolean value according to whether the underlying operating system vendor is Oracle Solaris.
-
-\begin{codebox}{Example}{teal}{\icnote}{white}
-if (isSolaris()) { System.out.println('Running Solaris.'); }
-\end{codebox}
-
 \item[\mdbox{R}{isCygwin()}{boolean}] This method returns a boolean value according to whether the underlying operating system vendor is Microsoft Windows and \arara\ is being executed inside a Cygwin environment.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -575,30 +551,6 @@ command = isMac('ls', 'dir');
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command = isUnix('tree', 'dir');
-\end{codebox}
-
-\item[\mdbox{R}{isAIX(Object yes, Object no)}{Object}] This method checks if the underlying operating system vendor is IBM AIX. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
-
-\begin{codebox}{Example}{teal}{\icnote}{white}
-command = isAIX('pwd', 'ls');
-\end{codebox}
-
-\item[\mdbox{R}{isIrix(Object yes, Object no)}{Object}] This method checks if the underlying operating system vendor is Silicon Graphics Irix. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
-
-\begin{codebox}{Example}{teal}{\icnote}{white}
-command = isIrix('ls', 'pwd');
-\end{codebox}
-
-\item[\mdbox{R}{isOS2(Object yes, Object no)}{Object}] This method checks if the underlying operating system vendor is IBM OS/2 Warp. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
-
-\begin{codebox}{Example}{teal}{\icnote}{white}
-command = isOS2('ls', 'cd');
-\end{codebox}
-
-\item[\mdbox{R}{isSolaris(Object yes, Object no)}{Object}] This method checks if the underlying operating system vendor is Oracle Solaris. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
-
-\begin{codebox}{Example}{teal}{\icnote}{white}
-command = isSolaris('ls', 'cat');
 \end{codebox}
 
 \item[\mdbox{R}{isCygwin(Object yes, Object no)}{Object}] This method checks if the underlying operating system vendor is Microsoft Windows and if \arara\ is being executed inside a Cygwin environment. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
@@ -854,7 +806,7 @@ The UI methods presented in this section can be used for writing \TeX\ tutorials
 \section{Commands and triggers}
 \label{sec:commandsandtriggers}
 
-From version 4.0 on, \arara\ features the \rbox{Command} object, a new approach for handling system commands based on a high level structure with explicit argument parsing. Similarly, there is also the mystical \rbox{Trigger} object that constitutes a very special command that changes the inner workings of our tool at runtime. This section introduces methods for generating such objects.
+From version 4.0 on, \arara\ features the \rbox{Command} object, a new approach for handling system commands based on a high level structure with explicit argument parsing.
 
 \begin{messagebox}{The anatomy of a command}{araracolour}{\icok}{white}
 \setlength{\parskip}{1em}
@@ -894,28 +846,6 @@ Note that the above list of integers contains nested lists. When applying list f
 
 List flattening and string mapping confer expressiveness and flexibility to the \rbox{Command} object construction, as users can virtually use any data type to describe the underlying rule logic and yet obtain a consistent representation.
 
-\begin{messagebox}{The anatomy of a trigger}{araracolour}{\icok}{white}
-\setlength{\parskip}{1em}
-A \rbox{Trigger} object constitutes a special command that changes the internal workings of \arara\ at runtime. It is a highly experimental feature. A trigger is basically a function call defined in terms of a \rbox{String} reference representing the actual function name followed by an optional list of \rbox{Object} arguments. For instance, consider this hypothetical trigger that multiplies an arbitrary number of integer terms:
-
-{\centering
-\setlength\tabcolsep{0.2em}
-\begin{tabular}{cccc}
-{\footnotesize\em name} &
-\multicolumn{3}{c}{\footnotesize\em list of arguments} \\
-\rbox[cyan]{multiply} &
-\rbox[araracolour]{\hphantom{w}12\hphantom{w}} &
-\rbox[araracolour]{\hphantom{w}34\hphantom{w}} &
-\rbox[araracolour]{\hphantom{w}65\hphantom{w}}
-\end{tabular}\par}
-
-\vspace{0.4em}
-
-This description is, in some aspects, very much like a typical \rbox{Command} construction. However, a trigger is less forgiving on data types and does not apply transformations on the provided list of arguments. Therefore, the argument types \emph{must match} the trigger signature.
-
-So far, the tool provides only one trigger, seen in action in one of the official rules, under the name \rbox{halt} and with no parameters. This particular trigger halts the current interpretation workflow, such that subsequent directives are ignored. We have not worked much on triggers yet, and the concept is mentioned here for documentation purposes only.
-\end{messagebox}
-
 \begin{description}
 \item[\mdbox{R}{getCommand(List<String> elements)}{Command}] This method, as the name implies, returns a \rbox{Command} object according to the provided list of \rbox{String} elements. If the list is empty, the tool will ignore the execution.
 
@@ -927,18 +857,6 @@ return getCommand([ 'ls', '-l' ]);
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 return getCommand('pdflatex', '--shell-escape', 'thesis.tex');
-\end{codebox}
-
-\item[\mdbox{R}{getTrigger(String name)}{Trigger}] This method, as the name implies, returns a \rbox{Trigger} object according to the provided \rbox{String} reference as function name. It is important to observe that this particular trigger instance does not have parameters.
-
-\begin{codebox}{Example}{teal}{\icnote}{white}
-return getTrigger('halt');
-\end{codebox}
-
-\item[\mdbox{R}{getTrigger(String name, Object... parameters)}{Trigger}] This method, as the name implies, returns a proper \rbox{Trigger} object according to the provided \rbox{String} reference as function name and the \rbox{Object} array as associated parameters. Note that the object array is denoted by a comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters.
-
-\begin{codebox}{Example}{teal}{\icnote}{white}
-return getTrigger('multiply', 12, 34, 65);
 \end{codebox}
 
 \item[\mdbox{R}{\parbox{0.62\textwidth}{getCommandWithWorkingDirectory(File directory,\\\hspace*{1em} List<String> elements)}}{Command}] This method, as the name implies, sets the working directory based on the provided \rbox{File} reference and returns a proper \rbox{Command} object according to the provided list of \rbox{String} elements. If the list is empty, the tool will ignore the execution.
@@ -980,14 +898,16 @@ This section introduces assorted methods provided by \arara\ as a means to impro
 \begin{messagebox}{Session}{araracolour}{\icok}{white}
 Rules are designed under the \emph{encapsulation} notion, such that the direct access to internal workings of such structures is restricted. However, as a means to support framework awareness, \arara\ provides a mechanism for data sharing across rule contexts, implemented as a \rbox{Session} object. In practical terms, this particular object is a global, persistent map composed of \rbox{String} keys and \rbox{Object} values available throughout the entire execution. The public methods are described as follows:
 
+TODO: mention namespaces
+
 \begin{description}
-\item[\mtbox{insert(String key, Object value)}\hfill\rrbox{void}] This method, as the name implies, inserts an object into the session, indexed by the provided key. Observe that, if the session previously contained a mapping for the provided key, the old value is replaced by the specified value.
+\item[\mtbox{put(String key, Object value)}\hfill\rrbox{void}] This method, as the name implies, inserts an object into the session, indexed by the provided key. Observe that, if the session previously contained a mapping for the provided key, the old value is replaced by the specified value.
 
 \item[\mtbox{remove(String key)}\hfill\rrbox{void}] This method, as the name implies, removes  the mapping for the provided key from the session. Be mindful that an attempt to remove a mapping for a nonexistent key will raise an exception.
 
-\item[\mtbox{exists(String key)}\hfill\rrbox{boolean}] This method, as the name implies, returns a boolean value according to whether the session contains a mapping for the provided key. It is highly advisable to use this method before attempting to remove a mapping from the session.
+\item[\mtbox{contains(String key)}\hfill\rrbox{boolean}] This method, as the name implies, returns a boolean value according to whether the session contains a mapping for the provided key. It is highly advisable to use this method before attempting to remove a mapping from the session.
 
-\item[\mtbox{obtain(String key)}\hfill\rrbox{Object}] This method, as the name implies, returns the object value to which the specified key is mapped. Be mindful that an attempt to return a value for a nonexistent key will raise an exception.
+\item[\mtbox{get(String key)}\hfill\rrbox{Object}] This method, as the name implies, returns the object value to which the specified key is mapped. Be mindful that an attempt to return a value for a nonexistent key will raise an exception.
 
 \item[\mtbox{forget()}\hfill\rrbox{void}] This method, as the name implies, removes all of the existing mappings from the session. The session object will be effectively empty after this call returns.
 \end{description}
@@ -1042,25 +962,5 @@ Please \emph{do not abuse} this method! Keep in mind that this particular featur
 \begin{codebox}{Example}{teal}{\icnote}{white}
 valid = isSubdirectory(toFile('chapters/'));
 \end{codebox}
-
-\item[\mdbox{R}{\parbox{0.62\textwidth}{mergeVelocityTemplate(File input, File output,\\\hspace*{1em} Map<String, Object> map)}}{void}] This method, as the name implies, merges the provided \rbox{File} template reference written in the Velocity Template Language 1.7 specification with the \rbox{Map} data object in order to produce a corresponding \rbox{File} output. It is important to observe that this method will raise an exception if the provided input file does not exist or if there is an error with the underlying template language.
-
-\begin{ncodebox}{Source file}{teal}{\icnote}{white}{input.txt}
-Hello, my name is ${name} and
-I am from ${country}!
-\end{ncodebox}
-
-\begin{codebox}{Example}{teal}{\icnote}{white}
-mergeVelocityTemplate(toFile('input.txt'), toFile('output.txt'),
-     [ 'name' : 'Paulo', 'country' : 'Brazil' ])
-\end{codebox}
-
-\begin{messagebox}{Velocity Template Language 1.7}{attentioncolour}{\icattention}{black}
-\setlength{\parskip}{1em}
-As of 2017, the Apache Foundation has released the new 2.0 version for the Velocity Template Language. However, this particular version introduces behavioural and syntactic changes that may cause problems with older versions.
-
-In order to maintain compatibility with older Java virtual machines, \arara\ works with the \href{http://velocity.apache.org/engine/1.7/vtl-reference.html}{VTL 1.7 specification}, so it is highly recommended to strictly adhere to this reference when writing templates for the corresponding method or the official \rbox{velocity} rule.
-\end{messagebox}
-\end{description}
 
 The methods presented in this section provide interesting features for persistent data sharing, error handling, early command execution, and templating. It is important to note that more classes, objects and methods can be incorporated into \arara\ through class loading and object instantiation, extending the features and enhancing the overall user experience.
