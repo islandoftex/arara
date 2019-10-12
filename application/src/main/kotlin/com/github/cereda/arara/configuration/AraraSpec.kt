@@ -62,8 +62,8 @@ object AraraSpec : ConfigSpec() {
     object Directive : ConfigSpec() {
         val linebreakPattern by optional("^\\s*-->\\s(.*)$")
 
-        private val directive = "^\\s*(\\w+)\\s*(:\\s*(\\{.*\\})\\s*)?"
-        private val pattern = "(\\s+(if|while|until|unless)\\s+(\\S.*))?$"
+        private const val directive = "^\\s*(\\w+)\\s*(:\\s*(\\{.*\\})\\s*)?"
+        private const val pattern = "(\\s+(if|while|until|unless)\\s+(\\S.*))?$"
         val directivePattern by optional(directive + pattern)
     }
 

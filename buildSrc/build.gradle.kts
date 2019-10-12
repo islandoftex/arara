@@ -1,11 +1,11 @@
 repositories {
-  mavenCentral()
+    mavenCentral()
 }
 
 plugins {
-  `kotlin-dsl`
+    `kotlin-dsl`
 }
 
 dependencies {
-  "implementation"("org.zeroturnaround:zt-exec:1.9")
+    "implementation"("org.zeroturnaround:zt-exec:1.9")
 }

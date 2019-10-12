@@ -3,37 +3,44 @@ import org.islandoftex.arara.build.CTANBuilderTask
 import org.islandoftex.arara.build.TDSZipBuilderTask
 
 buildscript {
-  repositories {
-    mavenCentral()
-  }
+    repositories {
+        jcenter()
+    }
 }
 
 allprojects {
-  repositories {
-    mavenCentral()
-  }
-  group = "com.github.cereda.arara"
+    repositories {
+        jcenter()
+    }
+    group = "com.github.cereda.arara"
 }
 
 plugins {
-  kotlin("jvm") version "1.3.50" apply false                        // Apache 2.0
-  id("com.github.johnrengelman.shadow") version "5.1.0" apply false // Apache 2.0
-  id("com.github.ben-manes.versions") version "0.25.0"              // Apache 2.0
+    kotlin("jvm") version "1.3.50" apply false                        // Apache 2.0
+    id("com.github.johnrengelman.shadow") version "5.1.0" apply false // Apache 2.0
+    id("com.github.ben-manes.versions") version "0.26.0"              // Apache 2.0
+    id("io.gitlab.arturbosch.detekt") version "1.1.1"                 // Apache 2.0
 }
 
 // exclude alpha and beta versions
 // from the README (see https://github.com/ben-manes/gradle-versions-plugin)
 tasks.withType<DependencyUpdatesTask> {
-  rejectVersionIf {
-    val stableKeyword = listOf("RELEASE", "FINAL", "GA")
-        .any { candidate.version.toUpperCase().contains(it) }
-    val isStable = stableKeyword || "^[0-9,.v-]+$".toRegex()
-        .matches(candidate.version)
-    isStable.not()
-  }
+    rejectVersionIf {
+        val stableKeyword = listOf("RELEASE", "FINAL", "GA")
+                .any { candidate.version.toUpperCase().contains(it) }
+        val isStable = stableKeyword || "^[0-9,.v-]+$".toRegex()
+                .matches(candidate.version)
+        isStable.not()
+    }
+}
+
+detekt {
+    failFast = false
+    input = files("application/src/main/kotlin",
+            "buildSrc/src/main/kotlin")
 }
 
 tasks.register("assembleTDSZip", TDSZipBuilderTask::class.java)
 tasks.register("assembleCTAN", CTANBuilderTask::class.java) {
-  dependsOn(":assembleTDSZip")
+    dependsOn(":assembleTDSZip")
 }
