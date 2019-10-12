@@ -13,7 +13,7 @@ commands:
 - name: TeX engine
   command: >
     @{
-        return getCommand('tex', interaction, shell, options, file);
+        return getCommand('tex', interaction, shell, options, reference);
     }
 arguments:
 - identifier: interaction

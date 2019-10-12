@@ -13,7 +13,7 @@ commands:
   command: >
     @{
         return getCommand('pdfcsplain', interaction, draft, shell,
-               synctex, options, file);
+               synctex, options, reference);
     }
 arguments:
 - identifier: interaction

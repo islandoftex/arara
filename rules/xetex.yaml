@@ -14,7 +14,7 @@ commands:
   command: >
     @{
         return getCommand('xetex', interaction, shell,
-               synctex, options, file);
+               synctex, options, reference);
     }
 arguments:
 - identifier: interaction

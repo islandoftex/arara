@@ -19,7 +19,7 @@ commands:
         }
         else {
             return getCommand('latexmk', isEmpty(program, engine,
-                   program), options, file);
+                   program), options, reference);
         }
     }
 arguments:
