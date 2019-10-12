@@ -42,10 +42,10 @@ fun String.center(width: Int, padChar: Char): String {
 
 /**
  * Wrap text at a specified width.
- * 
+ *
  * Algorithm from Wikipedia:
  * https://en.wikipedia.org/wiki/Line_wrap_and_word_wrap#Minimum_number_of_lines
- * 
+ *
  * @param width The width to wrap at.
  * @return Wrapped text.
  */

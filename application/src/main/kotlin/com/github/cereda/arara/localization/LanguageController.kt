@@ -35,6 +35,7 @@ package com.github.cereda.arara.localization
 
 import ch.qos.cal10n.IMessageConveyor
 import ch.qos.cal10n.MessageConveyor
+import com.github.cereda.arara.configuration.AraraSpec
 import java.util.*
 
 /**
@@ -46,12 +47,12 @@ import java.util.*
  * @since 4.0
  */
 object LanguageController {
-
     // the message conveyor helps us to get localized messages
     // according to the provided locale
     // The fallback language is set to English for all
     // messages in arara.
-    private var conveyor: IMessageConveyor = MessageConveyor(Locale("en"))
+    private var conveyor: IMessageConveyor = MessageConveyor(Locale(
+            AraraSpec.Application.defaultLanguageCode.default))
 
     /**
      * Sets the current locale. This method actually resets the language
@@ -87,13 +88,5 @@ object LanguageController {
      */
     fun <E : Enum<*>> getMessage(key: E): String {
         return conveyor.getMessage(key)
-    }
-
-    /**
-     * Initializes the class. This method actually does nothing, it just
-     * triggers the static attributions. Dirty, isn't it?
-     */
-    fun init() {
-        // quack, quack, quack!
     }
 }

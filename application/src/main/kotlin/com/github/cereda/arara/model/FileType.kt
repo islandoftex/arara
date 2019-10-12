@@ -35,7 +35,7 @@ package com.github.cereda.arara.model
 
 /**
  * Implements the file type model.
- * 
+ *
  * @author Paulo Roberto Massa Cereda
  * @version 4.0
  * @since 4.0

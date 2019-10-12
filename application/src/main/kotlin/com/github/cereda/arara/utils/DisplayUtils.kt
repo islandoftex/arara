@@ -388,7 +388,7 @@ object DisplayUtils {
             if (Arara.config[AraraSpec.UserInteraction.displayLine] ||
                     Arara.config[AraraSpec.UserInteraction.displayException])
                 addNewLine()
-            
+
             val text = messages.getMessage(
                     Messages.INFO_DISPLAY_EXECUTION_TIME,
                     "%1.2f".format(language.locale, seconds))

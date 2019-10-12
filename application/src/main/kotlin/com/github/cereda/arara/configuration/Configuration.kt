@@ -189,7 +189,7 @@ object Configuration {
         Arara.config[AraraSpec.Execution.logName] =
                 ConfigurationUtils.cleanFileName(resource.logname)
 
-        val loops = resource.loops.toInt()
+        val loops = resource.loops
         if (loops <= 0) {
             throw AraraException(
                     messages.getMessage(

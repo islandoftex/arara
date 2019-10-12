@@ -47,7 +47,7 @@ class ExecutionTest : ShouldSpec({
 
     should("honor falsy existence test") {
         val file = File(getPathForTest("conditionals") + "/conditionals.quack")
-        if(file.exists()) file.delete()
+        if (file.exists()) file.delete()
         val output = outputForTest("conditionals")
         output shouldContain "QuackOne"
         output shouldContain "QuackFour"
@@ -77,7 +77,7 @@ class ExecutionTest : ShouldSpec({
 
     should("track changes") {
         val file = File(getPathForTest("changes") + "/arara.yaml")
-        if(file.exists()) file.delete()
+        if (file.exists()) file.delete()
         outputForTest("changes") shouldContain "QuackOne"
         outputForTest("changes") shouldNotContain "QuackOne"
     }

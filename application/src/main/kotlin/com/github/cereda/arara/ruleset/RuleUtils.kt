@@ -34,8 +34,8 @@
 package com.github.cereda.arara.ruleset
 
 import com.github.cereda.arara.localization.LanguageController
-import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.localization.Messages
+import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.utils.CommonUtils
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.Constructor

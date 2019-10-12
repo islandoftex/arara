@@ -96,36 +96,37 @@ class Evaluator {
         // has reached our concept of infinity,
         // thus breaking the cycles
         counter++
-        if (conditional.type === Conditional.ConditionalType.WHILE
-                && counter > loops
-                || conditional.type === Conditional.ConditionalType.UNTIL
-                && counter >= loops) {
-            return false
-        } else {
-            val context = Methods.getConditionalMethods()
+        return when {
+            conditional.type === Conditional.ConditionalType.WHILE
+                    && counter > loops -> false
+            conditional.type === Conditional.ConditionalType.UNTIL
+                    && counter >= loops -> false
+            else -> {
+                val context = Methods.getConditionalMethods()
 
-            try {
-                val result = TemplateRuntime.eval("@{ " + conditional.condition + " }", context)
-                if (result !is Boolean) {
+                try {
+                    val result = TemplateRuntime.eval("@{ " + conditional.condition + " }", context)
+                    if (result !is Boolean) {
+                        throw AraraException(
+                                messages.getMessage(
+                                        Messages.ERROR_EVALUATE_NOT_BOOLEAN_VALUE
+                                )
+                        )
+                    } else {
+                        var value = result
+                        if (conditional.type == Conditional.ConditionalType.UNLESS ||
+                                conditional.type == Conditional.ConditionalType.UNTIL)
+                            value = !value
+                        return value
+                    }
+                } catch (exception: RuntimeException) {
                     throw AraraException(
                             messages.getMessage(
-                                    Messages.ERROR_EVALUATE_NOT_BOOLEAN_VALUE
-                            )
+                                    Messages.ERROR_EVALUATE_COMPILATION_FAILED
+                            ),
+                            exception
                     )
-                } else {
-                    var value = result
-                    if (conditional.type == Conditional.ConditionalType.UNLESS ||
-                            conditional.type == Conditional.ConditionalType.UNTIL)
-                        value = !value
-                    return value
                 }
-            } catch (exception: RuntimeException) {
-                throw AraraException(
-                        messages.getMessage(
-                                Messages.ERROR_EVALUATE_COMPILATION_FAILED
-                        ),
-                        exception
-                )
             }
         }
     }

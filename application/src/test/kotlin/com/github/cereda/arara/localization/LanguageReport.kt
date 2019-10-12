@@ -63,7 +63,7 @@ data class LanguageReport(
         /**
          * Analyzes the list of lines.
          *
-         * @param lines List of lines.
+         * @param file The file to read.
          * @return The language report.
          */
         internal fun analyze(file: File): LanguageReport {
