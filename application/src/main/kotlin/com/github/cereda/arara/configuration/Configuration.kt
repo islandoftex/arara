@@ -41,7 +41,6 @@ import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.model.FileType
 import com.github.cereda.arara.utils.CommonUtils
 import kotlin.time.ExperimentalTime
-import kotlin.time.milliseconds
 
 /**
  * Implements the configuration model, which holds the default settings and can
@@ -71,9 +70,6 @@ object Configuration {
         // since we can track errors from there instead
         // of relying on a check on this level
 
-        // reset everything
-        reset()
-
         // get the configuration file, if any
         val file = ConfigurationUtils.configFile
         if (file != null) {
@@ -93,52 +89,6 @@ object Configuration {
         // display localized messages
         val locale = Arara.config[AraraSpec.Execution.language].locale
         LanguageController.setLocale(locale)
-    }
-
-    /**
-     * Resets the configuration to initial settings.
-     *
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
-    @ExperimentalTime
-    @Throws(AraraException::class)
-    private fun reset() {
-        // TODO: remove and replace with proper default values
-        Arara.config[AraraSpec.Execution.maxLoops] = 10
-        Arara.config[AraraSpec.Execution.haltOnErrors] = true
-        Arara.config[AraraSpec.Execution.timeout] = false
-        Arara.config[AraraSpec.Execution.timeoutValue] = 0.milliseconds
-        Arara.config[AraraSpec.Application.version] = "5.0.0"
-        Arara.config[AraraSpec.Directive.linebreakPattern] = "^\\s*-->\\s(.*)$"
-
-        val directive = "^\\s*(\\w+)\\s*(:\\s*(\\{.*\\})\\s*)?"
-        val pattern = "(\\s+(if|while|until|unless)\\s+(\\S.*))?$"
-
-        Arara.config[AraraSpec.Directive.directivePattern] = directive + pattern
-        Arara.config[AraraSpec.Application.namePattern] = "arara:\\s"
-        Arara.config[AraraSpec.Application.width] = 65
-        Arara.config[AraraSpec.Execution.databaseName] = "arara"
-        Arara.config[AraraSpec.Execution.logName] = "arara"
-        Arara.config[AraraSpec.Execution.verbose] = false
-
-        Arara.config[AraraSpec.Trigger.halt] = false
-        Arara.config[AraraSpec.Execution.language] = Language("en")
-        Arara.config[AraraSpec.Execution.logging] = false
-        Arara.config[AraraSpec.Execution.dryrun] = false
-        Arara.config[AraraSpec.Execution.status] = 0
-        Arara.config[AraraSpec.Application.copyrightYear] = "2012-2019"
-        Arara.config[AraraSpec.Execution.fileTypes] = ConfigurationUtils.defaultFileTypes
-        Arara.config[AraraSpec.Execution.rulePaths] = listOf(CommonUtils.buildPath(
-                ConfigurationUtils.applicationPath,
-                "rules"
-        ))
-
-        Arara.config[AraraSpec.Execution.preambles] = mapOf()
-        Arara.config[AraraSpec.Execution.preamblesActive] = false
-        Arara.config[AraraSpec.Execution.configurationName] = "[none]"
-        Arara.config[AraraSpec.Execution.header] = false
-        Arara.config[AraraSpec.UserInteraction.lookAndFeel] = "none"
     }
 
     /**

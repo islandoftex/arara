@@ -42,20 +42,16 @@ import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.model.Extractor
 import com.github.cereda.arara.model.Interpreter
 import com.github.cereda.arara.ruleset.DirectiveUtils
-import com.github.cereda.arara.utils.CommonUtils
 import com.github.cereda.arara.utils.DisplayUtils
-import com.github.cereda.arara.utils.LoggingUtils
 import com.uchuhimo.konf.Config
-import kotlin.system.exitProcess
-import kotlin.time.ClockMark
 import kotlin.time.ExperimentalTime
-import kotlin.time.MonoClock
 
 object Arara {
     // TODO: watch config files
-    val config = Config { addSpec(AraraSpec) }
+    val baseconfig = Config { addSpec(AraraSpec) }
             .from.env()
             .from.systemProperties()
+    var config = baseconfig.withLayer("initial")
 
     /**
      * Main method. This is the application entry point.
@@ -80,26 +76,6 @@ object Arara {
 
     @ExperimentalTime
     fun run() {
-        // the first component to be initialized is the
-        // logging controller; note init() actually disables
-        // the logging, so early exceptions won't generate
-        // a lot of noise in the terminal
-        LoggingUtils.init()
-
-        // print the arara logo in the terminal; I just
-        // hope people use this tool in a good terminal with
-        // fixed-width fonts, otherwise the logo will be messed
-        DisplayUtils.printLogo()
-
-        // arara features now a cool stopwatch, so we can see how
-        // much time has passed since everything started; start(),
-        // for obvious reasons, starts the stopwatch and keeps track
-        // of time for us; internally, this class makes use of
-        // nano time, so we might get an interesting precision here
-        // (although timing is not a serious business in here, it's
-        // just a cool addition)
-        val executionStart: ClockMark = MonoClock.markNow()
-
         try {
             // first of all, let's try to load a potential
             // configuration file located at the current
@@ -154,21 +130,5 @@ object Arara {
             // application and catch it here instead of a local treatment
             DisplayUtils.printException(exception)
         }
-
-        // this is the last command from arara; once the execution time is
-        // available, print it; note that this notification is suppressed
-        // when the command line parsing returns false as result (it makes
-        // no sense to print the execution time for a help message, I guess)
-        DisplayUtils.printTime(executionStart.elapsedNow().inSeconds)
-
-        // gets the application exit status; the rule here is:
-        // 0 : everything went just fine (note that the dry-run mode always
-        //     makes arara exit with 0, unless it is an error in the directive
-        //     builder itself).
-        // 1 : one of the tasks failed, so the execution ended abruptly. This
-        //     means the error relies on the command line call, not with arara.
-        // 2 : arara just handled an exception, meaning that something bad
-        //     just happened and might require user intervention.
-        exitProcess(CommonUtils.exitStatus)
     }
 }

@@ -341,18 +341,18 @@ object DisplayUtils {
                 version
         ))
         logger.info(displaySeparator())
-        logger.info("::: arara @ $applicationPath")
-        logger.info("::: Java %s, %s".format(
+        logger.debug("::: arara @ $applicationPath")
+        logger.debug("::: Java %s, %s".format(
                 CommonUtils.getSystemProperty("java.version",
                         "[unknown version]"),
                 CommonUtils.getSystemProperty("java.vendor",
                         "[unknown vendor]")
         ))
-        logger.info("::: %s".format(
+        logger.debug("::: %s".format(
                 CommonUtils.getSystemProperty("java.home",
                         "[unknown location]")
         ))
-        logger.info("::: %s, %s, %s".format(
+        logger.debug("::: %s, %s, %s".format(
                 CommonUtils.getSystemProperty("os.name",
                         "[unknown OS name]"),
                 CommonUtils.getSystemProperty("os.arch",
@@ -360,17 +360,17 @@ object DisplayUtils {
                 CommonUtils.getSystemProperty("os.version",
                         "[unknown OS version]")
         ))
-        logger.info("::: user.home @ %s".format(
+        logger.debug("::: user.home @ %s".format(
                 CommonUtils.getSystemProperty("user.home",
                         "[unknown user's home directory]")
         ))
-        logger.info("::: user.dir @ %s".format(
+        logger.debug("::: user.dir @ %s".format(
                 CommonUtils.getSystemProperty("user.dir",
                         "[unknown user's working directory]")
         ))
-        logger.info("::: CF @ %s".format(Arara.config[AraraSpec.Execution
+        logger.debug("::: CF @ %s".format(Arara.config[AraraSpec.Execution
                 .configurationName]))
-        logger.info(displaySeparator())
+        logger.debug(displaySeparator())
         logger.info(line)
         wrapText(line)
         addNewLine()

@@ -14,8 +14,12 @@ import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.utils.CommonUtils
+import com.github.cereda.arara.utils.DisplayUtils
 import com.github.cereda.arara.utils.LoggingUtils
+import kotlin.system.exitProcess
+import kotlin.time.ClockMark
 import kotlin.time.ExperimentalTime
+import kotlin.time.MonoClock
 import kotlin.time.milliseconds
 
 class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
@@ -49,8 +53,12 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
             help = "The file(s) to evaluate and process")
             .multiple(required = true)
 
+    /**
+     * Update the default configuration with the values parsed from the
+     * command line.
+     */
     @ExperimentalTime
-    override fun run() {
+    private fun updateConfigurationFromCommandLine() {
         Arara.config[AraraSpec.Execution.language] = Language(language)
         LanguageController.setLocale(Arara.config[AraraSpec.Execution.language]
                 .locale)
@@ -79,11 +87,59 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
             Arara.config[AraraSpec.Execution.timeoutValue] = it.milliseconds
         }
 
-        // TODO: process more than one file
-        CommonUtils.discoverFile(reference[0])
         LoggingUtils.enableLogging(log)
         Arara.config[AraraSpec.UserInteraction.displayTime] = true
+    }
 
-        Arara.run()
+    /**
+     * The actual main method of arara (when run in command-line mode)
+     */
+    @ExperimentalTime
+    override fun run() {
+        // the first component to be initialized is the
+        // logging controller; note init() actually disables
+        // the logging, so early exceptions won't generate
+        // a lot of noise in the terminal
+        LoggingUtils.init()
+
+        // print the arara logo in the terminal; I just
+        // hope people use this tool in a good terminal with
+        // fixed-width fonts, otherwise the logo will be messed
+        DisplayUtils.printLogo()
+
+        // arara features a stopwatch, so we can see how much time has passed
+        // since everything started; internally, this class makes use of
+        // nano time, so we might get an interesting precision here
+        // (although timing is not a serious business in here, it's
+        // just a cool addition)
+        val executionStart: ClockMark = MonoClock.markNow()
+
+        // TODO: this will have to change for parallelization
+        reference.forEach {
+            // TODO: do we have to reset some more file-specific config?
+            // especially the working directory will have to be set and
+            // changed
+            Arara.config = Arara.baseconfig.withLayer(it)
+            // next, update the configuration
+            updateConfigurationFromCommandLine()
+            CommonUtils.discoverFile(it)
+            Arara.run()
+        }
+
+        // this is the last command from arara; once the execution time is
+        // available, print it; note that this notification is suppressed
+        // when the command line parsing returns false as result (it makes
+        // no sense to print the execution time for a help message, I guess)
+        DisplayUtils.printTime(executionStart.elapsedNow().inSeconds)
+
+        // gets the application exit status; the rule here is:
+        // 0 : everything went just fine (note that the dry-run mode always
+        //     makes arara exit with 0, unless it is an error in the directive
+        //     builder itself).
+        // 1 : one of the tasks failed, so the execution ended abruptly. This
+        //     means the error relies on the command line call, not with arara.
+        // 2 : arara just handled an exception, meaning that something bad
+        //     just happened and might require user intervention.
+        exitProcess(CommonUtils.exitStatus)
     }
 }
