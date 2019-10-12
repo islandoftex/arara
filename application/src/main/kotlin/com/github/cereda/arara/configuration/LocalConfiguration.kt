@@ -82,7 +82,7 @@ class LocalConfiguration {
         get() = CommonUtils.removeKeywordNotNull(field)
 
     // maximum number of loops
-    var loops: Int = Arara.config[AraraSpec.Execution.loops]
+    var loops: Int = Arara.config[AraraSpec.Execution.maxLoops]
 
     // verbose flag
     var isVerbose: Boolean = Arara.config[AraraSpec.Execution.verbose]

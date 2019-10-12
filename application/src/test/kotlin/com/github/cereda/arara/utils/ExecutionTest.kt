@@ -1,9 +1,10 @@
 package com.github.cereda.arara.utils
 
+import com.github.cereda.arara.Arara
+import com.github.cereda.arara.configuration.AraraSpec
 import com.github.cereda.arara.configuration.Configuration
 import com.github.cereda.arara.model.Extractor
 import com.github.cereda.arara.model.Interpreter
-import com.github.cereda.arara.model.Parser
 import com.github.cereda.arara.ruleset.DirectiveUtils
 import io.kotlintest.DoNotParallelize
 import io.kotlintest.matchers.string.shouldContain
@@ -26,7 +27,8 @@ class ExecutionTest : ShouldSpec({
             System.setOut(PrintStream(output))
             System.setProperty("user.dir", getPathForTest(testName))
             Configuration.load()
-            Parser(arrayOf("-v", "$testName.tex")).parse()
+            Arara.config[AraraSpec.Execution.verbose] = true
+            CommonUtils.discoverFile("$testName.tex")
             val directives = DirectiveUtils.validate(Extractor.extract(
                     File("${getPathForTest(testName)}/$testName.tex")))
             Interpreter(directives).execute()

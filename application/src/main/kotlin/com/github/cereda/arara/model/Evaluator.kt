@@ -53,7 +53,7 @@ class Evaluator {
     // this attribute holds the maximum number of
     // loops arara will accept; it's like
     // reaching infinity
-    private val loops: Int = Arara.config[AraraSpec.Execution.loops]
+    private val loops: Int = Arara.config[AraraSpec.Execution.maxLoops]
 
     // the counter for the current execution, it
     // helps us keep track of the number of times

@@ -33,12 +33,14 @@
  */
 package com.github.cereda.arara
 
+import com.github.ajalt.clikt.parameters.options.versionOption
 import com.github.cereda.arara.configuration.AraraSpec
 import com.github.cereda.arara.configuration.Configuration
+import com.github.cereda.arara.localization.LanguageController
+import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.model.Extractor
 import com.github.cereda.arara.model.Interpreter
-import com.github.cereda.arara.model.Parser
 import com.github.cereda.arara.ruleset.DirectiveUtils
 import com.github.cereda.arara.utils.CommonUtils
 import com.github.cereda.arara.utils.DisplayUtils
@@ -62,6 +64,22 @@ object Arara {
     @ExperimentalTime
     @JvmStatic
     fun main(args: Array<String>) {
+        val year = config[AraraSpec.Application.copyrightYear]
+        val version = config[AraraSpec.Application.version]
+        CLI().versionOption(version, names = setOf("-V", "--version"),
+                message = {
+                    "arara $version\n" +
+                            "Copyright (c) $year, Paulo Roberto Massa Cereda\n" +
+                            LanguageController.getMessage(Messages
+                                    .INFO_PARSER_ALL_RIGHTS_RESERVED) + "\n\n" +
+                            LanguageController.getMessage(Messages
+                                    .INFO_PARSER_NOTES)
+                })
+                .main(args)
+    }
+
+    @ExperimentalTime
+    fun run() {
         // the first component to be initialized is the
         // logging controller; note init() actually disables
         // the logging, so early exceptions won't generate
@@ -90,60 +108,45 @@ object Arara {
             // end the execution
             Configuration.load()
 
-            // if we are here, either there was no configuration
-            // file at all or we managed to load the settings; now,
-            // it's time to properly parse the command line arguments;
-            // this is done by creating a brand new instance of arara's
-            // command line parser and providing the string array to it
-            val parser = Parser(args)
+            // let's print the current file information; it is a
+            // basic display, just the file name, the size properly
+            // formatted as a human readable format, and the last
+            // modification date; also, in this point, the logging
+            // feature starts to collect data (of course, if enabled
+            // either through the configuration file or manually
+            // in the command line)
+            DisplayUtils.printFileInformation()
 
-            // now let's see if we are good to go; parse() will return
-            // a boolean value indicating if the provided arguments
-            // allow the tool to continue (we might reach some special
-            // flags as well, like --help or --version, which simply
-            // do their jobs and return false, since there's no point
-            // of continuing processing with such flags)
-            if (parser.parse()) {
-                // let's print the current file information; it is a
-                // basic display, just the file name, the size properly
-                // formatted as a human readable format, and the last
-                // modification date; also, in this point, the logging
-                // feature starts to collect data (of course, if enabled
-                // either through the configuration file or manually
-                // in the command line)
-                DisplayUtils.printFileInformation()
+            // time to read the file and try to extract the directives;
+            // extract() brings us a list of directives properly parsed
+            // and almost ready to be handled; note that no directives
+            // in the provided file will raise an exception; this is
+            // by design and I opted to not include a default fallback
+            // (although it wouldn't be so difficult to write one,
+            // I decided not to take the risk)
+            val extracted = Extractor.extract(config[AraraSpec.Execution
+                    .reference])
 
-                // time to read the file and try to extract the directives;
-                // extract() brings us a list of directives properly parsed
-                // and almost ready to be handled; note that no directives
-                // in the provided file will raise an exception; this is
-                // by design and I opted to not include a default fallback
-                // (although it wouldn't be so difficult to write one,
-                // I decided not to take the risk)
-                val extracted = Extractor.extract(config[AraraSpec.Execution
-                        .reference])
+            // it is time to validate the directives (for example, we have
+            // a couple of keywords that cannot be used as directive
+            // parameters); another interesting feature of the validate()
+            // method is to replicate a directive that has the 'files'
+            // keyword on it, since it's the whole point of having 'files'
+            // in the first place; if you check the log file, you will see
+            // that the list of extracted directives might differ from
+            // the final list of directives to be effectively processed
+            // by arara
+            // TODO: rename validate, it doesn't only validate
+            val directives = DirectiveUtils.validate(extracted)
 
-                // it is time to validate the directives (for example, we have
-                // a couple of keywords that cannot be used as directive
-                // parameters); another interesting feature of the validate()
-                // method is to replicate a directive that has the 'files'
-                // keyword on it, since it's the whole point of having 'files'
-                // in the first place; if you check the log file, you will see
-                // that the list of extracted directives might differ from
-                // the final list of directives to be effectively processed
-                // by arara
-                // TODO: rename validate, it doesn't only validate
-                val directives = DirectiveUtils.validate(extracted)
-
-                // time to shine, now the interpreter class will interpret
-                // one directive at a time, get the corresponding rule,
-                // set the parameters, evaluate it, get the tasks, run them,
-                // evaluate the result and print the status; note that
-                // arara, from this version on, will try to evaluate things
-                // progressively, so in case of an error, the previous tasks
-                // were already processed and potentially executed
-                Interpreter(directives).execute()
-            }
+            // time to shine, now the interpreter class will interpret
+            // one directive at a time, get the corresponding rule,
+            // set the parameters, evaluate it, get the tasks, run them,
+            // evaluate the result and print the status; note that
+            // arara, from this version on, will try to evaluate things
+            // progressively, so in case of an error, the previous tasks
+            // were already processed and potentially executed
+            Interpreter(directives).execute()
         } catch (exception: AraraException) {
             // something bad just happened, so arara will print the proper
             // exception and provide details on it, if available; the idea

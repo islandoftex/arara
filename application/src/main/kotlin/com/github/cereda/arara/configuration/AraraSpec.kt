@@ -18,7 +18,7 @@ object AraraSpec : ConfigSpec() {
     }
 
     object Execution : ConfigSpec() {
-        val loops by optional(10)
+        val maxLoops by optional(10)
         val timeout by optional(false)
         @ExperimentalTime
         val timeoutValue by optional(0.milliseconds)
