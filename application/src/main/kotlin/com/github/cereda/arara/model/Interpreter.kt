@@ -126,11 +126,6 @@ class Interpreter(
             val name = rule.name
             val authors = rule.authors
 
-            // save the identifiers of the rule's arguments for later use
-            // TODO: never used?!
-            Arara.config[AraraSpec.Execution.ruleArguments] =
-                    rule.arguments.mapNotNull { it.identifier }
-
             val evaluator = Evaluator()
 
             var available = true

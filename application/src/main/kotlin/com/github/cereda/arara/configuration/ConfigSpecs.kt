@@ -49,17 +49,13 @@ object AraraSpec : ConfigSpec() {
         // initialized and tested
         val reference by optional(File("/tmp/"))
         val file by optional(File("/tmp/"))
-
         object InfoSpec : ConfigSpec() {
             val ruleId by optional<String?>(null)
             val rulePath by optional<String?>(null)
         }
-
         object DirectiveSpec : ConfigSpec() {
             val lines by optional(listOf<Int>())
         }
-
-        val ruleArguments by optional(listOf<String>())
         val filePattern by optional("")
     }
 
