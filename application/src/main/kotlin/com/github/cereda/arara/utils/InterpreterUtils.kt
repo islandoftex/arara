@@ -97,21 +97,17 @@ object InterpreterUtils {
      */
     @ExperimentalTime
     @Throws(AraraException::class)
-    fun run(command: Any): Int {
+    fun run(command: Command): Int {
         val verbose = Arara.config[AraraSpec.Execution.verbose]
         val timeout = Arara.config[AraraSpec.Execution.timeout]
         val timeOutValue = Arara.config[AraraSpec.Execution.timeoutValue]
         val buffer = ByteArrayOutputStream()
         var executor = ProcessExecutor()
-        if (command is Command) {
-            executor = executor.command((command).elements)
-            if (command.hasWorkingDirectory()) {
-                executor = executor.directory(
-                        command.workingDirectory
-                )
-            }
-        } else {
-            executor = executor.commandSplit(command as String)
+        executor = executor.command((command).elements)
+        if (command.hasWorkingDirectory()) {
+            executor = executor.directory(
+                    command.workingDirectory
+            )
         }
         if (timeout) {
             if (timeOutValue == Duration.ZERO) {
@@ -148,43 +144,19 @@ object InterpreterUtils {
                     )
             ))
             return exit
-        } catch (ioexception: IOException) {
-            throw AraraException(
-                    messages.getMessage(
-                            Messages.ERROR_RUN_IO_EXCEPTION
-                    ),
-                    ioexception
-            )
-        } catch (iexception: InterruptedException) {
-            throw AraraException(
-                    messages.getMessage(
-                            Messages.ERROR_RUN_INTERRUPTED_EXCEPTION
-                    ),
-                    iexception
-            )
-        } catch (ievexception: InvalidExitValueException) {
-            throw AraraException(
-                    messages.getMessage(
-                            Messages.ERROR_RUN_INVALID_EXIT_VALUE_EXCEPTION
-                    ),
-                    ievexception
-            )
-        } catch (texception: TimeoutException) {
-            throw AraraException(
-                    messages.getMessage(
-                            Messages.ERROR_RUN_TIMEOUT_EXCEPTION
-                    ),
-                    texception
-            )
         } catch (exception: Exception) {
-            throw AraraException(
-                    messages.getMessage(
-                            Messages.ERROR_RUN_GENERIC_EXCEPTION
-                    ),
-                    exception
-            )
+            throw AraraException(messages.getMessage(
+                    when (exception) {
+                        is IOException -> Messages.ERROR_RUN_IO_EXCEPTION
+                        is InterruptedException ->
+                            Messages.ERROR_RUN_INTERRUPTED_EXCEPTION
+                        is InvalidExitValueException ->
+                            Messages.ERROR_RUN_INVALID_EXIT_VALUE_EXCEPTION
+                        is TimeoutException ->
+                            Messages.ERROR_RUN_TIMEOUT_EXCEPTION
+                        else -> Messages.ERROR_RUN_GENERIC_EXCEPTION
+                    }), exception)
         }
-
     }
 
     /**

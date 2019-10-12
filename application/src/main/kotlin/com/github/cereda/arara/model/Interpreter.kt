@@ -163,10 +163,9 @@ class Interpreter(
 
                         for (current in execution) {
                             if (current.toString().isNotBlank()) {
-                                DisplayUtils.printEntry(name,
-                                        command.name
-                                                ?: messages.getMessage(Messages.INFO_LABEL_UNNAMED_TASK)
-                                )
+                                DisplayUtils.printEntry(name, command.name
+                                        ?: messages.getMessage(Messages
+                                                .INFO_LABEL_UNNAMED_TASK))
                                 var success = true
 
                                 if (current is Boolean) {
@@ -190,20 +189,16 @@ class Interpreter(
                                                 directive.conditional
                                         )
                                     }
-                                } else {
-                                    val representation = if (current is Command)
-                                        current
-                                    else
-                                        current.toString()
+                                } else if (current is Command) {
                                     logger.info(
                                             messages.getMessage(
                                                     Messages.LOG_INFO_SYSTEM_COMMAND,
-                                                    representation
+                                                    current
                                             )
                                     )
 
                                     if (!Arara.config[AraraSpec.Execution.dryrun]) {
-                                        val code = InterpreterUtils.run(representation)
+                                        val code = InterpreterUtils.run(current)
                                         val check: Any
                                         try {
                                             val context = mutableMapOf<String, Any>()
@@ -237,13 +232,17 @@ class Interpreter(
                                         DisplayUtils.wrapText(
                                                 messages.getMessage(
                                                         Messages.INFO_INTERPRETER_DRYRUN_MODE_SYSTEM_COMMAND,
-                                                        representation
+                                                        current
                                                 )
                                         )
                                         DisplayUtils.printConditional(
                                                 directive.conditional
                                         )
                                     }
+                                } else {
+                                    TODO("error: this should not happen" +
+                                            "we are only supporting string + " +
+                                            "command")
                                 }
 
                                 DisplayUtils.printEntryResult(success)
@@ -253,9 +252,9 @@ class Interpreter(
                                     return
                                 // TODO: document this key
                                 if (Session.contains("arara:${Arara
-                                        .config[AraraSpec.Execution.reference]
-                                        .name}:halt"))
-                                    // TODO: key maps to exit value, use the value
+                                                .config[AraraSpec.Execution.reference]
+                                                .name}:halt"))
+                                // TODO: key maps to exit value, use the value
                                     return
                             }
                         }
