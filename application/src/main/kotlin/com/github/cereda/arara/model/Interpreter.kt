@@ -119,7 +119,9 @@ class Interpreter(
             Arara.config[AraraSpec.Execution.DirectiveSpec.lines] =
                     directive.lineNumbers
 
-            val rule = parseRule(file, directive)
+            // parse the rule identified by the directive
+            // (may throw an exception)
+            val rule = RuleUtils.parseRule(file, directive.identifier)
             val parameters = parseArguments(rule, directive).toMutableMap()
             parameters.putAll(Methods.getRuleMethods())
 
@@ -290,20 +292,6 @@ class Interpreter(
     }
 
     /**
-     * Parses the rule against the provided directive.
-     *
-     * @param file      The file representing the rule.
-     * @param directive The directive to be analyzed.
-     * @return A rule object.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
-    @Throws(AraraException::class)
-    private fun parseRule(file: File, directive: Directive): Rule {
-        return RuleUtils.parseRule(file, directive.identifier)
-    }
-
-    /**
      * Parses the rule arguments against the provided directive.
      *
      * @param rule      The rule object.
@@ -318,7 +306,6 @@ class Interpreter(
         val arguments = rule.arguments
         val unknown = CommonUtils.getUnknownKeys(directive.parameters, arguments)
                 .toMutableSet()
-        unknown.remove("file")
         unknown.remove("reference")
         if (unknown.isNotEmpty()) {
             throw AraraException(
@@ -329,12 +316,10 @@ class Interpreter(
         }
 
         val mapping = mutableMapOf<String, Any>()
-        mapping["file"] = directive.parameters.getValue("file")
         mapping["reference"] = directive.parameters.getValue("reference")
 
         val context = mutableMapOf<String, Any>()
         context["parameters"] = directive.parameters
-        context["file"] = directive.parameters.getValue("file")
         context["reference"] = directive.parameters.getValue("reference")
         context.putAll(Methods.getRuleMethods())
 

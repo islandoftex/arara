@@ -36,8 +36,8 @@ package com.github.cereda.arara.ruleset
 import com.github.cereda.arara.Arara
 import com.github.cereda.arara.configuration.AraraSpec
 import com.github.cereda.arara.localization.LanguageController
-import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.localization.Messages
+import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.utils.CommonUtils
 import com.github.cereda.arara.utils.DisplayUtils
 import org.slf4j.LoggerFactory
@@ -164,7 +164,8 @@ object DirectiveUtils {
         if (matcher.find()) {
             val directive = Directive(
                     identifier = matcher.group(1),
-                    parameters = getParameters(matcher.group(3), assembler.getLineNumbers()),
+                    parameters = getParameters(matcher.group(3),
+                            assembler.getLineNumbers()),
                     conditional = Conditional(
                             type = getType(matcher.group(5)),
                             condition = matcher.group(6) ?: ""
@@ -258,15 +259,6 @@ object DirectiveUtils {
         for (directive in directives) {
             val parameters = directive.parameters.toMutableMap()
 
-            if (parameters.containsKey("file")) {
-                throw AraraException(
-                        messages.getMessage(
-                                Messages.ERROR_VALIDATE_FILE_IS_RESERVED,
-                                "(" + directive.lineNumbers.joinToString(", ") + ")"
-                        )
-                )
-            }
-
             if (parameters.containsKey("reference")) {
                 throw AraraException(
                         messages.getMessage(
@@ -295,8 +287,6 @@ object DirectiveUtils {
                         val representation = CommonUtils.getCanonicalFile(file.toString())
 
                         map["reference"] = representation
-                        map["file"] = representation.name
-
                         result.add(Directive(
                                 identifier = directive.identifier,
                                 conditional = Conditional(
@@ -317,7 +307,6 @@ object DirectiveUtils {
                 }
             } else {
                 val representation = Arara.config[AraraSpec.Execution.reference]
-                parameters["file"] = representation.name
                 parameters["reference"] = representation
                 result.add(directive.copy(parameters = parameters))
             }

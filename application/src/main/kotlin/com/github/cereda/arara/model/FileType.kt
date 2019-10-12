@@ -79,6 +79,6 @@ data class FileType(
      * @return An integer representing the file type hash code.
      */
     override fun hashCode(): Int {
-        return extension.hashCode() ?: 0
+        return extension.hashCode()
     }
 }

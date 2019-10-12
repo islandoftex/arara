@@ -7,12 +7,12 @@ commands:
 - name: The PDFLaTeX engine
   command: >
     @{
-        return getCommand('pdflatex', file);
+        return getCommand('pdflatex', reference);
     }
 - name: The PDFLaTeX engine
   command: >
     @{
-        return getCommand('pdflatex', file);
+        return getCommand('pdflatex', reference);
     }
 - name: File cleanup
   command: >
@@ -30,7 +30,7 @@ commands:
         extensions = [ 'listing', 'log', 'toc',
                        'out', 'synctex.gz' ];
         foreach (extension : extensions) {
-            removals.add(getCommand(prefix, getBasename(file)
+            removals.add(getCommand(prefix, getBasename(reference)
                      .concat('.').concat(extension)));
         }
         foreach (match : matches) {

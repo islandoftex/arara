@@ -160,7 +160,7 @@ object RuleUtils {
             }
         }
 
-        arguments.intersect(listOf("file", "files", "reference")).forEach {
+        arguments.intersect(listOf("files", "reference")).forEach {
             throw AraraException(
                     CommonUtils.ruleErrorHeader + messages.getMessage(
                             Messages.ERROR_VALIDATEBODY_ARGUMENT_ID_IS_RESERVED,
