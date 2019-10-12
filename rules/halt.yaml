@@ -13,6 +13,7 @@ commands:
 - name: The halt trigger
   command: >
     @{
-        return getTrigger('halt');
+        halt(0);
+        return true;
     }
 arguments: []

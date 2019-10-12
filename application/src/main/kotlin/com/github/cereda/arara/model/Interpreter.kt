@@ -162,127 +162,101 @@ class Interpreter(
                         }
 
                         for (current in execution) {
-                            if (current == null) {
-                                throw AraraException(
-                                        CommonUtils.ruleErrorHeader + messages.getMessage(
-                                                Messages.ERROR_INTERPRETER_NULL_COMMAND
-                                        )
+                            if (current.toString().isNotBlank()) {
+                                DisplayUtils.printEntry(name,
+                                        command.name
+                                                ?: messages.getMessage(Messages.INFO_LABEL_UNNAMED_TASK)
                                 )
-                            } else {
-                                if (current.toString().isNotBlank()) {
-                                    DisplayUtils.printEntry(name,
-                                            command.name
-                                                    ?: messages.getMessage(Messages.INFO_LABEL_UNNAMED_TASK)
+                                var success = true
+
+                                if (current is Boolean) {
+                                    success = current
+                                    logger.info(
+                                            messages.getMessage(
+                                                    Messages.LOG_INFO_BOOLEAN_MODE,
+                                                    success.toString()
+                                            )
                                     )
-                                    var success = true
 
-                                    if (current is Trigger) {
-                                        if (!Arara.config[AraraSpec.Execution.dryrun]) {
-                                            if (Arara.config[AraraSpec.Execution.verbose]) {
-                                                DisplayUtils.wrapText(
-                                                        messages.getMessage(
-                                                                Messages.INFO_INTERPRETER_VERBOSE_MODE_TRIGGER_MODE
-                                                        )
+                                    if (Arara.config[AraraSpec.Execution.dryrun]) {
+                                        DisplayUtils.printAuthors(authors)
+                                        DisplayUtils.wrapText(
+                                                messages.getMessage(
+                                                        Messages.INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE,
+                                                        success
                                                 )
-                                            }
-                                        } else {
-                                            DisplayUtils.printAuthors(authors)
-                                            DisplayUtils.wrapText(
-                                                    messages.getMessage(
-                                                            Messages.INFO_INTERPRETER_DRYRUN_MODE_TRIGGER_MODE
-                                                    )
-                                            )
-                                            DisplayUtils.printConditional(
-                                                    directive.conditional
-                                            )
-                                        }
-                                        current.process()
-                                    } else {
-                                        if (current is Boolean) {
-                                            success = current
-                                            logger.info(
-                                                    messages.getMessage(
-                                                            Messages.LOG_INFO_BOOLEAN_MODE,
-                                                            success.toString()
-                                                    )
-                                            )
-
-                                            if (Arara.config[AraraSpec.Execution.dryrun]) {
-                                                DisplayUtils.printAuthors(authors)
-                                                DisplayUtils.wrapText(
-                                                        messages.getMessage(
-                                                                Messages.INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE,
-                                                                success
-                                                        )
-                                                )
-                                                DisplayUtils.printConditional(
-                                                        directive.conditional
-                                                )
-                                            }
-                                        } else {
-                                            val representation = if (current is Command)
-                                                current
-                                            else
-                                                current.toString()
-                                            logger.info(
-                                                    messages.getMessage(
-                                                            Messages.LOG_INFO_SYSTEM_COMMAND,
-                                                            representation
-                                                    )
-                                            )
-
-                                            if (!Arara.config[AraraSpec.Execution.dryrun]) {
-                                                val code = InterpreterUtils.run(representation)
-                                                val check: Any
-                                                try {
-                                                    val context = mutableMapOf<String, Any>()
-                                                    context["value"] = code
-                                                    check = TemplateRuntime.eval(
-                                                            "@{ " + (if (command.exit == null)
-                                                                "value == 0"
-                                                            else
-                                                                command.exit) + " }",
-                                                            context)
-                                                } catch (exception: RuntimeException) {
-                                                    throw AraraException(
-                                                            CommonUtils.ruleErrorHeader + messages.getMessage(
-                                                                    Messages.ERROR_INTERPRETER_EXIT_RUNTIME_ERROR
-                                                            ),
-                                                            exception
-                                                    )
-                                                }
-
-                                                if (check is Boolean) {
-                                                    success = check
-                                                } else {
-                                                    throw AraraException(
-                                                            CommonUtils.ruleErrorHeader + messages.getMessage(
-                                                                    Messages.ERROR_INTERPRETER_WRONG_EXIT_CLOSURE_RETURN
-                                                            )
-                                                    )
-                                                }
-                                            } else {
-                                                DisplayUtils.printAuthors(authors)
-                                                DisplayUtils.wrapText(
-                                                        messages.getMessage(
-                                                                Messages.INFO_INTERPRETER_DRYRUN_MODE_SYSTEM_COMMAND,
-                                                                representation
-                                                        )
-                                                )
-                                                DisplayUtils.printConditional(
-                                                        directive.conditional
-                                                )
-                                            }
-                                        }
+                                        )
+                                        DisplayUtils.printConditional(
+                                                directive.conditional
+                                        )
                                     }
+                                } else {
+                                    val representation = if (current is Command)
+                                        current
+                                    else
+                                        current.toString()
+                                    logger.info(
+                                            messages.getMessage(
+                                                    Messages.LOG_INFO_SYSTEM_COMMAND,
+                                                    representation
+                                            )
+                                    )
 
-                                    DisplayUtils.printEntryResult(success)
+                                    if (!Arara.config[AraraSpec.Execution.dryrun]) {
+                                        val code = InterpreterUtils.run(representation)
+                                        val check: Any
+                                        try {
+                                            val context = mutableMapOf<String, Any>()
+                                            context["value"] = code
+                                            check = TemplateRuntime.eval(
+                                                    "@{ " + (if (command.exit == null)
+                                                        "value == 0"
+                                                    else
+                                                        command.exit) + " }",
+                                                    context)
+                                        } catch (exception: RuntimeException) {
+                                            throw AraraException(
+                                                    CommonUtils.ruleErrorHeader + messages.getMessage(
+                                                            Messages.ERROR_INTERPRETER_EXIT_RUNTIME_ERROR
+                                                    ),
+                                                    exception
+                                            )
+                                        }
 
-                                    if (Arara.config[AraraSpec.Trigger.halt]
-                                            || Arara.config[AraraSpec.Execution.haltOnErrors]
-                                            && !success)
-                                        return
+                                        if (check is Boolean) {
+                                            success = check
+                                        } else {
+                                            throw AraraException(
+                                                    CommonUtils.ruleErrorHeader + messages.getMessage(
+                                                            Messages.ERROR_INTERPRETER_WRONG_EXIT_CLOSURE_RETURN
+                                                    )
+                                            )
+                                        }
+                                    } else {
+                                        DisplayUtils.printAuthors(authors)
+                                        DisplayUtils.wrapText(
+                                                messages.getMessage(
+                                                        Messages.INFO_INTERPRETER_DRYRUN_MODE_SYSTEM_COMMAND,
+                                                        representation
+                                                )
+                                        )
+                                        DisplayUtils.printConditional(
+                                                directive.conditional
+                                        )
+                                    }
                                 }
+
+                                DisplayUtils.printEntryResult(success)
+
+                                if (Arara.config[AraraSpec.Execution.haltOnErrors]
+                                        && !success)
+                                    return
+                                // TODO: document this key
+                                if (Session.contains("arara:${Arara
+                                        .config[AraraSpec.Execution.reference]
+                                        .name}:halt"))
+                                    // TODO: key maps to exit value, use the value
+                                    return
                             }
                         }
                     }

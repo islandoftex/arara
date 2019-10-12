@@ -39,13 +39,15 @@ import com.github.cereda.arara.localization.LanguageController;
 import com.github.cereda.arara.localization.Messages;
 import com.github.cereda.arara.model.AraraException;
 import com.github.cereda.arara.model.Session;
-import com.github.cereda.arara.model.Trigger;
 import com.github.cereda.arara.ruleset.Command;
 import kotlin.Pair;
 
 import java.io.File;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 /**
@@ -77,15 +79,14 @@ public class Methods {
                     "isNotEmpty", "isTrue", "isFalse",
                     "trimSpaces", "getBasename", "getFullBasename",
                     "getFiletype", "throwError", "getSession",
-                    "isWindows", "isLinux", "isMac", "isUnix", "isAIX",
-                    "isIrix", "isOS2", "isSolaris", "isCygwin",
+                    "isWindows", "isLinux", "isMac", "isUnix", "isCygwin",
                     "replicatePattern", "buildString", "addQuotes",
-                    "getCommand", "getTrigger", "checkClass", "isString",
+                    "getCommand", "checkClass", "isString",
                     "isList", "isMap", "isBoolean", "isVerboseMode",
                     "showMessage", "isOnPath", "unsafelyExecuteSystemCommand",
                     "getCommandWithWorkingDirectory", "listFilesByExtensions",
                     "listFilesByPatterns", "writeToFile", "readFromFile",
-                    "isSubdirectory").forEach(name ->
+                    "isSubdirectory", "halt").forEach(name ->
                     map.put(name, Stream.of(methods).filter(
                             m -> m.getName().equals(name)).findFirst().get()));
         } catch (Exception exception) {
@@ -112,6 +113,22 @@ public class Methods {
             // quack, quack, quack
         }
         return map;
+    }
+
+    /**
+     * Exit the application normally
+     */
+    public static void halt() {
+        halt(0);
+    }
+
+    /**
+     * Exit the application with status code.
+     *
+     * @param status The exit value
+     */
+    public static void halt(int status) {
+        session.put("arara:" + getOriginalFile() + ":halt", status);
     }
 
     /**
@@ -526,50 +543,6 @@ public class Methods {
     }
 
     /**
-     * Checks if AIX is the underlying operating system.
-     *
-     * @return A boolean value.
-     * @throws AraraException Something wrong happened, to be caught in the
-     *                        higher levels.
-     */
-    public static boolean isAIX() throws AraraException {
-        return CommonUtils.INSTANCE.checkOS("aix");
-    }
-
-    /**
-     * Checks if Irix is the underlying operating system.
-     *
-     * @return A boolean value.
-     * @throws AraraException Something wrong happened, to be caught in the
-     *                        higher levels.
-     */
-    public static boolean isIrix() throws AraraException {
-        return CommonUtils.INSTANCE.checkOS("irix");
-    }
-
-    /**
-     * Checks if OS2 is the underlying operating system.
-     *
-     * @return A boolean value.
-     * @throws AraraException Something wrong happened, to be caught in the
-     *                        higher levels.
-     */
-    public static boolean isOS2() throws AraraException {
-        return CommonUtils.INSTANCE.checkOS("os2");
-    }
-
-    /**
-     * Checks if Solaris is the underlying operating system.
-     *
-     * @return A boolean value.
-     * @throws AraraException Something wrong happened, to be caught in the
-     *                        higher levels.
-     */
-    public static boolean isSolaris() throws AraraException {
-        return CommonUtils.INSTANCE.checkOS("solaris");
-    }
-
-    /**
      * Checks if Windows is the underlying operating system.
      *
      * @param yes Object to return if true.
@@ -633,58 +606,6 @@ public class Methods {
      */
     public static Object isUnix(Object yes, Object no) throws AraraException {
         return CommonUtils.INSTANCE.checkOS("unix") ? yes : no;
-    }
-
-    /**
-     * Checks if AIX is the underlying operating system.
-     *
-     * @param yes Object to return if true.
-     * @param no  Object to return if false.
-     * @return One of the two objects.
-     * @throws AraraException Something wrong happened, to be caught in the
-     *                        higher levels.
-     */
-    public static Object isAIX(Object yes, Object no) throws AraraException {
-        return CommonUtils.INSTANCE.checkOS("aix") ? yes : no;
-    }
-
-    /**
-     * Checks if Irix is the underlying operating system.
-     *
-     * @param yes Object to return if true.
-     * @param no  Object to return if false.
-     * @return One of the two objects.
-     * @throws AraraException Something wrong happened, to be caught in the
-     *                        higher levels.
-     */
-    public static Object isIrix(Object yes, Object no) throws AraraException {
-        return CommonUtils.INSTANCE.checkOS("irix") ? yes : no;
-    }
-
-    /**
-     * Checks if OS2 is the underlying operating system.
-     *
-     * @param yes Object to return if true.
-     * @param no  Object to return if false.
-     * @return One of the two objects.
-     * @throws AraraException Something wrong happened, to be caught in the
-     *                        higher levels.
-     */
-    public static Object isOS2(Object yes, Object no) throws AraraException {
-        return CommonUtils.INSTANCE.checkOS("os2") ? yes : no;
-    }
-
-    /**
-     * Checks if Solaris is the underlying operating system.
-     *
-     * @param yes Object to return if true.
-     * @param no  Object to return if false.
-     * @return One of the two objects.
-     * @throws AraraException Something wrong happened, to be caught in the
-     *                        higher levels.
-     */
-    public static Object isSolaris(Object yes, Object no) throws AraraException {
-        return CommonUtils.INSTANCE.checkOS("solaris") ? yes : no;
     }
 
     /**
@@ -905,27 +826,6 @@ public class Methods {
         Command command = new Command(elements);
         command.setWorkingDirectory(file);
         return command;
-    }
-
-    /**
-     * Gets the trigger.
-     *
-     * @param action The action name.
-     * @return The trigger.
-     */
-    public static Trigger getTrigger(String action) {
-        return new Trigger(action, new ArrayList<>());
-    }
-
-    /**
-     * Gets the trigger.
-     *
-     * @param action     The action name.
-     * @param parameters The trigger parameters.
-     * @return A trigger.
-     */
-    public static Trigger getTrigger(String action, Object... parameters) {
-        return new Trigger(action, Arrays.asList(parameters));
     }
 
     /**

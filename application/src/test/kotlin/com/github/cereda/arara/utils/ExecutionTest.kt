@@ -83,4 +83,10 @@ class ExecutionTest : ShouldSpec({
         outputForTest("changes") shouldContain "QuackOne"
         outputForTest("changes") shouldNotContain "QuackOne"
     }
+
+    should("halt on halt rule") {
+        val output = outputForTest("halt")
+        output shouldContain "QuackOne"
+        output shouldNotContain "QuackTwo"
+    }
 })

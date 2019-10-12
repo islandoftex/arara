@@ -1,0 +1,10 @@
+!config
+identifier: echotwo
+name: Test rule for conditionals 2
+commands:
+  - name: The echoer
+    command: >
+      @{
+          return getCommand('echo', 'QuackTwo');
+      }
+arguments: []

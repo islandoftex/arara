@@ -49,13 +49,16 @@ object AraraSpec : ConfigSpec() {
         // initialized and tested
         val reference by optional(File("/tmp/"))
         val file by optional(File("/tmp/"))
+
         object InfoSpec : ConfigSpec() {
             val ruleId by optional<String?>(null)
             val rulePath by optional<String?>(null)
         }
+
         object DirectiveSpec : ConfigSpec() {
             val lines by optional(listOf<Int>())
         }
+
         val filePattern by optional("")
     }
 
@@ -65,10 +68,6 @@ object AraraSpec : ConfigSpec() {
         private const val directive = "^\\s*(\\w+)\\s*(:\\s*(\\{.*\\})\\s*)?"
         private const val pattern = "(\\s+(if|while|until|unless)\\s+(\\S.*))?$"
         val directivePattern by optional(directive + pattern)
-    }
-
-    object Trigger : ConfigSpec() {
-        val halt by optional(false)
     }
 
     object UserInteraction : ConfigSpec() {
