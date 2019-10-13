@@ -11,6 +11,8 @@ plugins {
     `maven-publish`
     kotlin("jvm")
     id("com.github.johnrengelman.shadow")
+    id("io.gitlab.arturbosch.detekt")
+    id("org.jetbrains.dokka")
 }
 
 val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class).kotlinPluginVersion
@@ -66,11 +68,11 @@ val mainManifest: Manifest = DefaultManifest((project as ProjectInternal).fileRe
         }
 
 tasks {
-    register<Jar>("javadocJar") {
+    register<Jar>("dokkaJar") {
         group = JavaBasePlugin.DOCUMENTATION_GROUP
-        description = "Create JAR with javadoc documentation"
-        archiveClassifier.set("javadoc")
-        from(javadoc)
+        description = "Create JAR with dokka documentation"
+        archiveClassifier.set("dokka")
+        from(dokka)
     }
     register<Jar>("sourcesJar") {
         group = JavaBasePlugin.DOCUMENTATION_GROUP
@@ -198,7 +200,7 @@ publishing {
 
             from(components["java"])
             artifact(tasks["sourcesJar"])
-            artifact(tasks["javadocJar"])
+            artifact(tasks["dokkaJar"])
         }
     }
 
