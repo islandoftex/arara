@@ -75,7 +75,7 @@ object DirectiveUtils {
      */
     @Throws(AraraException::class)
     fun extractDirectives(lines: List<String>): List<Directive> {
-        val header = Arara.config[AraraSpec.Execution.header]
+        val header = Arara.config[AraraSpec.Execution.onlyHeader]
         var regex = Arara.config[AraraSpec.Execution.filePattern]
         val linecheck = Pattern.compile(regex)
         regex += Arara.config[AraraSpec.Application.namePattern]

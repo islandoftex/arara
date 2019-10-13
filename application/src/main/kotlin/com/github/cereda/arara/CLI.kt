@@ -7,6 +7,7 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
+import com.github.ajalt.clikt.parameters.types.path
 import com.github.ajalt.clikt.parameters.types.restrictTo
 import com.github.cereda.arara.configuration.AraraSpec
 import com.github.cereda.arara.localization.Language
@@ -25,17 +26,18 @@ import kotlin.time.milliseconds
 class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
     private val log by option("-l", "--log",
             help = "Generate a log output")
-            .flag(default = false)
+            .flag(default = AraraSpec.Execution.logging.default)
     private val verbose by option("-v", "--verbose",
             help = "Print the command output")
-            .flag("-s", "--silent", default = false)
+            .flag("-s", "--silent",
+                    default = AraraSpec.Execution.verbose.default)
     private val dryrun by option("-n", "--dry-run",
             help = "Go through all the motions of running a command, but " +
                     "with no actual calls")
-            .flag(default = false)
+            .flag(default = AraraSpec.Execution.dryrun.default)
     private val onlyheader by option("-H", "--header",
             help = "Extract directives only in the file header")
-            .flag(default = false)
+            .flag(default = AraraSpec.Execution.onlyHeader.default)
     private val timeout by option("-t", "--timeout",
             help = "Set the execution timeout (in milliseconds)")
             .int().restrictTo(min = 1)
@@ -48,6 +50,10 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
             .default(AraraSpec.Execution.maxLoops.default)
     private val preamble by option("-p", "--preamble",
             help = "Set the file preamble based on the configuration file")
+    private val workingDirectory by option("-d", "--working-directory",
+            help = "Set the working directory for all tools")
+            .path(exists = true, fileOkay = false, readable = true)
+            .default(AraraSpec.Execution.workingDirectory.default)
 
     private val reference by argument("file",
             help = "The file(s) to evaluate and process")
@@ -66,8 +72,9 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         Arara.config[AraraSpec.Execution.logging] = log
         Arara.config[AraraSpec.Execution.verbose] = verbose
         Arara.config[AraraSpec.Execution.dryrun] = dryrun
-        Arara.config[AraraSpec.Execution.header] = onlyheader
+        Arara.config[AraraSpec.Execution.onlyHeader] = onlyheader
         Arara.config[AraraSpec.Execution.maxLoops] = maxLoops
+        Arara.config[AraraSpec.Execution.workingDirectory] = workingDirectory
         preamble?.let {
             val preambles = Arara.config[AraraSpec.Execution.preambles]
             if (preambles.containsKey(it)) {

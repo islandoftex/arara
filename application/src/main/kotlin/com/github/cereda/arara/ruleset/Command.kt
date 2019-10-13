@@ -33,6 +33,8 @@
  */
 package com.github.cereda.arara.ruleset
 
+import com.github.cereda.arara.Arara
+import com.github.cereda.arara.configuration.AraraSpec
 import com.github.cereda.arara.utils.CommonUtils
 import java.io.File
 
@@ -49,8 +51,8 @@ class Command {
 
     // an optional file acting as a reference
     // for the default working directory
-    // TODO: initialize with application's working directory
-    var workingDirectory: File? = null
+    var workingDirectory: File = Arara.config[AraraSpec.Execution
+            .workingDirectory].toFile()
 
     /**
      * Constructor.
@@ -72,19 +74,11 @@ class Command {
     }
 
     /**
-     * Checks if a working directory was defined.
-     * @return A logic value indicating if a working directory was defined.
-     */
-    fun hasWorkingDirectory(): Boolean = workingDirectory != null
-
-    /**
      * Provides a textual representation of the current command.
      * @return A string representing the current command.
      */
     override fun toString(): String {
         return "[ " + elements.joinToString(", ") + " ]" +
-                if (hasWorkingDirectory()) " @ " + workingDirectory!!.toString()
-                else ""
+                " @ $workingDirectory"
     }
-
 }

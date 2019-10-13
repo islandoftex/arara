@@ -50,14 +50,19 @@ class LocalConfiguration {
     // rule paths
     var paths: List<String> = listOf()
         get() {
-            val user = mutableMapOf<String, Any>(
+            val user = mapOf(
                     "home" to (CommonUtils.getSystemPropertyOrNull("user.home")
                             ?: ""),
                     "dir" to (CommonUtils.getSystemPropertyOrNull("user.dir")
                             ?: ""),
                     "name" to (CommonUtils.getSystemPropertyOrNull("user.name")
                             ?: ""))
-            val map = mutableMapOf<String, Any>("user" to user)
+            val application = mapOf(
+                    "workingDirectory" to Arara.config[AraraSpec.Execution
+                            .workingDirectory].toAbsolutePath().toString()
+            )
+            val map = mutableMapOf("user" to user,
+                    "application" to application)
 
             // TODO: do we call this often?
             return field.map { input ->
@@ -91,7 +96,7 @@ class LocalConfiguration {
     var isLogging: Boolean = Arara.config[AraraSpec.Execution.logging]
 
     // header flag
-    var isHeader: Boolean = Arara.config[AraraSpec.Execution.header]
+    var isHeader: Boolean = Arara.config[AraraSpec.Execution.onlyHeader]
 
     // database name
     var dbname: String = Arara.config[AraraSpec.Execution.databaseName]

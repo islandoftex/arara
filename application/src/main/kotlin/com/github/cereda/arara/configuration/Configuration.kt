@@ -129,7 +129,7 @@ object Configuration {
 
         Arara.config[AraraSpec.Execution.verbose] = resource.isVerbose
         Arara.config[AraraSpec.Execution.logging] = resource.isLogging
-        Arara.config[AraraSpec.Execution.header] = resource.isHeader
+        Arara.config[AraraSpec.Execution.onlyHeader] = resource.isHeader
         Arara.config[AraraSpec.Execution.language] =
                 Language(resource.language)
         Arara.config[AraraSpec.UserInteraction.lookAndFeel] = resource.laf

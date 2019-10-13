@@ -13,6 +13,7 @@ import io.kotlintest.specs.ShouldSpec
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
+import java.nio.file.Paths
 import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
@@ -21,11 +22,11 @@ class ExecutionTest : ShouldSpec({
     fun getPathForTest(name: String): String = "src/test/resources/$name"
     fun outputForTest(testName: String): String {
         val sysout = System.out
-        val previousUserDir = System.getProperty("user.dir")!!
         val output = ByteArrayOutputStream()
         try {
             System.setOut(PrintStream(output))
-            System.setProperty("user.dir", getPathForTest(testName))
+            Arara.config[AraraSpec.Execution.workingDirectory] =
+                    Paths.get(getPathForTest(testName))
             Configuration.load()
             Arara.config[AraraSpec.Execution.verbose] = true
             CommonUtils.discoverFile("$testName.tex")
@@ -36,7 +37,6 @@ class ExecutionTest : ShouldSpec({
         } catch (ex: Exception) {
             ex.printStackTrace()
         } finally {
-            System.setProperty("user.dir", previousUserDir)
             System.setOut(sysout)
             output.close()
         }

@@ -104,11 +104,7 @@ object InterpreterUtils {
         val buffer = ByteArrayOutputStream()
         var executor = ProcessExecutor()
         executor = executor.command((command).elements)
-        if (command.hasWorkingDirectory()) {
-            executor = executor.directory(
-                    command.workingDirectory
-            )
-        }
+        executor = executor.directory(command.workingDirectory.absoluteFile)
         if (timeout) {
             if (timeOutValue == Duration.ZERO) {
                 throw AraraException(
@@ -200,5 +196,4 @@ object InterpreterUtils {
             CommonUtils.buildPath(parent, fileName)
         }
     }
-
 }

@@ -88,6 +88,14 @@ object ConfigurationUtils {
         get() {
             val names = listOf(".araraconfig.yaml",
                     "araraconfig.yaml", ".arararc.yaml", "arararc.yaml")
+            Arara.config[AraraSpec.Execution.workingDirectory]
+                    .let { workingDir ->
+                        val first = names
+                                .map { workingDir.resolve(it).toFile() }
+                                .firstOrNull { it.exists() }
+                        if (first != null)
+                            return first
+                    }
             CommonUtils.getSystemPropertyOrNull("user.dir")?.let { userDir ->
                 val first = names
                         .map { File(CommonUtils.buildPath(userDir, it)) }

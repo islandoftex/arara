@@ -4,6 +4,7 @@ import com.github.cereda.arara.localization.Language
 import com.github.cereda.arara.utils.CommonUtils
 import com.uchuhimo.konf.ConfigSpec
 import java.io.File
+import java.nio.file.Paths
 import java.time.LocalDate
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
@@ -42,14 +43,14 @@ object AraraSpec : ConfigSpec() {
         val preamblesActive by optional(false)
         val preamblesContent by optional("")
 
+        val workingDirectory by optional(Paths.get(""))
         val configurationName by optional("[none]")
-        val header by optional(false)
+        val onlyHeader by optional(false)
 
         // TODO: these are runtime values, they should be properly
         // initialized and tested
         val reference by optional(File("/tmp/"))
         val file by optional(File("/tmp/"))
-
         object InfoSpec : ConfigSpec() {
             val ruleId by optional<String?>(null)
             val rulePath by optional<String?>(null)
@@ -58,7 +59,6 @@ object AraraSpec : ConfigSpec() {
         object DirectiveSpec : ConfigSpec() {
             val lines by optional(listOf<Int>())
         }
-
         val filePattern by optional("")
     }
 

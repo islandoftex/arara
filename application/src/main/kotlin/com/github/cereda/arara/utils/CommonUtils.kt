@@ -177,6 +177,7 @@ object CommonUtils {
      * @param file A string representing the file to be appended.
      * @return The full path as a string.
      */
+    // TODO: remove in favor of using `resolve` on File and Path objects
     fun buildPath(path: String, file: String): String {
         return if (path.endsWith(File.separator))
             path + file
@@ -242,7 +243,8 @@ object CommonUtils {
     @Throws(AraraException::class)
     private fun lookupFile(reference: String): File? {
         val types = Arara.config[AraraSpec.Execution.fileTypes]
-        val file = File(reference)
+        val file = Arara.config[AraraSpec.Execution.workingDirectory]
+                .resolve(reference).toFile()
         val name = file.name
         val parent = getParentCanonicalPath(file)
 
