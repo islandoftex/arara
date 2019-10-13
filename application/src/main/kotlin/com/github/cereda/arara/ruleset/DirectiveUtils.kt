@@ -174,12 +174,8 @@ object DirectiveUtils {
                     lineNumbers = assembler.getLineNumbers()
             )
 
-            logger.info(
-                    messages.getMessage(
-                            Messages.LOG_INFO_POTENTIAL_DIRECTIVE_FOUND,
-                            directive
-                    )
-            )
+            logger.info(messages.getMessage(
+                    Messages.LOG_INFO_POTENTIAL_DIRECTIVE_FOUND, directive))
 
             return directive
         } else {
@@ -231,7 +227,6 @@ object DirectiveUtils {
                 DirectiveResolver()
         )
         try {
-            // TODO: check type checking
             return yaml.loadAs(text, HashMap::class.java)
                     .mapKeys { it.toString() }
         } catch (exception: MarkedYAMLException) {
@@ -255,9 +250,9 @@ object DirectiveUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun validate(directives: List<Directive>): List<Directive> {
+    fun process(directives: List<Directive>): List<Directive> {
         val result = mutableListOf<Directive>()
-        for (directive in directives) {
+        directives.forEach { directive ->
             val parameters = directive.parameters.toMutableMap()
 
             if (parameters.containsKey("reference")) {
@@ -282,23 +277,14 @@ object DirectiveUtils {
                                 )
                         )
                     }
-                    for (file in files) {
-                        // copy the parameters map into a new one
-                        val map = parameters.toMutableMap()
-                        val representation = CommonUtils
-                                .getCanonicalFile(File(file.toString()))
 
-                        map["reference"] = representation
-                        result.add(Directive(
-                                identifier = directive.identifier,
-                                conditional = Conditional(
-                                        type = directive.conditional.type,
-                                        condition = directive.conditional.condition
-                                ),
-                                parameters = map,
-                                lineNumbers = directive.lineNumbers
-                        ))
-                    }
+                    result.addAll(files
+                            .map { File(it.toString()) }
+                            .map(CommonUtils::getCanonicalFile)
+                            .map { reference ->
+                                directive.copy(parameters = parameters
+                                        .plus("reference" to reference))
+                            })
                 } else {
                     throw AraraException(
                             messages.getMessage(
@@ -308,26 +294,17 @@ object DirectiveUtils {
                     )
                 }
             } else {
-                val representation = Arara.config[AraraSpec.Execution.reference]
-                parameters["reference"] = representation
-                result.add(directive.copy(parameters = parameters))
+                result.add(directive.copy(parameters = parameters
+                        .plus("reference" to
+                                Arara.config[AraraSpec.Execution.reference])))
             }
         }
 
-        logger.info(
-                messages.getMessage(
-                        Messages.LOG_INFO_VALIDATED_DIRECTIVES
-                )
-        )
+        logger.info(messages.getMessage(
+                Messages.LOG_INFO_VALIDATED_DIRECTIVES))
         logger.info(DisplayUtils.displayOutputSeparator(
-                messages.getMessage(
-                        Messages.LOG_INFO_DIRECTIVES_BLOCK
-                )
-        ))
-        for (directive in result) {
-            logger.info(directive.toString())
-        }
-
+                messages.getMessage(Messages.LOG_INFO_DIRECTIVES_BLOCK)))
+        result.forEach { logger.info(it.toString()) }
         logger.info(DisplayUtils.displaySeparator())
 
         return result

@@ -98,26 +98,21 @@ object InterpreterUtils {
     @ExperimentalTime
     @Throws(AraraException::class)
     fun run(command: Command): Int {
-        val verbose = Arara.config[AraraSpec.Execution.verbose]
         val timeout = Arara.config[AraraSpec.Execution.timeout]
         val timeOutValue = Arara.config[AraraSpec.Execution.timeoutValue]
         val buffer = ByteArrayOutputStream()
-        var executor = ProcessExecutor()
-        executor = executor.command((command).elements)
-        executor = executor.directory(command.workingDirectory.absoluteFile)
+        var executor = ProcessExecutor().command((command).elements)
+                .directory(command.workingDirectory.absoluteFile)
         if (timeout) {
             if (timeOutValue == Duration.ZERO) {
-                throw AraraException(
-                        messages.getMessage(
-                                Messages.ERROR_RUN_TIMEOUT_INVALID_RANGE
-                        )
-                )
+                throw AraraException(messages.getMessage(Messages
+                        .ERROR_RUN_TIMEOUT_INVALID_RANGE))
             }
             executor = executor.timeout(timeOutValue.toLongNanoseconds(),
                     TimeUnit.NANOSECONDS)
         }
         val tee: TeeOutputStream
-        if (verbose) {
+        if (Arara.config[AraraSpec.Execution.verbose]) {
             tee = TeeOutputStream(System.out, buffer)
             executor = executor.redirectInput(System.`in`)
         } else {
@@ -130,15 +125,11 @@ object InterpreterUtils {
             val exit = executor.execute().exitValue
             logger.info(DisplayUtils.displayOutputSeparator(
                     messages.getMessage(
-                            Messages.LOG_INFO_BEGIN_BUFFER
-                    )
-            ))
+                            Messages.LOG_INFO_BEGIN_BUFFER)))
             logger.info(buffer.toString())
             logger.info(DisplayUtils.displayOutputSeparator(
                     messages.getMessage(
-                            Messages.LOG_INFO_END_BUFFER
-                    )
-            ))
+                            Messages.LOG_INFO_END_BUFFER)))
             return exit
         } catch (exception: Exception) {
             throw AraraException(messages.getMessage(
@@ -190,6 +181,8 @@ object InterpreterUtils {
         return if (location.isAbsolute) {
             location.resolve(fileName).toString()
         } else {
+            // TODO: why are we resolving against reference? Should it be
+            // working directory?
             val reference = Arara.config[AraraSpec.Execution.reference]
             val parent = CommonUtils.getParentCanonicalFile(reference).resolve(path)
             parent.resolve(fileName).toString()

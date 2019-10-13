@@ -66,19 +66,12 @@ object DatabaseUtils {
     private val file: File
         @Throws(AraraException::class)
         get() {
+            val reference = Arara.config[AraraSpec.Execution.reference]
             val name = Arara.config[AraraSpec.Execution.databaseName] +
                     ".yaml"
             val path = CommonUtils.getParentCanonicalFile(reference)
             return path.resolve(name)
         }
-
-    /**
-     * Gets the main file reference.
-     *
-     * @return The main file reference.
-     */
-    private val reference: File
-        get() = Arara.config[AraraSpec.Execution.reference]
 
     /**
      * Loads the YAML file representing the database.
@@ -98,13 +91,8 @@ object DatabaseUtils {
                 Yaml(Constructor(Database::class.java), representer)
                         .loadAs(file.readText(), Database::class.java)
             } catch (exception: Exception) {
-                throw AraraException(
-                        messages.getMessage(
-                                Messages.ERROR_LOAD_COULD_NOT_LOAD_XML,
-                                file.name
-                        ),
-                        exception
-                )
+                throw AraraException(messages.getMessage(Messages
+                        .ERROR_LOAD_COULD_NOT_LOAD_XML, file.name), exception)
             }
 
         }

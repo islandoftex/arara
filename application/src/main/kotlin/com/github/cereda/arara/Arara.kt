@@ -112,8 +112,7 @@ object Arara {
             // that the list of extracted directives might differ from
             // the final list of directives to be effectively processed
             // by arara
-            // TODO: rename validate, it doesn't only validate
-            val directives = DirectiveUtils.validate(extracted)
+            val directives = DirectiveUtils.process(extracted)
 
             // time to shine, now the interpreter class will interpret
             // one directive at a time, get the corresponding rule,

@@ -67,6 +67,40 @@ class Evaluator {
     private var halt: Boolean = false
 
     /**
+     * Check if a condition is of type if or unless and whether halt
+     * is set.
+     * @param type The type to check.
+     * @param haltCheck The value [halt] should have.
+     * @return `(type == if || type == unless) && haltCheck`
+     */
+    private fun isIfUnlessAndHalt(type: Conditional.ConditionalType,
+                                  haltCheck: Boolean = true): Boolean =
+            (type == Conditional.ConditionalType.IF
+                    || type == Conditional.ConditionalType.UNLESS)
+                    && halt == haltCheck
+
+    /**
+     * Only run the evaluation of the conditional including a check whether
+     * the result needs to be inverted.
+     * @param conditional The conditional.
+     * @return The result of the evaluation.
+     */
+    private fun evaluateCondition(conditional: Conditional): Boolean {
+        val result = TemplateRuntime.eval("@{ " + conditional.condition + " }",
+                Methods.getConditionalMethods())
+        return if (result is Boolean) {
+            if (conditional.type == Conditional.ConditionalType.UNLESS ||
+                    conditional.type == Conditional.ConditionalType.UNTIL)
+                !result
+            else
+                result
+        } else {
+            throw AraraException(messages.getMessage(
+                    Messages.ERROR_EVALUATE_NOT_BOOLEAN_VALUE))
+        }
+    }
+
+    /**
      * Evaluate the provided conditional.
      *
      * @param conditional The conditional object.
@@ -76,20 +110,15 @@ class Evaluator {
      */
     @Throws(AraraException::class)
     fun evaluate(conditional: Conditional): Boolean {
-        // when in dry-run mode, arara
-        // always ignore conditional evaluations
-        if (Arara.config[AraraSpec.Execution.dryrun])
+        // when in dry-run mode or not evaluating a
+        // conditional, arara always ignores conditional
+        // evaluations
+        if (conditional.type == Conditional.ConditionalType.NONE ||
+                Arara.config[AraraSpec.Execution.dryrun] ||
+                isIfUnlessAndHalt(conditional.type, true))
             return false
-
-        // TODO: make exhaustive
-        when (conditional.type) {
-            Conditional.ConditionalType.NONE -> return false
-            Conditional.ConditionalType.IF,
-            Conditional.ConditionalType.UNLESS -> if (!halt) {
-                halt = true
-            } else {
-                return false
-            }
+        else if (isIfUnlessAndHalt(conditional.type, false)) {
+            halt = true
         }
 
         // check counters and see if the execution
@@ -102,30 +131,12 @@ class Evaluator {
             conditional.type === Conditional.ConditionalType.UNTIL
                     && counter >= loops -> false
             else -> {
-                val context = Methods.getConditionalMethods()
-
                 try {
-                    val result = TemplateRuntime.eval("@{ " + conditional.condition + " }", context)
-                    if (result !is Boolean) {
-                        throw AraraException(
-                                messages.getMessage(
-                                        Messages.ERROR_EVALUATE_NOT_BOOLEAN_VALUE
-                                )
-                        )
-                    } else {
-                        var value = result
-                        if (conditional.type == Conditional.ConditionalType.UNLESS ||
-                                conditional.type == Conditional.ConditionalType.UNTIL)
-                            value = !value
-                        return value
-                    }
+                    evaluateCondition(conditional)
                 } catch (exception: RuntimeException) {
-                    throw AraraException(
-                            messages.getMessage(
-                                    Messages.ERROR_EVALUATE_COMPILATION_FAILED
-                            ),
-                            exception
-                    )
+                    throw AraraException(messages.getMessage(Messages
+                            .ERROR_EVALUATE_COMPILATION_FAILED),
+                            exception)
                 }
             }
         }

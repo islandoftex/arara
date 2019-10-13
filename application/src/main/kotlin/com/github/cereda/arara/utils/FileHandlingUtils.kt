@@ -35,8 +35,6 @@ package com.github.cereda.arara.utils
 
 import java.io.File
 import java.io.IOException
-import java.nio.file.Files
-import java.nio.file.StandardOpenOption
 
 /**
  * Implements file handling utilitary methods.
@@ -79,26 +77,16 @@ object FileHandlingUtils {
      * @return A logical value indicating whether it was successful.
      */
     fun writeToFile(file: File, lines: List<String>,
-                    append: Boolean): Boolean {
-        return try {
-            // try to write the provided
-            // string lists to the file,
-            // with UTF-8 as encoding
-            Files.write(file.toPath(), lines, Charsets.UTF_8,
-                    if (append) StandardOpenOption.APPEND
-                    else StandardOpenOption.TRUNCATE_EXISTING)
-            true
-        } catch (_: IOException) {
-            // if something bad happens,
-            // gracefully fallback to
-            // reporting the failure
-            false
-        }
-
-    }
+                    append: Boolean): Boolean =
+            try {
+                writeToFile(file, lines.joinToString(System.lineSeparator()),
+                        append)
+            } catch (_: IOException) {
+                false
+            }
 
     /**
-     * Reads the provided file into a list of strings.
+     * Reads the provided file (UTF-8) into a list of strings.
      * @param file The file.
      * @return A list of strings.
      */
