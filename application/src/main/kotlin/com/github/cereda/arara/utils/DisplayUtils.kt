@@ -89,7 +89,7 @@ object DisplayUtils {
      */
     private val applicationPath: String
         get() = try {
-            ConfigurationUtils.applicationPath
+            ConfigurationUtils.applicationPath.toString()
         } catch (ae: AraraException) {
             "[unknown application path]"
         }
@@ -101,9 +101,7 @@ object DisplayUtils {
      * @param task Task name.
      */
     private fun buildShortEntry(name: String, task: String) {
-        val result = if (longestMatch >= width)
-            10
-        else longestMatch
+        val result = if (longestMatch >= width) 10 else longestMatch
         val space = width - result - 1
         val line = "($name) $task ".abbreviate(space - 4)
         print(line.padEnd(space, '.') + " ")
@@ -290,9 +288,7 @@ object DisplayUtils {
      *
      * @param text The text to be displayed.
      */
-    fun wrapText(text: String) {
-        println(text.wrap(width))
-    }
+    fun wrapText(text: String) = println(text.wrap(width))
 
     /**
      * Displays the rule authors in the terminal.

@@ -58,18 +58,18 @@ object DatabaseUtils {
     private val messages = LanguageController
 
     /**
-     * Gets the path to the YAML file representing the database as string.
+     * Gets the file representing the YAML file (database).
      *
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
-    private val path: String
+    private val file: File
         @Throws(AraraException::class)
         get() {
             val name = Arara.config[AraraSpec.Execution.databaseName] +
                     ".yaml"
-            val path = CommonUtils.getParentCanonicalPath(reference)
-            return CommonUtils.buildPath(path, name)
+            val path = CommonUtils.getParentCanonicalFile(reference)
+            return path.resolve(name)
         }
 
     /**
@@ -92,7 +92,6 @@ object DatabaseUtils {
         return if (!exists()) {
             Database()
         } else {
-            val file = File(path)
             try {
                 val representer = Representer()
                 representer.addClassTag(Database::class.java, Tag("!database"))
@@ -120,7 +119,6 @@ object DatabaseUtils {
      */
     @Throws(AraraException::class)
     fun save(database: Database) {
-        val file = File(path)
         try {
             val representer = Representer()
             representer.addClassTag(Database::class.java, Tag("!database"))
@@ -148,7 +146,7 @@ object DatabaseUtils {
      */
     @Throws(AraraException::class)
     private fun exists(): Boolean {
-        return File(path).exists()
+        return file.exists()
     }
 
 }

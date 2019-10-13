@@ -188,12 +188,11 @@ object InterpreterUtils {
         val fileName = "$name.yaml"
         val location = File(path)
         return if (location.isAbsolute) {
-            CommonUtils.buildPath(path, fileName)
+            location.resolve(fileName).toString()
         } else {
             val reference = Arara.config[AraraSpec.Execution.reference]
-            val parent = CommonUtils.buildPath(
-                    CommonUtils.getParentCanonicalPath(reference), path)
-            CommonUtils.buildPath(parent, fileName)
+            val parent = CommonUtils.getParentCanonicalFile(reference).resolve(path)
+            parent.resolve(fileName).toString()
         }
     }
 }

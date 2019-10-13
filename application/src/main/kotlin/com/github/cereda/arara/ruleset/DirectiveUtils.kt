@@ -46,6 +46,7 @@ import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.Constructor
 import org.yaml.snakeyaml.error.MarkedYAMLException
 import org.yaml.snakeyaml.representer.Representer
+import java.io.File
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -284,7 +285,8 @@ object DirectiveUtils {
                     for (file in files) {
                         // copy the parameters map into a new one
                         val map = parameters.toMutableMap()
-                        val representation = CommonUtils.getCanonicalFile(file.toString())
+                        val representation = CommonUtils
+                                .getCanonicalFile(File(file.toString()))
 
                         map["reference"] = representation
                         result.add(Directive(

@@ -105,26 +105,22 @@ object Configuration {
                     ConfigurationUtils.normalizePaths(resource.paths)
 
         if (resource.filetypes.isNotEmpty()) {
-            val resources = resource.filetypes
-            var filetypes = mutableListOf<FileType>()
-            resources.forEach { type ->
-                if (type.pattern != null) {
-                    filetypes.add(FileType(type.extension!!, type.pattern!!))
-                } else {
-                    filetypes.add(FileType(type.extension!!,
-                            ConfigurationUtils.defaultFileTypePatterns[type
-                                    .extension!!] ?: throw AraraException(
-                                    messages.getMessage(
-                                            Messages.ERROR_FILETYPE_UNKNOWN_EXTENSION,
-                                            type.extension!!,
-                                            CommonUtils.fileTypesList
-                                    )
-                            )))
-                }
-            }
-            filetypes = ConfigurationUtils.normalizeFileTypes(filetypes)
-                    .toMutableList()
-            Arara.config[AraraSpec.Execution.fileTypes] = filetypes
+            Arara.config[AraraSpec.Execution.fileTypes] = ConfigurationUtils
+                    .normalizeFileTypes(resource.filetypes.map { type ->
+                        if (type.pattern != null) {
+                            FileType(type.extension!!, type.pattern!!)
+                        } else {
+                            FileType(type.extension!!, ConfigurationUtils
+                                    .defaultFileTypePatterns[type.extension!!]
+                                    ?: throw AraraException(
+                                            messages.getMessage(
+                                                    Messages.ERROR_FILETYPE_UNKNOWN_EXTENSION,
+                                                    type.extension!!,
+                                                    CommonUtils.fileTypesList
+                                            )
+                                    ))
+                        }
+                    })
         }
 
         Arara.config[AraraSpec.Execution.verbose] = resource.isVerbose
@@ -141,11 +137,8 @@ object Configuration {
 
         val loops = resource.loops
         if (loops <= 0) {
-            throw AraraException(
-                    messages.getMessage(
-                            Messages.ERROR_CONFIGURATION_LOOPS_INVALID_RANGE
-                    )
-            )
+            throw AraraException(messages.getMessage(Messages
+                    .ERROR_CONFIGURATION_LOOPS_INVALID_RANGE))
         } else {
             Arara.config[AraraSpec.Execution.maxLoops] = loops
         }

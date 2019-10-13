@@ -717,7 +717,7 @@ public class Methods {
      * @return The object enclosed in double quotes.
      */
     public static String addQuotes(Object object) {
-        return CommonUtils.INSTANCE.addQuotes(object);
+        return "\"" + object.toString() + "\"";
     }
 
     /**

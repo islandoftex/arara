@@ -22,4 +22,17 @@ class CommonUtilsTest : ShouldSpec({
         CommonUtils.calculateHash(File("../LICENSE")) shouldBe "17f430a5"
         CommonUtils.calculateHash(File("../CODE_OF_CONDUCT.md")) shouldBe "536c426f"
     }
+
+    should("find system utils") {
+        CommonUtils.isOnPath("echo") shouldBe true
+    }
+    should("not find utils with fantasy name") {
+        // hopefully no one will have such a command in the path…
+        CommonUtils.isOnPath("echoQuackForArara") shouldBe false
+    }
+
+    should("flatten lists correctly") {
+        CommonUtils.flatten(listOf(1, 2, listOf(3, 4, listOf(5, 6))))
+                .toSet() shouldBe (setOf(1, 2, 3, 4, 5, 6) as Set<Any>)
+    }
 })

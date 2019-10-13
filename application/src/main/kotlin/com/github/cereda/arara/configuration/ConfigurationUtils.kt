@@ -48,6 +48,8 @@ import java.io.File
 import java.io.FileReader
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
+import java.nio.file.Path
+import java.nio.file.Paths
 
 /**
  * Implements configuration utilitary methods.
@@ -72,7 +74,7 @@ object ConfigurationUtils {
     )
 
     // list of default file types provided by arara, in order.
-    val defaultFileTypes: List<FileType>
+    val defaultFileTypes: Set<FileType>
         @Throws(AraraException::class)
         get() = listOf("tex", "dtx", "ltx", "drv", "ins")
                 .map {
@@ -80,6 +82,7 @@ object ConfigurationUtils {
                             ?: throw AraraException("File type not found in " +
                                     "defaults (severe developer error)"))
                 }
+                .toSet()
 
     // look for configuration files in the user's working directory first
     // if no configuration files are found in the user's working directory,
@@ -98,13 +101,13 @@ object ConfigurationUtils {
                     }
             CommonUtils.getSystemPropertyOrNull("user.dir")?.let { userDir ->
                 val first = names
-                        .map { File(CommonUtils.buildPath(userDir, it)) }
+                        .map { File(userDir).resolve(it) }
                         .firstOrNull { it.exists() }
                 if (first != null)
                     return first
             }
             CommonUtils.getSystemPropertyOrNull("user.home")?.let { userHome ->
-                return names.map { File(CommonUtils.buildPath(userHome, it)) }
+                return names.map { File(userHome).resolve(it) }
                         .firstOrNull { it.exists() }
             }
             return null
@@ -116,15 +119,14 @@ object ConfigurationUtils {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
-    val applicationPath: String
+    val applicationPath: Path
         @Throws(AraraException::class)
         get() {
             try {
                 var path = Arara::class.java.protectionDomain.codeSource
                         .location.path
                 path = URLDecoder.decode(path, "UTF-8")
-                path = File(path).parentFile.path
-                return path
+                return Paths.get(path).parent.toAbsolutePath()
             } catch (exception: UnsupportedEncodingException) {
                 throw AraraException(
                         messages.getMessage(
@@ -185,11 +187,8 @@ object ConfigurationUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun normalizePaths(paths: List<String>): List<String> {
-        val pathlist = paths.toMutableList()
-        pathlist.add(CommonUtils.buildPath(applicationPath, "rules"))
-        return pathlist.distinct()
-    }
+    fun normalizePaths(paths: Iterable<String>): Set<String> =
+            paths.union(AraraSpec.Execution.rulePaths.default)
 
     /**
      * Normalize a list of file types, removing all duplicates.
@@ -200,11 +199,8 @@ object ConfigurationUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun normalizeFileTypes(types: List<FileType>): List<FileType> {
-        val typelist = types.toMutableList()
-        typelist.addAll(defaultFileTypes)
-        return typelist.distinct()
-    }
+    fun normalizeFileTypes(types: Iterable<FileType>): Set<FileType> =
+            types.union(defaultFileTypes)
 
     /**
      * Cleans the file name to avoid invalid entries.
@@ -216,5 +212,4 @@ object ConfigurationUtils {
         val result = File(name).name.trim()
         return if (result.isEmpty()) "arara" else result.trim()
     }
-
 }

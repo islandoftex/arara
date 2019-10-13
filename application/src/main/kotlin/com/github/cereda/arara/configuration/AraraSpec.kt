@@ -35,10 +35,10 @@ object AraraSpec : ConfigSpec() {
         val dryrun by optional(false)
         val status by optional(0)
         val fileTypes by optional(ConfigurationUtils.defaultFileTypes)
-        val rulePaths by optional(listOf(CommonUtils.buildPath(
-                ConfigurationUtils.applicationPath,
-                "rules"
-        )))
+        val rulePaths by optional(setOf(
+                ConfigurationUtils.applicationPath.resolve("rules")
+                        .toString()
+        ))
         val preambles by optional(mapOf<String, String>())
         val preamblesActive by optional(false)
         val preamblesContent by optional("")

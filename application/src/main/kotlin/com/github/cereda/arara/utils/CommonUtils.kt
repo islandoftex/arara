@@ -102,12 +102,9 @@ object CommonUtils {
      */
     val allRulePaths: List<String>
         @Throws(AraraException::class)
-        get() {
-            val paths = Arara.config[AraraSpec.Execution.rulePaths]
-            return paths.map {
-                val location = File(InterpreterUtils.construct(it, "quack"))
-                getParentCanonicalPath(location)
-            }
+        get() = Arara.config[AraraSpec.Execution.rulePaths].map {
+            val location = File(InterpreterUtils.construct(it, "quack"))
+            getParentCanonicalPath(location)
         }
 
     /**
@@ -171,21 +168,6 @@ object CommonUtils {
     }
 
     /**
-     * Build a system-dependant path based on the path and the file.
-     *
-     * @param path A string representing the path to be prepended.
-     * @param file A string representing the file to be appended.
-     * @return The full path as a string.
-     */
-    // TODO: remove in favor of using `resolve` on File and Path objects
-    fun buildPath(path: String, file: String): String {
-        return if (path.endsWith(File.separator))
-            path + file
-        else
-            path + File.separator + file
-    }
-
-    /**
      * Removes the keyword from the beginning of the provided string.
      *
      * @param line A string to be analyzed.
@@ -246,26 +228,26 @@ object CommonUtils {
         val file = Arara.config[AraraSpec.Execution.workingDirectory]
                 .resolve(reference).toFile()
         val name = file.name
-        val parent = getParentCanonicalPath(file)
+        val parent = getParentCanonicalFile(file)
 
         // direct search, so we are considering
         // the reference as a complete name
-        val testPath = buildPath(parent, name)
-        val testFile = File(testPath)
+        val testFile = parent.resolve(name)
         if (testFile.exists() && testFile.isFile) {
-            types.firstOrNull { testPath.endsWith("." + it.extension) }
-                    ?.let {
-                        Arara.config[AraraSpec.Execution.filePattern] =
-                                it.pattern
-                        Arara.config[AraraSpec.Execution.reference] = testFile
-                        return testFile
-                    }
+            types.firstOrNull {
+                testFile.toString().endsWith("." + it.extension)
+            }?.let {
+                Arara.config[AraraSpec.Execution.filePattern] =
+                        it.pattern
+                Arara.config[AraraSpec.Execution.reference] = testFile
+                return testFile
+            }
         }
 
         // indirect search; in this case, we are considering
         // that the file reference has an implicit extension,
         // so we need to add it and look again
-        types.map { it to File(buildPath(parent, name + "." + it.extension)) }
+        types.map { it to parent.resolve("$name.${it.extension}") }
                 .firstOrNull { it.second.exists() && it.second.isFile }
                 ?.let {
                     Arara.config[AraraSpec.Execution.filePattern] =
@@ -286,8 +268,21 @@ object CommonUtils {
      */
     @Throws(AraraException::class)
     fun getParentCanonicalPath(file: File): String {
+        return getParentCanonicalFile(file).toString()
+    }
+
+    /**
+     * Gets the parent canonical file of a file.
+     *
+     * @param file The file.
+     * @return The parent canonical file of a file.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    @Throws(AraraException::class)
+    fun getParentCanonicalFile(file: File): File {
         try {
-            return file.canonicalFile.parent
+            return file.canonicalFile.parentFile
         } catch (exception: IOException) {
             throw AraraException(
                     messages.getMessage(
@@ -295,48 +290,6 @@ object CommonUtils {
                     ),
                     exception
             )
-        }
-
-    }
-
-    /**
-     * Gets the canonical file from a file.
-     *
-     * @param file The file.
-     * @return The canonical file.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
-    @Throws(AraraException::class)
-    fun getCanonicalFile(file: String): File {
-        try {
-            return File(file).canonicalFile
-        } catch (exception: IOException) {
-            throw AraraException(
-                    messages.getMessage(
-                            Messages.ERROR_GETCANONICALFILE_IO_EXCEPTION
-                    ),
-                    exception
-            )
-        }
-
-    }
-
-    /**
-     * Helper method to flatten a potential list of lists into a list of
-     * objects.
-     *
-     * @param list First list.
-     * @param flat Second list.
-     */
-    // TODO: check nullity
-    private fun flatten(list: List<*>, flat: MutableList<Any>) {
-        for (item in list) {
-            if (item is List<*>) {
-                flatten(item, flat)
-            } else {
-                flat.add(item as Any)
-            }
         }
     }
 
@@ -346,9 +299,15 @@ object CommonUtils {
      * @param list The list to be flattened.
      * @return The flattened list.
      */
+    // TODO: check nullity
     fun flatten(list: List<*>): List<Any> {
         val result = mutableListOf<Any>()
-        flatten(list, result)
+        list.forEach { item ->
+            if (item is List<*>)
+                result.addAll(flatten(item))
+            else
+                result.add(item as Any)
+        }
         return result
     }
 
@@ -410,12 +369,8 @@ object CommonUtils {
                 value
             })
         } catch (exception: IOException) {
-            throw AraraException(
-                    messages.getMessage(
-                            Messages.ERROR_CALCULATEHASH_IO_EXCEPTION
-                    ),
-                    exception
-            )
+            throw AraraException(messages.getMessage(Messages
+                    .ERROR_CALCULATEHASH_IO_EXCEPTION), exception)
         }
 
     }
@@ -426,9 +381,7 @@ object CommonUtils {
      * @param file The file.
      * @return The corresponding file type.
      */
-    fun getFileExtension(file: File): String {
-        return file.extension
-    }
+    fun getFileExtension(file: File): String = file.extension
 
     /**
      * Gets the base name of a file.
@@ -436,18 +389,7 @@ object CommonUtils {
      * @param file The file.
      * @return The corresponding base name.
      */
-    fun getBasename(file: File): String {
-        return file.nameWithoutExtension
-    }
-
-    /**
-     * Encloses the provided object in double quotes.
-     *
-     * @param string The string.
-     * @return A string representation of the provided string enclosed in double
-     * quotes.
-     */
-    fun addQuotes(string: Any): String = "\"$string\""
+    fun getBasename(file: File): String = file.nameWithoutExtension
 
     /**
      * Generates a string based on a list of objects, separating each one of
@@ -543,9 +485,9 @@ object CommonUtils {
      */
     @Throws(AraraException::class)
     private fun getPath(extension: String): String {
-        val name = getBasename(currentReference) + ".$extension"
-        val path = getParentCanonicalPath(currentReference)
-        return buildPath(path, name)
+        val name = currentReference.nameWithoutExtension + ".$extension"
+        val path = getParentCanonicalFile(currentReference)
+        return path.resolve(name).toString()
     }
 
     /**
@@ -558,12 +500,25 @@ object CommonUtils {
      */
     @Throws(AraraException::class)
     fun getCanonicalPath(file: File): String {
+        return getCanonicalFile(file).toString()
+    }
+
+    /**
+     * Gets the canonical file from the provided file.
+     *
+     * @param file The file.
+     * @return The canonical file from the provided file.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    @Throws(AraraException::class)
+    fun getCanonicalFile(file: File): File {
         try {
-            return file.canonicalPath
+            return file.canonicalFile
         } catch (exception: IOException) {
             throw AraraException(
                     messages.getMessage(
-                            Messages.ERROR_GETCANONICALPATH_IO_EXCEPTION
+                            Messages.ERROR_GETCANONICALFILE_IO_EXCEPTION
                     ),
                     exception
             )
@@ -760,7 +715,7 @@ object CommonUtils {
      * @return A logic value.
      */
     fun isOnPath(command: String): Boolean {
-        try {
+        return try {
             // first and foremost, let's build the list
             // of filenames based on the underlying
             // operating system
@@ -768,36 +723,24 @@ object CommonUtils {
 
             // break the path into several parts
             // based on the path separator symbol
-            val tokenizer = StringTokenizer(
-                    System.getenv("PATH"),
-                    File.pathSeparator
-            )
-
-            // iterate through every part of the
-            // path looking for each filename
-            while (tokenizer.hasMoreTokens()) {
-                // if the search does not return an empty
-                // list, one of the filenames got a match,
-                // and the command is available somewhere
-                // in the system path
-                if (File(tokenizer.nextToken()).listFiles()!!
-                                .any {
-                                    filenames.contains(it.name) &&
-                                            !it.isDirectory
-                                }) {
-                    // command is found somewhere,
-                    // so it is on path
-                    return true
-                }
-            }
-
-            // nothing was found,
-            // command is not on path
-            return false
+            System.getenv("PATH").split(File.pathSeparator)
+                    .asSequence()
+                    .mapNotNull { File(it).listFiles() }
+                    // if the search does not return an empty
+                    // list, one of the filenames got a match,
+                    // and the command is available somewhere
+                    // in the system path
+                    .firstOrNull {
+                        it.any { file ->
+                            filenames.contains(file.name) && !file.isDirectory
+                        }
+                    }?.let { true }
+            // otherwise it is not in the path
+                    ?: false
         } catch (exception: Exception) {
             // an exception was raised, simply
             // return and forget about it
-            return false
+            false
         }
     }
 
@@ -810,21 +753,19 @@ object CommonUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun getFullBasename(file: File): String {
-        // if the provided file does not contain a
-        // file separator, fallback to the usual
-        // base name lookup
-        return if (!file.toString().contains(File.separator)) {
-            getBasename(file)
-        } else {
-            // we need to get the parent file, get the
-            // canonical path and build the corresponding
-            // full base name path
-            val parent = file.parentFile
-            val path = getCanonicalPath(parent ?: file)
-            buildPath(path, getBasename(file))
-        }
-    }
+    fun getFullBasename(file: File): String =
+            if (!file.toString().contains(File.separator)) {
+                // if the provided file does not contain a
+                // file separator, fallback to the usual
+                // base name lookup
+                getBasename(file)
+            } else {
+                // we need to get the parent file, get the
+                // canonical path and build the corresponding
+                // full base name path
+                getCanonicalFile(file.parentFile ?: file)
+                        .resolve(getBasename(file)).toString()
+            }
 
     /**
      * Checks whether a directory is under a root directory.
