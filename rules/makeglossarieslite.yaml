@@ -14,7 +14,7 @@ commands:
 - name: The MakeGlossariesLite software
   command: >
     @{
-       return  getCommand('makeglossaries-lite', options, getBasename(file));
+       return  getCommand('makeglossaries-lite', options, getBasename(reference));
     }
 arguments:
 - identifier: options

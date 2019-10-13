@@ -23,7 +23,7 @@ commands:
                prefix = [ 'cmd', '/c', 'del' ];
            }
 
-           base = getBasename(file);
+           base = getBasename(reference);
            removals = [];
 
            lines = readFromFile(base.concat('.').concat('aux'));
@@ -63,7 +63,7 @@ commands:
           return getCommand('bib2gls', dir, trans, group, interpret,
                  breakspace, trimfields, recordcount, recordcountunit, 
                  cite, verbose, merge, locale, uniscript, packages, 
-                 ignore, custom, mapformats, options, getBasename(file));
+                 ignore, custom, mapformats, options, getBasename(reference));
        }
     }
 arguments:
@@ -80,7 +80,7 @@ arguments:
           throwError('Forbidden transcript extension');
        }
 
-       return ['--log-file', getBasename(file)+"."+parameters.trans]
+       return ['--log-file', getBasename(reference)+"."+parameters.trans]
     }
 - identifier: locale
   flag: >

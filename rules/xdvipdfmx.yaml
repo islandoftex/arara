@@ -13,7 +13,7 @@ commands:
 - name: The XDVIPDFMX program
   command: >
     @{
-        infile = getBasename(file).concat('.dvi');
+        infile = getBasename(reference).concat('.dvi');
         outfile = getBasename(output).concat('.pdf');
         return getCommand('xdvipdfmx', infile, '-o', outfile, options);
     }
@@ -25,7 +25,7 @@ arguments:
     }
   default: >
     @{
-        file
+        reference
     }
 - identifier: options
   flag: >

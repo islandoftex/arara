@@ -13,7 +13,7 @@ commands:
 - name: The TeXindy software
   command: >
     @{
-        base = getBasename(file);
+        base = getBasename(reference);
         infile = base.concat('.').concat(input);
         outfile = [ '-o', base.concat('.').concat(output) ];
         logfile = [ '-t', base.concat('.').concat(log) ];

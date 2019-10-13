@@ -14,8 +14,8 @@ commands:
   command: >
     @{
         prefix = [];
-        input = getBasename(file).concat('.pdf');
-        output = getBasename(file).concat('.gif');
+        input = getBasename(reference).concat('.pdf');
+        output = getBasename(reference).concat('.gif');
         if (isUnix()) {
             prefix = [ program ];
         }

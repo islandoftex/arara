@@ -21,13 +21,13 @@ commands:
             prefix = [ 'cmd', '/c', 'del' ];
         }
         if (extensions == '') {
-            if (getOriginalFile() == file) {
+            if (getOriginalReference() == reference) {
                 throwError('I cannot remove the main file reference.');
             }
-            return getCommand(prefix, file);
+            return getCommand(prefix, reference);
         }
         else {
-            base = getBasename(file);
+            base = getBasename(reference);
             removals = [];
             foreach(extension : extensions) {
                 if (base.concat('.').concat(extension) == getOriginalFile()) {

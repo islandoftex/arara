@@ -12,7 +12,7 @@ commands:
 - name: The dvisvgm program
   command: >
     @{
-        base = getBasename(file).concat('.dvi');
+        base = getBasename(reference).concat('.dvi');
         return getCommand('dvisvgm', base, options);
     }
 arguments:

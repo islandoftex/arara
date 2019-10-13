@@ -16,7 +16,7 @@ commands:
     @{
         if (isEmpty(clean))
         {
-           return getCommand('makeglossaries', options, getBasename(file));
+           return getCommand('makeglossaries', options, getBasename(reference));
         }
         else {
            prefix = [];
@@ -27,7 +27,7 @@ commands:
                prefix = [ 'cmd', '/c', 'del' ];
            }
 
-           base = getBasename(file);
+           base = getBasename(reference);
            removals = [];
 
            removals.add(getCommand(prefix, base.concat(".glsdefs")));
