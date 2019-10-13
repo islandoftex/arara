@@ -152,13 +152,11 @@ class Interpreter(
                             )
                         }
 
-                        var execution = mutableListOf<Any>()
                         // TODO: check nullability
-                        if (result is List<*>) {
-                            execution = CommonUtils.flatten(result)
-                                    .toMutableList()
+                        val execution = if (result is List<*>) {
+                            CommonUtils.flatten(result)
                         } else {
-                            execution.add(result)
+                            listOf(result)
                         }
 
                         for (current in execution) {
@@ -251,11 +249,13 @@ class Interpreter(
                                         && !success)
                                     return
                                 // TODO: document this key
-                                if (Session.contains("arara:${Arara
-                                                .config[AraraSpec.Execution.reference]
-                                                .name}:halt"))
-                                // TODO: key maps to exit value, use the value
+                                val haltKey = "arara:${Arara.config[AraraSpec
+                                        .Execution.reference].name}:halt"
+                                if (Session.contains(haltKey)) {
+                                    Arara.config[AraraSpec.Execution.status] =
+                                            Session[haltKey].toString().toInt()
                                     return
+                                }
                             }
                         }
                     }

@@ -9,6 +9,8 @@ import com.github.cereda.arara.ruleset.DirectiveUtils
 import io.kotlintest.DoNotParallelize
 import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.matchers.string.shouldNotContain
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.ShouldSpec
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -84,9 +86,16 @@ class ExecutionTest : ShouldSpec({
         outputForTest("changes") shouldNotContain "QuackOne"
     }
 
-    should("halt on halt rule") {
+    should("gracefully halt on halt rule") {
         val output = outputForTest("halt")
         output shouldContain "QuackOne"
         output shouldNotContain "QuackTwo"
+        CommonUtils.exitStatus shouldBe 0
+    }
+    should("forcefully halt on halt error rule") {
+        val output = outputForTest("halt-error")
+        output shouldContain "QuackOne"
+        output shouldNotContain "QuackTwo"
+        CommonUtils.exitStatus shouldNotBe 0
     }
 })
