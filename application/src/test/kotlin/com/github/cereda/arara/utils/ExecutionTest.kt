@@ -3,6 +3,7 @@ package com.github.cereda.arara.utils
 import com.github.cereda.arara.Arara
 import com.github.cereda.arara.configuration.AraraSpec
 import com.github.cereda.arara.configuration.Configuration
+import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.model.Extractor
 import com.github.cereda.arara.model.Interpreter
 import com.github.cereda.arara.ruleset.DirectiveUtils
@@ -11,6 +12,7 @@ import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.matchers.string.shouldNotContain
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
+import io.kotlintest.shouldThrow
 import io.kotlintest.specs.ShouldSpec
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -22,7 +24,8 @@ import kotlin.time.ExperimentalTime
 @DoNotParallelize
 class ExecutionTest : ShouldSpec({
     fun getPathForTest(name: String): String = "src/test/resources/$name"
-    fun outputForTest(testName: String): String {
+    fun outputForTest(testName: String, fileName: String = "$testName.tex"):
+            String {
         val sysout = System.out
         val output = ByteArrayOutputStream()
         try {
@@ -31,18 +34,17 @@ class ExecutionTest : ShouldSpec({
                     Paths.get(getPathForTest(testName))
             Configuration.load()
             Arara.config[AraraSpec.Execution.verbose] = true
-            CommonUtils.discoverFile("$testName.tex")
-            val directives = DirectiveUtils.validate(Extractor.extract(
-                    File("${getPathForTest(testName)}/$testName.tex")))
+            CommonUtils.discoverFile(fileName)
+            val directives = DirectiveUtils.process(Extractor.extract(
+                    File("${getPathForTest(testName)}/$fileName")))
             Interpreter(directives).execute()
             return output.toByteArray().toString(Charsets.UTF_8)
         } catch (ex: Exception) {
-            ex.printStackTrace()
+            throw ex
         } finally {
             System.setOut(sysout)
             output.close()
         }
-        return ""
     }
 
     should("be able to store variables sessions") {
@@ -97,5 +99,15 @@ class ExecutionTest : ShouldSpec({
         output shouldContain "QuackOne"
         output shouldNotContain "QuackTwo"
         CommonUtils.exitStatus shouldNotBe 0
+    }
+
+    should("read foreign extension") {
+        val output = outputForTest("foreign-extension", "foreign-extension.my")
+        output shouldContain "QuackOne"
+    }
+    should("fail on unknown extension") {
+        shouldThrow<AraraException> {
+            outputForTest("foreign-extension", "foreign-extension.xy")
+        }
     }
 })
