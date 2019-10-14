@@ -247,15 +247,14 @@ object CommonUtils {
         // indirect search; in this case, we are considering
         // that the file reference has an implicit extension,
         // so we need to add it and look again
-        types.map { it to parent.resolve("$name.${it.extension}") }
+        return types.map { it to parent.resolve("$name.${it.extension}") }
                 .firstOrNull { it.second.exists() && it.second.isFile }
                 ?.let {
                     Arara.config[AraraSpec.Execution.filePattern] =
                             it.first.pattern
                     Arara.config[AraraSpec.Execution.reference] = it.second
-                    return file
+                    file
                 }
-        return null
     }
 
     /**
@@ -431,8 +430,8 @@ object CommonUtils {
         val database = DatabaseUtils.load()
         val map = database.map
         val path = getCanonicalPath(file)
-        if (!file.exists()) {
-            return if (map.containsKey(path)) {
+        return if (!file.exists()) {
+            if (map.containsKey(path)) {
                 map.remove(path)
                 database.map = map
                 DatabaseUtils.save(database)
@@ -444,7 +443,7 @@ object CommonUtils {
             val hash = calculateHash(file)
             if (map.containsKey(path)) {
                 val value = map[path]
-                return if (hash == value) {
+                if (hash == value) {
                     false
                 } else {
                     map[path] = hash
@@ -456,7 +455,7 @@ object CommonUtils {
                 map[path] = hash
                 database.map = map
                 DatabaseUtils.save(database)
-                return true
+                true
             }
         }
     }

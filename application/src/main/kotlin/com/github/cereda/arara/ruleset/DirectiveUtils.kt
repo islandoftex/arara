@@ -107,13 +107,9 @@ object DirectiveUtils {
             }
         }
 
-        if (pairs.isEmpty()) {
-            throw AraraException(
-                    messages.getMessage(
-                            Messages.ERROR_VALIDATE_NO_DIRECTIVES_FOUND
-                    )
-            )
-        }
+        if (pairs.isEmpty())
+            throw AraraException(messages.getMessage(
+                    Messages.ERROR_VALIDATE_NO_DIRECTIVES_FOUND))
 
         val assemblers = mutableListOf<DirectiveAssembler>()
         var assembler = DirectiveAssembler()
@@ -157,6 +153,7 @@ object DirectiveUtils {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
+    // TODO: think about making private or an extension to DirectiveAssembler
     @Throws(AraraException::class)
     fun generateDirective(assembler: DirectiveAssembler): Directive {
         val regex = Arara.config[AraraSpec.Directive.directivePattern]
@@ -242,6 +239,48 @@ object DirectiveUtils {
     }
 
     /**
+     * Replicate a directive for given files.
+     *
+     * @param holder The list of files.
+     * @param parameters The parameters for the directive.
+     * @param directive The directive to clone.
+     * @return List of cloned directives.
+     * @throws AraraException If there is an error validating the [holder]
+     *   object.
+     */
+    @Throws(AraraException::class)
+    private fun replicateDirective(holder: Any, parameters: Map<String, Any>,
+                                   directive: Directive): List<Directive> {
+        return if (holder is List<*>) {
+            val files = holder as List<Any>
+            if (files.isEmpty()) {
+                throw AraraException(
+                        messages.getMessage(
+                                Messages.ERROR_VALIDATE_EMPTY_FILES_LIST,
+                                "(" + directive.lineNumbers.joinToString(", ") + ")"
+                        )
+                )
+            }
+
+            files.asSequence()
+                    .map { File(it.toString()) }
+                    .map(CommonUtils::getCanonicalFile)
+                    .map { reference ->
+                        directive.copy(parameters = parameters
+                                .plus("reference" to reference))
+                    }
+                    .toList()
+        } else {
+            throw AraraException(
+                    messages.getMessage(
+                            Messages.ERROR_VALIDATE_FILES_IS_NOT_A_LIST,
+                            "(" + directive.lineNumbers.joinToString(", ") + ")"
+                    )
+            )
+        }
+    }
+
+    /**
      * Validates the list of directives, returning a new list.
      *
      * @param directives The list of directives.
@@ -253,46 +292,16 @@ object DirectiveUtils {
     fun process(directives: List<Directive>): List<Directive> {
         val result = mutableListOf<Directive>()
         directives.forEach { directive ->
-            val parameters = directive.parameters.toMutableMap()
+            val parameters = directive.parameters
 
-            if (parameters.containsKey("reference")) {
-                throw AraraException(
-                        messages.getMessage(
-                                Messages.ERROR_VALIDATE_REFERENCE_IS_RESERVED,
-                                "(" + directive.lineNumbers.joinToString(", ") + ")"
-                        )
-                )
-            }
+            if (parameters.containsKey("reference"))
+                throw AraraException(messages.getMessage(
+                        Messages.ERROR_VALIDATE_REFERENCE_IS_RESERVED,
+                        "(" + directive.lineNumbers.joinToString(", ") + ")"))
 
             if (parameters.containsKey("files")) {
-                val holder = parameters["files"]
-                if (holder is List<*>) {
-                    val files = holder as List<Any>
-                    parameters.remove("files")
-                    if (files.isEmpty()) {
-                        throw AraraException(
-                                messages.getMessage(
-                                        Messages.ERROR_VALIDATE_EMPTY_FILES_LIST,
-                                        "(" + directive.lineNumbers.joinToString(", ") + ")"
-                                )
-                        )
-                    }
-
-                    result.addAll(files
-                            .map { File(it.toString()) }
-                            .map(CommonUtils::getCanonicalFile)
-                            .map { reference ->
-                                directive.copy(parameters = parameters
-                                        .plus("reference" to reference))
-                            })
-                } else {
-                    throw AraraException(
-                            messages.getMessage(
-                                    Messages.ERROR_VALIDATE_FILES_IS_NOT_A_LIST,
-                                    "(" + directive.lineNumbers.joinToString(", ") + ")"
-                            )
-                    )
-                }
+                result.addAll(replicateDirective(parameters.getValue("files"),
+                        parameters.minus("files"), directive))
             } else {
                 result.add(directive.copy(parameters = parameters
                         .plus("reference" to

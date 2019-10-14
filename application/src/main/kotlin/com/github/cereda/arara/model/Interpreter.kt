@@ -117,17 +117,26 @@ class Interpreter(
         return value
     }
 
+    /**
+     * Run a command
+     * @param command The command to run.
+     * @param conditional The conditional applied to the run (only for printing).
+     * @param authors The rule authors (only for printing).
+     * @param ruleCommandExitValue The exit value of the rule command.
+     * @return Success of the execution.
+     * @throws AraraException Execution failed.
+     */
     @ExperimentalTime
     @Throws(AraraException::class)
-    private fun runCommand(current: Command, conditional: Conditional,
+    private fun runCommand(command: Command, conditional: Conditional,
                            authors: List<String>,
                            ruleCommandExitValue: String?): Boolean {
         logger.info(messages.getMessage(Messages.LOG_INFO_SYSTEM_COMMAND,
-                current))
+                command))
         var success = true
 
         if (!Arara.config[AraraSpec.Execution.dryrun]) {
-            val code = InterpreterUtils.run(current)
+            val code = InterpreterUtils.run(command)
             val check: Any = try {
                 val context = mapOf<String, Any>("value" to code)
                 TemplateRuntime.eval(
@@ -153,67 +162,77 @@ class Interpreter(
             DisplayUtils.printAuthors(authors)
             DisplayUtils.wrapText(messages.getMessage(
                     Messages.INFO_INTERPRETER_DRYRUN_MODE_SYSTEM_COMMAND,
-                    current))
+                    command))
             DisplayUtils.printConditional(conditional)
         }
 
         return success
     }
 
-    // TODO: document
+    /**
+     * Converts the command evaluation result to a flat list.
+     * @param result The result
+     * @return A flat list.
+     */
+    private fun resultToList(result: Any) = if (result is List<*>) {
+        CommonUtils.flatten(result)
+    } else {
+        listOf(result)
+    }
+
+    /**
+     * Execute a command.
+     * @param command The command to evaluate.
+     * @param conditional Under which condition to execute.
+     * @param rule The rule (only passed for output purposes).
+     * @param parameters The parameters for evaluation
+     * @throws AraraException Running the command failed.
+     */
     @ExperimentalTime
-    private fun executeCommand(command: RuleCommand, directive: Directive,
+    @Throws(AraraException::class)
+    private fun executeCommand(command: RuleCommand, conditional: Conditional,
                                rule: Rule, parameters: Map<String, Any>) {
         val result: Any = try {
             TemplateRuntime.eval(command.command!!, parameters)
         } catch (exception: RuntimeException) {
-            throw AraraException(
-                    CommonUtils.ruleErrorHeader + messages.getMessage(
-                            Messages.ERROR_INTERPRETER_COMMAND_RUNTIME_ERROR
-                    ),
-                    exception
-            )
+            throw AraraException(CommonUtils.ruleErrorHeader +
+                    messages.getMessage(Messages
+                            .ERROR_INTERPRETER_COMMAND_RUNTIME_ERROR),
+                    exception)
         }
 
         // TODO: check nullability
-        val execution = if (result is List<*>) {
-            CommonUtils.flatten(result)
-        } else {
-            listOf(result)
-        }
+        resultToList(result).filter { it.toString().isNotBlank() }
+                .forEach { current ->
+                    DisplayUtils.printEntry(rule.name, command.name
+                            ?: messages.getMessage(Messages
+                                    .INFO_LABEL_UNNAMED_TASK))
 
-        execution.forEach { current ->
-            if (current.toString().isNotBlank()) {
-                DisplayUtils.printEntry(rule.name, command.name
-                        ?: messages.getMessage(Messages
-                                .INFO_LABEL_UNNAMED_TASK))
+                    val success = when (current) {
+                        is Boolean -> runBoolean(current, conditional,
+                                rule.authors)
+                        is Command -> runCommand(current, conditional,
+                                rule.authors, command.exit)
+                        else -> TODO("error: this should not happen" +
+                                "we are only supporting boolean + command")
+                    }
 
-                val success = when (current) {
-                    is Boolean -> runBoolean(current, directive.conditional,
-                            rule.authors)
-                    is Command -> runCommand(current, directive.conditional,
-                            rule.authors, command.exit)
-                    else -> TODO("error: this should not happen" +
-                            "we are only supporting boolean + command")
-                }
+                    DisplayUtils.printEntryResult(success)
 
-                DisplayUtils.printEntryResult(success)
-
-                if (Arara.config[AraraSpec.Execution.haltOnErrors] && !success)
-                // TODO: localize
-                    throw HaltExpectedException("Command failed")
-
-                // TODO: document this key
-                val haltKey = "arara:${Arara.config[AraraSpec
-                        .Execution.reference].name}:halt"
-                if (Session.contains(haltKey)) {
-                    Arara.config[AraraSpec.Execution.status] =
-                            Session[haltKey].toString().toInt()
+                    if (Arara.config[AraraSpec.Execution.haltOnErrors] && !success)
                     // TODO: localize
-                    throw HaltExpectedException("User requested halt")
+                        throw HaltExpectedException("Command failed")
+
+                    // TODO: document this key
+                    val haltKey = "arara:${Arara.config[AraraSpec
+                            .Execution.reference].name}:halt"
+                    if (Session.contains(haltKey)) {
+                        Arara.config[AraraSpec.Execution.status] =
+                                Session[haltKey].toString().toInt()
+                        // TODO: localize
+                        throw HaltExpectedException("User requested halt")
+                    }
                 }
-            }
-        }
     }
 
     /**
@@ -247,8 +266,8 @@ class Interpreter(
             // parse the rule identified by the directive
             // (may throw an exception)
             val rule = RuleUtils.parseRule(file, directive.identifier)
-            val parameters = parseArguments(rule, directive).toMutableMap()
-            parameters.putAll(Methods.getRuleMethods())
+            val parameters = parseArguments(rule, directive)
+                    .plus(Methods.getRuleMethods())
 
             val evaluator = Evaluator()
 
@@ -263,7 +282,7 @@ class Interpreter(
             do {
                 rule.commands.forEach { command ->
                     try {
-                        executeCommand(command, directive, rule, parameters)
+                        executeCommand(command, directive.conditional, rule, parameters)
                     } catch (_: HaltExpectedException) {
                         // if the user uses the halt rule to trigger
                         // a halt, this will be raised

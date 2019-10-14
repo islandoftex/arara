@@ -47,6 +47,7 @@ import org.zeroturnaround.exec.listener.ShutdownHookProcessDestroyer
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
+import java.io.OutputStream
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import kotlin.time.Duration
@@ -87,6 +88,32 @@ object InterpreterUtils {
         }
     }
 
+    @ExperimentalTime
+    private fun getProcessExecutorForCommand(command: Command,
+                                             buffer: OutputStream):
+            ProcessExecutor {
+        val timeOutValue = Arara.config[AraraSpec.Execution.timeoutValue]
+        var executor = ProcessExecutor().command((command).elements)
+                .directory(command.workingDirectory.absoluteFile)
+                .addDestroyer(ShutdownHookProcessDestroyer())
+        if (Arara.config[AraraSpec.Execution.timeout]) {
+            if (timeOutValue == Duration.ZERO) {
+                throw AraraException(messages.getMessage(Messages
+                        .ERROR_RUN_TIMEOUT_INVALID_RANGE))
+            }
+            executor = executor.timeout(timeOutValue.toLongNanoseconds(),
+                    TimeUnit.NANOSECONDS)
+        }
+        val tee = if (Arara.config[AraraSpec.Execution.verbose]) {
+            executor = executor.redirectInput(System.`in`)
+            TeeOutputStream(System.out, buffer)
+        } else {
+            TeeOutputStream(buffer)
+        }
+        executor = executor.redirectOutput(tee).redirectError(tee)
+        return executor
+    }
+
     /**
      * Runs the command in the underlying operating system.
      *
@@ -98,39 +125,16 @@ object InterpreterUtils {
     @ExperimentalTime
     @Throws(AraraException::class)
     fun run(command: Command): Int {
-        val timeout = Arara.config[AraraSpec.Execution.timeout]
-        val timeOutValue = Arara.config[AraraSpec.Execution.timeoutValue]
         val buffer = ByteArrayOutputStream()
-        var executor = ProcessExecutor().command((command).elements)
-                .directory(command.workingDirectory.absoluteFile)
-        if (timeout) {
-            if (timeOutValue == Duration.ZERO) {
-                throw AraraException(messages.getMessage(Messages
-                        .ERROR_RUN_TIMEOUT_INVALID_RANGE))
-            }
-            executor = executor.timeout(timeOutValue.toLongNanoseconds(),
-                    TimeUnit.NANOSECONDS)
-        }
-        val tee: TeeOutputStream
-        if (Arara.config[AraraSpec.Execution.verbose]) {
-            tee = TeeOutputStream(System.out, buffer)
-            executor = executor.redirectInput(System.`in`)
-        } else {
-            tee = TeeOutputStream(buffer)
-        }
-        executor = executor.redirectOutput(tee).redirectError(tee)
-        val hook = ShutdownHookProcessDestroyer()
-        executor = executor.addDestroyer(hook)
-        try {
+        val executor = getProcessExecutorForCommand(command, buffer)
+        return try {
             val exit = executor.execute().exitValue
             logger.info(DisplayUtils.displayOutputSeparator(
-                    messages.getMessage(
-                            Messages.LOG_INFO_BEGIN_BUFFER)))
+                    messages.getMessage(Messages.LOG_INFO_BEGIN_BUFFER)))
             logger.info(buffer.toString())
             logger.info(DisplayUtils.displayOutputSeparator(
-                    messages.getMessage(
-                            Messages.LOG_INFO_END_BUFFER)))
-            return exit
+                    messages.getMessage(Messages.LOG_INFO_END_BUFFER)))
+            exit
         } catch (exception: Exception) {
             throw AraraException(messages.getMessage(
                     when (exception) {
