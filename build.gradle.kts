@@ -20,7 +20,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "5.1.0" apply false // Apache 2.0
     id("org.jetbrains.dokka") version "0.10.0" apply false            // Apache 2.0
     id("io.gitlab.arturbosch.detekt") version "1.1.1"                 // Apache 2.0
-    id("com.github.ben-manes.versions") version "0.26.0"              // Apache 2.0
+    id("com.github.ben-manes.versions") version "0.27.0"              // Apache 2.0
 }
 
 // exclude alpha and beta versions

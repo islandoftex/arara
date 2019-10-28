@@ -115,8 +115,7 @@ object CommonUtils {
      * @return A reference of the current file in execution. Might be different
      * than the main file provided in the command line.
      */
-    // TODO: rename as it is pointing to file and not reference?
-    private val currentReference: File
+    private val currentFile: File
         get() = Arara.config[AraraSpec.Execution.file]
 
     /**
@@ -484,8 +483,8 @@ object CommonUtils {
      */
     @Throws(AraraException::class)
     private fun getPath(extension: String): String {
-        val name = currentReference.nameWithoutExtension + ".$extension"
-        val path = getParentCanonicalFile(currentReference)
+        val name = currentFile.nameWithoutExtension + ".$extension"
+        val path = getParentCanonicalFile(currentFile)
         return path.resolve(name).toString()
     }
 
@@ -544,6 +543,8 @@ object CommonUtils {
 
     /**
      * Checks if the file contains the provided regex.
+     * 
+     * As we use [File.readText] this should not be called on files > 2GB.
      *
      * @param file  The file.
      * @param regex The regex.
@@ -555,7 +556,6 @@ object CommonUtils {
     @Throws(AraraException::class)
     fun checkRegex(file: File, regex: String): Boolean {
         try {
-            // TODO: do we call this on files > 2 GB?
             val text = file.readText()
             val pattern = Pattern.compile(regex)
             val matcher = pattern.matcher(text)

@@ -61,14 +61,13 @@ class LocalConfiguration {
                     "workingDirectory" to Arara.config[AraraSpec.Execution
                             .workingDirectory].toAbsolutePath().toString()
             )
-            val map = mutableMapOf("user" to user,
-                    "application" to application)
 
-            // TODO: do we call this often?
             return field.map { input ->
                 var path = CommonUtils.removeKeywordNotNull(input)
                 try {
-                    path = TemplateRuntime.eval(path, map) as String
+                    path = TemplateRuntime.eval(path, mapOf(
+                            "user" to user, "application" to application
+                    )) as String
                 } catch (_: RuntimeException) {
                     // do nothing, gracefully fallback to
                     // the default, unparsed path

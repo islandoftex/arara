@@ -234,8 +234,7 @@ object DisplayUtils {
         }
         val text = (if (exception.hasException())
             exception.message + " " + messages.getMessage(
-                    Messages.INFO_DISPLAY_EXCEPTION_MORE_DETAILS
-            )
+                    Messages.INFO_DISPLAY_EXCEPTION_MORE_DETAILS)
         else
             exception.message) ?: "EXCEPTION PROVIDES NO MESSAGE"
         // TODO: check null handling

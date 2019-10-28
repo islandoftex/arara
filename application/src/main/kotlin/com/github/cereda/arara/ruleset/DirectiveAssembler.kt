@@ -62,9 +62,7 @@ class DirectiveAssembler {
      * Adds a line number to the assembler.
      * @param line An integer representing the line number.
      */
-    fun addLineNumber(line: Int) {
-        lineNumbers.add(line)
-    }
+    fun addLineNumber(line: Int) = lineNumbers.add(line)
 
     /**
      * Appends the provided line to the assembler text.
@@ -78,15 +76,11 @@ class DirectiveAssembler {
      * Gets the list of line numbers.
      * @return The list of line numbers.
      */
-    fun getLineNumbers(): List<Int> {
-        return lineNumbers
-    }
+    fun getLineNumbers(): List<Int> = lineNumbers
 
     /**
      * Gets the text.
      * @return The assembler text, properly trimmed.
      */
-    fun getText(): String {
-        return text.trim()
-    }
+    fun getText(): String = text.trim()
 }

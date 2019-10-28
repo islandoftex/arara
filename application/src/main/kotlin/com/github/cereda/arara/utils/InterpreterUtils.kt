@@ -185,11 +185,10 @@ object InterpreterUtils {
         return if (location.isAbsolute) {
             location.resolve(fileName).toString()
         } else {
-            // TODO: why are we resolving against reference? Should it be
-            // working directory?
-            val reference = Arara.config[AraraSpec.Execution.reference]
-            val parent = CommonUtils.getParentCanonicalFile(reference).resolve(path)
-            parent.resolve(fileName).toString()
+            Arara.config[AraraSpec.Execution.workingDirectory]
+                    // first resolve the path (rule path) against the working
+                    // directory, then the rule name we want to resolve
+                    .resolve(path).resolve(fileName).toAbsolutePath().toString()
         }
     }
 }

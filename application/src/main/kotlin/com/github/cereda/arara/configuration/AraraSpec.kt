@@ -1,7 +1,6 @@
 package com.github.cereda.arara.configuration
 
 import com.github.cereda.arara.localization.Language
-import com.github.cereda.arara.utils.CommonUtils
 import com.uchuhimo.konf.ConfigSpec
 import java.io.File
 import java.nio.file.Paths
@@ -48,7 +47,8 @@ object AraraSpec : ConfigSpec() {
         val onlyHeader by optional(false)
 
         // TODO: these are runtime values, they should be properly
-        // initialized and tested
+        // initialized and tested (maybe move them into their own
+        // Spec or session)
         val reference by optional(File("/tmp/"))
         val file by optional(File("/tmp/"))
         object InfoSpec : ConfigSpec() {

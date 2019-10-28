@@ -153,7 +153,6 @@ object DirectiveUtils {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
-    // TODO: think about making private or an extension to DirectiveAssembler
     @Throws(AraraException::class)
     fun generateDirective(assembler: DirectiveAssembler): Directive {
         val regex = Arara.config[AraraSpec.Directive.directivePattern]
