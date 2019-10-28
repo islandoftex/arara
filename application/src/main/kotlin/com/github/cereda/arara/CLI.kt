@@ -14,6 +14,7 @@ import com.github.cereda.arara.localization.Language
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.AraraException
+import com.github.cereda.arara.model.Session
 import com.github.cereda.arara.utils.CommonUtils
 import com.github.cereda.arara.utils.DisplayUtils
 import com.github.cereda.arara.utils.LoggingUtils
@@ -120,6 +121,10 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         // (although timing is not a serious business in here, it's
         // just a cool addition)
         val executionStart: ClockMark = MonoClock.markNow()
+
+        // arara stores the environment variables accessible at the start
+        // of the execution in the session object for the user
+        Session.updateEnvironmentVariables()
 
         // TODO: this will have to change for parallelization
         reference.forEach {

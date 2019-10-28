@@ -130,4 +130,25 @@ object Session {
     fun clear() {
         map.clear()
     }
+
+    /**
+     * Update the environment variables stored in the session.
+     *
+     * @param additionFilter Which environment variables to include. You can
+     *   filter their names (the string parameter) but not their values. By
+     *   default all values will be added.
+     * @param removalFilter Which environment variables to remove beforehand.
+     *   By default all values will be removed.
+     */
+    fun updateEnvironmentVariables(
+            additionFilter: (String) -> Boolean = { true },
+            removalFilter: (String) -> Boolean = { true }) {
+        // remove all current environment variables to clean up the session
+        map.filterKeys { it.startsWith("environment:") }
+                .filterKeys(removalFilter)
+                .forEach { remove(it.key) }
+        // add all relevant new environment variables
+        System.getenv().filterKeys(additionFilter)
+                .forEach { map[it.key] = it.value }
+    }
 }
