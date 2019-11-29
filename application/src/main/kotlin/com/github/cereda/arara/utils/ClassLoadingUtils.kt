@@ -34,6 +34,7 @@
 package com.github.cereda.arara.utils
 
 import java.io.File
+import java.lang.reflect.InvocationTargetException
 import java.net.MalformedURLException
 import java.net.URLClassLoader
 
@@ -125,14 +126,15 @@ object ClassLoadingUtils {
                 // the pair and instantiate it
                 // by invoking the default
                 // constructor (without arguments)
-                value = pair.second.newInstance()
+                value = pair.second.getDeclaredConstructor().newInstance()
             } catch (_: IllegalAccessException) {
-                // the object instantiation violated
-                // an access policy, status is updated
+                // the object instantiation violated an access policy
                 status = 4
             } catch (_: InstantiationException) {
-                // an instantiation exception has
-                // occurred, status is updated
+                // the user wanted to instantiate an abstract class
+                status = 5
+            } catch (_: InvocationTargetException) {
+                // the underlying constructor caused an exception
                 status = 5
             }
         }

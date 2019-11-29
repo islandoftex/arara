@@ -251,24 +251,29 @@ object DirectiveUtils {
     private fun replicateDirective(holder: Any, parameters: Map<String, Any>,
                                    directive: Directive): List<Directive> {
         return if (holder is List<*>) {
-            val files = holder as List<Any>
-            if (files.isEmpty()) {
-                throw AraraException(
-                        messages.getMessage(
-                                Messages.ERROR_VALIDATE_EMPTY_FILES_LIST,
-                                "(" + directive.lineNumbers.joinToString(", ") + ")"
-                        )
-                )
-            }
-
-            files.asSequence()
+            // we received a file list, so we map that list to files
+            holder.filterIsInstance<Any>()
+                    .asSequence()
                     .map { File(it.toString()) }
                     .map(CommonUtils::getCanonicalFile)
+                    // and because we want directives, we replicate our
+                    // directive to be applied to that file
                     .map { reference ->
                         directive.copy(parameters = parameters
                                 .plus("reference" to reference))
                     }
                     .toList()
+                    // we take the result if and only if we have at least one
+                    // file and we did not filter out any invalid argument
+                    .takeIf { it.isNotEmpty() && holder.size == it.size }
+                    // TODO: check exception according to condition
+                    ?: throw AraraException(
+                            messages.getMessage(
+                                    Messages.ERROR_VALIDATE_EMPTY_FILES_LIST,
+                                    "(" + directive.lineNumbers
+                                            .joinToString(", ") + ")"
+                            )
+                    )
         } else {
             throw AraraException(
                     messages.getMessage(
