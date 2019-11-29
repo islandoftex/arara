@@ -359,10 +359,6 @@ object DisplayUtils {
                 CommonUtils.getSystemProperty("user.home",
                         "[unknown user's home directory]")
         ))
-        logger.debug("::: user.dir @ %s".format(
-                CommonUtils.getSystemProperty("user.dir",
-                        "[unknown user's working directory]")
-        ))
         logger.debug("::: CF @ %s".format(Arara.config[AraraSpec.Execution
                 .configurationName]))
         logger.debug(displaySeparator())

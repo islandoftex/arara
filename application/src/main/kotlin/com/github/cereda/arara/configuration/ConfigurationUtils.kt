@@ -99,13 +99,6 @@ object ConfigurationUtils {
                         if (first != null)
                             return first
                     }
-            CommonUtils.getSystemPropertyOrNull("user.dir")?.let { userDir ->
-                val first = names
-                        .map { File(userDir).resolve(it) }
-                        .firstOrNull { it.exists() }
-                if (first != null)
-                    return first
-            }
             CommonUtils.getSystemPropertyOrNull("user.home")?.let { userHome ->
                 return names.map { File(userHome).resolve(it) }
                         .firstOrNull { it.exists() }

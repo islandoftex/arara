@@ -53,8 +53,6 @@ class LocalConfiguration {
             val user = mapOf(
                     "home" to (CommonUtils.getSystemPropertyOrNull("user.home")
                             ?: ""),
-                    "dir" to (CommonUtils.getSystemPropertyOrNull("user.dir")
-                            ?: ""),
                     "name" to (CommonUtils.getSystemPropertyOrNull("user.name")
                             ?: ""))
             val application = mapOf(
