@@ -124,6 +124,7 @@ object SystemCallUtils {
             // create a process result with the provided
             // command, capturing the output
             val result = ProcessExecutor(command.elements)
+                    .directory(command.workingDirectory)
                     .readOutput(true).execute()
 
             // return the pair containing the exit status
