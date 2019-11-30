@@ -16,6 +16,7 @@ open class CTANBuilderTask : DefaultTask() {
      * The task's main action: Creating a CTAN-ready zip file.
      */
     @TaskAction
+    @Suppress("TooGenericExceptionCaught")
     fun run() {
         try {
             logger.lifecycle("Testing required tools")

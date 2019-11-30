@@ -79,17 +79,12 @@ object SystemCallUtils {
                 // instance, it checks if we are inside a Cygwin environment.
                 // Returns a boolean value indicating if we are inside a Cygwin
                 // environment.
-                try {
-                    // execute a new system call to 'uname -s', read the output
-                    // as an UTF-8 string, lowercase it and check if it starts
-                    // with the 'cygwin' string; if so, we are inside Cygwin
-                    executeSystemCommand(Command("uname", "-s"))
-                            .second.toLowerCase().startsWith("cygwin")
-                } catch (exception: Exception) {
-                    // gracefully fallback in case of any nasty and evil
-                    // exception, e.g, if the command is unavailable
-                    false
-                }
+
+                // execute a new system call to 'uname -s', read the output
+                // as an UTF-8 string, lowercase it and check if it starts
+                // with the 'cygwin' string; if so, we are inside Cygwin
+                executeSystemCommand(Command("uname", "-s"))
+                        .second.toLowerCase().startsWith("cygwin")
             })
 
     /**
@@ -127,13 +122,13 @@ object SystemCallUtils {
      * as a string.
      */
     fun executeSystemCommand(command: Command): Pair<Int, String> {
-        return try {
-            ProcessExecutor(command.elements)
-                    .directory(command.workingDirectory)
-                    .readOutput(true)
-                    .execute()
-                    .run { exitValue to outputUTF8() }
-        } catch (exception: Exception) {
+        return ProcessExecutor(command.elements).runCatching {
+            directory(command.workingDirectory)
+            readOutput(true)
+            execute().run {
+                exitValue to outputUTF8()
+            }
+        }.getOrElse {
             // quack, quack, do nothing, just
             // return a default error code
             errorExitStatus to errorCommandOutput

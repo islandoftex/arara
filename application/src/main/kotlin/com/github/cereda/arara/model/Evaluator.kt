@@ -85,6 +85,7 @@ class Evaluator {
      * @param conditional The conditional.
      * @return The result of the evaluation.
      */
+    @Throws(AraraException::class, RuntimeException::class)
     private fun evaluateCondition(conditional: Conditional): Boolean {
         val result = TemplateRuntime.eval("@{ " + conditional.condition + " }",
                 Methods.getConditionalMethods())
@@ -109,6 +110,7 @@ class Evaluator {
      * higher levels.
      */
     @Throws(AraraException::class)
+    @Suppress("TooGenericExceptionCaught")
     fun evaluate(conditional: Conditional): Boolean {
         // when in dry-run mode or not evaluating a
         // conditional, arara always ignores conditional

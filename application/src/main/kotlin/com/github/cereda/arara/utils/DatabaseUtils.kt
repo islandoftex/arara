@@ -85,16 +85,15 @@ object DatabaseUtils {
         return if (!exists()) {
             Database()
         } else {
-            try {
-                val representer = Representer()
-                representer.addClassTag(Database::class.java, Tag("!database"))
-                Yaml(Constructor(Database::class.java), representer)
-                        .loadAs(file.readText(), Database::class.java)
-            } catch (exception: Exception) {
+            val representer = Representer()
+            representer.addClassTag(Database::class.java, Tag("!database"))
+            Yaml(Constructor(Database::class.java), representer).runCatching {
+                loadAs(file.readText(), Database::class.java)
+            }.getOrElse {
                 throw AraraException(messages.getMessage(Messages
-                        .ERROR_LOAD_COULD_NOT_LOAD_XML, file.name), exception)
+                        .ERROR_LOAD_COULD_NOT_LOAD_XML, file.name),
+                        it as Exception)
             }
-
         }
     }
 
@@ -107,22 +106,20 @@ object DatabaseUtils {
      */
     @Throws(AraraException::class)
     fun save(database: Database) {
-        try {
-            val representer = Representer()
-            representer.addClassTag(Database::class.java, Tag("!database"))
-            file.writeText(
+        val representer = Representer()
+        representer.addClassTag(Database::class.java, Tag("!database"))
+        file.runCatching {
+            writeText(
                     Yaml(Constructor(Database::class.java), representer)
                             .dump(database))
-        } catch (exception: Exception) {
+        }.getOrElse {
             throw AraraException(
                     messages.getMessage(
                             Messages.ERROR_SAVE_COULD_NOT_SAVE_XML,
                             file.name
-                    ),
-                    exception
+                    ), it as Exception
             )
         }
-
     }
 
     /**

@@ -127,17 +127,17 @@ object InterpreterUtils {
     fun run(command: Command): Int {
         val buffer = ByteArrayOutputStream()
         val executor = getProcessExecutorForCommand(command, buffer)
-        return try {
-            val exit = executor.execute().exitValue
+        return executor.runCatching {
+            val exit = execute().exitValue
             logger.info(DisplayUtils.displayOutputSeparator(
                     messages.getMessage(Messages.LOG_INFO_BEGIN_BUFFER)))
             logger.info(buffer.toString())
             logger.info(DisplayUtils.displayOutputSeparator(
                     messages.getMessage(Messages.LOG_INFO_END_BUFFER)))
             exit
-        } catch (exception: Exception) {
+        }.getOrElse {
             throw AraraException(messages.getMessage(
-                    when (exception) {
+                    when (it) {
                         is IOException -> Messages.ERROR_RUN_IO_EXCEPTION
                         is InterruptedException ->
                             Messages.ERROR_RUN_INTERRUPTED_EXCEPTION
@@ -146,7 +146,7 @@ object InterpreterUtils {
                         is TimeoutException ->
                             Messages.ERROR_RUN_TIMEOUT_EXCEPTION
                         else -> Messages.ERROR_RUN_GENERIC_EXCEPTION
-                    }), exception)
+                    }), it as Exception)
         }
     }
 

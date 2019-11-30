@@ -128,6 +128,7 @@ class Interpreter(
      */
     @ExperimentalTime
     @Throws(AraraException::class)
+    @Suppress("TooGenericExceptionCaught")
     private fun runCommand(command: Command, conditional: Conditional,
                            authors: List<String>,
                            ruleCommandExitValue: String?): Boolean {
@@ -190,6 +191,7 @@ class Interpreter(
      */
     @ExperimentalTime
     @Throws(AraraException::class)
+    @Suppress("TooGenericExceptionCaught")
     private fun executeCommand(command: RuleCommand, conditional: Conditional,
                                rule: Rule, parameters: Map<String, Any>) {
         val result: Any = try {
@@ -343,6 +345,7 @@ class Interpreter(
      * @throws AraraException The argument could not be processed.
      */
     @Throws(AraraException::class)
+    @Suppress("TooGenericExceptionCaught")
     private fun processArgument(argument: Argument, idInDirectiveParams: Boolean,
                                 context: Map<String, Any>): Any {
         if (argument.isRequired && !idInDirectiveParams)

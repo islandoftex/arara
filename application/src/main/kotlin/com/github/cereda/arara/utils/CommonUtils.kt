@@ -653,14 +653,10 @@ object CommonUtils {
      * @param fallback The fallback value.
      * @return A string containing the system property value or the fallback.
      */
-    fun getSystemProperty(key: String, fallback: String): String {
-        return try {
-            val result = System.getProperty(key, fallback)
-            if (result == "") fallback else result
-        } catch (exception: Exception) {
-            fallback
-        }
-    }
+    fun getSystemProperty(key: String, fallback: String): String =
+            System.getProperties().runCatching {
+                getOrDefault(key, fallback).toString().takeIf { it != "" }
+            }.getOrNull() ?: fallback
 
     /**
      * Access a system property.
@@ -669,13 +665,9 @@ object CommonUtils {
      * @return The value of the system property or null if there is an
      *   exception.
      */
-    fun getSystemPropertyOrNull(key: String): String? {
-        return try {
-            System.getProperty(key)
-        } catch (_: Exception) {
-            null
-        }
-    }
+    fun getSystemPropertyOrNull(key: String): String? =
+            System.getProperties().runCatching { getValue(key).toString() }
+                    .getOrNull()
 
     /**
      * Generates a list of filenames from the provided command based on a list
@@ -718,12 +710,11 @@ object CommonUtils {
      * @return A logic value.
      */
     fun isOnPath(command: String): Boolean {
-        return try {
-            // first and foremost, let's build the list
-            // of filenames based on the underlying
-            // operating system
-            val filenames = appendExtensions(command)
-
+        // first and foremost, let's build the list
+        // of filenames based on the underlying
+        // operating system
+        val filenames = appendExtensions(command)
+        return kotlin.runCatching {
             // break the path into several parts
             // based on the path separator symbol
             System.getenv("PATH").split(File.pathSeparator)
@@ -738,13 +729,8 @@ object CommonUtils {
                             filenames.contains(file.name) && !file.isDirectory
                         }
                     }?.let { true }
-            // otherwise it is not in the path
-                    ?: false
-        } catch (exception: Exception) {
-            // an exception was raised, simply
-            // return and forget about it
-            false
-        }
+        }.getOrNull() ?: false
+        // otherwise (and in case of an exception) it is not in the path
     }
 
     /**

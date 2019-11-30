@@ -143,32 +143,27 @@ object ConfigurationUtils {
         val representer = Representer()
         representer.addClassTag(LocalConfiguration::class.java, Tag("!config"))
         val yaml = Yaml(Constructor(LocalConfiguration::class.java), representer)
-        try {
-            val resource: LocalConfiguration = yaml.loadAs(FileReader(file),
-                    LocalConfiguration::class.java)
-            if (resource.filetypes.any { it.extension == null }) {
-                throw AraraException(
+        return yaml.runCatching {
+            // successful loading results in a valid local configuration
+            loadAs(FileReader(file), LocalConfiguration::class.java)
+        }.getOrElse {
+            throw if (it is MarkedYAMLException)
+                AraraException(
                         messages.getMessage(
-                                Messages.ERROR_CONFIGURATION_FILETYPE_MISSING_EXTENSION
+                                Messages.ERROR_CONFIGURATION_INVALID_YAML
+                        ), it)
+            else
+                AraraException(
+                        messages.getMessage(
+                                Messages.ERROR_CONFIGURATION_GENERIC_ERROR
                         )
                 )
-            }
-            return resource
-        } catch (yamlException: MarkedYAMLException) {
-            throw AraraException(
-                    messages.getMessage(
-                            Messages.ERROR_CONFIGURATION_INVALID_YAML
-                    ),
-                    yamlException
-            )
-        } catch (exception: Exception) {
-            throw AraraException(
-                    messages.getMessage(
-                            Messages.ERROR_CONFIGURATION_GENERIC_ERROR
-                    )
-            )
-        }
-
+        }.takeUnless { localConfiguration ->
+            // a local configuration must not have any null extension
+            // (user error) because we cannot append null to any file name
+            localConfiguration.filetypes.any { it.extension == null }
+        } ?: throw AraraException(messages.getMessage(
+                Messages.ERROR_CONFIGURATION_FILETYPE_MISSING_EXTENSION))
     }
 
     /**

@@ -71,21 +71,19 @@ object RuleUtils {
         val representer = Representer()
         representer.addClassTag(Rule::class.java, Tag("!config"))
         val yaml = Yaml(Constructor(Rule::class.java), representer)
-        val rule: Rule = try {
-            yaml.loadAs(file.readText(), Rule::class.java)
-        } catch (yamlException: MarkedYAMLException) {
-            throw AraraException(
-                    CommonUtils.ruleErrorHeader + messages.getMessage(
-                            Messages.ERROR_PARSERULE_INVALID_YAML
-                    ),
-                    yamlException
-            )
-        } catch (exception: Exception) {
-            throw AraraException(
-                    CommonUtils.ruleErrorHeader + messages.getMessage(
-                            Messages.ERROR_PARSERULE_GENERIC_ERROR
-                    )
-            )
+        val rule: Rule = yaml.runCatching {
+            loadAs(file.readText(), Rule::class.java)
+        }.getOrElse {
+            throw if (it is MarkedYAMLException)
+                AraraException(
+                        CommonUtils.ruleErrorHeader + messages.getMessage(
+                                Messages.ERROR_PARSERULE_INVALID_YAML
+                        ), it)
+            else
+                AraraException(
+                        CommonUtils.ruleErrorHeader + messages.getMessage(
+                                Messages.ERROR_PARSERULE_GENERIC_ERROR
+                        ))
         }
 
         validateHeader(rule, identifier)
