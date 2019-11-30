@@ -13,6 +13,7 @@ object TaskHelper {
     @Throws(IOException::class)
     fun assertAvailability(vararg commands: String) {
         try {
+            @Suppress("SpreadOperator")
             execute(File("."), *commands)
         } catch (_: IOException) {
             throw IOException("The command has returned an invalid "

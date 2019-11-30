@@ -12,6 +12,9 @@ open class CTANBuilderTask : DefaultTask() {
         outputs.files(project.buildDir.resolve("arara.zip"))
     }
 
+    /**
+     * The task's main action: Creating a CTAN-ready zip file.
+     */
     @TaskAction
     fun run() {
         try {

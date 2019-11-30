@@ -49,6 +49,16 @@ import org.zeroturnaround.exec.ProcessExecutor
  * @since 4.0
  */
 object SystemCallUtils {
+    /**
+     * When executing a system call goes wrong, this status code is returned.
+     */
+    const val errorExitStatus = -99
+    /**
+     * When executing a system call goes wrong and the caller asked for output,
+     * this output will be returned.
+     */
+    const val errorCommandOutput = ""
+
     // the system call map which holds the result of
     // system specific variables not directly available
     // at runtime; the idea here is to provide wrappers
@@ -64,15 +74,11 @@ object SystemCallUtils {
     // create the new map of commands and
     // add the corresponding system calls
     private val commands: MutableMap<String, () -> Any> = mutableMapOf(
-            // add the check for a Cygwin
-            // environment in here
             "cygwin" to {
-                /*
-                 * Implements the body of the command. In this particular
-                 * instance, it checks if we are inside a Cygwin environment.
-                 * @return A boolean value indicating if we are inside a Cygwin
-                 * environment.
-                 */
+                // Implements the body of the command. In this particular
+                // instance, it checks if we are inside a Cygwin environment.
+                // Returns a boolean value indicating if we are inside a Cygwin
+                // environment.
                 try {
                     // execute a new system call to 'uname -s', read the output
                     // as an UTF-8 string, lowercase it and check if it starts
@@ -93,6 +99,7 @@ object SystemCallUtils {
      * @param key The provided map key.
      * @return The object indexed by the provided map key.
      */
+    @Throws(NoSuchElementException::class, AraraException::class)
     operator fun get(key: String): Any {
         // if key is not found, meaning that
         // the value wasn't required before
@@ -120,24 +127,16 @@ object SystemCallUtils {
      * as a string.
      */
     fun executeSystemCommand(command: Command): Pair<Int, String> {
-        try {
-            // create a process result with the provided
-            // command, capturing the output
-            val result = ProcessExecutor(command.elements)
+        return try {
+            ProcessExecutor(command.elements)
                     .directory(command.workingDirectory)
-                    .readOutput(true).execute()
-
-            // return the pair containing the exit status
-            // and the output string as UTF-8
-            return Pair(result.exitValue, result.outputUTF8())
+                    .readOutput(true)
+                    .execute()
+                    .run { exitValue to outputUTF8() }
         } catch (exception: Exception) {
             // quack, quack, do nothing, just
             // return a default error code
-
-            // if something goes wrong, the default
-            // error branch returns an exit status of
-            // -99 and an empty string
-            return Pair(-99, "")
+            errorExitStatus to errorCommandOutput
         }
     }
 }

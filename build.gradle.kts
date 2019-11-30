@@ -39,6 +39,8 @@ detekt {
     failFast = false
     input = files("application/src/main/kotlin",
             "buildSrc/src/main/kotlin")
+    buildUponDefaultConfig = true
+    config = files("detekt-config.yml")
 }
 
 tasks.register("assembleTDSZip", TDSZipBuilderTask::class.java)

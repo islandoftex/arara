@@ -330,13 +330,17 @@ object CommonUtils {
      * @param size The byte size to be converted.
      * @return A string representation of the size.
      */
+    @Suppress("MagicNumber")
     fun byteSizeToString(size: Long): String {
         val language = Arara.config[AraraSpec.Execution.language]
-        val unit = 1000
-        if (size < unit) return "$size B"
-        val exp = (ln(size.toDouble()) / ln(unit.toDouble())).toInt()
-        return "%.1f %sB".format(language.locale, size / unit.toDouble()
-                .pow(exp.toDouble()), "kMGTPE"[exp - 1])
+        val conversionFactor = 1000.0
+        return if (size < conversionFactor) "$size B"
+        else
+            (ln(size.toDouble()) / ln(conversionFactor)).toInt().let { exp ->
+                "%.1f %sB".format(language.locale,
+                        size / conversionFactor.pow(exp.toDouble()),
+                        "kMGTPE"[exp - 1])
+            }
     }
 
     /**
@@ -543,7 +547,7 @@ object CommonUtils {
 
     /**
      * Checks if the file contains the provided regex.
-     * 
+     *
      * As we use [File.readText] this should not be called on files > 2GB.
      *
      * @param file  The file.

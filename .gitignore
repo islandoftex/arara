@@ -6,6 +6,8 @@ docs/**/*.*
 !docs/logos/*.pdf
 !docs/*.yaml
 **/arara.yaml
+**/arara.log
+**/arara.xml
 .DS_Store
 .gradle
 .idea

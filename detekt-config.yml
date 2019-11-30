@@ -1,0 +1,94 @@
+build:
+  maxIssues: 10
+  weights:
+    # complexity: 2
+    # LongParameterList: 1
+    # style: 1
+    # comments: 1
+
+comments:
+  active: true
+  excludes: "**/test/**,**/androidTest/**,**/*.Test.kt,**/*.Spec.kt,**/*.Spek.kt"
+  UndocumentedPublicClass:
+    # TODO: activate
+    active: false
+    searchInNestedClass: true
+    searchInInnerClass: true
+    searchInInnerObject: true
+    searchInInnerInterface: true
+  UndocumentedPublicFunction:
+    active: true
+  UndocumentedPublicProperty:
+    # TODO: activate
+    active: false
+
+complexity:
+  active: true
+  ComplexMethod:
+    active: true
+    threshold: 15
+    ignoreSingleWhenExpression: false
+    ignoreSimpleWhenEntries: false
+    ignoreNestingFunctions: false
+    nestingFunctions: run,let,apply,with,also,use,forEach,isNotNull,ifNull
+  LargeClass:
+    active: true
+    threshold: 600
+  LongMethod:
+    active: true
+    threshold: 60
+  NestedBlockDepth:
+    active: true
+    threshold: 4
+  TooManyFunctions:
+    active: true
+    excludes: "**/test/**,**/androidTest/**,**/*.Test.kt,**/*.Spec.kt,**/*.Spek.kt"
+    thresholdInFiles: 11
+    thresholdInClasses: 11
+    thresholdInInterfaces: 11
+    thresholdInObjects: 11
+    thresholdInEnums: 11
+    ignoreDeprecated: false
+    ignorePrivate: true
+    ignoreOverridden: true
+
+exceptions:
+  active: true
+  NotImplementedDeclaration:
+    active: true
+  PrintStackTrace:
+    active: true
+  ThrowingExceptionFromFinally:
+    active: false
+  ThrowingExceptionInMain:
+    active: false
+  ThrowingExceptionsWithoutMessageOrCause:
+    active: false
+    exceptions: 'IllegalArgumentException,IllegalStateException,IOException'
+  TooGenericExceptionCaught:
+    active: true
+    excludes: "**/test/**,**/androidTest/**,**/*.Test.kt,**/*.Spec.kt,**/*.Spek.kt"
+    exceptionNames:
+     - ArrayIndexOutOfBoundsException
+     - Error
+     - Exception
+     - IllegalMonitorStateException
+     - NullPointerException
+     - IndexOutOfBoundsException
+     - RuntimeException
+     - Throwable
+    allowedExceptionNameRegex: "^(_|(ignore|expected).*)"
+  TooGenericExceptionThrown:
+    active: true
+    exceptionNames:
+     - Error
+     - Exception
+     - Throwable
+     - RuntimeException
+
+style:
+  active: true
+  ForbiddenComment:
+    active: true
+    values: 'NIY:,FIXME:,STOPSHIP:'
+    allowedPatterns: ""

@@ -75,6 +75,7 @@ object DirectiveUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
+    @Suppress("MagicNumber")
     fun extractDirectives(lines: List<String>): List<Directive> {
         val header = Arara.config[AraraSpec.Execution.onlyHeader]
         var regex = Arara.config[AraraSpec.Execution.filePattern]
@@ -154,6 +155,7 @@ object DirectiveUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
+    @Suppress("MagicNumber")
     fun generateDirective(assembler: DirectiveAssembler): Directive {
         val regex = Arara.config[AraraSpec.Directive.directivePattern]
         val pattern = Pattern.compile(regex)

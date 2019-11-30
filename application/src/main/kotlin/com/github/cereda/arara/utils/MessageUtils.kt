@@ -81,6 +81,7 @@ object MessageUtils {
      * @param value An integer value.
      * @return The normalized integer value.
      */
+    @Suppress("MagicNumber")
     private fun normalizeIconType(value: Int): Int {
         // do the normalization according to the available
         // icons in the underlying message implementation
@@ -170,7 +171,7 @@ object MessageUtils {
      */
     fun showOptions(type: Int, title: String,
                     text: String, vararg buttons: Any): Int {
-        return showOptions(WIDTH, type, title, text, *buttons)
+        return showOptions(WIDTH, type, title, text, buttons)
     }
 
     /**
@@ -237,12 +238,11 @@ object MessageUtils {
         // if it's not a null object, let's
         // find the corresponding index
         if (index != null) {
-            // iterate through the array of elements
-            for (i in elements.indices) {
+            elements.forEachIndexed { i, value ->
                 // if the element is found, simply
                 // return the index plus 1, as zero
                 // corresponds to no selection at all
-                if (elements[i] == index) {
+                if (value == index) {
                     return i + 1
                 }
             }
@@ -264,6 +264,6 @@ object MessageUtils {
      */
     fun showDropdown(type: Int, title: String,
                      text: String, vararg elements: Any): Int {
-        return showDropdown(WIDTH, type, title, text, *elements)
+        return showDropdown(WIDTH, type, title, text, elements)
     }
 }

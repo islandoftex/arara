@@ -8,6 +8,7 @@ import java.time.LocalDate
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
+@Suppress("MagicNumber")
 object AraraSpec : ConfigSpec() {
     object Application : ConfigSpec() {
         val defaultLanguageCode by optional("en")
@@ -65,9 +66,9 @@ object AraraSpec : ConfigSpec() {
     object Directive : ConfigSpec() {
         val linebreakPattern by optional("^\\s*-->\\s(.*)$")
 
-        private const val directive = "^\\s*(\\w+)\\s*(:\\s*(\\{.*\\})\\s*)?"
-        private const val pattern = "(\\s+(if|while|until|unless)\\s+(\\S.*))?$"
-        val directivePattern by optional(directive + pattern)
+        private const val directivestart = """^\s*(\w+)\s*(:\s*(\{.*\})\s*)?"""
+        private const val pattern = """(\s+(if|while|until|unless)\s+(\S.*))?$"""
+        val directivePattern by optional(directivestart + pattern)
     }
 
     object UserInteraction : ConfigSpec() {

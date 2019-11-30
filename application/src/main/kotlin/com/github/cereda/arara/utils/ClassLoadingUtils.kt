@@ -46,21 +46,33 @@ import java.net.URLClassLoader
  */
 object ClassLoadingUtils {
     /**
+     * Indicator of success or failure of class loading.
+     */
+    enum class ClassLoadingStatus {
+        SUCCESS,
+        FILE_NOT_FOUND,
+        MALFORMED_URL,
+        CLASS_NOT_FOUND,
+        ILLEGAL_ACCESS,
+        INSTANTIATION_EXCEPTION
+    }
+    
+    /**
      * Loads a class from the provided file, potentially a Java archive.
      * @param file File containing the Java bytecode (namely, a JAR).
      * @param name The canonical name of the class.
      * @return A pair representing the status and the class.
      */
-    fun loadClass(file: File, name: String): Pair<Int, Class<*>> {
+    fun loadClass(file: File, name: String): 
+            Pair<ClassLoadingStatus, Class<*>> {
         // status and class to be returned,
         // it defaults to an object class
-        var status = 0
         var value: Class<*> = Any::class.java
 
         // if file does not exist, nothing
         // can be done, status is changed
-        if (!file.exists()) {
-            status = 1
+        val status = if (!file.exists()) {
+            ClassLoadingStatus.FILE_NOT_FOUND
         } else {
             // classloading involves defining
             // a classloader and fetching the
@@ -70,28 +82,23 @@ object ClassLoadingUtils {
                 // creates a new classloader with
                 // the provided file (potentially
                 // a JAR file)
-                val classloader = URLClassLoader(
-                        arrayOf(file.toURI().toURL()),
-                        ClassLoadingUtils::class.java.classLoader
-                )
+                val classloader = URLClassLoader(arrayOf(file.toURI().toURL()),
+                        ClassLoadingUtils::class.java.classLoader)
 
                 // fetches the class from the
                 // instantiated classloader
                 value = Class.forName(name, true, classloader)
+                ClassLoadingStatus.SUCCESS
             } catch (_: MalformedURLException) {
-                // the file URL is incorrect,
-                // update status accordingly
-                status = 2
+                ClassLoadingStatus.MALFORMED_URL
             } catch (_: ClassNotFoundException) {
-                // the class was not found,
-                // update status accordingly
-                status = 3
+                ClassLoadingStatus.CLASS_NOT_FOUND
             }
         }
 
         // return a new pair based on the
         // current status and class holder
-        return Pair(status, value)
+        return status to value
     }
 
     /**
@@ -100,7 +107,7 @@ object ClassLoadingUtils {
      * @param name The canonical name of the class.
      * @return A pair representing the status and the class object.
      */
-    fun loadObject(file: File, name: String): Pair<Int, Any> {
+    fun loadObject(file: File, name: String): Pair<ClassLoadingStatus, Any> {
         // load the corresponding class
         // based on the qualified name
         val pair = loadClass(file, name)
@@ -113,7 +120,7 @@ object ClassLoadingUtils {
         // checks if the class actually
         // exists, otherwise simply
         // ignore instantiation
-        if (status == 0) {
+        if (status == ClassLoadingStatus.SUCCESS) {
             // object instantiation relies
             // on the default constructor
             // (without arguments), class
@@ -128,19 +135,18 @@ object ClassLoadingUtils {
                 // constructor (without arguments)
                 value = pair.second.getDeclaredConstructor().newInstance()
             } catch (_: IllegalAccessException) {
-                // the object instantiation violated an access policy
-                status = 4
+                status = ClassLoadingStatus.ILLEGAL_ACCESS
             } catch (_: InstantiationException) {
                 // the user wanted to instantiate an abstract class
-                status = 5
+                status = ClassLoadingStatus.INSTANTIATION_EXCEPTION
             } catch (_: InvocationTargetException) {
                 // the underlying constructor caused an exception
-                status = 5
+                status = ClassLoadingStatus.INSTANTIATION_EXCEPTION
             }
         }
 
         // return a new pair based on the
         // current status and object holder
-        return Pair(status, value)
+        return status to value
     }
 }

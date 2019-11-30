@@ -1087,8 +1087,11 @@ public class Methods {
      * @param name The canonical name of the class.
      * @return A pair representing the status and the class.
      */
+    // TODO: refactor to use the enum
     public static Pair<Integer, Class<?>> loadClass(File file, String name) {
-        return ClassLoadingUtils.INSTANCE.loadClass(file, name);
+        Pair<ClassLoadingUtils.ClassLoadingStatus, Class<?>> pair =
+                ClassLoadingUtils.INSTANCE.loadClass(file, name);
+        return new Pair<>(pair.getFirst().ordinal(), pair.getSecond());
     }
 
     /**
@@ -1098,8 +1101,11 @@ public class Methods {
      * @param name The canonical name of the class.
      * @return A pair representing the status and the class.
      */
+    // TODO: refactor to use the enum
     public static Pair<Integer, Class<?>> loadClass(String ref, String name) {
-        return ClassLoadingUtils.INSTANCE.loadClass(new File(ref), name);
+        Pair<ClassLoadingUtils.ClassLoadingStatus, Class<?>> pair =
+                ClassLoadingUtils.INSTANCE.loadClass(new File(ref), name);
+        return new Pair<>(pair.getFirst().ordinal(), pair.getSecond());
     }
 
     /**
@@ -1109,8 +1115,11 @@ public class Methods {
      * @param name The canonical name of the class.
      * @return A pair representing the status and the class object.
      */
+    // TODO: refactor to use the enum
     public static Pair<Integer, Object> loadObject(File file, String name) {
-        return ClassLoadingUtils.INSTANCE.loadObject(file, name);
+        Pair<ClassLoadingUtils.ClassLoadingStatus, Object> pair =
+                ClassLoadingUtils.INSTANCE.loadObject(file, name);
+        return new Pair<>(pair.getFirst().ordinal(), pair.getSecond());
     }
 
     /**
@@ -1120,8 +1129,11 @@ public class Methods {
      * @param name The canonical name of the class.
      * @return A pair representing the status and the class object.
      */
+    // TODO: refactor to use the enum
     public static Pair<Integer, Object> loadObject(String ref, String name) {
-        return ClassLoadingUtils.INSTANCE.loadObject(new File(ref), name);
+        Pair<ClassLoadingUtils.ClassLoadingStatus, Object> pair =
+                ClassLoadingUtils.INSTANCE.loadObject(new File(ref), name);
+        return new Pair<>(pair.getFirst().ordinal(), pair.getSecond());
     }
 
     /**

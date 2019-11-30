@@ -12,6 +12,9 @@ open class TDSZipBuilderTask : DefaultTask() {
         outputs.files(project.buildDir.resolve("arara.tds.zip"))
     }
 
+    /**
+     * The task's main action: Creating a TDS zip file.
+     */
     @TaskAction
     fun run() {
         logger.lifecycle("Testing required tools")

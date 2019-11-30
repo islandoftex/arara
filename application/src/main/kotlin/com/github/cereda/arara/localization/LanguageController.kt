@@ -74,9 +74,8 @@ object LanguageController {
      * @return A string containing a localized message indexed by the provided
      * enumeration key and applied the array of objects as parameters.
      */
-    fun <E : Enum<*>> getMessage(key: E, vararg parameters: Any): String {
-        return conveyor.getMessage(key, *parameters)
-    }
+    fun <E : Enum<*>> getMessage(key: E, vararg parameters: Any): String =
+        conveyor.getMessage(key, parameters)
 
     /**
      * Gets the localized message indexed by the provided enumeration key. This
@@ -86,7 +85,5 @@ object LanguageController {
      * @return A string containing a localized message indexed by the provided
      * enumeration key.
      */
-    fun <E : Enum<*>> getMessage(key: E): String {
-        return conveyor.getMessage(key)
-    }
+    fun <E : Enum<*>> getMessage(key: E): String = conveyor.getMessage(key)
 }

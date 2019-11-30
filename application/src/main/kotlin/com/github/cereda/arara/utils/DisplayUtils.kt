@@ -65,6 +65,11 @@ object DisplayUtils {
             messages.getMessage(Messages.INFO_LABEL_ON_FAILURE),
             messages.getMessage(Messages.INFO_LABEL_ON_ERROR))
             .map { it.length }.max()!!
+    /**
+     * If the longest match is longer than the width, then it will be truncated
+     * to this length.
+     */
+    private const val shortenedLongestMatch = 10
 
     /**
      * The default terminal width defined in the settings.
@@ -101,9 +106,12 @@ object DisplayUtils {
      * @param task Task name.
      */
     private fun buildShortEntry(name: String, task: String) {
-        val result = if (longestMatch >= width) 10 else longestMatch
+        val result = if (longestMatch >= width)
+            shortenedLongestMatch
+        else
+            longestMatch
         val space = width - result - 1
-        val line = "($name) $task ".abbreviate(space - 4)
+        val line = "($name) $task ".abbreviate(space - "... ".length)
         print(line.padEnd(space, '.') + " ")
     }
 
