@@ -23,7 +23,7 @@ import kotlin.time.ExperimentalTime
 @ExperimentalTime
 @DoNotParallelize
 class ExecutionTest : ShouldSpec({
-    fun getPathForTest(name: String): String = "src/test/resources/$name"
+    fun getPathForTest(name: String): String = "src/test/resources/executiontests/$name"
     fun outputForTest(testName: String, fileName: String = "$testName.tex"):
             String {
         val sysout = System.out
