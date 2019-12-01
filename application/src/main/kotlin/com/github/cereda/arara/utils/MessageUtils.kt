@@ -169,9 +169,10 @@ object MessageUtils {
      * @param buttons An array of objects to be presented as buttons.
      * @return The index of the selected button, starting from 1.
      */
+    @Suppress("SpreadOperator")
     fun showOptions(type: Int, title: String,
                     text: String, vararg buttons: Any): Int {
-        return showOptions(WIDTH, type, title, text, buttons)
+        return showOptions(WIDTH, type, title, text, *buttons)
     }
 
     /**
@@ -262,8 +263,9 @@ object MessageUtils {
      * @param elements An array of objects representing the elements.
      * @return The index of the selected element, starting from 1.
      */
+    @Suppress("SpreadOperator")
     fun showDropdown(type: Int, title: String,
                      text: String, vararg elements: Any): Int {
-        return showDropdown(WIDTH, type, title, text, elements)
+        return showDropdown(WIDTH, type, title, text, *elements)
     }
 }
