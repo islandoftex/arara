@@ -100,6 +100,7 @@ object RuleUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
+    @Suppress("ThrowsCount")
     private fun validateHeader(rule: Rule, identifier: String) {
         if (rule.identifier != Rule.INVALID_RULE_IDENTIFIER) {
             if (rule.identifier != identifier) {
@@ -130,6 +131,7 @@ object RuleUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
+    @Suppress("ThrowsCount")
     private fun validateBody(rule: Rule) {
         if (rule.commands.any { it.command == null }) {
             throw AraraException(CommonUtils.ruleErrorHeader +

@@ -11,7 +11,6 @@ plugins {
     `maven-publish`
     kotlin("jvm")
     id("com.github.johnrengelman.shadow")
-    id("io.gitlab.arturbosch.detekt")
     id("org.jetbrains.dokka")
 }
 

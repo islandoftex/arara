@@ -48,7 +48,6 @@ import org.yaml.snakeyaml.error.MarkedYAMLException
 import org.yaml.snakeyaml.representer.Representer
 import java.io.File
 import java.util.*
-import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 /**
@@ -67,6 +66,40 @@ object DirectiveUtils {
     private val logger = LoggerFactory.getLogger(DirectiveUtils::class.java)
 
     /**
+     * This function filters the lines of a file to identify the potential
+     * directives.
+     *
+     * @param lines The lines of the file.
+     * @return A map containing the line number and the line's content.
+     */
+    private fun getPotentialDirectiveLines(lines: List<String>):
+            Map<Int, String> {
+        val header = Arara.config[AraraSpec.Execution.onlyHeader]
+        val validLineRegex = Arara.config[AraraSpec.Execution.filePattern]
+        val validLinePattern = Pattern.compile(validLineRegex)
+        val validLineStartPattern = (validLineRegex + Arara.config[AraraSpec
+                .Application.namePattern]).toPattern()
+        val map = mutableMapOf<Int, String>()
+        for ((i, text) in lines.withIndex()) {
+            val validLineMatcher = validLineStartPattern.matcher(text)
+            if (validLineMatcher.find()) {
+                val line = text.substring(validLineMatcher.end())
+                map[i + 1] = line
+
+                logger.info(messages.getMessage(
+                        Messages.LOG_INFO_POTENTIAL_PATTERN_FOUND,
+                        i + 1, line.trim()))
+            } else if (header && !checkLinePattern(validLinePattern, text)) {
+                // if we should only look within the file's header and reached
+                // a point where the line pattern does not match anymore, we
+                // assume we have left the header and break
+                break
+            }
+        }
+        return map
+    }
+
+    /**
      * Extracts a list of directives from a list of strings.
      *
      * @param lines List of strings.
@@ -77,66 +110,36 @@ object DirectiveUtils {
     @Throws(AraraException::class)
     @Suppress("MagicNumber")
     fun extractDirectives(lines: List<String>): List<Directive> {
-        val header = Arara.config[AraraSpec.Execution.onlyHeader]
-        var regex = Arara.config[AraraSpec.Execution.filePattern]
-        val linecheck = Pattern.compile(regex)
-        regex += Arara.config[AraraSpec.Application.namePattern]
-        var pattern = Pattern.compile(regex)
-        val pairs = mutableListOf<Pair<Int, String>>()
-        var matcher: Matcher
-        for (i in lines.indices) {
-            matcher = pattern.matcher(lines[i])
-            if (matcher.find()) {
-                val line = lines[i].substring(
-                        matcher.end())
-                val pair = Pair(i + 1, line)
-                pairs.add(pair)
-
-                logger.info(
-                        messages.getMessage(
-                                Messages.LOG_INFO_POTENTIAL_PATTERN_FOUND,
-                                i + 1,
-                                line.trim()
-                        )
-                )
-            } else {
-                if (header) {
-                    if (!checkLinePattern(linecheck, lines[i])) {
-                        break
-                    }
-                }
-            }
-        }
-
-        if (pairs.isEmpty())
-            throw AraraException(messages.getMessage(
-                    Messages.ERROR_VALIDATE_NO_DIRECTIVES_FOUND))
+        val pairs = getPotentialDirectiveLines(lines)
+                .takeIf { it.isNotEmpty() }
+                ?: throw AraraException(messages.getMessage(
+                        Messages.ERROR_VALIDATE_NO_DIRECTIVES_FOUND))
 
         val assemblers = mutableListOf<DirectiveAssembler>()
         var assembler = DirectiveAssembler()
-        regex = Arara.config[AraraSpec.Directive.linebreakPattern]
-        pattern = Pattern.compile(regex)
-        for ((first, second) in pairs) {
-            matcher = pattern.matcher(second)
-            if (matcher.find()) {
+        val linebreakPattern = Arara.config[AraraSpec.Directive
+                .linebreakPattern].toPattern()
+        for ((lineno, content) in pairs) {
+            val linebreakMatcher = linebreakPattern.matcher(content)
+            if (linebreakMatcher.find()) {
                 if (!assembler.isAppendAllowed) {
                     throw AraraException(
                             messages.getMessage(
                                     Messages.ERROR_VALIDATE_ORPHAN_LINEBREAK,
-                                    first
+                                    lineno
                             )
                     )
                 } else {
-                    assembler.addLineNumber(first)
-                    assembler.appendLine(matcher.group(1))
+                    assembler.addLineNumber(lineno)
+                    assembler.appendLine(linebreakMatcher.group(1))
                 }
             } else {
                 if (assembler.isAppendAllowed) {
                     assemblers.add(assembler)
                 }
                 assembler = DirectiveAssembler()
-                assembler.addLineNumber(first)
-                assembler.appendLine(second)
+                assembler.addLineNumber(lineno)
+                assembler.appendLine(content)
             }
         }
         if (assembler.isAppendAllowed) {
@@ -162,7 +165,7 @@ object DirectiveUtils {
         val matcher = pattern.matcher(assembler.getText())
         if (matcher.find()) {
             val directive = Directive(
-                    identifier = matcher.group(1),
+                    identifier = matcher.group(1)!!,
                     parameters = getParameters(matcher.group(3),
                             assembler.getLineNumbers()),
                     conditional = Conditional(
@@ -213,30 +216,26 @@ object DirectiveUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
+    // TODO: loadAs might throw another (undocumented) exception
     private fun getParameters(text: String?,
                               numbers: List<Int>): Map<String, Any> {
         if (text == null)
             return mapOf()
 
-        val yaml = Yaml(
-                Constructor(),
+        return Yaml(Constructor(),
                 Representer(),
                 DumperOptions(),
-                DirectiveResolver()
-        )
-        try {
-            return yaml.loadAs(text, HashMap::class.java)
-                    .mapKeys { it.toString() }
-        } catch (exception: MarkedYAMLException) {
-            throw AraraException(
-                    messages.getMessage(
-                            Messages.ERROR_VALIDATE_YAML_EXCEPTION,
-                            "(" + numbers.joinToString(", ") + ")"
-                    ),
-                    exception
-            )
+                DirectiveResolver()).runCatching {
+            loadAs(text, HashMap::class.java).mapKeys { it.toString() }
+        }.getOrElse {
+            throw if (it is MarkedYAMLException)
+                AraraException(messages.getMessage(
+                        Messages.ERROR_VALIDATE_YAML_EXCEPTION,
+                        "(" + numbers.joinToString(", ") + ")"),
+                        it)
+            else
+                it
         }
-
     }
 
     /**
@@ -268,7 +267,7 @@ object DirectiveUtils {
                     // we take the result if and only if we have at least one
                     // file and we did not filter out any invalid argument
                     .takeIf { it.isNotEmpty() && holder.size == it.size }
-                    // TODO: check exception according to condition
+            // TODO: check exception according to condition
                     ?: throw AraraException(
                             messages.getMessage(
                                     Messages.ERROR_VALIDATE_EMPTY_FILES_LIST,

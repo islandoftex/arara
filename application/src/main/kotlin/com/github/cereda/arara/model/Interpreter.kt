@@ -191,7 +191,7 @@ class Interpreter(
      */
     @ExperimentalTime
     @Throws(AraraException::class)
-    @Suppress("TooGenericExceptionCaught")
+    @Suppress("TooGenericExceptionCaught", "ThrowsCount")
     private fun executeCommand(command: RuleCommand, conditional: Conditional,
                                rule: Rule, parameters: Map<String, Any>) {
         val result: Any = try {
@@ -246,6 +246,7 @@ class Interpreter(
      */
     @ExperimentalTime
     @Throws(AraraException::class)
+    @Suppress("NestedBlockDepth")
     fun execute() {
         for (directive in directives) {
             logger.info(messages.getMessage(Messages.LOG_INFO_INTERPRET_RULE,
@@ -345,7 +346,7 @@ class Interpreter(
      * @throws AraraException The argument could not be processed.
      */
     @Throws(AraraException::class)
-    @Suppress("TooGenericExceptionCaught")
+    @Suppress("TooGenericExceptionCaught", "ThrowsCount")
     private fun processArgument(argument: Argument, idInDirectiveParams: Boolean,
                                 context: Map<String, Any>): Any {
         if (argument.isRequired && !idInDirectiveParams)

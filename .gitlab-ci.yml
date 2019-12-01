@@ -43,6 +43,7 @@ build:linux:jdk11:
   stage: test
   script:
     - gradle test
+    - gradle detekt
   cache:
     key: "$CI_COMMIT_REF_NAME-$JAVA_VERSION"
     policy: pull
