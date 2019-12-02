@@ -808,6 +808,10 @@ The UI methods presented in this section can be used for writing \TeX\ tutorials
 
 From version 4.0 on, \arara\ features the \rbox{Command} object, a new approach for handling system commands based on a high level structure with explicit argument parsing.
 
+\begin{messagebox}{Important change in version 5.0}{araracolour}{\icattention}{white}
+\textbf{Triggers} -- \arara\ previously had the concept of triggers which allowed to easily ``trigger'' events like halting \arara. As of version 5.0, support for triggers has been dropped due to the lack of use cases.
+\end{messagebox}
+
 \begin{messagebox}{The anatomy of a command}{araracolour}{\icok}{white}
 \setlength{\parskip}{1em}
 From the user perspective, a \rbox{Command} object is simply a good old list of \rbox{Object} objects, in which the list head (i.e, the first element) is the underlying system command, and the list tail (i.e, the remaining elements), if any, contains the associated command line arguments. For instance:
@@ -952,6 +956,10 @@ According to the \href{https://en.wikipedia.org/wiki/PATH_(variable)}{Wikipedia 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 result = unsafelyExecuteSystemCommand(getCommand('ls'));
 \end{codebox}
+
+\begin{messagebox}{Important change in version 5.0}{araracolour}{\icattention}{white}
+\textbf{Working directory support} -- \arara\ now executes commands obtained from \rbox{getCommandWithWorkingDirectory} correctly. Previously, the working directory got silently ignored. This makes \arara\ even more powerful but we decided to change this for the sake of consistency.
+\end{messagebox}
 
 \begin{messagebox}{Hic sunt leones}{attentioncolour}{\icattention}{black}
 Please \emph{do not abuse} this method! Keep in mind that this particular feature is included for very specific scenarios in which the command streams are needed ahead of time for proper decision making.
