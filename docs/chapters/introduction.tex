@@ -141,7 +141,7 @@ That is pretty much how \arara\ works: directives in the source code are mapped 
 \section{Operating system remarks}
 \label{sec:operatingsystemremarks}
 
-The application is written using the Java language, so \arara\ runs on top of a Java virtual machine, available on all the major operating systems~--~in some cases, you might need to install the proper virtual machine. We tried very hard to keep both code and libraries compatible with older virtual machines or from other vendors. Currently, \arara\ is known to run on Oracle's Java 5 to 10, and OpenJDK 5 to 10. We also have reports of users successfully using the tool with virtual machines provided by Azul Systems, so your mileage might vary greatly.
+The application is written using the Kotlin language (and some pieces of Java), so \arara\ runs on top of a Java virtual machine, available on all the major operating systems~--~in some cases, you might need to install the proper virtual machine. We tried very hard to keep both code and libraries compatible with older virtual machines or from other vendors. Currently, \arara\ is known to run on Oracle's Java 8 to 13, OpenJDK 8 to 13 and ZuluFX 8 and 11.
 
 \begin{messagebox}{Outdated Java virtual machines}{attentioncolour}{\icerror}{black}
 Dear reader, beware of outdated software, mainly Java virtual machines! Although \arara\ offers support for older virtual machines, try your best to keep your software updated as frequently as possible. The legacy support exists only for historical reasons, and also due to the sheer fact that we know some people that still runs \arara\ on very old hardware. If you are not in this particular scenario, get the latest virtual machine.

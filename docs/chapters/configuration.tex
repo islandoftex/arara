@@ -67,7 +67,6 @@ paths:
 \end{codebox}
 
 \item[\varbox{user.name}] This variable, as the name implies, holds the value of the current user account name, as plain string. On certain operating systems, this value is used to build the home directory structure.
-\end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 paths:
@@ -80,6 +79,7 @@ paths:
 paths:
 - '@{application.workingDirectory}/rules'
 \end{codebox}
+\end{description}
 
 Observe that the \varbox{user} variable actually holds a map containing two keys (resulting in a map within a map). However, for didactic purposes, it is easier to use the property navigation feature of \gls{MVEL}, detailed in Section~\ref{sec:propertynavigation}, on page~\pageref{sec:propertynavigation}, and consider the map references as three independent variables. You can use property navigation styles interchangeably. Note that you can also precede the path with the special keyword \rbox{<arara>} and save some quotes (see Section~\ref{sec:rule}, on page~\pageref{sec:rule}). In this specific scenario, the special keyword will be automatically removed afterwards.
 
