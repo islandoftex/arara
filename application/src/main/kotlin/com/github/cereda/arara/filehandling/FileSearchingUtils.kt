@@ -31,8 +31,14 @@
  * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.cereda.arara.utils
+package com.github.cereda.arara.filehandling
 
+import com.github.cereda.arara.Arara
+import com.github.cereda.arara.configuration.AraraSpec
+import com.github.cereda.arara.localization.LanguageController
+import com.github.cereda.arara.localization.Messages
+import com.github.cereda.arara.model.AraraException
+import com.github.cereda.arara.utils.CommonUtils
 import java.io.File
 import java.io.FileFilter
 import java.nio.file.FileSystems
@@ -106,5 +112,68 @@ object FileSearchingUtils {
         // gracefully fallback to
         // an empty file list
         listOf()
+    }
+
+    /**
+     * Discovers the file through string reference lookup and sets the
+     * configuration accordingly.
+     *
+     * @param reference The string reference.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    @Throws(AraraException::class)
+    fun discoverFile(reference: String) {
+        lookupFile(reference)
+                ?: throw AraraException(
+                        LanguageController.getMessage(
+                                Messages.ERROR_DISCOVERFILE_FILE_NOT_FOUND,
+                                reference,
+                                CommonUtils.fileTypesList
+                        )
+                )
+    }
+
+    /**
+     * Performs a file lookup based on a string reference.
+     *
+     * @param reference The file reference as a string.
+     * @return The file as result of the lookup operation.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    @Throws(AraraException::class)
+    private fun lookupFile(reference: String): File? {
+        val types = Arara.config[AraraSpec.Execution.fileTypes]
+        val file = Arara.config[AraraSpec.Execution.workingDirectory]
+                .resolve(reference).toFile()
+        val name = file.name
+        val parent = FileHandlingUtils.getParentCanonicalFile(file)
+
+        // direct search, so we are considering
+        // the reference as a complete name
+        val testFile = parent.resolve(name)
+        if (testFile.exists() && testFile.isFile) {
+            types.firstOrNull {
+                testFile.toString().endsWith("." + it.extension)
+            }?.let {
+                Arara.config[AraraSpec.Execution.filePattern] =
+                        it.pattern
+                Arara.config[AraraSpec.Execution.reference] = testFile
+                return testFile
+            }
+        }
+
+        // indirect search; in this case, we are considering
+        // that the file reference has an implicit extension,
+        // so we need to add it and look again
+        return types.map { it to parent.resolve("$name.${it.extension}") }
+                .firstOrNull { it.second.exists() && it.second.isFile }
+                ?.let {
+                    Arara.config[AraraSpec.Execution.filePattern] =
+                            it.first.pattern
+                    Arara.config[AraraSpec.Execution.reference] = it.second
+                    file
+                }
     }
 }

@@ -35,6 +35,8 @@ package com.github.cereda.arara.utils;
 
 import com.github.cereda.arara.Arara;
 import com.github.cereda.arara.configuration.AraraSpec;
+import com.github.cereda.arara.filehandling.FileHandlingUtils;
+import com.github.cereda.arara.filehandling.FileSearchingUtils;
 import com.github.cereda.arara.localization.LanguageController;
 import com.github.cereda.arara.localization.Messages;
 import com.github.cereda.arara.model.AraraException;
@@ -57,6 +59,7 @@ import java.util.stream.Stream;
  * @version 4.0
  * @since 4.0
  */
+@SuppressWarnings("unused")
 public class Methods {
 
     // the language controller
@@ -398,7 +401,7 @@ public class Methods {
      */
     public static String getBasename(File file) throws AraraException {
         if (file.isFile()) {
-            return CommonUtils.INSTANCE.getBasename(file);
+            return FileHandlingUtils.INSTANCE.getBasename(file);
         } else {
             throw new AraraException(
                     CommonUtils.INSTANCE.getRuleErrorHeader().concat(
@@ -418,7 +421,7 @@ public class Methods {
      * @return The basename.
      */
     public static String getBasename(String filename) {
-        return CommonUtils.INSTANCE.getBasename(new File(filename));
+        return FileHandlingUtils.INSTANCE.getBasename(new File(filename));
     }
 
     /**
@@ -431,7 +434,7 @@ public class Methods {
      */
     public static String getFiletype(File file) throws AraraException {
         if (file.isFile()) {
-            return CommonUtils.INSTANCE.getFileExtension(file);
+            return FileHandlingUtils.INSTANCE.getFileExtension(file);
         } else {
             throw new AraraException(
                     CommonUtils.INSTANCE.getRuleErrorHeader().concat(
@@ -451,7 +454,7 @@ public class Methods {
      * @return The file type.
      */
     public static String getFiletype(String filename) {
-        return CommonUtils.INSTANCE.getFileExtension(new File(filename));
+        return FileHandlingUtils.INSTANCE.getFileExtension(new File(filename));
     }
 
     /**
@@ -464,7 +467,8 @@ public class Methods {
      *                        higher levels.
      */
     public static List<Object> replicatePattern(String pattern,
-                                                List<Object> values) throws AraraException {
+                                                List<Object> values)
+            throws AraraException {
         return CommonUtils.INSTANCE.replicateList(pattern, values);
     }
 
@@ -617,7 +621,7 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean exists(String extension) throws AraraException {
-        return CommonUtils.INSTANCE.exists(extension);
+        return FileHandlingUtils.INSTANCE.exists(extension);
     }
 
     /**
@@ -641,7 +645,7 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean changed(String extension) throws AraraException {
-        return CommonUtils.INSTANCE.hasChanged(extension);
+        return FileHandlingUtils.INSTANCE.hasChanged(extension);
     }
 
     /**
@@ -685,7 +689,7 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean changed(File filename) throws AraraException {
-        return CommonUtils.INSTANCE.hasChanged(filename);
+        return FileHandlingUtils.INSTANCE.hasChanged(filename);
     }
 
     /**
@@ -1029,7 +1033,7 @@ public class Methods {
      */
     public static String getFullBasename(File file) throws AraraException {
         if (file.isFile()) {
-            return CommonUtils.INSTANCE.getFullBasename(file);
+            return FileHandlingUtils.INSTANCE.getFullBasename(file);
         } else {
             throw new AraraException(
                     CommonUtils.INSTANCE.getRuleErrorHeader().concat(
@@ -1290,7 +1294,8 @@ public class Methods {
      */
     public static boolean isSubdirectory(File directory)
             throws AraraException {
-        return CommonUtils.INSTANCE.isSubDirectory(directory, getOriginalReference());
+        return FileHandlingUtils.INSTANCE.isSubDirectory(
+                directory, getOriginalReference());
     }
 
 }

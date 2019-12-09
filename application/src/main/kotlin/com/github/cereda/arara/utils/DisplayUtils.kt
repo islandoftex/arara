@@ -36,6 +36,7 @@ package com.github.cereda.arara.utils
 import com.github.cereda.arara.Arara
 import com.github.cereda.arara.configuration.AraraSpec
 import com.github.cereda.arara.configuration.ConfigurationUtils
+import com.github.cereda.arara.filehandling.FileHandlingUtils
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.AraraException
@@ -337,7 +338,7 @@ object DisplayUtils {
                 Messages.INFO_DISPLAY_FILE_INFORMATION,
                 file.name,
                 CommonUtils.byteSizeToString(file.length()),
-                CommonUtils.getLastModifiedInformation(file)
+                FileHandlingUtils.getLastModifiedInformation(file)
         )
         logger.info(messages.getMessage(
                 Messages.LOG_INFO_WELCOME_MESSAGE,

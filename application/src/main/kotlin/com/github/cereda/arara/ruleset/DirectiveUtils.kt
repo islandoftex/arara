@@ -35,10 +35,10 @@ package com.github.cereda.arara.ruleset
 
 import com.github.cereda.arara.Arara
 import com.github.cereda.arara.configuration.AraraSpec
+import com.github.cereda.arara.filehandling.FileHandlingUtils
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.AraraException
-import com.github.cereda.arara.utils.CommonUtils
 import com.github.cereda.arara.utils.DisplayUtils
 import org.slf4j.LoggerFactory
 import org.yaml.snakeyaml.DumperOptions
@@ -256,7 +256,7 @@ object DirectiveUtils {
             holder.filterIsInstance<Any>()
                     .asSequence()
                     .map { File(it.toString()) }
-                    .map(CommonUtils::getCanonicalFile)
+                    .map(FileHandlingUtils::getCanonicalFile)
                     // and because we want directives, we replicate our
                     // directive to be applied to that file
                     .map { reference ->

@@ -10,6 +10,7 @@ import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import com.github.ajalt.clikt.parameters.types.restrictTo
 import com.github.cereda.arara.configuration.AraraSpec
+import com.github.cereda.arara.filehandling.FileSearchingUtils
 import com.github.cereda.arara.localization.Language
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
@@ -134,7 +135,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
             Arara.config = Arara.baseconfig.withLayer(it)
             // next, update the configuration
             updateConfigurationFromCommandLine()
-            CommonUtils.discoverFile(it)
+            FileSearchingUtils.discoverFile(it)
             Arara.run()
         }
 

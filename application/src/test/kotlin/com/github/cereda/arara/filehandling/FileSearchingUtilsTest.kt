@@ -1,4 +1,4 @@
-package com.github.cereda.arara.utils
+package com.github.cereda.arara.filehandling
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec

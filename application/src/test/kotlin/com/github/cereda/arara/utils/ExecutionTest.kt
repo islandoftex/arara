@@ -3,6 +3,7 @@ package com.github.cereda.arara.utils
 import com.github.cereda.arara.Arara
 import com.github.cereda.arara.configuration.AraraSpec
 import com.github.cereda.arara.configuration.Configuration
+import com.github.cereda.arara.filehandling.FileSearchingUtils
 import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.model.Extractor
 import com.github.cereda.arara.model.Interpreter
@@ -34,7 +35,7 @@ class ExecutionTest : ShouldSpec({
                     Paths.get(getPathForTest(testName))
             Configuration.load()
             Arara.config[AraraSpec.Execution.verbose] = true
-            CommonUtils.discoverFile(fileName)
+            FileSearchingUtils.discoverFile(fileName)
             val directives = DirectiveUtils.process(Extractor.extract(
                     File("${getPathForTest(testName)}/$fileName")))
             Interpreter(directives).execute()

@@ -34,6 +34,7 @@
 package com.github.cereda.arara.configuration
 
 import com.github.cereda.arara.Arara
+import com.github.cereda.arara.filehandling.FileHandlingUtils
 import com.github.cereda.arara.localization.Language
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
@@ -76,7 +77,7 @@ object Configuration {
             // set the configuration file name for
             // logging purposes
             Arara.config[AraraSpec.Execution.configurationName] =
-                    CommonUtils.getCanonicalPath(file)
+                    FileHandlingUtils.getCanonicalPath(file)
 
             // then validate it and update the
             // configuration accordingly

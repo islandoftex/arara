@@ -18,11 +18,6 @@ class CommonUtilsTest : ShouldSpec({
         }
     }
 
-    should("generate correct CRC sums") {
-        CommonUtils.calculateHash(File("../LICENSE")) shouldBe "17f430a5"
-        CommonUtils.calculateHash(File("../CODE_OF_CONDUCT.md")) shouldBe "536c426f"
-    }
-
     should("find system utils") {
         CommonUtils.isOnPath("echo") shouldBe true
     }

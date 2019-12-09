@@ -31,14 +31,14 @@
  * WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.cereda.arara.utils
+package com.github.cereda.arara.filehandling
 
 import com.github.cereda.arara.Arara
 import com.github.cereda.arara.configuration.AraraSpec
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.AraraException
-import com.github.cereda.arara.model.Database
+import com.github.cereda.arara.utils.CommonUtils
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.Constructor
 import org.yaml.snakeyaml.nodes.Tag
@@ -69,7 +69,7 @@ object DatabaseUtils {
             val reference = Arara.config[AraraSpec.Execution.reference]
             val name = Arara.config[AraraSpec.Execution.databaseName] +
                     ".yaml"
-            val path = CommonUtils.getParentCanonicalFile(reference)
+            val path = FileHandlingUtils.getParentCanonicalFile(reference)
             return path.resolve(name)
         }
 
