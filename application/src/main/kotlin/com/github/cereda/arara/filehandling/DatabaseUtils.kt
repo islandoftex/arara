@@ -38,7 +38,6 @@ import com.github.cereda.arara.configuration.AraraSpec
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.AraraException
-import com.github.cereda.arara.utils.CommonUtils
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.Constructor
 import org.yaml.snakeyaml.nodes.Tag
@@ -91,8 +90,7 @@ object DatabaseUtils {
                 loadAs(file.readText(), Database::class.java)
             }.getOrElse {
                 throw AraraException(messages.getMessage(Messages
-                        .ERROR_LOAD_COULD_NOT_LOAD_XML, file.name),
-                        it as Exception)
+                        .ERROR_LOAD_COULD_NOT_LOAD_XML, file.name), it)
             }
         }
     }
@@ -117,8 +115,7 @@ object DatabaseUtils {
                     messages.getMessage(
                             Messages.ERROR_SAVE_COULD_NOT_SAVE_XML,
                             file.name
-                    ), it as Exception
-            )
+                    ), it)
         }
     }
 

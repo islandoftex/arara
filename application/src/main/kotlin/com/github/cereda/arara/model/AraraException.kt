@@ -61,9 +61,15 @@ class AraraException : Exception {
     constructor(message: String, exception: Exception) : super(message) {
         this.exception = exception
     }
-    
-    // TODO: constructor with Throwable and refactor all "as Exception"
-    //  in codebase
+
+    /**
+     * Constructor. Takes the exception message and the underlying exception.
+     * @param message The exception message.
+     * @param throwable The underlying exception as generic throwable.
+     */
+    constructor(message: String, throwable: Throwable) : super(message) {
+        this.exception = RuntimeException(throwable)
+    }
 
     /**
      * Checks if there is an underlying exception defined in the current object.

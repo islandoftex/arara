@@ -5,7 +5,6 @@ import com.github.cereda.arara.configuration.AraraSpec
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.AraraException
-import com.github.cereda.arara.utils.CommonUtils
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -136,8 +135,7 @@ object FileHandlingUtils {
         }.getOrElse {
             // it is IOException || is is SecurityException
             throw AraraException(messages.getMessage(
-                    Messages.ERROR_GETPARENTCANONICALPATH_IO_EXCEPTION),
-                    it as Exception)
+                    Messages.ERROR_GETPARENTCANONICALPATH_IO_EXCEPTION), it)
         }
     }
 

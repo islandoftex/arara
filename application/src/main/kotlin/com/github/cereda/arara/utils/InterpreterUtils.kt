@@ -146,7 +146,7 @@ object InterpreterUtils {
                         is TimeoutException ->
                             Messages.ERROR_RUN_TIMEOUT_EXCEPTION
                         else -> Messages.ERROR_RUN_GENERIC_EXCEPTION
-                    }), it as Exception)
+                    }), it)
         }
     }
 
