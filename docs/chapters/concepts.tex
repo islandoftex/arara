@@ -412,13 +412,18 @@ Even when a directive is interpreted with a file other than the one being proces
 If this is your first time using \arara\ or you do not have custom rules in the old format, you can safely ignore this section. All rules shipped with our tool are already written in the new format.
 \end{messagebox}
 
+\begin{messagebox}{Removal of velocity}{araracolour}{\icinfo}{white}
+\arara\ featured support for the Velocity Template Language. In version 5.0, this support has been removed. We decided in favour of this breaking change to achieve more independence from third-party modules and to avoid being stuck at version~1.7 for compatibility reasons.
+
+Due to this change, \arara\ does not ship support for any templating language at the moment. If you are interested in getting a templating language on board, you are welcome to support our efforts to make the inclusion of JVM-Code on the user-side more pleasant.
+\end{messagebox}
+
 TODO: discuss changes in version 5:
 
 \begin{itemize}
   \item removed triggers
   \item reduced available commands (methods)
   \item removed string-based commands
-  \item removed velocity rule
 \end{itemize}
 
 This section pretty much covered the basics for correctly migrating rules in the old format to the new one. Of course, it is highly advisable to make use of the new features available in \arara\ 5.0 for achieving better results. If you need any help, please do not hesitate to contact us. See Section~\ref{sec:support}, on page~\pageref{sec:support}, for more details on how to get help.
