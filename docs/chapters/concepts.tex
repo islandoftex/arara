@@ -64,7 +64,7 @@ authors:
 \item[\describe{M}{commands}] This key is introduced in version 4.0 of \arara\ and denotes a potential list of commands. From the user perspective, each command is called a \emph{subtask} within a task (rule and directive) context. A task may represent only a single command (a single subtask), as well as a sequence of commands (subtasks). For instance, the \rbox{frontespizio} rule requires at least two commands. So, as a means of normalizing the representation, a task composed of a single command (single subtask) is defined as the only element of the list, as opposed to previous versions of \arara, which had a specific key to hold just one command.
 
 \begin{messagebox}{Incompatibility with older versions}{attentioncolour}{\icerror}{black}
-Dear reader, note that rules from version 4.0 are incompatible with older versions of \arara. If you are migrating from old versions to version 4.0, we need to replace \abox{command} by \abox{commands} and specify a contextual element, as seen in the following descriptions. Please refer to Section~\ref{sec:migrationguide}, on page~\pageref{sec:migrationguide}, for a comprehensible migration guide.
+Dear reader, note that rules from version 4.0 and newer are incompatible with older versions of \arara. If you are migrating from old versions to version 4.0, we need to replace \abox{command} by \abox{commands} and specify a contextual element, as seen in the following descriptions.
 \end{messagebox}
 
 In order to properly set a subtask, the keys used in this specification are defined inside the \rbox{commands$\rightarrow$} context and presented as follows.
@@ -405,11 +405,17 @@ It is important to observe that, in this case, \rbox{doc3.tex} is a plain \TeX\ 
 
 Even when a directive is interpreted with a file other than the one being processed by \arara\ (through the magic of the \abox{files} parameter), it is possible to use helper methods in the rule context to get access to the original file and reference. Such methods are detailed later on, in Section~\ref{sec:files}, on page~\pageref{sec:files}.
 
-\section{Migration guide}
+\section{Important changes in version 5.0}
 \label{sec:migrationguide}
 
 \begin{messagebox}{A note to users}{araracolour}{\icattention}{white}
 If this is your first time using \arara\ or you do not have custom rules in the old format, you can safely ignore this section. All rules shipped with our tool are already written in the new format.
+\end{messagebox}
+
+\begin{messagebox}{Removal of triggers}{araracolour}{\icattention}{white}
+\arara\ previously had the concept of triggers which allowed to easily ``trigger'' events like halting \arara. As of version 5.0, support for triggers has been dropped due to the lack of use cases.
+
+As the only pre-defined trigger has been `halt` we did not deprecate the ability to halt the application. However, the new mechanism uses the concept of session values (see \autoref{sec:others}).
 \end{messagebox}
 
 \begin{messagebox}{Removal of velocity}{araracolour}{\icinfo}{white}
@@ -418,12 +424,33 @@ If this is your first time using \arara\ or you do not have custom rules in the 
 Due to this change, \arara\ does not ship support for any templating language at the moment. If you are interested in getting a templating language on board, you are welcome to support our efforts to make the inclusion of JVM-Code on the user-side more pleasant.
 \end{messagebox}
 
-TODO: discuss changes in version 5:
+\begin{messagebox}{Removal of string-based commands}{araracolour}{\icinfo}{white}
+Up to version 5.0 you could simply use \verb|return "command";| in your rules. This resulted in \arara\ implicitly constructing a command object. As this does not make clear that this command is actually run, we now enforce the usage of \mdbox{R}{getCommand(List<String> commands)}{Command}. Hence, the new way of doing the same is \verb|return getCommand("command");|.
+\end{messagebox}
+
+\begin{messagebox}{Removal of velocity}{araracolour}{\icinfo}{white}
+\arara\ featured support for the Velocity Template Language. In version 5.0, this support has been removed. We decided in favour of this breaking change to achieve more independence from third-party modules and to avoid being stuck at version~1.7 for compatibility reasons.
+
+Due to this change, \arara\ does not ship support for any templating language at the moment. If you are interested in getting a templating language on board, you are welcome to support our efforts to make the inclusion of JVM-Code on the user-side more pleasant.
+\end{messagebox}
+
+\begin{messagebox}{Methods: removal and change of name}{araracolour}{\icinfo}{white}
+The following previously available methods (and repective overloaded variants) have been removed:
 
 \begin{itemize}
-  \item removed triggers
-  \item reduced available commands (methods)
-  \item removed string-based commands
+\item \mdbox{R}{isAIX()}{boolean}
+\item \mdbox{R}{isIrix()}{boolean}
+\item \mdbox{R}{isOS2()}{boolean}
+\item \mdbox{R}{isSolaris()}{boolean}
+\item \mdbox{R}{\parbox{0.62\textwidth}{mergeVelocityTemplate(File input, File output,\\\hspace*{1em} Map<String, Object> map)}}{void}
 \end{itemize}
+
+The following methods have been renamed:
+\begin{itemize}
+\item \mdbox{(Session.)insert(String key, Object value)}{void} to \mdbox{(Session.)put(String key, Object value)}{void}
+\item \mdbox{(Session.)exists(String key)}{boolean} to \mdbox{(Session.)contains(String key)}{boolean}
+\item \mdbox{(Session.)obtain(String key)}{Object} to \mdbox{(Session.)get(String key)}{Object}
+\end{itemize}
+\end{messagebox}
 
 This section pretty much covered the basics for correctly migrating rules in the old format to the new one. Of course, it is highly advisable to make use of the new features available in \arara\ 5.0 for achieving better results. If you need any help, please do not hesitate to contact us. See Section~\ref{sec:support}, on page~\pageref{sec:support}, for more details on how to get help.

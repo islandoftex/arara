@@ -803,14 +803,10 @@ This method shows an input dialog box according to the provided parameters. The 
 
 The UI methods presented in this section can be used for writing \TeX\ tutorials and assisted compilation workflows based on user interactions, including visual input and feedback through dialog boxes.
 
-\section{Commands and triggers}
+\section{Commands}
 \label{sec:commandsandtriggers}
 
 From version 4.0 on, \arara\ features the \rbox{Command} object, a new approach for handling system commands based on a high level structure with explicit argument parsing.
-
-\begin{messagebox}{Important change in version 5.0}{araracolour}{\icattention}{white}
-\textbf{Triggers} -- \arara\ previously had the concept of triggers which allowed to easily ``trigger'' events like halting \arara. As of version 5.0, support for triggers has been dropped due to the lack of use cases.
-\end{messagebox}
 
 \begin{messagebox}{The anatomy of a command}{araracolour}{\icok}{white}
 \setlength{\parskip}{1em}
@@ -900,9 +896,7 @@ The methods presented in this section constitute the foundations of underlying s
 This section introduces assorted methods provided by \arara\ as a means to improve the automation itself with expressive rules and enhance the user experience. Such methods are properly described as follows.
 
 \begin{messagebox}{Session}{araracolour}{\icok}{white}
-Rules are designed under the \emph{encapsulation} notion, such that the direct access to internal workings of such structures is restricted. However, as a means to support framework awareness, \arara\ provides a mechanism for data sharing across rule contexts, implemented as a \rbox{Session} object. In practical terms, this particular object is a global, persistent map composed of \rbox{String} keys and \rbox{Object} values available throughout the entire execution. The public methods are described as follows:
-
-TODO: mention namespaces
+Rules are designed under the \emph{encapsulation} notion, such that the direct access to internal workings of such structures is restricted. However, as a means to support framework awareness, \arara\ provides a mechanism for data sharing across rule contexts, implemented as a \rbox{Session} object. In practical terms, this particular object is a global, persistent map composed of \rbox{String} keys and \rbox{Object} values available throughout the entire execution. The public methods of a session are described as follows:
 
 \begin{description}
 \item[\mtbox{put(String key, Object value)}\hfill\rrbox{void}] This method, as the name implies, inserts an object into the session, indexed by the provided key. Observe that, if the session previously contained a mapping for the provided key, the old value is replaced by the specified value.
@@ -923,7 +917,7 @@ It is important to observe that the \rbox{Session} object provided by our tool f
 \item[\mdbox{R}{getSession()}{Session}] This method, as the name implies, returns the \rbox{Session} object for data sharing across rule contexts. Keep in mind that a session cannot contain duplicate keys. Each key can map to at most one value.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-name = getSession().obtain('name');
+name = getSession().get('name');
 \end{codebox}
 
 \item[\mdbox{R}{throwError(String message)}{void}] This method deliberately throws an error to be intercepted later on during execution. Consider using such method for an explicit notification about unexpected or unsought scenarios, e.g, wrong parameter types or values. The raised error has an associated message which is displayed in the terminal and added to the log file.
@@ -971,5 +965,19 @@ Please \emph{do not abuse} this method! Keep in mind that this particular featur
 valid = isSubdirectory(toFile('chapters/'));
 \end{codebox}
 \end{description}
+
+\begin{messagebox}{Flags and reserved storage in a session}{araracolour}{\icok}{white}
+Within a session there are two ``reserved'' namespaces: \verb|arara| and \verb|environment|. The latter is quite intuitive: \arara\ will store the current state of the systems environment variables in its session. You may alter these values in the session storage but they will not be written back to the system configuration. To access an environment variable, you can use its usual name prefixed by \verb|environment:|.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+path = getSession().get('environment:PATH');
+\end{codebox}
+
+The \verb|arara| namespace is a bit different. It provides flags that control \arara s behaviour. Flags are used in rules and may be manipulated by the user. Be aware, that every change in this namespace will result in \arara\ acting like you know what you did. Use this power with care. Currently, there is only one relevant flag: \verb|arara:FILENAME:halt|. This will stop the currently run command execution on the file with the specified file name. The value of this map entry is the exit status you want \arara\ to have. 
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+path = getSession().put('arara:myfile.tex:halt', 42);
+\end{codebox}
+\end{messagebox}
 
 The methods presented in this section provide interesting features for persistent data sharing, error handling, early command execution, and templating. It is important to note that more classes, objects and methods can be incorporated into \arara\ through class loading and object instantiation, extending the features and enhancing the overall user experience.
