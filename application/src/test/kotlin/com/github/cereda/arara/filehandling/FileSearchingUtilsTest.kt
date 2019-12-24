@@ -4,8 +4,12 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
 import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.reflect.full.declaredMemberFunctions
+import kotlin.reflect.jvm.isAccessible
 
 class FileSearchingUtilsTest : ShouldSpec({
+    // TODO: test implicit extensions
+
     fun prepareFileSystem(): Path {
         val tempDir = Files.createTempDirectory(System.nanoTime().toString())
         tempDir.resolve("quack/quack").toFile().mkdirs()
@@ -14,6 +18,20 @@ class FileSearchingUtilsTest : ShouldSpec({
             tempDir.resolve("$it.txt").toFile().writeText(" ")
         }
         return tempDir
+    }
+
+    should("fail looking up inexistent file") {
+        val lookupFile = FileSearchingUtils::class.declaredMemberFunctions
+                .first { it.name == "lookupFile" }
+        lookupFile.isAccessible = true
+        lookupFile.call(FileSearchingUtils, "QUACK") shouldBe null
+    }
+
+    should("fail on existing directory") {
+        val lookupFile = FileSearchingUtils::class.declaredMemberFunctions
+                .first { it.name == "lookupFile" }
+        lookupFile.isAccessible = true
+        lookupFile.call(FileSearchingUtils, "../buildSrc") shouldBe null
     }
 
     should("find file by extension") {

@@ -12,6 +12,7 @@ plugins {
     kotlin("jvm")
     id("com.github.johnrengelman.shadow")
     id("org.jetbrains.dokka")
+    jacoco
 }
 
 val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class).kotlinPluginVersion
@@ -123,7 +124,9 @@ tasks {
         }
     }
 }
-tasks.named<Task>("assembleDist").configure { dependsOn("shadowJar") }
+tasks.named<Task>("assembleDist").configure {
+    dependsOn("shadowJar", "jacocoTestReport")
+}
 
 publishing {
     publications {

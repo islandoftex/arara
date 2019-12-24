@@ -323,21 +323,21 @@ object FileHandlingUtils {
     /**
      * Checks whether a directory is under a root directory.
      *
-     * @param f1 Directory to be inspected.
-     * @param f2 Root directory.
+     * @param child Directory to be inspected.
+     * @param parent Root directory.
      * @return Logical value indicating whether the directoy is under root.
      * @throws AraraException There was a problem with path retrieval.
      */
     @Throws(AraraException::class)
-    fun isSubDirectory(f1: File, f2: File): Boolean {
-        return if (f1.isDirectory) {
-            getCanonicalPath(f1).startsWith(
-                    getParentCanonicalPath(f2) + File.separator
+    fun isSubDirectory(child: File, parent: File): Boolean {
+        return if (child.isDirectory && parent.isDirectory) {
+            getCanonicalPath(child).startsWith(
+                    getParentCanonicalPath(parent) + File.separator
             )
         } else {
             throw AraraException(messages.getMessage(
                     Messages.ERROR_ISSUBDIRECTORY_NOT_A_DIRECTORY,
-                    f1.name))
+                    child.name))
         }
     }
 }
