@@ -119,17 +119,13 @@ object Session {
      * @return A boolean value indicating if the provided key exists in the
      * session.
      */
-    operator fun contains(key: String): Boolean {
-        return map.containsKey(key)
-    }
+    operator fun contains(key: String): Boolean = map.containsKey(key)
 
     /**
      * Clears the session (map). This method, as usual, holds the map method of
      * the same name.
      */
-    fun clear() {
-        map.clear()
-    }
+    fun clear() = map.clear()
 
     /**
      * Update the environment variables stored in the session.
@@ -149,6 +145,6 @@ object Session {
                 .forEach { remove(it.key) }
         // add all relevant new environment variables
         System.getenv().filterKeys(additionFilter)
-                .forEach { map[it.key] = it.value }
+                .forEach { map["environment:${it.key}"] = it.value }
     }
 }
