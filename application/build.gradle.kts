@@ -17,13 +17,13 @@ plugins {
 val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class).kotlinPluginVersion
 dependencies {
     implementation(kotlin("stdlib", kotlinVersion))
-    implementation("com.uchuhimo:konf-core:0.21.0")
+    implementation("com.uchuhimo:konf-core:0.22.1")
     implementation("com.github.ajalt:clikt:2.3.0")
     implementation("ch.qos.cal10n:cal10n-api:0.8.1")
     implementation("ch.qos.logback:logback-classic:1.2.3")
     implementation("ch.qos.logback:logback-core:1.2.3")
-    implementation("org.mvel:mvel2:2.4.4.Final")
-    implementation("org.slf4j:slf4j-api:1.7.29")
+    implementation("org.mvel:mvel2:2.4.5.Final")
+    implementation("org.slf4j:slf4j-api:1.7.30")
     implementation("org.yaml:snakeyaml:1.25")
     implementation("org.zeroturnaround:zt-exec:1.11")
 
