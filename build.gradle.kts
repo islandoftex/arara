@@ -12,7 +12,7 @@ allprojects {
     repositories {
         jcenter()
     }
-    group = "com.github.cereda.arara"
+    group = "org.islandoftex.arara"
 }
 
 plugins {
