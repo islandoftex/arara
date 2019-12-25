@@ -42,10 +42,8 @@ import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.ruleset.Argument
 import java.io.File
 import java.io.IOException
-import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
-import java.util.zip.CRC32
 import kotlin.math.ln
 import kotlin.math.pow
 

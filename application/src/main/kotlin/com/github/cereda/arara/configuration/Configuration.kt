@@ -39,8 +39,6 @@ import com.github.cereda.arara.localization.Language
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.AraraException
-import com.github.cereda.arara.model.FileType
-import com.github.cereda.arara.utils.CommonUtils
 import kotlin.time.ExperimentalTime
 
 /**
