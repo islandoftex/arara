@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: BSD-3-Clause
+
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.java.archives.internal.DefaultManifest

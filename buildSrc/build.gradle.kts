@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: BSD-3-Clause
+
 repositories {
     mavenCentral()
 }
@@ -7,5 +9,5 @@ plugins {
 }
 
 dependencies {
-    "implementation"("org.zeroturnaround:zt-exec:1.9")
+    "implementation"("org.zeroturnaround:zt-exec:1.11")
 }

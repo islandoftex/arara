@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: BSD-3-Clause
+
 package org.islandoftex.arara.localization
 
 import org.islandoftex.arara.model.AraraException

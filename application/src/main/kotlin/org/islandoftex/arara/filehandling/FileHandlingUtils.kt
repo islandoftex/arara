@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: BSD-3-Clause
+
 package org.islandoftex.arara.filehandling
 
 import org.islandoftex.arara.Arara

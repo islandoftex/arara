@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: BSD-3-Clause
+
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.islandoftex.arara.build.CTANBuilderTask
 import org.islandoftex.arara.build.TDSZipBuilderTask
