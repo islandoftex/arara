@@ -34,7 +34,7 @@
 package com.github.cereda.arara.configuration
 
 import com.github.cereda.arara.Arara
-import com.github.cereda.arara.model.FileTypeResource
+import com.github.cereda.arara.model.FileType
 import com.github.cereda.arara.utils.CommonUtils
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -78,7 +78,7 @@ class LocalConfiguration {
         }
 
     // file types
-    var filetypes: List<FileTypeResource> = listOf()
+    var filetypes: List<FileType> = listOf()
 
     // the application language
     // default to English

@@ -107,21 +107,7 @@ object Configuration {
 
         if (resource.filetypes.isNotEmpty()) {
             Arara.config[AraraSpec.Execution.fileTypes] = ConfigurationUtils
-                    .normalizeFileTypes(resource.filetypes.map { type ->
-                        if (type.pattern != null) {
-                            FileType(type.extension!!, type.pattern!!)
-                        } else {
-                            FileType(type.extension!!, ConfigurationUtils
-                                    .defaultFileTypePatterns[type.extension!!]
-                                    ?: throw AraraException(
-                                            messages.getMessage(
-                                                    Messages.ERROR_FILETYPE_UNKNOWN_EXTENSION,
-                                                    type.extension!!,
-                                                    CommonUtils.fileTypesList
-                                            )
-                                    ))
-                        }
-                    })
+                    .normalizeFileTypes(resource.filetypes)
         }
 
         Arara.config[AraraSpec.Execution.verbose] = resource.isVerbose

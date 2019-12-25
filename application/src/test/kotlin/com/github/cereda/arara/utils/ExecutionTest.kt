@@ -118,4 +118,8 @@ class ExecutionTest : ShouldSpec({
             outputForTest("foreign-extension", "foreign-extension.xy")
         }
     }
+    should("accept empty pattern on known extension") {
+        val output = outputForTest("known-extension")
+        output shouldContain "QuackOne"
+    }
 })

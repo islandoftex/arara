@@ -69,15 +69,12 @@ object ConfigurationUtils {
     )
 
     // list of default file types provided by arara, in order.
-    val defaultFileTypes: Set<FileType>
-        @Throws(AraraException::class)
-        get() = listOf("tex", "dtx", "ltx", "drv", "ins")
-                .map {
-                    FileType(it, defaultFileTypePatterns[it]
-                            ?: throw AraraException("File type not found in " +
-                                    "defaults (severe developer error)"))
-                }
+    // initialization may throw AraraException if file types are wrong
+    val defaultFileTypes: Set<FileType> by lazy {
+        defaultFileTypePatterns
+                .map { (extension, pattern) -> FileType(extension, pattern) }
                 .toSet()
+    }
 
     // look for configuration files in the user's working directory first
     // if no configuration files are found in the user's working directory,
@@ -144,12 +141,7 @@ object ConfigurationUtils {
         }.getOrElse {
             throw AraraException(messages.getMessage(
                     Messages.ERROR_CONFIGURATION_GENERIC_ERROR), it)
-        }.takeUnless { localConfiguration ->
-            // a local configuration must not have any null extension
-            // (user error) because we cannot append null to any file name
-            localConfiguration.filetypes.any { it.extension == null }
-        } ?: throw AraraException(messages.getMessage(
-                Messages.ERROR_CONFIGURATION_FILETYPE_MISSING_EXTENSION))
+        }
     }
 
     /**

@@ -33,6 +33,13 @@
  */
 package com.github.cereda.arara.model
 
+import com.github.cereda.arara.configuration.ConfigurationUtils
+import com.github.cereda.arara.localization.LanguageController
+import com.github.cereda.arara.localization.Messages
+import com.github.cereda.arara.utils.CommonUtils
+import kotlinx.serialization.Serializable
+import java.util.regex.PatternSyntaxException
+
 /**
  * Implements the file type model.
  *
@@ -40,14 +47,66 @@ package com.github.cereda.arara.model
  * @version 4.0
  * @since 4.0
  */
-data class FileType(
-        // string representing the
-        // file extension
-        val extension: String,
-        // string representing the
-        // file pattern to be used
-        // as directive lookup
-        val pattern: String) {
+@Serializable
+class FileType {
+    // string representing the
+    // file extension
+    var extension: String = INVALID_EXTENSION
+        get() = CommonUtils.removeKeywordNotNull(field)
+        private set
+    // string representing the
+    // file pattern to be used
+    // as directive lookup
+    var pattern: String = INVALID_PATTERN
+        @Throws(AraraException::class)
+        get() {
+            CommonUtils.removeKeywordNotNull(field)
+            if (field == INVALID_PATTERN) {
+                field = ConfigurationUtils.defaultFileTypePatterns[extension]
+                        ?: throw AraraException(
+                                LanguageController.getMessage(
+                                        Messages.ERROR_FILETYPE_UNKNOWN_EXTENSION,
+                                        extension,
+                                        CommonUtils.fileTypesList
+                                )
+                        )
+            }
+            return field
+        }
+        private set
+
+    constructor(extension: String, pattern: String) {
+        this.extension = extension
+        this.pattern = pattern
+
+        try {
+            pattern.toPattern()
+        } catch (e: PatternSyntaxException) {
+            if (!ConfigurationUtils.defaultFileTypePatterns.containsKey(extension))
+                throw AraraException(
+                        LanguageController.getMessage(
+                                Messages.ERROR_FILETYPE_UNKNOWN_EXTENSION,
+                                extension,
+                                CommonUtils.fileTypesList
+                        )
+                )
+        }
+    }
+
+    companion object {
+        /**
+         * This constant identifies an invalid extension. As unices do not
+         * allow a forward and Windows does not allow a backward slash, this
+         * should suffice.
+         */
+        const val INVALID_EXTENSION = "/\\"
+        /**
+         * This constant identifies an invalid pattern. This is a opening
+         * character class which is invalid.
+         */
+        const val INVALID_PATTERN = "["
+    }
+
     /**
      * Provides a textual representation of the current file type object.
      * @return A string containing a textual representation of the current file
