@@ -33,7 +33,7 @@
  */
 package com.github.cereda.arara.filehandling
 
-import java.util.*
+import kotlinx.serialization.Serializable
 
 /**
  * The XML database model, which keeps track on file changes. I am using the
@@ -42,10 +42,11 @@ import java.util.*
  * @version 4.0
  * @since 4.0
  */
-class Database {
-    // the whole database is implemented as a map, where
-    // the key is the absolute canonical file and the value
-    // is its corresponding CRC32 hash; the XML map is done
-    // inline, so it does not clutter the output a lot
-    var map: HashMap<String, String> = hashMapOf()
-}
+@Serializable
+data class Database(
+        // the whole database is implemented as a map, where
+        // the key is the absolute canonical file and the value
+        // is its corresponding CRC32 hash; the XML map is done
+        // inline, so it does not clutter the output a lot
+        val map: MutableMap<String, String> = mutableMapOf()
+) : MutableMap<String, String> by map

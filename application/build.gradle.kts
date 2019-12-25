@@ -10,6 +10,7 @@ plugins {
     application
     `maven-publish`
     kotlin("jvm")
+    id("org.jetbrains.kotlin.plugin.serialization")
     id("com.github.johnrengelman.shadow")
     id("org.jetbrains.dokka")
     jacoco
@@ -25,7 +26,8 @@ dependencies {
     implementation("ch.qos.logback:logback-core:1.2.3")
     implementation("org.mvel:mvel2:2.4.5.Final")
     implementation("org.slf4j:slf4j-api:1.7.30")
-    implementation("org.yaml:snakeyaml:1.25")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.14.0")
+    implementation("com.charleskorn.kaml:kaml:0.15.0")
     implementation("org.zeroturnaround:zt-exec:1.11")
 
     testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")

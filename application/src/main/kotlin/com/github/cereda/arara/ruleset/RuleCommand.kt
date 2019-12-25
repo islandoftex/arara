@@ -34,6 +34,7 @@
 package com.github.cereda.arara.ruleset
 
 import com.github.cereda.arara.utils.CommonUtils
+import kotlinx.serialization.Serializable
 
 /**
  * Implements the rule command model.
@@ -41,6 +42,7 @@ import com.github.cereda.arara.utils.CommonUtils
  * @version 4.0
  * @since 4.0
  */
+@Serializable
 class RuleCommand {
     // the command name
     var name: String? = null

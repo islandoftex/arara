@@ -33,6 +33,7 @@
  */
 package com.github.cereda.arara.ruleset
 
+import com.charleskorn.kaml.Yaml
 import com.github.cereda.arara.Arara
 import com.github.cereda.arara.configuration.AraraSpec
 import com.github.cereda.arara.filehandling.FileHandlingUtils
@@ -40,14 +41,9 @@ import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.utils.DisplayUtils
+import kotlinx.serialization.serializer
 import org.slf4j.LoggerFactory
-import org.yaml.snakeyaml.DumperOptions
-import org.yaml.snakeyaml.Yaml
-import org.yaml.snakeyaml.constructor.Constructor
-import org.yaml.snakeyaml.error.MarkedYAMLException
-import org.yaml.snakeyaml.representer.Representer
 import java.io.File
-import java.util.*
 import java.util.regex.Pattern
 
 /**
@@ -57,6 +53,7 @@ import java.util.regex.Pattern
  * @version 4.0
  * @since 4.0
  */
+@UseExperimental(kotlinx.serialization.ImplicitReflectionSerializer::class)
 object DirectiveUtils {
     // the application messages obtained from the
     // language controller
@@ -216,25 +213,29 @@ object DirectiveUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    // TODO: loadAs might throw another (undocumented) exception
     private fun getParameters(text: String?,
                               numbers: List<Int>): Map<String, Any> {
         if (text == null)
             return mapOf()
 
-        return Yaml(Constructor(),
-                Representer(),
-                DumperOptions(),
-                DirectiveResolver()).runCatching {
-            loadAs(text, HashMap::class.java).mapKeys { it.toString() }
+        /* Before using kotlinx.serialization, there has been a dedicated
+         * directive resolver which instructed SnakeYAML to do the following:
+         * 
+         * addImplicitResolver(Tag.MERGE, MERGE, "<")
+         * addImplicitResolver(Tag.NULL, NULL, "~nN\u0000")
+         * addImplicitResolver(Tag.NULL, EMPTY, null)
+         * 
+         * This has been removed.
+         */
+        return Yaml.default.runCatching {
+            parse(Map::class.serializer(), text).map {
+                it.key.toString() to it.value!!
+            }.toMap()
         }.getOrElse {
-            throw if (it is MarkedYAMLException)
-                AraraException(messages.getMessage(
-                        Messages.ERROR_VALIDATE_YAML_EXCEPTION,
-                        "(" + numbers.joinToString(", ") + ")"),
-                        it)
-            else
-                it
+            throw AraraException(messages.getMessage(
+                    Messages.ERROR_VALIDATE_YAML_EXCEPTION,
+                    "(" + numbers.joinToString(", ") + ")"),
+                    it)
         }
     }
 

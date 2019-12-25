@@ -33,15 +33,12 @@
  */
 package com.github.cereda.arara.filehandling
 
+import com.charleskorn.kaml.Yaml
 import com.github.cereda.arara.Arara
 import com.github.cereda.arara.configuration.AraraSpec
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.AraraException
-import org.yaml.snakeyaml.Yaml
-import org.yaml.snakeyaml.constructor.Constructor
-import org.yaml.snakeyaml.nodes.Tag
-import org.yaml.snakeyaml.representer.Representer
 import java.io.File
 
 /**
@@ -66,8 +63,7 @@ object DatabaseUtils {
         @Throws(AraraException::class)
         get() {
             val reference = Arara.config[AraraSpec.Execution.reference]
-            val name = Arara.config[AraraSpec.Execution.databaseName] +
-                    ".yaml"
+            val name = "${Arara.config[AraraSpec.Execution.databaseName]}.yaml"
             val path = FileHandlingUtils.getParentCanonicalFile(reference)
             return path.resolve(name)
         }
@@ -84,11 +80,13 @@ object DatabaseUtils {
         return if (!exists()) {
             Database()
         } else {
-            val representer = Representer()
-            representer.addClassTag(Database::class.java, Tag("!database"))
-            Yaml(Constructor(Database::class.java), representer).runCatching {
-                loadAs(file.readText(), Database::class.java)
+            file.runCatching {
+                val text = readText()
+                if (!text.startsWith("!database"))
+                    throw Exception("Database should start with !database")
+                Yaml.default.parse(Database.serializer(), text)
             }.getOrElse {
+                it.printStackTrace()
                 throw AraraException(messages.getMessage(Messages
                         .ERROR_LOAD_COULD_NOT_LOAD_XML, file.name), it)
             }
@@ -104,12 +102,10 @@ object DatabaseUtils {
      */
     @Throws(AraraException::class)
     fun save(database: Database) {
-        val representer = Representer()
-        representer.addClassTag(Database::class.java, Tag("!database"))
         file.runCatching {
-            writeText(
-                    Yaml(Constructor(Database::class.java), representer)
-                            .dump(database))
+            val content = "!database\n" +
+                    Yaml.default.stringify(Database.serializer(), database)
+            writeText(content)
         }.getOrElse {
             throw AraraException(
                     messages.getMessage(

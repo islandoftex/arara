@@ -36,6 +36,8 @@ package com.github.cereda.arara.configuration
 import com.github.cereda.arara.Arara
 import com.github.cereda.arara.model.FileTypeResource
 import com.github.cereda.arara.utils.CommonUtils
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.mvel2.templates.TemplateRuntime
 
 /**
@@ -46,6 +48,7 @@ import org.mvel2.templates.TemplateRuntime
  * @version 4.0
  * @since 4.0
  */
+@Serializable
 class LocalConfiguration {
     // rule paths
     var paths: List<String> = listOf()
@@ -87,12 +90,15 @@ class LocalConfiguration {
     var loops: Int = Arara.config[AraraSpec.Execution.maxLoops]
 
     // verbose flag
+    @SerialName("verbose")
     var isVerbose: Boolean = Arara.config[AraraSpec.Execution.verbose]
 
     // logging flag
+    @SerialName("logging")
     var isLogging: Boolean = Arara.config[AraraSpec.Execution.logging]
 
     // header flag
+    @SerialName("header")
     var isHeader: Boolean = Arara.config[AraraSpec.Execution.onlyHeader]
 
     // database name

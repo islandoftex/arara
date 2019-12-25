@@ -33,15 +33,11 @@
  */
 package com.github.cereda.arara.ruleset
 
+import com.charleskorn.kaml.Yaml
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.utils.CommonUtils
-import org.yaml.snakeyaml.Yaml
-import org.yaml.snakeyaml.constructor.Constructor
-import org.yaml.snakeyaml.error.MarkedYAMLException
-import org.yaml.snakeyaml.nodes.Tag
-import org.yaml.snakeyaml.representer.Representer
 import java.io.File
 
 /**
@@ -68,22 +64,16 @@ object RuleUtils {
      */
     @Throws(AraraException::class)
     fun parseRule(file: File, identifier: String): Rule {
-        val representer = Representer()
-        representer.addClassTag(Rule::class.java, Tag("!config"))
-        val yaml = Yaml(Constructor(Rule::class.java), representer)
-        val rule: Rule = yaml.runCatching {
-            loadAs(file.readText(), Rule::class.java)
+        val rule = file.runCatching {
+            val text = readText()
+            if (!text.startsWith("!config"))
+                throw Exception("Rule should start with !config")
+            Yaml.default.parse(Rule.serializer(), text)
         }.getOrElse {
-            throw if (it is MarkedYAMLException)
-                AraraException(
-                        CommonUtils.ruleErrorHeader + messages.getMessage(
-                                Messages.ERROR_PARSERULE_INVALID_YAML
-                        ), it)
-            else
-                AraraException(
-                        CommonUtils.ruleErrorHeader + messages.getMessage(
-                                Messages.ERROR_PARSERULE_GENERIC_ERROR
-                        ))
+            throw AraraException(
+                    CommonUtils.ruleErrorHeader + messages.getMessage(
+                            Messages.ERROR_PARSERULE_GENERIC_ERROR
+                    ), it)
         }
 
         validateHeader(rule, identifier)

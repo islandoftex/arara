@@ -34,6 +34,7 @@
 package com.github.cereda.arara.model
 
 import com.github.cereda.arara.utils.CommonUtils
+import kotlinx.serialization.Serializable
 
 /**
  * Implements the file type resource model.
@@ -43,6 +44,7 @@ import com.github.cereda.arara.utils.CommonUtils
  */
 // TODO: remove, `FileType` should be sufficient if we can ensure that
 // remove keyword is called on initialization
+@Serializable
 class FileTypeResource {
     // the file extension
     var extension: String? = null

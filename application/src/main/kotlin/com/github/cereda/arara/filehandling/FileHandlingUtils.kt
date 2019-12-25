@@ -251,12 +251,10 @@ object FileHandlingUtils {
     @Throws(AraraException::class)
     fun hasChanged(file: File): Boolean {
         val database = DatabaseUtils.load()
-        val map = database.map
         val path = getCanonicalPath(file)
         return if (!file.exists()) {
-            if (map.containsKey(path)) {
-                map.remove(path)
-                database.map = map
+            if (database.containsKey(path)) {
+                database.remove(path)
                 DatabaseUtils.save(database)
                 true
             } else {
@@ -264,19 +262,17 @@ object FileHandlingUtils {
             }
         } else {
             val hash = calculateHash(file)
-            if (map.containsKey(path)) {
-                val value = map[path]
+            if (database.containsKey(path)) {
+                val value = database[path]
                 if (hash == value) {
                     false
                 } else {
-                    map[path] = hash
-                    database.map = map
+                    database[path] = hash
                     DatabaseUtils.save(database)
                     true
                 }
             } else {
-                map[path] = hash
-                database.map = map
+                database[path] = hash
                 DatabaseUtils.save(database)
                 true
             }

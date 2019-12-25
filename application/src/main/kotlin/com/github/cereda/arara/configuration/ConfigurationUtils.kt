@@ -33,19 +33,14 @@
  */
 package com.github.cereda.arara.configuration
 
+import com.charleskorn.kaml.Yaml
 import com.github.cereda.arara.Arara
 import com.github.cereda.arara.localization.LanguageController
 import com.github.cereda.arara.localization.Messages
 import com.github.cereda.arara.model.AraraException
 import com.github.cereda.arara.model.FileType
 import com.github.cereda.arara.utils.CommonUtils
-import org.yaml.snakeyaml.Yaml
-import org.yaml.snakeyaml.constructor.Constructor
-import org.yaml.snakeyaml.error.MarkedYAMLException
-import org.yaml.snakeyaml.nodes.Tag
-import org.yaml.snakeyaml.representer.Representer
 import java.io.File
-import java.io.FileReader
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.nio.file.Path
@@ -140,24 +135,15 @@ object ConfigurationUtils {
      */
     @Throws(AraraException::class)
     fun loadLocalConfiguration(file: File): LocalConfiguration {
-        val representer = Representer()
-        representer.addClassTag(LocalConfiguration::class.java, Tag("!config"))
-        val yaml = Yaml(Constructor(LocalConfiguration::class.java), representer)
-        return yaml.runCatching {
-            // successful loading results in a valid local configuration
-            loadAs(FileReader(file), LocalConfiguration::class.java)
+        return file.runCatching {
+            val text = readText()
+            if (!text.startsWith("!config"))
+                throw Exception("Configuration should start with !config")
+            Yaml.default.parse(LocalConfiguration.serializer(),
+                    text)
         }.getOrElse {
-            throw if (it is MarkedYAMLException)
-                AraraException(
-                        messages.getMessage(
-                                Messages.ERROR_CONFIGURATION_INVALID_YAML
-                        ), it)
-            else
-                AraraException(
-                        messages.getMessage(
-                                Messages.ERROR_CONFIGURATION_GENERIC_ERROR
-                        )
-                )
+            throw AraraException(messages.getMessage(
+                    Messages.ERROR_CONFIGURATION_GENERIC_ERROR), it)
         }.takeUnless { localConfiguration ->
             // a local configuration must not have any null extension
             // (user error) because we cannot append null to any file name

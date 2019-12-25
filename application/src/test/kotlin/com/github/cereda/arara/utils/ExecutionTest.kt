@@ -102,6 +102,13 @@ class ExecutionTest : ShouldSpec({
         CommonUtils.exitStatus shouldNotBe 0
     }
 
+    should("fail on invalid config") {
+        val exception = shouldThrow<AraraException> {
+            outputForTest("invalid-config")
+        }
+        exception.message shouldContain "could not parse the configuration"
+    }
+
     should("read foreign extension") {
         val output = outputForTest("foreign-extension", "foreign-extension.my")
         output shouldContain "QuackOne"
