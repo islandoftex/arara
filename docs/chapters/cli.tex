@@ -2,8 +2,6 @@
 \chapter{Command line}
 \label{chap:commandline}
 
-TODO: mention multiple files and globbing
-
 \arara\ is a command line tool. It can be used in a plethora of command interpreter implementations, from bash to a Windows prompt, provided that the Java runtime environment is accessible within the current session. This chapter covers the user interface design, as well as options (also known as flags or switches) that modify the underlying application behaviour.
 
 \section{User interface design}
@@ -86,6 +84,8 @@ In order to run \arara\ on your \TeX\ file, the simplest possible way is to prov
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ arara doc6.tex
 \end{codebox}
+
+From version 5.0 on, \arara\ may receive more than one file as parameter. It will compile them sequentially (starting with the leftmost). The process fails on the first failure of these executions. For the files to be flawlessly compiled by \TeX, they should be in the same working directory. If you process your files with other tools, this requirement could be lifted.
 
 The tool has a set of command line options (also known as flags or switches) that modify the underlying execution behaviour or enhance the execution workflow. If you do not provide any parameters, \arara\ will display the tool usage and the available options:
 
