@@ -296,30 +296,6 @@ object FileHandlingUtils {
             hasChanged(File(getPath(extension)))
 
     /**
-     * Gets the full base name of a file.
-     *
-     * @param file The file.
-     * @return The corresponding full base name.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
-    @Throws(AraraException::class)
-    fun getFullBasename(file: File): String =
-            if (!file.toString().contains(File.separator)) {
-                // if the provided file does not contain a
-                // file separator, fallback to the usual
-                // base name lookup
-                getBasename(file)
-            } else {
-                // we need to get the parent file, get the
-                // canonical path and build the corresponding
-                // full base name path
-                getCanonicalFile(file.parentFile
-                        ?: file)
-                        .resolve(getBasename(file)).toString()
-            }
-
-    /**
      * Checks whether a directory is under a root directory.
      *
      * @param child Directory to be inspected.

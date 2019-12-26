@@ -48,14 +48,13 @@ public class Methods {
         try {
             Method[] methods = Methods.class.getMethods();
             Arrays.asList("getOriginalFile", "getOriginalReference", "isEmpty",
-                    "isNotEmpty", "isTrue", "isFalse",
-                    "trimSpaces", "getBasename", "getFullBasename",
-                    "getFiletype", "throwError", "getSession",
+                    "isNotEmpty", "isTrue", "isFalse", "trimSpaces",
+                    "getBasename", "getFiletype", "throwError", "getSession",
                     "isWindows", "isLinux", "isMac", "isUnix", "isCygwin",
-                    "replicatePattern", "buildString", "addQuotes",
-                    "getCommand", "checkClass", "isString",
-                    "isList", "isMap", "isBoolean", "isVerboseMode",
-                    "showMessage", "isOnPath", "unsafelyExecuteSystemCommand",
+                    "replicatePattern", "buildString", "getCommand",
+                    "checkClass", "isString", "isList", "isMap", "isBoolean",
+                    "isVerboseMode", "showMessage", "isOnPath",
+                    "unsafelyExecuteSystemCommand",
                     "getCommandWithWorkingDirectory", "listFilesByExtensions",
                     "listFilesByPatterns", "writeToFile", "readFromFile",
                     "isSubdirectory", "halt").forEach(name ->
@@ -684,16 +683,6 @@ public class Methods {
     }
 
     /**
-     * Encloses the provided object into double quotes.
-     *
-     * @param object The object.
-     * @return The object enclosed in double quotes.
-     */
-    public static String addQuotes(Object object) {
-        return "\"" + object.toString() + "\"";
-    }
-
-    /**
      * Checks if the file contains the regex, based on its extension.
      *
      * @param extension The extension.
@@ -990,41 +979,6 @@ public class Methods {
      */
     public static boolean isOnPath(String command) {
         return CommonUtils.INSTANCE.isOnPath(command);
-    }
-
-    /**
-     * Gets the full basename.
-     *
-     * @param file The file.
-     * @return The full basename of the provided file.
-     * @throws AraraException Something wrong happened, to be caught in the
-     *                        higher levels.
-     */
-    public static String getFullBasename(File file) throws AraraException {
-        if (file.isFile()) {
-            return FileHandlingUtils.INSTANCE.getFullBasename(file);
-        } else {
-            throw new AraraException(
-                    CommonUtils.INSTANCE.getRuleErrorHeader().concat(
-                            messages.getMessage(
-                                    Messages.ERROR_BASENAME_NOT_A_FILE,
-                                    file.getName()
-                            )
-                    )
-            );
-        }
-    }
-
-    /**
-     * Gets the full basename.
-     *
-     * @param name The string.
-     * @return The full basename.
-     * @throws AraraException Something wrong happened, to be caught in the
-     *                        higher levels.
-     */
-    public static String getFullBasename(String name) throws AraraException {
-        return getFullBasename(new File(name));
     }
 
     /**

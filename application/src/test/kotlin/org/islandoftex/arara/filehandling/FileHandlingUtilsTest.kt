@@ -32,12 +32,6 @@ class FileHandlingUtilsTest : ShouldSpec({
         FileHandlingUtils.getBasename(File("a.tex")) shouldBe "a"
         FileHandlingUtils.getBasename(File(".tex")) shouldBe ""
     }
-    should("find correct full basename") {
-        val currentPath = File("").absolutePath
-        FileHandlingUtils.getFullBasename(File("a/QUACK")) shouldBe "$currentPath/a/QUACK"
-        FileHandlingUtils.getFullBasename(File("a.tex")) shouldBe "a"
-        FileHandlingUtils.getFullBasename(File("meow/a/.tex")) shouldBe "$currentPath/meow/a"
-    }
 
     should("get subdirecotry relationship right") {
         FileHandlingUtils.isSubDirectory(File("../docs"), File("..")) shouldBe true
