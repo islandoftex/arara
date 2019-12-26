@@ -46,28 +46,16 @@ if (reference.equals(getOriginalFile())) {
 f = toFile('thesis.tex');
 \end{codebox}
 
-\item[\mdbox{R}{getBasename(File file)}{String}] This method returns the base name (i.e, the name without the associated extension) of the provided \rbox{File} reference, as a string. Observe that this method ignores a potential path reference when extracting the base name. For a complete base name extraction with full path support, please refer to the \mtbox{getFullBasename} methods. Also, this method will throw an exception if the provided reference is not a proper file.
+\item[\mdbox{R}{getBasename(File file)}{String}] This method returns the base name (i.e, the name without the associated extension) of the provided \rbox{File} reference, as a string. Observe that this method ignores a potential path reference when extracting the base name. Also, this method will throw an exception if the provided reference is not a proper file.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 basename = getBasename(toFile('thesis.tex'));
 \end{codebox}
 
-\item[\mdbox{R}{getBasename(String reference)}{String}] This method returns the base name (i.e, the name without the associated extension) of the provided \rbox{String} reference, as a string. Observe that this method ignores a potential path reference when extracting the base name. For a complete base name extraction with full path support, please refer to the \mtbox{getFullBasename} methods.
+\item[\mdbox{R}{getBasename(String reference)}{String}] This method returns the base name (i.e, the name without the associated extension) of the provided \rbox{String} reference, as a string. Observe that this method ignores a potential path reference when extracting the base name.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 basename = getBasename('thesis.tex');
-\end{codebox}
-
-\item[\mdbox{R}{getFullBasename(File file)}{String}] This method returns the full base name (i.e, the name without the associated extension, as well as the potential path reference) of the provided \rbox{File} reference, as a string. This method will throw an exception if the provided reference is not a proper file.
-
-\begin{codebox}{Example}{teal}{\icnote}{white}
-basename = getFullBasename(toFile('/home/paulo/thesis.tex'));
-\end{codebox}
-
-\item[\mdbox{R}{getFullBasename(String reference)}{String}] This method returns the full base name (i.e, the name without the associated extension, as well as the potential path reference) of the provided \rbox{String} reference, as a string. As the path discovery requires an underlying file conversion, this method will throw an exception if the provided reference is not a proper file.
-
-\begin{codebox}{Example}{teal}{\icnote}{white}
-basename = getFullBasename('/home/paulo/thesis.tex');
 \end{codebox}
 
 \item[\mdbox{R}{getFiletype(File file)}{String}] This method returns the file type (i.e, the associated extension specified as a suffix to the name, typically delimited with a full stop) of the provided \rbox{File} reference, as a string. This method will throw an exception if the provided reference is not a proper file. An empty string is returned if, and only if, the provided file name has no associated extension.
@@ -463,12 +451,6 @@ result = buildString('a', 'b', 'c', 'd');
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 result = trimSpaces('   hello world   ');
-\end{codebox}
-
-\item[\mdbox{R}{addQuotes(String string)}{String}] This method returns the provided parameter enclosed in double quotes, as a plain string. It is important to observe that there is no automatic quote handling.
-
-\begin{codebox}{Example}{teal}{\icnote}{white}
-result = addQuotes('to be or not to be');
 \end{codebox}
 
 \item[\mdbox{R}{replicatePattern(String pattern, List<Object> values)}{List<Object>}] This method replicates the provided pattern to each element of the second parameter and returns the resulting list. The pattern must contain exactly one placeholder. For instance, \rbox{\%s} denotes a string representation of the provided argument. Please refer to the \rbox{Formatter} class reference in the \href{https://docs.oracle.com/javase/7/docs/api/java/util/Formatter.html}{Java documentation} for more information on placeholders. This method raises an exception if an invalid pattern is applied.

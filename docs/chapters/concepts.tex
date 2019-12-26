@@ -438,18 +438,20 @@ Due to this change, \arara\ does not ship support for any templating language at
 The following previously available methods (and repective overloaded variants) have been removed:
 
 \begin{itemize}
+\item \mdbox{R}{addQuotes(String string)}{String}
 \item \mdbox{R}{isAIX()}{boolean}
 \item \mdbox{R}{isIrix()}{boolean}
 \item \mdbox{R}{isOS2()}{boolean}
 \item \mdbox{R}{isSolaris()}{boolean}
+\item \mdbox{R}{getFullBasename(File file)}{String}
 \item \mdbox{R}{\parbox{0.62\textwidth}{mergeVelocityTemplate(File input, File output,\\\hspace*{1em} Map<String, Object> map)}}{void}
 \end{itemize}
 
 The following methods have been renamed:
 \begin{itemize}
-\item \mdbox{(Session.)insert(String key, Object value)}{void} to \mdbox{(Session.)put(String key, Object value)}{void}
-\item \mdbox{(Session.)exists(String key)}{boolean} to \mdbox{(Session.)contains(String key)}{boolean}
-\item \mdbox{(Session.)obtain(String key)}{Object} to \mdbox{(Session.)get(String key)}{Object}
+\item \mdbox{R}{(Session.)insert(String key, Object value)}{void} to \mdbox{R}{(Session.)put(String key, Object value)}{void}
+\item \mdbox{R}{(Session.)exists(String key)}{boolean} to \mdbox{R}{(Session.)contains(String key)}{boolean}
+\item \mdbox{R}{(Session.)obtain(String key)}{Object} to \mdbox{R}{(Session.)get(String key)}{Object}
 \end{itemize}
 \end{messagebox}
 
