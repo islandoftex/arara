@@ -32,7 +32,7 @@ class SessionTest : ShouldSpec({
         Session.put("A", "B")
         Session["A"] shouldBe "B"
     }
-    
+
     should("support removal") {
         Session.clear()
         Session.put("A", "B")
@@ -43,7 +43,7 @@ class SessionTest : ShouldSpec({
         Session.contains("A") shouldBe false
         Session.contains("C") shouldBe true
     }
-    
+
     should("clear itself") {
         Session.clear()
         Session.put("A", "B")

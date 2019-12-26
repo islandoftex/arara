@@ -45,7 +45,7 @@ object LanguageController {
      */
     @Suppress("SpreadOperator")
     fun <E : Enum<*>> getMessage(key: E, vararg parameters: Any): String =
-        conveyor.getMessage(key, *parameters)
+            conveyor.getMessage(key, *parameters)
 
     /**
      * Gets the localized message indexed by the provided enumeration key. This

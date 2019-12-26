@@ -77,9 +77,9 @@ object DisplayUtils {
      */
     private fun buildShortEntry(name: String, task: String) {
         val result = if (longestMatch >= width)
-          shortenedLongestMatch
+            shortenedLongestMatch
         else
-          longestMatch
+            longestMatch
         val space = width - result - 1
         val line = "($name) $task ".abbreviate(space - "... ".length)
         print(line.padEnd(space, '.') + " ")
@@ -111,9 +111,9 @@ object DisplayUtils {
         )
         if (!isDryRunMode) {
             if (!isVerboseMode) {
-              buildShortResult(value)
+                buildShortResult(value)
             } else {
-              buildLongResult(value)
+                buildLongResult(value)
             }
         }
     }
@@ -146,12 +146,12 @@ object DisplayUtils {
         Arara.config[AraraSpec.UserInteraction.displayResult] = false
         if (!isDryRunMode) {
             if (!isVerboseMode) {
-              buildShortEntry(name, task)
+                buildShortEntry(name, task)
             } else {
-              buildLongEntry(name, task)
+                buildLongEntry(name, task)
             }
         } else {
-          buildDryRunEntry(name, task)
+            buildDryRunEntry(name, task)
         }
     }
 
@@ -163,7 +163,7 @@ object DisplayUtils {
      */
     private fun buildLongEntry(name: String, task: String) {
         if (Arara.config[AraraSpec.UserInteraction.displayRolling]) {
-          addNewLine()
+            addNewLine()
         } else {
             Arara.config[AraraSpec.UserInteraction.displayRolling] = true
         }
@@ -180,7 +180,7 @@ object DisplayUtils {
      */
     private fun buildDryRunEntry(name: String, task: String) {
         if (Arara.config[AraraSpec.UserInteraction.displayRolling]) {
-          addNewLine()
+            addNewLine()
         } else {
             Arara.config[AraraSpec.UserInteraction.displayRolling] = true
         }
@@ -199,15 +199,15 @@ object DisplayUtils {
 
         val display = Arara.config[AraraSpec.UserInteraction.displayLine]
         if (Arara.config[AraraSpec.UserInteraction.displayResult])
-          addNewLine()
+            addNewLine()
         if (display) {
             if (!isDryRunMode) {
                 if (!isVerboseMode) {
-                  buildShortError()
+                    buildShortError()
                 } else {
-                  buildLongError()
+                    buildLongError()
                 }
-              addNewLine()
+                addNewLine()
             }
         }
         val text = (if (exception.hasException())
@@ -217,13 +217,13 @@ object DisplayUtils {
             exception.message) ?: "EXCEPTION PROVIDES NO MESSAGE"
         // TODO: check null handling
         logger.error(text)
-      wrapText(text)
+        wrapText(text)
         if (exception.hasException()) {
-          addNewLine()
-          displayDetailsLine()
+            addNewLine()
+            displayDetailsLine()
             val details = exception.exception!!.message!!
             logger.error(details)
-          wrapText(details)
+            wrapText(details)
         }
     }
 
@@ -281,7 +281,7 @@ object DisplayUtils {
             messages.getMessage(Messages.INFO_LABEL_NO_AUTHORS)
         else
             authors.joinToString(", ") { it.trim() }
-      wrapText("$line $text")
+        wrapText("$line $text")
     }
 
     /**
@@ -291,9 +291,9 @@ object DisplayUtils {
      */
     fun printConditional(conditional: Conditional) {
         if (conditional.type !== Conditional.ConditionalType.NONE) {
-          wrapText(messages.getMessage(Messages.INFO_LABEL_CONDITIONAL) +
-              " (" + conditional.type + ") " +
-              conditional.condition)
+            wrapText(messages.getMessage(Messages.INFO_LABEL_CONDITIONAL) +
+                    " (" + conditional.type + ") " +
+                    conditional.condition)
         }
     }
 
@@ -306,7 +306,7 @@ object DisplayUtils {
         val line = messages.getMessage(
                 Messages.INFO_DISPLAY_FILE_INFORMATION,
                 file.name,
-            CommonUtils.byteSizeToString(file.length()),
+                CommonUtils.byteSizeToString(file.length()),
                 FileHandlingUtils.getLastModifiedInformation(file)
         )
         logger.info(messages.getMessage(
@@ -316,33 +316,33 @@ object DisplayUtils {
         logger.info(displaySeparator())
         logger.debug("::: arara @ $applicationPath")
         logger.debug("::: Java %s, %s".format(
-            CommonUtils.getSystemProperty("java.version",
-                "[unknown version]"),
-            CommonUtils.getSystemProperty("java.vendor",
-                "[unknown vendor]")
+                CommonUtils.getSystemProperty("java.version",
+                        "[unknown version]"),
+                CommonUtils.getSystemProperty("java.vendor",
+                        "[unknown vendor]")
         ))
         logger.debug("::: %s".format(
-            CommonUtils.getSystemProperty("java.home",
-                "[unknown location]")
+                CommonUtils.getSystemProperty("java.home",
+                        "[unknown location]")
         ))
         logger.debug("::: %s, %s, %s".format(
-            CommonUtils.getSystemProperty("os.name",
-                "[unknown OS name]"),
-            CommonUtils.getSystemProperty("os.arch",
-                "[unknown OS arch]"),
-            CommonUtils.getSystemProperty("os.version",
-                "[unknown OS version]")
+                CommonUtils.getSystemProperty("os.name",
+                        "[unknown OS name]"),
+                CommonUtils.getSystemProperty("os.arch",
+                        "[unknown OS arch]"),
+                CommonUtils.getSystemProperty("os.version",
+                        "[unknown OS version]")
         ))
         logger.debug("::: user.home @ %s".format(
-            CommonUtils.getSystemProperty("user.home",
-                "[unknown user's home directory]")
+                CommonUtils.getSystemProperty("user.home",
+                        "[unknown user's home directory]")
         ))
         logger.debug("::: CF @ %s".format(Arara.config[AraraSpec.Execution
                 .configurationName]))
         logger.debug(displaySeparator())
         logger.info(line)
-      wrapText(line)
-      addNewLine()
+        wrapText(line)
+        addNewLine()
     }
 
     /**
@@ -356,13 +356,13 @@ object DisplayUtils {
         if (Arara.config[AraraSpec.UserInteraction.displayTime]) {
             if (Arara.config[AraraSpec.UserInteraction.displayLine] ||
                     Arara.config[AraraSpec.UserInteraction.displayException])
-              addNewLine()
+                addNewLine()
 
             val text = messages.getMessage(
                     Messages.INFO_DISPLAY_EXECUTION_TIME,
                     "%1.2f".format(language.locale, seconds))
             logger.info(text)
-          wrapText(text)
+            wrapText(text)
         }
     }
 
@@ -376,7 +376,7 @@ object DisplayUtils {
             | (_| | | | (_| | | | (_| |
              \__,_|_|  \__,_|_|  \__,_|
         """.trimIndent())
-      addNewLine()
+        addNewLine()
     }
 
     /**

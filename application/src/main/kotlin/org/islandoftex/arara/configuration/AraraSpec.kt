@@ -2,8 +2,8 @@
 
 package org.islandoftex.arara.configuration
 
-import org.islandoftex.arara.localization.Language
 import com.uchuhimo.konf.ConfigSpec
+import org.islandoftex.arara.localization.Language
 import java.io.File
 import java.nio.file.Paths
 import java.time.LocalDate
@@ -53,6 +53,7 @@ object AraraSpec : ConfigSpec() {
         // Spec or session)
         val reference by optional(File("/tmp/"))
         val file by optional(File("/tmp/"))
+
         object InfoSpec : ConfigSpec() {
             val ruleId by optional<String?>(null)
             val rulePath by optional<String?>(null)
@@ -61,6 +62,7 @@ object AraraSpec : ConfigSpec() {
         object DirectiveSpec : ConfigSpec() {
             val lines by optional(listOf<Int>())
         }
+
         val filePattern by optional("")
     }
 

@@ -30,7 +30,7 @@ object CommonUtils {
     private val messages = LanguageController
 
     /**
-     * Gets the list of file types, in order.
+     * Gets the list of file types as string, in order.
      *
      * @return A string representation of the list of file types, in order.
      */

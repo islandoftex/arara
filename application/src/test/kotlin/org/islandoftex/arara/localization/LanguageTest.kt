@@ -2,10 +2,10 @@
 
 package org.islandoftex.arara.localization
 
-import org.islandoftex.arara.model.AraraException
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.ShouldSpec
+import org.islandoftex.arara.model.AraraException
 import java.util.*
 
 class LanguageTest : ShouldSpec({

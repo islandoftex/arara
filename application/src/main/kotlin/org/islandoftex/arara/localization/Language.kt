@@ -58,7 +58,7 @@ class Language(code: String) {
                 "ptbr" to Pair("Brazilian Portuguese", Locale("pt", "BR")),
                 "it" to Pair("Italian", Locale("it"))
         )
-        
+
         // string representing the list of available languages
         // because they don't change initialized with the string
         val languagesList: String = "(" + languages.map { (key, value) ->

@@ -25,14 +25,14 @@ object ClassLoadingUtils {
         ILLEGAL_ACCESS,
         INSTANTIATION_EXCEPTION
     }
-    
+
     /**
      * Loads a class from the provided file, potentially a Java archive.
      * @param file File containing the Java bytecode (namely, a JAR).
      * @param name The canonical name of the class.
      * @return A pair representing the status and the class.
      */
-    fun loadClass(file: File, name: String): 
+    fun loadClass(file: File, name: String):
             Pair<ClassLoadingStatus, Class<*>> {
         // status and class to be returned,
         // it defaults to an object class
@@ -41,7 +41,7 @@ object ClassLoadingUtils {
         // if file does not exist, nothing
         // can be done, status is changed
         val status = if (!file.exists()) {
-          ClassLoadingStatus.FILE_NOT_FOUND
+            ClassLoadingStatus.FILE_NOT_FOUND
         } else {
             // classloading involves defining
             // a classloader and fetching the
@@ -57,11 +57,11 @@ object ClassLoadingUtils {
                 // fetches the class from the
                 // instantiated classloader
                 value = Class.forName(name, true, classloader)
-              ClassLoadingStatus.SUCCESS
+                ClassLoadingStatus.SUCCESS
             } catch (_: MalformedURLException) {
-              ClassLoadingStatus.MALFORMED_URL
+                ClassLoadingStatus.MALFORMED_URL
             } catch (_: ClassNotFoundException) {
-              ClassLoadingStatus.CLASS_NOT_FOUND
+                ClassLoadingStatus.CLASS_NOT_FOUND
             }
         }
 

@@ -2,6 +2,7 @@
 
 package org.islandoftex.arara.utils;
 
+import kotlin.Pair;
 import org.islandoftex.arara.Arara;
 import org.islandoftex.arara.configuration.AraraSpec;
 import org.islandoftex.arara.filehandling.FileHandlingUtils;
@@ -11,7 +12,6 @@ import org.islandoftex.arara.localization.Messages;
 import org.islandoftex.arara.model.AraraException;
 import org.islandoftex.arara.model.Session;
 import org.islandoftex.arara.ruleset.Command;
-import kotlin.Pair;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -1220,5 +1220,4 @@ public class Methods {
         return FileHandlingUtils.INSTANCE.isSubDirectory(
                 directory, getOriginalReference());
     }
-
 }

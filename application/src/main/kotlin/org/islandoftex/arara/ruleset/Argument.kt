@@ -2,9 +2,9 @@
 
 package org.islandoftex.arara.ruleset
 
-import org.islandoftex.arara.utils.CommonUtils
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.islandoftex.arara.utils.CommonUtils
 
 /**
  * The rule argument model.

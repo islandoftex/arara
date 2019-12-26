@@ -2,11 +2,11 @@
 
 package org.islandoftex.arara.model
 
+import kotlinx.serialization.Serializable
 import org.islandoftex.arara.configuration.ConfigurationUtils
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.utils.CommonUtils
-import kotlinx.serialization.Serializable
 import java.util.regex.PatternSyntaxException
 
 /**

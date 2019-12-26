@@ -3,6 +3,7 @@
 package org.islandoftex.arara.ruleset
 
 import com.charleskorn.kaml.Yaml
+import kotlinx.serialization.serializer
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.filehandling.FileHandlingUtils
@@ -10,7 +11,6 @@ import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.model.AraraException
 import org.islandoftex.arara.utils.DisplayUtils
-import kotlinx.serialization.serializer
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.util.regex.Pattern

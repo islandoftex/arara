@@ -2,12 +2,12 @@
 
 package org.islandoftex.arara.filehandling
 
-import org.islandoftex.arara.Arara
-import org.islandoftex.arara.configuration.AraraSpec
-import org.islandoftex.arara.model.AraraException
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.ShouldSpec
+import org.islandoftex.arara.Arara
+import org.islandoftex.arara.configuration.AraraSpec
+import org.islandoftex.arara.model.AraraException
 import java.io.File
 import java.nio.file.Files
 

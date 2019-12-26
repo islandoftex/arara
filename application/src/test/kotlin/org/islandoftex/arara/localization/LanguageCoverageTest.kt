@@ -3,12 +3,12 @@
 package org.islandoftex.arara.localization
 
 import ch.qos.cal10n.verifier.MessageKeyVerifier
-import org.islandoftex.arara.model.AraraException
 import io.kotlintest.inspectors.forAll
 import io.kotlintest.matchers.collections.shouldNotBeEmpty
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.ShouldSpec
+import org.islandoftex.arara.model.AraraException
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files

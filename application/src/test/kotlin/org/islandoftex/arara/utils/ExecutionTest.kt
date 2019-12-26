@@ -2,6 +2,13 @@
 
 package org.islandoftex.arara.utils
 
+import io.kotlintest.DoNotParallelize
+import io.kotlintest.matchers.string.shouldContain
+import io.kotlintest.matchers.string.shouldNotContain
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldNotBe
+import io.kotlintest.shouldThrow
+import io.kotlintest.specs.ShouldSpec
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.configuration.Configuration
@@ -10,13 +17,6 @@ import org.islandoftex.arara.model.AraraException
 import org.islandoftex.arara.model.Extractor
 import org.islandoftex.arara.model.Interpreter
 import org.islandoftex.arara.ruleset.DirectiveUtils
-import io.kotlintest.DoNotParallelize
-import io.kotlintest.matchers.string.shouldContain
-import io.kotlintest.matchers.string.shouldNotContain
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldNotBe
-import io.kotlintest.shouldThrow
-import io.kotlintest.specs.ShouldSpec
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream

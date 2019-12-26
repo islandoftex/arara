@@ -2,11 +2,11 @@
 
 package org.islandoftex.arara.utils
 
+import io.kotlintest.shouldBe
+import io.kotlintest.specs.ShouldSpec
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.localization.Language
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.ShouldSpec
 
 class CommonUtilsTest : ShouldSpec({
     should("format bytes correctly") {

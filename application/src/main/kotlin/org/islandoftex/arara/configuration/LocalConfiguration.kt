@@ -2,11 +2,11 @@
 
 package org.islandoftex.arara.configuration
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.model.FileType
 import org.islandoftex.arara.utils.CommonUtils
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 import org.mvel2.templates.TemplateRuntime
 
 /**
