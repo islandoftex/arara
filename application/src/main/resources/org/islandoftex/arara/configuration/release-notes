@@ -1,0 +1,5 @@
+* Introduced working directory support.
+* Reorganized code base for more speed 
+* Removed triggers and introduced session namespaces.
+* Removed the velocity templating language and several outdated methods.
+* Removed string-based commands (return "command";).

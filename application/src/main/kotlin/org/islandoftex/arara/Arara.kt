@@ -3,6 +3,7 @@
 package org.islandoftex.arara
 
 import com.github.ajalt.clikt.parameters.options.versionOption
+import com.uchuhimo.konf.Config
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.configuration.Configuration
 import org.islandoftex.arara.localization.LanguageController
@@ -12,7 +13,6 @@ import org.islandoftex.arara.model.Extractor
 import org.islandoftex.arara.model.Interpreter
 import org.islandoftex.arara.ruleset.DirectiveUtils
 import org.islandoftex.arara.utils.DisplayUtils
-import com.uchuhimo.konf.Config
 import kotlin.time.ExperimentalTime
 
 object Arara {
@@ -38,7 +38,11 @@ object Arara {
                             LanguageController.getMessage(Messages
                                     .INFO_PARSER_ALL_RIGHTS_RESERVED) + "\n\n" +
                             LanguageController.getMessage(Messages
-                                    .INFO_PARSER_NOTES)
+                                    .INFO_PARSER_NOTES) + "\n\n" +
+                            "New features in version $version:" +
+                            Arara::class.java
+                                    .getResource("/org/islandoftex/arara/configuration/release-notes")
+                                    .readText()
                 })
                 .main(args)
     }
