@@ -2,7 +2,7 @@
 \chapter{Building from source}
 \label{chap:buildingfromsource}
 
-\arara\ is a Java application licensed under the \href{http://www.opensource.org/licenses/bsd-license.php}{New BSD License}, a verified GPL-compatible free software license, and the source code is available in the project repository at \href{https://gitlab.com/islandoftex/arara}{GitLab}. This chapter provides detailed instructions on how to build our tool from source.
+\arara\ is a Kotlin and Java application licensed under the \href{http://www.opensource.org/licenses/bsd-license.php}{New BSD License}, a verified GPL-compatible free software license, and the source code is available in the project repository at \href{https://gitlab.com/islandoftex/arara}{GitLab}. This chapter provides detailed instructions on how to build our tool from source.
 
 \section{Requirements}
 \label{sec:requirements}
@@ -95,30 +95,23 @@ $ ls build.gradle.kts
 build.gradle.kts
 \end{codebox}
 
-% TODO
-
-Great, we are in the correct location! From the previous output, let us inspect the directory contents. The \abox[araracolour]{src/} directory, as the name suggests, contains the source code organized in an established package structure, whereas \rbox{pom.xml} is the corresponding build file written in the Project Object Model format, a special XML file that contains information about the project and configuration details used by Apache Maven to build the project. In order to build our tool, run the following command in the terminal:
+Great, we are in the correct location! From the previous output, let us inspect the directory contents. The \abox[araracolour]{application/} directory, as the name suggests, contains the source code of the main application organized in an established package structure, whereas \rbox{build.gradle.kts} is the corresponding Gradle build file written to efficiently compile the project. In order to build our tool, run the following command in the terminal:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
-$ mvn compile assembly:single
+$ gradle build
 \end{codebox}
 
-Apache Maven is based around the central concept of a build life cycle. The \rbox{compile} phase, as the name suggests, compiles the source code of the project using the underlying Java compiler. From the previous command, bound to this particular build phase, note that there is an \rbox{assembly:single} plug-in goal which aggregates the project output along with its dependencies and other files into a single distributable archive. An \emph{assembly} is a group of files, directories and dependencies that are assembled into an archive format and distributed. In our case, the resulting file will be a typical Java archive file, with the \rbox{jar} extension. The first Maven build will take a couple of seconds (or minutes, depending on your Internet connection), as the tool will download all dependencies and required plug-ins for proper compilation and packaging. Subsequent builds will be significantly faster. Finally, after some time, Maven will output the following message as result (please note that the entire compilation and packaging only took 10 seconds on my development machine due to an existing local cache):
+Gradle is based around the central concept of a build life cycle. The \rbox{compile} phase, as the name suggests, compiles the source code of the project using the underlying Java compiler. After compiling, the code can be packaged, tested and run. The \rbox{build} target actually compiles, tests and packages arara. Afterwards, you will have a \abox[araracolour]{application/build/libs/} directory with multiple JAR files, one containing ``with-deps''. That file is ready to run as it bundles all dependencies. Subsequent builds will be significantly faster than the first build because they do not fetch dependencies and rely on a build cache. Finally, after some time, Maven will output the following message as result (please note that the entire compilation and packaging only took 4 seconds on my development machine due to an existing local cache):
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
-[INFO] ---------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ---------------------------------------------------------
-[INFO] Total time: 10.371 s
-[INFO] Finished at: 2018-06-22T18:38:02-03:00
-[INFO] Final Memory: 39M/184M
-[INFO] ---------------------------------------------------------
+BUILD SUCCESSFUL in 4s
+15 actionable tasks: 15 up-to-date
 \end{codebox}
 
-On account of a successful build in our previous interaction, there is now a newly created \abox[araracolour]{target/} directory containing compiled classes, a established package structure and, at last but not least, our assembly. Now, let us move the resulting Java archive file from that particular directory to \abox[araracolour]{application/} which is our current directory. It is important to note that the aforementioned assembly plug-in adds the \rbox{jar-with-dependencies} reference to the file name in order to differentiate a proper assembly from a typical Java archive file. Run the following command in the terminal (please note that the Java archive file was also renamed during the move operation):
+Now, let us move the resulting Java archive file from that particular directory to our current directory. Run the following command in the terminal (please note that the Java archive file was also renamed during the move operation):
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
-$ mv target/arara-4.0-jar-with-dependencies.jar arara.jar
+$ mv application/build/libs/arara-with-deps-*.jar arara.jar
 \end{codebox}
 
 Now, our current directory contains the final \rbox{arara.jar} Java archive file properly built from source. This file can be safely distributed and deployed, as seen later on, in Chapter~\ref{chap:deployingthetool}, on page~\pageref{chap:deployingthetool}. You can also test the resulting file by running the following command in the terminal:
