@@ -13,6 +13,7 @@ import org.islandoftex.arara.model.Extractor
 import org.islandoftex.arara.model.Interpreter
 import org.islandoftex.arara.ruleset.DirectiveUtils
 import org.islandoftex.arara.utils.DisplayUtils
+import java.time.LocalDate
 import kotlin.time.ExperimentalTime
 
 object Arara {
@@ -40,8 +41,7 @@ object Arara {
                 message = {
                     "arara $version\n" +
                             "Copyright (c) $year, Paulo Roberto Massa Cereda\n" +
-                            LanguageController.getMessage(Messages
-                                    .INFO_PARSER_ALL_RIGHTS_RESERVED) + "\n\n" +
+                            "Copyright (c) ${LocalDate.now().year},      Island of TeX\n" +
                             LanguageController.getMessage(Messages
                                     .INFO_PARSER_NOTES) + "\n\n" +
                             "New features in version $version:\n" +
