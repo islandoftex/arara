@@ -601,6 +601,38 @@ spreadsheet import functions also use this setting.
 % arara: makeindex: { style: book.ist }
 \end{codebox}
 
+\item[\rulebox{metapost}{}] This rule runs \rbox{metapost}, a tool to compile the Metapost graphics programming language. Please note that you will have to make the \verb|.mp| extension known to arara in order to compile Metapost files. Furthermore, it is advised to use this in your regular \TeX\ document specifying the \verb|files| parameter to include all graphics you want to compile for inclusion in your document.
+
+\begin{description}
+\item[\abox{interaction}] This option alters the underlying engine behaviour. If this option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
+
+\begin{description}
+\item[\povalue{batchmode}] In this mode, nothing is printed on the terminal, and errors are scrolled as if the \rbox{return} key is hit at every error. Missing files that \TeX\ tries to input or request from keyboard input cause the job to abort.
+
+\item[\povalue{nonstopmode}] In this mode, the diagnostic message will appear on the terminal, but there is no possibility of user interaction just like in batch mode, previously described.
+
+\item[\povalue{scrollmode}] In this mode, as the name indicates, \TeX\ will stop only for missing files to input or if proper keyboard input is necessary. \TeX\ fixes errors itself.
+
+\item[\povalue{errorstopmode}] In this mode, \TeX\ will stop at each error, asking for proper user intervention. This is the most user interactive mode available.
+\end{description}
+
+\item[\abox{numbersystem}] This option sets the number system Metapost will use for calculations.
+
+\begin{description}
+\item[\povalue{scaled}] In this mode, 32-bit fixed-point arithmetics is used.
+
+\item[\povalue{double}] In this mode, IEEE floating-point arithmetics with 64 bits is used.
+\item[\povalue{binary}] This mode is similary to \povalue{double} but without a fixed-length mantissa.
+\item[\povalue{decimal}] In this mode, arbitrary precision arithmetics is used and numbers are internally represented in base 10.
+\end{description}
+
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: metapost: { files: [graphics.mp] }
+\end{codebox}
+
 \item[\rulebox{nomencl}{Marco Daniel, Nicola Talbot, Paulo Cereda}] This rule runs \rbox{makeindex} in order to automatically generate a nomenclature list from \TeX\ documents that work with the \rbox{nomencl} package. The program itself is a general purpose hierarchical index generator and takes the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{nlo} suffix and a special style file in order to generate the nomenclature list as a special \rbox{nls} file.
 
 \begin{description}
