@@ -2,7 +2,7 @@
 
 # arara
 
-![Version](https://img.shields.io/badge/Current_version-4.0-blue.svg?style=flat-square)
+![Version](https://img.shields.io/badge/Current_version-5.0.0-blue.svg?style=flat-square)
 ![Language: Kotlin](https://img.shields.io/badge/Language-Kotlin-blue.svg?style=flat-square)
 ![Minimum JRE: 8.0](https://img.shields.io/badge/Linimum_JRE-8-blue.svg?style=flat-square)
 ![License: New BSD](https://img.shields.io/badge/License-New_BSD-blue.svg?style=flat-square)
@@ -30,17 +30,17 @@ Hello, world!
 Now when you run `arara myfile`, that directive (`% arara: ...`) will be seen
 and carried out as described by the `pdflatex` rule.  You can read more about
 rules and directives in the user manual available in our
-[releases](https://github.com/cereda/arara/releases) section. In addition to
-documenting all of the rules that come standard with `arara`, the manual gives
-a detailed explanation of how `arara` works, as well as how to create and use
-your own rules.
+[releases](https://gitlab.com/islandoftex/arara/-/releases) section. In addition
+to documenting all of the rules that come standard with `arara`, the manual
+gives a detailed explanation of how `arara` works, as well as how to create and
+use your own rules.
 
 ## Getting the latest and greatest arara
 
 `arara` is continuously built by the GitLab CI. For each and every commit, it is
  ensured that a green tick means `arara` passes the test suite and is ready to
- be tested. However, that is not meant you can use the executable artifacts of
- the builds for *productive use*.
+ be tested. However, that is *not* meant you can use the executable artifacts of
+ the builds *for productive use*.
  
  Development of `arara` takes place in the development branch. Feel free to be
  one of our testers and enjoy the latest features and bug fixes by building from
@@ -48,14 +48,14 @@ your own rules.
  
 ## Support
 
-[![Gitter chatroom](https://img.shields.io/badge/gitter-join_chat-blue.svg?style=flat-square)](https://gitter.im/cereda/arara)
-[![GitHub issues](https://img.shields.io/badge/github-issues-blue.svg?style=flat-square)](https://github.com/cereda/arara/issues)
+[![Gitter chatroom](https://img.shields.io/badge/Gitter-join_chat-blue.svg?style=flat-square)](https://gitter.im/cereda/arara)
+[![GitLab issues](https://img.shields.io/badge/GitLab-issues-blue.svg?style=flat-square)](https://gitlab.com/islandoftex/arara/issues)
 
 We use a [Gitter](https://gitter.im/cereda/arara) chatroom for discussing things
 related to `arara`. You are more than welcome to come join the fun and say *hi!*
-to us. We also have the [issues](https://github.com/cereda/arara/issues) section
-in our repository as a valid channel to report problems, bugs and suggest
-improvements. 
+to us. We also have the [issues](https://gitlab.com/islandoftex/arara/issues)
+section in our repository as a valid channel to report problems, bugs and
+suggest improvements. 
 
 ## Localization
 
@@ -70,8 +70,8 @@ localization work!
 
 ## Downloads
 
-[![Download from GitHub](https://img.shields.io/badge/github-4.0-blue.svg?style=flat-square)](https://github.com/cereda/arara/releases)
-[![Download from Bintray](https://img.shields.io/badge/bintray-4.0-blue.svg?style=flat-square)](https://bintray.com/cereda/arara)
+[![Download from GitLab](https://img.shields.io/badge/GitLab-5.0.0-blue.svg?style=flat-square)](https://gitlab.com/islandoftex/arara/-/releases)
+[![Download from Bintray](https://img.shields.io/badge/Bintray-5.0.0-blue.svg?style=flat-square)](https://bintray.com/cereda/arara)
 
 From the 4.0 series on, the team decided to not release cross-platform
 installers any more. Our tool is available out of the shelf on all major TeX
@@ -80,10 +80,10 @@ unnecessary given the significant coverage of such distributions. Chances are
 you already have `arara` in your system!
 
 You can obtain the official package available in the
-[releases](https://github.com/cereda/arara/releases) section of our project
-repository, as well as the [Bintray](https://bintray.com/cereda/arara) software
-distribution service. Please refer to the documentation on how to manually
-deploy our tool.
+[releases](https://gitlab.com/islandoftex/arara/-/releases) section of our
+project repository, as well as the [Bintray](https://bintray.com/cereda/arara)
+software distribution service. Please refer to the documentation on how to
+manually deploy our tool.
 
 ## License
 

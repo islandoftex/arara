@@ -28,6 +28,8 @@ from version 5.0.0 on.
 * The application has been rewritten in Kotlin and the code has been streamlined
   to its use cases. That includes we now run a test suite (which is far from
   exhaustive).
+* The application is now hosted on [GitLab](https://gitlab.com/islandoftex/arara).
+  From now on, support will be provided there.
 
 ### Deprecated
 

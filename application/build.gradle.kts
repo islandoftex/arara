@@ -35,7 +35,8 @@ dependencies {
     testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
 }
 
-version = "5.0.0-SNAPSHOT"
+status = "development"
+version = "5.0.0" + if (status == "development") "-SNAPSHOT" else ""
 val projectName = project.name.toLowerCase()
 val moduleName = group
 val mainClass = "$moduleName.Arara"
@@ -93,13 +94,13 @@ tasks {
                     "--module-path", sourceSets["main"].compileClasspath.asPath)
         }
     }
-    withType<KotlinCompile>() {
+    withType<KotlinCompile> {
         kotlinOptions {
             jvmTarget = "1.8"
         }
     }
 
-    withType<Jar>() {
+    withType<Jar> {
         archiveBaseName.set("arara")
         manifest.attributes.putAll(mainManifest.attributes)
     }
@@ -118,7 +119,7 @@ tasks {
         }
     }
 
-    withType<Test>() {
+    withType<Test> {
         useJUnitPlatform()
 
         testLogging {
@@ -141,11 +142,11 @@ publishing {
 
             pom {
                 name.set("arara")
-                description.set(
-                        "Arara is a TeX automation tool based on rules and directives."
-                )
+                description.set("arara is a TeX automation tool based on " +
+                        "rules and directives. It gives you a way to enhance " +
+                        "your TeX experience.")
                 inceptionYear.set("2012")
-                url.set("https://github.com/cereda/arara")
+                url.set("https://gitlab.com/islandoftex/arara")
                 organization {
                     name.set("Island of TeX")
                     url.set("https://gitlab.com/islandoftex")
@@ -164,6 +165,12 @@ publishing {
                         id.set("cereda")
                         url.set("https://tex.stackexchange.com/users/3094")
                         roles.set(listOf("Lead developer", "Creator", "Duck enthusiast"))
+                    }
+                    developer {
+                        name.set("Ben Frank")
+                        id.set("benfrank")
+                        url.set("https://gitlab.com/benfrank")
+                        roles.set(listOf("Release coordinator v5"))
                     }
                     developer {
                         name.set("Marco Daniel")
@@ -190,17 +197,17 @@ publishing {
                     }
                 }
                 scm {
-                    connection.set("scm:git:https://github.com/cereda/arara.git")
-                    developerConnection.set("scm:git:https://github.com/cereda/arara.git")
-                    url.set("https://github.com/cereda/arara")
+                    connection.set("scm:git:https://gitlab.com/islandoftex/arara.git")
+                    developerConnection.set("scm:git:https://gitlab.com/islandoftex/arara.git")
+                    url.set("https://gitlab.com/islandoftex/arara")
                 }
                 ciManagement {
                     system.set("GitLab")
-                    url.set("https://gitlab.com/islandoftex/arara-v5/pipelines")
+                    url.set("https://gitlab.com/islandoftex/arara/pipelines")
                 }
                 issueManagement {
-                    system.set("GitHub")
-                    url.set("https://github.com/cereda/arara/issues")
+                    system.set("GitLab")
+                    url.set("https://gitlab.com/islandoftex/arara/issues")
                 }
             }
 
