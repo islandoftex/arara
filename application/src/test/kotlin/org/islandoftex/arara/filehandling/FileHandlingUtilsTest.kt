@@ -18,7 +18,7 @@ class FileHandlingUtilsTest : ShouldSpec({
         }
     }
     should("generate correct CRC sums") {
-        FileHandlingUtils.calculateHash(File("../LICENSE")) shouldBe "a6f53c83"
+        FileHandlingUtils.calculateHash(File("../LICENSE")) shouldBe "fa68960d"
         FileHandlingUtils.calculateHash(File("../CODE_OF_CONDUCT.md")) shouldBe "536c426f"
     }
 
