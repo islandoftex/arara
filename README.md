@@ -2,11 +2,8 @@
 
 # arara
 
-![Version](https://img.shields.io/badge/Current_version-5.0.0-blue.svg?style=flat-square)
 ![Language: Kotlin](https://img.shields.io/badge/Language-Kotlin-blue.svg?style=flat-square)
-![Minimum JRE: 8.0](https://img.shields.io/badge/Linimum_JRE-8-blue.svg?style=flat-square)
-![License: New BSD](https://img.shields.io/badge/License-New_BSD-blue.svg?style=flat-square)
-![CTAN packaging](https://img.shields.io/badge/CTAN_packaging-5.0.0-blue.svg?style=flat-square)
+![Minimum JRE: 8.0](https://img.shields.io/badge/Minimum_JRE-8-blue.svg?style=flat-square)
 
 `arara` is a TeX automation tool based on rules and directives. It gives you a
 way to enhance your TeX experience. The tool is an effort to provide a concise
@@ -48,9 +45,6 @@ use your own rules.
  
 ## Support
 
-[![Gitter chatroom](https://img.shields.io/badge/Gitter-join_chat-blue.svg?style=flat-square)](https://gitter.im/cereda/arara)
-[![GitLab issues](https://img.shields.io/badge/GitLab-issues-blue.svg?style=flat-square)](https://gitlab.com/islandoftex/arara/issues)
-
 We use a [Gitter](https://gitter.im/cereda/arara) chatroom for discussing things
 related to `arara`. You are more than welcome to come join the fun and say *hi!*
 to us. We also have the [issues](https://gitlab.com/islandoftex/arara/issues)
@@ -70,8 +64,8 @@ localization work!
 
 ## Downloads
 
-[![Download from GitLab](https://img.shields.io/badge/GitLab-5.0.0-blue.svg?style=flat-square)](https://gitlab.com/islandoftex/arara/-/releases)
-[![Download from Bintray](https://img.shields.io/badge/Bintray-5.0.0-blue.svg?style=flat-square)](https://bintray.com/cereda/arara)
+[![Download from GitLab](https://img.shields.io/badge/dynamic/json.svg?color=blue&label=Latest%20release&query=%24.0.name&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2F%14349047%2Frepository%2Ftags&style=flat-square)](https://gitlab.com/islandoftex/arara/-/releases)
+[![Download from Bintray](https://img.shields.io/bintray/v/cereda/arara/releases?label=Bintray&style=flat-square)](https://bintray.com/cereda/arara)
 
 From the 4.0 series on, the team decided to not release cross-platform
 installers any more. Our tool is available out of the shelf on all major TeX
