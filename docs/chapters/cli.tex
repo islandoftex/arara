@@ -100,22 +100,26 @@ arara 4.0 (revision 1)
 Copyright (c) 2012-2017, Paulo Roberto Massa Cereda
 All rights reserved
 
-usage: arara [file [--dry-run] [--log] [--verbose | --silent]
-             [--timeout N] [--max-loops N] [--language L]
-             [ --preamble P ] [--header] | --help | --version]
- -h,--help                 print the help message
- -H,--header               extract directives only in the file header
- -l,--log                  generate a log output
- -L,--language <code>      set the application language
- -m,--max-loops <number>   set the maximum number of loops
- -n,--dry-run              go through all the motions of running a
-                           command, but with no actual calls
- -p,--preamble <name>      set the file preamble based on the
-                           configuration file
- -s,--silent               hide the command output
- -t,--timeout <number>     set the execution timeout (in milliseconds)
- -V,--version              print the application version
- -v,--verbose              print the command output
+Usage: arara [OPTIONS] [file]...
+
+Options:
+  -l, --log                        Generate a log output
+  -v, --verbose / -s, --silent     Print the command output
+  -n, --dry-run                    Go through all the motions of running a
+                                   command, but with no actual calls
+  -H, --header                     Extract directives only in the file header
+  -t, --timeout INT                Set the execution timeout (in milliseconds)
+  -L, --language TEXT              Set the application language
+  -m, --max-loops INT              Set the maximum number of loops (> 0)
+  -p, --preamble TEXT              Set the file preamble based on the
+                                   configuration file
+  -d, --working-directory DIRECTORY
+                                   Set the working directory for all tools
+  -V, --version                    Show the version and exit
+  -h, --help                       Show this message and exit
+
+Arguments:
+  file  The file(s) to evaluate and process
 \end{codebox}
 
 The available options for our tool are detailed as follows. Each option contains short and long variations, which are denoted by \opbox{o} and \opbox{{-}option} in the command line, respectively. Additionally, when a parameter is required by the current option, it will be denoted by \prbox{parameter} in the description.
@@ -315,6 +319,8 @@ Total: 3.37 seconds
 \end{codebox}
 
 If left unattended, this particular execution would never finish (and probably crash the engine at a certain point), as expected by the recursive calls without a proper fixed point. The \opbox{{-}timeout} option was set at 3000 milliseconds and the task was aborted when the time limit was reached. Note that the tool raised an error about it.
+
+\item[\describeop{d}{working-directory}] This option allows you to change the working directory. That is, the commands will run from a different directory than the directory you launched \arara\ in. This is especially useful when calling a \TeX\ engine as they resolve files against the working direcotry. For that reason, \arara\ will also resolve each file you pass to it that has no absolute path against the working directory. The working directory is fixed for the whole call; passing multiple files to \arara\ will resolve all of them against and execute all actions within that one working directory.
 
 \item[\describeop{V}{version}] This option, as the name indicates, prints the current version. It also prints the current revision and a list of libraries with their corresponding licenses. Finally, it simply exits the application. Note that this option has the second highest priority over the others.
 
