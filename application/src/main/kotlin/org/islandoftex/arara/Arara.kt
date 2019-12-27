@@ -29,6 +29,11 @@ object Arara {
     @ExperimentalTime
     @JvmStatic
     fun main(args: Array<String>) {
+        // print the arara logo in the terminal; I just
+        // hope people use this tool in a good terminal with
+        // fixed-width fonts, otherwise the logo will be messed
+        DisplayUtils.printLogo()
+
         val year = config[AraraSpec.Application.copyrightYear]
         val version = config[AraraSpec.Application.version]
         CLI().versionOption(version, names = setOf("-V", "--version"),
@@ -39,7 +44,7 @@ object Arara {
                                     .INFO_PARSER_ALL_RIGHTS_RESERVED) + "\n\n" +
                             LanguageController.getMessage(Messages
                                     .INFO_PARSER_NOTES) + "\n\n" +
-                            "New features in version $version:" +
+                            "New features in version $version:\n" +
                             Arara::class.java
                                     .getResource("/org/islandoftex/arara/configuration/release-notes")
                                     .readText()

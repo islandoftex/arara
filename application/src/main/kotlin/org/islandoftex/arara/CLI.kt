@@ -113,11 +113,6 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         // a lot of noise in the terminal
         LoggingUtils.init()
 
-        // print the arara logo in the terminal; I just
-        // hope people use this tool in a good terminal with
-        // fixed-width fonts, otherwise the logo will be messed
-        DisplayUtils.printLogo()
-
         // arara features a stopwatch, so we can see how much time has passed
         // since everything started; internally, this class makes use of
         // nano time, so we might get an interesting precision here
