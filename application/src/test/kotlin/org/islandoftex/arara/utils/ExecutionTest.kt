@@ -124,4 +124,15 @@ class ExecutionTest : ShouldSpec({
         val output = outputForTest("known-extension")
         output shouldContain "QuackOne"
     }
+
+    should("execute option-less directives") {
+        val output = outputForTest("simple-directive")
+        output shouldContain "PDFTeX"
+        output shouldContain "SUCCESS"
+    }
+    should("execute directive with options") {
+        val output = outputForTest("directive-with-options")
+        output shouldContain "PDFTeX"
+        output shouldContain "SUCCESS"
+    }
 })
