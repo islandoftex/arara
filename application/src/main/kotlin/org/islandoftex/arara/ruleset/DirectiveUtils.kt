@@ -3,7 +3,7 @@
 package org.islandoftex.arara.ruleset
 
 import com.charleskorn.kaml.Yaml
-import kotlinx.serialization.serializer
+import kotlinx.serialization.parseMap
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.filehandling.FileHandlingUtils
@@ -197,9 +197,7 @@ object DirectiveUtils {
          * This has been removed.
          */
         return Yaml.default.runCatching {
-            parse(Map::class.serializer(), text).map {
-                it.key.toString() to it.value!!
-            }.toMap()
+            Yaml.default.parseMap<String, String>(text)
         }.getOrElse {
             throw AraraException(messages.getMessage(
                     Messages.ERROR_VALIDATE_YAML_EXCEPTION,
