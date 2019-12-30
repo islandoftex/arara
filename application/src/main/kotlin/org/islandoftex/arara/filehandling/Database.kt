@@ -13,7 +13,6 @@ import kotlinx.serialization.Serializable
  * @version 4.0
  * @since 4.0
  */
-// TODO: switch to <File, String>
 @Serializable
 data class Database(
     /**

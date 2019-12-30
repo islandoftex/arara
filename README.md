@@ -64,7 +64,7 @@ localization work!
 
 ## Downloads
 
-[![Download from GitLab](https://img.shields.io/badge/dynamic/json.svg?color=blue&label=Latest%20release&query=%24.0.name&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2F%14349047%2Frepository%2Ftags&style=flat-square)](https://gitlab.com/islandoftex/arara/-/releases)
+[![Download from GitLab](https://img.shields.io/badge/dynamic/json.svg?color=blue&label=Latest%20release&query=%24.0.name&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2F14349047%2Frepository%2Ftags&style=flat-square)](https://gitlab.com/islandoftex/arara/-/releases)
 [![Download from Bintray](https://img.shields.io/bintray/v/cereda/arara/releases?label=Bintray&style=flat-square)](https://bintray.com/cereda/arara)
 
 From the 4.0 series on, the team decided to not release cross-platform

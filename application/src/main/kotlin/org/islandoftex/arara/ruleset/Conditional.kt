@@ -18,7 +18,7 @@ data class Conditional(
      * The expression to be evaluated according to its type. Defaults
      * to no evaluation (empty string).
      */
-    var condition: String = ""
+    val condition: String = ""
 ) {
     /**
      * The types of conditionals arara is able to recognize.
