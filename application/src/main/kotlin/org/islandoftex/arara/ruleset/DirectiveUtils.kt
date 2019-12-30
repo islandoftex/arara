@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.ruleset
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import java.io.File
+import java.util.regex.Pattern
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.filehandling.FileHandlingUtils
@@ -14,8 +15,6 @@ import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.model.AraraException
 import org.islandoftex.arara.utils.DisplayUtils
 import org.slf4j.LoggerFactory
-import java.io.File
-import java.util.regex.Pattern
 
 /**
  * Implements directive utilitary methods.
@@ -44,7 +43,7 @@ object DirectiveUtils {
             Map<Int, String> {
         val header = Arara.config[AraraSpec.Execution.onlyHeader]
         val validLineRegex = Arara.config[AraraSpec.Execution.filePattern]
-        val validLinePattern = Pattern.compile(validLineRegex)
+        val validLinePattern = validLineRegex.toPattern()
         val validLineStartPattern = (validLineRegex + Arara.config[AraraSpec
                 .Application.namePattern]).toPattern()
         val map = mutableMapOf<Int, String>()
@@ -128,9 +127,8 @@ object DirectiveUtils {
     @Throws(AraraException::class)
     @Suppress("MagicNumber")
     fun generateDirective(assembler: DirectiveAssembler): Directive {
-        val regex = Arara.config[AraraSpec.Directive.directivePattern]
-        val pattern = Pattern.compile(regex)
-        val matcher = pattern.matcher(assembler.getText())
+        val matcher = Arara.config[AraraSpec.Directive.directivePattern]
+                .toPattern().matcher(assembler.getText())
         if (matcher.find()) {
             val directive = Directive(
                     identifier = matcher.group(1)!!,
@@ -177,25 +175,27 @@ object DirectiveUtils {
     /**
      * Gets the parameters from the input string.
      *
-     * @param text    The input string.
+     * @param text The input string.
      * @param numbers The list of line numbers.
      * @return A map containing the directive parameters.
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
     @Throws(AraraException::class)
-    private fun getParameters(text: String?,
-                              numbers: List<Int>): Map<String, Any> {
+    private fun getParameters(
+        text: String?,
+        numbers: List<Int>
+    ): Map<String, Any> {
         if (text == null)
             return mapOf()
 
         /* Before using kotlinx.serialization, there has been a dedicated
          * directive resolver which instructed SnakeYAML to do the following:
-         * 
+         *
          * addImplicitResolver(Tag.MERGE, MERGE, "<")
          * addImplicitResolver(Tag.NULL, NULL, "~nN\u0000")
          * addImplicitResolver(Tag.NULL, EMPTY, null)
-         * 
+         *
          * This has been removed.
          */
         return ObjectMapper(YAMLFactory()).registerKotlinModule().runCatching {
@@ -219,8 +219,11 @@ object DirectiveUtils {
      *   object.
      */
     @Throws(AraraException::class)
-    private fun replicateDirective(holder: Any, parameters: Map<String, Any>,
-                                   directive: Directive): List<Directive> {
+    private fun replicateDirective(
+        holder: Any,
+        parameters: Map<String, Any>,
+        directive: Directive
+    ): List<Directive> {
         return if (holder is List<*>) {
             // we received a file list, so we map that list to files
             holder.filterIsInstance<Any>()
@@ -299,7 +302,7 @@ object DirectiveUtils {
      * the file type, or an empty line.
      *
      * @param pattern Pattern to be matched, based on the file type.
-     * @param line    Provided line.
+     * @param line Provided line.
      * @return Logical value indicating if the provided line contains the
      * corresponding pattern, based on the file type, or an empty line.
      */

@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.configuration
 
 import com.uchuhimo.konf.ConfigSpec
-import org.islandoftex.arara.localization.Language
 import java.io.File
 import java.nio.file.Paths
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
+import org.islandoftex.arara.localization.Language
 
 @Suppress("MagicNumber")
 object AraraSpec : ConfigSpec() {

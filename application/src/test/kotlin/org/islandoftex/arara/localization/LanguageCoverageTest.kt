@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.localization
 
 import ch.qos.cal10n.verifier.MessageKeyVerifier
@@ -8,14 +7,14 @@ import io.kotlintest.matchers.collections.shouldNotBeEmpty
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.ShouldSpec
-import org.islandoftex.arara.model.AraraException
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.*
+import java.util.Locale
 import java.util.stream.Collectors
+import org.islandoftex.arara.model.AraraException
 
 class LanguageCoverageTest : ShouldSpec({
     "locale definitions" {
@@ -74,10 +73,10 @@ class LanguageCoverageTest : ShouldSpec({
                     LanguageReport.analyze(file)
                 } catch (exception: IOException) {
                     throw AssertionError(
-                            "Fatal exception: an error was raised while "
-                                    + "trying to read one of the languages. Please "
-                                    + "make sure all languages in the provided "
-                                    + "directory have read permission.")
+                            "Fatal exception: an error was raised while " +
+                                    "trying to read one of the languages. Please " +
+                                    "make sure all languages in the provided " +
+                                    "directory have read permission.")
                 }
             }.forEach { report ->
                 // debug output

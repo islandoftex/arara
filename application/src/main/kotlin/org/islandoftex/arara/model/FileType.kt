@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.model
 
+import java.util.regex.PatternSyntaxException
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.configuration.ConfigurationUtils
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.utils.CommonUtils
-import java.util.regex.PatternSyntaxException
 
 /**
  * Implements the file type model.
@@ -99,7 +98,6 @@ class FileType {
         if (extension != other.extension) return false
         return true
     }
-
 
     /**
      * Implements the file type hash code. Note that only the file extension is

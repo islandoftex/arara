@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.ruleset
 
 /**
@@ -10,40 +9,47 @@ package org.islandoftex.arara.ruleset
  * @since 4.0
  */
 data class Conditional(
-        // the conditional type, specified above; the
-        // default fallback, as seen in the constructor,
-        // is set to NONE, that is, no conditional at all
-        val type: ConditionalType = ConditionalType.NONE,
-        // the expression to be evaluated according to its
-        // type; the default fallback, as seen in the
-        // constructor, is set to an empty string
-        var condition: String = "") {
-
-    // these are all types of conditionals arara
-    // is able to recognize; personally, I believe
-    // they are more than sufficient to cover the
-    // majority of test cases
+    /**
+     * The type of the condition indicates the meaning when evaluated.
+     * Defaults to [ConditionalType.NONE].
+     */
+    val type: ConditionalType = ConditionalType.NONE,
+    /**
+     * The expression to be evaluated according to its type. Defaults
+     * to no evaluation (empty string).
+     */
+    var condition: String = ""
+) {
+    /**
+     * The types of conditionals arara is able to recognize.
+     */
     enum class ConditionalType {
-        // evaluated beforehand, directive is interpreted
-        // if and only if the result is true
+        /**
+         * Evaluated beforehand, directive is interpreted if and only if the
+         * result is true.
+         */
         IF,
-
-        // there is no evaluation, directive is interpreted,
-        // no extra effort is needed
+        /**
+         * There is no evaluation, directive is interpreted, no extra effort is
+         * needed.
+         */
         NONE,
-
-        // evaluated beforehand, directive is interpreted
-        // if and only if the result is false
+        /**
+         * Evaluated beforehand, directive is interpreted if and only if the
+         * result is false.
+         */
         UNLESS,
-
-        // directive is interpreted the first time, then the
-        // evaluation is done; while the result is false,
-        // the directive is interpreted again and again
+        /**
+         * Directive is interpreted the first time, then the evaluation is
+         * done; while the result is false, the directive is interpreted again
+         * and again.
+         */
         UNTIL,
-
-        // evaluated beforehand, directive is interpreted if
-        // and oly if the result is true, and the process is
-        // repeated while the result still holds true
+        /**
+         * Evaluated beforehand, directive is interpreted if and only if the
+         * result is true, and the process is repeated while the result still
+         * holds true.
+         */
         WHILE
     }
 

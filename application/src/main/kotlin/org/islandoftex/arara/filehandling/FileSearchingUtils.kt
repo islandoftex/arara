@@ -1,16 +1,15 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.filehandling
 
+import java.io.File
+import java.io.FileFilter
+import java.nio.file.FileSystems
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.model.AraraException
 import org.islandoftex.arara.utils.CommonUtils
-import java.io.File
-import java.io.FileFilter
-import java.nio.file.FileSystems
 
 /**
  * Implements file searching utilitary methods.
@@ -28,8 +27,11 @@ object FileSearchingUtils {
      * @param recursive A flag indicating whether the search is recursive.
      * @return A list of files.
      */
-    fun listFilesByExtensions(directory: File,
-                              extensions: List<String>, recursive: Boolean):
+    fun listFilesByExtensions(
+        directory: File,
+        extensions: List<String>,
+        recursive: Boolean
+    ):
             List<File> = try {
         // return the result of the
         // provided search
@@ -57,8 +59,11 @@ object FileSearchingUtils {
      * @param recursive A flag indicating whether the search is recursive.
      * @return A list of files.
      */
-    fun listFilesByPatterns(directory: File,
-                            patterns: List<String>, recursive: Boolean):
+    fun listFilesByPatterns(
+        directory: File,
+        patterns: List<String>,
+        recursive: Boolean
+    ):
             List<File> = try {
         // return the result of the provided
         // search, with the wildcard filter

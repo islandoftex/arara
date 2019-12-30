@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.localization
 
 import java.io.File
@@ -12,15 +11,22 @@ import java.io.File
  * @since 5.0
  */
 data class LanguageReport(
-        // the file reference
-        val reference: File,
-        // total of checked lines
-        val total: Int,
-        // list of problematic lines and
-        // their corresponding error types
-        val lines: Map<Int, Char>) {
-
-    // language coverage
+    /**
+     * The file reference.
+     */
+    val reference: File,
+    /**
+     * Total of checked lines.
+     */
+    val total: Int,
+    /**
+     * List of problematic lines and their corresponding error types.
+     */
+    val lines: Map<Int, Char>
+) {
+    /**
+     * Language coverage of the file.
+     */
     val coverage: Float
         get() = if (lines.isEmpty()) {
             100f

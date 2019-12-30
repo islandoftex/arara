@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.model
 
 import org.islandoftex.arara.localization.LanguageController
@@ -106,8 +105,9 @@ object Session {
      *   By default all values will be removed.
      */
     fun updateEnvironmentVariables(
-            additionFilter: (String) -> Boolean = { true },
-            removalFilter: (String) -> Boolean = { true }) {
+        additionFilter: (String) -> Boolean = { true },
+        removalFilter: (String) -> Boolean = { true }
+    ) {
         // remove all current environment variables to clean up the session
         map.filterKeys { it.startsWith("environment:") }
                 .filterKeys(removalFilter)

@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.localization
 
+import java.util.Locale
 import org.islandoftex.arara.model.AraraException
-import java.util.*
 
 /**
  * Implements the language model.

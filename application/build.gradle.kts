@@ -5,7 +5,7 @@ import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.java.archives.internal.DefaultManifest
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
+import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -15,10 +15,11 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.github.johnrengelman.shadow")
     id("org.jetbrains.dokka")
+    id("com.diffplug.gradle.spotless")
     jacoco
 }
 
-val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class).kotlinPluginVersion
+val kotlinVersion = project.getKotlinPluginVersion()
 dependencies {
     implementation(kotlin("stdlib", kotlinVersion))
     implementation(kotlin("reflect", kotlinVersion))
@@ -63,6 +64,21 @@ sourceSets {
 application {
     applicationName = project.name
     mainClassName = mainClass
+}
+
+spotless {
+    java {
+        removeUnusedImports()
+        licenseHeader("// SPDX-License-Identifier: BSD-3-Clause")
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    kotlin {
+        ktlint()
+        licenseHeader("// SPDX-License-Identifier: BSD-3-Clause")
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
 }
 
 val mainManifest: Manifest = DefaultManifest((project as ProjectInternal).fileResolver)

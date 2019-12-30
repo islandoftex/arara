@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara
 
 import com.github.ajalt.clikt.parameters.options.versionOption
 import com.uchuhimo.konf.Config
+import java.time.LocalDate
+import kotlin.time.ExperimentalTime
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.configuration.Configuration
 import org.islandoftex.arara.localization.LanguageController
@@ -13,8 +14,6 @@ import org.islandoftex.arara.model.Extractor
 import org.islandoftex.arara.model.Interpreter
 import org.islandoftex.arara.ruleset.DirectiveUtils
 import org.islandoftex.arara.utils.DisplayUtils
-import java.time.LocalDate
-import kotlin.time.ExperimentalTime
 
 object Arara {
     // TODO: watch config files

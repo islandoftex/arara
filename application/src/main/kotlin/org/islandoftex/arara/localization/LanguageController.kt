@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.localization
 
 import ch.qos.cal10n.IMessageConveyor
 import ch.qos.cal10n.MessageConveyor
+import java.util.Locale
 import org.islandoftex.arara.configuration.AraraSpec
-import java.util.*
 
 /**
  * Implements the language controller. This controller provides a singleton

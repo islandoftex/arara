@@ -1,16 +1,15 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.filehandling
 
+import java.io.File
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.zip.CRC32
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.model.AraraException
-import java.io.File
-import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.zip.CRC32
 
 /**
  * Implements file handling utilitary methods.
@@ -67,8 +66,11 @@ object FileHandlingUtils {
      * @param append A flag whether to append the content.
      * @return A logical value indicating whether it was successful.
      */
-    fun writeToFile(file: File, lines: List<String>,
-                    append: Boolean): Boolean =
+    fun writeToFile(
+        file: File,
+        lines: List<String>,
+        append: Boolean
+    ): Boolean =
             try {
                 writeToFile(file, lines.joinToString(System.lineSeparator()),
                         append)
@@ -222,7 +224,6 @@ object FileHandlingUtils {
             throw AraraException(messages.getMessage(Messages
                     .ERROR_CALCULATEHASH_IO_EXCEPTION), exception)
         }
-
     }
 
     /**

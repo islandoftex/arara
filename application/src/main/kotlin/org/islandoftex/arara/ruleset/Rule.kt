@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.ruleset
 
 import kotlinx.serialization.Serializable

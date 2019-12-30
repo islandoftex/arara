@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.model
 
 import org.islandoftex.arara.Arara
@@ -42,11 +41,13 @@ class Evaluator {
      * @param haltCheck The value [halt] should have.
      * @return `(type == if || type == unless) && haltCheck`
      */
-    private fun isIfUnlessAndHalt(type: Conditional.ConditionalType,
-                                  haltCheck: Boolean = true): Boolean =
-            (type == Conditional.ConditionalType.IF
-                    || type == Conditional.ConditionalType.UNLESS)
-                    && halt == haltCheck
+    private fun isIfUnlessAndHalt(
+        type: Conditional.ConditionalType,
+        haltCheck: Boolean = true
+    ): Boolean =
+            (type == Conditional.ConditionalType.IF ||
+                    type == Conditional.ConditionalType.UNLESS) &&
+                    halt == haltCheck
 
     /**
      * Only run the evaluation of the conditional including a check whether

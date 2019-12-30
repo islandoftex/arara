@@ -1,15 +1,14 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.filehandling
 
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.ShouldSpec
+import java.io.File
+import java.nio.file.Files
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.model.AraraException
-import java.io.File
-import java.nio.file.Files
 
 class FileHandlingUtilsTest : ShouldSpec({
     should("fail generating CRC sums on inexistent files") {

@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara
 
 import com.github.ajalt.clikt.core.CliktCommand
@@ -11,6 +10,11 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import com.github.ajalt.clikt.parameters.types.restrictTo
+import kotlin.system.exitProcess
+import kotlin.time.ClockMark
+import kotlin.time.ExperimentalTime
+import kotlin.time.MonoClock
+import kotlin.time.milliseconds
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.filehandling.FileSearchingUtils
 import org.islandoftex.arara.localization.Language
@@ -21,11 +25,6 @@ import org.islandoftex.arara.model.Session
 import org.islandoftex.arara.utils.CommonUtils
 import org.islandoftex.arara.utils.DisplayUtils
 import org.islandoftex.arara.utils.LoggingUtils
-import kotlin.system.exitProcess
-import kotlin.time.ClockMark
-import kotlin.time.ExperimentalTime
-import kotlin.time.MonoClock
-import kotlin.time.milliseconds
 
 class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
     private val log by option("-l", "--log",

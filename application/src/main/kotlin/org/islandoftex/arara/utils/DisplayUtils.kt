@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.utils
 
 import org.islandoftex.arara.Arara
@@ -371,7 +370,7 @@ object DisplayUtils {
      */
     fun printLogo() {
         println("""
-              __ _ _ __ __ _ _ __ __ _ 
+              __ _ _ __ __ _ _ __ __ _
              / _` | '__/ _` | '__/ _` |
             | (_| | | | (_| | | | (_| |
              \__,_|_|  \__,_|_|  \__,_|

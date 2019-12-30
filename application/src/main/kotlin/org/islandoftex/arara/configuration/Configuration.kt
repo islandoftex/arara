@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.configuration
 
+import kotlin.time.ExperimentalTime
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.filehandling.FileHandlingUtils
 import org.islandoftex.arara.localization.Language
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.model.AraraException
-import kotlin.time.ExperimentalTime
 
 /**
  * Implements the configuration model, which holds the default settings and can

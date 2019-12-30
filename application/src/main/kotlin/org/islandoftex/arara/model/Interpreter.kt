@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.model
 
+import java.io.File
+import kotlin.time.ExperimentalTime
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.localization.LanguageController
@@ -19,8 +20,6 @@ import org.islandoftex.arara.utils.InterpreterUtils
 import org.islandoftex.arara.utils.Methods
 import org.mvel2.templates.TemplateRuntime
 import org.slf4j.LoggerFactory
-import java.io.File
-import kotlin.time.ExperimentalTime
 
 /**
  * Interprets the list of directives.
@@ -30,9 +29,11 @@ import kotlin.time.ExperimentalTime
  * @since 4.0
  */
 class Interpreter(
-        // list of directives to be
-        // interpreted in here
-        val directives: List<Directive>) {
+    /**
+     * The list of directives to be interpreted and evaluated.
+     */
+    val directives: List<Directive>
+) {
     /**
      * Exception class to represent that the interpreter should stop for some
      * reason
@@ -70,8 +71,11 @@ class Interpreter(
      * @param authors The authors of the rule.
      * @return Returns [value]
      */
-    private fun runBoolean(value: Boolean, conditional: Conditional,
-                           authors: List<String>): Boolean {
+    private fun runBoolean(
+        value: Boolean,
+        conditional: Conditional,
+        authors: List<String>
+    ): Boolean {
         logger.info(messages.getMessage(Messages.LOG_INFO_BOOLEAN_MODE,
                 value.toString()))
 
@@ -98,9 +102,12 @@ class Interpreter(
     @ExperimentalTime
     @Throws(AraraException::class)
     @Suppress("TooGenericExceptionCaught")
-    private fun runCommand(command: Command, conditional: Conditional,
-                           authors: List<String>,
-                           ruleCommandExitValue: String?): Boolean {
+    private fun runCommand(
+        command: Command,
+        conditional: Conditional,
+        authors: List<String>,
+        ruleCommandExitValue: String?
+    ): Boolean {
         logger.info(messages.getMessage(Messages.LOG_INFO_SYSTEM_COMMAND,
                 command))
         var success = true
@@ -161,8 +168,12 @@ class Interpreter(
     @ExperimentalTime
     @Throws(AraraException::class)
     @Suppress("TooGenericExceptionCaught", "ThrowsCount")
-    private fun executeCommand(command: RuleCommand, conditional: Conditional,
-                               rule: Rule, parameters: Map<String, Any>) {
+    private fun executeCommand(
+        command: RuleCommand,
+        conditional: Conditional,
+        rule: Rule,
+        parameters: Map<String, Any>
+    ) {
         val result: Any = try {
             TemplateRuntime.eval(command.command!!, parameters)
         } catch (exception: RuntimeException) {
@@ -268,7 +279,7 @@ class Interpreter(
     /**
      * Parses the rule arguments against the provided directive.
      *
-     * @param rule      The rule object.
+     * @param rule The rule object.
      * @param directive The directive.
      * @return A map containing all arguments resolved according to the
      * directive parameters.
@@ -316,8 +327,11 @@ class Interpreter(
      */
     @Throws(AraraException::class)
     @Suppress("TooGenericExceptionCaught", "ThrowsCount")
-    private fun processArgument(argument: Argument, idInDirectiveParams: Boolean,
-                                context: Map<String, Any>): Any {
+    private fun processArgument(
+        argument: Argument,
+        idInDirectiveParams: Boolean,
+        context: Map<String, Any>
+    ): Any {
         if (argument.isRequired && !idInDirectiveParams)
             throw AraraException(CommonUtils.ruleErrorHeader +
                     messages.getMessage(

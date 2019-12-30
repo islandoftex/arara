@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.utils
 
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.joran.JoranConfigurator
 import ch.qos.logback.core.joran.spi.JoranException
+import java.io.InputStream
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.configuration.AraraSpec
 import org.slf4j.LoggerFactory
-import java.io.InputStream
 
 /**
  * Implements the logging controller. This class actually sets the logging

@@ -1,7 +1,14 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.utils
 
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.IOException
+import java.io.OutputStream
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.localization.LanguageController
@@ -13,14 +20,6 @@ import org.slf4j.LoggerFactory
 import org.zeroturnaround.exec.InvalidExitValueException
 import org.zeroturnaround.exec.ProcessExecutor
 import org.zeroturnaround.exec.listener.ShutdownHookProcessDestroyer
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.IOException
-import java.io.OutputStream
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
 /**
  * Implements interpreter utilitary methods.
@@ -58,8 +57,10 @@ object InterpreterUtils {
     }
 
     @ExperimentalTime
-    private fun getProcessExecutorForCommand(command: Command,
-                                             buffer: OutputStream):
+    private fun getProcessExecutorForCommand(
+        command: Command,
+        buffer: OutputStream
+    ):
             ProcessExecutor {
         val timeOutValue = Arara.config[AraraSpec.Execution.timeoutValue]
         var executor = ProcessExecutor().command((command).elements)

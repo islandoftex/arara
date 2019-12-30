@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.utils
 
-import org.islandoftex.arara.Arara
-import org.islandoftex.arara.configuration.AraraSpec
 import javax.swing.JOptionPane
 import javax.swing.UIManager
+import org.islandoftex.arara.Arara
+import org.islandoftex.arara.configuration.AraraSpec
 
 /**
  * Implements utilitary methods for displaying messages.
@@ -79,8 +78,12 @@ object MessageUtils {
      * @param title Title of the message.
      * @param text Text of the message.
      */
-    fun showMessage(width: Int, type: Int,
-                    title: String, text: String) {
+    fun showMessage(
+        width: Int,
+        type: Int,
+        title: String,
+        text: String
+    ) {
         // effectively shows the message based
         // on the provided parameters
         JOptionPane.showMessageDialog(null,
@@ -112,8 +115,13 @@ object MessageUtils {
      * @param buttons An array of objects to be presented as buttons.
      * @return The index of the selected button, starting from 1.
      */
-    fun showOptions(width: Int, type: Int, title: String,
-                    text: String, vararg buttons: Any): Int {
+    fun showOptions(
+        width: Int,
+        type: Int,
+        title: String,
+        text: String,
+        vararg buttons: Any
+    ): Int {
         // returns the index of the selected button,
         // zero if nothing is selected
         return JOptionPane.showOptionDialog(null,
@@ -139,8 +147,12 @@ object MessageUtils {
      * @return The index of the selected button, starting from 1.
      */
     @Suppress("SpreadOperator")
-    fun showOptions(type: Int, title: String,
-                    text: String, vararg buttons: Any): Int {
+    fun showOptions(
+        type: Int,
+        title: String,
+        text: String,
+        vararg buttons: Any
+    ): Int {
         return showOptions(WIDTH, type, title, text, *buttons)
     }
 
@@ -152,8 +164,12 @@ object MessageUtils {
      * @param text Text of the message.
      * @return The string representing the input text.
      */
-    fun showInput(width: Int, type: Int,
-                  title: String, text: String): String {
+    fun showInput(
+        width: Int,
+        type: Int,
+        title: String,
+        text: String
+    ): String {
         // get the string from the
         // input text, if any
         val input = JOptionPane.showInputDialog(null,
@@ -191,8 +207,13 @@ object MessageUtils {
      * @param elements An array of objects representing the elements.
      * @return The index of the selected element, starting from 1.
      */
-    fun showDropdown(width: Int, type: Int, title: String,
-                     text: String, vararg elements: Any): Int {
+    fun showDropdown(
+        width: Int,
+        type: Int,
+        title: String,
+        text: String,
+        vararg elements: Any
+    ): Int {
         // show the dropdown list and get
         // the selected object, if any
         val index = JOptionPane.showInputDialog(null,
@@ -233,8 +254,12 @@ object MessageUtils {
      * @return The index of the selected element, starting from 1.
      */
     @Suppress("SpreadOperator")
-    fun showDropdown(type: Int, title: String,
-                     text: String, vararg elements: Any): Int {
+    fun showDropdown(
+        type: Int,
+        title: String,
+        text: String,
+        vararg elements: Any
+    ): Int {
         return showDropdown(WIDTH, type, title, text, *elements)
     }
 }

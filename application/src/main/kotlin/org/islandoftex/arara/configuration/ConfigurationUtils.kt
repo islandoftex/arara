@@ -1,19 +1,18 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.configuration
 
 import com.charleskorn.kaml.Yaml
+import java.io.File
+import java.io.UnsupportedEncodingException
+import java.net.URLDecoder
+import java.nio.file.Path
+import java.nio.file.Paths
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.model.AraraException
 import org.islandoftex.arara.model.FileType
 import org.islandoftex.arara.utils.CommonUtils
-import java.io.File
-import java.io.UnsupportedEncodingException
-import java.net.URLDecoder
-import java.nio.file.Path
-import java.nio.file.Paths
 
 /**
  * Implements configuration utilitary methods.

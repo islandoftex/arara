@@ -59,6 +59,13 @@ test:dependencies:
   script:
     - gradle dependencyUpdates
 
+test:spotless:
+  stage: test
+  needs: ["build:linux:jdk8"]
+  image: registry.gitlab.com/islandoftex/images/javafx-gradle:jdk8-latest
+  script:
+    - gradle spotlessCheck
+
 test:linux:jdk8:
   needs: ["build:linux:jdk8"]
   image: registry.gitlab.com/islandoftex/images/javafx-gradle:jdk8-latest

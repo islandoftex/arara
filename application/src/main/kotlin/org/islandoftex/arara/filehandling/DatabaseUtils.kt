@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.filehandling
 
 import com.charleskorn.kaml.Yaml
+import java.io.File
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.model.AraraException
-import java.io.File
 
 /**
  * Implements database utilitary methods.
@@ -95,5 +94,4 @@ object DatabaseUtils {
     private fun exists(): Boolean {
         return file.exists()
     }
-
 }

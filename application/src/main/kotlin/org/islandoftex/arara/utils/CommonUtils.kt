@@ -1,7 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.utils
 
+import java.io.File
+import java.io.IOException
+import java.util.MissingFormatArgumentException
+import java.util.regex.Pattern
+import kotlin.math.ln
+import kotlin.math.pow
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.filehandling.FileHandlingUtils
@@ -9,13 +14,6 @@ import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.model.AraraException
 import org.islandoftex.arara.ruleset.Argument
-import java.io.File
-import java.io.IOException
-import java.util.*
-import java.util.regex.Pattern
-import kotlin.math.ln
-import kotlin.math.pow
-
 
 /**
  * Implements common utilitary methods.
@@ -47,8 +45,8 @@ object CommonUtils {
      */
     val ruleErrorHeader: String
         get() {
-            return if (Arara.config[AraraSpec.Execution.InfoSpec.ruleId] != null
-                    && Arara.config[AraraSpec.Execution.InfoSpec.rulePath] != null) {
+            return if (Arara.config[AraraSpec.Execution.InfoSpec.ruleId] != null &&
+                    Arara.config[AraraSpec.Execution.InfoSpec.rulePath] != null) {
                 val id = Arara.config[AraraSpec.Execution.InfoSpec.ruleId]!!
                 val path = Arara.config[AraraSpec.Execution.InfoSpec.rulePath]!!
                 messages.getMessage(
@@ -173,11 +171,13 @@ object CommonUtils {
      * is a set difference from the keys in the map and the entries in the list.
      *
      * @param parameters The map of parameters.
-     * @param arguments  The list of arguments.
+     * @param arguments The list of arguments.
      * @return A set of strings representing unknown keys from a map and a list.
      */
-    fun getUnknownKeys(parameters: Map<String, Any>,
-                       arguments: List<Argument>): Set<String> {
+    fun getUnknownKeys(
+        parameters: Map<String, Any>,
+        arguments: List<Argument>
+    ): Set<String> {
         val found = parameters.keys
         val expected = arguments.mapNotNull { it.identifier }
         return found.subtract(expected)
@@ -219,7 +219,7 @@ object CommonUtils {
      * regex.
      *
      * @param extension The file extension.
-     * @param regex     The regex.
+     * @param regex The regex.
      * @return A boolean value indicating if the file contains the provided
      * regex.
      * @throws AraraException Something wrong happened, to be caught in the
@@ -236,7 +236,7 @@ object CommonUtils {
      *
      * As we use [File.readText] this should not be called on files > 2GB.
      *
-     * @param file  The file.
+     * @param file The file.
      * @param regex The regex.
      * @return A boolean value indicating if the file contains the provided
      * regex.
@@ -259,7 +259,6 @@ object CommonUtils {
                     exception
             )
         }
-
     }
 
     /**
@@ -267,15 +266,17 @@ object CommonUtils {
      * as result.
      *
      * @param pattern The string pattern.
-     * @param values  The list of objects to be merged with the pattern.
+     * @param values The list of objects to be merged with the pattern.
      * @return A list containing the string pattern replicated to each object
      * from the list.
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun replicateList(pattern: String,
-                      values: List<Any>): List<Any> {
+    fun replicateList(
+        pattern: String,
+        values: List<Any>
+    ): List<Any> {
         return try {
             values.map { String.format(pattern, it) }
         } catch (exception: MissingFormatArgumentException) {
@@ -335,7 +336,7 @@ object CommonUtils {
      * Gets the system property according to the provided key, or resort to the
      * fallback value if an exception is thrown or if the key is invalid.
      *
-     * @param key      The system property key.
+     * @param key The system property key.
      * @param fallback The fallback value.
      * @return A string containing the system property value or the fallback.
      */

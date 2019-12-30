@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.utils
 
 import java.io.IOException
@@ -13,11 +12,15 @@ import java.io.OutputStream
  * @since 4.0
  */
 class TeeOutputStream(
-        // array of output streams
-        vararg outputStreams: OutputStream) : OutputStream() {
-    // an array of streams in which
-    // an object of this class will
-    // split data
+    /**
+     * The array of output streams holds every output stream that will be
+     * written to.
+     */
+    vararg outputStreams: OutputStream
+) : OutputStream() {
+    /**
+     * An array of streams in which an object of this class will split data.
+     */
     private val streams: List<OutputStream> = outputStreams.toList()
 
     /**
@@ -33,7 +36,7 @@ class TeeOutputStream(
      * Writes the provided byte array to each stream, with the provided offset
      * and length.
      *
-     * @param b      The byte array.
+     * @param b The byte array.
      * @param offset The offset.
      * @param length The length.
      * @throws IOException An IO exception.

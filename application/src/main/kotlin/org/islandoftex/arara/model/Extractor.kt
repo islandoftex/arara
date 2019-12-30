@@ -1,15 +1,14 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.model
 
+import java.io.File
+import java.io.IOException
+import java.nio.charset.Charset
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.ruleset.Directive
 import org.islandoftex.arara.ruleset.DirectiveUtils
 import org.islandoftex.arara.utils.CommonUtils
-import java.io.File
-import java.io.IOException
-import java.nio.charset.Charset
 
 /**
  * It extracts directives from the provided main file.
@@ -46,6 +45,5 @@ object Extractor {
                     ioexception
             )
         }
-
     }
 }

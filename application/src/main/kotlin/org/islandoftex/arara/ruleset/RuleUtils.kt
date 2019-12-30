@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.ruleset
 
 import com.charleskorn.kaml.Yaml
+import java.io.File
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.model.AraraException
 import org.islandoftex.arara.utils.CommonUtils
-import java.io.File
 
 /**
  * Implements rule utilitary methods.
@@ -25,7 +24,7 @@ object RuleUtils {
      * Parses the provided file, checks the identifier and returns a rule
      * representation.
      *
-     * @param file       The rule file.
+     * @param file The rule file.
      * @param identifier The directive identifier.
      * @return The rule object.
      * @throws AraraException Something wrong happened, to be caught in the
@@ -53,7 +52,7 @@ object RuleUtils {
     /**
      * Validates the rule header according to the directive identifier.
      *
-     * @param rule       The rule object.
+     * @param rule The rule object.
      * @param identifier The directive identifier.
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.

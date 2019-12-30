@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.ruleset
 
+import java.io.File
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.utils.CommonUtils
-import java.io.File
 
 /**
  * Implements a command model, containing a list of strings.
