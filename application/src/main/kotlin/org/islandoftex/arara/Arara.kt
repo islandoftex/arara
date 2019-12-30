@@ -35,13 +35,11 @@ object Arara {
         // fixed-width fonts, otherwise the logo will be messed
         DisplayUtils.printLogo()
 
-        val year = config[AraraSpec.Application.copyrightYear]
         val version = config[AraraSpec.Application.version]
         CLI().versionOption(version, names = setOf("-V", "--version"),
                 message = {
                     "arara $version\n" +
-                            "Copyright (c) $year, Paulo Roberto Massa Cereda\n" +
-                            "Copyright (c) ${LocalDate.now().year},      Island of TeX\n" +
+                            "Copyright (c) ${LocalDate.now().year}, Island of TeX\n" +
                             LanguageController.getMessage(Messages
                                     .INFO_PARSER_NOTES) + "\n\n" +
                             "New features in version $version:\n" +

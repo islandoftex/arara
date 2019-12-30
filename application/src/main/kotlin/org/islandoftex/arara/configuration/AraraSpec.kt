@@ -6,7 +6,6 @@ import com.uchuhimo.konf.ConfigSpec
 import org.islandoftex.arara.localization.Language
 import java.io.File
 import java.nio.file.Paths
-import java.time.LocalDate
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
@@ -15,7 +14,6 @@ object AraraSpec : ConfigSpec() {
     object Application : ConfigSpec() {
         val defaultLanguageCode by optional("en")
         val version by optional("5.0.0")
-        val copyrightYear by optional("2012–${LocalDate.now().year}")
         val namePattern by optional("arara:\\s")
         val width by optional(65)
     }
