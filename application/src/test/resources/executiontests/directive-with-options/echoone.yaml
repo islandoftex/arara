@@ -1,0 +1,36 @@
+!config
+identifier: echoone
+name: Test rule for conditionals 1
+commands:
+  - name: The echoer
+    command: >
+      @{
+          return getCommand('echo', 'QuackOne', interaction, synctex);
+      }
+arguments:
+- identifier: interaction
+  flag: >
+    @{
+        if ([ 'batchmode', 'nonstopmode', 'scrollmode',
+              'errorstopmode' ].contains(parameters.interaction)) {
+            return '--interaction='.concat(parameters.interaction);
+        }
+        else {
+            throwError('The provided interaction value is not valid.');
+        }
+    }
+- identifier: synctex
+  flag: >
+    @{
+        isTrue(parameters.synctex, '--synctex=1', '--synctex=0')
+    }
+- identifier: extensions
+  flag: >
+    @{
+        if (isList(parameters.extensions)) {
+            return parameters.extensions;
+        }
+        else {
+            throwError('I was expecting a list of extensions.');
+        }
+    }

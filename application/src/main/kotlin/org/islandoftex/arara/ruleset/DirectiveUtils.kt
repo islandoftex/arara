@@ -2,8 +2,10 @@
 
 package org.islandoftex.arara.ruleset
 
-import com.charleskorn.kaml.Yaml
-import kotlinx.serialization.parseMap
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.filehandling.FileHandlingUtils
@@ -196,8 +198,8 @@ object DirectiveUtils {
          * 
          * This has been removed.
          */
-        return Yaml.default.runCatching {
-            Yaml.default.parseMap<String, String>(text)
+        return ObjectMapper(YAMLFactory()).registerKotlinModule().runCatching {
+            readValue<Map<String, Any>>(text)
         }.getOrElse {
             throw AraraException(messages.getMessage(
                     Messages.ERROR_VALIDATE_YAML_EXCEPTION,

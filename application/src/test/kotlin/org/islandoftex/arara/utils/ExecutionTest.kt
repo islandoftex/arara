@@ -127,12 +127,13 @@ class ExecutionTest : ShouldSpec({
 
     should("execute option-less directives") {
         val output = outputForTest("simple-directive")
-        output shouldContain "PDFTeX"
+        output shouldContain "The echoer"
         output shouldContain "SUCCESS"
     }
     should("execute directive with options") {
         val output = outputForTest("directive-with-options")
-        output shouldContain "PDFTeX"
+        output shouldContain "The echoer"
+        output shouldContain "batchmode"
         output shouldContain "SUCCESS"
     }
 })
