@@ -63,7 +63,7 @@ object TaskHelper {
         jar="${'$'}scriptname.jar"
         jarpath=`kpsewhich --progname="${'$'}scriptname" --format=texmfscripts "${'$'}jar"`
         
-        kernel=`uname -s 2>/dev/null`"
+        kernel=`uname -s 2>/dev/null`
         if echo "${'$'}kernel" | grep CYGWIN >/dev/null; then
           CYGWIN_ROOT=`cygpath -w /`
           export CYGWIN_ROOT
