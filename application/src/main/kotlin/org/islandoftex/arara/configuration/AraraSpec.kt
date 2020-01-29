@@ -12,7 +12,8 @@ import org.islandoftex.arara.localization.Language
 object AraraSpec : ConfigSpec() {
     object Application : ConfigSpec() {
         val defaultLanguageCode by optional("en")
-        val version by optional("5.0.0")
+        val version by optional(AraraSpec::class.java.`package`.implementationVersion
+                ?: "DEVELOPMENT BUILD")
         val namePattern by optional("arara:\\s")
         val width by optional(65)
     }

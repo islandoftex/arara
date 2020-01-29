@@ -40,7 +40,6 @@ dependencies {
 }
 
 status = "development"
-version = "5.0.0" + if (status == "development") "-SNAPSHOT" else ""
 val projectName = project.name.toLowerCase()
 val moduleName = group
 val mainClass = "$moduleName.Arara"
