@@ -24,8 +24,8 @@ plugins {
     id("com.diffplug.spotless-changelog") version "1.1.0"                        // Apache 2.0
     id("org.jetbrains.dokka") version "0.10.0" apply false                       // Apache 2.0
     id("org.jetbrains.kotlin.plugin.serialization") version "1.3.61" apply false // Apache 2.0
-    id("io.gitlab.arturbosch.detekt") version "1.3.0"                            // Apache 2.0
-    id("com.diffplug.gradle.spotless") version "3.26.1"                          // Apache 2.0
+    id("io.gitlab.arturbosch.detekt") version "1.5.0"                            // Apache 2.0
+    id("com.diffplug.gradle.spotless") version "3.27.1"                          // Apache 2.0
 }
 
 // exclude alpha and beta versions
