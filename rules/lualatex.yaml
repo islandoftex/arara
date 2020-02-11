@@ -13,10 +13,19 @@ commands:
 - name: LuaLaTeX engine
   command: >
     @{
-        return getCommand('lualatex', interaction, draft, shell,
+        return getCommand('lualatex' + branch, interaction, draft, shell,
                synctex, options, reference);
     }
 arguments:
+- identifier: branch
+  flag: >
+    @{
+        if ([ '', 'dev' ].contains(parameters.branch) && parameters.branch != '') {
+            return '-' + parameters.branch;
+        } else {
+            throwError('There are only two predefined branches: empty and dev');
+        }
+    }
 - identifier: interaction
   flag: >
     @{

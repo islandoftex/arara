@@ -13,10 +13,19 @@ commands:
 - name: LaTeX engine
   command: >
     @{
-        return getCommand('latex', interaction, draft, shell,
+        return getCommand('latex' + branch, interaction, draft, shell,
                synctex, options, reference);
     }
 arguments:
+- identifier: branch
+  flag: >
+    @{
+        if ([ '', 'dev' ].contains(parameters.branch) && parameters.branch != '') {
+            return '-' + parameters.branch;
+        } else {
+            throwError('There are only two predefined branches: empty and dev');
+        }
+    }
 - identifier: interaction
   flag: >
     @{
