@@ -1,6 +1,6 @@
 !config
 # Arara, the cool TeX automation tool
-# Copyright (c) 2018, Paulo Roberto Massa Cereda 
+# Copyright (c) 2020, Paulo Roberto Massa Cereda 
 # All rights reserved.
 #
 # This rule is part of arara.
@@ -13,9 +13,23 @@ commands:
 - name: The Biber reference management software
   command: >
     @{
-        return getCommand('biber', options, getBasename(reference));
+        if (tool) {
+            return getCommand('biber', '--tool', options);
+        }
+        else {
+            return getCommand('biber', options, getBasename(file));
+        }
     }
 arguments:
+- identifier: tool
+  flag: >
+    @{
+      return isTrue(parameters.tool);
+    }
+  default: >
+    @{
+      return false;
+    }
 - identifier: options
   flag: >
     @{
