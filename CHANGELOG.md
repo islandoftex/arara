@@ -66,11 +66,70 @@ from version 5.0.0 on.
 
 <!-- END CHANGELOG -->
 
+## [3.0] - 2013-02-07
+
+### Added
+
+* Localized messages in English, Brazilian Portuguese, German, Italian, Spanish, French, Turkish and Russian.
+* Friendly and very detailed messages instead of generic ones.
+* An optional configuration file is now available in order to customize and enhance the application behaviour.
+* Now rules are unified in a plain format. No more compiled rules.
+* Rules can allow an arbitrary number of commands instead of just one.
+* Built-in functions in the rule context to ease the writing process.
+
+### Fixed
+
+* Improved error analysis for rules and directives.
+* Improved rule syntax, new keys added.
+* Improved expansion mechanism.
+
+## [2.0] - 2012-07-24
+
+### Added
+
+* Added the `--timeout n` flag to allow setting a timeout for every task. If
+     the timeout is reached before the task ends, `arara` will kill it and 
+     interrupt the processing. The `n` value is expressed in milliseconds.
+* There's no need of noninteractive commands anymore. `arara` can now handle
+     user input through the `--verbose` tag. If the flag is not set and the 
+     command requires user interaction, the task execution is interrupted.
+* Added the `@{SystemUtils}` orb tag to provide specific operating system 
+     checks. The orb tag maps the `SystemUtils` class from the amazing 
+     [Apache Commons Lang](http://commons.apache.org/lang/) library and 
+     all of its methods and properties.
+
+### Fixed
+
+* Fixed the `--verbose` flag to behave as a realtime output.
+* Fixed the execution of some script-based system commands to ensure 
+     cross-platform compatibility.
+
+## [1.0.1]
+
+### Added
+
+* Added support for `.tex`, `.dtx` and `.ltx` files. When no extension is 
+     provided, `arara` will automatically look for these extensions in this 
+     specific order.
+* Added the `--verbose` flag to allow printing the complete log in the 
+     terminal. A short `-v` tag is also available. Both `stdout` and `stderr`
+     are printed.
+* Fixed exit status when an exception is thrown. Now `arara` also returns a 
+     non-zero exit status when something wrong happened. Note that this 
+     behaviour happens only when `arara` is processing a file.
+
+## [1.0] - 2012-04-24
+
+* Initial release
+
+---
+
 For versions previous to version 5.0.0, there has not been any persistent record
 of changes. Please refer to the commit history for details.
 
 [Unreleased]: https://gitlab.com/islandoftex/arara/compare/v4.0...master
 [4.0.0]: https://gitlab.com/islandoftex/arara/compare/v3.0...v4.0
 [3.0]: https://gitlab.com/islandoftex/arara/-/tags/v2.0...v3.0
-[2.0]: https://gitlab.com/islandoftex/arara/compare/v1.0...v2.0
+[2.0]: https://gitlab.com/islandoftex/arara/compare/v1.0.1...v2.0
+[1.0.1]: https://gitlab.com/islandoftex/arara/-/tags/v1.0...v1.0.1
 [1.0]: https://gitlab.com/islandoftex/arara/-/tags/v1.0
