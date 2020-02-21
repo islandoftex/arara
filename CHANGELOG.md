@@ -60,9 +60,29 @@ from version 5.0.0 on.
 
 ## [4.0.0] - 2018-07-10
 
+### Added
+
+* Support for multiline directives was added.
+* The exit status checking can be adjusted.
+* Partial directive extraction mode has been added (only scan until the first
+  non-comment line is encountered).
+* The user may define preambles to share common preambles between files that
+  require the same compilation setup.
+* Support for running code from `class` and `jar` files has been added.
+* `Command`s and `Trigger`s have been introduced as abstraction layers.
+
 ### Changed
 
-* The rule format has been reworked (breaking change).
+* arara follows a REPL workflow (rule evaluation on demand as opposed to prior
+  to execution).
+* The rule format has been reworked, e.g. `command` has become `commands`
+  (breaking change).
+* The lookup strategy for configuration files has been altered and extended.
+
+### Removed
+
+* Cross-platform installers have been retired. `arara` is available in all major
+  TeX distributions.
 
 <!-- END CHANGELOG -->
 
@@ -104,7 +124,7 @@ from version 5.0.0 on.
 * Fixed the execution of some script-based system commands to ensure 
      cross-platform compatibility.
 
-## [1.0.1]
+## [1.0.1] - 2012-04-24
 
 ### Added
 
