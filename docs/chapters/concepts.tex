@@ -61,29 +61,32 @@ authors:
 - Paulo Cereda
 \end{codebox}
 
-\item[\describe{M}{commands}] This key is introduced in version 4.0 of \arara\ and denotes a potential list of commands. From the user perspective, each command is called a \emph{subtask} within a task (rule and directive) context. A task may represent only a single command (a single subtask), as well as a sequence of commands (subtasks). For instance, the \rbox{frontespizio} rule requires at least two commands. So, as a means of normalizing the representation, a task composed of a single command (single subtask) is defined as the only element of the list, as opposed to previous versions of \arara, which had a specific key to hold just one command.
+\item[\describe{M}{commands}] This key denotes a potential list of commands. From the user perspective, each command is called a \emph{subtask} within a task (rule and directive) context. A task may represent only a single command (a single subtask), as well as a sequence of commands (subtasks). For instance, the \rbox{frontespizio} rule requires at least two commands. So, as a means of normalizing the representation, a task composed of a single command (single subtask) is defined as the only element of the list, as opposed to previous versions of \arara, which had a specific key to hold just one command.
 
-\begin{messagebox}{Incompatibility with older versions}{attentioncolour}{\icerror}{black}
-Dear reader, note that rules from version 4.0 and newer are incompatible with older versions of \arara. If you are migrating from old versions to version 4.0, we need to replace \abox{command} by \abox{commands} and specify a contextual element, as seen in the following descriptions.
-\end{messagebox}
+% TODO remove?
+%\begin{messagebox}{Incompatibility with older versions}{attentioncolour}{\icerror}{black}
+%Dear reader, note that rules from version 4.0 and newer are incompatible with older versions of \arara. If you are migrating from old versions to version 4.0, we need to replace \abox{command} by \abox{commands} and specify a contextual element, as seen in the following descriptions.
+%\end{messagebox}
 
 In order to properly set a subtask, the keys used in this specification are defined inside the \rbox{commands$\rightarrow$} context and presented as follows.
 
 \begin{description}
 \item[\describecontext{O}{commands}{name}] This key holds the name of the subtask as a plain string. When running \arara, this value will be displayed in the output. Subtask names are displayed after the main task name. By the way, did you notice that this key is entirely optional? That means that a subtask can simply be unnamed, if you decide so. However, such practice is not recommended, as it's always good to have a visual description of what \arara\ is running at the moment, so name your subtasks properly.
 
-\item[\describecontext{M}{commands}{command}] This key holds the action to be performed, typically a system command. In previous versions, \arara\ would rely solely on a string. For this version on, as a means to enhance the user experience (and also fix serious blockers when handling spaces in file names, as seen in \href{https://gitlab.com/islandoftex/arara/issues}{previous issues} reported in the repository), the tool offers four types of returned values:
+\item[\describecontext{M}{commands}{command}] This key holds the action to be performed, typically a system command. In previous versions, \arara\ would rely solely on a string. For this version on, as a means to enhance the user experience (and also fix serious blockers when handling spaces in file names, as seen in \href{https://gitlab.com/islandoftex/arara/issues}{previous issues} reported in the repository), the tool offers two types of returned values:
 
 \begin{itemize}[label={--}]
-\item A plain string: this is the default (and only) behaviour in older versions of \arara. The plain string is processed as it is by the underlying execution engine. However, automatic argument parsing is problematic, so this approach, although supported, is not recommended any more.
 
-\begin{codebox}{Example}{teal}{\icnote}{white}
-command: 'ls'
-\end{codebox}
+% TODO removed, see #2
+%\item A plain string: this is the default (and only) behaviour in older versions of \arara. The plain string is processed as it is by the underlying execution engine. However, automatic argument parsing is problematic, so this approach, although supported, is not recommended any more.
+%
+%\begin{codebox}{Example}{teal}{\icnote}{white}
+%command: 'ls'
+%\end{codebox}
+%
+%It is important to observe that you can use either a plain string directly or use an \gls{orb-tag} with an explicit \rbox{return} command (as seen in Section~\ref{sec:mvelbasicusage}, on page~\pageref{sec:mvelbasicusage}). Personally, I favour the explicit indication for a quick understanding.
 
-It is important to observe that you can use either a plain string directly or use an \gls{orb-tag} with an explicit \rbox{return} command (as seen in Section~\ref{sec:mvelbasicusage}, on page~\pageref{sec:mvelbasicusage}). Personally, I favour the explicit indication for a quick understanding.
-
-\item A \rbox{Command} object: \arara\ 4.0 features a new approach for handling system commands based on a high level structure with explicit argument parsing named \rbox{Command} (for our curious users, it is a plain Java object). In order to use this approach, we need to rely on \glspl{orb-tag} and use a helper method named \mtbox{getCommand} to obtain the desired result. We will detail this method later on, in Section~\ref{sec:commandsandtriggers}, on page~\pageref{sec:commandsandtriggers}. We highly recommend the adoption of this approach for rule writing instead of using plain strings.
+\item A \rbox{Command} object: \arara\ features an approach for handling system commands based on a high level structure with explicit argument parsing named \rbox{Command} (for our curious users, it is a plain Java object). In order to use this approach, we need to rely on \glspl{orb-tag} and use a helper method named \mtbox{getCommand} to obtain the desired result. We will detail this method later on, in Section~\ref{sec:commands}, on page~\pageref{sec:commands}. We highly recommend the adoption of this approach for rule writing instead of using plain strings.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command: "@{ return getCommand('ls') }"
@@ -96,24 +99,27 @@ command: "@{ return 1 == 1 }"
 \end{codebox}
 \end{itemize}
 
-It is also worth mentioning that \arara\ also supports lists of commands represented as plain strings, \rbox{Command} objects, boolean values or a mix of them. This is useful if your rule has to decide whether more actions are required in order to accomplish a task. In this case, our tool will take care of the list and execute each element in the specified order.
+It is also worth mentioning that \arara\ also supports lists of commands represented as \rbox{Command} objects, boolean values or a mix of them. This is useful if your rule has to decide whether more actions are required in order to accomplish a task. In this case, our tool will take care of the list and execute each element in the specified order.
 
+% TODO updated example, removed plain string references
 \begin{codebox}{Example}{teal}{\icnote}{white}
-command: "@{ return [ 'ls', 'ls', 'ls' ] }"
+command: "@{ return [ getCommand('ls'), getCommand('ls') ] }"
 \end{codebox}
 
 As an example, please refer to the official \rbox{clean} rule for a real scenario where a list of commands is successfully employed: for each provided extension, the rule creates a new cleaning command and adds it to a list of removals to be processed later.
 
-\begin{messagebox}{Plain string is deprecated}{attentioncolour}{\icattention}{black}
-It took me a lot of effort to find out that handling plain strings and employing guesswork to parse arguments are the root of several issues reported by users. Therefore, this approach is being marked as \emph{deprecated} and will be removed in future versions.
-\end{messagebox}
+% TODO removed, see #2
+%\begin{messagebox}{Plain string is deprecated}{attentioncolour}{\icattention}{black}
+%It took me a lot of effort to find out that handling plain strings and employing guesswork to parse arguments are the root of several issues reported by users. Therefore, this approach is being marked as \emph{deprecated} and will be removed in future versions.
+%\end{messagebox}
+
 
 There are at least two variables available in the \abox{command} context and are described as follows (note that \gls{MVEL} variables and \glspl{orb-tag} are discussed in Chapter~\ref{chap:mvel}). A variable will be denoted by \varbox{variable} in this list. For each rule argument (defined later on), there will be a corresponding variable in the \abox{command} context, directly accessed through its unique identifier.
 
 \begin{description}
 \item[\varbox{file}] This variable holds the file name, without any path reference, as a plain string. It is usually composed from the base name and the extension. This variable is available since the first release of \arara.
 
-\item[\varbox{reference}] This variable is introduced in version 4.0 of \arara\ and holds the canonical, absolute path representation of the \varbox{file} variable as a \rbox{File} object. This is useful if it's necessary to know the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \rbox{File} class.
+\item[\varbox{reference}] This variable holds the canonical, absolute path representation of the \varbox{file} variable as a \rbox{File} object. This is useful if it's necessary to know the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \rbox{File} class.
 \end{description}
 
 \begin{messagebox}{Quote handling}{araracolour}{\icinfo}{white}
@@ -138,7 +144,7 @@ command: >
 Mind the indentation, as \gls{YAML} requires it to properly identify blocks. I personally recommend this approach for longer code, as it provides a better visual representation. You will see the second solution all around the default rules, but feel free to use the one you feel more comfortable with.
 \end{messagebox}
 
-\item[\describecontext{O}{commands}{exit}] This key holds a special purpose in \arara\ 4.0, as it represents a custom exit status evaluation for the corresponding command. In general, a successful execution has zero as an exit status, but sometimes we end up with tools or situations where we need to override this check for whatever reason. For this purpose, simply write a \gls{MVEL} expression \emph{without \glspl{orb-tag}} as plain string and use the special variable \varbox{value} if you need the actual exit status returned by the command, available at runtime. For example, if the command returns a non-zero value indicating a successful execution, we can write this key as:
+\item[\describecontext{O}{commands}{exit}] This key holds a special purpose, as it represents a custom exit status evaluation for the corresponding command. In general, a successful execution has zero as an exit status, but sometimes we end up with tools or situations where we need to override this check for whatever reason. For this purpose, simply write a \gls{MVEL} expression \emph{without \glspl{orb-tag}} as plain string and use the special variable \varbox{value} if you need the actual exit status returned by the command, available at runtime. For example, if the command returns a non-zero value indicating a successful execution, we can write this key as:
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 exit: value > 0
@@ -197,7 +203,7 @@ There are three variables available in the \abox{flag} context, described as fol
 
 \item[\varbox{file}] This variable holds the file name, without any path reference, as a plain string. It is usually composed from the base name and the extension. This variable is available since the first release of \arara.
 
-\item[\varbox{reference}] This variable is introduced in version 4.0 of \arara\ and holds the canonical, absolute path representation of the \varbox{file} variable as a \rbox{File} object. This is useful if it's necessary to know the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \rbox{File} class.
+\item[\varbox{reference}] This variable holds the canonical, absolute path representation of the \varbox{file} variable as a \rbox{File} object. This is useful if it's necessary to know the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \rbox{File} class.
 \end{description}
 
 In the previous example, observe that the \gls{MVEL} expression defined in the \abox{flag} key checks if the user provided an affirmative value regarding shell escape, through comparing \varbox{parameters.shell} with a set of predefined affirmative values. In any case, the corresponding command flag is defined as result of such evaluation.
@@ -215,7 +221,7 @@ There are three variables available in the \abox{default} context, described as 
 
 \item[\varbox{file}] This variable holds the file name, without any path reference, as a plain string. It is usually composed from the base name and the extension. This variable is available since the first release of \arara.
 
-\item[\varbox{reference}] This variable is introduced in version 4.0 of \arara\ and holds the canonical, absolute path representation of the \varbox{file} variable as a \rbox{File} object. This is useful if it's necessary to know the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \rbox{File} class.
+\item[\varbox{reference}] This variable holds the canonical, absolute path representation of the \varbox{file} variable as a \rbox{File} object. This is useful if it's necessary to know the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \rbox{File} class.
 \end{description}
 
 \item[\describecontext{O}{arguments}{required}] There might be certain scenarios in which a rule could make use of required arguments (for instance, a copy operation in which source and target must be provided). The \abox{required} key acts as a boolean switch to indicate whether the corresponding argument should be mandatory. In this case, set the key value to \rbox{true} and the argument becomes required. Later on at runtime, \arara\ will throw an error if a required parameter is missing in the directive.
@@ -254,13 +260,13 @@ This is the rule structure in the \gls{YAML} format used by \arara. Keep in mind
 
 A \emph{directive} is a special comment inserted in the source file in which you indicate how \arara\ should behave. You can insert as many directives as you want and in any position of the file. The tool will read the whole file and extract the directives.
 
-\begin{messagebox}{New features in version 4.0}{araracolour}{\icinfo}{white}
-\setlength{\parskip}{1em}
-\textbf{Partial directive extraction} -- From version 4.0 of \arara\ on, it is now possible to extract directives only available in the file preamble, i.e, all lines from the beginning that are comments until reaching the first line that is not a comment (excluding blank lines). To this end, a new command line flag is introduced in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}.
-
-\textbf{Predefined preambles} -- Common preambles can be predefined and used with files that require the same automation steps, then \arara\ can be invoked based on such specifications. This feature is covered in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}.
-\end{messagebox}
-
+% TODO remove?
+%\begin{messagebox}{New features in version 4.0}{araracolour}{\icinfo}{white}
+%\setlength{\parskip}{1em}
+%\textbf{Partial directive extraction} -- From version 4.0 of \arara\ on, it is now possible to extract directives only available in the file preamble, i.e, all lines from the beginning that are comments until reaching the first line that is not a comment (excluding blank lines). To this end, a new command line flag is introduced in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}.
+%
+%\textbf{Predefined preambles} -- Common preambles can be predefined and used with files that require the same automation steps, then \arara\ can be invoked based on such specifications. This feature is covered in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}.
+%\end{messagebox}
 
 There are two types of directives in \arara\ which determine the way the corresponding rules will be instantiated. They are listed as follows. Note that directives are always preceded by the \rbox{arara:} pattern.
 
@@ -307,11 +313,12 @@ Total: 0.21 seconds
 
 As the message suggests, we need to remove the unknown parameter key from our directive or rewrite the rule in order to include it as an argument. The first option is, of course, easier.
 
-\begin{messagebox}{New feature in version 4.0}{araracolour}{\icinfo}{white}
-\textbf{Helpful messages} -- It is a staple of \arara\ to have friendly and helpful messages. From version 4.0 on, we decided to make messages even friendlier and include suggestions for correcting errors or improving usage. So, whenever possible, make sure to read all messages our tool provides, they will help you!
-\end{messagebox}
+% TODO remove?
+%\begin{messagebox}{New feature in version 4.0}{araracolour}{\icinfo}{white}
+%\textbf{Helpful messages} -- It is a staple of \arara\ to have friendly and helpful messages. From version 4.0 on, we decided to make messages even friendlier and include suggestions for correcting errors or improving usage. So, whenever possible, make sure to read all messages our tool provides, they will help you!
+%\end{messagebox}
 
-Sometimes, directives can span several columns of a line, particularly the ones with several parameters. From \arara\ 4.0 on, we can split a directive into multiple lines by using the \rbox{arara: {-}{-}>} mark (also known as \emph{arrow notation} during development) to each line which should compose the directive. We call it a \emph{multiline directive}. Let us see an example:
+Sometimes, directives can span several columns of a line, particularly the ones with several parameters. We can split a directive into multiple lines by using the \rbox{arara: {-}{-}>} mark (also known as \emph{arrow notation} during development) to each line which should compose the directive. We call it a \emph{multiline directive}. Let us see an example:
 
 \begin{codebox}{Multiline directive}{teal}{\icnote}{white}
 % arara: pdflatex: {
@@ -326,7 +333,7 @@ It is important to observe that there is no need of them to be in contiguous lin
 Although it is possible to spread lines of a multiline directive all over the code, it is considered good practice to keep them together for easier reading and editing. In any case, you can always see which lines compose a directive by inspecting the log file.
 \end{messagebox}
 
-\arara\ 4.0 provides logical expressions, written in the \gls{MVEL} language, and special operators processed at runtime in order to determine whether and how a directive should be processed. This feature is named \emph{directive conditional}, or simply \emph{conditional} as an abbreviation. The following list describes all conditional operators available in the directive context.
+\arara\ provides logical expressions, written in the \gls{MVEL} language, and special operators processed at runtime in order to determine whether and how a directive should be processed. This feature is named \emph{directive conditional}, or simply \emph{conditional} as an abbreviation. The following list describes all conditional operators available in the directive context.
 
 \begin{description}
 \item[\describeconditional{a priori}{if}] The associated \gls{MVEL} expression is evaluated beforehand, and the directive is interpreted if, and only if, the result of such evaluation is true. This directive, when the conditional holds true, is executed at most once.
@@ -413,45 +420,81 @@ If this is your first time using \arara\ or you do not have custom rules in the 
 \end{messagebox}
 
 \begin{messagebox}{Removal of triggers}{araracolour}{\icattention}{white}
-\arara\ previously had the concept of triggers which allowed to easily ``trigger'' events like halting \arara. As of version 5.0, support for triggers has been dropped due to the lack of use cases.
+\arara\ previously had the concept of triggers which allowed to easily trigger events like halting \arara. As of version 5.0, support for triggers has been dropped due to the lack of use cases.
 
-As the only pre-defined trigger has been `halt` we did not deprecate the ability to halt the application. However, the new mechanism uses the concept of session values (see \autoref{sec:others}).
+As the only pre-defined trigger has been \rbox{halt} we did not deprecate the ability to halt the application. However, the new mechanism uses the concept of session values (see \autoref{sec:others}).
 \end{messagebox}
 
-\begin{messagebox}{Removal of velocity}{araracolour}{\icinfo}{white}
+\begin{messagebox}{Removal of Velocity support}{araracolour}{\icinfo}{white}
 \arara\ featured support for the Velocity Template Language. In version 5.0, this support has been removed. We decided in favour of this breaking change to achieve more independence from third-party modules and to avoid being stuck at version~1.7 for compatibility reasons.
 
-Due to this change, \arara\ does not ship support for any templating language at the moment. If you are interested in getting a templating language on board, you are welcome to support our efforts to make the inclusion of JVM-Code on the user-side more pleasant.
+Due to this change, \arara\ does not ship support for any templating language at the moment. If you are interested in getting a templating language on board, you are welcome to support our efforts to make the inclusion of JVM code on the user-side more pleasant.
 \end{messagebox}
 
 \begin{messagebox}{Removal of string-based commands}{araracolour}{\icinfo}{white}
-Up to version 5.0 you could simply use \verb|return "command";| in your rules. This resulted in \arara\ implicitly constructing a command object. As this does not make clear that this command is actually run, we now enforce the usage of \mdbox{R}{getCommand(List<String> commands)}{Command}. Hence, the new way of doing the same is \verb|return getCommand("command");|.
-\end{messagebox}
+Up to version 5.0 you could simply use
 
-\begin{messagebox}{Removal of velocity}{araracolour}{\icinfo}{white}
-\arara\ featured support for the Velocity Template Language. In version 5.0, this support has been removed. We decided in favour of this breaking change to achieve more independence from third-party modules and to avoid being stuck at version~1.7 for compatibility reasons.
+\begin{codebox}{Return statement}{teal}{\icnote}{white}
+return "command";
+\end{codebox}
 
-Due to this change, \arara\ does not ship support for any templating language at the moment. If you are interested in getting a templating language on board, you are welcome to support our efforts to make the inclusion of JVM-Code on the user-side more pleasant.
+\noindent in your rules. This resulted in \arara\ implicitly constructing a command object. As this does not make clear that this command is actually run, we now enforce the usage of
+
+\vspace{1em}
+
+\mdbox{R}{getCommand(List<String> commands)}{Command}
+
+\vspace{1em}
+
+\noindent in the \rbox{return} statement. Hence, the new way of doing the same is (with either single or double quote pairs):
+
+\begin{codebox}{Return statement}{teal}{\icnote}{white}
+return getCommand("command");
+\end{codebox}
 \end{messagebox}
 
 \begin{messagebox}{Methods: removal and change of name}{araracolour}{\icinfo}{white}
 The following previously available methods (and repective overloaded variants) have been removed:
 
 \begin{itemize}
-\item \mdbox{R}{addQuotes(String string)}{String}
-\item \mdbox{R}{isAIX()}{boolean}
-\item \mdbox{R}{isIrix()}{boolean}
-\item \mdbox{R}{isOS2()}{boolean}
-\item \mdbox{R}{isSolaris()}{boolean}
-\item \mdbox{R}{getFullBasename(File file)}{String}
-\item \mdbox{R}{\parbox{0.62\textwidth}{mergeVelocityTemplate(File input, File output,\\\hspace*{1em} Map<String, Object> map)}}{void}
+\item[\textcolor{warningcolour}{\faClose}] \mdbox{R}{addQuotes(String string)}{String}
+\item[\textcolor{warningcolour}{\faClose}] \mdbox{R}{isAIX()}{boolean}
+\item[\textcolor{warningcolour}{\faClose}] \mdbox{R}{isIrix()}{boolean}
+\item[\textcolor{warningcolour}{\faClose}] \mdbox{R}{isOS2()}{boolean}
+\item[\textcolor{warningcolour}{\faClose}] \mdbox{R}{isSolaris()}{boolean}
+\item[\textcolor{warningcolour}{\faClose}] \mdbox{R}{getFullBasename(File file)}{String}
+\item[\textcolor{warningcolour}{\faClose}] \mdbox{R}{\parbox{0.62\textwidth}{mergeVelocityTemplate(File input,\\\hspace*{1em} File output, Map<String, Object> map)}}{void}
 \end{itemize}
 
 The following methods have been renamed:
 \begin{itemize}
-\item \mdbox{R}{(Session.)insert(String key, Object value)}{void} to \mdbox{R}{(Session.)put(String key, Object value)}{void}
-\item \mdbox{R}{(Session.)exists(String key)}{boolean} to \mdbox{R}{(Session.)contains(String key)}{boolean}
-\item \mdbox{R}{(Session.)obtain(String key)}{Object} to \mdbox{R}{(Session.)get(String key)}{Object}
+\item[\textcolor{warningcolour}{\faClose}] \mdbox{R}{(Session.)insert(String key, Object value)}{void}
+
+\vspace{.5em}
+
+\hspace{2cm}\textcolor{teal}{\faArrowDown}
+
+\item[\textcolor{okcolour}{\faCheck}]\mdbox{R}{(Session.)put(String key, Object value)}{void}
+
+\vspace{1em}
+
+\item[\textcolor{warningcolour}{\faClose}] \mdbox{R}{(Session.)exists(String key)}{boolean}
+
+\vspace{.5em}
+
+\hspace{2cm}\textcolor{teal}{\faArrowDown}
+
+\item[\textcolor{okcolour}{\faCheck}] \mdbox{R}{(Session.)contains(String key)}{boolean}
+
+\vspace{1em}
+
+\item[\textcolor{warningcolour}{\faClose}] \mdbox{R}{(Session.)obtain(String key)}{Object}
+
+\vspace{.5em}
+
+\hspace{2cm}\textcolor{teal}{\faArrowDown}
+
+\item[\textcolor{okcolour}{\faCheck}]\mdbox{R}{(Session.)get(String key)}{Object}
 \end{itemize}
 \end{messagebox}
 

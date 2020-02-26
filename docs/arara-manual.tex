@@ -1,5 +1,6 @@
 % arara: manual
 
+% TODO change license
 % Arara, the cool TeX automation tool
 % Copyright (c) 2012 -- 2018, Paulo Roberto Massa Cereda
 % All rights reserved.
@@ -124,11 +125,11 @@ files but also used for data storage or transmission},
 
 \vspace{6em}
 
-{\large\em Paulo Cereda, Marco Daniel,\\
-Brent Longborough, and Nicola Talbot\par}
+{\large\em The Island of \TeX\par}
 
 \vspace{3em}
 
+% TODO change icon to GitLab, remove e-mail and Twitter
 \href{mailto:cereda.paulo@gmail.com}{\fpemail{0.4}}%
 \quad\href{https://gitlab.com/islandoftex/arara}{\fpgithub{0.4}}%
 \quad\href{http://twitter.com/paulocereda}{\fptwitter{0.4}}
@@ -157,19 +158,15 @@ Version \araraversion}
 \em No birds were harmed in the making of this manual.
 \end{flushright}
 
-\include{chapters/foreword}
+% TODO remove foreword?
+%\include{chapters/foreword}
+
+% TODO write new prologue
 \include{chapters/prologue}
+
+% TODO update license
 \include{chapters/license}
 \printunsrtglossary
-
-\cleardoublepage
-
-\vspace*{25em}
-
-\thispagestyle{empty}
-\begin{flushright}
-\em To Marco's son Niclas.
-\end{flushright}
 
 \cleardoublepage
 
@@ -179,12 +176,15 @@ Version \araraversion}
 
 \mainmatter
 
+% OK
 \include{chapters/introduction}
 
 \part{The application}
 \label{part:application}
 
+%OK
 \include{chapters/concepts}
+
 \include{chapters/cli}
 \include{chapters/configuration}
 \include{chapters/logging}
