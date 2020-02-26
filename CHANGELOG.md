@@ -149,7 +149,7 @@ of changes. Please refer to the commit history for details.
 
 [Unreleased]: https://gitlab.com/islandoftex/arara/compare/v4.0...master
 [4.0.0]: https://gitlab.com/islandoftex/arara/compare/v3.0...v4.0
-[3.0]: https://gitlab.com/islandoftex/arara/-/tags/v2.0...v3.0
+[3.0]: https://gitlab.com/islandoftex/arara/compare/v2.0...v3.0
 [2.0]: https://gitlab.com/islandoftex/arara/compare/v1.0.1...v2.0
-[1.0.1]: https://gitlab.com/islandoftex/arara/-/tags/v1.0...v1.0.1
+[1.0.1]: https://gitlab.com/islandoftex/arara/compare/v1.0...v1.0.1
 [1.0]: https://gitlab.com/islandoftex/arara/-/tags/v1.0
