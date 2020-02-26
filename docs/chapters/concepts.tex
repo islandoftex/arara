@@ -63,29 +63,14 @@ authors:
 
 \item[\describe{M}{commands}] This key denotes a potential list of commands. From the user perspective, each command is called a \emph{subtask} within a task (rule and directive) context. A task may represent only a single command (a single subtask), as well as a sequence of commands (subtasks). For instance, the \rbox{frontespizio} rule requires at least two commands. So, as a means of normalizing the representation, a task composed of a single command (single subtask) is defined as the only element of the list, as opposed to previous versions of \arara, which had a specific key to hold just one command.
 
-% TODO remove?
-%\begin{messagebox}{Incompatibility with older versions}{attentioncolour}{\icerror}{black}
-%Dear reader, note that rules from version 4.0 and newer are incompatible with older versions of \arara. If you are migrating from old versions to version 4.0, we need to replace \abox{command} by \abox{commands} and specify a contextual element, as seen in the following descriptions.
-%\end{messagebox}
-
 In order to properly set a subtask, the keys used in this specification are defined inside the \rbox{commands$\rightarrow$} context and presented as follows.
 
 \begin{description}
 \item[\describecontext{O}{commands}{name}] This key holds the name of the subtask as a plain string. When running \arara, this value will be displayed in the output. Subtask names are displayed after the main task name. By the way, did you notice that this key is entirely optional? That means that a subtask can simply be unnamed, if you decide so. However, such practice is not recommended, as it's always good to have a visual description of what \arara\ is running at the moment, so name your subtasks properly.
 
-\item[\describecontext{M}{commands}{command}] This key holds the action to be performed, typically a system command. In previous versions, \arara\ would rely solely on a string. For this version on, as a means to enhance the user experience (and also fix serious blockers when handling spaces in file names, as seen in \href{https://gitlab.com/islandoftex/arara/issues}{previous issues} reported in the repository), the tool offers two types of returned values:
+\item[\describecontext{M}{commands}{command}] This key holds the action to be performed, typically a system command. The tool offers two types of returned values:
 
 \begin{itemize}[label={--}]
-
-% TODO removed, see #2
-%\item A plain string: this is the default (and only) behaviour in older versions of \arara. The plain string is processed as it is by the underlying execution engine. However, automatic argument parsing is problematic, so this approach, although supported, is not recommended any more.
-%
-%\begin{codebox}{Example}{teal}{\icnote}{white}
-%command: 'ls'
-%\end{codebox}
-%
-%It is important to observe that you can use either a plain string directly or use an \gls{orb-tag} with an explicit \rbox{return} command (as seen in Section~\ref{sec:mvelbasicusage}, on page~\pageref{sec:mvelbasicusage}). Personally, I favour the explicit indication for a quick understanding.
-
 \item A \rbox{Command} object: \arara\ features an approach for handling system commands based on a high level structure with explicit argument parsing named \rbox{Command} (for our curious users, it is a plain Java object). In order to use this approach, we need to rely on \glspl{orb-tag} and use a helper method named \mtbox{getCommand} to obtain the desired result. We will detail this method later on, in Section~\ref{sec:commands}, on page~\pageref{sec:commands}. We highly recommend the adoption of this approach for rule writing instead of using plain strings.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
@@ -101,18 +86,11 @@ command: "@{ return 1 == 1 }"
 
 It is also worth mentioning that \arara\ also supports lists of commands represented as \rbox{Command} objects, boolean values or a mix of them. This is useful if your rule has to decide whether more actions are required in order to accomplish a task. In this case, our tool will take care of the list and execute each element in the specified order.
 
-% TODO updated example, removed plain string references
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command: "@{ return [ getCommand('ls'), getCommand('ls') ] }"
 \end{codebox}
 
 As an example, please refer to the official \rbox{clean} rule for a real scenario where a list of commands is successfully employed: for each provided extension, the rule creates a new cleaning command and adds it to a list of removals to be processed later.
-
-% TODO removed, see #2
-%\begin{messagebox}{Plain string is deprecated}{attentioncolour}{\icattention}{black}
-%It took me a lot of effort to find out that handling plain strings and employing guesswork to parse arguments are the root of several issues reported by users. Therefore, this approach is being marked as \emph{deprecated} and will be removed in future versions.
-%\end{messagebox}
-
 
 There are at least two variables available in the \abox{command} context and are described as follows (note that \gls{MVEL} variables and \glspl{orb-tag} are discussed in Chapter~\ref{chap:mvel}). A variable will be denoted by \varbox{variable} in this list. For each rule argument (defined later on), there will be a corresponding variable in the \abox{command} context, directly accessed through its unique identifier.
 
@@ -260,14 +238,6 @@ This is the rule structure in the \gls{YAML} format used by \arara. Keep in mind
 
 A \emph{directive} is a special comment inserted in the source file in which you indicate how \arara\ should behave. You can insert as many directives as you want and in any position of the file. The tool will read the whole file and extract the directives.
 
-% TODO remove?
-%\begin{messagebox}{New features in version 4.0}{araracolour}{\icinfo}{white}
-%\setlength{\parskip}{1em}
-%\textbf{Partial directive extraction} -- From version 4.0 of \arara\ on, it is now possible to extract directives only available in the file preamble, i.e, all lines from the beginning that are comments until reaching the first line that is not a comment (excluding blank lines). To this end, a new command line flag is introduced in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}.
-%
-%\textbf{Predefined preambles} -- Common preambles can be predefined and used with files that require the same automation steps, then \arara\ can be invoked based on such specifications. This feature is covered in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}.
-%\end{messagebox}
-
 There are two types of directives in \arara\ which determine the way the corresponding rules will be instantiated. They are listed as follows. Note that directives are always preceded by the \rbox{arara:} pattern.
 
 \begin{description}
@@ -312,11 +282,6 @@ Total: 0.21 seconds
 \end{codebox}
 
 As the message suggests, we need to remove the unknown parameter key from our directive or rewrite the rule in order to include it as an argument. The first option is, of course, easier.
-
-% TODO remove?
-%\begin{messagebox}{New feature in version 4.0}{araracolour}{\icinfo}{white}
-%\textbf{Helpful messages} -- It is a staple of \arara\ to have friendly and helpful messages. From version 4.0 on, we decided to make messages even friendlier and include suggestions for correcting errors or improving usage. So, whenever possible, make sure to read all messages our tool provides, they will help you!
-%\end{messagebox}
 
 Sometimes, directives can span several columns of a line, particularly the ones with several parameters. We can split a directive into multiple lines by using the \rbox{arara: {-}{-}>} mark (also known as \emph{arrow notation} during development) to each line which should compose the directive. We call it a \emph{multiline directive}. Let us see an example:
 
