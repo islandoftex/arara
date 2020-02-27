@@ -5,7 +5,7 @@
 As previously mentioned, \arara\ runs on top of a Java virtual machine, available on all major operating systems -- in some cases, you might need to install the proper virtual machine. This chapter provides detailed instructions on how to properly deploy the tool in your computer from either the official package available in our project repository or a personal build generated from source (as seen in Section~\ref{sec:compilingthetool}, on page~\pageref{sec:compilingthetool}).
 
 \begin{messagebox}{No more installers}{araracolour}{\icok}{white}
-Be mindful that, from version 4.0 on, the team decided to not release cross-platform installers any more. Our tool is available off the shelf on all major \TeX\ distributions, including \TeX\ Live and MiK\TeX, which makes manual installation unnecessary given the significant coverage of such distributions. Chances are you already have \arara\ in your system!
+Be mindful that the team decided to not release cross-platform installers any more. Our tool is available off the shelf on all major \TeX\ distributions, including \TeX\ Live and MiK\TeX, which makes manual installation unnecessary given the significant coverage of such distributions. Chances are you already have \arara\ in your system!
 \end{messagebox}
 
 \section{Directory structure}
@@ -41,10 +41,10 @@ Provided that this specific directory structure is honoured, the tool is ready f
 \section{Defining a location}
 \label{sec:definingalocation}
 
-First and foremost, we need to obtain \rbox{arara-4.0.zip} from either our project repository at GitLab or at the Bintray service mirror. As the name indicates, this is a compressed file format, so we need to extract it into a proper location. Run the following command in the terminal:
+First and foremost, we need to obtain \rbox{arara-5.0.zip} from either our project repository at GitLab. As the name indicates, this is a compressed file format, so we need to extract it into a proper location. Run the following command in the terminal:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
-$ unzip arara-4.0.zip
+$ unzip arara-5.0.zip
 \end{codebox}
 
 As a result of the previous command, we obtained a directory named \abox[araracolour]{arara} with the exact structure presented in Section~\ref{sec:directorystructure} in our working directory. Now we need to decide where \arara\ should reside in our system. For example, I usually deploy my tools inside the \abox[araracolour]{/opt/paulo} path, so I need to run the following command in the terminal (please note that my personal directory already has the proper permissions, so I do not need superuser privileges):

@@ -34,7 +34,7 @@ if (reference.equals(getOriginalFile())) {
 }
 \end{codebox}
 
-\item[\mddbox{C}{R}{currentFile()}{File}] This method returns the file reference, as a \rbox{File} object, for the current directive. It is important to observe that, from version 4.0 on, \arara\ replicates the directive when the special \abox{files} parameter is detected amongst the parameters, so each instance will have a different reference.
+\item[\mddbox{C}{R}{currentFile()}{File}] This method returns the file reference, as a \rbox{File} object, for the current directive. It is important to observe that \arara\ replicates the directive when the special \abox{files} parameter is detected amongst the parameters, so each instance will have a different reference.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 % arara: pdflatex if currentFile().getName() == 'thesis.tex'
@@ -321,7 +321,7 @@ This section introduces methods related to conditional flow based on \emph{natur
 
 \vspace{1.4em}
 
-All elements from the provided set of natural boolean values can be used interchangeably in directive parameters. It is important to observe that, from version 4.0 on, \arara\ throws an exception if a value absent from the set is provided to the methods described in this section.
+All elements from the provided set of natural boolean values can be used interchangeably in directive parameters. It is important to observe that \arara\ throws an exception if a value absent from the set is provided to the methods described in this section.
 
 \begin{description}
 \item[\mdbox{R}{isTrue(String string)}{boolean}] This method returns a boolean value according to whether the provided \rbox{String} value is contained in the sub-set of natural true boolean values. It is worth mentioning that the verification is case insensitive, i.e, upper case and lower case symbols are treated as equivalent. If the provided value is an empty string, the method returns false.
@@ -586,7 +586,7 @@ The methods presented in this section cover the most common types used in direct
 \section{Classes and objects}
 \label{sec:classesandobjects}
 
-From version 4.0 on, \arara\ can be extended at runtime with code from \gls{JVM} languages, such as Groovy, Scala, Clojure and Kotlin. The tool can load classes from \rbox{class} and \rbox{jar} files and even instantiate them. This section introduces methods related to class loading and object instantiation.
+\arara\ can be extended at runtime with code from \gls{JVM} languages, such as Groovy, Scala, Clojure and Kotlin. The tool can load classes from \rbox{class} and \rbox{jar} files and even instantiate them. This section introduces methods related to class loading and object instantiation.
 
 \begin{messagebox}{Ordered pairs}{araracolour}{\icok}{white}
 According to the \href{https://en.wikipedia.org/wiki/Ordered_pair}{Wikipedia entry}, in mathematics, an \emph{ordered pair} $(a, b)$ is a pair of objects. The order in which the objects appear in the pair is significant: the ordered pair $(a, b)$ is different from the ordered pair $(b, a)$ unless $a = b$. In the ordered pair $(a, b)$, the object $a$ is called the \emph{first} entry, and the object $b$ the \emph{second} entry of the pair. \arara\ relies on this concept with the helper \rbox{Pair<A, B>} class, in which \rbox{A} and \rbox{B} denote the component classes, i.e, the types associated to the pair elements. In order to access the pair entries, the class provides two methods:
@@ -786,9 +786,9 @@ This method shows an input dialog box according to the provided parameters. The 
 The UI methods presented in this section can be used for writing \TeX\ tutorials and assisted compilation workflows based on user interactions, including visual input and feedback through dialog boxes.
 
 \section{Commands}
-\label{sec:commandsandtriggers}
+\label{sec:commands}
 
-From version 4.0 on, \arara\ features the \rbox{Command} object, a new approach for handling system commands based on a high level structure with explicit argument parsing.
+\arara\ features the \rbox{Command} object, a new approach for handling system commands based on a high level structure with explicit argument parsing.
 
 \begin{messagebox}{The anatomy of a command}{araracolour}{\icok}{white}
 \setlength{\parskip}{1em}

@@ -227,7 +227,7 @@ When writing rules for \arara, is advisable to keep variables to a minimum in or
 \section{Basic templating}
 \label{sec:mvelbasictemplating}
 
-\gls{MVEL} templates are comprised of \emph{orb} tags inside a plain text document. \Glspl{orb-tag} denote dynamic elements of the template which the engine will evaluate at runtime. \arara\ heavily relies on this concept for runtime evaluation of conditionals and rules. For rules, we use \glspl{orb-tag} to return either a string from a textual template or a proper command object. The former constituted the basis of command generation in previous versions of our tool; from version 4.0 on, we highly recommend the latter, detailed in Section~\ref{sec:rule}, on page~\ref{sec:rule}. Conditionals are in fact \glspl{orb-tag} in disguise, such that the expression (or a sequence of expressions) is properly evaluated at runtime. Consider the following example:
+\gls{MVEL} templates are comprised of \emph{orb} tags inside a plain text document. \Glspl{orb-tag} denote dynamic elements of the template which the engine will evaluate at runtime. \arara\ heavily relies on this concept for runtime evaluation of conditionals and rules. For rules, we use \glspl{orb-tag} to return either a string from a textual template or a proper command object. The former constituted the basis of command generation in previous versions of our tool; we highly recommend the latter, detailed in Section~\ref{sec:rule}, on page~\ref{sec:rule}. Conditionals are in fact \glspl{orb-tag} in disguise, such that the expression (or a sequence of expressions) is properly evaluated at runtime. Consider the following example:
 
 \begin{codebox}{Template}{teal}{\icnote}{white}
 My favourite team is @{ person.name == 'Enrico'
