@@ -13,19 +13,21 @@ commands:
 - name: PDFLaTeX engine
   command: >
     @{
-        return getCommand('pdflatex' + branch, interaction, draft, shell,
+        return getCommand(branch, interaction, draft, shell,
                synctex, options, reference);
     }
 arguments:
 - identifier: branch
   flag: >
     @{
-        if ([ '', 'dev' ].contains(parameters.branch) && parameters.branch != '') {
-            return '-' + parameters.branch;
+        engines = [ 'stable' : 'pdflatex', 'developer' : 'pdflatex-dev' ];
+        if (engines.keySet().contains(parameters.branch)) {
+            return engines.get(parameters.branch);
         } else {
-            throwError('There are only two predefined branches: empty and dev');
+            throwError('The valid branch values are: ' + engines.keySet());
         }
     }
+  default: 'pdflatex'
 - identifier: interaction
   flag: >
     @{

@@ -13,19 +13,21 @@ commands:
 - name: XeLaTeX engine
   command: >
     @{
-        return getCommand('xelatex' + branch, interaction, shell,
+        return getCommand(branch, interaction, shell,
                synctex, options, reference);
     }
 arguments:
 - identifier: branch
   flag: >
     @{
-        if ([ '', 'dev' ].contains(parameters.branch) && parameters.branch != '') {
-            return '-' + parameters.branch;
+        engines = [ 'stable' : 'xelatex', 'developer' : 'xelatex-dev' ];
+        if (engines.keySet().contains(parameters.branch)) {
+            return engines.get(parameters.branch);
         } else {
-            throwError('There are only two predefined branches: empty and dev');
+            throwError('The valid branch values are: ' + engines.keySet());
         }
     }
+  default: 'xelatex'
 - identifier: interaction
   flag: >
     @{
