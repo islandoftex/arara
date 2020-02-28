@@ -30,6 +30,10 @@ from version 5.0.0 on.
   exhaustive).
 * The application is now hosted on [GitLab](https://gitlab.com/islandoftex/arara).
   From now on, support will be provided there.
+* The file lookup now performs an additional lookup step. File names ending on a
+  period will ignore the period (use case: command-line completion by various
+  shells) in the second lookup. So `arara file.` will resolve `file..tex`
+  etc. first and then (if no luck yet) try to resolve `file.tex`.
 
 ### Deprecated
 

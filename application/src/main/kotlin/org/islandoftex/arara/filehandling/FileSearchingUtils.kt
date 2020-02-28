@@ -141,12 +141,16 @@ object FileSearchingUtils {
         // indirect search; in this case, we are considering
         // that the file reference has an implicit extension,
         // so we need to add it and look again
-        return types.map { it to parent.resolve("$name.${it.extension}") }
-                .firstOrNull { it.second.exists() && it.second.isFile }
+        // TODO: disable this step in safe mode
+        return types.map { parent.resolve("$name.${it.extension}") to it }
+                .union(types.map {
+                    parent.resolve("${name.removeSuffix(".").trim()}.${it.extension}") to it
+                })
+                .firstOrNull { it.first.exists() && it.first.isFile }
                 ?.let {
                     Arara.config[AraraSpec.Execution.filePattern] =
-                            it.first.pattern
-                    Arara.config[AraraSpec.Execution.reference] = it.second
+                            it.second.pattern
+                    Arara.config[AraraSpec.Execution.reference] = it.first
                     file
                 }
     }
