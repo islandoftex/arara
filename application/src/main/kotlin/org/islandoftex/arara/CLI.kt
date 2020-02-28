@@ -123,23 +123,28 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         // of the execution in the session object for the user
         Session.updateEnvironmentVariables()
 
-        // TODO: this will have to change for parallelization
-        reference.forEach {
-            // TODO: do we have to reset some more file-specific config?
-            // especially the working directory will have to be set and
-            // changed
-            Arara.config = Arara.baseconfig.withLayer(it)
-            // next, update the configuration
-            updateConfigurationFromCommandLine()
-            FileSearchingUtils.discoverFile(it)
-            Arara.run()
-        }
+        try {
+            // TODO: this will have to change for parallelization
+            reference.forEach {
+                // TODO: do we have to reset some more file-specific config?
+                // especially the working directory will have to be set and
+                // changed
+                Arara.config = Arara.baseconfig.withLayer(it)
+                // next, update the configuration
+                updateConfigurationFromCommandLine()
+                FileSearchingUtils.discoverFile(it)
+                Arara.run()
+            }
 
-        // this is the last command from arara; once the execution time is
-        // available, print it; note that this notification is suppressed
-        // when the command line parsing returns false as result (it makes
-        // no sense to print the execution time for a help message, I guess)
-        DisplayUtils.printTime(executionStart.elapsedNow().inSeconds)
+            // this is the last command from arara; once the execution time is
+            // available, print it; note that this notification is suppressed
+            // when the command line parsing returns false as result (it makes
+            // no sense to print the execution time for a help message, I guess)
+            DisplayUtils.printTime(executionStart.elapsedNow().inSeconds)
+        } catch (ex: AraraException) {
+            DisplayUtils.printException(ex)
+            Arara.config[AraraSpec.Execution.status] = 2
+        }
 
         // gets the application exit status; the rule here is:
         // 0 : everything went just fine (note that the dry-run mode always
