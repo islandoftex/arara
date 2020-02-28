@@ -97,7 +97,6 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
             Arara.config[AraraSpec.Execution.timeoutValue] = it.milliseconds
         }
 
-        LoggingUtils.enableLogging(log)
         Arara.config[AraraSpec.UserInteraction.displayTime] = true
     }
 
@@ -122,6 +121,10 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         // arara stores the environment variables accessible at the start
         // of the execution in the session object for the user
         Session.updateEnvironmentVariables()
+
+        // logging has to be initialized only once and for all because
+        // context resets lead to missing output
+        LoggingUtils.enableLogging(log)
 
         try {
             // TODO: this will have to change for parallelization
