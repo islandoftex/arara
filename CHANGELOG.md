@@ -18,7 +18,10 @@ from version 5.0.0 on.
 * The most important update release notes are shown when calling arara with the
   version flag.
   (see #25)
-* A `metapost` rule has been added.
+* Multiple rules have been added. All of them are untested and we are open for
+  feedback and enhancements: `asymptote`, `luahbtex`, `metapost`, `pbibtex`,
+  `platex`, `ptex`, `upbibtex`, `uplatex`, `uptex`, `xindex`.
+  (see #10)
 
 ### Changed
 
@@ -34,6 +37,8 @@ from version 5.0.0 on.
   period will ignore the period (use case: command-line completion by various
   shells) in the second lookup. So `arara file.` will resolve `file..tex`
   etc. first and then (if no luck yet) try to resolve `file.tex`.
+* The `biber` rule is now aware of the biber option `tool`.
+  (see https://github.com/cereda/arara/issues/136)
 
 ### Deprecated
 
