@@ -37,6 +37,8 @@ from version 5.0.0 on.
   period will ignore the period (use case: command-line completion by various
   shells) in the second lookup. So `arara file.` will resolve `file..tex`
   etc. first and then (if no luck yet) try to resolve `file.tex`.
+* `arara` does not use a XML database anymore. File changes are recorded in a
+  YAML database instead.
 * The `biber` rule is now aware of the biber option `tool`.
   (see https://github.com/cereda/arara/issues/136)
 
