@@ -94,7 +94,7 @@ extension = getFiletype('thesis.pdf');
 % arara: pdftex if missing('pdf')
 \end{codebox}
 
-\item[\mddbox{C}{R}{changed(File file)}{boolean}] This method returns a boolean value according to whether the provided \rbox{File} reference has changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a \gls{XML} database file named \rbox{arara.xml} located in the same directory as the current file (the database name can be overridden in the configuration file, as discussed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). The method semantics (including the return values) is presented as follows.
+\item[\mddbox{C}{R}{changed(File file)}{boolean}] This method returns a boolean value according to whether the provided \rbox{File} reference has changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a YAML database file named \rbox{arara.yaml} located in the same directory as the current file (the database name can be overridden in the configuration file, as discussed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). The method semantics (including the return values) is presented as follows.
 
 \vspace{1em}
 
@@ -130,7 +130,7 @@ According to the \href{https://en.wikipedia.org/wiki/Short-circuit_evaluation}{W
 \arara\ internally relies on a CRC32 implementation for file hashing. This particular choice, although not designed for hashing, offers an interesting trade-off between speed and quality. Besides, since it is not computationally expensive as strong algorithms such as MD5 and SHA1, CRC32 can be used for hashing typical \TeX\ documents and plain text files with little to no collisions.
 \end{messagebox}
 
-\item[\mddbox{C}{R}{changed(String extension)}{boolean}] This method returns a boolean value according to whether the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the provided \rbox{String} extension has changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a \gls{XML} database file named \rbox{arara.xml} located in the same directory as the current file (the database name can be overridden in the configuration file, as discussed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). The method semantics (including the return values) is presented as follows.
+\item[\mddbox{C}{R}{changed(String extension)}{boolean}] This method returns a boolean value according to whether the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the provided \rbox{String} extension has changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a \gls{XML} database file named \rbox{arara.yaml} located in the same directory as the current file (the database name can be overridden in the configuration file, as discussed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). The method semantics (including the return values) is presented as follows.
 
 \vspace{1em}
 
@@ -158,7 +158,7 @@ It is important to observe that this method \emph{always} performs a database op
 % arara: pdflatex if changed('tex')
 \end{codebox}
 
-\item[\mddbox{C}{R}{unchanged(File file)}{boolean}] This method returns a boolean value according to whether the provided \rbox{File} reference has not changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a \gls{XML} database file named \rbox{arara.xml} located in the same directory as the current file (the database name can be overridden in the configuration file, as discussed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). The method semantics (including the return values) is presented as follows.
+\item[\mddbox{C}{R}{unchanged(File file)}{boolean}] This method returns a boolean value according to whether the provided \rbox{File} reference has not changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a YAML database file named \rbox{arara.yaml} located in the same directory as the current file (the database name can be overridden in the configuration file, as discussed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). The method semantics (including the return values) is presented as follows.
 
 \vspace{1em}
 
@@ -186,7 +186,7 @@ It is important to observe that this method \emph{always} performs a database op
 % arara: pdflatex if !unchanged(toFile('thesis.tex'))
 \end{codebox}
 
-\item[\mddbox{C}{R}{unchanged(String extension)}{boolean}] This method returns a boolean value according to whether the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the provided \rbox{String} extension has not changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a \gls{XML} database file named \rbox{arara.xml} located in the same directory as the current file (the database name can be overridden in the configuration file, as discussed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). The method semantics (including the return values) is presented as follows.
+\item[\mddbox{C}{R}{unchanged(String extension)}{boolean}] This method returns a boolean value according to whether the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the provided \rbox{String} extension has not changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a YAML database file named \rbox{arara.yaml} located in the same directory as the current file (the database name can be overridden in the configuration file, as discussed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). The method semantics (including the return values) is presented as follows.
 
 \vspace{1em}
 
