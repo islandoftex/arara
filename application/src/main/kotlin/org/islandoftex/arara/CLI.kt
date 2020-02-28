@@ -134,6 +134,8 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                 updateConfigurationFromCommandLine()
                 FileSearchingUtils.discoverFile(it)
                 Arara.run()
+                // add an empty line between file executions
+                println()
             }
 
             // this is the last command from arara; once the execution time is
