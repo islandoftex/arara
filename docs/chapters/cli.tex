@@ -87,7 +87,25 @@ $ arara doc6.tex
 
 From version 5.0 on, \arara\ may receive more than one file as parameter. It will compile them sequentially (starting with the leftmost). The process fails on the first failure of these executions. For the files to be flawlessly compiled by \TeX, they should be in the same working directory. If you process your files with other tools, this requirement could be lifted.
 
-% TODO perhaps an example of multiple files?
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ arara doc20.tex doc21.tex
+  __ _ _ __ __ _ _ __ __ _
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+Processing 'doc20.tex' (size: 28 B, last modified: 02/28/2020
+07:15:02), please wait.
+
+(PDFTeX) PDFTeX engine .................................. SUCCESS
+
+Processing 'doc21.tex' (size: 28 B, last modified: 02/28/2020
+07:15:10), please wait.
+
+(PDFTeX) PDFTeX engine .................................. SUCCESS
+
+Total: 1.20 seconds
+\end{codebox}
 
 The tool has a set of command line options (also known as flags or switches) that modify the underlying execution behaviour or enhance the execution workflow. If you do not provide any parameters, \arara\ will display the tool usage and the available options:
 
