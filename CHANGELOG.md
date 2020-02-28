@@ -79,6 +79,11 @@ from version 5.0.0 on.
   (breaking change).
 * The lookup strategy for configuration files has been altered and extended.
 
+### Deprecated
+
+* String-based commands require guesswork and opinionated syntax. Hence, they
+  will be removed in version 5.0.
+
 ### Removed
 
 * Cross-platform installers have been retired. `arara` is available in all major
