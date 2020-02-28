@@ -492,7 +492,13 @@ spreadsheet import functions also use this setting.
 \item[\rulebox{lualatex}{Marco Daniel, Paulo Cereda}] This rule runs the new \rbox{lualatex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document File format, as expected.
 
 \begin{description}
-\item[\abox{branch}] This option allows to use the \rbox{latex-dev} format instead of \rbox{latex}. This option may have only one value: \povalue{dev}.
+\item[\abox{branch}] This option allows branching formats for the current engine, mainly focused on package development. Users of current \TeX\ distributions might benefit from format branching in order to easily test documents and code against the upcoming releases. Possible values are:
+
+\begin{description}
+\item[\povalue{stable}] This value, as the name implies, enables the stable engine format branch. Note that this is the default format.
+
+\item[\povalue{developer}] For experienced users, this value enables the experimental, developer engine format branch.
+\end{description}
 
 \item[\abox{interaction}] This option alters the underlying engine behaviour. If this option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
 
@@ -684,7 +690,13 @@ spreadsheet import functions also use this setting.
 \item[\rulebox{pdflatex}{Marco Daniel, Paulo Cereda}] This rule runs the \rbox{pdflatex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document File format, as expected.
 
 \begin{description}
-\item[\abox{branch}] This option allows to use the \rbox{latex-dev} format instead of \rbox{latex}. This option may have only one value: \povalue{dev}.
+\item[\abox{branch}] This option allows branching formats for the current engine, mainly focused on package development. Users of current \TeX\ distributions might benefit from format branching in order to easily test documents and code against the upcoming releases. Possible values are:
+
+\begin{description}
+\item[\povalue{stable}] This value, as the name implies, enables the stable engine format branch. Note that this is the default format.
+
+\item[\povalue{developer}] For experienced users, this value enables the experimental, developer engine format branch.
+\end{description}
 
 \item[\abox{interaction}] This option alters the underlying engine behaviour. If this option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
 
@@ -873,7 +885,13 @@ spreadsheet import functions also use this setting.
 \item[\rulebox{xelatex}{Marco Daniel, Paulo Cereda}] This rule runs the new \rbox{xelatex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document File format, as expected.
 
 \begin{description}
-\item[\abox{branch}] This option allows to use the \rbox{latex-dev} format instead of \rbox{latex}. This option may have only one value: \povalue{dev}.
+\item[\abox{branch}] This option allows branching formats for the current engine, mainly focused on package development. Users of current \TeX\ distributions might benefit from format branching in order to easily test documents and code against the upcoming releases. Possible values are:
+
+\begin{description}
+\item[\povalue{stable}] This value, as the name implies, enables the stable engine format branch. Note that this is the default format.
+
+\item[\povalue{developer}] For experienced users, this value enables the experimental, developer engine format branch.
+\end{description}
 
 \item[\abox{interaction}] This option alters the underlying engine behaviour. If this option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
 
