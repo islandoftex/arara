@@ -50,28 +50,37 @@ The best solution to avoid possible future name conflicts, according to the Imag
 \item[\povalue{gray}] This option value, as the name suggests, converts all colors to a grayscale model.
 \end{description}
 
-\item[\rpbox{engine}{latex}] This option, as the name indicates, sets the underlying \TeX\ engine to be used for the current compilation. Possible values are:
+\item[\rpbox{engine}{latex}] This option, as the name indicates, sets the underlying \TeX\ engine to be used for the current compilation. Make sure to take a look at the Asymptote manual for further details on this option. Possible values are:
 
 \begin{description}
-\item[\povalue{latex}] This value, as the name suggests, sets the underlying \TeX\ engine to \rbox{latex} for the current compilation.
+\item[\povalue{latex}] This value, as the name suggests, sets the underlying \TeX\ engine to \rbox{latex} for the current compilation. Note that the engine might play a major role in the generated code.
 
-\item[\povalue{pdflatex}] This value, as the name indicates, sets the underlying \TeX\ engine to \rbox{pdflatex} for the current compilation.
+\item[\povalue{pdflatex}] This value, as the name indicates, sets the underlying \TeX\ engine to \rbox{pdflatex} for the current compilation. Note that the engine might play a major role in the generated code.
 
-\item[\povalue{xelatex}] This value, as the name suggests, sets the underlying \TeX\ engine to \rbox{xelatex} for the current compilation.
+\item[\povalue{xelatex}] This value, as the name suggests, sets the underlying \TeX\ engine to \rbox{xelatex} for the current compilation. Note that the engine might play a major role in the generated code.
 
-\item[\povalue{lualatex}] This value, as the name indicates, sets the underlying \TeX\ engine to \rbox{lualatex} for the current compilation.
+\item[\povalue{lualatex}] This value, as the name indicates, sets the underlying \TeX\ engine to \rbox{lualatex} for the current compilation. Note that the engine might play a major role in the generated code.
 
-\item[\povalue{tex}] This value, as the name suggests, sets the underlying \TeX\ engine to \rbox{tex} for the current compilation.
+\item[\povalue{tex}] This value, as the name suggests, sets the underlying \TeX\ engine to \rbox{tex} for the current compilation. Note that the engine might play a major role in the generated code.
 
-\item[\povalue{pdftex}] This value, as the name indicates, sets the underlying \TeX\ engine to \rbox{pdftex} for the current compilation.
+\item[\povalue{pdftex}] This value, as the name indicates, sets the underlying \TeX\ engine to \rbox{pdftex} for the current compilation. Note that the engine might play a major role in the generated code.
 
-\item[\povalue{luatex}] This value, as the name suggests, sets the underlying \TeX\ engine to \rbox{luatex} for the current compilation.
+\item[\povalue{luatex}] This value, as the name suggests, sets the underlying \TeX\ engine to \rbox{luatex} for the current compilation. Note that the engine might play a major role in the generated code.
 
-\item[\povalue{context}] This value, as the name indicates, sets the underlying \TeX\ engine to \rbox{context} for the current compilation.
+\item[\povalue{context}] This value, as the name indicates, sets the underlying \TeX\ engine to \rbox{context} for the current compilation. Note that the engine might play a major role in the generated code.
 
-\item[\povalue{none}] This value, as the name suggests, sets the underlying \TeX\ engine to \rbox{none} for the current compilation.
+\item[\povalue{none}] This value, as the name suggests, sets the underlying \TeX\ engine to \rbox{none} for the current compilation. In this case, there will be no associated engine.
 \end{description} 
 
+\item[\abox{format}] This option, as the name suggests, converts each output file to a specified format. Make sure to take a look at the Asymptote manual for further details.
+
+\item[\abox{output}] This option, as the name suggests, sets an alternative output directory or file name. Make sure to take a look at the Asymptote manual for further details.
+
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: asymptote: { files: [ mydrawing.asy ] }
+\end{codebox}
 \end{description}
 
 \item[\rulebox{bib2gls}{Nicola Talbot, Paulo Cereda}] This rule executes the \rbox{bib2gls} command line application which extracts glossary information stored in a \rbox{bib} file and converts it into glossary entry definitions in resource files. This rule passes the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as the mandatory argument.

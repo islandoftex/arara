@@ -13,18 +13,16 @@ commands:
   command: >
     @{
         return getCommand('asy', color, engine, twice,
-               outformat, outname, options, file);
+               format, output, options, file);
     }
 arguments:
 - identifier: color
   flag: >
     @{
-        if (parameters.color) {
-            if ([ 'bw', 'cmyk', 'rgb', 'gray' ].contains(parameters.color)) {
-                return '-' + parameters.color;
-            } else {
-                throwError('The provided color enforcement is not valid.');
-            }
+        if ([ 'bw', 'cmyk', 'rgb', 'gray' ].contains(parameters.color)) {
+            return '-' + parameters.color;
+        } else {
+            throwError('The provided color enforcement is not valid.');
         }
     }
 - identifier: engine
@@ -43,19 +41,15 @@ arguments:
     @{
         return isTrue(parameters.twice, '-twice');
     }
-- identifier: outformat
+- identifier: format
   flag: >
     @{
-        if (parameters.outformat) {
-            return [ '-f ', parameters.outformat ];
-        }
+        return [ '-f', parameters.format ];
     }
-- identifier: outname
+- identifier: output
   flag: >
     @{
-        if (parameters.outname) {
-            return [ '-o', parameters.outname ];
-        }
+        return [ '-o', parameters.output ];
     }
 - identifier: options
   flag: >
