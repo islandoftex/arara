@@ -41,9 +41,8 @@ arguments:
 - identifier: twice
   flag: >
     @{
-        return [ '-twice ', parameters.twice ];
+        return isTrue(parameters.twice, '-twice');
     }
-  default: false
 - identifier: outformat
   flag: >
     @{
