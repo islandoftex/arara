@@ -1,6 +1,6 @@
 !config
 # Arara, the cool TeX automation tool
-# Copyright (c) 2020, Island of TeX
+# Copyright (c) 2020, Island of TeX 
 # All rights reserved.
 #
 # This rule is part of arara.
@@ -28,8 +28,8 @@ arguments:
 - identifier: engine
   flag: >
     @{
-        if ([ 'latex', 'pdflatex' , 'xelatex', 'lualatex', 'tex',
-              'pdftex', 'luatex', 'context', 'none' ].contains(parameters.engine)) {
+        if ([ 'latex', 'pdflatex' , 'xelatex', 'lualatex', 'tex', 'pdftex',
+              'luatex', 'context', 'none' ].contains(parameters.engine)) {
             return [ '-tex', parameters.engine ];
         } else {
             throwError('The provided TeX engine is invalid.');

@@ -1,6 +1,6 @@
 !config
 # Arara, the cool TeX automation tool
-# Copyright (c) 2018, Paulo Roberto Massa Cereda 
+# Copyright (c) 2020, Island of TeX 
 # All rights reserved.
 #
 # This rule is part of arara.
@@ -8,7 +8,7 @@ identifier: sketch
 name: Sketch
 authors:
 - Sergey Ulyanov
-- Paulo Cereda
+- Island of TeX
 commands:
 - name: The Sketch software
   command: >

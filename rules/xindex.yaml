@@ -18,20 +18,26 @@ arguments:
 - identifier: input
   flag: >
     @{
-      parameters.input
+        return parameters.input;
     }
 - identifier: config
   flag: >
     @{
-      '-c' + parameters.config
+        return [ '-c', parameters.config ];
     }
-  default: cfg
+  default: >
+    @{
+        return [ '-c', 'cfg' ];
+    }
 - identifier: language
   flag: >
     @{
-      '-l' + parameters.language
+        return [ '-l', parameters.language ];
     }
-  default: en
+  default: >
+    @{
+        return [ '-l', 'en' ];
+    }
 - identifier: options
   flag: >
     @{

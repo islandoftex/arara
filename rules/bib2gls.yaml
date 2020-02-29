@@ -1,14 +1,13 @@
 !config
 # Arara, the cool TeX automation tool
-# Copyright (c) 2018, Paulo Roberto Massa Cereda 
+# Copyright (c) 2020, Island of TeX 
 # All rights reserved.
 #
 # This rule is part of arara.
 identifier: bib2gls
 name: Bib2Gls
 authors:
-- Nicola Talbot
-- Paulo Cereda
+- Island of TeX
 commands:
 - name: The Bib2Gls software
   command: >

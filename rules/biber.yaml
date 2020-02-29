@@ -1,14 +1,13 @@
 !config
 # Arara, the cool TeX automation tool
-# Copyright (c) 2020, Paulo Roberto Massa Cereda 
+# Copyright (c) 2020, Island of TeX 
 # All rights reserved.
 #
 # This rule is part of arara.
 identifier: biber
 name: Biber
 authors:
-- Marco Daniel
-- Paulo Cereda
+- Island of TeX
 commands:
 - name: The Biber reference management software
   command: >
@@ -24,11 +23,11 @@ arguments:
 - identifier: tool
   flag: >
     @{
-      return isTrue(parameters.tool);
+        return isTrue(parameters.tool);
     }
   default: >
     @{
-      return false;
+        return false;
     }
 - identifier: options
   flag: >
