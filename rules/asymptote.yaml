@@ -20,7 +20,7 @@ arguments:
   flag: >
     @{
         if (parameters.color) {
-            if ([ 'bw, 'cmyk, rgb', 'gray' ].contains(parameters.color)) {
+            if ([ 'bw', 'cmyk', 'rgb', 'gray' ].contains(parameters.color)) {
                 return '-' + parameters.color;
             } else {
                 throwError('The provided color enforcement is not valid.');
@@ -32,7 +32,7 @@ arguments:
     @{
         if ([ 'latex', 'pdflatex' , 'xelatex', 'lualatex', 'tex',
               'pdftex', 'luatex', 'context', 'none' ].contains(parameters.engine)) {
-            return '-tex' + parameters.engine;
+            return [ '-tex', parameters.engine ];
         } else {
             throwError('The provided TeX engine is invalid.');
         }
@@ -41,20 +41,22 @@ arguments:
 - identifier: twice
   flag: >
     @{
-        '-twice ' + parameters.twice
+        return [ '-twice ', parameters.twice ];
     }
   default: false
 - identifier: outformat
   flag: >
     @{
-        if (parameters.outformat)
-            return '-f ' + parameters.outformat;
+        if (parameters.outformat) {
+            return [ '-f ', parameters.outformat ];
+        }
     }
 - identifier: outname
   flag: >
     @{
-        if (parameters.outname)
-            return '-o' + parameters.outname;
+        if (parameters.outname) {
+            return [ '-o', parameters.outname ];
+        }
     }
 - identifier: options
   flag: >
