@@ -487,6 +487,25 @@ This rule runs \rbox{latexindent}, a Perl script that indents \TeX\ files accord
 % arara: indent: { overwrite: yes }
 \end{codebox}
 
+\item[\rulebox{knitr}]
+This rule calls the \rbox{knitr} package, a transparent engine for dynamic report generation with R. It takes an \rbox{.Rnw} file as input, extracts the R code in it according to a list of patterns, evaluates the code and writes the output in another file. It can also tangle R source code from the input document.
+
+\begin{description}
+\item[\rpbox{output}{NULL}] This option sets the output file. when absent, \rbox{knitr} will try to guess a default, which will be under the current working directory.
+
+\item[\rpsbox{tangle}] This option sets whether to tangle the R code from the input file. Note that, when used, this option requires \abox{output} to be specified as well, otherwise an error is thrown.
+
+\item[\rpsbox{quiet}] This option, as the name indicates, sets whether the tool should suppress both progress bar and messages.
+
+\item[\rpbox{envir}{parent.frame()}] This option sets the environment in which code chunks are to be evaluated. Please refer to the documentation for further details.
+
+\item[\rpbox{encoding}{getOption("encoding")}] This option, as the name indicates, sets the encoding of the input file. Please refer to the documentation for further details.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: knitr: { quiet: yes }
+\end{codebox}
+
 \item[\rulebox{latex}]
 This rule runs the \rbox{latex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in a device independent format.
 
