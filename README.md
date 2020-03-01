@@ -71,19 +71,16 @@ localization work!
 ## Downloads
 
 [![Download from GitLab](https://img.shields.io/badge/dynamic/json.svg?color=blue&label=Latest%20release&query=%24.0.name&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2F14349047%2Frepository%2Ftags&style=flat-square)](https://gitlab.com/islandoftex/arara/-/releases)
-[![Download from Bintray](https://img.shields.io/bintray/v/cereda/arara/releases?label=Bintray&style=flat-square)](https://bintray.com/cereda/arara)
 
-From the 4.0 series on, the team decided to not release cross-platform
-installers any more. Our tool is available out of the shelf on all major TeX
-distributions, including TeX Live and MiKTeX, which makes manual installation
-unnecessary given the significant coverage of such distributions. Chances are
-you already have `arara` in your system!
+Our tool is available out of the shelf on all major TeX distributions, including
+TeX Live and MiKTeX, which makes manual installation unnecessary given the
+significant coverage of such distributions. Chances are you already have `arara`
+in your system!
 
 You can obtain the official package available in the
 [releases](https://gitlab.com/islandoftex/arara/-/releases) section of our
-project repository, as well as the [Bintray](https://bintray.com/cereda/arara)
-software distribution service. Please refer to the documentation on how to
-manually deploy our tool.
+project repository. Please refer to the documentation on how to manually deploy
+our tool.
 
 ## License
 
@@ -97,6 +94,6 @@ has been vetted as an open source license by the
 ## The team
 
 `arara`, the cool TeX automation tool, is brought to you by Paulo Cereda, Marco
-Daniel, Brent Longborough and Nicola Talbot. If you want to support TeX
-development by a donation, the best way to do this is donating to the
+Daniel, Brent Longborough, Nicola Talbot and Ben Frank. If you want to support
+TeX development by a donation, the best way to do this is donating to the
 [TeX Users Group](https://www.tug.org/donate.html).
