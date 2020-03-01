@@ -1,0 +1,58 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2020, Island of TeX 
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: knitr
+name: knitr
+authors:
+- Adam Liter
+- Island of TeX
+commands:
+- name: knitr
+  command: >
+    @{
+        elements = [];
+        if (!isEmpty(tangle)) elements.add('tangle = ' + tangle);
+        if (!isEmpty(quiet)) elements.add('quiet = ' + quiet);
+        elements.add('envir = ' + envir);
+        elements.add('encoding = ' + encoding);
+        return getCommand('Rscript', '-e',
+               'library(knitr); knit("' + file + '", ' +
+               'output = ' + isEmpty(output, 'NULL', '"' + output + '"') + ', ' +
+               String.join(', ', elements) + ')');
+    }
+arguments:
+- identifier: output
+  flag: >
+    @{
+        return parameters.output;
+    }
+- identifier: tangle
+  flag: >
+    @{
+        if(isTrue(parameters.tangle) && !parameters.containsKey('output')) {
+            throwError('If you want to tangle the document, specify an output file.');
+        }
+        else {
+            isTrue(parameters.tangle, 'TRUE', 'FALSE')
+        }
+    }
+- identifier: quiet
+  flag: >
+    @{
+        isTrue(parameters.quiet, 'TRUE', 'FALSE')
+    }
+- identifier: envir
+  flag: >
+    @{
+        return parameters.envir;
+    }
+  default: 'parent.frame()'
+- identifier: encoding
+  flag: >
+    @{
+        return parameters.encoding;
+    }
+  default: 'getOption("encoding")'
