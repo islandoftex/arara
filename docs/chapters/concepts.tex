@@ -119,7 +119,7 @@ command: >
   }
 \end{codebox}
 
-Mind the indentation, as \gls{YAML} requires it to properly identify blocks. I personally recommend this approach for longer code, as it provides a better visual representation. You will see the second solution all around the default rules, but feel free to use the one you feel more comfortable with.
+Mind the indentation, as \gls{YAML} requires it to properly identify blocks. Please keep in mind that the \rbox{<arara>} keyword is marked as deprecated in version 5.0 and will be removed in future versions of \arara, so it is highly recommended to favour this approach.
 \end{messagebox}
 
 \item[\describecontext{O}{commands}{exit}] This key holds a special purpose, as it represents a custom exit status evaluation for the corresponding command. In general, a successful execution has zero as an exit status, but sometimes we end up with tools or situations where we need to override this check for whatever reason. For this purpose, simply write a \gls{MVEL} expression \emph{without \glspl{orb-tag}} as plain string and use the special variable \varbox{value} if you need the actual exit status returned by the command, available at runtime. For example, if the command returns a non-zero value indicating a successful execution, we can write this key as:
