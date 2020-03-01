@@ -10,27 +10,27 @@
 The goal of a user interface design is to make the interaction as simple and efficient as possible. Good user interface design facilitates finishing the task at hand without drawing unnecessary attention to itself. We redesigned the interface in order to look more pleasant to the eye, after all, we work with \TeX\ and friends:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
-  __ _ _ __ __ _ _ __ __ _ 
+  __ _ _ __ __ _ _ __ __ _
  / _` | '__/ _` | '__/ _` |
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
 
-Processing 'doc5.tex' (size: 307 bytes, last modified: 05/29/2018
-08:57:30), please wait.
+Processing 'doc5.tex' (size: 285 B, last modified: 03/01/2020
+19:25:40), please wait.
 
 (PDFLaTeX) PDFLaTeX engine .............................. SUCCESS
 (BibTeX) The BibTeX reference management software ....... SUCCESS
 (PDFLaTeX) PDFLaTeX engine .............................. SUCCESS
 (PDFLaTeX) PDFLaTeX engine .............................. SUCCESS
 
-Total: 1.45 seconds
+Total: 1.14 seconds
 \end{codebox}
 
 First of all, we have the nice application logo, displayed using ASCII art. The entire layout is based on monospaced font spacing, usually used in terminal prompts. Hopefully you follow the conventional use of a monospaced font in your terminal, otherwise the visual effect will not be so pleasant. First and foremost, \arara\ displays details about the file being processed, including size and modification status:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
-Processing 'doc5.tex' (size: 307 bytes, last modified: 05/29/2018
-08:57:30), please wait.
+Processing 'doc5.tex' (size: 285 B, last modified: 03/01/2020
+19:25:40), please wait.
 \end{codebox}
 
 The list of tasks was also redesigned to be fully justified, and each entry displays both task and subtask names (the former being displayed enclosed in parentheses), besides of course the usual execution result:
@@ -51,7 +51,7 @@ As previously mentioned in Section~\ref{sec:rule}, on page~\pageref{sec:rule}, i
 Also, observe that our tool displays the execution time before terminating, in seconds. The execution time has a very simple precision, as it is meant to be easily readable, and should not be considered for command profiling.
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
-Total: 1.45 seconds
+Total: 1.14 seconds
 \end{codebox}
 
 The tool has two execution modes: \emph{silent}, which is the default, and \emph{verbose}, which prints as much information about tasks as possible. When in silent mode, \arara\ will simply display the task and subtask names, as well as the execution result. Nothing more is added to the output. For instance:
@@ -66,7 +66,7 @@ When executed in verbose mode, \arara\ will display the underlying system comman
 -----------------------------------------------------------------
 (BibTeX) The BibTeX reference management software
 -----------------------------------------------------------------
-This is BibTeX, Version 0.99d (TeX Live 2017)
+This is BibTeX, Version 0.99d (TeX Live 2019)
 The top-level auxiliary file: doc5.aux
 The style file: plain.bst
 Database file #1: mybib.bib
@@ -111,14 +111,10 @@ The tool has a set of command line options (also known as flags or switches) tha
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ arara
-  __ _ _ __ __ _ _ __ __ _ 
+  __ _ _ __ __ _ _ __ __ _
  / _` | '__/ _` | '__/ _` |
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
-
-arara 4.0 (revision 1)
-Copyright (c) 2012-2017, Paulo Roberto Massa Cereda
-All rights reserved
 
 Usage: arara [OPTIONS] [file]...
 
@@ -165,20 +161,20 @@ When running \arara\ without this option, two directives will be extracted (the 
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ arara -L nl doc5.tex
-  __ _ _ __ __ _ _ __ __ _ 
+  __ _ _ __ __ _ _ __ __ _
  / _` | '__/ _` | '__/ _` |
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
 
-Verwerken van 'doc5.tex' (grootte: 307 bytes, laatst gewijzigd:
-05/29/2018 11:50:32), een ogenblik geduld.
+Verwerken van 'doc5.tex' (grootte: 285 B, laatst gewijzigd:
+03/01/2020 19:25:40), een ogenblik geduld.
 
-(PDFLaTeX) PDFLaTeX engine ............................ SUCCESVOL
-(BibTeX) The BibTeX reference management software ..... SUCCESVOL
-(PDFLaTeX) PDFLaTeX engine ............................ SUCCESVOL
-(PDFLaTeX) PDFLaTeX engine ............................ SUCCESVOL
+(PDFLaTeX) PDFLaTeX engine .............................. SUCCESVOL
+(BibTeX) The BibTeX reference management software ....... SUCCESVOL
+(PDFLaTeX) PDFLaTeX engine .............................. SUCCESVOL
+(PDFLaTeX) PDFLaTeX engine .............................. SUCCESVOL
 
-Totaal: 1,59 seconden
+Totaal: 1,07 seconden
 \end{codebox}
 
 \begin{messagebox}{Navis volitans mihi anguillis plena est}{araracolour}{\icok}{white}
@@ -220,7 +216,7 @@ $ arara -m 2 doc8.tex
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
 
-Processing 'doc8.tex' (size: 45 bytes, last modified: 05/29/2018
+Processing 'doc8.tex' (size: 45 B, last modified: 05/29/2018
 12:32:14), please wait.
 
 (PDFTeX) PDFTeX engine .................................. SUCCESS
@@ -235,35 +231,35 @@ This option can also be specified in the configuration file (see Section~\ref{se
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ arara -n doc5.tex 
-  __ _ _ __ __ _ _ __ __ _ 
+  __ _ _ __ __ _ _ __ __ _
  / _` | '__/ _` | '__/ _` |
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
 
-Processing 'doc5.tex' (size: 307 bytes, last modified: 05/29/2018
-11:50:32), please wait.
+Processing 'doc5.tex' (size: 285 B, last modified: 03/01/2020
+19:25:40), please wait.
 
 [DR] (PDFLaTeX) PDFLaTeX engine
 -----------------------------------------------------------------
-Authors: Marco Daniel, Paulo Cereda
-About to run: [ pdflatex, doc5.tex ]
+Author: Island of TeX
+About to run: [ pdflatex, /home/paulo/Downloads/doc5.tex ] @ 
 
 [DR] (BibTeX) The BibTeX reference management software
 -----------------------------------------------------------------
-Authors: Marco Daniel, Paulo Cereda
-About to run: [ bibtex, doc5 ]
+Author: Island of TeX
+About to run: [ bibtex, doc5 ] @ 
 
 [DR] (PDFLaTeX) PDFLaTeX engine
 -----------------------------------------------------------------
-Authors: Marco Daniel, Paulo Cereda
-About to run: [ pdflatex, doc5.tex ]
+Author: Island of TeX
+About to run: [ pdflatex, /home/paulo/Downloads/doc5.tex ] @ 
 
 [DR] (PDFLaTeX) PDFLaTeX engine
 -----------------------------------------------------------------
-Authors: Marco Daniel, Paulo Cereda
-About to run: [ pdflatex, doc5.tex ]
+Author: Island of TeX
+About to run: [ pdflatex, /home/paulo/Downloads/doc5.tex ] @ 
 
-Total: 0.27 seconds
+Total: 0.23 seconds
 \end{codebox}
 
 Note that the rule authors are displayed (so they can be blamed in case anything goes wrong), as well as the system command to be executed. It is an interesting approach to see everything that will happen to your document and in which order.
@@ -294,7 +290,7 @@ $ arara -p twopdftex doc9.tex
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
 
-Processing 'doc9.tex' (size: 18 bytes, last modified: 05/29/2018
+Processing 'doc9.tex' (size: 18 B, last modified: 05/29/2018
 14:39:21), please wait.
 
 (PDFTeX) PDFTeX engine .................................. SUCCESS
@@ -321,7 +317,7 @@ $ arara --timeout 3000 doc9.tex
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
 
-Processing 'doc10.tex' (size: 63 bytes, last modified: 05/29/2018
+Processing 'doc10.tex' (size: 63 B, last modified: 05/29/2018
 15:24:06), please wait.
 
 (PDFTeX) PDFTeX engine .................................   ERROR
@@ -388,7 +384,7 @@ $ arara doc11.tex
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
 
-Processing 'doc11.tex' (size: 34 bytes, last modified: 05/29/2018
+Processing 'doc11.tex' (size: 34 B, last modified: 05/29/2018
 19:40:35), please wait.
 
 (PDFTeX) PDFTeX engine .................................. SUCCESS
@@ -405,7 +401,7 @@ $ arara doc11
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
 
-Processing 'doc11.tex' (size: 34 bytes, last modified: 05/29/2018
+Processing 'doc11.tex' (size: 34 B, last modified: 05/29/2018
 19:40:35), please wait.
 
 (PDFTeX) PDFTeX engine .................................. SUCCESS
@@ -423,7 +419,7 @@ $ arara doc11.
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
 
-Processing 'doc11.tex' (size: 34 bytes, last modified: 05/29/2018
+Processing 'doc11.tex' (size: 34 B, last modified: 05/29/2018
 19:40:35), please wait.
 
 (PDFTeX) PDFTeX engine .................................. SUCCESS

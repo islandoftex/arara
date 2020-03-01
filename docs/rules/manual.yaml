@@ -2,7 +2,7 @@
 identifier: manual
 name: The arara manual
 authors:
-- Paulo Cereda
+- Island of TeX
 commands:
 - name: The PDFLaTeX engine
   command: >
