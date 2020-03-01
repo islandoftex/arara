@@ -72,15 +72,15 @@ localization work!
 
 [![Download from GitLab](https://img.shields.io/badge/dynamic/json.svg?color=blue&label=Latest%20release&query=%24.0.name&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2F14349047%2Frepository%2Ftags&style=flat-square)](https://gitlab.com/islandoftex/arara/-/releases)
 
-Our tool is available out of the shelf on all major TeX distributions, including
-TeX Live and MiKTeX, which makes manual installation unnecessary given the
-significant coverage of such distributions. Chances are you already have `arara`
-in your system!
+Our tool is available out of the shelf on all major TeX distributions,
+including TeX Live and MiKTeX, which makes manual installation unnecessary
+given the significant coverage of such distributions. Chances are
+you already have `arara` in your system!
 
 You can obtain the official package available in the
 [releases](https://gitlab.com/islandoftex/arara/-/releases) section of our
-project repository. Please refer to the documentation on how to manually deploy
-our tool.
+project repository. Please refer to the documentation on how to
+manually deploy our tool.
 
 ## License
 
