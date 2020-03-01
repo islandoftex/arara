@@ -28,6 +28,10 @@ Total: 0.09 seconds
 
 Once a rule is defined, \arara\ automatically provides an access layer to that rule through directives in the source code, a concept to be formally introduced later on, in Section~\ref{sec:directives}. Observe that a directive reflects a particular instance of a rule of the same name (i.e, a \rbox{foo} directive in a certain source code is an instance of the \rbox{foo} rule).
 
+\begin{messagebox}{A note about rules}{attentioncolour}{\icattention}{black}
+For version 5.0, we kept the current YAML rule scheme. However, the names of the rules being public are marked as deprecated, as they might change in future versions.
+\end{messagebox}
+
 In short, a rule is a plain text file written in the \gls{YAML} format, described in Chapter~\ref{chap:yaml}, on page~\pageref{chap:yaml}. I opted for this format because back then it was cleaner and more intuitive to use than other markup languages such as \gls{XML}, besides of course being a data serialization standard for programming languages.
 
 \begin{messagebox}{Animal jokes}{araracolour}{\icok}{white}
