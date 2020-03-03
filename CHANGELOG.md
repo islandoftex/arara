@@ -8,6 +8,8 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
+## [5.0.0]
+
 #### Added
 
 * Working directory support has been added. Users may now specify their working
@@ -46,6 +48,9 @@ from version 5.0.0 on.
 
 * The `<arara>` shorthand notation will be removed in the next major release.
   (see #26)
+* The file names of distributed rules being public should not be relied upon
+  anymore because there are plans to rename them.
+  (see #32)
 
 ### Removed
 
@@ -163,7 +168,8 @@ from version 5.0.0 on.
 For versions previous to version 5.0.0, there has not been any persistent record
 of changes. Please refer to the commit history for details.
 
-[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v4.0...master
+[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v5.0.0...master
+[5.0.0]: https://gitlab.com/islandoftex/arara/compare/v4.0...v5.0.0
 [4.0.0]: https://gitlab.com/islandoftex/arara/compare/v3.0...v4.0
 [3.0]: https://gitlab.com/islandoftex/arara/compare/v2.0...v3.0
 [2.0]: https://gitlab.com/islandoftex/arara/compare/v1.0.1...v2.0
