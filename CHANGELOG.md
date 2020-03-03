@@ -8,9 +8,9 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
-## [5.0.0]
+## [5.0.0] - 2020-03-03
 
-#### Added
+### Added
 
 * Working directory support has been added. Users may now specify their working
   directory by passing a command-line option.
