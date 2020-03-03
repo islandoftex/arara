@@ -32,7 +32,7 @@ Once a rule is defined, \arara\ automatically provides an access layer to that r
 For version 5.0, we kept the current YAML rule scheme. However, the names of the rules being public are marked as deprecated, as they might change in future versions.
 \end{messagebox}
 
-In short, a rule is a plain text file written in the \gls{YAML} format, described in Chapter~\ref{chap:yaml}, on page~\pageref{chap:yaml}. I opted for this format because back then it was cleaner and more intuitive to use than other markup languages such as \gls{XML}, besides of course being a data serialization standard for programming languages.
+In short, a rule is a plain text file written in the YAML format, described in Chapter~\ref{chap:yaml}, on page~\pageref{chap:yaml}. I opted for this format because back then it was cleaner and more intuitive to use than other markup languages such as XML, besides of course being a data serialization standard for programming languages.
 
 \begin{messagebox}{Animal jokes}{araracolour}{\icok}{white}
 As a bonus, the acronym \emph{YAML} rhymes with the word \emph{camel}, so \arara\ is heavily environmentally friendly. Speaking of camels, there is the programming reference as well, since this amusing animal is usually associated with Perl and friends.
@@ -40,12 +40,12 @@ As a bonus, the acronym \emph{YAML} rhymes with the word \emph{camel}, so \arara
 
 The default rules, i.e, the rules shipped with \arara, are placed inside a special subdirectory named \abox[araracolour]{rules/} inside another special directory named \abox[araracolour]{ARARA\_HOME} (the place where our tool is installed). We will learn later on, in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}, that we can add an arbitrary number of paths for storing our own rules, in order of priority, so do not worry too much about the location of the default rules, although it is important to understand and acknowledge their existence.
 
-The following list describes the basic structure of an \arara\ rule by presenting the proper elements (or keys, if we consider the proper \gls{YAML} nomenclature). Observe that elements marked as \rbox[araracolour]{M} are mandatory (i.e, the rule \emph{has} to have them in order to work). Similarly, elements marked as \rbox[araracolour]{O} are optional, so you can safely ignore them when writing a rule for our tool. A key preceded by \rbox{context$\rightarrow$} indicates a context and should be properly defined inside it.
+The following list describes the basic structure of an \arara\ rule by presenting the proper elements (or keys, if we consider the proper YAML nomenclature). Observe that elements marked as \rbox[araracolour]{M} are mandatory (i.e, the rule \emph{has} to have them in order to work). Similarly, elements marked as \rbox[araracolour]{O} are optional, so you can safely ignore them when writing a rule for our tool. A key preceded by \rbox{context$\rightarrow$} indicates a context and should be properly defined inside it.
 
 \begin{description}
 \item[\describe{M}{!config}] This keyword is mandatory and must be the first line of any \arara\ rule. It denotes the object mapping metadata to be internally used by the tool. Actually, the tool is not too demanding on using it (in fact, you could suppress it entirely and \arara\ will not complain), but it is considered good practice to start all rules with a \abox{!config} keyword regardless.
 
-\item[\describe{M}{identifier}] This key acts as a unique identifier for the rule (as expected). It is highly recommended to use lowercase letters without spaces, accents or punctuation symbols, as good practice (again). As a convention, if you have an identifier named \rbox{pdflatex}, the rule filename must be \rbox{pdflatex.yaml} (like our own instance). Please note that, although \rbox{yml} is known to be a valid \gls{YAML} extension as well, \arara\ only considers files ending with the \rbox{yaml} extension. This is a deliberate decision.
+\item[\describe{M}{identifier}] This key acts as a unique identifier for the rule (as expected). It is highly recommended to use lowercase letters without spaces, accents or punctuation symbols, as good practice (again). As a convention, if you have an identifier named \rbox{pdflatex}, the rule filename must be \rbox{pdflatex.yaml} (like our own instance). Please note that, although \rbox{yml} is known to be a valid YAML extension as well, \arara\ only considers files ending with the \rbox{yaml} extension. This is a deliberate decision.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 identifier: pdflatex
@@ -75,7 +75,7 @@ In order to properly set a subtask, the keys used in this specification are defi
 \item[\describecontext{M}{commands}{command}] This key holds the action to be performed, typically a system command. The tool offers two types of returned values:
 
 \begin{itemize}[label={--}]
-\item A \rbox{Command} object: \arara\ features an approach for handling system commands based on a high level structure with explicit argument parsing named \rbox{Command} (for our curious users, it is a plain Java object). In order to use this approach, we need to rely on \glspl{orb-tag} and use a helper method named \mtbox{getCommand} to obtain the desired result. We will detail this method later on, in Section~\ref{sec:commands}, on page~\pageref{sec:commands}. We highly recommend the adoption of this approach for rule writing instead of using plain strings.
+\item A \rbox{Command} object: \arara\ features an approach for handling system commands based on a high level structure with explicit argument parsing named \rbox{Command} (for our curious users, it is a plain Java object). In order to use this approach, we need to rely on orb tags and use a helper method named \mtbox{getCommand} to obtain the desired result. We will detail this method later on, in Section~\ref{sec:commands}, on page~\pageref{sec:commands}. We highly recommend the adoption of this approach for rule writing instead of using plain strings.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command: "@{ return getCommand('ls') }"
@@ -96,7 +96,7 @@ command: "@{ return [ getCommand('ls'), getCommand('ls') ] }"
 
 As an example, please refer to the official \rbox{clean} rule for a real scenario where a list of commands is successfully employed: for each provided extension, the rule creates a new cleaning command and adds it to a list of removals to be processed later.
 
-There are at least two variables available in the \abox{command} context and are described as follows (note that \gls{MVEL} variables and \glspl{orb-tag} are discussed in Chapter~\ref{chap:mvel}). A variable will be denoted by \varbox{variable} in this list. For each rule argument (defined later on), there will be a corresponding variable in the \abox{command} context, directly accessed through its unique identifier.
+There are at least two variables available in the \abox{command} context and are described as follows (note that MVEL variables and orb tags are discussed in Chapter~\ref{chap:mvel}). A variable will be denoted by \varbox{variable} in this list. For each rule argument (defined later on), there will be a corresponding variable in the \abox{command} context, directly accessed through its unique identifier.
 
 \begin{description}
 \item[\varbox{file}] This variable holds the file name, without any path reference, as a plain string. It is usually composed from the base name and the extension. This variable is available since the first release of \arara.
@@ -106,7 +106,7 @@ There are at least two variables available in the \abox{command} context and are
 
 \begin{messagebox}{Quote handling}{araracolour}{\icinfo}{white}
 \setlength{\parskip}{1em}
-The \gls{YAML} format disallows key values starting with \rbox{@} without proper quoting. This is the reason we had to use double quotes for the value and internally using single quotes for the command string. Also, we could use the other way around, or even using only one type and then escaping them when needed. This is excessively verbose but needed due to the format requirement. Thankfully, \arara\ offers two solutions for removing the quoting verbosity when writing commands.
+The YAML format disallows key values starting with \rbox{@} without proper quoting. This is the reason we had to use double quotes for the value and internally using single quotes for the command string. Also, we could use the other way around, or even using only one type and then escaping them when needed. This is excessively verbose but needed due to the format requirement. Thankfully, \arara\ offers two solutions for removing the quoting verbosity when writing commands.
 
 The first solution is used in previous versions and it still works like a charm in modern days. We need to precede our command with a special keyword \rbox{<arara>} which will be removed afterwards. This solution works on virtually every key in the rule context, so it is a bonus. The new code will look like this:
 
@@ -114,7 +114,7 @@ The first solution is used in previous versions and it still works like a charm 
 command: <arara> @{ return getCommand('ls') }
 \end{codebox}
 
-The second approach is more of a \gls{YAML} feature rather than a tool exclusive, although we have to do a couple of checks under the hood in order to ensure the correct execution. The idea here is to use the scalar content in folded style, as seen in Section~\ref{sec:yamlscalars}, on page~\pageref{sec:yamlscalars}. The new code will look like this:
+The second approach is more of a YAML feature rather than a tool exclusive, although we have to do a couple of checks under the hood in order to ensure the correct execution. The idea here is to use the scalar content in folded style, as seen in Section~\ref{sec:yamlscalars}, on page~\pageref{sec:yamlscalars}. The new code will look like this:
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 command: >
@@ -123,10 +123,10 @@ command: >
   }
 \end{codebox}
 
-Mind the indentation, as \gls{YAML} requires it to properly identify blocks. Please keep in mind that the \rbox{<arara>} keyword is marked as deprecated in version 5.0 and will be removed in future versions of \arara, so it is highly recommended to favour this approach.
+Mind the indentation, as YAML requires it to properly identify blocks. Please keep in mind that the \rbox{<arara>} keyword is marked as deprecated in version 5.0 and will be removed in future versions of \arara, so it is highly recommended to favour this approach.
 \end{messagebox}
 
-\item[\describecontext{O}{commands}{exit}] This key holds a special purpose, as it represents a custom exit status evaluation for the corresponding command. In general, a successful execution has zero as an exit status, but sometimes we end up with tools or situations where we need to override this check for whatever reason. For this purpose, simply write a \gls{MVEL} expression \emph{without \glspl{orb-tag}} as plain string and use the special variable \varbox{value} if you need the actual exit status returned by the command, available at runtime. For example, if the command returns a non-zero value indicating a successful execution, we can write this key as:
+\item[\describecontext{O}{commands}{exit}] This key holds a special purpose, as it represents a custom exit status evaluation for the corresponding command. In general, a successful execution has zero as an exit status, but sometimes we end up with tools or situations where we need to override this check for whatever reason. For this purpose, simply write a MVEL expression \emph{without orb tags} as plain string and use the special variable \varbox{value} if you need the actual exit status returned by the command, available at runtime. For example, if the command returns a non-zero value indicating a successful execution, we can write this key as:
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 exit: value > 0
@@ -188,7 +188,7 @@ There are three variables available in the \abox{flag} context, described as fol
 \item[\varbox{reference}] This variable holds the canonical, absolute path representation of the \varbox{file} variable as a \rbox{File} object. This is useful if it's necessary to know the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \rbox{File} class.
 \end{description}
 
-In the previous example, observe that the \gls{MVEL} expression defined in the \abox{flag} key checks if the user provided an affirmative value regarding shell escape, through comparing \varbox{parameters.shell} with a set of predefined affirmative values. In any case, the corresponding command flag is defined as result of such evaluation.
+In the previous example, observe that the MVEL expression defined in the \abox{flag} key checks if the user provided an affirmative value regarding shell escape, through comparing \varbox{parameters.shell} with a set of predefined affirmative values. In any case, the corresponding command flag is defined as result of such evaluation.
 
 \item[\describecontext{O}{arguments}{default}] As default behaviour, if a parameter is not set in the directive context, the reference will be mapped to an empty string. This key exists for the exact purpose of overriding such behaviour.
 
@@ -235,7 +235,7 @@ arguments:
 \end{codebox}
 \end{description}
 
-This is the rule structure in the \gls{YAML} format used by \arara. Keep in mind that all subtasks in a rule are checked against their corresponding exit status. If an abnormal execution is detected, the tool will instantly halt and the rule will fail. Even \arara\ itself will return an exit code different than zero when this situation happens (detailed in Chapter~\ref{chap:commandline}, on page~\pageref{chap:commandline}).
+This is the rule structure in the YAML format used by \arara. Keep in mind that all subtasks in a rule are checked against their corresponding exit status. If an abnormal execution is detected, the tool will instantly halt and the rule will fail. Even \arara\ itself will return an exit code different than zero when this situation happens (detailed in Chapter~\ref{chap:commandline}, on page~\pageref{chap:commandline}).
 
 \section{Directives}
 \label{sec:directives}
@@ -251,7 +251,7 @@ There are two types of directives in \arara\ which determine the way the corresp
 % arara: pdflatex
 \end{codebox}
 
-\item[parametrized directive] This type of directive also has the rule name (which refers to the \abox{identifier} key from the rule of the same name), and also contains a map of parameters in order to provide additional information to the corresponding rule. This map is defined in the \gls{YAML} format, based on the inline style.
+\item[parametrized directive] This type of directive also has the rule name (which refers to the \abox{identifier} key from the rule of the same name), and also contains a map of parameters in order to provide additional information to the corresponding rule. This map is defined in the YAML format, based on the inline style.
 
 \begin{codebox}{Parametrized directive}{teal}{\icnote}{white}
 % arara: pdflatex: { shell: yes }
@@ -302,28 +302,28 @@ It is important to observe that there is no need of them to be in contiguous lin
 Although it is possible to spread lines of a multiline directive all over the code, it is considered good practice to keep them together for easier reading and editing. In any case, you can always see which lines compose a directive by inspecting the log file.
 \end{messagebox}
 
-\arara\ provides logical expressions, written in the \gls{MVEL} language, and special operators processed at runtime in order to determine whether and how a directive should be processed. This feature is named \emph{directive conditional}, or simply \emph{conditional} as an abbreviation. The following list describes all conditional operators available in the directive context.
+\arara\ provides logical expressions, written in the MVEL language, and special operators processed at runtime in order to determine whether and how a directive should be processed. This feature is named \emph{directive conditional}, or simply \emph{conditional} as an abbreviation. The following list describes all conditional operators available in the directive context.
 
 \begin{description}
-\item[\describeconditional{a priori}{if}] The associated \gls{MVEL} expression is evaluated beforehand, and the directive is interpreted if, and only if, the result of such evaluation is true. This directive, when the conditional holds true, is executed at most once.
+\item[\describeconditional{a priori}{if}] The associated MVEL expression is evaluated beforehand, and the directive is interpreted if, and only if, the result of such evaluation is true. This directive, when the conditional holds true, is executed at most once.
 
 \begin{codebox}{Conditional}{teal}{\icnote}{white}
 % arara: pdflatex if missing('pdf') || changed('tex')
 \end{codebox}
 
-\item[\describeconditional{a posteriori}{until}] The directive is interpreted the first time, then the associated \gls{MVEL} expression evaluation is done. While the result holds false, the directive is interpreted again and again. There are no guarantees of proper halting.
+\item[\describeconditional{a posteriori}{until}] The directive is interpreted the first time, then the associated MVEL expression evaluation is done. While the result holds false, the directive is interpreted again and again. There are no guarantees of proper halting.
 
 \begin{codebox}{Conditional}{teal}{\icnote}{white}
 % arara: pdflatex until !found('log', 'undefined references')
 \end{codebox}
 
-\item[\describeconditional{a priori}{unless}] Technically an inverted \cdbox{if} conditional, the associated \gls{MVEL} expression is evaluated beforehand, and the directive is interpreted if, and only if, the result is false. This directive, when the conditional holds false, is executed at most once.
+\item[\describeconditional{a priori}{unless}] Technically an inverted \cdbox{if} conditional, the associated MVEL expression is evaluated beforehand, and the directive is interpreted if, and only if, the result is false. This directive, when the conditional holds false, is executed at most once.
 
 \begin{codebox}{Conditional}{teal}{\icnote}{white}
 % arara: pdflatex unless unchanged('tex') && exists('pdf')
 \end{codebox}
 
-\item[\describeconditional{a priori}{while}] The associated \gls{MVEL} expression is evaluated beforehand, the directive is interpreted if, and only if, the result is true, and the process is repeated while the result still holds true. There are no guarantees of proper halting.
+\item[\describeconditional{a priori}{while}] The associated MVEL expression is evaluated beforehand, the directive is interpreted if, and only if, the result is true, and the process is repeated while the result still holds true. There are no guarantees of proper halting.
 
 \begin{codebox}{Conditional}{teal}{\icnote}{white}
 % arara: pdflatex while missing('pdf') ||

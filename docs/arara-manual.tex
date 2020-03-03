@@ -41,63 +41,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage[margin=2.5cm]{geometry}
 \usepackage{arara}
-\usepackage[record,postpunc=dot]{glossaries-extra}
 
 \newcommand{\araraversion}{5.0}
-
-\glssetcategoryattribute{abbreviation}{glossdesc}{firstuc}
-\glssetcategoryattribute{general}{glossname}{firstuc}
-\glssetcategoryattribute{general}{glossdesc}{firstuc}
-
-\setabbreviationstyle{short-nolong-desc}
-\renewcommand{\glsxtrshortdescname}{%
- \protect\glsabbrvfont{\the\glsshorttok} (\the\glslongtok)%
-}
-
- \newabbreviation
- [description={an interface that allows users to interact
-through graphical components, such as buttons and menus}]
- {GUI}{GUI}{Graphical User Interface}
-
- \newabbreviation
- [description={an organisation that develops and promotes Internet standards}]
- {IETF}{IETF}{Internet Engineering Task Force}
-
- \newabbreviation
- [description={a virtual machine that enables Java programs to be run}]
- {JVM}{JVM}{Java Virtual Machine}
-
- \newabbreviation
- [description={a hybrid, dynamic, statically typed, embeddable
- expression language and runtime for the Java platform},
- location={(See Chapter~\ref{chap:mvel}.)}]
- {MVEL}{MVEL}{MVFLEX Expression Language}
-
-\newglossaryentry{orb-tag}{name={orb tag},
- description={a dynamic element of an \gls{MVEL} template which is
- evaluated at runtime},
- location={(See Section~\ref{sec:mvelbasictemplating}.)}}
-
-\newabbreviation
- [description={a simple computer programming environment that takes
-  a single expression (input), evaluates it and results the result}]
- {REPL}{REPL}{Read--Eval--Print Loop}
-
-\newabbreviation
- [description={a database language}]
- {SQL}{SQL}{Structured Query Language}
-
-\newabbreviation
- [description={a markup language that defines a set of rules for
-encoding documents in a format that is both human-readable and
-machine-readable}]
- {XML}{XML}{Extensible Markup Language}
-
-\newabbreviation
- [description={human-friendly data, commonly used for configuration
-files but also used for data storage or transmission},
- location={(See Chapter~\ref{chap:yaml}.)}]
- {YAML}{YAML}{YAML Ain't Markup Language}
  
 \begin{document}
 
@@ -154,13 +99,7 @@ Version \araraversion}
 \em No birds were harmed in the making of this manual.
 \end{flushright}
 
-% TODO remove foreword?
-%\include{chapters/foreword}
-
-% TODO write new prologue
-\include{chapters/prologue}
 \include{chapters/license}
-\printunsrtglossary
 
 \cleardoublepage
 

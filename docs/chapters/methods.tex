@@ -2,10 +2,10 @@
 \chapter{Methods}
 \label{chap:methods}
 
-\arara\ features several helper methods available in directive conditional and rule contexts which provide interesting features for enhancing the user experience, as well as improving the automation itself. This chapter provides a list of such methods. It is important to observe that virtually all classes from the Java runtime environment can be used within \gls{MVEL} expressions, so your mileage might vary.
+\arara\ features several helper methods available in directive conditional and rule contexts which provide interesting features for enhancing the user experience, as well as improving the automation itself. This chapter provides a list of such methods. It is important to observe that virtually all classes from the Java runtime environment can be used within MVEL expressions, so your mileage might vary.
 
 \begin{messagebox}{A note on writing code}{araracolour}{\icok}{white}
-As seen in Chapter~\ref{chap:mvel}, on page~\pageref{chap:mvel}, Java and \gls{MVEL} code be used interchangeably within expressions and \glspl{orb-tag}, including instantiation of classes into objects and invocation of methods. However, be mindful of explicitly importing Java packages and classes through the classic \rbox{import} statement, as \gls{MVEL} does not automatically handle imports, or an exception will surely be raised. Alternatively, you can provide the full qualified name to classes as well.
+As seen in Chapter~\ref{chap:mvel}, on page~\pageref{chap:mvel}, Java and MVEL code be used interchangeably within expressions and orb tags, including instantiation of classes into objects and invocation of methods. However, be mindful of explicitly importing Java packages and classes through the classic \rbox{import} statement, as MVEL does not automatically handle imports, or an exception will surely be raised. Alternatively, you can provide the full qualified name to classes as well.
 \end{messagebox}
 
 Methods are listed with their complete signatures, including potential  parameters and corresponding types. Also, the return type of a method is denoted by \rrbox{type} and refers to a typical Java data type (either class or primitive). Do not worry too much, as there are illustrative examples. A method available in the directive conditional context will be marked by \ctbox{C} next to the corresponding signature. Similarly, an entry marked by \ctbox{R} denotes that the corresponding method is available in the rule context.
@@ -123,14 +123,14 @@ It is important to observe that this method \emph{always} performs a database op
 \end{codebox}
 
 \begin{messagebox}{Short-circuit evaluation}{araracolour}{\icok}{white}
-According to the \href{https://en.wikipedia.org/wiki/Short-circuit_evaluation}{Wikipedia entry}, a \emph{short-circuit evaluation} is the semantics of some boolean operators in some programming languages in which the second argument is executed or evaluated only if the first argument does not suffice to determine the value of the expression. In Java (and consequently \gls{MVEL}), both short-circuit and standard boolean operators are available.
+According to the \href{https://en.wikipedia.org/wiki/Short-circuit_evaluation}{Wikipedia entry}, a \emph{short-circuit evaluation} is the semantics of some boolean operators in some programming languages in which the second argument is executed or evaluated only if the first argument does not suffice to determine the value of the expression. In Java (and consequently MVEL), both short-circuit and standard boolean operators are available.
 \end{messagebox}
 
 \begin{messagebox}{CRC as a hashing algorithm}{attentioncolour}{\icattention}{black}
 \arara\ internally relies on a CRC32 implementation for file hashing. This particular choice, although not designed for hashing, offers an interesting trade-off between speed and quality. Besides, since it is not computationally expensive as strong algorithms such as MD5 and SHA1, CRC32 can be used for hashing typical \TeX\ documents and plain text files with little to no collisions.
 \end{messagebox}
 
-\item[\mddbox{C}{R}{changed(String extension)}{boolean}] This method returns a boolean value according to whether the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the provided \rbox{String} extension has changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a \gls{XML} database file named \rbox{arara.yaml} located in the same directory as the current file (the database name can be overridden in the configuration file, as discussed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). The method semantics (including the return values) is presented as follows.
+\item[\mddbox{C}{R}{changed(String extension)}{boolean}] This method returns a boolean value according to whether the base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the provided \rbox{String} extension has changed since last verification, based on a traditional cyclic redundancy check. The file reference, as well as the associated hash, is stored in a YAML database file named \rbox{arara.yaml} located in the same directory as the current file (the database name can be overridden in the configuration file, as discussed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). The method semantics (including the return values) is presented as follows.
 
 \vspace{1em}
 
@@ -586,15 +586,15 @@ The methods presented in this section cover the most common types used in direct
 \section{Classes and objects}
 \label{sec:classesandobjects}
 
-\arara\ can be extended at runtime with code from \gls{JVM} languages, such as Groovy, Scala, Clojure and Kotlin. The tool can load classes from \rbox{class} and \rbox{jar} files and even instantiate them. This section introduces methods related to class loading and object instantiation.
+\arara\ can be extended at runtime with code from JVM languages, such as Groovy, Scala, Clojure and Kotlin. The tool can load classes from \rbox{class} and \rbox{jar} files and even instantiate them. This section introduces methods related to class loading and object instantiation.
 
 \begin{messagebox}{Ordered pairs}{araracolour}{\icok}{white}
 According to the \href{https://en.wikipedia.org/wiki/Ordered_pair}{Wikipedia entry}, in mathematics, an \emph{ordered pair} $(a, b)$ is a pair of objects. The order in which the objects appear in the pair is significant: the ordered pair $(a, b)$ is different from the ordered pair $(b, a)$ unless $a = b$. In the ordered pair $(a, b)$, the object $a$ is called the \emph{first} entry, and the object $b$ the \emph{second} entry of the pair. \arara\ relies on this concept with the helper \rbox{Pair<A, B>} class, in which \rbox{A} and \rbox{B} denote the component classes, i.e, the types associated to the pair elements. In order to access the pair entries, the class provides two methods:
 
 \begin{description}
-\item[\mtbox{first()}\hfill\rrbox{A}] This method, as the name implies, returns the first entry of the ordered pair, as an \rbox{A} object. It is important to observe that, from the \gls{MVEL} context, as the method constitutes a property accessor (namely, a getter), the parentheses can be safely omitted.
+\item[\mtbox{first()}\hfill\rrbox{A}] This method, as the name implies, returns the first entry of the ordered pair, as an \rbox{A} object. It is important to observe that, from the MVEL context, as the method constitutes a property accessor (namely, a getter), the parentheses can be safely omitted.
 
-\item[\mtbox{second()}\hfill\rrbox{B}] This method, as the name implies, returns the second entry of the ordered pair, as a \rbox{B} object. It is important to observe that, from the \gls{MVEL} context, as the method constitutes a property accessor (namely, a getter), the parentheses can be safely omitted.
+\item[\mtbox{second()}\hfill\rrbox{B}] This method, as the name implies, returns the second entry of the ordered pair, as a \rbox{B} object. It is important to observe that, from the MVEL context, as the method constitutes a property accessor (namely, a getter), the parentheses can be safely omitted.
 \end{description}
 
 Keep in mind that the entries in the \rbox{Pair} class, once defined, cannot be modified to other values. The initial values are set during instantiation and, therefore, only entry getters are available to the user during the object life cycle. 
@@ -761,7 +761,7 @@ This method shows a dialog box according to the provided parameters, including o
 \end{codebox}
 
 \begin{messagebox}{Swing toolkit}{araracolour}{\icok}{white}
-According to the \href{https://en.wikipedia.org/wiki/Swing_(Java)}{Wikipedia entry}, the Swing toolkit was developed to provide a more sophisticated set of \gls{GUI} components than the earlier  AWT widget system. Swing provides a look and feel that emulates the look and feel of several platforms, and also supports a pluggable look and feel that allows applications to have a look and feel unrelated to the underlying platform. It has more powerful and flexible components than AWT. In addition to familiar components such as buttons, check boxes and labels, Swing provides several advanced components, such as scroll panes, trees, tables, and lists.
+According to the \href{https://en.wikipedia.org/wiki/Swing_(Java)}{Wikipedia entry}, the Swing toolkit was developed to provide a more sophisticated set of GUI components than the earlier  AWT widget system. Swing provides a look and feel that emulates the look and feel of several platforms, and also supports a pluggable look and feel that allows applications to have a look and feel unrelated to the underlying platform. It has more powerful and flexible components than AWT. In addition to familiar components such as buttons, check boxes and labels, Swing provides several advanced components, such as scroll panes, trees, tables, and lists.
 \end{messagebox}
 
 \item[\mddbox{C}{R}{showInput(int width, int icon, String title, String text)}{String}]\uimethod{inputbox1}
