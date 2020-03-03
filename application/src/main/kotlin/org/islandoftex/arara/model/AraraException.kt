@@ -3,14 +3,16 @@ package org.islandoftex.arara.model
 
 /**
  * Implements the specific exception model for arara.
- * @author Paulo Roberto Massa Cereda
- * @version 4.0
+ * 
+ * @author Island of TeX
+ * @version 5.0
  * @since 4.0
  */
 class AraraException : Exception {
-    // the underlying exception,
-    // used to hold more details
-    // on what really happened
+    /**
+     * The underlying exception, used to hold more details
+     * on what really happened
+     */
     val exception: Exception?
 
     /**
@@ -44,5 +46,5 @@ class AraraException : Exception {
      * @return A boolean value indicating if the current object has an
      * underlying exception.
      */
-    fun hasException(): Boolean = exception?.message != null ?: false
+    fun hasException(): Boolean = exception?.message != null
 }
