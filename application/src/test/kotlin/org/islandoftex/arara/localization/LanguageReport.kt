@@ -6,7 +6,7 @@ import java.io.File
 /**
  * Implements the language report model.
  *
- * @author Paulo Roberto Massa Cereda
+ * @author Island of TeX
  * @version 5.0
  * @since 5.0
  */

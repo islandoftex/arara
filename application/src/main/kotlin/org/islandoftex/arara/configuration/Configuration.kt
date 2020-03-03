@@ -15,8 +15,8 @@ import org.islandoftex.arara.model.AraraException
  * all configuration settings used by model and utilitary classes throughout
  * the execution. This controller is implemented as a singleton.
  *
- * @author Paulo Roberto Massa Cereda
- * @version 4.0
+ * @author Island of TeX
+ * @version 5.0
  * @since 4.0
  */
 object Configuration {

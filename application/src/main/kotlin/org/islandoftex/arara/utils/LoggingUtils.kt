@@ -12,8 +12,9 @@ import org.slf4j.LoggerFactory
 /**
  * Implements the logging controller. This class actually sets the logging
  * configuration in order to allow appending results to a file.
- * @author Paulo Roberto Massa Cereda
- * @version 4.0
+ *
+ * @author Island of TeX
+ * @version 5.0
  * @since 4.0
  */
 object LoggingUtils {

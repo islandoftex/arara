@@ -9,8 +9,8 @@ import kotlinx.serialization.Serializable
  * This database is a map because it maps files to hashes. So the key will
  * always be a file representation and the value always a string.
  *
- * @author Paulo Roberto Massa Cereda
- * @version 4.0
+ * @author Island of TeX
+ * @version 5.0
  * @since 4.0
  */
 @Serializable

@@ -8,17 +8,22 @@ import org.islandoftex.arara.utils.CommonUtils
 
 /**
  * Implements a command model, containing a list of strings.
- * @author Paulo Roberto Massa Cereda
- * @version 4.0
+ *
+ * @author Island of TeX
+ * @version 5.0
  * @since 4.0
  */
 class Command {
-    // a list of elements which are components
-    // of a command and represented as strings
+    /**
+     * A list of elements which are components
+     * of a command and represented as strings
+     */
     val elements: List<String>
 
-    // an optional file acting as a reference
-    // for the default working directory
+    /**
+     * An optional file acting as a reference for
+     * the default working directory
+     */
     var workingDirectory: File = Arara.config[AraraSpec.Execution
             .workingDirectory].toFile()
 

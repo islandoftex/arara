@@ -15,6 +15,13 @@ import org.islandoftex.arara.model.Interpreter
 import org.islandoftex.arara.ruleset.DirectiveUtils
 import org.islandoftex.arara.utils.DisplayUtils
 
+/**
+ * arara's main entry point
+ *
+ * @author Island of TeX
+ * @version 5.0
+ * @since 5.0
+ */
 object Arara {
     // TODO: watch config files
     val baseconfig = Config { addSpec(AraraSpec) }

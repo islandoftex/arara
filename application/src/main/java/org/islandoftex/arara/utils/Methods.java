@@ -23,8 +23,8 @@ import java.util.stream.Stream;
 /**
  * Implements some auxiliary methods for runtime evaluation.
  *
- * @author Paulo Roberto Massa Cereda
- * @version 4.0
+ * @author Island of TeX
+ * @version 5.0
  * @since 4.0
  */
 @SuppressWarnings("unused")

@@ -17,8 +17,8 @@ import org.islandoftex.arara.utils.CommonUtils
 /**
  * Implements configuration utilitary methods.
  *
- * @author Paulo Roberto Massa Cereda
- * @version 4.0
+ * @author Island of TeX
+ * @version 5.0
  * @since 4.0
  */
 object ConfigurationUtils {
@@ -26,8 +26,10 @@ object ConfigurationUtils {
     // language controller
     private val messages = LanguageController
 
-    // a map containing all file types that arara accepts
-    // and their corresponding patterns
+    /**
+     * This map contains all file types that arara accepts
+     * and their corresponding search patterns (for comments).
+     */
     val defaultFileTypePatterns = mapOf(
             "tex" to "^\\s*%\\s+",
             "dtx" to "^\\s*%\\s+",
@@ -36,17 +38,23 @@ object ConfigurationUtils {
             "ins" to "^\\s*%\\s+"
     )
 
-    // list of default file types provided by arara, in order.
-    // initialization may throw AraraException if file types are wrong
+    /**
+     * Set of default file types provided by arara.
+     * Initialization may throw AraraException if file types are wrong
+     */
     val defaultFileTypes: Set<FileType> by lazy {
         defaultFileTypePatterns
                 .map { (extension, pattern) -> FileType(extension, pattern) }
                 .toSet()
     }
 
-    // look for configuration files in the user's working directory first
-    // if no configuration files are found in the user's working directory,
-    // try to look up in a global directory, that is, the user home
+    /**
+     * The configuration file in use.
+     *
+     * Look for configuration files in the user's working directory first
+     * if no configuration files are found in the user's working directory,
+     * try to look up in a global directory, that is, the user home.
+     */
     val configFile: File?
         get() {
             val names = listOf(".araraconfig.yaml",

@@ -10,8 +10,9 @@ import org.islandoftex.arara.configuration.AraraSpec
  * Implements the language controller. This controller provides a singleton
  * object that holds the application messages, easily available to all model
  * and utilitary classes.
- * @author Paulo Roberto Massa Cereda
- * @version 4.0
+ *
+ * @author Island of TeX
+ * @version 5.0
  * @since 4.0
  */
 object LanguageController {

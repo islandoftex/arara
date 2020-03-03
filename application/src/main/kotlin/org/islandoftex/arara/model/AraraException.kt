@@ -3,7 +3,7 @@ package org.islandoftex.arara.model
 
 /**
  * Implements the specific exception model for arara.
- * 
+ *
  * @author Island of TeX
  * @version 5.0
  * @since 4.0

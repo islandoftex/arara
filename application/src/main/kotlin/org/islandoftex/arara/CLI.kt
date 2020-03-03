@@ -26,6 +26,13 @@ import org.islandoftex.arara.utils.CommonUtils
 import org.islandoftex.arara.utils.DisplayUtils
 import org.islandoftex.arara.utils.LoggingUtils
 
+/**
+ * arara's command line interface
+ *
+ * @author Island of TeX
+ * @version 5.0
+ * @since 5.0
+ */
 class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
     private val log by option("-l", "--log",
             help = "Generate a log output")

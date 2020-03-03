@@ -24,8 +24,8 @@ import org.zeroturnaround.exec.listener.ShutdownHookProcessDestroyer
 /**
  * Implements interpreter utilitary methods.
  *
- * @author Paulo Roberto Massa Cereda
- * @version 4.0
+ * @author Island of TeX
+ * @version 5.0
  * @since 4.0
  */
 object InterpreterUtils {

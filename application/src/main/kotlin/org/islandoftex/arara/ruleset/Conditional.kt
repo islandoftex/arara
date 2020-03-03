@@ -4,8 +4,9 @@ package org.islandoftex.arara.ruleset
 /**
  * The conditional class, it represents the type of conditional available
  * for a directive and its corresponding expression to be evaluated.
- * @author Paulo Roberto Massa Cereda
- * @version 4.0
+ *
+ * @author Island of TeX
+ * @version 5.0
  * @since 4.0
  */
 data class Conditional(

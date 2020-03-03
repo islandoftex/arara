@@ -11,9 +11,10 @@ import org.islandoftex.arara.ruleset.DirectiveUtils
 import org.islandoftex.arara.utils.CommonUtils
 
 /**
- * It extracts directives from the provided main file.
- * @author Paulo Roberto Massa Cereda
- * @version 4.0
+ * Extractor for directives from the provided main file.
+ *
+ * @author Island of TeX
+ * @version 5.0
  * @since 4.0
  */
 object Extractor {

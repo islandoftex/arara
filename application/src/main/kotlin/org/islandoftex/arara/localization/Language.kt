@@ -7,8 +7,8 @@ import org.islandoftex.arara.model.AraraException
 /**
  * Implements the language model.
  *
- * @author Paulo Roberto Massa Cereda
- * @version 4.0
+ * @author Island of TeX
+ * @version 5.0
  * @since 4.0
  */
 class Language(code: String) {
@@ -58,8 +58,10 @@ class Language(code: String) {
                 "it" to Pair("Italian", Locale("it"))
         )
 
-        // string representing the list of available languages
-        // because they don't change initialized with the string
+        /**
+         * String representing the list of available languages
+         * because they don't change initialized with the string
+         */
         val languagesList: String = "(" + languages.map { (key, value) ->
             value.first + ": " + key
         }.joinToString(", ") + ")"

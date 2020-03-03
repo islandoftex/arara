@@ -10,8 +10,8 @@ import org.islandoftex.arara.localization.Messages
  * This class wraps a map that holds the execution session, that is, a dirty
  * maneuver to exchange pretty much any data between commands and even rules.
  *
- * @author Paulo Roberto Massa Cereda
- * @version 4.0
+ * @author Island of TeX
+ * @version 5.0
  * @since 4.0
  */
 object Session {

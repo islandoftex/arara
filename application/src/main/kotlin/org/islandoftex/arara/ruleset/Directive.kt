@@ -4,8 +4,8 @@ package org.islandoftex.arara.ruleset
 /**
  * Implements the directive model.
  *
- * @author Paulo Roberto Massa Cereda
- * @version 4.0
+ * @author Island of TeX
+ * @version 5.0
  * @since 4.0
  */
 data class Directive(

@@ -7,28 +7,34 @@ import org.islandoftex.arara.utils.CommonUtils
 
 /**
  * The rule argument model.
- * @author Paulo Roberto Massa Cereda
- * @version 4.0
+ *
+ * @author Island of TeX
+ * @version 5.0
  * @since 4.0
  */
 @Serializable
 class Argument {
-    // the argument identifier
+    /**
+     * The argument identifier
+     */
     var identifier: String? = null
         get() = CommonUtils.removeKeyword(field)
 
-    // a boolean indicating if the
-    // current argument is required
+    /**
+     * Boolean indicating if the current argument is required
+     */
     @SerialName("required")
     var isRequired: Boolean = false
 
-    // the flag to hold the argument
-    // value manipulation
+    /**
+     * Flag to hold the argument value manipulation
+     */
     var flag: String? = null
         get() = CommonUtils.removeKeyword(field)
 
-    // the argument fallback if it is
-    // not defined in the directive
+    /**
+     * The argument fallback if it is not defined in the directive
+     */
     var default: String? = null
         get() = CommonUtils.removeKeyword(field)
 }

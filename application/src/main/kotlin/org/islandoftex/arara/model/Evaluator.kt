@@ -13,8 +13,8 @@ import org.mvel2.templates.TemplateRuntime
  * Implements the evaluator model, on which a conditional can be analyzed and
  * processed.
  *
- * @author Paulo Roberto Massa Cereda
- * @version 4.0
+ * @author Island of TeX
+ * @version 5.0
  * @since 4.0
  */
 class Evaluator {

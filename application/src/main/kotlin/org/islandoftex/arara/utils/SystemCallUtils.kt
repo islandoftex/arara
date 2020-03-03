@@ -12,8 +12,8 @@ import org.zeroturnaround.exec.ProcessExecutor
  * not directly available at runtime and makes unsafe calling of system
  * commands available to rules.
  *
- * @author Paulo Roberto Massa Cereda
- * @version 4.0
+ * @author Island of TeX
+ * @version 5.0
  * @since 4.0
  */
 object SystemCallUtils {

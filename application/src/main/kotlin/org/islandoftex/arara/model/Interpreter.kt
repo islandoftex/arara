@@ -24,8 +24,8 @@ import org.slf4j.LoggerFactory
 /**
  * Interprets the list of directives.
  *
- * @author Paulo Roberto Massa Cereda
- * @version 4.0
+ * @author Island of TeX
+ * @version 5.0
  * @since 4.0
  */
 class Interpreter(

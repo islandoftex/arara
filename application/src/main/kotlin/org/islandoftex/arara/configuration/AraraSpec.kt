@@ -8,6 +8,13 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 import org.islandoftex.arara.localization.Language
 
+/**
+ * Configuration hierarchy for arara
+ *
+ * @author Island of TeX
+ * @version 5.0
+ * @since 5.0
+ */
 @Suppress("MagicNumber")
 object AraraSpec : ConfigSpec() {
     object Application : ConfigSpec() {
