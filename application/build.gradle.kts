@@ -243,7 +243,9 @@ publishing {
                 if (project.hasProperty("jobToken")) {
                     name = "Job-Token"
                     value = project.property("jobToken").toString()
-                }
+                } else {
+		    logger.warn("Will be unable to publish (jobToken missing)")
+		}
             }
             authentication {
                 create<HttpHeaderAuthentication>("header")

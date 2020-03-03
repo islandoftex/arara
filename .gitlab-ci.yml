@@ -6,6 +6,7 @@ stages:
   - build
   - test
   - doc
+  - publish
 
 .buildtemplate: &builddefinition
   stage: build
@@ -89,3 +90,13 @@ build:doc:
     paths:
       - docs/*.pdf
     expire_in: 1 week
+
+publish:gitlab:
+  image: registry.gitlab.com/islandoftex/images/javafx-gradle:jdk8-latest
+  stage: publish
+  script:
+    - gradle publishGitLabPublicationToMavenRepository -PjobToken=$CI_JOB_TOKEN -Prelease=true
+  only:
+    refs:
+      - tags
+      - master
