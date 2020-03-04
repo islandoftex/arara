@@ -100,3 +100,28 @@ publish:gitlab:
     refs:
       - tags
       - master
+
+publish:snapshot_tdszip:
+  image: registry.gitlab.com/islandoftex/images/javafx-gradle:jdk8-latest
+  stage: publish
+  script:
+    - gradle assembleCTAN
+  artifacts:
+    paths:
+      - build/*.zip
+  except:
+    refs:
+      - tags
+      - master
+publish:tdszip:
+  image: registry.gitlab.com/islandoftex/images/javafx-gradle:jdk8-latest
+  stage: publish
+  script:
+    - gradle -Prelease=true assembleCTAN
+  artifacts:
+    paths:
+      - build/*.zip
+  only:
+    refs:
+      - tags
+      - master
