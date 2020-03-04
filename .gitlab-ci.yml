@@ -101,26 +101,34 @@ publish:gitlab:
       - tags
       - master
 
-publish:snapshot_tdszip:
-  image: registry.gitlab.com/islandoftex/images/javafx-gradle:jdk8-latest
+.ctantemplate: &ctandefinition
   stage: publish
+  image: registry.gitlab.com/islandoftex/images/texlive:latest
   script:
-    - gradle assembleCTAN
+    - GRADLEURL=https://services.gradle.org/distributions/ && \ 
+      GRADLEFILE=`curl -s $GRADLEURL | grep -oP "<span\s*class=\"name\">\K[^<]*-bin.zip" | head -1` && \ 
+      echo "Fetching remote file $GRADLEFILE" && \ 
+      wget -O gradle.zip "$GRADLEURL$GRADLEFILE" && \ 
+      unzip gradle.zip && \ 
+      rm gradle.zip && \ 
+      mv gradle* gradle
+    - gradle/current/bin/gradle -Prelease=$PRELEASE assembleCTAN
   artifacts:
+    name: "$CI_COMMIT_REF_NAME-ctan"
     paths:
       - build/*.zip
+publish:snapshot_tdszip:
+  variables:
+    PRELEASE: "false"
+  <<: *ctandefinition
   except:
     refs:
       - tags
       - master
 publish:tdszip:
-  image: registry.gitlab.com/islandoftex/images/javafx-gradle:jdk8-latest
-  stage: publish
-  script:
-    - gradle -Prelease=true assembleCTAN
-  artifacts:
-    paths:
-      - build/*.zip
+  variables:
+    PRELEASE: "true"
+  <<: *ctandefinition
   only:
     refs:
       - tags
