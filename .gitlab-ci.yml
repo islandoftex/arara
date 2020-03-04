@@ -5,7 +5,6 @@ variables:
 stages:
   - build
   - test
-  - doc
   - publish
 
 .buildtemplate: &builddefinition
@@ -77,20 +76,6 @@ test:linux:jdk11:
   image: registry.gitlab.com/islandoftex/images/javafx-gradle:jdk11-latest
   <<: *testdefinition
 
-build:doc:
-  stage: doc
-  needs: ["build:linux:jdk8"]
-  image: registry.gitlab.com/islandoftex/images/texlive:latest
-  script:
-    # build the manual
-    - cd docs
-    - java -jar ../bin/*-with-deps-*.jar -l -v arara-manual.tex
-  artifacts:
-    name: "$CI_COMMIT_REF_NAME-doc"
-    paths:
-      - docs/*.pdf
-    expire_in: 1 week
-
 publish:gitlab:
   image: registry.gitlab.com/islandoftex/images/javafx-gradle:jdk8-latest
   stage: publish
@@ -107,11 +92,15 @@ publish:gitlab:
   script:
     - sh .gitlab/ci/installGradle.sh
     - apt-get install -y --no-install-recommends zip
+    - /opt/gradle/current/bin/gradle -Prelease build --info
+    - /opt/gradle/current/bin/gradle -Prelease docs:buildManual
     - /opt/gradle/current/bin/gradle -Prelease=$PRELEASE assembleCTAN --info
+    - cp build/*.zip ./
   artifacts:
     name: "$CI_COMMIT_REF_NAME-ctan"
     paths:
-      - build/*.zip
+      - ./*.zip
+      - docs/*.pdf
 publish:snapshot_tdszip:
   variables:
     PRELEASE: "false"
