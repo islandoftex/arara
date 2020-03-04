@@ -105,14 +105,9 @@ publish:gitlab:
   stage: publish
   image: registry.gitlab.com/islandoftex/images/texlive:latest
   script:
-    - GRADLEURL=https://services.gradle.org/distributions/ && \ 
-      GRADLEFILE=`curl -s $GRADLEURL | grep -oP "<span\s*class=\"name\">\K[^<]*-bin.zip" | head -1` && \ 
-      echo "Fetching remote file $GRADLEFILE" && \ 
-      wget -O gradle.zip "$GRADLEURL$GRADLEFILE" && \ 
-      unzip gradle.zip && \ 
-      rm gradle.zip && \ 
-      mv gradle* gradle
-    - gradle/current/bin/gradle -Prelease=$PRELEASE assembleCTAN
+    - sh .gitlab/ci/installGradle.sh
+    - apt-get install -y --no-install-recommends zip
+    - /opt/gradle/current/bin/gradle -Prelease=$PRELEASE assembleCTAN --info
   artifacts:
     name: "$CI_COMMIT_REF_NAME-ctan"
     paths:
