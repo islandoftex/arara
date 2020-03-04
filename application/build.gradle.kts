@@ -244,8 +244,10 @@ publishing {
                     name = "Job-Token"
                     value = project.property("jobToken").toString()
                 } else {
-		    logger.warn("Will be unable to publish (jobToken missing)")
-		}
+                    logger.warn("Will be unable to publish (jobToken missing)\n" +
+                            "Ignore this warning if you are not running the publish task " +
+                            "for the GitLab package repository.")
+                }
             }
             authentication {
                 create<HttpHeaderAuthentication>("header")

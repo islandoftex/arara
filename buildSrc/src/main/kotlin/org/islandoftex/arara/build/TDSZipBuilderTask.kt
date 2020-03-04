@@ -39,7 +39,6 @@ open class TDSZipBuilderTask : DefaultTask() {
         }
 
         logger.debug("Compiling the documentation")
-        // dependsOn(":buildManual")
         project.copy {
             from(project.files(project.tasks.findByPath(":docs:buildManual")))
             into(temporaryDir.resolve("doc/support/arara"))
@@ -63,7 +62,6 @@ open class TDSZipBuilderTask : DefaultTask() {
         }
 
         logger.debug("Copying the application binary")
-        // dependsOn(":application:build")
         project.copy {
             from(project.files(project.tasks.findByPath(":application:shadowJar")))
             into(temporaryDir.resolve("scripts/arara"))
