@@ -21,14 +21,14 @@ allprojects {
 }
 
 plugins {
-    kotlin("jvm") version "1.3.61" apply false                                   // Apache 2.0
+    kotlin("jvm") version "1.3.70" apply false                                   // Apache 2.0
     id("com.github.johnrengelman.shadow") version "5.2.0" apply false            // Apache 2.0
     id("com.github.ben-manes.versions") version "0.28.0"                         // Apache 2.0
     id("com.diffplug.spotless-changelog") version "1.1.0"                        // Apache 2.0
     id("org.jetbrains.dokka") version "0.10.1" apply false                       // Apache 2.0
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.3.61" apply false // Apache 2.0
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.3.70" apply false // Apache 2.0
     id("io.gitlab.arturbosch.detekt") version "1.6.0"                            // Apache 2.0
-    id("com.diffplug.gradle.spotless") version "3.27.1"                          // Apache 2.0
+    id("com.diffplug.gradle.spotless") version "3.27.2"                          // Apache 2.0
 }
 
 // exclude alpha and beta versions

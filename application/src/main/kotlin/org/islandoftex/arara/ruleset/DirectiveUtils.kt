@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory
  * @version 5.0
  * @since 4.0
  */
-@UseExperimental(kotlinx.serialization.ImplicitReflectionSerializer::class)
+@OptIn(kotlinx.serialization.ImplicitReflectionSerializer::class)
 object DirectiveUtils {
     // the application messages obtained from the
     // language controller

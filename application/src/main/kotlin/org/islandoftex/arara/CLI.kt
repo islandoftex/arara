@@ -11,9 +11,8 @@ import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import com.github.ajalt.clikt.parameters.types.restrictTo
 import kotlin.system.exitProcess
-import kotlin.time.ClockMark
 import kotlin.time.ExperimentalTime
-import kotlin.time.MonoClock
+import kotlin.time.TimeSource
 import kotlin.time.milliseconds
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.filehandling.FileSearchingUtils
@@ -62,7 +61,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
             help = "Set the file preamble based on the configuration file")
     private val workingDirectory by option("-d", "--working-directory",
             help = "Set the working directory for all tools")
-            .path(exists = true, fileOkay = false, readable = true)
+            .path(mustExist = true, canBeFile = false, mustBeReadable = true)
             .default(AraraSpec.Execution.workingDirectory.default)
 
     private val reference by argument("file",
@@ -123,7 +122,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         // nano time, so we might get an interesting precision here
         // (although timing is not a serious business in here, it's
         // just a cool addition)
-        val executionStart: ClockMark = MonoClock.markNow()
+        val executionStart = TimeSource.Monotonic.markNow()
 
         // arara stores the environment variables accessible at the start
         // of the execution in the session object for the user
