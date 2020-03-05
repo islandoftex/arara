@@ -8,6 +8,16 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
+### Changed
+
+* The CI builds now produce a CTAN-ready zip file instead of running the
+  documentation build separately
+
+### Fixed
+
+* The `biber` rule did use a `file` reference where it should have used
+  `reference` instead.
+
 ## [5.0.0] - 2020-03-03
 
 ### Added
