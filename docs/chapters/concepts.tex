@@ -96,12 +96,10 @@ command: "@{ return [ getCommand('ls'), getCommand('ls') ] }"
 
 As an example, please refer to the official \rbox{clean} rule for a real scenario where a list of commands is successfully employed: for each provided extension, the rule creates a new cleaning command and adds it to a list of removals to be processed later.
 
-There are at least two variables available in the \abox{command} context and are described as follows (note that MVEL variables and orb tags are discussed in Chapter~\ref{chap:mvel}). A variable will be denoted by \varbox{variable} in this list. For each rule argument (defined later on), there will be a corresponding variable in the \abox{command} context, directly accessed through its unique identifier.
+There are at least one variable available in the \abox{command} context and is described as follows (note that MVEL variables and orb tags are discussed in Chapter~\ref{chap:mvel}). A variable will be denoted by \varbox{variable} in this list. For each rule argument (defined later on), there will be a corresponding variable in the \abox{command} context, directly accessed through its unique identifier.
 
 \begin{description}
-\item[\varbox{file}] This variable holds the file name, without any path reference, as a plain string. It is usually composed from the base name and the extension. This variable is available since the first release of \arara.
-
-\item[\varbox{reference}] This variable holds the canonical, absolute path representation of the \varbox{file} variable as a \rbox{File} object. This is useful if it's necessary to know the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \rbox{File} class.
+\item[\varbox{reference}] This variable holds the canonical, absolute path representation of the file name as a \rbox{File} object. This is useful if it's necessary to know the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \rbox{File} class.
 \end{description}
 
 \begin{messagebox}{Quote handling}{araracolour}{\icinfo}{white}
@@ -165,7 +163,7 @@ identifier: shell
 It is important to mention that not all names are valid as argument identifiers. \arara\ has restrictions on three names, described as follows, which cannot be used.
 
 \begin{messagebox}{Reserved names for rule arguments}{attentioncolour}{\icattention}{black}
-Our tool has three names reserved for internal use: \abox{file}, \abox{files}, and \abox{reference}. Do not use them as argument identifiers!
+Our tool has two names reserved for internal use: \abox{files}, and \abox{reference}. Do not use them as argument identifiers!
 \end{messagebox}
 
 \item[\describecontext{O}{arguments}{flag}] This key holds a plain string and is evaluated when the corresponding argument is defined in the directive context.  After being evaluated, the result will be stored in a variable of the same name to be later accessed in the \abox{command} context. In the scenario where the argument is not defined in the directive, the variable will hold an empty string.
@@ -178,14 +176,12 @@ flag: >
   }
 \end{codebox}
 
-There are three variables available in the \abox{flag} context, described as follows. Note that are also several helper methods available in the rule context (for instance, \mtbox{isTrue} presented in the previous example) which provide interesting features for rule writing. They are detailed later on, in Chapter~\ref{chap:methods}, on page~\pageref{chap:methods}.
+There are two variables available in the \abox{flag} context, described as follows. Note that are also several helper methods available in the rule context (for instance, \mtbox{isTrue} presented in the previous example) which provide interesting features for rule writing. They are detailed later on, in Chapter~\ref{chap:methods}, on page~\pageref{chap:methods}.
 
 \begin{description}
 \item[\varbox{parameters}] This variable holds a map of directive parameters available at runtime. For each argument identifier listed in the \abox{arguments} list in the rule context, there will be an entry in this variable. This is useful to get the actual values provided during execution and take proper actions. If a parameter is not set in the directive context, the reference will still exist in the map, but it will be mapped to an empty string.
 
-\item[\varbox{file}] This variable holds the file name, without any path reference, as a plain string. It is usually composed from the base name and the extension. This variable is available since the first release of \arara.
-
-\item[\varbox{reference}] This variable holds the canonical, absolute path representation of the \varbox{file} variable as a \rbox{File} object. This is useful if it's necessary to know the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \rbox{File} class.
+\item[\varbox{reference}] This variable holds the canonical, absolute path representation of the file name as a \rbox{File} object. This is useful if it's necessary to know the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \rbox{File} class.
 \end{description}
 
 In the previous example, observe that the MVEL expression defined in the \abox{flag} key checks if the user provided an affirmative value regarding shell escape, through comparing \varbox{parameters.shell} with a set of predefined affirmative values. In any case, the corresponding command flag is defined as result of such evaluation.
@@ -201,9 +197,7 @@ There are three variables available in the \abox{default} context, described as 
 \begin{description}
 \item[\varbox{parameters}] This variable holds a map of directive parameters available at runtime. For each argument identifier listed in the \abox{arguments} list in the rule context, there will be an entry in this variable. This is useful to get the actual values provided during execution and take proper actions. If a parameter is not set in the directive context, the reference will still exist in the map, but it will be mapped to an empty string.
 
-\item[\varbox{file}] This variable holds the file name, without any path reference, as a plain string. It is usually composed from the base name and the extension. This variable is available since the first release of \arara.
-
-\item[\varbox{reference}] This variable holds the canonical, absolute path representation of the \varbox{file} variable as a \rbox{File} object. This is useful if it's necessary to know the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \rbox{File} class.
+\item[\varbox{reference}] This variable holds the canonical, absolute path representation of the file name as a \rbox{File} object. This is useful if it's necessary to know the hierarchical structure of a project. Since the reference is a Java object, we can use all methods available in the \rbox{File} class.
 \end{description}
 
 \item[\describecontext{O}{arguments}{required}] There might be certain scenarios in which a rule could make use of required arguments (for instance, a copy operation in which source and target must be provided). The \abox{required} key acts as a boolean switch to indicate whether the corresponding argument should be mandatory. In this case, set the key value to \rbox{true} and the argument becomes required. Later on at runtime, \arara\ will throw an error if a required parameter is missing in the directive.
@@ -337,7 +331,7 @@ Several methods are available in the directive context in order to ease the writ
 Although there are no conceptual guarantees for proper halting of unbounded loops, we have provided a technical solution for potentially infinite iterations: \arara\ has a predefined maximum number of loops. The default value is set to 10, but it can be overridden either in the configuration file or with a command line flag. We discuss this feature later on, in Sections~\ref{sec:options} and~\ref{sec:basicstructure}, on pages~\pageref{sec:options} and~\pageref{sec:basicstructure}, respectively.
 \end{messagebox}
 
-All directives, regardless of their type, are internally mapped with both \abox{file} and \abox{reference} parameters, discussed earlier on, in Section~\ref{sec:coreconcepts}, on page~\pageref{sec:coreconcepts}, as special variables in the rule context. When inspecting the log file, you will find all map keys and values for each extracted directive (actually, there is an entire log section devoted to detailing directives found in the code). This feature is covered in Section~\ref{sec:directivenormalization}, on page~\pageref{sec:directivenormalization}. See, for instance, the report of the directive extraction and normalization process performed by \arara\ when inspecting \rbox{doc2.tex}, available in the log file. Note that timestamps were deliberately removed in order to declutter the output, and line breaks were included in order to easily spot the log entries.
+All directives, regardless of their type, are internally mapped with the \abox{reference} parameter, discussed earlier on, in Section~\ref{sec:coreconcepts}, on page~\pageref{sec:coreconcepts}, as a special variable in the rule context. When inspecting the log file, you will find all map keys and values for each extracted directive (actually, there is an entire log section devoted to detailing directives found in the code). This feature is covered in Section~\ref{sec:directivenormalization}, on page~\pageref{sec:directivenormalization}. See, for instance, the report of the directive extraction and normalization process performed by \arara\ when inspecting \rbox{doc2.tex}, available in the log file. Note that timestamps were deliberately removed in order to declutter the output, and line breaks were included in order to easily spot the log entries.
 
 \begin{ncodebox}{Source file}{teal}{\icnote}{white}{doc2.tex}
 % arara: pdflatex
@@ -351,15 +345,15 @@ Hello world.
 
 \begin{codebox}{An excerpt of the log file (directive section)}{teal}{\icnote}{white}
 Directive: { identifier: pdflatex, parameters:
-{reference=/home/paulo/doc2.tex, file=doc2.tex},
+{reference=/home/paulo/doc2.tex},
 conditional: { NONE }, lines: [1] }
 
 Directive: { identifier: pdflatex, parameters:
-{shell=yes, file=doc2.tex, reference=/home/paulo/doc2.tex},
+{shell=yes, reference=/home/paulo/doc2.tex},
 conditional: { NONE }, lines: [2] }
 \end{codebox}
 
-The directive context also features another special parameter named \abox{files} which expects a non-empty list of file names as plain string values. For each element of this list, \arara\ will replicate the current directive and point the element being iterated as current \abox{file} and \abox{reference} values (being the latter resolved to a proper absolute, canonical path of the former). See, for instance, the report of the directive extraction and normalization process performed by \arara\ when inspecting \rbox{doc3.tex}, available in the log file.
+The directive context also features another special parameter named \abox{files} which expects a non-empty list of file names as plain string values. For each element of this list, \arara\ will replicate the current directive and point the element being iterated as current \abox{reference} value (resolved to a proper absolute, canonical path of the file name). See, for instance, the report of the directive extraction and normalization process performed by \arara\ when inspecting \rbox{doc3.tex}, available in the log file.
 
 \begin{ncodebox}{Source file}{teal}{\icnote}{white}{doc3.tex}
 % arara: pdflatex: { files: [ doc1.tex, doc2.tex ] }
@@ -369,11 +363,11 @@ Hello world.
 
 \begin{codebox}{An excerpt of the log file (directive section)}{teal}{\icnote}{white}
 Directive: { identifier: pdflatex, parameters:
-{reference=/home/paulo/doc1.tex, file=doc1.tex},
+{reference=/home/paulo/doc1.tex},
 conditional: { NONE }, lines: [1] }
 
 Directive: { identifier: pdflatex, parameters:
-{reference=/home/paulo/doc2.tex, file=doc2.tex},
+{reference=/home/paulo/doc2.tex},
 conditional: { NONE }, lines: [1] }
 \end{codebox}
 
@@ -386,6 +380,10 @@ Even when a directive is interpreted with a file other than the one being proces
 
 \begin{messagebox}{A note to users}{araracolour}{\icattention}{white}
 If this is your first time using \arara\ or you do not have custom rules in the old format, you can safely ignore this section. All rules shipped with our tool are already written in the new format.
+\end{messagebox}
+
+\begin{messagebox}{Removal of the file string reference}{araracolour}{\icattention}{white}
+\arara\ previously had the file name string reference as the \abox{file} variable in the rule context. As of version 5.0, support for this variable has been dropped. Users should favour the \abox{reference} variable instead, since it holds the absolute, canonical representation of the file name as a proper \rbox{File} object.
 \end{messagebox}
 
 \begin{messagebox}{Removal of triggers}{araracolour}{\icattention}{white}
