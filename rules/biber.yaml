@@ -16,7 +16,7 @@ commands:
             return getCommand('biber', '--tool', options);
         }
         else {
-            return getCommand('biber', options, getBasename(file));
+            return getCommand('biber', options, getBasename(reference));
         }
     }
 arguments:
