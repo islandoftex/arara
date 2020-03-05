@@ -8,6 +8,8 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
+## [5.0.1] - 2020-03-05
+
 ### Changed
 
 * The CI builds now produce a CTAN-ready zip file instead of running the
@@ -15,8 +17,10 @@ from version 5.0.0 on.
 
 ### Fixed
 
-* The `biber` rule did use a `file` reference where it should have used
+* Multiple rules did use a `file` reference where it should have used
   `reference` instead.
+* Documentation still mentioned `file` although it should have been marked
+  removed since version 5.0.0.
 
 ## [5.0.0] - 2020-03-03
 
@@ -78,6 +82,8 @@ from version 5.0.0 on.
 * Removed auxiliary tools such as the separate CTAN packager, language checker
   and rule converter. They have been merged into the test suite or build process
   or lost relevance.
+* Removed `file` reference. The replacement `reference` is correctly typed
+  and available since version 4.0.
 
 ### Fixed
 
@@ -178,7 +184,8 @@ from version 5.0.0 on.
 For versions previous to version 5.0.0, there has not been any persistent record
 of changes. Please refer to the commit history for details.
 
-[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v5.0.0...master
+[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v5.0.1...master
+[5.0.1]: https://gitlab.com/islandoftex/arara/compare/v5.0.0...v5.0.1
 [5.0.0]: https://gitlab.com/islandoftex/arara/compare/v4.0...v5.0.0
 [4.0.0]: https://gitlab.com/islandoftex/arara/compare/v3.0...v4.0
 [3.0]: https://gitlab.com/islandoftex/arara/compare/v2.0...v3.0
