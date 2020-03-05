@@ -19,7 +19,7 @@ commands:
         elements.add('envir = ' + envir);
         elements.add('encoding = ' + encoding);
         return getCommand('Rscript', '-e',
-               'library(knitr); knit("' + file + '", ' +
+               'library(knitr); knit("' + reference + '", ' +
                'output = ' + isEmpty(output, 'NULL', '"' + output + '"') + ', ' +
                String.join(', ', elements) + ')');
     }
