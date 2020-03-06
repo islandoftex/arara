@@ -92,7 +92,7 @@ publish:gitlab:
   script:
     - sh .gitlab/ci/installGradle.sh
     - apt-get install -y --no-install-recommends zip
-    - /opt/gradle/current/bin/gradle -Prelease build --info
+    - /opt/gradle/current/bin/gradle -Prelease shadowJar --info
     - /opt/gradle/current/bin/gradle -Prelease docs:buildManual
     - /opt/gradle/current/bin/gradle -Prelease=$PRELEASE assembleCTAN --info
     - cp build/*.zip ./
