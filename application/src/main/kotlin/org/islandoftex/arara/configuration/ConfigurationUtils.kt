@@ -87,7 +87,7 @@ object ConfigurationUtils {
                 var path = Arara::class.java.protectionDomain.codeSource
                         .location.path
                 path = URLDecoder.decode(path, "UTF-8")
-                return Paths.get(path).parent.toAbsolutePath()
+                return Paths.get(File(path).toURI()).parent.toAbsolutePath()
             } catch (exception: UnsupportedEncodingException) {
                 throw AraraException(
                         messages.getMessage(
