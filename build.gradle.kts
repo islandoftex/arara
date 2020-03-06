@@ -66,9 +66,7 @@ detekt {
 }
 
 tasks.register("assembleTDSZip", TDSZipBuilderTask::class.java)
-tasks.register("assembleCTAN", CTANBuilderTask::class.java) {
-    dependsOn(":assembleTDSZip")
-}
+tasks.register("assembleCTAN", CTANBuilderTask::class.java)
 
 version = spotlessChangelog.versionNext
 allprojects {

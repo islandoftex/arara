@@ -10,6 +10,9 @@ open class TDSZipBuilderTask : DefaultTask() {
         group = "distribution"
         description = "Create a TDS compliant ZIP file."
 
+	dependsOn(":application:shadowJar")
+	dependsOn(":docs:buildManual")
+	
         inputs.files("docs", "application", "rules")
         outputs.files(project.buildDir.resolve("arara.tds.zip"))
     }

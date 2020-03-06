@@ -10,6 +10,8 @@ open class CTANBuilderTask : DefaultTask() {
         group = "distribution"
         description = "Create a CTAN-ready ZIP file."
 
+	dependsOn("assembleTDSZip")
+	
         inputs.files(project.buildDir.resolve("arara.tds.zip"))
         outputs.files(project.buildDir.resolve("arara.zip"))
     }
