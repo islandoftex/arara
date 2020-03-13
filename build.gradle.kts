@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
-import org.islandoftex.arara.build.CTANBuilderTask
+import org.islandoftex.arara.build.CTANTreeBuilderTask
+import org.islandoftex.arara.build.CTANZipBuilderTask
 import org.islandoftex.arara.build.SourceZipBuilderTask
 import org.islandoftex.arara.build.TDSTreeBuilderTask
 import org.islandoftex.arara.build.TDSZipBuilderTask
@@ -68,7 +69,7 @@ detekt {
 }
 
 tasks.register("assembleCTANSourceZip", SourceZipBuilderTask::class.java)
-tasks.register("assembleTDSTree", TDSTreeBuilderTask::class.java)  {
+tasks.register("assembleTDSTree", TDSTreeBuilderTask::class.java) {
     dependsOn(":application:shadowJar")
     dependsOn(":docs:buildManual")
     dependsOn("assembleCTANSourceZip")
@@ -76,8 +77,11 @@ tasks.register("assembleTDSTree", TDSTreeBuilderTask::class.java)  {
 tasks.register("assembleTDSZip", TDSZipBuilderTask::class.java) {
     dependsOn("assembleTDSTree")
 }
-tasks.register("assembleCTAN", CTANBuilderTask::class.java) {
+tasks.register("assembleCTANTree", CTANTreeBuilderTask::class.java) {
     dependsOn("assembleTDSZip")
+}
+tasks.register("assembleCTAN", CTANZipBuilderTask::class.java) {
+    dependsOn("assembleCTANTree")
 }
 
 version = spotlessChangelog.versionNext
