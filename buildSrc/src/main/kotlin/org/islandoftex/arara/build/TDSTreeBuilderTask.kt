@@ -51,6 +51,7 @@ open class TDSTreeBuilderTask : DefaultTask() {
         project.copy {
             from(project.files(project.tasks.findByPath(":docs:buildManual")))
             into(temporaryDir.resolve("doc/support/arara"))
+            exclude("*.xml")
         }
 
         logger.debug("Copying the top level README file")

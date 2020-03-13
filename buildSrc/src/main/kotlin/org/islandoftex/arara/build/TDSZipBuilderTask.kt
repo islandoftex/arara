@@ -10,7 +10,7 @@ open class TDSZipBuilderTask : Zip() {
         description = "Create a TDS compliant ZIP file."
 
         inputs.dir(project.buildDir.resolve("tds"))
-        outputs.files(project.buildDir.resolve("arara.tds.zip"))
+        outputs.file(project.buildDir.resolve("arara.tds.zip"))
         outputs.upToDateWhen { false }
 
         archiveFileName.set(project.buildDir.resolve("arara.tds.zip").absolutePath)
