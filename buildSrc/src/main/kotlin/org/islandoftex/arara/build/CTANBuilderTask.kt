@@ -2,51 +2,34 @@
 
 package org.islandoftex.arara.build
 
-import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.bundling.Zip
 
-open class CTANBuilderTask : DefaultTask() {
+open class CTANBuilderTask : Zip() {
     init {
         group = "distribution"
         description = "Create a CTAN-ready ZIP file."
 
-        dependsOn("assembleTDSZip")
-
         inputs.files(project.buildDir.resolve("arara.tds.zip"))
-        outputs.files(project.buildDir.resolve("arara.zip"))
-    }
+        outputs.files(project.buildDir.resolve("arara-ctan.zip"))
+        outputs.upToDateWhen { false }
 
-    /**
-     * The task's main action: Creating a CTAN-ready zip file.
-     */
-    @TaskAction
-    @Suppress("TooGenericExceptionCaught")
-    fun run() {
-        try {
-            logger.lifecycle("Testing required tools")
-            logger.debug("Zip archive utility (zip)")
-            TaskHelper.assertAvailability("zip", "-v")
-
+        doFirst {
             logger.lifecycle("Preparing the archive file for CTAN submission")
 
+            if (temporaryDir.exists())
+                temporaryDir.deleteRecursively()
+
             logger.debug("Copying the TDS archive file to the temporary directory")
-            project.buildDir.resolve("arara.tds.zip")
+            val tdsZip = project.buildDir.resolve("arara.tds.zip")
                     .copyTo(temporaryDir.resolve("arara.tds.zip"),
                             overwrite = true)
-
-            logger.debug("Copying the temporary TDS structure")
-            val tempTDSzip = temporaryDir.resolve("arara.tds.zip")
-                    .copyTo(temporaryDir.resolve("arara/arara.zip"))
-
+            
             logger.debug("Extracting the temporary TDS structure")
             project.copy {
-                from(project.zipTree(tempTDSzip))
+                from(project.zipTree(tdsZip))
                 into(temporaryDir.resolve("arara"))
             }
-
-            logger.debug("Removing the temporary TDS reference")
-            tempTDSzip.delete()
-
+            
             logger.debug("Renaming the structure")
             temporaryDir.resolve("arara/doc")
                     .renameTo(temporaryDir.resolve("arara/doc-old"))
@@ -78,20 +61,10 @@ open class CTANBuilderTask : DefaultTask() {
 
             logger.debug("Copying the README file to the top level")
             temporaryDir.resolve("arara/doc/README.md")
-                    .copyTo(temporaryDir.resolve("arara/README.md"))
-
-            logger.debug("Removing the original README file")
-            temporaryDir.resolve("arara/doc/README.md").delete()
-
-            logger.debug("Creating the archive file")
-            TaskHelper.execute(temporaryDir, "zip", "-r", "arara.zip",
-                    "arara.tds.zip", "arara")
-
-            logger.debug("Copying archive file to top level")
-            temporaryDir.resolve("arara.zip")
-                    .copyTo(project.buildDir.resolve("arara.zip"), overwrite = true)
-        } catch (exception: Exception) {
-            logger.error(exception.message)
+                    .renameTo(temporaryDir.resolve("arara/README.md"))
         }
+
+        archiveFileName.set(project.buildDir.resolve("arara-ctan.zip").absolutePath)
+        from(temporaryDir)
     }
 }

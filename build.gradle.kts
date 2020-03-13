@@ -2,6 +2,7 @@
 
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.islandoftex.arara.build.CTANBuilderTask
+import org.islandoftex.arara.build.TDSTreeBuilderTask
 import org.islandoftex.arara.build.TDSZipBuilderTask
 
 buildscript {
@@ -65,8 +66,16 @@ detekt {
     config = files("detekt-config.yml")
 }
 
-tasks.register("assembleTDSZip", TDSZipBuilderTask::class.java)
-tasks.register("assembleCTAN", CTANBuilderTask::class.java)
+tasks.register("assembleTDSTree", TDSTreeBuilderTask::class.java)  {
+    dependsOn(":application:shadowJar")
+    dependsOn(":docs:buildManual")
+}
+tasks.register("assembleTDSZip", TDSZipBuilderTask::class.java) {
+    dependsOn("assembleTDSTree")
+}
+tasks.register("assembleCTAN", CTANBuilderTask::class.java) {
+    dependsOn("assembleTDSZip")
+}
 
 version = spotlessChangelog.versionNext
 allprojects {
