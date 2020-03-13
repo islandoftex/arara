@@ -13,6 +13,8 @@ open class TDSTreeBuilderTask : DefaultTask() {
         // depend on shadow Jar input
         inputs.files(project.fileTree("application/build/libs/")
                 .include("*-with-deps-*.jar"))
+        // depend on source zip as required by CTAN
+        inputs.file(project.buildDir.resolve("arara-${project.version}-src.zip"))
         // depend on documentation (it should be compiled)
         inputs.dir("docs")
         inputs.dir("application")
@@ -85,13 +87,9 @@ open class TDSTreeBuilderTask : DefaultTask() {
         logger.info("Building the source code structure")
 
         logger.debug("Creating the source code structure")
-        temporaryDir.resolve("source/support/arara").mkdirs()
-
-        logger.debug("Copying the application source code directory")
         project.copy {
-            from(project.rootDir.resolve("application"))
+            from(project.buildDir.resolve("arara-${project.version}-src.zip"))
             into(temporaryDir.resolve("source/support/arara"))
-            exclude("build")
         }
     }
 }
