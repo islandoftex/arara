@@ -10,7 +10,9 @@ class SessionTest : ShouldSpec({
     should("include all environment variables") {
         Session.clear()
         Session.updateEnvironmentVariables()
-        Session.contains("environment:PATH") shouldBe true
+        // on Linux it is called PATH, on Windows it may be Path
+        (Session.contains("environment:PATH") ||
+                Session.contains("environment:Path")) shouldBe true
     }
 
     should("properly check existence") {
