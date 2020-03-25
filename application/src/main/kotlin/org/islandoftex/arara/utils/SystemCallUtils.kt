@@ -91,7 +91,7 @@ object SystemCallUtils {
      */
     fun executeSystemCommand(command: Command): Pair<Int, String> {
         return ProcessExecutor(command.elements).runCatching {
-            directory(command.workingDirectory)
+            directory(command.workingDirectory.absoluteFile)
             readOutput(true)
             execute().run {
                 exitValue to outputUTF8()

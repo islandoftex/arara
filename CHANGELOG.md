@@ -8,6 +8,10 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
+### Fixed
+
+* `unsafelyExecuteSystemCommand` failed to execute in the current directory.
+
 ## [5.0.2] - 2020-03-07
 
 ### Fixed
