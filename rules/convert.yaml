@@ -12,14 +12,7 @@ commands:
 - name: The Convert program
   command: >
     @{
-        prefix = [];
-        if (isUnix()) {
-            prefix = [ program ];
-        }
-        else {
-            prefix = [ 'cmd', '/c', program ];
-        }
-        return getCommand(prefix, options);
+        return getCommand(program, options);
     }
 arguments:
 - identifier: program

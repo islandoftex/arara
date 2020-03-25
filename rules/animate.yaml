@@ -16,13 +16,7 @@ commands:
         prefix = [];
         input = getBasename(reference).concat('.pdf');
         output = getBasename(reference).concat('.gif');
-        if (isUnix()) {
-            prefix = [ program ];
-        }
-        else {
-            prefix = [ 'cmd', '/c', program ];
-        }
-        return getCommand(prefix, '-delay', delay, '-loop',
+        return getCommand(program, '-delay', delay, '-loop',
                loop, '-density', density, options, input, output);
     }
 arguments:
