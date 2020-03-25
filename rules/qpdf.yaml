@@ -1,0 +1,29 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2020, Island of TeX 
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: qpdf
+name: QPDF
+authors:
+- Island of TeX
+commands:
+- name: The QPDF program
+  command: >
+    @{
+        return getCommand('qpdf', options);
+    }
+arguments:
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.');
+        }
+    }
+  required: true
+
