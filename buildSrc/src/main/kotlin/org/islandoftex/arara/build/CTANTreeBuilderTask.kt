@@ -21,7 +21,7 @@ open class CTANTreeBuilderTask : DefaultTask() {
     @TaskAction
     fun run() {
         logger.lifecycle("Preparing the archive file for CTAN submission")
-        
+
         val temporaryDir = project.buildDir.resolve("ctan")
         if (temporaryDir.exists())
             temporaryDir.deleteRecursively()

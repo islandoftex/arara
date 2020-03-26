@@ -1,6 +1,6 @@
 # Description of the bug
 
-* arara version: 
+* arara version:
 * operating system: Windows/Linux/Mac/…
 * TeX distribution: MikTeX/TeX Live/…
 
@@ -10,7 +10,7 @@ Please provide a minimum working example to reproduce this issue:
 
 ```tex
 % arara: pdflatex
-``` 
+```
 
 # How should arara act instead?
 

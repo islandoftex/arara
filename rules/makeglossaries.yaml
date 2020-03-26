@@ -1,6 +1,6 @@
 !config
 # Arara, the cool TeX automation tool
-# Copyright (c) 2020, Island of TeX 
+# Copyright (c) 2020, Island of TeX
 # All rights reserved.
 #
 # This rule is part of arara.
@@ -32,11 +32,11 @@ commands:
 
            lines = readFromFile(base.concat('.').concat('aux'));
 
-           java.util.regex.Pattern glsPattern = 
+           java.util.regex.Pattern glsPattern =
                 java.util.regex.Pattern.compile(
                  "\\\\@newglossary\\{.*\\}\\{(.*)\\}\\{(.*)\\}\\{(.*)\\}");
 
-           java.util.regex.Pattern istPattern = 
+           java.util.regex.Pattern istPattern =
              (clean == 'partial' ? null :
               java.util.regex.Pattern.compile("\\\\@istfilename\\{(.*)\\}"));
 

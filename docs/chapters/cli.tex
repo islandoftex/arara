@@ -210,8 +210,8 @@ This option can also be specified in the configuration file (see Section~\ref{se
 The \opbox{{-}max-loops} option is used to redefine the maximum number of loops our tool will allow for potentially infinite iterations. Any positive integer can be used as the \prbox{number} value for this option. An execution of the previous directive with a lower maximum number of loops is shown as follows:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
-$ arara -m 2 doc8.tex 
-  __ _ _ __ __ _ _ __ __ _ 
+$ arara -m 2 doc8.tex
+  __ _ _ __ __ _ _ __ __ _
  / _` | '__/ _` | '__/ _` |
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
@@ -230,7 +230,7 @@ This option can also be specified in the configuration file (see Section~\ref{se
 \item[\describeop{n}{dry-run}] This option makes \arara\ go through all the motions of running tasks and subtasks, but with no actual calls. It is a very useful feature for testing the sequence of underlying system commands to be performed on a file. For instance, consider the following execution:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
-$ arara -n doc5.tex 
+$ arara -n doc5.tex
   __ _ _ __ __ _ _ __ __ _
  / _` | '__/ _` | '__/ _` |
 | (_| | | | (_| | | | (_| |
@@ -242,22 +242,22 @@ Processing 'doc5.tex' (size: 285 B, last modified: 03/01/2020
 [DR] (PDFLaTeX) PDFLaTeX engine
 -----------------------------------------------------------------
 Author: Island of TeX
-About to run: [ pdflatex, /home/paulo/Downloads/doc5.tex ] @ 
+About to run: [ pdflatex, /home/paulo/Downloads/doc5.tex ] @
 
 [DR] (BibTeX) The BibTeX reference management software
 -----------------------------------------------------------------
 Author: Island of TeX
-About to run: [ bibtex, doc5 ] @ 
+About to run: [ bibtex, doc5 ] @
 
 [DR] (PDFLaTeX) PDFLaTeX engine
 -----------------------------------------------------------------
 Author: Island of TeX
-About to run: [ pdflatex, /home/paulo/Downloads/doc5.tex ] @ 
+About to run: [ pdflatex, /home/paulo/Downloads/doc5.tex ] @
 
 [DR] (PDFLaTeX) PDFLaTeX engine
 -----------------------------------------------------------------
 Author: Island of TeX
-About to run: [ pdflatex, /home/paulo/Downloads/doc5.tex ] @ 
+About to run: [ pdflatex, /home/paulo/Downloads/doc5.tex ] @
 
 Total: 0.23 seconds
 \end{codebox}
@@ -285,7 +285,7 @@ In this example, we have a preamble named \abox{twopdftex} and a \TeX\ file name
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ arara -p twopdftex doc9.tex
-  __ _ _ __ __ _ _ __ __ _ 
+  __ _ _ __ __ _ _ __ __ _
  / _` | '__/ _` | '__/ _` |
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
@@ -299,7 +299,7 @@ Processing 'doc9.tex' (size: 18 B, last modified: 05/29/2018
 Total: 0.96 seconds
 \end{codebox}
 
-It is important to note that this is just a directive-based preamble and nothing else, so a line other than a directive is discarded. Line breaks and conditionals are supported. Trying to exploit this area for other purposes will not work. The preamble specification in the configuration file is detailed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}. 
+It is important to note that this is just a directive-based preamble and nothing else, so a line other than a directive is discarded. Line breaks and conditionals are supported. Trying to exploit this area for other purposes will not work. The preamble specification in the configuration file is detailed in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}.
 
 \item[\describeopp{t}{timeout}{number}] This option sets an execution timeout for every task, in milliseconds. If the timeout is reached before the task ends, \arara\ will kill it and halt the execution. Any positive integer can be used as the \prbox{number} value for this option. Of course, use a sensible value to allow proper time for a task to be executed. For instance, consider the following recursive call:
 
@@ -312,7 +312,7 @@ This will go \foo forever.
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ arara --timeout 3000 doc9.tex
-  __ _ _ __ __ _ _ __ __ _ 
+  __ _ _ __ __ _ _ __ __ _
  / _` | '__/ _` | '__/ _` |
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
@@ -379,7 +379,7 @@ Note that other extensions can be added through a proper mapping in the configur
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ arara doc11.tex
-  __ _ _ __ __ _ _ __ __ _ 
+  __ _ _ __ __ _ _ __ __ _
  / _` | '__/ _` | '__/ _` |
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
@@ -396,7 +396,7 @@ Total: 0.69 seconds
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ arara doc11
-  __ _ _ __ __ _ _ __ __ _ 
+  __ _ _ __ __ _ _ __ __ _
  / _` | '__/ _` | '__/ _` |
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
@@ -414,7 +414,7 @@ resolve against them as well!
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ arara doc11.
-  __ _ _ __ __ _ _ __ __ _ 
+  __ _ _ __ __ _ _ __ __ _
  / _` | '__/ _` | '__/ _` |
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|

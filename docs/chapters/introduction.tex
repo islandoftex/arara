@@ -28,7 +28,7 @@ The mentioned tools perform an analysis on the file and decide what has to be do
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ arara hello.tex
-  __ _ _ __ __ _ _ __ __ _ 
+  __ _ _ __ __ _ _ __ __ _
  / _` | '__/ _` | '__/ _` |
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
@@ -62,8 +62,8 @@ Hello world!
 For now, do not worry too much about the terms, we will come back to them later on, in Chapter~\ref{chap:importantconcepts}, on page~\pageref{chap:importantconcepts}. It suffices to say that \arara\ expects \emph{you} to provide a list of tasks, and this is done by inserting special comments in the source file. Let us see how \arara\ behaves with this updated code:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
-$ arara hello.tex 
-  __ _ _ __ __ _ _ __ __ _ 
+$ arara hello.tex
+  __ _ _ __ __ _ _ __ __ _
  / _` | '__/ _` | '__/ _` |
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
@@ -81,7 +81,7 @@ Hurrah, we finally got our document properly compiled with a \TeX\ engine by the
 \section{Core concepts}
 \label{sec:coreconcepts}
 
-When adding a directive in our source code, we are explicitly telling the tool what we want it to do, but I am afraid that is not sufficient at all. So far, \arara\ knows \emph{what} to do, but now it needs to know \emph{how} the task should be done. If we want \arara\ to run \rbox{pdflatex} on \rbox{hello.tex}, we need to have instructions telling our tool how to run that specific application. This particular sequence of instructions is referred as a \emph{rule} in our context. 
+When adding a directive in our source code, we are explicitly telling the tool what we want it to do, but I am afraid that is not sufficient at all. So far, \arara\ knows \emph{what} to do, but now it needs to know \emph{how} the task should be done. If we want \arara\ to run \rbox{pdflatex} on \rbox{hello.tex}, we need to have instructions telling our tool how to run that specific application. This particular sequence of instructions is referred as a \emph{rule} in our context.
 
 \begin{messagebox}{Note on rules}{attentioncolour}{\icattention}{black}
 Although the core team provides a lot of rules shipped with \arara\ out of the box, with the possibility of extending the set by adding more rules, some users might find this decision rather annoying, since other tools have most of their rules hard-coded, making the automation process even more transparent. However, since \arara\ does not rely on a specific automation or compilation scheme, it becomes more extensible. The use of directives in the source code make the automation steps more fluent, which allows the specification of complex workflows much easier.

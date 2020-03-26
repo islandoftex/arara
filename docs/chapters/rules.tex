@@ -44,7 +44,7 @@ This rule executes the \rbox{asy} command line, referring to Asymptote, a powerf
 \begin{description}
 \item[\povalue{\hphantom{x}bw\hphantom{x}}] This option value, as the name suggests, converts all colors to a black and white model.
 
-\item[\povalue{cmyk}] This option value converts the RGB (red, green an blue) color model to the CMYK (cyan, magenta, yellow and black) counterpart. 
+\item[\povalue{cmyk}] This option value converts the RGB (red, green an blue) color model to the CMYK (cyan, magenta, yellow and black) counterpart.
 
 \item[\povalue{rgb}] This option value converts the CMYK (cyan, magenta, yellow and black)  color model to the RGB (red, green an blue) counterpart.
 
@@ -71,7 +71,7 @@ This rule executes the \rbox{asy} command line, referring to Asymptote, a powerf
 \item[\povalue{context}] This value, as the name indicates, sets the underlying \TeX\ engine to \rbox{context} for the current compilation. Note that the engine might play a major role in the generated code.
 
 \item[\povalue{none}] This value, as the name suggests, sets the underlying \TeX\ engine to \rbox{none} for the current compilation. In this case, there will be no associated engine.
-\end{description} 
+\end{description}
 
 \item[\abox{format}] This option, as the name suggests, converts each output file to a specified format. Make sure to take a look at the Asymptote manual for further details.
 
@@ -134,7 +134,7 @@ This rule executes the \rbox{bib2gls} command line application which extracts gl
 This rule runs \rbox{biber}, the backend bibliography processor for \rbox{biblatex}, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string.
 
 \begin{description}
-\item[\rpsbox{tool}]  This option sets whether the bibliography processor should be executed in \emph{tool mode}, intended for transformations and modifications of datasources. Since this mode is oriented towards a datasource rather than a document, make sure to use it alongside the \abox{options} option. 
+\item[\rpsbox{tool}]  This option sets whether the bibliography processor should be executed in \emph{tool mode}, intended for transformations and modifications of datasources. Since this mode is oriented towards a datasource rather than a document, make sure to use it alongside the \abox{options} option.
 
 \item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
@@ -440,7 +440,7 @@ This rule runs \rbox{latexindent}, a Perl script that indents \TeX\ files accord
 \begin{description}
 \item[\rpsbox{silent}] This option, as the name indicates, sets whether the script will operate in silent mode, in which no output is given to the terminal.
 
-\item[\rpsbox{overwrite}] This option, as the name indicates, sets whether the \mtbox{currentFile} reference will be overwritten. If activated, a copy will be made before the actual indentation process. 
+\item[\rpsbox{overwrite}] This option, as the name indicates, sets whether the \mtbox{currentFile} reference will be overwritten. If activated, a copy will be made before the actual indentation process.
 
 \item[\abox{trace}] This option, as the name indicates, enables the script tracing mode, such that a verbose output will be given to the \rbox{indent.log} log file. Possible values are:
 
@@ -720,7 +720,7 @@ This rule runs \rbox{makeindex}, a general purpose hierarchical index generator,
 \item[\abox{order}] This option, as the name indicates, sets the default ordering scheme for the \rbox{makeindex} program. Two possible values are available:
 
 \begin{description}
-\item[\povalue{letter}] This value, as the name indicates, activates the letter ordering scheme. In such scheme, a blank space does not precede any letter in the alphabet. 
+\item[\povalue{letter}] This value, as the name indicates, activates the letter ordering scheme. In such scheme, a blank space does not precede any letter in the alphabet.
 
 \item[\povalue{word}] This value, as the name indicates, activates the word ordering scheme. In such scheme, a blank space precedes any letter in the alphabet.
 \end{description}

@@ -1,10 +1,10 @@
 # Description of the current situation
 
-* arara version: 
+* arara version:
 * operating system: Windows/Linux/Mac/…
 * TeX distribution: MikTeX/TeX Live/…
 
-*Please describe a use case that requires a new feature* 
+*Please describe a use case that requires a new feature*
 
 # How should arara act instead?
 

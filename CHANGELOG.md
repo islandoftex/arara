@@ -156,34 +156,34 @@ from version 5.0.0 on.
 ### Added
 
 * Added the `--timeout n` flag to allow setting a timeout for every task. If
-     the timeout is reached before the task ends, `arara` will kill it and 
+     the timeout is reached before the task ends, `arara` will kill it and
      interrupt the processing. The `n` value is expressed in milliseconds.
 * There's no need of noninteractive commands anymore. `arara` can now handle
-     user input through the `--verbose` tag. If the flag is not set and the 
+     user input through the `--verbose` tag. If the flag is not set and the
      command requires user interaction, the task execution is interrupted.
-* Added the `@{SystemUtils}` orb tag to provide specific operating system 
-     checks. The orb tag maps the `SystemUtils` class from the amazing 
-     [Apache Commons Lang](http://commons.apache.org/lang/) library and 
+* Added the `@{SystemUtils}` orb tag to provide specific operating system
+     checks. The orb tag maps the `SystemUtils` class from the amazing
+     [Apache Commons Lang](http://commons.apache.org/lang/) library and
      all of its methods and properties.
 
 ### Fixed
 
 * Fixed the `--verbose` flag to behave as a realtime output.
-* Fixed the execution of some script-based system commands to ensure 
+* Fixed the execution of some script-based system commands to ensure
      cross-platform compatibility.
 
 ## [1.0.1] - 2012-04-24
 
 ### Added
 
-* Added support for `.tex`, `.dtx` and `.ltx` files. When no extension is 
-     provided, `arara` will automatically look for these extensions in this 
+* Added support for `.tex`, `.dtx` and `.ltx` files. When no extension is
+     provided, `arara` will automatically look for these extensions in this
      specific order.
-* Added the `--verbose` flag to allow printing the complete log in the 
+* Added the `--verbose` flag to allow printing the complete log in the
      terminal. A short `-v` tag is also available. Both `stdout` and `stderr`
      are printed.
-* Fixed exit status when an exception is thrown. Now `arara` also returns a 
-     non-zero exit status when something wrong happened. Note that this 
+* Fixed exit status when an exception is thrown. Now `arara` also returns a
+     non-zero exit status when something wrong happened. Note that this
      behaviour happens only when `arara` is processing a file.
 
 ## [1.0] - 2012-04-24

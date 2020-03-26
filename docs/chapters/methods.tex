@@ -597,7 +597,7 @@ According to the \href{https://en.wikipedia.org/wiki/Ordered_pair}{Wikipedia ent
 \item[\mtbox{second()}\hfill\rrbox{B}] This method, as the name implies, returns the second entry of the ordered pair, as a \rbox{B} object. It is important to observe that, from the MVEL context, as the method constitutes a property accessor (namely, a getter), the parentheses can be safely omitted.
 \end{description}
 
-Keep in mind that the entries in the \rbox{Pair} class, once defined, cannot be modified to other values. The initial values are set during instantiation and, therefore, only entry getters are available to the user during the object life cycle. 
+Keep in mind that the entries in the \rbox{Pair} class, once defined, cannot be modified to other values. The initial values are set during instantiation and, therefore, only entry getters are available to the user during the object life cycle.
 \end{messagebox}
 
 \begin{messagebox}{Status for class loading and instantiation}{araracolour}{\icok}{white}
@@ -618,7 +618,7 @@ The class loading and instantiation methods provided by \arara\ typically return
 
 \vspace{1.4em}
 
-Please make sure to \emph{always} check the returned integer status when using class loading and instantiation methods in directive and rule contexts. This feature is quite powerful yet tricky and subtle! 
+Please make sure to \emph{always} check the returned integer status when using class loading and instantiation methods in directive and rule contexts. This feature is quite powerful yet tricky and subtle!
 \end{messagebox}
 
 \begin{description}
@@ -807,7 +807,7 @@ From the user perspective, a \rbox{Command} object is simply a good old list of 
 
 \vspace{0.4em}
 
-From the previous example, it is important to observe that a potential file name quoting is not necessary. The underlying system command execution library handles the provided arguments accordingly. 
+From the previous example, it is important to observe that a potential file name quoting is not necessary. The underlying system command execution library handles the provided arguments accordingly.
 
 Behind the scenes, however, \arara\ employs a different workflow when constructing a \rbox{Command} object. The tool sets the working directory path for the current command to \abox[araracolour]{USER\_DIR} which is based on the current execution. The working directory path can be explicitly set through specific method calls, described later on in this section.
 
@@ -870,7 +870,7 @@ return getCommandWithWorkingDirectory('/home/paulo',
 \end{codebox}
 \end{description}
 
-The methods presented in this section constitute the foundations of underlying system command execution. In particular, whenever possible, it is highly advisable to use \rbox{Command} objects through proper \mtbox{getCommand} method calls, as the plain string approach used in previous versions of our tool is marked as deprecated and will be removed in future versions. 
+The methods presented in this section constitute the foundations of underlying system command execution. In particular, whenever possible, it is highly advisable to use \rbox{Command} objects through proper \mtbox{getCommand} method calls, as the plain string approach used in previous versions of our tool is marked as deprecated and will be removed in future versions.
 
 \section{Others}
 \label{sec:others}
@@ -955,7 +955,7 @@ Within a session there are two ``reserved'' namespaces: \verb|arara| and \verb|e
 path = getSession().get('environment:PATH');
 \end{codebox}
 
-The \verb|arara| namespace is a bit different. It provides flags that control \arara s behaviour. Flags are used in rules and may be manipulated by the user. Be aware, that every change in this namespace will result in \arara\ acting like you know what you did. Use this power with care. Currently, there is only one relevant flag: \verb|arara:FILENAME:halt|. This will stop the currently run command execution on the file with the specified file name. The value of this map entry is the exit status you want \arara\ to have. 
+The \verb|arara| namespace is a bit different. It provides flags that control \arara s behaviour. Flags are used in rules and may be manipulated by the user. Be aware, that every change in this namespace will result in \arara\ acting like you know what you did. Use this power with care. Currently, there is only one relevant flag: \verb|arara:FILENAME:halt|. This will stop the currently run command execution on the file with the specified file name. The value of this map entry is the exit status you want \arara\ to have.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 path = getSession().put('arara:myfile.tex:halt', 42);

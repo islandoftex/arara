@@ -55,10 +55,10 @@ open class TDSTreeBuilderTask : DefaultTask() {
         }
 
         logger.debug("Copying the top level README file")
-        project.copy { 
+        project.copy {
             from("README.md")
             into(temporaryDir.resolve("doc/support/arara"))
-            filter { 
+            filter {
                 it.replace("# arara", "# arara v${project.version}")
             }
         }

@@ -74,7 +74,7 @@ According to the documentation, MVEL allows you to express lists, maps and array
 [ "Jim", "Bob", "Smith" ]
 \end{codebox}
 
-Note that lists are denoted by comma-separated values delimited by square brackets. Similarly, maps (sets of key/value attributes) are expressed in the following format: 
+Note that lists are denoted by comma-separated values delimited by square brackets. Similarly, maps (sets of key/value attributes) are expressed in the following format:
 
 \begin{codebox}{Creating a map}{teal}{\icnote}{white}
 [ "Foo" : "Bar", "Bar" : "Foo" ]
@@ -129,10 +129,10 @@ The expression language goes beyond simple evaluations. In fact, MVEL supports a
 if (var > 0) {
    r = "greater than zero";
 }
-else if (var == 0) { 
+else if (var == 0) {
    r = "exactly zero";
 }
-else { 
+else {
    r = "less than zero";
 }
 \end{codebox}
@@ -151,10 +151,10 @@ foreach (name : people) {
 }
 \end{codebox}
 
-As expected, MVEL also implements the standard C \rbox{for} loop. Observe that newer versions of MVEL allow an abbreviation of \rbox{foreach} to the usual \rbox{for} statement, as syntactic sugar. In order to explicitly indicate a collection iteration, we usually use \rbox{foreach} in the default rules for \arara, but both statements behave exactly the same from a semantic point of view. 
+As expected, MVEL also implements the standard C \rbox{for} loop. Observe that newer versions of MVEL allow an abbreviation of \rbox{foreach} to the usual \rbox{for} statement, as syntactic sugar. In order to explicitly indicate a collection iteration, we usually use \rbox{foreach} in the default rules for \arara, but both statements behave exactly the same from a semantic point of view.
 
 \begin{codebox}{Iteration statement}{teal}{\icnote}{white}
-for (int i = 0; i < 100; i++) { 
+for (int i = 0; i < 100; i++) {
    System.out.println(i);
 }
 \end{codebox}

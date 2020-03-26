@@ -44,18 +44,18 @@ use your own rules.
  ensured that a green tick means `arara` passes the test suite and is ready to
  be tested. However, that is *not* meant you can use the executable artifacts of
  the builds *for productive use*.
- 
+
  Development of `arara` takes place in the development branch. Feel free to be
  one of our testers and enjoy the latest features and bug fixes by building from
- there. 
- 
+ there.
+
 ## Support
 
 We use a [Gitter](https://gitter.im/cereda/arara) chatroom for discussing things
 related to `arara`. You are more than welcome to come join the fun and say *hi!*
 to us. We also have the [issues](https://gitlab.com/islandoftex/arara/issues)
 section in our repository as a valid channel to report problems, bugs and
-suggest improvements. 
+suggest improvements.
 
 ## Localization
 
@@ -84,7 +84,7 @@ manually deploy our tool.
 
 ## License
 
-This application is licensed under the 
+This application is licensed under the
 [New BSD License](https://opensource.org/licenses/BSD-3-Clause). Please
 note that the New BSD License has been verified as a GPL-compatible free
 software license by the [Free Software Foundation](http://www.fsf.org/), and
