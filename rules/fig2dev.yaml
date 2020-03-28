@@ -1,0 +1,66 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2020, Island of TeX
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: fig2dev
+name: fig2dev
+authors:
+- Island of TeX
+commands:
+- name: The fig2dev program
+  command: >
+    @{
+        input = getBasename(reference).concat('.fig');
+        return getCommand('fig2dev', language, magnification, font, size,
+                          options, input, output);
+    }
+arguments:
+- identifier: language
+  flag: >
+    @{
+        if ([ 'box', 'cgm', 'epic', 'eepic', 'eepicemu', 'emf', 'eps', 'gif',
+              'ibmgl', 'jpeg', 'latex', 'map', 'mf', 'mp', 'mmp', 'pcx',
+              'pdf', 'pdftex', 'pdftex_t', 'pic', 'pictex', 'png', 'ppm',
+              'ps', 'pstex', 'pstex_t', 'ptk', 'shape', 'sld', 'svg',
+              'textyl', 'tiff', 'tk', 'tpic', 'xbm',
+              'xpm' ].contains(parameters.language)) {
+            return [ '-L', parameters.language ];
+        }
+        else {
+            throwError('Invalid language, please refer to the manual.');
+        }
+    }
+  required: true
+- identifier: output
+  flag: >
+    @{
+        return parameters.output;
+    }
+  required: true
+- identifier: magnification
+  flag: >
+    @{
+        return [ '-m', parameters.magnification ];
+    }
+- identifier: font
+  flag: >
+    @{
+        return [ '-f', parameters.font ];
+    }
+- identifier: size
+  flag: >
+    @{
+        return [ '-s', parameters.size ];
+    }
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.')
+        }
+    }
