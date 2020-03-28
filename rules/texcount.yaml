@@ -1,0 +1,74 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2020, Island of TeX
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: texcount
+name: TeXcount
+authors:
+- Island of TeX
+commands:
+- name: The TeXcount program
+  command: >
+    @{
+        return getCommand('texcount', rules, verbosity, strict, html,
+                          total, unicode, options, output, reference);
+    }
+arguments:
+- identifier: rules
+  flag: >
+    @{
+        if ([ 'relaxed', 'restricted' ].contains(parameters.rules)) {
+            return '-'.concat(parameters.rules);
+        }
+        else {
+            throwError('Invalid value, use either relaxed or restricted.');
+        }
+    }
+- identifier: verbosity
+  flag: >
+    @{
+        if ([ '0', '1', '2', '3', '4' ].contains(parameters.verbosity)) {
+            return '-v'.concat(parameters.verbosity);
+        }
+        else {
+            throwError('Invalid value, use an integer range from 0 to 4.');
+        }
+    }
+- identifier: strict
+  flag: >
+    @{
+        return isTrue(parameters.strict, '-strict');
+    }
+- identifier: html
+  flag: >
+    @{
+        return isTrue(parameters.html, '-html');
+    }
+- identifier: total
+  flag: >
+    @{
+        return isTrue(parameters.total, '-total');
+    }
+- identifier: unicode
+  flag: >
+    @{
+        return isTrue(parameters.unicode, '-unicode');
+    }
+- identifier: output
+  flag: >
+    @{
+        return '-out='.concat(parameters.output);
+    }
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.');
+        }
+    }
+
