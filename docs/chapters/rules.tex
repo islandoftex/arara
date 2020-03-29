@@ -192,6 +192,20 @@ When in doubt, always remember that the \opbox{{-}dry-run} command line option i
 % arara: clean: { extensions: [ aux, log ] }
 \end{codebox}
 
+\item[\rulebox{convert}]
+This rule runs the \rbox{convert} program, a member of the ImageMagick suite of tools. This program is used to convert between image formats as well  as  resize  an  image, blur, crop, despeckle, dither, draw on, flip, join, resample, and more.
+
+\begin{description}
+\item[\rpbox{program}{convert}] This option specifies the command utility path as a means to avoid potential clashes with underlying operating system commands.
+
+\item[\abox{options}~\rqbox] This option, as the name indicates, takes a list of raw command line options and appends it to the actual script call. An error is thrown if any data structure other than a proper list is provided as the value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: convert: { options: [ 'photo1.jpg', '--resize',
+% arara: --> '50%', 'photo2.jpg' ] }
+\end{codebox}
+
 \item[\rulebox{csplain}]
 This rule runs the \rbox{csplain} \TeX\ engine, a conservative extension of Knuth's plain \TeX\ with direct processing characters and hyphenation patterns for Czech and Slovak, on the provided \mtbox{currentFile} reference.
 
@@ -297,6 +311,37 @@ spreadsheet import functions also use this setting.
 % arara: datatooltk: {
 % arara: --> output: books.dbtex,
 % arara: --> csv: booklist.csv }
+\end{codebox}
+
+\item[\rulebox{detex}]
+This rule runs \rbox{detex}, a command line application that, as the name indicates, reads the provided \mtbox{currentFile} reference, removes all comments and \TeX\ control sequences and writes the remainder to the standard output or file.
+
+\begin{description}
+\item[\rpsbox{references}] This option defines whether the tool should echo values from page counters, references and citations.
+
+\item[\rpsbox{follow}] This option defines whether the tool should follow files referenced through typical input mechanisms.
+
+\item[\rpsbox{math}] This option defines whether the tool should replace math with nouns and verbs in order to preserve grammar.
+
+\item[\rpsbox{spaces}] This option, as the name indicates, define whether the tool should replace control sequences with spaces.
+
+\item[\rpsbox{words}] This option, as the name indicates, define whether the tool should output only a list of words.
+
+\item[\abox{environments}] This option takes a list of environments to be ignored by the tool during the text transformation.
+
+\item[\abox{mode}] This option, as the name indicates, defines the operation mode for the tool. Possible values are:
+
+\begin{description}
+\item[\povalue{latex}] This value, as the name suggests, enables and forces the \LaTeX\ mode for the tool.
+
+\item[\povalue{tex}] This value, as the name suggests, enables and forces the plain \TeX\ mode for the tool.
+\end{description}
+
+\item[\abox{output}] This value, as the name indicates, sets the output file in which the contents will be redirected.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: detex: { output: thesis.txt }
 \end{codebox}
 
 \item[\rulebox{dvipdfm}]
