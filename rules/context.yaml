@@ -1,0 +1,152 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2020, Island of TeX
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: context
+name: ConTeXt
+authors:
+- Island of TeX
+commands:
+- name: ConTeXt engine
+  command: >
+    @{
+        return getCommand('context', options, reference);
+    }
+arguments:
+- identifier: make
+  flag: >
+    @{
+        return isTrue(parameters.make, '--make');
+    }
+- identifier: ctx
+  flag: >
+    @{
+        return '--ctx='.concat(parameters.ctx);
+    }
+- identifier: interface
+  flag: >
+    @{
+        return [ '--interface', parameters.interface ];
+    }
+- identifier: autopdf
+  flag: >
+    @{
+        return isTrue(parameters.autopdf, '--autopdf');
+    }
+- identifier: purge
+  flag: >
+    @{
+        p = [ 'partial' : '--purge', 'all' : '--purgeall',
+              'result' : '--purgeresult' ];
+        if (p.keySet().contains(parameters.purge)) {
+            return p.get(parameters.purge);
+        }
+        else {
+            throwError('Invalid value, expected either partial or all.');
+        }
+    }
+- identifier: modules
+  flag: >
+    @{
+        if (isList(parameters.modules)) {
+            return '--usemodule='.concat(String.join(',', parameters.modules));
+        }
+        else {
+            throwError('I was expecting a list.');
+        }
+    }
+- identifier: environments
+  flag: >
+    @{
+        if (isList(parameters.environments)) {
+            return '--environment='.concat(String.join(',',
+                   parameters.environments));
+        }
+        else {
+            throwError('I was expecting a list.');
+        }
+    }
+- identifier: mode
+  flag: >
+    @{
+        if (isList(parameters.mode)) {
+            return '--mode='.concat(String.join(',', parameters.mode));
+        }
+        else {
+            throwError('I was expecting a list.');
+        }
+    }
+- identifier: path
+  flag: >
+    @{
+        if (isList(parameters.path)) {
+            return '--path='.concat(String.join(',', parameters.path));
+        }
+        else {
+            throwError('I was expecting a list.');
+        }
+    }
+- identifier: arguments
+  flag: >
+    @{
+        if (isList(parameters.arguments)) {
+            return '--arguments='.concat(String.join(',',
+                   parameters.arguments));
+        }
+        else {
+            throwError('I was expecting a list.');
+        }
+    }
+- identifier: trackers
+  flag: >
+    @{
+        if (isList(parameters.trackers)) {
+            return '--trackers='.concat(String.join(',', parameters.trackers));
+        }
+        else {
+            throwError('I was expecting a list.');
+        }
+    }
+- identifier: directives
+  flag: >
+    @{
+        if (isList(parameters.directives)) {
+            return '--directives='.concat(String.join(',',
+                   parameters.directives));
+        }
+        else {
+            throwError('I was expecting a list.');
+        }
+    }
+- identifier: silent
+  flag: >
+    @{
+        if (isList(parameters.modules)) {
+            return '--silent='.concat(String.join(',', parameters.silent));
+        }
+        else {
+            throwError('I was expecting a list.');
+        }
+    }
+- identifier: errors
+  flag: >
+    @{
+        if (isList(parameters.errors)) {
+            return '--errors='.concat(String.join(',', parameters.errors));
+        }
+        else {
+            throwError('I was expecting a list.');
+        }
+    }
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.');
+        }
+    }
