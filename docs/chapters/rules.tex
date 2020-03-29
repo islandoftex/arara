@@ -431,11 +431,56 @@ This rule runs the \rbox{etex} extended (plain) \TeX\ engine on the provided \mt
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-% arara: etex: { shell: yes }
+% arara: etex: {
+% arara: --> shell: yes,
+% arara: --> interaction: batchmode
+% arara: --> }
+\end{codebox}
+
+\item[\rulebox{fig2dev}]
+This rule runs \rbox{fig2dev}, a command line application that translates \rbox{fig} code in the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{fig} suffix into the specified graphics language and puts them in the specified output file.
+
+\begin{description}
+\item[\abox{language}~\rqbox] This option, as the name indicates, sets the output graphics language for proper transformation. Possible values are listed in the following table (you can infer their types as well, based on the values):
+
+\bigskip
+
+{\centering
+\def\arraystretch{1.5}
+\begin{tabularx}{0.8\textwidth}{YYYYYY}
+\povalue{box} & \povalue{cgm} & \povalue{epic} &
+\povalue{eepic} & \povalue{eepicemu} & \povalue{emf}\\
+\povalue{eps} & \povalue{gif} & \povalue{ibmgl} &
+\povalue{jpeg} & \povalue{latex} & \povalue{map}\\
+\povalue{mf} & \povalue{mp} & \povalue{mmp} &
+\povalue{pcx} & \povalue{pdf} & \povalue{pdftex}\\
+\povalue{pdftex\_t} & \povalue{pic} & \povalue{pictex} &
+\povalue{png} & \povalue{ppm} & \povalue{ps}\\
+\povalue{pstex} & \povalue{pstex\_t} & \povalue{ptk} &
+\povalue{shape} & \povalue{sld} & \povalue{svg}\\
+\povalue{textyl} & \povalue{tiff} & \povalue{tk} &
+\povalue{tpic} & \povalue{xbm} & \povalue{xpm}
+\end{tabularx}\par}
+
+\bigskip
+
+\item[\abox{output}~\rqbox] This option, as the name indicates, sets the output file which will contain the translated code based on the provided file and language.
+
+\item[\abox{magnification}] This option, as the name suggests, sets the magnification level at which the figure is rendered.
+
+\item[\abox{font}] This option sets the default font used for text objects to the provided value. Keep in mind that the format of this option depends on the graphics language in use.
+
+\item[\abox{size}] This option, as the name suggests, set the default font size (in points) for text objects to the provided value.
+
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: fig2dev: { language: mp, output: drawing.mp }
 \end{codebox}
 
 \item[\rulebox{frontespizio}]
-This rule automates the steps required by the \rbox{frontespizio} package in order to help Italian users generate the frontispiece to their thesis. First and foremost, the frontispiece is generated. If \rbox{latex} is used as the underlying engine, there is an additional intermediate conversion step to a proper \rbox{eps} file. Finally, the final document is compiled.
+This rule automates the steps required by the \rbox{frontespizio} package in order to help Italian users generate the frontispiece to their thesis. First and foremost, the frontispiece is generated. If \rbox{latex} is used as the underlying engine, there is an additional intermediate conversion step to~ a proper \rbox{eps} file. Finally, the final document is compiled.
 
 \begin{description}
 \item[\rpbox{engine}{pdflatex}] This option, as the name indicates, sets the underlying \TeX\ engine to be used for both compilations (the frontispiece and the document itself). Possible values are:
