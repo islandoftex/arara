@@ -1041,6 +1041,18 @@ This rule runs \rbox{ps2pdf}, a tool that converts PostScript to Portable Docume
 % arara: ps2pdf: { output: article }
 \end{codebox}
 
+\item[\rulebox{qpdf}]
+This rule runs \rbox{qpdf}, a command line application that does structural, content-preserving transformations of Portable Document Files, as well as providing capabilities to developers.
+
+\begin{description}
+\item[\abox{options}~\rqbox] This option, as the name indicates, takes a list of raw command line options and appends it to the actual script call. An error is thrown if any data structure other than a proper list is provided as the value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: qpdf: { options: [ '--linearize', 'input.pdf',
+% arara: --> 'output.pdf' ] }
+\end{codebox}
+
 \item[\rulebox{sketch}]
 This rule runs \rbox{sketch}, a system for producing line drawings of solid objects and scenes, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{sk} suffix. Note that one needs to add support for this particular file type, as seen in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}.
 
@@ -1090,6 +1102,49 @@ This rule runs the \rbox{tex} \TeX\ engine on the provided \mtbox{currentFile} r
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 % arara: tex: { shell: yes }
+\end{codebox}
+
+\item[\rulebox{texcount}]
+This rule runs \rbox{texcount}, a Perl script designed to count words in \TeX\ and \LaTeX\ files, ignoring macros, tables, formulae and more on the provided \mtbox{currentFile} reference. The script is highly configurable, so make sure to check the manual for further information. 
+
+\begin{description}
+\item[\abox{rules}] This option, as the name suggests, sets the rules which dictate how the script should work regarding word counting and option handling. Possible values are:
+
+\begin{description}
+\item[\povalue{relaxed}] This value, as the name indicates, sets a relaxed set of rules, allowing more general cases to be counted as either words and macros.
+
+\item[\povalue{restricted}] This value, as the name indicates, sets a more restricted set of rules for word counting and option handling.
+\end{description}
+
+\item[\abox{verbosity}] This option, as the name suggests, sets the verbosity level of the script according to the provided integer value. Possible values are:
+
+\begin{description}
+\item[\povalue{\hphantom{x}0\hphantom{x}}] This value sets the lowest verbosity level of all, such that the script does not present parsing details.
+
+\item[\povalue{\hphantom{x}1\hphantom{x}}] This value raises the details a bit and sets the verbosity level to include parsed words and marked formulae.
+
+\item[\povalue{\hphantom{x}2\hphantom{x}}] This value adds more details from the previous verbosity level by including ignored text as well.
+
+\item[\povalue{\hphantom{x}3\hphantom{x}}] This value adds more details from the previous verbosity level by including comments and options.
+
+\item[\povalue{\hphantom{x}4\hphantom{x}}] This value sets the highest verbosity level of all, such that the script includes parsed worded, marked formulae, ignored text, comments, options and internal states.
+\end{description}
+
+\item[\rpsbox{strict}] This option sets whether the tool should enable strict mode, so certain groups for which rules are not defined raise warnings.
+
+\item[\rpsbox{html}] This option, as the name suggests, defines whether the tool should output the report in the HTML format.
+
+\item[\rpsbox{total}] This option, as the name suggests, defines whether the tool should provide a total sum instead of partial sums (per file).
+
+\item[\rpsbox{unicode}] This option, as the name indicates, defines whether the tool should select Unicode as encoding for both input and output.
+
+\item[\abox{output}] This option, as the name suggests, sets the output file name in which the report will be written.
+
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: texcount: { output: report.txt }
 \end{codebox}
 
 \item[\rulebox{texindy}]
