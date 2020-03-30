@@ -8,6 +8,11 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
+### Added
+
+* New rules for ConTeXt, fig2dev, qpdf, convert, texcount and detex.
+  (see #10)
+
 ### Fixed
 
 * `unsafelyExecuteSystemCommand` failed to execute in the current directory.
