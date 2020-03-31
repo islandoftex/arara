@@ -3,6 +3,10 @@ package org.islandoftex.arara.project
 
 import java.io.File
 
+/**
+ * A project in arara's sense is a collection of files that should be compiled
+ * together. Files in a project are not dependent on each other.
+ */
 data class Project(
     val name: String,
     val workingDirectory: File,

@@ -36,7 +36,10 @@ class ExecutionTest : ShouldSpec({
                     Paths.get(getPathForTest(testName))
             Configuration.load()
             Arara.config[AraraSpec.Execution.verbose] = true
-            FileSearchingUtils.discoverFile(fileName)
+            FileSearchingUtils.registerFileAttributes(
+                    FileSearchingUtils.resolveFile(fileName,
+                            File(getPathForTest(testName)))
+            )
             val directives = DirectiveUtils.process(Extractor.extract(
                     File("${getPathForTest(testName)}/$fileName")))
             Interpreter(directives).execute()

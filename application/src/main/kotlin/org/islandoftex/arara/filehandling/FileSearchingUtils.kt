@@ -98,16 +98,18 @@ object FileSearchingUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun discoverFile(reference: String) {
-        lookupFile(reference)
-                ?: throw AraraException(
-                        LanguageController.getMessage(
-                                Messages.ERROR_DISCOVERFILE_FILE_NOT_FOUND,
-                                reference,
-                                CommonUtils.fileTypesList
-                        )
-                )
-    }
+    fun resolveFile(
+        reference: String,
+        workingDirectory: File = Arara.config[AraraSpec.Execution.workingDirectory].toFile()
+    ): File =
+            lookupFile(reference, workingDirectory)
+                    ?: throw AraraException(
+                            LanguageController.getMessage(
+                                    Messages.ERROR_DISCOVERFILE_FILE_NOT_FOUND,
+                                    reference,
+                                    CommonUtils.fileTypesList
+                            )
+                    )
 
     /**
      * Performs a file lookup based on a string reference.
@@ -118,10 +120,9 @@ object FileSearchingUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    private fun lookupFile(reference: String): File? {
+    private fun lookupFile(reference: String, workingDirectory: File): File? {
         val types = Arara.config[AraraSpec.Execution.fileTypes]
-        val file = Arara.config[AraraSpec.Execution.workingDirectory]
-                .resolve(reference).toFile()
+        val file = workingDirectory.resolve(reference)
         val name = file.name
         val parent = FileHandlingUtils.getParentCanonicalFile(file)
 
@@ -132,9 +133,6 @@ object FileSearchingUtils {
             types.firstOrNull {
                 testFile.toString().endsWith("." + it.extension)
             }?.let {
-                Arara.config[AraraSpec.Execution.filePattern] =
-                        it.pattern
-                Arara.config[AraraSpec.Execution.reference] = testFile
                 return testFile
             }
         }
@@ -143,16 +141,20 @@ object FileSearchingUtils {
         // that the file reference has an implicit extension,
         // so we need to add it and look again
         // TODO: disable this step in safe mode
-        return types.map { parent.resolve("$name.${it.extension}") to it }
+        return types.map { parent.resolve("$name.${it.extension}") }
                 .union(types.map {
-                    parent.resolve("${name.removeSuffix(".").trim()}.${it.extension}") to it
+                    parent.resolve("${name.removeSuffix(".").trim()}.${it.extension}")
                 })
-                .firstOrNull { it.first.exists() && it.first.isFile }
+                .firstOrNull { it.exists() && it.isFile }
                 ?.let {
-                    Arara.config[AraraSpec.Execution.filePattern] =
-                            it.second.pattern
-                    Arara.config[AraraSpec.Execution.reference] = it.first
                     file
                 }
+    }
+
+    fun registerFileAttributes(file: File) {
+        Arara.config[AraraSpec.Execution.filePattern] =
+                Arara.config[AraraSpec.Execution.fileTypes]
+                        .first { it.extension == file.extension }.pattern
+        Arara.config[AraraSpec.Execution.reference] = file
     }
 }

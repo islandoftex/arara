@@ -21,6 +21,7 @@ import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.model.AraraException
 import org.islandoftex.arara.model.Session
+import org.islandoftex.arara.project.Project
 import org.islandoftex.arara.utils.CommonUtils
 import org.islandoftex.arara.utils.DisplayUtils
 import org.islandoftex.arara.utils.LoggingUtils
@@ -134,14 +135,18 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
 
         try {
             // TODO: this will have to change for parallelization
-            reference.forEach {
+            Project(workingDirectory.fileName.toString(),
+                    workingDirectory.toFile(),
+                    reference.map {
+                        FileSearchingUtils.resolveFile(it, workingDirectory.toFile())
+                    }).absoluteFiles.forEach {
                 // TODO: do we have to reset some more file-specific config?
                 // especially the working directory will have to be set and
                 // changed
-                Arara.config = Arara.baseconfig.withLayer(it)
+                Arara.config = Arara.baseconfig.withLayer(it.absolutePath)
                 // next, update the configuration
                 updateConfigurationFromCommandLine()
-                FileSearchingUtils.discoverFile(it)
+                FileSearchingUtils.registerFileAttributes(it)
                 Arara.run()
                 // add an empty line between file executions
                 println()
