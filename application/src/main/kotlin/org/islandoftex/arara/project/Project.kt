@@ -10,13 +10,13 @@ import java.io.File
 data class Project(
     val name: String,
     val workingDirectory: File,
-    val files: List<File>,
+    val files: List<ProjectFile>,
     val dependencies: Set<String> = setOf()
 ) {
     internal val absoluteFiles = files.map {
         if (it.isAbsolute)
             it
         else
-            workingDirectory.resolve(it)
+            it.copy(path = workingDirectory.toPath().resolve(it).toAbsolutePath())
     }
 }

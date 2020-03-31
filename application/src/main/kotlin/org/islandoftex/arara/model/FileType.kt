@@ -69,10 +69,14 @@ class FileType {
          */
         const val INVALID_EXTENSION = "/\\"
         /**
-         * This constant identifies an invalid pattern. This is a opening
+         * This constant identifies an invalid pattern. This is an opening
          * character class which is invalid.
          */
-        const val INVALID_PATTERN = "["
+        const val INVALID_PATTERN = ""
+        /**
+         * This value identifies an unknown file type.
+         */
+        val UNKNOWN_TYPE = FileType(INVALID_EXTENSION, "")
     }
 
     /**

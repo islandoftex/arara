@@ -143,7 +143,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                 // TODO: do we have to reset some more file-specific config?
                 // especially the working directory will have to be set and
                 // changed
-                Arara.config = Arara.baseconfig.withLayer(it.absolutePath)
+                Arara.config = Arara.baseconfig.withLayer(it.toString())
                 // load the configuration (we need to set the working directory
                 // first because the configuration loading relies on it)
                 // CLI options are prioritized

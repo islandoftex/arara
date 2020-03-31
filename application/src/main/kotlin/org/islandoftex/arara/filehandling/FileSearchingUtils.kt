@@ -9,6 +9,8 @@ import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.model.AraraException
+import org.islandoftex.arara.model.FileType
+import org.islandoftex.arara.project.ProjectFile
 import org.islandoftex.arara.utils.CommonUtils
 
 /**
@@ -101,7 +103,7 @@ object FileSearchingUtils {
     fun resolveFile(
         reference: String,
         workingDirectory: File = Arara.config[AraraSpec.Execution.workingDirectory].toFile()
-    ): File =
+    ): ProjectFile =
             lookupFile(reference, workingDirectory)
                     ?: throw AraraException(
                             LanguageController.getMessage(
@@ -120,7 +122,7 @@ object FileSearchingUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    private fun lookupFile(reference: String, workingDirectory: File): File? {
+    private fun lookupFile(reference: String, workingDirectory: File): ProjectFile? {
         val types = Arara.config[AraraSpec.Execution.fileTypes]
         val file = workingDirectory.resolve(reference)
         val name = file.name
@@ -133,7 +135,11 @@ object FileSearchingUtils {
             types.firstOrNull {
                 testFile.toString().endsWith("." + it.extension)
             }?.let {
-                return testFile
+                return ProjectFile(
+                        testFile.toPath(),
+                        types.firstOrNull { testFile.extension == it.extension }
+                                ?: FileType.UNKNOWN_TYPE
+                )
             }
         }
 
@@ -146,12 +152,17 @@ object FileSearchingUtils {
                     parent.resolve("${name.removeSuffix(".").trim()}.${it.extension}")
                 })
                 .firstOrNull { it.exists() && it.isFile }
+                ?.let { found ->
+                    ProjectFile(
+                            found.toPath(),
+                            types.firstOrNull { found.extension == it.extension }
+                                    ?: FileType.UNKNOWN_TYPE
+                    )
+                }
     }
 
-    fun registerFileAttributes(file: File) {
-        Arara.config[AraraSpec.Execution.filePattern] =
-                Arara.config[AraraSpec.Execution.fileTypes]
-                        .first { it.extension == file.extension }.pattern
-        Arara.config[AraraSpec.Execution.reference] = file
+    fun registerFileAttributes(file: ProjectFile) {
+        Arara.config[AraraSpec.Execution.filePattern] = file.fileType.pattern
+        Arara.config[AraraSpec.Execution.reference] = file.toFile()
     }
 }
