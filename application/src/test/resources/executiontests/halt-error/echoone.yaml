@@ -5,6 +5,6 @@ commands:
   - name: The echoer
     command: >
       @{
-          return getCommand('echo', 'QuackOne');
+          return isWindows(getCommand('cmd', '/c', 'echo', 'QuackOne'), getCommand('echo', 'QuackOne'));
       }
 arguments: []

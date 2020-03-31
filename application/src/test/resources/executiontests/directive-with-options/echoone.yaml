@@ -5,7 +5,8 @@ commands:
   - name: The echoer
     command: >
       @{
-          return getCommand('echo', 'QuackOne', interaction, synctex);
+          return isWindows(getCommand('cmd', '/c', 'echo', 'QuackOne', interaction, synctex),
+                  getCommand('echo', 'QuackOne', interaction, synctex));
       }
 arguments:
 - identifier: interaction
