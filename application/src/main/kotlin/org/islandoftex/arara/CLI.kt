@@ -16,15 +16,16 @@ import kotlin.time.milliseconds
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.configuration.Configuration
 import org.islandoftex.arara.filehandling.FileSearchingUtils
+import org.islandoftex.arara.files.Project
 import org.islandoftex.arara.localization.Language
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.model.AraraException
 import org.islandoftex.arara.model.Session
-import org.islandoftex.arara.project.Project
 import org.islandoftex.arara.utils.CommonUtils
 import org.islandoftex.arara.utils.DisplayUtils
 import org.islandoftex.arara.utils.LoggingUtils
+import org.islandoftex.arara.utils.absoluteFiles
 
 /**
  * arara's command line interface
@@ -136,10 +137,11 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         try {
             // TODO: this will have to change for parallelization
             Project(workingDir.fileName.toString(),
-                    workingDir.toFile(),
+                    workingDir,
                     reference.map {
                         FileSearchingUtils.resolveFile(it, workingDir.toFile())
-                    }).absoluteFiles.forEach {
+                    }.toSet()
+            ).absoluteFiles.forEach {
                 // TODO: do we have to reset some more file-specific config?
                 // especially the working directory will have to be set and
                 // changed

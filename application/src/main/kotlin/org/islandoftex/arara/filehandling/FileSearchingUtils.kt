@@ -6,11 +6,12 @@ import java.io.FileFilter
 import java.nio.file.FileSystems
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.configuration.AraraSpec
+import org.islandoftex.arara.files.FileType
+import org.islandoftex.arara.files.ProjectFile
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.model.AraraException
-import org.islandoftex.arara.model.FileType
-import org.islandoftex.arara.project.ProjectFile
+import org.islandoftex.arara.model.UNKNOWN_TYPE
 import org.islandoftex.arara.utils.CommonUtils
 
 /**

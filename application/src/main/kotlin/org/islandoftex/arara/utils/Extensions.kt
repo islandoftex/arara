@@ -2,6 +2,8 @@
 package org.islandoftex.arara.utils
 
 import kotlin.math.ceil
+import org.islandoftex.arara.files.Project
+import org.islandoftex.arara.files.ProjectFile
 
 /**
  * Abbreviate a String to a maximal width.
@@ -66,3 +68,14 @@ fun String.wrap(width: Int): String {
     }
     return wrapped
 }
+
+/**
+ * Get the files of a project as absolute paths.
+ */
+val Project.absoluteFiles: Set<ProjectFile>
+    get() = files.map {
+        if (it.isAbsolute)
+            it
+        else
+            it.copy(path = workingDirectory.resolve(it).toRealPath())
+    }.toSet()

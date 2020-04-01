@@ -21,6 +21,8 @@ plugins {
 
 val kotlinVersion = project.getKotlinPluginVersion()
 dependencies {
+    implementation(project(":api"))
+
     implementation(kotlin("stdlib", kotlinVersion))
     implementation(kotlin("reflect", kotlinVersion))
     implementation("com.uchuhimo:konf-core:0.22.1")

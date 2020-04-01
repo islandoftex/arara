@@ -4,7 +4,7 @@ package org.islandoftex.arara.configuration
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.Arara
-import org.islandoftex.arara.model.FileType
+import org.islandoftex.arara.model.FileTypeImpl
 import org.islandoftex.arara.utils.CommonUtils
 import org.mvel2.templates.TemplateRuntime
 
@@ -45,7 +45,7 @@ class LocalConfiguration {
         }
 
     // file types
-    var filetypes: List<FileType> = listOf()
+    var filetypes: List<FileTypeImpl> = listOf()
 
     // the application language
     // default to English

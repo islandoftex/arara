@@ -62,8 +62,11 @@ spotless {
 
 detekt {
     failFast = false
-    input = files("application/src/main/kotlin",
-            "buildSrc/src/main/kotlin")
+    input = files(
+            "api/src/main/kotlin",
+            "application/src/main/kotlin",
+            "buildSrc/src/main/kotlin"
+    )
     buildUponDefaultConfig = true
     config = files("detekt-config.yml")
 }

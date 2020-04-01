@@ -73,7 +73,8 @@ object Configuration {
                     ConfigurationUtils.normalizePaths(resource.paths)
 
         if (resource.filetypes.isNotEmpty()) {
-            Arara.config[AraraSpec.Execution.fileTypes] = ConfigurationUtils.normalizeFileTypes(resource.filetypes)
+            Arara.config[AraraSpec.Execution.fileTypes] =
+                    ConfigurationUtils.normalizeFileTypes(resource.filetypes)
         }
 
         Arara.config[AraraSpec.Execution.verbose] = resource.isVerbose

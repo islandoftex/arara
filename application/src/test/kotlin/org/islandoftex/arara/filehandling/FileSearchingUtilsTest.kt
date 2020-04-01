@@ -9,7 +9,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.reflect.full.declaredMemberFunctions
 import kotlin.reflect.jvm.isAccessible
-import org.islandoftex.arara.project.ProjectFile
+import org.islandoftex.arara.files.ProjectFile
 
 class FileSearchingUtilsTest : ShouldSpec({
     // TODO: test implicit extensions

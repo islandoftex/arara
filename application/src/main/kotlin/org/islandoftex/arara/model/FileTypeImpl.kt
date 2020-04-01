@@ -4,6 +4,7 @@ package org.islandoftex.arara.model
 import java.util.regex.PatternSyntaxException
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.configuration.ConfigurationUtils
+import org.islandoftex.arara.files.FileType
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.utils.CommonUtils
@@ -16,20 +17,21 @@ import org.islandoftex.arara.utils.CommonUtils
  * @since 4.0
  */
 @Serializable
-class FileType {
+class FileTypeImpl : FileType {
     // string representing the
     // file extension
-    var extension: String = INVALID_EXTENSION
+    override var extension: String = FileType.INVALID_EXTENSION
         get() = CommonUtils.removeKeywordNotNull(field)
         private set
+
     // string representing the
     // file pattern to be used
     // as directive lookup
-    var pattern: String = INVALID_PATTERN
+    override var pattern: String = FileType.INVALID_PATTERN
         @Throws(AraraException::class)
         get() {
             CommonUtils.removeKeywordNotNull(field)
-            if (field == INVALID_PATTERN) {
+            if (field == FileType.INVALID_PATTERN) {
                 field = ConfigurationUtils.defaultFileTypePatterns[extension]
                         ?: throw AraraException(
                                 LanguageController.getMessage(
@@ -59,24 +61,6 @@ class FileType {
                         )
                 )
         }
-    }
-
-    companion object {
-        /**
-         * This constant identifies an invalid extension. As unices do not
-         * allow a forward and Windows does not allow a backward slash, this
-         * should suffice.
-         */
-        const val INVALID_EXTENSION = "/\\"
-        /**
-         * This constant identifies an invalid pattern. This is an opening
-         * character class which is invalid.
-         */
-        const val INVALID_PATTERN = ""
-        /**
-         * This value identifies an unknown file type.
-         */
-        val UNKNOWN_TYPE = FileType(INVALID_EXTENSION, "")
     }
 
     /**
@@ -112,3 +96,9 @@ class FileType {
         return extension.hashCode()
     }
 }
+
+/**
+ * This value identifies an unknown file type.
+ */
+val FileType.Companion.UNKNOWN_TYPE: FileType
+    get() = FileTypeImpl(FileType.INVALID_EXTENSION, "")

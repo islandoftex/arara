@@ -8,10 +8,11 @@ import java.net.URLDecoder
 import java.nio.file.Path
 import java.nio.file.Paths
 import org.islandoftex.arara.Arara
+import org.islandoftex.arara.files.FileType
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.model.AraraException
-import org.islandoftex.arara.model.FileType
+import org.islandoftex.arara.model.FileTypeImpl
 import org.islandoftex.arara.utils.CommonUtils
 
 /**
@@ -44,7 +45,7 @@ object ConfigurationUtils {
      */
     val defaultFileTypes: Set<FileType> by lazy {
         defaultFileTypePatterns
-                .map { (extension, pattern) -> FileType(extension, pattern) }
+                .map { (extension, pattern) -> FileTypeImpl(extension, pattern) }
                 .toSet()
     }
 
