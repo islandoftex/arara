@@ -146,9 +146,6 @@ object FileSearchingUtils {
                     parent.resolve("${name.removeSuffix(".").trim()}.${it.extension}")
                 })
                 .firstOrNull { it.exists() && it.isFile }
-                ?.let {
-                    file
-                }
     }
 
     fun registerFileAttributes(file: File) {

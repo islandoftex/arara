@@ -3,6 +3,7 @@ package org.islandoftex.arara.filehandling
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.ShouldSpec
+import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.reflect.full.declaredMemberFunctions
@@ -25,14 +26,33 @@ class FileSearchingUtilsTest : ShouldSpec({
         val lookupFile = FileSearchingUtils::class.declaredMemberFunctions
                 .first { it.name == "lookupFile" }
         lookupFile.isAccessible = true
-        lookupFile.call(FileSearchingUtils, "QUACK") shouldBe null
+        lookupFile.call(FileSearchingUtils, "QUACK", File(".")) shouldBe null
     }
-
     should("fail on existing directory") {
         val lookupFile = FileSearchingUtils::class.declaredMemberFunctions
                 .first { it.name == "lookupFile" }
         lookupFile.isAccessible = true
-        lookupFile.call(FileSearchingUtils, "../buildSrc") shouldBe null
+        lookupFile.call(FileSearchingUtils, "../buildSrc", File(".")) shouldBe null
+    }
+    should("succeed finding tex file with extension") {
+        val lookupFile = FileSearchingUtils::class.declaredMemberFunctions
+                .first { it.name == "lookupFile" }
+        lookupFile.isAccessible = true
+        val projectFile = lookupFile.call(FileSearchingUtils,
+                "src/test/resources/executiontests/changes/changes.tex",
+                File(".")) as File
+        projectFile.canonicalPath shouldBe
+                File("./src/test/resources/executiontests/changes/changes.tex").canonicalPath
+    }
+    should("succeed finding tex file without extension") {
+        val lookupFile = FileSearchingUtils::class.declaredMemberFunctions
+                .first { it.name == "lookupFile" }
+        lookupFile.isAccessible = true
+        val projectFile = lookupFile.call(FileSearchingUtils,
+                "src/test/resources/executiontests/changes/changes",
+                File(".")) as File
+        projectFile.canonicalPath shouldBe
+                File("./src/test/resources/executiontests/changes/changes.tex").canonicalPath
     }
 
     should("find file by extension") {
