@@ -79,3 +79,11 @@ val Project.absoluteFiles: Set<ProjectFile>
         else
             it.copy(path = workingDirectory.resolve(it).toRealPath())
     }.toSet()
+
+/**
+ * Get the project's files in order of compilation.
+ */
+val Project.filesByPriority: List<ProjectFile>
+    get() = files.sortedBy {
+        it.priority
+    }

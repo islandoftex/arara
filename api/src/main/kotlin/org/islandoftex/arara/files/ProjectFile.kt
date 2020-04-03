@@ -17,5 +17,11 @@ data class ProjectFile(
         /**
          * The file's type. This will identify extension and search pattern.
          */
-        val fileType: FileType
+        val fileType: FileType,
+        /**
+         * Within a project, a file may have a priority. Files with highest
+         * priority are compiled before files with lower priority. Files with
+         * equal priority will be compiled in random order.
+         */
+        val priority: Int = 0
 ) : Path by path
