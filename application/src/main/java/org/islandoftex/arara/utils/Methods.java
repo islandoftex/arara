@@ -9,8 +9,9 @@ import org.islandoftex.arara.filehandling.FileSearchingUtils;
 import org.islandoftex.arara.localization.LanguageController;
 import org.islandoftex.arara.localization.Messages;
 import org.islandoftex.arara.AraraException;
-import org.islandoftex.arara.model.Session;
+import org.islandoftex.arara.model.SessionImpl;
 import org.islandoftex.arara.ruleset.Command;
+import org.islandoftex.arara.session.Session;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -35,7 +36,7 @@ public class Methods {
             LanguageController.INSTANCE;
 
     // the session controller
-    private static final Session session = Session.INSTANCE;
+    private static final Session session = SessionImpl.INSTANCE;
 
     /**
      * Get rule methods.

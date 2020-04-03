@@ -4,18 +4,16 @@ package org.islandoftex.arara.model
 import org.islandoftex.arara.AraraException
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
+import org.islandoftex.arara.session.Session
 
 /**
  * Implements the session.
- *
- * This class wraps a map that holds the execution session, that is, a dirty
- * maneuver to exchange pretty much any data between commands and even rules.
  *
  * @author Island of TeX
  * @version 5.0
  * @since 4.0
  */
-object Session {
+object SessionImpl : Session {
     // the application messages obtained from the
     // language controller
     private val messages = LanguageController
@@ -35,7 +33,7 @@ object Session {
      * higher levels.
      */
     @Throws(AraraException::class)
-    operator fun get(key: String): Any {
+    override operator fun get(key: String): Any {
         return if (contains(key)) {
             map.getValue(key)
         } else {
@@ -55,7 +53,7 @@ object Session {
      * @param key The provided key.
      * @param value The value to be inserted.
      */
-    fun put(key: String, value: Any) {
+    override fun put(key: String, value: Any) {
         map[key] = value
     }
 
@@ -68,7 +66,7 @@ object Session {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun remove(key: String) {
+    override fun remove(key: String) {
         if (contains(key)) {
             map.remove(key)
         } else {
@@ -88,13 +86,13 @@ object Session {
      * @return A boolean value indicating if the provided key exists in the
      * session.
      */
-    operator fun contains(key: String): Boolean = map.containsKey(key)
+    override operator fun contains(key: String): Boolean = map.containsKey(key)
 
     /**
      * Clears the session (map). This method, as usual, holds the map method of
      * the same name.
      */
-    fun clear() = map.clear()
+    override fun clear() = map.clear()
 
     /**
      * Update the environment variables stored in the session.

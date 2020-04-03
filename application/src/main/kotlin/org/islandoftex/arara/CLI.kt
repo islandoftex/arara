@@ -19,7 +19,7 @@ import org.islandoftex.arara.files.Project
 import org.islandoftex.arara.localization.Language
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
-import org.islandoftex.arara.model.Session
+import org.islandoftex.arara.model.SessionImpl
 import org.islandoftex.arara.session.ExecutionMode
 import org.islandoftex.arara.session.ExecutionOptions
 import org.islandoftex.arara.utils.CommonUtils
@@ -134,7 +134,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
 
         // arara stores the environment variables accessible at the start
         // of the execution in the session object for the user
-        Session.updateEnvironmentVariables()
+        SessionImpl.updateEnvironmentVariables()
 
         // logging has to be initialized only once and for all because
         // context resets lead to missing output

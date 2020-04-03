@@ -206,9 +206,9 @@ class Interpreter(
                     // TODO: document this key
                     val haltKey = "arara:${Arara.config[AraraSpec
                             .Execution.reference].name}:halt"
-                    if (Session.contains(haltKey)) {
+                    if (SessionImpl.contains(haltKey)) {
                         Arara.config[AraraSpec.Execution.status] =
-                                Session[haltKey].toString().toInt()
+                                SessionImpl[haltKey].toString().toInt()
                         // TODO: localize
                         throw HaltExpectedException("User requested halt")
                     }
