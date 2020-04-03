@@ -8,11 +8,11 @@ import java.util.regex.Pattern
 import kotlin.math.ln
 import kotlin.math.pow
 import org.islandoftex.arara.Arara
+import org.islandoftex.arara.AraraException
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.filehandling.FileHandlingUtils
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
-import org.islandoftex.arara.model.AraraException
 import org.islandoftex.arara.ruleset.Argument
 
 /**

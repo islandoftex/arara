@@ -3,6 +3,7 @@ package org.islandoftex.arara.model
 
 import java.util.regex.PatternSyntaxException
 import kotlinx.serialization.Serializable
+import org.islandoftex.arara.AraraException
 import org.islandoftex.arara.configuration.ConfigurationUtils
 import org.islandoftex.arara.files.FileType
 import org.islandoftex.arara.localization.LanguageController

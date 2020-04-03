@@ -8,10 +8,10 @@ import java.io.OutputStream
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import org.islandoftex.arara.Arara
+import org.islandoftex.arara.AraraException
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
-import org.islandoftex.arara.model.AraraException
 import org.islandoftex.arara.ruleset.Command
 import org.islandoftex.arara.ruleset.Conditional
 import org.slf4j.LoggerFactory
@@ -98,17 +98,20 @@ object InterpreterUtils {
                     messages.getMessage(Messages.LOG_INFO_END_BUFFER)))
             exit
         }.getOrElse {
-            throw AraraException(messages.getMessage(
-                    when (it) {
-                        is IOException -> Messages.ERROR_RUN_IO_EXCEPTION
-                        is InterruptedException ->
-                            Messages.ERROR_RUN_INTERRUPTED_EXCEPTION
-                        is InvalidExitValueException ->
-                            Messages.ERROR_RUN_INVALID_EXIT_VALUE_EXCEPTION
-                        is TimeoutException ->
-                            Messages.ERROR_RUN_TIMEOUT_EXCEPTION
-                        else -> Messages.ERROR_RUN_GENERIC_EXCEPTION
-                    }), it)
+            throw AraraException(
+                    messages.getMessage(
+                            when (it) {
+                                is IOException -> Messages.ERROR_RUN_IO_EXCEPTION
+                                is InterruptedException ->
+                                    Messages.ERROR_RUN_INTERRUPTED_EXCEPTION
+                                is InvalidExitValueException ->
+                                    Messages.ERROR_RUN_INVALID_EXIT_VALUE_EXCEPTION
+                                is TimeoutException ->
+                                    Messages.ERROR_RUN_TIMEOUT_EXCEPTION
+                                else -> Messages.ERROR_RUN_GENERIC_EXCEPTION
+                            }
+                    ), it
+            )
         }
     }
 

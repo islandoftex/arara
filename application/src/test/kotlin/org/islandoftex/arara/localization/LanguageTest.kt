@@ -5,7 +5,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import java.util.Locale
-import org.islandoftex.arara.model.AraraException
+import org.islandoftex.arara.AraraException
 
 class LanguageTest : ShouldSpec({
     should("instantiate with known code") {

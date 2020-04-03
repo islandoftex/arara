@@ -4,6 +4,7 @@ package org.islandoftex.arara.model
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
+import org.islandoftex.arara.AraraException
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.ruleset.Directive

@@ -8,11 +8,11 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import java.io.File
 import java.util.regex.Pattern
 import org.islandoftex.arara.Arara
+import org.islandoftex.arara.AraraException
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.filehandling.FileHandlingUtils
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
-import org.islandoftex.arara.model.AraraException
 import org.islandoftex.arara.utils.DisplayUtils
 import org.slf4j.LoggerFactory
 
@@ -87,8 +87,11 @@ object DirectiveUtils {
     fun extractDirectives(lines: List<String>): List<Directive> {
         val pairs = getPotentialDirectiveLines(lines)
                 .takeIf { it.isNotEmpty() }
-                ?: throw AraraException(messages.getMessage(
-                        Messages.ERROR_VALIDATE_NO_DIRECTIVES_FOUND))
+                ?: throw AraraException(
+                        messages.getMessage(
+                                Messages.ERROR_VALIDATE_NO_DIRECTIVES_FOUND
+                        )
+                )
 
         val assemblers = mutableListOf<DirectiveAssembler>()
         var assembler = DirectiveAssembler()
@@ -206,10 +209,13 @@ object DirectiveUtils {
         return ObjectMapper(YAMLFactory()).registerKotlinModule().runCatching {
             readValue<Map<String, Any>>(text)
         }.getOrElse {
-            throw AraraException(messages.getMessage(
-                    Messages.ERROR_VALIDATE_YAML_EXCEPTION,
-                    "(" + numbers.joinToString(", ") + ")"),
-                    it)
+            throw AraraException(
+                    messages.getMessage(
+                            Messages.ERROR_VALIDATE_YAML_EXCEPTION,
+                            "(" + numbers.joinToString(", ") + ")"
+                    ),
+                    it
+            )
         }
     }
 
@@ -278,9 +284,12 @@ object DirectiveUtils {
             val parameters = directive.parameters
 
             if (parameters.containsKey("reference"))
-                throw AraraException(messages.getMessage(
-                        Messages.ERROR_VALIDATE_REFERENCE_IS_RESERVED,
-                        "(" + directive.lineNumbers.joinToString(", ") + ")"))
+                throw AraraException(
+                        messages.getMessage(
+                                Messages.ERROR_VALIDATE_REFERENCE_IS_RESERVED,
+                                "(" + directive.lineNumbers.joinToString(", ") + ")"
+                        )
+                )
 
             if (parameters.containsKey("files")) {
                 result.addAll(replicateDirective(parameters.getValue("files"),

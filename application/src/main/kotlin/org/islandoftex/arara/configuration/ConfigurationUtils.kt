@@ -8,10 +8,10 @@ import java.net.URLDecoder
 import java.nio.file.Path
 import java.nio.file.Paths
 import org.islandoftex.arara.Arara
+import org.islandoftex.arara.AraraException
 import org.islandoftex.arara.files.FileType
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
-import org.islandoftex.arara.model.AraraException
 import org.islandoftex.arara.model.FileTypeImpl
 import org.islandoftex.arara.utils.CommonUtils
 
@@ -116,8 +116,11 @@ object ConfigurationUtils {
             Yaml.default.parse(LocalConfiguration.serializer(),
                     text)
         }.getOrElse {
-            throw AraraException(messages.getMessage(
-                    Messages.ERROR_CONFIGURATION_GENERIC_ERROR), it)
+            throw AraraException(
+                    messages.getMessage(
+                            Messages.ERROR_CONFIGURATION_GENERIC_ERROR
+                    ), it
+            )
         }
     }
 

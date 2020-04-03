@@ -4,10 +4,10 @@ package org.islandoftex.arara.filehandling
 import com.charleskorn.kaml.Yaml
 import java.io.File
 import org.islandoftex.arara.Arara
+import org.islandoftex.arara.AraraException
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
-import org.islandoftex.arara.model.AraraException
 
 /**
  * Implements database utilitary methods.
@@ -55,8 +55,12 @@ object DatabaseUtils {
                 Yaml.default.parse(Database.serializer(), text)
             }.getOrElse {
                 it.printStackTrace()
-                throw AraraException(messages.getMessage(Messages
-                        .ERROR_LOAD_COULD_NOT_LOAD_XML, file.name), it)
+                throw AraraException(
+                        messages.getMessage(
+                                Messages.ERROR_LOAD_COULD_NOT_LOAD_XML,
+                                file.name
+                        ), it
+                )
             }
         }
     }
@@ -79,7 +83,8 @@ object DatabaseUtils {
                     messages.getMessage(
                             Messages.ERROR_SAVE_COULD_NOT_SAVE_XML,
                             file.name
-                    ), it)
+                    ), it
+            )
         }
     }
 

@@ -3,9 +3,9 @@ package org.islandoftex.arara.ruleset
 
 import com.charleskorn.kaml.Yaml
 import java.io.File
+import org.islandoftex.arara.AraraException
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
-import org.islandoftex.arara.model.AraraException
 import org.islandoftex.arara.utils.CommonUtils
 
 /**
@@ -41,7 +41,8 @@ object RuleUtils {
             throw AraraException(
                     CommonUtils.ruleErrorHeader + messages.getMessage(
                             Messages.ERROR_PARSERULE_GENERIC_ERROR
-                    ), it)
+                    ), it
+            )
         }
 
         validateHeader(rule, identifier)
@@ -62,15 +63,20 @@ object RuleUtils {
     private fun validateHeader(rule: Rule, identifier: String) {
         if (rule.identifier != Rule.INVALID_RULE_IDENTIFIER) {
             if (rule.identifier != identifier) {
-                throw AraraException(CommonUtils.ruleErrorHeader +
-                        messages.getMessage(
-                                Messages.ERROR_VALIDATEHEADER_WRONG_IDENTIFIER,
-                                rule.identifier,
-                                identifier))
+                throw AraraException(
+                        CommonUtils.ruleErrorHeader +
+                                messages.getMessage(
+                                        Messages.ERROR_VALIDATEHEADER_WRONG_IDENTIFIER,
+                                        rule.identifier,
+                                        identifier
+                                )
+                )
             }
         } else {
-            throw AraraException(CommonUtils.ruleErrorHeader +
-                    messages.getMessage(Messages.ERROR_VALIDATEHEADER_NULL_ID))
+            throw AraraException(
+                    CommonUtils.ruleErrorHeader +
+                            messages.getMessage(Messages.ERROR_VALIDATEHEADER_NULL_ID)
+            )
         }
         if (rule.name == Rule.INVALID_RULE_NAME) {
             throw AraraException(
@@ -92,9 +98,12 @@ object RuleUtils {
     @Suppress("ThrowsCount")
     private fun validateBody(rule: Rule) {
         if (rule.commands.any { it.command == null }) {
-            throw AraraException(CommonUtils.ruleErrorHeader +
-                    messages.getMessage(
-                            Messages.ERROR_VALIDATEBODY_NULL_COMMAND))
+            throw AraraException(
+                    CommonUtils.ruleErrorHeader +
+                            messages.getMessage(
+                                    Messages.ERROR_VALIDATEBODY_NULL_COMMAND
+                            )
+            )
         }
 
         val arguments = mutableListOf<String>()

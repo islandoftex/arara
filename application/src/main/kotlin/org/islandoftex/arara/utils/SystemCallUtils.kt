@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.utils
 
-import org.islandoftex.arara.model.AraraException
+import org.islandoftex.arara.AraraException
 import org.islandoftex.arara.ruleset.Command
 import org.zeroturnaround.exec.ProcessExecutor
 
@@ -72,8 +72,10 @@ object SystemCallUtils {
             // populate the corresponding value
                 map[key] = commands[key]!!.invoke()
             else
-                throw AraraException("The requested key could not be " +
-                        "translated into a command to get the call value.")
+                throw AraraException(
+                        "The requested key could not be " +
+                                "translated into a command to get the call value."
+                )
         }
 
         // simply return the corresponding

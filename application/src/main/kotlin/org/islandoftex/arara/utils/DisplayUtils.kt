@@ -2,12 +2,12 @@
 package org.islandoftex.arara.utils
 
 import org.islandoftex.arara.Arara
+import org.islandoftex.arara.AraraException
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.configuration.ConfigurationUtils
 import org.islandoftex.arara.filehandling.FileHandlingUtils
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
-import org.islandoftex.arara.model.AraraException
 import org.islandoftex.arara.ruleset.Conditional
 import org.slf4j.LoggerFactory
 

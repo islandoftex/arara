@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.model
 
+import org.islandoftex.arara.AraraException
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
 

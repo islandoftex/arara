@@ -6,10 +6,10 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.zip.CRC32
 import org.islandoftex.arara.Arara
+import org.islandoftex.arara.AraraException
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
-import org.islandoftex.arara.model.AraraException
 
 /**
  * Implements file handling utilitary methods.
@@ -138,8 +138,11 @@ object FileHandlingUtils {
             this.canonicalFile.parentFile
         }.getOrElse {
             // it is IOException || is is SecurityException
-            throw AraraException(messages.getMessage(
-                    Messages.ERROR_GETPARENTCANONICALPATH_IO_EXCEPTION), it)
+            throw AraraException(
+                    messages.getMessage(
+                            Messages.ERROR_GETPARENTCANONICALPATH_IO_EXCEPTION
+                    ), it
+            )
         }
     }
 
@@ -221,8 +224,11 @@ object FileHandlingUtils {
                 value
             })
         } catch (exception: IOException) {
-            throw AraraException(messages.getMessage(Messages
-                    .ERROR_CALCULATEHASH_IO_EXCEPTION), exception)
+            throw AraraException(
+                    messages.getMessage(
+                            Messages.ERROR_CALCULATEHASH_IO_EXCEPTION
+                    ), exception
+            )
         }
     }
 
@@ -311,9 +317,12 @@ object FileHandlingUtils {
                     getParentCanonicalPath(parent) + File.separator
             )
         } else {
-            throw AraraException(messages.getMessage(
-                    Messages.ERROR_ISSUBDIRECTORY_NOT_A_DIRECTORY,
-                    child.name))
+            throw AraraException(
+                    messages.getMessage(
+                            Messages.ERROR_ISSUBDIRECTORY_NOT_A_DIRECTORY,
+                            child.name
+                    )
+            )
         }
     }
 }

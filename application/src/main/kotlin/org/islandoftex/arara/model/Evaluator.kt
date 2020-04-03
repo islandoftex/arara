@@ -2,6 +2,7 @@
 package org.islandoftex.arara.model
 
 import org.islandoftex.arara.Arara
+import org.islandoftex.arara.AraraException
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
@@ -66,8 +67,11 @@ class Evaluator {
             else
                 result
         } else {
-            throw AraraException(messages.getMessage(
-                    Messages.ERROR_EVALUATE_NOT_BOOLEAN_VALUE))
+            throw AraraException(
+                    messages.getMessage(
+                            Messages.ERROR_EVALUATE_NOT_BOOLEAN_VALUE
+                    )
+            )
         }
     }
 
@@ -106,9 +110,12 @@ class Evaluator {
                 try {
                     evaluateCondition(conditional)
                 } catch (exception: RuntimeException) {
-                    throw AraraException(messages.getMessage(Messages
-                            .ERROR_EVALUATE_COMPILATION_FAILED),
-                            exception)
+                    throw AraraException(
+                            messages.getMessage(
+                                    Messages.ERROR_EVALUATE_COMPILATION_FAILED
+                            ),
+                            exception
+                    )
                 }
             }
         }

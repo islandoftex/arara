@@ -5,6 +5,7 @@ import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
+import org.islandoftex.arara.AraraException
 
 class SessionTest : ShouldSpec({
     should("include all environment variables") {

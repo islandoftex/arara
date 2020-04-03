@@ -14,7 +14,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.Locale
 import java.util.stream.Collectors
-import org.islandoftex.arara.model.AraraException
+import org.islandoftex.arara.AraraException
 
 class LanguageCoverageTest : ShouldSpec({
     "locale definitions" {

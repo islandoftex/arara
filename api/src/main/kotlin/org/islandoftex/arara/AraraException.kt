@@ -1,12 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.model
+package org.islandoftex.arara
 
 /**
  * Implements the specific exception model for arara.
- *
- * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
 class AraraException : Exception {
     /**

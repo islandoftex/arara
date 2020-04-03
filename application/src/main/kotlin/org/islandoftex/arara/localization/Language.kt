@@ -2,7 +2,7 @@
 package org.islandoftex.arara.localization
 
 import java.util.Locale
-import org.islandoftex.arara.model.AraraException
+import org.islandoftex.arara.AraraException
 
 /**
  * Implements the language model.

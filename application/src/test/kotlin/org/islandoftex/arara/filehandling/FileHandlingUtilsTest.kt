@@ -7,8 +7,8 @@ import io.kotest.matchers.shouldBe
 import java.io.File
 import java.nio.file.Files
 import org.islandoftex.arara.Arara
+import org.islandoftex.arara.AraraException
 import org.islandoftex.arara.configuration.AraraSpec
-import org.islandoftex.arara.model.AraraException
 
 class FileHandlingUtilsTest : ShouldSpec({
     should("fail generating CRC sums on inexistent files") {

@@ -13,10 +13,10 @@ import java.io.File
 import java.io.PrintStream
 import java.nio.file.Paths
 import org.islandoftex.arara.Arara
+import org.islandoftex.arara.AraraException
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.configuration.Configuration
 import org.islandoftex.arara.filehandling.FileSearchingUtils
-import org.islandoftex.arara.model.AraraException
 import org.islandoftex.arara.model.Extractor
 import org.islandoftex.arara.model.Interpreter
 import org.islandoftex.arara.ruleset.DirectiveUtils
