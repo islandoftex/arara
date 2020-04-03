@@ -2,7 +2,6 @@
 package org.islandoftex.arara.model
 
 import java.io.File
-import kotlin.time.ExperimentalTime
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.localization.LanguageController
@@ -99,7 +98,6 @@ class Interpreter(
      * @return Success of the execution.
      * @throws AraraException Execution failed.
      */
-    @ExperimentalTime
     @Throws(AraraException::class)
     @Suppress("TooGenericExceptionCaught")
     private fun runCommand(
@@ -165,7 +163,6 @@ class Interpreter(
      * @param parameters The parameters for evaluation
      * @throws AraraException Running the command failed.
      */
-    @ExperimentalTime
     @Throws(AraraException::class)
     @Suppress("TooGenericExceptionCaught", "ThrowsCount")
     private fun executeCommand(
@@ -224,7 +221,6 @@ class Interpreter(
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
-    @ExperimentalTime
     @Throws(AraraException::class)
     @Suppress("NestedBlockDepth")
     fun execute() {

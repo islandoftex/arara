@@ -117,7 +117,7 @@ tasks {
     }
     withType<KotlinCompile> {
         kotlinOptions {
-            freeCompilerArgs = listOf("-Xuse-experimental=kotlin.Experimental,kotlinx.serialization.ImplicitReflectionSerializer")
+            freeCompilerArgs = listOf("-Xopt-in=kotlin.time.ExperimentalTime,kotlin.RequiresOptIn")
             jvmTarget = "1.8"
         }
     }

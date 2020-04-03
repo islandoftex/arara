@@ -12,7 +12,6 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 import java.nio.file.Paths
-import kotlin.time.ExperimentalTime
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.configuration.Configuration
@@ -22,7 +21,6 @@ import org.islandoftex.arara.model.Extractor
 import org.islandoftex.arara.model.Interpreter
 import org.islandoftex.arara.ruleset.DirectiveUtils
 
-@ExperimentalTime
 @DoNotParallelize
 class ExecutionTest : ShouldSpec({
     fun getPathForTest(name: String): String = "src/test/resources/executiontests/$name"

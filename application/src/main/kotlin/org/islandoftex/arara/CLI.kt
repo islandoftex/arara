@@ -10,7 +10,6 @@ import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import com.github.ajalt.clikt.parameters.types.restrictTo
 import kotlin.system.exitProcess
-import kotlin.time.ExperimentalTime
 import kotlin.time.TimeSource
 import kotlin.time.milliseconds
 import org.islandoftex.arara.configuration.AraraSpec
@@ -70,7 +69,6 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
      * Update the default configuration with the values parsed from the
      * command line.
      */
-    @ExperimentalTime
     private fun updateConfigurationFromCommandLine() {
         language?.let {
             Arara.config[AraraSpec.Execution.language] = Language(it)
@@ -110,7 +108,6 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
     /**
      * The actual main method of arara (when run in command-line mode)
      */
-    @ExperimentalTime
     override fun run() {
         // the first component to be initialized is the
         // logging controller; note init() actually disables

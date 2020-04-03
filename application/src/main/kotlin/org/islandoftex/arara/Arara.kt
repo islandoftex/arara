@@ -4,7 +4,6 @@ package org.islandoftex.arara
 import com.github.ajalt.clikt.parameters.options.versionOption
 import com.uchuhimo.konf.Config
 import java.time.LocalDate
-import kotlin.time.ExperimentalTime
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
@@ -32,7 +31,6 @@ object Arara {
      * Main method. This is the application entry point.
      * @param args A string array containing all command line arguments.
      */
-    @ExperimentalTime
     @JvmStatic
     fun main(args: Array<String>) {
         // print the arara logo in the terminal; I just
@@ -55,7 +53,6 @@ object Arara {
                 .main(args)
     }
 
-    @ExperimentalTime
     fun run() {
         try {
             // let's print the current file information; it is a

@@ -7,8 +7,6 @@ import java.io.IOException
 import java.io.OutputStream
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.localization.LanguageController
@@ -56,7 +54,6 @@ object InterpreterUtils {
         }
     }
 
-    @ExperimentalTime
     private fun getProcessExecutorForCommand(
         command: Command,
         buffer: OutputStream
@@ -67,10 +64,6 @@ object InterpreterUtils {
                 .directory(command.workingDirectory.absoluteFile)
                 .addDestroyer(ShutdownHookProcessDestroyer())
         if (Arara.config[AraraSpec.Execution.timeout]) {
-            if (timeOutValue == Duration.ZERO) {
-                throw AraraException(messages.getMessage(Messages
-                        .ERROR_RUN_TIMEOUT_INVALID_RANGE))
-            }
             executor = executor.timeout(timeOutValue.toLongNanoseconds(),
                     TimeUnit.NANOSECONDS)
         }
@@ -92,7 +85,6 @@ object InterpreterUtils {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
-    @ExperimentalTime
     @Throws(AraraException::class)
     fun run(command: Command): Int {
         val buffer = ByteArrayOutputStream()
