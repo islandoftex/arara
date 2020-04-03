@@ -32,6 +32,14 @@ object DirectiveUtils {
     // get the logger context from a factory
     private val logger = LoggerFactory.getLogger(DirectiveUtils::class.java)
 
+    private const val directivestart = """^\s*(\w+)\s*(:\s*(\{.*\})\s*)?"""
+    private const val pattern = """(\s+(if|while|until|unless)\s+(\S.*))?$"""
+    // pattern to match directives against
+    private val directivePattern = (directivestart + pattern).toPattern()
+
+    // what to expect after a line break in a directive
+    private val linebreakPattern = "^\\s*-->\\s(.*)$".toPattern()
+
     /**
      * This function filters the lines of a file to identify the potential
      * directives.
@@ -84,8 +92,6 @@ object DirectiveUtils {
 
         val assemblers = mutableListOf<DirectiveAssembler>()
         var assembler = DirectiveAssembler()
-        val linebreakPattern = Arara.config[AraraSpec.Directive
-                .linebreakPattern].toPattern()
         for ((lineno, content) in pairs) {
             val linebreakMatcher = linebreakPattern.matcher(content)
             if (linebreakMatcher.find()) {
@@ -127,8 +133,7 @@ object DirectiveUtils {
     @Throws(AraraException::class)
     @Suppress("MagicNumber")
     fun generateDirective(assembler: DirectiveAssembler): Directive {
-        val matcher = Arara.config[AraraSpec.Directive.directivePattern]
-                .toPattern().matcher(assembler.getText())
+        val matcher = directivePattern.matcher(assembler.getText())
         if (matcher.find()) {
             val directive = Directive(
                     identifier = matcher.group(1)!!,

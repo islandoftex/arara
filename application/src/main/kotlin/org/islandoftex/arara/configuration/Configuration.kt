@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.configuration
 
-import kotlin.time.ExperimentalTime
+import java.nio.file.Paths
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.filehandling.FileHandlingUtils
 import org.islandoftex.arara.localization.Language
@@ -31,7 +31,6 @@ object Configuration {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
-    @ExperimentalTime
     @Throws(AraraException::class)
     fun load() {
         // initialize both file type and language models,
@@ -84,7 +83,7 @@ object Configuration {
         Arara.config[AraraSpec.UserInteraction.lookAndFeel] = resource.laf
 
         Arara.config[AraraSpec.Execution.databaseName] =
-                ConfigurationUtils.cleanFileName(resource.dbname)
+                Paths.get(ConfigurationUtils.cleanFileName(resource.dbname))
         Arara.config[AraraSpec.Execution.logName] =
                 ConfigurationUtils.cleanFileName(resource.logname)
 

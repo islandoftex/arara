@@ -239,8 +239,6 @@ class Interpreter(
                     directive.identifier
             Arara.config[AraraSpec.Execution.InfoSpec.rulePath] =
                     file.parent
-            Arara.config[AraraSpec.Execution.DirectiveSpec.lines] =
-                    directive.lineNumbers
 
             // parse the rule identified by the directive
             // (may throw an exception)

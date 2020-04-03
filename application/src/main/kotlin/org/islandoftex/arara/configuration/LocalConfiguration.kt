@@ -68,7 +68,7 @@ class LocalConfiguration {
     var isHeader: Boolean = Arara.config[AraraSpec.Execution.onlyHeader]
 
     // database name
-    var dbname: String = Arara.config[AraraSpec.Execution.databaseName]
+    var dbname: String = Arara.config[AraraSpec.Execution.databaseName].toString()
         get() = CommonUtils.removeKeywordNotNull(field)
 
     // log name

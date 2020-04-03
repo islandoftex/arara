@@ -21,6 +21,8 @@ import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.model.AraraException
 import org.islandoftex.arara.model.Session
+import org.islandoftex.arara.session.ExecutionMode
+import org.islandoftex.arara.session.ExecutionOptions
 import org.islandoftex.arara.utils.CommonUtils
 import org.islandoftex.arara.utils.DisplayUtils
 import org.islandoftex.arara.utils.LoggingUtils
@@ -76,13 +78,26 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                     .locale)
         }
 
+        Arara.config[AraraSpec.Execution.executionOptions] = ExecutionOptions(
+                maxLoops = maxLoops
+                        ?: Arara.config[AraraSpec.Execution.executionOptions].maxLoops,
+                timeoutValue = timeout?.milliseconds
+                        ?: Arara.config[AraraSpec.Execution.executionOptions].timeoutValue,
+                verbose = if (verbose)
+                    true
+                else
+                    Arara.config[AraraSpec.Execution.executionOptions].verbose,
+                executionMode = if (dryrun)
+                    ExecutionMode.DRY_RUN
+                else
+                    Arara.config[AraraSpec.Execution.executionOptions].executionMode,
+                parseOnlyHeader = if (onlyheader)
+                    true
+                else
+                    Arara.config[AraraSpec.Execution.executionOptions].parseOnlyHeader
+        )
+
         if (log) Arara.config[AraraSpec.Execution.logging] = log
-        if (verbose) Arara.config[AraraSpec.Execution.verbose] = verbose
-        if (dryrun) Arara.config[AraraSpec.Execution.dryrun] = dryrun
-        if (onlyheader) Arara.config[AraraSpec.Execution.onlyHeader] = onlyheader
-        maxLoops?.let {
-            Arara.config[AraraSpec.Execution.maxLoops] = it
-        }
         preamble?.let {
             val preambles = Arara.config[AraraSpec.Execution.preambles]
             if (preambles.containsKey(it)) {
@@ -96,10 +111,6 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                                 Messages.ERROR_PARSER_INVALID_PREAMBLE, it)
                 )
             }
-        }
-        timeout?.let {
-            Arara.config[AraraSpec.Execution.timeout] = true
-            Arara.config[AraraSpec.Execution.timeoutValue] = it.milliseconds
         }
 
         Arara.config[AraraSpec.UserInteraction.displayTime] = true

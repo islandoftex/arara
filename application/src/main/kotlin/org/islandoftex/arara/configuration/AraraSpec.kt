@@ -4,9 +4,9 @@ package org.islandoftex.arara.configuration
 import com.uchuhimo.konf.ConfigSpec
 import java.io.File
 import java.nio.file.Paths
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 import org.islandoftex.arara.localization.Language
+import org.islandoftex.arara.session.ExecutionOptions
 
 /**
  * Configuration hierarchy for arara
@@ -26,16 +26,15 @@ object AraraSpec : ConfigSpec() {
     }
 
     object Execution : ConfigSpec() {
-        val maxLoops by optional(10)
-        val timeout by optional(false)
-        @ExperimentalTime
-        val timeoutValue by optional(0.milliseconds)
-        val haltOnErrors by optional(true)
-
-        val databaseName by optional("arara")
+        val executionOptions by optional(ExecutionOptions())
+        val maxLoops by lazy { it[executionOptions].maxLoops }
+        val timeout by lazy { it[executionOptions].timeoutValue != 0.milliseconds }
+        val timeoutValue by lazy { it[executionOptions].timeoutValue }
+        val haltOnErrors by lazy { it[executionOptions].haltOnErrors }
+        val databaseName by lazy { it[executionOptions].databaseName }
         val logName by optional("arara")
 
-        val verbose by optional(false)
+        val verbose by lazy { it[executionOptions].verbose }
         val language by optional(Language(Application.defaultLanguageCode.default))
         val logging by optional(false)
         val dryrun by optional(false)
@@ -51,7 +50,7 @@ object AraraSpec : ConfigSpec() {
 
         val workingDirectory by optional(Paths.get(""))
         val configurationName by optional("[none]")
-        val onlyHeader by optional(false)
+        val onlyHeader by lazy { it[executionOptions].parseOnlyHeader }
 
         // TODO: these are runtime values, they should be properly
         // initialized and tested (maybe move them into their own
@@ -64,19 +63,7 @@ object AraraSpec : ConfigSpec() {
             val rulePath by optional<String?>(null)
         }
 
-        object DirectiveSpec : ConfigSpec() {
-            val lines by optional(listOf<Int>())
-        }
-
         val filePattern by optional("")
-    }
-
-    object Directive : ConfigSpec() {
-        val linebreakPattern by optional("^\\s*-->\\s(.*)$")
-
-        private const val directivestart = """^\s*(\w+)\s*(:\s*(\{.*\})\s*)?"""
-        private const val pattern = """(\s+(if|while|until|unless)\s+(\S.*))?$"""
-        val directivePattern by optional(directivestart + pattern)
     }
 
     object UserInteraction : ConfigSpec() {
