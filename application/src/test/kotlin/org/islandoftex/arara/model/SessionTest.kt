@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.model
 
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldNotThrow
-import io.kotlintest.shouldThrow
-import io.kotlintest.specs.ShouldSpec
+import io.kotest.assertions.throwables.shouldNotThrow
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.matchers.shouldBe
 
 class SessionTest : ShouldSpec({
     should("include all environment variables") {
@@ -56,14 +56,18 @@ class SessionTest : ShouldSpec({
         Session.contains("C") shouldBe false
     }
 
-    should("throw on unknown removal") {
+    should("not throw on known removal") {
         Session.clear()
         Session.put("A", "B")
         shouldNotThrow<AraraException> {
             Session.remove("A")
         }
+    }
+
+    should("throw on unknown removal") {
+        Session.clear()
         shouldThrow<AraraException> {
-            Session.remove("C")
+            Session.remove("A")
         }
     }
 

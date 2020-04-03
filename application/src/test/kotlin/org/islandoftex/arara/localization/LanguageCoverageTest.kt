@@ -2,11 +2,11 @@
 package org.islandoftex.arara.localization
 
 import ch.qos.cal10n.verifier.MessageKeyVerifier
-import io.kotlintest.inspectors.forAll
-import io.kotlintest.matchers.collections.shouldNotBeEmpty
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrow
-import io.kotlintest.specs.ShouldSpec
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.inspectors.forAll
+import io.kotest.matchers.collections.shouldNotBeEmpty
+import io.kotest.matchers.shouldBe
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files

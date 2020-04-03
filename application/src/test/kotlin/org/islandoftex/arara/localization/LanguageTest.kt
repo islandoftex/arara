@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.localization
 
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrow
-import io.kotlintest.specs.ShouldSpec
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.matchers.shouldBe
 import java.util.Locale
 import org.islandoftex.arara.model.AraraException
 

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.filehandling
 
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.ShouldSpec
+import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.matchers.shouldBe
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path

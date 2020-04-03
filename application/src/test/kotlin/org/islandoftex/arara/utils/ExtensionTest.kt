@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.utils
 
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrow
-import io.kotlintest.specs.ShouldSpec
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.matchers.shouldBe
 
 class ExtensionTest : ShouldSpec({
     should("abbreviate strings correctly") {

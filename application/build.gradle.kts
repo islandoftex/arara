@@ -36,7 +36,8 @@ dependencies {
     implementation("com.charleskorn.kaml:kaml:0.17.0")
     implementation("org.zeroturnaround:zt-exec:1.11")
 
-    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:4.0.1")
+    testImplementation("io.kotest:kotest-assertions-core-jvm:4.0.1")
 }
 
 status = "development"
