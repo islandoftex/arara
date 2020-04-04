@@ -9,7 +9,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     `java-library`
     `maven-publish`
-    kotlin("jvm")
     id("com.github.johnrengelman.shadow")
 }
 
@@ -50,7 +49,7 @@ val mainManifest: Manifest = DefaultManifest((project as ProjectInternal).fileRe
         }
 
 tasks {
-    withType<KotlinCompile>() {
+    withType<KotlinCompile> {
         kotlinOptions {
             jvmTarget = "1.8"
         }

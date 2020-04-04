@@ -11,11 +11,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     application
     `maven-publish`
-    kotlin("jvm")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.github.johnrengelman.shadow")
-    id("org.jetbrains.dokka")
-    id("com.diffplug.gradle.spotless")
     jacoco
 }
 
@@ -66,21 +63,6 @@ sourceSets {
 application {
     applicationName = project.name
     mainClassName = mainClass
-}
-
-spotless {
-    java {
-        removeUnusedImports()
-        licenseHeader("// SPDX-License-Identifier: BSD-3-Clause")
-        trimTrailingWhitespace()
-        endWithNewline()
-    }
-    kotlin {
-        ktlint()
-        licenseHeader("// SPDX-License-Identifier: BSD-3-Clause")
-        trimTrailingWhitespace()
-        endWithNewline()
-    }
 }
 
 val mainManifest: Manifest = DefaultManifest((project as ProjectInternal).fileResolver)

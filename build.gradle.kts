@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
+import com.diffplug.gradle.spotless.SpotlessExtension
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.islandoftex.arara.build.CTANTreeBuilderTask
 import org.islandoftex.arara.build.CTANZipBuilderTask
@@ -90,4 +91,29 @@ tasks.register("assembleCTAN", CTANZipBuilderTask::class.java) {
 version = spotlessChangelog.versionNext
 allprojects {
     version = rootProject.version
+}
+subprojects {
+    if (!path.contains("docs")) {
+        apply(plugin = "org.jetbrains.kotlin.jvm")
+        apply(plugin = "org.jetbrains.dokka")
+        apply(plugin = "com.diffplug.gradle.spotless")
+        configure<SpotlessExtension> {
+            java {
+                removeUnusedImports()
+                licenseHeader("// SPDX-License-Identifier: BSD-3-Clause")
+                trimTrailingWhitespace()
+                endWithNewline()
+            }
+            kotlin {
+                ktlint()
+                licenseHeader("// SPDX-License-Identifier: BSD-3-Clause")
+                trimTrailingWhitespace()
+                endWithNewline()
+            }
+            kotlinGradle {
+                trimTrailingWhitespace()
+                endWithNewline()
+            }
+        }
+    }
 }
