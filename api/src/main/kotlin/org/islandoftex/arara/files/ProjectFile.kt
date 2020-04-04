@@ -23,5 +23,14 @@ data class ProjectFile(
      * priority are compiled before files with lower priority. Files with
      * equal priority will be compiled in random order.
      */
-    val priority: Int = 0
-) : Path by path
+    val priority: Int = DEFAULT_PRIORITY
+) : Path by path {
+    companion object {
+        /**
+         * This value represents the default priority of a project file. It
+         * should be used whenever it is irrelevant which priority a file has
+         * (within a project).
+         */
+        const val DEFAULT_PRIORITY = 0
+    }
+}
