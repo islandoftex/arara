@@ -2,6 +2,7 @@
 package org.islandoftex.arara.ruleset
 
 import kotlinx.serialization.Serializable
+import org.islandoftex.arara.rules.RuleCommand
 
 /**
  * Implements the rule command model.
@@ -11,11 +12,11 @@ import kotlinx.serialization.Serializable
  * @since 4.0
  */
 @Serializable
-class RuleCommand {
+class RuleCommandImpl : RuleCommand {
     /**
      * The command name
      */
-    var name: String? = null
+    override var name: String? = null
 
     /**
      * The command instruction

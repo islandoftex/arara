@@ -13,7 +13,7 @@ import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.filehandling.FileHandlingUtils
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
-import org.islandoftex.arara.ruleset.Argument
+import org.islandoftex.arara.rules.RuleArgument
 
 /**
  * Implements common utilitary methods.
@@ -149,7 +149,7 @@ object CommonUtils {
      */
     fun getUnknownKeys(
         parameters: Map<String, Any>,
-        arguments: List<Argument>
+        arguments: List<RuleArgument<*>>
     ): Set<String> {
         val found = parameters.keys
         val expected = arguments.map { it.identifier }

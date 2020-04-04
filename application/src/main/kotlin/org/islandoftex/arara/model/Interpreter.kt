@@ -7,12 +7,12 @@ import org.islandoftex.arara.AraraException
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
+import org.islandoftex.arara.rules.Rule
 import org.islandoftex.arara.ruleset.Argument
 import org.islandoftex.arara.ruleset.Command
 import org.islandoftex.arara.ruleset.Conditional
 import org.islandoftex.arara.ruleset.Directive
-import org.islandoftex.arara.ruleset.Rule
-import org.islandoftex.arara.ruleset.RuleCommand
+import org.islandoftex.arara.ruleset.RuleCommandImpl
 import org.islandoftex.arara.ruleset.RuleUtils
 import org.islandoftex.arara.utils.CommonUtils
 import org.islandoftex.arara.utils.DisplayUtils
@@ -167,7 +167,7 @@ class Interpreter(
     @Throws(AraraException::class)
     @Suppress("TooGenericExceptionCaught", "ThrowsCount")
     private fun executeCommand(
-        command: RuleCommand,
+        command: RuleCommandImpl,
         conditional: Conditional,
         rule: Rule,
         parameters: Map<String, Any>
@@ -184,7 +184,7 @@ class Interpreter(
         // TODO: check nullability
         resultToList(result).filter { it.toString().isNotBlank() }
                 .forEach { current ->
-                    DisplayUtils.printEntry(rule.name, command.name
+                    DisplayUtils.printEntry(rule.displayName!!, command.name
                             ?: messages.getMessage(Messages
                                     .INFO_LABEL_UNNAMED_TASK))
 
@@ -260,7 +260,13 @@ class Interpreter(
             do {
                 rule.commands.forEach { command ->
                     try {
-                        executeCommand(command, directive.conditional, rule, parameters)
+                        executeCommand(
+                                // TODO: remove cast
+                                command as RuleCommandImpl,
+                                directive.conditional,
+                                rule,
+                                parameters
+                        )
                     } catch (_: HaltExpectedException) {
                         // if the user uses the halt rule to trigger
                         // a halt, this will be raised
@@ -303,9 +309,12 @@ class Interpreter(
         ).plus(Methods.getRuleMethods())
 
         arguments.forEach { argument ->
-            resolvedArguments[argument.identifier] = processArgument(argument,
+            resolvedArguments[argument.identifier] = processArgument(
+                    // TODO: remove cast
+                    argument as Argument,
                     directive.parameters.containsKey(argument.identifier),
-                    context)
+                    context
+            )
         }
 
         return resolvedArguments

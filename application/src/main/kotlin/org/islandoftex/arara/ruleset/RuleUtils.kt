@@ -6,6 +6,7 @@ import java.io.File
 import org.islandoftex.arara.AraraException
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
+import org.islandoftex.arara.rules.Rule
 import org.islandoftex.arara.utils.CommonUtils
 
 /**
@@ -36,7 +37,7 @@ object RuleUtils {
             val text = readText()
             if (!text.startsWith("!config"))
                 throw Exception("Rule should start with !config")
-            Yaml.default.parse(Rule.serializer(), text)
+            Yaml.default.parse(RuleImpl.serializer(), text)
         }.getOrElse {
             throw AraraException(
                     CommonUtils.ruleErrorHeader + messages.getMessage(
@@ -78,7 +79,7 @@ object RuleUtils {
                             messages.getMessage(Messages.ERROR_VALIDATEHEADER_NULL_ID)
             )
         }
-        if (rule.name == Rule.INVALID_RULE_NAME) {
+        if (rule.displayName == null) {
             throw AraraException(
                     CommonUtils.ruleErrorHeader + messages.getMessage(
                             Messages.ERROR_VALIDATEHEADER_NULL_NAME
@@ -96,7 +97,7 @@ object RuleUtils {
      */
     @Throws(AraraException::class)
     @Suppress("ThrowsCount")
-    private fun validateBody(rule: Rule) {
+    private fun validateBody(rule: RuleImpl) {
         if (rule.commands.any { it.command == null }) {
             throw AraraException(
                     CommonUtils.ruleErrorHeader +
