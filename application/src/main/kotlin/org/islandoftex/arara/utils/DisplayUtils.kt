@@ -8,7 +8,8 @@ import org.islandoftex.arara.configuration.ConfigurationUtils
 import org.islandoftex.arara.filehandling.FileHandlingUtils
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
-import org.islandoftex.arara.ruleset.Conditional
+import org.islandoftex.arara.rules.DirectiveConditional
+import org.islandoftex.arara.rules.DirectiveConditionalType
 import org.slf4j.LoggerFactory
 
 /**
@@ -288,8 +289,8 @@ object DisplayUtils {
      *
      * @param conditional The conditional object.
      */
-    fun printConditional(conditional: Conditional) {
-        if (conditional.type !== Conditional.ConditionalType.NONE) {
+    fun printConditional(conditional: DirectiveConditional) {
+        if (conditional.type !== DirectiveConditionalType.NONE) {
             wrapText(messages.getMessage(Messages.INFO_LABEL_CONDITIONAL) +
                     " (" + conditional.type + ") " +
                     conditional.condition)

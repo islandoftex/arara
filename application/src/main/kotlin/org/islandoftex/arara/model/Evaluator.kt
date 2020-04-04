@@ -6,7 +6,8 @@ import org.islandoftex.arara.AraraException
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
-import org.islandoftex.arara.ruleset.Conditional
+import org.islandoftex.arara.rules.DirectiveConditional
+import org.islandoftex.arara.rules.DirectiveConditionalType
 import org.islandoftex.arara.utils.Methods
 import org.mvel2.templates.TemplateRuntime
 
@@ -43,11 +44,11 @@ class Evaluator {
      * @return `(type == if || type == unless) && haltCheck`
      */
     private fun isIfUnlessAndHalt(
-        type: Conditional.ConditionalType,
+        type: DirectiveConditionalType,
         haltCheck: Boolean = true
     ): Boolean =
-            (type == Conditional.ConditionalType.IF ||
-                    type == Conditional.ConditionalType.UNLESS) &&
+            (type == DirectiveConditionalType.IF ||
+                    type == DirectiveConditionalType.UNLESS) &&
                     halt == haltCheck
 
     /**
@@ -57,12 +58,12 @@ class Evaluator {
      * @return The result of the evaluation.
      */
     @Throws(AraraException::class, RuntimeException::class)
-    private fun evaluateCondition(conditional: Conditional): Boolean {
+    private fun evaluateCondition(conditional: DirectiveConditional): Boolean {
         val result = TemplateRuntime.eval("@{ " + conditional.condition + " }",
                 Methods.getConditionalMethods())
         return if (result is Boolean) {
-            if (conditional.type == Conditional.ConditionalType.UNLESS ||
-                    conditional.type == Conditional.ConditionalType.UNTIL)
+            if (conditional.type == DirectiveConditionalType.UNLESS ||
+                    conditional.type == DirectiveConditionalType.UNTIL)
                 !result
             else
                 result
@@ -85,11 +86,11 @@ class Evaluator {
      */
     @Throws(AraraException::class)
     @Suppress("TooGenericExceptionCaught")
-    fun evaluate(conditional: Conditional): Boolean {
+    fun evaluate(conditional: DirectiveConditional): Boolean {
         // when in dry-run mode or not evaluating a
         // conditional, arara always ignores conditional
         // evaluations
-        if (conditional.type == Conditional.ConditionalType.NONE ||
+        if (conditional.type == DirectiveConditionalType.NONE ||
                 Arara.config[AraraSpec.Execution.dryrun] ||
                 isIfUnlessAndHalt(conditional.type, true))
             return false
@@ -102,9 +103,9 @@ class Evaluator {
         // thus breaking the cycles
         counter++
         return when {
-            conditional.type === Conditional.ConditionalType.WHILE
+            conditional.type == DirectiveConditionalType.WHILE
                     && counter > loops -> false
-            conditional.type === Conditional.ConditionalType.UNTIL
+            conditional.type == DirectiveConditionalType.UNTIL
                     && counter >= loops -> false
             else -> {
                 try {

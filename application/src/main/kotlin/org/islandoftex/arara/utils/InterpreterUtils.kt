@@ -12,8 +12,9 @@ import org.islandoftex.arara.AraraException
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
+import org.islandoftex.arara.rules.DirectiveConditional
+import org.islandoftex.arara.rules.DirectiveConditionalType
 import org.islandoftex.arara.ruleset.Command
-import org.islandoftex.arara.ruleset.Conditional
 import org.slf4j.LoggerFactory
 import org.zeroturnaround.exec.InvalidExitValueException
 import org.zeroturnaround.exec.ProcessExecutor
@@ -41,14 +42,14 @@ object InterpreterUtils {
      * @return A boolean value indicating if the current conditional has a prior
      * evaluation.
      */
-    fun runPriorEvaluation(conditional: Conditional): Boolean {
+    fun runPriorEvaluation(conditional: DirectiveConditional): Boolean {
         return if (Arara.config[AraraSpec.Execution.dryrun]) {
             false
         } else {
             when (conditional.type) {
-                Conditional.ConditionalType.IF,
-                Conditional.ConditionalType.WHILE,
-                Conditional.ConditionalType.UNLESS -> true
+                DirectiveConditionalType.IF,
+                DirectiveConditionalType.WHILE,
+                DirectiveConditionalType.UNLESS -> true
                 else -> false
             }
         }

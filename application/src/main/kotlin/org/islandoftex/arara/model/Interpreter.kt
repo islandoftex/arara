@@ -7,10 +7,10 @@ import org.islandoftex.arara.AraraException
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
+import org.islandoftex.arara.rules.DirectiveConditional
 import org.islandoftex.arara.rules.Rule
 import org.islandoftex.arara.ruleset.Argument
 import org.islandoftex.arara.ruleset.Command
-import org.islandoftex.arara.ruleset.Conditional
 import org.islandoftex.arara.ruleset.Directive
 import org.islandoftex.arara.ruleset.RuleCommandImpl
 import org.islandoftex.arara.ruleset.RuleUtils
@@ -73,7 +73,7 @@ class Interpreter(
      */
     private fun runBoolean(
         value: Boolean,
-        conditional: Conditional,
+        conditional: DirectiveConditional,
         authors: List<String>
     ): Boolean {
         logger.info(messages.getMessage(Messages.LOG_INFO_BOOLEAN_MODE,
@@ -103,7 +103,7 @@ class Interpreter(
     @Suppress("TooGenericExceptionCaught")
     private fun runCommand(
         command: Command,
-        conditional: Conditional,
+        conditional: DirectiveConditional,
         authors: List<String>,
         ruleCommandExitValue: String?
     ): Boolean {
@@ -168,7 +168,7 @@ class Interpreter(
     @Suppress("TooGenericExceptionCaught", "ThrowsCount")
     private fun executeCommand(
         command: RuleCommandImpl,
-        conditional: Conditional,
+        conditional: DirectiveConditional,
         rule: Rule,
         parameters: Map<String, Any>
     ) {

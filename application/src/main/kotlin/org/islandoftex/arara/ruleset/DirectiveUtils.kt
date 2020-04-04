@@ -13,6 +13,7 @@ import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.filehandling.FileHandlingUtils
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
+import org.islandoftex.arara.rules.DirectiveConditionalType
 import org.islandoftex.arara.utils.DisplayUtils
 import org.slf4j.LoggerFactory
 
@@ -142,7 +143,7 @@ object DirectiveUtils {
                     identifier = matcher.group(1)!!,
                     parameters = getParameters(matcher.group(3),
                             assembler.getLineNumbers()),
-                    conditional = Conditional(
+                    conditional = DirectiveConditionalImpl(
                             type = getType(matcher.group(5)),
                             condition = matcher.group(6) ?: ""
                     ),
@@ -170,13 +171,13 @@ object DirectiveUtils {
      * @param text The input string.
      * @return The conditional type.
      */
-    private fun getType(text: String?): Conditional.ConditionalType {
+    private fun getType(text: String?): DirectiveConditionalType {
         return when (text) {
-            null -> Conditional.ConditionalType.NONE
-            "if" -> Conditional.ConditionalType.IF
-            "while" -> Conditional.ConditionalType.WHILE
-            "until" -> Conditional.ConditionalType.UNTIL
-            else -> Conditional.ConditionalType.UNLESS
+            null -> DirectiveConditionalType.NONE
+            "if" -> DirectiveConditionalType.IF
+            "while" -> DirectiveConditionalType.WHILE
+            "until" -> DirectiveConditionalType.UNTIL
+            else -> DirectiveConditionalType.UNLESS
         }
     }
 

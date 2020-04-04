@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.ruleset
 
+import org.islandoftex.arara.rules.DirectiveConditional
+
 /**
  * Implements the directive model.
  *
@@ -23,7 +25,7 @@ data class Directive(
      * A conditional containing the type and the expression to be evaluated
      * later on.
      */
-    val conditional: Conditional,
+    val conditional: DirectiveConditional,
     /**
      * A list contained all line numbers from the main file which built the
      * current directive.
