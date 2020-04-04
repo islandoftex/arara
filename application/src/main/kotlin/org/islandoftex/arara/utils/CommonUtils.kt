@@ -179,7 +179,7 @@ object CommonUtils {
         arguments: List<Argument>
     ): Set<String> {
         val found = parameters.keys
-        val expected = arguments.mapNotNull { it.identifier }
+        val expected = arguments.map { it.identifier }
         return found.subtract(expected)
     }
 

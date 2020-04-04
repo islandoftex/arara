@@ -3,6 +3,7 @@ package org.islandoftex.arara.ruleset
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.islandoftex.arara.rules.RuleArgument
 import org.islandoftex.arara.utils.CommonUtils
 
 /**
@@ -13,18 +14,18 @@ import org.islandoftex.arara.utils.CommonUtils
  * @since 4.0
  */
 @Serializable
-class Argument {
+class Argument : RuleArgument<String?> {
     /**
      * The argument identifier
      */
-    var identifier: String? = null
-        get() = CommonUtils.removeKeyword(field)
+    override var identifier: String = ""
+        get() = CommonUtils.removeKeywordNotNull(field)
 
     /**
      * Boolean indicating if the current argument is required
      */
     @SerialName("required")
-    var isRequired: Boolean = false
+    override var isRequired: Boolean = false
 
     /**
      * Flag to hold the argument value manipulation
@@ -35,6 +36,6 @@ class Argument {
     /**
      * The argument fallback if it is not defined in the directive
      */
-    var default: String? = null
+    override var defaultValue: String? = null
         get() = CommonUtils.removeKeyword(field)
 }

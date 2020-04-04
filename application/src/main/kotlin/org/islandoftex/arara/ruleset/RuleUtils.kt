@@ -108,9 +108,9 @@ object RuleUtils {
 
         val arguments = mutableListOf<String>()
         for (argument in rule.arguments) {
-            if (argument.identifier != null) {
-                if (argument.flag != null || argument.default != null) {
-                    arguments.add(argument.identifier!!)
+            if (argument.identifier.isNotBlank()) {
+                if (argument.flag != null || argument.defaultValue != null) {
+                    arguments.add(argument.identifier)
                 } else {
                     throw AraraException(
                             CommonUtils.ruleErrorHeader + messages.getMessage(

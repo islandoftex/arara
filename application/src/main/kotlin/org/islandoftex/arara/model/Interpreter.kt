@@ -303,8 +303,8 @@ class Interpreter(
         ).plus(Methods.getRuleMethods())
 
         arguments.forEach { argument ->
-            resolvedArguments[argument.identifier!!] = processArgument(argument,
-                    directive.parameters.containsKey(argument.identifier!!),
+            resolvedArguments[argument.identifier] = processArgument(argument,
+                    directive.parameters.containsKey(argument.identifier),
                     context)
         }
 
@@ -331,9 +331,9 @@ class Interpreter(
             throw AraraException(CommonUtils.ruleErrorHeader +
                     messages.getMessage(
                             Messages.ERROR_INTERPRETER_ARGUMENT_IS_REQUIRED,
-                            argument.identifier!!))
+                            argument.identifier))
 
-        var ret = argument.default?.let {
+        var ret = argument.defaultValue?.let {
             try {
                 TemplateRuntime.eval(it, context)
             } catch (exception: RuntimeException) {
