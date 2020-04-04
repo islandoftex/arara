@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.ruleset
 
-import java.io.File
+import java.nio.file.Path
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.configuration.AraraSpec
+import org.islandoftex.arara.session.Command
 import org.islandoftex.arara.utils.CommonUtils
 
 /**
@@ -13,19 +14,10 @@ import org.islandoftex.arara.utils.CommonUtils
  * @version 5.0
  * @since 4.0
  */
-class Command {
-    /**
-     * A list of elements which are components
-     * of a command and represented as strings
-     */
-    val elements: List<String>
-
-    /**
-     * An optional file acting as a reference for
-     * the default working directory
-     */
-    var workingDirectory: File = Arara.config[AraraSpec.Execution
-            .workingDirectory].toFile()
+class CommandImpl : Command {
+    override val elements: List<String>
+    override var workingDirectory: Path = Arara.config[AraraSpec.Execution
+            .workingDirectory]
 
     /**
      * Constructor.

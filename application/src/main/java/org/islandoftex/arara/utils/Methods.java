@@ -3,18 +3,20 @@ package org.islandoftex.arara.utils;
 
 import kotlin.Pair;
 import org.islandoftex.arara.Arara;
+import org.islandoftex.arara.AraraException;
 import org.islandoftex.arara.configuration.AraraSpec;
 import org.islandoftex.arara.filehandling.FileHandlingUtils;
 import org.islandoftex.arara.filehandling.FileSearchingUtils;
 import org.islandoftex.arara.localization.LanguageController;
 import org.islandoftex.arara.localization.Messages;
-import org.islandoftex.arara.AraraException;
 import org.islandoftex.arara.model.SessionImpl;
-import org.islandoftex.arara.ruleset.Command;
+import org.islandoftex.arara.ruleset.CommandImpl;
+import org.islandoftex.arara.session.Command;
 import org.islandoftex.arara.session.Session;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -717,7 +719,7 @@ public class Methods {
      * @return A command.
      */
     public static Command getCommand(List<String> elements) {
-        return new Command(elements);
+        return new CommandImpl(elements);
     }
 
     /**
@@ -727,7 +729,7 @@ public class Methods {
      * @return A command.
      */
     public static Command getCommand(Object... elements) {
-        return new Command(elements);
+        return new CommandImpl(elements);
     }
 
     /**
@@ -740,8 +742,8 @@ public class Methods {
      */
     public static Command getCommandWithWorkingDirectory(String path,
                                                          Object... elements) {
-        Command command = new Command(elements);
-        command.setWorkingDirectory(new File(path));
+        CommandImpl command = new CommandImpl(elements);
+        command.setWorkingDirectory(Paths.get(path));
         return command;
     }
 
@@ -755,8 +757,8 @@ public class Methods {
      */
     public static Command getCommandWithWorkingDirectory(File file,
                                                          Object... elements) {
-        Command command = new Command(elements);
-        command.setWorkingDirectory(file);
+        CommandImpl command = new CommandImpl(elements);
+        command.setWorkingDirectory(file.toPath());
         return command;
     }
 
@@ -770,8 +772,8 @@ public class Methods {
      */
     public static Command getCommandWithWorkingDirectory(String path,
                                                          List<String> elements) {
-        Command command = new Command(elements);
-        command.setWorkingDirectory(new File(path));
+        CommandImpl command = new CommandImpl(elements);
+        command.setWorkingDirectory(Paths.get(path));
         return command;
     }
 
@@ -785,8 +787,8 @@ public class Methods {
      */
     public static Command getCommandWithWorkingDirectory(File file,
                                                          List<String> elements) {
-        Command command = new Command(elements);
-        command.setWorkingDirectory(file);
+        CommandImpl command = new CommandImpl(elements);
+        command.setWorkingDirectory(file.toPath());
         return command;
     }
 

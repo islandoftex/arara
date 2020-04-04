@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.utils
 
+import org.islandoftex.arara.Arara
 import org.islandoftex.arara.AraraException
-import org.islandoftex.arara.ruleset.Command
+import org.islandoftex.arara.configuration.AraraSpec
+import org.islandoftex.arara.ruleset.CommandImpl
+import org.islandoftex.arara.session.Command
 import org.zeroturnaround.exec.ProcessExecutor
 
 /**
@@ -51,7 +54,7 @@ object SystemCallUtils {
                 // execute a new system call to 'uname -s', read the output
                 // as an UTF-8 string, lowercase it and check if it starts
                 // with the 'cygwin' string; if so, we are inside Cygwin
-                executeSystemCommand(Command("uname", "-s"))
+                executeSystemCommand(CommandImpl("uname", "-s"))
                         .second.toLowerCase().startsWith("cygwin")
             })
 
@@ -93,7 +96,10 @@ object SystemCallUtils {
      */
     fun executeSystemCommand(command: Command): Pair<Int, String> {
         return ProcessExecutor(command.elements).runCatching {
-            directory(command.workingDirectory.absoluteFile)
+            // TODO: choose project's working directory over the execution-wide one
+            val workingDirectory = command.workingDirectory
+                    ?: Arara.config[AraraSpec.Execution.workingDirectory]
+            directory(workingDirectory.toFile().absoluteFile)
             readOutput(true)
             execute().run {
                 exitValue to outputUTF8()

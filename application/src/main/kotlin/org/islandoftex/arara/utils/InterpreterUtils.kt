@@ -14,7 +14,7 @@ import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.rules.DirectiveConditional
 import org.islandoftex.arara.rules.DirectiveConditionalType
-import org.islandoftex.arara.ruleset.Command
+import org.islandoftex.arara.session.Command
 import org.slf4j.LoggerFactory
 import org.zeroturnaround.exec.InvalidExitValueException
 import org.zeroturnaround.exec.ProcessExecutor
@@ -58,11 +58,12 @@ object InterpreterUtils {
     private fun getProcessExecutorForCommand(
         command: Command,
         buffer: OutputStream
-    ):
-            ProcessExecutor {
+    ): ProcessExecutor {
         val timeOutValue = Arara.config[AraraSpec.Execution.timeoutValue]
+        val workingDirectory = command.workingDirectory
+                ?: Arara.config[AraraSpec.Execution.workingDirectory]
         var executor = ProcessExecutor().command((command).elements)
-                .directory(command.workingDirectory.absoluteFile)
+                .directory(workingDirectory.toFile().absoluteFile)
                 .addDestroyer(ShutdownHookProcessDestroyer())
         if (Arara.config[AraraSpec.Execution.timeout]) {
             executor = executor.timeout(timeOutValue.toLongNanoseconds(),
