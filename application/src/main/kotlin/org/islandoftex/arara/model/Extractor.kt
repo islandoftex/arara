@@ -7,7 +7,7 @@ import java.nio.charset.Charset
 import org.islandoftex.arara.AraraException
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
-import org.islandoftex.arara.ruleset.Directive
+import org.islandoftex.arara.rules.Directive
 import org.islandoftex.arara.ruleset.DirectiveUtils
 import org.islandoftex.arara.utils.CommonUtils
 

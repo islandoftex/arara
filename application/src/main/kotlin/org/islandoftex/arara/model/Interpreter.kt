@@ -7,11 +7,11 @@ import org.islandoftex.arara.AraraException
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
+import org.islandoftex.arara.rules.Directive
 import org.islandoftex.arara.rules.DirectiveConditional
 import org.islandoftex.arara.rules.Rule
 import org.islandoftex.arara.ruleset.Argument
 import org.islandoftex.arara.ruleset.Command
-import org.islandoftex.arara.ruleset.Directive
 import org.islandoftex.arara.ruleset.RuleCommandImpl
 import org.islandoftex.arara.ruleset.RuleUtils
 import org.islandoftex.arara.utils.CommonUtils

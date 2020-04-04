@@ -13,6 +13,7 @@ import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.filehandling.FileHandlingUtils
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
+import org.islandoftex.arara.rules.Directive
 import org.islandoftex.arara.rules.DirectiveConditionalType
 import org.islandoftex.arara.utils.DisplayUtils
 import org.slf4j.LoggerFactory
@@ -139,7 +140,7 @@ object DirectiveUtils {
     fun generateDirective(assembler: DirectiveAssembler): Directive {
         val matcher = directivePattern.matcher(assembler.getText())
         if (matcher.find()) {
-            val directive = Directive(
+            val directive = DirectiveImpl(
                     identifier = matcher.group(1)!!,
                     parameters = getParameters(matcher.group(3),
                             assembler.getLineNumbers()),
@@ -245,8 +246,12 @@ object DirectiveUtils {
                     // and because we want directives, we replicate our
                     // directive to be applied to that file
                     .map { reference ->
-                        directive.copy(parameters = parameters
-                                .plus("reference" to reference))
+                        DirectiveImpl(
+                                directive.identifier,
+                                parameters.plus("reference" to reference),
+                                directive.conditional,
+                                directive.lineNumbers
+                        )
                     }
                     .toList()
                     // we take the result if and only if we have at least one
@@ -296,9 +301,13 @@ object DirectiveUtils {
                 result.addAll(replicateDirective(parameters.getValue("files"),
                         parameters.minus("files"), directive))
             } else {
-                result.add(directive.copy(parameters = parameters
-                        .plus("reference" to
-                                Arara.config[AraraSpec.Execution.reference])))
+                result.add(DirectiveImpl(
+                        directive.identifier,
+                        parameters.plus("reference" to
+                                Arara.config[AraraSpec.Execution.reference]),
+                        directive.conditional,
+                        directive.lineNumbers
+                ))
             }
         }
 
