@@ -8,6 +8,12 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
+### Removed
+
+* Removed the `<arara>` shorthand notation which has been deprecated in version
+  5.0.0.
+  (see #26; breaking change)
+
 ## [5.1.3] - 2020-04-23
 
 ### Added

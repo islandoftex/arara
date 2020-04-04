@@ -22,7 +22,6 @@ class FileTypeImpl : FileType {
     // string representing the
     // file extension
     override var extension: String = FileType.INVALID_EXTENSION
-        get() = CommonUtils.removeKeywordNotNull(field)
         private set
 
     // string representing the
@@ -31,7 +30,6 @@ class FileTypeImpl : FileType {
     override var pattern: String = FileType.INVALID_PATTERN
         @Throws(AraraException::class)
         get() {
-            CommonUtils.removeKeywordNotNull(field)
             if (field == FileType.INVALID_PATTERN) {
                 field = ConfigurationUtils.defaultFileTypePatterns[extension]
                         ?: throw AraraException(

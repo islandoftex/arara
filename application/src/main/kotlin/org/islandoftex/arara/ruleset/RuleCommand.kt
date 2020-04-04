@@ -2,7 +2,6 @@
 package org.islandoftex.arara.ruleset
 
 import kotlinx.serialization.Serializable
-import org.islandoftex.arara.utils.CommonUtils
 
 /**
  * Implements the rule command model.
@@ -17,17 +16,16 @@ class RuleCommand {
      * The command name
      */
     var name: String? = null
-        get() = CommonUtils.removeKeyword(field)
 
     /**
      * The command instruction
      */
+    // TODO: why is trimming needed?
     var command: String? = null
-        get() = CommonUtils.removeKeyword(field)
+        get() = field?.trim()
 
     /**
      * The exit status expression
      */
     var exit: String? = null
-        get() = CommonUtils.removeKeyword(field)
 }

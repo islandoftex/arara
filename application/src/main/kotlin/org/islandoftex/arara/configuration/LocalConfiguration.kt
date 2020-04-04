@@ -30,17 +30,16 @@ class LocalConfiguration {
                     "workingDirectory" to Arara.config[AraraSpec.Execution.workingDirectory].toAbsolutePath().toString()
             )
 
-            return field.map { input ->
-                var path = CommonUtils.removeKeywordNotNull(input)
+            return field.map { it.trim() }.map { input ->
                 try {
-                    path = TemplateRuntime.eval(path, mapOf(
+                    TemplateRuntime.eval(input, mapOf(
                             "user" to user, "application" to application
                     )) as String
                 } catch (_: RuntimeException) {
                     // do nothing, gracefully fallback to
                     // the default, unparsed path
+                    input
                 }
-                path
             }
         }
 
@@ -50,7 +49,6 @@ class LocalConfiguration {
     // the application language
     // default to English
     var language: String = Arara.config[AraraSpec.Application.defaultLanguageCode]
-        get() = CommonUtils.removeKeywordNotNull(field)
 
     // maximum number of loops
     var loops: Int = Arara.config[AraraSpec.Execution.maxLoops]
@@ -69,11 +67,9 @@ class LocalConfiguration {
 
     // database name
     var dbname: String = Arara.config[AraraSpec.Execution.databaseName].toString()
-        get() = CommonUtils.removeKeywordNotNull(field)
 
     // log name
     var logname: String = Arara.config[AraraSpec.Execution.logName]
-        get() = CommonUtils.removeKeywordNotNull(field)
 
     // map of preambles
     var preambles: Map<String, String> = Arara.config[AraraSpec.Execution.preambles]
@@ -81,5 +77,4 @@ class LocalConfiguration {
     // look and feel
     // default to none
     var laf: String = Arara.config[AraraSpec.UserInteraction.lookAndFeel]
-        get() = CommonUtils.removeKeywordNotNull(field)
 }

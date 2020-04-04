@@ -122,33 +122,6 @@ object CommonUtils {
     }
 
     /**
-     * Removes the keyword from the beginning of the provided string.
-     *
-     * @param line A string to be analyzed.
-     * @return The provided string without the keyword.
-     */
-    fun removeKeyword(line: String?): String? {
-        return if (line == null) null
-        else removeKeywordNotNull(line)
-    }
-
-    /**
-     * Removes the keyword from the beginning of the provided string.
-     *
-     * @param line A string to be analyzed.
-     * @return The provided string without the keyword.
-     */
-    fun removeKeywordNotNull(line: String): String {
-        var tempLine = line
-        val pattern = "^(\\s)*<arara>\\s".toPattern()
-        val matcher = pattern.matcher(tempLine)
-        if (matcher.find()) {
-            tempLine = tempLine.substring(matcher.end())
-        }
-        return tempLine.trim()
-    }
-
-    /**
      * Flattens a potential list of lists into a list of objects.
      *
      * @param list The list to be flattened.

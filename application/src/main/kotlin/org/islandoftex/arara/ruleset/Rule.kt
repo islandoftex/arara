@@ -2,7 +2,6 @@
 package org.islandoftex.arara.ruleset
 
 import kotlinx.serialization.Serializable
-import org.islandoftex.arara.utils.CommonUtils
 
 /**
  * Implements the rule model.
@@ -17,19 +16,17 @@ class Rule {
      * The rule identifier
      */
     var identifier: String = INVALID_RULE_IDENTIFIER
-        get() = CommonUtils.removeKeywordNotNull(field)
 
     /**
      * The rule name
      */
     var name: String = INVALID_RULE_NAME
-        get() = CommonUtils.removeKeywordNotNull(field)
 
     /**
      * The list of authors
      */
     var authors: List<String> = listOf()
-        get() = field.mapNotNull { CommonUtils.removeKeyword(it) }
+        get() = field.map { it.trim() }
 
     /**
      * The list of commands
