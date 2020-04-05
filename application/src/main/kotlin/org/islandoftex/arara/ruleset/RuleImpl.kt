@@ -19,5 +19,5 @@ data class RuleImpl(
     override var displayName: String? = null,
     override var authors: List<String> = listOf(),
     override var commands: List<RuleCommandImpl> = listOf(),
-    override var arguments: List<Argument> = listOf()
+    override var arguments: List<RuleArgumentImpl> = listOf()
 ) : Rule

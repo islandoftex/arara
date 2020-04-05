@@ -13,7 +13,7 @@ import org.islandoftex.arara.rules.RuleArgument
  * @since 4.0
  */
 @Serializable
-class Argument : RuleArgument<String?> {
+class RuleArgumentImpl : RuleArgument<String?> {
     /**
      * The argument identifier
      */

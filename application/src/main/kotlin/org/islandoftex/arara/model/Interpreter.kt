@@ -10,7 +10,7 @@ import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.rules.Directive
 import org.islandoftex.arara.rules.DirectiveConditional
 import org.islandoftex.arara.rules.Rule
-import org.islandoftex.arara.ruleset.Argument
+import org.islandoftex.arara.ruleset.RuleArgumentImpl
 import org.islandoftex.arara.ruleset.RuleCommandImpl
 import org.islandoftex.arara.ruleset.RuleUtils
 import org.islandoftex.arara.session.Command
@@ -311,7 +311,7 @@ class Interpreter(
         arguments.forEach { argument ->
             resolvedArguments[argument.identifier] = processArgument(
                     // TODO: remove cast
-                    argument as Argument,
+                    argument as RuleArgumentImpl,
                     directive.parameters.containsKey(argument.identifier),
                     context
             )
@@ -332,7 +332,7 @@ class Interpreter(
     @Throws(AraraException::class)
     @Suppress("TooGenericExceptionCaught", "ThrowsCount")
     private fun processArgument(
-        argument: Argument,
+        argument: RuleArgumentImpl,
         idInDirectiveParams: Boolean,
         context: Map<String, Any>
     ): Any {
