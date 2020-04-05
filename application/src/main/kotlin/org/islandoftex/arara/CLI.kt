@@ -14,6 +14,7 @@ import kotlin.time.TimeSource
 import kotlin.time.milliseconds
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.configuration.Configuration
+import org.islandoftex.arara.configuration.ExecutionOptionsImpl
 import org.islandoftex.arara.filehandling.FileSearchingUtils
 import org.islandoftex.arara.localization.Language
 import org.islandoftex.arara.localization.LanguageController
@@ -21,7 +22,6 @@ import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.model.ProjectImpl
 import org.islandoftex.arara.model.SessionImpl
 import org.islandoftex.arara.session.ExecutionMode
-import org.islandoftex.arara.session.ExecutionOptions
 import org.islandoftex.arara.utils.CommonUtils
 import org.islandoftex.arara.utils.DisplayUtils
 import org.islandoftex.arara.utils.LoggingUtils
@@ -76,7 +76,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                     .locale)
         }
 
-        Arara.config[AraraSpec.Execution.executionOptions] = ExecutionOptions(
+        Arara.config[AraraSpec.Execution.executionOptions] = ExecutionOptionsImpl(
                 maxLoops = maxLoops
                         ?: Arara.config[AraraSpec.Execution.executionOptions].maxLoops,
                 timeoutValue = timeout?.milliseconds

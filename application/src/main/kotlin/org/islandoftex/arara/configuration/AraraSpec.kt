@@ -26,7 +26,7 @@ object AraraSpec : ConfigSpec() {
     }
 
     object Execution : ConfigSpec() {
-        val executionOptions by optional(ExecutionOptions())
+        val executionOptions by optional<ExecutionOptions>(ExecutionOptionsImpl())
         val maxLoops by lazy { it[executionOptions].maxLoops }
         val timeout by lazy { it[executionOptions].timeoutValue != 0.milliseconds }
         val timeoutValue by lazy { it[executionOptions].timeoutValue }
