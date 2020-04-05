@@ -15,17 +15,16 @@ import kotlin.time.milliseconds
 import org.islandoftex.arara.configuration.AraraSpec
 import org.islandoftex.arara.configuration.Configuration
 import org.islandoftex.arara.filehandling.FileSearchingUtils
-import org.islandoftex.arara.files.Project
 import org.islandoftex.arara.localization.Language
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
+import org.islandoftex.arara.model.ProjectImpl
 import org.islandoftex.arara.model.SessionImpl
 import org.islandoftex.arara.session.ExecutionMode
 import org.islandoftex.arara.session.ExecutionOptions
 import org.islandoftex.arara.utils.CommonUtils
 import org.islandoftex.arara.utils.DisplayUtils
 import org.islandoftex.arara.utils.LoggingUtils
-import org.islandoftex.arara.utils.absoluteFiles
 
 /**
  * arara's command line interface
@@ -143,7 +142,8 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         val workingDir = workingDirectory ?: AraraSpec.Execution.workingDirectory.default
         try {
             // TODO: this will have to change for parallelization
-            Project(workingDir.fileName.toString(),
+            ProjectImpl(
+                    workingDir.fileName.toString(),
                     workingDir,
                     reference.map {
                         FileSearchingUtils.resolveFile(it, workingDir.toFile())
