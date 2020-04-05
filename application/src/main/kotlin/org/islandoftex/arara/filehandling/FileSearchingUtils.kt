@@ -11,6 +11,7 @@ import org.islandoftex.arara.files.FileType
 import org.islandoftex.arara.files.ProjectFile
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
+import org.islandoftex.arara.model.ProjectFileImpl
 import org.islandoftex.arara.model.UNKNOWN_TYPE
 import org.islandoftex.arara.utils.CommonUtils
 
@@ -136,7 +137,7 @@ object FileSearchingUtils {
             types.firstOrNull {
                 testFile.toString().endsWith("." + it.extension)
             }?.let {
-                return ProjectFile(
+                return ProjectFileImpl(
                         testFile.toPath(),
                         types.firstOrNull { testFile.extension == it.extension }
                                 ?: FileType.UNKNOWN_TYPE
@@ -154,7 +155,7 @@ object FileSearchingUtils {
                 })
                 .firstOrNull { it.exists() && it.isFile }
                 ?.let { found ->
-                    ProjectFile(
+                    ProjectFileImpl(
                             found.toPath(),
                             types.firstOrNull { found.extension == it.extension }
                                     ?: FileType.UNKNOWN_TYPE
@@ -164,6 +165,6 @@ object FileSearchingUtils {
 
     fun registerFileAttributes(file: ProjectFile) {
         Arara.config[AraraSpec.Execution.filePattern] = file.fileType.pattern
-        Arara.config[AraraSpec.Execution.reference] = file.toFile()
+        Arara.config[AraraSpec.Execution.reference] = file.path.toFile()
     }
 }

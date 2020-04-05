@@ -20,10 +20,14 @@ data class ProjectImpl(
      */
     val absoluteFiles: Set<ProjectFile>
         get() = files.map {
-            if (it.isAbsolute)
+            if (it.path.isAbsolute)
                 it
             else
-                it.copy(path = workingDirectory.resolve(it).toRealPath())
+                ProjectFileImpl(
+                        workingDirectory.resolve(it.path).toRealPath(),
+                        it.fileType,
+                        it.priority
+                )
         }.toSet()
 
     /**
