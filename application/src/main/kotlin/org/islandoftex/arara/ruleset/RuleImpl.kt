@@ -14,10 +14,10 @@ import org.islandoftex.arara.rules.Rule
  */
 @Serializable
 data class RuleImpl(
-    override var identifier: String = Rule.INVALID_RULE_IDENTIFIER,
+    override val identifier: String,
     @SerialName("name")
-    override var displayName: String? = null,
-    override var authors: List<String> = listOf(),
-    override var commands: List<RuleCommandImpl> = listOf(),
-    override var arguments: List<RuleArgumentImpl> = listOf()
+    override val displayName: String? = null,
+    override val authors: List<String> = listOf(),
+    override val commands: List<RuleCommandImpl> = listOf(),
+    override val arguments: List<RuleArgumentImpl> = listOf()
 ) : Rule

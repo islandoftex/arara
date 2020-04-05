@@ -24,14 +24,6 @@ interface Rule {
      */
     val displayName: String?
 
-    companion object {
-        /**
-         * An invalid rule is identified by the string `INVALID_RULE`. This may
-         * not be used to identify any rule.
-         */
-        const val INVALID_RULE_IDENTIFIER = "INVALID_RULE"
-    }
-
     /**
      * The list of authors represented by the string representation of their
      * names.

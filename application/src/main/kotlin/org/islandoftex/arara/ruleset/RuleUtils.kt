@@ -62,21 +62,14 @@ object RuleUtils {
     @Throws(AraraException::class)
     @Suppress("ThrowsCount")
     private fun validateHeader(rule: Rule, identifier: String) {
-        if (rule.identifier != Rule.INVALID_RULE_IDENTIFIER) {
-            if (rule.identifier != identifier) {
-                throw AraraException(
-                        CommonUtils.ruleErrorHeader +
-                                messages.getMessage(
-                                        Messages.ERROR_VALIDATEHEADER_WRONG_IDENTIFIER,
-                                        rule.identifier,
-                                        identifier
-                                )
-                )
-            }
-        } else {
+        if (rule.identifier != identifier) {
             throw AraraException(
                     CommonUtils.ruleErrorHeader +
-                            messages.getMessage(Messages.ERROR_VALIDATEHEADER_NULL_ID)
+                            messages.getMessage(
+                                    Messages.ERROR_VALIDATEHEADER_WRONG_IDENTIFIER,
+                                    rule.identifier,
+                                    identifier
+                            )
             )
         }
         if (rule.displayName == null) {
