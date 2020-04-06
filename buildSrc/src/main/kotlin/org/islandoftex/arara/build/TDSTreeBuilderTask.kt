@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.build
 
 import org.gradle.api.DefaultTask
@@ -11,13 +10,13 @@ open class TDSTreeBuilderTask : DefaultTask() {
         description = "Create a TDS compliant directory tree."
 
         // depend on shadow Jar input
-        inputs.files(project.fileTree("application/build/libs/")
+        inputs.files(project.fileTree("cli/build/libs/")
                 .include("*-with-deps-*.jar"))
         // depend on source zip as required by CTAN
         inputs.file(project.buildDir.resolve("arara-${project.version}-src.zip"))
         // depend on documentation (it should be compiled)
         inputs.dir("docs")
-        inputs.dir("application")
+        inputs.dir("cli")
         inputs.dir("rules")
         outputs.dir(project.buildDir.resolve("tds").absolutePath)
     }
@@ -77,7 +76,7 @@ open class TDSTreeBuilderTask : DefaultTask() {
 
         logger.debug("Copying the application binary")
         project.copy {
-            from(project.files(project.tasks.findByPath(":application:shadowJar")))
+            from(project.files(project.tasks.findByPath(":cli:shadowJar")))
             into(temporaryDir.resolve("scripts/arara"))
             rename { "arara.jar" }
         }

@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 package org.islandoftex.arara.build
 
 import java.io.File
@@ -34,10 +33,10 @@ object TaskHelper {
         exec java -jar "${'$'}jarpath" "${'$'}@"
       """.trimIndent())
         } catch (_: IOException) {
-            throw IOException("I could not create the shell script for "
-                    + "arara due to an IO error. Please make sure the "
-                    + "current directory has the correct permissions "
-                    + "and try again. The application will halt now.")
+            throw IOException("I could not create the shell script for " +
+                    "arara due to an IO error. Please make sure the " +
+                    "current directory has the correct permissions " +
+                    "and try again. The application will halt now.")
         }
     }
 }

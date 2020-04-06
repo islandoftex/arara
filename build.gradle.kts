@@ -53,6 +53,14 @@ spotlessChangelog {
 
 spotless {
     kotlinGradle {
+        target("build.gradle.kts", "buildSrc/build.gradle.kts")
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    kotlin {
+        target("buildSrc/src/**/*.kt")
+        ktlint()
+        licenseHeader("// SPDX-License-Identifier: BSD-3-Clause")
         trimTrailingWhitespace()
         endWithNewline()
     }
@@ -71,7 +79,7 @@ detekt {
 
 tasks.register("assembleCTANSourceZip", SourceZipBuilderTask::class.java)
 tasks.register("assembleTDSTree", TDSTreeBuilderTask::class.java) {
-    dependsOn(":application:shadowJar")
+    dependsOn(":cli:shadowJar")
     dependsOn(":docs:buildManual")
     dependsOn("assembleCTANSourceZip")
 }

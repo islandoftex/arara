@@ -1,2 +1,2 @@
 rootProject.name = "arara"
-include("api", "core", "application", "docs")
+include("api", "core", "cli", "docs")
