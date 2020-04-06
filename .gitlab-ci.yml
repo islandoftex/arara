@@ -13,8 +13,8 @@ stages:
     # create the executables for distribution
     - ./gradlew --build-cache assembleDist --info
     - mkdir bin
-    - cp application/build/libs/*.jar bin/
-    - cp application/build/distributions/*.zip bin/
+    - cp cli/build/libs/*.jar bin/
+    - cp cli/build/distributions/*.zip bin/
     # create checksum file to make sure we're distributing the right thing
     - cd bin
     - md5sum *.{jar,zip} > checksums.txt
@@ -28,7 +28,9 @@ stages:
     policy: push
     paths:
       - build
-      - application/build
+      - api/build
+      - core/build
+      - cli/build
       - .gradle
 
 build:linux:jdk8:
@@ -49,7 +51,9 @@ build:linux:jdk11:
     policy: pull
     paths:
       - build
-      - application/build
+      - api/build
+      - core/build
+      - cli/build
       - .gradle
 
 test:dependencies:
