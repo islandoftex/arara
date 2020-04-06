@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.session
+package org.islandoftex.arara.api.session
 
 /**
  *  This interface wraps a map that holds the execution session, that is, a

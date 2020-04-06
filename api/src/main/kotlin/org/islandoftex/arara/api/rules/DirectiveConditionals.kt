@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.rules
+package org.islandoftex.arara.api.rules
 
 /**
  * The conditional class, it represents the type of conditional available

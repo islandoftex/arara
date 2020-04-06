@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.rules
+package org.islandoftex.arara.api.rules
 
 /**
  * A directive is a pattern within a source file that tells arara which rules

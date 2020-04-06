@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.rules
+package org.islandoftex.arara.api.rules
 
 /**
  * This interface describes an argument to a rule. arara will look for

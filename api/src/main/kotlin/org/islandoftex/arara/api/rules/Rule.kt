@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.rules
+package org.islandoftex.arara.api.rules
 
 /**
  * A rule is the core of arara's execution. It describes how to execute

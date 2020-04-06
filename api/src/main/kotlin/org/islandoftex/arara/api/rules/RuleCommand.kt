@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.rules
+package org.islandoftex.arara.api.rules
 
 /**
  * A command is the essence of a rule. It is the unit of execution and
