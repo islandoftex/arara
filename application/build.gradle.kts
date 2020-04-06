@@ -20,7 +20,6 @@ val kotlinVersion = project.getKotlinPluginVersion()
 dependencies {
     implementation(project(":api"))
 
-    implementation(kotlin("stdlib", kotlinVersion))
     implementation(kotlin("reflect", kotlinVersion))
     implementation("com.uchuhimo:konf-core:0.22.1")
     implementation("com.github.ajalt:clikt:2.6.0")
@@ -43,11 +42,6 @@ status = "development"
 val projectName = project.name.toLowerCase()
 val moduleName = group
 val mainClass = "$moduleName.Arara"
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = sourceCompatibility
-}
 
 sourceSets {
     main {
@@ -100,7 +94,6 @@ tasks {
     withType<KotlinCompile> {
         kotlinOptions {
             freeCompilerArgs = listOf("-Xopt-in=kotlin.time.ExperimentalTime,kotlin.RequiresOptIn")
-            jvmTarget = "1.8"
         }
     }
 
@@ -120,16 +113,6 @@ tasks {
                         "--module-path", classpath.asPath
                 )
             }
-        }
-    }
-
-    withType<Test> {
-        useJUnitPlatform()
-
-        testLogging {
-            exceptionFormat = TestExceptionFormat.FULL
-            events(TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR,
-                    TestLogEvent.SKIPPED, TestLogEvent.PASSED, TestLogEvent.FAILED)
         }
     }
 }

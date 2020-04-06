@@ -2,23 +2,20 @@
 
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.islandoftex.arara.build.CTANTreeBuilderTask
 import org.islandoftex.arara.build.CTANZipBuilderTask
 import org.islandoftex.arara.build.SourceZipBuilderTask
 import org.islandoftex.arara.build.TDSTreeBuilderTask
 import org.islandoftex.arara.build.TDSZipBuilderTask
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
 
 buildscript {
     repositories {
         jcenter()
     }
-}
-
-allprojects {
-    repositories {
-        jcenter()
-    }
-    group = "org.islandoftex.arara"
 }
 
 plugins {
@@ -90,6 +87,11 @@ tasks.register("assembleCTAN", CTANZipBuilderTask::class.java) {
 
 version = spotlessChangelog.versionNext
 allprojects {
+    repositories {
+        jcenter()
+    }
+
+    group = "org.islandoftex.arara"
     version = rootProject.version
 }
 subprojects {
@@ -97,6 +99,12 @@ subprojects {
         apply(plugin = "org.jetbrains.kotlin.jvm")
         apply(plugin = "org.jetbrains.dokka")
         apply(plugin = "com.diffplug.gradle.spotless")
+
+        val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class).kotlinPluginVersion
+        dependencies {
+            "implementation"(kotlin("stdlib", kotlinVersion))
+        }
+
         configure<SpotlessExtension> {
             java {
                 removeUnusedImports()
@@ -113,6 +121,30 @@ subprojects {
             kotlinGradle {
                 trimTrailingWhitespace()
                 endWithNewline()
+            }
+        }
+
+        val javaCompatibility = JavaVersion.VERSION_1_8
+        configure<JavaPluginExtension> {
+            sourceCompatibility = javaCompatibility
+            targetCompatibility = javaCompatibility
+        }
+
+        tasks {
+            withType<KotlinCompile> {
+                kotlinOptions {
+                    jvmTarget = "1.8"
+                }
+            }
+
+            withType<Test> {
+                useJUnitPlatform()
+
+                testLogging {
+                    exceptionFormat = TestExceptionFormat.FULL
+                    events(TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR,
+                           TestLogEvent.SKIPPED, TestLogEvent.PASSED, TestLogEvent.FAILED)
+                }
             }
         }
     }

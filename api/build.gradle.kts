@@ -12,18 +12,7 @@ plugins {
     id("com.github.johnrengelman.shadow")
 }
 
-val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class).kotlinPluginVersion
-dependencies {
-    implementation(kotlin("stdlib", kotlinVersion))
-}
-
-val projectName = project.name.toLowerCase()
-val moduleName = group
-
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = sourceCompatibility
-
     withJavadocJar()
     withSourcesJar()
 }
@@ -44,18 +33,13 @@ val mainManifest: Manifest = DefaultManifest((project as ProjectInternal).fileRe
             attributes["Implementation-Title"] = project.name
             attributes["Implementation-Version"] = version
             if (java.sourceCompatibility < JavaVersion.VERSION_1_9) {
-                attributes["Automatic-Module-Name"] = moduleName
+                attributes["Automatic-Module-Name"] = group
             }
         }
 
 tasks {
-    withType<KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = "1.8"
-        }
-    }
-
     withType<Jar> {
+        archiveBaseName.set("arara-api")
         manifest.attributes.putAll(mainManifest.attributes)
     }
     named<ShadowJar>("shadowJar") {
@@ -63,13 +47,8 @@ tasks {
         archiveAppendix.set("with-deps")
         archiveClassifier.set("")
     }
-
-    withType<Test> {
-        useJUnitPlatform()
-    }
 }
 
-/*
 publishing {
     publications {
         create<MavenPublication>("GitLab") {
@@ -80,10 +59,11 @@ publishing {
             pom {
                 name.set("arara-api")
                 description.set(
-                        "Arara is a TeX automation tool based on rules and directives."
+                        "arara's API component for use in applications " +
+                                "interested in letting arara compile their TeX files."
                 )
-                inceptionYear.set("2012")
-                url.set("https://github.com/cereda/arara")
+                inceptionYear.set("2020")
+                url.set("https://gitlab.com/islandoftex/arara")
                 organization {
                     name.set("Island of TeX")
                     url.set("https://gitlab.com/islandoftex")
@@ -103,19 +83,48 @@ publishing {
                         url.set("https://tex.stackexchange.com/users/3094")
                         roles.set(listOf("Lead developer", "Creator", "Duck enthusiast"))
                     }
+                    developer {
+                        name.set("Ben Frank")
+                        id.set("benfrank")
+                        url.set("https://gitlab.com/benfrank")
+                        roles.set(listOf("Release coordinator v5"))
+                    }
+                    developer {
+                        name.set("Marco Daniel")
+                        email.set("marco.daniel@mada-nada.de")
+                        id.set("marcodaniel")
+                        url.set("https://tex.stackexchange.com/users/5239")
+                        roles.set(listOf("Contributor", "Tester", "Fast driver"))
+                    }
+                    developer {
+                        name.set("Brent Longborough")
+                        email.set("brent@longborough.org")
+                        id.set("brent")
+                        url.set("https://tex.stackexchange.com/users/344")
+                        roles.set(listOf("Developer", "Contributor", "Tester",
+                                "Haskell fanatic"))
+                    }
+                    developer {
+                        name.set("Nicola Talbot")
+                        email.set("nicola.lc.talbot@gmail.com")
+                        id.set("nlct")
+                        url.set("https://tex.stackexchange.com/users/19862")
+                        roles.set(listOf("Developer", "Contributor", "Tester",
+                                "Hat enthusiast"))
+                    }
                 }
                 scm {
-                    connection.set("scm:git:https://github.com/cereda/arara.git")
-                    developerConnection.set("scm:git:https://github.com/cereda/arara.git")
-                    url.set("https://github.com/cereda/arara")
+                    connection.set("scm:git:https://gitlab.com/islandoftex/arara.git")
+                    developerConnection.set("scm:git:https://gitlab.com/islandoftex/arara.git")
+                    url.set("https://gitlab.com/islandoftex/arara")
                 }
                 ciManagement {
                     system.set("GitLab")
                     url.set("https://gitlab.com/islandoftex/arara/pipelines")
                 }
                 issueManagement {
-                    system.set("GitHub")
-                    url.set("https://github.com/cereda/arara/issues")
+                    system.set("GitLab")
+                    url.set("https://gitlab.com/islandoftex/arara/issues")
                 }
             }
 
@@ -132,6 +141,10 @@ publishing {
                 if (project.hasProperty("jobToken")) {
                     name = "Job-Token"
                     value = project.property("jobToken").toString()
+                } else {
+                    logger.warn("Will be unable to publish (jobToken missing)\n" +
+                            "Ignore this warning if you are not running the publish task " +
+                            "for the GitLab package repository.")
                 }
             }
             authentication {
@@ -140,4 +153,3 @@ publishing {
         }
     }
 }
-*/
