@@ -3,47 +3,28 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.java.archives.internal.DefaultManifest
-import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
+import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    application
+    `java-library`
     `maven-publish`
-    id("org.jetbrains.kotlin.plugin.serialization")
     id("com.github.johnrengelman.shadow")
-    jacoco
 }
 
-val kotlinVersion = project.getKotlinPluginVersion()
+val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class).kotlinPluginVersion
 dependencies {
-    implementation(project(":core"))
-
-    implementation(kotlin("reflect", kotlinVersion))
-    implementation("com.uchuhimo:konf-core:0.22.1")
-    implementation("com.github.ajalt:clikt:2.6.0")
-    implementation("ch.qos.cal10n:cal10n-api:0.8.1")
-    implementation("ch.qos.logback:logback-classic:1.2.3")
-    implementation("ch.qos.logback:logback-core:1.2.3")
-    implementation("org.mvel:mvel2:2.4.7.Final")
-    implementation("org.slf4j:slf4j-api:1.7.30")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.10.3")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
-    implementation("com.charleskorn.kaml:kaml:0.17.0")
-    implementation("org.zeroturnaround:zt-exec:1.11")
-
-    testImplementation("io.kotest:kotest-runner-junit5-jvm:4.0.1")
-    testImplementation("io.kotest:kotest-assertions-core-jvm:4.0.1")
+    api(project(":api"))
 }
 
-status = "development"
-val projectName = project.name.toLowerCase()
-val moduleName = group
-val mainClass = "$moduleName.Arara"
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
 
 sourceSets {
     main {
-        java { setSrcDirs(listOf("src/main/java", "src/main/kotlin")) }
+        java { setSrcDirs(listOf("src/main/kotlin")) }
         resources { setSrcDirs(listOf("src/main/resources")) }
     }
     test {
@@ -52,51 +33,18 @@ sourceSets {
     }
 }
 
-application {
-    applicationName = project.name
-    mainClassName = mainClass
-}
-
 val mainManifest: Manifest = DefaultManifest((project as ProjectInternal).fileResolver)
         .apply {
             attributes["Implementation-Title"] = project.name
             attributes["Implementation-Version"] = version
-            attributes["Main-Class"] = mainClass
             if (java.sourceCompatibility < JavaVersion.VERSION_1_9) {
-                attributes["Automatic-Module-Name"] = moduleName
+                attributes["Automatic-Module-Name"] = group
             }
         }
 
 tasks {
-    register<Jar>("dokkaJar") {
-        group = JavaBasePlugin.DOCUMENTATION_GROUP
-        description = "Create JAR with dokka documentation"
-        archiveClassifier.set("dokka")
-        from(dokka)
-    }
-    register<Jar>("sourcesJar") {
-        group = JavaBasePlugin.DOCUMENTATION_GROUP
-        description = "Assembles sources JAR"
-        archiveClassifier.set("sources")
-        from(sourceSets["main"].allSource)
-    }
-
-    named<JavaCompile>("compileJava") {
-        if (java.sourceCompatibility > JavaVersion.VERSION_1_8) {
-            inputs.property("moduleName", moduleName)
-            options.compilerArgs = listOf(
-                    // include Gradle dependencies as modules
-                    "--module-path", sourceSets["main"].compileClasspath.asPath)
-        }
-    }
-    withType<KotlinCompile> {
-        kotlinOptions {
-            freeCompilerArgs = listOf("-Xopt-in=kotlin.time.ExperimentalTime,kotlin.RequiresOptIn")
-        }
-    }
-
     withType<Jar> {
-        archiveBaseName.set("arara")
+        archiveBaseName.set("arara-core")
         manifest.attributes.putAll(mainManifest.attributes)
     }
     named<ShadowJar>("shadowJar") {
@@ -104,33 +52,22 @@ tasks {
         archiveAppendix.set("with-deps")
         archiveClassifier.set("")
     }
-    named<JavaExec>("run") {
-        if (JavaVersion.current() > JavaVersion.VERSION_1_8) {
-            doFirst {
-                jvmArgs = listOf(
-                        "--module-path", classpath.asPath
-                )
-            }
-        }
-    }
-}
-tasks.named<Task>("assembleDist").configure {
-    dependsOn("shadowJar", "jacocoTestReport")
 }
 
 publishing {
     publications {
         create<MavenPublication>("GitLab") {
             groupId = project.group.toString()
-            artifactId = "arara"
+            artifactId = "arara-core"
             version = project.version.toString()
 
             pom {
-                name.set("arara")
-                description.set("arara is a TeX automation tool based on " +
-                        "rules and directives. It gives you a way to enhance " +
-                        "your TeX experience.")
-                inceptionYear.set("2012")
+                name.set("arara-core")
+                description.set(
+                        "arara's API component for use in applications " +
+                                "interested in letting arara compile their TeX files."
+                )
+                inceptionYear.set("2020")
                 url.set("https://gitlab.com/islandoftex/arara")
                 organization {
                     name.set("Island of TeX")
@@ -198,7 +135,7 @@ publishing {
 
             from(components["java"])
             artifact(tasks["sourcesJar"])
-            artifact(tasks["dokkaJar"])
+            artifact(tasks["javadocJar"])
         }
     }
 

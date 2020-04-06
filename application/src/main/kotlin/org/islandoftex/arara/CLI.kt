@@ -12,19 +12,20 @@ import com.github.ajalt.clikt.parameters.types.restrictTo
 import kotlin.system.exitProcess
 import kotlin.time.TimeSource
 import kotlin.time.milliseconds
-import org.islandoftex.arara.configuration.AraraSpec
-import org.islandoftex.arara.configuration.Configuration
-import org.islandoftex.arara.configuration.ExecutionOptionsImpl
-import org.islandoftex.arara.filehandling.FileSearchingUtils
-import org.islandoftex.arara.localization.Language
-import org.islandoftex.arara.localization.LanguageController
-import org.islandoftex.arara.localization.Messages
-import org.islandoftex.arara.model.ProjectImpl
-import org.islandoftex.arara.model.SessionImpl
-import org.islandoftex.arara.session.ExecutionMode
-import org.islandoftex.arara.utils.CommonUtils
-import org.islandoftex.arara.utils.DisplayUtils
-import org.islandoftex.arara.utils.LoggingUtils
+import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.session.ExecutionMode
+import org.islandoftex.arara.cli.configuration.AraraSpec
+import org.islandoftex.arara.cli.configuration.Configuration
+import org.islandoftex.arara.cli.filehandling.FileSearchingUtils
+import org.islandoftex.arara.cli.localization.Language
+import org.islandoftex.arara.cli.localization.LanguageController
+import org.islandoftex.arara.cli.localization.Messages
+import org.islandoftex.arara.cli.model.SessionImpl
+import org.islandoftex.arara.cli.utils.CommonUtils
+import org.islandoftex.arara.cli.utils.DisplayUtils
+import org.islandoftex.arara.cli.utils.LoggingUtils
+import org.islandoftex.arara.core.files.Project
+import org.islandoftex.arara.core.session.ExecutionOptions
 
 /**
  * arara's command line interface
@@ -76,7 +77,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                     .locale)
         }
 
-        Arara.config[AraraSpec.Execution.executionOptions] = ExecutionOptionsImpl(
+        Arara.config[AraraSpec.Execution.executionOptions] = ExecutionOptions(
                 maxLoops = maxLoops
                         ?: Arara.config[AraraSpec.Execution.executionOptions].maxLoops,
                 timeoutValue = timeout?.milliseconds
@@ -142,7 +143,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         val workingDir = workingDirectory ?: AraraSpec.Execution.workingDirectory.default
         try {
             // TODO: this will have to change for parallelization
-            ProjectImpl(
+            Project(
                     workingDir.fileName.toString(),
                     workingDir,
                     reference.map {

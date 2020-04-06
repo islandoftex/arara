@@ -4,13 +4,14 @@ package org.islandoftex.arara
 import com.github.ajalt.clikt.parameters.options.versionOption
 import com.uchuhimo.konf.Config
 import java.time.LocalDate
-import org.islandoftex.arara.configuration.AraraSpec
-import org.islandoftex.arara.localization.LanguageController
-import org.islandoftex.arara.localization.Messages
-import org.islandoftex.arara.model.Extractor
-import org.islandoftex.arara.model.Interpreter
-import org.islandoftex.arara.ruleset.DirectiveUtils
-import org.islandoftex.arara.utils.DisplayUtils
+import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.cli.configuration.AraraSpec
+import org.islandoftex.arara.cli.localization.LanguageController
+import org.islandoftex.arara.cli.localization.Messages
+import org.islandoftex.arara.cli.model.Extractor
+import org.islandoftex.arara.cli.model.Interpreter
+import org.islandoftex.arara.cli.ruleset.DirectiveUtils
+import org.islandoftex.arara.cli.utils.DisplayUtils
 
 /**
  * arara's main entry point
@@ -46,7 +47,7 @@ object Arara {
                                     .INFO_PARSER_NOTES) + "\n\n" +
                             "New features in version $version:\n" +
                             Arara::class.java
-                                    .getResource("/org/islandoftex/arara/configuration/release-notes")
+                                    .getResource("/org/islandoftex/arara/cli/configuration/release-notes")
                                     .readText()
                 })
                 .main(args)
