@@ -1,0 +1,10 @@
+!config
+identifier: echoone
+name: Test rule for conditionals 1
+commands:
+  - name: The echoer
+    command: >
+      @{
+          return isWindows(getCommand('cmd', '/c', 'echo', reference), getCommand('echo', reference));
+      }
+arguments: []

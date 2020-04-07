@@ -2,10 +2,10 @@
 package org.islandoftex.arara.cli.configuration
 
 import com.uchuhimo.konf.ConfigSpec
-import java.io.File
 import java.nio.file.Paths
 import kotlin.time.milliseconds
 import org.islandoftex.arara.api.files.FileType
+import org.islandoftex.arara.api.session.ExecutionMode
 import org.islandoftex.arara.api.session.ExecutionOptions
 import org.islandoftex.arara.cli.localization.Language
 import org.islandoftex.arara.cli.model.ProjectFile
@@ -42,7 +42,7 @@ object AraraSpec : ConfigSpec() {
         val verbose by lazy { it[executionOptions].verbose }
         val language by optional(Language(Application.defaultLanguageCode.default))
         val logging by optional(false)
-        val dryrun by optional(false)
+        val dryrun by lazy { it[executionOptions].executionMode == ExecutionMode.DRY_RUN }
         val status by optional(0)
         val fileTypes by optional(ConfigurationUtils.defaultFileTypes)
         val rulePaths by optional(setOf(
@@ -57,13 +57,12 @@ object AraraSpec : ConfigSpec() {
         val configurationName by optional("[none]")
         val onlyHeader by lazy { it[executionOptions].parseOnlyHeader }
 
-        // TODO: these are runtime values, they should be properly
-        // initialized and tested (maybe move them into their own
+        // TODO: this is a runtime value which should be properly
+        // initialized and tested (maybe move it into its own
         // Spec or session)
         val reference by optional<org.islandoftex.arara.api.files.ProjectFile>(
                 ProjectFile(Paths.get("/tmp/"), FileType.UNKNOWN_TYPE)
         )
-        val file by optional(File("/tmp/"))
 
         object InfoSpec : ConfigSpec() {
             val ruleId by optional<String?>(null)

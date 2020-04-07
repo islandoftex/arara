@@ -1006,7 +1006,7 @@ public class Methods {
      */
     public static File currentFile() {
         return Arara.INSTANCE.getConfig().get(AraraSpec.Execution
-                .INSTANCE.getFile());
+                .INSTANCE.getReference()).getPath().toFile();
     }
 
     /**

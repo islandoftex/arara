@@ -32,7 +32,7 @@ object FileHandlingUtils {
      * than the main file provided in the command line.
      */
     private val currentFile: File
-        get() = Arara.config[AraraSpec.Execution.file]
+        get() = Arara.config[AraraSpec.Execution.reference].path.toFile()
 
     /**
      * Writes the string to a file, using UTF-8 as default encoding.

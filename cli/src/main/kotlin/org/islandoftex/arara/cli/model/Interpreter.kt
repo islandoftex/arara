@@ -238,10 +238,7 @@ class Interpreter(
             logger.info(messages.getMessage(Messages.LOG_INFO_INTERPRET_RULE,
                     directive.identifier))
 
-            Arara.config[AraraSpec.Execution.file] =
-                    directive.parameters.getValue("reference") as File
             val file = getRule(directive)
-
             logger.info(messages.getMessage(Messages.LOG_INFO_RULE_LOCATION,
                     file.parent))
 

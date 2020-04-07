@@ -135,4 +135,11 @@ class ExecutionTest : ShouldSpec({
         output shouldContain "SUCCESS"
         output shouldNotContain "FAILURE"
     }
+
+    should("process multiple files (files array)") {
+        val output = outputForTest("multiple-files")
+        output shouldContain "doc1.tex"
+        output shouldContain "doc2.tex"
+        output shouldNotContain "doc3.tex"
+    }
 })
