@@ -11,20 +11,31 @@ interface Directive {
      * a [Rule.identifier].
      */
     val identifier: String
+
     /**
      * The parameters of a directive are specified in YAML format within the
      * source file. This map collects all parameters, validation happens later
      * on.
      */
     val parameters: Map<String, Any>
+
     /**
      * If the directive is subject to conditional execution, the conditions
      * have to be stored.
      */
     val conditional: DirectiveConditional
+
     /**
      * A list contained all line numbers from the source file which built the
      * current directive.
      */
     val lineNumbers: List<Int>
+
+    /**
+     * Execute the current directive, i.e. transform it into rules and
+     * conditionals, resolve parameters and run the rule's command.
+     *
+     * @return The exit code of the rule's command.
+     */
+    fun execute(): Int
 }

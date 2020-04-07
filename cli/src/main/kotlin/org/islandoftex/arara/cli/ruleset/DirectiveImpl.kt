@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.ruleset
 
+import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditional
+import org.islandoftex.arara.cli.configuration.AraraSpec
+import org.islandoftex.arara.cli.model.Interpreter
 
 /**
  * Implements the directive model.
@@ -16,4 +19,9 @@ data class DirectiveImpl(
     override val parameters: Map<String, Any>,
     override val conditional: DirectiveConditional,
     override val lineNumbers: List<Int>
-) : Directive
+) : Directive {
+    override fun execute(): Int {
+        Interpreter(listOf(this)).execute()
+        return Arara.config[AraraSpec.Execution.status]
+    }
+}
