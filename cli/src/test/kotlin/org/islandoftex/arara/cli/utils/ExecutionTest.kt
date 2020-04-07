@@ -17,7 +17,6 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.configuration.Configuration
 import org.islandoftex.arara.cli.filehandling.FileSearchingUtils
-import org.islandoftex.arara.cli.model.Extractor
 import org.islandoftex.arara.cli.model.Interpreter
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 
@@ -34,12 +33,11 @@ class ExecutionTest : ShouldSpec({
                     Paths.get(getPathForTest(testName))
             Configuration.load()
             Arara.config[AraraSpec.Execution.verbose] = true
-            FileSearchingUtils.registerFileAttributes(
-                    FileSearchingUtils.resolveFile(fileName,
-                            File(getPathForTest(testName)))
-            )
-            val directives = DirectiveUtils.process(Extractor.extract(
-                    File("${getPathForTest(testName)}/$fileName")))
+            val projectFile = FileSearchingUtils.resolveFile(fileName,
+                    File(getPathForTest(testName)))
+            FileSearchingUtils.registerFileAttributes(projectFile)
+            val directives = DirectiveUtils.process(
+                    projectFile.fetchDirectives(false))
             Interpreter(directives).execute()
             return output.toByteArray().toString(Charsets.UTF_8)
         } catch (ex: Exception) {

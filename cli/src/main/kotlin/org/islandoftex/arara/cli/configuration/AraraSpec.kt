@@ -69,8 +69,6 @@ object AraraSpec : ConfigSpec() {
             val ruleId by optional<String?>(null)
             val rulePath by optional<String?>(null)
         }
-
-        val filePattern by optional("")
     }
 
     object UserInteraction : ConfigSpec() {

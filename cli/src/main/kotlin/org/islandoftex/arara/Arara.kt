@@ -8,7 +8,6 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.localization.Messages
-import org.islandoftex.arara.cli.model.Extractor
 import org.islandoftex.arara.cli.model.Interpreter
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
@@ -71,8 +70,8 @@ object Arara {
             // by design and I opted to not include a default fallback
             // (although it wouldn't be so difficult to write one,
             // I decided not to take the risk)
-            val extracted = Extractor.extract(config[AraraSpec.Execution
-                    .reference].path.toFile())
+            val rawDirectives = config[AraraSpec.Execution.reference]
+                    .fetchDirectives(config[AraraSpec.Execution.onlyHeader])
 
             // it is time to validate the directives (for example, we have
             // a couple of keywords that cannot be used as directive
@@ -83,7 +82,7 @@ object Arara {
             // that the list of extracted directives might differ from
             // the final list of directives to be effectively processed
             // by arara
-            val directives = DirectiveUtils.process(extracted)
+            val directives = DirectiveUtils.process(rawDirectives)
 
             // time to shine, now the interpreter class will interpret
             // one directive at a time, get the corresponding rule,
