@@ -18,6 +18,7 @@ import org.islandoftex.arara.cli.utils.CommonUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.InterpreterUtils
 import org.islandoftex.arara.cli.utils.Methods
+import org.islandoftex.arara.core.session.Session
 import org.mvel2.templates.TemplateRuntime
 import org.slf4j.LoggerFactory
 
@@ -214,9 +215,9 @@ class Interpreter(
                     // TODO: document this key
                     val haltKey = "arara:${Arara.config[AraraSpec
                             .Execution.reference].name}:halt"
-                    if (SessionImpl.contains(haltKey)) {
+                    if (Session.contains(haltKey)) {
                         Arara.config[AraraSpec.Execution.status] =
-                                SessionImpl[haltKey].toString().toInt()
+                                Session[haltKey].toString().toInt()
                         // TODO: localize
                         throw HaltExpectedException("User requested halt")
                     }

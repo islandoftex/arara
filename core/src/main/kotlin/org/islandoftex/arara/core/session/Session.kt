@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.model
+package org.islandoftex.arara.core.session
 
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.session.Session
-import org.islandoftex.arara.cli.localization.LanguageController
-import org.islandoftex.arara.cli.localization.Messages
+import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.localization.Messages
 
 /**
  * Implements the session.
@@ -13,7 +13,7 @@ import org.islandoftex.arara.cli.localization.Messages
  * @version 5.0
  * @since 4.0
  */
-object SessionImpl : Session {
+object Session : Session {
     // the application messages obtained from the
     // language controller
     private val messages = LanguageController
