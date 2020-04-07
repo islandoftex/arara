@@ -14,5 +14,6 @@ docs/**/*.*
 .DS_Store
 .gradle
 .idea
-build
+**/build/*
+!buildSrc/src/**/build/*
 target

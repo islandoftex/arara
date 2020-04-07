@@ -9,7 +9,7 @@ object Versions {
     const val shadow = "5.2.0"
     const val spotless = "3.28.1"
     const val spotlessChangelog = "1.1.0"
-    const val versions = "0.28.0"
+    const val versionsPlugin = "0.28.0"
 
     // non-plugin dependencies
     const val cal10n = "0.8.1"

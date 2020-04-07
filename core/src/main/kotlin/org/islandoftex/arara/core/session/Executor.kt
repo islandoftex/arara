@@ -11,15 +11,22 @@ import org.islandoftex.arara.api.session.ExecutionReport
 import org.islandoftex.arara.api.session.Executor
 import org.islandoftex.arara.core.files.byPriority
 
+/**
+ * arara's core executor is configurable at some places by inserting hooks.
+ * This is a collection of all hooks that are applicable.
+ */
+data class ExecutorHooks(
+    val executeBeforeExecution: () -> Unit = {},
+    val executeAfterExecution: (ExecutionReport) -> Unit = { _ -> },
+    val executeBeforeProject: (Project) -> Unit = { _ -> },
+    val executeAfterProject: (Project) -> Unit = { _ -> },
+    val executeBeforeFile: (ProjectFile) -> Unit = { _ -> },
+    val executeAfterFile: (ExecutionReport) -> Unit = { _ -> },
+    val processDirectives: (List<Directive>) -> List<Directive> = { l -> l }
+)
+
 object Executor : Executor {
-    // TODO: move hooks to class
-    var executeBeforeExecution: () -> Unit = {}
-    var executeAfterExecution: (ExecutionReport) -> Unit = { _ -> }
-    var executeBeforeProject: (Project) -> Unit = { _ -> }
-    var executeAfterProject: (Project) -> Unit = { _ -> }
-    var executeBeforeFile: (ProjectFile) -> Unit = { _ -> }
-    var executeAfterFile: (ExecutionReport) -> Unit = { _ -> }
-    var processDirectives: (List<Directive>) -> List<Directive> = { l -> l }
+    var hooks = ExecutorHooks()
 
     @ExperimentalTime
     override fun execute(
@@ -27,7 +34,7 @@ object Executor : Executor {
         executionOptions: ExecutionOptions
     ): ExecutionReport {
         // TODO: DAG resolution for parallelization
-        executeBeforeExecution()
+        hooks.executeBeforeExecution()
         val executionStarted = TimeSource.Monotonic.markNow()
         var exitCode = 0
         for (project in projects) {
@@ -37,7 +44,7 @@ object Executor : Executor {
         }
         val executionEnded = TimeSource.Monotonic.markNow()
         val executionReport = ExecutionReport(executionStarted, executionEnded, exitCode)
-        executeAfterExecution(executionReport)
+        hooks.executeAfterExecution(executionReport)
         return executionReport
     }
 
@@ -47,16 +54,16 @@ object Executor : Executor {
         executionOptions: ExecutionOptions
     ): Int {
         var exitCode = 0
-        executeBeforeProject(project)
+        hooks.executeBeforeProject(project)
         for (file in project.files.byPriority) {
-            executeBeforeFile(file)
+            hooks.executeBeforeFile(file)
             val executionReport = execute(file, executionOptions)
             exitCode = executionReport.exitCode
             if (executionOptions.haltOnErrors && exitCode != 0)
                 return exitCode
-            executeAfterFile(executionReport)
+            hooks.executeAfterFile(executionReport)
         }
-        executeAfterProject(project)
+        hooks.executeAfterProject(project)
         return exitCode
     }
 
@@ -66,7 +73,7 @@ object Executor : Executor {
         executionOptions: ExecutionOptions
     ): ExecutionReport {
         val executionStarted = TimeSource.Monotonic.markNow()
-        val directives = processDirectives(
+        val directives = hooks.processDirectives(
                 file.fetchDirectives(executionOptions.parseOnlyHeader)
         )
         var exitCode = 0

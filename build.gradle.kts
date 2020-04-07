@@ -22,7 +22,7 @@ plugins {
     val versions = org.islandoftex.arara.build.Versions
     kotlin("jvm") version versions.kotlin apply false                                   // Apache 2.0
     id("com.github.johnrengelman.shadow") version versions.shadow apply false           // Apache 2.0
-    id("com.github.ben-manes.versions") version versions.versions                       // Apache 2.0
+    id("com.github.ben-manes.versions") version versions.versionsPlugin                 // Apache 2.0
     id("com.diffplug.spotless-changelog") version versions.spotlessChangelog            // Apache 2.0
     id("org.jetbrains.dokka") version versions.dokka apply false                        // Apache 2.0
     id("org.jetbrains.kotlin.plugin.serialization") version versions.kotlin apply false // Apache 2.0
