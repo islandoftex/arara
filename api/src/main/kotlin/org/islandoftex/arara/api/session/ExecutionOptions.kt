@@ -46,6 +46,11 @@ interface ExecutionOptions {
     val timeoutValue: Duration
 
     /**
+     * Whether arara should parallelize the execution.
+     */
+    val parallelExecution: Boolean
+
+    /**
      * Whether arara will halt on errors.
      */
     val haltOnErrors: Boolean

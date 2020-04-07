@@ -2,6 +2,7 @@
 package org.islandoftex.arara.api.files
 
 import java.nio.file.Path
+import org.islandoftex.arara.api.rules.Directive
 
 /**
  * A file in a [Project]. This layer is a [Path] providing a [FileType]
@@ -26,4 +27,12 @@ interface ProjectFile {
      * equal priority will be compiled in random order.
      */
     val priority: Int
+
+    /**
+     * Get the file's directives. This does not put them into any context,
+     * just resolves the literal directives.
+     *
+     * @return The list of directives in the file, in order.
+     */
+    fun fetchDirectives(parseOnlyHeader: Boolean): List<Directive>
 }

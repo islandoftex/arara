@@ -136,7 +136,7 @@ object FileSearchingUtils {
             types.firstOrNull {
                 testFile.toString().endsWith("." + it.extension)
             }?.let {
-                return org.islandoftex.arara.core.files.ProjectFile(
+                return org.islandoftex.arara.cli.model.ProjectFile(
                         path = testFile.toPath(),
                         fileType = types.firstOrNull { testFile.extension == it.extension }
                                 ?: FileType.UNKNOWN_TYPE
@@ -154,7 +154,7 @@ object FileSearchingUtils {
                 })
                 .firstOrNull { it.exists() && it.isFile }
                 ?.let { found ->
-                    org.islandoftex.arara.core.files.ProjectFile(
+                    org.islandoftex.arara.cli.model.ProjectFile(
                             found.toPath(),
                             types.firstOrNull { found.extension == it.extension }
                                     ?: FileType.UNKNOWN_TYPE

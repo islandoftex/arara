@@ -20,6 +20,7 @@ import org.islandoftex.arara.cli.filehandling.FileSearchingUtils
 import org.islandoftex.arara.cli.localization.Language
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.localization.Messages
+import org.islandoftex.arara.cli.model.ProjectFile
 import org.islandoftex.arara.cli.utils.CommonUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.LoggingUtils
@@ -149,7 +150,16 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                     reference.map {
                         FileSearchingUtils.resolveFile(it, workingDir.toFile())
                     }.toSet()
-            ).absoluteFiles.forEach {
+            ).files.map {
+                if (it.path.isAbsolute)
+                    it
+                else
+                    ProjectFile(
+                            workingDirectory.resolve(it.path).toRealPath(),
+                            it.fileType,
+                            it.priority
+                    )
+            }.toSet().forEach {
                 // TODO: do we have to reset some more file-specific config?
                 // especially the working directory will have to be set and
                 // changed
