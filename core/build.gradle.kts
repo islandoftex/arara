@@ -3,6 +3,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.java.archives.internal.DefaultManifest
+import org.islandoftex.arara.build.Versions
 import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -16,8 +17,8 @@ val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class).kotlinPluginVe
 dependencies {
     api(project(":api"))
 
-    testImplementation("io.kotest:kotest-runner-junit5-jvm:4.0.2")
-    testImplementation("io.kotest:kotest-assertions-core-jvm:4.0.2")
+    testImplementation(group = "io.kotest", name = "kotest-runner-junit5-jvm", version = Versions.kotest)
+    testImplementation(group = "io.kotest", name = "kotest-assertions-core-jvm", version = Versions.kotest)
 }
 
 java {

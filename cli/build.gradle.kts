@@ -3,7 +3,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.java.archives.internal.DefaultManifest
-import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
+import org.islandoftex.arara.build.Versions
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -14,26 +14,25 @@ plugins {
     jacoco
 }
 
-val kotlinVersion = project.getKotlinPluginVersion()
 dependencies {
     implementation(project(":core"))
 
-    implementation(kotlin("reflect", kotlinVersion))
-    implementation("com.uchuhimo:konf-core:0.22.1")
-    implementation("com.github.ajalt:clikt:2.6.0")
-    implementation("ch.qos.cal10n:cal10n-api:0.8.1")
-    implementation("ch.qos.logback:logback-classic:1.2.3")
-    implementation("ch.qos.logback:logback-core:1.2.3")
-    implementation("org.mvel:mvel2:2.4.7.Final")
-    implementation("org.slf4j:slf4j-api:1.7.30")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.10.3")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
-    implementation("com.charleskorn.kaml:kaml:0.17.0")
-    implementation("org.zeroturnaround:zt-exec:1.11")
+    implementation(kotlin("reflect", Versions.kotlin))
+    implementation(group = "com.uchuhimo", name = "konf-core", version = Versions.konf)
+    implementation(group = "com.github.ajalt", name = "clikt", version = Versions.clikt)
+    implementation(group = "ch.qos.cal10n", name = "cal10n-api", version = Versions.cal10n)
+    implementation(group = "ch.qos.logback", name = "logback-classic", version = Versions.logback)
+    implementation(group = "ch.qos.logback", name = "logback-core", version = Versions.logback)
+    implementation(group = "org.mvel" , name = "mvel2", version = Versions.mvel)
+    implementation(group = "org.slf4j", name = "slf4j-api", version = Versions.slf4j)
+    implementation(group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-yaml", version = Versions.jackson)
+    implementation(group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version = Versions.jackson)
+    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-runtime", version = Versions.kotlinxSerialization)
+    implementation(group = "com.charleskorn.kaml", name = "kaml", version = Versions.kaml)
+    implementation(group = "org.zeroturnaround", name = "zt-exec", version = Versions.ztExec)
 
-    testImplementation("io.kotest:kotest-runner-junit5-jvm:4.0.2")
-    testImplementation("io.kotest:kotest-assertions-core-jvm:4.0.2")
+    testImplementation(group = "io.kotest", name = "kotest-runner-junit5-jvm", version = Versions.kotest)
+    testImplementation(group = "io.kotest", name = "kotest-assertions-core-jvm", version = Versions.kotest)
 }
 
 status = "development"

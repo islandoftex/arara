@@ -9,8 +9,8 @@ import org.islandoftex.arara.build.CTANZipBuilderTask
 import org.islandoftex.arara.build.SourceZipBuilderTask
 import org.islandoftex.arara.build.TDSTreeBuilderTask
 import org.islandoftex.arara.build.TDSZipBuilderTask
+import org.islandoftex.arara.build.Versions
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
 
 buildscript {
     repositories {
@@ -19,14 +19,15 @@ buildscript {
 }
 
 plugins {
-    kotlin("jvm") version "1.3.71" apply false                                   // Apache 2.0
-    id("com.github.johnrengelman.shadow") version "5.2.0" apply false            // Apache 2.0
-    id("com.github.ben-manes.versions") version "0.28.0"                         // Apache 2.0
-    id("com.diffplug.spotless-changelog") version "1.1.0"                        // Apache 2.0
-    id("org.jetbrains.dokka") version "0.10.1" apply false                       // Apache 2.0
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.3.71" apply false // Apache 2.0
-    id("io.gitlab.arturbosch.detekt") version "1.7.4"                            // Apache 2.0
-    id("com.diffplug.gradle.spotless") version "3.28.1"                          // Apache 2.0
+    val versions = org.islandoftex.arara.build.Versions
+    kotlin("jvm") version versions.kotlin apply false                                   // Apache 2.0
+    id("com.github.johnrengelman.shadow") version versions.shadow apply false           // Apache 2.0
+    id("com.github.ben-manes.versions") version versions.versions                       // Apache 2.0
+    id("com.diffplug.spotless-changelog") version versions.spotlessChangelog            // Apache 2.0
+    id("org.jetbrains.dokka") version versions.dokka apply false                        // Apache 2.0
+    id("org.jetbrains.kotlin.plugin.serialization") version versions.kotlin apply false // Apache 2.0
+    id("io.gitlab.arturbosch.detekt") version versions.detekt                           // Apache 2.0
+    id("com.diffplug.gradle.spotless") version versions.spotless                        // Apache 2.0
 }
 
 // exclude alpha and beta versions
@@ -70,7 +71,8 @@ detekt {
     failFast = false
     input = files(
             "api/src/main/kotlin",
-            "application/src/main/kotlin",
+            "core/src/main/kotlin",
+            "cli/src/main/kotlin",
             "buildSrc/src/main/kotlin"
     )
     buildUponDefaultConfig = true
@@ -108,9 +110,8 @@ subprojects {
         apply(plugin = "org.jetbrains.dokka")
         apply(plugin = "com.diffplug.gradle.spotless")
 
-        val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class).kotlinPluginVersion
         dependencies {
-            "implementation"(kotlin("stdlib", kotlinVersion))
+            "implementation"(kotlin("stdlib", Versions.kotlin))
         }
 
         configure<SpotlessExtension> {
