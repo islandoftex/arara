@@ -17,6 +17,5 @@ interface RuleCommand {
      * integer. This integer is treated as exit code. Use it like you would use
      * an exit code on the command line (i.e. we treat only 0 as success).
      */
-    // TODO: uncomment the following
-    // val command: () -> Int
+    val command: () -> Int
 }

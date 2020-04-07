@@ -18,6 +18,6 @@ data class RuleImpl(
     @SerialName("name")
     override val displayName: String? = null,
     override val authors: List<String> = listOf(),
-    override val commands: List<RuleCommandImpl> = listOf(),
+    override val commands: List<SerialRuleCommand> = listOf(),
     override val arguments: List<RuleArgumentImpl> = listOf()
 ) : Rule

@@ -12,8 +12,8 @@ import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.localization.Messages
 import org.islandoftex.arara.cli.ruleset.RuleArgumentImpl
-import org.islandoftex.arara.cli.ruleset.RuleCommandImpl
 import org.islandoftex.arara.cli.ruleset.RuleUtils
+import org.islandoftex.arara.cli.ruleset.SerialRuleCommand
 import org.islandoftex.arara.cli.utils.CommonUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.InterpreterUtils
@@ -172,13 +172,13 @@ class Interpreter(
     @Throws(AraraException::class)
     @Suppress("TooGenericExceptionCaught", "ThrowsCount")
     private fun executeCommand(
-        command: RuleCommandImpl,
+        command: SerialRuleCommand,
         conditional: DirectiveConditional,
         rule: Rule,
         parameters: Map<String, Any>
     ) {
         val result: Any = try {
-            TemplateRuntime.eval(command.command!!, parameters)
+            TemplateRuntime.eval(command.commandString!!, parameters)
         } catch (exception: RuntimeException) {
             throw AraraException(
                 CommonUtils.ruleErrorHeader +
@@ -271,7 +271,7 @@ class Interpreter(
                     try {
                         executeCommand(
                                 // TODO: remove cast
-                                command as RuleCommandImpl,
+                                command as SerialRuleCommand,
                                 directive.conditional,
                                 rule,
                                 parameters

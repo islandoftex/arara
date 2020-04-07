@@ -91,7 +91,7 @@ object RuleUtils {
     @Throws(AraraException::class)
     @Suppress("ThrowsCount")
     private fun validateBody(rule: RuleImpl) {
-        if (rule.commands.any { it.command == null }) {
+        if (rule.commands.any { it.commandString == null }) {
             throw AraraException(
                     CommonUtils.ruleErrorHeader +
                             messages.getMessage(
