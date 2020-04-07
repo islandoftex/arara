@@ -38,6 +38,8 @@ object DirectiveUtils {
     private const val pattern = """(\s+(if|while|until|unless)\s+(\S.*))?$"""
     // pattern to match directives against
     private val directivePattern = (directivestart + pattern).toPattern()
+    // math the arara part in `% arara: pdflatex`
+    private const val namePattern = "arara:\\s"
 
     // what to expect after a line break in a directive
     private val linebreakPattern = "^\\s*-->\\s(.*)$".toPattern()
@@ -54,8 +56,7 @@ object DirectiveUtils {
         val header = Arara.config[AraraSpec.Execution.onlyHeader]
         val validLineRegex = Arara.config[AraraSpec.Execution.reference].fileType.pattern
         val validLinePattern = validLineRegex.toPattern()
-        val validLineStartPattern = (validLineRegex + Arara.config[AraraSpec
-                .Application.namePattern]).toPattern()
+        val validLineStartPattern = (validLineRegex + namePattern).toPattern()
         val map = mutableMapOf<Int, String>()
         for ((i, text) in lines.withIndex()) {
             val validLineMatcher = validLineStartPattern.matcher(text)

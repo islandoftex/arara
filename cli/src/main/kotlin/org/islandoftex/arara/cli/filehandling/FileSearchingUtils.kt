@@ -161,8 +161,4 @@ object FileSearchingUtils {
                     )
                 }
     }
-
-    fun registerFileAttributes(file: ProjectFile) {
-        Arara.config[AraraSpec.Execution.reference] = file
-    }
 }

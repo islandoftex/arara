@@ -33,11 +33,11 @@ class ExecutionTest : ShouldSpec({
                     Paths.get(getPathForTest(testName))
             Configuration.load()
             Arara.config[AraraSpec.Execution.verbose] = true
-            val projectFile = FileSearchingUtils.resolveFile(fileName,
-                    File(getPathForTest(testName)))
-            FileSearchingUtils.registerFileAttributes(projectFile)
-            val directives = DirectiveUtils.process(
-                    projectFile.fetchDirectives(false))
+            Arara.config[AraraSpec.Execution.reference] = FileSearchingUtils
+                    .resolveFile(fileName, File(getPathForTest(testName)))
+            val directives = DirectiveUtils.process(Arara
+                    .config[AraraSpec.Execution.reference]
+                    .fetchDirectives(false))
             Interpreter(directives).execute()
             return output.toByteArray().toString(Charsets.UTF_8)
         } catch (ex: Exception) {

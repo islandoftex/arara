@@ -24,7 +24,6 @@ object AraraSpec : ConfigSpec() {
         val defaultLanguageCode by optional("en")
         val version by optional(AraraSpec::class.java.`package`.implementationVersion
                 ?: "DEVELOPMENT BUILD")
-        val namePattern by optional("arara:\\s")
         val width by optional(65)
     }
 

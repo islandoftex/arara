@@ -170,8 +170,8 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                 Arara.config[AraraSpec.Execution.workingDirectory] = workingDir
                 Configuration.load()
                 updateConfigurationFromCommandLine()
-                FileSearchingUtils.registerFileAttributes(it)
                 // run arara
+                Arara.config[AraraSpec.Execution.reference] = it
                 Arara.run()
                 // add an empty line between file executions
                 println()
