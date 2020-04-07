@@ -304,7 +304,7 @@ object DirectiveUtils {
                 result.add(DirectiveImpl(
                         directive.identifier,
                         parameters.plus("reference" to
-                                Arara.config[AraraSpec.Execution.reference]),
+                                Arara.config[AraraSpec.Execution.reference].path.toFile()),
                         directive.conditional,
                         directive.lineNumbers
                 ))

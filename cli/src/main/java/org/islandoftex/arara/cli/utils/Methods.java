@@ -109,9 +109,9 @@ public class Methods {
      * @return The original file.
      */
     public static String getOriginalFile() {
-        File file = Arara.INSTANCE.getConfig()
-                .get(AraraSpec.Execution.INSTANCE.getReference());
-        return file.getName();
+        return Arara.INSTANCE.getConfig()
+                .get(AraraSpec.Execution.INSTANCE.getReference())
+                .getPath().toFile().getName();
     }
 
     /**
@@ -121,7 +121,8 @@ public class Methods {
      */
     public static File getOriginalReference() {
         return Arara.INSTANCE.getConfig()
-                .get(AraraSpec.Execution.INSTANCE.getReference());
+                .get(AraraSpec.Execution.INSTANCE.getReference())
+                .getPath().toFile();
     }
 
     /**

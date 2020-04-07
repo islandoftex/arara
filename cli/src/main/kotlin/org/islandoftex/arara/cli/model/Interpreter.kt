@@ -214,7 +214,7 @@ class Interpreter(
 
                     // TODO: document this key
                     val haltKey = "arara:${Arara.config[AraraSpec
-                            .Execution.reference].name}:halt"
+                            .Execution.reference].path.fileName}:halt"
                     if (Session.contains(haltKey)) {
                         Arara.config[AraraSpec.Execution.status] =
                                 Session[haltKey].toString().toInt()

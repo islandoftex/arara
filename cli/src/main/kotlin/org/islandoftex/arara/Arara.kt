@@ -72,7 +72,7 @@ object Arara {
             // (although it wouldn't be so difficult to write one,
             // I decided not to take the risk)
             val extracted = Extractor.extract(config[AraraSpec.Execution
-                    .reference])
+                    .reference].path.toFile())
 
             // it is time to validate the directives (for example, we have
             // a couple of keywords that cannot be used as directive

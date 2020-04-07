@@ -5,8 +5,11 @@ import com.uchuhimo.konf.ConfigSpec
 import java.io.File
 import java.nio.file.Paths
 import kotlin.time.milliseconds
+import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.session.ExecutionOptions
 import org.islandoftex.arara.cli.localization.Language
+import org.islandoftex.arara.cli.model.ProjectFile
+import org.islandoftex.arara.cli.model.UNKNOWN_TYPE
 
 /**
  * Configuration hierarchy for arara
@@ -57,7 +60,9 @@ object AraraSpec : ConfigSpec() {
         // TODO: these are runtime values, they should be properly
         // initialized and tested (maybe move them into their own
         // Spec or session)
-        val reference by optional(File("/tmp/"))
+        val reference by optional<org.islandoftex.arara.api.files.ProjectFile>(
+                ProjectFile(Paths.get("/tmp/"), FileType.UNKNOWN_TYPE)
+        )
         val file by optional(File("/tmp/"))
 
         object InfoSpec : ConfigSpec() {

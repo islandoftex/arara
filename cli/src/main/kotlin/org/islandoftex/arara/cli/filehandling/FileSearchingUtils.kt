@@ -164,6 +164,6 @@ object FileSearchingUtils {
 
     fun registerFileAttributes(file: ProjectFile) {
         Arara.config[AraraSpec.Execution.filePattern] = file.fileType.pattern
-        Arara.config[AraraSpec.Execution.reference] = file.path.toFile()
+        Arara.config[AraraSpec.Execution.reference] = file
     }
 }

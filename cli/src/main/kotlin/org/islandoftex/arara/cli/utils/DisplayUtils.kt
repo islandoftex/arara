@@ -301,7 +301,7 @@ object DisplayUtils {
      * Displays the file information in the terminal.
      */
     fun printFileInformation() {
-        val file = Arara.config[AraraSpec.Execution.reference]
+        val file = Arara.config[AraraSpec.Execution.reference].path.toFile()
         val version = Arara.config[AraraSpec.Application.version]
         val line = messages.getMessage(
                 Messages.INFO_DISPLAY_FILE_INFORMATION,

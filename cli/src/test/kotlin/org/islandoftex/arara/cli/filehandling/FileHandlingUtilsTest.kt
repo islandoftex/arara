@@ -8,7 +8,10 @@ import java.io.File
 import java.nio.file.Files
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.cli.configuration.AraraSpec
+import org.islandoftex.arara.cli.model.ProjectFile
+import org.islandoftex.arara.cli.model.UNKNOWN_TYPE
 
 class FileHandlingUtilsTest : ShouldSpec({
     should("fail generating CRC sums on inexistent files") {
@@ -46,7 +49,10 @@ class FileHandlingUtilsTest : ShouldSpec({
     should("detect changes on file") {
         val file = Files.createTempFile(null, null).toFile()
         val referenceBackup = Arara.config[AraraSpec.Execution.reference]
-        Arara.config[AraraSpec.Execution.reference] = file.parentFile.resolve("reference")
+        Arara.config[AraraSpec.Execution.reference] = ProjectFile(
+                file.parentFile.resolve("reference").toPath(),
+                FileType.UNKNOWN_TYPE
+        )
         FileHandlingUtils.hasChanged(file) shouldBe true
         FileHandlingUtils.hasChanged(file) shouldBe false
         file.writeText("QUACK")

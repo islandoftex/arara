@@ -30,7 +30,7 @@ object DatabaseUtils {
     private val file: File
         @Throws(AraraException::class)
         get() {
-            val reference = Arara.config[AraraSpec.Execution.reference]
+            val reference = Arara.config[AraraSpec.Execution.reference].path.toFile()
             val name = Arara.config[AraraSpec.Execution.databaseName].toString()
             val path = FileHandlingUtils.getParentCanonicalFile(reference)
             return path.resolve(name)
