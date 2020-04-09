@@ -35,6 +35,7 @@ object DisplayUtils {
             messages.getMessage(Messages.INFO_LABEL_ON_FAILURE),
             messages.getMessage(Messages.INFO_LABEL_ON_ERROR))
             .map { it.length }.max()!!
+
     /**
      * If the longest match is longer than the width, then it will be truncated
      * to this length.
@@ -44,8 +45,7 @@ object DisplayUtils {
     /**
      * The default terminal width defined in the settings.
      */
-    private val width: Int
-        get() = Arara.config[AraraSpec.Application.width]
+    private const val outputWidth: Int = 65
 
     /**
      * Checks if the execution is in dry-run mode.
@@ -76,11 +76,11 @@ object DisplayUtils {
      * @param task Task name.
      */
     private fun buildShortEntry(name: String, task: String) {
-        val result = if (longestMatch >= width)
+        val result = if (longestMatch >= outputWidth)
             shortenedLongestMatch
         else
             longestMatch
-        val space = width - result - 1
+        val space = outputWidth - result - 1
         val line = "($name) $task ".abbreviate(space - "... ".length)
         print(line.padEnd(space, '.') + " ")
     }
@@ -124,7 +124,7 @@ object DisplayUtils {
      * @param value The boolean value to be displayed
      */
     private fun buildLongResult(value: Boolean) {
-        val width = width
+        val width = outputWidth
         println("\n" + (" " + getResult(value)).padStart(width, '-'))
     }
 
@@ -168,7 +168,7 @@ object DisplayUtils {
             Arara.config[AraraSpec.UserInteraction.displayRolling] = true
         }
         println(displaySeparator())
-        println("($name) $task".abbreviate(width))
+        println("($name) $task".abbreviate(outputWidth))
         println(displaySeparator())
     }
 
@@ -184,7 +184,7 @@ object DisplayUtils {
         } else {
             Arara.config[AraraSpec.UserInteraction.displayRolling] = true
         }
-        println("[DR] ($name) $task".abbreviate(width))
+        println("[DR] ($name) $task".abbreviate(outputWidth))
         println(displaySeparator())
     }
 
@@ -256,7 +256,7 @@ object DisplayUtils {
      */
     private fun buildLongError() {
         println((" " + messages.getMessage(Messages.INFO_LABEL_ON_ERROR))
-                .padStart(width, '-'))
+                .padStart(outputWidth, '-'))
     }
 
     /**
@@ -265,7 +265,7 @@ object DisplayUtils {
      *
      * @param text The text to be displayed.
      */
-    fun wrapText(text: String) = println(text.wrap(width))
+    fun wrapText(text: String) = println(text.wrap(outputWidth))
 
     /**
      * Displays the rule authors in the terminal.
@@ -353,17 +353,15 @@ object DisplayUtils {
     fun printTime(seconds: Double) {
         val language = Arara.config[AraraSpec.Execution.language]
 
-        if (Arara.config[AraraSpec.UserInteraction.displayTime]) {
-            if (Arara.config[AraraSpec.UserInteraction.displayLine] ||
-                    Arara.config[AraraSpec.UserInteraction.displayException])
-                addNewLine()
+        if (Arara.config[AraraSpec.UserInteraction.displayLine] ||
+                Arara.config[AraraSpec.UserInteraction.displayException])
+            addNewLine()
 
-            val text = messages.getMessage(
-                    Messages.INFO_DISPLAY_EXECUTION_TIME,
-                    "%1.2f".format(language.locale, seconds))
-            logger.info(text)
-            wrapText(text)
-        }
+        val text = messages.getMessage(
+                Messages.INFO_DISPLAY_EXECUTION_TIME,
+                "%1.2f".format(language.locale, seconds))
+        logger.info(text)
+        wrapText(text)
     }
 
     /**
@@ -392,7 +390,7 @@ object DisplayUtils {
     private fun displayDetailsLine() {
         val line = messages.getMessage(
                 Messages.INFO_LABEL_ON_DETAILS) + " "
-        println(line.abbreviate(width).padEnd(width, '-'))
+        println(line.abbreviate(outputWidth).padEnd(outputWidth, '-'))
     }
 
     /**
@@ -402,7 +400,7 @@ object DisplayUtils {
      * @return A string containing the output separator with the provided text.
      */
     fun displayOutputSeparator(message: String): String {
-        return " $message ".center(width, '-')
+        return " $message ".center(outputWidth, '-')
     }
 
     /**
@@ -411,6 +409,6 @@ object DisplayUtils {
      * @return A string containing the line separator.
      */
     fun displaySeparator(): String {
-        return "-".repeat(width)
+        return "-".repeat(outputWidth)
     }
 }

@@ -24,7 +24,6 @@ object AraraSpec : ConfigSpec() {
         val defaultLanguageCode by optional("en")
         val version by optional(AraraSpec::class.java.`package`.implementationVersion
                 ?: "DEVELOPMENT BUILD")
-        val width by optional(65)
     }
 
     object Execution : ConfigSpec() {
@@ -71,7 +70,6 @@ object AraraSpec : ConfigSpec() {
 
     object UserInteraction : ConfigSpec() {
         val lookAndFeel by optional("none")
-        val displayTime by optional(false)
         val displayLine by optional(true)
         val displayResult by optional(false)
         val displayRolling by optional(false)
