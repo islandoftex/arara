@@ -9,6 +9,7 @@ import org.islandoftex.arara.cli.localization.Language
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.localization.Messages
 import org.islandoftex.arara.cli.utils.LoggingUtils
+import org.islandoftex.arara.mvel.configuration.LocalConfiguration
 
 /**
  * Implements the configuration model, which holds the default settings and can
@@ -67,6 +68,8 @@ object Configuration {
      */
     @Throws(AraraException::class)
     private fun update(resource: LocalConfiguration) {
+        val loggingOptions = resource.toLoggingOptions()
+
         if (resource.paths.isNotEmpty())
             Arara.config[AraraSpec.Execution.rulePaths] =
                     ConfigurationUtils.normalizePaths(resource.paths)
@@ -85,17 +88,16 @@ object Configuration {
         Arara.config[AraraSpec.Execution.databaseName] =
                 Paths.get(ConfigurationUtils.cleanFileName(resource.dbname))
         Arara.config[AraraSpec.Execution.logName] =
-                ConfigurationUtils.cleanFileName(resource.logname)
+                ConfigurationUtils.cleanFileName(loggingOptions.logFile.fileName.toString())
 
-        Arara.config[AraraSpec.Execution.logging] = resource.isLogging
-        LoggingUtils.enableLogging(resource.isLogging)
+        Arara.config[AraraSpec.Execution.logging] = loggingOptions.enableLogging
+        LoggingUtils.enableLogging(loggingOptions.enableLogging)
 
         val loops = resource.loops
         if (loops <= 0) {
             throw AraraException(
                 messages.getMessage(
-                    Messages
-                        .ERROR_CONFIGURATION_LOOPS_INVALID_RANGE
+                    Messages.ERROR_CONFIGURATION_LOOPS_INVALID_RANGE
                 )
             )
         } else {

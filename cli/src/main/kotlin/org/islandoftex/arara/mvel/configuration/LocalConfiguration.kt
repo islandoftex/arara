@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.configuration
+package org.islandoftex.arara.mvel.configuration
 
+import java.nio.file.Paths
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.Arara
+import org.islandoftex.arara.api.session.ExecutionOptions
+import org.islandoftex.arara.api.session.LoggingOptions
+import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.model.FileTypeImpl
 import org.islandoftex.arara.cli.utils.CommonUtils
 import org.mvel2.templates.TemplateRuntime
@@ -59,7 +63,7 @@ class LocalConfiguration {
 
     // logging flag
     @SerialName("logging")
-    var isLogging: Boolean = Arara.config[AraraSpec.Execution.logging]
+    private var isLogging: Boolean = Arara.config[AraraSpec.Execution.logging]
 
     // header flag
     @SerialName("header")
@@ -69,7 +73,7 @@ class LocalConfiguration {
     var dbname: String = Arara.config[AraraSpec.Execution.databaseName].toString()
 
     // log name
-    var logname: String = Arara.config[AraraSpec.Execution.logName]
+    private var logname: String = Arara.config[AraraSpec.Execution.logName]
 
     // map of preambles
     var preambles: Map<String, String> = Arara.config[AraraSpec.Execution.preambles]
@@ -77,4 +81,34 @@ class LocalConfiguration {
     // look and feel
     // default to none
     var laf: String = Arara.config[AraraSpec.UserInteraction.lookAndFeel]
+
+    /**
+     * Convert the relevant properties of the configuration to execution
+     * options. Intended to be used together with [toLoggingOptions] to
+     * destructure and discard this object.
+     *
+     * @return The corresponding execution options.
+     */
+    fun toExecutionOptions(): ExecutionOptions {
+        return org.islandoftex.arara.core.session.ExecutionOptions(
+                maxLoops = loops,
+                databaseName = Paths.get(dbname),
+                parseOnlyHeader = isHeader,
+                verbose = isVerbose
+        )
+    }
+
+    /**
+     * Convert the relevant properties of the configuration to logging options.
+     * Intended to be used together with [toExecutionOptions] to destructure
+     * and discard this object.
+     *
+     * @return The corresponding logging options.
+     */
+    fun toLoggingOptions(): LoggingOptions {
+        return org.islandoftex.arara.core.session.LoggingOptions(
+                enableLogging = isLogging,
+                logFile = Paths.get(logname)
+        )
+    }
 }

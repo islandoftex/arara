@@ -31,6 +31,10 @@ enum class ExecutionMode {
     NORMAL_RUN
 }
 
+/**
+ * Configure arara's runtime behavior. These options will be frozen for an
+ * execution once it has been started.
+ */
 @ExperimentalTime
 interface ExecutionOptions {
     /**

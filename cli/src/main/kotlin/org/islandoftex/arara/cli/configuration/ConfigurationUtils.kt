@@ -14,6 +14,7 @@ import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.localization.Messages
 import org.islandoftex.arara.cli.model.FileTypeImpl
 import org.islandoftex.arara.cli.utils.CommonUtils
+import org.islandoftex.arara.mvel.configuration.LocalConfiguration
 
 /**
  * Implements configuration utilitary methods.
