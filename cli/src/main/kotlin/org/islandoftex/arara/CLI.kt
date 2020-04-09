@@ -15,7 +15,6 @@ import kotlin.time.milliseconds
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.session.ExecutionMode
 import org.islandoftex.arara.cli.configuration.AraraSpec
-import org.islandoftex.arara.cli.configuration.Configuration
 import org.islandoftex.arara.cli.filehandling.FileSearchingUtils
 import org.islandoftex.arara.cli.localization.Language
 import org.islandoftex.arara.cli.localization.LanguageController
@@ -25,7 +24,6 @@ import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.session.ExecutionOptions
-import org.islandoftex.arara.core.session.Session
 
 /**
  * arara's command line interface
@@ -67,55 +65,6 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
             .multiple(required = true)
 
     /**
-     * Update the default configuration with the values parsed from the
-     * command line.
-     */
-    private fun updateConfigurationFromCommandLine() {
-        language?.let {
-            Arara.config[AraraSpec.Execution.language] = Language(it)
-            LanguageController.setLocale(Arara.config[AraraSpec.Execution.language]
-                    .locale)
-        }
-
-        Arara.config[AraraSpec.Execution.executionOptions] = ExecutionOptions(
-                maxLoops = maxLoops
-                        ?: Arara.config[AraraSpec.Execution.executionOptions].maxLoops,
-                timeoutValue = timeout?.milliseconds
-                        ?: Arara.config[AraraSpec.Execution.executionOptions].timeoutValue,
-                verbose = if (verbose)
-                    true
-                else
-                    Arara.config[AraraSpec.Execution.executionOptions].verbose,
-                executionMode = if (dryrun)
-                    ExecutionMode.DRY_RUN
-                else
-                    Arara.config[AraraSpec.Execution.executionOptions].executionMode,
-                parseOnlyHeader = if (onlyheader)
-                    true
-                else
-                    Arara.config[AraraSpec.Execution.executionOptions].parseOnlyHeader
-        )
-
-        if (log) Arara.config[AraraSpec.Execution.logging] = log
-        preamble?.let {
-            val preambles = Arara.config[AraraSpec.Execution.preambles]
-            if (preambles.containsKey(it)) {
-                Arara.config[AraraSpec.Execution.preamblesActive] = true
-                Arara.config[AraraSpec.Execution.preamblesContent] =
-                        // will never throw (see check above)
-                        preambles.getValue(it)
-            } else {
-                throw AraraException(
-                        LanguageController.getMessage(
-                                Messages.ERROR_PARSER_INVALID_PREAMBLE, it)
-                )
-            }
-        }
-
-        Arara.config[AraraSpec.UserInteraction.displayTime] = true
-    }
-
-    /**
      * The actual main method of arara (when run in command-line mode)
      */
     override fun run() {
@@ -132,10 +81,6 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         // just a cool addition)
         val executionStart = TimeSource.Monotonic.markNow()
 
-        // arara stores the environment variables accessible at the start
-        // of the execution in the session object for the user
-        Session.updateEnvironmentVariables()
-
         // logging has to be initialized only once and for all because
         // context resets lead to missing output
         LoggingUtils.enableLogging(log)
@@ -143,7 +88,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         val workingDir = workingDirectory ?: AraraSpec.Execution.workingDirectory.default
         try {
             // TODO: this will have to change for parallelization
-            Project(
+            Arara.config[AraraSpec.Execution.projects] = listOf(Project(
                     workingDir.fileName.toString(),
                     workingDir,
                     reference.map { fileName ->
@@ -159,23 +104,53 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                                 )
                         }
                     }.toSet()
-            ).files.forEach {
-                // TODO: do we have to reset some more file-specific config?
-                // especially the working directory will have to be set and
-                // changed
-                Arara.config = Arara.baseconfig.withLayer(it.toString())
-                // load the configuration (we need to set the working directory
-                // first because the configuration loading relies on it)
-                // CLI options are prioritized
+            ))
+            Arara.updateConfigurationFromCommandLine = {
+                language?.let {
+                    Arara.config[AraraSpec.Execution.language] = Language(it)
+                    LanguageController.setLocale(
+                            Arara.config[AraraSpec.Execution.language].locale)
+                }
+
+                Arara.config[AraraSpec.Execution.executionOptions] = ExecutionOptions(
+                        maxLoops = maxLoops
+                                ?: Arara.config[AraraSpec.Execution.executionOptions].maxLoops,
+                        timeoutValue = timeout?.milliseconds
+                                ?: Arara.config[AraraSpec.Execution.executionOptions].timeoutValue,
+                        verbose = if (verbose)
+                            true
+                        else
+                            Arara.config[AraraSpec.Execution.executionOptions].verbose,
+                        executionMode = if (dryrun)
+                            ExecutionMode.DRY_RUN
+                        else
+                            Arara.config[AraraSpec.Execution.executionOptions].executionMode,
+                        parseOnlyHeader = if (onlyheader)
+                            true
+                        else
+                            Arara.config[AraraSpec.Execution.executionOptions].parseOnlyHeader
+                )
+
+                if (log) Arara.config[AraraSpec.Execution.logging] = log
                 Arara.config[AraraSpec.Execution.workingDirectory] = workingDir
-                Configuration.load()
-                updateConfigurationFromCommandLine()
-                // run arara
-                Arara.config[AraraSpec.Execution.reference] = it
-                Arara.run()
-                // add an empty line between file executions
-                println()
+                preamble?.let {
+                    val preambles = Arara.config[AraraSpec.Execution.preambles]
+                    if (preambles.containsKey(it)) {
+                        Arara.config[AraraSpec.Execution.preamblesActive] = true
+                        Arara.config[AraraSpec.Execution.preamblesContent] =
+                                // will never throw (see check above)
+                                preambles.getValue(it)
+                    } else {
+                        throw AraraException(
+                                LanguageController.getMessage(
+                                        Messages.ERROR_PARSER_INVALID_PREAMBLE, it)
+                        )
+                    }
+                }
+
+                Arara.config[AraraSpec.UserInteraction.displayTime] = true
             }
+            Arara.run()
 
             // this is the last command from arara; once the execution time is
             // available, print it; note that this notification is suppressed
