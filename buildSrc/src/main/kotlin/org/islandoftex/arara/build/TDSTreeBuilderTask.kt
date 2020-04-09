@@ -82,7 +82,7 @@ open class TDSTreeBuilderTask : DefaultTask() {
         }
 
         logger.debug("Creating the shell script wrapper")
-        TaskHelper.createScript(temporaryDir.resolve("scripts/arara/arara.sh"))
+        TaskHelper.createScript(temporaryDir.resolve("scripts/arara/arara.sh").toPath())
 
         logger.info("Building the source code structure")
 
