@@ -21,7 +21,7 @@ data class DirectiveImpl(
     override val lineNumbers: List<Int>
 ) : Directive {
     override fun execute(): Int {
-        Interpreter(listOf(this)).execute()
+        Interpreter.execute(this)
         return Arara.config[AraraSpec.Execution.exitCode]
     }
 }

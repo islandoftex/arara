@@ -29,12 +29,15 @@ import org.slf4j.LoggerFactory
  * @version 5.0
  * @since 4.0
  */
-class Interpreter(
-    /**
-     * The list of directives to be interpreted and evaluated.
-     */
-    val directives: List<Directive>
-) {
+object Interpreter {
+    // the application messages obtained from the
+    // language controller
+    private val messages = LanguageController
+
+    // the class logger obtained from
+    // the logger factory
+    private val logger = LoggerFactory.getLogger(Interpreter::class.java)
+
     /**
      * Exception class to represent that the interpreter should stop for some
      * reason
@@ -233,54 +236,54 @@ class Interpreter(
      */
     @Throws(AraraException::class)
     @Suppress("NestedBlockDepth")
-    fun execute() {
-        for (directive in directives) {
-            logger.info(messages.getMessage(Messages.LOG_INFO_INTERPRET_RULE,
-                    directive.identifier))
+    fun execute(directive: Directive) {
+        logger.info(messages.getMessage(Messages.LOG_INFO_INTERPRET_RULE,
+                directive.identifier))
 
-            val file = getRule(directive)
-            logger.info(messages.getMessage(Messages.LOG_INFO_RULE_LOCATION,
-                    file.parent))
+        val file = getRule(directive)
+        logger.info(messages.getMessage(Messages.LOG_INFO_RULE_LOCATION,
+                file.parent))
 
-            Arara.config[AraraSpec.Execution.InfoSpec.ruleId] =
-                    directive.identifier
-            Arara.config[AraraSpec.Execution.InfoSpec.rulePath] =
-                    file.parent
+        Arara.config[AraraSpec.Execution.InfoSpec.ruleId] =
+                directive.identifier
+        Arara.config[AraraSpec.Execution.InfoSpec.rulePath] =
+                file.parent
 
-            // parse the rule identified by the directive
-            // (may throw an exception)
-            val rule = RuleUtils.parseRule(file, directive.identifier)
-            val parameters = parseArguments(rule, directive)
-                    .plus(Methods.getRuleMethods())
+        // parse the rule identified by the directive
+        // (may throw an exception)
+        val rule = RuleUtils.parseRule(file, directive.identifier)
+        val parameters = parseArguments(rule, directive)
+                .plus(Methods.getRuleMethods())
 
-            val evaluator = Evaluator()
+        val evaluator = Evaluator()
 
-            var available = true
-            if (InterpreterUtils.runPriorEvaluation(directive.conditional)) {
-                available = evaluator.evaluate(directive.conditional)
-            }
-
-            // if this directive is conditionally disabled, skip
-            if (!available) continue
-            // if not execute the commands associated with the directive
-            do {
-                rule.commands.forEach { command ->
-                    try {
-                        executeCommand(
-                                // TODO: remove cast
-                                command as SerialRuleCommand,
-                                directive.conditional,
-                                rule,
-                                parameters
-                        )
-                    } catch (_: HaltExpectedException) {
-                        // if the user uses the halt rule to trigger
-                        // a halt, this will be raised
-                        return
-                    }
-                }
-            } while (evaluator.evaluate(directive.conditional))
+        var available = true
+        if (InterpreterUtils.runPriorEvaluation(directive.conditional)) {
+            available = evaluator.evaluate(directive.conditional)
         }
+
+        // if this directive is conditionally disabled, skip
+        if (!available || Session.contains("arara:${Arara.config[AraraSpec
+                        .Execution.reference].path.fileName}:halt"))
+            return
+        // if not execute the commands associated with the directive
+        do {
+            rule.commands.forEach { command ->
+                try {
+                    executeCommand(
+                            // TODO: remove cast
+                            command as SerialRuleCommand,
+                            directive.conditional,
+                            rule,
+                            parameters
+                    )
+                } catch (_: HaltExpectedException) {
+                    // if the user uses the halt rule to trigger
+                    // a halt, this will be raised
+                    return
+                }
+            }
+        } while (evaluator.evaluate(directive.conditional))
     }
 
     /**
@@ -385,15 +388,5 @@ class Interpreter(
         }
 
         return ret
-    }
-
-    companion object {
-        // the application messages obtained from the
-        // language controller
-        private val messages = LanguageController
-
-        // the class logger obtained from
-        // the logger factory
-        private val logger = LoggerFactory.getLogger(Interpreter::class.java)
     }
 }

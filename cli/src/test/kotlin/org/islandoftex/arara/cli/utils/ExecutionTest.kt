@@ -17,7 +17,6 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.configuration.Configuration
 import org.islandoftex.arara.cli.filehandling.FileSearchingUtils
-import org.islandoftex.arara.cli.model.Interpreter
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 
 @DoNotParallelize
@@ -38,7 +37,9 @@ class ExecutionTest : ShouldSpec({
             val directives = DirectiveUtils.process(Arara
                     .config[AraraSpec.Execution.reference]
                     .fetchDirectives(false))
-            Interpreter(directives).execute()
+            directives.forEach {
+                it.execute()
+            }
             return output.toByteArray().toString(Charsets.UTF_8)
         } catch (ex: Exception) {
             throw ex
