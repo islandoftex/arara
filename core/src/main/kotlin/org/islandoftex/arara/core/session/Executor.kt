@@ -81,7 +81,7 @@ object Executor : Executor {
         var exitCode = 0
         for (directive in directives) {
             exitCode = directive.execute()
-            if (executionOptions.haltOnErrors) {
+            if (executionOptions.haltOnErrors && exitCode != 0) {
                 break
             }
         }
