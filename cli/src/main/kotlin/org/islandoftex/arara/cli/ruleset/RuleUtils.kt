@@ -8,6 +8,7 @@ import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.localization.Messages
 import org.islandoftex.arara.cli.utils.CommonUtils
+import org.islandoftex.arara.mvel.rules.RuleImpl
 
 /**
  * Implements rule utilitary methods.

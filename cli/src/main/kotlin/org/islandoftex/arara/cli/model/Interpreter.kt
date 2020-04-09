@@ -11,14 +11,15 @@ import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.localization.Messages
-import org.islandoftex.arara.cli.ruleset.RuleArgumentImpl
 import org.islandoftex.arara.cli.ruleset.RuleUtils
-import org.islandoftex.arara.cli.ruleset.SerialRuleCommand
 import org.islandoftex.arara.cli.utils.CommonUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.InterpreterUtils
 import org.islandoftex.arara.cli.utils.Methods
 import org.islandoftex.arara.core.session.Session
+import org.islandoftex.arara.mvel.rules.DirectiveConditionalEvaluator
+import org.islandoftex.arara.mvel.rules.RuleArgument
+import org.islandoftex.arara.mvel.rules.SerialRuleCommand
 import org.mvel2.templates.TemplateRuntime
 import org.slf4j.LoggerFactory
 
@@ -324,7 +325,7 @@ object Interpreter {
         arguments.forEach { argument ->
             resolvedArguments[argument.identifier] = processArgument(
                     // TODO: remove cast
-                    argument as RuleArgumentImpl,
+                    argument as RuleArgument,
                     directive.parameters.containsKey(argument.identifier),
                     context
             )
@@ -345,7 +346,7 @@ object Interpreter {
     @Throws(AraraException::class)
     @Suppress("TooGenericExceptionCaught", "ThrowsCount")
     private fun processArgument(
-        argument: RuleArgumentImpl,
+        argument: RuleArgument,
         idInDirectiveParams: Boolean,
         context: Map<String, Any>
     ): Any {

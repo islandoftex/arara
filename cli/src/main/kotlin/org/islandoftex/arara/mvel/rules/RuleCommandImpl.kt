@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.ruleset
+package org.islandoftex.arara.mvel.rules
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

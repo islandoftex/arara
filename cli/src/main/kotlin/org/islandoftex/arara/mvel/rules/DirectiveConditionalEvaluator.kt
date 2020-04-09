@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.model
+package org.islandoftex.arara.mvel.rules
 
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.rules.DirectiveConditional

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.ruleset
+package org.islandoftex.arara.mvel.rules
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -13,7 +13,7 @@ import org.islandoftex.arara.api.rules.RuleArgument
  * @since 4.0
  */
 @Serializable
-class RuleArgumentImpl : RuleArgument<String?> {
+class RuleArgument : RuleArgument<String?> {
     /**
      * The argument identifier
      */

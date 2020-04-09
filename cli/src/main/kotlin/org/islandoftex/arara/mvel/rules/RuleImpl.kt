@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.ruleset
+package org.islandoftex.arara.mvel.rules
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -19,5 +19,5 @@ data class RuleImpl(
     override val displayName: String? = null,
     override val authors: List<String> = listOf(),
     override val commands: List<SerialRuleCommand> = listOf(),
-    override val arguments: List<RuleArgumentImpl> = listOf()
+    override val arguments: List<RuleArgument> = listOf()
 ) : Rule
