@@ -146,19 +146,20 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
             Project(
                     workingDir.fileName.toString(),
                     workingDir,
-                    reference.map {
-                        FileSearchingUtils.resolveFile(it, workingDir.toFile())
+                    reference.map { fileName ->
+                        FileSearchingUtils.resolveFile(fileName,
+                                workingDir.toFile()).let {
+                            if (it.path.isAbsolute)
+                                it
+                            else
+                                ProjectFile(
+                                        workingDir.resolve(it.path).toRealPath(),
+                                        it.fileType,
+                                        it.priority
+                                )
+                        }
                     }.toSet()
-            ).files.map {
-                if (it.path.isAbsolute)
-                    it
-                else
-                    ProjectFile(
-                            workingDirectory.resolve(it.path).toRealPath(),
-                            it.fileType,
-                            it.priority
-                    )
-            }.toSet().forEach {
+            ).files.forEach {
                 // TODO: do we have to reset some more file-specific config?
                 // especially the working directory will have to be set and
                 // changed
