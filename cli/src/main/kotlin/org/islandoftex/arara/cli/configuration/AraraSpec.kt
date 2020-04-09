@@ -42,7 +42,7 @@ object AraraSpec : ConfigSpec() {
         val language by optional(Language(Application.defaultLanguageCode.default))
         val logging by optional(false)
         val dryrun by lazy { it[executionOptions].executionMode == ExecutionMode.DRY_RUN }
-        val status by optional(0)
+        val exitCode by optional(0)
         val fileTypes by optional(ConfigurationUtils.defaultFileTypes)
         val rulePaths by optional(setOf(
                 ConfigurationUtils.applicationPath.resolve("rules")

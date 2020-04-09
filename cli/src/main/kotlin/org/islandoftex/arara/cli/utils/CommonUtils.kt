@@ -74,14 +74,6 @@ object CommonUtils {
         }
 
     /**
-     * Returns the exit status of the application.
-     *
-     * @return An integer representing the exit status of the application.
-     */
-    val exitStatus: Int
-        get() = Arara.config[AraraSpec.Execution.status]
-
-    /**
      * Gets the preamble content, converting a single string into a list of
      * strings, based on new lines.
      *

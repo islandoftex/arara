@@ -103,7 +103,7 @@ object DisplayUtils {
     fun printEntryResult(value: Boolean) {
         Arara.config[AraraSpec.UserInteraction.displayLine] = false
         Arara.config[AraraSpec.UserInteraction.displayResult] = true
-        Arara.config[AraraSpec.Execution.status] = if (value) 0 else 1
+        Arara.config[AraraSpec.Execution.exitCode] = if (value) 0 else 1
         logger.info(
                 messages.getMessage(
                         Messages.LOG_INFO_TASK_RESULT
@@ -195,7 +195,7 @@ object DisplayUtils {
      */
     fun printException(exception: AraraException) {
         Arara.config[AraraSpec.UserInteraction.displayException] = true
-        Arara.config[AraraSpec.Execution.status] = 2
+        Arara.config[AraraSpec.Execution.exitCode] = 2
 
         val display = Arara.config[AraraSpec.UserInteraction.displayLine]
         if (Arara.config[AraraSpec.UserInteraction.displayResult])

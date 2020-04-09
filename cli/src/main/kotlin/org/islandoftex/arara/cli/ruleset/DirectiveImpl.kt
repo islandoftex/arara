@@ -22,6 +22,6 @@ data class DirectiveImpl(
 ) : Directive {
     override fun execute(): Int {
         Interpreter(listOf(this)).execute()
-        return Arara.config[AraraSpec.Execution.status]
+        return Arara.config[AraraSpec.Execution.exitCode]
     }
 }

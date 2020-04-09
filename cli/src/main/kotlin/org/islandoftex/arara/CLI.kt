@@ -21,7 +21,6 @@ import org.islandoftex.arara.cli.localization.Language
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.localization.Messages
 import org.islandoftex.arara.cli.model.ProjectFile
-import org.islandoftex.arara.cli.utils.CommonUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.core.files.Project
@@ -184,7 +183,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
             DisplayUtils.printTime(executionStart.elapsedNow().inSeconds)
         } catch (ex: AraraException) {
             DisplayUtils.printException(ex)
-            Arara.config[AraraSpec.Execution.status] = 2
+            Arara.config[AraraSpec.Execution.exitCode] = 2
         }
 
         // gets the application exit status; the rule here is:
@@ -195,6 +194,6 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         //     means the error relies on the command line call, not with arara.
         // 2 : arara just handled an exception, meaning that something bad
         //     just happened and might require user intervention.
-        exitProcess(CommonUtils.exitStatus)
+        exitProcess(Arara.config[AraraSpec.Execution.exitCode])
     }
 }
