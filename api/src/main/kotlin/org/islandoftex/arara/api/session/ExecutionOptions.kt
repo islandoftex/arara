@@ -4,6 +4,7 @@ package org.islandoftex.arara.api.session
 import java.nio.file.Path
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
+import org.islandoftex.arara.api.files.FileType
 
 /**
  * arara's different execution modes. They have to be chosen before a run is
@@ -76,6 +77,19 @@ interface ExecutionOptions {
      * abilities.
      */
     val executionMode: ExecutionMode
+
+    /**
+     * The paths arara will search for rules. Should default to the rules arara
+     * ships with. For safe runs, a restrictions seems useful.
+     */
+    val rulePaths: Set<Path>
+
+    /**
+     * The file types arara will look for and understand including patterns.
+     * List entries should be unique and in order of their priority with the
+     * most common file type as first element.
+     */
+    val fileTypes: List<FileType>
 
     /**
      * Whether only to parse a contiguous block of comments at the start

@@ -9,10 +9,8 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.localization.Messages
-import org.islandoftex.arara.cli.model.FileTypeImpl
 import org.islandoftex.arara.cli.utils.CommonUtils
 import org.islandoftex.arara.mvel.configuration.LocalConfiguration
 
@@ -27,28 +25,6 @@ object ConfigurationUtils {
     // the application messages obtained from the
     // language controller
     private val messages = LanguageController
-
-    /**
-     * This map contains all file types that arara accepts
-     * and their corresponding search patterns (for comments).
-     */
-    val defaultFileTypePatterns = mapOf(
-            "tex" to "^\\s*%\\s+",
-            "dtx" to "^\\s*%\\s+",
-            "ltx" to "^\\s*%\\s+",
-            "drv" to "^\\s*%\\s+",
-            "ins" to "^\\s*%\\s+"
-    )
-
-    /**
-     * Set of default file types provided by arara.
-     * Initialization may throw AraraException if file types are wrong
-     */
-    val defaultFileTypes: Set<FileType> by lazy {
-        defaultFileTypePatterns
-                .map { (extension, pattern) -> FileTypeImpl(extension, pattern) }
-                .toSet()
-    }
 
     /**
      * The configuration file in use.
@@ -124,30 +100,6 @@ object ConfigurationUtils {
             )
         }
     }
-
-    /**
-     * Normalize a list of rule paths, removing all duplicates.
-     *
-     * @param paths The list of rule paths.
-     * @return A list of normalized paths, without duplicates.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
-    @Throws(AraraException::class)
-    fun normalizePaths(paths: Iterable<String>): Set<String> =
-            paths.union(AraraSpec.Execution.rulePaths.default)
-
-    /**
-     * Normalize a list of file types, removing all duplicates.
-     *
-     * @param types The list of file types.
-     * @return A list of normalized file types, without duplicates.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
-    @Throws(AraraException::class)
-    fun normalizeFileTypes(types: Iterable<FileType>): Set<FileType> =
-            types.union(defaultFileTypes)
 
     /**
      * Cleans the file name to avoid invalid entries.

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.configuration
 
-import java.nio.file.Paths
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.cli.filehandling.FileHandlingUtils
@@ -72,21 +71,16 @@ object Configuration {
         val loggingOptions = resource.toLoggingOptions()
         val uiOptions = resource.toUserInterfaceOptions()
 
-        Arara.config[AraraSpec.Execution.rulePaths] =
-                ConfigurationUtils.normalizePaths(resource.paths)
+        Arara.config[AraraSpec.Execution.rulePaths] = executionOptions.rulePaths
+        Arara.config[AraraSpec.Execution.fileTypes] = executionOptions.fileTypes
 
-        Arara.config[AraraSpec.Execution.fileTypes] =
-                ConfigurationUtils.normalizeFileTypes(resource.filetypes)
-        
         Arara.config[AraraSpec.Execution.verbose] = executionOptions.verbose
         Arara.config[AraraSpec.Execution.onlyHeader] = executionOptions.parseOnlyHeader
         Arara.config[AraraSpec.Execution.language] = Language(uiOptions.languageCode)
         Arara.config[AraraSpec.UserInteraction.lookAndFeel] = uiOptions.swingLookAndFeel
 
-        Arara.config[AraraSpec.Execution.databaseName] =
-                Paths.get(ConfigurationUtils.cleanFileName(executionOptions.databaseName.toString()))
-        Arara.config[AraraSpec.Execution.logName] =
-                ConfigurationUtils.cleanFileName(loggingOptions.logFile.toString())
+        Arara.config[AraraSpec.Execution.databaseName] = executionOptions.databaseName
+        Arara.config[AraraSpec.Execution.logName] = loggingOptions.logFile.toString()
 
         Arara.config[AraraSpec.Execution.logging] = loggingOptions.enableLogging
         LoggingUtils.enableLogging(loggingOptions.enableLogging)

@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.io.OutputStream
+import java.nio.file.Path
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import org.islandoftex.arara.Arara
@@ -146,11 +147,10 @@ object InterpreterUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun construct(path: String, name: String): String {
+    fun construct(path: Path, name: String): String {
         val fileName = "$name.yaml"
-        val location = File(path)
-        return if (location.isAbsolute) {
-            location.resolve(fileName).toString()
+        return if (path.isAbsolute) {
+            path.resolve(fileName).toString()
         } else {
             Arara.config[AraraSpec.Execution.workingDirectory]
                     // first resolve the path (rule path) against the working

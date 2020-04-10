@@ -46,11 +46,13 @@ object AraraSpec : ConfigSpec() {
         val logging by lazy { it[loggingOptions].enableLogging }
         val dryrun by lazy { it[executionOptions].executionMode == ExecutionMode.DRY_RUN }
         val exitCode by optional(0)
-        val fileTypes by optional(ConfigurationUtils.defaultFileTypes)
-        val rulePaths by optional(setOf(
-                ConfigurationUtils.applicationPath.resolve("rules")
-                        .toString()
-        ))
+        val fileTypes by lazy { it[executionOptions].fileTypes }
+        val rulePaths by lazy {
+            it[executionOptions].rulePaths.plus(
+                    ConfigurationUtils
+                            .applicationPath.resolve("rules")
+            )
+        }
         val preambles by optional(mapOf<String, String>())
         val preamblesActive by optional(false)
         val preamblesContent by optional("")

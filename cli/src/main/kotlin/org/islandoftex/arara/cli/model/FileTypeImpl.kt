@@ -5,10 +5,10 @@ import java.util.regex.PatternSyntaxException
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
-import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.localization.Messages
 import org.islandoftex.arara.cli.utils.CommonUtils
+import org.islandoftex.arara.core.configuration.ConfigurationUtils
 
 /**
  * Implements the file type model.
