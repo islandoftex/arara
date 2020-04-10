@@ -52,6 +52,7 @@ object LoggingUtils {
                 // the logging controller to append
                 // entries to the file
                 val name = Arara.config[AraraSpec.loggingOptions].logFile.toString()
+                        .removeSuffix(".log")
                 loggerContext.putProperty("name", name)
                 configurator.doConfigure(resource)
             }
