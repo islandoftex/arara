@@ -23,29 +23,16 @@ import org.mvel2.templates.TemplateRuntime
  */
 @Serializable
 data class LocalConfiguration(
-        // rule paths
     private var paths: List<String> = listOf(),
-        // file types
     private var filetypes: List<FileTypeImpl> = listOf(),
-        // the application language
-        // default to English
     private var language: String = Arara.config[AraraSpec.Application.defaultLanguageCode],
-        // maximum number of loops
     private var loops: Int = Arara.config[AraraSpec.Execution.maxLoops],
-        // verbose flag
     private var verbose: Boolean = Arara.config[AraraSpec.Execution.verbose],
-        // logging flag
-    private var logging: Boolean = Arara.config[AraraSpec.Execution.logging],
-        // header flag
+    private var logging: Boolean = Arara.config[AraraSpec.Execution.loggingOptions].enableLogging,
     private var header: Boolean = Arara.config[AraraSpec.Execution.onlyHeader],
-        // database name
     private var dbname: String = Arara.config[AraraSpec.Execution.databaseName].toString(),
-        // log name
-    private var logname: String = Arara.config[AraraSpec.Execution.logName],
-        // look and feel
-        // default to none
+    private var logname: String = Arara.config[AraraSpec.Execution.loggingOptions].logFile.toString(),
     private var laf: String = Arara.config[AraraSpec.UserInteraction.lookAndFeel],
-        // map of preambles
     var preambles: Map<String, String> = Arara.config[AraraSpec.Execution.preambles]
 ) {
     /**

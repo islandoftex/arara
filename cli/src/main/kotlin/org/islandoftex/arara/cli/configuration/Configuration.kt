@@ -68,8 +68,12 @@ object Configuration {
     @Throws(AraraException::class)
     private fun update(resource: LocalConfiguration) {
         val executionOptions = resource.toExecutionOptions()
-        val loggingOptions = resource.toLoggingOptions()
         val uiOptions = resource.toUserInterfaceOptions()
+
+        Arara.config[AraraSpec.Execution.loggingOptions] = resource.toLoggingOptions()
+        LoggingUtils.enableLogging(
+                Arara.config[AraraSpec.Execution.loggingOptions].enableLogging
+        )
 
         Arara.config[AraraSpec.Execution.rulePaths] = executionOptions.rulePaths
         Arara.config[AraraSpec.Execution.fileTypes] = executionOptions.fileTypes
@@ -80,10 +84,6 @@ object Configuration {
         Arara.config[AraraSpec.UserInteraction.lookAndFeel] = uiOptions.swingLookAndFeel
 
         Arara.config[AraraSpec.Execution.databaseName] = executionOptions.databaseName
-        Arara.config[AraraSpec.Execution.logName] = loggingOptions.logFile.toString()
-
-        Arara.config[AraraSpec.Execution.logging] = loggingOptions.enableLogging
-        LoggingUtils.enableLogging(loggingOptions.enableLogging)
 
         val loops = executionOptions.maxLoops
         if (loops <= 0) {

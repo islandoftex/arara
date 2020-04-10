@@ -39,11 +39,9 @@ object AraraSpec : ConfigSpec() {
         val timeoutValue by lazy { it[executionOptions].timeoutValue }
         val haltOnErrors by lazy { it[executionOptions].haltOnErrors }
         val databaseName by lazy { it[executionOptions].databaseName }
-        val logName by lazy { it[loggingOptions].logFile.fileName.toString() }
 
         val verbose by lazy { it[executionOptions].verbose }
         val language by optional(Language(Application.defaultLanguageCode.default))
-        val logging by lazy { it[loggingOptions].enableLogging }
         val dryrun by lazy { it[executionOptions].executionMode == ExecutionMode.DRY_RUN }
         val exitCode by optional(0)
         val fileTypes by lazy { it[executionOptions].fileTypes }

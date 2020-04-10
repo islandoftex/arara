@@ -28,6 +28,7 @@ import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.session.ExecutionOptions
 import org.islandoftex.arara.core.session.Executor
 import org.islandoftex.arara.core.session.ExecutorHooks
+import org.islandoftex.arara.core.session.LoggingOptions
 
 /**
  * arara's command line interface
@@ -97,7 +98,14 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                     Arara.config[AraraSpec.Execution.executionOptions].parseOnlyHeader
         )
 
-        if (log) Arara.config[AraraSpec.Execution.logging] = log
+        Arara.config[AraraSpec.Execution.loggingOptions] = LoggingOptions(
+                enableLogging = if (log)
+                    true
+                else
+                    Arara.config[AraraSpec.Execution.loggingOptions].enableLogging,
+                appendLog = Arara.config[AraraSpec.Execution.loggingOptions].appendLog,
+                logFile = Arara.config[AraraSpec.Execution.loggingOptions].logFile
+        )
         Arara.config[AraraSpec.Execution.workingDirectory] = workingDirectory
                 ?: AraraSpec.Execution.workingDirectory.default
         preamble?.let {
