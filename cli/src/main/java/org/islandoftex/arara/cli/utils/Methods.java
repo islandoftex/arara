@@ -850,7 +850,7 @@ public class Methods {
      */
     public static boolean isVerboseMode() {
         return Arara.INSTANCE.getConfig()
-                .get(AraraSpec.Execution.INSTANCE.getVerbose());
+                .get(AraraSpec.INSTANCE.getExecutionOptions()).getVerbose();
     }
 
     /**

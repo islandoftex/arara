@@ -32,15 +32,15 @@ object AraraSpec : ConfigSpec() {
     )
 
     object Execution : ConfigSpec() {
-        val verbose by lazy { it[executionOptions].verbose }
         val language by lazy { Language(it[userInterfaceOptions].languageCode) }
-        val exitCode by optional(0)
         val rulePaths by lazy {
             it[executionOptions].rulePaths.plus(
                     ConfigurationUtils
                             .applicationPath.resolve("rules")
             )
         }
+
+        val exitCode by optional(0)
 
         // TODO: this is a runtime value which should be properly
         // initialized and tested (maybe move it into its own

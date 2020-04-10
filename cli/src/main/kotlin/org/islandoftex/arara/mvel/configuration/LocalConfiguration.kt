@@ -76,17 +76,19 @@ data class LocalConfiguration(
                     )
             )
         }
-        return org.islandoftex.arara.core.session.ExecutionOptions(
-                maxLoops = maxLoops,
-                verbose = verbose,
-                databaseName = databaseName,
-                fileTypes = filetypes
-                        .plus(Arara.config[AraraSpec.executionOptions].fileTypes),
-                rulePaths = preprocessedPaths.map { Paths.get(it) }
-                        .plus(Arara.config[AraraSpec.Execution.rulePaths])
-                        .toSet(),
-                parseOnlyHeader = header
-        )
+        return org.islandoftex.arara.core.session.ExecutionOptions
+                .from(Arara.config[AraraSpec.executionOptions])
+                .copy(
+                        maxLoops = maxLoops,
+                        verbose = verbose,
+                        databaseName = databaseName,
+                        fileTypes = filetypes
+                                .plus(Arara.config[AraraSpec.executionOptions].fileTypes),
+                        rulePaths = preprocessedPaths.map { Paths.get(it) }
+                                .plus(Arara.config[AraraSpec.Execution.rulePaths])
+                                .toSet(),
+                        parseOnlyHeader = header
+                )
     }
 
     /**

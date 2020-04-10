@@ -18,6 +18,7 @@ import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.filehandling.FileSearchingUtils
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.core.files.Project
+import org.islandoftex.arara.core.session.ExecutionOptions
 import org.islandoftex.arara.mvel.configuration.Configuration
 
 @DoNotParallelize
@@ -33,7 +34,9 @@ class ExecutionTest : ShouldSpec({
             Arara.config[AraraSpec.Execution.currentProject] =
                     Project("Test", workingDirectory, setOf())
             Configuration.load(workingDirectory.resolve("arararc.yaml"))
-            Arara.config[AraraSpec.Execution.verbose] = true
+            Arara.config[AraraSpec.executionOptions] = ExecutionOptions
+                    .from(Arara.config[AraraSpec.executionOptions])
+                    .copy(verbose = true)
             Arara.config[AraraSpec.Execution.reference] = FileSearchingUtils
                     .resolveFile(fileName, File(getPathForTest(testName)))
             val directives = DirectiveUtils.process(Arara

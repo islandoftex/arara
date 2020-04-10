@@ -7,7 +7,6 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.localization.LanguageController
-import org.islandoftex.arara.core.session.ExecutionOptions
 
 /**
  * Implements the configuration model, which holds the default settings and can
@@ -30,20 +29,7 @@ object Configuration {
     fun load(file: Path) {
         // then validate it and update the configuration accordingly
         val resource = ConfigurationUtils.loadLocalConfiguration(file)
-        val executionOptions = resource.toExecutionOptions()
-        val baseOptions = Arara.config[AraraSpec.executionOptions]
-        Arara.config[AraraSpec.executionOptions] = ExecutionOptions(
-                maxLoops = executionOptions.maxLoops,
-                timeoutValue = baseOptions.timeoutValue,
-                parallelExecution = baseOptions.parallelExecution,
-                haltOnErrors = baseOptions.haltOnErrors,
-                databaseName = executionOptions.databaseName,
-                verbose = executionOptions.verbose,
-                executionMode = baseOptions.executionMode,
-                fileTypes = executionOptions.fileTypes,
-                rulePaths = executionOptions.rulePaths,
-                parseOnlyHeader = executionOptions.parseOnlyHeader
-        )
+        Arara.config[AraraSpec.executionOptions] = resource.toExecutionOptions()
         Arara.config[AraraSpec.loggingOptions] = resource.toLoggingOptions()
         Arara.config[AraraSpec.userInterfaceOptions] = resource.toUserInterfaceOptions()
 
