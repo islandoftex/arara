@@ -242,10 +242,8 @@ object Interpreter {
         logger.info(LanguageController.getMessage(Messages.LOG_INFO_RULE_LOCATION,
                 file.parent))
 
-        Arara.config[AraraSpec.Execution.InfoSpec.ruleId] =
-                directive.identifier
-        Arara.config[AraraSpec.Execution.InfoSpec.rulePath] =
-                file.parent
+        CommonUtils.ruleId = directive.identifier
+        CommonUtils.rulePath = file.parent
 
         // parse the rule identified by the directive
         // (may throw an exception)

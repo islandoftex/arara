@@ -54,10 +54,5 @@ object AraraSpec : ConfigSpec() {
         val currentProject by optional<Project>(
                 org.islandoftex.arara.core.files.Project("", Paths.get(""), setOf())
         )
-
-        object InfoSpec : ConfigSpec() {
-            val ruleId by optional<String?>(null)
-            val rulePath by optional<String?>(null)
-        }
     }
 }

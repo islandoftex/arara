@@ -24,13 +24,14 @@ import org.islandoftex.arara.cli.localization.Messages
  */
 object CommonUtils {
     /**
-     * Gets the list of file types as string, in order.
-     *
-     * @return A string representation of the list of file types, in order.
+     * The rule identifier to display in the rule error header.
      */
-    val fileTypesList: String
-        get() = "[ " + Arara.config[AraraSpec.executionOptions].fileTypes
-                .joinToString(" | ") + " ]"
+    var ruleId: String? = null
+
+    /**
+     * The rule path to display in the rule error header.
+     */
+    var rulePath: String? = null
 
     /**
      * Gets the rule error header, containing the identifier and the path, if
@@ -41,19 +42,25 @@ object CommonUtils {
      */
     val ruleErrorHeader: String
         get() {
-            return if (Arara.config[AraraSpec.Execution.InfoSpec.ruleId] != null &&
-                    Arara.config[AraraSpec.Execution.InfoSpec.rulePath] != null) {
-                val id = Arara.config[AraraSpec.Execution.InfoSpec.ruleId]!!
-                val path = Arara.config[AraraSpec.Execution.InfoSpec.rulePath]!!
-                LanguageController.getMessage(
-                        Messages.ERROR_RULE_IDENTIFIER_AND_PATH,
-                        id,
-                        path
-                ) + " "
-            } else {
-                ""
-            }
+            return ruleId?.let { id ->
+                rulePath?.let { path ->
+                    LanguageController.getMessage(
+                            Messages.ERROR_RULE_IDENTIFIER_AND_PATH,
+                            id,
+                            path
+                    ) + " "
+                }
+            } ?: ""
         }
+
+    /**
+     * Gets the list of file types as string, in order.
+     *
+     * @return A string representation of the list of file types, in order.
+     */
+    val fileTypesList: String
+        get() = "[ " + Arara.config[AraraSpec.executionOptions].fileTypes
+                .joinToString(" | ") + " ]"
 
     /**
      * Gets a list of all rule paths.
