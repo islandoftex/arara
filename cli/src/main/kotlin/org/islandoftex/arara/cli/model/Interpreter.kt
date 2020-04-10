@@ -253,7 +253,7 @@ object Interpreter {
                 .plus(Methods.getRuleMethods())
 
         val evaluator = DirectiveConditionalEvaluator(
-                Arara.config[AraraSpec.Execution.executionOptions])
+                Arara.config[AraraSpec.executionOptions])
 
         var available = true
         if (InterpreterUtils.runPriorEvaluation(directive.conditional)) {

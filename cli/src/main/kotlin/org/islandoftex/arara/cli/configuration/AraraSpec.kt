@@ -27,16 +27,17 @@ object AraraSpec : ConfigSpec() {
                 ?: "DEVELOPMENT BUILD")
     }
 
+    val executionOptions by Execution.optional<ExecutionOptions>(
+            org.islandoftex.arara.core.session.ExecutionOptions()
+    )
+    val loggingOptions by Execution.optional<LoggingOptions>(
+            org.islandoftex.arara.core.session.LoggingOptions()
+    )
+    val userInterfaceOptions by Execution.optional<UserInterfaceOptions>(
+            org.islandoftex.arara.core.session.UserInterfaceOptions()
+    )
+
     object Execution : ConfigSpec() {
-        val executionOptions by optional<ExecutionOptions>(
-                org.islandoftex.arara.core.session.ExecutionOptions()
-        )
-        val loggingOptions by optional<LoggingOptions>(
-                org.islandoftex.arara.core.session.LoggingOptions()
-        )
-        val userInterfaceOptions by optional<UserInterfaceOptions>(
-                org.islandoftex.arara.core.session.UserInterfaceOptions()
-        )
         val maxLoops by lazy { it[executionOptions].maxLoops }
         val timeout by lazy { it[executionOptions].timeoutValue != 0.milliseconds }
         val timeoutValue by lazy { it[executionOptions].timeoutValue }

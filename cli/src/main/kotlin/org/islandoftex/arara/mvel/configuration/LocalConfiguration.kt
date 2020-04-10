@@ -28,14 +28,14 @@ import org.mvel2.templates.TemplateRuntime
 data class LocalConfiguration(
     private var paths: List<String> = listOf(),
     private var filetypes: List<FileTypeImpl> = listOf(),
-    private var language: String = Arara.config[AraraSpec.Execution.userInterfaceOptions].languageCode,
-    private var loops: Int = Arara.config[AraraSpec.Execution.maxLoops],
-    private var verbose: Boolean = Arara.config[AraraSpec.Execution.verbose],
-    private var logging: Boolean = Arara.config[AraraSpec.Execution.loggingOptions].enableLogging,
-    private var header: Boolean = Arara.config[AraraSpec.Execution.onlyHeader],
-    private var dbname: String = Arara.config[AraraSpec.Execution.databaseName].toString(),
-    private var logname: String = Arara.config[AraraSpec.Execution.loggingOptions].logFile.toString(),
-    private var laf: String = Arara.config[AraraSpec.Execution.userInterfaceOptions].swingLookAndFeel,
+    private var language: String = Arara.config[AraraSpec.userInterfaceOptions].languageCode,
+    private var loops: Int = Arara.config[AraraSpec.executionOptions].maxLoops,
+    private var verbose: Boolean = Arara.config[AraraSpec.executionOptions].verbose,
+    private var logging: Boolean = Arara.config[AraraSpec.loggingOptions].enableLogging,
+    private var header: Boolean = Arara.config[AraraSpec.executionOptions].parseOnlyHeader,
+    private var dbname: String = Arara.config[AraraSpec.executionOptions].databaseName.toString(),
+    private var logname: String = Arara.config[AraraSpec.loggingOptions].logFile.toString(),
+    private var laf: String = Arara.config[AraraSpec.userInterfaceOptions].swingLookAndFeel,
     var preambles: Map<String, String> = Arara.config[AraraSpec.Execution.preambles]
 ) {
     /**

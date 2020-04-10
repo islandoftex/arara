@@ -63,11 +63,11 @@ object Configuration {
     private fun update(resource: LocalConfiguration) {
         val executionOptions = resource.toExecutionOptions()
 
-        Arara.config[AraraSpec.Execution.loggingOptions] = resource.toLoggingOptions()
+        Arara.config[AraraSpec.loggingOptions] = resource.toLoggingOptions()
         LoggingUtils.enableLogging(
-                Arara.config[AraraSpec.Execution.loggingOptions].enableLogging
+                Arara.config[AraraSpec.loggingOptions].enableLogging
         )
-        Arara.config[AraraSpec.Execution.userInterfaceOptions] = resource.toUserInterfaceOptions()
+        Arara.config[AraraSpec.userInterfaceOptions] = resource.toUserInterfaceOptions()
 
         Arara.config[AraraSpec.Execution.rulePaths] = executionOptions.rulePaths
         Arara.config[AraraSpec.Execution.fileTypes] = executionOptions.fileTypes

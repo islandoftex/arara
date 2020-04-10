@@ -23,7 +23,7 @@ object MessageUtils {
     // close as possible to the system
     init {
         // get the current look and feel
-        var laf = Arara.config[AraraSpec.Execution.userInterfaceOptions].swingLookAndFeel
+        var laf = Arara.config[AraraSpec.userInterfaceOptions].swingLookAndFeel
 
         // check if one is actually set
         if (laf != "none") {

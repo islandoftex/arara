@@ -79,32 +79,32 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                     Arara.config[AraraSpec.Execution.language].locale)
         }
 
-        Arara.config[AraraSpec.Execution.executionOptions] = ExecutionOptions(
+        Arara.config[AraraSpec.executionOptions] = ExecutionOptions(
                 maxLoops = maxLoops
-                        ?: Arara.config[AraraSpec.Execution.executionOptions].maxLoops,
+                        ?: Arara.config[AraraSpec.executionOptions].maxLoops,
                 timeoutValue = timeout?.milliseconds
-                        ?: Arara.config[AraraSpec.Execution.executionOptions].timeoutValue,
+                        ?: Arara.config[AraraSpec.executionOptions].timeoutValue,
                 verbose = if (verbose)
                     true
                 else
-                    Arara.config[AraraSpec.Execution.executionOptions].verbose,
+                    Arara.config[AraraSpec.executionOptions].verbose,
                 executionMode = if (dryrun)
                     ExecutionMode.DRY_RUN
                 else
-                    Arara.config[AraraSpec.Execution.executionOptions].executionMode,
+                    Arara.config[AraraSpec.executionOptions].executionMode,
                 parseOnlyHeader = if (onlyheader)
                     true
                 else
-                    Arara.config[AraraSpec.Execution.executionOptions].parseOnlyHeader
+                    Arara.config[AraraSpec.executionOptions].parseOnlyHeader
         )
 
-        Arara.config[AraraSpec.Execution.loggingOptions] = LoggingOptions(
+        Arara.config[AraraSpec.loggingOptions] = LoggingOptions(
                 enableLogging = if (log)
                     true
                 else
-                    Arara.config[AraraSpec.Execution.loggingOptions].enableLogging,
-                appendLog = Arara.config[AraraSpec.Execution.loggingOptions].appendLog,
-                logFile = Arara.config[AraraSpec.Execution.loggingOptions].logFile
+                    Arara.config[AraraSpec.loggingOptions].enableLogging,
+                appendLog = Arara.config[AraraSpec.loggingOptions].appendLog,
+                logFile = Arara.config[AraraSpec.loggingOptions].logFile
         )
         Arara.config[AraraSpec.Execution.workingDirectory] = workingDirectory
                 ?: AraraSpec.Execution.workingDirectory.default
@@ -189,7 +189,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                 )
                 Arara.config[AraraSpec.Execution.exitCode] = Executor.execute(
                         projects,
-                        Arara.config[AraraSpec.Execution.executionOptions]
+                        Arara.config[AraraSpec.executionOptions]
                 ).exitCode
             } catch (exception: AraraException) {
                 // something bad just happened, so arara will print the proper
