@@ -21,7 +21,7 @@ object LanguageController {
     // The fallback language is set to English for all
     // messages in arara.
     private var conveyor: IMessageConveyor = MessageConveyor(Locale(
-            AraraSpec.Application.defaultLanguageCode.default))
+            AraraSpec.Execution.userInterfaceOptions.default.languageCode))
 
     /**
      * Sets the current locale. This method actually resets the language

@@ -4,7 +4,6 @@ package org.islandoftex.arara.cli.configuration
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.cli.filehandling.FileHandlingUtils
-import org.islandoftex.arara.cli.localization.Language
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.localization.Messages
 import org.islandoftex.arara.cli.utils.LoggingUtils
@@ -68,20 +67,18 @@ object Configuration {
     @Throws(AraraException::class)
     private fun update(resource: LocalConfiguration) {
         val executionOptions = resource.toExecutionOptions()
-        val uiOptions = resource.toUserInterfaceOptions()
 
         Arara.config[AraraSpec.Execution.loggingOptions] = resource.toLoggingOptions()
         LoggingUtils.enableLogging(
                 Arara.config[AraraSpec.Execution.loggingOptions].enableLogging
         )
+        Arara.config[AraraSpec.Execution.userInterfaceOptions] = resource.toUserInterfaceOptions()
 
         Arara.config[AraraSpec.Execution.rulePaths] = executionOptions.rulePaths
         Arara.config[AraraSpec.Execution.fileTypes] = executionOptions.fileTypes
 
         Arara.config[AraraSpec.Execution.verbose] = executionOptions.verbose
         Arara.config[AraraSpec.Execution.onlyHeader] = executionOptions.parseOnlyHeader
-        Arara.config[AraraSpec.Execution.language] = Language(uiOptions.languageCode)
-        Arara.config[AraraSpec.UserInteraction.lookAndFeel] = uiOptions.swingLookAndFeel
 
         Arara.config[AraraSpec.Execution.databaseName] = executionOptions.databaseName
 
