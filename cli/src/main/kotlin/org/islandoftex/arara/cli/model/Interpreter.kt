@@ -124,8 +124,7 @@ object Interpreter {
                 throw AraraException(
                     CommonUtils.ruleErrorHeader +
                             LanguageController.getMessage(
-                                Messages
-                                    .ERROR_INTERPRETER_EXIT_RUNTIME_ERROR
+                                Messages.ERROR_INTERPRETER_EXIT_RUNTIME_ERROR
                             ),
                     exception
                 )
@@ -184,8 +183,7 @@ object Interpreter {
             throw AraraException(
                 CommonUtils.ruleErrorHeader +
                         LanguageController.getMessage(
-                            Messages
-                                .ERROR_INTERPRETER_COMMAND_RUNTIME_ERROR
+                            Messages.ERROR_INTERPRETER_COMMAND_RUNTIME_ERROR
                         ),
                 exception
             )
@@ -234,7 +232,7 @@ object Interpreter {
      */
     @Throws(AraraException::class)
     @Suppress("NestedBlockDepth")
-    fun execute(directive: Directive) {
+    fun execute(directive: Directive): Int {
         logger.info(LanguageController.getMessage(Messages.LOG_INFO_INTERPRET_RULE,
                 directive.identifier))
 
@@ -262,11 +260,12 @@ object Interpreter {
         // if this directive is conditionally disabled, skip
         if (!available || Session.contains("arara:${Arara.config[AraraSpec
                         .Execution.reference].path.fileName}:halt"))
-            return
-        // if not execute the commands associated with the directive
-        do {
-            rule.commands.forEach { command ->
-                try {
+            return Arara.config[AraraSpec.Execution.exitCode]
+
+        try {
+            // if not execute the commands associated with the directive
+            do {
+                rule.commands.forEach { command ->
                     executeCommand(
                             // TODO: remove cast
                             command as SerialRuleCommand,
@@ -274,13 +273,13 @@ object Interpreter {
                             rule,
                             parameters
                     )
-                } catch (_: HaltExpectedException) {
-                    // if the user uses the halt rule to trigger
-                    // a halt, this will be raised
-                    return
                 }
-            }
-        } while (evaluator.evaluate(directive.conditional))
+            } while (evaluator.evaluate(directive.conditional))
+        } catch (_: HaltExpectedException) {
+            // If the user uses the halt rule to trigger a halt, this will be
+            // raised. Any other exception will not be caught and propagate up.
+        }
+        return Arara.config[AraraSpec.Execution.exitCode]
     }
 
     /**
@@ -361,8 +360,7 @@ object Interpreter {
                 throw AraraException(
                     CommonUtils.ruleErrorHeader +
                             LanguageController.getMessage(
-                                Messages
-                                    .ERROR_INTERPRETER_DEFAULT_VALUE_RUNTIME_ERROR
+                                Messages.ERROR_INTERPRETER_DEFAULT_VALUE_RUNTIME_ERROR
                             ),
                     exception
                 )
@@ -376,8 +374,7 @@ object Interpreter {
                 throw AraraException(
                     CommonUtils.ruleErrorHeader + LanguageController
                         .getMessage(
-                            Messages
-                                .ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION
+                            Messages.ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION
                         ),
                     exception
                 )
