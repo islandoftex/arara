@@ -23,10 +23,6 @@ import org.islandoftex.arara.cli.localization.Messages
  * @since 4.0
  */
 object CommonUtils {
-    // the application messages obtained from the
-    // language controller
-    private val messages = LanguageController
-
     /**
      * Gets the list of file types as string, in order.
      *
@@ -49,7 +45,7 @@ object CommonUtils {
                     Arara.config[AraraSpec.Execution.InfoSpec.rulePath] != null) {
                 val id = Arara.config[AraraSpec.Execution.InfoSpec.ruleId]!!
                 val path = Arara.config[AraraSpec.Execution.InfoSpec.rulePath]!!
-                messages.getMessage(
+                LanguageController.getMessage(
                         Messages.ERROR_RULE_IDENTIFIER_AND_PATH,
                         id,
                         path
@@ -103,7 +99,7 @@ object CommonUtils {
         val no = listOf("no", "false", "0", "off")
         return if (!yes.union(no).contains(value.toLowerCase())) {
             throw AraraException(
-                messages.getMessage(
+                LanguageController.getMessage(
                     Messages.ERROR_CHECKBOOLEAN_NOT_VALID_BOOLEAN,
                     value
                 )
@@ -217,7 +213,7 @@ object CommonUtils {
             return matcher.find()
         } catch (exception: IOException) {
             throw AraraException(
-                messages.getMessage(
+                LanguageController.getMessage(
                     Messages.ERROR_CHECKREGEX_IO_EXCEPTION,
                     file.name
                 ),
@@ -246,7 +242,7 @@ object CommonUtils {
             values.map { String.format(pattern, it) }
         } catch (exception: MissingFormatArgumentException) {
             throw AraraException(
-                messages.getMessage(
+                LanguageController.getMessage(
                     Messages.ERROR_REPLICATELIST_MISSING_FORMAT_ARGUMENTS_EXCEPTION
                 ),
                 exception
@@ -287,7 +283,7 @@ object CommonUtils {
         values["cygwin"] = SystemCallUtils["cygwin"] as Boolean
         if (!values.containsKey(value.toLowerCase())) {
             throw AraraException(
-                messages.getMessage(
+                LanguageController.getMessage(
                     Messages.ERROR_CHECKOS_INVALID_OPERATING_SYSTEM,
                     value
                 )

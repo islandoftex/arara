@@ -29,10 +29,6 @@ import org.zeroturnaround.exec.listener.ShutdownHookProcessDestroyer
  * @since 4.0
  */
 object InterpreterUtils {
-    // the application messages obtained from the
-    // language controller
-    private val messages = LanguageController
-
     // get the logger context from a factory
     private val logger = LoggerFactory.getLogger(InterpreterUtils::class.java)
 
@@ -95,14 +91,14 @@ object InterpreterUtils {
         return executor.runCatching {
             val exit = execute().exitValue
             logger.info(DisplayUtils.displayOutputSeparator(
-                    messages.getMessage(Messages.LOG_INFO_BEGIN_BUFFER)))
+                    LanguageController.getMessage(Messages.LOG_INFO_BEGIN_BUFFER)))
             logger.info(buffer.toString())
             logger.info(DisplayUtils.displayOutputSeparator(
-                    messages.getMessage(Messages.LOG_INFO_END_BUFFER)))
+                    LanguageController.getMessage(Messages.LOG_INFO_END_BUFFER)))
             exit
         }.getOrElse {
             throw AraraException(
-                messages.getMessage(
+                LanguageController.getMessage(
                     when (it) {
                         is IOException -> Messages.ERROR_RUN_IO_EXCEPTION
                         is InterruptedException ->

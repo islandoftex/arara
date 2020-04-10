@@ -31,10 +31,6 @@ import org.slf4j.LoggerFactory
  * @since 4.0
  */
 object Interpreter {
-    // the application messages obtained from the
-    // language controller
-    private val messages = LanguageController
-
     // the class logger obtained from
     // the logger factory
     private val logger = LoggerFactory.getLogger(Interpreter::class.java)
@@ -58,7 +54,7 @@ object Interpreter {
     private fun getRule(directive: Directive): File {
         return InterpreterUtils.buildRulePath(directive.identifier)
                 ?: throw AraraException(
-                    messages.getMessage(
+                    LanguageController.getMessage(
                         Messages.ERROR_INTERPRETER_RULE_NOT_FOUND,
                         directive.identifier,
                         "(" + CommonUtils.allRulePaths
@@ -81,12 +77,12 @@ object Interpreter {
         conditional: DirectiveConditional,
         authors: List<String>
     ): Boolean {
-        logger.info(messages.getMessage(Messages.LOG_INFO_BOOLEAN_MODE,
+        logger.info(LanguageController.getMessage(Messages.LOG_INFO_BOOLEAN_MODE,
                 value.toString()))
 
         if (Arara.config[AraraSpec.Execution.dryrun]) {
             DisplayUtils.printAuthors(authors)
-            DisplayUtils.wrapText(messages.getMessage(Messages
+            DisplayUtils.wrapText(LanguageController.getMessage(Messages
                     .INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE,
                     value))
             DisplayUtils.printConditional(conditional)
@@ -112,7 +108,7 @@ object Interpreter {
         authors: List<String>,
         ruleCommandExitValue: String?
     ): Boolean {
-        logger.info(messages.getMessage(Messages.LOG_INFO_SYSTEM_COMMAND,
+        logger.info(LanguageController.getMessage(Messages.LOG_INFO_SYSTEM_COMMAND,
                 command))
         var success = true
 
@@ -126,7 +122,7 @@ object Interpreter {
             } catch (exception: RuntimeException) {
                 throw AraraException(
                     CommonUtils.ruleErrorHeader +
-                            messages.getMessage(
+                            LanguageController.getMessage(
                                 Messages
                                     .ERROR_INTERPRETER_EXIT_RUNTIME_ERROR
                             ),
@@ -138,14 +134,14 @@ object Interpreter {
                 check
             } else {
                 throw AraraException(
-                    CommonUtils.ruleErrorHeader + messages.getMessage(
+                    CommonUtils.ruleErrorHeader + LanguageController.getMessage(
                         Messages.ERROR_INTERPRETER_WRONG_EXIT_CLOSURE_RETURN
                     )
                 )
             }
         } else {
             DisplayUtils.printAuthors(authors)
-            DisplayUtils.wrapText(messages.getMessage(
+            DisplayUtils.wrapText(LanguageController.getMessage(
                     Messages.INFO_INTERPRETER_DRYRUN_MODE_SYSTEM_COMMAND,
                     command))
             DisplayUtils.printConditional(conditional)
@@ -186,7 +182,7 @@ object Interpreter {
         } catch (exception: RuntimeException) {
             throw AraraException(
                 CommonUtils.ruleErrorHeader +
-                        messages.getMessage(
+                        LanguageController.getMessage(
                             Messages
                                 .ERROR_INTERPRETER_COMMAND_RUNTIME_ERROR
                         ),
@@ -198,7 +194,7 @@ object Interpreter {
         resultToList(result).filter { it.toString().isNotBlank() }
                 .forEach { current ->
                     DisplayUtils.printEntry(rule.displayName!!, command.name
-                            ?: messages.getMessage(Messages
+                            ?: LanguageController.getMessage(Messages
                                     .INFO_LABEL_UNNAMED_TASK))
 
                     val success = when (current) {
@@ -238,11 +234,11 @@ object Interpreter {
     @Throws(AraraException::class)
     @Suppress("NestedBlockDepth")
     fun execute(directive: Directive) {
-        logger.info(messages.getMessage(Messages.LOG_INFO_INTERPRET_RULE,
+        logger.info(LanguageController.getMessage(Messages.LOG_INFO_INTERPRET_RULE,
                 directive.identifier))
 
         val file = getRule(directive)
-        logger.info(messages.getMessage(Messages.LOG_INFO_RULE_LOCATION,
+        logger.info(LanguageController.getMessage(Messages.LOG_INFO_RULE_LOCATION,
                 file.parent))
 
         Arara.config[AraraSpec.Execution.InfoSpec.ruleId] =
@@ -307,7 +303,7 @@ object Interpreter {
         if (unknown.isNotEmpty())
             throw AraraException(
                 CommonUtils.ruleErrorHeader +
-                        messages.getMessage(
+                        LanguageController.getMessage(
                             Messages.ERROR_INTERPRETER_UNKNOWN_KEYS,
                             "(" + unknown.joinToString(", ") + ")"
                         )
@@ -353,7 +349,7 @@ object Interpreter {
         if (argument.isRequired && !idInDirectiveParams)
             throw AraraException(
                 CommonUtils.ruleErrorHeader +
-                        messages.getMessage(
+                        LanguageController.getMessage(
                             Messages.ERROR_INTERPRETER_ARGUMENT_IS_REQUIRED,
                             argument.identifier
                         )
@@ -365,7 +361,7 @@ object Interpreter {
             } catch (exception: RuntimeException) {
                 throw AraraException(
                     CommonUtils.ruleErrorHeader +
-                            messages.getMessage(
+                            LanguageController.getMessage(
                                 Messages
                                     .ERROR_INTERPRETER_DEFAULT_VALUE_RUNTIME_ERROR
                             ),
@@ -379,7 +375,7 @@ object Interpreter {
                 TemplateRuntime.eval(argument.flag!!, context)
             } catch (exception: RuntimeException) {
                 throw AraraException(
-                    CommonUtils.ruleErrorHeader + messages
+                    CommonUtils.ruleErrorHeader + LanguageController
                         .getMessage(
                             Messages
                                 .ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION

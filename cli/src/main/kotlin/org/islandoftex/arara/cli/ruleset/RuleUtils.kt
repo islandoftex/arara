@@ -18,10 +18,6 @@ import org.islandoftex.arara.mvel.rules.RuleImpl
  * @since 4.0
  */
 object RuleUtils {
-    // the application messages obtained from the
-    // language controller
-    private val messages = LanguageController
-
     /**
      * Parses the provided file, checks the identifier and returns a rule
      * representation.
@@ -41,7 +37,7 @@ object RuleUtils {
             Yaml.default.parse(RuleImpl.serializer(), text)
         }.getOrElse {
             throw AraraException(
-                    CommonUtils.ruleErrorHeader + messages.getMessage(
+                    CommonUtils.ruleErrorHeader + LanguageController.getMessage(
                             Messages.ERROR_PARSERULE_GENERIC_ERROR
                     ), it
             )
@@ -66,7 +62,7 @@ object RuleUtils {
         if (rule.identifier != identifier) {
             throw AraraException(
                     CommonUtils.ruleErrorHeader +
-                            messages.getMessage(
+                            LanguageController.getMessage(
                                     Messages.ERROR_VALIDATEHEADER_WRONG_IDENTIFIER,
                                     rule.identifier,
                                     identifier
@@ -75,7 +71,7 @@ object RuleUtils {
         }
         if (rule.displayName == null) {
             throw AraraException(
-                    CommonUtils.ruleErrorHeader + messages.getMessage(
+                    CommonUtils.ruleErrorHeader + LanguageController.getMessage(
                             Messages.ERROR_VALIDATEHEADER_NULL_NAME
                     )
             )
@@ -95,7 +91,7 @@ object RuleUtils {
         if (rule.commands.any { it.commandString == null }) {
             throw AraraException(
                     CommonUtils.ruleErrorHeader +
-                            messages.getMessage(
+                            LanguageController.getMessage(
                                     Messages.ERROR_VALIDATEBODY_NULL_COMMAND
                             )
             )
@@ -108,14 +104,14 @@ object RuleUtils {
                     arguments.add(argument.identifier)
                 } else {
                     throw AraraException(
-                            CommonUtils.ruleErrorHeader + messages.getMessage(
+                            CommonUtils.ruleErrorHeader + LanguageController.getMessage(
                                     Messages.ERROR_VALIDATEBODY_MISSING_KEYS
                             )
                     )
                 }
             } else {
                 throw AraraException(
-                        CommonUtils.ruleErrorHeader + messages.getMessage(
+                        CommonUtils.ruleErrorHeader + LanguageController.getMessage(
                                 Messages.ERROR_VALIDATEBODY_NULL_ARGUMENT_ID
                         )
                 )
@@ -124,7 +120,7 @@ object RuleUtils {
 
         arguments.intersect(listOf("files", "reference")).forEach {
             throw AraraException(
-                    CommonUtils.ruleErrorHeader + messages.getMessage(
+                    CommonUtils.ruleErrorHeader + LanguageController.getMessage(
                             Messages.ERROR_VALIDATEBODY_ARGUMENT_ID_IS_RESERVED,
                             it
                     )
@@ -135,7 +131,7 @@ object RuleUtils {
         val found = arguments.toSet().size
         if (expected != found) {
             throw AraraException(
-                    CommonUtils.ruleErrorHeader + messages.getMessage(
+                    CommonUtils.ruleErrorHeader + LanguageController.getMessage(
                             Messages.ERROR_VALIDATEBODY_DUPLICATE_ARGUMENT_IDENTIFIERS
                     )
             )

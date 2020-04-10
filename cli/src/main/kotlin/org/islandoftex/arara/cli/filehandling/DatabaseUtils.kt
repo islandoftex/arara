@@ -17,10 +17,6 @@ import org.islandoftex.arara.cli.localization.Messages
  * @since 4.0
  */
 object DatabaseUtils {
-    // the application messages obtained from the
-    // language controller
-    private val messages = LanguageController
-
     /**
      * Gets the file representing the YAML file (database).
      *
@@ -56,7 +52,7 @@ object DatabaseUtils {
             }.getOrElse {
                 it.printStackTrace()
                 throw AraraException(
-                    messages.getMessage(
+                    LanguageController.getMessage(
                         Messages.ERROR_LOAD_COULD_NOT_LOAD_XML,
                         file.name
                     ), it
@@ -80,7 +76,7 @@ object DatabaseUtils {
             writeText(content)
         }.getOrElse {
             throw AraraException(
-                messages.getMessage(
+                LanguageController.getMessage(
                     Messages.ERROR_SAVE_COULD_NOT_SAVE_XML,
                     file.name
                 ), it

@@ -41,24 +41,18 @@ class DirectiveConditionalEvaluator(executionOptions: ExecutionOptions) :
                     result
             } else {
                 throw AraraException(
-                        messages.getMessage(
+                        LanguageController.getMessage(
                                 Messages.ERROR_EVALUATE_NOT_BOOLEAN_VALUE
                         )
                 )
             }
         } catch (exception: RuntimeException) {
             throw AraraException(
-                    messages.getMessage(
+                    LanguageController.getMessage(
                             Messages.ERROR_EVALUATE_COMPILATION_FAILED
                     ),
                     exception
             )
         }
-    }
-
-    companion object {
-        // the application messages obtained from the
-        // language controller
-        private val messages = LanguageController
     }
 }

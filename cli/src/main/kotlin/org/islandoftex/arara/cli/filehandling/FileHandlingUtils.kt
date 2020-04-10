@@ -19,10 +19,6 @@ import org.islandoftex.arara.cli.localization.Messages
  * @since 4.0
  */
 object FileHandlingUtils {
-    // the application messages obtained from the
-    // language controller
-    private val messages = LanguageController
-
     /**
      * Gets the reference of the current file in execution. Note that this
      * method might return a value different than the main file provided in
@@ -139,7 +135,7 @@ object FileHandlingUtils {
         }.getOrElse {
             // it is IOException || is is SecurityException
             throw AraraException(
-                messages.getMessage(
+                LanguageController.getMessage(
                     Messages.ERROR_GETPARENTCANONICALPATH_IO_EXCEPTION
                 ), it
             )
@@ -188,7 +184,7 @@ object FileHandlingUtils {
             return file.canonicalFile
         } catch (exception: IOException) {
             throw AraraException(
-                messages.getMessage(
+                LanguageController.getMessage(
                     Messages.ERROR_GETCANONICALFILE_IO_EXCEPTION
                 ),
                 exception
@@ -225,7 +221,7 @@ object FileHandlingUtils {
             })
         } catch (exception: IOException) {
             throw AraraException(
-                messages.getMessage(
+                LanguageController.getMessage(
                     Messages.ERROR_CALCULATEHASH_IO_EXCEPTION
                 ), exception
             )
@@ -318,7 +314,7 @@ object FileHandlingUtils {
             )
         } else {
             throw AraraException(
-                messages.getMessage(
+                LanguageController.getMessage(
                     Messages.ERROR_ISSUBDIRECTORY_NOT_A_DIRECTORY,
                     child.name
                 )

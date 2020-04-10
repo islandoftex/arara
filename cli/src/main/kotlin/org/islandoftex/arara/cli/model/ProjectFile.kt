@@ -17,10 +17,6 @@ class ProjectFile(
     fileType: FileType,
     priority: Int = DEFAULT_PRIORITY
 ) : ProjectFile(path, fileType, priority) {
-    // the application messages obtained from the
-    // language controller
-    private val messages = LanguageController
-
     override fun fetchDirectives(parseOnlyHeader: Boolean): List<Directive> {
         try {
             val content = CommonUtils.preambleContent.toMutableList()
@@ -28,7 +24,7 @@ class ProjectFile(
             return DirectiveUtils.extractDirectives(content)
         } catch (ioexception: IOException) {
             throw AraraException(
-                    messages.getMessage(
+                    LanguageController.getMessage(
                             Messages.ERROR_EXTRACTOR_IO_ERROR
                     ),
                     ioexception

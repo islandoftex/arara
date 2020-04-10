@@ -27,10 +27,6 @@ import org.slf4j.LoggerFactory
  */
 @OptIn(kotlinx.serialization.ImplicitReflectionSerializer::class)
 object DirectiveUtils {
-    // the application messages obtained from the
-    // language controller
-    private val messages = LanguageController
-
     // get the logger context from a factory
     private val logger = LoggerFactory.getLogger(DirectiveUtils::class.java)
 
@@ -64,7 +60,7 @@ object DirectiveUtils {
                 val line = text.substring(validLineMatcher.end())
                 map[i + 1] = line
 
-                logger.info(messages.getMessage(
+                logger.info(LanguageController.getMessage(
                         Messages.LOG_INFO_POTENTIAL_PATTERN_FOUND,
                         i + 1, line.trim()))
             } else if (header && !checkLinePattern(validLinePattern, text)) {
@@ -91,7 +87,7 @@ object DirectiveUtils {
         val pairs = getPotentialDirectiveLines(lines)
                 .takeIf { it.isNotEmpty() }
                 ?: throw AraraException(
-                        messages.getMessage(
+                        LanguageController.getMessage(
                                 Messages.ERROR_VALIDATE_NO_DIRECTIVES_FOUND
                         )
                 )
@@ -103,7 +99,7 @@ object DirectiveUtils {
             if (linebreakMatcher.find()) {
                 if (!assembler.isAppendAllowed) {
                     throw AraraException(
-                            messages.getMessage(
+                            LanguageController.getMessage(
                                     Messages.ERROR_VALIDATE_ORPHAN_LINEBREAK,
                                     lineno
                             )
@@ -152,13 +148,13 @@ object DirectiveUtils {
                     lineNumbers = assembler.getLineNumbers()
             )
 
-            logger.info(messages.getMessage(
+            logger.info(LanguageController.getMessage(
                     Messages.LOG_INFO_POTENTIAL_DIRECTIVE_FOUND, directive))
 
             return directive
         } else {
             throw AraraException(
-                    messages.getMessage(
+                    LanguageController.getMessage(
                             Messages.ERROR_VALIDATE_INVALID_DIRECTIVE_FORMAT,
                             "(" + assembler.getLineNumbers()
                                     .joinToString(", ") + ")"
@@ -213,7 +209,7 @@ object DirectiveUtils {
             readValue<Map<String, Any>>(text)
         }.getOrElse {
             throw AraraException(
-                    messages.getMessage(
+                    LanguageController.getMessage(
                             Messages.ERROR_VALIDATE_YAML_EXCEPTION,
                             "(" + numbers.joinToString(", ") + ")"
                     ),
@@ -260,7 +256,7 @@ object DirectiveUtils {
                     .takeIf { it.isNotEmpty() && holder.size == it.size }
             // TODO: check exception according to condition
                     ?: throw AraraException(
-                            messages.getMessage(
+                            LanguageController.getMessage(
                                     Messages.ERROR_VALIDATE_EMPTY_FILES_LIST,
                                     "(" + directive.lineNumbers
                                             .joinToString(", ") + ")"
@@ -268,7 +264,7 @@ object DirectiveUtils {
                     )
         } else {
             throw AraraException(
-                    messages.getMessage(
+                    LanguageController.getMessage(
                             Messages.ERROR_VALIDATE_FILES_IS_NOT_A_LIST,
                             "(" + directive.lineNumbers.joinToString(", ") + ")"
                     )
@@ -292,7 +288,7 @@ object DirectiveUtils {
 
             if (parameters.containsKey("reference"))
                 throw AraraException(
-                        messages.getMessage(
+                        LanguageController.getMessage(
                                 Messages.ERROR_VALIDATE_REFERENCE_IS_RESERVED,
                                 "(" + directive.lineNumbers.joinToString(", ") + ")"
                         )
@@ -312,10 +308,10 @@ object DirectiveUtils {
             }
         }
 
-        logger.info(messages.getMessage(
+        logger.info(LanguageController.getMessage(
                 Messages.LOG_INFO_VALIDATED_DIRECTIVES))
         logger.info(DisplayUtils.displayOutputSeparator(
-                messages.getMessage(Messages.LOG_INFO_DIRECTIVES_BLOCK)))
+                LanguageController.getMessage(Messages.LOG_INFO_DIRECTIVES_BLOCK)))
         result.forEach { logger.info(it.toString()) }
         logger.info(DisplayUtils.displaySeparator())
 

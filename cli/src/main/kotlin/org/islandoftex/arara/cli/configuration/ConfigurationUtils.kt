@@ -22,10 +22,6 @@ import org.islandoftex.arara.mvel.configuration.LocalConfiguration
  * @since 4.0
  */
 object ConfigurationUtils {
-    // the application messages obtained from the
-    // language controller
-    private val messages = LanguageController
-
     /**
      * The configuration file in use.
      *
@@ -68,7 +64,7 @@ object ConfigurationUtils {
                 return Paths.get(File(path).toURI()).parent.toAbsolutePath()
             } catch (exception: UnsupportedEncodingException) {
                 throw AraraException(
-                    messages.getMessage(
+                    LanguageController.getMessage(
                         Messages.ERROR_GETAPPLICATIONPATH_ENCODING_EXCEPTION
                     ),
                     exception
@@ -94,7 +90,7 @@ object ConfigurationUtils {
                     text)
         }.getOrElse {
             throw AraraException(
-                messages.getMessage(
+                LanguageController.getMessage(
                     Messages.ERROR_CONFIGURATION_GENERIC_ERROR
                 ), it
             )
