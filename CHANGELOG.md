@@ -8,6 +8,21 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
+### Added
+
+* `arara` now features an API and a library to ease developing an own TeX
+  compilation workflow.
+
+### Changed
+
+* `arara` is now split into an API, a core implementation (library) and the
+  implementation of the executable (cli). Projects relying on code in the
+  `arara` JAR distributions have to be updated.
+  (breaking change)
+* The log file may now be specified as path anywhere on the file system.
+  Warning: This behavior may be altered for a future safe mode.
+  (see https://github.com/cereda/arara/issues/133).
+
 ### Removed
 
 * Removed the `<arara>` shorthand notation which has been deprecated in version
