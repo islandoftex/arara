@@ -60,11 +60,4 @@ object AraraSpec : ConfigSpec() {
             val rulePath by optional<String?>(null)
         }
     }
-
-    object UserInteraction : ConfigSpec() {
-        val displayLine by optional(true)
-        val displayResult by optional(false)
-        val displayRolling by optional(false)
-        val displayException by optional(false)
-    }
 }

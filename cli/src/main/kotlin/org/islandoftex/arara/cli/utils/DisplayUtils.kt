@@ -50,6 +50,11 @@ object DisplayUtils {
      */
     private const val outputWidth: Int = 65
 
+    private var displayLine = true
+    private var displayResult = false
+    private var displayRolling = false
+    private var displayException = false
+
     /**
      * Checks if the execution is in dry-run mode.
      */
@@ -105,8 +110,8 @@ object DisplayUtils {
      * @param value The boolean value to be displayed.
      */
     fun printEntryResult(value: Boolean) {
-        Arara.config[AraraSpec.UserInteraction.displayLine] = false
-        Arara.config[AraraSpec.UserInteraction.displayResult] = true
+        displayLine = false
+        displayResult = true
         Arara.config[AraraSpec.Execution.exitCode] = if (value) 0 else 1
         logger.info(
                 LanguageController.getMessage(
@@ -146,8 +151,8 @@ object DisplayUtils {
                         name
                 )
         )
-        Arara.config[AraraSpec.UserInteraction.displayLine] = true
-        Arara.config[AraraSpec.UserInteraction.displayResult] = false
+        displayLine = true
+        displayResult = false
         if (!isDryRunMode) {
             if (!isVerboseMode) {
                 buildShortEntry(name, task)
@@ -166,10 +171,10 @@ object DisplayUtils {
      * @param task Task name.
      */
     private fun buildLongEntry(name: String, task: String) {
-        if (Arara.config[AraraSpec.UserInteraction.displayRolling]) {
+        if (displayRolling) {
             addNewLine()
         } else {
-            Arara.config[AraraSpec.UserInteraction.displayRolling] = true
+            displayRolling = true
         }
         println(displaySeparator())
         println("($name) $task".abbreviate(outputWidth))
@@ -183,10 +188,10 @@ object DisplayUtils {
      * @param task The task name.
      */
     private fun buildDryRunEntry(name: String, task: String) {
-        if (Arara.config[AraraSpec.UserInteraction.displayRolling]) {
+        if (displayRolling) {
             addNewLine()
         } else {
-            Arara.config[AraraSpec.UserInteraction.displayRolling] = true
+            displayRolling = true
         }
         println("[DR] ($name) $task".abbreviate(outputWidth))
         println(displaySeparator())
@@ -198,13 +203,12 @@ object DisplayUtils {
      * @param exception The exception object.
      */
     fun printException(exception: AraraException) {
-        Arara.config[AraraSpec.UserInteraction.displayException] = true
+        displayException = true
         Arara.config[AraraSpec.Execution.exitCode] = 2
 
-        val display = Arara.config[AraraSpec.UserInteraction.displayLine]
-        if (Arara.config[AraraSpec.UserInteraction.displayResult])
+        if (displayResult)
             addNewLine()
-        if (display) {
+        if (displayLine) {
             if (!isDryRunMode) {
                 if (!isVerboseMode) {
                     buildShortError()
@@ -356,8 +360,7 @@ object DisplayUtils {
     fun printTime(seconds: Double) {
         val language = Arara.config[AraraSpec.Execution.language]
 
-        if (Arara.config[AraraSpec.UserInteraction.displayLine] ||
-                Arara.config[AraraSpec.UserInteraction.displayException])
+        if (displayLine || displayException)
             addNewLine()
 
         val text = LanguageController.getMessage(
