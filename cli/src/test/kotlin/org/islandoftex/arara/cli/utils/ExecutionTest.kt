@@ -15,10 +15,10 @@ import java.nio.file.Paths
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.cli.configuration.AraraSpec
-import org.islandoftex.arara.cli.configuration.Configuration
 import org.islandoftex.arara.cli.filehandling.FileSearchingUtils
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.core.files.Project
+import org.islandoftex.arara.mvel.configuration.Configuration
 
 @DoNotParallelize
 class ExecutionTest : ShouldSpec({
@@ -29,9 +29,10 @@ class ExecutionTest : ShouldSpec({
         val output = ByteArrayOutputStream()
         try {
             System.setOut(PrintStream(output))
+            val workingDirectory = Paths.get(getPathForTest(testName))
             Arara.config[AraraSpec.Execution.currentProject] =
-                    Project("Test", Paths.get(getPathForTest(testName)), setOf())
-            Configuration.load()
+                    Project("Test", workingDirectory, setOf())
+            Configuration.load(workingDirectory.resolve("arararc.yaml"))
             Arara.config[AraraSpec.Execution.verbose] = true
             Arara.config[AraraSpec.Execution.reference] = FileSearchingUtils
                     .resolveFile(fileName, File(getPathForTest(testName)))

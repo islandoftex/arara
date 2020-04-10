@@ -5,6 +5,7 @@ import com.charleskorn.kaml.Yaml
 import java.io.File
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
+import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import org.islandoftex.arara.Arara
@@ -29,23 +30,23 @@ object ConfigurationUtils {
      * if no configuration files are found in the user's working directory,
      * try to look up in a global directory, that is, the user home.
      */
-    val configFile: File?
+    val configFile: Path?
         get() {
             val names = listOf(".araraconfig.yaml",
                     "araraconfig.yaml", ".arararc.yaml", "arararc.yaml")
             Arara.config[AraraSpec.Execution.currentProject].workingDirectory
                     .let { workingDir ->
                         val first = names
-                                .map { workingDir.resolve(it).toFile() }
-                                .firstOrNull { it.exists() }
+                                .map { workingDir.resolve(it) }
+                                .firstOrNull { Files.exists(it) }
                         if (first != null)
                             return first
                     }
-            CommonUtils.getSystemPropertyOrNull("user.home")?.let { userHome ->
-                return names.map { File(userHome).resolve(it) }
-                        .firstOrNull { it.exists() }
-            }
-            return null
+            return CommonUtils.getSystemPropertyOrNull("user.home")
+                    ?.let { userHome ->
+                        names.map { Paths.get(userHome).resolve(it) }
+                                .firstOrNull { Files.exists(it) }
+                    }
         }
 
     /**
@@ -64,10 +65,10 @@ object ConfigurationUtils {
                 return Paths.get(File(path).toURI()).parent.toAbsolutePath()
             } catch (exception: UnsupportedEncodingException) {
                 throw AraraException(
-                    LanguageController.getMessage(
-                        Messages.ERROR_GETAPPLICATIONPATH_ENCODING_EXCEPTION
-                    ),
-                    exception
+                        LanguageController.getMessage(
+                                Messages.ERROR_GETAPPLICATIONPATH_ENCODING_EXCEPTION
+                        ),
+                        exception
                 )
             }
         }
@@ -81,18 +82,18 @@ object ConfigurationUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun loadLocalConfiguration(file: File): LocalConfiguration {
+    fun loadLocalConfiguration(file: Path): LocalConfiguration {
         return file.runCatching {
-            val text = readText()
+            val text = file.toFile().readText()
             if (!text.startsWith("!config"))
                 throw Exception("Configuration should start with !config")
             Yaml.default.parse(LocalConfiguration.serializer(),
                     text)
         }.getOrElse {
             throw AraraException(
-                LanguageController.getMessage(
-                    Messages.ERROR_CONFIGURATION_GENERIC_ERROR
-                ), it
+                    LanguageController.getMessage(
+                            Messages.ERROR_CONFIGURATION_GENERIC_ERROR
+                    ), it
             )
         }
     }

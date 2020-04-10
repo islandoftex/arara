@@ -25,6 +25,12 @@ object DisplayUtils {
     private val logger = LoggerFactory.getLogger(DisplayUtils::class.java)
 
     /**
+     * The file name of the configuration file in use. It is only needed for
+     * logging purposes.
+     */
+    var configurationFileName: String = "[none]"
+
+    /**
      * The length of the longest result match as integer.
      */
     private val longestMatch: Int = listOf(
@@ -335,8 +341,7 @@ object DisplayUtils {
                 CommonUtils.getSystemProperty("user.home",
                         "[unknown user's home directory]")
         ))
-        logger.debug("::: CF @ %s".format(Arara.config[AraraSpec.Execution
-                .configurationName]))
+        logger.debug("::: CF @ %s".format(configurationFileName))
         logger.debug(displaySeparator())
         logger.info(line)
         wrapText(line)

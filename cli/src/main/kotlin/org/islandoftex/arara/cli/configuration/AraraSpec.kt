@@ -45,8 +45,6 @@ object AraraSpec : ConfigSpec() {
             )
         }
 
-        val configurationName by optional("[none]")
-
         // TODO: this is a runtime value which should be properly
         // initialized and tested (maybe move it into its own
         // Spec or session)

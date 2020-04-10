@@ -15,7 +15,7 @@ import kotlin.time.milliseconds
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.session.ExecutionMode
 import org.islandoftex.arara.cli.configuration.AraraSpec
-import org.islandoftex.arara.cli.configuration.Configuration
+import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.filehandling.FileSearchingUtils
 import org.islandoftex.arara.cli.localization.Language
 import org.islandoftex.arara.cli.localization.LanguageController
@@ -28,6 +28,7 @@ import org.islandoftex.arara.core.session.ExecutionOptions
 import org.islandoftex.arara.core.session.Executor
 import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LoggingOptions
+import org.islandoftex.arara.mvel.configuration.Configuration
 
 /**
  * arara's command line interface
@@ -149,9 +150,12 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
             ))
             try {
                 Executor.hooks = ExecutorHooks(
-                        executeBeforeProject = {
-                            Configuration.load()
-                            Arara.config[AraraSpec.Execution.currentProject] = it
+                        executeBeforeProject = { project ->
+                            ConfigurationUtils.configFile?.let {
+                                DisplayUtils.configurationFileName = it.toString()
+                                Configuration.load(it)
+                            }
+                            Arara.config[AraraSpec.Execution.currentProject] = project
                         },
                         executeBeforeFile = {
                             // TODO: do we have to reset some more file-specific config?
