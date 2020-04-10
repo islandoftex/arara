@@ -4,6 +4,7 @@ package org.islandoftex.arara
 import com.github.ajalt.clikt.parameters.options.versionOption
 import com.uchuhimo.konf.Config
 import java.time.LocalDate
+import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.localization.Messages
@@ -34,14 +35,13 @@ object Arara {
         // fixed-width fonts, otherwise the logo will be messed
         DisplayUtils.printLogo()
 
-        val version = config[AraraSpec.version]
-        CLI().versionOption(version, names = setOf("-V", "--version"),
+        CLI().versionOption(AraraAPI.version, names = setOf("-V", "--version"),
                 message = {
-                    "arara $version\n" +
+                    "arara ${AraraAPI.version}\n" +
                             "Copyright (c) ${LocalDate.now().year}, Island of TeX\n" +
                             LanguageController.getMessage(Messages
                                     .INFO_PARSER_NOTES) + "\n\n" +
-                            "New features in version $version:\n" +
+                            "New features in version ${AraraAPI.version}:\n" +
                             Arara::class.java
                                     .getResource("/org/islandoftex/arara/cli/configuration/release-notes")
                                     .readText()

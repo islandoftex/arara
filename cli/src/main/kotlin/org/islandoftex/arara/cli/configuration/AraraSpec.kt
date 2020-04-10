@@ -21,9 +21,6 @@ import org.islandoftex.arara.cli.model.UNKNOWN_TYPE
  */
 @Suppress("MagicNumber")
 object AraraSpec : ConfigSpec() {
-    val version by optional(AraraSpec::class.java.`package`.implementationVersion
-            ?: "DEVELOPMENT BUILD")
-
     val executionOptions by optional<ExecutionOptions>(
             org.islandoftex.arara.core.session.ExecutionOptions()
     )

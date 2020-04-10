@@ -2,6 +2,7 @@
 package org.islandoftex.arara.cli.utils
 
 import org.islandoftex.arara.Arara
+import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
@@ -310,7 +311,6 @@ object DisplayUtils {
      */
     fun printFileInformation() {
         val file = Arara.config[AraraSpec.Execution.reference].path.toFile()
-        val version = Arara.config[AraraSpec.version]
         val line = LanguageController.getMessage(
                 Messages.INFO_DISPLAY_FILE_INFORMATION,
                 file.name,
@@ -319,7 +319,7 @@ object DisplayUtils {
         )
         logger.info(LanguageController.getMessage(
                 Messages.LOG_INFO_WELCOME_MESSAGE,
-                version
+                AraraAPI.version
         ))
         logger.info(displaySeparator())
         logger.debug("::: arara @ $applicationPath")
