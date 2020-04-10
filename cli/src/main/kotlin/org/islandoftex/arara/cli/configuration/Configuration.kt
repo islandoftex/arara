@@ -68,32 +68,30 @@ object Configuration {
      */
     @Throws(AraraException::class)
     private fun update(resource: LocalConfiguration) {
+        val executionOptions = resource.toExecutionOptions()
         val loggingOptions = resource.toLoggingOptions()
+        val uiOptions = resource.toUserInterfaceOptions()
 
-        if (resource.paths.isNotEmpty())
-            Arara.config[AraraSpec.Execution.rulePaths] =
-                    ConfigurationUtils.normalizePaths(resource.paths)
+        Arara.config[AraraSpec.Execution.rulePaths] =
+                ConfigurationUtils.normalizePaths(resource.paths)
 
-        if (resource.filetypes.isNotEmpty()) {
-            Arara.config[AraraSpec.Execution.fileTypes] =
-                    ConfigurationUtils.normalizeFileTypes(resource.filetypes)
-        }
-
-        Arara.config[AraraSpec.Execution.verbose] = resource.isVerbose
-        Arara.config[AraraSpec.Execution.onlyHeader] = resource.isHeader
-        Arara.config[AraraSpec.Execution.language] =
-                Language(resource.language)
-        Arara.config[AraraSpec.UserInteraction.lookAndFeel] = resource.laf
+        Arara.config[AraraSpec.Execution.fileTypes] =
+                ConfigurationUtils.normalizeFileTypes(resource.filetypes)
+        
+        Arara.config[AraraSpec.Execution.verbose] = executionOptions.verbose
+        Arara.config[AraraSpec.Execution.onlyHeader] = executionOptions.parseOnlyHeader
+        Arara.config[AraraSpec.Execution.language] = Language(uiOptions.languageCode)
+        Arara.config[AraraSpec.UserInteraction.lookAndFeel] = uiOptions.swingLookAndFeel
 
         Arara.config[AraraSpec.Execution.databaseName] =
-                Paths.get(ConfigurationUtils.cleanFileName(resource.dbname))
+                Paths.get(ConfigurationUtils.cleanFileName(executionOptions.databaseName.toString()))
         Arara.config[AraraSpec.Execution.logName] =
-                ConfigurationUtils.cleanFileName(loggingOptions.logFile.fileName.toString())
+                ConfigurationUtils.cleanFileName(loggingOptions.logFile.toString())
 
         Arara.config[AraraSpec.Execution.logging] = loggingOptions.enableLogging
         LoggingUtils.enableLogging(loggingOptions.enableLogging)
 
-        val loops = resource.loops
+        val loops = executionOptions.maxLoops
         if (loops <= 0) {
             throw AraraException(
                 messages.getMessage(

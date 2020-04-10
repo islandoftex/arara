@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.session.ExecutionOptions
 import org.islandoftex.arara.api.session.LoggingOptions
+import org.islandoftex.arara.api.session.UserInterfaceOptions
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.model.FileTypeImpl
 import org.islandoftex.arara.cli.utils.CommonUtils
@@ -52,14 +53,14 @@ class LocalConfiguration {
 
     // the application language
     // default to English
-    var language: String = Arara.config[AraraSpec.Application.defaultLanguageCode]
+    private var language: String = Arara.config[AraraSpec.Application.defaultLanguageCode]
 
     // maximum number of loops
-    var loops: Int = Arara.config[AraraSpec.Execution.maxLoops]
+    private var loops: Int = Arara.config[AraraSpec.Execution.maxLoops]
 
     // verbose flag
     @SerialName("verbose")
-    var isVerbose: Boolean = Arara.config[AraraSpec.Execution.verbose]
+    private var isVerbose: Boolean = Arara.config[AraraSpec.Execution.verbose]
 
     // logging flag
     @SerialName("logging")
@@ -67,10 +68,10 @@ class LocalConfiguration {
 
     // header flag
     @SerialName("header")
-    var isHeader: Boolean = Arara.config[AraraSpec.Execution.onlyHeader]
+    private var isHeader: Boolean = Arara.config[AraraSpec.Execution.onlyHeader]
 
     // database name
-    var dbname: String = Arara.config[AraraSpec.Execution.databaseName].toString()
+    private var dbname: String = Arara.config[AraraSpec.Execution.databaseName].toString()
 
     // log name
     private var logname: String = Arara.config[AraraSpec.Execution.logName]
@@ -80,12 +81,12 @@ class LocalConfiguration {
 
     // look and feel
     // default to none
-    var laf: String = Arara.config[AraraSpec.UserInteraction.lookAndFeel]
+    private var laf: String = Arara.config[AraraSpec.UserInteraction.lookAndFeel]
 
     /**
      * Convert the relevant properties of the configuration to execution
-     * options. Intended to be used together with [toLoggingOptions] to
-     * destructure and discard this object.
+     * options. Intended to be used together with [toLoggingOptions] and
+     * [toUserInterfaceOptions] to destructure and discard this object.
      *
      * @return The corresponding execution options.
      */
@@ -100,8 +101,8 @@ class LocalConfiguration {
 
     /**
      * Convert the relevant properties of the configuration to logging options.
-     * Intended to be used together with [toExecutionOptions] to destructure
-     * and discard this object.
+     * Intended to be used together with [toExecutionOptions] and
+     * [toUserInterfaceOptions] to destructure and discard this object.
      *
      * @return The corresponding logging options.
      */
@@ -109,6 +110,20 @@ class LocalConfiguration {
         return org.islandoftex.arara.core.session.LoggingOptions(
                 enableLogging = isLogging,
                 logFile = Paths.get(logname)
+        )
+    }
+
+    /**
+     * Convert the relevant properties of the configuration to UI options.
+     * Intended to be used together with [toExecutionOptions] and
+     * [toLoggingOptions] to destructure and discard this object.
+     *
+     * @return The corresponding user interface options.
+     */
+    fun toUserInterfaceOptions(): UserInterfaceOptions {
+        return org.islandoftex.arara.core.session.UserInterfaceOptions(
+                languageCode = language,
+                swingLookAndFeel = laf
         )
     }
 }
