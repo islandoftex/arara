@@ -16,11 +16,11 @@ import org.islandoftex.arara.cli.ruleset.RuleUtils
 import org.islandoftex.arara.cli.utils.CommonUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.InterpreterUtils
-import org.islandoftex.arara.cli.utils.Methods
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.mvel.rules.DirectiveConditionalEvaluator
 import org.islandoftex.arara.mvel.rules.RuleArgument
 import org.islandoftex.arara.mvel.rules.SerialRuleCommand
+import org.islandoftex.arara.mvel.utils.Methods
 import org.mvel2.templates.TemplateRuntime
 import org.slf4j.LoggerFactory
 

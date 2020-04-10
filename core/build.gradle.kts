@@ -16,6 +16,7 @@ plugins {
 val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class).kotlinPluginVersion
 dependencies {
     api(project(":api"))
+    implementation(group = "org.zeroturnaround", name = "zt-exec", version = Versions.ztExec)
 
     testImplementation(group = "io.kotest", name = "kotest-runner-junit5-jvm", version = Versions.kotest)
     testImplementation(group = "io.kotest", name = "kotest-assertions-core-jvm", version = Versions.kotest)

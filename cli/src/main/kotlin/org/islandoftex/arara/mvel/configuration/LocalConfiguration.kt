@@ -13,7 +13,7 @@ import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.localization.Messages
 import org.islandoftex.arara.cli.model.FileTypeImpl
-import org.islandoftex.arara.cli.utils.CommonUtils
+import org.islandoftex.arara.core.session.Environment
 import org.mvel2.templates.TemplateRuntime
 
 /**
@@ -50,9 +50,9 @@ data class LocalConfiguration(
             try {
                 TemplateRuntime.eval(input, mapOf(
                         "user" to mapOf(
-                                "home" to (CommonUtils.getSystemPropertyOrNull("user.home")
+                                "home" to (Environment.getSystemPropertyOrNull("user.home")
                                         ?: ""),
-                                "name" to (CommonUtils.getSystemPropertyOrNull("user.name")
+                                "name" to (Environment.getSystemPropertyOrNull("user.name")
                                         ?: "")
                         ),
                         "application" to mapOf(

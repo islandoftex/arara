@@ -12,7 +12,7 @@ import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.localization.Messages
-import org.islandoftex.arara.cli.utils.CommonUtils
+import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.mvel.configuration.LocalConfiguration
 
 /**
@@ -42,7 +42,7 @@ object ConfigurationUtils {
                         if (first != null)
                             return first
                     }
-            return CommonUtils.getSystemPropertyOrNull("user.home")
+            return Environment.getSystemPropertyOrNull("user.home")
                     ?.let { userHome ->
                         names.map { Paths.get(userHome).resolve(it) }
                                 .firstOrNull { Files.exists(it) }

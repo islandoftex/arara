@@ -7,8 +7,8 @@ import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.api.session.ExecutionOptions
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.localization.Messages
-import org.islandoftex.arara.cli.utils.Methods
 import org.islandoftex.arara.core.rules.DirectiveConditionalEvaluator
+import org.islandoftex.arara.mvel.utils.Methods
 import org.mvel2.templates.TemplateRuntime
 
 /**

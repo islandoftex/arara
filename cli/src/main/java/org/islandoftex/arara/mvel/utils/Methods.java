@@ -1,17 +1,22 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.utils;
+package org.islandoftex.arara.mvel.utils;
 
 import kotlin.Pair;
 import org.islandoftex.arara.Arara;
 import org.islandoftex.arara.api.AraraException;
+import org.islandoftex.arara.api.session.Command;
 import org.islandoftex.arara.cli.configuration.AraraSpec;
 import org.islandoftex.arara.cli.filehandling.FileHandlingUtils;
 import org.islandoftex.arara.cli.filehandling.FileSearchingUtils;
 import org.islandoftex.arara.cli.localization.LanguageController;
 import org.islandoftex.arara.cli.localization.Messages;
-import org.islandoftex.arara.core.session.Session;
 import org.islandoftex.arara.cli.ruleset.CommandImpl;
-import org.islandoftex.arara.api.session.Command;
+import org.islandoftex.arara.cli.utils.ClassLoadingUtils;
+import org.islandoftex.arara.cli.utils.CommonUtils;
+import org.islandoftex.arara.cli.utils.MessageUtils;
+import org.islandoftex.arara.cli.utils.SystemCallUtils;
+import org.islandoftex.arara.core.session.Environment;
+import org.islandoftex.arara.core.session.Session;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -469,7 +474,7 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean isWindows() throws AraraException {
-        return CommonUtils.INSTANCE.checkOS("windows");
+        return SystemCallUtils.INSTANCE.checkOS("windows");
     }
 
     /**
@@ -480,7 +485,7 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean isCygwin() throws AraraException {
-        return CommonUtils.INSTANCE.checkOS("cygwin");
+        return SystemCallUtils.INSTANCE.checkOS("cygwin");
     }
 
     /**
@@ -491,7 +496,7 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean isLinux() throws AraraException {
-        return CommonUtils.INSTANCE.checkOS("linux");
+        return SystemCallUtils.INSTANCE.checkOS("linux");
     }
 
     /**
@@ -502,7 +507,7 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean isMac() throws AraraException {
-        return CommonUtils.INSTANCE.checkOS("mac");
+        return SystemCallUtils.INSTANCE.checkOS("mac");
     }
 
     /**
@@ -513,7 +518,7 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean isUnix() throws AraraException {
-        return CommonUtils.INSTANCE.checkOS("unix");
+        return SystemCallUtils.INSTANCE.checkOS("unix");
     }
 
     /**
@@ -527,7 +532,7 @@ public class Methods {
      */
     public static Object isWindows(Object yes, Object no)
             throws AraraException {
-        return CommonUtils.INSTANCE.checkOS("windows") ? yes : no;
+        return SystemCallUtils.INSTANCE.checkOS("windows") ? yes : no;
     }
 
     /**
@@ -540,7 +545,7 @@ public class Methods {
      *                        higher levels.
      */
     public static Object isCygwin(Object yes, Object no) throws AraraException {
-        return CommonUtils.INSTANCE.checkOS("cygwin") ? yes : no;
+        return SystemCallUtils.INSTANCE.checkOS("cygwin") ? yes : no;
     }
 
     /**
@@ -553,7 +558,7 @@ public class Methods {
      *                        higher levels.
      */
     public static Object isLinux(Object yes, Object no) throws AraraException {
-        return CommonUtils.INSTANCE.checkOS("linux") ? yes : no;
+        return SystemCallUtils.INSTANCE.checkOS("linux") ? yes : no;
     }
 
     /**
@@ -566,7 +571,7 @@ public class Methods {
      *                        higher levels.
      */
     public static Object isMac(Object yes, Object no) throws AraraException {
-        return CommonUtils.INSTANCE.checkOS("mac") ? yes : no;
+        return SystemCallUtils.INSTANCE.checkOS("mac") ? yes : no;
     }
 
     /**
@@ -579,7 +584,7 @@ public class Methods {
      *                        higher levels.
      */
     public static Object isUnix(Object yes, Object no) throws AraraException {
-        return CommonUtils.INSTANCE.checkOS("unix") ? yes : no;
+        return SystemCallUtils.INSTANCE.checkOS("unix") ? yes : no;
     }
 
     /**
@@ -980,7 +985,7 @@ public class Methods {
      * @return A logic value.
      */
     public static boolean isOnPath(String command) {
-        return CommonUtils.INSTANCE.isOnPath(command);
+        return SystemCallUtils.INSTANCE.isOnPath(command);
     }
 
     /**
@@ -993,7 +998,11 @@ public class Methods {
      * as a string.
      */
     public static Pair<Integer, String> unsafelyExecuteSystemCommand(Command command) {
-        return SystemCallUtils.INSTANCE.executeSystemCommand(command);
+        return Environment.INSTANCE.executeSystemCommand(command,
+                Arara.INSTANCE.getConfig()
+                        .get(AraraSpec.Execution.INSTANCE.getCurrentProject())
+                        .getWorkingDirectory()
+        );
     }
 
     /**

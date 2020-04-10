@@ -12,6 +12,7 @@ import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.filehandling.FileHandlingUtils
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.localization.Messages
+import org.islandoftex.arara.core.session.Environment
 import org.slf4j.LoggerFactory
 
 /**
@@ -324,25 +325,25 @@ object DisplayUtils {
         logger.info(displaySeparator())
         logger.debug("::: arara @ $applicationPath")
         logger.debug("::: Java %s, %s".format(
-                CommonUtils.getSystemProperty("java.version",
+                Environment.getSystemProperty("java.version",
                         "[unknown version]"),
-                CommonUtils.getSystemProperty("java.vendor",
+                Environment.getSystemProperty("java.vendor",
                         "[unknown vendor]")
         ))
         logger.debug("::: %s".format(
-                CommonUtils.getSystemProperty("java.home",
+                Environment.getSystemProperty("java.home",
                         "[unknown location]")
         ))
         logger.debug("::: %s, %s, %s".format(
-                CommonUtils.getSystemProperty("os.name",
+                Environment.getSystemProperty("os.name",
                         "[unknown OS name]"),
-                CommonUtils.getSystemProperty("os.arch",
+                Environment.getSystemProperty("os.arch",
                         "[unknown OS arch]"),
-                CommonUtils.getSystemProperty("os.version",
+                Environment.getSystemProperty("os.version",
                         "[unknown OS version]")
         ))
         logger.debug("::: user.home @ %s".format(
-                CommonUtils.getSystemProperty("user.home",
+                Environment.getSystemProperty("user.home",
                         "[unknown user's home directory]")
         ))
         logger.debug("::: CF @ %s".format(configurationFileName))
