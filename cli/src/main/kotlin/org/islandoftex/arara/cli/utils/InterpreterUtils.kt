@@ -8,11 +8,13 @@ import java.io.OutputStream
 import java.nio.file.Path
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
+import kotlin.time.milliseconds
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.api.session.Command
+import org.islandoftex.arara.api.session.ExecutionMode
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.localization.Messages
@@ -40,7 +42,8 @@ object InterpreterUtils {
      * evaluation.
      */
     fun runPriorEvaluation(conditional: DirectiveConditional): Boolean {
-        return if (Arara.config[AraraSpec.Execution.dryrun]) {
+        return if (Arara.config[AraraSpec.executionOptions].executionMode ==
+                ExecutionMode.DRY_RUN) {
             false
         } else {
             when (conditional.type) {
@@ -56,17 +59,17 @@ object InterpreterUtils {
         command: Command,
         buffer: OutputStream
     ): ProcessExecutor {
-        val timeOutValue = Arara.config[AraraSpec.Execution.timeoutValue]
+        val timeOutValue = Arara.config[AraraSpec.executionOptions].timeoutValue
         val workingDirectory = command.workingDirectory
                 ?: Arara.config[AraraSpec.Execution.workingDirectory]
         var executor = ProcessExecutor().command((command).elements)
                 .directory(workingDirectory.toFile().absoluteFile)
                 .addDestroyer(ShutdownHookProcessDestroyer())
-        if (Arara.config[AraraSpec.Execution.timeout]) {
+        if (timeOutValue != 0.milliseconds) {
             executor = executor.timeout(timeOutValue.toLongNanoseconds(),
                     TimeUnit.NANOSECONDS)
         }
-        val tee = if (Arara.config[AraraSpec.Execution.verbose]) {
+        val tee = if (Arara.config[AraraSpec.executionOptions].verbose) {
             executor = executor.redirectInput(System.`in`)
             TeeOutputStream(System.out, buffer)
         } else {

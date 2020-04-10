@@ -34,7 +34,7 @@ object Arara {
         // fixed-width fonts, otherwise the logo will be messed
         DisplayUtils.printLogo()
 
-        val version = config[AraraSpec.Application.version]
+        val version = config[AraraSpec.version]
         CLI().versionOption(version, names = setOf("-V", "--version"),
                 message = {
                     "arara $version\n" +

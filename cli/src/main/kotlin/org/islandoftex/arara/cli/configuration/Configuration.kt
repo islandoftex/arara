@@ -6,6 +6,7 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.cli.filehandling.FileHandlingUtils
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.utils.LoggingUtils
+import org.islandoftex.arara.core.session.ExecutionOptions
 import org.islandoftex.arara.mvel.configuration.LocalConfiguration
 
 /**
@@ -62,21 +63,24 @@ object Configuration {
     @Throws(AraraException::class)
     private fun update(resource: LocalConfiguration) {
         val executionOptions = resource.toExecutionOptions()
-
+        val baseOptions = Arara.config[AraraSpec.executionOptions]
+        Arara.config[AraraSpec.executionOptions] = ExecutionOptions(
+                maxLoops = executionOptions.maxLoops,
+                timeoutValue = baseOptions.timeoutValue,
+                parallelExecution = baseOptions.parallelExecution,
+                haltOnErrors = baseOptions.haltOnErrors,
+                databaseName = executionOptions.databaseName,
+                verbose = executionOptions.verbose,
+                executionMode = baseOptions.executionMode,
+                fileTypes = executionOptions.fileTypes,
+                rulePaths = executionOptions.rulePaths,
+                parseOnlyHeader = executionOptions.parseOnlyHeader
+        )
         Arara.config[AraraSpec.loggingOptions] = resource.toLoggingOptions()
         LoggingUtils.enableLogging(
                 Arara.config[AraraSpec.loggingOptions].enableLogging
         )
         Arara.config[AraraSpec.userInterfaceOptions] = resource.toUserInterfaceOptions()
-
-        Arara.config[AraraSpec.Execution.rulePaths] = executionOptions.rulePaths
-        Arara.config[AraraSpec.Execution.fileTypes] = executionOptions.fileTypes
-
-        Arara.config[AraraSpec.Execution.verbose] = executionOptions.verbose
-        Arara.config[AraraSpec.Execution.onlyHeader] = executionOptions.parseOnlyHeader
-
-        Arara.config[AraraSpec.Execution.databaseName] = executionOptions.databaseName
-        Arara.config[AraraSpec.Execution.maxLoops] = executionOptions.maxLoops
 
         if (resource.preambles.isNotEmpty())
             Arara.config[AraraSpec.Execution.preambles] = resource.preambles

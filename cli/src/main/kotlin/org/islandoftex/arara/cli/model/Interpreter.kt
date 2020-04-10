@@ -8,6 +8,7 @@ import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.api.session.Command
+import org.islandoftex.arara.api.session.ExecutionMode
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.localization.Messages
@@ -80,7 +81,7 @@ object Interpreter {
         logger.info(LanguageController.getMessage(Messages.LOG_INFO_BOOLEAN_MODE,
                 value.toString()))
 
-        if (Arara.config[AraraSpec.Execution.dryrun]) {
+        if (Arara.config[AraraSpec.executionOptions].executionMode == ExecutionMode.DRY_RUN) {
             DisplayUtils.printAuthors(authors)
             DisplayUtils.wrapText(LanguageController.getMessage(Messages
                     .INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE,
@@ -112,7 +113,7 @@ object Interpreter {
                 command))
         var success = true
 
-        if (!Arara.config[AraraSpec.Execution.dryrun]) {
+        if (Arara.config[AraraSpec.executionOptions].executionMode != ExecutionMode.DRY_RUN) {
             val code = InterpreterUtils.run(command)
             val check: Any = try {
                 val context = mapOf<String, Any>("value" to code)
@@ -208,7 +209,7 @@ object Interpreter {
 
                     DisplayUtils.printEntryResult(success)
 
-                    if (Arara.config[AraraSpec.Execution.haltOnErrors] && !success)
+                    if (Arara.config[AraraSpec.executionOptions].haltOnErrors && !success)
                     // TODO: localize
                         throw HaltExpectedException("Command failed")
 

@@ -81,7 +81,7 @@ data class LocalConfiguration(
                 verbose = verbose,
                 databaseName = databaseName,
                 fileTypes = filetypes
-                        .plus(Arara.config[AraraSpec.Execution.fileTypes]),
+                        .plus(Arara.config[AraraSpec.executionOptions].fileTypes),
                 rulePaths = preprocessedPaths.map { Paths.get(it) }
                         .plus(Arara.config[AraraSpec.Execution.rulePaths])
                         .toSet(),

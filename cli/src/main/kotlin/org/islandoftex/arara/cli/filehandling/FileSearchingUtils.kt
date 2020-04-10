@@ -124,7 +124,7 @@ object FileSearchingUtils {
      */
     @Throws(AraraException::class)
     private fun lookupFile(reference: String, workingDirectory: File): ProjectFile? {
-        val types = Arara.config[AraraSpec.Execution.fileTypes]
+        val types = Arara.config[AraraSpec.executionOptions].fileTypes
         val file = workingDirectory.resolve(reference)
         val name = file.name
         val parent = FileHandlingUtils.getParentCanonicalFile(file)

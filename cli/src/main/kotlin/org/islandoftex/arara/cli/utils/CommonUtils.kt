@@ -29,7 +29,7 @@ object CommonUtils {
      * @return A string representation of the list of file types, in order.
      */
     val fileTypesList: String
-        get() = "[ " + Arara.config[AraraSpec.Execution.fileTypes]
+        get() = "[ " + Arara.config[AraraSpec.executionOptions].fileTypes
                 .joinToString(" | ") + " ]"
 
     /**

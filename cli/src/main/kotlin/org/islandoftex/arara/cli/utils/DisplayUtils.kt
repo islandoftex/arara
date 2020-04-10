@@ -5,6 +5,7 @@ import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
+import org.islandoftex.arara.api.session.ExecutionMode
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.filehandling.FileHandlingUtils
@@ -47,13 +48,14 @@ object DisplayUtils {
      * Checks if the execution is in dry-run mode.
      */
     private val isDryRunMode: Boolean
-        get() = Arara.config[AraraSpec.Execution.dryrun]
+        get() = Arara.config[AraraSpec.executionOptions].executionMode ==
+                ExecutionMode.DRY_RUN
 
     /**
      * Checks if the execution is in verbose mode.
      */
     private val isVerboseMode: Boolean
-        get() = Arara.config[AraraSpec.Execution.verbose]
+        get() = Arara.config[AraraSpec.executionOptions].verbose
 
     /**
      * The application path.
@@ -298,7 +300,7 @@ object DisplayUtils {
      */
     fun printFileInformation() {
         val file = Arara.config[AraraSpec.Execution.reference].path.toFile()
-        val version = Arara.config[AraraSpec.Application.version]
+        val version = Arara.config[AraraSpec.version]
         val line = LanguageController.getMessage(
                 Messages.INFO_DISPLAY_FILE_INFORMATION,
                 file.name,

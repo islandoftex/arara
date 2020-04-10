@@ -49,7 +49,7 @@ object DirectiveUtils {
      */
     private fun getPotentialDirectiveLines(lines: List<String>):
             Map<Int, String> {
-        val header = Arara.config[AraraSpec.Execution.onlyHeader]
+        val header = Arara.config[AraraSpec.executionOptions].parseOnlyHeader
         val validLineRegex = Arara.config[AraraSpec.Execution.reference].fileType.pattern
         val validLinePattern = validLineRegex.toPattern()
         val validLineStartPattern = (validLineRegex + namePattern).toPattern()
