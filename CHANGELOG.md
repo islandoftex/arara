@@ -28,6 +28,8 @@ from version 5.0.0 on.
 * Removed the `<arara>` shorthand notation which has been deprecated in version
   5.0.0.
   (see #26; breaking change)
+* Removed the preambles feature. It will be replaced by a configuration option
+  through the Kotlin DSL.
 
 ## [5.1.3] - 2020-04-23
 

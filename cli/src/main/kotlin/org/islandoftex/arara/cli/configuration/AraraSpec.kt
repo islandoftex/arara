@@ -44,9 +44,6 @@ object AraraSpec : ConfigSpec() {
                             .applicationPath.resolve("rules")
             )
         }
-        val preambles by optional(mapOf<String, String>())
-        val preamblesActive by optional(false)
-        val preamblesContent by optional("")
 
         val configurationName by optional("[none]")
 

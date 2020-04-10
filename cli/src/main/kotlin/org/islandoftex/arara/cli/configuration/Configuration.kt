@@ -7,7 +7,6 @@ import org.islandoftex.arara.cli.filehandling.FileHandlingUtils
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.core.session.ExecutionOptions
-import org.islandoftex.arara.mvel.configuration.LocalConfiguration
 
 /**
  * Implements the configuration model, which holds the default settings and can
@@ -43,7 +42,25 @@ object Configuration {
             // then validate it and update the
             // configuration accordingly
             val resource = ConfigurationUtils.loadLocalConfiguration(file)
-            update(resource)
+            val executionOptions = resource.toExecutionOptions()
+            val baseOptions = Arara.config[AraraSpec.executionOptions]
+            Arara.config[AraraSpec.executionOptions] = ExecutionOptions(
+                    maxLoops = executionOptions.maxLoops,
+                    timeoutValue = baseOptions.timeoutValue,
+                    parallelExecution = baseOptions.parallelExecution,
+                    haltOnErrors = baseOptions.haltOnErrors,
+                    databaseName = executionOptions.databaseName,
+                    verbose = executionOptions.verbose,
+                    executionMode = baseOptions.executionMode,
+                    fileTypes = executionOptions.fileTypes,
+                    rulePaths = executionOptions.rulePaths,
+                    parseOnlyHeader = executionOptions.parseOnlyHeader
+            )
+            Arara.config[AraraSpec.loggingOptions] = resource.toLoggingOptions()
+            LoggingUtils.enableLogging(
+                    Arara.config[AraraSpec.loggingOptions].enableLogging
+            )
+            Arara.config[AraraSpec.userInterfaceOptions] = resource.toUserInterfaceOptions()
         }
 
         // just to be sure, update the
@@ -51,38 +68,5 @@ object Configuration {
         // display localized messages
         val locale = Arara.config[AraraSpec.Execution.language].locale
         LanguageController.setLocale(locale)
-    }
-
-    /**
-     * Update the configuration based on the provided map.
-     *
-     * @param resource Map containing the new configuration settings.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
-    @Throws(AraraException::class)
-    private fun update(resource: LocalConfiguration) {
-        val executionOptions = resource.toExecutionOptions()
-        val baseOptions = Arara.config[AraraSpec.executionOptions]
-        Arara.config[AraraSpec.executionOptions] = ExecutionOptions(
-                maxLoops = executionOptions.maxLoops,
-                timeoutValue = baseOptions.timeoutValue,
-                parallelExecution = baseOptions.parallelExecution,
-                haltOnErrors = baseOptions.haltOnErrors,
-                databaseName = executionOptions.databaseName,
-                verbose = executionOptions.verbose,
-                executionMode = baseOptions.executionMode,
-                fileTypes = executionOptions.fileTypes,
-                rulePaths = executionOptions.rulePaths,
-                parseOnlyHeader = executionOptions.parseOnlyHeader
-        )
-        Arara.config[AraraSpec.loggingOptions] = resource.toLoggingOptions()
-        LoggingUtils.enableLogging(
-                Arara.config[AraraSpec.loggingOptions].enableLogging
-        )
-        Arara.config[AraraSpec.userInterfaceOptions] = resource.toUserInterfaceOptions()
-
-        if (resource.preambles.isNotEmpty())
-            Arara.config[AraraSpec.Execution.preambles] = resource.preambles
     }
 }

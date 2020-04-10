@@ -19,7 +19,6 @@ import org.islandoftex.arara.cli.configuration.Configuration
 import org.islandoftex.arara.cli.filehandling.FileSearchingUtils
 import org.islandoftex.arara.cli.localization.Language
 import org.islandoftex.arara.cli.localization.LanguageController
-import org.islandoftex.arara.cli.localization.Messages
 import org.islandoftex.arara.cli.model.ProjectFile
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
@@ -59,8 +58,6 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
     private val maxLoops by option("-m", "--max-loops",
             help = "Set the maximum number of loops (> 0)")
             .int().restrictTo(min = 1)
-    private val preamble by option("-p", "--preamble",
-            help = "Set the file preamble based on the configuration file")
     private val workingDirectory by option("-d", "--working-directory",
             help = "Set the working directory for all tools")
             .path(mustExist = true, canBeFile = false, mustBeReadable = true)
@@ -106,20 +103,6 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                 appendLog = Arara.config[AraraSpec.loggingOptions].appendLog,
                 logFile = Arara.config[AraraSpec.loggingOptions].logFile
         )
-        preamble?.let {
-            val preambles = Arara.config[AraraSpec.Execution.preambles]
-            if (preambles.containsKey(it)) {
-                Arara.config[AraraSpec.Execution.preamblesActive] = true
-                Arara.config[AraraSpec.Execution.preamblesContent] =
-                        // will never throw (see check above)
-                        preambles.getValue(it)
-            } else {
-                throw AraraException(
-                        LanguageController.getMessage(
-                                Messages.ERROR_PARSER_INVALID_PREAMBLE, it)
-                )
-            }
-        }
     }
 
     /**

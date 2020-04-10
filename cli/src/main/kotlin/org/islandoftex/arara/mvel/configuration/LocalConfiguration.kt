@@ -35,8 +35,7 @@ data class LocalConfiguration(
     private var header: Boolean = Arara.config[AraraSpec.executionOptions].parseOnlyHeader,
     private var dbname: String = Arara.config[AraraSpec.executionOptions].databaseName.toString(),
     private var logname: String = Arara.config[AraraSpec.loggingOptions].logFile.toString(),
-    private var laf: String = Arara.config[AraraSpec.userInterfaceOptions].swingLookAndFeel,
-    var preambles: Map<String, String> = Arara.config[AraraSpec.Execution.preambles]
+    private var laf: String = Arara.config[AraraSpec.userInterfaceOptions].swingLookAndFeel
 ) {
     /**
      * Convert the relevant properties of the configuration to execution

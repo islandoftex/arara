@@ -70,22 +70,6 @@ object CommonUtils {
         }
 
     /**
-     * Gets the preamble content, converting a single string into a list of
-     * strings, based on new lines.
-     *
-     * @return A list of strings representing the preamble content.
-     */
-    val preambleContent: List<String>
-        get() = if (Arara.config[AraraSpec.Execution.preamblesActive]) {
-            Arara.config[AraraSpec.Execution.preamblesContent]
-                    .split("\n")
-                    .dropLastWhile { it.isEmpty() }
-                    .toList()
-        } else {
-            listOf()
-        }
-
-    /**
      * Checks if the input string is equal to a valid boolean value.
      *
      * @param value The input string.
