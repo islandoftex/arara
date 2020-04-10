@@ -18,6 +18,7 @@ import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.configuration.Configuration
 import org.islandoftex.arara.cli.filehandling.FileSearchingUtils
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
+import org.islandoftex.arara.core.files.Project
 
 @DoNotParallelize
 class ExecutionTest : ShouldSpec({
@@ -28,8 +29,8 @@ class ExecutionTest : ShouldSpec({
         val output = ByteArrayOutputStream()
         try {
             System.setOut(PrintStream(output))
-            Arara.config[AraraSpec.Execution.workingDirectory] =
-                    Paths.get(getPathForTest(testName))
+            Arara.config[AraraSpec.Execution.currentProject] =
+                    Project("Test", Paths.get(getPathForTest(testName)), setOf())
             Configuration.load()
             Arara.config[AraraSpec.Execution.verbose] = true
             Arara.config[AraraSpec.Execution.reference] = FileSearchingUtils

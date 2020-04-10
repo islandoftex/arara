@@ -96,9 +96,8 @@ object SystemCallUtils {
      */
     fun executeSystemCommand(command: Command): Pair<Int, String> {
         return ProcessExecutor(command.elements).runCatching {
-            // TODO: choose project's working directory over the execution-wide one
             val workingDirectory = command.workingDirectory
-                    ?: Arara.config[AraraSpec.Execution.workingDirectory]
+                    ?: Arara.config[AraraSpec.Execution.currentProject].workingDirectory
             directory(workingDirectory.toFile().absoluteFile)
             readOutput(true)
             execute().run {

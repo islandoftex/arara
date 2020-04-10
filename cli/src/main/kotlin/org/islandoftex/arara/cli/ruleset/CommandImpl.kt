@@ -17,7 +17,7 @@ import org.islandoftex.arara.cli.utils.CommonUtils
 class CommandImpl : Command {
     override val elements: List<String>
     override var workingDirectory: Path = Arara.config[AraraSpec.Execution
-            .workingDirectory]
+            .currentProject].workingDirectory
 
     /**
      * Constructor.

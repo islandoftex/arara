@@ -33,7 +33,7 @@ object ConfigurationUtils {
         get() {
             val names = listOf(".araraconfig.yaml",
                     "araraconfig.yaml", ".arararc.yaml", "arararc.yaml")
-            Arara.config[AraraSpec.Execution.workingDirectory]
+            Arara.config[AraraSpec.Execution.currentProject].workingDirectory
                     .let { workingDir ->
                         val first = names
                                 .map { workingDir.resolve(it).toFile() }

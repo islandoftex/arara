@@ -61,7 +61,7 @@ object InterpreterUtils {
     ): ProcessExecutor {
         val timeOutValue = Arara.config[AraraSpec.executionOptions].timeoutValue
         val workingDirectory = command.workingDirectory
-                ?: Arara.config[AraraSpec.Execution.workingDirectory]
+                ?: Arara.config[AraraSpec.Execution.currentProject].workingDirectory
         var executor = ProcessExecutor().command((command).elements)
                 .directory(workingDirectory.toFile().absoluteFile)
                 .addDestroyer(ShutdownHookProcessDestroyer())
@@ -151,7 +151,7 @@ object InterpreterUtils {
         return if (path.isAbsolute) {
             path.resolve(fileName).toString()
         } else {
-            Arara.config[AraraSpec.Execution.workingDirectory]
+            Arara.config[AraraSpec.Execution.currentProject].workingDirectory
                     // first resolve the path (rule path) against the working
                     // directory, then the rule name we want to resolve
                     .resolve(path).resolve(fileName).toAbsolutePath().toString()

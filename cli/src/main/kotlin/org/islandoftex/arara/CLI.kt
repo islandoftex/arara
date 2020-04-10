@@ -106,8 +106,6 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                 appendLog = Arara.config[AraraSpec.loggingOptions].appendLog,
                 logFile = Arara.config[AraraSpec.loggingOptions].logFile
         )
-        Arara.config[AraraSpec.Execution.workingDirectory] = workingDirectory
-                ?: AraraSpec.Execution.workingDirectory.default
         preamble?.let {
             val preambles = Arara.config[AraraSpec.Execution.preambles]
             if (preambles.containsKey(it)) {
@@ -145,7 +143,8 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         // context resets lead to missing output
         LoggingUtils.enableLogging(log)
 
-        val workingDir = workingDirectory ?: AraraSpec.Execution.workingDirectory.default
+        val workingDir = workingDirectory 
+                ?: AraraSpec.Execution.currentProject.default.workingDirectory
         try {
             // TODO: this will have to change for parallelization
             val projects = listOf(Project(
@@ -169,6 +168,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                 Executor.hooks = ExecutorHooks(
                         executeBeforeProject = {
                             Configuration.load()
+                            Arara.config[AraraSpec.Execution.currentProject] = it
                         },
                         executeBeforeFile = {
                             // TODO: do we have to reset some more file-specific config?

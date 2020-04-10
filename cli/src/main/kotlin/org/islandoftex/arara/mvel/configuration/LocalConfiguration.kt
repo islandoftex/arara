@@ -57,7 +57,8 @@ data class LocalConfiguration(
                                         ?: "")
                         ),
                         "application" to mapOf(
-                                "workingDirectory" to Arara.config[AraraSpec.Execution.workingDirectory].toAbsolutePath().toString()
+                                "workingDirectory" to Arara.config[AraraSpec.Execution.currentProject]
+                                        .workingDirectory.toAbsolutePath().toString()
                         )
                 )) as String
             } catch (_: RuntimeException) {

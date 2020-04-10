@@ -101,10 +101,7 @@ object FileSearchingUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun resolveFile(
-        reference: String,
-        workingDirectory: File = Arara.config[AraraSpec.Execution.workingDirectory].toFile()
-    ): ProjectFile =
+    fun resolveFile(reference: String, workingDirectory: File): ProjectFile =
             lookupFile(reference, workingDirectory)
                     ?: throw AraraException(
                         LanguageController.getMessage(

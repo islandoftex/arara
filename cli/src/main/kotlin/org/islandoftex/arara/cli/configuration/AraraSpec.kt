@@ -4,6 +4,7 @@ package org.islandoftex.arara.cli.configuration
 import com.uchuhimo.konf.ConfigSpec
 import java.nio.file.Paths
 import org.islandoftex.arara.api.files.FileType
+import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.session.ExecutionOptions
 import org.islandoftex.arara.api.session.LoggingOptions
 import org.islandoftex.arara.api.session.UserInterfaceOptions
@@ -47,7 +48,6 @@ object AraraSpec : ConfigSpec() {
         val preamblesActive by optional(false)
         val preamblesContent by optional("")
 
-        val workingDirectory by optional(Paths.get(""))
         val configurationName by optional("[none]")
 
         // TODO: this is a runtime value which should be properly
@@ -55,6 +55,9 @@ object AraraSpec : ConfigSpec() {
         // Spec or session)
         val reference by optional<org.islandoftex.arara.api.files.ProjectFile>(
                 ProjectFile(Paths.get("/tmp/"), FileType.UNKNOWN_TYPE)
+        )
+        val currentProject by optional<Project>(
+                org.islandoftex.arara.core.files.Project("", Paths.get(""), setOf())
         )
 
         object InfoSpec : ConfigSpec() {
