@@ -5,7 +5,6 @@ import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.cli.filehandling.FileHandlingUtils
 import org.islandoftex.arara.cli.localization.LanguageController
-import org.islandoftex.arara.cli.localization.Messages
 import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.mvel.configuration.LocalConfiguration
 
@@ -20,10 +19,6 @@ import org.islandoftex.arara.mvel.configuration.LocalConfiguration
  * @since 4.0
  */
 object Configuration {
-    // the application messages obtained from the
-    // language controller
-    private val messages = LanguageController
-
     /**
      * Loads the application configuration.
      *
@@ -81,17 +76,7 @@ object Configuration {
         Arara.config[AraraSpec.Execution.onlyHeader] = executionOptions.parseOnlyHeader
 
         Arara.config[AraraSpec.Execution.databaseName] = executionOptions.databaseName
-
-        val loops = executionOptions.maxLoops
-        if (loops <= 0) {
-            throw AraraException(
-                messages.getMessage(
-                    Messages.ERROR_CONFIGURATION_LOOPS_INVALID_RANGE
-                )
-            )
-        } else {
-            Arara.config[AraraSpec.Execution.maxLoops] = loops
-        }
+        Arara.config[AraraSpec.Execution.maxLoops] = executionOptions.maxLoops
 
         if (resource.preambles.isNotEmpty())
             Arara.config[AraraSpec.Execution.preambles] = resource.preambles

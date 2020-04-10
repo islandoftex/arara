@@ -4,11 +4,14 @@ package org.islandoftex.arara.mvel.configuration
 import java.nio.file.Paths
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.Arara
+import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.session.ExecutionOptions
 import org.islandoftex.arara.api.session.LoggingOptions
 import org.islandoftex.arara.api.session.UserInterfaceOptions
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
+import org.islandoftex.arara.cli.localization.LanguageController
+import org.islandoftex.arara.cli.localization.Messages
 import org.islandoftex.arara.cli.model.FileTypeImpl
 import org.islandoftex.arara.cli.utils.CommonUtils
 import org.mvel2.templates.TemplateRuntime
@@ -42,6 +45,7 @@ data class LocalConfiguration(
      *
      * @return The corresponding execution options.
      */
+    @Throws(AraraException::class)
     fun toExecutionOptions(): ExecutionOptions {
         val preprocessedPaths = paths.map { it.trim() }.map { input ->
             try {
@@ -63,8 +67,17 @@ data class LocalConfiguration(
             }
         }
         val databaseName = Paths.get(ConfigurationUtils.cleanFileName(dbname))
+        val maxLoops = if (loops > 0) {
+            loops
+        } else {
+            throw AraraException(
+                    LanguageController.getMessage(
+                            Messages.ERROR_CONFIGURATION_LOOPS_INVALID_RANGE
+                    )
+            )
+        }
         return org.islandoftex.arara.core.session.ExecutionOptions(
-                maxLoops = loops,
+                maxLoops = maxLoops,
                 verbose = verbose,
                 databaseName = databaseName,
                 fileTypes = filetypes
