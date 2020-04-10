@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory
 import org.zeroturnaround.exec.InvalidExitValueException
 import org.zeroturnaround.exec.ProcessExecutor
 import org.zeroturnaround.exec.listener.ShutdownHookProcessDestroyer
+import org.zeroturnaround.exec.stream.TeeOutputStream
 
 /**
  * Implements interpreter utilitary methods.
@@ -73,7 +74,7 @@ object InterpreterUtils {
             executor = executor.redirectInput(System.`in`)
             TeeOutputStream(System.out, buffer)
         } else {
-            TeeOutputStream(buffer)
+            buffer
         }
         executor = executor.redirectOutput(tee).redirectError(tee)
         return executor
