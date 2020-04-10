@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.model
 
-import java.util.regex.PatternSyntaxException
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
@@ -44,24 +43,6 @@ class FileTypeImpl : FileType {
         }
         private set
 
-    constructor(extension: String, pattern: String) {
-        this.extension = extension
-        this.pattern = pattern
-
-        try {
-            pattern.toPattern()
-        } catch (e: PatternSyntaxException) {
-            if (!ConfigurationUtils.defaultFileTypePatterns.containsKey(extension))
-                throw AraraException(
-                    LanguageController.getMessage(
-                        Messages.ERROR_FILETYPE_UNKNOWN_EXTENSION,
-                        extension,
-                        CommonUtils.fileTypesList
-                    )
-                )
-        }
-    }
-
     /**
      * Provides a textual representation of the current file type object.
      * @return A string containing a textual representation of the current file
@@ -100,4 +81,4 @@ class FileTypeImpl : FileType {
  * This value identifies an unknown file type.
  */
 val FileType.Companion.UNKNOWN_TYPE: FileType
-    get() = FileTypeImpl(FileType.INVALID_EXTENSION, "")
+    get() = org.islandoftex.arara.core.files.FileType(INVALID_EXTENSION, "")

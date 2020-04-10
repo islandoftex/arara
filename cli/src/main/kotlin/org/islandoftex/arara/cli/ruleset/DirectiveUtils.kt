@@ -9,6 +9,7 @@ import java.io.File
 import java.util.regex.Pattern
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.cli.configuration.AraraSpec
@@ -45,12 +46,16 @@ object DirectiveUtils {
      * directives.
      *
      * @param lines The lines of the file.
+     * @param parseOnlyHeader Whether to parse only the header.
+     * @param fileType The file type of the file to investigate.
      * @return A map containing the line number and the line's content.
      */
-    private fun getPotentialDirectiveLines(lines: List<String>):
-            Map<Int, String> {
-        val header = Arara.config[AraraSpec.executionOptions].parseOnlyHeader
-        val validLineRegex = Arara.config[AraraSpec.Execution.reference].fileType.pattern
+    private fun getPotentialDirectiveLines(
+        lines: List<String>,
+        parseOnlyHeader: Boolean,
+        fileType: FileType
+    ): Map<Int, String> {
+        val validLineRegex = fileType.pattern
         val validLinePattern = validLineRegex.toPattern()
         val validLineStartPattern = (validLineRegex + namePattern).toPattern()
         val map = mutableMapOf<Int, String>()
@@ -63,7 +68,7 @@ object DirectiveUtils {
                 logger.info(LanguageController.getMessage(
                         Messages.LOG_INFO_POTENTIAL_PATTERN_FOUND,
                         i + 1, line.trim()))
-            } else if (header && !checkLinePattern(validLinePattern, text)) {
+            } else if (parseOnlyHeader && !checkLinePattern(validLinePattern, text)) {
                 // if we should only look within the file's header and reached
                 // a point where the line pattern does not match anymore, we
                 // assume we have left the header and break
@@ -77,14 +82,20 @@ object DirectiveUtils {
      * Extracts a list of directives from a list of strings.
      *
      * @param lines List of strings.
+     * @param parseOnlyHeader Whether to parse only the header.
+     * @param fileType The file type of the file to investigate.
      * @return A list of directives.
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
     @Throws(AraraException::class)
     @Suppress("MagicNumber")
-    fun extractDirectives(lines: List<String>): List<Directive> {
-        val pairs = getPotentialDirectiveLines(lines)
+    fun extractDirectives(
+        lines: List<String>,
+        parseOnlyHeader: Boolean,
+        fileType: FileType
+    ): List<Directive> {
+        val pairs = getPotentialDirectiveLines(lines, parseOnlyHeader, fileType)
                 .takeIf { it.isNotEmpty() }
                 ?: throw AraraException(
                         LanguageController.getMessage(
@@ -135,7 +146,7 @@ object DirectiveUtils {
     @Throws(AraraException::class)
     @Suppress("MagicNumber")
     fun generateDirective(assembler: DirectiveAssembler): Directive {
-        val matcher = directivePattern.matcher(assembler.getText())
+        val matcher = directivePattern.matcher(assembler.text)
         if (matcher.find()) {
             val directive = DirectiveImpl(
                     identifier = matcher.group(1)!!,
