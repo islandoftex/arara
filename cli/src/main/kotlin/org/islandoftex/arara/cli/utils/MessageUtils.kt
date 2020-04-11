@@ -79,8 +79,9 @@ object MessageUtils {
      * @param title Title of the message.
      * @param text Text of the message.
      */
+    @JvmOverloads
     fun showMessage(
-        width: Int,
+        width: Int = WIDTH,
         type: Int,
         title: String,
         text: String
@@ -98,16 +99,6 @@ object MessageUtils {
     }
 
     /**
-     * Shows the message. It relies on the default width.
-     * @param type Type of message.
-     * @param title Title of the message.
-     * @param text Text of the message.
-     */
-    fun showMessage(type: Int, title: String, text: String) {
-        showMessage(WIDTH, type, title, text)
-    }
-
-    /**
      * Shows a message with options presented as an array of buttons.
      * @param width Integer value, in pixels.
      * @param type Type of message.
@@ -116,8 +107,9 @@ object MessageUtils {
      * @param buttons An array of objects to be presented as buttons.
      * @return The index of the selected button, starting from 1.
      */
+    @JvmOverloads
     fun showOptions(
-        width: Int,
+        width: Int = WIDTH,
         type: Int,
         title: String,
         text: String,
@@ -139,25 +131,6 @@ object MessageUtils {
     }
 
     /**
-     * Shows a message with options presented as an array of buttons. It relies
-     * on the default width.
-     * @param type Type of message.
-     * @param title Title of the message.
-     * @param text Text of the message.
-     * @param buttons An array of objects to be presented as buttons.
-     * @return The index of the selected button, starting from 1.
-     */
-    @Suppress("SpreadOperator")
-    fun showOptions(
-        type: Int,
-        title: String,
-        text: String,
-        vararg buttons: Any
-    ): Int {
-        return showOptions(WIDTH, type, title, text, *buttons)
-    }
-
-    /**
      * Shows a message with a text input.
      * @param width Integer value, in pixels.
      * @param type Type of message.
@@ -165,8 +138,9 @@ object MessageUtils {
      * @param text Text of the message.
      * @return The string representing the input text.
      */
+    @JvmOverloads
     fun showInput(
-        width: Int,
+        width: Int = WIDTH,
         type: Int,
         title: String,
         text: String
@@ -189,17 +163,6 @@ object MessageUtils {
     }
 
     /**
-     * Shows a message with a text input. It relies on the default width.
-     * @param type Type of message.
-     * @param title Title of the message.
-     * @param text Text of the message.
-     * @return The string representing the input text.
-     */
-    fun showInput(type: Int, title: String, text: String): String {
-        return showInput(WIDTH, type, title, text)
-    }
-
-    /**
      * Shows a message with options presented as a dropdown list of elements.
      * @param width Integer value, in pixels.
      * @param type Type of message.
@@ -208,8 +171,9 @@ object MessageUtils {
      * @param elements An array of objects representing the elements.
      * @return The index of the selected element, starting from 1.
      */
+    @JvmOverloads
     fun showDropdown(
-        width: Int,
+        width: Int = WIDTH,
         type: Int,
         title: String,
         text: String,
@@ -243,24 +207,5 @@ object MessageUtils {
         // nothing was selected,
         // simply return zero
         return 0
-    }
-
-    /**
-     * Shows a message with options presented as a dropdown list of elements. It
-     * relies on the default width.
-     * @param type Type of message.
-     * @param title Title of the message.
-     * @param text Text of the message.
-     * @param elements An array of objects representing the elements.
-     * @return The index of the selected element, starting from 1.
-     */
-    @Suppress("SpreadOperator")
-    fun showDropdown(
-        type: Int,
-        title: String,
-        text: String,
-        vararg elements: Any
-    ): Int {
-        return showDropdown(WIDTH, type, title, text, *elements)
     }
 }
