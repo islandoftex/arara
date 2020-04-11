@@ -13,7 +13,7 @@ import org.islandoftex.arara.cli.localization.Messages;
 import org.islandoftex.arara.cli.ruleset.CommandImpl;
 import org.islandoftex.arara.cli.utils.ClassLoadingUtils;
 import org.islandoftex.arara.cli.utils.CommonUtils;
-import org.islandoftex.arara.cli.utils.MessageUtils;
+import org.islandoftex.arara.core.ui.GUIDialogs;
 import org.islandoftex.arara.cli.utils.SystemCallUtils;
 import org.islandoftex.arara.core.session.Environment;
 import org.islandoftex.arara.core.session.Session;
@@ -878,7 +878,8 @@ public class Methods {
      */
     public static void showMessage(int width, int type,
                                    String title, String text) {
-        MessageUtils.INSTANCE.showMessage(width, type, title, text);
+        GUIDialogs.INSTANCE.showMessage(width, type, title, text,
+                Arara.INSTANCE.getConfig().get(AraraSpec.INSTANCE.getUserInterfaceOptions()));
     }
 
     /**
@@ -889,7 +890,7 @@ public class Methods {
      * @param text  Text of the message.
      */
     public static void showMessage(int type, String title, String text) {
-        MessageUtils.INSTANCE.showMessage(type, title, text);
+        showMessage(GUIDialogs.DEFAULT_WIDTH, type, title, text);
     }
 
     /**
@@ -904,7 +905,9 @@ public class Methods {
      */
     public static int showOptions(int width, int type, String title,
                                   String text, Object... buttons) {
-        return MessageUtils.INSTANCE.showOptions(width, type, title, text, buttons);
+        return GUIDialogs.INSTANCE.showOptions(width, type, title, text,
+                Arara.INSTANCE.getConfig().get(AraraSpec.INSTANCE.getUserInterfaceOptions()),
+                buttons);
     }
 
     /**
@@ -919,7 +922,7 @@ public class Methods {
      */
     public static int showOptions(int type, String title,
                                   String text, Object... buttons) {
-        return MessageUtils.INSTANCE.showOptions(type, title, text, buttons);
+        return showOptions(GUIDialogs.DEFAULT_WIDTH, type, title, text, buttons);
     }
 
     /**
@@ -933,7 +936,8 @@ public class Methods {
      */
     public static String showInput(int width, int type,
                                    String title, String text) {
-        return MessageUtils.INSTANCE.showInput(width, type, title, text);
+        return GUIDialogs.INSTANCE.showInput(width, type, title, text,
+                Arara.INSTANCE.getConfig().get(AraraSpec.INSTANCE.getUserInterfaceOptions()));
     }
 
     /**
@@ -945,7 +949,7 @@ public class Methods {
      * @return The string representing the input text.
      */
     public static String showInput(int type, String title, String text) {
-        return MessageUtils.INSTANCE.showInput(type, title, text);
+        return showInput(GUIDialogs.DEFAULT_WIDTH, type, title, text);
     }
 
     /**
@@ -960,7 +964,7 @@ public class Methods {
      */
     public static int showDropdown(int width, int type, String title,
                                    String text, Object... elements) {
-        return MessageUtils.INSTANCE.showDropdown(width, type, title, text, elements);
+        return GUIDialogs.INSTANCE.showDropdown(width, type, title, text, elements);
     }
 
     /**
@@ -975,7 +979,7 @@ public class Methods {
      */
     public static int showDropdown(int type, String title,
                                    String text, Object... elements) {
-        return MessageUtils.INSTANCE.showDropdown(type, title, text, elements);
+        return GUIDialogs.INSTANCE.showDropdown(type, title, text, elements);
     }
 
     /**

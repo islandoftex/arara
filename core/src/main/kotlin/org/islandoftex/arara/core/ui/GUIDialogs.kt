@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.utils
+package org.islandoftex.arara.core.ui
 
 import javax.swing.JOptionPane
 import javax.swing.UIManager
-import org.islandoftex.arara.Arara
-import org.islandoftex.arara.cli.configuration.AraraSpec
+import org.islandoftex.arara.api.session.UserInterfaceOptions
 
 /**
  * Implements utilitary methods for displaying messages.
@@ -13,17 +12,21 @@ import org.islandoftex.arara.cli.configuration.AraraSpec
  * @version 5.0
  * @since 4.0
  */
-object MessageUtils {
-    // holds the default width for the
-    // message body, in pixels
-    private const val WIDTH = 250
+object GUIDialogs {
+    /**
+     * The default width for the message body, in pixels.
+     */
+    const val DEFAULT_WIDTH = 250
 
-    // let's start the UI manager and set
-    // the default look and feel to be as
-    // close as possible to the system
-    init {
+    /**
+     * Set the system's look and feel.
+     *
+     * @param userInterfaceOptions The user interface options containing the
+     *   new look and feel.
+     */
+    private fun applyUIOptions(userInterfaceOptions: UserInterfaceOptions) {
         // get the current look and feel
-        var laf = Arara.config[AraraSpec.userInterfaceOptions].swingLookAndFeel
+        var laf = userInterfaceOptions.swingLookAndFeel
 
         // check if one is actually set
         if (laf != "none") {
@@ -69,7 +72,7 @@ object MessageUtils {
      * @return The normalized width.
      */
     private fun normalizeMessageWidth(value: Int): Int {
-        return if (value > 0) value else WIDTH
+        return if (value > 0) value else DEFAULT_WIDTH
     }
 
     /**
@@ -81,11 +84,13 @@ object MessageUtils {
      */
     @JvmOverloads
     fun showMessage(
-        width: Int = WIDTH,
+        width: Int = DEFAULT_WIDTH,
         type: Int,
         title: String,
-        text: String
+        text: String,
+        userInterfaceOptions: UserInterfaceOptions? = null
     ) {
+        userInterfaceOptions?.let { applyUIOptions(it) }
         // effectively shows the message based
         // on the provided parameters
         JOptionPane.showMessageDialog(null,
@@ -109,12 +114,14 @@ object MessageUtils {
      */
     @JvmOverloads
     fun showOptions(
-        width: Int = WIDTH,
+        width: Int = DEFAULT_WIDTH,
         type: Int,
         title: String,
         text: String,
+        userInterfaceOptions: UserInterfaceOptions? = null,
         vararg buttons: Any
     ): Int {
+        userInterfaceOptions?.let { applyUIOptions(it) }
         // returns the index of the selected button,
         // zero if nothing is selected
         return JOptionPane.showOptionDialog(null,
@@ -140,11 +147,13 @@ object MessageUtils {
      */
     @JvmOverloads
     fun showInput(
-        width: Int = WIDTH,
+        width: Int = DEFAULT_WIDTH,
         type: Int,
         title: String,
-        text: String
+        text: String,
+        userInterfaceOptions: UserInterfaceOptions? = null
     ): String {
+        userInterfaceOptions?.let { applyUIOptions(it) }
         // get the string from the
         // input text, if any
         val input = JOptionPane.showInputDialog(null,
@@ -173,14 +182,15 @@ object MessageUtils {
      */
     @JvmOverloads
     fun showDropdown(
-        width: Int = WIDTH,
+        width: Int = DEFAULT_WIDTH,
         type: Int,
         title: String,
         text: String,
+        userInterfaceOptions: UserInterfaceOptions? = null,
         vararg elements: Any
     ): Int {
-        // show the dropdown list and get
-        // the selected object, if any
+        userInterfaceOptions?.let { applyUIOptions(it) }
+        // show the dropdown list and get the selected object, if any
         val index = JOptionPane.showInputDialog(null,
                 String.format(
                         "<html><body style=\"width:%dpx\">%s</body></html>",
@@ -191,8 +201,7 @@ object MessageUtils {
                 elements,
                 elements[0])
 
-        // if it's not a null object, let's
-        // find the corresponding index
+        // if it's not a null object, let's find the corresponding index
         if (index != null) {
             elements.forEachIndexed { i, value ->
                 // if the element is found, simply
@@ -204,8 +213,7 @@ object MessageUtils {
             }
         }
 
-        // nothing was selected,
-        // simply return zero
+        // nothing was selected, simply return zero
         return 0
     }
 }
