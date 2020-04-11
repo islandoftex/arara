@@ -10,12 +10,15 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     `java-library`
     `maven-publish`
+    id("org.jetbrains.kotlin.plugin.serialization")
     id("com.github.johnrengelman.shadow")
 }
 
 val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class).kotlinPluginVersion
 dependencies {
     api(project(":api"))
+    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-runtime", version = Versions.kotlinxSerialization)
+    implementation(group = "com.charleskorn.kaml", name = "kaml", version = Versions.kaml)
     implementation(group = "org.zeroturnaround", name = "zt-exec", version = Versions.ztExec)
 
     testImplementation(group = "io.kotest", name = "kotest-runner-junit5-jvm", version = Versions.kotest)

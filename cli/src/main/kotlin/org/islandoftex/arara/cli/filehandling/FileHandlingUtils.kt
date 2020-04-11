@@ -3,13 +3,16 @@ package org.islandoftex.arara.cli.filehandling
 
 import java.io.File
 import java.io.IOException
+import java.nio.file.Paths
 import java.text.SimpleDateFormat
 import java.util.zip.CRC32
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.localization.Messages
+import org.islandoftex.arara.core.files.Database
 
 /**
  * Implements file handling utilitary methods.
@@ -135,9 +138,9 @@ object FileHandlingUtils {
         }.getOrElse {
             // it is IOException || is is SecurityException
             throw AraraException(
-                LanguageController.getMessage(
-                    Messages.ERROR_GETPARENTCANONICALPATH_IO_EXCEPTION
-                ), it
+                    LanguageController.getMessage(
+                            Messages.ERROR_GETPARENTCANONICALPATH_IO_EXCEPTION
+                    ), it
             )
         }
     }
@@ -184,10 +187,10 @@ object FileHandlingUtils {
             return file.canonicalFile
         } catch (exception: IOException) {
             throw AraraException(
-                LanguageController.getMessage(
-                    Messages.ERROR_GETCANONICALFILE_IO_EXCEPTION
-                ),
-                exception
+                    LanguageController.getMessage(
+                            Messages.ERROR_GETCANONICALFILE_IO_EXCEPTION
+                    ),
+                    exception
             )
         }
     }
@@ -213,20 +216,19 @@ object FileHandlingUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun calculateHash(file: File): String {
-        try {
-            return String.format("%08x", CRC32().run {
-                update(file.readBytes())
-                value
-            })
-        } catch (exception: IOException) {
-            throw AraraException(
-                LanguageController.getMessage(
-                    Messages.ERROR_CALCULATEHASH_IO_EXCEPTION
-                ), exception
-            )
-        }
-    }
+    fun calculateHash(file: File): Long =
+            try {
+                CRC32().run {
+                    update(file.readBytes())
+                    value
+                }
+            } catch (exception: IOException) {
+                throw AraraException(
+                        LanguageController.getMessage(
+                                Messages.ERROR_CALCULATEHASH_IO_EXCEPTION
+                        ), exception
+                )
+            }
 
     /**
      * Gets the extension of a file.
@@ -248,37 +250,44 @@ object FileHandlingUtils {
      * Checks if a file has changed since the last verification.
      *
      * @param file The file.
+     * @param project The project the file is part of.
      * @return A boolean value indicating if the file has changed since the last
      * verification.
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun hasChanged(file: File): Boolean {
-        val database = DatabaseUtils.load()
-        val path = getCanonicalPath(file)
+    @JvmOverloads
+    fun hasChanged(
+        file: File,
+        project: Project = Arara.config[AraraSpec.Execution.currentProject]
+    ): Boolean {
+        val dbPath = project.workingDirectory.resolve(Arara
+                .config[AraraSpec.executionOptions].databaseName)
+        val database = Database.load(dbPath)
+        val path = Paths.get(getCanonicalPath(file))
         return if (!file.exists()) {
-            if (database.containsKey(path)) {
+            if (path in database) {
                 database.remove(path)
-                DatabaseUtils.save(database)
+                database.save(dbPath)
                 true
             } else {
                 false
             }
         } else {
             val hash = calculateHash(file)
-            if (database.containsKey(path)) {
+            if (path in database) {
                 val value = database[path]
                 if (hash == value) {
                     false
                 } else {
                     database[path] = hash
-                    DatabaseUtils.save(database)
+                    database.save(dbPath)
                     true
                 }
             } else {
                 database[path] = hash
-                DatabaseUtils.save(database)
+                database.save(dbPath)
                 true
             }
         }
@@ -314,10 +323,10 @@ object FileHandlingUtils {
             )
         } else {
             throw AraraException(
-                LanguageController.getMessage(
-                    Messages.ERROR_ISSUBDIRECTORY_NOT_A_DIRECTORY,
-                    child.name
-                )
+                    LanguageController.getMessage(
+                            Messages.ERROR_ISSUBDIRECTORY_NOT_A_DIRECTORY,
+                            child.name
+                    )
             )
         }
     }
