@@ -21,6 +21,8 @@ from version 5.0.0 on.
   (breaking change)
 * Languages have to be passed as IETF BCP 47 codes. The old system has been
   removed. Hence, please use `en-QN` instead of `qn` etc.
+* Localization is provided by classes as library instead of property files in
+  arara's resources.
 * The log file may now be specified as path anywhere on the file system.
   Warning: This behavior may be altered for a future safe mode.
   (see https://github.com/cereda/arara/issues/133).
