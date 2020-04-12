@@ -30,8 +30,8 @@ object FileHandlingUtils {
      * @return A reference of the current file in execution. Might be different
      * than the main file provided in the command line.
      */
-    private val currentFile: File
-        get() = Arara.config[AraraSpec.Execution.reference].path.toFile()
+    private val currentFile: Path
+        get() = Arara.config[AraraSpec.Execution.reference].path
 
     /**
      * Writes the string to a file, using UTF-8 as default encoding.
@@ -84,10 +84,8 @@ object FileHandlingUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun exists(extension: String): Boolean {
-        return Files.exists(FileHandling.changeExtension(
-                currentFile.toPath(), extension))
-    }
+    fun exists(extension: String): Boolean =
+        Files.exists(FileHandling.changeExtension(currentFile, extension))
 
     /**
      * Gets the parent canonical file of a file.
@@ -120,9 +118,8 @@ object FileHandlingUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun getPath(extension: String): String {
-        return FileHandling.changeExtension(currentFile.toPath(), extension).toString()
-    }
+    fun getPath(extension: String): String =
+            FileHandling.changeExtension(currentFile, extension).toString()
 
     /**
      * Gets the date the provided file was last modified.
@@ -168,5 +165,8 @@ object FileHandlingUtils {
         file: File,
         project: Project = Arara.config[AraraSpec.Execution.currentProject],
         databaseName: Path = Arara.config[AraraSpec.executionOptions].databaseName
-    ): Boolean = FileHandling.hasChanged(file.toPath(), project.workingDirectory.resolve(databaseName))
+    ): Boolean = FileHandling.hasChanged(
+            file.toPath(),
+            project.workingDirectory.resolve(databaseName)
+    )
 }
