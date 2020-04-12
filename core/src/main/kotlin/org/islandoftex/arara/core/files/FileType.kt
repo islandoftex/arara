@@ -58,4 +58,4 @@ data class FileType(
  * This value identifies an unknown file type.
  */
 val FileType.Companion.UNKNOWN_TYPE: FileType
-    get() = FileType(FileType.INVALID_EXTENSION, "")
+    get() = FileType(INVALID_EXTENSION, "")

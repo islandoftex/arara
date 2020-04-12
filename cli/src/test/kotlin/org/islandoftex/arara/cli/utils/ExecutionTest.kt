@@ -38,7 +38,8 @@ class ExecutionTest : ShouldSpec({
                     .from(Arara.config[AraraSpec.executionOptions])
                     .copy(verbose = true)
             Arara.config[AraraSpec.Execution.reference] = FileSearchingUtils
-                    .resolveFile(fileName, File(getPathForTest(testName)))
+                    .resolveFile(fileName, File(getPathForTest(testName)),
+                            Arara.config[AraraSpec.executionOptions])
             val directives = DirectiveUtils.process(Arara
                     .config[AraraSpec.Execution.reference]
                     .fetchDirectives(false))

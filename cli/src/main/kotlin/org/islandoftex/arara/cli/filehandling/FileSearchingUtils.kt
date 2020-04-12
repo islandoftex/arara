@@ -2,16 +2,12 @@
 package org.islandoftex.arara.cli.filehandling
 
 import java.io.File
-import java.io.FileFilter
-import java.nio.file.FileSystems
-import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
+import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.ProjectFile
-import org.islandoftex.arara.cli.configuration.AraraSpec
-import org.islandoftex.arara.cli.model.UNKNOWN_TYPE
-import org.islandoftex.arara.cli.utils.CommonUtils
+import org.islandoftex.arara.core.files.UNKNOWN_TYPE
 import org.islandoftex.arara.core.localization.LanguageController
 
 /**
@@ -23,74 +19,6 @@ import org.islandoftex.arara.core.localization.LanguageController
  */
 object FileSearchingUtils {
     /**
-     * List all files from the provided directory according to the list of
-     * extensions. The leading dot must be omitted, unless it is part of the
-     * extension.
-     * @param directory The provided directory.
-     * @param extensions The list of extensions.
-     * @param recursive A flag indicating whether the search is recursive.
-     * @return A list of files.
-     */
-    fun listFilesByExtensions(
-        directory: File,
-        extensions: List<String>,
-        recursive: Boolean
-    ): List<File> = try {
-        // return the result of the
-        // provided search
-        if (recursive)
-            directory.walkTopDown().asSequence()
-                    .filter { !it.isDirectory }
-                    .filter { extensions.contains(it.extension) }
-                    .toList()
-        else
-            directory.listFiles(
-                    FileFilter { extensions.contains(it.extension) })!!
-                    .toList()
-    } catch (_: Exception) {
-        // if something bad happens,
-        // gracefully fallback to
-        // an empty file list
-        listOf()
-    }
-
-    /**
-     * List all files from the provided directory matching the list of file
-     * name patterns. Such list can contain wildcards.
-     * @param directory The provided directory.
-     * @param patterns The list of file name patterns.
-     * @param recursive A flag indicating whether the search is recursive.
-     * @return A list of files.
-     */
-    fun listFilesByPatterns(
-        directory: File,
-        patterns: List<String>,
-        recursive: Boolean
-    ): List<File> = try {
-        // return the result of the provided
-        // search, with the wildcard filter
-        // and a potential recursive search
-        val pathMatcher = patterns.map {
-            FileSystems.getDefault().getPathMatcher("glob:$it")
-        }
-        if (recursive)
-            directory.walkTopDown().asSequence()
-                    .filter { !it.isDirectory }
-                    .filter { file ->
-                        pathMatcher.any { it.matches(file.toPath().fileName) }
-                    }.toList()
-        else
-            directory.listFiles { file: File ->
-                pathMatcher.any { it.matches(file.toPath().fileName) }
-            }!!.toList()
-    } catch (_: Exception) {
-        // if something bad happens,
-        // gracefully fallback to
-        // an empty file list
-        listOf()
-    }
-
-    /**
      * Discovers the file through string reference lookup and sets the
      * configuration accordingly.
      *
@@ -99,13 +27,18 @@ object FileSearchingUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun resolveFile(reference: String, workingDirectory: File): ProjectFile =
-            lookupFile(reference, workingDirectory)
+    fun resolveFile(
+        reference: String,
+        workingDirectory: File,
+        executionOptions: ExecutionOptions
+    ): ProjectFile =
+            lookupFile(reference, workingDirectory, executionOptions)
                     ?: throw AraraException(
                             LanguageController.messages.ERROR_DISCOVERFILE_FILE_NOT_FOUND
                                     .format(
                                             reference,
-                                            CommonUtils.fileTypesList
+                                            executionOptions.fileTypes
+                                                    .joinToString(" | ", "[ ", " ]")
                                     )
                     )
 
@@ -118,8 +51,12 @@ object FileSearchingUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    internal fun lookupFile(reference: String, workingDirectory: File): ProjectFile? {
-        val types = Arara.config[AraraSpec.executionOptions].fileTypes
+    internal fun lookupFile(
+        reference: String,
+        workingDirectory: File,
+        executionOptions: ExecutionOptions
+    ): ProjectFile? {
+        val types = executionOptions.fileTypes
         val file = workingDirectory.resolve(reference)
         val name = file.name
         val parent = FileHandlingUtils.getParentCanonicalFile(file)
@@ -142,7 +79,7 @@ object FileSearchingUtils {
         // indirect search; in this case, we are considering
         // that the file reference has an implicit extension,
         // so we need to add it and look again
-        if (Arara.config[AraraSpec.executionOptions].executionMode == ExecutionMode.SAFE_RUN)
+        if (executionOptions.executionMode == ExecutionMode.SAFE_RUN)
             return null
 
         return types.map { parent.resolve("$name.${it.extension}") }

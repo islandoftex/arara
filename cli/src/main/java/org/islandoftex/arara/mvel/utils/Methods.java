@@ -9,7 +9,7 @@ import org.islandoftex.arara.api.localization.Messages;
 import org.islandoftex.arara.api.session.Command;
 import org.islandoftex.arara.cli.configuration.AraraSpec;
 import org.islandoftex.arara.cli.filehandling.FileHandlingUtils;
-import org.islandoftex.arara.cli.filehandling.FileSearchingUtils;
+import org.islandoftex.arara.core.files.FileSearching;
 import org.islandoftex.arara.core.localization.LanguageController;
 import org.islandoftex.arara.cli.ruleset.CommandImpl;
 import org.islandoftex.arara.core.session.ClassLoading;
@@ -1088,7 +1088,7 @@ public class Methods {
      */
     public static List<File> listFilesByExtensions(File directory,
                                                    List<String> extensions, boolean recursive) {
-        return FileSearchingUtils.INSTANCE.listFilesByExtensions(
+        return FileSearching.INSTANCE.listFilesByExtensions(
                 directory,
                 extensions,
                 recursive
@@ -1107,7 +1107,7 @@ public class Methods {
      */
     public static List<File> listFilesByExtensions(String path,
                                                    List<String> extensions, boolean recursive) {
-        return FileSearchingUtils.INSTANCE.listFilesByExtensions(
+        return FileSearching.INSTANCE.listFilesByExtensions(
                 new File(path),
                 extensions,
                 recursive
@@ -1125,7 +1125,7 @@ public class Methods {
      */
     public static List<File> listFilesByPatterns(File directory,
                                                  List<String> patterns, boolean recursive) {
-        return FileSearchingUtils.INSTANCE.listFilesByPatterns(
+        return FileSearching.INSTANCE.listFilesByPatterns(
                 directory,
                 patterns,
                 recursive
@@ -1143,7 +1143,7 @@ public class Methods {
      */
     public static List<File> listFilesByPatterns(String path,
                                                  List<String> patterns, boolean recursive) {
-        return FileSearchingUtils.INSTANCE.listFilesByPatterns(
+        return FileSearching.INSTANCE.listFilesByPatterns(
                 new File(path),
                 patterns,
                 recursive

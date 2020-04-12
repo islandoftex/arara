@@ -138,8 +138,11 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                     workingDir.fileName.toString(),
                     FileHandling.normalize(workingDir),
                     reference.map { fileName ->
-                        FileSearchingUtils.resolveFile(fileName,
-                                workingDir.toFile()).let {
+                        FileSearchingUtils.resolveFile(
+                                fileName,
+                                workingDir.toFile(),
+                                Arara.config[AraraSpec.executionOptions]
+                        ).let {
                             if (it.path.isAbsolute)
                                 it
                             else
