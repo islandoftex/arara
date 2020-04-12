@@ -166,8 +166,7 @@ object DirectiveUtils {
             throw AraraException(
                     LanguageController.messages.ERROR_VALIDATE_INVALID_DIRECTIVE_FORMAT
                             .format(
-                                    "(" + assembler.getLineNumbers()
-                                            .joinToString(", ") + ")"
+                                    assembler.getLineNumbers().joinToString(", ", "(", ")")
                             )
             )
         }
@@ -221,7 +220,7 @@ object DirectiveUtils {
             throw AraraException(
                     LanguageController.messages.ERROR_VALIDATE_YAML_EXCEPTION
                             .format(
-                                    "(" + numbers.joinToString(", ") + ")"
+                                    numbers.joinToString(", ", "(", ")")
                             ),
                     it
             )
@@ -269,15 +268,14 @@ object DirectiveUtils {
                     ?: throw AraraException(
                             LanguageController.messages.ERROR_VALIDATE_EMPTY_FILES_LIST
                                     .format(
-                                            "(" + directive.lineNumbers
-                                                    .joinToString(", ") + ")"
+                                            directive.lineNumbers.joinToString(", ", "(", ")")
                                     )
                     )
         } else {
             throw AraraException(
                     LanguageController.messages.ERROR_VALIDATE_FILES_IS_NOT_A_LIST
                             .format(
-                                    "(" + directive.lineNumbers.joinToString(", ") + ")"
+                                    directive.lineNumbers.joinToString(", ", "(", ")")
                             )
             )
         }
@@ -301,7 +299,7 @@ object DirectiveUtils {
                 throw AraraException(
                         LanguageController.messages.ERROR_VALIDATE_REFERENCE_IS_RESERVED
                                 .format(
-                                        "(" + directive.lineNumbers.joinToString(", ") + ")"
+                                        directive.lineNumbers.joinToString(", ", "(", ")")
                                 )
                 )
 

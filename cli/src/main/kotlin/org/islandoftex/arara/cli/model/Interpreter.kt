@@ -56,8 +56,7 @@ object Interpreter {
                 ?: throw AraraException(
                         LanguageController.messages.ERROR_INTERPRETER_RULE_NOT_FOUND.format(
                                 directive.identifier,
-                                "(" + CommonUtils.allRulePaths
-                                        .joinToString("; ") + ")"
+                                CommonUtils.allRulePaths.joinToString("; ", "(", ")")
                         )
                 )
     }
@@ -296,7 +295,7 @@ object Interpreter {
             throw AraraException(
                     CommonUtils.ruleErrorHeader +
                             LanguageController.messages.ERROR_INTERPRETER_UNKNOWN_KEYS.format(
-                                    "(" + unknown.joinToString(", ") + ")"
+                                    unknown.joinToString(", ", "(", ")")
                             )
             )
 

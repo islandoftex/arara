@@ -55,8 +55,8 @@ object CommonUtils {
      * @return A string representation of the list of file types, in order.
      */
     val fileTypesList: String
-        get() = "[ " + Arara.config[AraraSpec.executionOptions].fileTypes
-                .joinToString(" | ") + " ]"
+        get() = Arara.config[AraraSpec.executionOptions].fileTypes
+                .joinToString(" | ", "[ ", " ]")
 
     /**
      * Gets a list of all rule paths.

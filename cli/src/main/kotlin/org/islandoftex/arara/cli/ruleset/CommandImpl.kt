@@ -43,7 +43,7 @@ class CommandImpl : Command {
      * @return A string representing the current command.
      */
     override fun toString(): String {
-        return "[ " + elements.joinToString(", ") + " ]" +
+        return elements.joinToString(", ", "[", "]") +
                 " @ $workingDirectory"
     }
 }
