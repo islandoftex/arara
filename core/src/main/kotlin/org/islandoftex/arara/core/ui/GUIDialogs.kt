@@ -12,11 +12,17 @@ import org.islandoftex.arara.api.session.UserInterfaceOptions
  * @version 5.0
  * @since 4.0
  */
-object GUIDialogs {
+class GUIDialogs
+@JvmOverloads constructor(
+    uiOptions: UserInterfaceOptions,
     /**
      * The default width for the message body, in pixels.
      */
-    const val DEFAULT_WIDTH = 250
+    val defaultWidth: Int = 250
+) {
+    init {
+        applyUIOptions(uiOptions)
+    }
 
     /**
      * Set the system's look and feel.
@@ -72,7 +78,7 @@ object GUIDialogs {
      * @return The normalized width.
      */
     private fun normalizeMessageWidth(value: Int): Int {
-        return if (value > 0) value else DEFAULT_WIDTH
+        return if (value > 0) value else defaultWidth
     }
 
     /**
@@ -84,13 +90,11 @@ object GUIDialogs {
      */
     @JvmOverloads
     fun showMessage(
-        width: Int = DEFAULT_WIDTH,
+        width: Int = defaultWidth,
         type: Int,
         title: String,
-        text: String,
-        userInterfaceOptions: UserInterfaceOptions? = null
+        text: String
     ) {
-        userInterfaceOptions?.let { applyUIOptions(it) }
         // effectively shows the message based
         // on the provided parameters
         JOptionPane.showMessageDialog(null,
@@ -114,14 +118,12 @@ object GUIDialogs {
      */
     @JvmOverloads
     fun showOptions(
-        width: Int = DEFAULT_WIDTH,
+        width: Int = defaultWidth,
         type: Int,
         title: String,
         text: String,
-        userInterfaceOptions: UserInterfaceOptions? = null,
         vararg buttons: Any
     ): Int {
-        userInterfaceOptions?.let { applyUIOptions(it) }
         // returns the index of the selected button,
         // zero if nothing is selected
         return JOptionPane.showOptionDialog(null,
@@ -147,13 +149,11 @@ object GUIDialogs {
      */
     @JvmOverloads
     fun showInput(
-        width: Int = DEFAULT_WIDTH,
+        width: Int = defaultWidth,
         type: Int,
         title: String,
-        text: String,
-        userInterfaceOptions: UserInterfaceOptions? = null
+        text: String
     ): String {
-        userInterfaceOptions?.let { applyUIOptions(it) }
         // get the string from the
         // input text, if any
         val input = JOptionPane.showInputDialog(null,
@@ -182,14 +182,12 @@ object GUIDialogs {
      */
     @JvmOverloads
     fun showDropdown(
-        width: Int = DEFAULT_WIDTH,
+        width: Int = defaultWidth,
         type: Int,
         title: String,
         text: String,
-        userInterfaceOptions: UserInterfaceOptions? = null,
         vararg elements: Any
     ): Int {
-        userInterfaceOptions?.let { applyUIOptions(it) }
         // show the dropdown list and get the selected object, if any
         val index = JOptionPane.showInputDialog(null,
                 String.format(
