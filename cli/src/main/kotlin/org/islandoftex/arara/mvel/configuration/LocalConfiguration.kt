@@ -76,7 +76,7 @@ data class LocalConfiguration(
                     )
             )
         }
-        return org.islandoftex.arara.core.session.ExecutionOptions
+        return org.islandoftex.arara.core.configuration.ExecutionOptions
                 .from(Arara.config[AraraSpec.executionOptions])
                 .copy(
                         maxLoops = maxLoops,
@@ -100,7 +100,7 @@ data class LocalConfiguration(
      */
     fun toLoggingOptions(): LoggingOptions {
         val logName = Paths.get(ConfigurationUtils.cleanFileName(logname))
-        return org.islandoftex.arara.core.session.LoggingOptions(
+        return org.islandoftex.arara.core.configuration.LoggingOptions(
                 enableLogging = logging,
                 logFile = logName
         )
@@ -114,7 +114,7 @@ data class LocalConfiguration(
      * @return The corresponding user interface options.
      */
     fun toUserInterfaceOptions(): UserInterfaceOptions {
-        return org.islandoftex.arara.core.session.UserInterfaceOptions(
+        return org.islandoftex.arara.core.configuration.UserInterfaceOptions(
                 languageCode = language,
                 swingLookAndFeel = laf
         )

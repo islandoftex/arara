@@ -22,13 +22,13 @@ import org.islandoftex.arara.cli.model.UNKNOWN_TYPE
 @Suppress("MagicNumber")
 object AraraSpec : ConfigSpec() {
     val executionOptions by optional<ExecutionOptions>(
-            org.islandoftex.arara.core.session.ExecutionOptions()
+        org.islandoftex.arara.core.configuration.ExecutionOptions()
     )
     val loggingOptions by optional<LoggingOptions>(
-            org.islandoftex.arara.core.session.LoggingOptions()
+            org.islandoftex.arara.core.configuration.LoggingOptions()
     )
     val userInterfaceOptions by optional<UserInterfaceOptions>(
-            org.islandoftex.arara.core.session.UserInterfaceOptions()
+            org.islandoftex.arara.core.configuration.UserInterfaceOptions()
     )
 
     object Execution : ConfigSpec() {

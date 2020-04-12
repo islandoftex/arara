@@ -17,8 +17,8 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.filehandling.FileSearchingUtils
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
+import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.files.Project
-import org.islandoftex.arara.core.session.ExecutionOptions
 import org.islandoftex.arara.mvel.configuration.Configuration
 
 @DoNotParallelize

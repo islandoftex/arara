@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.core.session
+package org.islandoftex.arara.core.configuration
 
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -9,7 +9,6 @@ import kotlin.time.milliseconds
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.session.ExecutionMode
 import org.islandoftex.arara.api.session.ExecutionOptions
-import org.islandoftex.arara.core.configuration.ConfigurationUtils
 
 @ExperimentalTime
 data class ExecutionOptions(
@@ -30,18 +29,18 @@ data class ExecutionOptions(
          * conversion method.
          */
         fun from(options: ExecutionOptions):
-                org.islandoftex.arara.core.session.ExecutionOptions {
+                org.islandoftex.arara.core.configuration.ExecutionOptions {
             return ExecutionOptions(
-                    maxLoops = options.maxLoops,
-                    timeoutValue = options.timeoutValue,
-                    parallelExecution = options.parallelExecution,
-                    haltOnErrors = options.haltOnErrors,
-                    databaseName = options.databaseName,
-                    verbose = options.verbose,
-                    executionMode = options.executionMode,
-                    rulePaths = options.rulePaths,
-                    fileTypes = options.fileTypes,
-                    parseOnlyHeader = options.parseOnlyHeader
+                maxLoops = options.maxLoops,
+                timeoutValue = options.timeoutValue,
+                parallelExecution = options.parallelExecution,
+                haltOnErrors = options.haltOnErrors,
+                databaseName = options.databaseName,
+                verbose = options.verbose,
+                executionMode = options.executionMode,
+                rulePaths = options.rulePaths,
+                fileTypes = options.fileTypes,
+                parseOnlyHeader = options.parseOnlyHeader
             )
         }
     }
