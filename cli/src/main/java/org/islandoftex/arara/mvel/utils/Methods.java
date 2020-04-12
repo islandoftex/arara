@@ -12,7 +12,7 @@ import org.islandoftex.arara.cli.filehandling.FileSearchingUtils;
 import org.islandoftex.arara.cli.localization.LanguageController;
 import org.islandoftex.arara.cli.localization.Messages;
 import org.islandoftex.arara.cli.ruleset.CommandImpl;
-import org.islandoftex.arara.cli.utils.ClassLoadingUtils;
+import org.islandoftex.arara.core.session.ClassLoading;
 import org.islandoftex.arara.cli.utils.CommonUtils;
 import org.islandoftex.arara.core.files.FileHandling;
 import org.islandoftex.arara.core.ui.GUIDialogs;
@@ -1031,8 +1031,8 @@ public class Methods {
      */
     // TODO: refactor to use the enum
     public static Pair<Integer, Class<?>> loadClass(File file, String name) {
-        Pair<ClassLoadingUtils.ClassLoadingStatus, Class<?>> pair =
-                ClassLoadingUtils.INSTANCE.loadClass(file, name);
+        Pair<ClassLoading.ClassLoadingStatus, Class<?>> pair =
+                ClassLoading.INSTANCE.loadClass(file, name);
         return new Pair<>(pair.getFirst().ordinal(), pair.getSecond());
     }
 
@@ -1045,8 +1045,8 @@ public class Methods {
      */
     // TODO: refactor to use the enum
     public static Pair<Integer, Class<?>> loadClass(String ref, String name) {
-        Pair<ClassLoadingUtils.ClassLoadingStatus, Class<?>> pair =
-                ClassLoadingUtils.INSTANCE.loadClass(new File(ref), name);
+        Pair<ClassLoading.ClassLoadingStatus, Class<?>> pair =
+                ClassLoading.INSTANCE.loadClass(new File(ref), name);
         return new Pair<>(pair.getFirst().ordinal(), pair.getSecond());
     }
 
@@ -1059,8 +1059,8 @@ public class Methods {
      */
     // TODO: refactor to use the enum
     public static Pair<Integer, Object> loadObject(File file, String name) {
-        Pair<ClassLoadingUtils.ClassLoadingStatus, Object> pair =
-                ClassLoadingUtils.INSTANCE.loadObject(file, name);
+        Pair<ClassLoading.ClassLoadingStatus, Object> pair =
+                ClassLoading.INSTANCE.loadObject(file, name);
         return new Pair<>(pair.getFirst().ordinal(), pair.getSecond());
     }
 
@@ -1073,8 +1073,8 @@ public class Methods {
      */
     // TODO: refactor to use the enum
     public static Pair<Integer, Object> loadObject(String ref, String name) {
-        Pair<ClassLoadingUtils.ClassLoadingStatus, Object> pair =
-                ClassLoadingUtils.INSTANCE.loadObject(new File(ref), name);
+        Pair<ClassLoading.ClassLoadingStatus, Object> pair =
+                ClassLoading.INSTANCE.loadObject(new File(ref), name);
         return new Pair<>(pair.getFirst().ordinal(), pair.getSecond());
     }
 

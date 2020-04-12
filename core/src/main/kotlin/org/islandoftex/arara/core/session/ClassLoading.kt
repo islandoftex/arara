@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.utils
+package org.islandoftex.arara.core.session
 
 import java.io.File
 import java.lang.reflect.InvocationTargetException
@@ -13,7 +13,7 @@ import java.net.URLClassLoader
  * @version 5.0
  * @since 4.0
  */
-object ClassLoadingUtils {
+object ClassLoading {
     /**
      * Indicator of success or failure of class loading.
      */
@@ -52,7 +52,7 @@ object ClassLoadingUtils {
                 // the provided file (potentially
                 // a JAR file)
                 val classloader = URLClassLoader(arrayOf(file.toURI().toURL()),
-                        ClassLoadingUtils::class.java.classLoader)
+                        ClassLoading::class.java.classLoader)
 
                 // fetches the class from the
                 // instantiated classloader
