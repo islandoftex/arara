@@ -25,6 +25,7 @@ import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.LoggingOptions
 import org.islandoftex.arara.core.configuration.UserInterfaceOptions
+import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Executor
@@ -135,7 +136,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
             // TODO: this will have to change for parallelization
             val projects = listOf(Project(
                     workingDir.fileName.toString(),
-                    workingDir,
+                    FileHandling.normalize(workingDir),
                     reference.map { fileName ->
                         FileSearchingUtils.resolveFile(fileName,
                                 workingDir.toFile()).let {
