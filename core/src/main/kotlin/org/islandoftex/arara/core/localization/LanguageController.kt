@@ -18,6 +18,13 @@ object LanguageController {
         private set
 
     fun setLocale(locale: Locale) {
-        // TODO: get messages for locale
+        messages = when (locale) {
+            Locale.GERMAN -> GermanLanguage()
+            Locale.ITALIAN -> ItalianLanguage()
+            Locale.forLanguageTag("nl") -> DutchLanguage()
+            Locale.forLanguageTag("pt-BR") -> BrazilianLanguage()
+            Locale.forLanguageTag("en-QN") -> NorfolkLanguage()
+            else -> Messages()
+        }
     }
 }
