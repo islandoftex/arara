@@ -6,6 +6,7 @@ import java.io.FileFilter
 import java.nio.file.FileSystems
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.cli.configuration.AraraSpec
@@ -141,7 +142,9 @@ object FileSearchingUtils {
         // indirect search; in this case, we are considering
         // that the file reference has an implicit extension,
         // so we need to add it and look again
-        // TODO: disable this step in safe mode
+        if (Arara.config[AraraSpec.executionOptions].executionMode == ExecutionMode.SAFE_RUN)
+            return null
+
         return types.map { parent.resolve("$name.${it.extension}") }
                 .union(types.map {
                     parent.resolve("${name.removeSuffix(".").trim()}.${it.extension}")

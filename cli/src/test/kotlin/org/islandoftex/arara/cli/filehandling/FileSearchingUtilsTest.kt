@@ -49,6 +49,7 @@ class FileSearchingUtilsTest : ShouldSpec({
         projectFile.fileType.extension shouldBe "tex"
         projectFile.fileType.pattern shouldBe "^\\s*%\\s+"
     }
+    // TODO: tests for safe mode
 
     should("find file by extension") {
         val tempDir = prepareFileSystem()
