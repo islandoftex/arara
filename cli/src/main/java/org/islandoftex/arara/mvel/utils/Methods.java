@@ -2,6 +2,7 @@
 package org.islandoftex.arara.mvel.utils;
 
 import kotlin.Pair;
+import kotlin.text.Charsets;
 import org.islandoftex.arara.Arara;
 import org.islandoftex.arara.api.AraraException;
 import org.islandoftex.arara.api.session.Command;
@@ -13,18 +14,18 @@ import org.islandoftex.arara.cli.localization.Messages;
 import org.islandoftex.arara.cli.ruleset.CommandImpl;
 import org.islandoftex.arara.cli.utils.ClassLoadingUtils;
 import org.islandoftex.arara.cli.utils.CommonUtils;
+import org.islandoftex.arara.core.files.FileHandling;
 import org.islandoftex.arara.core.ui.GUIDialogs;
 import org.islandoftex.arara.cli.utils.SystemCallUtils;
 import org.islandoftex.arara.core.session.Environment;
 import org.islandoftex.arara.core.session.Session;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -1209,7 +1210,11 @@ public class Methods {
      * @return A list of strings.
      */
     public static List<String> readFromFile(File file) {
-        return FileHandlingUtils.INSTANCE.readFromFile(file);
+        try {
+            return Files.readAllLines(file.toPath(), Charsets.UTF_8);
+        } catch (IOException | SecurityException e) {
+            return new ArrayList<>();
+        }
     }
 
     /**
@@ -1219,7 +1224,7 @@ public class Methods {
      * @return A list of strings.
      */
     public static List<String> readFromFile(String path) {
-        return FileHandlingUtils.INSTANCE.readFromFile(new File(path));
+        return readFromFile(new File(path));
     }
 
     /**
@@ -1231,7 +1236,9 @@ public class Methods {
      */
     public static boolean isSubdirectory(File directory)
             throws AraraException {
-        return FileHandlingUtils.INSTANCE.isSubDirectory(
-                directory, getOriginalReference());
+        return FileHandling.INSTANCE.isSubDirectory(directory.toPath(),
+                Arara.INSTANCE.getConfig().get(
+                        AraraSpec.Execution.INSTANCE.getCurrentProject()
+                ).getWorkingDirectory());
     }
 }

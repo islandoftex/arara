@@ -35,17 +35,6 @@ class FileHandlingUtilsTest : ShouldSpec({
         FileHandlingUtils.getBasename(File(".tex")) shouldBe ""
     }
 
-    should("get subdirecotry relationship right") {
-        FileHandlingUtils.isSubDirectory(File("../docs"), File("..")) shouldBe true
-        FileHandlingUtils.isSubDirectory(File(".."), File("../docs")) shouldBe false
-        shouldThrow<AraraException> {
-            FileHandlingUtils.isSubDirectory(File("../LICENSE"), File(".."))
-        }
-        shouldThrow<AraraException> {
-            FileHandlingUtils.isSubDirectory(File(".."), File("../LICENSE"))
-        }
-    }
-
     should("detect changes on file") {
         val file = Files.createTempFile(null, null).toFile()
         val referenceBackup = Arara.config[AraraSpec.Execution.reference]

@@ -3,7 +3,7 @@ package org.islandoftex.arara.cli.filehandling
 
 import java.io.File
 import java.io.IOException
-import java.nio.file.Paths
+import java.nio.file.Files
 import java.text.SimpleDateFormat
 import java.util.zip.CRC32
 import org.islandoftex.arara.Arara
@@ -13,6 +13,7 @@ import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.localization.Messages
 import org.islandoftex.arara.core.files.Database
+import org.islandoftex.arara.core.files.FileHandling
 
 /**
  * Implements file handling utilitary methods.
@@ -69,32 +70,11 @@ object FileHandlingUtils {
         file: File,
         lines: List<String>,
         append: Boolean
-    ): Boolean =
-            try {
-                writeToFile(file, lines.joinToString(System.lineSeparator()),
-                        append)
-            } catch (_: IOException) {
-                false
-            }
-
-    /**
-     * Reads the provided file (UTF-8) into a list of strings.
-     * @param file The file.
-     * @return A list of strings.
-     */
-    fun readFromFile(file: File): List<String> {
-        return try {
-            // returns the contents of
-            // the provided file as
-            // a list of strings
-            file.readLines(Charsets.UTF_8)
-        } catch (_: IOException) {
-            // if something bad happens,
-            // gracefully fallback to
-            // an empty file list
-            listOf()
-        }
-    }
+    ): Boolean = writeToFile(
+            file,
+            lines.joinToString(System.lineSeparator()),
+            append
+    )
 
     /**
      * Checks if a file exists based on its extension.
@@ -106,21 +86,8 @@ object FileHandlingUtils {
      */
     @Throws(AraraException::class)
     fun exists(extension: String): Boolean {
-        val file = File(getPath(extension))
-        return file.exists()
-    }
-
-    /**
-     * Gets the parent canonical path of a file.
-     *
-     * @param file The file.
-     * @return The parent canonical path of a file.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
-    @Throws(AraraException::class)
-    fun getParentCanonicalPath(file: File): String {
-        return getParentCanonicalFile(file).toString()
+        return Files.exists(FileHandling.changeExtension(
+                currentFile.toPath(), extension))
     }
 
     /**
@@ -155,22 +122,7 @@ object FileHandlingUtils {
      */
     @Throws(AraraException::class)
     fun getPath(extension: String): String {
-        val name = currentFile.nameWithoutExtension + ".$extension"
-        val path = getParentCanonicalFile(currentFile)
-        return path.resolve(name).toString()
-    }
-
-    /**
-     * Gets the canonical path from the provided file.
-     *
-     * @param file The file.
-     * @return The canonical path from the provided file.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
-    @Throws(AraraException::class)
-    fun getCanonicalPath(file: File): String {
-        return getCanonicalFile(file).toString()
+        return FileHandling.changeExtension(currentFile.toPath(), extension).toString()
     }
 
     /**
@@ -265,7 +217,7 @@ object FileHandlingUtils {
         val dbPath = project.workingDirectory.resolve(Arara
                 .config[AraraSpec.executionOptions].databaseName)
         val database = Database.load(dbPath)
-        val path = Paths.get(getCanonicalPath(file))
+        val path = getCanonicalFile(file).toPath()
         return if (!file.exists()) {
             if (path in database) {
                 database.remove(path)
@@ -304,30 +256,7 @@ object FileHandlingUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun hasChanged(extension: String): Boolean =
-            hasChanged(File(getPath(extension)))
-
-    /**
-     * Checks whether a directory is under a root directory.
-     *
-     * @param child Directory to be inspected.
-     * @param parent Root directory.
-     * @return Logical value indicating whether the directoy is under root.
-     * @throws AraraException There was a problem with path retrieval.
-     */
-    @Throws(AraraException::class)
-    fun isSubDirectory(child: File, parent: File): Boolean {
-        return if (child.isDirectory && parent.isDirectory) {
-            getCanonicalPath(child).startsWith(
-                    getParentCanonicalPath(parent) + File.separator
-            )
-        } else {
-            throw AraraException(
-                    LanguageController.getMessage(
-                            Messages.ERROR_ISSUBDIRECTORY_NOT_A_DIRECTORY,
-                            child.name
-                    )
-            )
-        }
-    }
+    fun hasChanged(extension: String): Boolean = hasChanged(
+            FileHandling.changeExtension(currentFile.toPath(), extension).toFile()
+    )
 }

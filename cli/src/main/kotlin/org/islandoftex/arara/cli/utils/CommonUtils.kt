@@ -73,7 +73,7 @@ object CommonUtils {
         @Throws(AraraException::class)
         get() = Arara.config[AraraSpec.Execution.rulePaths].map {
             val location = File(InterpreterUtils.construct(it, "quack"))
-            FileHandlingUtils.getParentCanonicalPath(location)
+            FileHandlingUtils.getParentCanonicalFile(location).toString()
         }
 
     /**
