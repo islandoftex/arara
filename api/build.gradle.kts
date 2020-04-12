@@ -38,6 +38,12 @@ val mainManifest: Manifest = DefaultManifest((project as ProjectInternal).fileRe
         }
 
 tasks {
+    withType<KotlinCompile> {
+        kotlinOptions {
+            freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn")
+        }
+    }
+
     withType<Jar> {
         archiveBaseName.set("arara-api")
         manifest.attributes.putAll(mainManifest.attributes)
