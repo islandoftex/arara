@@ -5,9 +5,8 @@ import java.io.File
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.cli.configuration.AraraSpec
-import org.islandoftex.arara.cli.localization.LanguageController
-import org.islandoftex.arara.cli.localization.Messages
 import org.islandoftex.arara.cli.ruleset.CommandImpl
+import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 
 /**
@@ -113,10 +112,9 @@ object SystemCallUtils {
         values["cygwin"] = SystemCallUtils["cygwin"] as Boolean
         if (!values.containsKey(value.toLowerCase())) {
             throw AraraException(
-                    LanguageController.getMessage(
-                            Messages.ERROR_CHECKOS_INVALID_OPERATING_SYSTEM,
-                            value
-                    )
+                    LanguageController.messages
+                            .ERROR_CHECKOS_INVALID_OPERATING_SYSTEM
+                            .format(value)
             )
         }
         // will never throw, see check above

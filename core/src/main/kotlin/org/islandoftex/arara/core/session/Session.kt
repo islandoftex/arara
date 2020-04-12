@@ -4,7 +4,6 @@ package org.islandoftex.arara.core.session
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.session.Session
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.localization.Messages
 
 /**
  * Implements the session.
@@ -14,10 +13,6 @@ import org.islandoftex.arara.core.localization.Messages
  * @since 4.0
  */
 object Session : Session {
-    // the application messages obtained from the
-    // language controller
-    private val messages = LanguageController
-
     // the session map which holds the execution session;
     // the idea here is to provide wrappers to the map
     // methods, so it could be easily manipulated
@@ -38,10 +33,8 @@ object Session : Session {
             map.getValue(key)
         } else {
             throw AraraException(
-                messages.getMessage(
-                    Messages.ERROR_SESSION_OBTAIN_UNKNOWN_KEY,
-                    key
-                )
+                LanguageController.messages.ERROR_SESSION_OBTAIN_UNKNOWN_KEY
+                        .format(key)
             )
         }
     }
@@ -71,10 +64,8 @@ object Session : Session {
             map.remove(key)
         } else {
             throw AraraException(
-                messages.getMessage(
-                    Messages.ERROR_SESSION_REMOVE_UNKNOWN_KEY,
-                    key
-                )
+                LanguageController.messages.ERROR_SESSION_REMOVE_UNKNOWN_KEY
+                        .format(key)
             )
         }
     }

@@ -10,12 +10,11 @@ import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.cli.configuration.AraraSpec
-import org.islandoftex.arara.cli.localization.LanguageController
-import org.islandoftex.arara.cli.localization.Messages
 import org.islandoftex.arara.cli.ruleset.RuleUtils
 import org.islandoftex.arara.cli.utils.CommonUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.InterpreterUtils
+import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.mvel.rules.DirectiveConditionalEvaluator
 import org.islandoftex.arara.mvel.rules.RuleArgument
@@ -55,12 +54,11 @@ object Interpreter {
     private fun getRule(directive: Directive): File {
         return InterpreterUtils.buildRulePath(directive.identifier)
                 ?: throw AraraException(
-                    LanguageController.getMessage(
-                        Messages.ERROR_INTERPRETER_RULE_NOT_FOUND,
-                        directive.identifier,
-                        "(" + CommonUtils.allRulePaths
-                            .joinToString("; ") + ")"
-                    )
+                        LanguageController.messages.ERROR_INTERPRETER_RULE_NOT_FOUND.format(
+                                directive.identifier,
+                                "(" + CommonUtils.allRulePaths
+                                        .joinToString("; ") + ")"
+                        )
                 )
     }
 
@@ -78,14 +76,12 @@ object Interpreter {
         conditional: DirectiveConditional,
         authors: List<String>
     ): Boolean {
-        logger.info(LanguageController.getMessage(Messages.LOG_INFO_BOOLEAN_MODE,
-                value.toString()))
+        logger.info(LanguageController.messages.LOG_INFO_BOOLEAN_MODE.format(value))
 
         if (Arara.config[AraraSpec.executionOptions].executionMode == ExecutionMode.DRY_RUN) {
             DisplayUtils.printAuthors(authors)
-            DisplayUtils.wrapText(LanguageController.getMessage(Messages
-                    .INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE,
-                    value))
+            DisplayUtils.wrapText(LanguageController.messages
+                    .INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE.format(value))
             DisplayUtils.printConditional(conditional)
         }
 
@@ -109,8 +105,7 @@ object Interpreter {
         authors: List<String>,
         ruleCommandExitValue: String?
     ): Boolean {
-        logger.info(LanguageController.getMessage(Messages.LOG_INFO_SYSTEM_COMMAND,
-                command))
+        logger.info(LanguageController.messages.LOG_INFO_SYSTEM_COMMAND.format(command))
         var success = true
 
         if (Arara.config[AraraSpec.executionOptions].executionMode != ExecutionMode.DRY_RUN) {
@@ -122,11 +117,9 @@ object Interpreter {
                         context)
             } catch (exception: RuntimeException) {
                 throw AraraException(
-                    CommonUtils.ruleErrorHeader +
-                            LanguageController.getMessage(
-                                Messages.ERROR_INTERPRETER_EXIT_RUNTIME_ERROR
-                            ),
-                    exception
+                        CommonUtils.ruleErrorHeader + LanguageController
+                                .messages.ERROR_INTERPRETER_EXIT_RUNTIME_ERROR,
+                        exception
                 )
             }
 
@@ -134,16 +127,14 @@ object Interpreter {
                 check
             } else {
                 throw AraraException(
-                    CommonUtils.ruleErrorHeader + LanguageController.getMessage(
-                        Messages.ERROR_INTERPRETER_WRONG_EXIT_CLOSURE_RETURN
-                    )
+                        CommonUtils.ruleErrorHeader + LanguageController
+                                .messages.ERROR_INTERPRETER_WRONG_EXIT_CLOSURE_RETURN
                 )
             }
         } else {
             DisplayUtils.printAuthors(authors)
-            DisplayUtils.wrapText(LanguageController.getMessage(
-                    Messages.INFO_INTERPRETER_DRYRUN_MODE_SYSTEM_COMMAND,
-                    command))
+            DisplayUtils.wrapText(LanguageController.messages
+                    .INFO_INTERPRETER_DRYRUN_MODE_SYSTEM_COMMAND.format(command))
             DisplayUtils.printConditional(conditional)
         }
 
@@ -181,11 +172,9 @@ object Interpreter {
             TemplateRuntime.eval(command.commandString!!, parameters)
         } catch (exception: RuntimeException) {
             throw AraraException(
-                CommonUtils.ruleErrorHeader +
-                        LanguageController.getMessage(
-                            Messages.ERROR_INTERPRETER_COMMAND_RUNTIME_ERROR
-                        ),
-                exception
+                    CommonUtils.ruleErrorHeader + LanguageController
+                            .messages.ERROR_INTERPRETER_COMMAND_RUNTIME_ERROR,
+                    exception
             )
         }
 
@@ -193,8 +182,7 @@ object Interpreter {
         resultToList(result).filter { it.toString().isNotBlank() }
                 .forEach { current ->
                     DisplayUtils.printEntry(rule.displayName!!, command.name
-                            ?: LanguageController.getMessage(Messages
-                                    .INFO_LABEL_UNNAMED_TASK))
+                            ?: LanguageController.messages.INFO_LABEL_UNNAMED_TASK)
 
                     val success = when (current) {
                         is Boolean -> runBoolean(current, conditional,
@@ -233,12 +221,18 @@ object Interpreter {
     @Throws(AraraException::class)
     @Suppress("NestedBlockDepth")
     fun execute(directive: Directive): Int {
-        logger.info(LanguageController.getMessage(Messages.LOG_INFO_INTERPRET_RULE,
-                directive.identifier))
+        logger.info(
+                LanguageController.messages.LOG_INFO_INTERPRET_RULE.format(
+                        directive.identifier
+                )
+        )
 
         val file = getRule(directive)
-        logger.info(LanguageController.getMessage(Messages.LOG_INFO_RULE_LOCATION,
-                file.parent))
+        logger.info(
+                LanguageController.messages.LOG_INFO_RULE_LOCATION.format(
+                        file.parent
+                )
+        )
 
         CommonUtils.ruleId = directive.identifier
         CommonUtils.rulePath = file.parent
@@ -300,11 +294,10 @@ object Interpreter {
                 arguments).minus("reference")
         if (unknown.isNotEmpty())
             throw AraraException(
-                CommonUtils.ruleErrorHeader +
-                        LanguageController.getMessage(
-                            Messages.ERROR_INTERPRETER_UNKNOWN_KEYS,
-                            "(" + unknown.joinToString(", ") + ")"
-                        )
+                    CommonUtils.ruleErrorHeader +
+                            LanguageController.messages.ERROR_INTERPRETER_UNKNOWN_KEYS.format(
+                                    "(" + unknown.joinToString(", ") + ")"
+                            )
             )
 
         val resolvedArguments = mutableMapOf<String, Any>()
@@ -346,11 +339,10 @@ object Interpreter {
     ): Any {
         if (argument.isRequired && !idInDirectiveParams)
             throw AraraException(
-                CommonUtils.ruleErrorHeader +
-                        LanguageController.getMessage(
-                            Messages.ERROR_INTERPRETER_ARGUMENT_IS_REQUIRED,
-                            argument.identifier
-                        )
+                    CommonUtils.ruleErrorHeader +
+                            LanguageController.messages.ERROR_INTERPRETER_ARGUMENT_IS_REQUIRED.format(
+                                    argument.identifier
+                            )
             )
 
         var ret = argument.defaultValue?.let {
@@ -358,11 +350,9 @@ object Interpreter {
                 TemplateRuntime.eval(it, context)
             } catch (exception: RuntimeException) {
                 throw AraraException(
-                    CommonUtils.ruleErrorHeader +
-                            LanguageController.getMessage(
-                                Messages.ERROR_INTERPRETER_DEFAULT_VALUE_RUNTIME_ERROR
-                            ),
-                    exception
+                        CommonUtils.ruleErrorHeader + LanguageController
+                                .messages.ERROR_INTERPRETER_DEFAULT_VALUE_RUNTIME_ERROR,
+                        exception
                 )
             }
         } ?: ""
@@ -372,11 +362,9 @@ object Interpreter {
                 TemplateRuntime.eval(argument.flag!!, context)
             } catch (exception: RuntimeException) {
                 throw AraraException(
-                    CommonUtils.ruleErrorHeader + LanguageController
-                        .getMessage(
-                            Messages.ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION
-                        ),
-                    exception
+                        CommonUtils.ruleErrorHeader + LanguageController
+                                .messages.ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION,
+                        exception
                 )
             }
         }

@@ -1,9 +1,23 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.localization
 
-internal object LanguageController {
-    @Suppress("SpreadOperator")
-    fun <E : Enum<*>> getMessage(key: E, vararg parameters: Any): String = ""
+import java.util.Locale
+import org.islandoftex.arara.api.localization.Messages
 
-    fun <E : Enum<*>> getMessage(key: E): String = ""
+/**
+ * The language controller arara's core relies on.
+ *
+ * Please note that this relies on [org.islandoftex.arara.api.localization.AraraMessages].
+ */
+object LanguageController {
+    /**
+     * The messages object. This will be used to fetch messages and format them
+     * (using [String.format]).
+     */
+    var messages = Messages()
+        private set
+
+    fun setLocale(locale: Locale) {
+        // TODO: get messages for locale
+    }
 }

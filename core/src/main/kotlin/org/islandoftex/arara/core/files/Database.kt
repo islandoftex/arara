@@ -8,7 +8,6 @@ import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.Database
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.localization.Messages
 
 /**
  * The database model, which keeps track on file changes.
@@ -81,10 +80,8 @@ data class Database(
             path.toFile().writeText(content)
         }.getOrElse {
             throw AraraException(
-                    LanguageController.getMessage(
-                            Messages.ERROR_SAVE_COULD_NOT_SAVE_XML,
-                            path.fileName.toString()
-                    ), it
+                    LanguageController.messages.ERROR_SAVE_COULD_NOT_SAVE_XML
+                            .format(path.fileName.toString()), it
             )
         }
     }
@@ -109,11 +106,9 @@ data class Database(
                     Yaml.default.parse(serializer(), text)
                 }.getOrElse {
                     it.printStackTrace()
-                    throw AraraException(
-                            LanguageController.getMessage(
-                                    Messages.ERROR_LOAD_COULD_NOT_LOAD_XML,
-                                    path.fileName.toString()
-                            ), it
+                    throw AraraException(LanguageController
+                            .messages.ERROR_LOAD_COULD_NOT_LOAD_XML
+                            .format(path.fileName.toString()), it
                     )
                 }
             }

@@ -5,12 +5,12 @@ import kotlin.Pair;
 import kotlin.text.Charsets;
 import org.islandoftex.arara.Arara;
 import org.islandoftex.arara.api.AraraException;
+import org.islandoftex.arara.api.localization.Messages;
 import org.islandoftex.arara.api.session.Command;
 import org.islandoftex.arara.cli.configuration.AraraSpec;
 import org.islandoftex.arara.cli.filehandling.FileHandlingUtils;
 import org.islandoftex.arara.cli.filehandling.FileSearchingUtils;
-import org.islandoftex.arara.cli.localization.LanguageController;
-import org.islandoftex.arara.cli.localization.Messages;
+import org.islandoftex.arara.core.localization.LanguageController;
 import org.islandoftex.arara.cli.ruleset.CommandImpl;
 import org.islandoftex.arara.core.session.ClassLoading;
 import org.islandoftex.arara.cli.utils.CommonUtils;
@@ -38,12 +38,10 @@ import java.util.stream.Stream;
 @SuppressWarnings("unused")
 public class Methods {
     // the language controller
-    private static final LanguageController messages =
-            LanguageController.INSTANCE;
-
+    private static final Messages messages = LanguageController.INSTANCE.getMessages();
     // the session controller
     private static final Session session = Session.INSTANCE;
-
+    // the GUI generator
     private static final GUIDialogs dialogs = new GUIDialogs(
             Arara.INSTANCE.getConfig().get(AraraSpec.INSTANCE.getUserInterfaceOptions())
     );
@@ -384,8 +382,8 @@ public class Methods {
         } else {
             throw new AraraException(
                     CommonUtils.INSTANCE.getRuleErrorHeader().concat(
-                            messages.getMessage(
-                                    Messages.ERROR_BASENAME_NOT_A_FILE,
+                            String.format(
+                                    messages.getERROR_BASENAME_NOT_A_FILE(),
                                     file.getName()
                             )
                     )
@@ -417,8 +415,8 @@ public class Methods {
         } else {
             throw new AraraException(
                     CommonUtils.INSTANCE.getRuleErrorHeader().concat(
-                            messages.getMessage(
-                                    Messages.ERROR_FILETYPE_NOT_A_FILE,
+                            String.format(
+                                    messages.getERROR_FILETYPE_NOT_A_FILE(),
                                     file.getName()
                             )
                     )

@@ -9,10 +9,9 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.cli.configuration.AraraSpec
-import org.islandoftex.arara.cli.localization.LanguageController
-import org.islandoftex.arara.cli.localization.Messages
 import org.islandoftex.arara.cli.model.UNKNOWN_TYPE
 import org.islandoftex.arara.cli.utils.CommonUtils
+import org.islandoftex.arara.core.localization.LanguageController
 
 /**
  * Implements file searching utilitary methods.
@@ -104,11 +103,11 @@ object FileSearchingUtils {
     fun resolveFile(reference: String, workingDirectory: File): ProjectFile =
             lookupFile(reference, workingDirectory)
                     ?: throw AraraException(
-                        LanguageController.getMessage(
-                            Messages.ERROR_DISCOVERFILE_FILE_NOT_FOUND,
-                            reference,
-                            CommonUtils.fileTypesList
-                        )
+                            LanguageController.messages.ERROR_DISCOVERFILE_FILE_NOT_FOUND
+                                    .format(
+                                            reference,
+                                            CommonUtils.fileTypesList
+                                    )
                     )
 
     /**

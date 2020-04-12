@@ -10,8 +10,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.cli.localization.LanguageController
-import org.islandoftex.arara.cli.localization.Messages
+import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.mvel.configuration.LocalConfiguration
 
@@ -65,9 +64,7 @@ object ConfigurationUtils {
                 return Paths.get(File(path).toURI()).parent.toAbsolutePath()
             } catch (exception: UnsupportedEncodingException) {
                 throw AraraException(
-                        LanguageController.getMessage(
-                                Messages.ERROR_GETAPPLICATIONPATH_ENCODING_EXCEPTION
-                        ),
+                        LanguageController.messages.ERROR_GETAPPLICATIONPATH_ENCODING_EXCEPTION,
                         exception
                 )
             }
@@ -91,9 +88,8 @@ object ConfigurationUtils {
                     text)
         }.getOrElse {
             throw AraraException(
-                    LanguageController.getMessage(
-                            Messages.ERROR_CONFIGURATION_GENERIC_ERROR
-                    ), it
+                    LanguageController.messages.ERROR_CONFIGURATION_GENERIC_ERROR,
+                    it
             )
         }
     }

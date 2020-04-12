@@ -7,7 +7,6 @@ import java.nio.file.Path
 import java.util.zip.CRC32
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.localization.Messages
 
 object FileHandling {
     /**
@@ -69,9 +68,8 @@ object FileHandling {
                 }
             } catch (exception: IOException) {
                 throw AraraException(
-                        LanguageController.getMessage(
-                                Messages.ERROR_CALCULATEHASH_IO_EXCEPTION
-                        ), exception
+                        LanguageController.messages.ERROR_CALCULATEHASH_IO_EXCEPTION,
+                        exception
                 )
             }
 

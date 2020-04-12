@@ -6,9 +6,8 @@ import com.uchuhimo.konf.Config
 import java.time.LocalDate
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.cli.configuration.AraraSpec
-import org.islandoftex.arara.cli.localization.LanguageController
-import org.islandoftex.arara.cli.localization.Messages
 import org.islandoftex.arara.cli.utils.DisplayUtils
+import org.islandoftex.arara.core.localization.LanguageController
 
 /**
  * arara's main entry point
@@ -39,8 +38,7 @@ object Arara {
                 message = {
                     "arara ${AraraAPI.version}\n" +
                             "Copyright (c) ${LocalDate.now().year}, Island of TeX\n" +
-                            LanguageController.getMessage(Messages
-                                    .INFO_PARSER_NOTES) + "\n\n" +
+                            LanguageController.messages.INFO_PARSER_NOTES + "\n\n" +
                             "New features in version ${AraraAPI.version}:\n" +
                             Arara::class.java
                                     .getResource("/org/islandoftex/arara/cli/configuration/release-notes")

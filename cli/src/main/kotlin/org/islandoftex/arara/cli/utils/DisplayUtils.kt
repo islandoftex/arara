@@ -10,8 +10,7 @@ import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.filehandling.FileHandlingUtils
-import org.islandoftex.arara.cli.localization.LanguageController
-import org.islandoftex.arara.cli.localization.Messages
+import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.slf4j.LoggerFactory
 
@@ -36,10 +35,10 @@ object DisplayUtils {
      * The length of the longest result match as integer.
      */
     private val longestMatch: Int = listOf(
-            LanguageController.getMessage(Messages.INFO_LABEL_ON_SUCCESS),
-            LanguageController.getMessage(Messages.INFO_LABEL_ON_FAILURE),
-            LanguageController.getMessage(Messages.INFO_LABEL_ON_ERROR))
-            .map { it.length }.max()!!
+            LanguageController.messages.INFO_LABEL_ON_SUCCESS,
+            LanguageController.messages.INFO_LABEL_ON_FAILURE,
+            LanguageController.messages.INFO_LABEL_ON_ERROR
+    ).map { it.length }.max()!!
 
     /**
      * If the longest match is longer than the width, then it will be truncated
@@ -116,9 +115,8 @@ object DisplayUtils {
         displayResult = true
         Arara.config[AraraSpec.Execution.exitCode] = if (value) 0 else 1
         logger.info(
-                LanguageController.getMessage(
-                        Messages.LOG_INFO_TASK_RESULT
-                ) + " " + getResult(value)
+                LanguageController.messages.LOG_INFO_TASK_RESULT + " " +
+                        getResult(value)
         )
         if (!isDryRunMode) {
             if (!isVerboseMode) {
@@ -147,11 +145,8 @@ object DisplayUtils {
      */
     fun printEntry(name: String, task: String) {
         logger.info(
-                LanguageController.getMessage(
-                        Messages.LOG_INFO_INTERPRET_TASK,
-                        task,
-                        name
-                )
+                LanguageController.messages.LOG_INFO_INTERPRET_TASK
+                        .format(task, name)
         )
         displayLine = true
         displayResult = false
@@ -221,8 +216,8 @@ object DisplayUtils {
             }
         }
         val text = (if (exception.hasException())
-            exception.message + " " + LanguageController.getMessage(
-                    Messages.INFO_DISPLAY_EXCEPTION_MORE_DETAILS)
+            exception.message + " " + LanguageController.messages
+                    .INFO_DISPLAY_EXCEPTION_MORE_DETAILS
         else
             exception.message) ?: "EXCEPTION PROVIDES NO MESSAGE"
         // TODO: check null handling
@@ -245,29 +240,25 @@ object DisplayUtils {
      */
     private fun getResult(value: Boolean): String {
         return if (value)
-            LanguageController.getMessage(
-                    Messages.INFO_LABEL_ON_SUCCESS
-            )
+            LanguageController.messages.INFO_LABEL_ON_SUCCESS
         else
-            LanguageController.getMessage(Messages.INFO_LABEL_ON_FAILURE)
+            LanguageController.messages.INFO_LABEL_ON_FAILURE
     }
 
     /**
      * Displays the short version of an error in the terminal.
      */
-    private fun buildShortError() {
-        val result = longestMatch
-        println(LanguageController.getMessage(Messages.INFO_LABEL_ON_ERROR)
-                .padStart(result))
-    }
+    private fun buildShortError() = println(
+            LanguageController.messages.INFO_LABEL_ON_ERROR.padStart(longestMatch)
+    )
 
     /**
      * Displays the long version of an error in the terminal.
      */
-    private fun buildLongError() {
-        println((" " + LanguageController.getMessage(Messages.INFO_LABEL_ON_ERROR))
-                .padStart(outputWidth, '-'))
-    }
+    private fun buildLongError() = println(
+            (" " + LanguageController.messages.INFO_LABEL_ON_ERROR)
+                    .padStart(outputWidth, '-')
+    )
 
     /**
      * Displays the provided text wrapped nicely according to the default
@@ -284,11 +275,11 @@ object DisplayUtils {
      */
     fun printAuthors(authors: List<String>) {
         val line = if (authors.size == 1)
-            LanguageController.getMessage(Messages.INFO_LABEL_AUTHOR)
+            LanguageController.messages.INFO_LABEL_AUTHOR
         else
-            LanguageController.getMessage(Messages.INFO_LABEL_AUTHORS)
+            LanguageController.messages.INFO_LABEL_AUTHORS
         val text = if (authors.isEmpty())
-            LanguageController.getMessage(Messages.INFO_LABEL_NO_AUTHORS)
+            LanguageController.messages.INFO_LABEL_NO_AUTHORS
         else
             authors.joinToString(", ") { it.trim() }
         wrapText("$line $text")
@@ -301,7 +292,7 @@ object DisplayUtils {
      */
     fun printConditional(conditional: DirectiveConditional) {
         if (conditional.type !== DirectiveConditionalType.NONE) {
-            wrapText(LanguageController.getMessage(Messages.INFO_LABEL_CONDITIONAL) +
+            wrapText(LanguageController.messages.INFO_LABEL_CONDITIONAL +
                     " (" + conditional.type + ") " +
                     conditional.condition)
         }
@@ -312,16 +303,14 @@ object DisplayUtils {
      */
     fun printFileInformation() {
         val file = Arara.config[AraraSpec.Execution.reference].path.toFile()
-        val line = LanguageController.getMessage(
-                Messages.INFO_DISPLAY_FILE_INFORMATION,
-                file.name,
-                CommonUtils.byteSizeToString(file.length()),
-                FileHandlingUtils.getLastModifiedInformation(file)
-        )
-        logger.info(LanguageController.getMessage(
-                Messages.LOG_INFO_WELCOME_MESSAGE,
-                AraraAPI.version
-        ))
+        val line = LanguageController.messages.INFO_DISPLAY_FILE_INFORMATION
+                .format(
+                        file.name,
+                        CommonUtils.byteSizeToString(file.length()),
+                        FileHandlingUtils.getLastModifiedInformation(file)
+                )
+        logger.info(LanguageController.messages.LOG_INFO_WELCOME_MESSAGE
+                .format(AraraAPI.version))
         logger.info(displaySeparator())
         logger.debug("::: arara @ $applicationPath")
         logger.debug("::: Java %s, %s".format(
@@ -362,13 +351,13 @@ object DisplayUtils {
         if (displayLine || displayException)
             addNewLine()
 
-        val text = LanguageController.getMessage(
-                Messages.INFO_DISPLAY_EXECUTION_TIME,
-                "%1.2f".format(
-                        Arara.config[AraraSpec.userInterfaceOptions].locale,
-                        seconds
+        val text = LanguageController.messages.INFO_DISPLAY_EXECUTION_TIME
+                .format(
+                        "%1.2f".format(
+                                Arara.config[AraraSpec.userInterfaceOptions].locale,
+                                seconds
+                        )
                 )
-        )
         logger.info(text)
         wrapText(text)
     }
@@ -397,8 +386,7 @@ object DisplayUtils {
      * Displays a line containing details.
      */
     private fun displayDetailsLine() {
-        val line = LanguageController.getMessage(
-                Messages.INFO_LABEL_ON_DETAILS) + " "
+        val line = LanguageController.messages.INFO_LABEL_ON_DETAILS + " "
         println(line.abbreviate(outputWidth).padEnd(outputWidth, '-'))
     }
 

@@ -5,8 +5,7 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
-import org.islandoftex.arara.cli.localization.LanguageController
-import org.islandoftex.arara.cli.localization.Messages
+import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.DirectiveConditionalEvaluator
 import org.islandoftex.arara.mvel.utils.Methods
 import org.mvel2.templates.TemplateRuntime
@@ -41,16 +40,12 @@ class DirectiveConditionalEvaluator(executionOptions: ExecutionOptions) :
                     result
             } else {
                 throw AraraException(
-                        LanguageController.getMessage(
-                                Messages.ERROR_EVALUATE_NOT_BOOLEAN_VALUE
-                        )
+                        LanguageController.messages.ERROR_EVALUATE_NOT_BOOLEAN_VALUE
                 )
             }
         } catch (exception: RuntimeException) {
             throw AraraException(
-                    LanguageController.getMessage(
-                            Messages.ERROR_EVALUATE_COMPILATION_FAILED
-                    ),
+                    LanguageController.messages.ERROR_EVALUATE_COMPILATION_FAILED,
                     exception
             )
         }

@@ -18,7 +18,6 @@ import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.filehandling.FileSearchingUtils
-import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.model.ProjectFile
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
@@ -27,6 +26,7 @@ import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.LoggingOptions
 import org.islandoftex.arara.core.configuration.UserInterfaceOptions
 import org.islandoftex.arara.core.files.Project
+import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Executor
 import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.mvel.configuration.Configuration

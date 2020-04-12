@@ -6,7 +6,7 @@ import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
-import org.islandoftex.arara.cli.localization.LanguageController
+import org.islandoftex.arara.core.localization.LanguageController
 
 /**
  * Implements the configuration model, which holds the default settings and can

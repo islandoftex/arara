@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.localization
 
-import ch.qos.cal10n.verifier.MessageKeyVerifier
 import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.shouldBe
 import java.io.File
@@ -11,11 +9,10 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.Locale
 import java.util.stream.Collectors
 
 class LanguageCoverageTest : ShouldSpec({
-    "locale definitions" {
+    /*"locale definitions" {
         /**
          * Helper method, checks the provided locale (all keys set?).
          *
@@ -41,7 +38,7 @@ class LanguageCoverageTest : ShouldSpec({
             check(Locale.forLanguageTag("en-QN")) shouldBe 0
             check(Locale.forLanguageTag("pt-BR")) shouldBe 0
         }
-    }
+    }*/
     "language coverage" {
         /*
          * Tests the localized messages, checking if all messages are properly

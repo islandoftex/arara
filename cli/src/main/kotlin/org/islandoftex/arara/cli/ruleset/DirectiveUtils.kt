@@ -13,10 +13,9 @@ import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.cli.configuration.AraraSpec
-import org.islandoftex.arara.cli.localization.LanguageController
-import org.islandoftex.arara.cli.localization.Messages
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.files.FileHandling
+import org.islandoftex.arara.core.localization.LanguageController
 import org.slf4j.LoggerFactory
 
 /**
@@ -33,8 +32,10 @@ object DirectiveUtils {
 
     private const val directivestart = """^\s*(\w+)\s*(:\s*(\{.*\})\s*)?"""
     private const val pattern = """(\s+(if|while|until|unless)\s+(\S.*))?$"""
+
     // pattern to match directives against
     private val directivePattern = (directivestart + pattern).toPattern()
+
     // math the arara part in `% arara: pdflatex`
     private const val namePattern = "arara:\\s"
 
@@ -65,9 +66,12 @@ object DirectiveUtils {
                 val line = text.substring(validLineMatcher.end())
                 map[i + 1] = line
 
-                logger.info(LanguageController.getMessage(
-                        Messages.LOG_INFO_POTENTIAL_PATTERN_FOUND,
-                        i + 1, line.trim()))
+                logger.info(
+                        LanguageController.messages
+                                .LOG_INFO_POTENTIAL_PATTERN_FOUND.format(
+                                        i + 1, line.trim()
+                                )
+                )
             } else if (parseOnlyHeader && !checkLinePattern(validLinePattern, text)) {
                 // if we should only look within the file's header and reached
                 // a point where the line pattern does not match anymore, we
@@ -98,9 +102,7 @@ object DirectiveUtils {
         val pairs = getPotentialDirectiveLines(lines, parseOnlyHeader, fileType)
                 .takeIf { it.isNotEmpty() }
                 ?: throw AraraException(
-                        LanguageController.getMessage(
-                                Messages.ERROR_VALIDATE_NO_DIRECTIVES_FOUND
-                        )
+                        LanguageController.messages.ERROR_VALIDATE_NO_DIRECTIVES_FOUND
                 )
 
         val assemblers = mutableListOf<DirectiveAssembler>()
@@ -109,12 +111,9 @@ object DirectiveUtils {
             val linebreakMatcher = linebreakPattern.matcher(content)
             if (linebreakMatcher.find()) {
                 if (!assembler.isAppendAllowed) {
-                    throw AraraException(
-                            LanguageController.getMessage(
-                                    Messages.ERROR_VALIDATE_ORPHAN_LINEBREAK,
-                                    lineno
-                            )
-                    )
+                    throw AraraException(LanguageController
+                            .messages.ERROR_VALIDATE_ORPHAN_LINEBREAK
+                            .format(lineno))
                 } else {
                     assembler.addLineNumber(lineno)
                     assembler.appendLine(linebreakMatcher.group(1))
@@ -159,17 +158,17 @@ object DirectiveUtils {
                     lineNumbers = assembler.getLineNumbers()
             )
 
-            logger.info(LanguageController.getMessage(
-                    Messages.LOG_INFO_POTENTIAL_DIRECTIVE_FOUND, directive))
+            logger.info(LanguageController.messages
+                    .LOG_INFO_POTENTIAL_DIRECTIVE_FOUND.format(directive))
 
             return directive
         } else {
             throw AraraException(
-                    LanguageController.getMessage(
-                            Messages.ERROR_VALIDATE_INVALID_DIRECTIVE_FORMAT,
-                            "(" + assembler.getLineNumbers()
-                                    .joinToString(", ") + ")"
-                    )
+                    LanguageController.messages.ERROR_VALIDATE_INVALID_DIRECTIVE_FORMAT
+                            .format(
+                                    "(" + assembler.getLineNumbers()
+                                            .joinToString(", ") + ")"
+                            )
             )
         }
     }
@@ -220,10 +219,10 @@ object DirectiveUtils {
             readValue<Map<String, Any>>(text)
         }.getOrElse {
             throw AraraException(
-                    LanguageController.getMessage(
-                            Messages.ERROR_VALIDATE_YAML_EXCEPTION,
-                            "(" + numbers.joinToString(", ") + ")"
-                    ),
+                    LanguageController.messages.ERROR_VALIDATE_YAML_EXCEPTION
+                            .format(
+                                    "(" + numbers.joinToString(", ") + ")"
+                            ),
                     it
             )
         }
@@ -268,18 +267,18 @@ object DirectiveUtils {
                     .takeIf { it.isNotEmpty() && holder.size == it.size }
             // TODO: check exception according to condition
                     ?: throw AraraException(
-                            LanguageController.getMessage(
-                                    Messages.ERROR_VALIDATE_EMPTY_FILES_LIST,
-                                    "(" + directive.lineNumbers
-                                            .joinToString(", ") + ")"
-                            )
+                            LanguageController.messages.ERROR_VALIDATE_EMPTY_FILES_LIST
+                                    .format(
+                                            "(" + directive.lineNumbers
+                                                    .joinToString(", ") + ")"
+                                    )
                     )
         } else {
             throw AraraException(
-                    LanguageController.getMessage(
-                            Messages.ERROR_VALIDATE_FILES_IS_NOT_A_LIST,
-                            "(" + directive.lineNumbers.joinToString(", ") + ")"
-                    )
+                    LanguageController.messages.ERROR_VALIDATE_FILES_IS_NOT_A_LIST
+                            .format(
+                                    "(" + directive.lineNumbers.joinToString(", ") + ")"
+                            )
             )
         }
     }
@@ -300,10 +299,10 @@ object DirectiveUtils {
 
             if (parameters.containsKey("reference"))
                 throw AraraException(
-                        LanguageController.getMessage(
-                                Messages.ERROR_VALIDATE_REFERENCE_IS_RESERVED,
-                                "(" + directive.lineNumbers.joinToString(", ") + ")"
-                        )
+                        LanguageController.messages.ERROR_VALIDATE_REFERENCE_IS_RESERVED
+                                .format(
+                                        "(" + directive.lineNumbers.joinToString(", ") + ")"
+                                )
                 )
 
             if (parameters.containsKey("files")) {
@@ -320,10 +319,9 @@ object DirectiveUtils {
             }
         }
 
-        logger.info(LanguageController.getMessage(
-                Messages.LOG_INFO_VALIDATED_DIRECTIVES))
+        logger.info(LanguageController.messages.LOG_INFO_VALIDATED_DIRECTIVES)
         logger.info(DisplayUtils.displayOutputSeparator(
-                LanguageController.getMessage(Messages.LOG_INFO_DIRECTIVES_BLOCK)))
+                LanguageController.messages.LOG_INFO_DIRECTIVES_BLOCK))
         result.forEach { logger.info(it.toString()) }
         logger.info(DisplayUtils.displaySeparator())
 

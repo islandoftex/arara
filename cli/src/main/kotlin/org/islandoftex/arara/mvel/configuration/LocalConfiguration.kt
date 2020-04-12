@@ -11,9 +11,8 @@ import org.islandoftex.arara.api.configuration.LoggingOptions
 import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
-import org.islandoftex.arara.cli.localization.LanguageController
-import org.islandoftex.arara.cli.localization.Messages
 import org.islandoftex.arara.cli.model.FileTypeImpl
+import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.mvel2.templates.TemplateRuntime
 
@@ -72,9 +71,7 @@ data class LocalConfiguration(
             loops
         } else {
             throw AraraException(
-                    LanguageController.getMessage(
-                            Messages.ERROR_CONFIGURATION_LOOPS_INVALID_RANGE
-                    )
+                    LanguageController.messages.ERROR_CONFIGURATION_LOOPS_INVALID_RANGE
             )
         }
         return org.islandoftex.arara.core.configuration.ExecutionOptions

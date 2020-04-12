@@ -9,10 +9,9 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.cli.configuration.AraraSpec
-import org.islandoftex.arara.cli.localization.LanguageController
-import org.islandoftex.arara.cli.localization.Messages
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.core.files.ProjectFile
+import org.islandoftex.arara.core.localization.LanguageController
 
 class ProjectFile(
     path: Path,
@@ -28,9 +27,7 @@ class ProjectFile(
             )
         } catch (ioexception: IOException) {
             throw AraraException(
-                    LanguageController.getMessage(
-                            Messages.ERROR_EXTRACTOR_IO_ERROR
-                    ),
+                    LanguageController.messages.ERROR_EXTRACTOR_IO_ERROR,
                     ioexception
             )
         }

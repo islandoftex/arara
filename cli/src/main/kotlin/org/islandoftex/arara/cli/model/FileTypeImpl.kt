@@ -4,10 +4,9 @@ package org.islandoftex.arara.cli.model
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
-import org.islandoftex.arara.cli.localization.LanguageController
-import org.islandoftex.arara.cli.localization.Messages
 import org.islandoftex.arara.cli.utils.CommonUtils
 import org.islandoftex.arara.core.configuration.ConfigurationUtils
+import org.islandoftex.arara.core.localization.LanguageController
 
 /**
  * Implements the file type model.
@@ -32,11 +31,11 @@ class FileTypeImpl : FileType {
             if (field == FileType.INVALID_PATTERN) {
                 field = ConfigurationUtils.defaultFileTypePatterns[extension]
                         ?: throw AraraException(
-                            LanguageController.getMessage(
-                                Messages.ERROR_FILETYPE_UNKNOWN_EXTENSION,
-                                extension,
-                                CommonUtils.fileTypesList
-                            )
+                                LanguageController.messages
+                                        .ERROR_FILETYPE_UNKNOWN_EXTENSION.format(
+                                                extension,
+                                                CommonUtils.fileTypesList
+                                        )
                         )
             }
             return field

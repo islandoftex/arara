@@ -51,6 +51,12 @@ val mainManifest: Manifest = DefaultManifest((project as ProjectInternal).fileRe
         }
 
 tasks {
+    withType<KotlinCompile> {
+        kotlinOptions {
+            freeCompilerArgs = listOf("-Xopt-in=org.islandoftex.arara.api.localization.AraraMessages")
+        }
+    }
+
     withType<Jar> {
         archiveBaseName.set("arara-core")
         manifest.attributes.putAll(mainManifest.attributes)

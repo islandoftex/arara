@@ -10,9 +10,8 @@ import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.cli.configuration.AraraSpec
-import org.islandoftex.arara.cli.localization.LanguageController
-import org.islandoftex.arara.cli.localization.Messages
 import org.islandoftex.arara.core.files.FileHandling
+import org.islandoftex.arara.core.localization.LanguageController
 
 /**
  * Implements file handling utilitary methods.
@@ -102,9 +101,8 @@ object FileHandlingUtils {
         }.getOrElse {
             // it is IOException || is is SecurityException
             throw AraraException(
-                    LanguageController.getMessage(
-                            Messages.ERROR_GETPARENTCANONICALPATH_IO_EXCEPTION
-                    ), it
+                    LanguageController.messages.ERROR_GETPARENTCANONICALPATH_IO_EXCEPTION,
+                    it
             )
         }
     }

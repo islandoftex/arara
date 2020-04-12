@@ -12,8 +12,7 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.rules.RuleArgument
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.filehandling.FileHandlingUtils
-import org.islandoftex.arara.cli.localization.LanguageController
-import org.islandoftex.arara.cli.localization.Messages
+import org.islandoftex.arara.core.localization.LanguageController
 
 /**
  * Implements common utilitary methods.
@@ -44,11 +43,8 @@ object CommonUtils {
         get() {
             return ruleId?.let { id ->
                 rulePath?.let { path ->
-                    LanguageController.getMessage(
-                            Messages.ERROR_RULE_IDENTIFIER_AND_PATH,
-                            id,
-                            path
-                    ) + " "
+                    LanguageController.messages.ERROR_RULE_IDENTIFIER_AND_PATH
+                            .format(id, path) + " "
                 }
             } ?: ""
         }
@@ -90,10 +86,8 @@ object CommonUtils {
         val no = listOf("no", "false", "0", "off")
         return if (!yes.union(no).contains(value.toLowerCase())) {
             throw AraraException(
-                LanguageController.getMessage(
-                    Messages.ERROR_CHECKBOOLEAN_NOT_VALID_BOOLEAN,
-                    value
-                )
+                    LanguageController.messages.ERROR_CHECKBOOLEAN_NOT_VALID_BOOLEAN
+                            .format(value)
             )
         } else {
             yes.contains(value.toLowerCase())
@@ -205,11 +199,9 @@ object CommonUtils {
             return matcher.find()
         } catch (exception: IOException) {
             throw AraraException(
-                LanguageController.getMessage(
-                    Messages.ERROR_CHECKREGEX_IO_EXCEPTION,
-                    file.name
-                ),
-                exception
+                    LanguageController.messages.ERROR_CHECKREGEX_IO_EXCEPTION
+                            .format(file.name),
+                    exception
             )
         }
     }
@@ -234,10 +226,8 @@ object CommonUtils {
             values.map { String.format(pattern, it) }
         } catch (exception: MissingFormatArgumentException) {
             throw AraraException(
-                LanguageController.getMessage(
-                    Messages.ERROR_REPLICATELIST_MISSING_FORMAT_ARGUMENTS_EXCEPTION
-                ),
-                exception
+                    LanguageController.messages.ERROR_REPLICATELIST_MISSING_FORMAT_ARGUMENTS_EXCEPTION,
+                    exception
             )
         }
     }

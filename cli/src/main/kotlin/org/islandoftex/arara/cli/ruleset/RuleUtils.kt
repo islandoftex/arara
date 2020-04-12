@@ -5,9 +5,8 @@ import com.charleskorn.kaml.Yaml
 import java.io.File
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.rules.Rule
-import org.islandoftex.arara.cli.localization.LanguageController
-import org.islandoftex.arara.cli.localization.Messages
 import org.islandoftex.arara.cli.utils.CommonUtils
+import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.mvel.rules.RuleImpl
 
 /**
@@ -37,9 +36,9 @@ object RuleUtils {
             Yaml.default.parse(RuleImpl.serializer(), text)
         }.getOrElse {
             throw AraraException(
-                    CommonUtils.ruleErrorHeader + LanguageController.getMessage(
-                            Messages.ERROR_PARSERULE_GENERIC_ERROR
-                    ), it
+                    CommonUtils.ruleErrorHeader + LanguageController
+                            .messages.ERROR_PARSERULE_GENERIC_ERROR,
+                    it
             )
         }
 
@@ -62,18 +61,17 @@ object RuleUtils {
         if (rule.identifier != identifier) {
             throw AraraException(
                     CommonUtils.ruleErrorHeader +
-                            LanguageController.getMessage(
-                                    Messages.ERROR_VALIDATEHEADER_WRONG_IDENTIFIER,
-                                    rule.identifier,
-                                    identifier
-                            )
+                            LanguageController.messages.ERROR_VALIDATEHEADER_WRONG_IDENTIFIER
+                                    .format(
+                                            rule.identifier,
+                                            identifier
+                                    )
             )
         }
         if (rule.displayName == null) {
             throw AraraException(
-                    CommonUtils.ruleErrorHeader + LanguageController.getMessage(
-                            Messages.ERROR_VALIDATEHEADER_NULL_NAME
-                    )
+                    CommonUtils.ruleErrorHeader + LanguageController
+                            .messages.ERROR_VALIDATEHEADER_NULL_NAME
             )
         }
     }
@@ -90,10 +88,8 @@ object RuleUtils {
     private fun validateBody(rule: RuleImpl) {
         if (rule.commands.any { it.commandString == null }) {
             throw AraraException(
-                    CommonUtils.ruleErrorHeader +
-                            LanguageController.getMessage(
-                                    Messages.ERROR_VALIDATEBODY_NULL_COMMAND
-                            )
+                    CommonUtils.ruleErrorHeader + LanguageController
+                            .messages.ERROR_VALIDATEBODY_NULL_COMMAND
             )
         }
 
@@ -104,26 +100,23 @@ object RuleUtils {
                     arguments.add(argument.identifier)
                 } else {
                     throw AraraException(
-                            CommonUtils.ruleErrorHeader + LanguageController.getMessage(
-                                    Messages.ERROR_VALIDATEBODY_MISSING_KEYS
-                            )
+                            CommonUtils.ruleErrorHeader + LanguageController
+                                    .messages.ERROR_VALIDATEBODY_MISSING_KEYS
                     )
                 }
             } else {
                 throw AraraException(
-                        CommonUtils.ruleErrorHeader + LanguageController.getMessage(
-                                Messages.ERROR_VALIDATEBODY_NULL_ARGUMENT_ID
-                        )
+                        CommonUtils.ruleErrorHeader + LanguageController
+                                .messages.ERROR_VALIDATEBODY_NULL_ARGUMENT_ID
                 )
             }
         }
 
         arguments.intersect(listOf("files", "reference")).forEach {
             throw AraraException(
-                    CommonUtils.ruleErrorHeader + LanguageController.getMessage(
-                            Messages.ERROR_VALIDATEBODY_ARGUMENT_ID_IS_RESERVED,
-                            it
-                    )
+                    CommonUtils.ruleErrorHeader + LanguageController
+                            .messages.ERROR_VALIDATEBODY_ARGUMENT_ID_IS_RESERVED
+                            .format(it)
             )
         }
 
@@ -131,9 +124,8 @@ object RuleUtils {
         val found = arguments.toSet().size
         if (expected != found) {
             throw AraraException(
-                    CommonUtils.ruleErrorHeader + LanguageController.getMessage(
-                            Messages.ERROR_VALIDATEBODY_DUPLICATE_ARGUMENT_IDENTIFIERS
-                    )
+                    CommonUtils.ruleErrorHeader + LanguageController.messages
+                            .ERROR_VALIDATEBODY_DUPLICATE_ARGUMENT_IDENTIFIERS
             )
         }
     }

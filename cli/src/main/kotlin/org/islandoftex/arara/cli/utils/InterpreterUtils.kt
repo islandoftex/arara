@@ -16,8 +16,7 @@ import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.cli.configuration.AraraSpec
-import org.islandoftex.arara.cli.localization.LanguageController
-import org.islandoftex.arara.cli.localization.Messages
+import org.islandoftex.arara.core.localization.LanguageController
 import org.slf4j.LoggerFactory
 import org.zeroturnaround.exec.InvalidExitValueException
 import org.zeroturnaround.exec.ProcessExecutor
@@ -95,25 +94,22 @@ object InterpreterUtils {
         return executor.runCatching {
             val exit = execute().exitValue
             logger.info(DisplayUtils.displayOutputSeparator(
-                    LanguageController.getMessage(Messages.LOG_INFO_BEGIN_BUFFER)))
+                    LanguageController.messages.LOG_INFO_BEGIN_BUFFER))
             logger.info(buffer.toString())
             logger.info(DisplayUtils.displayOutputSeparator(
-                    LanguageController.getMessage(Messages.LOG_INFO_END_BUFFER)))
+                    LanguageController.messages.LOG_INFO_END_BUFFER))
             exit
         }.getOrElse {
             throw AraraException(
-                LanguageController.getMessage(
+                LanguageController.messages.run {
                     when (it) {
-                        is IOException -> Messages.ERROR_RUN_IO_EXCEPTION
-                        is InterruptedException ->
-                            Messages.ERROR_RUN_INTERRUPTED_EXCEPTION
-                        is InvalidExitValueException ->
-                            Messages.ERROR_RUN_INVALID_EXIT_VALUE_EXCEPTION
-                        is TimeoutException ->
-                            Messages.ERROR_RUN_TIMEOUT_EXCEPTION
-                        else -> Messages.ERROR_RUN_GENERIC_EXCEPTION
+                        is IOException -> ERROR_RUN_IO_EXCEPTION
+                        is InterruptedException -> ERROR_RUN_INTERRUPTED_EXCEPTION
+                        is InvalidExitValueException -> ERROR_RUN_INVALID_EXIT_VALUE_EXCEPTION
+                        is TimeoutException -> ERROR_RUN_TIMEOUT_EXCEPTION
+                        else -> ERROR_RUN_GENERIC_EXCEPTION
                     }
-                ), it
+                }, it
             )
         }
     }
