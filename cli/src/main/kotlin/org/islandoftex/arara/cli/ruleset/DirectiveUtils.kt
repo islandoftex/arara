@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import java.io.File
+import java.nio.file.Paths
 import java.util.regex.Pattern
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
@@ -13,10 +13,10 @@ import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.cli.configuration.AraraSpec
-import org.islandoftex.arara.cli.filehandling.FileHandlingUtils
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.localization.Messages
 import org.islandoftex.arara.cli.utils.DisplayUtils
+import org.islandoftex.arara.core.files.FileHandling
 import org.slf4j.LoggerFactory
 
 /**
@@ -249,8 +249,9 @@ object DirectiveUtils {
             // we received a file list, so we map that list to files
             holder.filterIsInstance<Any>()
                     .asSequence()
-                    .map { File(it.toString()) }
-                    .map(FileHandlingUtils::getCanonicalFile)
+                    .map { Paths.get(it.toString()) }
+                    .map(FileHandling::normalize)
+                    .map { it.toFile() }
                     // and because we want directives, we replicate our
                     // directive to be applied to that file
                     .map { reference ->

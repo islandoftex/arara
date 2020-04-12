@@ -9,6 +9,11 @@ package org.islandoftex.arara.core.localization
  * @since 4.0
  */
 internal enum class Messages {
+    // For whatever reason, I could not calculate the hash. I have no idea why
+    // it failed, though. Perhaps the file was moved or deleted before or during
+    // the hashing operation. Or maybe I do not have the proper permissions to
+    // read the file.
+    ERROR_CALCULATEHASH_IO_EXCEPTION,
     // I could not load the YAML database named ''{0}''. I have no idea why it
     // failed, though. Perhaps the file was moved or deleted before or during
     // the reading operation. Or maybe I do not have the proper permissions to

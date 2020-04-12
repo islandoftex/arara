@@ -624,7 +624,7 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean changed(String extension) throws AraraException {
-        return FileHandlingUtils.INSTANCE.hasChanged(extension);
+        return changed(new File(FileHandlingUtils.INSTANCE.getPath(extension)));
     }
 
     /**
