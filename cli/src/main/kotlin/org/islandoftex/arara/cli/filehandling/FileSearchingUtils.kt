@@ -34,8 +34,7 @@ object FileSearchingUtils {
         directory: File,
         extensions: List<String>,
         recursive: Boolean
-    ):
-            List<File> = try {
+    ): List<File> = try {
         // return the result of the
         // provided search
         if (recursive)
@@ -66,8 +65,7 @@ object FileSearchingUtils {
         directory: File,
         patterns: List<String>,
         recursive: Boolean
-    ):
-            List<File> = try {
+    ): List<File> = try {
         // return the result of the provided
         // search, with the wildcard filter
         // and a potential recursive search
@@ -119,7 +117,7 @@ object FileSearchingUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    private fun lookupFile(reference: String, workingDirectory: File): ProjectFile? {
+    internal fun lookupFile(reference: String, workingDirectory: File): ProjectFile? {
         val types = Arara.config[AraraSpec.executionOptions].fileTypes
         val file = workingDirectory.resolve(reference)
         val name = file.name

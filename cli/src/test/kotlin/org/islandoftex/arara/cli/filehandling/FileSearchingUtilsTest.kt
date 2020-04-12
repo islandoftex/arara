@@ -7,8 +7,6 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import kotlin.reflect.full.declaredMemberFunctions
-import kotlin.reflect.jvm.isAccessible
 import org.islandoftex.arara.api.files.ProjectFile
 
 class FileSearchingUtilsTest : ShouldSpec({
@@ -25,36 +23,27 @@ class FileSearchingUtilsTest : ShouldSpec({
     }
 
     should("fail looking up inexistent file") {
-        val lookupFile = FileSearchingUtils::class.declaredMemberFunctions
-                .first { it.name == "lookupFile" }
-        lookupFile.isAccessible = true
-        lookupFile.call(FileSearchingUtils, "QUACK", File(".")) shouldBe null
+        FileSearchingUtils.lookupFile("QUACK", File(".")) shouldBe null
     }
     should("fail on existing directory") {
-        val lookupFile = FileSearchingUtils::class.declaredMemberFunctions
-                .first { it.name == "lookupFile" }
-        lookupFile.isAccessible = true
-        lookupFile.call(FileSearchingUtils, "../buildSrc", File(".")) shouldBe null
+        FileSearchingUtils.lookupFile("../buildSrc", File(".")) shouldBe null
     }
     should("succeed finding tex file with extension") {
-        val lookupFile = FileSearchingUtils::class.declaredMemberFunctions
-                .first { it.name == "lookupFile" }
         val pathToTest = Paths.get("src/test/resources/executiontests/changes/changes.tex")
-        lookupFile.isAccessible = true
-        val projectFile = lookupFile.call(FileSearchingUtils, pathToTest.toString(),
-                File(".")) as ProjectFile
+        val projectFile = FileSearchingUtils.lookupFile(
+                pathToTest.toString(),
+                File(".")
+        ) as ProjectFile
         projectFile.path.toFile().canonicalFile.absolutePath shouldBe
                 File(".").resolve(pathToTest.toFile()).canonicalFile.absolutePath
         projectFile.fileType.extension shouldBe "tex"
         projectFile.fileType.pattern shouldBe "^\\s*%\\s+"
     }
     should("succeed finding tex file without extension") {
-        val lookupFile = FileSearchingUtils::class.declaredMemberFunctions
-                .first { it.name == "lookupFile" }
-        lookupFile.isAccessible = true
-        val projectFile = lookupFile.call(FileSearchingUtils,
+        val projectFile = FileSearchingUtils.lookupFile(
                 Paths.get("src/test/resources/executiontests/changes/changes").toString(),
-                File(".")) as ProjectFile
+                File(".")
+        ) as ProjectFile
         projectFile.path.toFile().canonicalFile.absolutePath shouldBe
                 File("./src/test/resources/executiontests/changes/changes.tex").canonicalFile.absolutePath
         projectFile.fileType.extension shouldBe "tex"
