@@ -35,7 +35,6 @@ object Configuration {
 
         // just to be sure, update the current locale in order to
         // display localized messages
-        val locale = Arara.config[AraraSpec.Execution.language].locale
-        LanguageController.setLocale(locale)
+        LanguageController.setLocale(Arara.config[AraraSpec.userInterfaceOptions].locale)
     }
 }

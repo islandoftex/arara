@@ -9,6 +9,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import com.github.ajalt.clikt.parameters.types.restrictTo
+import java.util.Locale
 import kotlin.system.exitProcess
 import kotlin.time.TimeSource
 import kotlin.time.milliseconds
@@ -17,7 +18,6 @@ import org.islandoftex.arara.api.session.ExecutionMode
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.filehandling.FileSearchingUtils
-import org.islandoftex.arara.cli.localization.Language
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.model.ProjectFile
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
@@ -25,6 +25,7 @@ import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.LoggingOptions
+import org.islandoftex.arara.core.configuration.UserInterfaceOptions
 import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.session.Executor
 import org.islandoftex.arara.core.session.ExecutorHooks
@@ -71,11 +72,12 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
      * Update arara's configuration with the command line arguments.
      */
     private fun updateConfigurationFromCommandLine() {
-        language?.let {
-            Arara.config[AraraSpec.Execution.language] = Language(it)
-            LanguageController.setLocale(
-                    Arara.config[AraraSpec.Execution.language].locale)
-        }
+        Arara.config[AraraSpec.userInterfaceOptions] = UserInterfaceOptions(
+                locale = language?.let { Locale.forLanguageTag(it) }
+                        ?: Arara.config[AraraSpec.userInterfaceOptions].locale,
+                swingLookAndFeel = Arara.config[AraraSpec.userInterfaceOptions].swingLookAndFeel
+        )
+        LanguageController.setLocale(Arara.config[AraraSpec.userInterfaceOptions].locale)
 
         Arara.config[AraraSpec.executionOptions] = ExecutionOptions(
                 maxLoops = maxLoops

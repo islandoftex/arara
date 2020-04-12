@@ -8,7 +8,6 @@ import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.session.ExecutionOptions
 import org.islandoftex.arara.api.session.LoggingOptions
 import org.islandoftex.arara.api.session.UserInterfaceOptions
-import org.islandoftex.arara.cli.localization.Language
 import org.islandoftex.arara.cli.model.ProjectFile
 import org.islandoftex.arara.cli.model.UNKNOWN_TYPE
 
@@ -32,7 +31,6 @@ object AraraSpec : ConfigSpec() {
     )
 
     object Execution : ConfigSpec() {
-        val language by lazy { Language(it[userInterfaceOptions].languageCode) }
         val rulePaths by lazy {
             it[executionOptions].rulePaths.plus(
                     ConfigurationUtils

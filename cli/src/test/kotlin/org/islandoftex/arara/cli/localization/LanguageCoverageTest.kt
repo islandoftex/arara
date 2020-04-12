@@ -2,7 +2,6 @@
 package org.islandoftex.arara.cli.localization
 
 import ch.qos.cal10n.verifier.MessageKeyVerifier
-import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldNotBeEmpty
@@ -14,7 +13,6 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.Locale
 import java.util.stream.Collectors
-import org.islandoftex.arara.api.AraraException
 
 class LanguageCoverageTest : ShouldSpec({
     "locale definitions" {
@@ -31,12 +29,7 @@ class LanguageCoverageTest : ShouldSpec({
         }
 
         should("succeed instantiating known locale") {
-            Language("en").locale.language shouldBe "en"
-        }
-        should("throw on unknown locale instantiation") {
-            shouldThrow<AraraException> {
-                Language("quack")
-            }
+            Locale("en").language shouldBe "en"
         }
 
         should("not error on known localizations") {
@@ -45,6 +38,8 @@ class LanguageCoverageTest : ShouldSpec({
             }
             check(Locale("en", "QN")) shouldBe 0
             check(Locale("pt", "BR")) shouldBe 0
+            check(Locale.forLanguageTag("en-QN")) shouldBe 0
+            check(Locale.forLanguageTag("pt-BR")) shouldBe 0
         }
     }
     "language coverage" {

@@ -359,14 +359,16 @@ object DisplayUtils {
      * @param seconds The elapsed seconds.
      */
     fun printTime(seconds: Double) {
-        val language = Arara.config[AraraSpec.Execution.language]
-
         if (displayLine || displayException)
             addNewLine()
 
         val text = LanguageController.getMessage(
                 Messages.INFO_DISPLAY_EXECUTION_TIME,
-                "%1.2f".format(language.locale, seconds))
+                "%1.2f".format(
+                        Arara.config[AraraSpec.userInterfaceOptions].locale,
+                        seconds
+                )
+        )
         logger.info(text)
         wrapText(text)
     }

@@ -2,6 +2,7 @@
 package org.islandoftex.arara.mvel.configuration
 
 import java.nio.file.Paths
+import java.util.Locale
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
@@ -28,7 +29,7 @@ import org.mvel2.templates.TemplateRuntime
 data class LocalConfiguration(
     private var paths: List<String> = listOf(),
     private var filetypes: List<FileTypeImpl> = listOf(),
-    private var language: String = Arara.config[AraraSpec.userInterfaceOptions].languageCode,
+    private var language: String = Arara.config[AraraSpec.userInterfaceOptions].locale.toLanguageTag(),
     private var loops: Int = Arara.config[AraraSpec.executionOptions].maxLoops,
     private var verbose: Boolean = Arara.config[AraraSpec.executionOptions].verbose,
     private var logging: Boolean = Arara.config[AraraSpec.loggingOptions].enableLogging,
@@ -115,7 +116,7 @@ data class LocalConfiguration(
      */
     fun toUserInterfaceOptions(): UserInterfaceOptions {
         return org.islandoftex.arara.core.configuration.UserInterfaceOptions(
-                languageCode = language,
+                locale = Locale.forLanguageTag(language),
                 swingLookAndFeel = laf
         )
     }

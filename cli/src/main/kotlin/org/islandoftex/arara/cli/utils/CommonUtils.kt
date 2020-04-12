@@ -143,14 +143,15 @@ object CommonUtils {
      */
     @Suppress("MagicNumber")
     fun byteSizeToString(size: Long): String {
-        val language = Arara.config[AraraSpec.Execution.language]
         val conversionFactor = 1000.0
         return if (size < conversionFactor) "$size B"
         else
             (ln(size.toDouble()) / ln(conversionFactor)).toInt().let { exp ->
-                "%.1f %sB".format(language.locale,
+                "%.1f %sB".format(
+                        Arara.config[AraraSpec.userInterfaceOptions].locale,
                         size / conversionFactor.pow(exp.toDouble()),
-                        "kMGTPE"[exp - 1])
+                        "kMGTPE"[exp - 1]
+                )
             }
     }
 
