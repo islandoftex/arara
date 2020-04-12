@@ -3,6 +3,7 @@ package org.islandoftex.arara.api.session
 
 import kotlin.time.ExperimentalTime
 import kotlin.time.TimeMark
+import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
 

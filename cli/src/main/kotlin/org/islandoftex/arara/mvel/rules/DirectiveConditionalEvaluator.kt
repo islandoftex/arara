@@ -2,9 +2,9 @@
 package org.islandoftex.arara.mvel.rules
 
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
-import org.islandoftex.arara.api.session.ExecutionOptions
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.localization.Messages
 import org.islandoftex.arara.core.rules.DirectiveConditionalEvaluator

@@ -6,9 +6,9 @@ import java.util.Locale
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.session.ExecutionOptions
-import org.islandoftex.arara.api.session.LoggingOptions
-import org.islandoftex.arara.api.session.UserInterfaceOptions
+import org.islandoftex.arara.api.configuration.ExecutionOptions
+import org.islandoftex.arara.api.configuration.LoggingOptions
+import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.localization.LanguageController

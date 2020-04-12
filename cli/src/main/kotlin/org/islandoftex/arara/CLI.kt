@@ -14,7 +14,7 @@ import kotlin.system.exitProcess
 import kotlin.time.TimeSource
 import kotlin.time.milliseconds
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.session.ExecutionMode
+import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.filehandling.FileSearchingUtils

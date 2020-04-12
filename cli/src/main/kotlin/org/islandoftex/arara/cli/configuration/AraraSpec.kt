@@ -3,11 +3,11 @@ package org.islandoftex.arara.cli.configuration
 
 import com.uchuhimo.konf.ConfigSpec
 import java.nio.file.Paths
+import org.islandoftex.arara.api.configuration.ExecutionOptions
+import org.islandoftex.arara.api.configuration.LoggingOptions
+import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.Project
-import org.islandoftex.arara.api.session.ExecutionOptions
-import org.islandoftex.arara.api.session.LoggingOptions
-import org.islandoftex.arara.api.session.UserInterfaceOptions
 import org.islandoftex.arara.cli.model.ProjectFile
 import org.islandoftex.arara.cli.model.UNKNOWN_TYPE
 

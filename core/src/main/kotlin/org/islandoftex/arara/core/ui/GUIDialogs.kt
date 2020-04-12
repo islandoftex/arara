@@ -3,7 +3,7 @@ package org.islandoftex.arara.core.ui
 
 import javax.swing.JOptionPane
 import javax.swing.UIManager
-import org.islandoftex.arara.api.session.UserInterfaceOptions
+import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 
 /**
  * Implements utilitary methods for displaying messages.

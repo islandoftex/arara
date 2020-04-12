@@ -2,7 +2,7 @@
 package org.islandoftex.arara.core.configuration
 
 import java.util.Locale
-import org.islandoftex.arara.api.session.UserInterfaceOptions
+import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 
 data class UserInterfaceOptions(
     override val locale: Locale = Locale("en"),

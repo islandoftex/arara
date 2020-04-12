@@ -4,11 +4,11 @@ package org.islandoftex.arara.cli.model
 import java.io.File
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.api.session.Command
-import org.islandoftex.arara.api.session.ExecutionMode
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.localization.LanguageController
 import org.islandoftex.arara.cli.localization.Messages

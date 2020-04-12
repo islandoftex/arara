@@ -3,10 +3,10 @@ package org.islandoftex.arara.core.rules
 
 import kotlin.time.ExperimentalTime
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.configuration.ExecutionMode
+import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
-import org.islandoftex.arara.api.session.ExecutionMode
-import org.islandoftex.arara.api.session.ExecutionOptions
 
 /**
  * Implements the evaluator model, on which a conditional can be analyzed and

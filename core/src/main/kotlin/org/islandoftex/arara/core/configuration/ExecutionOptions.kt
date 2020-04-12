@@ -6,9 +6,9 @@ import java.nio.file.Paths
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
+import org.islandoftex.arara.api.configuration.ExecutionMode
+import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.files.FileType
-import org.islandoftex.arara.api.session.ExecutionMode
-import org.islandoftex.arara.api.session.ExecutionOptions
 
 @ExperimentalTime
 data class ExecutionOptions(
