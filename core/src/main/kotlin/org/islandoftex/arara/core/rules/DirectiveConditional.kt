@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.ruleset
+package org.islandoftex.arara.core.rules
 
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
@@ -12,7 +12,7 @@ import org.islandoftex.arara.api.rules.DirectiveConditionalType
  * @version 5.0
  * @since 4.0
  */
-data class DirectiveConditionalImpl(
+data class DirectiveConditional(
     override val type: DirectiveConditionalType = DirectiveConditionalType.NONE,
     override val condition: String = ""
 ) : DirectiveConditional {

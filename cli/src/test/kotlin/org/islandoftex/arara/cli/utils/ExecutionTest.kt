@@ -16,7 +16,6 @@ import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.filehandling.FileSearchingUtils
-import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.mvel.configuration.Configuration
@@ -40,9 +39,8 @@ class ExecutionTest : ShouldSpec({
             Arara.config[AraraSpec.Execution.reference] = FileSearchingUtils
                     .resolveFile(fileName, File(getPathForTest(testName)),
                             Arara.config[AraraSpec.executionOptions])
-            val directives = DirectiveUtils.process(Arara
-                    .config[AraraSpec.Execution.reference]
-                    .fetchDirectives(false))
+            val directives = Arara.config[AraraSpec.Execution.reference]
+                    .fetchDirectives(false)
             directives.forEach {
                 it.execute()
             }

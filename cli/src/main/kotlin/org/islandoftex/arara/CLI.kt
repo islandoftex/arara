@@ -19,7 +19,6 @@ import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.filehandling.FileSearchingUtils
 import org.islandoftex.arara.cli.model.ProjectFile
-import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.core.configuration.ExecutionOptions
@@ -175,9 +174,6 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                         executeAfterFile = {
                             // add an empty line between file executions
                             println()
-                        },
-                        processDirectives = {
-                            DirectiveUtils.process(it)
                         }
                 )
                 Arara.config[AraraSpec.Execution.exitCode] = Executor.execute(

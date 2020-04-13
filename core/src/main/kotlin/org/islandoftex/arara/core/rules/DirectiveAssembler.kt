@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.ruleset
+package org.islandoftex.arara.core.rules
 
 /**
  * Implements a directive assembler in order to help build a directive from a
@@ -9,7 +9,7 @@ package org.islandoftex.arara.cli.ruleset
  * @version 5.0
  * @since 4.0
  */
-class DirectiveAssembler {
+internal class DirectiveAssembler {
     /**
      * This variable holds a list of line numbers indicating which lines
      * composed the resulting potential directive.
