@@ -6,16 +6,16 @@ import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.Locale
+import kotlin.time.ExperimentalTime
 import kotlinx.serialization.Serializable
-import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.configuration.ExecutionOptions
-import org.islandoftex.arara.api.configuration.LoggingOptions
-import org.islandoftex.arara.api.configuration.UserInterfaceOptions
-import org.islandoftex.arara.cli.configuration.AraraSpec
-import org.islandoftex.arara.cli.model.FileTypeImpl
+import org.islandoftex.arara.api.files.Project
+import org.islandoftex.arara.core.configuration.ExecutionOptions
+import org.islandoftex.arara.core.configuration.LoggingOptions
+import org.islandoftex.arara.core.configuration.UserInterfaceOptions
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
+import org.islandoftex.arara.mvel.files.FileType
 import org.mvel2.templates.TemplateRuntime
 
 /**
@@ -27,17 +27,18 @@ import org.mvel2.templates.TemplateRuntime
  * @since 4.0
  */
 @Serializable
+@ExperimentalTime
 data class LocalConfiguration(
     private var paths: List<String> = listOf(),
-    private var filetypes: List<FileTypeImpl> = listOf(),
-    private var language: String = Arara.config[AraraSpec.userInterfaceOptions].locale.toLanguageTag(),
-    private var loops: Int = Arara.config[AraraSpec.executionOptions].maxLoops,
-    private var verbose: Boolean = Arara.config[AraraSpec.executionOptions].verbose,
-    private var logging: Boolean = Arara.config[AraraSpec.loggingOptions].enableLogging,
-    private var header: Boolean = Arara.config[AraraSpec.executionOptions].parseOnlyHeader,
-    private var dbname: String = Arara.config[AraraSpec.executionOptions].databaseName.toString(),
-    private var logname: String = Arara.config[AraraSpec.loggingOptions].logFile.toString(),
-    private var laf: String = Arara.config[AraraSpec.userInterfaceOptions].swingLookAndFeel
+    private var filetypes: List<FileType> = listOf(),
+    private var language: String = UserInterfaceOptions().locale.toLanguageTag(),
+    private var loops: Int = ExecutionOptions().maxLoops,
+    private var verbose: Boolean = ExecutionOptions().verbose,
+    private var logging: Boolean = LoggingOptions().enableLogging,
+    private var header: Boolean = ExecutionOptions().parseOnlyHeader,
+    private var dbname: String = ExecutionOptions().databaseName.toString(),
+    private var logname: String = LoggingOptions().logFile.toString(),
+    private var laf: String = UserInterfaceOptions().swingLookAndFeel
 ) {
     /**
      * Convert the relevant properties of the configuration to execution
@@ -47,19 +48,19 @@ data class LocalConfiguration(
      * @return The corresponding execution options.
      */
     @Throws(AraraException::class)
-    fun toExecutionOptions(): ExecutionOptions {
+    fun toExecutionOptions(
+        currentProject: Project,
+        baseOptions: org.islandoftex.arara.api.configuration.ExecutionOptions = ExecutionOptions()
+    ): org.islandoftex.arara.api.configuration.ExecutionOptions {
         val preprocessedPaths = paths.map { it.trim() }.map { input ->
             try {
                 TemplateRuntime.eval(input, mapOf(
                         "user" to mapOf(
-                                "home" to (Environment.getSystemPropertyOrNull("user.home")
-                                        ?: ""),
-                                "name" to (Environment.getSystemPropertyOrNull("user.name")
-                                        ?: "")
+                                "home" to (Environment.getSystemPropertyOrNull("user.home") ?: ""),
+                                "name" to (Environment.getSystemPropertyOrNull("user.name") ?: "")
                         ),
                         "application" to mapOf(
-                                "workingDirectory" to Arara.config[AraraSpec.Execution.currentProject]
-                                        .workingDirectory.toAbsolutePath().toString()
+                                "workingDirectory" to currentProject.workingDirectory.toAbsolutePath().toString()
                         )
                 )) as String
             } catch (_: RuntimeException) {
@@ -76,16 +77,16 @@ data class LocalConfiguration(
                     LanguageController.messages.ERROR_CONFIGURATION_LOOPS_INVALID_RANGE
             )
         }
-        return org.islandoftex.arara.core.configuration.ExecutionOptions
-                .from(Arara.config[AraraSpec.executionOptions])
+        return ExecutionOptions
+                .from(baseOptions)
                 .copy(
                         maxLoops = maxLoops,
                         verbose = verbose,
                         databaseName = databaseName,
                         fileTypes = filetypes
-                                .plus(Arara.config[AraraSpec.executionOptions].fileTypes),
+                                .plus(baseOptions.fileTypes),
                         rulePaths = preprocessedPaths.map { Paths.get(it) }
-                                .plus(Arara.config[AraraSpec.Execution.rulePaths])
+                                .plus(baseOptions.rulePaths)
                                 .toSet(),
                         parseOnlyHeader = header
                 )
@@ -98,9 +99,9 @@ data class LocalConfiguration(
      *
      * @return The corresponding logging options.
      */
-    fun toLoggingOptions(): LoggingOptions {
+    fun toLoggingOptions(): org.islandoftex.arara.api.configuration.LoggingOptions {
         val logName = Paths.get(cleanFileName(logname))
-        return org.islandoftex.arara.core.configuration.LoggingOptions(
+        return LoggingOptions(
                 enableLogging = logging,
                 logFile = logName
         )
@@ -113,8 +114,8 @@ data class LocalConfiguration(
      *
      * @return The corresponding user interface options.
      */
-    fun toUserInterfaceOptions(): UserInterfaceOptions {
-        return org.islandoftex.arara.core.configuration.UserInterfaceOptions(
+    fun toUserInterfaceOptions(): org.islandoftex.arara.api.configuration.UserInterfaceOptions {
+        return UserInterfaceOptions(
                 locale = Locale.forLanguageTag(language),
                 swingLookAndFeel = laf
         )

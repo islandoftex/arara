@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.model
+package org.islandoftex.arara.mvel.files
 
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
-import org.islandoftex.arara.cli.utils.CommonUtils
 import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.localization.LanguageController
 
@@ -16,7 +15,7 @@ import org.islandoftex.arara.core.localization.LanguageController
  * @since 4.0
  */
 @Serializable
-class FileTypeImpl : FileType {
+class FileType : FileType {
     // string representing the
     // file extension
     override var extension: String = FileType.INVALID_EXTENSION
@@ -33,8 +32,8 @@ class FileTypeImpl : FileType {
                         ?: throw AraraException(
                                 LanguageController.messages
                                         .ERROR_FILETYPE_UNKNOWN_EXTENSION.format(
-                                                extension,
-                                                CommonUtils.fileTypesList
+                                                extension
+                                        // TODO: insert currently available file types
                                         )
                         )
             }
@@ -75,9 +74,3 @@ class FileTypeImpl : FileType {
         return extension.hashCode()
     }
 }
-
-/**
- * This value identifies an unknown file type.
- */
-val FileType.Companion.UNKNOWN_TYPE: FileType
-    get() = org.islandoftex.arara.core.files.FileType(INVALID_EXTENSION, "")
