@@ -2,11 +2,12 @@
 package org.islandoftex.arara.mvel.rules
 
 import com.charleskorn.kaml.Yaml
-import java.io.File
+import java.nio.file.Path
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.rules.Rule
+import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
 
 /**
@@ -54,11 +55,11 @@ data class RuleImpl(
          * higher levels.
          */
         @Throws(AraraException::class)
-        fun parse(file: File, identifier: String): Rule {
+        fun parse(file: Path, identifier: String): Rule {
             ruleId = identifier
-            rulePath = file.absolutePath
+            rulePath = FileHandling.normalize(file).toString()
             val rule = file.runCatching {
-                val text = readText()
+                val text = toFile().readText()
                 if (!text.startsWith("!config"))
                     throw Exception("Rule should start with !config")
                 Yaml.default.parse(RuleImpl.serializer(), text)

@@ -2,7 +2,6 @@
 package org.islandoftex.arara.cli.utils
 
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.io.IOException
 import java.io.OutputStream
 import java.nio.file.Path
@@ -16,6 +15,7 @@ import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.cli.configuration.AraraSpec
+import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
 import org.slf4j.LoggerFactory
 import org.zeroturnaround.exec.InvalidExitValueException
@@ -101,36 +101,17 @@ object InterpreterUtils {
             exit
         }.getOrElse {
             throw AraraException(
-                LanguageController.messages.run {
-                    when (it) {
-                        is IOException -> ERROR_RUN_IO_EXCEPTION
-                        is InterruptedException -> ERROR_RUN_INTERRUPTED_EXCEPTION
-                        is InvalidExitValueException -> ERROR_RUN_INVALID_EXIT_VALUE_EXCEPTION
-                        is TimeoutException -> ERROR_RUN_TIMEOUT_EXCEPTION
-                        else -> ERROR_RUN_GENERIC_EXCEPTION
-                    }
-                }, it
+                    LanguageController.messages.run {
+                        when (it) {
+                            is IOException -> ERROR_RUN_IO_EXCEPTION
+                            is InterruptedException -> ERROR_RUN_INTERRUPTED_EXCEPTION
+                            is InvalidExitValueException -> ERROR_RUN_INVALID_EXIT_VALUE_EXCEPTION
+                            is TimeoutException -> ERROR_RUN_TIMEOUT_EXCEPTION
+                            else -> ERROR_RUN_GENERIC_EXCEPTION
+                        }
+                    }, it
             )
         }
-    }
-
-    /**
-     * Builds the rule path based on the rule name and returns the corresponding
-     * file location.
-     *
-     * @param name The rule name.
-     * @return The rule file.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
-    @Throws(AraraException::class)
-    fun buildRulePath(name: String): File? {
-        Arara.config[AraraSpec.Execution.rulePaths].forEach { path ->
-            val location = File(construct(path, name))
-            if (location.exists())
-                return location
-        }
-        return null
     }
 
     /**
@@ -143,15 +124,17 @@ object InterpreterUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun construct(path: Path, name: String): String {
+    fun construct(path: Path, name: String): Path {
         val fileName = "$name.yaml"
         return if (path.isAbsolute) {
-            path.resolve(fileName).toString()
+            FileHandling.normalize(path.resolve(fileName))
         } else {
-            Arara.config[AraraSpec.Execution.currentProject].workingDirectory
-                    // first resolve the path (rule path) against the working
-                    // directory, then the rule name we want to resolve
-                    .resolve(path).resolve(fileName).toAbsolutePath().toString()
+            FileHandling.normalize(
+                    Arara.config[AraraSpec.Execution.currentProject].workingDirectory
+                            // first resolve the path (rule path) against the working
+                            // directory, then the rule name we want to resolve
+                            .resolve(path).resolve(fileName)
+            )
         }
     }
 }

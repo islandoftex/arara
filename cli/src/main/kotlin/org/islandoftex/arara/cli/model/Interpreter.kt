@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.model
 
-import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
@@ -51,8 +52,11 @@ object Interpreter {
      * higher levels.
      */
     @Throws(AraraException::class)
-    private fun getRule(directive: Directive): File {
-        return InterpreterUtils.buildRulePath(directive.identifier)
+    private fun getRule(directive: Directive): Path {
+        return Arara.config[AraraSpec.Execution.rulePaths]
+                .asSequence()
+                .map { path -> InterpreterUtils.construct(path, directive.identifier) }
+                .firstOrNull { Files.exists(it) }
                 ?: throw AraraException(
                         LanguageController.messages.ERROR_INTERPRETER_RULE_NOT_FOUND.format(
                                 directive.identifier,
@@ -234,7 +238,7 @@ object Interpreter {
         )
 
         CommonUtils.ruleId = directive.identifier
-        CommonUtils.rulePath = file.parent
+        CommonUtils.rulePath = file.parent.toString()
 
         // parse the rule identified by the directive
         // (may throw an exception)
