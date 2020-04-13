@@ -9,7 +9,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     application
     `maven-publish`
-    id("org.jetbrains.kotlin.plugin.serialization")
     id("com.github.johnrengelman.shadow")
     jacoco
 }
@@ -21,15 +20,12 @@ dependencies {
     implementation(kotlin("reflect", Versions.kotlin))
     implementation(group = "com.uchuhimo", name = "konf-core", version = Versions.konf)
     implementation(group = "com.github.ajalt", name = "clikt", version = Versions.clikt)
-    implementation(group = "ch.qos.cal10n", name = "cal10n-api", version = Versions.cal10n)
     implementation(group = "ch.qos.logback", name = "logback-classic", version = Versions.logback)
     implementation(group = "ch.qos.logback", name = "logback-core", version = Versions.logback)
     implementation(group = "org.mvel" , name = "mvel2", version = Versions.mvel)
     implementation(group = "org.slf4j", name = "slf4j-api", version = Versions.slf4j)
     implementation(group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-yaml", version = Versions.jackson)
     implementation(group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version = Versions.jackson)
-    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-runtime", version = Versions.kotlinxSerialization)
-    implementation(group = "com.charleskorn.kaml", name = "kaml", version = Versions.kaml)
     implementation(group = "org.zeroturnaround", name = "zt-exec", version = Versions.ztExec)
 
     testImplementation(group = "io.kotest", name = "kotest-runner-junit5-jvm", version = Versions.kotest)
