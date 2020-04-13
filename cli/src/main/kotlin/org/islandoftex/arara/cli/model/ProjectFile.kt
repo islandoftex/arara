@@ -23,7 +23,7 @@ class ProjectFile(
             return DirectiveUtils.extractDirectives(
                     Files.readAllLines(path),
                     Arara.config[AraraSpec.executionOptions].parseOnlyHeader,
-                    Arara.config[AraraSpec.Execution.reference].fileType
+                    fileType
             )
         } catch (ioexception: IOException) {
             throw AraraException(
