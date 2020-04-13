@@ -69,6 +69,8 @@ detekt {
     input = files(
             "api/src/main/kotlin",
             "core/src/main/kotlin",
+            "mvel/src/main/kotlin",
+            "kotlin-dsl/src/main/kotlin",
             "cli/src/main/kotlin",
             "buildSrc/src/main/kotlin"
     )

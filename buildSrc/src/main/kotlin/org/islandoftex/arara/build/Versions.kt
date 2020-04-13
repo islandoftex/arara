@@ -14,6 +14,7 @@ object Versions {
     // non-plugin dependencies
     const val cal10n = "0.8.1"
     const val clikt = "2.6.0"
+    const val jna = "5.5.0"
     const val kaml = "0.17.0"
     const val konf = "0.22.1"
     const val kotest = "4.0.2"
