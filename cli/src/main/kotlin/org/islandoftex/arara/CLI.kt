@@ -29,7 +29,6 @@ import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Executor
 import org.islandoftex.arara.core.session.ExecutorHooks
-import org.islandoftex.arara.mvel.configuration.Configuration
 
 /**
  * arara's command line interface
@@ -158,7 +157,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                         executeBeforeProject = { project ->
                             ConfigurationUtils.configFile?.let {
                                 DisplayUtils.configurationFileName = it.toString()
-                                Configuration.load(it)
+                                ConfigurationUtils.load(it)
                             }
                             Arara.config[AraraSpec.Execution.currentProject] = project
                         },

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.configuration
 
-import com.charleskorn.kaml.Yaml
 import java.io.File
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -79,29 +78,29 @@ object ConfigurationUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun loadLocalConfiguration(file: Path): LocalConfiguration {
-        return file.runCatching {
-            val text = file.toFile().readText()
-            if (!text.startsWith("!config"))
-                throw Exception("Configuration should start with !config")
-            Yaml.default.parse(LocalConfiguration.serializer(),
-                    text)
-        }.getOrElse {
-            throw AraraException(
-                    LanguageController.messages.ERROR_CONFIGURATION_GENERIC_ERROR,
-                    it
-            )
-        }
+    private fun loadLocalConfiguration(file: Path): LocalConfiguration {
+        return if (file.fileName.toString().endsWith(".yaml"))
+            LocalConfiguration.load(file)
+        else
+            TODO("Kotlin DSL not implemented yet")
     }
 
     /**
-     * Cleans the file name to avoid invalid entries.
+     * Loads the application configuration.
      *
-     * @param name The file name.
-     * @return A cleaned file name.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
      */
-    fun cleanFileName(name: String): String {
-        val result = File(name).name.trim()
-        return if (result.isEmpty()) "arara" else result.trim()
+    @Throws(AraraException::class)
+    fun load(file: Path) {
+        // then validate it and update the configuration accordingly
+        val resource = loadLocalConfiguration(file)
+        Arara.config[AraraSpec.executionOptions] = resource.toExecutionOptions()
+        Arara.config[AraraSpec.loggingOptions] = resource.toLoggingOptions()
+        Arara.config[AraraSpec.userInterfaceOptions] = resource.toUserInterfaceOptions()
+
+        // just to be sure, update the current locale in order to
+        // display localized messages
+        LanguageController.setLocale(Arara.config[AraraSpec.userInterfaceOptions].locale)
     }
 }

@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.mvel.configuration
 
+import com.charleskorn.kaml.Yaml
+import java.io.File
+import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.Locale
 import kotlinx.serialization.Serializable
@@ -10,7 +13,6 @@ import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.configuration.LoggingOptions
 import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 import org.islandoftex.arara.cli.configuration.AraraSpec
-import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.model.FileTypeImpl
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
@@ -66,7 +68,7 @@ data class LocalConfiguration(
                 input
             }
         }
-        val databaseName = Paths.get(ConfigurationUtils.cleanFileName(dbname))
+        val databaseName = Paths.get(cleanFileName(dbname))
         val maxLoops = if (loops > 0) {
             loops
         } else {
@@ -97,7 +99,7 @@ data class LocalConfiguration(
      * @return The corresponding logging options.
      */
     fun toLoggingOptions(): LoggingOptions {
-        val logName = Paths.get(ConfigurationUtils.cleanFileName(logname))
+        val logName = Paths.get(cleanFileName(logname))
         return org.islandoftex.arara.core.configuration.LoggingOptions(
                 enableLogging = logging,
                 logFile = logName
@@ -116,5 +118,41 @@ data class LocalConfiguration(
                 locale = Locale.forLanguageTag(language),
                 swingLookAndFeel = laf
         )
+    }
+
+    /**
+     * Cleans the file name to avoid invalid entries.
+     *
+     * @param name The file name.
+     * @return A cleaned file name.
+     */
+    private fun cleanFileName(name: String): String {
+        val result = File(name).name.trim()
+        return if (result.isEmpty()) "arara" else result.trim()
+    }
+
+    companion object {
+        /**
+         * Validates the configuration file.
+         *
+         * @param file The configuration file.
+         * @return The configuration file as a resource.
+         * @throws AraraException Something wrong happened, to be caught in the
+         * higher levels.
+         */
+        @Throws(AraraException::class)
+        fun load(file: Path): LocalConfiguration =
+                file.runCatching {
+                    val text = file.toFile().readText()
+                    if (!text.startsWith("!config"))
+                        throw Exception("Configuration should start with !config")
+                    Yaml.default.parse(LocalConfiguration.serializer(),
+                            text)
+                }.getOrElse {
+                    throw AraraException(
+                            LanguageController.messages.ERROR_CONFIGURATION_GENERIC_ERROR,
+                            it
+                    )
+                }
     }
 }
