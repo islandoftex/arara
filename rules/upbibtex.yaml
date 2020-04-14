@@ -12,7 +12,8 @@ commands:
 - name: The upBibTeX reference management software
   command: >
     @{
-        return getCommand('upbibtex', options, getBasename(reference))
+        return getCommand('upbibtex', options,
+                          getBasename(reference.getName()))
     }
 arguments:
 - identifier: options

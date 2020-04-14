@@ -13,8 +13,9 @@ commands:
 - name: The Sketch software
   command: >
     @{
-        output = getBasename(reference).concat('.tex');
-        return getCommand('sketch', options, reference, '-o', output);
+        output = getBasename(reference.getName()).concat('.tex');
+        return getCommand('sketch', options, reference.getName(),
+                          '-o', output);
     }
 arguments:
 - identifier: options

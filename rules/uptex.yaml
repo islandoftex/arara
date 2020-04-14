@@ -13,7 +13,7 @@ commands:
   command: >
     @{
         return getCommand('uptex', interaction, shell,
-               synctex, options, reference);
+               synctex, options, reference.getName());
     }
 arguments:
 - identifier: interaction

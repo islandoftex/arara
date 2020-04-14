@@ -12,7 +12,8 @@ commands:
 - name: The MakeGlossariesLite software
   command: >
     @{
-       return  getCommand('makeglossaries-lite', options, getBasename(reference));
+       return  getCommand('makeglossaries-lite', options,
+                          getBasename(reference.getName()));
     }
 arguments:
 - identifier: options

@@ -12,7 +12,8 @@ commands:
 - name: Extended TeX engine
   command: >
     @{
-        return getCommand('etex', interaction, shell, options, reference);
+        return getCommand('etex', interaction, shell, options,
+                          reference.getName());
     }
 arguments:
 - identifier: interaction

@@ -14,7 +14,8 @@ commands:
     @{
         if (isEmpty(clean))
         {
-           return getCommand('makeglossaries', options, getBasename(reference));
+           return getCommand('makeglossaries', options,
+                             getBasename(reference.getName()));
         }
         else {
            prefix = [];

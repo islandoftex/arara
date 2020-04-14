@@ -12,7 +12,7 @@ commands:
 - name: The DVIPS program
   command: >
     @{
-        base = getBasename(reference).concat('.dvi');
+        base = getBasename(reference.getName()).concat('.dvi');
         out = getBasename(output).concat('.ps');
         return getCommand('dvips', base, '-o', out, options);
     }
@@ -24,7 +24,7 @@ arguments:
     }
   default: >
     @{
-        reference
+        reference.getName()
     }
 - identifier: options
   flag: >

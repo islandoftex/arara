@@ -62,7 +62,8 @@ commands:
           return getCommand('bib2gls', dir, trans, group, interpret,
                  breakspace, trimfields, recordcount, recordcountunit,
                  cite, verbose, merge, locale, uniscript, packages,
-                 ignore, custom, mapformats, options, getBasename(reference));
+                 ignore, custom, mapformats, options,
+                 getBasename(reference.getName()));
        }
     }
 arguments:
@@ -79,7 +80,7 @@ arguments:
           throwError('Forbidden transcript extension');
        }
 
-       return ['--log-file', getBasename(reference)+"."+parameters.trans]
+       return ['--log-file', getBasename(reference.getName())+"."+parameters.trans]
     }
 - identifier: locale
   flag: >

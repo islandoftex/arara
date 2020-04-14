@@ -13,7 +13,7 @@ commands:
   command: >
     @{
         c = getCommand('detex', references, mode, follow, math, spaces,
-                       words, environments, reference);
+                       words, environments, reference.getName());
         if (isEmpty(output)) {
           return c;
         }

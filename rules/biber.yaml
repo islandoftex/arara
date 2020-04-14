@@ -16,7 +16,8 @@ commands:
             return getCommand('biber', '--tool', options);
         }
         else {
-            return getCommand('biber', options, getBasename(reference));
+            return getCommand('biber', options,
+                              getBasename(reference.getName()));
         }
     }
 arguments:

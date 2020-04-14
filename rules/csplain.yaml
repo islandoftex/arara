@@ -13,7 +13,7 @@ commands:
   command: >
     @{
         return getCommand('csplain', interaction, draft,
-               shell, synctex, options, reference);
+               shell, synctex, options, reference.getName());
     }
 arguments:
 - identifier: interaction

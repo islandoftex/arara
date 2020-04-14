@@ -13,7 +13,7 @@ commands:
 - name: TikZ list-and-make engine
   command: >
     @{
-        makefile = getBasename(reference).concat('.makefile');
+        makefile = getBasename(reference.getName()).concat('.makefile');
         return getCommand('make', force, jobs, options, '-f', makefile);
     }
 arguments:

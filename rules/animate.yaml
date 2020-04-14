@@ -14,8 +14,8 @@ commands:
   command: >
     @{
         prefix = [];
-        input = getBasename(reference).concat('.pdf');
-        output = getBasename(reference).concat('.gif');
+        input = getBasename(reference.getName()).concat('.pdf');
+        output = getBasename(reference.getName()).concat('.gif');
         return getCommand(program, '-delay', delay, '-loop',
                loop, '-density', density, options, input, output);
     }

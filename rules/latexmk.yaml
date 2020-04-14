@@ -17,7 +17,7 @@ commands:
         }
         else {
             return getCommand('latexmk', isEmpty(program, engine,
-                   program), options, reference);
+                   program), options, reference.getName());
         }
     }
 arguments:

@@ -13,7 +13,7 @@ commands:
   command: >
     @{
         return getCommand('asy', color, engine, twice,
-               format, output, options, reference);
+               format, output, options, reference.getName());
     }
 arguments:
 - identifier: color

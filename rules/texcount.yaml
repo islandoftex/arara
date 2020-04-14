@@ -13,7 +13,8 @@ commands:
   command: >
     @{
         return getCommand('texcount', rules, verbosity, strict, html,
-                          total, unicode, options, output, reference);
+                          total, unicode, options, output,
+                          reference.getName());
     }
 arguments:
 - identifier: rules

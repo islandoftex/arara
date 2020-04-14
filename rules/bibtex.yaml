@@ -12,7 +12,7 @@ commands:
 - name: The BibTeX reference management software
   command: >
     @{
-        return getCommand('bibtex', options, getBasename(reference))
+        return getCommand('bibtex', options, getBasename(reference.getName()))
     }
 arguments:
 - identifier: options

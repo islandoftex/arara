@@ -12,7 +12,7 @@ commands:
 - name: The DVIPDFMX program
   command: >
     @{
-        base = getBasename(reference).concat('.dvi');
+        base = getBasename(reference.getName()).concat('.dvi');
         out = getBasename(output).concat('.pdf');
         return getCommand('dvipdfmx', base, '-o', out, options);
     }
@@ -24,7 +24,7 @@ arguments:
     }
   default: >
     @{
-        reference
+        reference.getName()
     }
 - identifier: options
   flag: >

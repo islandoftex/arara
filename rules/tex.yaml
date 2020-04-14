@@ -12,7 +12,8 @@ commands:
 - name: TeX engine
   command: >
     @{
-        return getCommand('tex', interaction, shell, options, reference);
+        return getCommand('tex', interaction, shell, options,
+                          reference.getName());
     }
 arguments:
 - identifier: interaction

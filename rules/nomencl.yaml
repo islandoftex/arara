@@ -12,8 +12,8 @@ commands:
 - name: The Nomenclature software
   command: >
     @{
-        nlo = getBasename(reference).concat('.nlo');
-        nls = getBasename(reference).concat('.nls');
+        nlo = getBasename(reference.getName()).concat('.nlo');
+        nls = getBasename(reference.getName()).concat('.nls');
         return getCommand('makeindex', options, nlo, style, '-o', nls);
     }
 arguments:

@@ -12,7 +12,7 @@ commands:
 - name: The fig2dev program
   command: >
     @{
-        input = getBasename(reference).concat('.fig');
+        input = getBasename(reference.getName()).concat('.fig');
         return getCommand('fig2dev', language, magnification, font, size,
                           options, input, output);
     }
