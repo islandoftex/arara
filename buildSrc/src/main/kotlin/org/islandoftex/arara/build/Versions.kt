@@ -5,14 +5,13 @@ object Versions {
     // plugin dependencies
     const val detekt = "1.7.4"
     const val dokka = "0.10.1"
-    const val kotlin = "1.3.71"
+    const val kotlin = "1.3.72"
     const val shadow = "5.2.0"
     const val spotless = "3.28.1"
     const val spotlessChangelog = "1.1.0"
     const val versionsPlugin = "0.28.0"
 
     // non-plugin dependencies
-    const val cal10n = "0.8.1"
     const val clikt = "2.6.0"
     const val jna = "5.5.0"
     const val kaml = "0.17.0"
