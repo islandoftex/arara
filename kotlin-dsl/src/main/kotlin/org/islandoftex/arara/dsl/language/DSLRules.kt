@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.dsl
+package org.islandoftex.arara.dsl.language
 
 import java.nio.file.Path
 import kotlin.reflect.KClass

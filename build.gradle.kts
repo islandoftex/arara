@@ -118,16 +118,20 @@ subprojects {
                 removeUnusedImports()
                 licenseHeader("// SPDX-License-Identifier: BSD-3-Clause")
                 trimTrailingWhitespace()
+                indentWithSpaces()
                 endWithNewline()
             }
             kotlin {
+                targetExclude("src/test/**/*.kts")
                 ktlint()
                 licenseHeader("// SPDX-License-Identifier: BSD-3-Clause")
                 trimTrailingWhitespace()
+                indentWithSpaces()
                 endWithNewline()
             }
             kotlinGradle {
                 trimTrailingWhitespace()
+                indentWithSpaces()
                 endWithNewline()
             }
         }
