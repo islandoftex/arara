@@ -375,7 +375,7 @@ It is important to observe that, in this case, \rbox{doc3.tex} is a plain \TeX\ 
 
 Even when a directive is interpreted with a file other than the one being processed by \arara\ (through the magic of the \abox{files} parameter), it is possible to use helper methods in the rule context to get access to the original file and reference. Such methods are detailed later on, in Section~\ref{sec:files}, on page~\pageref{sec:files}.
 
-\section{Important changes in version 5.0}
+\section{Important changes in the 5.x series}
 \label{sec:migrationguide}
 
 \begin{messagebox}{A note to users}{araracolour}{\icattention}{white}
@@ -471,6 +471,10 @@ From version 5.0 on, \arara\ is able to compile multiple files at once by provid
 
 \begin{messagebox}{Support for changing the working directory}{araracolour}{\icinfo}{white}
 A common problem when compiling \TeX\ files are specialties of \TeX\ engines looking for files. Usually, you should call an engine from the directory where the target file is located. \arara\ had the same restriction in that case. Now you can instruct \arara\ to operate from another directory lifting that constraint. See \autoref{chap:commandline} for details.
+\end{messagebox}
+
+\begin{messagebox}{Relative paths for \TeX\ engines and tools}{araracolour}{\icinfo}{white}
+It is worth mentioning that, although \arara\ provides the absolute, canonical path of the provided files in the rule context through the \abox{reference} variable, \TeX-related tools rely on the file name as a relative path with \mtbox{reference.getName()}. This decision was made due to path constraints in these tools, as well as to ensure auxiliary files are written in their correct locations. If you need to run \arara\ on a file located in another directory, refer to \autoref{chap:commandline}, as there is an specific command line option for that purpose.
 \end{messagebox}
 
 This section pretty much covered the basics of the changes to this version. Of course, it is highly advisable to make use of the new features available in \arara\ 5.0 for achieving better results. If you need any help, please do not hesitate to contact us. See Section~\ref{sec:support}, on page~\pageref{sec:support}, for more details on how to get help.
