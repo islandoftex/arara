@@ -8,6 +8,13 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
+## [5.1.1] - 2020-04-14
+
+### Fixed
+
+* TeX-related rules were updated to use `reference.getName()` instead of
+  `reference` due to some issues when using absolute paths.
+
 ## [5.1.0] - 2020-04-03
 
 ### Added
