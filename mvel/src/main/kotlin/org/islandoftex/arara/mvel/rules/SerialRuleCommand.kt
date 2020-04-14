@@ -4,7 +4,6 @@ package org.islandoftex.arara.mvel.rules
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.api.rules.RuleCommand
 
 /**
@@ -29,16 +28,4 @@ class SerialRuleCommand : RuleCommand {
      * The exit status expression
      */
     var exit: String? = null
-
-    fun toRuleCommand(
-        rule: Rule,
-        parameters: Map<String, Any>
-    ): RuleCommand = RuleCommandImpl(name) {
-        TODO("implement this command")
-    }
 }
-
-data class RuleCommandImpl(
-    override val name: String?,
-    override val command: () -> Int
-) : RuleCommand

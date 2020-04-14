@@ -14,7 +14,14 @@ import kotlin.script.templates.standard.SimpleScriptTemplate
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.dsl.language.DSLInstance
 
+/**
+ * The executor object for projects specified in arara's Kotlin DSL.
+ */
 object Executor {
+    /**
+     * Currently, this library is an application with main function (just for
+     * testing purposes).
+     */
     @JvmStatic
     fun main(args: Array<String>) {
         println("Starting execution")

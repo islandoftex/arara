@@ -6,11 +6,19 @@ import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.core.files.ProjectFile
 
-class ProjectFile(
+/**
+ * Implementation of a project file with the option to specify directives
+ * explicitly and avoid fetching.
+ */
+internal class ProjectFile(
     path: Path,
     fileType: FileType,
     priority: Int = DEFAULT_PRIORITY
 ) : ProjectFile(path, fileType, priority) {
+    /**
+     * The directives to be used instead of fetching them from file. Used
+     * whenever non-null.
+     */
     internal var directives: List<String>? = null
 
     /**
