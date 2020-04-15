@@ -4,8 +4,16 @@ rule("id",
         authors = listOf("Quack")) {
     argument("identifier") {
         required = true
-        type = Int::class // this should be something for advanced user, but we should allow it
         // we also need a way for a choices value etc.
     }
-    // command("pdflatex", arguments["identifier"], arguments["quack"])
+    argument<Int>("identifier") {
+        required = true
+        defaultValue = 0
+    }
+
+    command("pdflatex", arguments["identifier"]!!, arguments["quack"]!!)
+    execute {
+        println("Test")
+        exit(1)
+    }
 }

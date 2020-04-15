@@ -30,7 +30,7 @@ object Executor {
                 .codeSource.location.path, "UTF-8")
         val scriptSource = Paths.get(File(path).toURI()).parent.toAbsolutePath()
                 .toFile()
-                .resolve("../../../src/test/resources/org/islandoftex/arara/dsl/samples/project.kts")
+                .resolve("../../../src/test/resources/org/islandoftex/arara/dsl/samples/rule.kts")
                 .readText().trimIndent().toScriptSource()
 
         BasicJvmScriptingHost().evalWithTemplate<SimpleScriptTemplate>(
@@ -47,5 +47,6 @@ object Executor {
         ).valueOrThrow()
 
         println(DSLInstance.projects)
+        println(DSLInstance.rules)
     }
 }

@@ -2,6 +2,7 @@
 package org.islandoftex.arara.dsl.language
 
 import org.islandoftex.arara.api.files.Project
+import org.islandoftex.arara.api.rules.Rule
 
 /**
  * An object holding all public members that are available as top-level
@@ -17,7 +18,7 @@ object DSLInstance {
     /**
      * Rules are specified in the DSL as well. This saves all rules.
      */
-    internal val rules = mutableListOf<DSLRule>()
+    internal val rules = mutableListOf<Rule>()
 
     /**
      * The DSL's way to specify a project.
@@ -42,14 +43,12 @@ object DSLInstance {
      * @param configure Configure the rules by applying methods and properties.
      * @return A configured DSLRule
      */
-    // TODO: return a rule instead.
     fun rule(
         id: String,
-        label: String = "",
+        label: String? = null,
         description: String = "",
         authors: List<String> = listOf(),
         configure: DSLRule.() -> Unit
-    ): DSLRule = DSLRule(id).apply(configure).also {
-        rules.add(it)
-    }
+    ): Rule = DSLRule(id, label, description, authors)
+            .apply(configure).toRule().also { rules.add(it) }
 }
