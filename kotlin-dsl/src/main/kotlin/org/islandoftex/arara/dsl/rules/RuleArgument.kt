@@ -3,7 +3,7 @@ package org.islandoftex.arara.dsl.rules
 
 import org.islandoftex.arara.api.rules.RuleArgument
 
-class RuleArgument<T>(
+data class RuleArgument<T>(
     override val identifier: String,
     override val isRequired: Boolean,
     override val defaultValue: T

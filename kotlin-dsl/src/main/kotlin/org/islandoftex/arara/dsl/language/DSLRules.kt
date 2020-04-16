@@ -2,11 +2,13 @@
 package org.islandoftex.arara.dsl.language
 
 import java.nio.file.Path
+import java.nio.file.Paths
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.api.rules.RuleArgument
 import org.islandoftex.arara.api.rules.RuleCommand
 import org.islandoftex.arara.api.session.Command
+import org.islandoftex.arara.core.session.Environment
 
 /**
  * A rule model class to capture DSL methods within.
@@ -49,8 +51,14 @@ class DSLRule(
         command: String,
         vararg parameters: String,
         workingDirectory: Path? = null
-    ): Command {
-        TODO("command implementation")
+    ): Command = org.islandoftex.arara.dsl.session.Command(
+            listOf(command).plus(parameters), workingDirectory
+    ).also {
+        commands.add(org.islandoftex.arara.dsl.rules.RuleCommand(command) {
+            // TODO: use application's path
+            Environment.executeSystemCommand(it,
+                    workingDirectory ?: Paths.get("")).first
+        })
     }
 
     /**
@@ -59,8 +67,15 @@ class DSLRule(
      * @param executable The scope for the execution. Must return an exit code.
      * @return A [Command] object executing this piece of code.
      */
-    fun execute(executable: DSLExecutable.() -> Int): RuleCommand {
-        TODO("command implementation")
+    fun execute(
+        name: String? = null,
+        executable: DSLExecutable.() -> Unit
+    ): RuleCommand {
+        val dslExecutable = DSLExecutable()
+        return org.islandoftex.arara.dsl.rules.RuleCommand(name) {
+            dslExecutable.executable()
+            dslExecutable.exitValue
+        }.also { commands.add(it) }
     }
 
     /**
@@ -104,51 +119,4 @@ class DSLRule(
             commands = commands,
             arguments = ruleArguments
     )
-}
-
-/**
- * A rule argument model to capture DSL methods within.
- */
-class DSLRuleArgument(val identifier: String) {
-    /**
-     * Whether this argument is required in a directive.
-     */
-    var required: Boolean = false
-
-    /**
-     * The default value of the argument. If null and `T` is non-null you have
-     * to specify a sef
-     */
-    var defaultValue: Any? = null
-
-    /**
-     * Turn this DSL object into arara's core object.
-     *
-     * @return A [RuleArgument] resembling the user's configuration.
-     */
-    inline fun <reified T> toRuleArgument(): RuleArgument<T> {
-        val default = if (defaultValue is T)
-            defaultValue as T
-        else
-            throw AraraException("The default value has to match the given " +
-                    "rule type.")
-        return org.islandoftex.arara.dsl.rules.RuleArgument(
-                identifier, isRequired = required, defaultValue = default
-        )
-    }
-}
-
-/**
- * An executable block model to capture DSL methods within.
- */
-class DSLExecutable {
-    private var exitValue = 0
-
-    /**
-     * Specify the exit value of the command.
-     *
-     * @param value The exit value.
-     * @return The exit value.
-     */
-    fun exit(value: Int): Int = value.also { exitValue = value }
 }
