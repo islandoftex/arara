@@ -8,7 +8,7 @@ import org.islandoftex.arara.api.AraraException;
 import org.islandoftex.arara.api.localization.Messages;
 import org.islandoftex.arara.api.session.Command;
 import org.islandoftex.arara.cli.configuration.AraraSpec;
-import org.islandoftex.arara.cli.filehandling.FileHandlingUtils;
+import org.islandoftex.arara.cli.utils.MethodUtils;
 import org.islandoftex.arara.core.files.FileSearching;
 import org.islandoftex.arara.core.localization.LanguageController;
 import org.islandoftex.arara.cli.ruleset.CommandImpl;
@@ -379,7 +379,7 @@ public class Methods {
      */
     public static String getBasename(File file) throws AraraException {
         if (file.isFile()) {
-            return FileHandlingUtils.INSTANCE.getBasename(file);
+            return MethodUtils.INSTANCE.getBasename(file);
         } else {
             throw new AraraException(
                     CommonUtils.INSTANCE.getRuleErrorHeader().concat(
@@ -399,7 +399,7 @@ public class Methods {
      * @return The basename.
      */
     public static String getBasename(String filename) {
-        return FileHandlingUtils.INSTANCE.getBasename(new File(filename));
+        return MethodUtils.INSTANCE.getBasename(new File(filename));
     }
 
     /**
@@ -412,7 +412,7 @@ public class Methods {
      */
     public static String getFiletype(File file) throws AraraException {
         if (file.isFile()) {
-            return FileHandlingUtils.INSTANCE.getFileExtension(file);
+            return MethodUtils.INSTANCE.getFileExtension(file);
         } else {
             throw new AraraException(
                     CommonUtils.INSTANCE.getRuleErrorHeader().concat(
@@ -432,7 +432,7 @@ public class Methods {
      * @return The file type.
      */
     public static String getFiletype(String filename) {
-        return FileHandlingUtils.INSTANCE.getFileExtension(new File(filename));
+        return MethodUtils.INSTANCE.getFileExtension(new File(filename));
     }
 
     /**
@@ -447,7 +447,7 @@ public class Methods {
     public static List<Object> replicatePattern(String pattern,
                                                 List<Object> values)
             throws AraraException {
-        return CommonUtils.INSTANCE.replicateList(pattern, values);
+        return MethodUtils.INSTANCE.replicateList(pattern, values);
     }
 
     /**
@@ -599,7 +599,7 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean exists(String extension) throws AraraException {
-        return FileHandlingUtils.INSTANCE.exists(extension);
+        return MethodUtils.INSTANCE.exists(extension);
     }
 
     /**
@@ -623,7 +623,7 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean changed(String extension) throws AraraException {
-        return changed(new File(FileHandlingUtils.INSTANCE.getPath(extension)));
+        return changed(MethodUtils.INSTANCE.getPath(extension));
     }
 
     /**
@@ -667,7 +667,7 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean changed(File filename) throws AraraException {
-        return FileHandlingUtils.INSTANCE.hasChanged(filename);
+        return MethodUtils.INSTANCE.hasChanged(filename);
     }
 
     /**
@@ -689,7 +689,7 @@ public class Methods {
      * @return A string built from the array.
      */
     public static String buildString(Object... objects) {
-        return CommonUtils.INSTANCE.generateString(objects);
+        return MethodUtils.INSTANCE.generateString(objects);
     }
 
     /**
@@ -703,7 +703,7 @@ public class Methods {
      */
     public static boolean found(String extension, String regex)
             throws AraraException {
-        return CommonUtils.INSTANCE.checkRegex(extension, regex);
+        return found(MethodUtils.INSTANCE.getPath(extension), regex);
     }
 
     /**
@@ -717,7 +717,7 @@ public class Methods {
      */
     public static boolean found(File file, String regex)
             throws AraraException {
-        return CommonUtils.INSTANCE.checkRegex(file, regex);
+        return MethodUtils.INSTANCE.checkRegex(file, regex);
     }
 
     /**
@@ -1160,7 +1160,7 @@ public class Methods {
      * @return A logical value indicating whether it was successful.
      */
     public static boolean writeToFile(File file, String text, boolean append) {
-        return FileHandlingUtils.INSTANCE.writeToFile(file, text, append);
+        return MethodUtils.INSTANCE.writeToFile(file, text, append);
     }
 
     /**
@@ -1173,7 +1173,7 @@ public class Methods {
      */
     public static boolean writeToFile(String path, String text,
                                       boolean append) {
-        return FileHandlingUtils.INSTANCE.writeToFile(new File(path), text, append);
+        return MethodUtils.INSTANCE.writeToFile(new File(path), text, append);
     }
 
     /**
@@ -1186,7 +1186,8 @@ public class Methods {
      */
     public static boolean writeToFile(File file, List<String> lines,
                                       boolean append) {
-        return FileHandlingUtils.INSTANCE.writeToFile(file, lines, append);
+        return MethodUtils.INSTANCE.writeToFile(file,
+                String.join(System.lineSeparator(), lines), append);
     }
 
     /**
@@ -1199,7 +1200,8 @@ public class Methods {
      */
     public static boolean writeToFile(String path, List<String> lines,
                                       boolean append) {
-        return FileHandlingUtils.INSTANCE.writeToFile(new File(path), lines, append);
+        return MethodUtils.INSTANCE.writeToFile(new File(path),
+                String.join(System.lineSeparator(), lines), append);
     }
 
     /**

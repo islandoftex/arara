@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
+import java.text.SimpleDateFormat
 import kotlin.math.ln
 import kotlin.math.pow
 import org.islandoftex.arara.Arara
@@ -10,7 +11,6 @@ import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.cli.configuration.AraraSpec
-import org.islandoftex.arara.cli.filehandling.FileHandlingUtils
 import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
@@ -329,7 +329,8 @@ object DisplayUtils {
                 .format(
                         file.name,
                         byteSizeToString(file.length()),
-                        FileHandlingUtils.getLastModifiedInformation(file)
+                        SimpleDateFormat("MM/dd/yyyy HH:mm:ss")
+                                .format(file.lastModified())
                 )
         logger.info(LanguageController.messages.LOG_INFO_WELCOME_MESSAGE
                 .format(AraraAPI.version))

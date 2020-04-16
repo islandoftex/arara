@@ -43,6 +43,27 @@ object FileSearchingUtils {
                     )
 
     /**
+     * Gets the parent canonical file of a file.
+     *
+     * @param file The file.
+     * @return The parent canonical file of a file.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    @Throws(AraraException::class)
+    private fun getParentCanonicalFile(file: File): File {
+        return file.runCatching {
+            this.canonicalFile.parentFile
+        }.getOrElse {
+            // it is IOException || is is SecurityException
+            throw AraraException(
+                    LanguageController.messages.ERROR_GETPARENTCANONICALPATH_IO_EXCEPTION,
+                    it
+            )
+        }
+    }
+
+    /**
      * Performs a file lookup based on a string reference.
      *
      * @param reference The file reference as a string.
@@ -59,7 +80,7 @@ object FileSearchingUtils {
         val types = executionOptions.fileTypes
         val file = workingDirectory.resolve(reference)
         val name = file.name
-        val parent = FileHandlingUtils.getParentCanonicalFile(file)
+        val parent = getParentCanonicalFile(file)
 
         // direct search, so we are considering
         // the reference as a complete name
