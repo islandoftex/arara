@@ -146,7 +146,7 @@ data class LocalConfiguration(
                 file.runCatching {
                     val text = file.toFile().readText()
                     if (!text.startsWith("!config"))
-                        throw Exception("Configuration should start with !config")
+                        throw AraraException("Configuration should start with !config")
                     Yaml.default.parse(LocalConfiguration.serializer(),
                             text)
                 }.getOrElse {

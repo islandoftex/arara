@@ -3,8 +3,7 @@ package org.islandoftex.arara.cli.ruleset
 
 import java.nio.file.Path
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.rules.Rule
-import org.islandoftex.arara.mvel.rules.RuleImpl
+import org.islandoftex.arara.mvel.rules.Rule
 
 /**
  * Implements rule utilitary methods.
@@ -25,9 +24,9 @@ object RuleUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun parseRule(file: Path, identifier: String): Rule {
+    fun parseRule(file: Path, identifier: String): org.islandoftex.arara.api.rules.Rule {
         return if (file.toString().substringAfterLast('.') == "yaml")
-            RuleImpl.parse(file, identifier)
+            Rule.parse(file, identifier)
         else
             TODO("Kotlin DSL not implemented yet")
     }

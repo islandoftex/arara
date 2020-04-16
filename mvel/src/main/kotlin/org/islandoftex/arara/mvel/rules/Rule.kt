@@ -18,7 +18,7 @@ import org.islandoftex.arara.core.localization.LanguageController
  * @since 4.0
  */
 @Serializable
-data class RuleImpl(
+data class Rule(
     override val identifier: String,
     @SerialName("name")
     override val displayName: String? = null,
@@ -61,8 +61,9 @@ data class RuleImpl(
             val rule = file.runCatching {
                 val text = toFile().readText()
                 if (!text.startsWith("!config"))
-                    throw Exception("Rule should start with !config")
-                Yaml.default.parse(RuleImpl.serializer(), text)
+                    throw AraraException("Rule should start with !config")
+                Yaml.default.parse(
+                        org.islandoftex.arara.mvel.rules.Rule.serializer(), text)
             }.getOrElse {
                 throw AraraException(ruleErrorHeader + LanguageController
                         .messages.ERROR_PARSERULE_GENERIC_ERROR, it)
@@ -105,7 +106,7 @@ data class RuleImpl(
          */
         @Throws(AraraException::class)
         @Suppress("ThrowsCount")
-        private fun validateBody(rule: RuleImpl) {
+        private fun validateBody(rule: org.islandoftex.arara.mvel.rules.Rule) {
             if (rule.commands.any { it.commandString == null })
                 throw AraraException(ruleErrorHeader + LanguageController
                         .messages.ERROR_VALIDATEBODY_NULL_COMMAND)

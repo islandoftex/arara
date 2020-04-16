@@ -102,10 +102,9 @@ data class Database(
                 runCatching {
                     val text = path.toFile().readText()
                     if (!text.startsWith("!database"))
-                        throw Exception("Database should start with !database")
+                        throw AraraException("Database should start with !database")
                     Yaml.default.parse(serializer(), text)
                 }.getOrElse {
-                    it.printStackTrace()
                     throw AraraException(LanguageController
                             .messages.ERROR_LOAD_COULD_NOT_LOAD_XML
                             .format(path.fileName.toString()), it

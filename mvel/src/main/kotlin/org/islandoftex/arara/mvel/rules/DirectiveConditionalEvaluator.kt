@@ -37,6 +37,7 @@ class DirectiveConditionalEvaluator(executionOptions: ExecutionOptions) :
             val conditionalMethods = methodsClass::class.java
                     .getMethod("getConditionalMethods")
                     .invoke(methodsClass)
+            @Suppress("UNCHECKED_CAST")
             val result = TemplateRuntime.eval("@{ " + conditional.condition + " }",
                     conditionalMethods as Map<String, Any>)
             return if (result is Boolean) {
