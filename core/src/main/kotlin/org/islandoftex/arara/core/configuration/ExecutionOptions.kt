@@ -19,7 +19,7 @@ data class ExecutionOptions(
     override val databaseName: Path = Paths.get("arara.yaml"),
     override val verbose: Boolean = false,
     override val executionMode: ExecutionMode = ExecutionMode.NORMAL_RUN,
-    override val rulePaths: Set<Path> = setOf(),
+    override val rulePaths: Set<Path> = setOf(ConfigurationUtils.applicationPath.resolve("rules")),
     override val fileTypes: List<FileType> = ConfigurationUtils.defaultFileTypes,
     override val parseOnlyHeader: Boolean = false
 ) : ExecutionOptions {

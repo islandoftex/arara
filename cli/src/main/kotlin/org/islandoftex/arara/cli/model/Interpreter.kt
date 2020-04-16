@@ -53,7 +53,7 @@ object Interpreter {
      */
     @Throws(AraraException::class)
     private fun getRule(directive: Directive): Path {
-        return Arara.config[AraraSpec.Execution.rulePaths]
+        return Arara.config[AraraSpec.executionOptions].rulePaths
                 .asSequence()
                 .map { path -> InterpreterUtils.construct(path, directive.identifier) }
                 .firstOrNull { Files.exists(it) }

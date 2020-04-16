@@ -10,6 +10,7 @@ import kotlin.time.ExperimentalTime
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.Project
+import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.LoggingOptions
 import org.islandoftex.arara.core.configuration.UserInterfaceOptions
@@ -87,6 +88,7 @@ data class LocalConfiguration(
                                 .plus(baseOptions.fileTypes),
                         rulePaths = preprocessedPaths.map { Paths.get(it) }
                                 .plus(baseOptions.rulePaths)
+                                .plus(ConfigurationUtils.applicationPath.resolve("rules"))
                                 .toSet(),
                         parseOnlyHeader = header
                 )

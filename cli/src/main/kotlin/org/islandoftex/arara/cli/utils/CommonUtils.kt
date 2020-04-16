@@ -67,7 +67,7 @@ object CommonUtils {
      */
     val allRulePaths: List<String>
         @Throws(AraraException::class)
-        get() = Arara.config[AraraSpec.Execution.rulePaths].map {
+        get() = Arara.config[AraraSpec.executionOptions].rulePaths.map {
             InterpreterUtils.construct(it, "quack").parent.toString()
         }
 
