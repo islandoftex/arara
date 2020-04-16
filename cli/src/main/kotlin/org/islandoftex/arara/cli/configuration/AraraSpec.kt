@@ -9,6 +9,7 @@ import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.cli.model.ProjectFile
+import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.files.UNKNOWN_TYPE
 
 /**
@@ -33,9 +34,7 @@ object AraraSpec : ConfigSpec() {
     object Execution : ConfigSpec() {
         val rulePaths by lazy {
             it[executionOptions].rulePaths.plus(
-                    ConfigurationUtils
-                            .applicationPath.resolve("rules")
-            )
+                    ConfigurationUtils.applicationPath.resolve("rules"))
         }
 
         val exitCode by optional(0)

@@ -1,7 +1,13 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.configuration
 
+import java.nio.file.InvalidPathException
+import java.nio.file.Path
+import java.nio.file.Paths
+import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
+import org.islandoftex.arara.core.files.FileHandling
+import org.islandoftex.arara.core.localization.LanguageController
 
 object ConfigurationUtils {
     /**
@@ -25,4 +31,28 @@ object ConfigurationUtils {
                     org.islandoftex.arara.core.files.FileType(extension, pattern)
                 }.toSet().toList()
     }
+
+    /**
+     * The canonical absolute application path.
+     *
+     * Please note that this might return wrong results if accessed by a
+     * front-end that accesses the `core` library from another location.
+     *
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    val applicationPath: Path
+        @Throws(AraraException::class)
+        get() {
+            try {
+                val path = this::class.java.protectionDomain.codeSource
+                        .location.path
+                return FileHandling.normalize(Paths.get(path).parent)
+            } catch (exception: InvalidPathException) {
+                throw AraraException(
+                        LanguageController.messages.ERROR_GETAPPLICATIONPATH_ENCODING_EXCEPTION,
+                        exception
+                )
+            }
+        }
 }
