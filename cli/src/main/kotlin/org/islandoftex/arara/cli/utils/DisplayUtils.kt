@@ -169,7 +169,7 @@ object DisplayUtils {
      */
     private fun buildLongEntry(name: String, task: String) {
         if (displayRolling) {
-            addNewLine()
+            println()
         } else {
             displayRolling = true
         }
@@ -186,7 +186,7 @@ object DisplayUtils {
      */
     private fun buildDryRunEntry(name: String, task: String) {
         if (displayRolling) {
-            addNewLine()
+            println()
         } else {
             displayRolling = true
         }
@@ -204,7 +204,7 @@ object DisplayUtils {
         Arara.config[AraraSpec.Execution.exitCode] = 2
 
         if (displayResult)
-            addNewLine()
+            println()
         if (displayLine) {
             if (!isDryRunMode) {
                 if (!isVerboseMode) {
@@ -212,7 +212,7 @@ object DisplayUtils {
                 } else {
                     buildLongError()
                 }
-                addNewLine()
+                println()
             }
         }
         val text = (if (exception.hasException())
@@ -224,7 +224,7 @@ object DisplayUtils {
         logger.error(text)
         wrapText(text)
         if (exception.hasException()) {
-            addNewLine()
+            println()
             displayDetailsLine()
             val details = exception.exception!!.message!!
             logger.error(details)
@@ -339,7 +339,7 @@ object DisplayUtils {
         logger.debug(displaySeparator())
         logger.info(line)
         wrapText(line)
-        addNewLine()
+        println()
     }
 
     /**
@@ -349,7 +349,7 @@ object DisplayUtils {
      */
     fun printTime(seconds: Double) {
         if (displayLine || displayException)
-            addNewLine()
+            println()
 
         val text = LanguageController.messages.INFO_DISPLAY_EXECUTION_TIME
                 .format(
@@ -372,13 +372,6 @@ object DisplayUtils {
             | (_| | | | (_| | | | (_| |
              \__,_|_|  \__,_|_|  \__,_|
         """.trimIndent())
-        addNewLine()
-    }
-
-    /**
-     * Adds a new line in the terminal.
-     */
-    private fun addNewLine() {
         println()
     }
 
