@@ -1028,11 +1028,9 @@ public class Methods {
      * @param name The canonical name of the class.
      * @return A pair representing the status and the class.
      */
-    // TODO: refactor to use the enum
-    public static Pair<Integer, Class<?>> loadClass(File file, String name) {
-        Pair<ClassLoading.ClassLoadingStatus, Class<?>> pair =
-                ClassLoading.INSTANCE.loadClass(file, name);
-        return new Pair<>(pair.getFirst().ordinal(), pair.getSecond());
+    public static Pair<ClassLoading.ClassLoadingStatus, Class<?>> loadClass(
+            File file, String name) {
+        return ClassLoading.INSTANCE.loadClass(file, name);
     }
 
     /**
@@ -1042,11 +1040,9 @@ public class Methods {
      * @param name The canonical name of the class.
      * @return A pair representing the status and the class.
      */
-    // TODO: refactor to use the enum
-    public static Pair<Integer, Class<?>> loadClass(String ref, String name) {
-        Pair<ClassLoading.ClassLoadingStatus, Class<?>> pair =
-                ClassLoading.INSTANCE.loadClass(new File(ref), name);
-        return new Pair<>(pair.getFirst().ordinal(), pair.getSecond());
+    public static Pair<ClassLoading.ClassLoadingStatus, Class<?>> loadClass(
+            String ref, String name) {
+        return loadClass(new File(ref), name);
     }
 
     /**
@@ -1056,11 +1052,9 @@ public class Methods {
      * @param name The canonical name of the class.
      * @return A pair representing the status and the class object.
      */
-    // TODO: refactor to use the enum
-    public static Pair<Integer, Object> loadObject(File file, String name) {
-        Pair<ClassLoading.ClassLoadingStatus, Object> pair =
-                ClassLoading.INSTANCE.loadObject(file, name);
-        return new Pair<>(pair.getFirst().ordinal(), pair.getSecond());
+    public static Pair<ClassLoading.ClassLoadingStatus, Object> loadObject(
+            File file, String name) {
+        return ClassLoading.INSTANCE.loadObject(file, name);
     }
 
     /**
@@ -1070,11 +1064,9 @@ public class Methods {
      * @param name The canonical name of the class.
      * @return A pair representing the status and the class object.
      */
-    // TODO: refactor to use the enum
-    public static Pair<Integer, Object> loadObject(String ref, String name) {
-        Pair<ClassLoading.ClassLoadingStatus, Object> pair =
-                ClassLoading.INSTANCE.loadObject(new File(ref), name);
-        return new Pair<>(pair.getFirst().ordinal(), pair.getSecond());
+    public static Pair<ClassLoading.ClassLoadingStatus, Object> loadObject(
+            String ref, String name) {
+        return loadObject(new File(ref), name);
     }
 
     /**

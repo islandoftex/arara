@@ -26,6 +26,9 @@ from version 5.0.0 on.
 * The log file may now be specified as path anywhere on the file system.
   Warning: This behavior may be altered for a future safe mode.
   (see https://github.com/cereda/arara/issues/133).
+* The method signatures of `loadObject` and `loadClass` have been altered to
+  return a `Pair<ClassLoading.ClassLoadingStatus, Object>` instead of a
+  `Pair<Integer, Object>`. You can now access the status values as enumeration.
 
 ### Removed
 
