@@ -19,6 +19,7 @@ import org.islandoftex.arara.core.ui.GUIDialogs;
 import org.islandoftex.arara.cli.utils.SystemCallUtils;
 import org.islandoftex.arara.core.session.Environment;
 import org.islandoftex.arara.core.session.Session;
+import org.islandoftex.arara.core.ui.InputHandling;
 
 import java.io.File;
 import java.io.IOException;
@@ -207,7 +208,7 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean isTrue(String string) throws AraraException {
-        return !isEmpty(string) && CommonUtils.INSTANCE.checkBoolean(string);
+        return !isEmpty(string) && InputHandling.INSTANCE.checkBoolean(string);
     }
 
     /**
@@ -219,7 +220,7 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean isFalse(String string) throws AraraException {
-        return !isEmpty(string) && !CommonUtils.INSTANCE.checkBoolean(string);
+        return !isEmpty(string) && !InputHandling.INSTANCE.checkBoolean(string);
     }
 
     /**

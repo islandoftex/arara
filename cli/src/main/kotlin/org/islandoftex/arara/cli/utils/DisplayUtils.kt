@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
+import kotlin.math.ln
+import kotlin.math.pow
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
@@ -299,6 +301,26 @@ object DisplayUtils {
     }
 
     /**
+     * Gets a human readable representation of a size.
+     *
+     * @param size The byte size to be converted.
+     * @return A string representation of the size.
+     */
+    @Suppress("MagicNumber")
+    internal fun byteSizeToString(size: Long): String {
+        val conversionFactor = 1000.0
+        return if (size < conversionFactor) "$size B"
+        else
+            (ln(size.toDouble()) / ln(conversionFactor)).toInt().let { exp ->
+                "%.1f %sB".format(
+                        Arara.config[AraraSpec.userInterfaceOptions].locale,
+                        size / conversionFactor.pow(exp.toDouble()),
+                        "kMGTPE"[exp - 1]
+                )
+            }
+    }
+
+    /**
      * Displays the file information in the terminal.
      */
     fun printFileInformation() {
@@ -306,7 +328,7 @@ object DisplayUtils {
         val line = LanguageController.messages.INFO_DISPLAY_FILE_INFORMATION
                 .format(
                         file.name,
-                        CommonUtils.byteSizeToString(file.length()),
+                        byteSizeToString(file.length()),
                         FileHandlingUtils.getLastModifiedInformation(file)
                 )
         logger.info(LanguageController.messages.LOG_INFO_WELCOME_MESSAGE

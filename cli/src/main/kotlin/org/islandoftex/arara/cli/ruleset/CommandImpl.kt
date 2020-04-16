@@ -5,7 +5,7 @@ import java.nio.file.Path
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.cli.configuration.AraraSpec
-import org.islandoftex.arara.cli.utils.CommonUtils
+import org.islandoftex.arara.core.ui.InputHandling
 
 /**
  * Implements a command model, containing a list of strings.
@@ -25,7 +25,7 @@ class CommandImpl : Command {
      */
     constructor(vararg values: Any) {
         elements = mutableListOf()
-        val result = CommonUtils.flatten(values.toList())
+        val result = InputHandling.flatten(values.toList())
         result.map { it.toString() }.filter { it.isNotEmpty() }
                 .forEach { elements.add(it) }
     }

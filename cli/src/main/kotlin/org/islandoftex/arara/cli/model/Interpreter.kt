@@ -18,6 +18,7 @@ import org.islandoftex.arara.cli.utils.InterpreterUtils
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Session
+import org.islandoftex.arara.core.ui.InputHandling
 import org.islandoftex.arara.mvel.rules.DirectiveConditionalEvaluator
 import org.islandoftex.arara.mvel.rules.RuleArgument
 import org.islandoftex.arara.mvel.rules.SerialRuleCommand
@@ -154,7 +155,7 @@ object Interpreter {
      * @return A flat list.
      */
     private fun resultToList(result: Any) = if (result is List<*>) {
-        CommonUtils.flatten(result)
+        InputHandling.flatten(result)
     } else {
         listOf(result)
     }
@@ -284,6 +285,23 @@ object Interpreter {
     }
 
     /**
+     * Gets a set of strings containing unknown keys from a map and a list. It
+     * is a set difference from the keys in the map and the entries in the list.
+     *
+     * @param parameters The map of parameters.
+     * @param arguments The list of arguments.
+     * @return A set of strings representing unknown keys from a map and a list.
+     */
+    private fun getUnknownKeys(
+        parameters: Map<String, Any>,
+        arguments: List<org.islandoftex.arara.api.rules.RuleArgument<*>>
+    ): Set<String> {
+        val found = parameters.keys
+        val expected = arguments.map { it.identifier }
+        return found.subtract(expected)
+    }
+
+    /**
      * Parses the rule arguments against the provided directive.
      *
      * @param rule The rule object.
@@ -297,8 +315,8 @@ object Interpreter {
     private fun parseArguments(rule: Rule, directive: Directive):
             Map<String, Any> {
         val arguments = rule.arguments
-        val unknown = CommonUtils.getUnknownKeys(directive.parameters,
-                arguments).minus("reference")
+        val unknown = getUnknownKeys(directive.parameters, arguments)
+                .minus("reference")
         if (unknown.isNotEmpty())
             throw AraraException(
                     CommonUtils.ruleErrorHeader +

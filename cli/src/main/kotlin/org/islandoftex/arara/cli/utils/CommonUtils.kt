@@ -5,11 +5,8 @@ import java.io.File
 import java.io.IOException
 import java.util.MissingFormatArgumentException
 import java.util.regex.Pattern
-import kotlin.math.ln
-import kotlin.math.pow
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.rules.RuleArgument
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.filehandling.FileHandlingUtils
 import org.islandoftex.arara.core.localization.LanguageController
@@ -57,83 +54,6 @@ object CommonUtils {
     val fileTypesList: String
         get() = Arara.config[AraraSpec.executionOptions].fileTypes
                 .joinToString(" | ", "[ ", " ]")
-
-    /**
-     * Checks if the input string is equal to a valid boolean value.
-     *
-     * @param value The input string.
-     * @return A boolean value represented by the provided string.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
-    @Throws(AraraException::class)
-    fun checkBoolean(value: String): Boolean {
-        val yes = listOf("yes", "true", "1", "on")
-        val no = listOf("no", "false", "0", "off")
-        return if (!yes.union(no).contains(value.toLowerCase())) {
-            throw AraraException(
-                    LanguageController.messages.ERROR_CHECKBOOLEAN_NOT_VALID_BOOLEAN
-                            .format(value)
-            )
-        } else {
-            yes.contains(value.toLowerCase())
-        }
-    }
-
-    /**
-     * Flattens a potential list of lists into a list of objects.
-     *
-     * @param list The list to be flattened.
-     * @return The flattened list.
-     */
-    // TODO: check nullity
-    fun flatten(list: List<*>): List<Any> {
-        val result = mutableListOf<Any>()
-        list.forEach { item ->
-            if (item is List<*>)
-                result.addAll(flatten(item))
-            else
-                result.add(item as Any)
-        }
-        return result
-    }
-
-    /**
-     * Gets a set of strings containing unknown keys from a map and a list. It
-     * is a set difference from the keys in the map and the entries in the list.
-     *
-     * @param parameters The map of parameters.
-     * @param arguments The list of arguments.
-     * @return A set of strings representing unknown keys from a map and a list.
-     */
-    fun getUnknownKeys(
-        parameters: Map<String, Any>,
-        arguments: List<RuleArgument<*>>
-    ): Set<String> {
-        val found = parameters.keys
-        val expected = arguments.map { it.identifier }
-        return found.subtract(expected)
-    }
-
-    /**
-     * Gets a human readable representation of a size.
-     *
-     * @param size The byte size to be converted.
-     * @return A string representation of the size.
-     */
-    @Suppress("MagicNumber")
-    fun byteSizeToString(size: Long): String {
-        val conversionFactor = 1000.0
-        return if (size < conversionFactor) "$size B"
-        else
-            (ln(size.toDouble()) / ln(conversionFactor)).toInt().let { exp ->
-                "%.1f %sB".format(
-                        Arara.config[AraraSpec.userInterfaceOptions].locale,
-                        size / conversionFactor.pow(exp.toDouble()),
-                        "kMGTPE"[exp - 1]
-                )
-            }
-    }
 
     /**
      * Generates a string based on a list of objects, separating each one of
