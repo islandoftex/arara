@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.configuration
 
-import java.nio.file.InvalidPathException
+import java.io.File
+import java.io.UnsupportedEncodingException
+import java.net.URLDecoder
 import java.nio.file.Path
 import java.nio.file.Paths
 import org.islandoftex.arara.api.AraraException
@@ -45,10 +47,11 @@ object ConfigurationUtils {
         @Throws(AraraException::class)
         get() {
             try {
-                val path = this::class.java.protectionDomain.codeSource
+                var path = this::class.java.protectionDomain.codeSource
                         .location.path
-                return FileHandling.normalize(Paths.get(path).parent)
-            } catch (exception: InvalidPathException) {
+                path = URLDecoder.decode(path, "UTF-8")
+                return FileHandling.normalize(Paths.get(File(path).toURI()).parent)
+            } catch (exception: UnsupportedEncodingException) {
                 throw AraraException(
                         LanguageController.messages.ERROR_GETAPPLICATIONPATH_ENCODING_EXCEPTION,
                         exception
