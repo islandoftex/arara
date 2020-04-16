@@ -15,6 +15,7 @@ import org.islandoftex.arara.cli.ruleset.RuleUtils
 import org.islandoftex.arara.cli.utils.CommonUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.InterpreterUtils
+import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.mvel.rules.DirectiveConditionalEvaluator
@@ -53,14 +54,17 @@ object Interpreter {
      */
     @Throws(AraraException::class)
     private fun getRule(directive: Directive): Path {
-        return Arara.config[AraraSpec.executionOptions].rulePaths
+        val rulePaths = Arara.config[AraraSpec.executionOptions].rulePaths
+        return rulePaths
                 .asSequence()
                 .map { path -> InterpreterUtils.construct(path, directive.identifier) }
                 .firstOrNull { Files.exists(it) }
                 ?: throw AraraException(
                         LanguageController.messages.ERROR_INTERPRETER_RULE_NOT_FOUND.format(
                                 directive.identifier,
-                                CommonUtils.allRulePaths.joinToString("; ", "(", ")")
+                                rulePaths.joinToString("; ", "(", ")") {
+                                    FileHandling.normalize(it).toString()
+                                }
                         )
                 )
     }

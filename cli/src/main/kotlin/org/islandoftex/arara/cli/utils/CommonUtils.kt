@@ -59,19 +59,6 @@ object CommonUtils {
                 .joinToString(" | ", "[ ", " ]")
 
     /**
-     * Gets a list of all rule paths.
-     *
-     * @return A list of all rule paths.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
-    val allRulePaths: List<String>
-        @Throws(AraraException::class)
-        get() = Arara.config[AraraSpec.executionOptions].rulePaths.map {
-            InterpreterUtils.construct(it, "quack").parent.toString()
-        }
-
-    /**
      * Checks if the input string is equal to a valid boolean value.
      *
      * @param value The input string.
