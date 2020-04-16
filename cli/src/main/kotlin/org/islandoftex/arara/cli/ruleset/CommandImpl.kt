@@ -24,10 +24,8 @@ class CommandImpl : Command {
      * @param values An array of objects.
      */
     constructor(vararg values: Any) {
-        elements = mutableListOf()
         val result = InputHandling.flatten(values.toList())
-        result.map { it.toString() }.filter { it.isNotEmpty() }
-                .forEach { elements.add(it) }
+        elements = result.map { it.toString() }.filter { it.isNotEmpty() }
     }
 
     /**

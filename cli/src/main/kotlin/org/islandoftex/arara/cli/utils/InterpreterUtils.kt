@@ -126,15 +126,15 @@ object InterpreterUtils {
     @Throws(AraraException::class)
     fun construct(path: Path, name: String): Path {
         val fileName = "$name.yaml"
-        return if (path.isAbsolute) {
-            FileHandling.normalize(path.resolve(fileName))
-        } else {
-            FileHandling.normalize(
+        return FileHandling.normalize(
+                if (path.isAbsolute) {
+                    path.resolve(fileName)
+                } else {
                     Arara.config[AraraSpec.Execution.currentProject].workingDirectory
                             // first resolve the path (rule path) against the working
                             // directory, then the rule name we want to resolve
                             .resolve(path).resolve(fileName)
-            )
-        }
+                }
+        )
     }
 }
