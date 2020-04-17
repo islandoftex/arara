@@ -16,8 +16,11 @@ internal class ProjectGraph : Graph<Project>() {
     fun addAll(projects: Iterable<Project>) {
         projects.forEach { project ->
             project.dependencies.forEach { dependency ->
-                addEdge(project, projects.find { it.name == dependency }
-                        ?: throw AraraException("Stray project dependencies"))
+                addEdge(
+                        projects.find { it.name == dependency }
+                                ?: throw AraraException("Stray project dependencies"),
+                        project
+                )
             }
         }
     }
