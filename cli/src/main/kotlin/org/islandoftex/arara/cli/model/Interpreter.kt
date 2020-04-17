@@ -63,6 +63,7 @@ object Interpreter {
                 ?: throw AraraException(
                         LanguageController.messages.ERROR_INTERPRETER_RULE_NOT_FOUND.format(
                                 directive.identifier,
+                                directive.identifier,
                                 rulePaths.joinToString("; ", "(", ")") {
                                     FileHandling.normalize(it).toString()
                                 }
