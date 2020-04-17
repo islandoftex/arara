@@ -15,6 +15,9 @@ internal class ProjectGraph : Graph<Project>() {
      */
     fun addAll(projects: Iterable<Project>) {
         projects.forEach { project ->
+            // separate vertex creation to ensure insertion if dependencies
+            // are empty
+            addVertex(project)
             project.dependencies.forEach { dependency ->
                 addEdge(
                         projects.find { it.name == dependency }
