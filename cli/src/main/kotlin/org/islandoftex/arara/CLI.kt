@@ -140,7 +140,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                     reference.map { fileName ->
                         FileSearchingUtils.resolveFile(
                                 fileName,
-                                workingDir.toFile(),
+                                workingDir,
                                 Executor.executionOptions
                         ).let {
                             if (it.path.isAbsolute)

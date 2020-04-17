@@ -11,12 +11,12 @@ import org.islandoftex.arara.core.configuration.ExecutionOptions
 
 class FileSearchingUtilsTest : ShouldSpec({
     should("fail looking up inexistent file") {
-        FileSearchingUtils.lookupFile("QUACK", File("."),
+        FileSearchingUtils.lookupFile("QUACK", Paths.get("."),
                 ExecutionOptions()) shouldBe null
     }
 
     should("fail on existing directory") {
-        FileSearchingUtils.lookupFile("../buildSrc", File("."),
+        FileSearchingUtils.lookupFile("../buildSrc", Paths.get("."),
                 ExecutionOptions()) shouldBe null
     }
 
@@ -24,11 +24,11 @@ class FileSearchingUtilsTest : ShouldSpec({
         val pathToTest = Paths.get("src/test/resources/executiontests/changes/changes.tex")
         val projectFile = FileSearchingUtils.lookupFile(
                 pathToTest.toString(),
-                File("."),
+                Paths.get("."),
                 ExecutionOptions()
         ) as ProjectFile
         projectFile.path.toFile().canonicalFile.absolutePath shouldBe
-                File(".").resolve(pathToTest.toFile()).canonicalFile.absolutePath
+                Paths.get(".").resolve(pathToTest).toFile().canonicalFile.absolutePath
         projectFile.fileType.extension shouldBe "tex"
         projectFile.fileType.pattern shouldBe "^\\s*%\\s+"
     }
@@ -36,7 +36,7 @@ class FileSearchingUtilsTest : ShouldSpec({
     should("succeed finding tex file without extension") {
         val projectFile = FileSearchingUtils.lookupFile(
                 Paths.get("src/test/resources/executiontests/changes/changes").toString(),
-                File("."),
+                Paths.get("."),
                 ExecutionOptions()
         ) as ProjectFile
         projectFile.path.toFile().canonicalFile.absolutePath shouldBe
@@ -49,11 +49,11 @@ class FileSearchingUtilsTest : ShouldSpec({
         val pathToTest = Paths.get("src/test/resources/executiontests/changes/changes.tex")
         val projectFile = FileSearchingUtils.lookupFile(
                 pathToTest.toString(),
-                File("."),
+                Paths.get("."),
                 ExecutionOptions().copy(executionMode = ExecutionMode.SAFE_RUN)
         ) as ProjectFile
         projectFile.path.toFile().canonicalFile.absolutePath shouldBe
-                File(".").resolve(pathToTest.toFile()).canonicalFile.absolutePath
+                pathToTest.toFile().canonicalFile.absolutePath
         projectFile.fileType.extension shouldBe "tex"
         projectFile.fileType.pattern shouldBe "^\\s*%\\s+"
     }
@@ -61,7 +61,7 @@ class FileSearchingUtilsTest : ShouldSpec({
     should("not succeed finding tex file without extension in safe mode") {
         FileSearchingUtils.lookupFile(
                 Paths.get("src/test/resources/executiontests/changes/changes").toString(),
-                File("."),
+                Paths.get("."),
                 ExecutionOptions().copy(executionMode = ExecutionMode.SAFE_RUN)
         ) shouldBe null
     }
