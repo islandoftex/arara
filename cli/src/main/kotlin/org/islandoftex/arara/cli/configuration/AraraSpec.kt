@@ -7,7 +7,7 @@ import org.islandoftex.arara.api.configuration.LoggingOptions
 import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.Project
-import org.islandoftex.arara.cli.model.ProjectFile
+import org.islandoftex.arara.core.files.ProjectFile
 import org.islandoftex.arara.core.files.UNKNOWN_TYPE
 
 /**

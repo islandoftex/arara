@@ -16,13 +16,18 @@ import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
-import org.islandoftex.arara.cli.filehandling.FileSearchingUtils
+import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.core.configuration.ExecutionOptions
+import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.session.Executor
 
 @DoNotParallelize
 class ExecutionTest : ShouldSpec({
+    beforeSpec {
+        DirectiveUtils.initializeDirectiveCore()
+    }
+
     fun getPathForTest(name: String): String = "src/test/resources/executiontests/$name"
     fun outputForTest(testName: String, fileName: String = "$testName.tex"):
             String {
@@ -37,11 +42,12 @@ class ExecutionTest : ShouldSpec({
             Executor.executionOptions = ExecutionOptions
                     .from(Executor.executionOptions)
                     .copy(verbose = true)
-            Arara.config[AraraSpec.Execution.reference] = FileSearchingUtils
+            Arara.config[AraraSpec.Execution.reference] = FileSearching
                     .resolveFile(fileName, workingDirectory, Executor.executionOptions)
-            val directives = Arara.config[AraraSpec.Execution.reference]
-                    .fetchDirectives(false)
-            directives.forEach {
+            DirectiveUtils.process(
+                    Arara.config[AraraSpec.Execution.reference]
+                            .fetchDirectives(false)
+            ).forEach {
                 it.execute()
             }
             return output.toByteArray().toString(Charsets.UTF_8)

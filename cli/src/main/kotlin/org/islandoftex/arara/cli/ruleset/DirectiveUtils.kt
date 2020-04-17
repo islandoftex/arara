@@ -7,7 +7,6 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.utils.DisplayUtils
@@ -27,7 +26,11 @@ object DirectiveUtils {
     // get the logger context from a factory
     private val logger = LoggerFactory.getLogger(DirectiveUtils::class.java)
 
-    init {
+    /**
+     * The [Directives] core object can't process directives without an
+     * implementation. This hook collection ensures we can use it.
+     */
+    fun initializeDirectiveCore() {
         Directives.hooks = DirectiveFetchingHooks(
                 processPotentialDirective = { line, directive ->
                     directive.trim().also {
@@ -56,26 +59,6 @@ object DirectiveUtils {
                 }
         )
     }
-
-    /**
-     * Extracts a list of directives from a list of strings.
-     *
-     * @param lines List of strings.
-     * @param parseOnlyHeader Whether to parse only the header.
-     * @param fileType The file type of the file to investigate.
-     * @return A list of directives.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
-    @Throws(AraraException::class)
-    @Suppress("MagicNumber")
-    fun extractDirectives(
-        lines: List<String>,
-        parseOnlyHeader: Boolean,
-        fileType: FileType
-    ): List<Directive> = process(
-            Directives.extractDirectives(lines, parseOnlyHeader, fileType)
-    )
 
     /**
      * Gets the parameters from the input string.

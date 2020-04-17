@@ -17,15 +17,16 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
-import org.islandoftex.arara.cli.filehandling.FileSearchingUtils
-import org.islandoftex.arara.cli.model.ProjectFile
+import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.LoggingOptions
 import org.islandoftex.arara.core.configuration.UserInterfaceOptions
 import org.islandoftex.arara.core.files.FileHandling
+import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.Project
+import org.islandoftex.arara.core.files.ProjectFile
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Executor
 import org.islandoftex.arara.core.session.ExecutorHooks
@@ -133,12 +134,12 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         val workingDir = workingDirectory
                 ?: AraraSpec.Execution.currentProject.default.workingDirectory
         try {
-            // TODO: this will have to change for parallelization
+            val absoluteWorkingDir = FileHandling.normalize(workingDir)
             val projects = listOf(Project(
-                    workingDir.fileName.toString(),
-                    FileHandling.normalize(workingDir),
+                    absoluteWorkingDir.fileName.toString(),
+                    absoluteWorkingDir,
                     reference.map { fileName ->
-                        FileSearchingUtils.resolveFile(
+                        FileSearching.resolveFile(
                                 fileName,
                                 workingDir,
                                 Executor.executionOptions
@@ -147,7 +148,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                                 it
                             else
                                 ProjectFile(
-                                        workingDir.resolve(it.path).toRealPath(),
+                                        absoluteWorkingDir.resolve(it.path),
                                         it.fileType,
                                         it.priority
                                 )
@@ -156,6 +157,11 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
             ))
             try {
                 Executor.hooks = ExecutorHooks(
+                        executeBeforeExecution = {
+                            // directive processing has to be initialized, so that the core
+                            // component respects our MVEL processing
+                            DirectiveUtils.initializeDirectiveCore()
+                        },
                         executeBeforeProject = { project ->
                             Arara.config[AraraSpec.Execution.currentProject] = project
                             ConfigurationUtils.configFile?.let {
@@ -175,6 +181,9 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                         executeAfterFile = {
                             // add an empty line between file executions
                             println()
+                        },
+                        processDirectives = {
+                            DirectiveUtils.process(it)
                         }
                 )
                 Arara.config[AraraSpec.Execution.exitCode] =
