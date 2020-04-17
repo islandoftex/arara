@@ -15,6 +15,12 @@ buildscript {
     }
 }
 
+if (!project.hasProperty("jobToken")) {
+    logger.warn("Will be unable to publish (jobToken missing)\n" +
+            "Ignore this warning if you are not running the publish task " +
+            "for the GitLab package repository.")
+}
+
 plugins {
     val versions = org.islandoftex.arara.build.Versions
     kotlin("jvm") version versions.kotlin apply false                                   // Apache 2.0
@@ -178,6 +184,7 @@ subprojects {
             }
             named<Jar>("shadowJar") {
                 archiveAppendix.set("with-deps")
+                archiveClassifier.set("")
             }
 
             withType<Test> {
@@ -275,21 +282,19 @@ subprojects {
                     artifact(tasks["dokkaJar"])
                 }
 
-                repositories {
-                    maven {
-                        url = uri("https://gitlab.com/api/v4/projects/14349047/packages/maven")
-                        credentials(HttpHeaderCredentials::class) {
-                            if (project.hasProperty("jobToken")) {
-                                name = "Job-Token"
-                                value = project.property("jobToken").toString()
-                            } else {
-                                logger.warn("Will be unable to publish (jobToken missing)\n" +
-                                        "Ignore this warning if you are not running the publish task " +
-                                        "for the GitLab package repository.")
+                if (System.getenv("CI_PROJECT_ID") != null) {
+                    repositories {
+                        maven {
+                            url = uri("https://gitlab.com/api/v4/projects/${System.getenv("CI_PROJECT_ID")!!}/packages/maven")
+                            credentials(HttpHeaderCredentials::class) {
+                                if (project.hasProperty("jobToken")) {
+                                    name = "Job-Token"
+                                    value = project.property("jobToken").toString()
+                                }
                             }
-                        }
-                        authentication {
-                            create<HttpHeaderAuthentication>("header")
+                            authentication {
+                                create<HttpHeaderAuthentication>("header")
+                            }
                         }
                     }
                 }
