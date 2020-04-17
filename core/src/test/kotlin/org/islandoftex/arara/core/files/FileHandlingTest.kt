@@ -17,7 +17,8 @@ class FileHandlingTest : ShouldSpec({
                     FileHandling.normalize(Paths.get("/tmp/")).toString()
         }
         should("not exceed root") {
-            FileHandling.normalize(Paths.get("/tmp/../../..")) shouldBe Paths.get("/")
+            FileHandling.normalize(Paths.get("/tmp/../../..")).toString() shouldBe
+                    Paths.get("/..").toAbsolutePath().normalize().toString()
         }
 
         should("change extension of file with extension") {
