@@ -14,7 +14,7 @@ import org.islandoftex.arara.api.files.FileType
 data class ExecutionOptions(
     override val maxLoops: Int = 10,
     override val timeoutValue: Duration = 0.milliseconds,
-    override val parallelExecution: Boolean = true,
+    override val parallelExecution: Boolean = false,
     override val haltOnErrors: Boolean = true,
     override val databaseName: Path = Paths.get("arara.yaml"),
     override val verbose: Boolean = false,

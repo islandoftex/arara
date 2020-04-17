@@ -51,6 +51,9 @@ object Executor : Executor {
             if (isExecuting)
                 throw AraraException("Cannot change execution options while " +
                         "executing a file.")
+            if (value.parallelExecution)
+                throw AraraException("This executor does not support " +
+                        "parallel execution.")
             field = value
         }
 
