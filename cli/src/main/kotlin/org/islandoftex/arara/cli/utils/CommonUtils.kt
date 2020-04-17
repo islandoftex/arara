@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
-import org.islandoftex.arara.Arara
-import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.session.Executor
 
 /**
  * Implements common utilitary methods.
@@ -46,6 +45,6 @@ object CommonUtils {
      * @return A string representation of the list of file types, in order.
      */
     val fileTypesList: String
-        get() = Arara.config[AraraSpec.executionOptions].fileTypes
+        get() = Executor.executionOptions.fileTypes
                 .joinToString(" | ", "[ ", " ]")
 }

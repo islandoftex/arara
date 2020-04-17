@@ -71,11 +71,10 @@ object ConfigurationUtils {
     fun load(file: Path) {
         // then validate it and update the configuration accordingly
         val resource = loadLocalConfiguration(file)
-        Arara.config[AraraSpec.executionOptions] = resource.toExecutionOptions(
+        Executor.executionOptions = resource.toExecutionOptions(
                 Arara.config[AraraSpec.Execution.currentProject],
-                Arara.config[AraraSpec.executionOptions]
+                Executor.executionOptions
         )
-        Executor.executionOptions = Arara.config[AraraSpec.executionOptions]
         Arara.config[AraraSpec.loggingOptions] = resource.toLoggingOptions()
         Arara.config[AraraSpec.userInterfaceOptions] = resource.toUserInterfaceOptions()
 

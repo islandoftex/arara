@@ -14,6 +14,7 @@ import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
+import org.islandoftex.arara.core.session.Executor
 import org.slf4j.LoggerFactory
 
 /**
@@ -62,14 +63,14 @@ object DisplayUtils {
      * Checks if the execution is in dry-run mode.
      */
     private val isDryRunMode: Boolean
-        get() = Arara.config[AraraSpec.executionOptions].executionMode ==
+        get() = Executor.executionOptions.executionMode ==
                 ExecutionMode.DRY_RUN
 
     /**
      * Checks if the execution is in verbose mode.
      */
     private val isVerboseMode: Boolean
-        get() = Arara.config[AraraSpec.executionOptions].verbose
+        get() = Executor.executionOptions.verbose
 
     /**
      * The application path.

@@ -4,14 +4,13 @@ package org.islandoftex.arara.cli.model
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
-import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.rules.Directive
-import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.core.files.ProjectFile
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.session.Executor
 
 class ProjectFile(
     path: Path,
@@ -22,7 +21,7 @@ class ProjectFile(
         try {
             return DirectiveUtils.extractDirectives(
                     Files.readAllLines(path),
-                    Arara.config[AraraSpec.executionOptions].parseOnlyHeader,
+                    Executor.executionOptions.parseOnlyHeader,
                     fileType
             )
         } catch (ioexception: IOException) {

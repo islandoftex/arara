@@ -13,6 +13,7 @@ import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.session.Executor
 
 object MethodUtils {
     /**
@@ -121,7 +122,7 @@ object MethodUtils {
     fun hasChanged(
         file: File,
         project: Project = Arara.config[AraraSpec.Execution.currentProject],
-        databaseName: Path = Arara.config[AraraSpec.executionOptions].databaseName
+        databaseName: Path = Executor.executionOptions.databaseName
     ): Boolean = FileHandling.hasChanged(
             file.toPath(),
             project.workingDirectory.resolve(databaseName)

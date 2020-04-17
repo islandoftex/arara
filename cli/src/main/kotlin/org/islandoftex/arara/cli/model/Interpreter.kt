@@ -88,7 +88,7 @@ object Interpreter {
     ): Boolean {
         logger.info(LanguageController.messages.LOG_INFO_BOOLEAN_MODE.format(value))
 
-        if (Arara.config[AraraSpec.executionOptions].executionMode == ExecutionMode.DRY_RUN) {
+        if (Executor.executionOptions.executionMode == ExecutionMode.DRY_RUN) {
             DisplayUtils.printAuthors(authors)
             DisplayUtils.wrapText(LanguageController.messages
                     .INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE.format(value))
@@ -118,7 +118,7 @@ object Interpreter {
         logger.info(LanguageController.messages.LOG_INFO_SYSTEM_COMMAND.format(command))
         var success = true
 
-        if (Arara.config[AraraSpec.executionOptions].executionMode != ExecutionMode.DRY_RUN) {
+        if (Executor.executionOptions.executionMode != ExecutionMode.DRY_RUN) {
             val code = InterpreterUtils.run(command)
             val check: Any = try {
                 val context = mapOf<String, Any>("value" to code)
@@ -205,7 +205,7 @@ object Interpreter {
 
                     DisplayUtils.printEntryResult(success)
 
-                    if (Arara.config[AraraSpec.executionOptions].haltOnErrors && !success)
+                    if (Executor.executionOptions.haltOnErrors && !success)
                     // TODO: localize
                         throw HaltExpectedException("Command failed")
 
@@ -253,8 +253,7 @@ object Interpreter {
         val parameters = parseArguments(rule, directive)
                 .plus(Methods.getRuleMethods())
 
-        val evaluator = DirectiveConditionalEvaluator(
-                Arara.config[AraraSpec.executionOptions])
+        val evaluator = DirectiveConditionalEvaluator(Executor.executionOptions)
 
         var available = true
         if (InterpreterUtils.runPriorEvaluation(directive.conditional)) {

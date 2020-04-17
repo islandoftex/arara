@@ -78,25 +78,25 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         )
         LanguageController.setLocale(Arara.config[AraraSpec.userInterfaceOptions].locale)
 
-        Arara.config[AraraSpec.executionOptions] = ExecutionOptions
-                .from(Arara.config[AraraSpec.executionOptions])
+        Executor.executionOptions = ExecutionOptions
+                .from(Executor.executionOptions)
                 .copy(
                         maxLoops = maxLoops
-                                ?: Arara.config[AraraSpec.executionOptions].maxLoops,
+                                ?: Executor.executionOptions.maxLoops,
                         timeoutValue = timeout?.milliseconds
-                                ?: Arara.config[AraraSpec.executionOptions].timeoutValue,
+                                ?: Executor.executionOptions.timeoutValue,
                         verbose = if (verbose)
                             true
                         else
-                            Arara.config[AraraSpec.executionOptions].verbose,
+                            Executor.executionOptions.verbose,
                         executionMode = if (dryrun)
                             ExecutionMode.DRY_RUN
                         else
-                            Arara.config[AraraSpec.executionOptions].executionMode,
+                            Executor.executionOptions.executionMode,
                         parseOnlyHeader = if (onlyheader)
                             true
                         else
-                            Arara.config[AraraSpec.executionOptions].parseOnlyHeader
+                            Executor.executionOptions.parseOnlyHeader
                 )
 
         Arara.config[AraraSpec.loggingOptions] = LoggingOptions(
@@ -141,7 +141,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                         FileSearchingUtils.resolveFile(
                                 fileName,
                                 workingDir.toFile(),
-                                Arara.config[AraraSpec.executionOptions]
+                                Executor.executionOptions
                         ).let {
                             if (it.path.isAbsolute)
                                 it

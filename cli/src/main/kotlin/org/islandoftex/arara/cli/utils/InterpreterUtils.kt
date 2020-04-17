@@ -17,6 +17,7 @@ import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.session.Executor
 import org.slf4j.LoggerFactory
 import org.zeroturnaround.exec.InvalidExitValueException
 import org.zeroturnaround.exec.ProcessExecutor
@@ -42,8 +43,7 @@ object InterpreterUtils {
      * evaluation.
      */
     fun runPriorEvaluation(conditional: DirectiveConditional): Boolean {
-        return if (Arara.config[AraraSpec.executionOptions].executionMode ==
-                ExecutionMode.DRY_RUN) {
+        return if (Executor.executionOptions.executionMode == ExecutionMode.DRY_RUN) {
             false
         } else {
             when (conditional.type) {
@@ -59,7 +59,7 @@ object InterpreterUtils {
         command: Command,
         buffer: OutputStream
     ): ProcessExecutor {
-        val timeOutValue = Arara.config[AraraSpec.executionOptions].timeoutValue
+        val timeOutValue = Executor.executionOptions.timeoutValue
         val workingDirectory = command.workingDirectory
                 ?: Arara.config[AraraSpec.Execution.currentProject].workingDirectory
         var executor = ProcessExecutor().command((command).elements)
@@ -69,7 +69,7 @@ object InterpreterUtils {
             executor = executor.timeout(timeOutValue.toLongNanoseconds(),
                     TimeUnit.NANOSECONDS)
         }
-        val tee = if (Arara.config[AraraSpec.executionOptions].verbose) {
+        val tee = if (Executor.executionOptions.verbose) {
             executor = executor.redirectInput(System.`in`)
             TeeOutputStream(System.out, buffer)
         } else {

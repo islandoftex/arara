@@ -19,6 +19,7 @@ import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.filehandling.FileSearchingUtils
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.files.Project
+import org.islandoftex.arara.core.session.Executor
 
 @DoNotParallelize
 class ExecutionTest : ShouldSpec({
@@ -33,12 +34,12 @@ class ExecutionTest : ShouldSpec({
             Arara.config[AraraSpec.Execution.currentProject] =
                     Project("Test", workingDirectory, setOf())
             ConfigurationUtils.load(workingDirectory.resolve("arararc.yaml"))
-            Arara.config[AraraSpec.executionOptions] = ExecutionOptions
-                    .from(Arara.config[AraraSpec.executionOptions])
+            Executor.executionOptions = ExecutionOptions
+                    .from(Executor.executionOptions)
                     .copy(verbose = true)
             Arara.config[AraraSpec.Execution.reference] = FileSearchingUtils
                     .resolveFile(fileName, File(getPathForTest(testName)),
-                            Arara.config[AraraSpec.executionOptions])
+                            Executor.executionOptions)
             val directives = Arara.config[AraraSpec.Execution.reference]
                     .fetchDirectives(false)
             directives.forEach {

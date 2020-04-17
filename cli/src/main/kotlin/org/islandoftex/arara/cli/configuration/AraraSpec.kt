@@ -3,7 +3,6 @@ package org.islandoftex.arara.cli.configuration
 
 import com.uchuhimo.konf.ConfigSpec
 import java.nio.file.Paths
-import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.configuration.LoggingOptions
 import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 import org.islandoftex.arara.api.files.FileType
@@ -20,9 +19,6 @@ import org.islandoftex.arara.core.files.UNKNOWN_TYPE
  */
 @Suppress("MagicNumber")
 object AraraSpec : ConfigSpec() {
-    val executionOptions by optional<ExecutionOptions>(
-        org.islandoftex.arara.core.configuration.ExecutionOptions()
-    )
     val loggingOptions by optional<LoggingOptions>(
             org.islandoftex.arara.core.configuration.LoggingOptions()
     )

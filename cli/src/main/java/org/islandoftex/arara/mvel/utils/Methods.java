@@ -15,6 +15,7 @@ import org.islandoftex.arara.cli.ruleset.CommandImpl;
 import org.islandoftex.arara.core.session.ClassLoading;
 import org.islandoftex.arara.cli.utils.CommonUtils;
 import org.islandoftex.arara.core.files.FileHandling;
+import org.islandoftex.arara.core.session.Executor;
 import org.islandoftex.arara.core.ui.GUIDialogs;
 import org.islandoftex.arara.cli.utils.SystemCallUtils;
 import org.islandoftex.arara.core.session.Environment;
@@ -857,8 +858,7 @@ public class Methods {
      * @return A boolean value indicating if the execution is in verbose mode.
      */
     public static boolean isVerboseMode() {
-        return Arara.INSTANCE.getConfig()
-                .get(AraraSpec.INSTANCE.getExecutionOptions()).getVerbose();
+        return Executor.INSTANCE.getExecutionOptions().getVerbose();
     }
 
     /**
