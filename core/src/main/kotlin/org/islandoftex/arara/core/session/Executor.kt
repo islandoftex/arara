@@ -10,6 +10,7 @@ import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.session.ExecutionReport
 import org.islandoftex.arara.api.session.Executor
+import org.islandoftex.arara.core.dependencies.ProjectGraph
 import org.islandoftex.arara.core.files.byPriority
 
 /**
@@ -71,11 +72,11 @@ object Executor : Executor {
      */
     @ExperimentalTime
     override fun execute(projects: List<Project>): ExecutionReport {
-        // TODO: DAG resolution for parallelization
+        val projectsInOrder = ProjectGraph().apply { addAll(projects) }.kahn()
         hooks.executeBeforeExecution()
         val executionStarted = TimeSource.Monotonic.markNow()
         var exitCode = 0
-        for (project in projects) {
+        for (project in projectsInOrder) {
             exitCode = executeProject(project)
             if (executionOptions.haltOnErrors && exitCode != 0)
                 break
