@@ -177,12 +177,8 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                             println()
                         }
                 )
-                Arara.config[AraraSpec.Execution.exitCode] = Executor.execute(
-                        projects,
-                        // TODO: this is the wrong executionOptions instance
-                        // (not the one from a local configuration)
-                        Arara.config[AraraSpec.executionOptions]
-                ).exitCode
+                Arara.config[AraraSpec.Execution.exitCode] =
+                        Executor.execute(projects).exitCode
             } catch (exception: AraraException) {
                 // something bad just happened, so arara will print the proper
                 // exception and provide details on it, if available; the idea

@@ -8,6 +8,7 @@ import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
+import org.islandoftex.arara.core.session.Executor
 import org.islandoftex.arara.mvel.configuration.LocalConfiguration
 
 /**
@@ -74,6 +75,7 @@ object ConfigurationUtils {
                 Arara.config[AraraSpec.Execution.currentProject],
                 Arara.config[AraraSpec.executionOptions]
         )
+        Executor.executionOptions = Arara.config[AraraSpec.executionOptions]
         Arara.config[AraraSpec.loggingOptions] = resource.toLoggingOptions()
         Arara.config[AraraSpec.userInterfaceOptions] = resource.toUserInterfaceOptions()
 

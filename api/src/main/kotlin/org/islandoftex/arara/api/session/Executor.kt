@@ -43,6 +43,13 @@ interface ExecutionReport {
  */
 interface Executor {
     /**
+     * The setup for all executions run by this executor. The execution options
+     * should not change while executing one project.
+     */
+    @ExperimentalTime
+    var executionOptions: ExecutionOptions
+
+    /**
      * Execute rules based on the projects. Should roughly implement the
      * following steps:
      *
@@ -53,13 +60,9 @@ interface Executor {
      * 3. Wait for all tasks to finish.
      *
      * @param projects The projects to act on.
-     * @param executionOptions The setup for all runs and the executor.
      */
     @ExperimentalTime
-    fun execute(
-        projects: List<Project>,
-        executionOptions: ExecutionOptions
-    ): ExecutionReport
+    fun execute(projects: List<Project>): ExecutionReport
 
     /**
      * Performs arara's main routine to run a file.
@@ -67,8 +70,5 @@ interface Executor {
      * @param file The file to run.
      */
     @ExperimentalTime
-    fun execute(
-        file: ProjectFile,
-        executionOptions: ExecutionOptions
-    ): ExecutionReport
+    fun execute(file: ProjectFile): ExecutionReport
 }

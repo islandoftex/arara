@@ -3,6 +3,7 @@ package org.islandoftex.arara.core.session
 
 import kotlin.time.ExperimentalTime
 import kotlin.time.TimeSource
+import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
@@ -28,19 +29,51 @@ data class ExecutorHooks(
 )
 
 object Executor : Executor {
+    /**
+     * We check whether we are executing so that execution options are not
+     * changed where they should not be changed.
+     */
+    private var isExecuting = false
+
+    /**
+     * Specify custom user hooks to run.
+     */
     var hooks = ExecutorHooks()
 
+    /**
+     * The setup for all executions run by this executor. The execution options
+     * should not change while executing one project.
+     */
     @ExperimentalTime
-    override fun execute(
-        projects: List<Project>,
-        executionOptions: ExecutionOptions
-    ): ExecutionReport {
+    override var executionOptions: ExecutionOptions =
+            org.islandoftex.arara.core.configuration.ExecutionOptions()
+        set(value) {
+            if (isExecuting)
+                throw AraraException("Cannot change execution options while " +
+                        "executing a file.")
+            field = value
+        }
+
+    /**
+     * Execute rules based on the projects. Should roughly implement the
+     * following steps:
+     *
+     * 1. Resolve project dependencies and create an appropriate execution
+     *    order. Pay attention to blocking when doing parallel execution.
+     * 2. Run arara's main routines on each project. Within a project,
+     *    follow the file priorities.
+     * 3. Wait for all tasks to finish.
+     *
+     * @param projects The projects to act on.
+     */
+    @ExperimentalTime
+    override fun execute(projects: List<Project>): ExecutionReport {
         // TODO: DAG resolution for parallelization
         hooks.executeBeforeExecution()
         val executionStarted = TimeSource.Monotonic.markNow()
         var exitCode = 0
         for (project in projects) {
-            exitCode = executeProject(project, executionOptions)
+            exitCode = executeProject(project)
             if (executionOptions.haltOnErrors && exitCode != 0)
                 break
         }
@@ -51,15 +84,12 @@ object Executor : Executor {
     }
 
     @ExperimentalTime
-    internal fun executeProject(
-        project: Project,
-        executionOptions: ExecutionOptions
-    ): Int {
+    internal fun executeProject(project: Project): Int {
         var exitCode = 0
         hooks.executeBeforeProject(project)
         for (file in project.files.byPriority) {
             hooks.executeBeforeFile(file)
-            val executionReport = execute(file, executionOptions)
+            val executionReport = execute(file)
             exitCode = executionReport.exitCode
             if (executionOptions.haltOnErrors && exitCode != 0)
                 return exitCode
@@ -69,11 +99,14 @@ object Executor : Executor {
         return exitCode
     }
 
+    /**
+     * Performs arara's main routine to run a file.
+     *
+     * @param file The file to run.
+     */
     @ExperimentalTime
-    override fun execute(
-        file: ProjectFile,
-        executionOptions: ExecutionOptions
-    ): ExecutionReport {
+    override fun execute(file: ProjectFile): ExecutionReport {
+        isExecuting = true
         val executionStarted = TimeSource.Monotonic.markNow()
         val directives = hooks.processDirectives(
                 file.fetchDirectives(executionOptions.parseOnlyHeader)
@@ -85,6 +118,7 @@ object Executor : Executor {
                 break
             }
         }
+        isExecuting = false
         return ExecutionReport(
                 executionStarted, TimeSource.Monotonic.markNow(), exitCode
         )
