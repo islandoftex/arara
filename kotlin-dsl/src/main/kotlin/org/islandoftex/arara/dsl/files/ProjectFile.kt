@@ -2,6 +2,7 @@
 package org.islandoftex.arara.dsl.files
 
 import java.nio.file.Path
+import kotlin.time.ExperimentalTime
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.core.files.ProjectFile
@@ -27,6 +28,7 @@ internal class ProjectFile(
      *
      * @return The list of directives in the file, in order.
      */
+    @ExperimentalTime
     override fun fetchDirectives(parseOnlyHeader: Boolean): List<Directive> {
         // TODO: proper implementation
         return listOf()

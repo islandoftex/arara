@@ -1,11 +1,19 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
+import java.io.IOException
+import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.time.ExperimentalTime
+import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.ProjectFile
+import org.islandoftex.arara.api.rules.Directive
+import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.rules.Directives
+import org.islandoftex.arara.core.session.Executor
 
-abstract class ProjectFile(
+open class ProjectFile(
     override val path: Path,
     override val fileType: FileType,
     override val priority: Int = DEFAULT_PRIORITY
@@ -35,6 +43,22 @@ abstract class ProjectFile(
         result = 31 * result + fileType.hashCode()
         result = 31 * result + priority
         return result
+    }
+
+    @ExperimentalTime
+    override fun fetchDirectives(parseOnlyHeader: Boolean): List<Directive> {
+        try {
+            return Directives.extractDirectives(
+                    Files.readAllLines(path),
+                    Executor.executionOptions.parseOnlyHeader,
+                    fileType
+            )
+        } catch (ioexception: IOException) {
+            throw AraraException(
+                    LanguageController.messages.ERROR_EXTRACTOR_IO_ERROR,
+                    ioexception
+            )
+        }
     }
 
     override fun toString(): String {
