@@ -10,10 +10,10 @@ import kotlin.time.ExperimentalTime
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.Project
-import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.LoggingOptions
 import org.islandoftex.arara.core.configuration.UserInterfaceOptions
+import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.mvel.files.FileType
@@ -53,23 +53,36 @@ data class LocalConfiguration(
         currentProject: Project,
         baseOptions: org.islandoftex.arara.api.configuration.ExecutionOptions = ExecutionOptions()
     ): org.islandoftex.arara.api.configuration.ExecutionOptions {
-        val preprocessedPaths = paths.map { it.trim() }.map { input ->
-            try {
-                TemplateRuntime.eval(input, mapOf(
-                        "user" to mapOf(
-                                "home" to (Environment.getSystemPropertyOrNull("user.home") ?: ""),
-                                "name" to (Environment.getSystemPropertyOrNull("user.name") ?: "")
-                        ),
-                        "application" to mapOf(
-                                "workingDirectory" to currentProject.workingDirectory.toAbsolutePath().toString()
-                        )
-                )) as String
-            } catch (_: RuntimeException) {
-                // do nothing, gracefully fallback to
-                // the default, unparsed path
-                input
-            }
-        }
+        val preprocessedPaths = paths.asSequence()
+                .map { it.trim() }
+                .map { input ->
+                    try {
+                        TemplateRuntime.eval(input, mapOf(
+                                "user" to mapOf(
+                                        "home" to (Environment.getSystemPropertyOrNull("user.home")
+                                                ?: ""),
+                                        "name" to (Environment.getSystemPropertyOrNull("user.name")
+                                                ?: "")
+                                ),
+                                "application" to mapOf(
+                                        "workingDirectory" to currentProject.workingDirectory.toAbsolutePath().toString()
+                                )
+                        )) as String
+                    } catch (_: RuntimeException) {
+                        // do nothing, gracefully fallback to
+                        // the default, unparsed path
+                        input
+                    }
+                }
+                .map { Paths.get(it) }
+                .map { path ->
+                    if (path.isAbsolute)
+                        path
+                    else
+                        currentProject.workingDirectory.resolve(path)
+                }
+                .map { FileHandling.normalize(it) }
+                .toSet()
         val databaseName = Paths.get(cleanFileName(dbname))
         val maxLoops = if (loops > 0) {
             loops
@@ -86,10 +99,8 @@ data class LocalConfiguration(
                         databaseName = databaseName,
                         fileTypes = filetypes
                                 .plus(baseOptions.fileTypes),
-                        rulePaths = preprocessedPaths.map { Paths.get(it) }
-                                .plus(baseOptions.rulePaths)
-                                .plus(ConfigurationUtils.applicationPath.resolve("rules"))
-                                .toSet(),
+                        rulePaths = preprocessedPaths
+                                .plus(baseOptions.rulePaths),
                         parseOnlyHeader = header
                 )
     }

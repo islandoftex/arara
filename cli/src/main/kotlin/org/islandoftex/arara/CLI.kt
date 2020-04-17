@@ -78,24 +78,26 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         )
         LanguageController.setLocale(Arara.config[AraraSpec.userInterfaceOptions].locale)
 
-        Arara.config[AraraSpec.executionOptions] = ExecutionOptions(
-                maxLoops = maxLoops
-                        ?: Arara.config[AraraSpec.executionOptions].maxLoops,
-                timeoutValue = timeout?.milliseconds
-                        ?: Arara.config[AraraSpec.executionOptions].timeoutValue,
-                verbose = if (verbose)
-                    true
-                else
-                    Arara.config[AraraSpec.executionOptions].verbose,
-                executionMode = if (dryrun)
-                    ExecutionMode.DRY_RUN
-                else
-                    Arara.config[AraraSpec.executionOptions].executionMode,
-                parseOnlyHeader = if (onlyheader)
-                    true
-                else
-                    Arara.config[AraraSpec.executionOptions].parseOnlyHeader
-        )
+        Arara.config[AraraSpec.executionOptions] = ExecutionOptions
+                .from(Arara.config[AraraSpec.executionOptions])
+                .copy(
+                        maxLoops = maxLoops
+                                ?: Arara.config[AraraSpec.executionOptions].maxLoops,
+                        timeoutValue = timeout?.milliseconds
+                                ?: Arara.config[AraraSpec.executionOptions].timeoutValue,
+                        verbose = if (verbose)
+                            true
+                        else
+                            Arara.config[AraraSpec.executionOptions].verbose,
+                        executionMode = if (dryrun)
+                            ExecutionMode.DRY_RUN
+                        else
+                            Arara.config[AraraSpec.executionOptions].executionMode,
+                        parseOnlyHeader = if (onlyheader)
+                            true
+                        else
+                            Arara.config[AraraSpec.executionOptions].parseOnlyHeader
+                )
 
         Arara.config[AraraSpec.loggingOptions] = LoggingOptions(
                 enableLogging = if (log)
@@ -128,7 +130,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         // context resets lead to missing output
         LoggingUtils.enableLogging(log)
 
-        val workingDir = workingDirectory 
+        val workingDir = workingDirectory
                 ?: AraraSpec.Execution.currentProject.default.workingDirectory
         try {
             // TODO: this will have to change for parallelization
@@ -155,11 +157,11 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
             try {
                 Executor.hooks = ExecutorHooks(
                         executeBeforeProject = { project ->
+                            Arara.config[AraraSpec.Execution.currentProject] = project
                             ConfigurationUtils.configFile?.let {
                                 DisplayUtils.configurationFileName = it.toString()
                                 ConfigurationUtils.load(it)
                             }
-                            Arara.config[AraraSpec.Execution.currentProject] = project
                         },
                         executeBeforeFile = {
                             // TODO: do we have to reset some more file-specific config?
@@ -177,6 +179,8 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                 )
                 Arara.config[AraraSpec.Execution.exitCode] = Executor.execute(
                         projects,
+                        // TODO: this is the wrong executionOptions instance
+                        // (not the one from a local configuration)
                         Arara.config[AraraSpec.executionOptions]
                 ).exitCode
             } catch (exception: AraraException) {
