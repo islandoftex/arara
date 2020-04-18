@@ -1,0 +1,71 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2020, Island of TeX
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: pythontex
+name: PythonTeX
+authors:
+- Island of TeX
+commands:
+- name: PythonTeX wrapper
+  command: >
+    @{
+        return getCommand('pythontex', encoding, errorcode, runall, rerun,
+                          hashdependencies, jobs, verbose, options,
+                          reference.getName());
+    }
+arguments:
+- identifier: encoding
+  flag: >
+    @{
+        return '--encoding='.concat(parameters.encoding);
+    }
+- identifier: errorcode
+  flag: >
+    @{
+        return '--error-exit-code='.concat(isTrue(parameters.errorcode,
+               'true', 'false'));
+    }
+- identifier: runall
+  flag: >
+    @{
+        return '--runall='.concat(isTrue(parameters.runall, 'true', 'false'));
+    }
+- identifier: rerun
+  flag: >
+    @{
+        if ([ 'never', 'modified', 'errors', 'warnings',
+              'always' ].contains(parameters.rerun)) {
+            return '--rerun='.concat(parameters.rerun);
+        }
+        else {
+            throwError('The provided value is not valid.');
+        }
+    }
+- identifier: hashdependencies
+  flag: >
+    @{
+        return '--hashdependencies='.concat(isTrue(parameters.hashdependencies,
+               'true', 'false'));
+    }
+- identifier: jobs
+  flag: >
+    @{
+        return [ '--jobs', parameters.jobs ];
+    }
+- identifier: verbose
+  flag: >
+    @{
+        return isTrue(parameters.verbose, '--verbose');
+    }
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        } else {
+            throwError('I was expecting a list of options.');
+        }
+    }

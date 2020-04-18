@@ -8,6 +8,11 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
+### Added
+
+* New rules for PythonTeX and PerlTeX have been added on user request.
+  (see #42)
+
 ## [5.1.1] - 2020-04-14
 
 ### Fixed
