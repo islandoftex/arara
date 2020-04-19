@@ -63,7 +63,7 @@ sourceSets {
 
 application {
     applicationName = project.name
-    mainClassName = mainClass
+    mainClassName = "$mainClass"
 }
 
 spotless {
