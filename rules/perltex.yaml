@@ -21,7 +21,7 @@ arguments:
   flag: >
     @{
         if ([ 'latex', 'pdflatex' , 'xelatex', 'lualatex', 'tex', 'pdftex',
-              'luatex', 'context', 'none' ].contains(parameters.engine)) {
+              'luatex', 'context' ].contains(parameters.engine)) {
             return '--latex='.concat(parameters.engine);
         } else {
             throwError('The provided TeX engine is invalid.');
