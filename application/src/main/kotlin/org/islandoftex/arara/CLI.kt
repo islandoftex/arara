@@ -15,6 +15,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.TimeSource
 import kotlin.time.milliseconds
 import org.islandoftex.arara.configuration.AraraSpec
+import org.islandoftex.arara.configuration.Configuration
 import org.islandoftex.arara.filehandling.FileSearchingUtils
 import org.islandoftex.arara.localization.Language
 import org.islandoftex.arara.localization.LanguageController
@@ -84,7 +85,6 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         Arara.config[AraraSpec.Execution.dryrun] = dryrun
         Arara.config[AraraSpec.Execution.onlyHeader] = onlyheader
         Arara.config[AraraSpec.Execution.maxLoops] = maxLoops
-        Arara.config[AraraSpec.Execution.workingDirectory] = workingDirectory
         preamble?.let {
             val preambles = Arara.config[AraraSpec.Execution.preambles]
             if (preambles.containsKey(it)) {
@@ -144,9 +144,14 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                 // especially the working directory will have to be set and
                 // changed
                 Arara.config = Arara.baseconfig.withLayer(it.absolutePath)
-                // next, update the configuration
+                // load the configuration (we need to set the working directory
+                // first because the configuration loading relies on it)
+                // CLI options are prioritized
+                Arara.config[AraraSpec.Execution.workingDirectory] = workingDirectory
+                Configuration.load()
                 updateConfigurationFromCommandLine()
                 FileSearchingUtils.registerFileAttributes(it)
+                // run arara
                 Arara.run()
                 // add an empty line between file executions
                 println()

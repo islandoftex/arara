@@ -6,7 +6,6 @@ import com.uchuhimo.konf.Config
 import java.time.LocalDate
 import kotlin.time.ExperimentalTime
 import org.islandoftex.arara.configuration.AraraSpec
-import org.islandoftex.arara.configuration.Configuration
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.model.AraraException
@@ -59,13 +58,6 @@ object Arara {
     @ExperimentalTime
     fun run() {
         try {
-            // first of all, let's try to load a potential
-            // configuration file located at the current
-            // user's home directory; if there's a bad
-            // configuration file, arara will panic and
-            // end the execution
-            Configuration.load()
-
             // let's print the current file information; it is a
             // basic display, just the file name, the size properly
             // formatted as a human readable format, and the last

@@ -13,6 +13,12 @@ from version 5.0.0 on.
 * New rules for PythonTeX and PerlTeX have been added on user request.
   (see #42)
 
+### Fixed
+
+* The configuration file has been loaded too late. That's why preambles did
+  not work any longer.
+  (see #43)
+
 ## [5.1.1] - 2020-04-14
 
 ### Fixed
