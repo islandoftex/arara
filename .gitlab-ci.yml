@@ -11,7 +11,7 @@ stages:
   stage: build
   script:
     # create the executables for distribution
-    - gradle --build-cache assembleDist --info
+    - ./gradlew --build-cache assembleDist --info
     - mkdir bin
     - cp application/build/libs/*.jar bin/
     - cp application/build/distributions/*.zip bin/
@@ -42,8 +42,8 @@ build:linux:jdk11:
 .testtemplate: &testdefinition
   stage: test
   script:
-    - gradle test
-    - gradle detekt
+    - ./gradlew test
+    - ./gradlew detekt
   cache:
     key: "$CI_COMMIT_REF_NAME-$JAVA_VERSION"
     policy: pull
@@ -57,14 +57,14 @@ test:dependencies:
   needs: ["build:linux:jdk8"]
   image: registry.gitlab.com/islandoftex/images/javafx-gradle:jdk8-latest
   script:
-    - gradle dependencyUpdates
+    - ./gradlew dependencyUpdates
 
 test:spotless:
   stage: test
   needs: ["build:linux:jdk8"]
   image: registry.gitlab.com/islandoftex/images/javafx-gradle:jdk8-latest
   script:
-    - gradle spotlessCheck
+    - ./gradlew spotlessCheck
 
 test:linux:jdk8:
   needs: ["build:linux:jdk8"]
@@ -80,7 +80,7 @@ publish:gitlab:
   image: registry.gitlab.com/islandoftex/images/javafx-gradle:jdk8-latest
   stage: publish
   script:
-    - gradle publishGitLabPublicationToMavenRepository -PjobToken=$CI_JOB_TOKEN -Prelease=true
+    - ./gradlew publishGitLabPublicationToMavenRepository -PjobToken=$CI_JOB_TOKEN -Prelease=true
   only:
     refs:
       - tags
@@ -90,9 +90,9 @@ publish:gitlab:
   stage: publish
   image: registry.gitlab.com/islandoftex/images/texlive:latest
   script:
-    - sh .gitlab/ci/installGradle.sh
+    - apt-get update
     - apt-get install -y --no-install-recommends zip
-    - /opt/gradle/current/bin/gradle -Prelease=$PRELEASE assembleCTAN --info
+    - ./gradlew -Prelease=$PRELEASE assembleCTAN --info
     - cp build/*.zip ./
   artifacts:
     name: "$CI_COMMIT_REF_NAME-ctan"
