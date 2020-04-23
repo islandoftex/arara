@@ -4,7 +4,6 @@ package org.islandoftex.arara
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.multiple
-import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
@@ -37,34 +36,30 @@ import org.islandoftex.arara.utils.LoggingUtils
 class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
     private val log by option("-l", "--log",
             help = "Generate a log output")
-            .flag(default = AraraSpec.Execution.logging.default)
+            .flag()
     private val verbose by option("-v", "--verbose",
             help = "Print the command output")
-            .flag("-s", "--silent",
-                    default = AraraSpec.Execution.verbose.default)
+            .flag("-s", "--silent")
     private val dryrun by option("-n", "--dry-run",
             help = "Go through all the motions of running a command, but " +
                     "with no actual calls")
-            .flag(default = AraraSpec.Execution.dryrun.default)
+            .flag()
     private val onlyheader by option("-H", "--header",
             help = "Extract directives only in the file header")
-            .flag(default = AraraSpec.Execution.onlyHeader.default)
+            .flag()
     private val timeout by option("-t", "--timeout",
             help = "Set the execution timeout (in milliseconds)")
             .int().restrictTo(min = 1)
     private val language by option("-L", "--language",
             help = "Set the application language")
-            .default(AraraSpec.Application.defaultLanguageCode.default)
     private val maxLoops by option("-m", "--max-loops",
             help = "Set the maximum number of loops (> 0)")
             .int().restrictTo(min = 1)
-            .default(AraraSpec.Execution.maxLoops.default)
     private val preamble by option("-p", "--preamble",
             help = "Set the file preamble based on the configuration file")
     private val workingDirectory by option("-d", "--working-directory",
             help = "Set the working directory for all tools")
             .path(mustExist = true, canBeFile = false, mustBeReadable = true)
-            .default(AraraSpec.Execution.workingDirectory.default)
 
     private val reference by argument("file",
             help = "The file(s) to evaluate and process")
@@ -76,15 +71,19 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
      */
     @ExperimentalTime
     private fun updateConfigurationFromCommandLine() {
-        Arara.config[AraraSpec.Execution.language] = Language(language)
-        LanguageController.setLocale(Arara.config[AraraSpec.Execution.language]
-                .locale)
+        language?.let {
+            Arara.config[AraraSpec.Execution.language] = Language(it)
+            LanguageController.setLocale(Arara.config[AraraSpec.Execution.language]
+                    .locale)
+        }
 
-        Arara.config[AraraSpec.Execution.logging] = log
-        Arara.config[AraraSpec.Execution.verbose] = verbose
-        Arara.config[AraraSpec.Execution.dryrun] = dryrun
-        Arara.config[AraraSpec.Execution.onlyHeader] = onlyheader
-        Arara.config[AraraSpec.Execution.maxLoops] = maxLoops
+        if (log) Arara.config[AraraSpec.Execution.logging] = log
+        if (verbose) Arara.config[AraraSpec.Execution.verbose] = verbose
+        if (dryrun) Arara.config[AraraSpec.Execution.dryrun] = dryrun
+        if (onlyheader) Arara.config[AraraSpec.Execution.onlyHeader] = onlyheader
+        maxLoops?.let {
+            Arara.config[AraraSpec.Execution.maxLoops] = it
+        }
         preamble?.let {
             val preambles = Arara.config[AraraSpec.Execution.preambles]
             if (preambles.containsKey(it)) {
@@ -133,12 +132,13 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         // context resets lead to missing output
         LoggingUtils.enableLogging(log)
 
+        val workingDir = workingDirectory ?: AraraSpec.Execution.workingDirectory.default
         try {
             // TODO: this will have to change for parallelization
-            Project(workingDirectory.fileName.toString(),
-                    workingDirectory.toFile(),
+            Project(workingDir.fileName.toString(),
+                    workingDir.toFile(),
                     reference.map {
-                        FileSearchingUtils.resolveFile(it, workingDirectory.toFile())
+                        FileSearchingUtils.resolveFile(it, workingDir.toFile())
                     }).absoluteFiles.forEach {
                 // TODO: do we have to reset some more file-specific config?
                 // especially the working directory will have to be set and
@@ -147,7 +147,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                 // load the configuration (we need to set the working directory
                 // first because the configuration loading relies on it)
                 // CLI options are prioritized
-                Arara.config[AraraSpec.Execution.workingDirectory] = workingDirectory
+                Arara.config[AraraSpec.Execution.workingDirectory] = workingDir
                 Configuration.load()
                 updateConfigurationFromCommandLine()
                 FileSearchingUtils.registerFileAttributes(it)

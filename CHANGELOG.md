@@ -8,6 +8,15 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
+## [5.1.3] - 2020-04-26
+
+### Fixed
+
+* In version 5.1.2, we introduced a different loading order for configuration
+  files. This has fixed the loading of preambles but broke the loading of other
+  settings. We accounted for that in v5.1.3.
+  (see #44)
+
 ## [5.1.2] - 2020-04-19
 
 ### Added
@@ -222,7 +231,8 @@ from version 5.0.0 on.
 For versions previous to version 5.0.0, there has not been any persistent record
 of changes. Please refer to the commit history for details.
 
-[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v5.1.2...master
+[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v5.1.3...master
+[5.1.3]: https://gitlab.com/islandoftex/arara/compare/v5.1.1...v5.1.3
 [5.1.2]: https://gitlab.com/islandoftex/arara/compare/v5.1.1...v5.1.2
 [5.1.1]: https://gitlab.com/islandoftex/arara/compare/v5.1.0...v5.1.1
 [5.1.0]: https://gitlab.com/islandoftex/arara/compare/v5.0.2...v5.1.0
