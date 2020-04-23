@@ -8,7 +8,12 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
-## [5.1.3] - 2020-04-26
+## [5.1.3] - 2020-04-23
+
+### Added
+
+* New rule for the authorindex package/perl script).
+  (see [this StackExchange post](https://tex.stackexchange.com/questions/539935/where-can-i-find-a-copy-of-the-arara-rule-file-authorindex-yaml-for-authorind?))
 
 ### Fixed
 
@@ -232,7 +237,7 @@ For versions previous to version 5.0.0, there has not been any persistent record
 of changes. Please refer to the commit history for details.
 
 [Unreleased]: https://gitlab.com/islandoftex/arara/compare/v5.1.3...master
-[5.1.3]: https://gitlab.com/islandoftex/arara/compare/v5.1.1...v5.1.3
+[5.1.3]: https://gitlab.com/islandoftex/arara/compare/v5.1.2...v5.1.3
 [5.1.2]: https://gitlab.com/islandoftex/arara/compare/v5.1.1...v5.1.2
 [5.1.1]: https://gitlab.com/islandoftex/arara/compare/v5.1.0...v5.1.1
 [5.1.0]: https://gitlab.com/islandoftex/arara/compare/v5.0.2...v5.1.0
