@@ -8,6 +8,7 @@ import org.islandoftex.arara.localization.Language
 import org.islandoftex.arara.localization.LanguageController
 import org.islandoftex.arara.localization.Messages
 import org.islandoftex.arara.model.AraraException
+import org.islandoftex.arara.utils.LoggingUtils
 
 /**
  * Implements the configuration model, which holds the default settings and can
@@ -76,7 +77,6 @@ object Configuration {
         }
 
         Arara.config[AraraSpec.Execution.verbose] = resource.isVerbose
-        Arara.config[AraraSpec.Execution.logging] = resource.isLogging
         Arara.config[AraraSpec.Execution.onlyHeader] = resource.isHeader
         Arara.config[AraraSpec.Execution.language] =
                 Language(resource.language)
@@ -86,6 +86,9 @@ object Configuration {
                 ConfigurationUtils.cleanFileName(resource.dbname)
         Arara.config[AraraSpec.Execution.logName] =
                 ConfigurationUtils.cleanFileName(resource.logname)
+
+        Arara.config[AraraSpec.Execution.logging] = resource.isLogging
+        LoggingUtils.enableLogging(resource.isLogging)
 
         val loops = resource.loops
         if (loops <= 0) {
