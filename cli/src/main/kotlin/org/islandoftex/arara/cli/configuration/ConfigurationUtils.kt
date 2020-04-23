@@ -6,6 +6,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.Executor
@@ -79,7 +80,8 @@ object ConfigurationUtils {
         Arara.config[AraraSpec.userInterfaceOptions] = resource.toUserInterfaceOptions()
 
         // just to be sure, update the current locale in order to
-        // display localized messages
+        // display localized messages and reset logging status
         LanguageController.setLocale(Arara.config[AraraSpec.userInterfaceOptions].locale)
+        LoggingUtils.enableLogging(Arara.config[AraraSpec.loggingOptions].enableLogging)
     }
 }
