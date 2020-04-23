@@ -131,13 +131,14 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         // context resets lead to missing output
         LoggingUtils.enableLogging(log)
 
-        val workingDir = workingDirectory
+        val workingDir = FileHandling.normalize(
+                workingDirectory
                 ?: AraraSpec.Execution.currentProject.default.workingDirectory
+        )
         try {
-            val absoluteWorkingDir = FileHandling.normalize(workingDir)
             val projects = listOf(Project(
-                    absoluteWorkingDir.fileName.toString(),
-                    absoluteWorkingDir,
+                    workingDir.fileName.toString(),
+                    workingDir,
                     reference.map { fileName ->
                         FileSearching.resolveFile(
                                 fileName,
@@ -148,7 +149,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                                 it
                             else
                                 ProjectFile(
-                                        absoluteWorkingDir.resolve(it.path),
+                                        workingDir.resolve(it.path),
                                         it.fileType,
                                         it.priority
                                 )
