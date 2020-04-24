@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: BSD-3-Clause -->
+<Configuration>
+    <Appenders>
+        <!--
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+        -->
+        <File name="File" append="false" fileName="${ctx:araraLogFile}">
+            <PatternLayout pattern="%d{dd MMM yyyy HH:mm:ss.SSS} %-5level - %msg%n" />
+        </File>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="org.zeroturnaround.exec" level="OFF"/>
+        <Root level="ALL">
+            <AppenderRef ref="File"/>
+        </Root>
+    </Loggers>
+</Configuration>

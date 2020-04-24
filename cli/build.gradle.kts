@@ -14,10 +14,10 @@ dependencies {
 
     implementation(kotlin("reflect", Versions.kotlin))
     implementation(group = "com.github.ajalt", name = "clikt", version = Versions.clikt)
-    implementation(group = "ch.qos.logback", name = "logback-classic", version = Versions.logback)
-    implementation(group = "ch.qos.logback", name = "logback-core", version = Versions.logback)
     implementation(group = "org.mvel" , name = "mvel2", version = Versions.mvel)
     implementation(group = "org.slf4j", name = "slf4j-api", version = Versions.slf4j)
+    implementation(group = "org.apache.logging.log4j", name = "log4j-core", version = Versions.log4j)
+    implementation(group = "org.apache.logging.log4j", name = "log4j-slf4j-impl", version = Versions.log4j)
     implementation(group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-yaml", version = Versions.jackson)
     implementation(group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version = Versions.jackson)
     implementation(group = "org.zeroturnaround", name = "zt-exec", version = Versions.ztExec)

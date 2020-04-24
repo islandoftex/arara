@@ -18,7 +18,7 @@ object Versions {
     const val kotest = "4.0.4"
     const val kotlinxSerialization = "0.20.0"
     const val jackson = "2.10.3"
-    const val logback = "1.2.3"
+    const val log4j = "2.13.1"
     const val mvel = "2.4.7.Final"
     const val slf4j = "1.7.30"
     const val ztExec = "1.11"
