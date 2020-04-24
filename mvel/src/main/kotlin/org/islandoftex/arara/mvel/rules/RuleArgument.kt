@@ -33,5 +33,6 @@ class RuleArgument : RuleArgument<String?> {
     /**
      * The argument fallback if it is not defined in the directive
      */
+    @SerialName("default")
     override var defaultValue: String? = null
 }
