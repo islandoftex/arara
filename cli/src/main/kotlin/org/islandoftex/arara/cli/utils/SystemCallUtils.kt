@@ -96,6 +96,7 @@ object SystemCallUtils {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
+    @JvmStatic
     @Throws(AraraException::class)
     fun checkOS(value: String): Boolean {
         fun checkOSProperty(key: String): Boolean =
@@ -160,6 +161,7 @@ object SystemCallUtils {
      * @param command A string representing the command.
      * @return A logic value.
      */
+    @JvmStatic
     fun isOnPath(command: String): Boolean {
         // first and foremost, let's build the list
         // of filenames based on the underlying

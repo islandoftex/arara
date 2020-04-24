@@ -29,6 +29,7 @@ object CommonUtils {
      * @return A string representation of the rule error header, containing the
      * identifier and the path, if any.
      */
+    @JvmStatic
     val ruleErrorHeader: String
         get() {
             return ruleId?.let { id ->

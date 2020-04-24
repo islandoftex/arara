@@ -22,6 +22,7 @@ object Arara {
     /**
      * arara's current exit code
      */
+    @JvmStatic
     var exitCode = 0
 
     /**

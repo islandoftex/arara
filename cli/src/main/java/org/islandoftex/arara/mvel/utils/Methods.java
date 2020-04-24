@@ -380,10 +380,10 @@ public class Methods {
      */
     public static String getBasename(File file) throws AraraException {
         if (file.isFile()) {
-            return MethodUtils.INSTANCE.getBasename(file);
+            return MethodUtils.getBasename(file);
         } else {
             throw new AraraException(
-                    CommonUtils.INSTANCE.getRuleErrorHeader().concat(
+                    CommonUtils.getRuleErrorHeader().concat(
                             String.format(
                                     messages.getERROR_BASENAME_NOT_A_FILE(),
                                     file.getName()
@@ -400,7 +400,7 @@ public class Methods {
      * @return The basename.
      */
     public static String getBasename(String filename) {
-        return MethodUtils.INSTANCE.getBasename(new File(filename));
+        return MethodUtils.getBasename(new File(filename));
     }
 
     /**
@@ -413,10 +413,10 @@ public class Methods {
      */
     public static String getFiletype(File file) throws AraraException {
         if (file.isFile()) {
-            return MethodUtils.INSTANCE.getFileExtension(file);
+            return MethodUtils.getFileExtension(file);
         } else {
             throw new AraraException(
-                    CommonUtils.INSTANCE.getRuleErrorHeader().concat(
+                    CommonUtils.getRuleErrorHeader().concat(
                             String.format(
                                     messages.getERROR_FILETYPE_NOT_A_FILE(),
                                     file.getName()
@@ -433,7 +433,7 @@ public class Methods {
      * @return The file type.
      */
     public static String getFiletype(String filename) {
-        return MethodUtils.INSTANCE.getFileExtension(new File(filename));
+        return MethodUtils.getFileExtension(new File(filename));
     }
 
     /**
@@ -448,7 +448,7 @@ public class Methods {
     public static List<Object> replicatePattern(String pattern,
                                                 List<Object> values)
             throws AraraException {
-        return MethodUtils.INSTANCE.replicateList(pattern, values);
+        return MethodUtils.replicateList(pattern, values);
     }
 
     /**
@@ -478,7 +478,7 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean isWindows() throws AraraException {
-        return SystemCallUtils.INSTANCE.checkOS("windows");
+        return SystemCallUtils.checkOS("windows");
     }
 
     /**
@@ -489,7 +489,7 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean isCygwin() throws AraraException {
-        return SystemCallUtils.INSTANCE.checkOS("cygwin");
+        return SystemCallUtils.checkOS("cygwin");
     }
 
     /**
@@ -500,7 +500,7 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean isLinux() throws AraraException {
-        return SystemCallUtils.INSTANCE.checkOS("linux");
+        return SystemCallUtils.checkOS("linux");
     }
 
     /**
@@ -511,7 +511,7 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean isMac() throws AraraException {
-        return SystemCallUtils.INSTANCE.checkOS("mac");
+        return SystemCallUtils.checkOS("mac");
     }
 
     /**
@@ -522,7 +522,7 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean isUnix() throws AraraException {
-        return SystemCallUtils.INSTANCE.checkOS("unix");
+        return SystemCallUtils.checkOS("unix");
     }
 
     /**
@@ -536,7 +536,7 @@ public class Methods {
      */
     public static Object isWindows(Object yes, Object no)
             throws AraraException {
-        return SystemCallUtils.INSTANCE.checkOS("windows") ? yes : no;
+        return SystemCallUtils.checkOS("windows") ? yes : no;
     }
 
     /**
@@ -549,7 +549,7 @@ public class Methods {
      *                        higher levels.
      */
     public static Object isCygwin(Object yes, Object no) throws AraraException {
-        return SystemCallUtils.INSTANCE.checkOS("cygwin") ? yes : no;
+        return SystemCallUtils.checkOS("cygwin") ? yes : no;
     }
 
     /**
@@ -562,7 +562,7 @@ public class Methods {
      *                        higher levels.
      */
     public static Object isLinux(Object yes, Object no) throws AraraException {
-        return SystemCallUtils.INSTANCE.checkOS("linux") ? yes : no;
+        return SystemCallUtils.checkOS("linux") ? yes : no;
     }
 
     /**
@@ -575,7 +575,7 @@ public class Methods {
      *                        higher levels.
      */
     public static Object isMac(Object yes, Object no) throws AraraException {
-        return SystemCallUtils.INSTANCE.checkOS("mac") ? yes : no;
+        return SystemCallUtils.checkOS("mac") ? yes : no;
     }
 
     /**
@@ -588,7 +588,7 @@ public class Methods {
      *                        higher levels.
      */
     public static Object isUnix(Object yes, Object no) throws AraraException {
-        return SystemCallUtils.INSTANCE.checkOS("unix") ? yes : no;
+        return SystemCallUtils.checkOS("unix") ? yes : no;
     }
 
     /**
@@ -600,7 +600,7 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean exists(String extension) throws AraraException {
-        return MethodUtils.INSTANCE.exists(extension);
+        return MethodUtils.exists(extension);
     }
 
     /**
@@ -624,7 +624,7 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean changed(String extension) throws AraraException {
-        return changed(MethodUtils.INSTANCE.getPath(extension));
+        return changed(MethodUtils.getPath(extension));
     }
 
     /**
@@ -668,7 +668,7 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean changed(File filename) throws AraraException {
-        return MethodUtils.INSTANCE.hasChanged(filename);
+        return MethodUtils.hasChanged(filename);
     }
 
     /**
@@ -690,7 +690,7 @@ public class Methods {
      * @return A string built from the array.
      */
     public static String buildString(Object... objects) {
-        return MethodUtils.INSTANCE.generateString(objects);
+        return MethodUtils.generateString(objects);
     }
 
     /**
@@ -704,7 +704,7 @@ public class Methods {
      */
     public static boolean found(String extension, String regex)
             throws AraraException {
-        return found(MethodUtils.INSTANCE.getPath(extension), regex);
+        return found(MethodUtils.getPath(extension), regex);
     }
 
     /**
@@ -718,7 +718,7 @@ public class Methods {
      */
     public static boolean found(File file, String regex)
             throws AraraException {
-        return MethodUtils.INSTANCE.checkRegex(file, regex);
+        return MethodUtils.checkRegex(file, regex);
     }
 
     /**
@@ -988,7 +988,7 @@ public class Methods {
      * @return A logic value.
      */
     public static boolean isOnPath(String command) {
-        return SystemCallUtils.INSTANCE.isOnPath(command);
+        return SystemCallUtils.isOnPath(command);
     }
 
     /**
@@ -1150,7 +1150,7 @@ public class Methods {
      * @return A logical value indicating whether it was successful.
      */
     public static boolean writeToFile(File file, String text, boolean append) {
-        return MethodUtils.INSTANCE.writeToFile(file, text, append);
+        return MethodUtils.writeToFile(file, text, append);
     }
 
     /**
@@ -1163,7 +1163,7 @@ public class Methods {
      */
     public static boolean writeToFile(String path, String text,
                                       boolean append) {
-        return MethodUtils.INSTANCE.writeToFile(new File(path), text, append);
+        return MethodUtils.writeToFile(new File(path), text, append);
     }
 
     /**
@@ -1176,7 +1176,7 @@ public class Methods {
      */
     public static boolean writeToFile(File file, List<String> lines,
                                       boolean append) {
-        return MethodUtils.INSTANCE.writeToFile(file,
+        return MethodUtils.writeToFile(file,
                 String.join(System.lineSeparator(), lines), append);
     }
 
@@ -1190,7 +1190,7 @@ public class Methods {
      */
     public static boolean writeToFile(String path, List<String> lines,
                                       boolean append) {
-        return MethodUtils.INSTANCE.writeToFile(new File(path),
+        return MethodUtils.writeToFile(new File(path),
                 String.join(System.lineSeparator(), lines), append);
     }
 

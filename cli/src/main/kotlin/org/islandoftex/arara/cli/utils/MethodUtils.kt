@@ -39,6 +39,7 @@ object MethodUtils {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
+    @JvmStatic
     @Throws(AraraException::class)
     fun checkRegex(file: File, regex: String): Boolean {
         try {
@@ -63,6 +64,7 @@ object MethodUtils {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
+    @JvmStatic
     @Throws(AraraException::class)
     fun exists(extension: String): Boolean =
             Files.exists(FileHandling.changeExtension(currentFile, extension))
@@ -75,6 +77,7 @@ object MethodUtils {
      * @return A string based on the list of objects, separating each one of
      * them by one space. Empty values are not considered.
      */
+    @JvmStatic
     fun generateString(vararg objects: Any): String = objects
             .map { it.toString() }.filter { it.isNotEmpty() }
             .joinToString(" ")
@@ -85,6 +88,7 @@ object MethodUtils {
      * @param file The file.
      * @return The corresponding base name.
      */
+    @JvmStatic
     fun getBasename(file: File): String = file.nameWithoutExtension
 
     /**
@@ -93,6 +97,7 @@ object MethodUtils {
      * @param file The file.
      * @return The corresponding file type.
      */
+    @JvmStatic
     fun getFileExtension(file: File): String = file.extension
 
     /**
@@ -103,6 +108,7 @@ object MethodUtils {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
+    @JvmStatic
     @Throws(AraraException::class)
     fun getPath(extension: String): File =
             FileHandling.changeExtension(currentFile, extension).toFile()
@@ -117,8 +123,9 @@ object MethodUtils {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
-    @Throws(AraraException::class)
+    @JvmStatic
     @JvmOverloads
+    @Throws(AraraException::class)
     fun hasChanged(
         file: File,
         project: Project = Arara.currentProject,
@@ -139,6 +146,7 @@ object MethodUtils {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
+    @JvmStatic
     @Throws(AraraException::class)
     fun replicateList(
         pattern: String,
@@ -161,6 +169,7 @@ object MethodUtils {
      * @param append A flag whether to append the content.
      * @return A logical value indicating whether it was successful.
      */
+    @JvmStatic
     fun writeToFile(file: File, text: String, append: Boolean): Boolean {
         return try {
             // try to write the provided
