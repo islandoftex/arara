@@ -15,7 +15,6 @@ object Versions {
     const val clikt = "2.6.0"
     const val jna = "5.5.0"
     const val kaml = "0.17.0"
-    const val konf = "0.22.1"
     const val kotest = "4.0.4"
     const val kotlinxSerialization = "0.20.0"
     const val jackson = "2.10.3"

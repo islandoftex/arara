@@ -13,7 +13,6 @@ dependencies {
     implementation(project(":mvel"))
 
     implementation(kotlin("reflect", Versions.kotlin))
-    implementation(group = "com.uchuhimo", name = "konf-core", version = Versions.konf)
     implementation(group = "com.github.ajalt", name = "clikt", version = Versions.clikt)
     implementation(group = "ch.qos.logback", name = "logback-classic", version = Versions.logback)
     implementation(group = "ch.qos.logback", name = "logback-core", version = Versions.logback)
