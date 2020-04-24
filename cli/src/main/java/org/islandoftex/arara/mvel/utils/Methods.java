@@ -2,12 +2,12 @@
 package org.islandoftex.arara.mvel.utils;
 
 import kotlin.Pair;
+import kotlin.io.FilesKt;
 import kotlin.text.Charsets;
 import org.islandoftex.arara.cli.Arara;
 import org.islandoftex.arara.api.AraraException;
 import org.islandoftex.arara.api.localization.Messages;
 import org.islandoftex.arara.api.session.Command;
-import org.islandoftex.arara.cli.utils.MethodUtils;
 import org.islandoftex.arara.core.files.FileSearching;
 import org.islandoftex.arara.core.localization.LanguageController;
 import org.islandoftex.arara.cli.ruleset.CommandImpl;
@@ -374,7 +374,7 @@ public class Methods {
      */
     public static String getBasename(File file) throws AraraException {
         if (file.isFile()) {
-            return MethodUtils.getBasename(file);
+            return FilesKt.getNameWithoutExtension(file);
         } else {
             throw new AraraException(
                     CommonUtils.getRuleErrorHeader().concat(
@@ -394,7 +394,7 @@ public class Methods {
      * @return The basename.
      */
     public static String getBasename(String filename) {
-        return MethodUtils.getBasename(new File(filename));
+        return FilesKt.getNameWithoutExtension(new File(filename));
     }
 
     /**
@@ -407,7 +407,7 @@ public class Methods {
      */
     public static String getFiletype(File file) throws AraraException {
         if (file.isFile()) {
-            return MethodUtils.getFileExtension(file);
+            return FilesKt.getExtension(file);
         } else {
             throw new AraraException(
                     CommonUtils.getRuleErrorHeader().concat(
@@ -427,7 +427,7 @@ public class Methods {
      * @return The file type.
      */
     public static String getFiletype(String filename) {
-        return MethodUtils.getFileExtension(new File(filename));
+        return FilesKt.getExtension(new File(filename));
     }
 
     /**
@@ -593,8 +593,9 @@ public class Methods {
      * @throws AraraException Something wrong happened, to be caught in the
      *                        higher levels.
      */
-    public static boolean exists(String extension) throws AraraException {
-        return MethodUtils.exists(extension);
+    public static boolean exists(String extension) {
+        return Files.exists(FileHandling.changeExtension(
+                Arara.getCurrentFile().getPath(), extension));
     }
 
     /**
@@ -618,7 +619,8 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean changed(String extension) throws AraraException {
-        return changed(MethodUtils.getPath(extension));
+        return changed(FileHandling.changeExtension(
+                Arara.getCurrentFile().getPath(), extension).toFile());
     }
 
     /**
@@ -662,7 +664,12 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean changed(File filename) throws AraraException {
-        return MethodUtils.hasChanged(filename);
+        return FileHandling.hasChanged(
+                filename.toPath(),
+                Arara.getCurrentProject().getWorkingDirectory().resolve(
+                        Executor.INSTANCE.getExecutionOptions().getDatabaseName()
+                )
+        );
     }
 
     /**
@@ -698,7 +705,8 @@ public class Methods {
      */
     public static boolean found(String extension, String regex)
             throws AraraException {
-        return found(MethodUtils.getPath(extension), regex);
+        return found(FileHandling.changeExtension(
+                Arara.getCurrentFile().getPath(), extension).toFile(), regex);
     }
 
     /**

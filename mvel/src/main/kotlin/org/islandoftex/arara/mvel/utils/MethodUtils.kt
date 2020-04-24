@@ -1,18 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.utils
+package org.islandoftex.arara.mvel.utils
 
 import java.io.File
 import java.io.IOException
-import java.nio.file.Files
-import java.nio.file.Path
 import java.util.MissingFormatArgumentException
 import java.util.regex.Pattern
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.files.Project
-import org.islandoftex.arara.cli.Arara
-import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.session.Executor
 
 object MethodUtils {
     /**
@@ -45,19 +39,6 @@ object MethodUtils {
     }
 
     /**
-     * Checks if a file exists based on its extension.
-     *
-     * @param extension The extension.
-     * @return A boolean value indicating if the file exists.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
-    @JvmStatic
-    @Throws(AraraException::class)
-    fun exists(extension: String): Boolean =
-            Files.exists(FileHandling.changeExtension(Arara.currentFile.path, extension))
-
-    /**
      * Generates a string based on a list of objects, separating each one of
      * them by one space.
      *
@@ -69,59 +50,6 @@ object MethodUtils {
     fun generateString(vararg objects: Any): String = objects
             .map { it.toString() }.filter { it.isNotEmpty() }
             .joinToString(" ")
-
-    /**
-     * Gets the base name of a file.
-     *
-     * @param file The file.
-     * @return The corresponding base name.
-     */
-    @JvmStatic
-    fun getBasename(file: File): String = file.nameWithoutExtension
-
-    /**
-     * Gets the extension of a file.
-     *
-     * @param file The file.
-     * @return The corresponding file type.
-     */
-    @JvmStatic
-    fun getFileExtension(file: File): String = file.extension
-
-    /**
-     * Gets the full file path based on the provided extension.
-     *
-     * @param extension The extension.
-     * @return A string containing the full file path.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
-    @JvmStatic
-    @Throws(AraraException::class)
-    fun getPath(extension: String): File =
-            FileHandling.changeExtension(Arara.currentFile.path, extension).toFile()
-
-    /**
-     * Checks if a file has changed since the last verification.
-     *
-     * @param file The file.
-     * @param project The project the file is part of.
-     * @return A boolean value indicating if the file has changed since the last
-     * verification.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
-    @JvmStatic
-    @JvmOverloads
-    @Throws(AraraException::class)
-    fun hasChanged(
-        file: File,
-        project: Project = Arara.currentProject,
-        databaseName: Path = Executor.executionOptions.databaseName
-    ): Boolean = FileHandling.hasChanged(
-            file.toPath(),
-            project.workingDirectory.resolve(databaseName)
-    )
 
     /**
      * Replicates a string pattern based on a list of objects, generating a list
