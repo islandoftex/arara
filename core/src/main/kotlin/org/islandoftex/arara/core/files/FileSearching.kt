@@ -32,6 +32,7 @@ object FileSearching {
      * @param recursive A flag indicating whether the search is recursive.
      * @return A list of files.
      */
+    @JvmStatic
     fun listFilesByExtensions(
         directory: File,
         extensions: List<String>,
@@ -64,6 +65,7 @@ object FileSearching {
      * @param recursive A flag indicating whether the search is recursive.
      * @return A list of files.
      */
+    @JvmStatic
     fun listFilesByPatterns(
         directory: File,
         patterns: List<String>,
@@ -100,6 +102,7 @@ object FileSearching {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
+    @JvmStatic
     @ExperimentalTime
     @Throws(AraraException::class)
     fun resolveFile(

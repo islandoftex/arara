@@ -14,9 +14,11 @@ object LanguageController {
      * The messages object. This will be used to fetch messages and format them
      * (using [String.format]).
      */
+    @JvmStatic
     var messages = Messages()
         private set
 
+    @JvmStatic
     fun setLocale(locale: Locale) {
         messages = when (locale) {
             Locale.GERMAN -> GermanLanguage()

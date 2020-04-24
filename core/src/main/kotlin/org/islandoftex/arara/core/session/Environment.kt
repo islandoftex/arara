@@ -17,6 +17,7 @@ object Environment {
      * @param fallback The fallback value.
      * @return A string containing the system property value or the fallback.
      */
+    @JvmStatic
     fun getSystemProperty(key: String, fallback: String): String =
             System.getProperties().runCatching {
                 getOrDefault(key, fallback).toString().takeIf { it != "" }
@@ -29,6 +30,7 @@ object Environment {
      * @return The value of the system property or null if there is an
      *   exception.
      */
+    @JvmStatic
     fun getSystemPropertyOrNull(key: String): String? =
             System.getProperties().runCatching { getValue(key).toString() }
                     .getOrNull()
@@ -53,6 +55,7 @@ object Environment {
      *   as a string. In case of an error, return the pair [errorExitStatus]
      *   and [errorCommandOutput].
      */
+    @JvmStatic
     fun executeSystemCommand(
         command: Command,
         workingDirectory: Path

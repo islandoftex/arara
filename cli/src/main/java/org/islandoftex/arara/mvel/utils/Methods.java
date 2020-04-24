@@ -40,7 +40,7 @@ import java.util.stream.Stream;
 @SuppressWarnings("unused")
 public class Methods {
     // the language controller
-    private static final Messages messages = LanguageController.INSTANCE.getMessages();
+    private static final Messages messages = LanguageController.getMessages();
     // the session controller
     private static final Session session = Session.INSTANCE;
     // the GUI generator
@@ -209,7 +209,7 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean isTrue(String string) throws AraraException {
-        return !isEmpty(string) && InputHandling.INSTANCE.checkBoolean(string);
+        return !isEmpty(string) && InputHandling.checkBoolean(string);
     }
 
     /**
@@ -221,7 +221,7 @@ public class Methods {
      *                        higher levels.
      */
     public static boolean isFalse(String string) throws AraraException {
-        return !isEmpty(string) && !InputHandling.INSTANCE.checkBoolean(string);
+        return !isEmpty(string) && !InputHandling.checkBoolean(string);
     }
 
     /**
@@ -1001,7 +1001,7 @@ public class Methods {
      * as a string.
      */
     public static Pair<Integer, String> unsafelyExecuteSystemCommand(Command command) {
-        return Environment.INSTANCE.executeSystemCommand(command,
+        return Environment.executeSystemCommand(command,
                 Arara.getCurrentProject().getWorkingDirectory()
         );
     }
@@ -1028,7 +1028,7 @@ public class Methods {
      */
     public static Pair<ClassLoading.ClassLoadingStatus, Class<?>> loadClass(
             File file, String name) {
-        return ClassLoading.INSTANCE.loadClass(file, name);
+        return ClassLoading.loadClass(file, name);
     }
 
     /**
@@ -1052,7 +1052,7 @@ public class Methods {
      */
     public static Pair<ClassLoading.ClassLoadingStatus, Object> loadObject(
             File file, String name) {
-        return ClassLoading.INSTANCE.loadObject(file, name);
+        return ClassLoading.loadObject(file, name);
     }
 
     /**
@@ -1079,7 +1079,7 @@ public class Methods {
      */
     public static List<File> listFilesByExtensions(File directory,
                                                    List<String> extensions, boolean recursive) {
-        return FileSearching.INSTANCE.listFilesByExtensions(
+        return FileSearching.listFilesByExtensions(
                 directory,
                 extensions,
                 recursive
@@ -1098,7 +1098,7 @@ public class Methods {
      */
     public static List<File> listFilesByExtensions(String path,
                                                    List<String> extensions, boolean recursive) {
-        return FileSearching.INSTANCE.listFilesByExtensions(
+        return FileSearching.listFilesByExtensions(
                 new File(path),
                 extensions,
                 recursive
@@ -1116,7 +1116,7 @@ public class Methods {
      */
     public static List<File> listFilesByPatterns(File directory,
                                                  List<String> patterns, boolean recursive) {
-        return FileSearching.INSTANCE.listFilesByPatterns(
+        return FileSearching.listFilesByPatterns(
                 directory,
                 patterns,
                 recursive
@@ -1134,7 +1134,7 @@ public class Methods {
      */
     public static List<File> listFilesByPatterns(String path,
                                                  List<String> patterns, boolean recursive) {
-        return FileSearching.INSTANCE.listFilesByPatterns(
+        return FileSearching.listFilesByPatterns(
                 new File(path),
                 patterns,
                 recursive
@@ -1227,7 +1227,7 @@ public class Methods {
      */
     public static boolean isSubdirectory(File directory)
             throws AraraException {
-        return FileHandling.INSTANCE.isSubDirectory(directory.toPath(),
+        return FileHandling.isSubDirectory(directory.toPath(),
                 Arara.getCurrentProject().getWorkingDirectory());
     }
 }

@@ -16,6 +16,7 @@ object ConfigurationUtils {
      * This map contains all file types that arara accepts
      * and their corresponding search patterns (for comments).
      */
+    @JvmStatic
     val defaultFileTypePatterns = mapOf(
             "tex" to "^\\s*%\\s+",
             "dtx" to "^\\s*%\\s+",
@@ -27,6 +28,7 @@ object ConfigurationUtils {
     /**
      * List of default file types provided by arara.
      */
+    @JvmStatic
     val defaultFileTypes: List<FileType> by lazy {
         defaultFileTypePatterns
                 .map { (extension, pattern) ->
@@ -43,6 +45,7 @@ object ConfigurationUtils {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
+    @JvmStatic
     val applicationPath: Path
         @Throws(AraraException::class)
         get() {

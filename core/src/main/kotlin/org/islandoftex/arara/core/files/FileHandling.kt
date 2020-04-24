@@ -18,6 +18,7 @@ object FileHandling {
      * @param path The path to the file.
      * @return The normalized path from the provided path.
      */
+    @JvmStatic
     @Throws(AraraException::class)
     fun normalize(path: Path): Path = path.toAbsolutePath().normalize()
 
@@ -28,6 +29,7 @@ object FileHandling {
      * @param extension The extension.
      * @return The full file path to the sibling.
      */
+    @JvmStatic
     fun changeExtension(path: Path, extension: String): Path {
         val name = path.fileName.toString().substringBeforeLast('.') +
                 ".$extension"
@@ -42,6 +44,7 @@ object FileHandling {
      * @return Logical value indicating whether the directoy is under root.
      * @throws AraraException There was a problem with path retrieval.
      */
+    @JvmStatic
     @Throws(AraraException::class)
     fun isSubDirectory(child: Path, parent: Path): Boolean {
         return if (Files.isDirectory(child) && Files.isDirectory(parent)) {
@@ -59,6 +62,7 @@ object FileHandling {
      * @throws AraraException Something wrong happened, to be caught in the
      *   higher levels.
      */
+    @JvmStatic
     @Throws(AraraException::class)
     fun calculateHash(path: Path): Long =
             try {
@@ -81,6 +85,7 @@ object FileHandling {
      * @return A boolean value indicating if the file has changed since the
      *   last verification.
      */
+    @JvmStatic
     fun hasChanged(file: Path, databaseFile: Path): Boolean {
         val database = Database.load(databaseFile)
         val path = normalize(file)

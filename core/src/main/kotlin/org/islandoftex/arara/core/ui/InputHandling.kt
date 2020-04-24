@@ -16,6 +16,7 @@ object InputHandling {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
+    @JvmStatic
     @Throws(AraraException::class)
     fun checkBoolean(value: String): Boolean {
         val yes = listOf("yes", "true", "1", "on")
@@ -37,6 +38,7 @@ object InputHandling {
      * @return The flattened list.
      */
     // TODO: check nullity
+    @JvmStatic
     fun flatten(list: List<*>): List<Any> {
         val result = mutableListOf<Any>()
         list.forEach { item ->

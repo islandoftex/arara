@@ -32,6 +32,7 @@ object ClassLoading {
      * @param name The canonical name of the class.
      * @return A pair representing the status and the class.
      */
+    @JvmStatic
     fun loadClass(file: File, name: String):
             Pair<ClassLoadingStatus, Class<*>> {
         // status and class to be returned,
@@ -76,6 +77,7 @@ object ClassLoading {
      * @param name The canonical name of the class.
      * @return A pair representing the status and the class object.
      */
+    @JvmStatic
     fun loadObject(file: File, name: String): Pair<ClassLoadingStatus, Any> {
         // load the corresponding class
         // based on the qualified name
