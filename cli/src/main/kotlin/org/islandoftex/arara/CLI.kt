@@ -15,7 +15,6 @@ import kotlin.time.TimeSource
 import kotlin.time.milliseconds
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
-import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
@@ -72,12 +71,12 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
      * Update arara's configuration with the command line arguments.
      */
     private fun updateConfigurationFromCommandLine() {
-        Arara.config[AraraSpec.userInterfaceOptions] = UserInterfaceOptions(
+        Arara.userInterfaceOptions = UserInterfaceOptions(
                 locale = language?.let { Locale.forLanguageTag(it) }
-                        ?: Arara.config[AraraSpec.userInterfaceOptions].locale,
-                swingLookAndFeel = Arara.config[AraraSpec.userInterfaceOptions].swingLookAndFeel
+                        ?: Arara.userInterfaceOptions.locale,
+                swingLookAndFeel = Arara.userInterfaceOptions.swingLookAndFeel
         )
-        LanguageController.setLocale(Arara.config[AraraSpec.userInterfaceOptions].locale)
+        LanguageController.setLocale(Arara.userInterfaceOptions.locale)
 
         Executor.executionOptions = ExecutionOptions
                 .from(Executor.executionOptions)
@@ -100,13 +99,13 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                             Executor.executionOptions.parseOnlyHeader
                 )
 
-        Arara.config[AraraSpec.loggingOptions] = LoggingOptions(
+        Arara.loggingOptions = LoggingOptions(
                 enableLogging = if (log)
                     true
                 else
-                    Arara.config[AraraSpec.loggingOptions].enableLogging,
-                appendLog = Arara.config[AraraSpec.loggingOptions].appendLog,
-                logFile = Arara.config[AraraSpec.loggingOptions].logFile
+                    Arara.loggingOptions.enableLogging,
+                appendLog = Arara.loggingOptions.appendLog,
+                logFile = Arara.loggingOptions.logFile
         )
     }
 
@@ -174,7 +173,6 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                             // TODO: do we have to reset some more file-specific config?
                             // especially the working directory will have to be set and
                             // changed
-                            Arara.config = Arara.baseconfig.withLayer(it.toString())
                             updateConfigurationFromCommandLine()
                             Arara.currentFile = it
                             DisplayUtils.printFileInformation()

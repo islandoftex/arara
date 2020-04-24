@@ -7,7 +7,6 @@ import org.islandoftex.arara.Arara;
 import org.islandoftex.arara.api.AraraException;
 import org.islandoftex.arara.api.localization.Messages;
 import org.islandoftex.arara.api.session.Command;
-import org.islandoftex.arara.cli.configuration.AraraSpec;
 import org.islandoftex.arara.cli.utils.MethodUtils;
 import org.islandoftex.arara.core.files.FileSearching;
 import org.islandoftex.arara.core.localization.LanguageController;
@@ -45,8 +44,7 @@ public class Methods {
     private static final Session session = Session.INSTANCE;
     // the GUI generator
     private static final GUIDialogs dialogs = new GUIDialogs(
-            Arara.INSTANCE.getConfig().get(AraraSpec.INSTANCE.getUserInterfaceOptions())
-    );
+            Arara.getUserInterfaceOptions());
 
     /**
      * Get rule methods.

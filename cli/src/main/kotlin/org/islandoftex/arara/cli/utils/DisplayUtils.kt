@@ -10,7 +10,6 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
-import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
@@ -314,7 +313,7 @@ object DisplayUtils {
         else
             (ln(size.toDouble()) / ln(conversionFactor)).toInt().let { exp ->
                 "%.1f %sB".format(
-                        Arara.config[AraraSpec.userInterfaceOptions].locale,
+                        Arara.userInterfaceOptions.locale,
                         size / conversionFactor.pow(exp.toDouble()),
                         "kMGTPE"[exp - 1]
                 )
@@ -378,7 +377,7 @@ object DisplayUtils {
         val text = LanguageController.messages.INFO_DISPLAY_EXECUTION_TIME
                 .format(
                         "%1.2f".format(
-                                Arara.config[AraraSpec.userInterfaceOptions].locale,
+                                Arara.userInterfaceOptions.locale,
                                 seconds
                         )
                 )
