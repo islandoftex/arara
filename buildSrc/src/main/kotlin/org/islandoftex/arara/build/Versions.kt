@@ -3,7 +3,7 @@ package org.islandoftex.arara.build
 
 object Versions {
     // plugin dependencies
-    const val detekt = "1.7.4"
+    const val detekt = "1.8.0"
     const val dokka = "0.10.1"
     const val kotlin = "1.3.72"
     const val shadow = "5.2.0"
@@ -16,7 +16,7 @@ object Versions {
     const val jna = "5.5.0"
     const val kaml = "0.17.0"
     const val konf = "0.22.1"
-    const val kotest = "4.0.2"
+    const val kotest = "4.0.4"
     const val kotlinxSerialization = "0.20.0"
     const val jackson = "2.10.3"
     const val logback = "1.2.3"

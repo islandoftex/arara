@@ -11,7 +11,7 @@ import kotlinx.coroutines.withContext
 import org.islandoftex.arara.api.AraraException
 
 class FileHandlingTest : ShouldSpec({
-    "path handling" {
+    context("path handling") {
         should("normalize dots") {
             FileHandling.normalize(Paths.get("/tmp/./quack/..")).toString() shouldBe
                     FileHandling.normalize(Paths.get("/tmp/")).toString()
@@ -31,7 +31,7 @@ class FileHandlingTest : ShouldSpec({
         }
     }
 
-    "subdirectories" {
+    context("subdirectories") {
         should("get subdirecotry relationship right") {
             FileHandling.isSubDirectory(Paths.get("../docs"), Paths.get("..")) shouldBe true
             FileHandling.isSubDirectory(Paths.get(".."), Paths.get("../docs")) shouldBe false
@@ -42,7 +42,7 @@ class FileHandlingTest : ShouldSpec({
         }
     }
 
-    "hashing and database" {
+    context("hashing and database") {
         should("fail generating CRC sums on inexistent files") {
             shouldThrow<AraraException> {
                 FileHandling.calculateHash(Paths.get("QUACK"))

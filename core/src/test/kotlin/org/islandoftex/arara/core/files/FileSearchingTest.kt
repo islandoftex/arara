@@ -15,7 +15,7 @@ import org.islandoftex.arara.core.configuration.ExecutionOptions
 
 @ExperimentalTime
 class FileSearchingTest : ShouldSpec({
-    "file listings" {
+    context("file listings") {
         fun prepareFileSystem(): Path {
             val tempDir = Files.createTempDirectory(System.nanoTime().toString())
             tempDir.resolve("quack/quack").toFile().mkdirs()
@@ -49,7 +49,7 @@ class FileSearchingTest : ShouldSpec({
         }
     }
 
-    "file lookup" {
+    context("file lookup") {
         should("fail looking up inexistent file") {
             FileSearching.lookupFile("QUACK", Paths.get("."),
                     ExecutionOptions()) shouldBe null
