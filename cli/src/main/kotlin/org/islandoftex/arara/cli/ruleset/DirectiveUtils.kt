@@ -8,7 +8,6 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.rules.Directive
-import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.DirectiveFetchingHooks
@@ -129,8 +128,7 @@ object DirectiveUtils {
             } else {
                 result.add(DirectiveImpl(
                         directive.identifier,
-                        parameters.plus("reference" to
-                                Arara.config[AraraSpec.Execution.reference].path.toFile()),
+                        parameters.plus("reference" to Arara.currentFile.path.toFile()),
                         directive.conditional,
                         directive.lineNumbers
                 ))

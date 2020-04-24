@@ -325,7 +325,7 @@ object DisplayUtils {
      * Displays the file information in the terminal.
      */
     fun printFileInformation() {
-        val file = Arara.config[AraraSpec.Execution.reference].path.toFile()
+        val file = Arara.currentFile.path.toFile()
         val line = LanguageController.messages.INFO_DISPLAY_FILE_INFORMATION
                 .format(
                         file.name,

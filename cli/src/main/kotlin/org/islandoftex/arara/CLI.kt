@@ -176,7 +176,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                             // changed
                             Arara.config = Arara.baseconfig.withLayer(it.toString())
                             updateConfigurationFromCommandLine()
-                            Arara.config[AraraSpec.Execution.reference] = it
+                            Arara.currentFile = it
                             DisplayUtils.printFileInformation()
                         },
                         executeAfterFile = {

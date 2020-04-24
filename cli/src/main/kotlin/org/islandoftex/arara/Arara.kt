@@ -6,9 +6,12 @@ import com.uchuhimo.konf.Config
 import java.nio.file.Paths
 import java.time.LocalDate
 import org.islandoftex.arara.api.AraraAPI
+import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.Project
+import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.utils.DisplayUtils
+import org.islandoftex.arara.core.files.UNKNOWN_TYPE
 import org.islandoftex.arara.core.localization.LanguageController
 
 /**
@@ -33,6 +36,15 @@ object Arara {
     @JvmStatic
     var currentProject: Project =
             org.islandoftex.arara.core.files.Project("", Paths.get(""), setOf())
+
+    /**
+     * arara's main file it is currently working on.
+     *
+     * TODO: sane initialization
+     */
+    @JvmStatic
+    var currentFile: ProjectFile = org.islandoftex.arara.core.files
+            .ProjectFile(Paths.get("/tmp/"), FileType.UNKNOWN_TYPE)
 
     // TODO: watch config files
     val baseconfig = Config { addSpec(AraraSpec) }

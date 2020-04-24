@@ -14,7 +14,6 @@ import java.io.PrintStream
 import java.nio.file.Paths
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.core.configuration.ExecutionOptions
@@ -41,14 +40,13 @@ class ExecutionTest : ShouldSpec({
             Executor.executionOptions = ExecutionOptions
                     .from(Executor.executionOptions)
                     .copy(verbose = true)
-            Arara.config[AraraSpec.Execution.reference] = FileSearching
-                    .resolveFile(fileName, workingDirectory, Executor.executionOptions)
-            DirectiveUtils.process(
-                    Arara.config[AraraSpec.Execution.reference]
-                            .fetchDirectives(false)
-            ).forEach {
-                it.execute()
-            }
+            Arara.currentFile = FileSearching.resolveFile(
+                    fileName,
+                    workingDirectory,
+                    Executor.executionOptions
+            )
+            DirectiveUtils.process(Arara.currentFile.fetchDirectives(false))
+                    .forEach { it.execute() }
             return output.toByteArray().toString(Charsets.UTF_8)
         } catch (ex: Exception) {
             throw ex

@@ -10,23 +10,11 @@ import java.util.regex.Pattern
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.Project
-import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Executor
 
 object MethodUtils {
-    /**
-     * Gets the reference of the current file in execution. Note that this
-     * method might return a value different than the main file provided in
-     * the command line.
-     *
-     * @return A reference of the current file in execution. Might be different
-     * than the main file provided in the command line.
-     */
-    private val currentFile: Path
-        get() = Arara.config[AraraSpec.Execution.reference].path
-
     /**
      * Checks if the file contains the provided regex.
      *
@@ -67,7 +55,7 @@ object MethodUtils {
     @JvmStatic
     @Throws(AraraException::class)
     fun exists(extension: String): Boolean =
-            Files.exists(FileHandling.changeExtension(currentFile, extension))
+            Files.exists(FileHandling.changeExtension(Arara.currentFile.path, extension))
 
     /**
      * Generates a string based on a list of objects, separating each one of
@@ -111,7 +99,7 @@ object MethodUtils {
     @JvmStatic
     @Throws(AraraException::class)
     fun getPath(extension: String): File =
-            FileHandling.changeExtension(currentFile, extension).toFile()
+            FileHandling.changeExtension(Arara.currentFile.path, extension).toFile()
 
     /**
      * Checks if a file has changed since the last verification.

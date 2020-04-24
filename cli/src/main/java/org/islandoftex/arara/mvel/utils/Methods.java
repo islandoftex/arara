@@ -118,9 +118,7 @@ public class Methods {
      * @return The original file.
      */
     public static String getOriginalFile() {
-        return Arara.INSTANCE.getConfig()
-                .get(AraraSpec.Execution.INSTANCE.getReference())
-                .getPath().toFile().getName();
+        return Arara.getCurrentFile().getPath().getFileName().toString();
     }
 
     /**
@@ -129,9 +127,7 @@ public class Methods {
      * @return The original reference.
      */
     public static File getOriginalReference() {
-        return Arara.INSTANCE.getConfig()
-                .get(AraraSpec.Execution.INSTANCE.getReference())
-                .getPath().toFile();
+        return Arara.getCurrentFile().getPath().toFile();
     }
 
     /**
@@ -1015,8 +1011,7 @@ public class Methods {
      * @return A file reference for the current directive.
      */
     public static File currentFile() {
-        return Arara.INSTANCE.getConfig().get(AraraSpec.Execution
-                .INSTANCE.getReference()).getPath().toFile();
+        return Arara.getCurrentFile().getPath().toFile();
     }
 
     /**

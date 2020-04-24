@@ -10,7 +10,6 @@ import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.api.session.Command
-import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.ruleset.RuleUtils
 import org.islandoftex.arara.cli.utils.CommonUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
@@ -210,8 +209,7 @@ object Interpreter {
                         throw HaltExpectedException("Command failed")
 
                     // TODO: document this key
-                    val haltKey = "arara:${Arara.config[AraraSpec
-                            .Execution.reference].path.fileName}:halt"
+                    val haltKey = "arara:${Arara.currentFile.path.fileName}:halt"
                     if (Session.contains(haltKey)) {
                         Arara.exitCode = Session[haltKey].toString().toInt()
                         // TODO: localize
@@ -260,8 +258,7 @@ object Interpreter {
         }
 
         // if this directive is conditionally disabled, skip
-        if (!available || Session.contains("arara:${Arara.config[AraraSpec
-                        .Execution.reference].path.fileName}:halt"))
+        if (!available || Session.contains("arara:${Arara.currentFile.path.fileName}:halt"))
             return Arara.exitCode
 
         try {
