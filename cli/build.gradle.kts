@@ -41,7 +41,7 @@ sourceSets {
 
 application {
     applicationName = project.name
-    mainClassName = "$moduleName.Arara"
+    mainClassName = "$moduleName.cli.Arara"
 }
 
 tasks {
