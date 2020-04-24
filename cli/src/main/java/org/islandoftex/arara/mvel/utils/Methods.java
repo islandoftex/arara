@@ -3,7 +3,7 @@ package org.islandoftex.arara.mvel.utils;
 
 import kotlin.Pair;
 import kotlin.text.Charsets;
-import org.islandoftex.arara.Arara;
+import org.islandoftex.arara.cli.Arara;
 import org.islandoftex.arara.api.AraraException;
 import org.islandoftex.arara.api.localization.Messages;
 import org.islandoftex.arara.api.session.Command;

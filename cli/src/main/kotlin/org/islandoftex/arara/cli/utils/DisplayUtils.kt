@@ -4,12 +4,12 @@ package org.islandoftex.arara.cli.utils
 import java.text.SimpleDateFormat
 import kotlin.math.ln
 import kotlin.math.pow
-import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
+import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment

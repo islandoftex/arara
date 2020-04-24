@@ -4,8 +4,8 @@ package org.islandoftex.arara.cli.configuration
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment

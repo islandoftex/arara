@@ -2,8 +2,8 @@
 package org.islandoftex.arara.cli.ruleset
 
 import java.nio.file.Path
-import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.session.Command
+import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.core.ui.InputHandling
 
 /**

@@ -7,9 +7,9 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.MissingFormatArgumentException
 import java.util.regex.Pattern
-import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.Project
+import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Executor

@@ -3,13 +3,13 @@ package org.islandoftex.arara.cli.model
 
 import java.nio.file.Files
 import java.nio.file.Path
-import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.api.session.Command
+import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.cli.ruleset.RuleUtils
 import org.islandoftex.arara.cli.utils.CommonUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils

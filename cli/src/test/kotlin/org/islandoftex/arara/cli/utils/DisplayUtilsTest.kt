@@ -4,7 +4,7 @@ package org.islandoftex.arara.cli.utils
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import java.util.Locale
-import org.islandoftex.arara.Arara
+import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.core.configuration.UserInterfaceOptions
 
 class DisplayUtilsTest : ShouldSpec({

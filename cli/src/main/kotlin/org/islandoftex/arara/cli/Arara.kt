@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara
+package org.islandoftex.arara.cli
 
 import com.github.ajalt.clikt.parameters.options.versionOption
 import java.nio.file.Paths

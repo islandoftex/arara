@@ -12,8 +12,8 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 import java.nio.file.Paths
-import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.core.configuration.ExecutionOptions

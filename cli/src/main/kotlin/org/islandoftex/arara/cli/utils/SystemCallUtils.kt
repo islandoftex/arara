@@ -2,8 +2,8 @@
 package org.islandoftex.arara.cli.utils
 
 import java.io.File
-import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.cli.ruleset.CommandImpl
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
