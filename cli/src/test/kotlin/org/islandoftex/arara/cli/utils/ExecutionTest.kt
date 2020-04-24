@@ -104,13 +104,13 @@ class ExecutionTest : ShouldSpec({
         val output = outputForTest("halt")
         output shouldContain "QuackOne"
         output shouldNotContain "QuackTwo"
-        Arara.config[AraraSpec.Execution.exitCode] shouldBe 0
+        Arara.exitCode shouldBe 0
     }
     should("forcefully halt on halt error rule") {
         val output = outputForTest("halt-error")
         output shouldContain "QuackOne"
         output shouldNotContain "QuackTwo"
-        Arara.config[AraraSpec.Execution.exitCode] shouldNotBe 0
+        Arara.exitCode shouldNotBe 0
     }
 
     should("fail on invalid config") {

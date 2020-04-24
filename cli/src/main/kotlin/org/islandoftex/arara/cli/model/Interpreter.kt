@@ -213,8 +213,7 @@ object Interpreter {
                     val haltKey = "arara:${Arara.config[AraraSpec
                             .Execution.reference].path.fileName}:halt"
                     if (Session.contains(haltKey)) {
-                        Arara.config[AraraSpec.Execution.exitCode] =
-                                Session[haltKey].toString().toInt()
+                        Arara.exitCode = Session[haltKey].toString().toInt()
                         // TODO: localize
                         throw HaltExpectedException("User requested halt")
                     }
@@ -263,7 +262,7 @@ object Interpreter {
         // if this directive is conditionally disabled, skip
         if (!available || Session.contains("arara:${Arara.config[AraraSpec
                         .Execution.reference].path.fileName}:halt"))
-            return Arara.config[AraraSpec.Execution.exitCode]
+            return Arara.exitCode
 
         try {
             // if not execute the commands associated with the directive
@@ -282,7 +281,7 @@ object Interpreter {
             // If the user uses the halt rule to trigger a halt, this will be
             // raised. Any other exception will not be caught and propagate up.
         }
-        return Arara.config[AraraSpec.Execution.exitCode]
+        return Arara.exitCode
     }
 
     /**

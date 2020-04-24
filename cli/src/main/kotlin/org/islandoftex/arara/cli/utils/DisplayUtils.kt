@@ -116,7 +116,7 @@ object DisplayUtils {
     fun printEntryResult(value: Boolean) {
         displayLine = false
         displayResult = true
-        Arara.config[AraraSpec.Execution.exitCode] = if (value) 0 else 1
+        Arara.exitCode = if (value) 0 else 1
         logger.info(
                 LanguageController.messages.LOG_INFO_TASK_RESULT + " " +
                         getResult(value)
@@ -204,7 +204,7 @@ object DisplayUtils {
      */
     fun printException(exception: AraraException) {
         displayException = true
-        Arara.config[AraraSpec.Execution.exitCode] = 2
+        Arara.exitCode = 2
 
         if (displayResult)
             println()

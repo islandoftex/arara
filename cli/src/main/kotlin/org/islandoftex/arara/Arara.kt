@@ -17,6 +17,11 @@ import org.islandoftex.arara.core.localization.LanguageController
  * @since 5.0
  */
 object Arara {
+    /**
+     * arara's current exit code
+     */
+    var exitCode = 0
+
     // TODO: watch config files
     val baseconfig = Config { addSpec(AraraSpec) }
             .from.env()

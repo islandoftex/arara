@@ -187,8 +187,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                             DirectiveUtils.process(it)
                         }
                 )
-                Arara.config[AraraSpec.Execution.exitCode] =
-                        Executor.execute(projects).exitCode
+                Arara.exitCode = Executor.execute(projects).exitCode
             } catch (exception: AraraException) {
                 // something bad just happened, so arara will print the proper
                 // exception and provide details on it, if available; the idea
@@ -204,7 +203,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
             DisplayUtils.printTime(executionStart.elapsedNow().inSeconds)
         } catch (ex: AraraException) {
             DisplayUtils.printException(ex)
-            Arara.config[AraraSpec.Execution.exitCode] = 2
+            Arara.exitCode = 2
         }
 
         // gets the application exit status; the rule here is:
@@ -215,6 +214,6 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         //     means the error relies on the command line call, not with arara.
         // 2 : arara just handled an exception, meaning that something bad
         //     just happened and might require user intervention.
-        exitProcess(Arara.config[AraraSpec.Execution.exitCode])
+        exitProcess(Arara.exitCode)
     }
 }
