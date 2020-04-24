@@ -129,7 +129,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
 
         // logging has to be initialized only once and for all because
         // context resets lead to missing output
-        LoggingUtils.enableLogging(log)
+        LoggingUtils.setupLogging(LoggingOptions(log))
 
         val workingDir = FileHandling.normalize(
                 workingDirectory

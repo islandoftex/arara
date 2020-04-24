@@ -5,8 +5,7 @@ import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.joran.JoranConfigurator
 import ch.qos.logback.core.joran.spi.JoranException
 import java.io.InputStream
-import org.islandoftex.arara.Arara
-import org.islandoftex.arara.cli.configuration.AraraSpec
+import org.islandoftex.arara.api.configuration.LoggingOptions
 import org.slf4j.LoggerFactory
 
 /**
@@ -29,10 +28,9 @@ object LoggingUtils {
      * Sets the logging configuration according to the provided boolean value.
      * If the value is set to true, the log entries will be appended to a file,
      * otherwise the logging feature will keep silent.
-     * @param enable A boolean value that indicates the logging behaviour
-     * throughout the application.
+     * @param loggingOptions The configuration of the logging behavior.
      */
-    fun enableLogging(enable: Boolean) {
+    fun setupLogging(loggingOptions: LoggingOptions) {
         // get the logger context from a factory, set a
         // new context and reset it
         val loggerContext = LoggerFactory.getILoggerFactory() as LoggerContext
@@ -47,13 +45,12 @@ object LoggingUtils {
             // if enabled, the log entries will be
             // appended to a file, otherwise it will
             // remain silent
-            if (enable) {
+            if (loggingOptions.enableLogging) {
                 // set the file name and configure
                 // the logging controller to append
                 // entries to the file
-                val name = Arara.config[AraraSpec.loggingOptions].logFile.toString()
-                        .removeSuffix(".log")
-                loggerContext.putProperty("name", name)
+                loggerContext.putProperty("name",
+                        loggingOptions.logFile.toString().removeSuffix(".log"))
                 configurator.doConfigure(resource)
             }
         } catch (_: JoranException) {
@@ -66,6 +63,6 @@ object LoggingUtils {
      * behaviour out of the box.
      */
     fun init() {
-        enableLogging(false)
+        setupLogging(org.islandoftex.arara.core.configuration.LoggingOptions())
     }
 }

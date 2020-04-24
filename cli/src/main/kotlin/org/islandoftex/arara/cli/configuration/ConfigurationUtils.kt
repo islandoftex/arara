@@ -82,6 +82,6 @@ object ConfigurationUtils {
         // just to be sure, update the current locale in order to
         // display localized messages and reset logging status
         LanguageController.setLocale(Arara.config[AraraSpec.userInterfaceOptions].locale)
-        LoggingUtils.enableLogging(Arara.config[AraraSpec.loggingOptions].enableLogging)
+        LoggingUtils.setupLogging(Arara.config[AraraSpec.loggingOptions])
     }
 }
