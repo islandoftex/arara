@@ -133,7 +133,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
 
         val workingDir = FileHandling.normalize(
                 workingDirectory
-                ?: AraraSpec.Execution.currentProject.default.workingDirectory
+                ?: Arara.currentProject.workingDirectory
         )
         try {
             val projects = listOf(Project(
@@ -164,7 +164,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                             DirectiveUtils.initializeDirectiveCore()
                         },
                         executeBeforeProject = { project ->
-                            Arara.config[AraraSpec.Execution.currentProject] = project
+                            Arara.currentProject = project
                             ConfigurationUtils.configFile?.let {
                                 DisplayUtils.configurationFileName = it.toString()
                                 ConfigurationUtils.load(it)

@@ -4,7 +4,6 @@ package org.islandoftex.arara.cli.ruleset
 import java.nio.file.Path
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.session.Command
-import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.core.ui.InputHandling
 
 /**
@@ -16,8 +15,7 @@ import org.islandoftex.arara.core.ui.InputHandling
  */
 class CommandImpl : Command {
     override val elements: List<String>
-    override var workingDirectory: Path = Arara.config[AraraSpec.Execution
-            .currentProject].workingDirectory
+    override var workingDirectory: Path = Arara.currentProject.workingDirectory
 
     /**
      * Constructor.

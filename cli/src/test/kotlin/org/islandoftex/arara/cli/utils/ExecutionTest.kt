@@ -36,8 +36,7 @@ class ExecutionTest : ShouldSpec({
         try {
             System.setOut(PrintStream(output))
             val workingDirectory = Paths.get(getPathForTest(testName))
-            Arara.config[AraraSpec.Execution.currentProject] =
-                    Project("Test", workingDirectory, setOf())
+            Arara.currentProject = Project("Test", workingDirectory, setOf())
             ConfigurationUtils.load(workingDirectory.resolve("arararc.yaml"))
             Executor.executionOptions = ExecutionOptions
                     .from(Executor.executionOptions)

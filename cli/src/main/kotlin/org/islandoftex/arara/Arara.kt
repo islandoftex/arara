@@ -3,8 +3,10 @@ package org.islandoftex.arara
 
 import com.github.ajalt.clikt.parameters.options.versionOption
 import com.uchuhimo.konf.Config
+import java.nio.file.Paths
 import java.time.LocalDate
 import org.islandoftex.arara.api.AraraAPI
+import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.localization.LanguageController
@@ -21,6 +23,15 @@ object Arara {
      * arara's current exit code
      */
     var exitCode = 0
+
+    /**
+     * arara's project it is currently working on.
+     *
+     * TODO: sane initialization
+     */
+    @JvmStatic
+    var currentProject: Project =
+            org.islandoftex.arara.core.files.Project("", Paths.get(""), setOf())
 
     // TODO: watch config files
     val baseconfig = Config { addSpec(AraraSpec) }

@@ -6,7 +6,6 @@ import java.nio.file.Paths
 import org.islandoftex.arara.api.configuration.LoggingOptions
 import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 import org.islandoftex.arara.api.files.FileType
-import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.core.files.ProjectFile
 import org.islandoftex.arara.core.files.UNKNOWN_TYPE
 
@@ -32,9 +31,6 @@ object AraraSpec : ConfigSpec() {
         // Spec or session)
         val reference by optional<org.islandoftex.arara.api.files.ProjectFile>(
                 ProjectFile(Paths.get("/tmp/"), FileType.UNKNOWN_TYPE)
-        )
-        val currentProject by optional<Project>(
-                org.islandoftex.arara.core.files.Project("", Paths.get(""), setOf())
         )
     }
 }

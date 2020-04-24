@@ -31,7 +31,7 @@ object ConfigurationUtils {
         get() {
             val names = listOf(".araraconfig.yaml",
                     "araraconfig.yaml", ".arararc.yaml", "arararc.yaml")
-            Arara.config[AraraSpec.Execution.currentProject].workingDirectory
+            Arara.currentProject.workingDirectory
                     .let { workingDir ->
                         val first = names
                                 .map { workingDir.resolve(it) }
@@ -73,7 +73,7 @@ object ConfigurationUtils {
         // then validate it and update the configuration accordingly
         val resource = loadLocalConfiguration(file)
         Executor.executionOptions = resource.toExecutionOptions(
-                Arara.config[AraraSpec.Execution.currentProject],
+                Arara.currentProject,
                 Executor.executionOptions
         )
         Arara.config[AraraSpec.loggingOptions] = resource.toLoggingOptions()

@@ -121,7 +121,7 @@ object MethodUtils {
     @JvmOverloads
     fun hasChanged(
         file: File,
-        project: Project = Arara.config[AraraSpec.Execution.currentProject],
+        project: Project = Arara.currentProject,
         databaseName: Path = Executor.executionOptions.databaseName
     ): Boolean = FileHandling.hasChanged(
             file.toPath(),

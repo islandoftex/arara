@@ -4,7 +4,6 @@ package org.islandoftex.arara.cli.utils
 import java.io.File
 import org.islandoftex.arara.Arara
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.cli.configuration.AraraSpec
 import org.islandoftex.arara.cli.ruleset.CommandImpl
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
@@ -47,7 +46,7 @@ object SystemCallUtils {
                 // with the 'cygwin' string; if so, we are inside Cygwin
                 Environment.executeSystemCommand(
                         CommandImpl("uname", "-s"),
-                        Arara.config[AraraSpec.Execution.currentProject].workingDirectory
+                        Arara.currentProject.workingDirectory
                 ).second.toLowerCase().startsWith("cygwin")
             })
 

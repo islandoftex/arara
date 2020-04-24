@@ -1002,9 +1002,7 @@ public class Methods {
      */
     public static Pair<Integer, String> unsafelyExecuteSystemCommand(Command command) {
         return Environment.INSTANCE.executeSystemCommand(command,
-                Arara.INSTANCE.getConfig()
-                        .get(AraraSpec.Execution.INSTANCE.getCurrentProject())
-                        .getWorkingDirectory()
+                Arara.getCurrentProject().getWorkingDirectory()
         );
     }
 
@@ -1230,8 +1228,6 @@ public class Methods {
     public static boolean isSubdirectory(File directory)
             throws AraraException {
         return FileHandling.INSTANCE.isSubDirectory(directory.toPath(),
-                Arara.INSTANCE.getConfig().get(
-                        AraraSpec.Execution.INSTANCE.getCurrentProject()
-                ).getWorkingDirectory());
+                Arara.getCurrentProject().getWorkingDirectory());
     }
 }
