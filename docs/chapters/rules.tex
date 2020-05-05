@@ -599,6 +599,23 @@ This rule automates the steps required by the \rbox{frontespizio} package in ord
 % arara: --> shell: yes, interaction: nonstopmode }
 \end{codebox}
 
+\item[\rulebox{gnuplot}]
+This rule runs \rbox{gnuplot}, a command-driven plotting program that can generate plots of functions, data and data fits. The program also provides scripting capabilities, looping, functions, text processing, variables, macros, arbitrary pre-processing of input data (usually across columns), as well as the ability to perform non-linear multi-dimensional multi-set weighted data fitting.
+
+\begin{description}
+\item[\rpsbox{persist}] This option, as the name implies, sets whether the program should let plot windows survive after the main execution exits.
+
+\item[\rpsbox{default}] this option, as the name suggests, sets whether the program should read the default settings from either \rbox{gnuplotrc} or \rbox{~/.gnuplot} on entry.
+
+\item[\abox{commands}] This option, as the name implies, executes the requested commands before loading the next input file. Please refer to the user manual for further details.
+
+\item[\abox{input}~\rqbox] This required option, as the name indicates, sets the list of input file names to be processed by the program. An error is thrown if any data structure other than a proper list is provided as the value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: gnuplot: { input: [ myplot.gnuplot ], default: yes }
+\end{codebox}
+
 \item[\rulebox{halt}]
 This rule, as the name suggests, sets a \rbox{halt} flag, which stops the current interpretation workflow, such that subsequent directives are ignored. This rule contains no associated options. Please refer to Section~\ref{sec:others}, on page~\pageref{sec:others}, for more information on flags.
 
