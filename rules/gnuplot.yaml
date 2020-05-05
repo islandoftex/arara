@@ -1,0 +1,46 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2020, Island of TeX
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: gnuplot
+name: The Gnuplot program
+authors:
+- Island of TeX
+commands:
+- name: Gnuplot
+  command: >
+    @{
+        c = [];
+        foreach (entry : input) {
+            c.add(getCommand('gnuplot', persist, default, commands, entry));
+        }
+        return c;
+    }
+arguments:
+- identifier: persist
+  flag: >
+    @{
+        return isTrue(parameters.persist, '--persist');
+    }
+- identifier: default
+  flag: >
+    @{
+        return isTrue(parameters.default, '--default');
+    }
+- identifier: commands
+  flag: >
+    @{
+        return [ '-e', parameters.commands ];
+    }
+- identifier: input
+  flag: >
+    @{
+        if (isList(parameters.input)) {
+            return parameters.input;
+        } else {
+            throwError('I was expecting a list of input files.');
+        }
+    }
+  required: true
