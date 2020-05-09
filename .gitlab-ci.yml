@@ -81,10 +81,8 @@ publish:gitlab:
   stage: publish
   script:
     - ./gradlew publishGitLabPublicationToMavenRepository -PjobToken=$CI_JOB_TOKEN -Prelease=true
-  only:
-    refs:
-      - tags
-      - master
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "master"'
 
 .ctantemplate: &ctandefinition
   stage: publish
@@ -103,15 +101,13 @@ publish:snapshot_tdszip:
   variables:
     PRELEASE: "false"
   <<: *ctandefinition
-  except:
-    refs:
-      - tags
-      - master
+  rules:
+    - if: '$CI_COMMIT_REF_NAME != "master"'
+      when: always
+    - when: manual
 publish:tdszip:
   variables:
     PRELEASE: "true"
   <<: *ctandefinition
-  only:
-    refs:
-      - tags
-      - master
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "master"'
