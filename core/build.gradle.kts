@@ -10,7 +10,7 @@ plugins {
 
 dependencies {
     api(project(":api"))
-    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-runtime", version = Versions.kotlinxSerialization)
+    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version = Versions.kotlinxSerialization)
     implementation(group = "com.charleskorn.kaml", name = "kaml", version = Versions.kaml)
     implementation(group = "org.zeroturnaround", name = "zt-exec", version = Versions.ztExec)
 

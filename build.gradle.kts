@@ -24,13 +24,13 @@ if (!project.hasProperty("jobToken")) {
 plugins {
     val versions = org.islandoftex.arara.build.Versions
     kotlin("jvm") version versions.kotlin apply false                                   // Apache 2.0
+    kotlin("plugin.serialization") version versions.kotlin apply false                  // Apache 2.0
     id("com.github.johnrengelman.shadow") version versions.shadow apply false           // Apache 2.0
     id("com.github.ben-manes.versions") version versions.versionsPlugin                 // Apache 2.0
     id("com.diffplug.spotless-changelog") version versions.spotlessChangelog            // Apache 2.0
     id("org.jetbrains.dokka") version versions.dokka apply false                        // Apache 2.0
-    id("org.jetbrains.kotlin.plugin.serialization") version versions.kotlin apply false // Apache 2.0
     id("io.gitlab.arturbosch.detekt") version versions.detekt                           // Apache 2.0
-    id("com.diffplug.gradle.spotless") version versions.spotless                        // Apache 2.0
+    id("com.diffplug.spotless") version versions.spotless                               // Apache 2.0
 }
 
 // exclude alpha and beta versions
@@ -113,7 +113,7 @@ subprojects {
     if (!path.contains("docs")) {
         apply(plugin = "org.jetbrains.kotlin.jvm")
         apply(plugin = "org.jetbrains.dokka")
-        apply(plugin = "com.diffplug.gradle.spotless")
+        apply(plugin = "com.diffplug.spotless")
 
         dependencies {
             "implementation"(kotlin("stdlib", Versions.kotlin))
@@ -148,6 +148,7 @@ subprojects {
             targetCompatibility = javaCompatibility
 
             withSourcesJar()
+            withJavadocJar()
         }
 
         apply(plugin = "com.github.johnrengelman.shadow")
@@ -168,19 +169,16 @@ subprojects {
                 }
             }
 
-            register<Jar>("dokkaJar") {
-                group = JavaBasePlugin.DOCUMENTATION_GROUP
-                description = "Create JAR with dokka documentation"
-                archiveClassifier.set("dokka")
-                from(project.tasks.getByPath("dokka"))
-            }
-
             withType<Jar> {
                 archiveBaseName.set("arara-${project.name}")
                 manifest.attributes.putAll(mainManifest.attributes)
             }
             named<Jar>("sourcesJar") {
                 archiveClassifier.set("sources")
+            }
+            named<Jar>("javadocJar") {
+                // TODO: use javadoc instead
+                from(project.tasks.getByPath("dokkaHtml"))
             }
             named<Jar>("shadowJar") {
                 archiveAppendix.set("with-deps")
@@ -279,7 +277,7 @@ subprojects {
 
                     from(components["java"])
                     artifact(tasks["sourcesJar"])
-                    artifact(tasks["dokkaJar"])
+                    artifact(tasks["javadocJar"])
                 }
 
                 if (System.getenv("CI_PROJECT_ID") != null) {

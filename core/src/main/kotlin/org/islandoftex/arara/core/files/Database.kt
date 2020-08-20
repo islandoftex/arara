@@ -76,7 +76,7 @@ data class Database(
     override fun save(path: Path) {
         runCatching {
             val content = "!database\n" +
-                    Yaml.default.stringify(serializer(), this)
+                    Yaml.default.encodeToString(serializer(), this)
             path.toFile().writeText(content)
         }.getOrElse {
             throw AraraException(
@@ -103,7 +103,7 @@ data class Database(
                     val text = path.toFile().readText()
                     if (!text.startsWith("!database"))
                         throw AraraException("Database should start with !database")
-                    Yaml.default.parse(serializer(), text)
+                    Yaml.default.decodeFromString(serializer(), text)
                 }.getOrElse {
                     throw AraraException(LanguageController
                             .messages.ERROR_LOAD_COULD_NOT_LOAD_XML

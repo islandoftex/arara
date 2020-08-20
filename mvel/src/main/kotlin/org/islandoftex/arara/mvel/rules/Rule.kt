@@ -62,7 +62,7 @@ data class Rule(
                 val text = toFile().readText()
                 if (!text.startsWith("!config"))
                     throw AraraException("Rule should start with !config")
-                Yaml.default.parse(
+                Yaml.default.decodeFromString(
                         org.islandoftex.arara.mvel.rules.Rule.serializer(), text)
             }.getOrElse {
                 throw AraraException(ruleErrorHeader + LanguageController

@@ -12,7 +12,7 @@ dependencies {
     api(project(":api"))
     implementation(project(":core"))
     implementation(group = "org.mvel" , name = "mvel2", version = Versions.mvel)
-    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-runtime", version = Versions.kotlinxSerialization)
+    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version = Versions.kotlinxSerialization)
     implementation(group = "com.charleskorn.kaml", name = "kaml", version = Versions.kaml)
 }
 
