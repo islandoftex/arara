@@ -23,11 +23,13 @@ class FileHandlingTest : ShouldSpec({
 
         should("change extension of file with extension") {
             FileHandling.changeExtension(Paths.get("quack.tex"), "log")
-                    .fileName shouldBe Paths.get("quack.log")
+                    .fileName.toAbsolutePath().toString() shouldBe
+                    Paths.get("quack.log").toAbsolutePath().toString()
         }
         should("change extension of file without extension") {
             FileHandling.changeExtension(Paths.get("quack"), "log")
-                    .fileName shouldBe Paths.get("quack.log")
+                    .fileName.toAbsolutePath().toString() shouldBe
+                    Paths.get("quack.log").toAbsolutePath().toString()
         }
     }
 

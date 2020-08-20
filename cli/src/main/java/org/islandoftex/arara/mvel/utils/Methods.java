@@ -593,7 +593,7 @@ public class Methods {
      * @throws AraraException Something wrong happened, to be caught in the
      *                        higher levels.
      */
-    public static boolean exists(String extension) {
+    public static boolean exists(String extension) throws AraraException {
         return Files.exists(FileHandling.changeExtension(
                 Arara.getCurrentFile().getPath(), extension));
     }
