@@ -1,10 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.gradle.api.internal.project.ProjectInternal
-import org.gradle.api.java.archives.internal.DefaultManifest
 import org.islandoftex.arara.build.Versions
-import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
 
 plugins {
     // `java-library`
@@ -22,7 +18,7 @@ dependencies {
     implementation(project(":core"))
     implementation(kotlin("script-util", Versions.kotlin))
     implementation(kotlin("scripting-jvm", Versions.kotlin))
-    implementation(kotlin("scripting-jvm-host-embeddable", Versions.kotlin))
+    implementation(kotlin("scripting-jvm-host", Versions.kotlin))
     runtimeOnly(kotlin("compiler-embeddable", Versions.kotlin))
     runtimeOnly(kotlin("scripting-compiler-embeddable", Versions.kotlin))
     runtimeOnly(group = "net.java.dev.jna", name = "jna", version = Versions.jna)
