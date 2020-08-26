@@ -40,7 +40,7 @@ object DisplayUtils {
             LanguageController.messages.INFO_LABEL_ON_SUCCESS,
             LanguageController.messages.INFO_LABEL_ON_FAILURE,
             LanguageController.messages.INFO_LABEL_ON_ERROR
-    ).map { it.length }.max()!!
+    ).map { it.length }.maxOrNull()!!
 
     /**
      * If the longest match is longer than the width, then it will be truncated

@@ -33,7 +33,7 @@ class DirectiveConditionalEvaluator(executionOptions: ExecutionOptions) :
         try {
             // TODO: remove reflection
             val methodsClass = Class.forName("org.islandoftex.arara.mvel.utils.Methods")
-                    .newInstance()
+                    .getDeclaredConstructor().newInstance()
             val conditionalMethods = methodsClass::class.java
                     .getMethod("getConditionalMethods")
                     .invoke(methodsClass)
