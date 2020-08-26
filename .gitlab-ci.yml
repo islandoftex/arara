@@ -2,6 +2,9 @@ variables:
   # disable the Gradle daemon for Continuous Integration servers
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
+include:
+  - template: SAST.gitlab-ci.yml
+
 stages:
   - build
   - test
