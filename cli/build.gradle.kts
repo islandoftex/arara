@@ -13,7 +13,7 @@ dependencies {
     implementation(project(":mvel"))
 
     implementation(kotlin("reflect", Versions.kotlin))
-    implementation(group = "com.github.ajalt", name = "clikt", version = Versions.clikt)
+    implementation(group = "com.github.ajalt.clikt", name = "clikt", version = Versions.clikt)
     implementation(group = "org.mvel" , name = "mvel2", version = Versions.mvel)
     implementation(group = "org.slf4j", name = "slf4j-api", version = Versions.slf4j)
     implementation(group = "org.apache.logging.log4j", name = "log4j-core", version = Versions.log4j)
