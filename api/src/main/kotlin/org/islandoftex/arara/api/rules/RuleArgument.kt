@@ -11,21 +11,21 @@ package org.islandoftex.arara.api.rules
  * ```
  * `shell` is an argument.
  */
-interface RuleArgument<T> {
+public interface RuleArgument<T> {
     /**
      * The rule's identifier is its key to arara. This will be used in
      * directives. The identifier must not be blank.
      */
-    val identifier: String
+    public val identifier: String
 
     /**
      * Whether an argument is required.
      */
-    val isRequired: Boolean
+    public val isRequired: Boolean
 
     /**
      * The argument's default value. It will be used when the argument's
      * identifier is given without value.
      */
-    val defaultValue: T
+    public val defaultValue: T
 }

@@ -6,7 +6,7 @@ package org.islandoftex.arara.api.session
  *  dirty maneuver to exchange pretty much any data between commands and even
  *  rules.
  */
-interface Session {
+public interface Session {
     /**
      * Gets the object indexed by the provided key from the session. This method
      * holds the map method of the very same name.
@@ -14,7 +14,7 @@ interface Session {
      * @param key The provided key.
      * @return The object indexed by the provided key.
      */
-    operator fun get(key: String): Any
+    public operator fun get(key: String): Any
 
     /**
      * Inserts (or overwrites) the object indexed by the provided key into the
@@ -23,7 +23,7 @@ interface Session {
      * @param key The provided key.
      * @param value The value to be inserted.
      */
-    fun put(key: String, value: Any)
+    public fun put(key: String, value: Any)
 
     /**
      * Removes the entry indexed by the provided key from the session. This method
@@ -31,7 +31,7 @@ interface Session {
      *
      * @param key The provided key.
      */
-    fun remove(key: String)
+    public fun remove(key: String)
 
     /**
      * Checks if the provided key exists in the session.
@@ -40,11 +40,11 @@ interface Session {
      * @return A boolean value indicating if the provided key exists in the
      * session.
      */
-    operator fun contains(key: String): Boolean
+    public operator fun contains(key: String): Boolean
 
     /**
      * Clears the session (map). This method, as usual, holds the map method of
      * the same name.
      */
-    fun clear()
+    public fun clear()
 }

@@ -4,18 +4,18 @@ package org.islandoftex.arara.api
 /**
  * Implements the specific exception model for arara.
  */
-class AraraException : Exception {
+public class AraraException : Exception {
     /**
      * The underlying exception, used to hold more details
      * on what really happened
      */
-    val exception: Exception?
+    public val exception: Exception?
 
     /**
      * Constructor. Takes the exception message.
      * @param message The exception message.
      */
-    constructor(message: String) : super(message) {
+    public constructor(message: String) : super(message) {
         this.exception = null
     }
 
@@ -24,7 +24,7 @@ class AraraException : Exception {
      * @param message The exception message.
      * @param exception The underlying exception object.
      */
-    constructor(message: String, exception: Exception) : super(message) {
+    public constructor(message: String, exception: Exception) : super(message) {
         this.exception = exception
     }
 
@@ -33,7 +33,7 @@ class AraraException : Exception {
      * @param message The exception message.
      * @param throwable The underlying exception as generic throwable.
      */
-    constructor(message: String, throwable: Throwable) : super(message) {
+    public constructor(message: String, throwable: Throwable) : super(message) {
         this.exception = RuntimeException(throwable)
     }
 
@@ -42,5 +42,5 @@ class AraraException : Exception {
      * @return A boolean value indicating if the current object has an
      * underlying exception.
      */
-    fun hasException(): Boolean = exception?.message != null
+    public fun hasException(): Boolean = exception?.message != null
 }

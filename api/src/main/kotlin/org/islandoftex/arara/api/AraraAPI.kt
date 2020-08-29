@@ -4,10 +4,10 @@ package org.islandoftex.arara.api
 /**
  * Store information about arara's build.
  */
-object AraraAPI {
+public object AraraAPI {
     /**
      * arara's version.
      */
-    val version = AraraAPI::class.java.`package`.implementationVersion
+    public val version: String = AraraAPI::class.java.`package`.implementationVersion
             ?: "DEVELOPMENT BUILD"
 }

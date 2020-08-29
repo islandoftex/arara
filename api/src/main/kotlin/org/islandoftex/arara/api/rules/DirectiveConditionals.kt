@@ -5,24 +5,24 @@ package org.islandoftex.arara.api.rules
  * The conditional class, it represents the type of conditional available
  * for a directive and its corresponding expression to be evaluated.
  */
-interface DirectiveConditional {
+public interface DirectiveConditional {
     /**
      * The type of the condition indicates the meaning when evaluated.
      * Defaults to [DirectiveConditionalType.NONE].
      */
-    val type: DirectiveConditionalType
+    public val type: DirectiveConditionalType
 
     /**
      * The expression to be evaluated according to its type. Defaults
      * to no evaluation (empty string).
      */
-    val condition: String
+    public val condition: String
 }
 
 /**
  * The types of conditionals arara is able to recognize.
  */
-enum class DirectiveConditionalType {
+public enum class DirectiveConditionalType {
     /**
      * Evaluated beforehand, directive is interpreted if and only if the
      * result is true.

@@ -11,14 +11,14 @@ import org.islandoftex.arara.api.files.ProjectFile
  * A [ExecutionReport] is intended to present the result of a completed
  * execution.
  */
-interface ExecutionReport {
+public interface ExecutionReport {
     /**
      * When the execution started. This should be measured after all
      * initialization work (logging etc.) has been done to really measure
      * the execution with lowest overhead.
      */
     @ExperimentalTime
-    val executionStarted: TimeMark
+    public val executionStarted: TimeMark
 
     /**
      * When the execution stopped. This should be measured before cleaning up
@@ -26,7 +26,7 @@ interface ExecutionReport {
      * overhead.
      */
     @ExperimentalTime
-    val executionStopped: TimeMark
+    public val executionStopped: TimeMark
 
     /**
      * The exit code reported by the execution. It will propagate the first
@@ -34,20 +34,20 @@ interface ExecutionReport {
      * code if [ExecutionOptions.haltOnErrors] is falsy and the success code
      * `0` if the run completes successfully.
      */
-    val exitCode: Int
+    public val exitCode: Int
 }
 
 /**
  * An [Executor] is arara's core and performs the execution of directive
  * resolution and rule execution.
  */
-interface Executor {
+public interface Executor {
     /**
      * The setup for all executions run by this executor. The execution options
      * should not change while executing one project.
      */
     @ExperimentalTime
-    var executionOptions: ExecutionOptions
+    public var executionOptions: ExecutionOptions
 
     /**
      * Execute rules based on the projects. Should roughly implement the
@@ -62,7 +62,7 @@ interface Executor {
      * @param projects The projects to act on.
      */
     @ExperimentalTime
-    fun execute(projects: List<Project>): ExecutionReport
+    public fun execute(projects: List<Project>): ExecutionReport
 
     /**
      * Performs arara's main routine to run a file.
@@ -70,5 +70,5 @@ interface Executor {
      * @param file The file to run.
      */
     @ExperimentalTime
-    fun execute(file: ProjectFile): ExecutionReport
+    public fun execute(file: ProjectFile): ExecutionReport
 }

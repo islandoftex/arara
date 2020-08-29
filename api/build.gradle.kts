@@ -6,6 +6,10 @@ plugins {
     `java-library`
 }
 
+kotlin {
+    explicitApi()
+}
+
 sourceSets {
     main {
         java { setSrcDirs(listOf("src/main/kotlin")) }
