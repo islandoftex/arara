@@ -177,8 +177,7 @@ subprojects {
                 archiveClassifier.set("sources")
             }
             named<Jar>("javadocJar") {
-                // TODO: use javadoc instead
-                from(project.tasks.getByPath("dokkaHtml"))
+                from(project.tasks.getByPath("dokkaJavadoc"))
             }
             named<Jar>("shadowJar") {
                 archiveAppendix.set("with-deps")
