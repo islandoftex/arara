@@ -190,7 +190,7 @@ object KtRuleMethods {
      */
     @JvmStatic
     fun getCommand(vararg elements: Any): Command =
-            getCommand(elements.toList().map { it.toString() })
+            CommandImpl(*elements)
 
     /**
      * Gets the command based on an array of objects and with the provided
@@ -205,7 +205,9 @@ object KtRuleMethods {
         path: String,
         vararg elements: Any
     ): Command =
-            getCommandWithWorkingDirectory(path, elements.toList().map { it.toString() })
+            CommandImpl(*elements).apply {
+                workingDirectory = Paths.get(path)
+            }
 
     /**
      * Gets the command based on an array of objects and with the provided
@@ -220,7 +222,9 @@ object KtRuleMethods {
         file: File,
         vararg elements: Any
     ): Command =
-            getCommandWithWorkingDirectory(file, elements.toList().map { it.toString() })
+            CommandImpl(*elements).apply {
+                workingDirectory = file.toPath()
+            }
 
     /**
      * Gets the command based on a list of strings and with the provided
