@@ -5,7 +5,6 @@ import com.github.ajalt.clikt.parameters.options.versionOption
 import java.nio.file.Paths
 import java.time.LocalDate
 import org.islandoftex.arara.api.AraraAPI
-import org.islandoftex.arara.api.configuration.LoggingOptions
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
@@ -38,12 +37,6 @@ object Arara {
     @JvmStatic
     var currentFile: ProjectFile = org.islandoftex.arara.core.files
             .ProjectFile(Paths.get("/tmp/"), FileType.UNKNOWN_TYPE)
-
-    /**
-     * arara's logging configuration.
-     */
-    var loggingOptions: LoggingOptions =
-            org.islandoftex.arara.core.configuration.LoggingOptions()
 
     /**
      * Main method. This is the application entry point.

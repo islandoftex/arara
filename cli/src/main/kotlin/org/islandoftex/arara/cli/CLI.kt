@@ -101,13 +101,13 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                             Executor.executionOptions.parseOnlyHeader
                 )
 
-        Arara.loggingOptions = LoggingOptions(
+        Session.loggingOptions = LoggingOptions(
                 enableLogging = if (log)
                     true
                 else
-                    Arara.loggingOptions.enableLogging,
-                appendLog = Arara.loggingOptions.appendLog,
-                logFile = Arara.loggingOptions.logFile
+                    Session.loggingOptions.enableLogging,
+                appendLog = Session.loggingOptions.appendLog,
+                logFile = Session.loggingOptions.logFile
         )
     }
 

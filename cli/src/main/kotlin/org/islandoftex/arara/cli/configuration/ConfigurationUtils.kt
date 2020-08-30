@@ -77,12 +77,12 @@ object ConfigurationUtils {
                 Arara.currentProject,
                 Executor.executionOptions
         )
-        Arara.loggingOptions = resource.toLoggingOptions()
+        Session.loggingOptions = resource.toLoggingOptions()
         Session.userInterfaceOptions = resource.toUserInterfaceOptions()
 
         // just to be sure, update the current locale in order to
         // display localized messages and reset logging status
         LanguageController.setLocale(Session.userInterfaceOptions.locale)
-        LoggingUtils.setupLogging(Arara.loggingOptions)
+        LoggingUtils.setupLogging(Session.loggingOptions)
     }
 }

@@ -2,6 +2,7 @@
 package org.islandoftex.arara.core.session
 
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.configuration.LoggingOptions
 import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 import org.islandoftex.arara.api.session.Session
 import org.islandoftex.arara.core.localization.LanguageController
@@ -26,6 +27,12 @@ object Session : Session {
     @JvmStatic
     var userInterfaceOptions: UserInterfaceOptions =
             org.islandoftex.arara.core.configuration.UserInterfaceOptions()
+
+    /**
+     * arara's logging configuration.
+     */
+    var loggingOptions: LoggingOptions =
+            org.islandoftex.arara.core.configuration.LoggingOptions()
 
     /**
      * Gets the object indexed by the provided key from the session. This method
