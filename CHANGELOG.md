@@ -29,6 +29,10 @@ from version 5.0.0 on.
 * The method signatures of `loadObject` and `loadClass` have been altered to
   return a `Pair<ClassLoading.ClassLoadingStatus, Object>` instead of a
   `Pair<Integer, Object>`. You can now access the status values as enumeration.
+* The implementation of methods available within rules has been moved to Kotlin
+  causing `null` values to be handled differently. Previously undefined behavior
+  will now cause an error.
+  (breaking change)
 
 ### Removed
 
