@@ -2,6 +2,7 @@
 package org.islandoftex.arara.cli
 
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.multiple
 import com.github.ajalt.clikt.parameters.options.flag
@@ -10,7 +11,6 @@ import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import com.github.ajalt.clikt.parameters.types.restrictTo
 import java.util.Locale
-import kotlin.system.exitProcess
 import kotlin.time.TimeSource
 import kotlin.time.milliseconds
 import org.islandoftex.arara.api.AraraException
@@ -209,6 +209,6 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
             Executor.executionStatus = ExecutionStatus.CAUGHT_EXCEPTION
         }
 
-        exitProcess(Executor.executionStatus.exitCode)
+        throw ProgramResult(Executor.executionStatus.exitCode)
     }
 }
