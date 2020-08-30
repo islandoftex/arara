@@ -166,7 +166,7 @@ object KtConditionalMethods {
         text: String,
         vararg buttons: Any
     ): Int =
-            dialogs.showOptions(width, type, title, text, *buttons)
+            dialogs.showOptions(width, type, title, text, buttons)
 
     /**
      * Shows a message with a text input.
@@ -206,7 +206,7 @@ object KtConditionalMethods {
         text: String,
         vararg elements: Any
     ): Int {
-        return dialogs.showDropdown(width, type, title, text, *elements)
+        return dialogs.showDropdown(width, type, title, text, elements)
     }
 
     /**

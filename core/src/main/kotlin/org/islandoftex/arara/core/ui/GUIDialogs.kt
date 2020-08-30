@@ -122,7 +122,7 @@ class GUIDialogs
         type: Int,
         title: String,
         text: String,
-        vararg buttons: Any
+        buttons: Array<out Any>
     ): Int {
         // returns the index of the selected button,
         // zero if nothing is selected
@@ -186,7 +186,7 @@ class GUIDialogs
         type: Int,
         title: String,
         text: String,
-        vararg elements: Any
+        elements: Array<out Any>
     ): Int {
         // show the dropdown list and get the selected object, if any
         val index = JOptionPane.showInputDialog(null,

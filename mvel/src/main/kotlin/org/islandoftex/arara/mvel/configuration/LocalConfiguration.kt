@@ -53,21 +53,20 @@ data class LocalConfiguration(
         currentProject: Project,
         baseOptions: org.islandoftex.arara.api.configuration.ExecutionOptions = ExecutionOptions()
     ): org.islandoftex.arara.api.configuration.ExecutionOptions {
+        val templateContext = mapOf(
+                "user" to mapOf(
+                        "home" to (Environment.getSystemPropertyOrNull("user.home") ?: ""),
+                        "name" to (Environment.getSystemPropertyOrNull("user.name") ?: "")
+                ),
+                "application" to mapOf(
+                        "workingDirectory" to currentProject.workingDirectory.toAbsolutePath().toString()
+                )
+        )
         val preprocessedPaths = paths.asSequence()
                 .map { it.trim() }
                 .map { input ->
                     try {
-                        TemplateRuntime.eval(input, mapOf(
-                                "user" to mapOf(
-                                        "home" to (Environment.getSystemPropertyOrNull("user.home")
-                                                ?: ""),
-                                        "name" to (Environment.getSystemPropertyOrNull("user.name")
-                                                ?: "")
-                                ),
-                                "application" to mapOf(
-                                        "workingDirectory" to currentProject.workingDirectory.toAbsolutePath().toString()
-                                )
-                        )) as String
+                        TemplateRuntime.eval(input, templateContext) as String
                     } catch (_: RuntimeException) {
                         // do nothing, gracefully fallback to
                         // the default, unparsed path
