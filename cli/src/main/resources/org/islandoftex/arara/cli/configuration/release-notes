@@ -1,5 +1,4 @@
-* Introduced working directory support.
-* Reorganized code base for more speed.
-* Removed triggers and introduced session namespaces.
-* Removed the velocity templating language and several outdated methods.
-* Removed string-based commands (return "command";).
+* Split arara into API, core and implementation packages.
+* Refactored localization to use IETF BCP 47 codes.
+* Use more restrictive null handling in rules.
+* Removed arara shorthands (<arara>).
