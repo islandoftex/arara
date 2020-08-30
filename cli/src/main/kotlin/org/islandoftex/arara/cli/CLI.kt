@@ -5,6 +5,7 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.multiple
+import com.github.ajalt.clikt.parameters.options.associate
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
@@ -64,6 +65,10 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
     private val workingDirectory by option("-d", "--working-directory",
             help = "Set the working directory for all tools")
             .path(mustExist = true, canBeFile = false, mustBeReadable = true)
+    private val parameters: Map<String, String> by option("-P", "--call-property",
+            help = "Pass parameters to the application to be used within the " +
+                    "session.")
+            .associate()
 
     private val reference by argument("file",
             help = "The file(s) to evaluate and process")
@@ -132,10 +137,16 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         // context resets lead to missing output
         LoggingUtils.setupLogging(LoggingOptions(log))
 
+        // resolve the working directory from the one that may be given
+        // as command line parameter
         val workingDir = FileHandling.normalize(
                 workingDirectory
                 ?: Arara.currentProject.workingDirectory
         )
+
+        // add all command line call parameters to the session
+        parameters.forEach { (key, value) -> Session.put("arg:$key", value) }
+
         try {
             val projects = listOf(Project(
                     workingDir.fileName.toString(),

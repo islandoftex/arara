@@ -12,6 +12,11 @@ from version 5.0.0 on.
 
 * `arara` now features an API and a library to ease developing an own TeX
   compilation workflow.
+* The new command line parameter `-P` allows specifying command-line options
+  to be passed to arara's session map. In a rule, you may now retrieve `value`
+  by calling `getSession().get('arg:key')` if you called arara with
+  `arara -P key=value myfile.tex`.
+  (see #38)
 
 ### Changed
 
