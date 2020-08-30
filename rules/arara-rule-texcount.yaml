@@ -72,4 +72,3 @@ arguments:
             throwError('I was expecting a list of options.');
         }
     }
-

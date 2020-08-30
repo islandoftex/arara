@@ -58,8 +58,10 @@ object Interpreter {
     private fun getRule(directive: Directive): Path {
         val rulePaths = Executor.executionOptions.rulePaths
         return rulePaths
-                .asSequence()
                 .map { path -> InterpreterUtils.construct(path, directive.identifier) }
+                .plus(rulePaths.map {
+                    path -> InterpreterUtils.construct(path, "arara-rule-" + directive.identifier)
+                })
                 .firstOrNull { Files.exists(it) }
                 ?: throw AraraException(
                         LanguageController.messages.ERROR_INTERPRETER_RULE_NOT_FOUND.format(

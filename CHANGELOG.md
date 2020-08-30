@@ -24,6 +24,10 @@ from version 5.0.0 on.
   implementation of the executable (cli). Projects relying on code in the
   `arara` JAR distributions have to be updated.
   (breaking change)
+* Rules included in the core distribution have been renamed to have a unique
+  prefix in the texmf tree. File names should not be relied upon (see
+  deprecation notice in v5).
+  (see #32)
 * Languages have to be passed as IETF BCP 47 codes. The old system has been
   removed. Hence, please use `en-QN` instead of `qn` etc.
 * Localization is provided by classes as library instead of property files in
