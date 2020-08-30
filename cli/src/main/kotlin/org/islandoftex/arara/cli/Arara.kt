@@ -22,12 +22,6 @@ import org.islandoftex.arara.core.localization.LanguageController
  */
 object Arara {
     /**
-     * arara's current exit code
-     */
-    @JvmStatic
-    var exitCode = 0
-
-    /**
      * arara's project it is currently working on.
      *
      * TODO: sane initialization

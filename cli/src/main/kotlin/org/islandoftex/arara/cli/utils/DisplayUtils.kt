@@ -9,6 +9,7 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
+import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.localization.LanguageController
@@ -116,7 +117,10 @@ object DisplayUtils {
     fun printEntryResult(value: Boolean) {
         displayLine = false
         displayResult = true
-        Arara.exitCode = if (value) 0 else 1
+        Executor.executionStatus = if (value)
+            ExecutionStatus.PROCESSING
+        else
+            ExecutionStatus.EXTERNAL_CALL_FAILED
         logger.info(
                 LanguageController.messages.LOG_INFO_TASK_RESULT + " " +
                         getResult(value)
@@ -204,7 +208,7 @@ object DisplayUtils {
      */
     fun printException(exception: AraraException) {
         displayException = true
-        Arara.exitCode = 2
+        Executor.executionStatus = ExecutionStatus.CAUGHT_EXCEPTION
 
         if (displayResult)
             println()

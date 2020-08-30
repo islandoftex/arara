@@ -15,6 +15,7 @@ import kotlin.time.TimeSource
 import kotlin.time.milliseconds
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
+import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
@@ -186,7 +187,10 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                             DirectiveUtils.process(it)
                         }
                 )
-                Arara.exitCode = Executor.execute(projects).exitCode
+                Executor.executionStatus = if (Executor.execute(projects).exitCode != 0)
+                    ExecutionStatus.EXTERNAL_CALL_FAILED
+                else
+                    ExecutionStatus.PROCESSING
             } catch (exception: AraraException) {
                 // something bad just happened, so arara will print the proper
                 // exception and provide details on it, if available; the idea
@@ -202,17 +206,9 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
             DisplayUtils.printTime(executionStart.elapsedNow().inSeconds)
         } catch (ex: AraraException) {
             DisplayUtils.printException(ex)
-            Arara.exitCode = 2
+            Executor.executionStatus = ExecutionStatus.CAUGHT_EXCEPTION
         }
 
-        // gets the application exit status; the rule here is:
-        // 0 : everything went just fine (note that the dry-run mode always
-        //     makes arara exit with 0, unless it is an error in the directive
-        //     builder itself).
-        // 1 : one of the tasks failed, so the execution ended abruptly. This
-        //     means the error relies on the command line call, not with arara.
-        // 2 : arara just handled an exception, meaning that something bad
-        //     just happened and might require user intervention.
-        exitProcess(Arara.exitCode)
+        exitProcess(Executor.executionStatus.exitCode)
     }
 }

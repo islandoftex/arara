@@ -9,6 +9,7 @@ import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.api.session.Command
+import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.cli.ruleset.RuleUtils
 import org.islandoftex.arara.cli.utils.CommonUtils
@@ -211,7 +212,11 @@ object Interpreter {
                     // TODO: document this key
                     val haltKey = "arara:${Arara.currentFile.path.fileName}:halt"
                     if (Session.contains(haltKey)) {
-                        Arara.exitCode = Session[haltKey].toString().toInt()
+                        Executor.executionStatus =
+                                if (Session[haltKey].toString().toInt() != 0)
+                                    ExecutionStatus.EXTERNAL_CALL_FAILED
+                                else
+                                    ExecutionStatus.PROCESSING
                         // TODO: localize
                         throw HaltExpectedException("User requested halt")
                     }
@@ -259,7 +264,7 @@ object Interpreter {
 
         // if this directive is conditionally disabled, skip
         if (!available || Session.contains("arara:${Arara.currentFile.path.fileName}:halt"))
-            return Arara.exitCode
+            return Executor.executionStatus.exitCode
 
         try {
             // if not execute the commands associated with the directive
@@ -278,7 +283,7 @@ object Interpreter {
             // If the user uses the halt rule to trigger a halt, this will be
             // raised. Any other exception will not be caught and propagate up.
         }
-        return Arara.exitCode
+        return Executor.executionStatus.exitCode
     }
 
     /**

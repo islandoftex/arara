@@ -34,6 +34,11 @@ from version 5.0.0 on.
   will now cause an error.
   (breaking change)
 
+### Fixed
+
+* The exit status handling now conforms to the documentation. We only
+  differentiate the exit values 0, 1 and 2 as detailed in the docs.
+
 ### Removed
 
 * Removed the `<arara>` shorthand notation which has been deprecated in version
