@@ -2,11 +2,13 @@
 package org.islandoftex.arara.core.session
 
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 import org.islandoftex.arara.api.session.Session
 import org.islandoftex.arara.core.localization.LanguageController
 
 /**
- * Implements the session.
+ * Implements the session, i.e. one single run of the whole arara tool.
+ * It is a superset of the session exposed to the user.
  *
  * @author Island of TeX
  * @version 5.0
@@ -17,6 +19,13 @@ object Session : Session {
     // the idea here is to provide wrappers to the map
     // methods, so it could be easily manipulated
     private val map = mutableMapOf<String, Any>()
+
+    /**
+     * arara's user interface configuration.
+     */
+    @JvmStatic
+    var userInterfaceOptions: UserInterfaceOptions =
+            org.islandoftex.arara.core.configuration.UserInterfaceOptions()
 
     /**
      * Gets the object indexed by the provided key from the session. This method
@@ -94,6 +103,7 @@ object Session : Session {
      * @param removalFilter Which environment variables to remove beforehand.
      *   By default all values will be removed.
      */
+    @JvmStatic
     fun updateEnvironmentVariables(
         additionFilter: (String) -> Boolean = { true },
         removalFilter: (String) -> Boolean = { true }

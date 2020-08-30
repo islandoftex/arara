@@ -9,7 +9,6 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.cli.Arara.currentFile
 import org.islandoftex.arara.cli.Arara.currentProject
-import org.islandoftex.arara.cli.Arara.userInterfaceOptions
 import org.islandoftex.arara.cli.ruleset.CommandImpl
 import org.islandoftex.arara.cli.utils.CommonUtils.ruleErrorHeader
 import org.islandoftex.arara.cli.utils.SystemCallUtils
@@ -31,7 +30,7 @@ object KtRuleMethods {
     private val messages = LanguageController.messages
 
     // the GUI generator
-    private val dialogs = GUIDialogs(userInterfaceOptions)
+    private val dialogs = GUIDialogs(Session.userInterfaceOptions)
 
     /**
      * Exit the application with status code.

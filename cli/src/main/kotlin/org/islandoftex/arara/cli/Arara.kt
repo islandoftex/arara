@@ -6,7 +6,6 @@ import java.nio.file.Paths
 import java.time.LocalDate
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.configuration.LoggingOptions
-import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
@@ -45,13 +44,6 @@ object Arara {
     @JvmStatic
     var currentFile: ProjectFile = org.islandoftex.arara.core.files
             .ProjectFile(Paths.get("/tmp/"), FileType.UNKNOWN_TYPE)
-
-    /**
-     * arara's user interface configuration.
-     */
-    @JvmStatic
-    var userInterfaceOptions: UserInterfaceOptions =
-            org.islandoftex.arara.core.configuration.UserInterfaceOptions()
 
     /**
      * arara's logging configuration.

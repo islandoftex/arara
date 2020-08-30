@@ -29,6 +29,7 @@ import org.islandoftex.arara.core.files.ProjectFile
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Executor
 import org.islandoftex.arara.core.session.ExecutorHooks
+import org.islandoftex.arara.core.session.Session
 
 /**
  * arara's command line interface
@@ -71,12 +72,12 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
      * Update arara's configuration with the command line arguments.
      */
     private fun updateConfigurationFromCommandLine() {
-        Arara.userInterfaceOptions = UserInterfaceOptions(
+        Session.userInterfaceOptions = UserInterfaceOptions(
                 locale = language?.let { Locale.forLanguageTag(it) }
-                        ?: Arara.userInterfaceOptions.locale,
-                swingLookAndFeel = Arara.userInterfaceOptions.swingLookAndFeel
+                        ?: Session.userInterfaceOptions.locale,
+                swingLookAndFeel = Session.userInterfaceOptions.swingLookAndFeel
         )
-        LanguageController.setLocale(Arara.userInterfaceOptions.locale)
+        LanguageController.setLocale(Session.userInterfaceOptions.locale)
 
         Executor.executionOptions = ExecutionOptions
                 .from(Executor.executionOptions)

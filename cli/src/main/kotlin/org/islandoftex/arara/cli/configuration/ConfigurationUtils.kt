@@ -10,6 +10,7 @@ import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.Executor
+import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.mvel.configuration.LocalConfiguration
 
 /**
@@ -77,11 +78,11 @@ object ConfigurationUtils {
                 Executor.executionOptions
         )
         Arara.loggingOptions = resource.toLoggingOptions()
-        Arara.userInterfaceOptions = resource.toUserInterfaceOptions()
+        Session.userInterfaceOptions = resource.toUserInterfaceOptions()
 
         // just to be sure, update the current locale in order to
         // display localized messages and reset logging status
-        LanguageController.setLocale(Arara.userInterfaceOptions.locale)
+        LanguageController.setLocale(Session.userInterfaceOptions.locale)
         LoggingUtils.setupLogging(Arara.loggingOptions)
     }
 }

@@ -14,6 +14,7 @@ import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.Executor
+import org.islandoftex.arara.core.session.Session
 import org.slf4j.LoggerFactory
 
 /**
@@ -313,7 +314,7 @@ object DisplayUtils {
         else
             (ln(size.toDouble()) / ln(conversionFactor)).toInt().let { exp ->
                 "%.1f %sB".format(
-                        Arara.userInterfaceOptions.locale,
+                        Session.userInterfaceOptions.locale,
                         size / conversionFactor.pow(exp.toDouble()),
                         "kMGTPE"[exp - 1]
                 )
@@ -377,7 +378,7 @@ object DisplayUtils {
         val text = LanguageController.messages.INFO_DISPLAY_EXECUTION_TIME
                 .format(
                         "%1.2f".format(
-                                Arara.userInterfaceOptions.locale,
+                                Session.userInterfaceOptions.locale,
                                 seconds
                         )
                 )

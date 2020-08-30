@@ -7,12 +7,13 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.session.Executor
+import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.GUIDialogs
 
 @Suppress("unused", "TooManyFunctions")
 object KtConditionalMethods {
     // the GUI generator
-    private val dialogs = GUIDialogs(Arara.userInterfaceOptions)
+    private val dialogs = GUIDialogs(Session.userInterfaceOptions)
 
     /**
      * Checks if the file exists according to its extension.
