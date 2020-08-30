@@ -45,7 +45,7 @@ object SystemCallUtils {
                 // as an UTF-8 string, lowercase it and check if it starts
                 // with the 'cygwin' string; if so, we are inside Cygwin
                 Environment.executeSystemCommand(
-                        CommandImpl("uname", "-s"),
+                        CommandImpl(listOf("uname", "-s")),
                         Arara.currentProject.workingDirectory
                 ).second.toLowerCase().startsWith("cygwin")
             })

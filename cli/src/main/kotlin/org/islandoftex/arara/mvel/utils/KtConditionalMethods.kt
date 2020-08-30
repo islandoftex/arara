@@ -123,7 +123,8 @@ object KtConditionalMethods {
     @JvmStatic
     @Throws(AraraException::class)
     fun found(extension: String, regex: String): Boolean = found(
-            FileHandling.changeExtension(Arara.currentFile.path, extension).toFile(), regex)
+            FileHandling.changeExtension(Arara.currentFile.path, extension)
+                    .toFile(), regex)
 
     /**
      * Checks if the file contains the provided regex.
@@ -165,8 +166,7 @@ object KtConditionalMethods {
         title: String,
         text: String,
         vararg buttons: Any
-    ): Int =
-            dialogs.showOptions(width, type, title, text, buttons)
+    ): Int = dialogs.showOptions(width, type, title, text, buttons)
 
     /**
      * Shows a message with a text input.
@@ -184,8 +184,7 @@ object KtConditionalMethods {
         type: Int,
         title: String,
         text: String
-    ): String =
-            dialogs.showInput(width, type, title, text)
+    ): String = dialogs.showInput(width, type, title, text)
 
     /**
      * Shows a message with options presented as a dropdown list of elements.
@@ -205,9 +204,7 @@ object KtConditionalMethods {
         title: String,
         text: String,
         vararg elements: Any
-    ): Int {
-        return dialogs.showDropdown(width, type, title, text, elements)
-    }
+    ): Int = dialogs.showDropdown(width, type, title, text, elements)
 
     /**
      * Gets the file reference for the current directive. It is important to

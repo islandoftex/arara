@@ -13,26 +13,10 @@ import org.islandoftex.arara.core.ui.InputHandling
  * @version 5.0
  * @since 4.0
  */
-class CommandImpl : Command {
-    override val elements: List<String>
+class CommandImpl(values: List<Any>) : Command {
+    override val elements: List<String> = InputHandling.flatten(values.toList())
+            .map { it.toString() }.filter { it.isNotEmpty() }
     override var workingDirectory: Path = Arara.currentProject.workingDirectory
-
-    /**
-     * Constructor.
-     * @param values An array of objects.
-     */
-    constructor(vararg values: Any) {
-        val result = InputHandling.flatten(values.toList())
-        elements = result.map { it.toString() }.filter { it.isNotEmpty() }
-    }
-
-    /**
-     * Constructor.
-     * @param elements A list of strings.
-     */
-    constructor(elements: List<String>) {
-        this.elements = elements
-    }
 
     /**
      * Provides a textual representation of the current command.
