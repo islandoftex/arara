@@ -50,11 +50,6 @@ object DisplayUtils {
      */
     private const val shortenedLongestMatch = 10
 
-    /**
-     * The default terminal width defined in the settings.
-     */
-    private const val outputWidth: Int = 65
-
     private var displayLine = true
     private var displayResult = false
     private var displayRolling = false
@@ -90,11 +85,11 @@ object DisplayUtils {
      * @param task Task name.
      */
     private fun buildShortEntry(name: String, task: String) {
-        val result = if (longestMatch >= outputWidth)
+        val result = if (longestMatch >= Session.userInterfaceOptions.terminalOutputWidth)
             shortenedLongestMatch
         else
             longestMatch
-        val space = outputWidth - result - 1
+        val space = Session.userInterfaceOptions.terminalOutputWidth - result - 1
         val line = "($name) $task ".abbreviate(space - "... ".length)
         print(line.padEnd(space, '.') + " ")
     }
@@ -139,10 +134,10 @@ object DisplayUtils {
      *
      * @param value The boolean value to be displayed
      */
-    private fun buildLongResult(value: Boolean) {
-        val width = outputWidth
-        println("\n" + (" " + getResult(value)).padStart(width, '-'))
-    }
+    private fun buildLongResult(value: Boolean) = println(
+            "\n" + (" " + getResult(value))
+                    .padStart(Session.userInterfaceOptions.terminalOutputWidth, '-')
+    )
 
     /**
      * Displays the current entry in the terminal.
@@ -181,7 +176,8 @@ object DisplayUtils {
             displayRolling = true
         }
         println(displaySeparator())
-        println("($name) $task".abbreviate(outputWidth))
+        println("($name) $task"
+                .abbreviate(Session.userInterfaceOptions.terminalOutputWidth))
         println(displaySeparator())
     }
 
@@ -197,7 +193,8 @@ object DisplayUtils {
         } else {
             displayRolling = true
         }
-        println("[DR] ($name) $task".abbreviate(outputWidth))
+        println("[DR] ($name) $task"
+                .abbreviate(Session.userInterfaceOptions.terminalOutputWidth))
         println(displaySeparator())
     }
 
@@ -264,7 +261,7 @@ object DisplayUtils {
      */
     private fun buildLongError() = println(
             (" " + LanguageController.messages.INFO_LABEL_ON_ERROR)
-                    .padStart(outputWidth, '-')
+                    .padStart(Session.userInterfaceOptions.terminalOutputWidth, '-')
     )
 
     /**
@@ -273,7 +270,9 @@ object DisplayUtils {
      *
      * @param text The text to be displayed.
      */
-    fun wrapText(text: String) = println(text.wrap(outputWidth))
+    fun wrapText(text: String) = println(
+            text.wrap(Session.userInterfaceOptions.terminalOutputWidth)
+    )
 
     /**
      * Displays the rule authors in the terminal.
@@ -406,10 +405,11 @@ object DisplayUtils {
     /**
      * Displays a line containing details.
      */
-    private fun displayDetailsLine() {
-        val line = LanguageController.messages.INFO_LABEL_ON_DETAILS + " "
-        println(line.abbreviate(outputWidth).padEnd(outputWidth, '-'))
-    }
+    private fun displayDetailsLine() = println(
+            (LanguageController.messages.INFO_LABEL_ON_DETAILS + " ")
+                    .abbreviate(Session.userInterfaceOptions.terminalOutputWidth)
+                    .padEnd(Session.userInterfaceOptions.terminalOutputWidth, '-')
+    )
 
     /**
      * Gets the output separator with the provided text.
@@ -417,16 +417,14 @@ object DisplayUtils {
      * @param message The provided text.
      * @return A string containing the output separator with the provided text.
      */
-    fun displayOutputSeparator(message: String): String {
-        return " $message ".center(outputWidth, '-')
-    }
+    fun displayOutputSeparator(message: String): String =
+        " $message ".center(Session.userInterfaceOptions.terminalOutputWidth, '-')
 
     /**
      * Gets the line separator.
      *
      * @return A string containing the line separator.
      */
-    fun displaySeparator(): String {
-        return "-".repeat(outputWidth)
-    }
+    fun displaySeparator(): String =
+            "-".repeat(Session.userInterfaceOptions.terminalOutputWidth)
 }

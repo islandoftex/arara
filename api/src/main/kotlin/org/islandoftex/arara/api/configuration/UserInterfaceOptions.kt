@@ -20,4 +20,11 @@ public interface UserInterfaceOptions {
      * will be used.
      */
     public val swingLookAndFeel: String
+
+    /**
+     * The number of columns to use as the default terminal width when
+     * outputting to terminal. This will only be used for wrapping arara's
+     * messages not the messages of external tools that are called.
+     */
+    public val terminalOutputWidth: Int
 }

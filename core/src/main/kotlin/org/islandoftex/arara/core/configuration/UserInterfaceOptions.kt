@@ -6,5 +6,6 @@ import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 
 data class UserInterfaceOptions(
     override val locale: Locale = Locale("en"),
-    override val swingLookAndFeel: String = "none"
+    override val swingLookAndFeel: String = "none",
+    override val terminalOutputWidth: Int = 65
 ) : UserInterfaceOptions
