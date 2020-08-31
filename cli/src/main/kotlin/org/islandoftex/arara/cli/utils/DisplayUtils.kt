@@ -95,16 +95,6 @@ object DisplayUtils {
     }
 
     /**
-     * Displays the short version of the current entry result in the terminal.
-     *
-     * @param value The boolean value to be displayed.
-     */
-    private fun buildShortResult(value: Boolean) {
-        val result = longestMatch
-        println(getResult(value).padStart(result))
-    }
-
-    /**
      * Displays the current entry result in the terminal.
      *
      * @param value The boolean value to be displayed.
@@ -121,23 +111,16 @@ object DisplayUtils {
                         getResult(value)
         )
         if (!isDryRunMode) {
-            if (!isVerboseMode) {
-                buildShortResult(value)
-            } else {
-                buildLongResult(value)
-            }
+            println(
+                    if (!isVerboseMode) {
+                        getResult(value).padStart(longestMatch)
+                    } else {
+                        "\n" + (" " + getResult(value))
+                                .padStart(Session.userInterfaceOptions.terminalOutputWidth, '-')
+                    }
+            )
         }
     }
-
-    /**
-     * Displays a long version of the current entry result in the terminal.
-     *
-     * @param value The boolean value to be displayed
-     */
-    private fun buildLongResult(value: Boolean) = println(
-            "\n" + (" " + getResult(value))
-                    .padStart(Session.userInterfaceOptions.terminalOutputWidth, '-')
-    )
 
     /**
      * Displays the current entry in the terminal.
@@ -211,11 +194,14 @@ object DisplayUtils {
             println()
         if (displayLine) {
             if (!isDryRunMode) {
-                if (!isVerboseMode) {
-                    buildShortError()
-                } else {
-                    buildLongError()
-                }
+                println(
+                        if (!isVerboseMode) {
+                            LanguageController.messages.INFO_LABEL_ON_ERROR.padStart(longestMatch)
+                        } else {
+                            (" " + LanguageController.messages.INFO_LABEL_ON_ERROR)
+                                    .padStart(Session.userInterfaceOptions.terminalOutputWidth, '-')
+                        }
+                )
                 println()
             }
         }
@@ -248,21 +234,6 @@ object DisplayUtils {
         else
             LanguageController.messages.INFO_LABEL_ON_FAILURE
     }
-
-    /**
-     * Displays the short version of an error in the terminal.
-     */
-    private fun buildShortError() = println(
-            LanguageController.messages.INFO_LABEL_ON_ERROR.padStart(longestMatch)
-    )
-
-    /**
-     * Displays the long version of an error in the terminal.
-     */
-    private fun buildLongError() = println(
-            (" " + LanguageController.messages.INFO_LABEL_ON_ERROR)
-                    .padStart(Session.userInterfaceOptions.terminalOutputWidth, '-')
-    )
 
     /**
      * Displays the provided text wrapped nicely according to the default
