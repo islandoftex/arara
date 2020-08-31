@@ -107,6 +107,7 @@ publish:gitlab:
     paths:
       - ./*.zip
       - docs/*.pdf
+    expire_in: 1 week
 publish:snapshot_tdszip:
   variables:
     PRELEASE: "false"
