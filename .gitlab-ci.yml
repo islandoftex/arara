@@ -67,6 +67,15 @@ test:dependencies:
   image: registry.gitlab.com/islandoftex/images/javafx-gradle:jdk8-latest
   script:
     - ./gradlew dependencyUpdates
+  cache:
+    key: "$CI_COMMIT_REF_NAME-$JAVA_VERSION"
+    policy: pull
+    paths:
+      - build
+      - api/build
+      - core/build
+      - cli/build
+      - .gradle
 
 test:spotless:
   stage: test
@@ -74,6 +83,15 @@ test:spotless:
   image: registry.gitlab.com/islandoftex/images/javafx-gradle:jdk8-latest
   script:
     - ./gradlew spotlessCheck
+  cache:
+    key: "$CI_COMMIT_REF_NAME-$JAVA_VERSION"
+    policy: pull
+    paths:
+      - build
+      - api/build
+      - core/build
+      - cli/build
+      - .gradle
 
 test:linux:jdk8:
   needs: ["build:linux:jdk8"]
@@ -93,6 +111,15 @@ publish:gitlab:
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'
     - if: '$CI_COMMIT_TAG'
+  cache:
+    key: "$CI_COMMIT_REF_NAME-$JAVA_VERSION"
+    policy: pull
+    paths:
+      - build
+      - api/build
+      - core/build
+      - cli/build
+      - .gradle
 
 .ctantemplate: &ctandefinition
   stage: publish
