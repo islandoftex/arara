@@ -47,11 +47,11 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
     private val verbose by option("-v", "--verbose",
             help = "Print the command output")
             .flag("-s", "--silent")
-    private val dryrun by option("-n", "--dry-run",
+    private val dryRun by option("-n", "--dry-run",
             help = "Go through all the motions of running a command, but " +
                     "with no actual calls")
             .flag()
-    private val onlyheader by option("-H", "--header",
+    private val onlyHeader by option("-H", "--header",
             help = "Extract directives only in the file header")
             .flag()
     private val timeout by option("-t", "--timeout",
@@ -96,11 +96,11 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                             true
                         else
                             Executor.executionOptions.verbose,
-                        executionMode = if (dryrun)
+                        executionMode = if (dryRun)
                             ExecutionMode.DRY_RUN
                         else
                             Executor.executionOptions.executionMode,
-                        parseOnlyHeader = if (onlyheader)
+                        parseOnlyHeader = if (onlyHeader)
                             true
                         else
                             Executor.executionOptions.parseOnlyHeader
