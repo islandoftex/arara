@@ -79,17 +79,23 @@ object DisplayUtils {
         }
 
     /**
+     * The number of columns available for output.
+     */
+    private val outputWidth: Int
+        get() = Session.userInterfaceOptions.terminalOutputWidth
+
+    /**
      * Displays the short version of the current entry in the terminal.
      *
      * @param name Rule name.
      * @param task Task name.
      */
     private fun buildShortEntry(name: String, task: String) {
-        val result = if (longestMatch >= Session.userInterfaceOptions.terminalOutputWidth)
+        val result = if (longestMatch >= outputWidth)
             shortenedLongestMatch
         else
             longestMatch
-        val space = Session.userInterfaceOptions.terminalOutputWidth - result - 1
+        val space = outputWidth - result - 1
         val line = "($name) $task ".abbreviate(space - "... ".length)
         print(line.padEnd(space, '.') + " ")
     }
@@ -116,7 +122,7 @@ object DisplayUtils {
                         getResult(value).padStart(longestMatch)
                     } else {
                         "\n" + (" " + getResult(value))
-                                .padStart(Session.userInterfaceOptions.terminalOutputWidth, '-')
+                                .padStart(outputWidth, '-')
                     }
             )
         }
@@ -160,7 +166,7 @@ object DisplayUtils {
         }
         println(displaySeparator())
         println("($name) $task"
-                .abbreviate(Session.userInterfaceOptions.terminalOutputWidth))
+                .abbreviate(outputWidth))
         println(displaySeparator())
     }
 
@@ -177,7 +183,7 @@ object DisplayUtils {
             displayRolling = true
         }
         println("[DR] ($name) $task"
-                .abbreviate(Session.userInterfaceOptions.terminalOutputWidth))
+                .abbreviate(outputWidth))
         println(displaySeparator())
     }
 
@@ -199,7 +205,7 @@ object DisplayUtils {
                             LanguageController.messages.INFO_LABEL_ON_ERROR.padStart(longestMatch)
                         } else {
                             (" " + LanguageController.messages.INFO_LABEL_ON_ERROR)
-                                    .padStart(Session.userInterfaceOptions.terminalOutputWidth, '-')
+                                    .padStart(outputWidth, '-')
                         }
                 )
                 println()
@@ -241,9 +247,7 @@ object DisplayUtils {
      *
      * @param text The text to be displayed.
      */
-    fun wrapText(text: String) = println(
-            text.wrap(Session.userInterfaceOptions.terminalOutputWidth)
-    )
+    fun wrapText(text: String) = println(text.wrap(outputWidth))
 
     /**
      * Displays the rule authors in the terminal.
@@ -378,8 +382,8 @@ object DisplayUtils {
      */
     private fun displayDetailsLine() = println(
             (LanguageController.messages.INFO_LABEL_ON_DETAILS + " ")
-                    .abbreviate(Session.userInterfaceOptions.terminalOutputWidth)
-                    .padEnd(Session.userInterfaceOptions.terminalOutputWidth, '-')
+                    .abbreviate(outputWidth)
+                    .padEnd(outputWidth, '-')
     )
 
     /**
@@ -389,13 +393,12 @@ object DisplayUtils {
      * @return A string containing the output separator with the provided text.
      */
     fun displayOutputSeparator(message: String): String =
-        " $message ".center(Session.userInterfaceOptions.terminalOutputWidth, '-')
+        " $message ".center(outputWidth, '-')
 
     /**
      * Gets the line separator.
      *
      * @return A string containing the line separator.
      */
-    fun displaySeparator(): String =
-            "-".repeat(Session.userInterfaceOptions.terminalOutputWidth)
+    fun displaySeparator(): String = "-".repeat(outputWidth)
 }
