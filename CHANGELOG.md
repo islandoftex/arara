@@ -47,6 +47,9 @@ from version 5.0.0 on.
 
 * The exit status handling now conforms to the documentation. We only
   differentiate the exit values 0, 1 and 2 as detailed in the docs.
+* The correct behavior of `currentFile` and `getOriginalReference` has been
+  restored as version 5 incorrectly used the same object for both.
+  (see #45)
 
 ### Removed
 

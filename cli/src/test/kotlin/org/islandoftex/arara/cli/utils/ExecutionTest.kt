@@ -35,6 +35,7 @@ class ExecutionTest : ShouldSpec({
         try {
             System.setOut(PrintStream(output))
             val workingDirectory = Paths.get(getPathForTest(testName))
+            // TODO: improve project setup
             Arara.currentProject = Project("Test", workingDirectory, setOf())
             ConfigurationUtils.load(workingDirectory.resolve("arararc.yaml"))
             Executor.executionOptions = ExecutionOptions
@@ -45,6 +46,14 @@ class ExecutionTest : ShouldSpec({
                     workingDirectory,
                     Executor.executionOptions
             )
+            Arara.currentProject = (Arara.currentProject as Project)
+                    .copy(files = setOf(
+                            FileSearching.resolveFile(
+                                    fileName,
+                                    workingDirectory,
+                                    Executor.executionOptions
+                            )
+                    ))
             DirectiveUtils.process(Arara.currentFile.fetchDirectives(false))
                     .forEach { it.execute() }
             return output.toByteArray().toString(Charsets.UTF_8)

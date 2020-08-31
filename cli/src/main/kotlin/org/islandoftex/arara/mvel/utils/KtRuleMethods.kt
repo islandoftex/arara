@@ -7,14 +7,14 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.session.Command
-import org.islandoftex.arara.cli.Arara.currentFile
-import org.islandoftex.arara.cli.Arara.currentProject
+import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.cli.ruleset.CommandImpl
 import org.islandoftex.arara.cli.utils.CommonUtils.ruleErrorHeader
 import org.islandoftex.arara.cli.utils.SystemCallUtils
 import org.islandoftex.arara.cli.utils.SystemCallUtils.checkOS
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.files.FileSearching
+import org.islandoftex.arara.core.files.byPriority
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment.executeSystemCommand
 import org.islandoftex.arara.core.session.Executor.executionOptions
@@ -49,15 +49,20 @@ object KtRuleMethods {
      * @return The original file.
      */
     @JvmStatic
-    fun getOriginalFile(): String = currentFile.path.fileName.toString()
+    fun getOriginalFile(): String = getOriginalReference().name
 
     /**
-     * Gets the original reference.
+     * Gets the original reference, i.e. the file arara has been called on or
+     * the file arara extracted the directives from respectively.
+     *
+     * The reference is the file with the lowest priority as the main file will
+     * always be compiled after all dependencies have been satisfied.
      *
      * @return The original reference.
      */
     @JvmStatic
-    fun getOriginalReference(): File = currentFile.path.toFile()
+    fun getOriginalReference(): File = Arara.currentProject.files.byPriority
+            .last().path.toFile()
 
     /**
      * Trim spaces from the string.
@@ -304,7 +309,7 @@ object KtRuleMethods {
      */
     @JvmStatic
     fun unsafelyExecuteSystemCommand(command: Command): Pair<Int, String> =
-            executeSystemCommand(command, currentProject.workingDirectory)
+            executeSystemCommand(command, Arara.currentProject.workingDirectory)
 
     /**
      * List all files from the provided directory according to the list of
@@ -475,7 +480,7 @@ object KtRuleMethods {
     @Throws(AraraException::class)
     fun isSubdirectory(directory: File): Boolean =
             FileHandling.isSubDirectory(directory.toPath(),
-                    currentProject.workingDirectory)
+                    Arara.currentProject.workingDirectory)
 
     /**
      * Checks if the string is empty.

@@ -69,5 +69,5 @@ open class ProjectFile(
 /**
  * Get the project's files in order of compilation.
  */
-internal val Iterable<ProjectFile>.byPriority: List<ProjectFile>
+val Iterable<ProjectFile>.byPriority: List<ProjectFile>
     get() = this.sortedByDescending { it.priority }
