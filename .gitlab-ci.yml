@@ -108,6 +108,15 @@ publish:gitlab:
       - ./*.zip
       - docs/*.pdf
     expire_in: 1 week
+  cache:
+    key: "$CI_COMMIT_REF_NAME-$JAVA_VERSION"
+    policy: pull
+    paths:
+      - build
+      - api/build
+      - core/build
+      - cli/build
+      - .gradle
 publish:snapshot_tdszip:
   variables:
     PRELEASE: "false"
