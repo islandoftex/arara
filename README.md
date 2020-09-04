@@ -93,7 +93,6 @@ has been vetted as an open source license by the
 
 ## The team
 
-`arara`, the cool TeX automation tool, is brought to you by Paulo Cereda, Marco
-Daniel, Brent Longborough, Nicola Talbot and Ben Frank. If you want to support
-TeX development by a donation, the best way to do this is donating to the
-[TeX Users Group](https://www.tug.org/donate.html).
+`arara`, the cool TeX automation tool, is brought to you by the Island of TeX.
+If you want to support TeX development by a donation, the best way to do this
+is donating to the [TeX Users Group](https://www.tug.org/donate.html).
