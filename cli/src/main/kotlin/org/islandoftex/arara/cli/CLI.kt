@@ -120,17 +120,13 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
      * The actual main method of arara (when run in command-line mode)
      */
     override fun run() {
-        // the first component to be initialized is the
-        // logging controller; note init() actually disables
-        // the logging, so early exceptions won't generate
-        // a lot of noise in the terminal
+        // initializing logging has to come first; init() actually disables
+        // the logging, so early exceptions won't generate a lot of noise in
+        // the terminal
         LoggingUtils.init()
 
-        // arara features a stopwatch, so we can see how much time has passed
-        // since everything started; internally, this class makes use of
-        // nano time, so we might get an interesting precision here
-        // (although timing is not a serious business in here, it's
-        // just a cool addition)
+        // start the internal stopwatch before any of arara's real working
+        // starts
         val executionStart = TimeSource.Monotonic.markNow()
 
         // logging has to be initialized only once and for all because
@@ -203,17 +199,14 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                 else
                     ExecutionStatus.PROCESSING
             } catch (exception: AraraException) {
-                // something bad just happened, so arara will print the proper
-                // exception and provide details on it, if available; the idea
-                // here is to propagate an exception throughout the whole
-                // application and catch it here instead of a local treatment
+                // catch a propagated exception to replace intentionally left
+                // out local treatment
                 DisplayUtils.printException(exception)
             }
 
-            // this is the last command from arara; once the execution time is
-            // available, print it; note that this notification is suppressed
-            // when the command line parsing returns false as result (it makes
-            // no sense to print the execution time for a help message, I guess)
+            // print the execution time if the command line parsing does not
+            // return false as result (it makes no sense to print the execution
+            // time for a help message)
             DisplayUtils.printTime(executionStart.elapsedNow().inSeconds)
         } catch (ex: AraraException) {
             DisplayUtils.printException(ex)

@@ -31,6 +31,7 @@ object Session : Session {
     /**
      * arara's logging configuration.
      */
+    @JvmStatic
     var loggingOptions: LoggingOptions =
             org.islandoftex.arara.core.configuration.LoggingOptions()
 
