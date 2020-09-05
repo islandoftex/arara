@@ -1,13 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.mvel.utils;
 
-import kotlin.Pair;
 import org.islandoftex.arara.api.localization.Messages;
 import org.islandoftex.arara.core.localization.LanguageController;
-import org.islandoftex.arara.core.session.ClassLoading;
 import org.islandoftex.arara.core.session.Session;
 
-import java.io.File;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Stream;
@@ -64,14 +61,10 @@ public class Methods {
     public static Map<String, Object> getConditionalMethods() {
         Map<String, Object> map = new HashMap<>();
         try {
-            Method[] methods = Methods.class.getMethods();
             Method[] methodsKotlin = KtConditionalMethods.class.getMethods();
-            Arrays.asList("loadClass", "loadObject").forEach(name ->
-                    map.put(name, Stream.of(methods).filter(
-                            m -> m.getName().equals(name)).findFirst().get()));
             Arrays.asList("exists", "missing", "changed", "unchanged",
                     "found", "toFile", "showDropdown", "showInput",
-                    "showOptions", "currentFile").forEach(name ->
+                    "showOptions", "currentFile", "loadClass", "loadObject").forEach(name ->
                     map.put(name, Stream.of(methodsKotlin).filter(
                             m -> m.getName().equals(name)).findFirst().get()));
         } catch (Exception exception) {
@@ -129,53 +122,5 @@ public class Methods {
      */
     public static boolean isBoolean(Object object) {
         return checkClass(Boolean.class, object);
-    }
-
-    /**
-     * Loads a class from the provided file, potentially a Java archive.
-     *
-     * @param file File containing the Java bytecode (namely, a JAR).
-     * @param name The canonical name of the class.
-     * @return A pair representing the status and the class.
-     */
-    public static Pair<ClassLoading.ClassLoadingStatus, Class<?>> loadClass(
-            File file, String name) {
-        return ClassLoading.loadClass(file, name);
-    }
-
-    /**
-     * Loads a class from the provided string reference, representing a file.
-     *
-     * @param ref  String reference representing a file.
-     * @param name The canonical name of the class.
-     * @return A pair representing the status and the class.
-     */
-    public static Pair<ClassLoading.ClassLoadingStatus, Class<?>> loadClass(
-            String ref, String name) {
-        return loadClass(new File(ref), name);
-    }
-
-    /**
-     * Loads a class from the provided file, instantiating it.
-     *
-     * @param file File containing the Java bytecode (namely, a JAR).
-     * @param name The canonical name of the class.
-     * @return A pair representing the status and the class object.
-     */
-    public static Pair<ClassLoading.ClassLoadingStatus, Object> loadObject(
-            File file, String name) {
-        return ClassLoading.loadObject(file, name);
-    }
-
-    /**
-     * Loads a class from the provided string reference, instantiating it.
-     *
-     * @param ref  String reference representing a file.
-     * @param name The canonical name of the class.
-     * @return A pair representing the status and the class object.
-     */
-    public static Pair<ClassLoading.ClassLoadingStatus, Object> loadObject(
-            String ref, String name) {
-        return loadObject(new File(ref), name);
     }
 }

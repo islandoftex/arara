@@ -6,6 +6,8 @@ import java.nio.file.Files
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.core.files.FileHandling
+import org.islandoftex.arara.core.session.ClassLoading
+import org.islandoftex.arara.core.session.ClassLoading.ClassLoadingStatus
 import org.islandoftex.arara.core.session.Executor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.GUIDialogs
@@ -217,4 +219,48 @@ object KtConditionalMethods {
      */
     @JvmStatic
     fun currentFile(): File = Arara.currentFile.path.toFile()
+
+    /**
+     * Loads a class from the provided file, potentially a Java archive.
+     *
+     * @param file File containing the Java bytecode (namely, a JAR).
+     * @param name The canonical name of the class.
+     * @return A pair representing the status and the class.
+     */
+    @JvmStatic
+    fun loadClass(file: File, name: String): Pair<ClassLoadingStatus, Class<*>> =
+        ClassLoading.loadClass(file, name)
+
+    /**
+     * Loads a class from the provided string reference, representing a file.
+     *
+     * @param ref String reference representing a file.
+     * @param name The canonical name of the class.
+     * @return A pair representing the status and the class.
+     */
+    @JvmStatic
+    fun loadClass(ref: String, name: String): Pair<ClassLoadingStatus, Class<*>> =
+        loadClass(File(ref), name)
+
+    /**
+     * Loads a class from the provided file, instantiating it.
+     *
+     * @param file File containing the Java bytecode (namely, a JAR).
+     * @param name The canonical name of the class.
+     * @return A pair representing the status and the class object.
+     */
+    @JvmStatic
+    fun loadObject(file: File, name: String): Pair<ClassLoadingStatus, Any> =
+        ClassLoading.loadObject(file, name)
+
+    /**
+     * Loads a class from the provided string reference, instantiating it.
+     *
+     * @param ref String reference representing a file.
+     * @param name The canonical name of the class.
+     * @return A pair representing the status and the class object.
+     */
+    @JvmStatic
+    fun loadObject(ref: String, name: String): Pair<ClassLoadingStatus, Any> =
+        loadObject(File(ref), name)
 }
