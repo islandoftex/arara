@@ -455,9 +455,9 @@ object KtRuleMethods {
     fun readFromFile(file: File): List<String> = try {
         Files.readAllLines(file.toPath(), Charsets.UTF_8)
     } catch (e: IOException) {
-        ArrayList()
+        listOf()
     } catch (e: SecurityException) {
-        ArrayList()
+        listOf()
     }
 
     /**
