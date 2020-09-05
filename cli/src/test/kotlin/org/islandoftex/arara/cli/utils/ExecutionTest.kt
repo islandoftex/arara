@@ -159,4 +159,12 @@ class ExecutionTest : ShouldSpec({
         output shouldContain "doc2.tex"
         output shouldNotContain "doc3.tex"
     }
+
+    should("identify types correctly") {
+        val output = outputForTest("typetests")
+        output shouldContain "Bool test success"
+        output shouldContain "String test success"
+        output shouldContain "List test success"
+        output shouldContain "Map test success"
+    }
 })

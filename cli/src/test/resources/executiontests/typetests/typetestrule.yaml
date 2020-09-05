@@ -1,0 +1,33 @@
+!config
+identifier: typetestrule
+name: Test rule for Java types
+commands:
+  - name: Testing booleans
+    command: >
+      @{
+          return isTrue(isBoolean(true) && !isBoolean("true"),
+            isWindows(getCommand('cmd', '/c', 'echo', 'Bool test success'),
+                      getCommand('echo', 'Bool test success')));
+      }
+  - name: Testing strings
+    command: >
+      @{
+          return isTrue(isString("Test") && !isString(4),
+            isWindows(getCommand('cmd', '/c', 'echo', 'String test success'),
+                      getCommand('echo', 'String test success')));
+      }
+  - name: Testing lists
+    command: >
+      @{
+          return isTrue(isList([1, 2, 3]) && !isList(4),
+            isWindows(getCommand('cmd', '/c', 'echo', 'List test success'),
+                      getCommand('echo', 'List test success')));
+      }
+  - name: Testing maps
+    command: >
+      @{
+          return isTrue(isMap([1: 2, 3: 4]) && !isMap(4),
+            isWindows(getCommand('cmd', '/c', 'echo', 'Map test success'),
+                      getCommand('echo', 'Map test success')));
+      }
+arguments: []
