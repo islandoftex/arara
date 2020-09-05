@@ -23,7 +23,7 @@ import org.islandoftex.arara.core.ui.InputHandling
 import org.islandoftex.arara.mvel.rules.DirectiveConditionalEvaluator
 import org.islandoftex.arara.mvel.rules.RuleArgument
 import org.islandoftex.arara.mvel.rules.SerialRuleCommand
-import org.islandoftex.arara.mvel.utils.Methods
+import org.islandoftex.arara.mvel.utils.KtMethods
 import org.mvel2.templates.TemplateRuntime
 import org.slf4j.LoggerFactory
 
@@ -255,7 +255,7 @@ object Interpreter {
         // (may throw an exception)
         val rule = RuleUtils.parseRule(file, directive.identifier)
         val parameters = parseArguments(rule, directive)
-                .plus(Methods.getRuleMethods())
+                .plus(KtMethods.ruleMethods)
 
         val evaluator = DirectiveConditionalEvaluator(Executor.executionOptions)
 
@@ -336,7 +336,7 @@ object Interpreter {
         val context = mapOf(
                 "parameters" to directive.parameters,
                 "reference" to directive.parameters.getValue("reference")
-        ).plus(Methods.getRuleMethods())
+        ).plus(KtMethods.ruleMethods)
 
         arguments.forEach { argument ->
             resolvedArguments[argument.identifier] = processArgument(

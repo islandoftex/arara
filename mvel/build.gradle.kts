@@ -11,6 +11,7 @@ plugins {
 dependencies {
     api(project(":api"))
     implementation(project(":core"))
+    implementation(kotlin("reflect", Versions.kotlin))
     implementation(group = "org.mvel" , name = "mvel2", version = Versions.mvel)
     implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version = Versions.kotlinxSerialization)
     implementation(group = "com.charleskorn.kaml", name = "kaml", version = Versions.kaml)
@@ -18,7 +19,7 @@ dependencies {
 
 sourceSets {
     main {
-        java { setSrcDirs(listOf("src/main/java", "src/main/kotlin")) }
+        java { setSrcDirs(listOf("src/main/kotlin")) }
         resources { setSrcDirs(listOf("src/main/resources")) }
     }
     test {

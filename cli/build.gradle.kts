@@ -30,7 +30,7 @@ val moduleName = group
 
 sourceSets {
     main {
-        java { setSrcDirs(listOf("src/main/java", "src/main/kotlin")) }
+        java { setSrcDirs(listOf("src/main/kotlin")) }
         resources { setSrcDirs(listOf("src/main/resources")) }
     }
     test {
@@ -45,14 +45,6 @@ application {
 }
 
 tasks {
-    named<JavaCompile>("compileJava") {
-        if (java.sourceCompatibility > JavaVersion.VERSION_1_8) {
-            inputs.property("moduleName", moduleName)
-            options.compilerArgs = listOf(
-                    // include Gradle dependencies as modules
-                    "--module-path", sourceSets["main"].compileClasspath.asPath)
-        }
-    }
     withType<KotlinCompile> {
         kotlinOptions {
             freeCompilerArgs = listOf("-Xopt-in=org.islandoftex.arara.api.localization.AraraMessages,kotlin.time.ExperimentalTime,kotlin.RequiresOptIn")

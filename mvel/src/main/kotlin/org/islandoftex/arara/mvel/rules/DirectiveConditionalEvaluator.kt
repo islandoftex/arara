@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.mvel.rules
 
+import kotlin.reflect.full.memberProperties
 import kotlin.time.ExperimentalTime
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionOptions
@@ -32,11 +33,10 @@ class DirectiveConditionalEvaluator(executionOptions: ExecutionOptions) :
     override fun evaluateCondition(conditional: DirectiveConditional): Boolean {
         try {
             // TODO: remove reflection
-            val methodsClass = Class.forName("org.islandoftex.arara.mvel.utils.Methods")
-                    .getDeclaredConstructor().newInstance()
-            val conditionalMethods = methodsClass::class.java
-                    .getMethod("getConditionalMethods")
-                    .invoke(methodsClass)
+            val methodsClass = Class.forName("org.islandoftex.arara.mvel.utils.KtMethods").kotlin
+            val conditionalMethods = methodsClass.memberProperties
+                    .first { it.name == "conditionalMethods" }
+                    .getter.call(methodsClass.objectInstance!!)
             @Suppress("UNCHECKED_CAST")
             val result = TemplateRuntime.eval("@{ " + conditional.condition + " }",
                     conditionalMethods as Map<String, Any>)
