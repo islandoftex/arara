@@ -27,7 +27,6 @@ import org.islandoftex.arara.core.configuration.UserInterfaceOptions
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.Project
-import org.islandoftex.arara.core.files.ProjectFile
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Executor
 import org.islandoftex.arara.core.session.ExecutorHooks
@@ -152,16 +151,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                                 fileName,
                                 workingDir,
                                 Executor.executionOptions
-                        ).let {
-                            if (it.path.isAbsolute)
-                                it
-                            else
-                                ProjectFile(
-                                        workingDir.resolve(it.path),
-                                        it.fileType,
-                                        it.priority
-                                )
-                        }
+                        )
                     }.toSet()
             ))
             try {
