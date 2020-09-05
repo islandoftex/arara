@@ -31,11 +31,7 @@ public class Methods {
     public static Map<String, Object> getRuleMethods() {
         Map<String, Object> map = new HashMap<>(getConditionalMethods());
         try {
-            Method[] methods = Methods.class.getMethods();
             Method[] methodsKotlin = KtRuleMethods.class.getMethods();
-            Arrays.asList("checkClass", "isString", "isList", "isMap", "isBoolean").forEach(name ->
-                    map.put(name, Stream.of(methods).filter(
-                            m -> m.getName().equals(name)).findFirst().get()));
             Arrays.asList("halt", "getOriginalFile", "getOriginalReference",
                     "trimSpaces", "getBasename", "getFiletype", "replicatePattern",
                     "throwError", "getSession", "buildString", "getCommand",
@@ -44,7 +40,8 @@ public class Methods {
                     "listFilesByExtensions", "listFilesByPatterns",
                     "writeToFile", "readFromFile", "isSubdirectory",
                     "isEmpty", "isNotEmpty", "isTrue", "isFalse",
-                    "isWindows", "isLinux", "isMac", "isUnix", "isCygwin").forEach(name ->
+                    "isWindows", "isLinux", "isMac", "isUnix", "isCygwin",
+                    "checkClass", "isString", "isList", "isMap", "isBoolean").forEach(name ->
                     map.put(name, Stream.of(methodsKotlin).filter(
                             m -> m.getName().equals(name)).findFirst().get()));
         } catch (Exception exception) {
@@ -71,56 +68,5 @@ public class Methods {
             // quack, quack, quack
         }
         return map;
-    }
-
-    /**
-     * Checks if the object is an instance of the provided class.
-     *
-     * @param clazz  The class.
-     * @param object The object.
-     * @return A boolean value.
-     */
-    public static boolean checkClass(Class<?> clazz, Object object) {
-        return clazz.isInstance(object);
-    }
-
-    /**
-     * Checks if the object is a string.
-     *
-     * @param object The object.
-     * @return A boolean value.
-     */
-    public static boolean isString(Object object) {
-        return checkClass(String.class, object);
-    }
-
-    /**
-     * Checks if the object is a list.
-     *
-     * @param object The object.
-     * @return A boolean value.
-     */
-    public static boolean isList(Object object) {
-        return checkClass(List.class, object);
-    }
-
-    /**
-     * Checks if the object is a map.
-     *
-     * @param object The object.
-     * @return A boolean value.
-     */
-    public static boolean isMap(Object object) {
-        return checkClass(Map.class, object);
-    }
-
-    /**
-     * Checks if the object is a boolean.
-     *
-     * @param object The object.
-     * @return A boolean value.
-     */
-    public static boolean isBoolean(Object object) {
-        return checkClass(Boolean.class, object);
     }
 }

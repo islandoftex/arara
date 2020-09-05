@@ -759,4 +759,50 @@ object KtRuleMethods {
     @JvmStatic
     @Throws(AraraException::class)
     fun isUnix(yes: Any?, no: Any?): Any? = if (checkOS("unix")) yes else no
+
+    /**
+     * Checks if the object is an instance of the provided class.
+     *
+     * @param clazz The class.
+     * @param obj The object.
+     * @return A boolean value.
+     */
+    @JvmStatic
+    fun checkClass(clazz: Class<*>, obj: Any?): Boolean = clazz.isInstance(obj)
+
+    /**
+     * Checks if the object is a string.
+     *
+     * @param obj The object.
+     * @return A boolean value.
+     */
+    @JvmStatic
+    fun isString(obj: Any?): Boolean = checkClass(java.lang.String::class.java, obj)
+
+    /**
+     * Checks if the object is a list.
+     *
+     * @param obj The object.
+     * @return A boolean value.
+     */
+    @JvmStatic
+    fun isList(obj: Any?): Boolean = checkClass(java.util.List::class.java, obj)
+
+    /**
+     * Checks if the object is a map.
+     *
+     * @param obj The object.
+     * @return A boolean value.
+     */
+    @JvmStatic
+    fun isMap(obj: Any?): Boolean = checkClass(java.util.Map::class.java, obj)
+
+    /**
+     * Checks if the object is a boolean.
+     *
+     * @param obj The object.
+     * @return A boolean value.
+     */
+    @JvmStatic
+    fun isBoolean(obj: Any?): Boolean = checkClass(java.lang.Boolean::class.java, obj)
 }
