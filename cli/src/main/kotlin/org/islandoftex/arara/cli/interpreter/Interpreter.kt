@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.model
+package org.islandoftex.arara.cli.interpreter
 
 import java.nio.file.Files
 import java.nio.file.Path
@@ -13,7 +13,6 @@ import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.cli.ruleset.RuleUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
-import org.islandoftex.arara.cli.utils.InterpreterUtils
 import org.islandoftex.arara.cli.utils.RuleErrorHeader
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController

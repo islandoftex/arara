@@ -3,7 +3,7 @@ package org.islandoftex.arara.cli.ruleset
 
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditional
-import org.islandoftex.arara.cli.model.Interpreter
+import org.islandoftex.arara.cli.interpreter.Interpreter
 
 /**
  * Implements the directive model.

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.utils
+package org.islandoftex.arara.cli.interpreter
 
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -14,6 +14,7 @@ import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.cli.Arara
+import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Executor
@@ -92,11 +93,17 @@ object InterpreterUtils {
         val executor = getProcessExecutorForCommand(command, buffer)
         return executor.runCatching {
             val exit = execute().exitValue
-            logger.info(DisplayUtils.displayOutputSeparator(
-                    LanguageController.messages.LOG_INFO_BEGIN_BUFFER))
+            logger.info(
+                DisplayUtils.displayOutputSeparator(
+                    LanguageController.messages.LOG_INFO_BEGIN_BUFFER
+                )
+            )
             logger.info(buffer.toString())
-            logger.info(DisplayUtils.displayOutputSeparator(
-                    LanguageController.messages.LOG_INFO_END_BUFFER))
+            logger.info(
+                DisplayUtils.displayOutputSeparator(
+                    LanguageController.messages.LOG_INFO_END_BUFFER
+                )
+            )
             exit
         }.getOrElse {
             throw AraraException(
