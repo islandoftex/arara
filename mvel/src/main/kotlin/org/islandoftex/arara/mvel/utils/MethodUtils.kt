@@ -69,7 +69,7 @@ object MethodUtils {
         values: List<Any>
     ): List<Any> {
         return try {
-            values.map { String.format(pattern, it) }
+            values.map { pattern.format(it) }
         } catch (exception: MissingFormatArgumentException) {
             throw AraraException(
                     LanguageController.messages.ERROR_REPLICATELIST_MISSING_FORMAT_ARGUMENTS_EXCEPTION,

@@ -98,10 +98,8 @@ class GUIDialogs
         // effectively shows the message based
         // on the provided parameters
         JOptionPane.showMessageDialog(null,
-                String.format(
-                        "<html><body style=\"width:%dpx\">%s</body></html>",
-                        normalizeMessageWidth(width),
-                        text),
+                "<html><body style=\"width:%dpx\">$text</body></html>".format(
+                        normalizeMessageWidth(width)),
                 title,
                 normalizeIconType(type)
         )
@@ -127,10 +125,8 @@ class GUIDialogs
         // returns the index of the selected button,
         // zero if nothing is selected
         return JOptionPane.showOptionDialog(null,
-                String.format(
-                        "<html><body style=\"width:%dpx\">%s</body></html>",
-                        normalizeMessageWidth(width),
-                        text),
+                "<html><body style=\"width:%dpx\">$text</body></html>".format(
+                        normalizeMessageWidth(width)),
                 title,
                 JOptionPane.DEFAULT_OPTION,
                 normalizeIconType(type), null,
@@ -157,10 +153,8 @@ class GUIDialogs
         // get the string from the
         // input text, if any
         val input = JOptionPane.showInputDialog(null,
-                String.format(
-                        "<html><body style=\"width:%dpx\">%s</body></html>",
-                        normalizeMessageWidth(width),
-                        text),
+                "<html><body style=\"width:%dpx\">$text</body></html>".format(
+                        normalizeMessageWidth(width)),
                 title,
                 normalizeIconType(type))
 
@@ -190,10 +184,8 @@ class GUIDialogs
     ): Int {
         // show the dropdown list and get the selected object, if any
         val index = JOptionPane.showInputDialog(null,
-                String.format(
-                        "<html><body style=\"width:%dpx\">%s</body></html>",
-                        normalizeMessageWidth(width),
-                        text),
+                "<html><body style=\"width:%dpx\">$text</body></html>".format(
+                        normalizeMessageWidth(width)),
                 title,
                 normalizeIconType(type), null,
                 elements,
