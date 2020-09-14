@@ -13,7 +13,7 @@ import kotlin.math.ceil
  * @return The abbreviated string.
  */
 @Throws(IllegalArgumentException::class)
-fun String.abbreviate(maxWidth: Int, ellipsis: String = "…"): String {
+internal fun String.abbreviate(maxWidth: Int, ellipsis: String = "…"): String {
     return when {
         maxWidth < ellipsis.length + 1 ->
             throw IllegalArgumentException("Can't abbreviate text further")
@@ -32,7 +32,7 @@ fun String.abbreviate(maxWidth: Int, ellipsis: String = "…"): String {
  * @param padChar The char to pad with.
  * @return The padded string.
  */
-fun String.center(width: Int, padChar: Char): String {
+internal fun String.center(width: Int, padChar: Char): String {
     return if (this.length > width) this
     else {
         val charsLeft = width - this.length
@@ -50,7 +50,7 @@ fun String.center(width: Int, padChar: Char): String {
  * @param width The width to wrap at.
  * @return Wrapped text.
  */
-fun String.wrap(width: Int): String {
+internal fun String.wrap(width: Int): String {
     val words = this.split(" ")
     var wrapped = words[0]
     var spaceLeft = width - wrapped.length
