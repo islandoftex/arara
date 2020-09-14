@@ -34,7 +34,7 @@ object LinearExecutor : Executor {
 
     /**
      * The file this executor currently works on, if any. This will always
-     * be set before the [ExecutorHooks.executeBeforeFile] hook is executed
+     * be set after the [ExecutorHooks.executeBeforeFile] hook is executed
      * and unset before the [ExecutorHooks.executeAfterFile] hook.
      */
     var currentFile: ProjectFile? = null
@@ -50,7 +50,7 @@ object LinearExecutor : Executor {
         set(value) {
             if (currentFile != null)
                 throw AraraException("Cannot change execution options while " +
-                        "executing a file.")
+                        "executing the file ${currentFile?.path}.")
             if (value.parallelExecution)
                 throw AraraException("This executor does not support " +
                         "parallel execution.")
@@ -92,7 +92,6 @@ object LinearExecutor : Executor {
         currentProject = project
         hooks.executeBeforeProject(project)
         for (file in project.files.byPriority) {
-            currentFile = file
             hooks.executeBeforeFile(file)
             val executionReport = execute(file)
             exitCode = executionReport.exitCode
