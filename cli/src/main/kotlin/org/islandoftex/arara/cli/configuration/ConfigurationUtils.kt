@@ -9,7 +9,7 @@ import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
-import org.islandoftex.arara.core.session.Executor
+import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.mvel.configuration.LocalConfiguration
 
@@ -73,9 +73,9 @@ object ConfigurationUtils {
     fun load(file: Path) {
         // then validate it and update the configuration accordingly
         val resource = loadLocalConfiguration(file)
-        Executor.executionOptions = resource.toExecutionOptions(
+        LinearExecutor.executionOptions = resource.toExecutionOptions(
                 Arara.currentProject,
-                Executor.executionOptions
+                LinearExecutor.executionOptions
         )
         Session.loggingOptions = resource.toLoggingOptions()
         Session.userInterfaceOptions = resource.toUserInterfaceOptions()

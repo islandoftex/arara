@@ -11,7 +11,7 @@ import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.Directives
-import org.islandoftex.arara.core.session.Executor
+import org.islandoftex.arara.core.session.LinearExecutor
 
 open class ProjectFile(
     override val path: Path,
@@ -50,7 +50,7 @@ open class ProjectFile(
         try {
             return Directives.extractDirectives(
                     Files.readAllLines(path),
-                    Executor.executionOptions.parseOnlyHeader,
+                    LinearExecutor.executionOptions.parseOnlyHeader,
                     fileType
             )
         } catch (ioexception: IOException) {

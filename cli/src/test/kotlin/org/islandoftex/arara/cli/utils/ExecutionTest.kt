@@ -19,7 +19,7 @@ import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.Project
-import org.islandoftex.arara.core.session.Executor
+import org.islandoftex.arara.core.session.LinearExecutor
 
 @DoNotParallelize
 class ExecutionTest : ShouldSpec({
@@ -38,20 +38,20 @@ class ExecutionTest : ShouldSpec({
             // TODO: improve project setup
             Arara.currentProject = Project("Test", workingDirectory, setOf())
             ConfigurationUtils.load(workingDirectory.resolve("arararc.yaml"))
-            Executor.executionOptions = ExecutionOptions
-                    .from(Executor.executionOptions)
+            LinearExecutor.executionOptions = ExecutionOptions
+                    .from(LinearExecutor.executionOptions)
                     .copy(verbose = true)
             Arara.currentFile = FileSearching.resolveFile(
                     fileName,
                     workingDirectory,
-                    Executor.executionOptions
+                    LinearExecutor.executionOptions
             )
             Arara.currentProject = (Arara.currentProject as Project)
                     .copy(files = setOf(
                             FileSearching.resolveFile(
                                     fileName,
                                     workingDirectory,
-                                    Executor.executionOptions
+                                    LinearExecutor.executionOptions
                             )
                     ))
             DirectiveUtils.process(Arara.currentFile.fetchDirectives(false))
@@ -110,13 +110,13 @@ class ExecutionTest : ShouldSpec({
         val output = outputForTest("halt")
         output shouldContain "QuackOne"
         output shouldNotContain "QuackTwo"
-        Executor.executionStatus.exitCode shouldBe 0
+        LinearExecutor.executionStatus.exitCode shouldBe 0
     }
     should("forcefully halt on halt error rule") {
         val output = outputForTest("halt-error")
         output shouldContain "QuackOne"
         output shouldNotContain "QuackTwo"
-        Executor.executionStatus.exitCode shouldNotBe 0
+        LinearExecutor.executionStatus.exitCode shouldNotBe 0
     }
 
     should("fail on invalid config") {

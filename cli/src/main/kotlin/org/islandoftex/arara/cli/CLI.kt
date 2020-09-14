@@ -28,8 +28,8 @@ import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.session.Executor
 import org.islandoftex.arara.core.session.ExecutorHooks
+import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 
 /**
@@ -84,25 +84,25 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         )
         LanguageController.setLocale(Session.userInterfaceOptions.locale)
 
-        Executor.executionOptions = ExecutionOptions
-                .from(Executor.executionOptions)
+        LinearExecutor.executionOptions = ExecutionOptions
+                .from(LinearExecutor.executionOptions)
                 .copy(
                         maxLoops = maxLoops
-                                ?: Executor.executionOptions.maxLoops,
+                                ?: LinearExecutor.executionOptions.maxLoops,
                         timeoutValue = timeout?.milliseconds
-                                ?: Executor.executionOptions.timeoutValue,
+                                ?: LinearExecutor.executionOptions.timeoutValue,
                         verbose = if (verbose)
                             true
                         else
-                            Executor.executionOptions.verbose,
+                            LinearExecutor.executionOptions.verbose,
                         executionMode = if (dryRun)
                             ExecutionMode.DRY_RUN
                         else
-                            Executor.executionOptions.executionMode,
+                            LinearExecutor.executionOptions.executionMode,
                         parseOnlyHeader = if (onlyHeader)
                             true
                         else
-                            Executor.executionOptions.parseOnlyHeader
+                            LinearExecutor.executionOptions.parseOnlyHeader
                 )
 
         Session.loggingOptions = LoggingOptions(
@@ -150,12 +150,12 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                         FileSearching.resolveFile(
                                 fileName,
                                 workingDir,
-                                Executor.executionOptions
+                                LinearExecutor.executionOptions
                         )
                     }.toSet()
             ))
             try {
-                Executor.hooks = ExecutorHooks(
+                LinearExecutor.hooks = ExecutorHooks(
                         executeBeforeExecution = {
                             // directive processing has to be initialized, so that the core
                             // component respects our MVEL processing
@@ -184,7 +184,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                             DirectiveUtils.process(it)
                         }
                 )
-                Executor.executionStatus = if (Executor.execute(projects).exitCode != 0)
+                LinearExecutor.executionStatus = if (LinearExecutor.execute(projects).exitCode != 0)
                     ExecutionStatus.EXTERNAL_CALL_FAILED
                 else
                     ExecutionStatus.PROCESSING
@@ -200,9 +200,9 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
             DisplayUtils.printTime(executionStart.elapsedNow().inSeconds)
         } catch (ex: AraraException) {
             DisplayUtils.printException(ex)
-            Executor.executionStatus = ExecutionStatus.CAUGHT_EXCEPTION
+            LinearExecutor.executionStatus = ExecutionStatus.CAUGHT_EXCEPTION
         }
 
-        throw ProgramResult(Executor.executionStatus.exitCode)
+        throw ProgramResult(LinearExecutor.executionStatus.exitCode)
     }
 }

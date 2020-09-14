@@ -8,7 +8,7 @@ import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.session.ClassLoading
 import org.islandoftex.arara.core.session.ClassLoading.ClassLoadingStatus
-import org.islandoftex.arara.core.session.Executor
+import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.GUIDialogs
 
@@ -98,7 +98,7 @@ object KtConditionalMethods {
     fun changed(filename: File): Boolean = FileHandling.hasChanged(
             filename.toPath(),
             Arara.currentProject.workingDirectory.resolve(
-                    Executor.executionOptions.databaseName
+                    LinearExecutor.executionOptions.databaseName
             )
     )
 

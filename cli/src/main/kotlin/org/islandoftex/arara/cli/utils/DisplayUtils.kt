@@ -14,7 +14,7 @@ import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
-import org.islandoftex.arara.core.session.Executor
+import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.slf4j.LoggerFactory
 
@@ -59,14 +59,14 @@ object DisplayUtils {
      * Checks if the execution is in dry-run mode.
      */
     private val isDryRunMode: Boolean
-        get() = Executor.executionOptions.executionMode ==
+        get() = LinearExecutor.executionOptions.executionMode ==
                 ExecutionMode.DRY_RUN
 
     /**
      * Checks if the execution is in verbose mode.
      */
     private val isVerboseMode: Boolean
-        get() = Executor.executionOptions.verbose
+        get() = LinearExecutor.executionOptions.verbose
 
     /**
      * The application path.
@@ -108,7 +108,7 @@ object DisplayUtils {
     fun printEntryResult(value: Boolean) {
         displayLine = false
         displayResult = true
-        Executor.executionStatus = if (value)
+        LinearExecutor.executionStatus = if (value)
             ExecutionStatus.PROCESSING
         else
             ExecutionStatus.EXTERNAL_CALL_FAILED
@@ -194,7 +194,7 @@ object DisplayUtils {
      */
     fun printException(exception: AraraException) {
         displayException = true
-        Executor.executionStatus = ExecutionStatus.CAUGHT_EXCEPTION
+        LinearExecutor.executionStatus = ExecutionStatus.CAUGHT_EXCEPTION
 
         if (displayResult)
             println()

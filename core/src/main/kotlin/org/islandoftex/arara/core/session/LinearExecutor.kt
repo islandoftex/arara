@@ -7,30 +7,13 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
-import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.session.ExecutionReport
 import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.api.session.Executor
 import org.islandoftex.arara.core.dependencies.ProjectGraph
 import org.islandoftex.arara.core.files.byPriority
 
-/**
- * arara's core executor is configurable at some places by inserting hooks.
- * This is a collection of all hooks that are applicable.
- */
-data class ExecutorHooks(
-    val executeBeforeExecution: () -> Unit = {
-        Session.updateEnvironmentVariables()
-    },
-    val executeAfterExecution: (ExecutionReport) -> Unit = { _ -> },
-    val executeBeforeProject: (Project) -> Unit = { _ -> },
-    val executeAfterProject: (Project) -> Unit = { _ -> },
-    val executeBeforeFile: (ProjectFile) -> Unit = { _ -> },
-    val executeAfterFile: (ExecutionReport) -> Unit = { _ -> },
-    val processDirectives: (List<Directive>) -> List<Directive> = { l -> l }
-)
-
-object Executor : Executor {
+object LinearExecutor : Executor {
     /**
      * Specify custom user hooks to run.
      */
@@ -65,7 +48,7 @@ object Executor : Executor {
     override var executionOptions: ExecutionOptions =
             org.islandoftex.arara.core.configuration.ExecutionOptions()
         set(value) {
-            if (currentFile == null)
+            if (currentFile != null)
                 throw AraraException("Cannot change execution options while " +
                         "executing a file.")
             if (value.parallelExecution)

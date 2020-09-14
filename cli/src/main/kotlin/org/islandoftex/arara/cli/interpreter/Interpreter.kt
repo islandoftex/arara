@@ -15,7 +15,7 @@ import org.islandoftex.arara.cli.ruleset.RuleUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.session.Executor
+import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.InputHandling
 import org.islandoftex.arara.mvel.rules.DirectiveConditionalEvaluator
@@ -48,7 +48,7 @@ object Interpreter {
      */
     @Throws(AraraException::class)
     private fun getRule(directive: Directive): Path {
-        val rulePaths = Executor.executionOptions.rulePaths
+        val rulePaths = LinearExecutor.executionOptions.rulePaths
         return rulePaths
                 .map { path -> InterpreterUtils.construct(path, directive.identifier) }
                 .plus(rulePaths.map {
@@ -82,7 +82,7 @@ object Interpreter {
     ): Boolean {
         logger.info(LanguageController.messages.LOG_INFO_BOOLEAN_MODE.format(value))
 
-        if (Executor.executionOptions.executionMode == ExecutionMode.DRY_RUN) {
+        if (LinearExecutor.executionOptions.executionMode == ExecutionMode.DRY_RUN) {
             DisplayUtils.printAuthors(authors)
             DisplayUtils.wrapText(LanguageController.messages
                     .INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE.format(value))
@@ -112,7 +112,7 @@ object Interpreter {
         logger.info(LanguageController.messages.LOG_INFO_SYSTEM_COMMAND.format(command))
         var success = true
 
-        if (Executor.executionOptions.executionMode != ExecutionMode.DRY_RUN) {
+        if (LinearExecutor.executionOptions.executionMode != ExecutionMode.DRY_RUN) {
             val code = InterpreterUtils.run(command)
             val check: Any = try {
                 val context = mapOf<String, Any>("value" to code)
@@ -198,14 +198,14 @@ object Interpreter {
 
                     DisplayUtils.printEntryResult(success)
 
-                    if (Executor.executionOptions.haltOnErrors && !success)
+                    if (LinearExecutor.executionOptions.haltOnErrors && !success)
                     // TODO: localize
                         throw HaltExpectedException("Command failed")
 
                     // TODO: document this key
                     val haltKey = "arara:${Arara.currentFile.path.fileName}:halt"
                     if (Session.contains(haltKey)) {
-                        Executor.executionStatus =
+                        LinearExecutor.executionStatus =
                                 if (Session[haltKey].toString().toInt() != 0)
                                     ExecutionStatus.EXTERNAL_CALL_FAILED
                                 else
@@ -245,7 +245,7 @@ object Interpreter {
         val parameters = parseArguments(rule, directive)
                 .plus(KtMethods.ruleMethods)
 
-        val evaluator = DirectiveConditionalEvaluator(Executor.executionOptions)
+        val evaluator = DirectiveConditionalEvaluator(LinearExecutor.executionOptions)
 
         var available = true
         if (InterpreterUtils.runPriorEvaluation(directive.conditional)) {
@@ -254,7 +254,7 @@ object Interpreter {
 
         // if this directive is conditionally disabled, skip
         if (!available || Session.contains("arara:${Arara.currentFile.path.fileName}:halt"))
-            return Executor.executionStatus.exitCode
+            return LinearExecutor.executionStatus.exitCode
 
         try {
             // if not execute the commands associated with the directive
@@ -281,7 +281,7 @@ object Interpreter {
                             .format(directive.identifier, file.parent.toString()) + " " +
                     e.message, e.exception ?: e)
         }
-        return Executor.executionStatus.exitCode
+        return LinearExecutor.executionStatus.exitCode
     }
 
     /**

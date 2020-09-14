@@ -17,7 +17,7 @@ import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.byPriority
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment.executeSystemCommand
-import org.islandoftex.arara.core.session.Executor.executionOptions
+import org.islandoftex.arara.core.session.LinearExecutor.executionOptions
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.GUIDialogs
 import org.islandoftex.arara.core.ui.InputHandling.checkBoolean
