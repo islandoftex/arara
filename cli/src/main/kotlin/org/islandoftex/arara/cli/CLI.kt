@@ -8,13 +8,16 @@ import com.github.ajalt.clikt.parameters.arguments.multiple
 import com.github.ajalt.clikt.parameters.options.associate
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.options.versionOption
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import com.github.ajalt.clikt.parameters.types.restrictTo
 import java.nio.file.Paths
+import java.time.LocalDate
 import java.util.Locale
 import kotlin.time.TimeSource
 import kotlin.time.milliseconds
+import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.session.ExecutionStatus
@@ -204,4 +207,27 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
 
         throw ProgramResult(LinearExecutor.executionStatus.exitCode)
     }
+}
+
+/**
+ * Main method. This is the application entry point.
+ * @param args A string array containing all command line arguments.
+ */
+fun main(args: Array<String>) {
+    // print the arara logo in the terminal; I just
+    // hope people use this tool in a good terminal with
+    // fixed-width fonts, otherwise the logo will be messed
+    DisplayUtils.printLogo()
+
+    CLI().versionOption(AraraAPI.version, names = setOf("-V", "--version"),
+            message = {
+                "arara ${AraraAPI.version}\n" +
+                        "Copyright (c) ${LocalDate.now().year}, Island of TeX\n" +
+                        LanguageController.messages.INFO_PARSER_NOTES + "\n\n" +
+                        "New features in version ${AraraAPI.version}:\n" +
+                        CLI::class.java
+                                .getResource("/org/islandoftex/arara/cli/configuration/release-notes")
+                                .readText()
+            })
+            .main(args)
 }

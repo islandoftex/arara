@@ -41,7 +41,7 @@ sourceSets {
 
 application {
     applicationName = project.name
-    mainClassName = "$moduleName.cli.Arara"
+    mainClassName = "$moduleName.cli.CLIKt"
 }
 
 tasks {
