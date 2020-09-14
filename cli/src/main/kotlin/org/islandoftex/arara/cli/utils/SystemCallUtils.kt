@@ -20,62 +20,18 @@ import org.islandoftex.arara.core.session.Environment
  * @since 4.0
  */
 object SystemCallUtils {
-    // the system call map which holds the result of
-    // system specific variables not directly available
-    // at runtime; the idea here is to provide wrappers
-    // to the map getter, so it could be easily manipulated
-    // create the new map instance to be
-    // populated on demand
-    private val map: MutableMap<String, Any> = mutableMapOf()
-
-    // the commands map will allow the system call map being
-    // populated only on demand, that is, if the key is not
-    // found, this map will provide the corresponding method
-    // and update the value
-    // create the new map of commands and
-    // add the corresponding system calls
-    private val commands: MutableMap<String, () -> Any> = mutableMapOf(
-            "cygwin" to {
-                // Implements the body of the command. In this particular
-                // instance, it checks if we are inside a Cygwin environment.
-                // Returns a boolean value indicating if we are inside a Cygwin
-                // environment.
-
-                // execute a new system call to 'uname -s', read the output
-                // as an UTF-8 string, lowercase it and check if it starts
-                // with the 'cygwin' string; if so, we are inside Cygwin
-                Environment.executeSystemCommand(
-                        CommandImpl(listOf("uname", "-s")),
-                        Arara.currentProject.workingDirectory
-                ).second.toLowerCase().startsWith("cygwin")
-            })
-
     /**
-     * Gets the object indexed by the provided key. This method actually holds
-     * the map method of the very same name.
+     * Determine whether arara is executed in a Cygwin environment (lazily to
+     * save expensive system calls).
      *
-     * @param key The provided map key.
-     * @return The object indexed by the provided map key.
+     * The test executes a new system call to `uname -s` and determines by its
+     * output whether we are running a Cygwin kernel.
      */
-    @Throws(NoSuchElementException::class, AraraException::class)
-    operator fun get(key: String): Any {
-        // if key is not found, meaning that
-        // the value wasn't required before
-        if (!map.containsKey(key)) {
-            if (commands.containsKey(key))
-            // perform the system call and
-            // populate the corresponding value
-                map[key] = commands[key]!!.invoke()
-            else
-                throw AraraException(
-                        "The requested key could not be " +
-                                "translated into a command to get the call value."
-                )
-        }
-
-        // simply return the corresponding
-        // value based on the provided key
-        return map.getValue(key)
+    private val inCygwinEnvironment by lazy {
+        Environment.executeSystemCommand(
+                CommandImpl(listOf("uname", "-s")),
+                Arara.currentProject.workingDirectory
+        ).second.toLowerCase().startsWith("cygwin")
     }
 
     /**
@@ -109,7 +65,7 @@ object SystemCallUtils {
         values["mac"] = checkOSProperty("Mac OS X")
         values["unix"] = checkOSProperty("Mac OS X") ||
                 checkOSProperty("Linux")
-        values["cygwin"] = SystemCallUtils["cygwin"] as Boolean
+        values["cygwin"] = inCygwinEnvironment
         if (!values.containsKey(value.toLowerCase())) {
             throw AraraException(
                     LanguageController.messages
