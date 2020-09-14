@@ -9,7 +9,7 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.cli.ruleset.CommandImpl
-import org.islandoftex.arara.cli.utils.CommonUtils.ruleErrorHeader
+import org.islandoftex.arara.cli.utils.RuleErrorHeader.ruleErrorHeader
 import org.islandoftex.arara.cli.utils.SystemCallUtils
 import org.islandoftex.arara.cli.utils.SystemCallUtils.checkOS
 import org.islandoftex.arara.core.files.FileHandling

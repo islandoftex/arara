@@ -12,9 +12,9 @@ import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.cli.ruleset.RuleUtils
-import org.islandoftex.arara.cli.utils.CommonUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.InterpreterUtils
+import org.islandoftex.arara.cli.utils.RuleErrorHeader
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Executor
@@ -129,7 +129,7 @@ object Interpreter {
                         context)
             } catch (exception: RuntimeException) {
                 throw AraraException(
-                        CommonUtils.ruleErrorHeader + LanguageController
+                        RuleErrorHeader.ruleErrorHeader + LanguageController
                                 .messages.ERROR_INTERPRETER_EXIT_RUNTIME_ERROR,
                         exception
                 )
@@ -139,7 +139,7 @@ object Interpreter {
                 check
             } else {
                 throw AraraException(
-                        CommonUtils.ruleErrorHeader + LanguageController
+                        RuleErrorHeader.ruleErrorHeader + LanguageController
                                 .messages.ERROR_INTERPRETER_WRONG_EXIT_CLOSURE_RETURN
                 )
             }
@@ -184,7 +184,7 @@ object Interpreter {
             TemplateRuntime.eval(command.commandString!!, parameters)
         } catch (exception: RuntimeException) {
             throw AraraException(
-                    CommonUtils.ruleErrorHeader + LanguageController
+                    RuleErrorHeader.ruleErrorHeader + LanguageController
                             .messages.ERROR_INTERPRETER_COMMAND_RUNTIME_ERROR,
                     exception
             )
@@ -248,8 +248,8 @@ object Interpreter {
                 )
         )
 
-        CommonUtils.ruleId = directive.identifier
-        CommonUtils.rulePath = file.parent.toString()
+        RuleErrorHeader.ruleId = directive.identifier
+        RuleErrorHeader.rulePath = file.parent.toString()
 
         // parse the rule identified by the directive
         // (may throw an exception)
@@ -323,7 +323,7 @@ object Interpreter {
                 .minus("reference")
         if (unknown.isNotEmpty())
             throw AraraException(
-                    CommonUtils.ruleErrorHeader +
+                    RuleErrorHeader.ruleErrorHeader +
                             LanguageController.messages.ERROR_INTERPRETER_UNKNOWN_KEYS.format(
                                     unknown.joinToString(", ", "(", ")")
                             )
@@ -368,7 +368,7 @@ object Interpreter {
     ): Any {
         if (argument.isRequired && !idInDirectiveParams)
             throw AraraException(
-                    CommonUtils.ruleErrorHeader +
+                    RuleErrorHeader.ruleErrorHeader +
                             LanguageController.messages.ERROR_INTERPRETER_ARGUMENT_IS_REQUIRED.format(
                                     argument.identifier
                             )
@@ -379,7 +379,7 @@ object Interpreter {
                 TemplateRuntime.eval(it, context)
             } catch (exception: RuntimeException) {
                 throw AraraException(
-                        CommonUtils.ruleErrorHeader + LanguageController
+                        RuleErrorHeader.ruleErrorHeader + LanguageController
                                 .messages.ERROR_INTERPRETER_DEFAULT_VALUE_RUNTIME_ERROR,
                         exception
                 )
@@ -391,7 +391,7 @@ object Interpreter {
                 TemplateRuntime.eval(argument.flag!!, context)
             } catch (exception: RuntimeException) {
                 throw AraraException(
-                        CommonUtils.ruleErrorHeader + LanguageController
+                        RuleErrorHeader.ruleErrorHeader + LanguageController
                                 .messages.ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION,
                         exception
                 )

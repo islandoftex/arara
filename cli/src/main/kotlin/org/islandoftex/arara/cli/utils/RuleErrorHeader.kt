@@ -4,13 +4,16 @@ package org.islandoftex.arara.cli.utils
 import org.islandoftex.arara.core.localization.LanguageController
 
 /**
- * Implements common utilitary methods.
+ * Implements a singleton holding the current rule for error output
+ * generation.
+ *
+ * TODO: remove this object
  *
  * @author Island of TeX
  * @version 5.0
  * @since 4.0
  */
-object CommonUtils {
+object RuleErrorHeader {
     /**
      * The rule identifier to display in the rule error header.
      */
