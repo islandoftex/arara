@@ -13,7 +13,6 @@ import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.api.session.Command
-import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
@@ -61,7 +60,7 @@ object InterpreterUtils {
     ): ProcessExecutor {
         val timeOutValue = LinearExecutor.executionOptions.timeoutValue
         val workingDirectory = command.workingDirectory
-                ?: Arara.currentProject.workingDirectory
+                ?: LinearExecutor.currentProject!!.workingDirectory
         var executor = ProcessExecutor().command((command).elements)
                 .directory(workingDirectory.toFile().absoluteFile)
                 .addDestroyer(ShutdownHookProcessDestroyer())
@@ -136,7 +135,9 @@ object InterpreterUtils {
                 if (path.isAbsolute) {
                     path.resolve(fileName)
                 } else {
-                    Arara.currentProject.workingDirectory
+                    // when retrieving rules the current project is never null
+                    // because the executor always acts on a project file
+                    LinearExecutor.currentProject!!.workingDirectory
                             // first resolve the path (rule path) against the working
                             // directory, then the rule name we want to resolve
                             .resolve(path).resolve(fileName)

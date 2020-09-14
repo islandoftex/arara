@@ -10,7 +10,6 @@ import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.api.session.ExecutionStatus
-import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.cli.ruleset.RuleUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.files.FileHandling
@@ -203,7 +202,7 @@ object Interpreter {
                         throw HaltExpectedException("Command failed")
 
                     // TODO: document this key
-                    val haltKey = "arara:${Arara.currentFile.path.fileName}:halt"
+                    val haltKey = "arara:${LinearExecutor.currentFile!!.path.fileName}:halt"
                     if (Session.contains(haltKey)) {
                         LinearExecutor.executionStatus =
                                 if (Session[haltKey].toString().toInt() != 0)
@@ -253,7 +252,7 @@ object Interpreter {
         }
 
         // if this directive is conditionally disabled, skip
-        if (!available || Session.contains("arara:${Arara.currentFile.path.fileName}:halt"))
+        if (!available || Session.contains("arara:${LinearExecutor.currentFile!!.path.fileName}:halt"))
             return LinearExecutor.executionStatus.exitCode
 
         try {

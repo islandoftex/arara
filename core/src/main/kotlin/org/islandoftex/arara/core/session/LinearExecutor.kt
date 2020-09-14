@@ -35,7 +35,7 @@ object LinearExecutor : Executor {
     /**
      * The file this executor currently works on, if any. This will always
      * be set before the [ExecutorHooks.executeBeforeFile] hook is executed
-     * and unset after the [ExecutorHooks.executeAfterFile] hook.
+     * and unset before the [ExecutorHooks.executeAfterFile] hook.
      */
     var currentFile: ProjectFile? = null
         private set
@@ -92,6 +92,7 @@ object LinearExecutor : Executor {
         currentProject = project
         hooks.executeBeforeProject(project)
         for (file in project.files.byPriority) {
+            currentFile = file
             hooks.executeBeforeFile(file)
             val executionReport = execute(file)
             exitCode = executionReport.exitCode
@@ -111,6 +112,8 @@ object LinearExecutor : Executor {
      */
     @ExperimentalTime
     override fun execute(file: ProjectFile): ExecutionReport {
+        // we are setting this here again because not everyone starts with
+        // a project
         currentFile = file
         val executionStarted = TimeSource.Monotonic.markNow()
         val directives = hooks.processDirectives(

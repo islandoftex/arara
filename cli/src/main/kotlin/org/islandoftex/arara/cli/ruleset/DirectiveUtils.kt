@@ -7,11 +7,11 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.rules.Directive
-import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.DirectiveFetchingHooks
 import org.islandoftex.arara.core.rules.Directives
+import org.islandoftex.arara.core.session.LinearExecutor
 import org.slf4j.LoggerFactory
 
 /**
@@ -128,7 +128,7 @@ object DirectiveUtils {
             } else {
                 result.add(DirectiveImpl(
                         directive.identifier,
-                        parameters.plus("reference" to Arara.currentFile.path.toFile()),
+                        parameters.plus("reference" to LinearExecutor.currentFile!!.path.toFile()),
                         directive.conditional,
                         directive.lineNumbers
                 ))

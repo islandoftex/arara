@@ -13,49 +13,52 @@ import java.io.File
 import java.io.PrintStream
 import java.nio.file.Paths
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
-import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.Project
+import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LinearExecutor
 
 @DoNotParallelize
 class ExecutionTest : ShouldSpec({
     beforeSpec {
         DirectiveUtils.initializeDirectiveCore()
+
+        LinearExecutor.hooks = ExecutorHooks(
+                executeBeforeProject = { project ->
+                    ConfigurationUtils.configFileForProject(project)?.let {
+                        DisplayUtils.configurationFileName = it.toString()
+                        ConfigurationUtils.load(it)
+                    }
+                },
+                executeBeforeFile = {
+                    DisplayUtils.printFileInformation()
+                },
+                processDirectives = {
+                    DirectiveUtils.process(it)
+                }
+        )
     }
 
     fun getPathForTest(name: String): String = "src/test/resources/executiontests/$name"
-    fun outputForTest(testName: String, fileName: String = "$testName.tex"):
-            String {
+    fun outputForTest(
+        testName: String,
+        fileName: String = "$testName.tex"
+    ): String {
         val sysout = System.out
         val output = ByteArrayOutputStream()
         try {
             System.setOut(PrintStream(output))
             val workingDirectory = Paths.get(getPathForTest(testName))
-            // TODO: improve project setup
-            Arara.currentProject = Project("Test", workingDirectory, setOf())
-            ConfigurationUtils.load(workingDirectory.resolve("arararc.yaml"))
-            LinearExecutor.executionOptions = ExecutionOptions
-                    .from(LinearExecutor.executionOptions)
-                    .copy(verbose = true)
-            Arara.currentFile = FileSearching.resolveFile(
-                    fileName,
-                    workingDirectory,
-                    LinearExecutor.executionOptions
-            )
-            Arara.currentProject = (Arara.currentProject as Project)
-                    .copy(files = setOf(
-                            FileSearching.resolveFile(
-                                    fileName,
+            LinearExecutor.execute(listOf(
+                    Project("Test", workingDirectory,
+                            setOf(FileSearching.resolveFile(fileName,
                                     workingDirectory,
-                                    LinearExecutor.executionOptions
+                                    LinearExecutor.executionOptions)
                             )
-                    ))
-            DirectiveUtils.process(Arara.currentFile.fetchDirectives(false))
-                    .forEach { it.execute() }
+                    )
+            ))
             return output.toByteArray().toString(Charsets.UTF_8)
         } catch (ex: Exception) {
             throw ex
@@ -126,15 +129,18 @@ class ExecutionTest : ShouldSpec({
         exception.message shouldContain "could not parse the configuration"
     }
 
-    should("read foreign extension") {
-        val output = outputForTest("foreign-extension", "foreign-extension.my")
-        output shouldContain "QuackOne"
-    }
-    should("fail on unknown extension") {
-        shouldThrow<AraraException> {
-            outputForTest("foreign-extension", "foreign-extension.xy")
-        }
-    }
+    // TODO: uncomment tests (but not here because they do not test the
+    // linear executor but FileSearching)
+//    should("read foreign extension") {
+//        val output = outputForTest("foreign-extension", "foreign-extension.my")
+//        output shouldContain "QuackOne"
+//    }
+//    should("fail on unknown extension") {
+//        shouldThrow<AraraException> {
+//            outputForTest("foreign-extension", "foreign-extension.xy")
+//        }
+//    }
+
     should("accept empty pattern on known extension") {
         val output = outputForTest("known-extension")
         output shouldContain "QuackOne"

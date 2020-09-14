@@ -11,6 +11,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import com.github.ajalt.clikt.parameters.types.restrictTo
+import java.nio.file.Paths
 import java.util.Locale
 import kotlin.time.TimeSource
 import kotlin.time.milliseconds
@@ -133,10 +134,10 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         LoggingUtils.setupLogging(LoggingOptions(log))
 
         // resolve the working directory from the one that may be given
-        // as command line parameter
+        // as command line parameter; otherwise resolve current directory
         val workingDir = FileHandling.normalize(
                 workingDirectory
-                ?: Arara.currentProject.workingDirectory
+                ?: Paths.get("")
         )
 
         // add all command line call parameters to the session
@@ -162,8 +163,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                             DirectiveUtils.initializeDirectiveCore()
                         },
                         executeBeforeProject = { project ->
-                            Arara.currentProject = project
-                            ConfigurationUtils.configFile?.let {
+                            ConfigurationUtils.configFileForProject(project)?.let {
                                 DisplayUtils.configurationFileName = it.toString()
                                 ConfigurationUtils.load(it)
                             }
@@ -173,7 +173,6 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                             // especially the working directory will have to be set and
                             // changed
                             updateConfigurationFromCommandLine()
-                            Arara.currentFile = it
                             DisplayUtils.printFileInformation()
                         },
                         executeAfterFile = {

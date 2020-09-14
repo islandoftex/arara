@@ -5,7 +5,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.cli.Arara
+import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
@@ -28,24 +28,22 @@ object ConfigurationUtils {
      * if no configuration files are found in the user's working directory,
      * try to look up in a global directory, that is, the user home.
      */
-    val configFile: Path?
-        get() {
-            val names = listOf(".araraconfig.yaml",
-                    "araraconfig.yaml", ".arararc.yaml", "arararc.yaml")
-            Arara.currentProject.workingDirectory
-                    .let { workingDir ->
-                        val first = names
-                                .map { workingDir.resolve(it) }
-                                .firstOrNull { Files.exists(it) }
-                        if (first != null)
-                            return first
-                    }
-            return Environment.getSystemPropertyOrNull("user.home")
-                    ?.let { userHome ->
-                        names.map { Paths.get(userHome).resolve(it) }
-                                .firstOrNull { Files.exists(it) }
-                    }
+    fun configFileForProject(project: Project): Path? {
+        val names = listOf(".araraconfig.yaml",
+                "araraconfig.yaml", ".arararc.yaml", "arararc.yaml")
+        project.workingDirectory.let { workingDir ->
+            val first = names
+                    .map { workingDir.resolve(it) }
+                    .firstOrNull { Files.exists(it) }
+            if (first != null)
+                return first
         }
+        return Environment.getSystemPropertyOrNull("user.home")
+                ?.let { userHome ->
+                    names.map { Paths.get(userHome).resolve(it) }
+                            .firstOrNull { Files.exists(it) }
+                }
+    }
 
     /**
      * Validates the configuration file.
@@ -66,6 +64,8 @@ object ConfigurationUtils {
     /**
      * Loads the application configuration.
      *
+     * @param file The YAML file to read the configuration from.
+     *
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
@@ -74,7 +74,7 @@ object ConfigurationUtils {
         // then validate it and update the configuration accordingly
         val resource = loadLocalConfiguration(file)
         LinearExecutor.executionOptions = resource.toExecutionOptions(
-                Arara.currentProject,
+                LinearExecutor.currentProject!!,
                 LinearExecutor.executionOptions
         )
         Session.loggingOptions = resource.toLoggingOptions()

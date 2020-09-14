@@ -7,7 +7,6 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.session.Command
-import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.cli.interpreter.AraraExceptionWithHeader
 import org.islandoftex.arara.cli.ruleset.CommandImpl
 import org.islandoftex.arara.cli.utils.SystemCallUtils
@@ -17,6 +16,7 @@ import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.byPriority
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment.executeSystemCommand
+import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.LinearExecutor.executionOptions
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.GUIDialogs
@@ -60,7 +60,8 @@ object KtRuleMethods {
      */
     @JvmStatic
     val originalReference: File
-            get() = Arara.currentProject.files.byPriority.last().path.toFile()
+            get() = LinearExecutor.currentProject!!.files.byPriority.last()
+                    .path.toFile()
 
     /**
      * Trim spaces from the string.
@@ -303,7 +304,10 @@ object KtRuleMethods {
      */
     @JvmStatic
     fun unsafelyExecuteSystemCommand(command: Command): Pair<Int, String> =
-            executeSystemCommand(command, Arara.currentProject.workingDirectory)
+            executeSystemCommand(
+                    command,
+                    LinearExecutor.currentProject!!.workingDirectory
+            )
 
     /**
      * List all files from the provided directory according to the list of
@@ -474,7 +478,7 @@ object KtRuleMethods {
     @Throws(AraraException::class)
     fun isSubdirectory(directory: File): Boolean =
             FileHandling.isSubDirectory(directory.toPath(),
-                    Arara.currentProject.workingDirectory)
+                    LinearExecutor.currentProject!!.workingDirectory)
 
     /**
      * Checks if the string is empty.

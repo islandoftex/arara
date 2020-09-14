@@ -10,7 +10,6 @@ import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.api.session.ExecutionStatus
-import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
@@ -303,7 +302,7 @@ object DisplayUtils {
      * Displays the file information in the terminal.
      */
     fun printFileInformation() {
-        val file = Arara.currentFile.path.toFile()
+        val file = LinearExecutor.currentFile!!.path.toFile()
         val line = LanguageController.messages.INFO_DISPLAY_FILE_INFORMATION
                 .format(
                         file.name,

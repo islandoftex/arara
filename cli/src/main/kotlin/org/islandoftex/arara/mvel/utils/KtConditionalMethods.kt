@@ -4,7 +4,6 @@ package org.islandoftex.arara.mvel.utils
 import java.io.File
 import java.nio.file.Files
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.session.ClassLoading
 import org.islandoftex.arara.core.session.ClassLoading.ClassLoadingStatus
@@ -28,7 +27,7 @@ object KtConditionalMethods {
     @JvmStatic
     @Throws(AraraException::class)
     fun exists(extension: String): Boolean = Files.exists(FileHandling.changeExtension(
-            Arara.currentFile.path, extension))
+            LinearExecutor.currentFile!!.path, extension))
 
     /**
      * Checks if the file is missing according to its extension.
@@ -53,7 +52,7 @@ object KtConditionalMethods {
     @JvmStatic
     @Throws(AraraException::class)
     fun changed(extension: String): Boolean = changed(FileHandling.changeExtension(
-            Arara.currentFile.path, extension).toFile())
+            LinearExecutor.currentFile!!.path, extension).toFile())
 
     /**
      * Checks if the file is unchanged according to its extension.
@@ -97,7 +96,7 @@ object KtConditionalMethods {
     @Throws(AraraException::class)
     fun changed(filename: File): Boolean = FileHandling.hasChanged(
             filename.toPath(),
-            Arara.currentProject.workingDirectory.resolve(
+            LinearExecutor.currentProject!!.workingDirectory.resolve(
                     LinearExecutor.executionOptions.databaseName
             )
     )
@@ -126,7 +125,7 @@ object KtConditionalMethods {
     @JvmStatic
     @Throws(AraraException::class)
     fun found(extension: String, regex: String): Boolean = found(
-            FileHandling.changeExtension(Arara.currentFile.path, extension)
+            FileHandling.changeExtension(LinearExecutor.currentFile!!.path, extension)
                     .toFile(), regex)
 
     /**
@@ -218,7 +217,7 @@ object KtConditionalMethods {
      * @return A file reference for the current directive.
      */
     @JvmStatic
-    fun currentFile(): File = Arara.currentFile.path.toFile()
+    fun currentFile(): File = LinearExecutor.currentFile!!.path.toFile()
 
     /**
      * Loads a class from the provided file, potentially a Java archive.
