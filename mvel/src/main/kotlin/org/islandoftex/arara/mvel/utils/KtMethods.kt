@@ -16,7 +16,8 @@ object KtMethods {
     val ruleMethods: Map<String, Any> by lazy {
         val map = conditionalMethods.toMutableMap()
         try {
-            val methodsKotlin = KtRuleMethods::class.java.methods
+            // TODO: remove reflection
+            val methodsKotlin = Class.forName("org.islandoftex.arara.mvel.utils.KtRuleMethods").methods
             listOf("halt", "getOriginalFile", "getOriginalReference",
                     "trimSpaces", "getBasename", "getFiletype", "replicatePattern",
                     "throwError", "getSession", "buildString", "getCommand",
@@ -45,7 +46,8 @@ object KtMethods {
     val conditionalMethods: Map<String, Any> by lazy {
         val map = mutableMapOf<String, Any>()
         try {
-            val methodsKotlin = KtConditionalMethods::class.java.methods
+            // TODO: remove reflection
+            val methodsKotlin = Class.forName("org.islandoftex.arara.mvel.utils.KtConditionalMethods").methods
             listOf("exists", "missing", "changed", "unchanged",
                     "found", "toFile", "showDropdown", "showInput",
                     "showOptions", "currentFile", "loadClass", "loadObject"

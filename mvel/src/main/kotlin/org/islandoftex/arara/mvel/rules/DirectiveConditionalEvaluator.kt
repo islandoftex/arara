@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.mvel.rules
 
-import kotlin.reflect.full.memberProperties
 import kotlin.time.ExperimentalTime
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionOptions
@@ -9,6 +8,7 @@ import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.DirectiveConditionalEvaluator
+import org.islandoftex.arara.mvel.utils.KtMethods
 import org.mvel2.templates.TemplateRuntime
 
 /**
@@ -32,14 +32,8 @@ class DirectiveConditionalEvaluator(executionOptions: ExecutionOptions) :
     @Suppress("TooGenericExceptionCaught")
     override fun evaluateCondition(conditional: DirectiveConditional): Boolean {
         try {
-            // TODO: remove reflection
-            val methodsClass = Class.forName("org.islandoftex.arara.mvel.utils.KtMethods").kotlin
-            val conditionalMethods = methodsClass.memberProperties
-                    .first { it.name == "conditionalMethods" }
-                    .getter.call(methodsClass.objectInstance!!)
-            @Suppress("UNCHECKED_CAST")
-            val result = TemplateRuntime.eval("@{ " + conditional.condition + " }",
-                    conditionalMethods as Map<String, Any>)
+            val result = TemplateRuntime.eval("@{ ${conditional.condition} }",
+                    KtMethods.conditionalMethods)
             return if (result is Boolean) {
                 if (conditional.type == DirectiveConditionalType.UNLESS ||
                         conditional.type == DirectiveConditionalType.UNTIL)
