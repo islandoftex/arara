@@ -13,7 +13,6 @@ import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.cli.ruleset.RuleUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
-import org.islandoftex.arara.cli.utils.RuleErrorHeader
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Executor
@@ -37,12 +36,6 @@ object Interpreter {
     // the class logger obtained from
     // the logger factory
     private val logger = LoggerFactory.getLogger(Interpreter::class.java)
-
-    /**
-     * Exception class to represent that the interpreter should stop for some
-     * reason
-     */
-    private class HaltExpectedException(msg: String) : Exception(msg)
 
     /**
      * Gets the rule according to the provided directive.
@@ -127,9 +120,8 @@ object Interpreter {
                         "@{ " + (ruleCommandExitValue ?: "value == 0") + " }",
                         context)
             } catch (exception: RuntimeException) {
-                throw AraraException(
-                        RuleErrorHeader.getCurrent() + LanguageController
-                                .messages.ERROR_INTERPRETER_EXIT_RUNTIME_ERROR,
+                throw AraraExceptionWithHeader(LanguageController.messages
+                        .ERROR_INTERPRETER_EXIT_RUNTIME_ERROR,
                         exception
                 )
             }
@@ -137,9 +129,9 @@ object Interpreter {
             success = if (check is Boolean) {
                 check
             } else {
-                throw AraraException(
-                        RuleErrorHeader.getCurrent() + LanguageController
-                                .messages.ERROR_INTERPRETER_WRONG_EXIT_CLOSURE_RETURN
+                throw AraraExceptionWithHeader(
+                        LanguageController.messages
+                                .ERROR_INTERPRETER_WRONG_EXIT_CLOSURE_RETURN
                 )
             }
         } else {
@@ -182,9 +174,8 @@ object Interpreter {
         val result: Any = try {
             TemplateRuntime.eval(command.commandString!!, parameters)
         } catch (exception: RuntimeException) {
-            throw AraraException(
-                    RuleErrorHeader.getCurrent() + LanguageController
-                            .messages.ERROR_INTERPRETER_COMMAND_RUNTIME_ERROR,
+            throw AraraExceptionWithHeader(LanguageController
+                    .messages.ERROR_INTERPRETER_COMMAND_RUNTIME_ERROR,
                     exception
             )
         }
@@ -247,9 +238,6 @@ object Interpreter {
                 )
         )
 
-        RuleErrorHeader.ruleId = directive.identifier
-        RuleErrorHeader.rulePath = file.parent.toString()
-
         // parse the rule identified by the directive
         // (may throw an exception)
         val rule = RuleUtils.parseRule(file, directive.identifier)
@@ -283,6 +271,14 @@ object Interpreter {
         } catch (_: HaltExpectedException) {
             // If the user uses the halt rule to trigger a halt, this will be
             // raised. Any other exception will not be caught and propagate up.
+        } catch (e: AraraExceptionWithHeader) {
+            // rethrow arara exceptions that are bound to have a header by
+            // prepending the header and removing the outer exception with
+            // header where possible
+            throw AraraException(
+                    LanguageController.messages.ERROR_RULE_IDENTIFIER_AND_PATH
+                            .format(directive.identifier, file.parent.toString()) + " " +
+                    e.message, e.exception ?: e)
         }
         return Executor.executionStatus.exitCode
     }
@@ -321,11 +317,10 @@ object Interpreter {
         val unknown = getUnknownKeys(directive.parameters, arguments)
                 .minus("reference")
         if (unknown.isNotEmpty())
-            throw AraraException(
-                    RuleErrorHeader.getCurrent() +
-                            LanguageController.messages.ERROR_INTERPRETER_UNKNOWN_KEYS.format(
-                                    unknown.joinToString(", ", "(", ")")
-                            )
+            throw AraraExceptionWithHeader(LanguageController.messages
+                    .ERROR_INTERPRETER_UNKNOWN_KEYS.format(
+                            unknown.joinToString(", ", "(", ")")
+                    )
             )
 
         val resolvedArguments = mutableMapOf<String, Any>()
@@ -366,20 +361,17 @@ object Interpreter {
         context: Map<String, Any>
     ): Any {
         if (argument.isRequired && !idInDirectiveParams)
-            throw AraraException(
-                    RuleErrorHeader.getCurrent() +
-                            LanguageController.messages.ERROR_INTERPRETER_ARGUMENT_IS_REQUIRED.format(
-                                    argument.identifier
-                            )
+            throw AraraExceptionWithHeader(
+                    LanguageController.messages.ERROR_INTERPRETER_ARGUMENT_IS_REQUIRED
+                            .format(argument.identifier)
             )
 
         var ret = argument.defaultValue?.let {
             try {
                 TemplateRuntime.eval(it, context)
             } catch (exception: RuntimeException) {
-                throw AraraException(
-                        RuleErrorHeader.getCurrent() + LanguageController
-                                .messages.ERROR_INTERPRETER_DEFAULT_VALUE_RUNTIME_ERROR,
+                throw AraraExceptionWithHeader(LanguageController.messages
+                        .ERROR_INTERPRETER_DEFAULT_VALUE_RUNTIME_ERROR,
                         exception
                 )
             }
@@ -389,9 +381,8 @@ object Interpreter {
             ret = try {
                 TemplateRuntime.eval(argument.flag!!, context)
             } catch (exception: RuntimeException) {
-                throw AraraException(
-                        RuleErrorHeader.getCurrent() + LanguageController
-                                .messages.ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION,
+                throw AraraExceptionWithHeader(LanguageController.messages
+                        .ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION,
                         exception
                 )
             }

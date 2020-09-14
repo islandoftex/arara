@@ -4,7 +4,7 @@ package org.islandoftex.arara.api
 /**
  * Implements the specific exception model for arara.
  */
-public class AraraException : Exception {
+public open class AraraException : Exception {
     /**
      * The underlying exception, used to hold more details
      * on what really happened

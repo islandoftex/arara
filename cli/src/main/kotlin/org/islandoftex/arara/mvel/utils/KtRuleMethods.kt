@@ -8,8 +8,8 @@ import java.nio.file.Paths
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.cli.Arara
+import org.islandoftex.arara.cli.interpreter.AraraExceptionWithHeader
 import org.islandoftex.arara.cli.ruleset.CommandImpl
-import org.islandoftex.arara.cli.utils.RuleErrorHeader
 import org.islandoftex.arara.cli.utils.SystemCallUtils
 import org.islandoftex.arara.cli.utils.SystemCallUtils.checkOS
 import org.islandoftex.arara.core.files.FileHandling
@@ -26,9 +26,6 @@ import org.islandoftex.arara.mvel.utils.MethodUtils.replicateList
 
 @Suppress("unused", "TooManyFunctions")
 object KtRuleMethods {
-    // the language controller
-    private val messages = LanguageController.messages
-
     // the GUI generator
     private val dialogs = GUIDialogs(Session.userInterfaceOptions)
 
@@ -88,8 +85,8 @@ object KtRuleMethods {
             if (file.isFile) {
                 file.nameWithoutExtension
             } else {
-                throw AraraException(RuleErrorHeader.getCurrent() +
-                        messages.ERROR_BASENAME_NOT_A_FILE.format(file.name))
+                throw AraraExceptionWithHeader(LanguageController.messages
+                                .ERROR_BASENAME_NOT_A_FILE.format(file.name))
             }
 
     /**
@@ -115,8 +112,8 @@ object KtRuleMethods {
             if (file.isFile) {
                 file.extension
             } else {
-                throw AraraException(RuleErrorHeader.getCurrent() +
-                        messages.ERROR_FILETYPE_NOT_A_FILE.format(file.name))
+                throw AraraExceptionWithHeader(LanguageController.messages
+                        .ERROR_FILETYPE_NOT_A_FILE.format(file.name))
             }
 
     /**
