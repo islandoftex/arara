@@ -158,6 +158,8 @@ subprojects {
                     attributes["Implementation-Version"] = version
                     if (project.name == "cli")
                         attributes["Main-Class"] = "${project.group}.Arara"
+                        // for Java 9+ compatibility of log4j
+                        attributes["Multi-Release"] = "true"
                     if (javaCompatibility < JavaVersion.VERSION_1_9) {
                         attributes["Automatic-Module-Name"] = rootProject.group
                     }
