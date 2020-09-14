@@ -176,7 +176,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                             // especially the working directory will have to be set and
                             // changed
                             updateConfigurationFromCommandLine()
-                            DisplayUtils.printFileInformation()
+                            DisplayUtils.printFileInformation(it)
                         },
                         executeAfterFile = {
                             // add an empty line between file executions

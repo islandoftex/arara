@@ -33,7 +33,7 @@ class ExecutionTest : ShouldSpec({
                     }
                 },
                 executeBeforeFile = {
-                    DisplayUtils.printFileInformation()
+                    DisplayUtils.printFileInformation(it)
                 },
                 processDirectives = {
                     DirectiveUtils.process(it)

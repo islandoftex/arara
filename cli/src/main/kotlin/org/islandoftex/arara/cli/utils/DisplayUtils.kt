@@ -7,6 +7,7 @@ import kotlin.math.pow
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
+import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.api.session.ExecutionStatus
@@ -301,8 +302,8 @@ object DisplayUtils {
     /**
      * Displays the file information in the terminal.
      */
-    fun printFileInformation() {
-        val file = LinearExecutor.currentFile!!.path.toFile()
+    fun printFileInformation(projectFile: ProjectFile) {
+        val file = projectFile.path.toFile()
         val line = LanguageController.messages.INFO_DISPLAY_FILE_INFORMATION
                 .format(
                         file.name,
