@@ -9,7 +9,7 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.cli.Arara
 import org.islandoftex.arara.cli.ruleset.CommandImpl
-import org.islandoftex.arara.cli.utils.RuleErrorHeader.ruleErrorHeader
+import org.islandoftex.arara.cli.utils.RuleErrorHeader
 import org.islandoftex.arara.cli.utils.SystemCallUtils
 import org.islandoftex.arara.cli.utils.SystemCallUtils.checkOS
 import org.islandoftex.arara.core.files.FileHandling
@@ -40,7 +40,7 @@ object KtRuleMethods {
     @JvmStatic
     @JvmOverloads
     fun halt(status: Int = 0) {
-        Session.put("arara:" + getOriginalFile() + ":halt", status)
+        Session.put("arara:$originalFile:halt", status)
     }
 
     /**
@@ -49,7 +49,8 @@ object KtRuleMethods {
      * @return The original file.
      */
     @JvmStatic
-    fun getOriginalFile(): String = getOriginalReference().name
+    val originalFile: String
+        get() = originalReference.name
 
     /**
      * Gets the original reference, i.e. the file arara has been called on or
@@ -61,8 +62,8 @@ object KtRuleMethods {
      * @return The original reference.
      */
     @JvmStatic
-    fun getOriginalReference(): File = Arara.currentProject.files.byPriority
-            .last().path.toFile()
+    val originalReference: File
+            get() = Arara.currentProject.files.byPriority.last().path.toFile()
 
     /**
      * Trim spaces from the string.
@@ -87,10 +88,8 @@ object KtRuleMethods {
             if (file.isFile) {
                 file.nameWithoutExtension
             } else {
-                throw AraraException(ruleErrorHeader + String.format(
-                        messages.ERROR_BASENAME_NOT_A_FILE,
-                        file.name
-                ))
+                throw AraraException(RuleErrorHeader.getCurrent() +
+                        messages.ERROR_BASENAME_NOT_A_FILE.format(file.name))
             }
 
     /**
@@ -116,10 +115,8 @@ object KtRuleMethods {
             if (file.isFile) {
                 file.extension
             } else {
-                throw AraraException(ruleErrorHeader + String.format(
-                        messages.ERROR_FILETYPE_NOT_A_FILE,
-                        file.name
-                ))
+                throw AraraException(RuleErrorHeader.getCurrent() +
+                        messages.ERROR_FILETYPE_NOT_A_FILE.format(file.name))
             }
 
     /**

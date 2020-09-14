@@ -31,14 +31,10 @@ object RuleErrorHeader {
      * @return A string representation of the rule error header, containing the
      * identifier and the path, if any.
      */
-    @JvmStatic
-    val ruleErrorHeader: String
-        get() {
-            return ruleId?.let { id ->
-                rulePath?.let { path ->
-                    LanguageController.messages.ERROR_RULE_IDENTIFIER_AND_PATH
-                            .format(id, path) + " "
-                }
-            } ?: ""
+    fun getCurrent() = ruleId?.let { id ->
+        rulePath?.let { path ->
+            LanguageController.messages.ERROR_RULE_IDENTIFIER_AND_PATH
+                    .format(id, path) + " "
         }
+    } ?: ""
 }

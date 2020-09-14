@@ -129,7 +129,7 @@ object Interpreter {
                         context)
             } catch (exception: RuntimeException) {
                 throw AraraException(
-                        RuleErrorHeader.ruleErrorHeader + LanguageController
+                        RuleErrorHeader.getCurrent() + LanguageController
                                 .messages.ERROR_INTERPRETER_EXIT_RUNTIME_ERROR,
                         exception
                 )
@@ -139,7 +139,7 @@ object Interpreter {
                 check
             } else {
                 throw AraraException(
-                        RuleErrorHeader.ruleErrorHeader + LanguageController
+                        RuleErrorHeader.getCurrent() + LanguageController
                                 .messages.ERROR_INTERPRETER_WRONG_EXIT_CLOSURE_RETURN
                 )
             }
@@ -184,7 +184,7 @@ object Interpreter {
             TemplateRuntime.eval(command.commandString!!, parameters)
         } catch (exception: RuntimeException) {
             throw AraraException(
-                    RuleErrorHeader.ruleErrorHeader + LanguageController
+                    RuleErrorHeader.getCurrent() + LanguageController
                             .messages.ERROR_INTERPRETER_COMMAND_RUNTIME_ERROR,
                     exception
             )
@@ -323,7 +323,7 @@ object Interpreter {
                 .minus("reference")
         if (unknown.isNotEmpty())
             throw AraraException(
-                    RuleErrorHeader.ruleErrorHeader +
+                    RuleErrorHeader.getCurrent() +
                             LanguageController.messages.ERROR_INTERPRETER_UNKNOWN_KEYS.format(
                                     unknown.joinToString(", ", "(", ")")
                             )
@@ -368,7 +368,7 @@ object Interpreter {
     ): Any {
         if (argument.isRequired && !idInDirectiveParams)
             throw AraraException(
-                    RuleErrorHeader.ruleErrorHeader +
+                    RuleErrorHeader.getCurrent() +
                             LanguageController.messages.ERROR_INTERPRETER_ARGUMENT_IS_REQUIRED.format(
                                     argument.identifier
                             )
@@ -379,7 +379,7 @@ object Interpreter {
                 TemplateRuntime.eval(it, context)
             } catch (exception: RuntimeException) {
                 throw AraraException(
-                        RuleErrorHeader.ruleErrorHeader + LanguageController
+                        RuleErrorHeader.getCurrent() + LanguageController
                                 .messages.ERROR_INTERPRETER_DEFAULT_VALUE_RUNTIME_ERROR,
                         exception
                 )
@@ -391,7 +391,7 @@ object Interpreter {
                 TemplateRuntime.eval(argument.flag!!, context)
             } catch (exception: RuntimeException) {
                 throw AraraException(
-                        RuleErrorHeader.ruleErrorHeader + LanguageController
+                        RuleErrorHeader.getCurrent() + LanguageController
                                 .messages.ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION,
                         exception
                 )
