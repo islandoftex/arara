@@ -26,7 +26,12 @@ object LanguageController {
             Locale.forLanguageTag("nl") -> DutchLanguage()
             Locale.forLanguageTag("pt-BR") -> BrazilianLanguage()
             Locale.forLanguageTag("en-QN") -> NorfolkLanguage()
-            else -> Messages()
+            Locale.ENGLISH -> Messages()
+            else -> {
+                // TODO: add warning or signal potentially differing
+                //  locale in another way
+                Messages()
+            }
         }
     }
 }
