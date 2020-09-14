@@ -191,8 +191,9 @@ object Interpreter {
                                 rule.authors)
                         is Command -> runCommand(current, conditional,
                                 rule.authors, command.exit)
-                        else -> TODO("error: this should not happen" +
-                                "we are only supporting boolean + command")
+                        else ->
+                            throw AraraExceptionWithHeader(LanguageController
+                                    .messages.ERROR_INTERPRETER_WRONG_RETURN_TYPE)
                     }
 
                     DisplayUtils.printEntryResult(success)
