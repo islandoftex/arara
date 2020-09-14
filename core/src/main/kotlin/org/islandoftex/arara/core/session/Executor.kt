@@ -32,12 +32,6 @@ data class ExecutorHooks(
 
 object Executor : Executor {
     /**
-     * We check whether we are executing so that execution options are not
-     * changed where they should not be changed.
-     */
-    private var isExecuting = false
-
-    /**
      * Specify custom user hooks to run.
      */
     var hooks = ExecutorHooks()
@@ -48,6 +42,22 @@ object Executor : Executor {
     var executionStatus: ExecutionStatus = ExecutionStatus.PROCESSING
 
     /**
+     * The project this executor currently executes, if any. This will always
+     * be set before the [ExecutorHooks.executeBeforeProject] hook is executed
+     * and unset after the [ExecutorHooks.executeAfterProject] hook.
+     */
+    var currentProject: Project? = null
+        private set
+
+    /**
+     * The file this executor currently works on, if any. This will always
+     * be set before the [ExecutorHooks.executeBeforeFile] hook is executed
+     * and unset after the [ExecutorHooks.executeAfterFile] hook.
+     */
+    var currentFile: ProjectFile? = null
+        private set
+
+    /**
      * The setup for all executions run by this executor. The execution options
      * should not change while executing one project.
      */
@@ -55,7 +65,7 @@ object Executor : Executor {
     override var executionOptions: ExecutionOptions =
             org.islandoftex.arara.core.configuration.ExecutionOptions()
         set(value) {
-            if (isExecuting)
+            if (currentFile == null)
                 throw AraraException("Cannot change execution options while " +
                         "executing a file.")
             if (value.parallelExecution)
@@ -96,6 +106,7 @@ object Executor : Executor {
     @ExperimentalTime
     internal fun executeProject(project: Project): Int {
         var exitCode = 0
+        currentProject = project
         hooks.executeBeforeProject(project)
         for (file in project.files.byPriority) {
             hooks.executeBeforeFile(file)
@@ -106,6 +117,7 @@ object Executor : Executor {
             hooks.executeAfterFile(executionReport)
         }
         hooks.executeAfterProject(project)
+        currentProject = null
         return exitCode
     }
 
@@ -116,7 +128,7 @@ object Executor : Executor {
      */
     @ExperimentalTime
     override fun execute(file: ProjectFile): ExecutionReport {
-        isExecuting = true
+        currentFile = file
         val executionStarted = TimeSource.Monotonic.markNow()
         val directives = hooks.processDirectives(
                 file.fetchDirectives(executionOptions.parseOnlyHeader)
@@ -128,7 +140,7 @@ object Executor : Executor {
                 break
             }
         }
-        isExecuting = false
+        currentFile = null
         return ExecutionReport(
                 executionStarted, TimeSource.Monotonic.markNow(), exitCode
         )
