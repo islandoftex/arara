@@ -2,7 +2,6 @@
 package org.islandoftex.arara.cli.utils
 
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.session.Executor
 
 /**
  * Implements common utilitary methods.
@@ -39,13 +38,4 @@ object CommonUtils {
                 }
             } ?: ""
         }
-
-    /**
-     * Gets the list of file types as string, in order.
-     *
-     * @return A string representation of the list of file types, in order.
-     */
-    val fileTypesList: String
-        get() = Executor.executionOptions.fileTypes
-                .joinToString(" | ", "[ ", " ]")
 }
