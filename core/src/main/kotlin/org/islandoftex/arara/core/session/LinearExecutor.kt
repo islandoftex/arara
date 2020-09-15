@@ -111,8 +111,6 @@ object LinearExecutor : Executor {
      */
     @ExperimentalTime
     override fun execute(file: ProjectFile): ExecutionReport {
-        // we are setting this here again because not everyone starts with
-        // a project
         currentFile = file
         val executionStarted = TimeSource.Monotonic.markNow()
         val directives = hooks.processDirectives(
