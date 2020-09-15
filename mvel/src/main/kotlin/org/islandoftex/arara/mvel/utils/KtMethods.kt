@@ -21,6 +21,7 @@ object KtMethods {
         try {
             // TODO: remove reflection
             val methodsKotlin = Class.forName("org.islandoftex.arara.mvel.utils.KtRuleMethods").methods
+                    .plus(RuleMethods::class.java.methods)
             listOf("halt", "getOriginalFile", "getOriginalReference",
                     "trimSpaces", "getBasename", "getFiletype", "replicatePattern",
                     "throwError", "getSession", "buildString", "getCommand",
