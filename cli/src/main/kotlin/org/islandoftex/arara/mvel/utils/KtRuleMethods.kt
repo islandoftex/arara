@@ -7,7 +7,6 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.session.Command
-import org.islandoftex.arara.cli.interpreter.AraraExceptionWithHeader
 import org.islandoftex.arara.cli.utils.SystemCallUtils
 import org.islandoftex.arara.cli.utils.SystemCallUtils.checkOS
 import org.islandoftex.arara.core.files.FileHandling
@@ -21,6 +20,7 @@ import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.GUIDialogs
 import org.islandoftex.arara.core.ui.InputHandling
 import org.islandoftex.arara.core.ui.InputHandling.checkBoolean
+import org.islandoftex.arara.mvel.interpreter.AraraExceptionWithHeader
 import org.islandoftex.arara.mvel.utils.MethodUtils.generateString
 import org.islandoftex.arara.mvel.utils.MethodUtils.replicateList
 

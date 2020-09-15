@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.interpreter
+package org.islandoftex.arara.mvel.interpreter
 
 import org.islandoftex.arara.api.AraraException
+
+// TODO: re-add internal keyword
 
 /**
  * A general interpreter exception to be thrown with the intention of
  * formatting it with appropriate debug context.
  */
-internal class AraraExceptionWithHeader : AraraException {
+class AraraExceptionWithHeader : AraraException {
     constructor(message: String) : super(message)
     constructor(message: String, exception: Exception) : super(message, exception)
 }
@@ -16,4 +18,4 @@ internal class AraraExceptionWithHeader : AraraException {
  * Exception class to represent that the interpreter should stop for some
  * reason
  */
-internal class HaltExpectedException(msg: String) : AraraException(msg)
+class HaltExpectedException(msg: String) : AraraException(msg)
