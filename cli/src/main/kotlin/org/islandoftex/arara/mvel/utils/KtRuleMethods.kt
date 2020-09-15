@@ -305,8 +305,13 @@ object KtRuleMethods {
     @JvmStatic
     fun unsafelyExecuteSystemCommand(command: Command): Pair<Int, String> =
             executeSystemCommand(
-                    command,
-                    LinearExecutor.currentProject!!.workingDirectory
+                    // TODO: reconsider this cast
+                    // the user is only able to instantiate CommandImpl objects
+                    // so this is the only implementation of Command we need
+                    // to consider
+                    (command as CommandImpl).apply {
+                        workingDirectory = LinearExecutor.currentProject?.workingDirectory
+                    }
             )
 
     /**

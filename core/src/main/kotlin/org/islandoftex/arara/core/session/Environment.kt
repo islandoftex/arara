@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
-import java.nio.file.Path
+import java.nio.file.Paths
 import org.islandoftex.arara.api.session.Command
 import org.zeroturnaround.exec.ProcessExecutor
 
@@ -56,11 +56,12 @@ object Environment {
      *   and [errorCommandOutput].
      */
     @JvmStatic
-    fun executeSystemCommand(
-        command: Command,
-        workingDirectory: Path
-    ): Pair<Int, String> {
+    fun executeSystemCommand(command: Command): Pair<Int, String> {
         return ProcessExecutor(command.elements).runCatching {
+            // use the command's working directory as the preferred working
+            // directory; although it may be missing in which case we will use
+            // arara's execution directory by default
+            val workingDirectory = command.workingDirectory ?: Paths.get("")
             directory(workingDirectory.toFile().absoluteFile)
             readOutput(true)
             execute().run {

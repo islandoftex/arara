@@ -2,7 +2,6 @@
 package org.islandoftex.arara.cli.utils
 
 import java.io.File
-import java.nio.file.Paths
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.cli.ruleset.CommandImpl
 import org.islandoftex.arara.core.localization.LanguageController
@@ -29,11 +28,9 @@ object SystemCallUtils {
      */
     private val inCygwinEnvironment by lazy {
         Environment.executeSystemCommand(
-                CommandImpl(listOf("uname", "-s")),
-                // execute the Cygwin detection from arara's execution directory
-                // instead of the project's working directory as the information
-                // whether one runs on Cygwin does not depend on the project
-                Paths.get("")
+                // execute the Cygwin detection; we do not specify a working
+                // directory because for the test it is irrelevant
+                CommandImpl(listOf("uname", "-s"))
         ).second.toLowerCase().startsWith("cygwin")
     }
 

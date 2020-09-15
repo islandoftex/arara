@@ -2,7 +2,6 @@
 package org.islandoftex.arara.dsl.language
 
 import java.nio.file.Path
-import java.nio.file.Paths
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.api.rules.RuleArgument
@@ -55,9 +54,7 @@ class DSLRule(
             listOf(command).plus(parameters), workingDirectory
     ).also {
         commands.add(org.islandoftex.arara.dsl.rules.RuleCommand(command) {
-            // TODO: use application's path
-            Environment.executeSystemCommand(it,
-                    workingDirectory ?: Paths.get("")).first
+            Environment.executeSystemCommand(it).first
         })
     }
 
