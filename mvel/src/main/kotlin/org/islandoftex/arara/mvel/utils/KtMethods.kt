@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.mvel.utils
 
+import kotlin.time.ExperimentalTime
+
 /**
  * Implements some auxiliary methods for runtime evaluation.
  *
@@ -8,6 +10,7 @@ package org.islandoftex.arara.mvel.utils
  * @version 6.0
  * @since 6.0
  */
+@ExperimentalTime
 object KtMethods {
     /**
      * A map of rule method names to method pointers.
@@ -46,8 +49,7 @@ object KtMethods {
     val conditionalMethods: Map<String, Any> by lazy {
         val map = mutableMapOf<String, Any>()
         try {
-            // TODO: remove reflection
-            val methodsKotlin = Class.forName("org.islandoftex.arara.mvel.utils.KtConditionalMethods").methods
+            val methodsKotlin = ConditionalMethods::class.java.methods
             listOf("exists", "missing", "changed", "unchanged",
                     "found", "toFile", "showDropdown", "showInput",
                     "showOptions", "currentFile", "loadClass", "loadObject"
