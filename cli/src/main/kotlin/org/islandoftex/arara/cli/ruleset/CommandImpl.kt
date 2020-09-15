@@ -3,7 +3,6 @@ package org.islandoftex.arara.cli.ruleset
 
 import java.nio.file.Path
 import org.islandoftex.arara.api.session.Command
-import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.ui.InputHandling
 
 /**
@@ -16,10 +15,7 @@ import org.islandoftex.arara.core.ui.InputHandling
 class CommandImpl(values: List<Any>) : Command {
     override val elements: List<String> = InputHandling.flatten(values.toList())
             .map { it.toString() }.filter { it.isNotEmpty() }
-    override var workingDirectory: Path =
-            // at the time commands are constructed, a project is executed so
-            // that the current project will be non-null
-            LinearExecutor.currentProject!!.workingDirectory
+    override var workingDirectory: Path? = null
 
     /**
      * Provides a textual representation of the current command.
