@@ -20,6 +20,7 @@ import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.LinearExecutor.executionOptions
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.GUIDialogs
+import org.islandoftex.arara.core.ui.InputHandling
 import org.islandoftex.arara.core.ui.InputHandling.checkBoolean
 import org.islandoftex.arara.mvel.utils.MethodUtils.generateString
 import org.islandoftex.arara.mvel.utils.MethodUtils.replicateList
@@ -188,7 +189,9 @@ object KtRuleMethods {
      * @return A command.
      */
     @JvmStatic
-    fun getCommand(vararg elements: Any): Command = CommandImpl(elements.toList())
+    fun getCommand(vararg elements: Any): Command = CommandImpl(
+            InputHandling.flatten(elements.toList())
+                    .map { it.toString() }.filter { it.isNotEmpty() })
 
     /**
      * Gets the command based on an array of objects and with the provided
@@ -203,9 +206,11 @@ object KtRuleMethods {
         path: String,
         vararg elements: Any
     ): Command =
-            CommandImpl(elements.toList()).apply {
-                workingDirectory = Paths.get(path)
-            }
+            CommandImpl(InputHandling.flatten(elements.toList())
+                    .map { it.toString() }.filter { it.isNotEmpty() })
+                    .apply {
+                        workingDirectory = Paths.get(path)
+                    }
 
     /**
      * Gets the command based on an array of objects and with the provided
@@ -220,9 +225,11 @@ object KtRuleMethods {
         file: File,
         vararg elements: Any
     ): Command =
-            CommandImpl(elements.toList()).apply {
-                workingDirectory = file.toPath()
-            }
+            CommandImpl(InputHandling.flatten(elements.toList())
+                    .map { it.toString() }.filter { it.isNotEmpty() })
+                    .apply {
+                        workingDirectory = file.toPath()
+                    }
 
     /**
      * Gets the command based on a list of strings and with the provided
