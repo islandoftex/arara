@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.ruleset
+package org.islandoftex.arara.core.session
 
 import java.nio.file.Path
 import org.islandoftex.arara.api.session.Command
@@ -11,7 +11,7 @@ import org.islandoftex.arara.api.session.Command
  * @version 5.0
  * @since 4.0
  */
-data class CommandImpl(
+data class Command(
     override val elements: List<String>,
     override val workingDirectory: Path? = null
 ) : Command {

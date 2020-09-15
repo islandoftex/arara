@@ -3,8 +3,8 @@ package org.islandoftex.arara.cli.utils
 
 import java.io.File
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.cli.ruleset.CommandImpl
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.session.Command
 import org.islandoftex.arara.core.session.Environment
 
 /**
@@ -30,7 +30,7 @@ object SystemCallUtils {
         Environment.executeSystemCommand(
                 // execute the Cygwin detection; we do not specify a working
                 // directory because for the test it is irrelevant
-                CommandImpl(listOf("uname", "-s"))
+                Command(listOf("uname", "-s"))
         ).second.toLowerCase().startsWith("cygwin")
     }
 

@@ -8,7 +8,6 @@ import java.nio.file.Paths
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.cli.interpreter.AraraExceptionWithHeader
-import org.islandoftex.arara.cli.ruleset.CommandImpl
 import org.islandoftex.arara.cli.utils.SystemCallUtils
 import org.islandoftex.arara.cli.utils.SystemCallUtils.checkOS
 import org.islandoftex.arara.core.files.FileHandling
@@ -180,7 +179,8 @@ object KtRuleMethods {
      * @return A command.
      */
     @JvmStatic
-    fun getCommand(elements: List<String>): Command = CommandImpl(elements)
+    fun getCommand(elements: List<String>): Command =
+            org.islandoftex.arara.core.session.Command(elements)
 
     /**
      * Gets the command based on an array of objects.
@@ -189,9 +189,11 @@ object KtRuleMethods {
      * @return A command.
      */
     @JvmStatic
-    fun getCommand(vararg elements: Any): Command = CommandImpl(
-            InputHandling.flatten(elements.toList())
-                    .map { it.toString() }.filter { it.isNotEmpty() })
+    fun getCommand(vararg elements: Any): Command =
+            org.islandoftex.arara.core.session.Command(
+                    InputHandling.flatten(elements.toList())
+                            .map { it.toString() }
+                            .filter { it.isNotEmpty() })
 
     /**
      * Gets the command based on an array of objects and with the provided
@@ -205,9 +207,10 @@ object KtRuleMethods {
     fun getCommandWithWorkingDirectory(
         path: String,
         vararg elements: Any
-    ): Command =
-            CommandImpl(InputHandling.flatten(elements.toList())
-                    .map { it.toString() }.filter { it.isNotEmpty() },
+    ): Command = org.islandoftex.arara.core.session.Command(
+                    InputHandling.flatten(elements.toList())
+                            .map { it.toString() }
+                            .filter { it.isNotEmpty() },
                     Paths.get(path)
             )
 
@@ -223,10 +226,11 @@ object KtRuleMethods {
     fun getCommandWithWorkingDirectory(
         file: File,
         vararg elements: Any
-    ): Command =
-            CommandImpl(InputHandling.flatten(elements.toList())
-                    .map { it.toString() }.filter { it.isNotEmpty() },
-                        file.toPath()
+    ): Command = org.islandoftex.arara.core.session.Command(
+                    InputHandling.flatten(elements.toList())
+                            .map { it.toString() }
+                            .filter { it.isNotEmpty() },
+                    file.toPath()
             )
 
     /**
@@ -241,7 +245,7 @@ object KtRuleMethods {
     fun getCommandWithWorkingDirectory(
         path: String,
         elements: List<String>
-    ): Command = CommandImpl(elements, Paths.get(path))
+    ): Command = org.islandoftex.arara.core.session.Command(elements, Paths.get(path))
 
     /**
      * Gets the command based on a list of strings and with the provided
@@ -255,7 +259,7 @@ object KtRuleMethods {
     fun getCommandWithWorkingDirectory(
         file: File,
         elements: List<String>
-    ): Command = CommandImpl(elements, file.toPath())
+    ): Command = org.islandoftex.arara.core.session.Command(elements, file.toPath())
 
     /**
      * Checks if the execution is in verbose mode.
