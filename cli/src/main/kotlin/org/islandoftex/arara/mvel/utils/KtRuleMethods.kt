@@ -207,10 +207,9 @@ object KtRuleMethods {
         vararg elements: Any
     ): Command =
             CommandImpl(InputHandling.flatten(elements.toList())
-                    .map { it.toString() }.filter { it.isNotEmpty() })
-                    .apply {
-                        workingDirectory = Paths.get(path)
-                    }
+                    .map { it.toString() }.filter { it.isNotEmpty() },
+                    Paths.get(path)
+            )
 
     /**
      * Gets the command based on an array of objects and with the provided
@@ -226,10 +225,9 @@ object KtRuleMethods {
         vararg elements: Any
     ): Command =
             CommandImpl(InputHandling.flatten(elements.toList())
-                    .map { it.toString() }.filter { it.isNotEmpty() })
-                    .apply {
-                        workingDirectory = file.toPath()
-                    }
+                    .map { it.toString() }.filter { it.isNotEmpty() },
+                        file.toPath()
+            )
 
     /**
      * Gets the command based on a list of strings and with the provided
@@ -243,10 +241,7 @@ object KtRuleMethods {
     fun getCommandWithWorkingDirectory(
         path: String,
         elements: List<String>
-    ): Command =
-            CommandImpl(elements).apply {
-                workingDirectory = Paths.get(path)
-            }
+    ): Command = CommandImpl(elements, Paths.get(path))
 
     /**
      * Gets the command based on a list of strings and with the provided
@@ -260,10 +255,7 @@ object KtRuleMethods {
     fun getCommandWithWorkingDirectory(
         file: File,
         elements: List<String>
-    ): Command =
-            CommandImpl(elements).apply {
-                workingDirectory = file.toPath()
-            }
+    ): Command = CommandImpl(elements, file.toPath())
 
     /**
      * Checks if the execution is in verbose mode.

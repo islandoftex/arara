@@ -11,11 +11,10 @@ import org.islandoftex.arara.api.session.Command
  * @version 5.0
  * @since 4.0
  */
-class CommandImpl(
-    override val elements: List<String>
+data class CommandImpl(
+    override val elements: List<String>,
+    override val workingDirectory: Path? = null
 ) : Command {
-    override var workingDirectory: Path? = null
-
     /**
      * Provides a textual representation of the current command.
      * @return A string representing the current command.
