@@ -249,7 +249,7 @@ object Directives {
  *
  * @return The conditional type.
  */
-internal fun String?.toDirectiveConditional() = when (this) {
+private fun String?.toDirectiveConditional() = when (this) {
     null -> DirectiveConditionalType.NONE
     "if" -> DirectiveConditionalType.IF
     "while" -> DirectiveConditionalType.WHILE

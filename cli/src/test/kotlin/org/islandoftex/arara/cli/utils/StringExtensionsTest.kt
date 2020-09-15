@@ -5,7 +5,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 
-class ExtensionTest : ShouldSpec({
+class StringExtensionsTest : ShouldSpec({
     should("abbreviate strings correctly") {
         "Quack quack".abbreviate(6) shouldBe "Quack…"
         "Quack Quack".abbreviate(80) shouldBe "Quack Quack"
