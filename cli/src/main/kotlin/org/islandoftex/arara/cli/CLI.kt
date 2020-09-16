@@ -173,8 +173,6 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                         },
                         executeBeforeFile = {
                             // TODO: do we have to reset some more file-specific config?
-                            // especially the working directory will have to be set and
-                            // changed
                             updateConfigurationFromCommandLine()
                             DisplayUtils.printFileInformation(it)
                         },
