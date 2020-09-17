@@ -22,6 +22,10 @@ from version 5.0.0 on.
   (see #18)
   Currently, the following features are restricted:
   * file lookup will only perform explicit file resolution
+  * `unsafelyExecuteSystemCommand` will raise an exception and abort the run
+    (although rules are still allowed to construct arbitrary commands using
+    a `return getCommand(…)` approach so this only disallows arbitrary system
+    commands that would not get logged and are thus invisible to the user)
 
 ### Changed
 

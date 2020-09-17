@@ -7,6 +7,8 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.time.ExperimentalTime
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.SafeRunViolationException
+import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.files.FileSearching
@@ -293,7 +295,13 @@ object RuleMethods {
      */
     @JvmStatic
     fun unsafelyExecuteSystemCommand(command: Command): Pair<Int, String> =
-            Environment.executeSystemCommand(command)
+            if (LinearExecutor.executionOptions.executionMode == ExecutionMode.SAFE_RUN)
+                throw SafeRunViolationException(
+                        "In safe mode, rules are not allowed to execute " +
+                                "arbitrary system commands within a step of execution."
+                )
+            else
+                Environment.executeSystemCommand(command)
 
     /**
      * List all files from the provided directory according to the list of
