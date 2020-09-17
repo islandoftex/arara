@@ -24,7 +24,7 @@ import org.zeroturnaround.exec.listener.ShutdownHookProcessDestroyer
 import org.zeroturnaround.exec.stream.TeeOutputStream
 
 /**
- * Implements interpreter utilitary methods.
+ * Implements interpreter auxiliary methods.
  *
  * @author Island of TeX
  * @version 5.0
@@ -61,7 +61,7 @@ object InterpreterUtils {
         val timeOutValue = LinearExecutor.executionOptions.timeoutValue
         val workingDirectory = command.workingDirectory
                 ?: LinearExecutor.currentProject!!.workingDirectory
-        var executor = ProcessExecutor().command((command).elements)
+        var executor = ProcessExecutor().command(command.elements)
                 .directory(workingDirectory.toFile().absoluteFile)
                 .addDestroyer(ShutdownHookProcessDestroyer())
         if (timeOutValue != 0.milliseconds) {
