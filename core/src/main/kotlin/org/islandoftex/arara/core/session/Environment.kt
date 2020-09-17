@@ -70,40 +70,40 @@ object Environment {
         silenceSystemOut: Boolean = true,
         timeout: Duration = Duration.ZERO
     ): Pair<Int, String> = ByteArrayOutputStream().use { buffer ->
-        ProcessExecutor(command.elements)
-                .addDestroyer(ShutdownHookProcessDestroyer())
-                .runCatching {
-                    // use the command's working directory as the preferred working
-                    // directory; although it may be missing in which case we will use
-                    // arara's execution directory by default
-                    val workingDirectory = command.workingDirectory
-                            ?: Paths.get("")
-                    directory(workingDirectory.toFile().absoluteFile)
+        ProcessExecutor(command.elements).runCatching {
+            addDestroyer(ShutdownHookProcessDestroyer())
 
-                    // implement output redirection if necessary for verbose
-                    // output
-                    val tee = if (silenceSystemOut) {
-                        buffer
-                    } else {
-                        redirectInput(System.`in`)
-                        TeeOutputStream(System.out, buffer)
-                    }
-                    redirectOutput(tee).redirectError(tee)
+            // use the command's working directory as the preferred working
+            // directory; although it may be missing in which case we will use
+            // arara's execution directory by default
+            val workingDirectory = command.workingDirectory
+                    ?: Paths.get("")
+            directory(workingDirectory.toFile().absoluteFile)
 
-                    // add non-zero timeout to the executor to restrict runtime
-                    if (timeout != Duration.ZERO) {
-                        timeout(timeout.toLongNanoseconds(), TimeUnit.NANOSECONDS)
-                    }
+            // implement output redirection if necessary for verbose
+            // output
+            val tee = if (silenceSystemOut) {
+                buffer
+            } else {
+                redirectInput(System.`in`)
+                TeeOutputStream(System.out, buffer)
+            }
+            redirectOutput(tee).redirectError(tee)
 
-                    execute().run {
-                        exitValue to buffer.toString(Charsets.UTF_8)
-                    }
-                }.getOrElse {
-                    // quack, quack, do nothing, just
-                    // return a default error code
-                    logger.debug("Caught an exception when executing " +
-                            "$command returning $errorExitStatus")
-                    errorExitStatus to "${it.javaClass.name}: ${it.message}"
-                }
+            // add non-zero timeout to the executor to restrict runtime
+            if (timeout != Duration.ZERO) {
+                timeout(timeout.toLongNanoseconds(), TimeUnit.NANOSECONDS)
+            }
+
+            execute().run {
+                exitValue to buffer.toString(Charsets.UTF_8)
+            }
+        }.getOrElse {
+            // quack, quack, do nothing, just
+            // return a default error code
+            logger.debug("Caught an exception when executing " +
+                    "$command returning $errorExitStatus")
+            errorExitStatus to "${it.javaClass.name}: ${it.message}"
+        }
     }
 }
