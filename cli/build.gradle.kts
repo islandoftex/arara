@@ -20,7 +20,6 @@ dependencies {
     implementation(group = "org.apache.logging.log4j", name = "log4j-slf4j-impl", version = Versions.log4j)
     implementation(group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-yaml", version = Versions.jackson)
     implementation(group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version = Versions.jackson)
-    implementation(group = "org.zeroturnaround", name = "zt-exec", version = Versions.ztExec)
 
     testImplementation(group = "io.kotest", name = "kotest-runner-junit5-jvm", version = Versions.kotest)
     testImplementation(group = "io.kotest", name = "kotest-assertions-core-jvm", version = Versions.kotest)

@@ -176,7 +176,8 @@ object RuleMethods {
      */
     @JvmStatic
     fun getCommand(elements: List<String>): Command =
-            org.islandoftex.arara.core.session.Command(elements)
+            org.islandoftex.arara.core.session.Command(elements,
+                    LinearExecutor.currentProject!!.workingDirectory)
 
     /**
      * Gets the command based on an array of objects.

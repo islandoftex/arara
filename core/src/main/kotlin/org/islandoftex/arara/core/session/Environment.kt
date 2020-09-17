@@ -1,11 +1,15 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
+import java.io.ByteArrayOutputStream
 import java.nio.file.Paths
+import java.util.concurrent.TimeUnit
+import kotlin.time.Duration
 import org.islandoftex.arara.api.session.Command
 import org.slf4j.LoggerFactory
 import org.zeroturnaround.exec.ProcessExecutor
 import org.zeroturnaround.exec.listener.ShutdownHookProcessDestroyer
+import org.zeroturnaround.exec.stream.TeeOutputStream
 
 /**
  * An object to handle interaction with the operating system.
@@ -46,24 +50,27 @@ object Environment {
     const val errorExitStatus = -99
 
     /**
-     * When executing a system call goes wrong and the caller asked for output,
-     * this output will be returned.
-     */
-    const val errorCommandOutput = ""
-
-    /**
      * Executes a system command from the underlying operating system and
      * returns a pair containing the exit status and the command output as a
      * string.
      *
      * @param command The system command to be executed.
+     * @param silenceSystemOut If true, the system output will not be appended
+     *   to. Otherwise, a split is performed between [System.out] and an
+     *   internal capture buffer.
+     * @param timeout An optional timeout. Non-zero values will be applied to
+     *   the executor.
      * @return A pair containing the exit status and the system command output
-     *   as a string. In case of an error, return the pair [errorExitStatus]
-     *   and [errorCommandOutput].
+     *   as a string. In case of an error, return a pair of [errorExitStatus]
+     *   and the string representation of the throwable.
      */
     @JvmStatic
-    fun executeSystemCommand(command: Command): Pair<Int, String> {
-        return ProcessExecutor(command.elements)
+    fun executeSystemCommand(
+        command: Command,
+        silenceSystemOut: Boolean = true,
+        timeout: Duration = Duration.ZERO
+    ): Pair<Int, String> = ByteArrayOutputStream().use { buffer ->
+        ProcessExecutor(command.elements)
                 .addDestroyer(ShutdownHookProcessDestroyer())
                 .runCatching {
                     // use the command's working directory as the preferred working
@@ -72,16 +79,31 @@ object Environment {
                     val workingDirectory = command.workingDirectory
                             ?: Paths.get("")
                     directory(workingDirectory.toFile().absoluteFile)
-                    readOutput(true)
+
+                    // implement output redirection if necessary for verbose
+                    // output
+                    val tee = if (silenceSystemOut) {
+                        buffer
+                    } else {
+                        redirectInput(System.`in`)
+                        TeeOutputStream(System.out, buffer)
+                    }
+                    redirectOutput(tee).redirectError(tee)
+
+                    // add non-zero timeout to the executor to restrict runtime
+                    if (timeout != Duration.ZERO) {
+                        timeout(timeout.toLongNanoseconds(), TimeUnit.NANOSECONDS)
+                    }
+
                     execute().run {
-                        exitValue to outputUTF8()
+                        exitValue to buffer.toString(Charsets.UTF_8)
                     }
                 }.getOrElse {
                     // quack, quack, do nothing, just
                     // return a default error code
                     logger.debug("Caught an exception when executing " +
                             "$command returning $errorExitStatus")
-                    errorExitStatus to errorCommandOutput
+                    errorExitStatus to "${it.javaClass.name}: ${it.message}"
                 }
     }
 }

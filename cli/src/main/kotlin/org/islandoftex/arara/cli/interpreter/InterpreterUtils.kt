@@ -1,13 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.interpreter
 
-import java.io.ByteArrayOutputStream
-import java.io.IOException
-import java.io.OutputStream
 import java.nio.file.Path
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
-import kotlin.time.milliseconds
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.rules.DirectiveConditional
@@ -16,12 +10,9 @@ import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.slf4j.LoggerFactory
-import org.zeroturnaround.exec.InvalidExitValueException
-import org.zeroturnaround.exec.ProcessExecutor
-import org.zeroturnaround.exec.listener.ShutdownHookProcessDestroyer
-import org.zeroturnaround.exec.stream.TeeOutputStream
 
 /**
  * Implements interpreter auxiliary methods.
@@ -54,30 +45,6 @@ object InterpreterUtils {
         }
     }
 
-    private fun getProcessExecutorForCommand(
-        command: Command,
-        buffer: OutputStream
-    ): ProcessExecutor {
-        val timeOutValue = LinearExecutor.executionOptions.timeoutValue
-        val workingDirectory = command.workingDirectory
-                ?: LinearExecutor.currentProject!!.workingDirectory
-        var executor = ProcessExecutor().command(command.elements)
-                .directory(workingDirectory.toFile().absoluteFile)
-                .addDestroyer(ShutdownHookProcessDestroyer())
-        if (timeOutValue != 0.milliseconds) {
-            executor = executor.timeout(timeOutValue.toLongNanoseconds(),
-                    TimeUnit.NANOSECONDS)
-        }
-        val tee = if (LinearExecutor.executionOptions.verbose) {
-            executor = executor.redirectInput(System.`in`)
-            TeeOutputStream(System.out, buffer)
-        } else {
-            buffer
-        }
-        executor = executor.redirectOutput(tee).redirectError(tee)
-        return executor
-    }
-
     /**
      * Runs the command in the underlying operating system.
      *
@@ -87,36 +54,37 @@ object InterpreterUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun run(command: Command): Int {
-        val buffer = ByteArrayOutputStream()
-        val executor = getProcessExecutorForCommand(command, buffer)
-        return executor.runCatching {
-            val exit = execute().exitValue
-            logger.info(
-                DisplayUtils.displayOutputSeparator(
-                    LanguageController.messages.LOG_INFO_BEGIN_BUFFER
-                )
-            )
-            logger.info(buffer.toString())
-            logger.info(
-                DisplayUtils.displayOutputSeparator(
-                    LanguageController.messages.LOG_INFO_END_BUFFER
-                )
-            )
-            exit
-        }.getOrElse {
+    fun run(command: Command): Int = Environment.executeSystemCommand(
+            command,
+            !LinearExecutor.executionOptions.verbose,
+            LinearExecutor.executionOptions.timeoutValue
+    ).let {
+        val (exitCode, output) = it
+        if (exitCode == Environment.errorExitStatus) {
             throw AraraException(
                     LanguageController.messages.run {
-                        when (it) {
-                            is IOException -> ERROR_RUN_IO_EXCEPTION
-                            is InterruptedException -> ERROR_RUN_INTERRUPTED_EXCEPTION
-                            is InvalidExitValueException -> ERROR_RUN_INVALID_EXIT_VALUE_EXCEPTION
-                            is TimeoutException -> ERROR_RUN_TIMEOUT_EXCEPTION
+                        when {
+                            output.startsWith("IOException") -> ERROR_RUN_IO_EXCEPTION
+                            output.startsWith("InterruptedException") -> ERROR_RUN_INTERRUPTED_EXCEPTION
+                            output.startsWith("InvalidExitValueException") -> ERROR_RUN_INVALID_EXIT_VALUE_EXCEPTION
+                            output.startsWith("TimeoutException") -> ERROR_RUN_TIMEOUT_EXCEPTION
                             else -> ERROR_RUN_GENERIC_EXCEPTION
                         }
-                    }, it
+                    }, AraraException(output)
             )
         }
+        logger.info(
+                DisplayUtils.displayOutputSeparator(
+                        LanguageController.messages.LOG_INFO_BEGIN_BUFFER
+                )
+        )
+        logger.info(output)
+        logger.info(
+                DisplayUtils.displayOutputSeparator(
+                        LanguageController.messages.LOG_INFO_END_BUFFER
+                )
+        )
+        exitCode
     }
 
     /**
