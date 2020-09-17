@@ -44,3 +44,10 @@ public open class AraraException : Exception {
      */
     public fun hasException(): Boolean = exception?.message != null
 }
+
+/**
+ * When in [org.islandoftex.arara.api.configuration.ExecutionMode.SAFE_RUN],
+ * this exception is thrown to indicate a violation of the safety contract
+ * and that a certain feature was requested that is not allowed in safe run.
+ */
+public class SafeRunViolationException(msg: String) : AraraException(msg)
