@@ -17,6 +17,7 @@ dependencies {
 
     testImplementation(group = "io.kotest", name = "kotest-runner-junit5-jvm", version = Versions.kotest)
     testImplementation(group = "io.kotest", name = "kotest-assertions-core-jvm", version = Versions.kotest)
+    testRuntimeOnly(group = "org.slf4j", name = "slf4j-simple", version = Versions.slf4j)
 }
 
 sourceSets {
