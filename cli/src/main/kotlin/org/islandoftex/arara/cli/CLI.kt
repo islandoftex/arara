@@ -54,6 +54,10 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
             help = "Go through all the motions of running a command, but " +
                     "with no actual calls")
             .flag()
+    private val safeRun by option("-s", "--safe-run",
+            help = "Run in safe mode and disable potentially harmful features." +
+                    "Make sure your projects uses only allowed features.")
+            .flag()
     private val onlyHeader by option("-H", "--header",
             help = "Extract directives only in the file header")
             .flag()
@@ -99,10 +103,11 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                             true
                         else
                             LinearExecutor.executionOptions.verbose,
-                        executionMode = if (dryRun)
-                            ExecutionMode.DRY_RUN
-                        else
-                            LinearExecutor.executionOptions.executionMode,
+                        executionMode = when {
+                            dryRun -> ExecutionMode.DRY_RUN
+                            safeRun -> ExecutionMode.SAFE_RUN
+                            else -> LinearExecutor.executionOptions.executionMode
+                        },
                         parseOnlyHeader = if (onlyHeader)
                             true
                         else

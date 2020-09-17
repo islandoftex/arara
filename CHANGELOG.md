@@ -17,6 +17,11 @@ from version 5.0.0 on.
   by calling `getSession().get('arg:key')` if you called arara with
   `arara -P key=value myfile.tex`.
   (see #38)
+* A new safe mode (`-s` or `--safe-run`) protects the system by disallowing
+  certain user actions.
+  (see #18)
+  Currently, the following features are restricted:
+  * file lookup will only perform explicit file resolution
 
 ### Changed
 

@@ -21,7 +21,6 @@ public enum class ExecutionMode {
      * In safe run mode, arara will take measures not to execute potentially
      * unwanted actions like cascading out of the working directory or
      * executing arbitrary commands.
-     * (NIY)
      */
     SAFE_RUN,
 
