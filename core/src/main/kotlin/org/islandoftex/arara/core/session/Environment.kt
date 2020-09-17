@@ -4,6 +4,7 @@ package org.islandoftex.arara.core.session
 import java.nio.file.Paths
 import org.islandoftex.arara.api.session.Command
 import org.zeroturnaround.exec.ProcessExecutor
+import org.zeroturnaround.exec.listener.ShutdownHookProcessDestroyer
 
 /**
  * An object to handle interaction with the operating system.
@@ -39,6 +40,7 @@ object Environment {
      * When executing a system call goes wrong, this status code is returned.
      */
     const val errorExitStatus = -99
+
     /**
      * When executing a system call goes wrong and the caller asked for output,
      * this output will be returned.
@@ -57,21 +59,24 @@ object Environment {
      */
     @JvmStatic
     fun executeSystemCommand(command: Command): Pair<Int, String> {
-        return ProcessExecutor(command.elements).runCatching {
-            // use the command's working directory as the preferred working
-            // directory; although it may be missing in which case we will use
-            // arara's execution directory by default
-            val workingDirectory = command.workingDirectory ?: Paths.get("")
-            directory(workingDirectory.toFile().absoluteFile)
-            readOutput(true)
-            execute().run {
-                exitValue to outputUTF8()
-            }
-        }.getOrElse {
-            // quack, quack, do nothing, just
-            // return a default error code
-            errorExitStatus to errorCommandOutput
-            // TODO: debug log entry
-        }
+        return ProcessExecutor(command.elements)
+                .addDestroyer(ShutdownHookProcessDestroyer())
+                .runCatching {
+                    // use the command's working directory as the preferred working
+                    // directory; although it may be missing in which case we will use
+                    // arara's execution directory by default
+                    val workingDirectory = command.workingDirectory
+                            ?: Paths.get("")
+                    directory(workingDirectory.toFile().absoluteFile)
+                    readOutput(true)
+                    execute().run {
+                        exitValue to outputUTF8()
+                    }
+                }.getOrElse {
+                    // quack, quack, do nothing, just
+                    // return a default error code
+                    errorExitStatus to errorCommandOutput
+                    // TODO: debug log entry
+                }
     }
 }
