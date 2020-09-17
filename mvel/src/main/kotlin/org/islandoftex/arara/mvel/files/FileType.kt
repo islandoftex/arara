@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.mvel.files
 
+import kotlin.time.ExperimentalTime
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.session.LinearExecutor
 
 /**
  * Implements the file type model.
@@ -16,25 +18,21 @@ import org.islandoftex.arara.core.localization.LanguageController
  */
 @Serializable
 class FileType : FileType {
-    // string representing the
-    // file extension
     override var extension: String = FileType.INVALID_EXTENSION
         private set
 
-    // string representing the
-    // file pattern to be used
-    // as directive lookup
+    @ExperimentalTime
     override var pattern: String = FileType.INVALID_PATTERN
         @Throws(AraraException::class)
         get() {
             if (field == FileType.INVALID_PATTERN) {
                 field = ConfigurationUtils.defaultFileTypePatterns[extension]
-                        ?: throw AraraException(
-                                LanguageController.messages
-                                        .ERROR_FILETYPE_UNKNOWN_EXTENSION.format(
-                                                extension
-                                        // TODO: insert currently available file types
-                                        )
+                        ?: throw AraraException(LanguageController.messages
+                                .ERROR_FILETYPE_UNKNOWN_EXTENSION.format(
+                                        extension,
+                                        LinearExecutor.executionOptions.fileTypes
+                                                .joinToString(" | ", "[ ", " ]")
+                                )
                         )
             }
             return field
