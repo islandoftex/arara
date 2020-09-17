@@ -47,7 +47,11 @@ arguments:
         if ([ 'latex', 'pdflatex', 'xelatex',
               'lualatex' ].contains(parameters.engine)) {
             flags = [ 'latex' : '-dvi', 'pdflatex' : '-pdf',
-                      'xelatex' : '-xelatex', 'lualatex' : '-lualatex' ];
+                      'xelatex' : '-xelatex', 'lualatex' : '-lualatex',
+                      'latex-dev' : [ '-dvi', '-e', "$latex='latex-dev'" ],
+                      'pdflatex-dev' : [ '-pdf', '-e', "$pdflatex='pdflatex-dev'" ],
+                      'xelatex-dev' : [ '-xelatex', '-e', "$xelatex='xelatex-dev'" ],
+                      'lualatex-dev' : [ '-lualatex', '-e', "$lualatex='lualatex-dev'" ] ];
             return flags[parameters.engine];
         }
         else {
