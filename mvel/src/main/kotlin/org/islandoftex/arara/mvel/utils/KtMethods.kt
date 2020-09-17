@@ -15,7 +15,7 @@ object KtMethods {
     @JvmStatic
     val ruleMethods: Map<String, Any> by lazy {
         val map = conditionalMethods.toMutableMap()
-        try {
+        kotlin.runCatching {
             // TODO: remove reflection
             val methodsKotlin = Class.forName("org.islandoftex.arara.mvel.utils.KtRuleMethods").methods
                     .plus(RuleMethods::class.java.methods)
@@ -32,8 +32,6 @@ object KtMethods {
             ).forEach { name: String ->
                 map[name] = methodsKotlin.first { it.name == name }
             }
-        } catch (exception: Exception) {
-            // quack, quack, quack
         }
         map
     }
@@ -46,7 +44,7 @@ object KtMethods {
     @JvmStatic
     val conditionalMethods: Map<String, Any> by lazy {
         val map = mutableMapOf<String, Any>()
-        try {
+        kotlin.runCatching {
             val methodsKotlin = ConditionalMethods::class.java.methods
             listOf("exists", "missing", "changed", "unchanged",
                     "found", "toFile", "showDropdown", "showInput",
@@ -54,8 +52,6 @@ object KtMethods {
             ).forEach { name: String ->
                 map[name] = methodsKotlin.first { it.name == name }
             }
-        } catch (exception: java.lang.Exception) {
-            // quack, quack, quack
         }
         map
     }
