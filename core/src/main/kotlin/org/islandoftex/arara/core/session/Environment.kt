@@ -95,9 +95,7 @@ object Environment {
                 timeout(timeout.toLongNanoseconds(), TimeUnit.NANOSECONDS)
             }
 
-            execute().run {
-                exitValue to buffer.toString(Charsets.UTF_8)
-            }
+            execute().exitValue to buffer.toString()
         }.getOrElse {
             // quack, quack, do nothing, just
             // return a default error code
