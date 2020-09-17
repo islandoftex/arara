@@ -36,7 +36,7 @@ data class Database(
      * @return Whether the object represented by the path is in the database.
      */
     override fun contains(path: Path): Boolean =
-            path.toAbsolutePath().toString() in map
+            FileHandling.normalize(path).toString() in map
 
     /**
      * Get the hash value associated with a file.
@@ -46,7 +46,7 @@ data class Database(
      * @return The hash value associated with the file if any and `null` if
      *   the element is not in the database.
      */
-    override fun get(path: Path): Long? = map[path.toAbsolutePath().toString()]
+    override fun get(path: Path): Long? = map[FileHandling.normalize(path).toString()]
 
     /**
      * Set the hash value for a given file.
@@ -55,7 +55,7 @@ data class Database(
      * @param hash The hash value of the file.
      */
     override fun set(path: Path, hash: Long) {
-        map[path.toAbsolutePath().toString()] = hash
+        map[FileHandling.normalize(path).toString()] = hash
     }
 
     /**
@@ -64,7 +64,7 @@ data class Database(
      * @param path The file acting as key in the database.
      */
     override fun remove(path: Path) {
-        map.remove(path.toAbsolutePath().toString())
+        map.remove(FileHandling.normalize(path).toString())
     }
 
     /**
