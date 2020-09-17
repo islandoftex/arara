@@ -4,13 +4,11 @@ package org.islandoftex.arara.core.configuration
 import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.files.FileType
 
-@ExperimentalTime
 data class ExecutionOptions(
     override val maxLoops: Int = 10,
     override val timeoutValue: Duration = 0.milliseconds,

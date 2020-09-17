@@ -6,7 +6,6 @@ import java.io.FileFilter
 import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.time.ExperimentalTime
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.ExecutionOptions
@@ -107,7 +106,6 @@ object FileSearching {
      * higher levels.
      */
     @JvmStatic
-    @ExperimentalTime
     @Throws(AraraException::class)
     fun resolveFile(
         reference: String,
@@ -132,7 +130,6 @@ object FileSearching {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
-    @ExperimentalTime
     @Throws(AraraException::class)
     internal fun lookupFile(
         reference: String,

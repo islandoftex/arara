@@ -5,7 +5,6 @@ import java.io.File
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
-import kotlin.time.ExperimentalTime
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.SafeRunViolationException
 import org.islandoftex.arara.api.configuration.ExecutionMode
@@ -21,7 +20,6 @@ import org.islandoftex.arara.core.ui.GUIDialogs
 import org.islandoftex.arara.core.ui.InputHandling
 import org.islandoftex.arara.mvel.interpreter.AraraExceptionWithHeader
 
-@ExperimentalTime
 @Suppress("unused", "TooManyFunctions")
 object RuleMethods {
     // the GUI generator

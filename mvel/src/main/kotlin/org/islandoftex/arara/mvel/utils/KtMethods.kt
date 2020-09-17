@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.mvel.utils
 
-import kotlin.time.ExperimentalTime
-
 /**
  * Implements some auxiliary methods for runtime evaluation.
  *
@@ -10,7 +8,6 @@ import kotlin.time.ExperimentalTime
  * @version 6.0
  * @since 6.0
  */
-@ExperimentalTime
 object KtMethods {
     /**
      * A map of rule method names to method pointers.

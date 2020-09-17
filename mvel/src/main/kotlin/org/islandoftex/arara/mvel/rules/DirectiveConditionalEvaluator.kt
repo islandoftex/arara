@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.mvel.rules
 
-import kotlin.time.ExperimentalTime
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.rules.DirectiveConditional
@@ -18,7 +17,6 @@ import org.mvel2.templates.TemplateRuntime
  * @version 5.0
  * @since 4.0
  */
-@ExperimentalTime
 class DirectiveConditionalEvaluator(executionOptions: ExecutionOptions) :
     DirectiveConditionalEvaluator(executionOptions) {
 

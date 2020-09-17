@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.mvel.files
 
-import kotlin.time.ExperimentalTime
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
@@ -21,7 +20,6 @@ class FileType : FileType {
     override var extension: String = FileType.INVALID_EXTENSION
         private set
 
-    @ExperimentalTime
     override var pattern: String = FileType.INVALID_PATTERN
         @Throws(AraraException::class)
         get() {

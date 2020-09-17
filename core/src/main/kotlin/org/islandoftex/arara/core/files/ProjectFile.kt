@@ -4,7 +4,6 @@ package org.islandoftex.arara.core.files
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.time.ExperimentalTime
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.ProjectFile
@@ -45,7 +44,6 @@ open class ProjectFile(
         return result
     }
 
-    @ExperimentalTime
     override fun fetchDirectives(parseOnlyHeader: Boolean): List<Directive> {
         try {
             return Directives.extractDirectives(

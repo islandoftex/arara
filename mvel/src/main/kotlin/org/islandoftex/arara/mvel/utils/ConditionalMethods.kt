@@ -3,7 +3,6 @@ package org.islandoftex.arara.mvel.utils
 
 import java.io.File
 import java.nio.file.Files
-import kotlin.time.ExperimentalTime
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.session.ClassLoading
@@ -12,7 +11,6 @@ import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.GUIDialogs
 
-@ExperimentalTime
 @Suppress("unused", "TooManyFunctions")
 object ConditionalMethods {
     // the GUI generator

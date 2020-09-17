@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.rules
 
-import kotlin.time.ExperimentalTime
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.ExecutionOptions
@@ -16,7 +15,6 @@ import org.islandoftex.arara.api.rules.DirectiveConditionalType
  * @version 5.0
  * @since 4.0
  */
-@ExperimentalTime
 abstract class DirectiveConditionalEvaluator(
     private val executionOptions: ExecutionOptions
 ) {

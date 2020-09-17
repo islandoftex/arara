@@ -6,14 +6,12 @@ import io.kotest.matchers.shouldBe
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import kotlin.time.ExperimentalTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 
-@ExperimentalTime
 class FileSearchingTest : ShouldSpec({
     context("file listings") {
         fun prepareFileSystem(): Path {

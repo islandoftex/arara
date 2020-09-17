@@ -6,7 +6,6 @@ import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.Locale
-import kotlin.time.ExperimentalTime
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.Project
@@ -28,7 +27,6 @@ import org.mvel2.templates.TemplateRuntime
  * @since 4.0
  */
 @Serializable
-@ExperimentalTime
 data class LocalConfiguration(
     private var paths: List<String> = listOf(),
     private var filetypes: List<FileType> = listOf(),
