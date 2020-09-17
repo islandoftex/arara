@@ -38,6 +38,9 @@ public interface Database {
     /**
      * Remove the entry associated with the key (file).
      *
+     * Implementation may throw [NoSuchElementException] exception if the
+     * [path] is not contained within the database.
+     *
      * @param path The file acting as key in the database.
      */
     public fun remove(path: Path)

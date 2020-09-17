@@ -62,9 +62,17 @@ data class Database(
      * Remove the entry associated with the key (file).
      *
      * @param path The file acting as key in the database.
+     * @throws NoSuchElementException exception if the [path] is not contained
+     *   within the database.
      */
+    @Throws(NoSuchElementException::class)
     override fun remove(path: Path) {
-        map.remove(FileHandling.normalize(path).toString())
+        val normalPath = FileHandling.normalize(path).toString()
+        if (normalPath in map)
+            map.remove(normalPath)
+        else
+            throw NoSuchElementException("Attempt to remove non-existent path " +
+                    "from database.")
     }
 
     /**
