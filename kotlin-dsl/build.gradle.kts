@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 import org.islandoftex.arara.build.Versions
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     // `java-library`
@@ -35,5 +36,13 @@ sourceSets {
     test {
         java { setSrcDirs(listOf("src/test/kotlin")) }
         resources { setSrcDirs(listOf("src/test/resources")) }
+    }
+}
+
+tasks {
+    withType<KotlinCompile> {
+        kotlinOptions {
+            freeCompilerArgs = listOf("-Xopt-in=org.islandoftex.arara.api.localization.AraraMessages,kotlin.time.ExperimentalTime")
+        }
     }
 }
