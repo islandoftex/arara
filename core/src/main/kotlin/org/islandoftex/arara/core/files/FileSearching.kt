@@ -13,6 +13,7 @@ import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.localization.LanguageController
+import org.slf4j.LoggerFactory
 
 /**
  * Implements file searching auxiliary methods.
@@ -22,6 +23,9 @@ import org.islandoftex.arara.core.localization.LanguageController
  * @since 4.0
  */
 object FileSearching {
+    // get the logger context from a factory
+    private val logger = LoggerFactory.getLogger(FileSearching::class.java)
+
     /**
      * List all files from the provided directory according to the list of
      * extensions. The leading dot must be omitted, unless it is part of the
@@ -154,7 +158,11 @@ object FileSearching {
                 }
             }
             // when in safe mode we do not perform indirect search
-            executionOptions.executionMode == ExecutionMode.SAFE_RUN -> null
+            executionOptions.executionMode == ExecutionMode.SAFE_RUN -> {
+                logger.info("Skipping indirect file search with extension " +
+                        "completion due to safe mode restrictions.")
+                null
+            }
             // indirect search; in this case, we are considering
             // that the file reference has an implicit extension,
             // so we need to add it and look again

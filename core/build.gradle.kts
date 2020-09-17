@@ -13,6 +13,7 @@ dependencies {
     implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version = Versions.kotlinxSerialization)
     implementation(group = "com.charleskorn.kaml", name = "kaml", version = Versions.kaml)
     implementation(group = "org.zeroturnaround", name = "zt-exec", version = Versions.ztExec)
+    implementation(group = "org.slf4j", name = "slf4j-api", version = Versions.slf4j)
 
     testImplementation(group = "io.kotest", name = "kotest-runner-junit5-jvm", version = Versions.kotest)
     testImplementation(group = "io.kotest", name = "kotest-assertions-core-jvm", version = Versions.kotest)

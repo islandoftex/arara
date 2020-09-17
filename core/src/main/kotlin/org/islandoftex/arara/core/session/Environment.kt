@@ -3,6 +3,7 @@ package org.islandoftex.arara.core.session
 
 import java.nio.file.Paths
 import org.islandoftex.arara.api.session.Command
+import org.slf4j.LoggerFactory
 import org.zeroturnaround.exec.ProcessExecutor
 import org.zeroturnaround.exec.listener.ShutdownHookProcessDestroyer
 
@@ -10,6 +11,9 @@ import org.zeroturnaround.exec.listener.ShutdownHookProcessDestroyer
  * An object to handle interaction with the operating system.
  */
 object Environment {
+    // get the logger context from a factory
+    private val logger = LoggerFactory.getLogger(Environment::class.java)
+
     /**
      * Gets the system property according to the provided key, or resort to the
      * fallback value if an exception is thrown or if the key is invalid.
@@ -75,8 +79,9 @@ object Environment {
                 }.getOrElse {
                     // quack, quack, do nothing, just
                     // return a default error code
+                    logger.debug("Caught an exception when executing " +
+                            "$command returning $errorExitStatus")
                     errorExitStatus to errorCommandOutput
-                    // TODO: debug log entry
                 }
     }
 }
