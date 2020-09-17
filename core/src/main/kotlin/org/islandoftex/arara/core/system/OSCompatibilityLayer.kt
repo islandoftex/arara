@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.utils
+package org.islandoftex.arara.core.system
 
 import java.io.File
 import org.islandoftex.arara.api.AraraException
@@ -18,7 +18,7 @@ import org.islandoftex.arara.core.session.Environment
  * @version 5.0
  * @since 4.0
  */
-object SystemCallUtils {
+object OSCompatibilityLayer {
     /**
      * Determine whether arara is executed in a Cygwin environment (lazily to
      * save expensive system calls).
@@ -126,7 +126,8 @@ object SystemCallUtils {
         return kotlin.runCatching {
             // break the path into several parts
             // based on the path separator symbol
-            System.getenv("PATH").split(File.pathSeparator)
+            (System.getenv("PATH") ?: System.getenv("Path"))
+                    .split(File.pathSeparator)
                     .asSequence()
                     .mapNotNull { File(it).listFiles() }
                     // if the search does not return an empty

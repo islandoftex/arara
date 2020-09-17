@@ -7,6 +7,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import java.util.concurrent.TimeoutException
 import kotlin.time.milliseconds
+import org.islandoftex.arara.core.system.OSCompatibilityLayer
 
 class EnvironmentTest : ShouldSpec({
     should("return null on non-existent system variable") {
@@ -23,8 +24,7 @@ class EnvironmentTest : ShouldSpec({
         listOf("/", "\\") shouldContain Environment.getSystemProperty("file.separator", "fallback")
     }
 
-    if (Environment.getSystemPropertyOrNull("os.name")?.toLowerCase()
-                    ?.startsWith("windows") != true) {
+    if (!OSCompatibilityLayer.checkOS("Windows")) {
         // if we are not on Windows execute tests with execution
         should("run successfully") {
             val (exit, output) = Environment.executeSystemCommand(Command(listOf("true")))

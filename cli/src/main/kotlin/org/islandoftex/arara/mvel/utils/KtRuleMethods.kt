@@ -2,8 +2,8 @@
 package org.islandoftex.arara.mvel.utils
 
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.cli.utils.SystemCallUtils
-import org.islandoftex.arara.cli.utils.SystemCallUtils.checkOS
+import org.islandoftex.arara.core.system.OSCompatibilityLayer
+import org.islandoftex.arara.core.system.OSCompatibilityLayer.checkOS
 
 @Suppress("unused", "TooManyFunctions")
 object KtRuleMethods {
@@ -14,7 +14,7 @@ object KtRuleMethods {
      * @return A logic value.
      */
     @JvmStatic
-    fun isOnPath(command: String): Boolean = SystemCallUtils.isOnPath(command)
+    fun isOnPath(command: String): Boolean = OSCompatibilityLayer.isOnPath(command)
 
     /**
      * Checks if Windows is the underlying operating system.
