@@ -26,15 +26,16 @@ abstract class DirectiveConditionalEvaluator(
      */
     private val maxLoops: Int = executionOptions.maxLoops
 
-    // the counter for the current execution, it
-    // helps us keep track of the number of times
-    // this evaluation has happened, and also to
-    // prevent potential infinite loops
+    /**
+     * The counter for the current execution, it helps us keep track of the
+     * number of times this evaluation has happened, and also to prevent
+     * potential infinite loops.
+     */
     private var counter: Int = 0
 
-    // a flag that indicates the
-    // evaluation to halt regardless
-    // of the the result
+    /**
+     * A flag that indicates the evaluation to halt regardless of the result.
+     */
     private var halt: Boolean = false
 
     /**

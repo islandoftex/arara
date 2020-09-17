@@ -11,6 +11,11 @@ import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
 
+/**
+ * Hooks to allow the customization of the directive creation process,
+ * intended to increase the flexibility for creating different implementations
+ * of the [Directive] interface.
+ */
 data class DirectiveFetchingHooks(
     /**
      * Whenever the parser found a potential directive, this will be
