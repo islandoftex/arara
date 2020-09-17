@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.interpreter
 
+import java.io.IOException
 import java.nio.file.Path
+import java.util.concurrent.TimeoutException
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.rules.DirectiveConditional
@@ -63,11 +65,15 @@ object InterpreterUtils {
         if (exitCode == Environment.errorExitStatus) {
             throw AraraException(
                     LanguageController.messages.run {
-                        when {
-                            output.startsWith("IOException") -> ERROR_RUN_IO_EXCEPTION
-                            output.startsWith("InterruptedException") -> ERROR_RUN_INTERRUPTED_EXCEPTION
-                            output.startsWith("InvalidExitValueException") -> ERROR_RUN_INVALID_EXIT_VALUE_EXCEPTION
-                            output.startsWith("TimeoutException") -> ERROR_RUN_TIMEOUT_EXCEPTION
+                        when (output.substringBefore(":")) {
+                            IOException::class.java.name ->
+                                ERROR_RUN_IO_EXCEPTION
+                            TimeoutException::class.java.name ->
+                                ERROR_RUN_TIMEOUT_EXCEPTION
+                            InterruptedException::class.java.name ->
+                                ERROR_RUN_INTERRUPTED_EXCEPTION
+                            "org.zeroturnaround.exec.InvalidExitValueException" ->
+                                ERROR_RUN_INVALID_EXIT_VALUE_EXCEPTION
                             else -> ERROR_RUN_GENERIC_EXCEPTION
                         }
                     }, AraraException(output)

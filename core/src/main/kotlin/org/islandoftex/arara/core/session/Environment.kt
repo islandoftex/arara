@@ -103,7 +103,7 @@ object Environment {
             // return a default error code
             logger.debug("Caught an exception when executing " +
                     "$command returning $errorExitStatus")
-            errorExitStatus to "${it.javaClass.name}: ${it.message}"
+            errorExitStatus to "${it::class.java.name}: ${it.message}"
         }
     }
 }
