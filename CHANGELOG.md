@@ -26,6 +26,8 @@ from version 5.0.0 on.
     (although rules are still allowed to construct arbitrary commands using
     a `return getCommand(…)` approach so this only disallows arbitrary system
     commands that would not get logged and are thus invisible to the user)
+* `-dev` formats are now available within the `latexmk` rule.
+  (see #48)
 
 ### Changed
 
