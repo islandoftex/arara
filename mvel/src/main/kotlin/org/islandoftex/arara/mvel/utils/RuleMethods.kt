@@ -187,8 +187,7 @@ object RuleMethods {
      */
     @JvmStatic
     fun getCommand(vararg elements: Any): Command =
-            org.islandoftex.arara.core.session.Command(
-                    InputHandling.flatten(elements.toList())
+            getCommand(InputHandling.flatten(elements.toList())
                             .map { it.toString() }
                             .filter { it.isNotEmpty() })
 
