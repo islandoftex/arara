@@ -182,8 +182,7 @@ object DisplayUtils {
         } else {
             displayRolling = true
         }
-        println("[DR] ($name) $task"
-                .abbreviate(outputWidth))
+        println("[DR] ($name) $task".abbreviate(outputWidth))
         println(displaySeparator())
     }
 
@@ -218,13 +217,13 @@ object DisplayUtils {
             exception.message) ?: "EXCEPTION PROVIDES NO MESSAGE"
         // TODO: check null handling
         logger.error(text)
-        wrapText(text)
+        printWrapped(text)
         if (exception.hasException()) {
             println()
             displayDetailsLine()
             val details = exception.exception!!.message!!
             logger.error(details)
-            wrapText(details)
+            printWrapped(details)
         }
     }
 
@@ -247,7 +246,7 @@ object DisplayUtils {
      *
      * @param text The text to be displayed.
      */
-    fun wrapText(text: String) = println(text.wrap(outputWidth))
+    fun printWrapped(text: String) = println(text.wrap(outputWidth))
 
     /**
      * Displays the rule authors in the terminal.
@@ -263,7 +262,7 @@ object DisplayUtils {
             LanguageController.messages.INFO_LABEL_NO_AUTHORS
         else
             authors.joinToString(", ") { it.trim() }
-        wrapText("$line $text")
+        printWrapped("$line $text")
     }
 
     /**
@@ -273,7 +272,7 @@ object DisplayUtils {
      */
     fun printConditional(conditional: DirectiveConditional) {
         if (conditional.type !== DirectiveConditionalType.NONE) {
-            wrapText(LanguageController.messages.INFO_LABEL_CONDITIONAL +
+            printWrapped(LanguageController.messages.INFO_LABEL_CONDITIONAL +
                     " (" + conditional.type + ") " +
                     conditional.condition)
         }
@@ -340,7 +339,7 @@ object DisplayUtils {
         logger.debug("::: CF @ %s".format(configurationFileName))
         logger.debug(displaySeparator())
         logger.info(line)
-        wrapText(line)
+        printWrapped(line)
         println()
     }
 
@@ -361,7 +360,7 @@ object DisplayUtils {
                         )
                 )
         logger.info(text)
-        wrapText(text)
+        printWrapped(text)
     }
 
     /**

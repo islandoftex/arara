@@ -85,7 +85,7 @@ object Interpreter {
 
         if (LinearExecutor.executionOptions.executionMode == ExecutionMode.DRY_RUN) {
             DisplayUtils.printAuthors(authors)
-            DisplayUtils.wrapText(LanguageController.messages
+            DisplayUtils.printWrapped(LanguageController.messages
                     .INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE.format(value))
             DisplayUtils.printConditional(conditional)
         }
@@ -137,7 +137,7 @@ object Interpreter {
             }
         } else {
             DisplayUtils.printAuthors(authors)
-            DisplayUtils.wrapText(LanguageController.messages
+            DisplayUtils.printWrapped(LanguageController.messages
                     .INFO_INTERPRETER_DRYRUN_MODE_SYSTEM_COMMAND.format(command))
             DisplayUtils.printConditional(conditional)
         }
