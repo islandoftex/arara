@@ -35,4 +35,8 @@ class RuleArgument : RuleArgument<String?> {
      */
     @SerialName("default")
     override var defaultValue: String? = null
+
+    override fun toString(): String {
+        return "RuleArgument(identifier='$identifier', isRequired=$isRequired, flag=$flag, defaultValue=$defaultValue)"
+    }
 }
