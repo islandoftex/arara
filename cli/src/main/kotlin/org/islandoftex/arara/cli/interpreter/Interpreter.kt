@@ -185,7 +185,6 @@ object Interpreter {
             )
         }
 
-        // TODO: check nullability
         resultToList(result).filter { it.toString().isNotBlank() }
                 .forEach { current ->
                     DisplayUtils.printEntry(rule.displayName!!, command.name
@@ -204,8 +203,9 @@ object Interpreter {
                     DisplayUtils.printEntryResult(success)
 
                     if (LinearExecutor.executionOptions.haltOnErrors && !success)
-                    // TODO: localize
-                        throw HaltExpectedException("Command failed")
+                        throw HaltExpectedException(LanguageController
+                                .messages.ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT
+                                .format(command.name))
 
                     // TODO: document this key
                     val haltKey = "arara:${LinearExecutor.currentFile!!.path.fileName}:halt"
@@ -215,8 +215,8 @@ object Interpreter {
                                     ExecutionStatus.EXTERNAL_CALL_FAILED
                                 else
                                     ExecutionStatus.PROCESSING
-                        // TODO: localize
-                        throw HaltExpectedException("User requested halt")
+                        throw HaltExpectedException(LanguageController.messages
+                                .ERROR_INTERPRETER_USER_REQUESTED_HALT)
                     }
                 }
     }

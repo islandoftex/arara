@@ -16,6 +16,10 @@ internal annotation class AraraMessages
  *
  * All properties except [providedLocale] and [translators] are strings and
  * intended to be used in a [String.format] call.
+ *
+ * TODO: Translate ERROR_INTERPRETER_WRONG_RETURN_TYPE,
+ *   ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT,
+ *   ERROR_INTERPRETER_USER_REQUESTED_HALT
  */
 @AraraMessages
 @Suppress("MaxLineLength", "ConstructorParameterNaming", "LongParameterList")
@@ -38,6 +42,8 @@ public open class Messages(
     public val ERROR_GETAPPLICATIONPATH_ENCODING_EXCEPTION: String = "There was an encoding problem while trying to obtain the application path. There is nothing much I can do about it.",
     public val ERROR_INTERPRETER_ARGUMENT_IS_REQUIRED: String = "It seems that \"%s\" is marked as required in the rule, but I could not find it in the directive parameters. Please make sure to add it as parameter for your directive and try again.",
     public val ERROR_INTERPRETER_COMMAND_RUNTIME_ERROR: String = "I could not evaluate one of the provided commands. This part is quite tricky, since it involves aspects of the underlying expression language. I will do my best to help you in any way I can.",
+    public val ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT: String = "The command \"%s\" exited unexpectedly with a non-zero exit code. Please see the command's output to evaluate your next steps.",
+    public val ERROR_INTERPRETER_USER_REQUESTED_HALT: String = "arara will now halt on your (or a rule's) request to halt arara.",
     public val ERROR_INTERPRETER_DEFAULT_VALUE_RUNTIME_ERROR: String = "I could not evaluate the default value expression of one of the arguments. This part is quite tricky, since it involves aspects of the underlying expression language. I will do my best to help you in any way I can.",
     public val ERROR_INTERPRETER_EXIT_RUNTIME_ERROR: String = "I could not evaluate the exit status expression of one of the provided commands. This part is quite tricky, since it involves aspects of the underlying expression language. I will do my best to help you in any way I can.",
     public val ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION: String = "I could not evaluate the flag expression of one of the arguments. This part is quite tricky, since it involves aspects of the underlying expression language. I will do my best to help you in any way I can.",
