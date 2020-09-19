@@ -29,6 +29,7 @@ class RuleArgument : RuleArgument<String?> {
      * Flag to hold the argument value manipulation
      */
     var flag: String? = null
+        get() = field?.trim()
 
     /**
      * The argument fallback if it is not defined in the directive
