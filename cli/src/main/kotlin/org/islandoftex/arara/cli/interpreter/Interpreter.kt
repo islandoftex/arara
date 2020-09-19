@@ -53,6 +53,10 @@ object Interpreter {
         return rulePaths
                 .map { path -> InterpreterUtils.construct(path, directive.identifier) }
                 .plus(rulePaths.map {
+                    // this lookup adds support for the rules distributed with
+                    // arara (in TL names should be unique, hence we avoided
+                    // going for pdflatex.yaml in favor of arara-rule-pdflatex.yaml
+                    // from version 6 on)
                     path -> InterpreterUtils.construct(path, "arara-rule-" + directive.identifier)
                 })
                 .firstOrNull { Files.exists(it) }
