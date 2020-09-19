@@ -3,6 +3,7 @@ package org.islandoftex.arara.core.localization
 
 import java.util.Locale
 import org.islandoftex.arara.api.localization.Messages
+import org.slf4j.LoggerFactory
 
 /**
  * The language controller arara's core relies on.
@@ -10,6 +11,9 @@ import org.islandoftex.arara.api.localization.Messages
  * Please note that this relies on [org.islandoftex.arara.api.localization.AraraMessages].
  */
 object LanguageController {
+    // get the logger context from a factory
+    private val logger = LoggerFactory.getLogger(LanguageController::class.java)
+
     /**
      * The messages object. This will be used to fetch messages and format them
      * (using [String.format]).
@@ -28,8 +32,8 @@ object LanguageController {
             Locale.forLanguageTag("en-QN") -> NorfolkLanguage()
             Locale.ENGLISH -> Messages()
             else -> {
-                // TODO: add warning or signal potentially differing
-                //  locale in another way
+                logger.warn("Language ${locale.displayLanguage} not available; " +
+                        "defaulting to English.")
                 Messages()
             }
         }
