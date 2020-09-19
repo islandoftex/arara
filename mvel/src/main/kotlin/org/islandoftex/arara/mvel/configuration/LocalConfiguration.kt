@@ -37,7 +37,8 @@ data class LocalConfiguration(
     private var header: Boolean = ExecutionOptions().parseOnlyHeader,
     private var dbname: String = ExecutionOptions().databaseName.toString(),
     private var logname: String = LoggingOptions().logFile.toString(),
-    private var laf: String = UserInterfaceOptions().swingLookAndFeel
+    private var laf: String = UserInterfaceOptions().swingLookAndFeel,
+    var preambles: Map<String, String> = mapOf()
 ) {
     /**
      * Convert the relevant properties of the configuration to execution

@@ -12,6 +12,7 @@ import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.mvel.configuration.LocalConfiguration
+import org.islandoftex.arara.mvel.utils.MvelState
 
 /**
  * Implements configuration utilitary methods.
@@ -79,6 +80,8 @@ object ConfigurationUtils {
         )
         Session.loggingOptions = resource.toLoggingOptions()
         Session.userInterfaceOptions = resource.toUserInterfaceOptions()
+
+        MvelState.preambles.putAll(resource.preambles)
 
         // just to be sure, update the current locale in order to
         // display localized messages and reset logging status

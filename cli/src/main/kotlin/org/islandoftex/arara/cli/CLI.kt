@@ -32,9 +32,11 @@ import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.rules.Directives
 import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
+import org.islandoftex.arara.mvel.utils.MvelState
 
 /**
  * arara's command line interface
@@ -61,6 +63,8 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
     private val onlyHeader by option("-H", "--header",
             help = "Extract directives only in the file header")
             .flag()
+    private val preamble by option("-p", "--preamble",
+            help = "Set the file preamble based on the configuration file")
     private val timeout by option("-t", "--timeout",
             help = "Set the execution timeout (in milliseconds)")
             .int().restrictTo(min = 1)
@@ -143,10 +147,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
 
         // resolve the working directory from the one that may be given
         // as command line parameter; otherwise resolve current directory
-        val workingDir = FileHandling.normalize(
-                workingDirectory
-                ?: Paths.get("")
-        )
+        val workingDir = FileHandling.normalize(workingDirectory ?: Paths.get(""))
 
         // add all command line call parameters to the session
         parameters.forEach { (key, value) -> Session.put("arg:$key", value) }
@@ -185,8 +186,23 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                             // add an empty line between file executions
                             println()
                         },
-                        processDirectives = {
-                            DirectiveUtils.process(it)
+                        processDirectives = { directives ->
+                            // if we have a preamble, prepend it,
+                            // otherwise use the preprocessed directives
+                            // TODO: shall we throw AraraException(
+                            //  LanguageController.messages.ERROR_PARSER_INVALID_PREAMBLE.format(it))
+                            DirectiveUtils.process(preamble
+                                    ?.takeIf { MvelState.preambles.containsKey(it) }
+                                    ?.let {
+                                        Directives.extractDirectives(
+                                                MvelState.preambles[preamble]!!
+                                                        .lines()
+                                                        .filterNot { it.isEmpty() },
+                                                true,
+                                                LinearExecutor.currentFile!!.fileType
+                                        ).plus(directives)
+                                    } ?: directives
+                            )
                         }
                 )
                 LinearExecutor.executionStatus = if (LinearExecutor.execute(projects).exitCode != 0)

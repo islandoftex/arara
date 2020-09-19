@@ -7,7 +7,7 @@ import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.DirectiveConditionalEvaluator
-import org.islandoftex.arara.mvel.utils.KtMethods
+import org.islandoftex.arara.mvel.utils.MvelState
 import org.mvel2.templates.TemplateRuntime
 
 /**
@@ -31,7 +31,7 @@ class DirectiveConditionalEvaluator(executionOptions: ExecutionOptions) :
     override fun evaluateCondition(conditional: DirectiveConditional): Boolean {
         try {
             val result = TemplateRuntime.eval("@{ ${conditional.condition} }",
-                    KtMethods.conditionalMethods)
+                    MvelState.conditionalMethods)
             return if (result is Boolean) {
                 if (conditional.type == DirectiveConditionalType.UNLESS ||
                         conditional.type == DirectiveConditionalType.UNTIL)

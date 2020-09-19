@@ -8,7 +8,7 @@ package org.islandoftex.arara.mvel.utils
  * @version 6.0
  * @since 6.0
  */
-object KtMethods {
+object MvelState {
     /**
      * A map of rule method names to method pointers.
      */
@@ -37,9 +37,7 @@ object KtMethods {
     }
 
     /**
-     * Get conditional methods.
-     *
-     * @return A map of method names to method pointers.
+     * A map of conditional method names to method pointers.
      */
     @JvmStatic
     val conditionalMethods: Map<String, Any> by lazy {
@@ -55,4 +53,9 @@ object KtMethods {
         }
         map
     }
+
+    /**
+     * Save the available preambles from the configuration file.
+     */
+    val preambles: MutableMap<String, String> = mutableMapOf()
 }
