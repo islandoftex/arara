@@ -344,6 +344,7 @@ object Interpreter {
 
     /**
      * Process a single argument and return the evaluated result.
+     *
      * @param argument The argument to process.
      * @param idInDirectiveParams Whether the argument's identifier is
      *   contained in the directive's parameters field.
@@ -364,7 +365,16 @@ object Interpreter {
                             .format(argument.identifier)
             )
 
-        var ret = argument.defaultValue?.let {
+        return argument.flag?.takeIf { idInDirectiveParams }?.let {
+            try {
+                TemplateRuntime.eval(argument.flag!!, context)
+            } catch (exception: RuntimeException) {
+                throw AraraExceptionWithHeader(LanguageController.messages
+                        .ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION,
+                        exception
+                )
+            }
+        } ?: argument.defaultValue?.let {
             try {
                 TemplateRuntime.eval(it, context)
             } catch (exception: RuntimeException) {
@@ -374,18 +384,5 @@ object Interpreter {
                 )
             }
         } ?: ""
-
-        if (argument.flag != null && idInDirectiveParams) {
-            ret = try {
-                TemplateRuntime.eval(argument.flag!!, context)
-            } catch (exception: RuntimeException) {
-                throw AraraExceptionWithHeader(LanguageController.messages
-                        .ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION,
-                        exception
-                )
-            }
-        }
-
-        return ret
     }
 }
