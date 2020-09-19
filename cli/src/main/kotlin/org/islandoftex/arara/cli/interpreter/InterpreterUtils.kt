@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory
  * @version 5.0
  * @since 4.0
  */
-object InterpreterUtils {
+internal object InterpreterUtils {
     // get the logger context from a factory
     private val logger = LoggerFactory.getLogger(InterpreterUtils::class.java)
 
@@ -35,7 +35,7 @@ object InterpreterUtils {
      * @return A boolean value indicating if the current conditional has a prior
      * evaluation.
      */
-    fun runPriorEvaluation(conditional: DirectiveConditional): Boolean {
+    internal fun runPriorEvaluation(conditional: DirectiveConditional): Boolean {
         return if (LinearExecutor.executionOptions.executionMode == ExecutionMode.DRY_RUN) {
             false
         } else {
@@ -57,7 +57,7 @@ object InterpreterUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun run(command: Command): Int = Environment.executeSystemCommand(
+    internal fun run(command: Command): Int = Environment.executeSystemCommand(
             command,
             !LinearExecutor.executionOptions.verbose,
             LinearExecutor.executionOptions.timeoutValue
@@ -104,7 +104,7 @@ object InterpreterUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun construct(path: Path, name: String, format: RuleFormat): Path {
+    internal fun construct(path: Path, name: String, format: RuleFormat): Path {
         val fileName = "$name.${format.extension}"
         return FileHandling.normalize(
                 if (path.isAbsolute) {

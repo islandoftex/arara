@@ -100,6 +100,7 @@ object Interpreter {
 
     /**
      * Run a command
+     *
      * @param command The command to run.
      * @param conditional The conditional applied to the run (only for printing).
      * @param authors The rule authors (only for printing).
@@ -176,50 +177,45 @@ object Interpreter {
         conditional: DirectiveConditional,
         rule: Rule,
         parameters: Map<String, Any>
-    ) {
-        val result: Any = try {
-            TemplateRuntime.eval(command.commandString!!, parameters)
-        } catch (exception: RuntimeException) {
-            throw AraraExceptionWithHeader(LanguageController
-                    .messages.ERROR_INTERPRETER_COMMAND_RUNTIME_ERROR,
-                    exception
-            )
+    ) = try {
+        resultToList(TemplateRuntime.eval(command.commandString!!, parameters))
+    } catch (exception: RuntimeException) {
+        throw AraraExceptionWithHeader(LanguageController
+                .messages.ERROR_INTERPRETER_COMMAND_RUNTIME_ERROR,
+                exception
+        )
+    }.filter { it.toString().isNotBlank() }.forEach { current ->
+        DisplayUtils.printEntry(rule.displayName!!, command.name
+                ?: LanguageController.messages.INFO_LABEL_UNNAMED_TASK)
+
+        val success = when (current) {
+            is Boolean -> runBoolean(current, conditional,
+                    rule.authors)
+            is Command -> runCommand(current, conditional,
+                    rule.authors, command.exit)
+            else ->
+                throw AraraExceptionWithHeader(LanguageController
+                        .messages.ERROR_INTERPRETER_WRONG_RETURN_TYPE)
         }
 
-        resultToList(result).filter { it.toString().isNotBlank() }
-                .forEach { current ->
-                    DisplayUtils.printEntry(rule.displayName!!, command.name
-                            ?: LanguageController.messages.INFO_LABEL_UNNAMED_TASK)
+        DisplayUtils.printEntryResult(success)
 
-                    val success = when (current) {
-                        is Boolean -> runBoolean(current, conditional,
-                                rule.authors)
-                        is Command -> runCommand(current, conditional,
-                                rule.authors, command.exit)
-                        else ->
-                            throw AraraExceptionWithHeader(LanguageController
-                                    .messages.ERROR_INTERPRETER_WRONG_RETURN_TYPE)
-                    }
+        if (LinearExecutor.executionOptions.haltOnErrors && !success)
+            throw HaltExpectedException(LanguageController
+                    .messages.ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT
+                    .format(command.name))
 
-                    DisplayUtils.printEntryResult(success)
-
-                    if (LinearExecutor.executionOptions.haltOnErrors && !success)
-                        throw HaltExpectedException(LanguageController
-                                .messages.ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT
-                                .format(command.name))
-
-                    // TODO: document this key
-                    val haltKey = "arara:${LinearExecutor.currentFile!!.path.fileName}:halt"
-                    if (Session.contains(haltKey)) {
-                        LinearExecutor.executionStatus =
-                                if (Session[haltKey].toString().toInt() != 0)
-                                    ExecutionStatus.EXTERNAL_CALL_FAILED
-                                else
-                                    ExecutionStatus.PROCESSING
-                        throw HaltExpectedException(LanguageController.messages
-                                .ERROR_INTERPRETER_USER_REQUESTED_HALT)
-                    }
-                }
+        // TODO: document this key
+        val haltKey = "arara:${LinearExecutor.currentFile!!.path.fileName}:halt"
+        if (Session.contains(haltKey)) {
+            LinearExecutor.executionStatus =
+                    if (Session[haltKey].toString().toInt() != 0)
+                        ExecutionStatus.EXTERNAL_CALL_FAILED
+                    else
+                        ExecutionStatus.PROCESSING
+            throw HaltExpectedException(LanguageController.messages
+                    .ERROR_INTERPRETER_USER_REQUESTED_HALT)
+        }
     }
 
     /**
@@ -245,12 +241,9 @@ object Interpreter {
                 )
         )
 
-        // parse the rule identified by the directive
-        // (may throw an exception)
+        // parse the rule identified by the directive (may throw an exception)
         val rule = RuleUtils.parseRule(file, directive.identifier)
-        val parameters = parseArguments(rule, directive)
-                .plus(KtMethods.ruleMethods)
-
+        val parameters = parseArguments(rule, directive).plus(KtMethods.ruleMethods)
         val evaluator = DirectiveConditionalEvaluator(LinearExecutor.executionOptions)
 
         var available = true
@@ -320,8 +313,7 @@ object Interpreter {
     @Throws(AraraException::class)
     private fun parseArguments(rule: Rule, directive: Directive):
             Map<String, Any> {
-        val arguments = rule.arguments
-        val unknown = getUnknownKeys(directive.parameters, arguments)
+        val unknown = getUnknownKeys(directive.parameters, rule.arguments)
                 .minus("reference")
         if (unknown.isNotEmpty())
             throw AraraExceptionWithHeader(LanguageController.messages
@@ -331,15 +323,14 @@ object Interpreter {
             )
 
         val resolvedArguments = mutableMapOf<String, Any>()
-        resolvedArguments["reference"] = directive.parameters
-                .getValue("reference")
+        resolvedArguments["reference"] = directive.parameters.getValue("reference")
 
         val context = mapOf(
                 "parameters" to directive.parameters,
                 "reference" to directive.parameters.getValue("reference")
         ).plus(KtMethods.ruleMethods)
 
-        arguments.forEach { argument ->
+        rule.arguments.forEach { argument ->
             resolvedArguments[argument.identifier] = processArgument(
                     // TODO: remove cast
                     argument as RuleArgument,
