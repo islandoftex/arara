@@ -9,6 +9,7 @@ import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.api.session.Command
+import org.islandoftex.arara.cli.ruleset.RuleFormat
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
@@ -103,8 +104,8 @@ object InterpreterUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun construct(path: Path, name: String): Path {
-        val fileName = "$name.yaml"
+    fun construct(path: Path, name: String, format: RuleFormat): Path {
+        val fileName = "$name.${format.extension}"
         return FileHandling.normalize(
                 if (path.isAbsolute) {
                     path.resolve(fileName)

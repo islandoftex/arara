@@ -10,6 +10,7 @@ import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.api.session.ExecutionStatus
+import org.islandoftex.arara.cli.ruleset.RuleFormat
 import org.islandoftex.arara.cli.ruleset.RuleUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.files.FileHandling
@@ -48,28 +49,28 @@ object Interpreter {
      * higher levels.
      */
     @Throws(AraraException::class)
-    private fun getRule(directive: Directive): Path {
-        val rulePaths = LinearExecutor.executionOptions.rulePaths
-        return rulePaths
-                .map { path -> InterpreterUtils.construct(path, directive.identifier) }
-                .plus(rulePaths.map {
-                    // this lookup adds support for the rules distributed with
-                    // arara (in TL names should be unique, hence we avoided
-                    // going for pdflatex.yaml in favor of arara-rule-pdflatex.yaml
-                    // from version 6 on)
-                    path -> InterpreterUtils.construct(path, "arara-rule-" + directive.identifier)
-                })
-                .firstOrNull { Files.exists(it) }
-                ?: throw AraraException(
+    private fun getRule(directive: Directive): Path =
+            LinearExecutor.executionOptions.rulePaths.let { paths ->
+                paths.flatMap { path ->
+                    listOf(
+                            InterpreterUtils.construct(path, directive.identifier, RuleFormat.MVEL),
+                            InterpreterUtils.construct(path, directive.identifier, RuleFormat.KOTLIN_DSL),
+                            // this lookup adds support for the rules distributed with
+                            // arara (in TL names should be unique, hence we avoided
+                            // going for pdflatex.yaml in favor of arara-rule-pdflatex.yaml
+                            // from version 6 on)
+                            InterpreterUtils.construct(path, "arara-rule-" + directive.identifier, RuleFormat.MVEL)
+                    )
+                }.firstOrNull { Files.exists(it) } ?: throw AraraException(
                         LanguageController.messages.ERROR_INTERPRETER_RULE_NOT_FOUND.format(
                                 directive.identifier,
                                 directive.identifier,
-                                rulePaths.joinToString("; ", "(", ")") {
+                                paths.joinToString("; ", "(", ")") {
                                     FileHandling.normalize(it).toString()
                                 }
                         )
                 )
-    }
+            }
 
     // TODO: in the following, extract the printing into the higher level
     // function
@@ -284,7 +285,7 @@ object Interpreter {
             throw AraraException(
                     LanguageController.messages.ERROR_RULE_IDENTIFIER_AND_PATH
                             .format(directive.identifier, file.parent.toString()) + " " +
-                    e.message, e.exception ?: e)
+                            e.message, e.exception ?: e)
         }
         return LinearExecutor.executionStatus.exitCode
     }
