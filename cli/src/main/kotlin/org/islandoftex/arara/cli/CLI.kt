@@ -191,7 +191,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                             // otherwise use the preprocessed directives
                             // TODO: shall we throw AraraException(
                             //  LanguageController.messages.ERROR_PARSER_INVALID_PREAMBLE.format(it))
-                            DirectiveUtils.process(preamble
+                            val allDirectives = preamble
                                     ?.takeIf { MvelState.preambles.containsKey(it) }
                                     ?.let {
                                         Directives.extractDirectives(
@@ -202,7 +202,10 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                                                 LinearExecutor.currentFile!!.fileType
                                         ).plus(directives)
                                     } ?: directives
-                            )
+                            if (allDirectives.isEmpty())
+                                throw AraraException(LanguageController
+                                        .messages.ERROR_VALIDATE_NO_DIRECTIVES_FOUND)
+                            DirectiveUtils.process(allDirectives)
                         }
                 )
                 LinearExecutor.executionStatus = if (LinearExecutor.execute(projects).exitCode != 0)
