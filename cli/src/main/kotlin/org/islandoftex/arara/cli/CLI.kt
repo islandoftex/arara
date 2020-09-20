@@ -20,6 +20,7 @@ import kotlin.time.milliseconds
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
+import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
@@ -129,6 +130,35 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
     }
 
     /**
+     * Prepend potential preamble lines to the given directives.
+     *
+     * If there is no preamble given on command-line, returns the [directives],
+     * otherwise checks existence of the preamble and returns the processed
+     * preamble prepended to [directives].
+     */
+    private fun prependPreambleDirectives(directives: List<Directive>): List<Directive> {
+        if (preamble != null && !MvelState.preambles.containsKey(preamble)) {
+            throw AraraException(LanguageController.messages
+                    .ERROR_PARSER_INVALID_PREAMBLE.format(preamble))
+        }
+        val allDirectives = preamble
+                ?.takeIf { MvelState.preambles.containsKey(it) }
+                ?.let { preambleName ->
+                    Directives.extractDirectives(
+                            MvelState.preambles.getValue(preambleName)
+                                    .lines()
+                                    .filterNot { it.isEmpty() },
+                            true,
+                            LinearExecutor.currentFile!!.fileType
+                    ).plus(directives)
+                } ?: directives
+        if (allDirectives.isEmpty())
+            throw AraraException(LanguageController
+                    .messages.ERROR_VALIDATE_NO_DIRECTIVES_FOUND)
+        return allDirectives
+    }
+
+    /**
      * The actual main method of arara (when run in command-line mode)
      */
     override fun run() {
@@ -186,26 +216,8 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                             // add an empty line between file executions
                             println()
                         },
-                        processDirectives = { directives ->
-                            // if we have a preamble, prepend it,
-                            // otherwise use the preprocessed directives
-                            // TODO: shall we throw AraraException(
-                            //  LanguageController.messages.ERROR_PARSER_INVALID_PREAMBLE.format(it))
-                            val allDirectives = preamble
-                                    ?.takeIf { MvelState.preambles.containsKey(it) }
-                                    ?.let {
-                                        Directives.extractDirectives(
-                                                MvelState.preambles[preamble]!!
-                                                        .lines()
-                                                        .filterNot { it.isEmpty() },
-                                                true,
-                                                LinearExecutor.currentFile!!.fileType
-                                        ).plus(directives)
-                                    } ?: directives
-                            if (allDirectives.isEmpty())
-                                throw AraraException(LanguageController
-                                        .messages.ERROR_VALIDATE_NO_DIRECTIVES_FOUND)
-                            DirectiveUtils.process(allDirectives)
+                        processDirectives = {
+                            DirectiveUtils.process(prependPreambleDirectives(it))
                         }
                 )
                 LinearExecutor.executionStatus = if (LinearExecutor.execute(projects).exitCode != 0)
