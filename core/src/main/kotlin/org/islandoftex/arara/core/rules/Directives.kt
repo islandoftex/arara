@@ -93,7 +93,7 @@ object Directives {
     }
 
     /**
-     * Extracts a list of directives from a list of strings.
+     * Extracts a list of directives from a list of strings. Might be empty.
      *
      * @param lines List of strings.
      * @param parseOnlyHeader Whether to parse only the header.
@@ -111,10 +111,7 @@ object Directives {
         fileType: FileType
     ): List<Directive> {
         val pairs = getPotentialDirectiveLines(lines, parseOnlyHeader, fileType.pattern)
-                .takeIf { it.isNotEmpty() }
-                ?: throw AraraException(
-                        LanguageController.messages.ERROR_VALIDATE_NO_DIRECTIVES_FOUND
-                )
+                .takeIf { it.isNotEmpty() } ?: return listOf()
 
         val assemblers = mutableListOf<DirectiveAssembler>()
         var assembler = DirectiveAssembler()
