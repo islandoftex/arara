@@ -43,6 +43,10 @@ from version 5.0.0 on.
   removed. Hence, please use `en-QN` instead of `qn` etc.
 * Localization is provided by classes as library instead of property files in
   arara's resources.
+* If you pass an invalid language code, arara will now run in English and issue
+  a log warning but not fail anymore. Failing due to the wrong language in a
+  helper tool's (that is what arara is) output was considered inappropriate.
+  (breaking change)
 * The log file may now be specified as path anywhere on the file system.
   Warning: This behavior may be altered for a future safe mode.
   (see https://github.com/cereda/arara/issues/133).
