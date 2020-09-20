@@ -675,4 +675,138 @@ object RuleMethods {
      */
     @JvmStatic
     fun isBoolean(obj: Any?): Boolean = checkClass(java.lang.Boolean::class.java, obj)
+
+    /**
+     * Checks if the provided command name is reachable from the system path.
+     *
+     * @param command A string representing the command.
+     * @return A logic value.
+     */
+    @JvmStatic
+    fun isOnPath(command: String): Boolean = Environment.isOnPath(command)
+
+    /**
+     * Checks if Windows is the underlying operating system.
+     *
+     * @return A boolean value.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    @JvmStatic
+    @Throws(AraraException::class)
+    fun isWindows(): Boolean = Environment.checkOS("windows")
+
+    /**
+     * Checks if we are inside a Cygwin environment.
+     *
+     * @return A boolean value.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    @JvmStatic
+    @Throws(AraraException::class)
+    fun isCygwin(): Boolean = Environment.checkOS("cygwin")
+
+    /**
+     * Checks if Linux is the underlying operating system.
+     *
+     * @return A boolean value.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    @JvmStatic
+    @Throws(AraraException::class)
+    fun isLinux(): Boolean = Environment.checkOS("linux")
+
+    /**
+     * Checks if Mac is the underlying operating system.
+     *
+     * @return A boolean value.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    @JvmStatic
+    @Throws(AraraException::class)
+    fun isMac(): Boolean = Environment.checkOS("mac")
+
+    /**
+     * Checks if Unix is the underlying operating system.
+     *
+     * @return A boolean value.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    @JvmStatic
+    @Throws(AraraException::class)
+    fun isUnix(): Boolean = Environment.checkOS("unix")
+
+    /**
+     * Checks if Windows is the underlying operating system.
+     *
+     * @param yes Object to return if true.
+     * @param no Object to return if false.
+     * @return One of the two objects.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    @JvmStatic
+    @Throws(AraraException::class)
+    fun isWindows(yes: Any?, no: Any?): Any? =
+            if (Environment.checkOS("windows")) yes else no
+
+    /**
+     * Checks if we are inside a Cygwin environment.
+     *
+     * @param yes Object to return if true.
+     * @param no Object to return if false.
+     * @return One of the two objects.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    @JvmStatic
+    @Throws(AraraException::class)
+    fun isCygwin(yes: Any?, no: Any?): Any? =
+            if (Environment.checkOS("cygwin")) yes else no
+
+    /**
+     * Checks if Linux is the underlying operating system.
+     *
+     * @param yes Object to return if true.
+     * @param no Object to return if false.
+     * @return One of the two objects.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    @JvmStatic
+    @Throws(AraraException::class)
+    fun isLinux(yes: Any?, no: Any?): Any? =
+            if (Environment.checkOS("linux")) yes else no
+
+    /**
+     * Checks if Mac is the underlying operating system.
+     *
+     * @param yes Object to return if true.
+     * @param no Object to return if false.
+     * @return One of the two objects.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    @JvmStatic
+    @Throws(AraraException::class)
+    fun isMac(yes: Any?, no: Any?): Any? =
+            if (Environment.checkOS("mac")) yes else no
+
+    /**
+     * Checks if Unix is the underlying operating system.
+     *
+     * @param yes Object to return if true.
+     * @param no Object to return if false.
+     * @return One of the two objects.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    @JvmStatic
+    @Throws(AraraException::class)
+    fun isUnix(yes: Any?, no: Any?): Any? =
+            if (Environment.checkOS("unix")) yes else no
 }
