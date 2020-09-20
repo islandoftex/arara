@@ -53,6 +53,9 @@ from version 5.0.0 on.
   causing `null` values to be handled differently. Previously undefined behavior
   will now cause an error.
   (breaking change)
+* Preambles are now a client-only feature. This feature will neither make it
+  to core nor to the mvel library because libraries should not deal with
+  prepending content to a file which is what the preambles feature does.
 
 ### Fixed
 
