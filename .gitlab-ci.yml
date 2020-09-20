@@ -124,6 +124,7 @@ publish:gitlab:
 .ctantemplate: &ctandefinition
   stage: publish
   image: registry.gitlab.com/islandoftex/images/texlive:latest
+  needs: ["test:linux:jdk8", "build:linux:jdk11"]
   script:
     - apt-get update
     - apt-get install -y --no-install-recommends zip
