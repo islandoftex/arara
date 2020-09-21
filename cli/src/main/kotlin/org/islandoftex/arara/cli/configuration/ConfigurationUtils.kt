@@ -78,8 +78,12 @@ object ConfigurationUtils {
                 LinearExecutor.currentProject!!,
                 LinearExecutor.executionOptions
         )
-        Session.loggingOptions = resource.toLoggingOptions()
-        Session.userInterfaceOptions = resource.toUserInterfaceOptions()
+        Session.loggingOptions = resource.toLoggingOptions(
+                Session.loggingOptions
+        )
+        Session.userInterfaceOptions = resource.toUserInterfaceOptions(
+                Session.userInterfaceOptions
+        )
 
         MvelState.preambles.putAll(resource.preambles)
 

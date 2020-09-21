@@ -8,10 +8,10 @@ import java.nio.file.Paths
 import java.util.Locale
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.configuration.ExecutionOptions
+import org.islandoftex.arara.api.configuration.LoggingOptions
+import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 import org.islandoftex.arara.api.files.Project
-import org.islandoftex.arara.core.configuration.ExecutionOptions
-import org.islandoftex.arara.core.configuration.LoggingOptions
-import org.islandoftex.arara.core.configuration.UserInterfaceOptions
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
@@ -28,17 +28,17 @@ import org.mvel2.templates.TemplateRuntime
  */
 @Serializable
 data class LocalConfiguration(
-    private var paths: List<String> = listOf(),
-    private var filetypes: List<FileType> = listOf(),
-    private var language: String = UserInterfaceOptions().locale.toLanguageTag(),
-    private var loops: Int = ExecutionOptions().maxLoops,
-    private var verbose: Boolean = ExecutionOptions().verbose,
-    private var logging: Boolean = LoggingOptions().enableLogging,
-    private var header: Boolean = ExecutionOptions().parseOnlyHeader,
-    private var dbname: String = ExecutionOptions().databaseName.toString(),
-    private var logname: String = LoggingOptions().logFile.toString(),
-    private var laf: String = UserInterfaceOptions().swingLookAndFeel,
-    var preambles: Map<String, String> = mapOf()
+    private val paths: List<String> = listOf(),
+    private val filetypes: List<FileType> = listOf(),
+    private val language: String? = null,
+    private val loops: Int? = null,
+    private val verbose: Boolean? = null,
+    private val logging: Boolean? = null,
+    private val header: Boolean? = null,
+    private val dbname: String? = null,
+    private val logname: String? = null,
+    private val laf: String? = null,
+    val preambles: Map<String, String> = mapOf()
 ) {
     /**
      * Convert the relevant properties of the configuration to execution
@@ -50,8 +50,8 @@ data class LocalConfiguration(
     @Throws(AraraException::class)
     fun toExecutionOptions(
         currentProject: Project,
-        baseOptions: org.islandoftex.arara.api.configuration.ExecutionOptions = ExecutionOptions()
-    ): org.islandoftex.arara.api.configuration.ExecutionOptions {
+        baseOptions: ExecutionOptions = org.islandoftex.arara.core.configuration.ExecutionOptions()
+    ): ExecutionOptions {
         val templateContext = mapOf(
                 "user" to mapOf(
                         "home" to (Environment.getSystemPropertyOrNull("user.home") ?: ""),
@@ -81,25 +81,29 @@ data class LocalConfiguration(
                 }
                 .map { FileHandling.normalize(it) }
                 .toSet()
-        val databaseName = Paths.get(cleanFileName(dbname))
-        val maxLoops = if (loops > 0) {
-            loops
-        } else {
-            throw AraraException(
-                    LanguageController.messages.ERROR_CONFIGURATION_LOOPS_INVALID_RANGE
-            )
-        }
-        return ExecutionOptions
+        val databaseName = dbname?.let { Paths.get(cleanFileName(it)) }
+                ?: baseOptions.databaseName
+        val maxLoops = loops?.let {
+            if (loops > 0) {
+                loops
+            } else {
+                throw AraraException(
+                        LanguageController.messages.ERROR_CONFIGURATION_LOOPS_INVALID_RANGE
+                )
+            }
+        } ?: baseOptions.maxLoops
+
+        return org.islandoftex.arara.core.configuration.ExecutionOptions
                 .from(baseOptions)
                 .copy(
                         maxLoops = maxLoops,
-                        verbose = verbose,
+                        verbose = verbose ?: baseOptions.verbose,
                         databaseName = databaseName,
                         fileTypes = filetypes
                                 .plus(baseOptions.fileTypes),
                         rulePaths = preprocessedPaths
                                 .plus(baseOptions.rulePaths),
-                        parseOnlyHeader = header
+                        parseOnlyHeader = header ?: baseOptions.parseOnlyHeader
                 )
     }
 
@@ -110,10 +114,13 @@ data class LocalConfiguration(
      *
      * @return The corresponding logging options.
      */
-    fun toLoggingOptions(): org.islandoftex.arara.api.configuration.LoggingOptions {
-        val logName = Paths.get(cleanFileName(logname))
-        return LoggingOptions(
-                enableLogging = logging,
+    fun toLoggingOptions(
+        baseOptions: LoggingOptions = org.islandoftex.arara.core.configuration.LoggingOptions()
+    ): LoggingOptions {
+        val logName = logname?.let { Paths.get(cleanFileName(it)) }
+                ?: baseOptions.logFile
+        return org.islandoftex.arara.core.configuration.LoggingOptions(
+                enableLogging = logging ?: baseOptions.enableLogging,
                 logFile = logName
         )
     }
@@ -125,10 +132,13 @@ data class LocalConfiguration(
      *
      * @return The corresponding user interface options.
      */
-    fun toUserInterfaceOptions(): org.islandoftex.arara.api.configuration.UserInterfaceOptions {
-        return UserInterfaceOptions(
-                locale = Locale.forLanguageTag(language),
-                swingLookAndFeel = laf
+    fun toUserInterfaceOptions(
+        baseOptions: UserInterfaceOptions = org.islandoftex.arara.core.configuration.UserInterfaceOptions()
+    ): UserInterfaceOptions {
+        return org.islandoftex.arara.core.configuration.UserInterfaceOptions(
+                locale = language?.let { Locale.forLanguageTag(it) }
+                        ?: baseOptions.locale,
+                swingLookAndFeel = laf ?: baseOptions.swingLookAndFeel
         )
     }
 
