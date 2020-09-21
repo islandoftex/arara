@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.ThreadContext
 import org.apache.logging.log4j.core.config.Configurator
 import org.islandoftex.arara.api.configuration.LoggingOptions
+import org.islandoftex.arara.core.files.FileHandling
 
 /**
  * Implements the logging controller. This class actually sets the logging
@@ -26,7 +27,8 @@ object LoggingUtils {
     fun setupLogging(loggingOptions: LoggingOptions) {
         if (loggingOptions.enableLogging) {
             // TODO: check for multi-threading
-            ThreadContext.put("araraLogFile", loggingOptions.logFile.toString())
+            ThreadContext.put("araraLogFile",
+                    FileHandling.normalize(loggingOptions.logFile).toString())
             val loggerContext = LogManager.getContext(false)
                     as org.apache.logging.log4j.core.LoggerContext
             loggerContext.configLocation = LoggingUtils::class.java

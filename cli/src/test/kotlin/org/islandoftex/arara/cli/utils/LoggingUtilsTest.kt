@@ -11,6 +11,7 @@ class LoggingUtilsTest : ShouldSpec({
         val defaultEnable = LoggingOptions(true)
         ThreadContext.get("araraLogFile") shouldBe null
         LoggingUtils.setupLogging(defaultEnable)
-        ThreadContext.get("araraLogFile") shouldBe defaultEnable.logFile.toString()
+        ThreadContext.get("araraLogFile") shouldBe defaultEnable.logFile
+                .toAbsolutePath().toString()
     }
 })
