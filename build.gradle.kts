@@ -281,10 +281,10 @@ subprojects {
                     artifact(tasks["javadocJar"])
                 }
 
-                if (System.getenv("CI_PROJECT_ID") != null) {
+                System.getenv("CI_PROJECT_ID")?.let {
                     repositories {
                         maven {
-                            url = uri("https://gitlab.com/api/v4/projects/${System.getenv("CI_PROJECT_ID")!!}/packages/maven")
+                            url = uri("https://gitlab.com/api/v4/projects/$it/packages/maven")
                             credentials(HttpHeaderCredentials::class) {
                                 if (project.hasProperty("jobToken")) {
                                     name = "Job-Token"

@@ -32,14 +32,10 @@ object ConfigurationUtils {
     fun configFileForProject(project: Project): Path? {
         val names = listOf(".araraconfig.yaml",
                 "araraconfig.yaml", ".arararc.yaml", "arararc.yaml")
-        project.workingDirectory.let { workingDir ->
-            val first = names
-                    .map { workingDir.resolve(it) }
+        return project.workingDirectory.let { workingDir ->
+            names.map { workingDir.resolve(it) }
                     .firstOrNull { Files.exists(it) }
-            if (first != null)
-                return first
-        }
-        return Environment.getSystemPropertyOrNull("user.home")
+        } ?: Environment.getSystemPropertyOrNull("user.home")
                 ?.let { userHome ->
                     names.map { Paths.get(userHome).resolve(it) }
                             .firstOrNull { Files.exists(it) }
