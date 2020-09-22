@@ -19,4 +19,9 @@ data class DirectiveImpl(
     override val lineNumbers: List<Int>
 ) : Directive {
     override fun execute(): Int = Interpreter.execute(this)
+
+    override fun toString(): String {
+        return "Directive(identifier='$identifier', parameters=$parameters," +
+                "conditional=$conditional, lineNumbers=$lineNumbers)"
+    }
 }
