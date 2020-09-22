@@ -53,6 +53,22 @@ object MvelState {
     }
 
     /**
+     * A map of directive method names to method pointers.
+     */
+    @JvmStatic
+    val directiveMethods: Map<String, Any> by lazy {
+        val map = conditionalMethods.toMutableMap()
+        kotlin.runCatching {
+            val methodsKotlin = RuleMethods::class.java.methods
+            listOf("getOriginalReference", "getBasename", "getSession")
+                    .forEach { name: String ->
+                        map[name] = methodsKotlin.first { it.name == name }
+                    }
+        }
+        map
+    }
+
+    /**
      * Save the available preambles from the configuration file.
      */
     val preambles: MutableMap<String, String> = mutableMapOf()

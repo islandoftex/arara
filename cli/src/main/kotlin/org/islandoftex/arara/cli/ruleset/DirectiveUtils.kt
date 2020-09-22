@@ -6,12 +6,15 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.DirectiveFetchingHooks
 import org.islandoftex.arara.core.rules.Directives
 import org.islandoftex.arara.core.session.LinearExecutor
+import org.islandoftex.arara.mvel.utils.MvelState
+import org.mvel2.templates.TemplateRuntime
 import org.slf4j.LoggerFactory
 
 /**
@@ -76,17 +79,7 @@ object DirectiveUtils {
         if (text == null)
             return mapOf()
 
-        /*
-         * Before using Jackson, there has been a dedicated directive resolver
-         * which instructed SnakeYAML to do the following:
-         *
-         * addImplicitResolver(Tag.MERGE, MERGE, "<")
-         * addImplicitResolver(Tag.NULL, NULL, "~nN\u0000")
-         * addImplicitResolver(Tag.NULL, EMPTY, null)
-         *
-         * This has been removed.
-         */
-        return ObjectMapper(YAMLFactory()).registerKotlinModule().runCatching {
+        val map = ObjectMapper(YAMLFactory()).registerKotlinModule().runCatching {
             readValue<Map<String, Any>>(text)
         }.getOrElse {
             throw AraraException(
@@ -97,6 +90,26 @@ object DirectiveUtils {
                     it
             )
         }
+
+        return if ("options" in map.keys && LinearExecutor.executionOptions
+                        .executionMode != ExecutionMode.SAFE_RUN) {
+            // perform directive interpolation by applying MVEL methods to the
+            // directive arguments
+            map.plus("options" to (map["options"]?.takeIf { it is List<*> }
+                    ?.let { list ->
+                        (list as List<*>).map { it.toString() }
+                    }
+                    ?.map { value ->
+                        kotlin.runCatching {
+                            TemplateRuntime.eval(value, MvelState.directiveMethods)
+                        }.getOrElse {
+                            throw AraraException(LanguageController.messages
+                                    .ERROR_EXTRACTOR_INTERPOLATION_FAILURE,
+                                    it
+                            )
+                        }
+                    } ?: listOf()))
+        } else map
     }
 
     /**
