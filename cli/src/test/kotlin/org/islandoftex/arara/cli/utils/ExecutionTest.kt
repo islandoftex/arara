@@ -13,8 +13,10 @@ import java.io.File
 import java.io.PrintStream
 import java.nio.file.Paths
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
+import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.session.ExecutorHooks
@@ -157,6 +159,22 @@ class ExecutionTest : ShouldSpec({
         output shouldContain "batchmode"
         output shouldContain "SUCCESS"
         output shouldNotContain "FAILURE"
+    }
+
+    should("interpret orb tags in directives") {
+        val output = outputForTest("directive-with-mvel-options")
+        output shouldContain "testdirective-with-mvel-optionsquack"
+        output shouldContain "nothing"
+    }
+    should("not interpret orb tags in directives in safe mode") {
+        val options = LinearExecutor.executionOptions
+        LinearExecutor.executionOptions = ExecutionOptions.from(options)
+                .copy(executionMode = ExecutionMode.SAFE_RUN)
+        val output = outputForTest("directive-with-mvel-options")
+        output shouldNotContain "testdirective-with-mvel-optionsquack"
+        output shouldContain "test@{getBasename(getOriginalReference())}quack"
+        output shouldContain "nothing"
+        LinearExecutor.executionOptions = options
     }
 
     should("process multiple files (files array)") {

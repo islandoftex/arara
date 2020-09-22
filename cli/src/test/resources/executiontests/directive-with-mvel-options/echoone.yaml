@@ -1,0 +1,21 @@
+!config
+identifier: echoone
+name: Test rule for conditionals 1
+commands:
+  - name: The echoer
+    command: >
+      @{
+          return isWindows(getCommand('cmd', '/c', 'echo', 'QuackOne', options),
+                  getCommand('echo', 'QuackOne', options));
+      }
+arguments:
+  - identifier: options
+    flag: >
+      @{
+          if (isList(parameters.options)) {
+              return parameters.options;
+          }
+          else {
+              throwError('I was expecting a list of options.');
+          }
+      }
