@@ -45,6 +45,12 @@ class Interpreter(
     private val logger = LoggerFactory.getLogger(Interpreter::class.java)
 
     /**
+     * This string represents the key necessary for halting the current
+     * executor. It will be checked against session values.
+     */
+    private val haltKey = "arara:${currentFile.path.fileName}:halt"
+
+    /**
      * Gets the rule according to the provided directive.
      *
      * @param directive The provided directive.
@@ -214,7 +220,6 @@ class Interpreter(
                     .messages.ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT
                     .format(command.name))
 
-        val haltKey = "arara:${currentFile.path.fileName}:halt"
         if (Session.contains(haltKey)) {
             LinearExecutor.executionStatus =
                     if (Session[haltKey].toString().toInt() != 0)
@@ -259,37 +264,42 @@ class Interpreter(
             available = evaluator.evaluate(directive.conditional)
         }
 
-        // if this directive is conditionally disabled, skip
-        if (!available || Session.contains("arara:${currentFile.path.fileName}:halt"))
-            return LinearExecutor.executionStatus
-
-        try {
-            // if not execute the commands associated with the directive
-            do {
-                rule.commands.forEach { command ->
-                    executeCommand(
-                            // TODO: remove cast
-                            command as SerialRuleCommand,
-                            directive.conditional,
-                            rule,
-                            parameters
-                    )
+        return when {
+            !available ->
+                // if this directive is conditionally disabled, skip
+                LinearExecutor.executionStatus
+            Session.contains(haltKey) ->
+                // a halt was requested by a rule
+                ExecutionStatus.FinishedWithCode(Session[haltKey].toString().toInt())
+            else -> {
+                try {
+                    // if not execute the commands associated with the directive
+                    do {
+                        rule.commands.forEach { command ->
+                            executeCommand(
+                                    // TODO: remove cast
+                                    command as SerialRuleCommand,
+                                    directive.conditional,
+                                    rule,
+                                    parameters
+                            )
+                        }
+                    } while (evaluator.evaluate(directive.conditional))
+                } catch (_: HaltExpectedException) {
+                    // If the user uses the halt rule to trigger a halt, this will be
+                    // raised. Any other exception will not be caught and propagate up.
+                } catch (e: AraraExceptionWithHeader) {
+                    // rethrow arara exceptions that are bound to have a header by
+                    // prepending the header and removing the outer exception with
+                    // header where possible
+                    throw AraraException(
+                            LanguageController.messages.ERROR_RULE_IDENTIFIER_AND_PATH
+                                    .format(directive.identifier, file.parent.toString()) + " " +
+                                    e.message, e.exception ?: e)
                 }
-            } while (evaluator.evaluate(directive.conditional))
-        } catch (_: HaltExpectedException) {
-            // If the user uses the halt rule to trigger a halt, this will be
-            // raised. Any other exception will not be caught and propagate up.
-        } catch (e: AraraExceptionWithHeader) {
-            // rethrow arara exceptions that are bound to have a header by
-            // prepending the header and removing the outer exception with
-            // header where possible
-            throw AraraException(
-                    LanguageController.messages.ERROR_RULE_IDENTIFIER_AND_PATH
-                            .format(directive.identifier, file.parent.toString()) + " " +
-                            e.message, e.exception ?: e)
+                LinearExecutor.executionStatus
+            }
         }
-
-        return LinearExecutor.executionStatus
     }
 
     /**
