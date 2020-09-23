@@ -5,6 +5,8 @@ import java.nio.file.Files
 import java.nio.file.Path
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
+import org.islandoftex.arara.api.configuration.ExecutionOptions
+import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.Rule
@@ -34,7 +36,10 @@ import org.slf4j.LoggerFactory
  * @version 5.0
  * @since 4.0
  */
-object Interpreter {
+class Interpreter(
+    private val executionOptions: ExecutionOptions,
+    private val currentFile: ProjectFile
+) {
     // the class logger obtained from
     // the logger factory
     private val logger = LoggerFactory.getLogger(Interpreter::class.java)
@@ -50,7 +55,7 @@ object Interpreter {
      */
     @Throws(AraraException::class)
     private fun getRule(directive: Directive): Path =
-            LinearExecutor.executionOptions.rulePaths.let { paths ->
+            executionOptions.rulePaths.let { paths ->
                 paths.flatMap { path ->
                     listOf(
                             InterpreterUtils.construct(path, directive.identifier, RuleFormat.MVEL),
@@ -88,7 +93,7 @@ object Interpreter {
     ): Boolean {
         logger.info(LanguageController.messages.LOG_INFO_BOOLEAN_MODE.format(value))
 
-        if (LinearExecutor.executionOptions.executionMode == ExecutionMode.DRY_RUN) {
+        if (executionOptions.executionMode == ExecutionMode.DRY_RUN) {
             DisplayUtils.printAuthors(authors)
             DisplayUtils.printWrapped(LanguageController.messages
                     .INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE.format(value))
@@ -119,7 +124,7 @@ object Interpreter {
         logger.info(LanguageController.messages.LOG_INFO_SYSTEM_COMMAND.format(command))
         var success = true
 
-        if (LinearExecutor.executionOptions.executionMode != ExecutionMode.DRY_RUN) {
+        if (executionOptions.executionMode != ExecutionMode.DRY_RUN) {
             val code = InterpreterUtils.run(command)
             val check: Any = try {
                 val context = mapOf<String, Any>("value" to code)
@@ -200,13 +205,13 @@ object Interpreter {
 
         DisplayUtils.printEntryResult(success)
 
-        if (LinearExecutor.executionOptions.haltOnErrors && !success)
+        if (executionOptions.haltOnErrors && !success)
             throw HaltExpectedException(LanguageController
                     .messages.ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT
                     .format(command.name))
 
         // TODO: document this key
-        val haltKey = "arara:${LinearExecutor.currentFile!!.path.fileName}:halt"
+        val haltKey = "arara:${currentFile.path.fileName}:halt"
         if (Session.contains(haltKey)) {
             LinearExecutor.executionStatus =
                     if (Session[haltKey].toString().toInt() != 0)
@@ -244,7 +249,7 @@ object Interpreter {
         // parse the rule identified by the directive (may throw an exception)
         val rule = RuleUtils.parseRule(file, directive.identifier)
         val parameters = parseArguments(rule, directive).plus(MvelState.ruleMethods)
-        val evaluator = DirectiveConditionalEvaluator(LinearExecutor.executionOptions)
+        val evaluator = DirectiveConditionalEvaluator(executionOptions)
 
         var available = true
         if (InterpreterUtils.runPriorEvaluation(directive.conditional)) {
@@ -252,7 +257,7 @@ object Interpreter {
         }
 
         // if this directive is conditionally disabled, skip
-        if (!available || Session.contains("arara:${LinearExecutor.currentFile!!.path.fileName}:halt"))
+        if (!available || Session.contains("arara:${currentFile.path.fileName}:halt"))
             return LinearExecutor.executionStatus
 
         try {

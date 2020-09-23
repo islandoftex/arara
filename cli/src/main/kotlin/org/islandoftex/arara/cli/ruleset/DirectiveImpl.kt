@@ -4,6 +4,7 @@ package org.islandoftex.arara.cli.ruleset
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.cli.interpreter.Interpreter
+import org.islandoftex.arara.core.session.LinearExecutor
 
 /**
  * Implements the directive model.
@@ -18,7 +19,9 @@ data class DirectiveImpl(
     override val conditional: DirectiveConditional,
     override val lineNumbers: List<Int>
 ) : Directive {
-    override fun execute(): Int = Interpreter.execute(this).exitCode
+    override fun execute(): Int = Interpreter(
+            LinearExecutor.executionOptions, LinearExecutor.currentFile!!
+    ).execute(this).exitCode
 
     override fun toString(): String {
         return "Directive(identifier='$identifier', parameters=$parameters," +
