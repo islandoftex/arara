@@ -195,51 +195,46 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                         )
                     }.toSet()
             ))
-            try {
-                LinearExecutor.hooks = ExecutorHooks(
-                        executeBeforeExecution = {
-                            // directive processing has to be initialized, so that the core
-                            // component respects our MVEL processing
-                            DirectiveUtils.initializeDirectiveCore()
-                        },
-                        executeBeforeProject = { project ->
-                            ConfigurationUtils.configFileForProject(project)?.let {
-                                DisplayUtils.configurationFileName = it.toString()
-                                ConfigurationUtils.load(it)
-                            }
-                        },
-                        executeBeforeFile = {
-                            // TODO: do we have to reset some more file-specific config?
-                            updateConfigurationFromCommandLine()
-                            DisplayUtils.printFileInformation(it)
-                        },
-                        executeAfterFile = {
-                            // add an empty line between file executions
-                            println()
-                        },
-                        processDirectives = {
-                            DirectiveUtils.process(prependPreambleDirectives(it))
+            LinearExecutor.hooks = ExecutorHooks(
+                    executeBeforeExecution = {
+                        // directive processing has to be initialized, so that the core
+                        // component respects our MVEL processing
+                        DirectiveUtils.initializeDirectiveCore()
+                    },
+                    executeBeforeProject = { project ->
+                        ConfigurationUtils.configFileForProject(project)?.let {
+                            DisplayUtils.configurationFileName = it.toString()
+                            ConfigurationUtils.load(it)
                         }
-                )
-                LinearExecutor.executionStatus = if (LinearExecutor.execute(projects).exitCode != 0)
-                    ExecutionStatus.EXTERNAL_CALL_FAILED
-                else
-                    ExecutionStatus.PROCESSING
-            } catch (exception: AraraException) {
-                // catch a propagated exception to replace intentionally left
-                // out local treatment
-                DisplayUtils.printException(exception)
-                LinearExecutor.executionStatus = ExecutionStatus.CAUGHT_EXCEPTION
-            }
-
-            // print the execution time if the command line parsing does not
-            // return false as result (it makes no sense to print the execution
-            // time for a help message)
-            DisplayUtils.printTime(executionStart.elapsedNow().inSeconds)
+                    },
+                    executeBeforeFile = {
+                        // TODO: do we have to reset some more file-specific config?
+                        updateConfigurationFromCommandLine()
+                        DisplayUtils.printFileInformation(it)
+                    },
+                    executeAfterFile = {
+                        // add an empty line between file executions
+                        println()
+                    },
+                    processDirectives = {
+                        DirectiveUtils.process(prependPreambleDirectives(it))
+                    }
+            )
+            LinearExecutor.executionStatus = if (LinearExecutor.execute(projects).exitCode != 0)
+                ExecutionStatus.EXTERNAL_CALL_FAILED
+            else
+                ExecutionStatus.PROCESSING
         } catch (ex: AraraException) {
+            // catch a propagated exception to replace intentionally left
+            // out local treatment
             DisplayUtils.printException(ex)
             LinearExecutor.executionStatus = ExecutionStatus.CAUGHT_EXCEPTION
         }
+
+        // print the execution time if the command line parsing does not
+        // return false as result (it makes no sense to print the execution
+        // time for a help message)
+        DisplayUtils.printTime(executionStart.elapsedNow().inSeconds)
 
         throw ProgramResult(LinearExecutor.executionStatus.exitCode)
     }
