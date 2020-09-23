@@ -21,7 +21,6 @@ import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.InputHandling
 import org.islandoftex.arara.mvel.interpreter.AraraExceptionWithHeader
-import org.islandoftex.arara.mvel.interpreter.HaltExpectedException
 import org.islandoftex.arara.mvel.rules.DirectiveConditionalEvaluator
 import org.islandoftex.arara.mvel.rules.RuleArgument
 import org.islandoftex.arara.mvel.rules.SerialRuleCommand
@@ -38,7 +37,7 @@ import org.slf4j.LoggerFactory
  */
 class Interpreter(
     private val executionOptions: ExecutionOptions,
-    private val currentFile: ProjectFile
+    currentFile: ProjectFile
 ) {
     // the class logger obtained from
     // the logger factory
@@ -210,24 +209,18 @@ class Interpreter(
         }
 
         DisplayUtils.printEntryResult(success)
-        LinearExecutor.executionStatus = if (success)
-            ExecutionStatus.Processing()
-        else
-            ExecutionStatus.ExternalCallFailed()
-
-        if (executionOptions.haltOnErrors && !success)
-            throw HaltExpectedException(LanguageController
-                    .messages.ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT
-                    .format(command.name))
-
-        if (Session.contains(haltKey)) {
-            LinearExecutor.executionStatus =
-                    if (Session[haltKey].toString().toInt() != 0)
-                        ExecutionStatus.ExternalCallFailed()
-                    else
-                        ExecutionStatus.Processing()
-            throw HaltExpectedException(LanguageController.messages
-                    .ERROR_INTERPRETER_USER_REQUESTED_HALT)
+        LinearExecutor.executionStatus = when {
+            Session.contains(haltKey) ->
+                throw HaltExpectedException(LanguageController.messages
+                        .ERROR_INTERPRETER_USER_REQUESTED_HALT,
+                        ExecutionStatus.FinishedWithCode(Session[haltKey].toString().toInt()))
+            executionOptions.haltOnErrors && !success ->
+                throw HaltExpectedException(LanguageController
+                        .messages.ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT
+                        .format(command.name),
+                        ExecutionStatus.ExternalCallFailed())
+            success -> ExecutionStatus.Processing()
+            else -> ExecutionStatus.ExternalCallFailed()
         }
     }
 
@@ -286,9 +279,10 @@ class Interpreter(
                             )
                         }
                     } while (evaluator.evaluate(directive.conditional))
-                } catch (_: HaltExpectedException) {
+                } catch (e: HaltExpectedException) {
                     // If the user uses the halt rule to trigger a halt, this will be
                     // raised. Any other exception will not be caught and propagate up.
+                    LinearExecutor.executionStatus = e.status
                 } catch (e: AraraExceptionWithHeader) {
                     // rethrow arara exceptions that are bound to have a header by
                     // prepending the header and removing the outer exception with
