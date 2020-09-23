@@ -227,7 +227,7 @@ object Interpreter {
      */
     @Throws(AraraException::class)
     @Suppress("NestedBlockDepth")
-    fun execute(directive: Directive): Int {
+    fun execute(directive: Directive): ExecutionStatus {
         logger.info(
                 LanguageController.messages.LOG_INFO_INTERPRET_RULE.format(
                         directive.identifier
@@ -253,7 +253,7 @@ object Interpreter {
 
         // if this directive is conditionally disabled, skip
         if (!available || Session.contains("arara:${LinearExecutor.currentFile!!.path.fileName}:halt"))
-            return LinearExecutor.executionStatus.exitCode
+            return LinearExecutor.executionStatus
 
         try {
             // if not execute the commands associated with the directive
@@ -280,7 +280,7 @@ object Interpreter {
                             .format(directive.identifier, file.parent.toString()) + " " +
                             e.message, e.exception ?: e)
         }
-        return LinearExecutor.executionStatus.exitCode
+        return LinearExecutor.executionStatus
     }
 
     /**
