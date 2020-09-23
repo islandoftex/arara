@@ -258,16 +258,17 @@ class Interpreter(
         val rule = RuleUtils.parseRule(file, directive.identifier)
         val parameters = parseArguments(rule, directive).plus(MvelState.ruleMethods)
         val evaluator = DirectiveConditionalEvaluator(executionOptions)
-
-        var available = true
-        if (InterpreterUtils.runPriorEvaluation(directive.conditional)) {
-            available = evaluator.evaluate(directive.conditional)
-        }
+        val available =
+                if (InterpreterUtils.runPriorEvaluation(directive.conditional))
+                    evaluator.evaluate(directive.conditional)
+                else true
 
         return when {
             !available ->
-                // if this directive is conditionally disabled, skip
-                LinearExecutor.executionStatus
+                // if this directive is conditionally disabled, skip by returning
+                // a zero exit code meaning a conditionally disabled directive
+                // never fails
+                ExecutionStatus.Processing()
             Session.contains(haltKey) ->
                 // a halt was requested by a rule
                 ExecutionStatus.FinishedWithCode(Session[haltKey].toString().toInt())
