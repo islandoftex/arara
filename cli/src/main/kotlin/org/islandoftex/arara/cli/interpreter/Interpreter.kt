@@ -210,7 +210,6 @@ class Interpreter(
                     .messages.ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT
                     .format(command.name))
 
-        // TODO: document this key
         val haltKey = "arara:${currentFile.path.fileName}:halt"
         if (Session.contains(haltKey)) {
             LinearExecutor.executionStatus =
