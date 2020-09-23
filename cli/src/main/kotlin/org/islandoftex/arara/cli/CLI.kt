@@ -183,7 +183,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         // add all command line call parameters to the session
         parameters.forEach { (key, value) -> Session.put("arg:$key", value) }
 
-        LinearExecutor.executionStatus = try {
+        try {
             val projects = listOf(Project(
                     workingDir.fileName.toString(),
                     workingDir,
@@ -229,14 +229,14 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
             // out local treatment
             DisplayUtils.printException(ex)
             ExecutionStatus.CAUGHT_EXCEPTION
+        }.let { executionStatus ->
+            // print the execution time if the command line parsing does not
+            // return false as result (it makes no sense to print the execution
+            // time for a help message)
+            DisplayUtils.printTime(executionStart.elapsedNow().inSeconds)
+
+            throw ProgramResult(executionStatus.exitCode)
         }
-
-        // print the execution time if the command line parsing does not
-        // return false as result (it makes no sense to print the execution
-        // time for a help message)
-        DisplayUtils.printTime(executionStart.elapsedNow().inSeconds)
-
-        throw ProgramResult(LinearExecutor.executionStatus.exitCode)
     }
 }
 
