@@ -183,7 +183,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         // add all command line call parameters to the session
         parameters.forEach { (key, value) -> Session.put("arg:$key", value) }
 
-        try {
+        LinearExecutor.executionStatus = try {
             val projects = listOf(Project(
                     workingDir.fileName.toString(),
                     workingDir,
@@ -220,7 +220,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                         DirectiveUtils.process(prependPreambleDirectives(it))
                     }
             )
-            LinearExecutor.executionStatus = if (LinearExecutor.execute(projects).exitCode != 0)
+            if (LinearExecutor.execute(projects).exitCode != 0)
                 ExecutionStatus.EXTERNAL_CALL_FAILED
             else
                 ExecutionStatus.PROCESSING
@@ -228,7 +228,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
             // catch a propagated exception to replace intentionally left
             // out local treatment
             DisplayUtils.printException(ex)
-            LinearExecutor.executionStatus = ExecutionStatus.CAUGHT_EXCEPTION
+            ExecutionStatus.CAUGHT_EXCEPTION
         }
 
         // print the execution time if the command line parsing does not
