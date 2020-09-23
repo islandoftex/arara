@@ -21,7 +21,7 @@ object LinearExecutor : Executor {
     /**
      * The execution status this executor is captured in.
      */
-    var executionStatus: ExecutionStatus = ExecutionStatus.PROCESSING
+    var executionStatus: ExecutionStatus = ExecutionStatus.Processing()
 
     /**
      * The project this executor currently executes, if any. This will always

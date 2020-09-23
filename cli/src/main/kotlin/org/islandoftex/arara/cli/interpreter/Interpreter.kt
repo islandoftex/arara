@@ -205,9 +205,9 @@ class Interpreter(
 
         DisplayUtils.printEntryResult(success)
         LinearExecutor.executionStatus = if (success)
-            ExecutionStatus.PROCESSING
+            ExecutionStatus.Processing()
         else
-            ExecutionStatus.EXTERNAL_CALL_FAILED
+            ExecutionStatus.ExternalCallFailed()
 
         if (executionOptions.haltOnErrors && !success)
             throw HaltExpectedException(LanguageController
@@ -218,9 +218,9 @@ class Interpreter(
         if (Session.contains(haltKey)) {
             LinearExecutor.executionStatus =
                     if (Session[haltKey].toString().toInt() != 0)
-                        ExecutionStatus.EXTERNAL_CALL_FAILED
+                        ExecutionStatus.ExternalCallFailed()
                     else
-                        ExecutionStatus.PROCESSING
+                        ExecutionStatus.Processing()
             throw HaltExpectedException(LanguageController.messages
                     .ERROR_INTERPRETER_USER_REQUESTED_HALT)
         }
@@ -288,6 +288,7 @@ class Interpreter(
                             .format(directive.identifier, file.parent.toString()) + " " +
                             e.message, e.exception ?: e)
         }
+
         return LinearExecutor.executionStatus
     }
 

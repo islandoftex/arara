@@ -221,14 +221,14 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                     }
             )
             if (LinearExecutor.execute(projects).exitCode != 0)
-                ExecutionStatus.EXTERNAL_CALL_FAILED
+                ExecutionStatus.ExternalCallFailed()
             else
-                ExecutionStatus.PROCESSING
+                ExecutionStatus.Processing()
         } catch (ex: AraraException) {
             // catch a propagated exception to replace intentionally left
             // out local treatment
             DisplayUtils.printException(ex)
-            ExecutionStatus.CAUGHT_EXCEPTION
+            ExecutionStatus.CaughtException()
         }.let { executionStatus ->
             // print the execution time if the command line parsing does not
             // return false as result (it makes no sense to print the execution
