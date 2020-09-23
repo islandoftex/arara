@@ -204,6 +204,10 @@ class Interpreter(
         }
 
         DisplayUtils.printEntryResult(success)
+        LinearExecutor.executionStatus = if (success)
+            ExecutionStatus.PROCESSING
+        else
+            ExecutionStatus.EXTERNAL_CALL_FAILED
 
         if (executionOptions.haltOnErrors && !success)
             throw HaltExpectedException(LanguageController
