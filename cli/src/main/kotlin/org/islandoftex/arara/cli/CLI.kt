@@ -229,6 +229,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                 // catch a propagated exception to replace intentionally left
                 // out local treatment
                 DisplayUtils.printException(exception)
+                LinearExecutor.executionStatus = ExecutionStatus.CAUGHT_EXCEPTION
             }
 
             // print the execution time if the command line parsing does not

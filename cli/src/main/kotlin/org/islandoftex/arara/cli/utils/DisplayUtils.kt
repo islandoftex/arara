@@ -193,7 +193,6 @@ object DisplayUtils {
      */
     fun printException(exception: AraraException) {
         displayException = true
-        LinearExecutor.executionStatus = ExecutionStatus.CAUGHT_EXCEPTION
 
         if (displayResult)
             println()
