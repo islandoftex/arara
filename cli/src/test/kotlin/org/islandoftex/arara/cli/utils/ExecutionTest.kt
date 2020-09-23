@@ -4,8 +4,6 @@ package org.islandoftex.arara.cli.utils
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.DoNotParallelize
 import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
 import java.io.ByteArrayOutputStream
@@ -115,13 +113,11 @@ class ExecutionTest : ShouldSpec({
         val output = outputForTest("halt")
         output shouldContain "QuackOne"
         output shouldNotContain "QuackTwo"
-        LinearExecutor.executionStatus.exitCode shouldBe 0
     }
     should("forcefully halt on halt error rule") {
         val output = outputForTest("halt-error")
         output shouldContain "QuackOne"
         output shouldNotContain "QuackTwo"
-        LinearExecutor.executionStatus.exitCode shouldNotBe 0
     }
 
     should("fail on invalid config") {

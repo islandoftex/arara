@@ -17,7 +17,6 @@ import org.islandoftex.arara.cli.ruleset.RuleUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.InputHandling
 import org.islandoftex.arara.mvel.interpreter.AraraExceptionWithHeader
@@ -194,35 +193,37 @@ class Interpreter(
                 .messages.ERROR_INTERPRETER_COMMAND_RUNTIME_ERROR,
                 exception
         )
-    }.filter { it.toString().isNotBlank() }.forEach { current ->
-        DisplayUtils.printEntry(rule.displayName!!, command.name
-                ?: LanguageController.messages.INFO_LABEL_UNNAMED_TASK)
+    }.filter { it.toString().isNotBlank() }
+            .fold(ExecutionStatus.Processing() as ExecutionStatus) { _, current ->
+                DisplayUtils.printEntry(rule.displayName!!, command.name
+                        ?: LanguageController.messages.INFO_LABEL_UNNAMED_TASK)
 
-        val success = when (current) {
-            is Boolean -> runBoolean(current, conditional,
-                    rule.authors)
-            is Command -> runCommand(current, conditional,
-                    rule.authors, command.exit)
-            else ->
-                throw AraraExceptionWithHeader(LanguageController
-                        .messages.ERROR_INTERPRETER_WRONG_RETURN_TYPE)
-        }
+                val success = when (current) {
+                    is Boolean -> runBoolean(current, conditional,
+                            rule.authors)
+                    is Command -> runCommand(current, conditional,
+                            rule.authors, command.exit)
+                    else ->
+                        throw AraraExceptionWithHeader(LanguageController
+                                .messages.ERROR_INTERPRETER_WRONG_RETURN_TYPE)
+                }
 
-        DisplayUtils.printEntryResult(success)
-        LinearExecutor.executionStatus = when {
-            Session.contains(haltKey) ->
-                throw HaltExpectedException(LanguageController.messages
-                        .ERROR_INTERPRETER_USER_REQUESTED_HALT,
-                        ExecutionStatus.FinishedWithCode(Session[haltKey].toString().toInt()))
-            executionOptions.haltOnErrors && !success ->
-                throw HaltExpectedException(LanguageController
-                        .messages.ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT
-                        .format(command.name),
-                        ExecutionStatus.ExternalCallFailed())
-            success -> ExecutionStatus.Processing()
-            else -> ExecutionStatus.ExternalCallFailed()
-        }
-    }
+                DisplayUtils.printEntryResult(success)
+                when {
+                    Session.contains(haltKey) ->
+                        throw HaltExpectedException(LanguageController.messages
+                                .ERROR_INTERPRETER_USER_REQUESTED_HALT,
+                                ExecutionStatus.FinishedWithCode(
+                                        Session[haltKey].toString().toInt()))
+                    executionOptions.haltOnErrors && !success ->
+                        throw HaltExpectedException(LanguageController
+                                .messages.ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT
+                                .format(command.name),
+                                ExecutionStatus.ExternalCallFailed())
+                    success -> ExecutionStatus.Processing()
+                    else -> ExecutionStatus.ExternalCallFailed()
+                }
+            }
 
     /**
      * Executes each directive, throwing an exception if something bad has
@@ -268,8 +269,10 @@ class Interpreter(
             else -> {
                 try {
                     // if not execute the commands associated with the directive
+                    var retValue: ExecutionStatus
                     do {
-                        rule.commands.forEach { command ->
+                        retValue = rule.commands.fold(ExecutionStatus.Processing()
+                                as ExecutionStatus) { _, command ->
                             executeCommand(
                                     // TODO: remove cast
                                     command as SerialRuleCommand,
@@ -279,10 +282,11 @@ class Interpreter(
                             )
                         }
                     } while (evaluator.evaluate(directive.conditional))
+                    retValue
                 } catch (e: HaltExpectedException) {
                     // If the user uses the halt rule to trigger a halt, this will be
                     // raised. Any other exception will not be caught and propagate up.
-                    LinearExecutor.executionStatus = e.status
+                    e.status
                 } catch (e: AraraExceptionWithHeader) {
                     // rethrow arara exceptions that are bound to have a header by
                     // prepending the header and removing the outer exception with
@@ -292,7 +296,6 @@ class Interpreter(
                                     .format(directive.identifier, file.parent.toString()) + " " +
                                     e.message, e.exception ?: e)
                 }
-                LinearExecutor.executionStatus
             }
         }
     }

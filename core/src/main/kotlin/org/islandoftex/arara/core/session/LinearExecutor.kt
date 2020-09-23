@@ -7,7 +7,6 @@ import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.session.ExecutionReport
-import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.api.session.Executor
 import org.islandoftex.arara.core.dependencies.ProjectGraph
 import org.islandoftex.arara.core.files.byPriority
@@ -17,11 +16,6 @@ object LinearExecutor : Executor {
      * Specify custom user hooks to run.
      */
     var hooks = ExecutorHooks()
-
-    /**
-     * The execution status this executor is captured in.
-     */
-    var executionStatus: ExecutionStatus = ExecutionStatus.Processing()
 
     /**
      * The project this executor currently executes, if any. This will always
