@@ -29,7 +29,7 @@ class ExecutionTest : ShouldSpec({
                 executeBeforeProject = { project ->
                     ConfigurationUtils.configFileForProject(project)?.let {
                         DisplayUtils.configurationFileName = it.toString()
-                        ConfigurationUtils.load(it)
+                        ConfigurationUtils.load(it, project)
                     }
                 },
                 executeBeforeFile = {

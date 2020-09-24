@@ -67,11 +67,11 @@ object ConfigurationUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun load(file: Path) {
+    fun load(file: Path, currentProject: Project) {
         // then validate it and update the configuration accordingly
         val resource = loadLocalConfiguration(file)
         LinearExecutor.executionOptions = resource.toExecutionOptions(
-                LinearExecutor.currentProject!!,
+                currentProject,
                 LinearExecutor.executionOptions
         )
         Session.loggingOptions = resource.toLoggingOptions(

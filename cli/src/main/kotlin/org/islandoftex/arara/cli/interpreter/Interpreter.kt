@@ -36,7 +36,8 @@ import org.slf4j.LoggerFactory
  */
 class Interpreter(
     private val executionOptions: ExecutionOptions,
-    currentFile: ProjectFile
+    currentFile: ProjectFile,
+    private val workingDirectory: Path
 ) {
     // the class logger obtained from
     // the logger factory
@@ -58,17 +59,20 @@ class Interpreter(
      * higher levels.
      */
     @Throws(AraraException::class)
-    private fun getRule(directive: Directive): Path =
+    private fun getRule(directive: Directive, workingDirectory: Path): Path =
             executionOptions.rulePaths.let { paths ->
                 paths.flatMap { path ->
                     listOf(
-                            InterpreterUtils.construct(path, directive.identifier, RuleFormat.MVEL),
-                            InterpreterUtils.construct(path, directive.identifier, RuleFormat.KOTLIN_DSL),
+                            InterpreterUtils.construct(path, directive.identifier,
+                                    RuleFormat.MVEL, workingDirectory),
+                            InterpreterUtils.construct(path, directive.identifier,
+                                    RuleFormat.KOTLIN_DSL, workingDirectory),
                             // this lookup adds support for the rules distributed with
                             // arara (in TL names should be unique, hence we avoided
                             // going for pdflatex.yaml in favor of arara-rule-pdflatex.yaml
                             // from version 6 on)
-                            InterpreterUtils.construct(path, "arara-rule-" + directive.identifier, RuleFormat.MVEL)
+                            InterpreterUtils.construct(path, "arara-rule-" + directive.identifier,
+                                    RuleFormat.MVEL, workingDirectory)
                     )
                 }.firstOrNull { Files.exists(it) } ?: throw AraraException(
                         LanguageController.messages.ERROR_INTERPRETER_RULE_NOT_FOUND.format(
@@ -241,7 +245,7 @@ class Interpreter(
                 )
         )
 
-        val file = getRule(directive)
+        val file = getRule(directive, workingDirectory)
         logger.info(
                 LanguageController.messages.LOG_INFO_RULE_LOCATION.format(
                         file.parent

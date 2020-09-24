@@ -104,18 +104,22 @@ internal object InterpreterUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    internal fun construct(path: Path, name: String, format: RuleFormat): Path {
+    internal fun construct(
+        path: Path,
+        name: String,
+        format: RuleFormat,
+        workingDirectory: Path
+    ): Path {
         val fileName = "$name.${format.extension}"
         return FileHandling.normalize(
                 if (path.isAbsolute) {
                     path.resolve(fileName)
                 } else {
                     // when retrieving rules the current project is never null
-                    // because the executor always acts on a project file
-                    LinearExecutor.currentProject!!.workingDirectory
-                            // first resolve the path (rule path) against the working
-                            // directory, then the rule name we want to resolve
-                            .resolve(path).resolve(fileName)
+                    // because the executor always acts on a project file;
+                    // first resolve the path (rule path) against the working
+                    // directory, then the rule name we want to resolve
+                    workingDirectory.resolve(path).resolve(fileName)
                 }
         )
     }
