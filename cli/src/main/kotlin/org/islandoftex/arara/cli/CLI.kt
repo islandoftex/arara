@@ -216,8 +216,9 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                         // add an empty line between file executions
                         println()
                     },
-                    processDirectives = {
-                        DirectiveUtils.process(prependPreambleDirectives(it))
+                    processDirectives = { file, list ->
+                        DirectiveUtils.process(file,
+                                prependPreambleDirectives(list))
                     }
             )
             if (LinearExecutor.execute(projects).exitCode != 0)

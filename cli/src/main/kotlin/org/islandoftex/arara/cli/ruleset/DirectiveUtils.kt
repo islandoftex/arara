@@ -7,6 +7,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
+import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.localization.LanguageController
@@ -115,13 +116,17 @@ object DirectiveUtils {
     /**
      * Validates the list of directives, returning a new list.
      *
+     * @param file The file these directives have been extracted from.
      * @param directives The list of directives.
      * @return A new list of directives.
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun process(directives: List<Directive>): List<Directive> {
+    fun process(
+        file: ProjectFile,
+        directives: List<Directive>
+    ): List<Directive> {
         val result = mutableListOf<Directive>()
         directives.forEach { directive ->
             val parameters = directive.parameters
@@ -141,7 +146,7 @@ object DirectiveUtils {
             } else {
                 result.add(DirectiveImpl(
                         directive.identifier,
-                        parameters.plus("reference" to LinearExecutor.currentFile!!.path.toFile()),
+                        parameters.plus("reference" to file.path.toFile()),
                         directive.conditional,
                         directive.lineNumbers
                 ))

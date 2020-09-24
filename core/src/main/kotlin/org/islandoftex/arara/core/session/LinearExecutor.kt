@@ -103,6 +103,7 @@ object LinearExecutor : Executor {
         currentFile = file
         val executionStarted = TimeSource.Monotonic.markNow()
         val directives = hooks.processDirectives(
+                file,
                 file.fetchDirectives(executionOptions.parseOnlyHeader)
         )
         var exitCode = 0

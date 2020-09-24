@@ -19,5 +19,5 @@ data class ExecutorHooks(
     val executeAfterProject: (Project) -> Unit = { _ -> },
     val executeBeforeFile: (ProjectFile) -> Unit = { _ -> },
     val executeAfterFile: (ExecutionReport) -> Unit = { _ -> },
-    val processDirectives: (List<Directive>) -> List<Directive> = { l -> l }
+    val processDirectives: (ProjectFile, List<Directive>) -> List<Directive> = { _, l -> l }
 )
