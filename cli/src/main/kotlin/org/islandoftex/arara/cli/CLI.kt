@@ -20,6 +20,7 @@ import kotlin.time.milliseconds
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
+import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
@@ -134,9 +135,12 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
      *
      * If there is no preamble given on command-line, returns the [directives],
      * otherwise checks existence of the preamble and returns the processed
-     * preamble prepended to [directives].
+     * preamble for a file of [fileType] prepended to [directives].
      */
-    private fun prependPreambleDirectives(directives: List<Directive>): List<Directive> {
+    private fun prependPreambleDirectives(
+        fileType: FileType,
+        directives: List<Directive>
+    ): List<Directive> {
         if (preamble != null && !MvelState.preambles.containsKey(preamble)) {
             throw AraraException(LanguageController.messages
                     .ERROR_PARSER_INVALID_PREAMBLE.format(preamble))
@@ -149,7 +153,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                                     .lines()
                                     .filterNot { it.isEmpty() },
                             true,
-                            LinearExecutor.currentFile!!.fileType
+                            fileType
                     ).plus(directives)
                 } ?: directives
         if (allDirectives.isEmpty())
@@ -218,7 +222,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                     },
                     processDirectives = { file, list ->
                         DirectiveUtils.process(file,
-                                prependPreambleDirectives(list))
+                                prependPreambleDirectives(file.fileType, list))
                     }
             )
             if (LinearExecutor.execute(projects).exitCode != 0)
