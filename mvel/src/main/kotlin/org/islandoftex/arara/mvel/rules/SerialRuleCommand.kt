@@ -30,6 +30,6 @@ class SerialRuleCommand : RuleCommand {
     var exit: String? = null
 
     override fun toString(): String {
-        return "SerialRuleCommand(name=$name, commandString=$commandString)"
+        return "RuleCommand(name=$name, commandString=$commandString)"
     }
 }
