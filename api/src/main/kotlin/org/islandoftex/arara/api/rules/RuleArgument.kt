@@ -28,4 +28,15 @@ public interface RuleArgument<T> {
      * identifier is given without value.
      */
     public val defaultValue: T
+
+    /**
+     * Process the argument value of type [T] into a list of string. If
+     * returned `emptyList()` this argument is either invalid or should not
+     * contribute to the command. The `Map<String, Any>` argument represents
+     * the parameter values as passed by the user (unprocessed).
+     *
+     * We map everything to `List<String>` to avoid issues when passing a
+     * single string to the system's process management.
+     */
+    public val processor: (T, Map<String, Any>) -> List<String>
 }

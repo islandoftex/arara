@@ -386,24 +386,17 @@ class Interpreter(
                             .format(argument.identifier)
             )
 
-        return argument.flag?.takeIf { idInDirectiveParams }?.let {
-            try {
-                TemplateRuntime.eval(argument.flag!!, context)
-            } catch (exception: RuntimeException) {
-                throw AraraExceptionWithHeader(LanguageController.messages
-                        .ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION,
-                        exception
-                )
-            }
-        } ?: argument.defaultValue?.let {
-            try {
-                TemplateRuntime.eval(it, context)
-            } catch (exception: RuntimeException) {
-                throw AraraExceptionWithHeader(LanguageController.messages
-                        .ERROR_INTERPRETER_DEFAULT_VALUE_RUNTIME_ERROR,
-                        exception
-                )
-            }
-        } ?: ""
+        return argument.takeIf { idInDirectiveParams }
+                ?.run { processor(null, context) }
+                ?: argument.defaultValue?.let {
+                    try {
+                        TemplateRuntime.eval(it, context)
+                    } catch (exception: RuntimeException) {
+                        throw AraraExceptionWithHeader(LanguageController.messages
+                                .ERROR_INTERPRETER_DEFAULT_VALUE_RUNTIME_ERROR,
+                                exception
+                        )
+                    }
+                } ?: ""
     }
 }

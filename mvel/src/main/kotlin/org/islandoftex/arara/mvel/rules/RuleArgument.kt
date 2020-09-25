@@ -3,7 +3,13 @@ package org.islandoftex.arara.mvel.rules
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import org.islandoftex.arara.api.rules.RuleArgument
+import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.ui.InputHandling
+import org.islandoftex.arara.mvel.interpreter.AraraExceptionWithHeader
+import org.mvel2.templates.TemplateRuntime
+import org.slf4j.LoggerFactory
 
 /**
  * The rule argument model.
@@ -14,31 +20,44 @@ import org.islandoftex.arara.api.rules.RuleArgument
  */
 @Serializable
 class RuleArgument : RuleArgument<String?> {
-    /**
-     * The argument identifier
-     */
+    @Transient
+    private val logger = LoggerFactory.getLogger(RuleArgument::class.java)
+
     override var identifier: String = ""
 
-    /**
-     * Boolean indicating if the current argument is required
-     */
     @SerialName("required")
     override var isRequired: Boolean = false
 
-    /**
-     * Flag to hold the argument value manipulation
-     */
     var flag: String? = null
         get() = field?.trim()
 
-    /**
-     * The argument fallback if it is not defined in the directive
-     */
     @SerialName("default")
     override var defaultValue: String? = null
         get() = field?.trim()
 
+    @Transient
+    override val processor: (String?, Map<String, Any>) -> List<String> = { _, context ->
+            try {
+                when (val output = TemplateRuntime.eval(flag!!, context)) {
+                    is String -> listOf(output)
+                    is List<*> -> InputHandling.flatten(output).map { it.toString() }
+                    else -> {
+                        logger.warn("You are using an unsupported return type " +
+                                "which may be deprecated in future versions of " +
+                                "arara. Please use String or List<String> instead.")
+                        listOf(output.toString())
+                    }
+                }
+            } catch (exception: RuntimeException) {
+                throw AraraExceptionWithHeader(LanguageController.messages
+                        .ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION,
+                        exception
+                )
+            }
+        }
+
     override fun toString(): String {
-        return "RuleArgument(identifier='$identifier', isRequired=$isRequired, flag=$flag, defaultValue=$defaultValue)"
+        return "RuleArgument(identifier='$identifier', isRequired=$isRequired, " +
+                "flag=$flag, defaultValue=$defaultValue)"
     }
 }
