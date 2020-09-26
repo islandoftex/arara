@@ -379,7 +379,7 @@ class Interpreter(
         argument: RuleArgument,
         idInDirectiveParams: Boolean,
         context: Map<String, Any>
-    ): Any {
+    ): List<*> {
         if (argument.isRequired && !idInDirectiveParams)
             throw AraraExceptionWithHeader(
                     LanguageController.messages.ERROR_INTERPRETER_ARGUMENT_IS_REQUIRED
@@ -388,9 +388,18 @@ class Interpreter(
 
         return argument.takeIf { idInDirectiveParams }
                 ?.run { processor(null, context) }
-                ?: argument.defaultValue?.let {
+                ?: argument.defaultValue?.let { default ->
                     try {
-                        TemplateRuntime.eval(it, context)
+                        when (val output = TemplateRuntime.eval(default, context)) {
+                            is String -> listOf(output)
+                            is List<*> -> InputHandling.flatten(output).map { it.toString() }
+                            else -> {
+                                logger.warn("You are using an unsupported return type " +
+                                        "which may be deprecated in future versions of " +
+                                        "arara. Please use String or List<String> instead.")
+                                listOf(output.toString())
+                            }
+                        }
                     } catch (exception: RuntimeException) {
                         throw AraraExceptionWithHeader(LanguageController.messages
                                 .ERROR_INTERPRETER_DEFAULT_VALUE_RUNTIME_ERROR,
