@@ -4,6 +4,7 @@ package org.islandoftex.arara.mvel.rules
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.rules.RuleArgument
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.ui.InputHandling
@@ -28,7 +29,7 @@ class RuleArgument : RuleArgument<String?> {
     @SerialName("required")
     override var isRequired: Boolean = false
 
-    var flag: String? = null
+    private var flag: String? = null
         get() = field?.trim()
 
     @SerialName("default")
@@ -58,6 +59,21 @@ class RuleArgument : RuleArgument<String?> {
                 )
             }
         }
+
+    /**
+     * Validate the argument for later processing.
+     */
+    fun validate(ruleErrorHeader: String): Boolean = if (identifier.isNotBlank()) {
+        if (flag != null || defaultValue != null) {
+            true
+        } else {
+            throw AraraException(ruleErrorHeader + LanguageController
+                    .messages.ERROR_VALIDATEBODY_MISSING_KEYS)
+        }
+    } else {
+        throw AraraException(ruleErrorHeader + LanguageController
+                .messages.ERROR_VALIDATEBODY_NULL_ARGUMENT_ID)
+    }
 
     override fun toString(): String {
         return "RuleArgument(identifier='$identifier', isRequired=$isRequired, " +

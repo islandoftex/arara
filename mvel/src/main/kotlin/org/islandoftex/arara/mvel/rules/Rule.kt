@@ -111,19 +111,7 @@ data class Rule(
                 throw AraraException(ruleErrorHeader + LanguageController
                         .messages.ERROR_VALIDATEBODY_NULL_COMMAND)
 
-            val arguments = rule.arguments.map { argument ->
-                if (argument.identifier.isNotBlank()) {
-                    if (argument.flag != null || argument.defaultValue != null) {
-                        argument.identifier
-                    } else {
-                        throw AraraException(ruleErrorHeader + LanguageController
-                                .messages.ERROR_VALIDATEBODY_MISSING_KEYS)
-                    }
-                } else {
-                    throw AraraException(ruleErrorHeader + LanguageController
-                            .messages.ERROR_VALIDATEBODY_NULL_ARGUMENT_ID)
-                }
-            }
+            val arguments = rule.arguments.filter { it.validate(ruleErrorHeader) }
 
             arguments.intersect(listOf("files", "reference")).forEach {
                 throw AraraException(ruleErrorHeader + LanguageController
