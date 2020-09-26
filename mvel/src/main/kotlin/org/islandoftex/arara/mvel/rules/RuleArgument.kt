@@ -36,9 +36,12 @@ class RuleArgument : RuleArgument<String?> {
         get() = field?.trim()
 
     @Transient
-    override val processor: (String?, Map<String, Any>) -> List<String> = { _, context ->
+    override val processor: (String?, Map<String, Any>) -> List<String> = { input, context ->
             try {
-                when (val output = TemplateRuntime.eval(flag!!, context)) {
+                val resolvedContext = context.plus((context
+                        .getValue("parameters") as Map<*, *>)
+                        .plus(identifier to input!!))
+                when (val output = TemplateRuntime.eval(flag!!, resolvedContext)) {
                     is String -> listOf(output)
                     is List<*> -> InputHandling.flatten(output).map { it.toString() }
                     else -> {

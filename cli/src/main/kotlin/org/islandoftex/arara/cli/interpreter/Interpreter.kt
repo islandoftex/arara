@@ -10,6 +10,7 @@ import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.Rule
+import org.islandoftex.arara.api.rules.RuleArgument
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.cli.ruleset.RuleFormat
@@ -21,7 +22,6 @@ import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.InputHandling
 import org.islandoftex.arara.mvel.interpreter.AraraExceptionWithHeader
 import org.islandoftex.arara.mvel.rules.DirectiveConditionalEvaluator
-import org.islandoftex.arara.mvel.rules.RuleArgument
 import org.islandoftex.arara.mvel.rules.SerialRuleCommand
 import org.islandoftex.arara.mvel.utils.MvelState
 import org.mvel2.templates.TemplateRuntime
@@ -353,10 +353,10 @@ class Interpreter(
 
         rule.arguments.forEach { argument ->
             resolvedArguments[argument.identifier] = processArgument(
-                    // TODO: remove cast
-                    argument as RuleArgument,
+                    argument as RuleArgument<Any?>,
                     directive.parameters.containsKey(argument.identifier),
-                    context
+                    context,
+                    directive.parameters[argument.identifier]
             )
         }
 
@@ -370,15 +370,16 @@ class Interpreter(
      * @param idInDirectiveParams Whether the argument's identifier is
      *   contained in the directive's parameters field.
      * @param context The context for the evaluation.
+     * @param parameterValue The value as passed by the user.
      * @return The result of the evaluation.
      * @throws AraraException The argument could not be processed.
      */
     @Throws(AraraException::class)
-    @Suppress("TooGenericExceptionCaught", "ThrowsCount")
     private fun processArgument(
-        argument: RuleArgument,
+        argument: RuleArgument<Any?>,
         idInDirectiveParams: Boolean,
-        context: Map<String, Any>
+        context: Map<String, Any>,
+        parameterValue: Any?
     ): List<*> {
         if (argument.isRequired && !idInDirectiveParams)
             throw AraraExceptionWithHeader(
@@ -386,26 +387,11 @@ class Interpreter(
                             .format(argument.identifier)
             )
 
-        return argument.takeIf { idInDirectiveParams }
-                ?.run { processor(null, context) }
-                ?: argument.defaultValue?.let { default ->
-                    try {
-                        when (val output = TemplateRuntime.eval(default, context)) {
-                            is String -> listOf(output)
-                            is List<*> -> InputHandling.flatten(output).map { it.toString() }
-                            else -> {
-                                logger.warn("You are using an unsupported return type " +
-                                        "which may be deprecated in future versions of " +
-                                        "arara. Please use String or List<String> instead.")
-                                listOf(output.toString())
-                            }
-                        }
-                    } catch (exception: RuntimeException) {
-                        throw AraraExceptionWithHeader(LanguageController.messages
-                                .ERROR_INTERPRETER_DEFAULT_VALUE_RUNTIME_ERROR,
-                                exception
-                        )
-                    }
-                } ?: emptyList<String>()
+        return if (idInDirectiveParams)
+            argument.processor(parameterValue.toString(), context)
+        else
+            argument.defaultValue?.let { default ->
+                argument.processor(default, context)
+            } ?: emptyList<String>()
     }
 }
