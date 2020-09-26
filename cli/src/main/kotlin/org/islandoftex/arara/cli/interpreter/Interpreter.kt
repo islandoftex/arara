@@ -397,6 +397,6 @@ class Interpreter(
                                 exception
                         )
                     }
-                } ?: ""
+                } ?: emptyList<String>()
     }
 }
