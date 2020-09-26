@@ -23,21 +23,15 @@ arguments:
 - identifier: config
   flag: >
     @{
-        return [ '-c', parameters.config ];
+        return [ '-c', isEmpty(parameters.config, 'cfg', parameters.config) ];
     }
-  default: >
-    @{
-        return [ '-c', 'cfg' ];
-    }
+  default: ''
 - identifier: language
   flag: >
     @{
-        return [ '-l', parameters.language ];
+        return [ '-l', isEmpty(parameters.language, 'en', parameters.language) ];
     }
-  default: >
-    @{
-        return [ '-l', 'en' ];
-    }
+  default: ''
 - identifier: options
   flag: >
     @{

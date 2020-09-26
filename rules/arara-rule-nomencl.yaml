@@ -20,12 +20,9 @@ arguments:
 - identifier: style
   flag: >
     @{
-        [ '-s', parameters.style ]
+        [ '-s', isEmpty(parameters.style, 'nomencl.ist', parameters.style) ]
     }
-  default: >
-    @{
-        [ '-s', 'nomencl.ist' ]
-    }
+  default: ''
 - identifier: options
   flag: >
     @{

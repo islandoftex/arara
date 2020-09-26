@@ -73,12 +73,9 @@ arguments:
 - identifier: noconsole
   flag: >
     @{
-        [ '--noconsole-action', parameters.noconsole ]
+        [ '--noconsole-action', isEmpty(parameters.noconsole, 'gui', parameters.noconsole) ]
     }
-  default: >
-    @{
-        [ '--noconsole-action', 'gui']
-    }
+  default: ''
 - identifier: probsoln
   flag: >
     @{

@@ -27,12 +27,9 @@ arguments:
 - identifier: output
   flag: >
     @{
-        parameters.output
+        isEmpty(parameters.output, reference.getName(), parameters.output)
     }
-  default: >
-    @{
-        reference.getName()
-    }
+  default: ''
 - identifier: options1
   flag: >
     @{
