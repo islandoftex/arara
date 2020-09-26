@@ -73,6 +73,12 @@ from version 5.0.0 on.
   versions, use `isList(variable) ? variable[0] : variable` to get the value of
   previously non-List values.
   (breaking change)
+* `default` values now are treated as values like user input. This means, no
+  orb tags are interpreted within this field anymore. The `default` value will
+  be processed by the `flag` if specified, just as user input would be. If no
+  flag is present, it will be returned as a (list of; see previous item) string.
+  Previous rules have to be rewritten if they make use of orb tags.
+  (breaking change)
 
 ### Fixed
 
