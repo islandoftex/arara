@@ -42,16 +42,18 @@ class RuleArgument : RuleArgument<String?> {
                 val resolvedContext = context.plus((context
                         .getValue("parameters") as Map<*, *>)
                         .plus(identifier to input!!))
-                when (val output = TemplateRuntime.eval(flag!!, resolvedContext)) {
-                    is String -> listOf(output)
-                    is List<*> -> InputHandling.flatten(output).map { it.toString() }
-                    else -> {
-                        logger.warn("You are using an unsupported return type " +
-                                "which may be deprecated in future versions of " +
-                                "arara. Please use String or List<String> instead.")
-                        listOf(output.toString())
+                flag?.let { fn ->
+                    when (val output = TemplateRuntime.eval(fn, resolvedContext)) {
+                        is String -> listOf(output)
+                        is List<*> -> InputHandling.flatten(output).map { it.toString() }
+                        else -> {
+                            logger.warn("You are using an unsupported return type " +
+                                    "which may be deprecated in future versions of " +
+                                    "arara. Please use String or List<String> instead.")
+                            listOf(output.toString())
+                        }
                     }
-                }
+                } ?: listOf(input)
             } catch (exception: RuntimeException) {
                 throw AraraExceptionWithHeader(LanguageController.messages
                         .ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION,
