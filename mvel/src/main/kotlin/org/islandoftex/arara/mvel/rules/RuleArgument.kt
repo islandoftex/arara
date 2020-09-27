@@ -39,7 +39,7 @@ class RuleArgument : RuleArgument<String?> {
     @Transient
     override val processor: (String?, Map<String, Any>) -> List<String> = { input, context ->
             try {
-                val resolvedContext = context.plus((context
+                val resolvedContext = context.plus("parameters" to (context
                         .getValue("parameters") as Map<*, *>)
                         .plus(identifier to input!!))
                 flag?.let { fn ->
