@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.mvel.rules
 
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -33,10 +32,10 @@ class RuleArgument : RuleArgument<Any?> {
     private var flag: String? = null
         get() = field?.trim()
 
-    @SerialName("default")
-    @Contextual
-    override var defaultValue: Any? = null
-        get() = field?.toString()?.trim()
+    override val defaultValue: Any?
+        get() = default?.trim()
+
+    private val default: String? = null
 
     @Transient
     override val processor: (Any?, Map<String, Any>) -> List<String> = { input, context ->
