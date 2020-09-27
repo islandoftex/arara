@@ -13,7 +13,6 @@ commands:
 - name: The Convert program
   command: >
     @{
-        prefix = [];
         input = getBasename(reference.getName()).concat('.pdf');
         output = getBasename(reference.getName()).concat('.gif');
         return getCommand(program, '-delay', delay, '-loop',

@@ -12,7 +12,7 @@ commands:
 - name: The Biber reference management software
   command: >
     @{
-        if (tool) {
+        if (isTrue(tool[0])) {
             return getCommand('biber', '--tool', options);
         }
         else {
@@ -24,7 +24,7 @@ arguments:
 - identifier: tool
   flag: >
     @{
-        return isTrue(parameters.tool);
+        return parameters.tool;
     }
   default: false
 - identifier: options

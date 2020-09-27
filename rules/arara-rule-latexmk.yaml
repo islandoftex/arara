@@ -12,7 +12,7 @@ commands:
 - name: Tool LaTeXmk
   command: >
     @{
-        if (isNotEmpty(clean)) {
+        if (isNotEmpty(clean[0])) {
             return getCommand('latexmk', clean, options);
         }
         else {

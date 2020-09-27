@@ -20,7 +20,7 @@ commands:
   command: >
     @{
         base = getBasename(reference.getName()).concat('.ps');
-        out = getBasename(output).concat('.pdf');
+        out = getBasename(output[0]).concat('.pdf');
         return getCommand('ps2pdf', options2, base, '-o', out);
     }
 arguments:

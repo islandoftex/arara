@@ -14,8 +14,8 @@ commands:
     @{
         base = getBasename(reference.getName());
         infile = base.concat('.').concat(input);
-        outfile = [ '-o', base.concat('.').concat(output) ];
-        logfile = [ '-t', base.concat('.').concat(log) ];
+        outfile = [ '-o', base.concat('.').concat(output[0]) ];
+        logfile = [ '-t', base.concat('.').concat(log[0]) ];
         return getCommand('makeindex', german, style, order, options,
                           logfile, infile, outfile);
     }

@@ -31,9 +31,9 @@ commands:
                 java.util.regex.Pattern.compile(
                  "\\\\glsxtr@resource\\{.*\\}\\{([^\\}]+)\\}");
 
-           if (isNotEmpty(trans))
+           if (isNotEmpty(trans[0]))
            {
-              if (trans == getOriginalFile())
+              if (trans[0] == getOriginalFile())
               {
                  throwError('I cannot remove the main file reference.');
               }

@@ -13,7 +13,7 @@ commands:
   command: >
     @{
         infile = getBasename(reference.getName()).concat('.ps');
-        outfile = getBasename(output).concat('.pdf');
+        outfile = getBasename(output[0]).concat('.pdf');
         return getCommand('ps2pdf', options, infile, outfile);
     }
 arguments:

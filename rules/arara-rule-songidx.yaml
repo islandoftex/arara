@@ -13,7 +13,7 @@ commands:
 - name: The SongIDX Lua script
   command: >
     @{
-        infile = getBasename(input).concat('.sxd');
+        infile = getBasename(input[0]).concat('.sxd');
         return getCommand('texlua', script, options, infile);
     }
 arguments:

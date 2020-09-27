@@ -13,9 +13,9 @@ commands:
   command: >
     @{
         base = getBasename(reference.getName());
-        infile = base.concat('.').concat(input);
-        outfile = [ '-o', base.concat('.').concat(output) ];
-        logfile = [ '-t', base.concat('.').concat(log) ];
+        infile = base.concat('.').concat(input[0]);
+        outfile = [ '-o', base.concat('.').concat(output[0]) ];
+        logfile = [ '-t', base.concat('.').concat(log[0]) ];
         return getCommand('texindy', quiet, markup, modules,
                codepage, language, logfile, outfile, options, infile);
     }

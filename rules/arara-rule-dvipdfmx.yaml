@@ -13,7 +13,7 @@ commands:
   command: >
     @{
         base = getBasename(reference.getName()).concat('.dvi');
-        out = getBasename(output).concat('.pdf');
+        out = getBasename(output[0]).concat('.pdf');
         return getCommand('dvipdfmx', base, '-o', out, options);
     }
 arguments:

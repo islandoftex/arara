@@ -12,7 +12,7 @@ commands:
 - name: The MakeGlossaries software
   command: >
     @{
-        if (isEmpty(clean))
+        if (isEmpty(clean[0]))
         {
            return getCommand('makeglossaries', options,
                              getBasename(reference.getName()));
