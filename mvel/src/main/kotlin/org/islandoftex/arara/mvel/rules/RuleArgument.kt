@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.mvel.rules
 
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -20,7 +21,7 @@ import org.slf4j.LoggerFactory
  * @since 4.0
  */
 @Serializable
-class RuleArgument : RuleArgument<String?> {
+class RuleArgument : RuleArgument<Any?> {
     @Transient
     private val logger = LoggerFactory.getLogger(RuleArgument::class.java)
 
@@ -33,11 +34,12 @@ class RuleArgument : RuleArgument<String?> {
         get() = field?.trim()
 
     @SerialName("default")
-    override var defaultValue: String? = null
-        get() = field?.trim()
+    @Contextual
+    override var defaultValue: Any? = null
+        get() = field?.toString()?.trim()
 
     @Transient
-    override val processor: (String?, Map<String, Any>) -> List<String> = { input, context ->
+    override val processor: (Any?, Map<String, Any>) -> List<String> = { input, context ->
             try {
                 val resolvedContext = context.plus("parameters" to (context
                         .getValue("parameters") as Map<*, *>)
@@ -53,7 +55,7 @@ class RuleArgument : RuleArgument<String?> {
                             listOf(output.toString())
                         }
                     }
-                } ?: listOf(input)
+                } ?: listOf(input.toString())
             } catch (exception: RuntimeException) {
                 throw AraraExceptionWithHeader(LanguageController.messages
                         .ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION,

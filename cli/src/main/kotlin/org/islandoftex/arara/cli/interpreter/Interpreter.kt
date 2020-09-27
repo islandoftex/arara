@@ -388,7 +388,7 @@ class Interpreter(
             )
 
         return if (idInDirectiveParams)
-            argument.processor(parameterValue.toString(), context)
+            argument.processor(parameterValue, context)
         else
             argument.defaultValue?.let { default ->
                 argument.processor(default, context)
