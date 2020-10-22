@@ -26,7 +26,8 @@ object MvelState {
                     "writeToFile", "readFromFile", "isSubdirectory",
                     "isEmpty", "isNotEmpty", "isTrue", "isFalse",
                     "isWindows", "isLinux", "isMac", "isUnix", "isCygwin",
-                    "checkClass", "isString", "isList", "isMap", "isBoolean"
+                    "checkClass", "isString", "isList", "isMap", "isBoolean",
+                    "getOrNull"
             ).forEach { name: String ->
                 map[name] = methodsKotlin.first { it.name == name }
             }
