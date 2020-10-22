@@ -124,17 +124,17 @@ object RuleMethods {
 
     /**
      * Attempts to retrieve an index-based element from a list of strings.
-     * 
+     *
      * @param list The list.
      * @param index The index.
      * @return The element in the position defined by the provided index or a
      * null value if the index is out of bounds.
-     * 
+     *
      */
     @JvmStatic
     @JvmOverloads
     fun getOrNull(list: List<String>, index: Int = 0) = list.getOrNull(index)
-    
+
     /**
      * Replicates the pattern to each element of a list.
      *
@@ -199,7 +199,7 @@ object RuleMethods {
      * @return A command.
      */
     @JvmStatic
-    fun getCommand(vararg elements: Any): Command =
+    fun getCommand(vararg elements: Any?): Command =
             getCommand(InputHandling.flatten(elements.toList().filterNotNull())
                             .map { it.toString() }
                             .filter { it.isNotEmpty() })
