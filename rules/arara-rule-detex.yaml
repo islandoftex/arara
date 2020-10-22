@@ -14,13 +14,13 @@ commands:
     @{
         c = getCommand('detex', references, mode, follow, math, spaces,
                        words, environments, reference.getName());
-        if (isEmpty(output[0])) {
+        if (output.isEmpty()) {
           return c;
         }
         else {
             p = unsafelyExecuteSystemCommand(c);
             if (p.first == 0) {
-                return writeToFile(toFile(output), p.second, false);
+                return writeToFile(toFile(output[0]), p.second, false);
             }
             else {
                 return false;

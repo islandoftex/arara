@@ -47,7 +47,7 @@ arguments:
             return p.get(parameters.purge);
         }
         else {
-            throwError('Invalid value, expected either partial or all.');
+            throwError('Invalid value, expected partial, result or all.');
         }
     }
 - identifier: modules

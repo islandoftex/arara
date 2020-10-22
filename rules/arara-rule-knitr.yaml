@@ -14,14 +14,14 @@ commands:
   command: >
     @{
         elements = [];
-        if (!isEmpty(tangle[0])) elements.add('tangle = ' + tangle);
-        if (!isEmpty(quiet[0])) elements.add('quiet = ' + quiet);
+        if (!tangle.isEmpty()) elements.add('tangle = ' + tangle[0]);
+        if (!quiet.isEmpty()) elements.add('quiet = ' + quiet[0]);
+        out = output.isEmpty() ? 'NULL' : '"' + output[0] + '"';
         elements.add('envir = ' + envir[0]);
         elements.add('encoding = ' + encoding[0]);
         return getCommand('Rscript', '-e',
                'library(knitr); knit("' + reference.getName() + '", ' +
-               'output = ' + isEmpty(output[0], 'NULL', '"' + output[0] + '"') + ', ' +
-               String.join(', ', elements) + ')');
+               'output = ' + out + ', ' + String.join(', ', elements) + ')');
     }
 arguments:
 - identifier: output

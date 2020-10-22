@@ -12,12 +12,12 @@ commands:
 - name: Tool LaTeXmk
   command: >
     @{
-        if (isNotEmpty(clean[0])) {
+        if (!clean.isEmpty()) {
             return getCommand('latexmk', clean, options);
         }
         else {
-            return getCommand('latexmk', isEmpty(program, engine,
-                   program), options, reference.getName());
+            return getCommand('latexmk', isTrue(program.isEmpty(),
+                   engine, program), options, reference.getName());
         }
     }
 arguments:

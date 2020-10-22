@@ -12,7 +12,7 @@ commands:
 - name: The MakeGlossaries software
   command: >
     @{
-        if (isEmpty(clean[0]))
+        if (clean.isEmpty())
         {
            return getCommand('makeglossaries', options,
                              getBasename(reference.getName()));
@@ -38,7 +38,7 @@ commands:
                  "\\\\@newglossary\\{.*\\}\\{(.*)\\}\\{(.*)\\}\\{(.*)\\}");
 
            java.util.regex.Pattern istPattern =
-             (clean == 'partial' ? null :
+             (clean[0] == 'partial' ? null :
               java.util.regex.Pattern.compile("\\\\@istfilename\\{(.*)\\}"));
 
            foreach (line: lines)

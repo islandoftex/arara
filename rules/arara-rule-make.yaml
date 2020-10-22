@@ -12,7 +12,7 @@ commands:
 - name: The Make program
   command: >
     @{
-        if (isNotEmpty(targets[0])) {
+        if (!targets.isEmpty()) {
             tasks = [];
             for (target : targets) {
                 tasks.add(getCommand('make', target, options));

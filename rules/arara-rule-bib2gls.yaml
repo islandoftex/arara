@@ -12,7 +12,7 @@ commands:
 - name: The Bib2Gls software
   command: >
     @{
-       if (isNotEmpty(clean))
+       if (!clean.isEmpty())
        {
            prefix = [];
            if (isUnix()) {
@@ -31,7 +31,7 @@ commands:
                 java.util.regex.Pattern.compile(
                  "\\\\glsxtr@resource\\{.*\\}\\{([^\\}]+)\\}");
 
-           if (isNotEmpty(trans[0]))
+           if (!trans.isEmpty())
            {
               if (trans[0] == getOriginalFile())
               {
