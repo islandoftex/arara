@@ -200,7 +200,7 @@ object RuleMethods {
      */
     @JvmStatic
     fun getCommand(vararg elements: Any): Command =
-            getCommand(InputHandling.flatten(elements.toList())
+            getCommand(InputHandling.flatten(elements.toList().filterNotNull())
                             .map { it.toString() }
                             .filter { it.isNotEmpty() })
 
