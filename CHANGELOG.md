@@ -33,6 +33,9 @@ from version 5.0.0 on.
   * the `options` parameter does not expand orb tags in any directive.
 * `-dev` formats are now available within the `latexmk` rule.
   (see #48)
+* The rule context has now a `getOrNull(…)` method, which attempts to retrieve
+  a list element based on an index (default is zero). If the index is out of
+  bounds, a `null` value is returned instead.
 
 ### Changed
 
