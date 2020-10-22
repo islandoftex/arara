@@ -123,6 +123,19 @@ object RuleMethods {
     fun getFiletype(filename: String): String = File(filename).extension
 
     /**
+     * Attempts to retrieve an index-based element from a list of strings.
+     * 
+     * @param list The list.
+     * @param index The index.
+     * @return The element in the position defined by the provided index or a
+     * null value if the index is out of bounds.
+     * 
+     */
+    @JvmStatic
+    @JvmOverloads
+    fun getOrNull(list: List<String>, index: Int = 0) = list.getOrNull(index)
+    
+    /**
      * Replicates the pattern to each element of a list.
      *
      * @param pattern The pattern.
