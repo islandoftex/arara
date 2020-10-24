@@ -3,18 +3,18 @@ package org.islandoftex.arara.build
 
 object Versions {
     // plugin dependencies
-    const val detekt = "1.14.1"
-    const val dokka = "1.4.10"
+    const val detekt = "1.14.2"
+    const val dokka = "1.4.10.2"
     const val kotlin = "1.4.10"
     const val shadow = "6.1.0"
-    const val spotless = "5.6.1"
+    const val spotless = "5.7.0"
     const val spotlessChangelog = "2.0.0"
     const val versionsPlugin = "0.33.0"
 
     // non-plugin dependencies
     const val clikt = "3.0.1"
     const val jna = "5.6.0"
-    const val kaml = "0.24.0"
+    const val kaml = "0.25.0"
     const val kotest = "4.3.0"
     const val kotlinxSerialization = "1.0.0"
     const val jackson = "2.11.3"
