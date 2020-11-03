@@ -8,14 +8,36 @@ identifier: dvisvgm
 name: DVISVGM
 authors:
 - samcarter
+- Pablo González
 commands:
 - name: The dvisvgm program
   command: >
     @{
-        base = getBasename(reference.getName()).concat('.dvi');
-        return getCommand('dvisvgm', base, options);
+        base = getBasename(reference.getName()).
+               concat('.').concat(format[0]);
+        return getCommand('dvisvgm', getOrNull(format, 1), page,
+               options, base);
     }
 arguments:
+- identifier: page
+  flag: >
+    @{
+        return [ '--page='.concat(parameters.page) ]
+    }
+- identifier: format
+  flag: >
+    @{
+        formats = [ 'dvi' : [ 'dvi' ], 'xdv' : [ 'xdv' ],
+                    'pdf' : [ 'pdf', '--pdf' ],
+                    'eps' : [ 'eps', '--eps' ] ];
+        if (formats.keySet().contains(parameters.format)) {
+            return formats.get(parameters.format);
+        }
+        else {
+            throwError('The valid formats are: ' + formats.keySet());
+        }
+    }
+  default: dvi
 - identifier: options
   flag: >
     @{
