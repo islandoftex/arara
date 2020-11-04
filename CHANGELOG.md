@@ -82,6 +82,10 @@ from version 5.0.0 on.
   flag is present, it will be returned as a (list of; see previous item) string.
   Previous rules have to be rewritten if they make use of orb tags.
   (breaking change)
+* The `dvisvgm` rule now supports `dvi`, `xdv`, `eps` and `pdf` extensions as
+  input, as well as the inclusion of a page range. (see #53)
+* The `xdvipdfmx` rule now supports both `dvi` and `xdv` extensions as input.
+  (see #53)
 
 ### Fixed
 
