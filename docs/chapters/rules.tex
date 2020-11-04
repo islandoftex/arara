@@ -481,9 +481,23 @@ This rule runs \rbox{dvips} in order to obtain a corresponding \rbox{ps} file fr
 \end{codebox}
 
 \item[\rulebox{dvisvgm}]
-This rule runs \rbox{dvisvgm} in order to obtain a corresponding \rbox{svg} file, a vector graphics format based on XML, from the initial \rbox{dvi} reference. It is important to observe that the base name is acquired from the \mtbox{currentFile} reference (i.e, the name without the associated extension) and used to construct the resulting file.
+This rule runs \rbox{dvisvgm} in order to obtain a corresponding \rbox{svg} file, a vector graphics format based on XML, from the initial reference. It is important to observe that the base name is acquired from the \mtbox{currentFile} reference (i.e, the name without the associated extension) and used to construct the resulting file.
 
 \begin{description}
+\item[\abox{entry}] This option sets the extension to be used for the initial reference (i.e, the current file name) as input to the command line tool. The following values are available for this option:
+
+\begin{description}
+\item[\povalue{dvi}] This value sets the extension to be used for the initial reference as a device independent format. This is the default value when no value is provided.
+
+\item[\povalue{xdv}] This value sets the extension to be used for the initial reference as an extended device independent format.
+
+\item[\povalue{eps}] This value sets the extension to be used for the initial reference as an encapsulated PostScript graphics format.
+
+\item[\povalue{pdf}] This value sets the extension to be used for the initial reference as a portable document format.
+\end{description}
+
+\item[\abox{pages}] This value, as the name implies, takes a list of integers indicating the pages to be processed by the command line tool.
+
 \item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
 \end{description}
 
@@ -1461,7 +1475,15 @@ This rule runs the \rbox{uptex} \TeX\ engine on the provided \mtbox{currentFile}
 \end{codebox}
 
 \item[\rulebox{xdvipdfmx}]
-This rule runs \rbox{xdvipdfmx}, the back end for the \rbox{xetex} \TeX\ engine (and not intended to be invoked directly), on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{dvi} suffix, generating a Portable Document Format \rbox{pdf} file.
+This rule runs \rbox{xdvipdfmx}, the back end for the \rbox{xetex} \TeX\ engine (and not intended to be invoked directly), on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with a certain suffix, generating a Portable Document Format \rbox{pdf} file.
+
+\item[\abox{entry}] This option sets the extension to be used for the initial reference (i.e, the current file name) as input to the command line tool. The following values are available for this option:
+
+\begin{description}
+\item[\povalue{dvi}] This value sets the extension to be used for the initial reference as a device independent format. This is the default value when no value is provided.
+
+\item[\povalue{xdv}] This value sets the extension to be used for the initial reference as an extended device independent format.
+\end{description}
 
 \begin{description}
 \item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{pdf} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as the default value.
