@@ -12,11 +12,23 @@ commands:
 - name: The XDVIPDFMX program
   command: >
     @{
-        infile = getBasename(reference.getName()).concat('.dvi');
+        infile = getBasename(reference.getName()).
+                 concat('.').concat(entry[0]);
         outfile = getBasename(output[0]).concat('.pdf');
         return getCommand('xdvipdfmx', infile, '-o', outfile, options);
     }
 arguments:
+- identifier: entry
+  flag: >
+    @{
+        if ([ 'dvi', 'xdv' ].contains(parameters.entry)) {
+            return parameters.entry;
+        }
+        else {
+            throwError('I was expecting either DVI or XDV.');
+        }
+    }
+  default: dvi
 - identifier: output
   flag: >
     @{
@@ -30,6 +42,6 @@ arguments:
             return parameters.options;
         }
         else {
-            throwError('I was expecting a list of options.')
+            throwError('I was expecting a list of options.');
         }
     }
