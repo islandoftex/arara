@@ -14,24 +14,31 @@ commands:
   command: >
     @{
         base = getBasename(reference.getName()).
-               concat('.').concat(format[0]);
-        return getCommand('dvisvgm', getOrNull(format, 1), page,
+               concat('.').concat(entry[0]);
+        return getCommand('dvisvgm', getOrNull(entry, 1), pages,
                options, base);
     }
 arguments:
-- identifier: page
+- identifier: pages
   flag: >
     @{
-        return [ '--page='.concat(parameters.page) ]
+        if (isList(parameters.pages)) {
+            q = [];
+            foreach (p : parameters.pages) q.add(p.toString());
+            return [ '--page='.concat(String.join(',', q)) ];
+        }
+        else {
+          throwError('I was expecting a list of pages.');
+        }
     }
-- identifier: format
+- identifier: entry
   flag: >
     @{
         formats = [ 'dvi' : [ 'dvi' ], 'xdv' : [ 'xdv' ],
                     'pdf' : [ 'pdf', '--pdf' ],
                     'eps' : [ 'eps', '--eps' ] ];
-        if (formats.keySet().contains(parameters.format)) {
-            return formats.get(parameters.format);
+        if (formats.keySet().contains(parameters.entry)) {
+            return formats.get(parameters.entry);
         }
         else {
             throwError('The valid formats are: ' + formats.keySet());
