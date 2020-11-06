@@ -1,0 +1,39 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2020, Island of TeX
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: move
+name: Move
+authors:
+- Island of TeX
+commands:
+- name: The OS move call
+  command: >
+    @{
+        prefix = [];
+        if (isUnix()) {
+            prefix = [ 'mv', '-f' ];
+        }
+        else {
+            prefix = [ 'cmd', '/c', 'move', '/Y' ];
+        }
+        if (getOriginalReference() == reference) {
+            throwError('I cannot move the main file reference.');
+        }
+        t = isList(target) ? target[0] : target;
+        f = toFile(t).getCanonicalFile();
+        if (getOriginalReference().equals(f)) {
+            throwError('I cannot overwrite the main file reference.');
+        }
+        return getCommand(prefix, reference, t);
+    }
+arguments:
+- identifier: target
+  flag: >
+    @{
+        return parameters.target;
+    }
+  required: true
+

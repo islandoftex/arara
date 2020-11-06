@@ -1,0 +1,36 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2020, Island of TeX
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: copy
+name: Copy
+authors:
+- Island of TeX
+commands:
+- name: The OS copy call
+  command: >
+    @{
+        prefix = [];
+        if (isUnix()) {
+            prefix = [ 'cp', '-f' ];
+        }
+        else {
+            prefix = [ 'cmd', '/c', 'copy', '/Y' ];
+        }
+        t = isList(target) ? target[0] : target;
+        f = toFile(t).getCanonicalFile();
+        if (getOriginalReference().equals(f)) {
+            throwError('I cannot overwrite the main file reference.');
+        }
+        return getCommand(prefix, reference, t);
+    }
+arguments:
+- identifier: target
+  flag: >
+    @{
+        return parameters.target;
+    }
+  required: true
+
