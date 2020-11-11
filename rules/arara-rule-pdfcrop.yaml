@@ -1,0 +1,132 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2020, Island of TeX
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: pdfcrop
+name: PDFCrop
+authors:
+- Island of TeX
+commands:
+- name: The cropping tool
+  command: >
+    @{
+        base = getBasename(reference.getName());
+        input = base.concat('.pdf');
+        return getCommand('pdfcrop', verbose, debug, engine,
+               margins, clip, hires, ini, restricted, papersize,
+               resolution, bbox, uncompress, options, input, output);
+    }
+arguments:
+- identifier: output
+  flag: >
+    @{
+        return isEmpty(parameters.output,
+               getBasename(reference.getName()).
+               concat('-crop.pdf'),
+               parameters.output);
+    }
+  default: ''
+- identifier: verbose
+  flag: >
+    @{
+        return isTrue(parameters.verbose, '--verbose', '--noverbose');
+    }
+- identifier: debug
+  flag: >
+    @{
+        return isTrue(parameters.debug, '--debug', '--nodebug');
+    }
+- identifier: engine
+  flag: >
+    @{
+        engines = [ 'pdftex', 'xetex', 'luatex' ];
+        if (engines.contains(parameters.engine)) {
+            return '--'.concat(parameters.engine);
+        }
+        else {
+            throwError('The provided engine is invalid.');
+        }
+    }
+- identifier: margins
+  flag: >
+    @{
+        if (isList(parameters.margins)) {
+            if (parameters.margins.size() != 4) {
+                throwError('Margins require 4 elements.');
+            }
+            else {
+                ms = [];
+                foreach (m : parameters.margins)
+                    ms.add(m.toString());
+                return [ '--margins', String.join(' ', ms) ];
+            }
+        }
+        else {
+          throwError('I was expecting a list.');
+        }
+    }
+- identifier: clip
+  flag: >
+    @{
+        return isTrue(parameters.clip, '--clip', '--noclip');
+    }
+- identifier: hires
+  flag: >
+    @{
+        return isTrue(parameters.hires, '--hires', '--nohires');
+    }
+- identifier: ini
+  flag: >
+    @{
+        return isTrue(parameters.ini, '--ini', '--noini');
+    }
+- identifier: restricted
+  flag: >
+    @{
+        return isTrue(parameters.restricted, '--restricted');
+    }
+- identifier: papersize
+  flag: >
+    @{
+        return [ '--papersize', parameters.papersize ];
+    }
+- identifier: resolution
+  flag: >
+    @{
+        return [ '--resolution', parameters.resolution ];
+    }
+- identifier: bbox
+  flag: >
+    @{
+        if (isList(parameters.bbox)) {
+            if (parameters.bbox.size() != 4) {
+                throwError('Bounding box require 4 elements.');
+            }
+            else {
+                ms = [];
+                foreach (m : parameters.bbox)
+                    ms.add(m.toString());
+                return [ '--margins', String.join(' ', ms) ];
+            }
+        }
+        else {
+          throwError('I was expecting a list.');
+        }
+    }
+- identifier: uncompress
+  flag: >
+    @{
+        return isTrue(parameters.uncompress, '--uncompress');
+    }
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.');
+        }
+    }
