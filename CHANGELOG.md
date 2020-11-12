@@ -38,7 +38,7 @@ from version 5.0.0 on.
   bounds, a `null` value is returned instead.
 * Multiple rules have been added. Most of them are untested and we are open for
   feedback and enhancements: `ghostscript`, `copy`, `move`, `ltx2any`, `llmk`,
-  `spix`, `pdfcrop`.
+  `spix`, `pdfcrop`, `sage`.
   (see #47 and https://github.com/cereda/arara/issues/83)
 
 ### Changed
