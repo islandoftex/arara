@@ -1,0 +1,44 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2020, Island of TeX
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: ghostscript
+name: GhostScript
+authors:
+- Island of TeX
+commands:
+- name: The command line tool
+  command: >
+    @{
+        return getCommand(program, device, output, options);
+    }
+arguments:
+- identifier: program
+  flag: >
+    @{
+        return parameters.program;
+    }
+  default: 'gs'
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.');
+        }
+    }
+  required: true
+- identifier: device
+  flag: >
+    @{
+        return '-sDEVICE='.concat(parameters.device);
+    }
+- identifier: output
+  flag: >
+    @{
+        return '-sOutputFile='.concat(parameters.output);
+    }
