@@ -1,0 +1,115 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2020, Island of TeX
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: ltx2any
+name: LTX2any
+authors:
+- Island of TeX
+commands:
+- name: The automation tool
+  command: >
+    @{
+        return getCommand('ltx2any', clean, recompilation, checkinterval,
+                          engine, parameters, tikzimages, jobname, logname,
+                          logformat, loglevel, frequency, directory,
+                          options, reference.getName());
+    }
+arguments:
+- identifier: clean
+  flag: >
+    @{
+        return isTrue(parameters.clean, '-c');
+    }
+- identifier: recompilation
+  flag: >
+    @{
+        return isTrue(parameters.recompilation, '-d');
+    }
+- identifier: checkinterval
+  flag: >
+    @{
+        return [ '-di', parameters.checkinterval ];
+    }
+- identifier: engine
+  flag: >
+    @{
+        return [ '-e', parameters.engine ];
+    }
+- identifier: parameters
+  flag: >
+    @{
+        if (isList(parameters.parameters)) {
+            return [ '-ep', String.join(' ',
+              parameters.parameters) ];
+        }
+        else {
+            throwError('I was execting a list of parameters.');
+        }
+    }
+- identifier: tikzimages
+  flag: >
+    @{
+        if (isList(parameters.tikzimages)) {
+            return [ '-ir', String.join(':',
+              parameters.tikzimages) ];
+        }
+        else {
+            throwError('I was expecting a list of images.');
+        }
+    }
+- identifier: jobname
+  flag: >
+    @{
+        return [ '-j', parameters.jobname ];
+    }
+- identifier: logname
+  flag: >
+    @{
+        return [ '-l', parameters.logname ];
+    }
+- identifier: logformat
+  flag: >
+    @{
+        fts = [ 'raw' : 'raw', 'markdown' : 'md',
+                'pdf' : 'pdf' ];
+        if (fts.keySet().contains(parameters.logformat)) {
+            return [ '-lf', fts.get(parameters.logformat) ];
+        }
+        else {
+            throw('Invalid log format.');
+        }
+    }
+- identifier: loglevel
+  flag: >
+    @{
+        ll = [ 'error', 'warning', 'info' ];
+        if (ll.contains(parameters.loglevel)) {
+            return [ '-ll', parameters.loglevel ];
+        }
+        else {
+            throwError('Invalid log level.');
+        }
+    }
+- identifier: frequency
+  flag: >
+    @{
+        return [ '-n', parameters.frequency ];
+    }
+- identifier: directory
+  flag: >
+    @{
+        return [ '-t', parameters.directory ];
+    }
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.');
+        }
+    }
