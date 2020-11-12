@@ -1,0 +1,59 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2020, Island of TeX
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: sage
+name: Sage
+authors:
+- Island of TeX
+commands:
+- name: The command line tool
+  command: >
+    @{
+        base = getBasename(reference.getName());
+        e = isList(extension) ? extension[0] : extension;
+        input = base.concat('.').concat(e);
+        return getCommand(program, command, dotsage,
+                          options, input);
+    }
+arguments:
+- identifier: program
+  flag: >
+    @{
+        return parameters.program;
+    }
+  default: 'sage'
+- identifier: extension
+  flag: >
+    @{
+        exts = [ 'sage', 'py', 'spyx' ];
+        if (exts.contains(parameters.extension)) {
+            return parameters.extension;
+        }
+        else {
+            throwError('The provided extension is invalid.');
+        }
+    }
+  default: 'sage'
+- identifier: command
+  flag: >
+    @{
+        return [ '-c', parameters.command ];
+    }
+- identifier: dotsage
+  flag: >
+    @{
+        return isFalse(parameters.dotsage, '--nodotsage');
+    }
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.');
+        }
+    }
