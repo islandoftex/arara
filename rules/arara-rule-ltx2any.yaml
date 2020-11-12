@@ -12,26 +12,16 @@ commands:
 - name: The automation tool
   command: >
     @{
-        return getCommand('ltx2any', clean, recompilation, checkinterval,
-                          engine, parameters, tikzimages, jobname, logname,
-                          logformat, loglevel, frequency, directory,
-                          options, reference.getName());
+        return getCommand('ltx2any', clean, engine, parameters,
+                          tikzimages, jobname, logname, logformat,
+                          loglevel, frequency, directory, options,
+                          reference.getName());
     }
 arguments:
 - identifier: clean
   flag: >
     @{
         return isTrue(parameters.clean, '-c');
-    }
-- identifier: recompilation
-  flag: >
-    @{
-        return isTrue(parameters.recompilation, '-d');
-    }
-- identifier: checkinterval
-  flag: >
-    @{
-        return [ '-di', parameters.checkinterval ];
     }
 - identifier: engine
   flag: >
