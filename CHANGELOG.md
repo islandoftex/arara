@@ -36,6 +36,10 @@ from version 5.0.0 on.
 * The rule context has now a `getOrNull(…)` method, which attempts to retrieve
   a list element based on an index (default is zero). If the index is out of
   bounds, a `null` value is returned instead.
+* Multiple rules have been added. Most of them are untested and we are open for
+  feedback and enhancements: `ghostscript`, `copy`, `move`, `ltx2any`, `llmk`,
+  `spix`, `pdfcrop`.
+  (see #47 and https://github.com/cereda/arara/issues/83)
 
 ### Changed
 
