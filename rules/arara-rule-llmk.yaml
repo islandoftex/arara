@@ -1,0 +1,57 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2020, Island of TeX
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: llmk
+name: LLMK
+authors:
+- Island of TeX
+commands:
+- name: The automation tool
+  command: >
+    @{
+        return getCommand('llmk', clean, debug, dry,
+                          mode, reference.getName());
+    }
+arguments:
+- identifier: clean
+  flag: >
+    @{
+        goals = [ 'partial' : '--clean', 'all' : '--clobber' ];
+        if (goals.keySet().contains(parameters.clean)) {
+            return goals.get(parameters.clean);
+        }
+        else {
+            throwError('The provided value is invalid.');
+        }
+    }
+- identifier: debug
+  flag: >
+    @{
+        if (parameters.debug.equals('all')) {
+            return '-D';
+        }
+        else {
+            return [ '-d', parameters.debug ];
+        }
+    }
+- identifier: dry
+  flag: >
+    @{
+        return isTrue(parameters.dry, '--dry-run');
+    }
+- identifier: mode
+  flag: >
+    @{
+        modes = [ 'quiet' : '-q', 'silent' : '-s',
+                  'verbose' : '-v' ];
+        if (modes.keySet().contains(parameters.mode)) {
+            return modes.get(parameters.mode);
+        }
+        else {
+            throwError('Invalid mode name.');
+        }
+    }
+
