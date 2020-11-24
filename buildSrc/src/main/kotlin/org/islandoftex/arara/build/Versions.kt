@@ -5,9 +5,9 @@ object Versions {
     // plugin dependencies
     const val detekt = "1.14.2"
     const val dokka = "1.4.10.2"
-    const val kotlin = "1.4.10"
+    const val kotlin = "1.4.20"
     const val shadow = "6.1.0"
-    const val spotless = "5.7.0"
+    const val spotless = "5.8.2"
     const val spotlessChangelog = "2.0.0"
     const val versionsPlugin = "0.36.0"
 
