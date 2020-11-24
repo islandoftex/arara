@@ -4,8 +4,10 @@ package org.islandoftex.arara.core.files
 import java.io.File
 import java.io.FileFilter
 import java.nio.file.FileSystems
-import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.io.path.div
+import kotlin.io.path.exists
+import kotlin.io.path.isRegularFile
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.ExecutionOptions
@@ -140,9 +142,9 @@ object FileSearching {
 
         // direct search, so we are considering
         // the reference as a complete name
-        val testFile = FileHandling.normalize(workingDirectory.resolve(reference))
+        val testFile = FileHandling.normalize(workingDirectory / reference)
         return when {
-            Files.exists(testFile) && Files.isRegularFile(testFile) -> {
+            testFile.exists() && testFile.isRegularFile() -> {
                 types.firstOrNull {
                     reference.endsWith("." + it.extension)
                 }?.let {
@@ -165,12 +167,12 @@ object FileSearching {
             // so we need to add it and look again
             else -> {
                 val name = testFile.fileName.toString()
-                types.map { testFile.parent.resolve("$name.${it.extension}") }
+                types.map { testFile.parent / "$name.${it.extension}" }
                         .union(types.map {
-                            testFile.parent.resolve(
-                                    "${name.removeSuffix(".").trim()}.${it.extension}")
+                            testFile.parent /
+                                    "${name.removeSuffix(".").trim()}.${it.extension}"
                         })
-                        .firstOrNull { Files.exists(it) && Files.isRegularFile(it) }
+                        .firstOrNull { it.exists() && it.isRegularFile() }
                         ?.let { found ->
                             val extension = found.toString().substringAfterLast('.')
                             ProjectFile(

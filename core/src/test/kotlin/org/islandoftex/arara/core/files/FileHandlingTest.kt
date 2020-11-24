@@ -3,9 +3,12 @@ package org.islandoftex.arara.core.files
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.engine.spec.tempfile
 import io.kotest.matchers.shouldBe
-import java.nio.file.Files
 import java.nio.file.Paths
+import kotlin.io.path.deleteExisting
+import kotlin.io.path.deleteIfExists
+import kotlin.io.path.writeText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.islandoftex.arara.api.AraraException
@@ -57,17 +60,17 @@ class FileHandlingTest : ShouldSpec({
 
         should("detect changes on file") {
             withContext(Dispatchers.IO) {
-                val file = Files.createTempFile(null, null)
-                val databaseFile = Files.createTempFile(null, null)
-                Files.deleteIfExists(databaseFile)
+                val file = tempfile().toPath()
+                val databaseFile = tempfile().toPath()
+                databaseFile.deleteIfExists()
                 FileHandling.hasChanged(file, databaseFile) shouldBe true
                 FileHandling.hasChanged(file, databaseFile) shouldBe false
-                file.toFile().writeText("QUACK")
+                file.writeText("QUACK")
                 FileHandling.hasChanged(file, databaseFile) shouldBe true
                 FileHandling.hasChanged(file, databaseFile) shouldBe false
-                file.toFile().writeText("QUACK2")
+                file.writeText("QUACK2")
                 FileHandling.hasChanged(file, databaseFile) shouldBe true
-                Files.delete(file)
+                file.deleteExisting()
                 FileHandling.hasChanged(file, databaseFile) shouldBe true
                 FileHandling.hasChanged(file, databaseFile) shouldBe false
             }

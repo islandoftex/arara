@@ -34,7 +34,8 @@ sourceSets {
 tasks {
     withType<KotlinCompile> {
         kotlinOptions {
-            freeCompilerArgs = listOf("-Xopt-in=org.islandoftex.arara.api.localization.AraraMessages,kotlin.time.ExperimentalTime")
+            freeCompilerArgs = listOf("-Xopt-in=org.islandoftex.arara.api.localization.AraraMessages," +
+                    "kotlin.time.ExperimentalTime,kotlin.io.path.ExperimentalPathApi")
         }
     }
 }

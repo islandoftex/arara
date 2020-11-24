@@ -117,6 +117,7 @@ subprojects {
 
         dependencies {
             "implementation"(kotlin("stdlib", Versions.kotlin))
+            "implementation"(kotlin("stdlib-jdk7", Versions.kotlin))
         }
 
         configure<SpotlessExtension> {

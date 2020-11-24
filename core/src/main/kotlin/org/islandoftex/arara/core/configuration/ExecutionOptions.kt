@@ -3,6 +3,7 @@ package org.islandoftex.arara.core.configuration
 
 import java.nio.file.Path
 import java.nio.file.Paths
+import kotlin.io.path.div
 import kotlin.time.Duration
 import kotlin.time.milliseconds
 import org.islandoftex.arara.api.configuration.ExecutionMode
@@ -17,7 +18,7 @@ data class ExecutionOptions(
     override val databaseName: Path = Paths.get("arara.yaml"),
     override val verbose: Boolean = false,
     override val executionMode: ExecutionMode = ExecutionMode.NORMAL_RUN,
-    override val rulePaths: Set<Path> = setOf(ConfigurationUtils.applicationPath.resolve("rules")),
+    override val rulePaths: Set<Path> = setOf(ConfigurationUtils.applicationPath / "rules"),
     override val fileTypes: List<FileType> = ConfigurationUtils.defaultFileTypes,
     override val parseOnlyHeader: Boolean = false
 ) : ExecutionOptions {

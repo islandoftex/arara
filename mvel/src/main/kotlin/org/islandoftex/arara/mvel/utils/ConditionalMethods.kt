@@ -2,7 +2,8 @@
 package org.islandoftex.arara.mvel.utils
 
 import java.io.File
-import java.nio.file.Files
+import kotlin.io.path.div
+import kotlin.io.path.exists
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.session.ClassLoading
@@ -26,8 +27,8 @@ object ConditionalMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun exists(extension: String): Boolean = Files.exists(FileHandling.changeExtension(
-            LinearExecutor.currentFile!!.path, extension))
+    fun exists(extension: String): Boolean = FileHandling.changeExtension(
+            LinearExecutor.currentFile!!.path, extension).exists()
 
     /**
      * Checks if the file is missing according to its extension.
@@ -96,9 +97,8 @@ object ConditionalMethods {
     @Throws(AraraException::class)
     fun changed(filename: File): Boolean = FileHandling.hasChanged(
             filename.toPath(),
-            LinearExecutor.currentProject!!.workingDirectory.resolve(
+            LinearExecutor.currentProject!!.workingDirectory /
                     LinearExecutor.executionOptions.databaseName
-            )
     )
 
     /**

@@ -2,8 +2,10 @@
 package org.islandoftex.arara.core.files
 
 import com.charleskorn.kaml.Yaml
-import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.io.path.notExists
+import kotlin.io.path.readText
+import kotlin.io.path.writeText
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.Database
@@ -85,7 +87,7 @@ data class Database(
         runCatching {
             val content = "!database\n" +
                     Yaml.default.encodeToString(serializer(), this)
-            path.toFile().writeText(content)
+            path.writeText(content)
         }.getOrElse {
             throw AraraException(
                     LanguageController.messages.ERROR_SAVE_COULD_NOT_SAVE_XML
@@ -104,11 +106,11 @@ data class Database(
          */
         @Throws(AraraException::class)
         fun load(path: Path): Database {
-            return if (!Files.exists(path)) {
+            return if (path.notExists()) {
                 Database()
             } else {
                 runCatching {
-                    val text = path.toFile().readText()
+                    val text = path.readText()
                     if (!text.startsWith("!database"))
                         throw AraraException("Database should start with !database")
                     Yaml.default.decodeFromString(serializer(), text)

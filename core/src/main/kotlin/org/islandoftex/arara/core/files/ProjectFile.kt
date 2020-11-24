@@ -2,8 +2,8 @@
 package org.islandoftex.arara.core.files
 
 import java.io.IOException
-import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.io.path.readLines
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.ProjectFile
@@ -47,7 +47,7 @@ open class ProjectFile(
     override fun fetchDirectives(parseOnlyHeader: Boolean): List<Directive> {
         try {
             return Directives.extractDirectives(
-                    Files.readAllLines(path),
+                    path.readLines(),
                     LinearExecutor.executionOptions.parseOnlyHeader,
                     fileType
             )

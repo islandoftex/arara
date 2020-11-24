@@ -2,9 +2,11 @@
 package org.islandoftex.arara.core.files
 
 import java.io.IOException
-import java.nio.file.Files
 import java.nio.file.Path
 import java.util.zip.CRC32
+import kotlin.io.path.isDirectory
+import kotlin.io.path.notExists
+import kotlin.io.path.readBytes
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.core.localization.LanguageController
 
@@ -47,7 +49,7 @@ object FileHandling {
     @JvmStatic
     @Throws(AraraException::class)
     fun isSubDirectory(child: Path, parent: Path): Boolean {
-        return if (Files.isDirectory(child) && Files.isDirectory(parent)) {
+        return if (child.isDirectory() && parent.isDirectory()) {
             normalize(child).startsWith(normalize(parent))
         } else {
             false
@@ -67,7 +69,7 @@ object FileHandling {
     fun calculateHash(path: Path): Long =
             try {
                 CRC32().run {
-                    update(path.toFile().readBytes())
+                    update(path.readBytes())
                     value
                 }
             } catch (exception: IOException) {
@@ -89,7 +91,7 @@ object FileHandling {
     fun hasChanged(file: Path, databaseFile: Path): Boolean {
         val database = Database.load(databaseFile)
         val path = normalize(file)
-        return if (!Files.exists(path)) {
+        return if (path.notExists()) {
             if (path in database) {
                 database.remove(path)
                 database.save(databaseFile)

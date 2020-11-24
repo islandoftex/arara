@@ -6,6 +6,9 @@ import io.kotest.matchers.shouldBe
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import kotlin.io.path.createDirectories
+import kotlin.io.path.div
+import kotlin.io.path.writeText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.islandoftex.arara.api.configuration.ExecutionMode
@@ -16,10 +19,10 @@ class FileSearchingTest : ShouldSpec({
     context("file listings") {
         fun prepareFileSystem(): Path {
             val tempDir = Files.createTempDirectory(System.nanoTime().toString())
-            tempDir.resolve("quack/quack").toFile().mkdirs()
+            (tempDir / "quack/quack").createDirectories()
             listOf("quack", "quack/quack", "quack/quack/quack").forEach {
-                tempDir.resolve("$it.tex").toFile().writeText(" ")
-                tempDir.resolve("$it.txt").toFile().writeText(" ")
+                (tempDir / "$it.tex").writeText(" ")
+                (tempDir / "$it.txt").writeText(" ")
             }
             return tempDir
         }
@@ -28,22 +31,22 @@ class FileSearchingTest : ShouldSpec({
             val tempDir = prepareFileSystem()
             FileSearching.listFilesByExtensions(tempDir.toFile(),
                     listOf("tex"), false).toSet() shouldBe
-                    setOf(tempDir.resolve("quack.tex").toFile())
+                    setOf((tempDir / "quack.tex").toFile())
             FileSearching.listFilesByExtensions(tempDir.toFile(),
                     listOf("tex"), true).toSet() shouldBe
                     listOf("quack", "quack/quack", "quack/quack/quack")
-                            .map { tempDir.resolve("$it.tex").toFile() }.toSet()
+                            .map { (tempDir / "$it.tex").toFile() }.toSet()
         }
 
         should("find file in listing by pattern") {
             val tempDir = prepareFileSystem()
             FileSearching.listFilesByPatterns(tempDir.toFile(),
                     listOf("*q*.txt"), false).toSet() shouldBe
-                    setOf(tempDir.resolve("quack.txt").toFile())
+                    setOf((tempDir / "quack.txt").toFile())
             FileSearching.listFilesByPatterns(tempDir.toFile(),
                     listOf("q*.txt"), true).toSet() shouldBe
                     listOf("quack", "quack/quack", "quack/quack/quack")
-                            .map { tempDir.resolve("$it.txt").toFile() }.toSet()
+                            .map { (tempDir / "$it.txt").toFile() }.toSet()
         }
     }
 
@@ -61,16 +64,16 @@ class FileSearchingTest : ShouldSpec({
         should("succeed finding tex file with extension") {
             withContext(Dispatchers.IO) {
                 val testDir = Files.createTempDirectory(System.nanoTime().toString())
-                val parent = Files.createDirectories(testDir.resolve("test/quack/"))
-                parent.resolve("changes.tex").toFile().writeText("quack")
-                val pathToTest = parent.resolve("changes.tex")
+                val parent = (testDir / "test/quack/").createDirectories()
+                val pathToTest = parent / "changes.tex"
+                pathToTest.writeText("quack")
                 val projectFile = FileSearching.lookupFile(
                         pathToTest.toString(),
                         testDir,
                         ExecutionOptions()
                 ) as ProjectFile
-                projectFile.path.toFile().canonicalFile.absolutePath shouldBe
-                        pathToTest.toFile().canonicalFile.absolutePath
+                FileHandling.normalize(projectFile.path).toString() shouldBe
+                        FileHandling.normalize(pathToTest).toString()
                 projectFile.fileType.extension shouldBe "tex"
                 projectFile.fileType.pattern shouldBe "^\\s*%\\s+"
             }
@@ -79,15 +82,15 @@ class FileSearchingTest : ShouldSpec({
         should("succeed finding tex file without extension") {
             withContext(Dispatchers.IO) {
                 val testDir = Files.createTempDirectory(System.nanoTime().toString())
-                val parent = Files.createDirectories(testDir.resolve("test/quack/"))
-                parent.resolve("changes.tex").toFile().writeText("quack")
+                val parent = (testDir / "test/quack/").createDirectories()
+                (parent / "changes.tex").writeText("quack")
                 val projectFile = FileSearching.lookupFile(
-                        parent.resolve("changes").toString(),
+                        (parent / "changes").toString(),
                         testDir,
                         ExecutionOptions()
                 ) as ProjectFile
-                projectFile.path.toFile().canonicalFile.absolutePath shouldBe
-                        parent.resolve("changes.tex").toFile().canonicalFile.absolutePath
+                FileHandling.normalize(projectFile.path).toString() shouldBe
+                        FileHandling.normalize(parent / "changes.tex").toString()
                 projectFile.fileType.extension shouldBe "tex"
                 projectFile.fileType.pattern shouldBe "^\\s*%\\s+"
             }
@@ -96,16 +99,16 @@ class FileSearchingTest : ShouldSpec({
         should("succeed finding tex file with extension in safe mode") {
             withContext(Dispatchers.IO) {
                 val testDir = Files.createTempDirectory(System.nanoTime().toString())
-                val parent = Files.createDirectories(testDir.resolve("test/quack/"))
-                parent.resolve("changes.tex").toFile().writeText("quack")
-                val pathToTest = parent.resolve("changes.tex")
+                val parent = (testDir / "test/quack/").createDirectories()
+                (parent / "changes.tex").writeText("quack")
+                val pathToTest = parent / "changes.tex"
                 val projectFile = FileSearching.lookupFile(
                         pathToTest.toString(),
                         testDir,
                         ExecutionOptions().copy(executionMode = ExecutionMode.SAFE_RUN)
                 ) as ProjectFile
-                projectFile.path.toFile().canonicalFile.absolutePath shouldBe
-                        pathToTest.toFile().canonicalFile.absolutePath
+                FileHandling.normalize(projectFile.path).toString() shouldBe
+                        FileHandling.normalize(pathToTest).toString()
                 projectFile.fileType.extension shouldBe "tex"
                 projectFile.fileType.pattern shouldBe "^\\s*%\\s+"
             }

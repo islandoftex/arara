@@ -3,9 +3,9 @@ package org.islandoftex.arara.core.files
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.engine.spec.tempfile
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import java.nio.file.Files
 import java.nio.file.Paths
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -32,7 +32,7 @@ class DatabaseTest : ShouldSpec({
 
     should("be able to perform save-load cycle") {
         withContext(Dispatchers.IO) {
-            val tmp = Files.createTempFile("db", null)
+            val tmp = tempfile("db").toPath()
             val db = Database()
             db[Paths.get("")] = 1L
             db[Paths.get("quack")] = 2L

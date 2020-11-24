@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.interpreter
 
-import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.io.path.exists
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.ExecutionOptions
@@ -74,7 +74,7 @@ class Interpreter(
                             InterpreterUtils.construct(path, "arara-rule-" + directive.identifier,
                                     RuleFormat.MVEL, workingDirectory)
                     )
-                }.firstOrNull { Files.exists(it) } ?: throw AraraException(
+                }.firstOrNull { it.exists() } ?: throw AraraException(
                         LanguageController.messages.ERROR_INTERPRETER_RULE_NOT_FOUND.format(
                                 directive.identifier,
                                 directive.identifier,

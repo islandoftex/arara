@@ -3,6 +3,7 @@ package org.islandoftex.arara.mvel.rules
 
 import com.charleskorn.kaml.Yaml
 import java.nio.file.Path
+import kotlin.io.path.readText
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
@@ -59,7 +60,7 @@ data class Rule(
             ruleId = identifier
             rulePath = FileHandling.normalize(file).toString()
             val rule = file.runCatching {
-                val text = toFile().readText()
+                val text = readText()
                 if (!text.startsWith("!config"))
                     throw AraraException("Rule should start with !config")
                 Yaml.default.decodeFromString(

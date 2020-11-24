@@ -6,6 +6,8 @@ import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.Locale
+import kotlin.io.path.div
+import kotlin.io.path.readText
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionOptions
@@ -77,7 +79,7 @@ data class LocalConfiguration(
                     if (path.isAbsolute)
                         path
                     else
-                        currentProject.workingDirectory.resolve(path)
+                        currentProject.workingDirectory / path
                 }
                 .map { FileHandling.normalize(it) }
                 .toSet()
@@ -165,7 +167,7 @@ data class LocalConfiguration(
         @Throws(AraraException::class)
         fun load(file: Path): LocalConfiguration =
                 file.runCatching {
-                    val text = file.toFile().readText()
+                    val text = file.readText()
                     if (!text.startsWith("!config"))
                         throw AraraException("Configuration should start with !config")
                     Yaml.default.decodeFromString(LocalConfiguration.serializer(),

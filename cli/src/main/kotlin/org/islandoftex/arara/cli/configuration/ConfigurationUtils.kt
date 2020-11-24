@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.configuration
 
-import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import kotlin.io.path.div
+import kotlin.io.path.exists
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.cli.utils.LoggingUtils
@@ -33,12 +34,11 @@ object ConfigurationUtils {
         val names = listOf(".araraconfig.yaml",
                 "araraconfig.yaml", ".arararc.yaml", "arararc.yaml")
         return project.workingDirectory.let { workingDir ->
-            names.map { workingDir.resolve(it) }
-                    .firstOrNull { Files.exists(it) }
+            names.map { workingDir / it }.firstOrNull { it.exists() }
         } ?: Environment.getSystemPropertyOrNull("user.home")
                 ?.let { userHome ->
-                    names.map { Paths.get(userHome).resolve(it) }
-                            .firstOrNull { Files.exists(it) }
+                    names.map { Paths.get(userHome) / it }
+                            .firstOrNull { it.exists() }
                 }
     }
 
