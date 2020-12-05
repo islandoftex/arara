@@ -42,7 +42,8 @@
 \usepackage[margin=2.5cm]{geometry}
 \usepackage{arara}
 
-\newcommand{\araraversion}{5.1.3}
+\newcommand{\araraversion}{%
+  \InputIfFileExists{version.tex}{}{undefined}}
 
 \begin{document}
 

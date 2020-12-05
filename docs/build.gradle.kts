@@ -2,9 +2,18 @@ dependencies {
     project(":cli")
 }
 
+tasks.create("writeVersionFile") {
+    outputs.file("version.tex")
+    outputs.upToDateWhen { false }
+
+    file("version.tex").writeText(project.version.toString())
+}
+
 tasks.create<JavaExec>("buildManual") {
     group = "documentation"
     description = "Compile the manual's TeX file to PDF."
+
+    dependsOn("writeVersionFile")
 
     classpath = files(project(":cli").tasks.findByPath("shadowJar"))
     args = listOf("-l", "-v", "arara-manual.tex")

@@ -5,6 +5,7 @@
 *.iml
 docs/**/*.*
 !docs/**/*.tex
+docs/version.tex
 !docs/figures/*.p*
 !docs/logos/*.pdf
 !docs/*.yaml
