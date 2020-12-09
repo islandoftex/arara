@@ -59,7 +59,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                     "with no actual calls")
             .flag()
     private val safeRun by option("-s", "--safe-run",
-            help = "Run in safe mode and disable potentially harmful features." +
+            help = "Run in safe mode and disable potentially harmful features. " +
                     "Make sure your projects uses only allowed features.")
             .flag()
     private val onlyHeader by option("-H", "--header",
