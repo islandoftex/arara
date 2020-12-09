@@ -49,6 +49,10 @@ open class CTANTreeBuilderTask : DefaultTask() {
         temporaryDir.resolve("arara/doc-old/support/arara")
                 .copyRecursively(temporaryDir.resolve("arara/doc"))
 
+        logger.debug("Copying the man page")
+        temporaryDir.resolve("${project.name}/doc-old/man/man1/${project.name}.1")
+                .copyTo(temporaryDir.resolve("${project.name}/doc/${project.name}.1"))
+
         logger.debug("Removing the old documentation structure")
         temporaryDir.resolve("arara/doc-old").deleteRecursively()
 

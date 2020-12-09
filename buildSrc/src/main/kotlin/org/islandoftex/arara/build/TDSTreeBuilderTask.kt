@@ -38,7 +38,6 @@ open class TDSTreeBuilderTask : DefaultTask() {
         temporaryDir.resolve("doc/support/arara").mkdirs()
 
         logger.debug("Copying the original documentation")
-        // copy the content of docs into support/arara
         project.copy {
             from(project.rootDir.resolve("docs"))
             into(temporaryDir.resolve("doc/support/arara"))
@@ -60,6 +59,14 @@ open class TDSTreeBuilderTask : DefaultTask() {
                 it.replace("# arara", "# arara v${project.version}")
             }
         }
+
+        logger.debug("Creating the man page directory structure")
+        temporaryDir.resolve("doc/man/man1").mkdirs()
+
+        logger.debug("Creating the man page")
+        TaskHelper.createManPage(temporaryDir
+                .resolve("doc/man/man1/${project.name}.1").toPath(),
+                project.version.toString())
 
         logger.info("Building the scripts directory")
 
