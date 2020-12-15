@@ -39,11 +39,11 @@ stages:
       - .gradle
 
 build:linux:jdk8:
-  image: gitlab.com/islandoftex/dependency_proxy/containers/openjdk:8
+  image: openjdk:8
   <<: *builddefinition
 
 build:linux:jdk11:
-  image: gitlab.com/islandoftex/dependency_proxy/containers/openjdk:11
+  image: openjdk:11
   <<: *builddefinition
 
 .testtemplate: &testdefinition
@@ -64,7 +64,7 @@ build:linux:jdk11:
 test:dependencies:
   stage: test
   needs: ["build:linux:jdk8"]
-  image: gitlab.com/islandoftex/dependency_proxy/containers/openjdk:8
+  image: openjdk:8
   script:
     - ./gradlew dependencyUpdates
   cache:
@@ -80,7 +80,7 @@ test:dependencies:
 test:spotless:
   stage: test
   needs: ["build:linux:jdk8"]
-  image: gitlab.com/islandoftex/dependency_proxy/containers/openjdk:8
+  image: openjdk:8
   script:
     - ./gradlew spotlessCheck
   cache:
@@ -95,16 +95,16 @@ test:spotless:
 
 test:linux:jdk8:
   needs: ["build:linux:jdk8"]
-  image: gitlab.com/islandoftex/dependency_proxy/containers/openjdk:8
+  image: openjdk:8
   <<: *testdefinition
 
 test:linux:jdk11:
   needs: ["build:linux:jdk11"]
-  image: gitlab.com/islandoftex/dependency_proxy/containers/openjdk:11
+  image: openjdk:11
   <<: *testdefinition
 
 publish:gitlab:
-  image: gitlab.com/islandoftex/dependency_proxy/containers/openjdk:8
+  image: openjdk:8
   stage: publish
   script:
     - ./gradlew publishGitLabPublicationToMavenRepository -PjobToken=$CI_JOB_TOKEN -Prelease=true
