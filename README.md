@@ -10,11 +10,10 @@ way to enhance your TeX experience. The tool is an effort to provide a concise
 way to automate the daily TeX workflow for users and also package writers. Users
 might write their own rules when the provided ones do not suffice.
 
-> Please note that `arara` recently moved. We are proud to announce that
-> `arara` is now part of the [Island of TeX](https://gitlab.com/islandoftex).
-> The new address is https://gitlab.com/islandoftex/arara. The old GitHub
-> repository will be used as mirror but development happens on GitLab. Please
-> open relevant issues and merge requests there.
+> We are proud to announce that `arara` is part of the
+> [Island of TeX](https://gitlab.com/islandoftex). The GitHub repository will
+> be used as mirror but development happens on GitLab. Please open relevant
+> issues and merge requests there.
 
 ## Basic use
 
