@@ -17,6 +17,12 @@ from version 5.0.0 on.
   by calling `getSession().get('arg:key')` if you called arara with
   `arara -P key=value myfile.tex`.
   (see #38)
+* Configuration files now honor an option `defaultPreamble` which allows to
+  specify a preamble for `arara` to use even if there are no directives in
+  the file nor preambles specified on the command-line. Preambles are resolved
+  at execution time meaning preambles from local configurations will take
+  precedence over global preambles.
+  (see #55)
 * `arara` now expands `@{}` orb tags within `options` parameter to directives.
   Supported methods are `getBasename`, `getSession` and `getOriginalReference`
   with their documented meanings.
