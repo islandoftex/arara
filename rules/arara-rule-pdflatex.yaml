@@ -26,7 +26,7 @@ arguments:
             throwError('The valid branch values are: ' + engines.keySet());
         }
     }
-  default: 'pdflatex'
+  default: 'stable'
 - identifier: interaction
   flag: >
     @{
