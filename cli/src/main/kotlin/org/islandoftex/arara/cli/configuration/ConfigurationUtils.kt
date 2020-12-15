@@ -81,7 +81,8 @@ object ConfigurationUtils {
                 Session.userInterfaceOptions
         )
 
-        MvelState.preambles.putAll(resource.preambles)
+        MvelState.preambles += resource.preambles
+        MvelState.defaultPreamble = resource.defaultPreamble
 
         // just to be sure, update the current locale in order to
         // display localized messages and reset logging status

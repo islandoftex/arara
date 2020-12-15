@@ -141,11 +141,12 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         fileType: FileType,
         directives: List<Directive>
     ): List<Directive> {
-        if (preamble != null && !MvelState.preambles.containsKey(preamble)) {
+        val resolvedPreamble = preamble ?: MvelState.defaultPreamble
+        if (resolvedPreamble != null && resolvedPreamble !in MvelState.preambles) {
             throw AraraException(LanguageController.messages
-                    .ERROR_PARSER_INVALID_PREAMBLE.format(preamble))
+                    .ERROR_PARSER_INVALID_PREAMBLE.format(resolvedPreamble))
         }
-        val allDirectives = preamble
+        val allDirectives = resolvedPreamble
                 ?.takeIf { MvelState.preambles.containsKey(it) }
                 ?.let { preambleName ->
                     Directives.extractDirectives(

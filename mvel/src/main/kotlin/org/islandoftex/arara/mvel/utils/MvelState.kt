@@ -73,4 +73,10 @@ object MvelState {
      * Save the available preambles from the configuration file.
      */
     val preambles: MutableMap<String, String> = mutableMapOf()
+
+    /**
+     * Specify the default preamble to pick if there is neither a preamble
+     * nor directives specified.
+     */
+    var defaultPreamble: String? = null
 }

@@ -40,7 +40,8 @@ data class LocalConfiguration(
     private val dbname: String? = null,
     private val logname: String? = null,
     private val laf: String? = null,
-    val preambles: Map<String, String> = mapOf()
+    val preambles: Map<String, String> = mapOf(),
+    val defaultPreamble: String? = null
 ) {
     /**
      * Convert the relevant properties of the configuration to execution
