@@ -48,13 +48,19 @@ use your own rules.
  one of our testers and enjoy the latest features and bug fixes by building from
  there.
 
-## Support
+## Get in touch
 
-We use a [Gitter](https://gitter.im/cereda/arara) chatroom for discussing things
-related to `arara`. You are more than welcome to come join the fun and say *hi!*
-to us. We also have the [issues](https://gitlab.com/islandoftex/arara/issues)
-section in our repository as a valid channel to report problems, bugs and
-suggest improvements.
+We use a [Gitter](https://gitter.im/Island-of-TeX/arara) chatroom for discussing
+things related to `arara`. You are more than welcome to come join the fun and
+say *hi!* to us. We also have the
+[issues](https://gitlab.com/islandoftex/arara/issues) section in our repository
+as a valid channel to report problems, bugs and suggest improvements.
+
+If you want to stay in the loop of our other projects, feel free to visit our
+[community room on Gitter](https://gitter.im/Island-of-TeX/community) or
+alternatively, the Matrix rooms for
+[arara](https://matrix.to/#/!HfEWIEvFtDplCLSQvz:matrix.org?via=matrix.org) or
+the [community](https://matrix.to/#/!titTeSvZiqNOvRIKCv:matrix.org?via=matrix.org).
 
 ## Localization
 
