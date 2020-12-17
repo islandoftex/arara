@@ -40,13 +40,18 @@ use your own rules.
 ## Getting the latest and greatest arara
 
 `arara` is continuously built by the GitLab CI. For each and every commit, it is
- ensured that a green tick means `arara` passes the test suite and is ready to
- be tested. However, that is *not* meant you can use the executable artifacts of
- the builds *for productive use*.
+ensured that a green tick means `arara` passes the test suite and is ready to
+be tested. However, that is *not* meant you can use the executable artifacts of
+the builds *for productive use*.
 
- Development of `arara` takes place in the development branch. Feel free to be
- one of our testers and enjoy the latest features and bug fixes by building from
- there.
+Development of `arara` takes place in the development branch. Feel free to be
+one of our testers and enjoy the latest features and bug fixes by building from
+there.
+
+If you encounter any bugs or issues when using the development branch, you are
+most welcome to get in touch with us and discuss potential solutions. We are
+also always watching out for developers who want to join us making `arara` even
+better.
 
 ## Get in touch
 
@@ -65,9 +70,9 @@ the [community](https://matrix.to/#/!titTeSvZiqNOvRIKCv:matrix.org?via=matrix.or
 ## Localization
 
 Would you like to make `arara` speak your own language? Splendid! We would love
-to have you in the team! Just send us an e-mail, join our dedicated chatroom or
-open an issue about it. The localization process is quite straightforward, we
-can help you! Any language is welcome!
+to have you in the team! Just contact us by opening an issue or joining our
+dedicated chatroom. The localization process is quite straightforward, we can
+help you! Any language is welcome!
 
 A big thanks to our translators Marco Daniel, Clemens Niederberger, Ulrike
 Fischer, Gert Fischer, Enrico Gregorio and Marijn Schraagen for the awesome
