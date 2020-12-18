@@ -4,38 +4,61 @@ import org.islandoftex.arara.build.Versions
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    `java-library`
+    kotlin("multiplatform")
     id("org.jetbrains.kotlin.plugin.serialization")
 }
 
-dependencies {
-    api(project(":api"))
-    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version = Versions.kotlinxSerialization)
-    implementation(group = "com.charleskorn.kaml", name = "kaml", version = Versions.kaml)
-    implementation(group = "org.zeroturnaround", name = "zt-exec", version = Versions.ztExec)
-    implementation(group = "org.slf4j", name = "slf4j-api", version = Versions.slf4j)
-
-    testImplementation(group = "io.kotest", name = "kotest-runner-junit5-jvm", version = Versions.kotest)
-    testImplementation(group = "io.kotest", name = "kotest-assertions-core-jvm", version = Versions.kotest)
-    testRuntimeOnly(group = "org.slf4j", name = "slf4j-simple", version = Versions.slf4j)
-}
-
-sourceSets {
-    main {
-        java { setSrcDirs(listOf("src/main/kotlin")) }
-        resources { setSrcDirs(listOf("src/main/resources")) }
+kotlin {
+    jvm {
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
     }
-    test {
-        java { setSrcDirs(listOf("src/test/kotlin")) }
-        resources { setSrcDirs(listOf("src/test/resources")) }
+    wasm32()
+    js {
+        browser {
+            testTask {
+                enabled = false
+            }
+        }
     }
-}
+    linuxArm64()
+    linuxX64()
+    macosX64()
+    mingwX64()
 
-tasks {
-    withType<KotlinCompile> {
-        kotlinOptions {
-            freeCompilerArgs = listOf("-Xopt-in=org.islandoftex.arara.api.localization.AraraMessages," +
-                    "kotlin.time.ExperimentalTime,kotlin.io.path.ExperimentalPathApi")
+    sourceSets {
+        all {
+            languageSettings.useExperimentalAnnotation("org.islandoftex.arara.api.localization.AraraMessages")
+            languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+
+            dependencies {
+                api(project(":api"))
+            }
+        }
+        val commonMain by getting {
+            dependencies {
+                kotlin("stdlib-common")
+            }
+        }
+        val jvmMain by getting {
+            languageSettings.useExperimentalAnnotation("kotlin.io.path.ExperimentalPathApi")
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:${Versions.kotlinxSerialization}")
+                implementation("com.charleskorn.kaml:kaml:${Versions.kaml}")
+                implementation("org.zeroturnaround:zt-exec:${Versions.ztExec}")
+                implementation("org.slf4j:slf4j-api:${Versions.slf4j}")
+            }
+        }
+        val jvmTest by getting {
+            languageSettings.useExperimentalAnnotation("kotlin.io.path.ExperimentalPathApi")
+            dependencies {
+                implementation("io.kotest:kotest-runner-junit5-jvm:${Versions.kotest}")
+                implementation("io.kotest:kotest-assertions-core-jvm:${Versions.kotest}")
+                runtimeOnly("org.slf4j:slf4j-simple:${Versions.slf4j}")
+            }
         }
     }
 }
