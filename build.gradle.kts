@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
-import com.diffplug.gradle.spotless.SpotlessExtension
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.java.archives.internal.DefaultManifest
@@ -57,15 +56,30 @@ spotlessChangelog {
 
 spotless {
     kotlinGradle {
-        target("build.gradle.kts", "buildSrc/build.gradle.kts")
+        target("build.gradle.kts",
+                "buildSrc/build.gradle.kts",
+                "api/build.gradle.kts",
+                "core/build.gradle.kts",
+                "mvel/build.gradle.kts",
+                "kotlin-dsl/build.gradle.kts",
+                "cli/build.gradle.kts")
+        targetExclude("src/test/**/*.kts")
         trimTrailingWhitespace()
+        indentWithSpaces()
         endWithNewline()
     }
     kotlin {
-        target("buildSrc/src/**/*.kt")
+        target("api/src/**/*.kt",
+                "core/src/**/*.kt",
+                "mvel/src/**/*.kt",
+                "kotlin-dsl/src/**/*.kt",
+                "cli/src/**/*.kt",
+                "buildSrc/src/**/*.kt")
+        targetExclude("src/test/**/*.kts")
         ktlint()
         licenseHeader("// SPDX-License-Identifier: BSD-3-Clause")
         trimTrailingWhitespace()
+        indentWithSpaces()
         endWithNewline()
     }
 }
@@ -113,34 +127,10 @@ subprojects {
     if (!path.contains("docs")) {
         apply(plugin = "org.jetbrains.kotlin.jvm")
         apply(plugin = "org.jetbrains.dokka")
-        apply(plugin = "com.diffplug.spotless")
 
         dependencies {
             "implementation"(kotlin("stdlib", Versions.kotlin))
             "implementation"(kotlin("stdlib-jdk7", Versions.kotlin))
-        }
-
-        configure<SpotlessExtension> {
-            java {
-                removeUnusedImports()
-                licenseHeader("// SPDX-License-Identifier: BSD-3-Clause")
-                trimTrailingWhitespace()
-                indentWithSpaces()
-                endWithNewline()
-            }
-            kotlin {
-                targetExclude("src/test/**/*.kts")
-                ktlint()
-                licenseHeader("// SPDX-License-Identifier: BSD-3-Clause")
-                trimTrailingWhitespace()
-                indentWithSpaces()
-                endWithNewline()
-            }
-            kotlinGradle {
-                trimTrailingWhitespace()
-                indentWithSpaces()
-                endWithNewline()
-            }
         }
 
         val javaCompatibility = JavaVersion.VERSION_1_8
