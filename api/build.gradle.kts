@@ -14,7 +14,7 @@ kotlin {
             }
         }
     }
-    wasm32()
+    /*wasm32()
     js {
         browser {
             testTask {
@@ -25,11 +25,14 @@ kotlin {
     linuxArm64()
     linuxX64()
     macosX64()
-    mingwX64()
+    mingwX64()*/
 
     sourceSets {
         all {
             languageSettings.useExperimentalAnnotation("kotlin.RequiresOptIn")
+        }
+        val jvmMain by getting {
+            languageSettings.useExperimentalAnnotation("kotlin.io.path.ExperimentalPathApi")
         }
     }
 }

@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.files
 
-import java.nio.file.Path
-
 /**
  * The database model represents arara's way to track file changes. arara
  * tracks changes within a project.
@@ -15,7 +13,7 @@ public interface Database {
      *   non-canonical paths are dealt with.
      * @return Whether the object represented by the path is in the database.
      */
-    public operator fun contains(path: Path): Boolean
+    public operator fun contains(path: MPPPath): Boolean
 
     /**
      * Get the hash value associated with a file.
@@ -25,7 +23,7 @@ public interface Database {
      * @return The hash value associated with the file if any and `null` if
      *   the element is not in the database.
      */
-    public operator fun get(path: Path): Long?
+    public operator fun get(path: MPPPath): Long?
 
     /**
      * Set the hash value for a given file.
@@ -33,7 +31,7 @@ public interface Database {
      * @param path The path of a file. Try to resolve it to an absolute path.
      * @param hash The hash value of the file.
      */
-    public operator fun set(path: Path, hash: Long)
+    public operator fun set(path: MPPPath, hash: Long)
 
     /**
      * Remove the entry associated with the key (file).
@@ -43,12 +41,12 @@ public interface Database {
      *
      * @param path The file acting as key in the database.
      */
-    public fun remove(path: Path)
+    public fun remove(path: MPPPath)
 
     /**
      * Save the database.
      *
      * @param path Where to save it.
      */
-    public fun save(path: Path)
+    public fun save(path: MPPPath)
 }

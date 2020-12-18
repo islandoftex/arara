@@ -2,13 +2,12 @@
 package org.islandoftex.arara.core.files
 
 import com.charleskorn.kaml.Yaml
-import java.nio.file.Path
-import kotlin.io.path.notExists
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.Database
+import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.localization.LanguageController
 
 /**
@@ -37,8 +36,8 @@ data class Database(
      *   non-canonical paths are dealt with.
      * @return Whether the object represented by the path is in the database.
      */
-    override fun contains(path: Path): Boolean =
-            FileHandling.normalize(path).toString() in map
+    override fun contains(path: MPPPath): Boolean =
+            FileHandling.normalize(path.toJVMPath()).toString() in map
 
     /**
      * Get the hash value associated with a file.
@@ -48,7 +47,8 @@ data class Database(
      * @return The hash value associated with the file if any and `null` if
      *   the element is not in the database.
      */
-    override fun get(path: Path): Long? = map[FileHandling.normalize(path).toString()]
+    override fun get(path: MPPPath): Long? =
+            map[FileHandling.normalize(path.toJVMPath()).toString()]
 
     /**
      * Set the hash value for a given file.
@@ -56,8 +56,8 @@ data class Database(
      * @param path The path of a file. Try to resolve it to an absolute path.
      * @param hash The hash value of the file.
      */
-    override fun set(path: Path, hash: Long) {
-        map[FileHandling.normalize(path).toString()] = hash
+    override fun set(path: MPPPath, hash: Long) {
+        map[FileHandling.normalize(path.toJVMPath()).toString()] = hash
     }
 
     /**
@@ -68,8 +68,8 @@ data class Database(
      *   within the database.
      */
     @Throws(NoSuchElementException::class)
-    override fun remove(path: Path) {
-        val normalPath = FileHandling.normalize(path).toString()
+    override fun remove(path: MPPPath) {
+        val normalPath = FileHandling.normalize(path.toJVMPath()).toString()
         if (normalPath in map)
             map.remove(normalPath)
         else
@@ -83,15 +83,15 @@ data class Database(
      * @param path Where to save it.
      */
     @Throws(AraraException::class)
-    override fun save(path: Path) {
+    override fun save(path: MPPPath) {
         runCatching {
             val content = "!database\n" +
                     Yaml.default.encodeToString(serializer(), this)
-            path.writeText(content)
+            path.toJVMPath().writeText(content)
         }.getOrElse {
             throw AraraException(
                     LanguageController.messages.ERROR_SAVE_COULD_NOT_SAVE_XML
-                            .format(path.fileName.toString()), it
+                            .format(path.fileName), it
             )
         }
     }
@@ -105,19 +105,19 @@ data class Database(
          *   higher levels.
          */
         @Throws(AraraException::class)
-        fun load(path: Path): Database {
-            return if (path.notExists()) {
+        fun load(path: MPPPath): Database {
+            return if (!path.exists) {
                 Database()
             } else {
                 runCatching {
-                    val text = path.readText()
+                    val text = path.toJVMPath().readText()
                     if (!text.startsWith("!database"))
                         throw AraraException("Database should start with !database")
                     Yaml.default.decodeFromString(serializer(), text)
                 }.getOrElse {
                     throw AraraException(LanguageController
                             .messages.ERROR_LOAD_COULD_NOT_LOAD_XML
-                            .format(path.fileName.toString()), it
+                            .format(path.fileName), it
                     )
                 }
             }

@@ -5,9 +5,9 @@ import java.io.IOException
 import java.nio.file.Path
 import java.util.zip.CRC32
 import kotlin.io.path.isDirectory
-import kotlin.io.path.notExists
 import kotlin.io.path.readBytes
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.localization.LanguageController
 
 object FileHandling {
@@ -89,12 +89,12 @@ object FileHandling {
      */
     @JvmStatic
     fun hasChanged(file: Path, databaseFile: Path): Boolean {
-        val database = Database.load(databaseFile)
-        val path = normalize(file)
-        return if (path.notExists()) {
+        val database = Database.load(MPPPath(databaseFile))
+        val path = MPPPath(normalize(file))
+        return if (!path.exists) {
             if (path in database) {
                 database.remove(path)
-                database.save(databaseFile)
+                database.save(MPPPath(databaseFile))
                 true
             } else {
                 false
@@ -107,12 +107,12 @@ object FileHandling {
                     false
                 } else {
                     database[path] = hash
-                    database.save(databaseFile)
+                    database.save(MPPPath(databaseFile))
                     true
                 }
             } else {
                 database[path] = hash
-                database.save(databaseFile)
+                database.save(MPPPath(databaseFile))
                 true
             }
         }

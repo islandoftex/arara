@@ -16,7 +16,7 @@ kotlin {
             }
         }
     }
-    wasm32()
+    /*wasm32()
     js {
         browser {
             testTask {
@@ -27,7 +27,7 @@ kotlin {
     linuxArm64()
     linuxX64()
     macosX64()
-    mingwX64()
+    mingwX64()*/
 
     sourceSets {
         all {
