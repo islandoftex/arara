@@ -3,7 +3,6 @@ package org.islandoftex.arara.api.session
 
 import kotlin.time.ExperimentalTime
 import kotlin.time.TimeMark
-import org.islandoftex.arara.api.configuration.ExecutionOptions
 
 /**
  * A [ExecutionReport] is intended to present the result of a completed
