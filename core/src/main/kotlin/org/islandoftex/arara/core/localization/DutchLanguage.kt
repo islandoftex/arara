@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.localization
 
-import java.util.Locale
+import org.islandoftex.arara.api.localization.CoreLocale
 import org.islandoftex.arara.api.localization.Messages
 
 @Suppress("MaxLineLength")
 class DutchLanguage : Messages(
-        providedLocale = Locale.forLanguageTag("nl"),
+        providedLocale = CoreLocale.DUTCH,
         translators = listOf("Marijn Schraagen", "Taco de Marie"),
         ERROR_BASENAME_NOT_A_FILE = "De 'basename'-methode vereist een bestand, geen directory. Het lijkt erop dat '%s' geen bestand is. Als je taken wil uitvoeren met een directory kan je een aantal methodes uit de Java API gebruiken.",
         ERROR_CALCULATEHASH_IO_EXCEPTION = "Om een of andere reden kan ik de hash niet berekenen. Ik weet niet waarom het precies fout ging. Misschien is het bestand verplaatst of verwijderd voor of tijdens de hashing, of misschien heb ik niet de juiste rechten om het bestand te lezen.",

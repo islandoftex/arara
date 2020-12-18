@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.localization
 
-import java.util.Locale
-
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.BINARY)
 @RequiresOptIn("arara's messages are not considered stable API. Only " +
@@ -20,7 +18,7 @@ internal annotation class AraraMessages
 @AraraMessages
 @Suppress("MaxLineLength", "ConstructorParameterNaming", "LongParameterList")
 public open class Messages(
-    public val providedLocale: Locale = Locale.ENGLISH,
+    public val providedLocale: CoreLocale = CoreLocale.ENGLISH,
     public val translators: List<String> = listOf("Paulo Roberto Massa Cereda"),
     public val ERROR_BASENAME_NOT_A_FILE: String = "The \"basename\" method requires a file, not a directory. It looks like \"%s\" does not appear to be a file at all. If you need to perform tasks on a directory, you could use a couple of methods from the Java API.",
     public val ERROR_CALCULATEHASH_IO_EXCEPTION: String = "For whatever reason, I could not calculate the hash. I have no idea why it failed, though. Perhaps the file was moved or deleted before or during the hashing operation. Or maybe I do not have the proper permissions to read the file.",

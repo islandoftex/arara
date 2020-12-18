@@ -20,10 +20,9 @@ object LanguageController {
      */
     @JvmStatic
     var messages = Messages()
-        private set
 
     @JvmStatic
-    fun setLocale(locale: Locale) {
+    fun loadMessagesFor(locale: Locale) {
         messages = when (locale) {
             Locale.GERMAN -> GermanLanguage()
             Locale.ITALIAN -> ItalianLanguage()

@@ -87,7 +87,7 @@ object ConfigurationUtils {
 
         // just to be sure, update the current locale in order to
         // display localized messages and reset logging status
-        LanguageController.setLocale(Session.userInterfaceOptions.locale)
+        LanguageController.loadMessagesFor(Session.userInterfaceOptions.locale)
         LoggingUtils.setupLogging(Session.loggingOptions)
     }
 }

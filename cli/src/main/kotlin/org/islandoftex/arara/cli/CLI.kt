@@ -96,7 +96,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                         ?: Session.userInterfaceOptions.locale,
                 swingLookAndFeel = Session.userInterfaceOptions.swingLookAndFeel
         )
-        LanguageController.setLocale(Session.userInterfaceOptions.locale)
+        LanguageController.loadMessagesFor(Session.userInterfaceOptions.locale)
 
         LinearExecutor.executionOptions = ExecutionOptions
                 .from(LinearExecutor.executionOptions)
