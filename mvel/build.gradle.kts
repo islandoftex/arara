@@ -17,17 +17,6 @@ dependencies {
     implementation(group = "com.charleskorn.kaml", name = "kaml", version = Versions.kaml)
 }
 
-sourceSets {
-    main {
-        java { setSrcDirs(listOf("src/main/kotlin")) }
-        resources { setSrcDirs(listOf("src/main/resources")) }
-    }
-    test {
-        java { setSrcDirs(listOf("src/test/kotlin")) }
-        resources { setSrcDirs(listOf("src/test/resources")) }
-    }
-}
-
 tasks {
     withType<KotlinCompile> {
         kotlinOptions {

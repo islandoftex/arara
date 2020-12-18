@@ -28,17 +28,6 @@ dependencies {
     testImplementation(group = "io.kotest", name = "kotest-assertions-core-jvm", version = Versions.kotest)
 }
 
-sourceSets {
-    main {
-        java { setSrcDirs(listOf("src/main/kotlin")) }
-        resources { setSrcDirs(listOf("src/main/resources")) }
-    }
-    test {
-        java { setSrcDirs(listOf("src/test/kotlin")) }
-        resources { setSrcDirs(listOf("src/test/resources")) }
-    }
-}
-
 tasks {
     withType<KotlinCompile> {
         kotlinOptions {
