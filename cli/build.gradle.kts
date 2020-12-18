@@ -25,22 +25,9 @@ dependencies {
     testImplementation(group = "io.kotest", name = "kotest-assertions-core-jvm", version = Versions.kotest)
 }
 
-val moduleName = group
-
-sourceSets {
-    main {
-        java { setSrcDirs(listOf("src/main/kotlin")) }
-        resources { setSrcDirs(listOf("src/main/resources")) }
-    }
-    test {
-        java { setSrcDirs(listOf("src/test/kotlin")) }
-        resources { setSrcDirs(listOf("src/test/resources")) }
-    }
-}
-
 application {
     applicationName = project.name
-    mainClassName = "$moduleName.cli.CLIKt"
+    mainClassName = "$group.cli.CLIKt"
 }
 
 tasks {
