@@ -1,18 +1,17 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.files
 
-import java.net.URI
-import java.nio.file.FileSystem
-import java.nio.file.LinkOption
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.nio.file.WatchEvent
-import java.nio.file.WatchKey
-import java.nio.file.WatchService
+import kotlin.io.path.div
 import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
+import kotlin.io.path.isRegularFile
+import kotlin.io.path.readLines
+import kotlin.io.path.readText
+import kotlin.io.path.writeText
 
-public actual class MPPPath : Path {
+public actual class MPPPath {
     internal val path: Path
 
     public constructor(pathString: String) {
@@ -23,10 +22,13 @@ public actual class MPPPath : Path {
         path = initPath
     }
 
+    public constructor(initPath: MPPPath) {
+        path = initPath.path
+    }
+
     public actual val isAbsolute: Boolean
         @JvmName("mppIsAbsolute")
         get() = path.isAbsolute
-    public override fun isAbsolute(): Boolean = isAbsolute
 
     public actual val fileName: String
         get() = path.fileName.toString()
@@ -37,83 +39,51 @@ public actual class MPPPath : Path {
         get() = path.exists()
     public actual val isDirectory: Boolean
         get() = path.isDirectory()
+    public actual val isRegularFile: Boolean
+        get() = path.isRegularFile()
 
     public actual fun startsWith(p: MPPPath): Boolean =
         path.startsWith(p.path)
 
-    override fun startsWith(p: Path): Boolean =
-            path.startsWith(p)
-
     public actual fun endsWith(p: MPPPath): Boolean =
         path.endsWith(p.path)
 
-    override fun endsWith(p: Path): Boolean =
-        path.endsWith(p)
-
-    public actual override fun normalize(): MPPPath =
+    public actual fun normalize(): MPPPath =
             MPPPath(path.normalize())
 
-    override fun relativize(p: Path): Path =
-            path.relativize(p)
-
-    public actual override fun resolve(p: String): MPPPath =
+    public actual fun resolve(p: String): MPPPath =
             MPPPath(path.resolve(p))
 
     public actual fun resolve(p: MPPPath): MPPPath =
             MPPPath(path.resolve(p.path))
 
-    override fun resolve(p: Path): Path =
-            MPPPath(path.resolve(p))
-
-    public actual override fun resolveSibling(p: String): MPPPath =
+    public actual fun resolveSibling(p: String): MPPPath =
             MPPPath(path.resolveSibling(p))
 
     public actual fun resolveSibling(p: MPPPath): MPPPath =
             MPPPath(path.resolveSibling(p.path))
 
-    override fun toUri(): URI = path.toUri()
-
-    public actual override fun toAbsolutePath(): MPPPath =
+    public actual fun toAbsolutePath(): MPPPath =
             MPPPath(path.toAbsolutePath())
-
-    override fun toRealPath(vararg options: LinkOption?): Path =
-            path.toRealPath(*options)
 
     public fun toJVMPath(): Path = path
 
+    public actual fun readLines(): List<String> = path.readLines()
+
+    public actual fun readText(): String = path.readText()
+
+    public actual fun writeText(text: String): Unit = path.writeText(text)
+
     override fun toString(): String = path.toString()
 
-    override fun register(
-        p0: WatchService?,
-        p1: Array<out WatchEvent.Kind<*>>?,
-        vararg p2: WatchEvent.Modifier?
-    ): WatchKey =
-            path.register(p0, p1, *p2)
-
-    override fun getFileSystem(): FileSystem =
-            path.fileSystem
-
-    override fun getRoot(): Path =
-            path.root
-
-    override fun getFileName(): Path =
-            path.fileName
-
-    public override fun getParent(): Path =
-            path.parent
-
-    override fun getNameCount(): Int =
-            path.nameCount
-
-    override fun getName(p: Int): Path =
-            path.getName(p)
-
-    override fun subpath(i: Int, j: Int): Path =
-            path.subpath(i, j)
-
     override fun hashCode(): Int = path.hashCode()
-    override fun compareTo(other: Path?): Int =
-            path.compareTo(other)
     override fun equals(other: Any?): Boolean =
             path == other
+
+    public operator fun div(p: String): MPPPath =
+            MPPPath(path / p)
+    public operator fun div(p: Path): MPPPath =
+            MPPPath(path / p)
+    public operator fun div(p: MPPPath): MPPPath =
+            MPPPath(path / p.path)
 }

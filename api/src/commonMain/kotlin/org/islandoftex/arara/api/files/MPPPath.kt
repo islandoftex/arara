@@ -8,6 +8,7 @@ public expect class MPPPath {
 
     public val exists: Boolean
     public val isDirectory: Boolean
+    public val isRegularFile: Boolean
 
     public fun startsWith(p: MPPPath): Boolean
     public fun endsWith(p: MPPPath): Boolean
@@ -17,4 +18,8 @@ public expect class MPPPath {
     public fun resolveSibling(p: String): MPPPath
     public fun resolveSibling(p: MPPPath): MPPPath
     public fun toAbsolutePath(): MPPPath
+
+    public fun readLines(): List<String>
+    public fun readText(): String
+    public fun writeText(text: String)
 }
