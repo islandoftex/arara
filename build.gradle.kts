@@ -124,7 +124,7 @@ allprojects {
     version = rootProject.version
 }
 subprojects {
-    if (!path.contains("docs")) {
+    if (!path.contains("docs") && !path.contains("api")) {
         apply(plugin = "org.jetbrains.kotlin.jvm")
         apply(plugin = "org.jetbrains.dokka")
 

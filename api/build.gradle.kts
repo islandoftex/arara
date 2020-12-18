@@ -1,30 +1,24 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    `java-library`
+    kotlin("multiplatform")
 }
 
 kotlin {
     explicitApi()
-}
 
-sourceSets {
-    main {
-        java { setSrcDirs(listOf("src/main/kotlin")) }
-        resources { setSrcDirs(listOf("src/main/resources")) }
+    jvm()
+    js {
+        browser {
+            testTask {
+                enabled = false
+            }
+        }
     }
-    test {
-        java { setSrcDirs(listOf("src/test/kotlin")) }
-        resources { setSrcDirs(listOf("src/test/resources")) }
-    }
-}
 
-tasks {
-    withType<KotlinCompile> {
-        kotlinOptions {
-            freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn")
+    sourceSets {
+        all {
+            languageSettings.useExperimentalAnnotation("kotlin.RequiresOptIn")
         }
     }
 }
