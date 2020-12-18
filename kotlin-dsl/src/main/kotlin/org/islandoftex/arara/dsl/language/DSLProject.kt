@@ -4,13 +4,14 @@ package org.islandoftex.arara.dsl.language
 import java.io.File
 import java.nio.file.Paths
 import org.islandoftex.arara.api.files.Project
+import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.files.FileHandling
 
 /**
  * A project model class to capture DSL methods within.
  */
 class DSLProject(private val name: String) {
-    private val files = mutableSetOf<org.islandoftex.arara.api.files.ProjectFile>()
+    private val files = mutableSetOf<ProjectFile>()
     private var workingDirectory = FileHandling.normalize(Paths.get(""))
     private val dependencyList = mutableSetOf<String>()
 

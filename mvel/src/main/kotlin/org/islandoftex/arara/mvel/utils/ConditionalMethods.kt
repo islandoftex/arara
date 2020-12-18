@@ -28,7 +28,7 @@ object ConditionalMethods {
     @JvmStatic
     @Throws(AraraException::class)
     fun exists(extension: String): Boolean = FileHandling.changeExtension(
-            LinearExecutor.currentFile!!.path, extension).exists()
+            LinearExecutor.currentFile!!.path.toJVMPath(), extension).exists()
 
     /**
      * Checks if the file is missing according to its extension.
@@ -53,7 +53,7 @@ object ConditionalMethods {
     @JvmStatic
     @Throws(AraraException::class)
     fun changed(extension: String): Boolean = changed(FileHandling.changeExtension(
-            LinearExecutor.currentFile!!.path, extension).toFile())
+            LinearExecutor.currentFile!!.path.toJVMPath(), extension).toFile())
 
     /**
      * Checks if the file is unchanged according to its extension.
@@ -125,7 +125,8 @@ object ConditionalMethods {
     @JvmStatic
     @Throws(AraraException::class)
     fun found(extension: String, regex: String): Boolean = found(
-            FileHandling.changeExtension(LinearExecutor.currentFile!!.path, extension)
+            FileHandling.changeExtension(
+                    LinearExecutor.currentFile!!.path.toJVMPath(), extension)
                     .toFile(), regex)
 
     /**
@@ -217,7 +218,7 @@ object ConditionalMethods {
      * @return A file reference for the current directive.
      */
     @JvmStatic
-    fun currentFile(): File = LinearExecutor.currentFile!!.path.toFile()
+    fun currentFile(): File = LinearExecutor.currentFile!!.path.toJVMPath().toFile()
 
     /**
      * Loads a class from the provided file, potentially a Java archive.

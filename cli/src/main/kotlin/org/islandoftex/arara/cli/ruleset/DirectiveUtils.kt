@@ -145,7 +145,7 @@ object DirectiveUtils {
             } else {
                 listOf(DirectiveImpl(
                         directive.identifier,
-                        parameters.plus("reference" to file.path.toFile()),
+                        parameters.plus("reference" to file.path.toJVMPath().toFile()),
                         directive.conditional,
                         directive.lineNumbers
                 ))

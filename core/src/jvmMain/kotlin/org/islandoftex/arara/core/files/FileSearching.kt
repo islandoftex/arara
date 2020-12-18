@@ -6,12 +6,11 @@ import java.io.FileFilter
 import java.nio.file.FileSystems
 import java.nio.file.Path
 import kotlin.io.path.div
-import kotlin.io.path.exists
-import kotlin.io.path.isRegularFile
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.files.FileType
+import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.localization.LanguageController
 import org.slf4j.LoggerFactory
@@ -142,15 +141,15 @@ object FileSearching {
 
         // direct search, so we are considering
         // the reference as a complete name
-        val testFile = FileHandling.normalize(workingDirectory / reference)
+        val testFile = MPPPath(FileHandling.normalize(workingDirectory / reference))
         return when {
-            testFile.exists() && testFile.isRegularFile() -> {
+            testFile.exists && testFile.isRegularFile -> {
                 types.firstOrNull {
                     reference.endsWith("." + it.extension)
                 }?.let {
                     val extension = reference.substringAfterLast('.')
                     ProjectFile(
-                            path = testFile,
+                            path = MPPPath(testFile),
                             fileType = types.firstOrNull { extension == it.extension }
                                     ?: FileType.UNKNOWN_TYPE
                     )
@@ -166,17 +165,17 @@ object FileSearching {
             // that the file reference has an implicit extension,
             // so we need to add it and look again
             else -> {
-                val name = testFile.fileName.toString()
+                val name = testFile.fileName
                 types.map { testFile.parent / "$name.${it.extension}" }
                         .union(types.map {
                             testFile.parent /
                                     "${name.removeSuffix(".").trim()}.${it.extension}"
                         })
-                        .firstOrNull { it.exists() && it.isRegularFile() }
+                        .firstOrNull { it.exists && it.isRegularFile }
                         ?.let { found ->
                             val extension = found.toString().substringAfterLast('.')
                             ProjectFile(
-                                    found,
+                                    MPPPath(found),
                                     types.firstOrNull { extension == it.extension }
                                             ?: FileType.UNKNOWN_TYPE
                             )

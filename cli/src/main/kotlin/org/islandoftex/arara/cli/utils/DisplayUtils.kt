@@ -300,7 +300,7 @@ object DisplayUtils {
      * Displays the file information in the terminal.
      */
     fun printFileInformation(projectFile: ProjectFile) {
-        val file = projectFile.path.toFile()
+        val file = projectFile.path.toJVMPath().toFile()
         val line = LanguageController.messages.INFO_DISPLAY_FILE_INFORMATION
                 .format(
                         file.name,

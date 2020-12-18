@@ -3,6 +3,7 @@ package org.islandoftex.arara.dsl.files
 
 import java.nio.file.Path
 import org.islandoftex.arara.api.files.FileType
+import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.core.files.ProjectFile
 
@@ -14,7 +15,7 @@ internal class ProjectFile(
     path: Path,
     fileType: FileType,
     priority: Int = DEFAULT_PRIORITY
-) : ProjectFile(path, fileType, priority) {
+) : ProjectFile(MPPPath(path), fileType, priority) {
     /**
      * The directives to be used instead of fetching them from file. Used
      * whenever non-null.

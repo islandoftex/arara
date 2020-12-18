@@ -57,7 +57,7 @@ object RuleMethods {
     @JvmStatic
     val originalReference: File
         get() = LinearExecutor.currentProject!!.files.byPriority.last()
-                .path.toFile()
+                .path.toJVMPath().toFile()
 
     /**
      * Trim spaces from the string.
