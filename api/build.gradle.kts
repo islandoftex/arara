@@ -8,6 +8,7 @@ kotlin {
     explicitApi()
 
     jvm()
+    wasm32()
     js {
         browser {
             testTask {
@@ -15,6 +16,10 @@ kotlin {
             }
         }
     }
+    linuxArm64()
+    linuxX64()
+    macosX64()
+    mingwX64()
 
     sourceSets {
         all {
