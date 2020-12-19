@@ -5,7 +5,6 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import java.nio.file.Paths
-import kotlin.io.path.div
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.cli.ruleset.DirectiveImpl
 import org.islandoftex.arara.core.configuration.ExecutionOptions
@@ -28,7 +27,7 @@ class InterpreterTest : ShouldSpec({
                     conditional, lineNumbers)
         }
 
-        Interpreter(ExecutionOptions(rulePaths = setOf(rulePath.toJVMPath())),
+        Interpreter(ExecutionOptions(rulePaths = setOf(rulePath)),
                 ProjectFile(filePath, texFile), filePath.parent.toJVMPath())
                 .execute(haltDirective).exitCode shouldBe 0
     }
@@ -43,7 +42,7 @@ class InterpreterTest : ShouldSpec({
                     conditional, lineNumbers)
         }
 
-        Interpreter(ExecutionOptions(rulePaths = setOf(rulePath.toJVMPath())),
+        Interpreter(ExecutionOptions(rulePaths = setOf(rulePath)),
                 ProjectFile(filePath, texFile), rulePath.toJVMPath())
                 .execute(haltDirective).exitCode shouldNotBe 0
     }

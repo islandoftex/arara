@@ -1,24 +1,24 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.configuration
 
-import java.nio.file.Path
-import java.nio.file.Paths
 import kotlin.io.path.div
 import kotlin.time.Duration
 import kotlin.time.milliseconds
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.files.FileType
+import org.islandoftex.arara.api.files.MPPPath
 
 data class ExecutionOptions(
     override val maxLoops: Int = 10,
     override val timeoutValue: Duration = 0.milliseconds,
     override val parallelExecution: Boolean = false,
     override val haltOnErrors: Boolean = true,
-    override val databaseName: Path = Paths.get("arara.yaml"),
+    override val databaseName: MPPPath = MPPPath("arara.yaml"),
     override val verbose: Boolean = false,
     override val executionMode: ExecutionMode = ExecutionMode.NORMAL_RUN,
-    override val rulePaths: Set<Path> = setOf(ConfigurationUtils.applicationPath / "rules"),
+    override val rulePaths: Set<MPPPath> = setOf(
+            MPPPath(ConfigurationUtils.applicationPath / "rules")),
     override val fileTypes: List<FileType> = ConfigurationUtils.defaultFileTypes,
     override val parseOnlyHeader: Boolean = false
 ) : ExecutionOptions {

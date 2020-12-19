@@ -3,7 +3,6 @@ package org.islandoftex.arara.mvel.configuration
 
 import com.charleskorn.kaml.Yaml
 import java.nio.file.Path
-import java.nio.file.Paths
 import java.util.Locale
 import kotlin.io.path.div
 import kotlin.io.path.readText
@@ -76,16 +75,17 @@ data class LocalConfiguration(
                         input
                     }
                 }
-                .map { Paths.get(it) }
+                .map { MPPPath(it) }
                 .map { path ->
                     if (path.isAbsolute)
                         path
                     else
-                        currentProject.workingDirectory.toJVMPath() / path
+                        currentProject.workingDirectory / path
                 }
-                .map { FileHandling.normalize(it) }
+                .map { FileHandling.normalize(it.toJVMPath()) }
+                .map { MPPPath(it) }
                 .toSet()
-        val databaseName = dbname?.let { Paths.get(it.trim()).fileName }
+        val databaseName = dbname?.let { MPPPath(MPPPath(it.trim()).fileName) }
                 ?: baseOptions.databaseName
         val maxLoops = loops?.let {
             if (loops > 0) {

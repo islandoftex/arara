@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.configuration
 
-import java.nio.file.Path
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import org.islandoftex.arara.api.files.FileType
+import org.islandoftex.arara.api.files.MPPPath
 
 /**
  * arara's different execution modes. They have to be chosen before a run is
@@ -64,7 +64,7 @@ public interface ExecutionOptions {
      * in a project. If it is not absolute it will be resolved against the
      * project's working directory.
      */
-    public val databaseName: Path
+    public val databaseName: MPPPath
 
     /**
      * Whether arara will output the commands' standard out.
@@ -81,7 +81,7 @@ public interface ExecutionOptions {
      * The paths arara will search for rules. Should default to the rules arara
      * ships with. For safe runs, a restrictions seems useful.
      */
-    public val rulePaths: Set<Path>
+    public val rulePaths: Set<MPPPath>
 
     /**
      * The file types arara will look for and understand including patterns.

@@ -61,7 +61,7 @@ class Interpreter(
     @Throws(AraraException::class)
     private fun getRule(directive: Directive, workingDirectory: Path): Path =
             executionOptions.rulePaths.let { paths ->
-                paths.flatMap { path ->
+                paths.map { it.toJVMPath() }.flatMap { path ->
                     listOf(
                             InterpreterUtils.construct(path, directive.identifier,
                                     RuleFormat.MVEL, workingDirectory),
@@ -79,7 +79,7 @@ class Interpreter(
                                 directive.identifier,
                                 directive.identifier,
                                 paths.joinToString("; ", "(", ")") {
-                                    FileHandling.normalize(it).toString()
+                                    FileHandling.normalize(it.toJVMPath()).toString()
                                 }
                         )
                 )
