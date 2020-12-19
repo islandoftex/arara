@@ -12,6 +12,7 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.configuration.LoggingOptions
 import org.islandoftex.arara.api.configuration.UserInterfaceOptions
+import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
@@ -120,7 +121,7 @@ data class LocalConfiguration(
     fun toLoggingOptions(
         baseOptions: LoggingOptions = org.islandoftex.arara.core.configuration.LoggingOptions()
     ): LoggingOptions {
-        val logName = logname?.runCatching { Paths.get(this) }?.getOrNull()
+        val logName = logname?.let { MPPPath(it) }
                 ?: baseOptions.logFile
         return org.islandoftex.arara.core.configuration.LoggingOptions(
                 enableLogging = logging ?: baseOptions.enableLogging,

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.configuration
 
-import java.nio.file.Path
+import org.islandoftex.arara.api.files.MPPPath
 
 /**
  * Configure arara's logging facilities.
@@ -22,5 +22,5 @@ public interface LoggingOptions {
     /**
      * The log file to write to.
      */
-    public val logFile: Path
+    public val logFile: MPPPath
 }
