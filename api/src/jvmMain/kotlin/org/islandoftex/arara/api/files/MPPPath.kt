@@ -90,8 +90,17 @@ public actual class MPPPath {
     override fun toString(): String = path.toString()
 
     override fun hashCode(): Int = path.hashCode()
-    override fun equals(other: Any?): Boolean =
-            path == other
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as MPPPath
+
+        if (path != other.path) return false
+
+        return true
+    }
 
     public operator fun div(p: String): MPPPath =
             MPPPath(path / p)
