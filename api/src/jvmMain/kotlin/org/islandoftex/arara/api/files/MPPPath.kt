@@ -15,8 +15,8 @@ import org.islandoftex.arara.api.AraraIOException
 public actual class MPPPath {
     internal val path: Path
 
-    public constructor(pathString: String) {
-        path = Paths.get(pathString)
+    public actual constructor(path: String) {
+        this.path = Paths.get(path)
     }
 
     public constructor(initPath: Path) {

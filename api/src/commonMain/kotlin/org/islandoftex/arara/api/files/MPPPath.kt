@@ -8,6 +8,12 @@ import org.islandoftex.arara.api.AraraIOException
  */
 public expect class MPPPath {
     /**
+     * Expect at least a constructor that accepts a string to be converted
+     * into a native path.
+     */
+    public constructor(path: String)
+
+    /**
      * Check whether a path is absolute. Does not guarantee it is normalized.
      */
     public val isAbsolute: Boolean
