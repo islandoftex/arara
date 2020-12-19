@@ -34,7 +34,7 @@ public actual class MPPPath {
     public actual val fileName: String
         get() = path.fileName.toString()
     public actual val parent: MPPPath
-        get() = this.takeIf { path == path.root } ?: MPPPath(path.root)
+        get() = this.takeIf { path == path.root } ?: MPPPath(path.parent)
 
     public actual val exists: Boolean
         get() = path.exists()

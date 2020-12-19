@@ -21,6 +21,18 @@ class MPPPathTest : ShouldSpec({
                     Paths.get("/..").toAbsolutePath().normalize().toString()
         }
     }
+    context("parenting") {
+        should("use root as parent of root") {
+            MPPPath("/").parent.toString() shouldBe
+                    MPPPath("/").toString()
+        }
+        should("determine parent of correctly") {
+            MPPPath("/tmp/./quack/..").parent.normalize().toString() shouldBe
+                    MPPPath("/tmp/quack").toString()
+            MPPPath("/tmp/./quack/..").normalize().parent.toString() shouldBe
+                    MPPPath("/").toString()
+        }
+    }
     context("read and write operations") {
         should("read from file") {
             val tmp = tempfile()

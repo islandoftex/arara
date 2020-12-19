@@ -141,7 +141,7 @@ object FileSearching {
 
         // direct search, so we are considering
         // the reference as a complete name
-        val testFile = MPPPath(FileHandling.normalize(workingDirectory / reference))
+        val testFile = MPPPath(workingDirectory / reference).normalize()
         return when {
             testFile.exists && testFile.isRegularFile -> {
                 types.firstOrNull {
@@ -149,7 +149,7 @@ object FileSearching {
                 }?.let {
                     val extension = reference.substringAfterLast('.')
                     ProjectFile(
-                            path = MPPPath(testFile),
+                            path = testFile,
                             fileType = types.firstOrNull { extension == it.extension }
                                     ?: FileType.UNKNOWN_TYPE
                     )
@@ -175,7 +175,7 @@ object FileSearching {
                         ?.let { found ->
                             val extension = found.toString().substringAfterLast('.')
                             ProjectFile(
-                                    MPPPath(found),
+                                    found,
                                     types.firstOrNull { extension == it.extension }
                                             ?: FileType.UNKNOWN_TYPE
                             )
