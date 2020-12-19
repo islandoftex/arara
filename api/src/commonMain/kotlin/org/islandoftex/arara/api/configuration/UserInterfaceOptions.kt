@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.configuration
 
-import java.util.Locale
+import org.islandoftex.arara.api.localization.MPPLocale
 
 /**
  * Configure arara's user interface
@@ -12,7 +12,7 @@ public interface UserInterfaceOptions {
      * language that is not available at runtime, English will be used as
      * fallback.
      */
-    public val locale: Locale
+    public val locale: MPPLocale
 
     /**
      * The name of the look and feel to apply to Swing components (dialogs).

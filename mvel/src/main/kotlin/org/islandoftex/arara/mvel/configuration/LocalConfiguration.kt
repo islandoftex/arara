@@ -3,8 +3,6 @@ package org.islandoftex.arara.mvel.configuration
 
 import com.charleskorn.kaml.Yaml
 import java.nio.file.Path
-import java.util.Locale
-import kotlin.io.path.div
 import kotlin.io.path.readText
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
@@ -13,6 +11,7 @@ import org.islandoftex.arara.api.configuration.LoggingOptions
 import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
+import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
@@ -140,7 +139,7 @@ data class LocalConfiguration(
         baseOptions: UserInterfaceOptions = org.islandoftex.arara.core.configuration.UserInterfaceOptions()
     ): UserInterfaceOptions {
         return org.islandoftex.arara.core.configuration.UserInterfaceOptions(
-                locale = language?.let { Locale.forLanguageTag(it) }
+                locale = language?.let { MPPLocale(it) }
                         ?: baseOptions.locale,
                 swingLookAndFeel = laf ?: baseOptions.swingLookAndFeel
         )

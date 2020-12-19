@@ -289,7 +289,7 @@ object DisplayUtils {
         else
             (ln(size.toDouble()) / ln(conversionFactor)).toInt().let { exp ->
                 "%.1f %sB".format(
-                        Session.userInterfaceOptions.locale,
+                        Session.userInterfaceOptions.locale.toJVMLocale(),
                         size / conversionFactor.pow(exp.toDouble()),
                         "kMGTPE"[exp - 1]
                 )

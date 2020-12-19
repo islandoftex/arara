@@ -16,9 +16,9 @@ class GUIDialogs
 @JvmOverloads constructor(
     uiOptions: UserInterfaceOptions,
     /**
-     * The default width for the message body, in pixels.
-     */
-    val defaultWidth: Int = 250
+ * The default width for the message body, in pixels.
+ */
+val defaultWidth: Int = 250
 ) {
     init {
         applyUIOptions(uiOptions)

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.localization
 
-import java.util.Locale
+import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.api.localization.Messages
 import org.slf4j.LoggerFactory
 
@@ -22,14 +22,14 @@ object LanguageController {
     var messages = Messages()
 
     @JvmStatic
-    fun loadMessagesFor(locale: Locale) {
+    fun loadMessagesFor(locale: MPPLocale) {
         messages = when (locale) {
-            Locale.GERMAN -> GermanLanguage()
-            Locale.ITALIAN -> ItalianLanguage()
-            Locale.forLanguageTag("nl") -> DutchLanguage()
-            Locale.forLanguageTag("pt-BR") -> BrazilianLanguage()
-            Locale.forLanguageTag("en-QN") -> NorfolkLanguage()
-            Locale.ENGLISH -> Messages()
+            MPPLocale("de") -> GermanLanguage()
+            MPPLocale("it") -> ItalianLanguage()
+            MPPLocale("nl") -> DutchLanguage()
+            MPPLocale("pt-BR") -> BrazilianLanguage()
+            MPPLocale("en-QN") -> NorfolkLanguage()
+            MPPLocale("en") -> Messages()
             else -> {
                 logger.warn("Language ${locale.displayLanguage} not available; " +
                         "defaulting to English.")
