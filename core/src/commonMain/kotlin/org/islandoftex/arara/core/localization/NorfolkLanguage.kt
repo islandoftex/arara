@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.localization
 
-import org.islandoftex.arara.api.localization.CoreLocale
+import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.api.localization.Messages
 
 @Suppress("MaxLineLength")
 class NorfolkLanguage : Messages(
-        providedLocale = CoreLocale.NORFOLK,
+        providedLocale = MPPLocale("en-QN"),
         translators = listOf("Nicola Talbot", "Keith Skipper"),
         ERROR_BASENAME_NOT_A_FILE = "Yew're gotta hev a file for the 'basename', not a directory. That '%s' yew give me ent a file. Do yew need ter do jarbs on a directory, yew myte try the Java API.",
         ERROR_CALCULATEHASH_IO_EXCEPTION = "Thass a rum ole dew, bor, I can't work out th' hash. I ent got no idea why thass gorn wrong. Praps the file was hulled abowt afore or time the hashing operation was doing else maybe I're gotta he'some proper permissions to snout abowt in the file.",

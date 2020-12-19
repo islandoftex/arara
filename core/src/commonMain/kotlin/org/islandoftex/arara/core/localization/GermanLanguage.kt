@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.localization
 
-import org.islandoftex.arara.api.localization.CoreLocale
+import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.api.localization.Messages
 
 @Suppress("MaxLineLength")
 class GermanLanguage : Messages(
-        providedLocale = CoreLocale.GERMAN,
+        providedLocale = MPPLocale("de"),
         translators = listOf("Marco Daniel", "Ben Frank", "Gert Fischer"),
         ERROR_BASENAME_NOT_A_FILE = "Die Methode des \"Dateinamens\" (\"basename\") benötigt eine Datei und kein Verzeichnis. Es scheint, als sei \"%s\" keine Datei. Falls du Aufgaben auf ein Verzeichnis bzw. Ordner anwenden willst, kannst du eine Vielzahl von JAVA API-Methoden verwenden.",
         ERROR_CALCULATEHASH_IO_EXCEPTION = "Aus was für einem Grund auch immer kann ich die Prüfziffer (checksum) nicht berechnen. Ich habe keine Idee, warum es fehlschlägt. Vielleicht wurde die Datei bevor oder während der Prüfziffer-Operation bewegt oder gelöscht. Möglicherweise habe ich nicht die geeigneten Rechte, um die Datei zu lesen.",

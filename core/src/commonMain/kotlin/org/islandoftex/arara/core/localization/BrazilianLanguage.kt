@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.localization
 
-import org.islandoftex.arara.api.localization.CoreLocale
+import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.api.localization.Messages
 
 @Suppress("MaxLineLength")
 class BrazilianLanguage : Messages(
-        providedLocale = CoreLocale.BRAZILIAN,
+        providedLocale = MPPLocale("pt-BR"),
         translators = listOf("Paulo Roberto Massa Cereda"),
         ERROR_BASENAME_NOT_A_FILE = "O método 'basename' requer um arquivo, não um diretório. Observe que '%s' não parece ser um arquivo. Se você precisa realizar alguma tarefa em um diretório, experimente os métodos disponíveis na API Java.",
         ERROR_CALCULATEHASH_IO_EXCEPTION = "Por alguma razão, eu não pude calcular o hash. Não tenho ideia porque não deu certo. Talvez o arquivo tenha sido movido ou removido antes ou durante a operação de hash. Ou talvez eu não tenha as permissões corretas para leitura do arquivo.",
