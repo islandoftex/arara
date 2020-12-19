@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.files
 
-import java.nio.file.Path
-
 /**
  * A project in arara's sense is a collection of files that should be compiled
  * together. Files in a project are not dependent on each other.
@@ -20,7 +18,7 @@ public interface Project {
      * relative file names against. Furthermore, all tools will be started
      * within the project's working directory.
      */
-    public val workingDirectory: Path
+    public val workingDirectory: MPPPath
 
     /**
      * The project's files. A file can only be added once to a project.

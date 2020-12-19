@@ -21,7 +21,7 @@ data class DirectiveImpl(
 ) : Directive {
     override fun execute(): Int = Interpreter(
             LinearExecutor.executionOptions, LinearExecutor.currentFile!!,
-            LinearExecutor.currentProject!!.workingDirectory
+            LinearExecutor.currentProject!!.workingDirectory.toJVMPath()
     ).execute(this).exitCode
 
     override fun toString(): String {

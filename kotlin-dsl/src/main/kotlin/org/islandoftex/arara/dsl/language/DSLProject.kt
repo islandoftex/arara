@@ -3,6 +3,7 @@ package org.islandoftex.arara.dsl.language
 
 import java.io.File
 import java.nio.file.Paths
+import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.files.FileHandling
@@ -109,6 +110,6 @@ class DSLProject(private val name: String) {
      * @return A [Project] resembling the user's configuration.
      */
     internal fun toProject(): Project = org.islandoftex.arara.core.files.Project(
-            name, workingDirectory, files, dependencyList
+            name, MPPPath(workingDirectory), files, dependencyList
     )
 }

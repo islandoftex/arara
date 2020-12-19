@@ -21,6 +21,7 @@ import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.FileType
+import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
@@ -191,7 +192,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
         try {
             val projects = listOf(Project(
                     workingDir.fileName.toString(),
-                    workingDir,
+                    MPPPath(workingDir),
                     reference.map { fileName ->
                         FileSearching.resolveFile(
                                 fileName,

@@ -34,7 +34,8 @@ object ConfigurationUtils {
         val names = listOf(".araraconfig.yaml",
                 "araraconfig.yaml", ".arararc.yaml", "arararc.yaml")
         return project.workingDirectory.let { workingDir ->
-            names.map { workingDir / it }.firstOrNull { it.exists() }
+            names.map { workingDir / it }.firstOrNull { it.exists }
+                    ?.toJVMPath()
         } ?: Environment.getSystemPropertyOrNull("user.home")
                 ?.let { userHome ->
                     names.map { Paths.get(userHome) / it }

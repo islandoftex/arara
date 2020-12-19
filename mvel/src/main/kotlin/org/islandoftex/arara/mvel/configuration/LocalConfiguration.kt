@@ -80,7 +80,7 @@ data class LocalConfiguration(
                     if (path.isAbsolute)
                         path
                     else
-                        currentProject.workingDirectory / path
+                        currentProject.workingDirectory.toJVMPath() / path
                 }
                 .map { FileHandling.normalize(it) }
                 .toSet()

@@ -97,7 +97,7 @@ object ConditionalMethods {
     @Throws(AraraException::class)
     fun changed(filename: File): Boolean = FileHandling.hasChanged(
             filename.toPath(),
-            LinearExecutor.currentProject!!.workingDirectory /
+            LinearExecutor.currentProject!!.workingDirectory.toJVMPath() /
                     LinearExecutor.executionOptions.databaseName
     )
 

@@ -12,6 +12,7 @@ import java.io.PrintStream
 import java.nio.file.Paths
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
+import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.core.configuration.ExecutionOptions
@@ -52,7 +53,7 @@ class ExecutionTest : ShouldSpec({
             System.setOut(PrintStream(output))
             val workingDirectory = Paths.get(getPathForTest(testName))
             LinearExecutor.execute(listOf(
-                    Project("Test", workingDirectory,
+                    Project("Test", MPPPath(workingDirectory),
                             setOf(FileSearching.resolveFile(fileName,
                                     workingDirectory,
                                     LinearExecutor.executionOptions)

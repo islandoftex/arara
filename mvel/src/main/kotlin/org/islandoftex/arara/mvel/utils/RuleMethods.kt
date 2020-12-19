@@ -188,7 +188,7 @@ object RuleMethods {
     @JvmStatic
     fun getCommand(elements: List<String>): Command =
             org.islandoftex.arara.core.session.Command(elements,
-                    LinearExecutor.currentProject!!.workingDirectory)
+                    LinearExecutor.currentProject!!.workingDirectory.toJVMPath())
 
     /**
      * Gets the command based on an array of objects.
@@ -481,7 +481,7 @@ object RuleMethods {
     @Throws(AraraException::class)
     fun isSubdirectory(directory: File): Boolean =
             FileHandling.isSubDirectory(directory.toPath(),
-                    LinearExecutor.currentProject!!.workingDirectory)
+                    LinearExecutor.currentProject!!.workingDirectory.toJVMPath())
 
     /**
      * Checks if the string is empty.
