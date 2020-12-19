@@ -3,10 +3,10 @@ package org.islandoftex.arara.core.session
 
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.core.localization.LanguageController
 import org.slf4j.LoggerFactory
@@ -204,8 +204,8 @@ object Environment {
             // directory; although it may be missing in which case we will use
             // arara's execution directory by default
             val workingDirectory = command.workingDirectory
-                    ?: Paths.get("")
-            directory(workingDirectory.toFile().absoluteFile)
+                    ?: MPPPath("")
+            directory(workingDirectory.toJVMPath().toFile().absoluteFile)
 
             // implement output redirection if necessary for verbose
             // output

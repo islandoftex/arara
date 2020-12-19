@@ -3,11 +3,11 @@ package org.islandoftex.arara.mvel.utils
 
 import java.io.File
 import java.io.IOException
-import java.nio.file.Paths
 import kotlin.io.path.readLines
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.SafeRunViolationException
 import org.islandoftex.arara.api.configuration.ExecutionMode
+import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.files.FileSearching
@@ -188,7 +188,7 @@ object RuleMethods {
     @JvmStatic
     fun getCommand(elements: List<String>): Command =
             org.islandoftex.arara.core.session.Command(elements,
-                    LinearExecutor.currentProject!!.workingDirectory.toJVMPath())
+                    LinearExecutor.currentProject!!.workingDirectory)
 
     /**
      * Gets the command based on an array of objects.
@@ -218,7 +218,7 @@ object RuleMethods {
             InputHandling.flatten(elements.filterNotNull())
                     .map { it.toString() }
                     .filter { it.isNotEmpty() },
-            Paths.get(path)
+            MPPPath(path)
     )
 
     /**
@@ -237,7 +237,7 @@ object RuleMethods {
             InputHandling.flatten(elements.filterNotNull())
                     .map { it.toString() }
                     .filter { it.isNotEmpty() },
-            file.toPath()
+            MPPPath(file.toPath())
     )
 
     /**
@@ -252,7 +252,8 @@ object RuleMethods {
     fun getCommandWithWorkingDirectory(
         path: String,
         elements: List<String>
-    ): Command = org.islandoftex.arara.core.session.Command(elements, Paths.get(path))
+    ): Command = org.islandoftex.arara.core.session.Command(
+            elements, MPPPath(path))
 
     /**
      * Gets the command based on a list of strings and with the provided
@@ -266,7 +267,8 @@ object RuleMethods {
     fun getCommandWithWorkingDirectory(
         file: File,
         elements: List<String>
-    ): Command = org.islandoftex.arara.core.session.Command(elements, file.toPath())
+    ): Command = org.islandoftex.arara.core.session.Command(
+            elements, MPPPath(file.toPath()))
 
     /**
      * Checks if the execution is in verbose mode.
