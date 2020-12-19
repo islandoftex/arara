@@ -37,7 +37,7 @@ data class Database(
      * @return Whether the object represented by the path is in the database.
      */
     override fun contains(path: MPPPath): Boolean =
-            FileHandling.normalize(path.toJVMPath()).toString() in map
+            path.normalize().toString() in map
 
     /**
      * Get the hash value associated with a file.
@@ -48,7 +48,7 @@ data class Database(
      *   the element is not in the database.
      */
     override fun get(path: MPPPath): Long? =
-            map[FileHandling.normalize(path.toJVMPath()).toString()]
+            map[path.normalize().toString()]
 
     /**
      * Set the hash value for a given file.
@@ -57,7 +57,7 @@ data class Database(
      * @param hash The hash value of the file.
      */
     override fun set(path: MPPPath, hash: Long) {
-        map[FileHandling.normalize(path.toJVMPath()).toString()] = hash
+        map[path.normalize().toString()] = hash
     }
 
     /**
@@ -69,7 +69,7 @@ data class Database(
      */
     @Throws(NoSuchElementException::class)
     override fun remove(path: MPPPath) {
-        val normalPath = FileHandling.normalize(path.toJVMPath()).toString()
+        val normalPath = path.normalize().toString()
         if (normalPath in map)
             map.remove(normalPath)
         else

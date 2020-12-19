@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.rules
 
-import java.nio.file.Paths
 import java.util.regex.Pattern
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
+import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
-import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
 
 /**
@@ -199,9 +198,8 @@ object Directives {
             // we received a file list, so we map that list to files
             holder.filterIsInstance<Any>()
                     .asSequence()
-                    .map { Paths.get(it.toString()) }
-                    .map(FileHandling::normalize)
-                    .map { it.toFile() }
+                    .map { MPPPath(it.toString()).normalize() }
+                    .map { it.toJVMPath().toFile() }
                     // and because we want directives, we replicate our
                     // directive to be applied to that file
                     .map { reference ->

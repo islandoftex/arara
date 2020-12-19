@@ -16,7 +16,6 @@ import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.cli.ruleset.RuleFormat
 import org.islandoftex.arara.cli.ruleset.RuleUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
-import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.InputHandling
@@ -79,7 +78,7 @@ class Interpreter(
                                 directive.identifier,
                                 directive.identifier,
                                 paths.joinToString("; ", "(", ")") {
-                                    FileHandling.normalize(it.toJVMPath()).toString()
+                                    it.normalize().toString()
                                 }
                         )
                 )

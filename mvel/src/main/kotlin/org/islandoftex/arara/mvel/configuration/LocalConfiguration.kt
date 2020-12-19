@@ -12,7 +12,6 @@ import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.localization.MPPLocale
-import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.mvel.files.FileType
@@ -81,8 +80,7 @@ data class LocalConfiguration(
                     else
                         currentProject.workingDirectory / path
                 }
-                .map { FileHandling.normalize(it.toJVMPath()) }
-                .map { MPPPath(it) }
+                .map { it.normalize() }
                 .toSet()
         val databaseName = dbname?.let { MPPPath(MPPPath(it.trim()).fileName) }
                 ?: baseOptions.databaseName

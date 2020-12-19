@@ -31,7 +31,6 @@ import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.LoggingOptions
 import org.islandoftex.arara.core.configuration.UserInterfaceOptions
-import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.localization.LanguageController
@@ -184,19 +183,20 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
 
         // resolve the working directory from the one that may be given
         // as command line parameter; otherwise resolve current directory
-        val workingDir = FileHandling.normalize(workingDirectory ?: Paths.get(""))
+        val workingDir = MPPPath(workingDirectory ?: Paths.get(""))
+                .normalize()
 
         // add all command line call parameters to the session
         parameters.forEach { (key, value) -> Session.put("arg:$key", value) }
 
         try {
             val projects = listOf(Project(
-                    workingDir.fileName.toString(),
-                    MPPPath(workingDir),
+                    workingDir.fileName,
+                    workingDir,
                     reference.map { fileName ->
                         FileSearching.resolveFile(
                                 fileName,
-                                workingDir,
+                                workingDir.toJVMPath(),
                                 LinearExecutor.executionOptions
                         )
                     }.toSet()

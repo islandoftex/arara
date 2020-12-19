@@ -90,7 +90,7 @@ object FileHandling {
     @JvmStatic
     fun hasChanged(file: Path, databaseFile: Path): Boolean {
         val database = Database.load(MPPPath(databaseFile))
-        val path = MPPPath(normalize(file))
+        val path = MPPPath(file).normalize()
         return if (!path.exists) {
             if (path in database) {
                 database.remove(path)
