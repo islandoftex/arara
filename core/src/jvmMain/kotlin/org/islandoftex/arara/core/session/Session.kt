@@ -33,7 +33,7 @@ object Session : Session {
      */
     @JvmStatic
     var loggingOptions: LoggingOptions =
-            org.islandoftex.arara.core.configuration.LoggingOptions()
+        org.islandoftex.arara.core.configuration.LoggingOptions()
 
     /**
      * Gets the object indexed by the provided key from the session. This method
