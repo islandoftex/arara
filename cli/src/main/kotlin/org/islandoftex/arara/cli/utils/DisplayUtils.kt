@@ -353,7 +353,7 @@ object DisplayUtils {
         val text = LanguageController.messages.INFO_DISPLAY_EXECUTION_TIME
                 .format(
                         "%1.2f".format(
-                                Session.userInterfaceOptions.locale,
+                                Session.userInterfaceOptions.locale.toJVMLocale(),
                                 seconds
                         )
                 )
