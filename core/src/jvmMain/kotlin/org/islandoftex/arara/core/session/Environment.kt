@@ -5,11 +5,11 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
+import mu.KotlinLogging
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.core.localization.LanguageController
-import org.slf4j.LoggerFactory
 import org.zeroturnaround.exec.ProcessExecutor
 import org.zeroturnaround.exec.listener.ShutdownHookProcessDestroyer
 import org.zeroturnaround.exec.stream.TeeOutputStream
@@ -19,7 +19,7 @@ import org.zeroturnaround.exec.stream.TeeOutputStream
  */
 object Environment {
     // get the logger context from a factory
-    private val logger = LoggerFactory.getLogger(Environment::class.java)
+    private val logger = KotlinLogging.logger { }
 
     /**
      * Gets the system property according to the provided key, or resort to the
@@ -84,7 +84,7 @@ object Environment {
     @Throws(AraraException::class)
     fun checkOS(value: String): Boolean {
         fun checkOSProperty(key: String): Boolean =
-                Environment.getSystemPropertyOrNull("os.name")
+                getSystemPropertyOrNull("os.name")
                         ?.toLowerCase()?.startsWith(key.toLowerCase()) ?: false
 
         val values = mutableMapOf<String, Boolean>()
@@ -226,8 +226,10 @@ object Environment {
         }.getOrElse {
             // quack, quack, do nothing, just
             // return a default error code
-            logger.debug("Caught an exception when executing " +
-                    "$command returning $errorExitStatus")
+            logger.debug {
+                "Caught an exception when executing " +
+                        "$command returning $errorExitStatus"
+            }
             errorExitStatus to "${it::class.java.name}: ${it.message}"
         }
     }

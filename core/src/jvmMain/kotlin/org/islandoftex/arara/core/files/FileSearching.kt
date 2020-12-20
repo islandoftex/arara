@@ -6,6 +6,7 @@ import java.io.FileFilter
 import java.nio.file.FileSystems
 import java.nio.file.Path
 import kotlin.io.path.div
+import mu.KotlinLogging
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.ExecutionOptions
@@ -13,7 +14,6 @@ import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.localization.LanguageController
-import org.slf4j.LoggerFactory
 
 /**
  * Implements file searching auxiliary methods.
@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory
  */
 object FileSearching {
     // get the logger context from a factory
-    private val logger = LoggerFactory.getLogger(FileSearching::class.java)
+    private val logger = KotlinLogging.logger { }
 
     /**
      * List all files from the provided directory according to the list of
@@ -157,8 +157,10 @@ object FileSearching {
             }
             // when in safe mode we do not perform indirect search
             executionOptions.executionMode == ExecutionMode.SAFE_RUN -> {
-                logger.info("Skipping indirect file search with extension " +
-                        "completion due to safe mode restrictions.")
+                logger.info {
+                    "Skipping indirect file search with extension " +
+                            "completion due to safe mode restrictions."
+                }
                 null
             }
             // indirect search; in this case, we are considering

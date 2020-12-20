@@ -2,6 +2,7 @@
 package org.islandoftex.arara.core.localization
 
 import kotlin.jvm.JvmStatic
+import mu.KotlinLogging
 import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.api.localization.Messages
 
@@ -11,6 +12,8 @@ import org.islandoftex.arara.api.localization.Messages
  * Please note that this relies on [org.islandoftex.arara.api.localization.AraraMessages].
  */
 object LanguageController {
+    private val logger = KotlinLogging.logger {}
+
     /**
      * The messages object. This will be used to fetch messages and format them
      * (using string formatting).
@@ -28,9 +31,10 @@ object LanguageController {
             MPPLocale("en-QN") -> NorfolkLanguage()
             MPPLocale("en") -> Messages()
             else -> {
-                // TODO: re-insert logging:
-                // logger.warn("Language ${locale.displayLanguage} not available; " +
-                //         "defaulting to English.")
+                logger.warn {
+                    "Language ${locale.displayLanguage} not available; " +
+                            "defaulting to English."
+                }
                 Messages()
             }
         }

@@ -16,6 +16,7 @@ object Versions {
     const val jna = "5.7.0"
     const val kaml = "0.27.0"
     const val kotest = "4.4.1"
+    const val kotlinLogging = "2.0.4"
     const val kotlinxSerialization = "1.0.1"
     const val jackson = "2.12.1"
     const val log4j = "2.14.0"

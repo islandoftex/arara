@@ -37,6 +37,7 @@ kotlin {
 
             dependencies {
                 api(project(":api"))
+                implementation("io.github.microutils:kotlin-logging:${Versions.kotlinLogging}")
             }
         }
         val commonMain by getting {
@@ -50,7 +51,6 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:${Versions.kotlinxSerialization}")
                 implementation("com.charleskorn.kaml:kaml:${Versions.kaml}")
                 implementation("org.zeroturnaround:zt-exec:${Versions.ztExec}")
-                implementation("org.slf4j:slf4j-api:${Versions.slf4j}")
             }
         }
         val jvmTest by getting {
@@ -58,7 +58,6 @@ kotlin {
             dependencies {
                 implementation("io.kotest:kotest-runner-junit5-jvm:${Versions.kotest}")
                 implementation("io.kotest:kotest-assertions-core-jvm:${Versions.kotest}")
-                runtimeOnly("org.slf4j:slf4j-simple:${Versions.slf4j}")
             }
         }
     }
