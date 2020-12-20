@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import mu.KotlinLogging
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.ProjectFile
@@ -16,7 +17,6 @@ import org.islandoftex.arara.core.rules.Directives
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.mvel.utils.MvelState
 import org.mvel2.templates.TemplateRuntime
-import org.slf4j.LoggerFactory
 
 /**
  * Implements directive utilitary methods.
@@ -26,8 +26,7 @@ import org.slf4j.LoggerFactory
  * @since 4.0
  */
 object DirectiveUtils {
-    // get the logger context from a factory
-    private val logger = LoggerFactory.getLogger(DirectiveUtils::class.java)
+    private val logger = KotlinLogging.logger { }
 
     /**
      * The [Directives] core object can't process directives without an

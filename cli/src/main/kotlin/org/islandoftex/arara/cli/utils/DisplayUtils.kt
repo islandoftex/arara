@@ -4,6 +4,7 @@ package org.islandoftex.arara.cli.utils
 import java.text.SimpleDateFormat
 import kotlin.math.ln
 import kotlin.math.pow
+import mu.KotlinLogging
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
@@ -15,7 +16,6 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
-import org.slf4j.LoggerFactory
 
 /**
  * Implements display utilitary methods.
@@ -25,8 +25,7 @@ import org.slf4j.LoggerFactory
  * @since 4.0
  */
 object DisplayUtils {
-    // get the logger context from a factory
-    private val logger = LoggerFactory.getLogger(DisplayUtils::class.java)
+    private val logger = KotlinLogging.logger { }
 
     /**
      * The file name of the configuration file in use. It is only needed for

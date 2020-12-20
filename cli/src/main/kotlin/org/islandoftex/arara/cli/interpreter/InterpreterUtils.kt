@@ -5,6 +5,7 @@ import java.io.IOException
 import java.nio.file.Path
 import java.util.concurrent.TimeoutException
 import kotlin.io.path.div
+import mu.KotlinLogging
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.rules.DirectiveConditional
@@ -16,7 +17,6 @@ import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
-import org.slf4j.LoggerFactory
 
 /**
  * Implements interpreter auxiliary methods.
@@ -26,8 +26,7 @@ import org.slf4j.LoggerFactory
  * @since 4.0
  */
 internal object InterpreterUtils {
-    // get the logger context from a factory
-    private val logger = LoggerFactory.getLogger(InterpreterUtils::class.java)
+    private val logger = KotlinLogging.logger { }
 
     /**
      * Checks if the current conditional has a prior evaluation.

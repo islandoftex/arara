@@ -3,6 +3,7 @@ package org.islandoftex.arara.cli.interpreter
 
 import java.nio.file.Path
 import kotlin.io.path.exists
+import mu.KotlinLogging
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.ExecutionOptions
@@ -24,7 +25,6 @@ import org.islandoftex.arara.mvel.rules.DirectiveConditionalEvaluator
 import org.islandoftex.arara.mvel.rules.SerialRuleCommand
 import org.islandoftex.arara.mvel.utils.MvelState
 import org.mvel2.templates.TemplateRuntime
-import org.slf4j.LoggerFactory
 
 /**
  * Interprets the list of directives.
@@ -38,9 +38,7 @@ class Interpreter(
     currentFile: ProjectFile,
     private val workingDirectory: Path
 ) {
-    // the class logger obtained from
-    // the logger factory
-    private val logger = LoggerFactory.getLogger(Interpreter::class.java)
+    private val logger = KotlinLogging.logger { }
 
     /**
      * This string represents the key necessary for halting the current
