@@ -82,7 +82,8 @@ object RuleMethods {
             if (file.isFile) {
                 file.nameWithoutExtension
             } else {
-                throw AraraExceptionWithHeader(LanguageController.messages
+                throw AraraExceptionWithHeader(
+                    LanguageController.messages
                         .ERROR_BASENAME_NOT_A_FILE.format(file.name))
             }
 
@@ -109,7 +110,8 @@ object RuleMethods {
             if (file.isFile) {
                 file.extension
             } else {
-                throw AraraExceptionWithHeader(LanguageController.messages
+                throw AraraExceptionWithHeader(
+                    LanguageController.messages
                         .ERROR_FILETYPE_NOT_A_FILE.format(file.name))
             }
 

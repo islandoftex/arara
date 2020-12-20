@@ -56,7 +56,8 @@ class RuleArgument : RuleArgument<Any?> {
                     }
                 } ?: listOf(input.toString())
             } catch (exception: RuntimeException) {
-                throw AraraExceptionWithHeader(LanguageController.messages
+                throw AraraExceptionWithHeader(
+                    LanguageController.messages
                         .ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION,
                         exception
                 )

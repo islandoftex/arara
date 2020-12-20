@@ -25,7 +25,8 @@ class FileType : FileType {
         get() {
             if (field == FileType.INVALID_PATTERN) {
                 field = ConfigurationUtils.defaultFileTypePatterns[extension]
-                        ?: throw AraraException(LanguageController.messages
+                        ?: throw AraraException(
+                            LanguageController.messages
                                 .ERROR_FILETYPE_UNKNOWN_EXTENSION.format(
                                         extension,
                                         LinearExecutor.executionOptions.fileTypes

@@ -143,7 +143,8 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
     ): List<Directive> {
         val resolvedPreamble = preamble ?: MvelState.defaultPreamble
         if (resolvedPreamble != null && resolvedPreamble !in MvelState.preambles) {
-            throw AraraException(LanguageController.messages
+            throw AraraException(
+                LanguageController.messages
                     .ERROR_PARSER_INVALID_PREAMBLE.format(resolvedPreamble))
         }
         val allDirectives = resolvedPreamble
@@ -158,7 +159,8 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                     ).plus(directives)
                 } ?: directives
         if (allDirectives.isEmpty())
-            throw AraraException(LanguageController
+            throw AraraException(
+                LanguageController
                     .messages.ERROR_VALIDATE_NO_DIRECTIVES_FOUND)
         return allDirectives
     }
