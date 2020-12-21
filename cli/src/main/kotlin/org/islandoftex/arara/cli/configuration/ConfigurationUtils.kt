@@ -83,6 +83,7 @@ object ConfigurationUtils {
 
         MvelState.preambles += resource.preambles
         MvelState.defaultPreamble = resource.defaultPreamble
+        MvelState.prependPreambleIfDirectivesGiven = resource.prependPreambleIfDirectivesGiven
 
         // just to be sure, update the current locale in order to
         // display localized messages and reset logging status

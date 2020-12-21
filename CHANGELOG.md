@@ -23,6 +23,10 @@ from version 5.0.0 on.
   at execution time meaning preambles from local configurations will take
   precedence over global preambles.
   (see #55)
+* The new configuration option `prependPreambleIfDirectivesGiven` allows you
+  to specify a boolean value indicating whether preambles should be applied
+  to all files or only those without directives. It defaults to `true` to avoid
+  breaking existing workflows.
 * `arara` now expands `@{}` orb tags within `options` parameter to directives.
   Supported methods are `getBasename`, `getSession` and `getOriginalReference`
   with their documented meanings.

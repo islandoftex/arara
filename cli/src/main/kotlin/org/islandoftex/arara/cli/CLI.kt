@@ -222,8 +222,9 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                         println()
                     },
                     processDirectives = { file, list ->
-                        DirectiveUtils.process(file,
-                                prependPreambleDirectives(file.fileType, list))
+                        DirectiveUtils.process(file, list
+                                .takeIf { list.isNotEmpty() && !MvelState.prependPreambleIfDirectivesGiven }
+                                ?: prependPreambleDirectives(file.fileType, list))
                     }
             )
             if (LinearExecutor.execute(projects).exitCode != 0)

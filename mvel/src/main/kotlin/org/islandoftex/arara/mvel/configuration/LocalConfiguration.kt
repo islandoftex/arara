@@ -41,7 +41,8 @@ data class LocalConfiguration(
     private val logname: String? = null,
     private val laf: String? = null,
     val preambles: Map<String, String> = mapOf(),
-    val defaultPreamble: String? = null
+    val defaultPreamble: String? = null,
+    val prependPreambleIfDirectivesGiven: Boolean = true
 ) {
     /**
      * Convert the relevant properties of the configuration to execution

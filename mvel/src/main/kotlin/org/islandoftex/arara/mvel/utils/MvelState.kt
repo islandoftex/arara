@@ -79,4 +79,13 @@ object MvelState {
      * nor directives specified.
      */
     var defaultPreamble: String? = null
+
+    /**
+     * Whether to prepend preamble directives even if there are directives
+     * in the document. Useful for enabling preambles only for documents
+     * without preambles.
+     *
+     * Set to `true` for reasons of backward compatibility.
+     */
+    var prependPreambleIfDirectivesGiven: Boolean = true
 }
