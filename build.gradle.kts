@@ -118,6 +118,7 @@ version = spotlessChangelog.versionNext
 allprojects {
     repositories {
         jcenter()
+        maven("https://dl.bintray.com/korlibs/korlibs/")
     }
 
     group = "org.islandoftex.arara"

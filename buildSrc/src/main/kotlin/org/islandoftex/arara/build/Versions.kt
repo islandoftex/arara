@@ -13,8 +13,10 @@ object Versions {
 
     // non-plugin dependencies
     const val clikt = "3.1.0"
+    const val coroutines = "1.3.8"
     const val jna = "5.7.0"
     const val kaml = "0.27.0"
+    const val korlibs = "2.0.4"
     const val kotest = "4.4.1"
     const val kotlinLogging = "2.0.4"
     const val kotlinxSerialization = "1.0.1"
