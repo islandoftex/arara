@@ -33,13 +33,15 @@ $ arara hello.tex
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
 
-Processing 'hello.tex' (size: 86 B, last modified: 05/03/2018
-07:28:30), please wait.
+Processing "hello.tex" (size: 70 B, last modified: 12/28/2020
+07:03:16), please wait.
+
+  ERROR
 
 It looks like no directives were found in the provided file. Make
 sure to include at least one directive and try again.
 
-Total: 0.00 seconds
+Total: 0.04 seconds
 \end{codebox}
 
 Quite surprising. However, this behaviour is not wrong at all, it is completely by design: \arara\ needs to know what you want. And for that purpose, you need to tell the tool what to do.
@@ -68,12 +70,12 @@ $ arara hello.tex
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
 
-Processing 'hello.tex' (size: 86 B, last modified: 05/03/2018
-07:28:30), please wait.
+Processing "hello.tex" (size: 88 B, last modified: 12/28/2020
+07:05:05), please wait.
 
 (PDFLaTeX) PDFLaTeX engine .............................. SUCCESS
 
-Total: 0.73 seconds
+Total: 0.56 seconds
 \end{codebox}
 
 Hurrah, we finally got our document properly compiled with a \TeX\ engine by the inner workings of our beloved tool, resulting in an expected \rbox{hello.pdf} file created using the very same system call that typical automation tools like \rbox{latexmk} and \rbox{rubber} use. Observe that \arara\ works practically on other side of the spectrum: you need to tell it how and when to do a task.
@@ -130,13 +132,13 @@ That is pretty much how \arara\ works: directives in the source code are mapped 
 \section{Operating system remarks}
 \label{sec:operatingsystemremarks}
 
-The application is written using the Kotlin language (and some pieces of Java), so \arara\ runs on top of a Java virtual machine, available on all the major operating systems~--~in some cases, you might need to install the proper virtual machine. We tried very hard to keep both code and libraries compatible with older virtual machines or from other vendors. Currently, \arara\ is known to run on Oracle's Java 8 to 13, OpenJDK 8 to 13 and ZuluFX 8 and 11.
+The application is written using the Kotlin language, so \arara\ runs on top of a Java virtual machine, available on all the major operating systems~--~in some cases, you might need to install the proper virtual machine. We tried very hard to keep both code and libraries compatible with older virtual machines or from other vendors. Currently, \arara\ is known to run on Java 8 to 15, from any vendor.
 
 \begin{messagebox}{Outdated Java virtual machines}{attentioncolour}{\icerror}{black}
 Dear reader, beware of outdated software, mainly Java virtual machines! Although \arara\ offers support for older virtual machines, try your best to keep your software updated as frequently as possible. The legacy support exists only for historical reasons, and also due to the sheer fact that we know some people that still runs \arara\ on very old hardware. If you are not in this particular scenario, get the latest virtual machine.
 \end{messagebox}
 
-In Chapter~\ref{chap:buildingfromsource}, on page~\pageref{chap:buildingfromsource}, we provide instructions on how to build \arara\ from sources using Apache Maven. Even if you use multiple operating systems, \arara\ should behave the same, including the rules. There are helper functions available in order to provide support for system-specific rules based on the underlying operating system.
+In Chapter~\ref{chap:buildingfromsource}, on page~\pageref{chap:buildingfromsource}, we provide instructions on how to build \arara\ from sources using Gradle. Even if you use multiple operating systems, \arara\ should behave the same, including the rules. There are helper functions available in order to provide support for system-specific rules based on the underlying operating system.
 
 \section{Support}
 \label{sec:support}
