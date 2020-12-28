@@ -17,4 +17,5 @@ docs/version.tex
 .idea
 **/build/*
 !buildSrc/src/**/build/*
+api/src/**/AraraAPI.kt
 target
