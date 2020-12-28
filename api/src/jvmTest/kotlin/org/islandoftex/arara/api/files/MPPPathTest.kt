@@ -9,6 +9,18 @@ import io.kotest.matchers.string.shouldContain
 import org.islandoftex.arara.api.AraraIOException
 
 class MPPPathTest : ShouldSpec({
+    context("attributes") {
+        should("not classify relative as absolute paths") {
+            MPPPath(".").isAbsolute shouldBe false
+        }
+        should("correctly detect absolute paths") {
+            MPPPath("/test").isAbsolute shouldBe true
+        }
+        should("consider root absolute") {
+            // korio does not handle this
+            MPPPath("/").isAbsolute shouldBe true
+        }
+    }
     context("path normalization") {
         should("normalize dots") {
             MPPPath("/tmp/./quack/..").normalize().toString() shouldBe
