@@ -31,7 +31,7 @@ from version 5.0.0 on.
   Supported methods are `getBasename`, `getSession` and `getOriginalReference`
   with their documented meanings.
   (see #38, #46)
-* A new safe mode (`-s` or `--safe-run`) protects the system by disallowing
+* A new safe mode (`-S` or `--safe-run`) protects the system by disallowing
   certain user actions.
   (see #18)
   Currently, the following features are restricted:
