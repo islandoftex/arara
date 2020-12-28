@@ -82,18 +82,18 @@ from version 5.0.0 on.
 * Preambles are now a client-only feature. This feature will neither make it
   to core nor to the mvel library because libraries should not deal with
   prepending content to a file which is what the preambles feature does.
-* All `flag`s and `default`s are consistently transformed into a `List<String>`.
-  If a `List` is returned, it will be flattened and all values will be turned
-  into string. If a string is returned, a single list with only that string will
-  be returned. Other values are not encouraged but if returned transformed into
-  a string. If you need interoperability of complex `command` code with older
-  versions, use `isList(variable) ? variable[0] : variable` to get the value of
-  previously non-List values.
+* All `flag`s are consistently transformed into a `List<String>`. If a `List` is
+  returned, it will be flattened and all values will be turned into string. If a
+  string is returned, a single list with only that string will be returned.
+  Other values are not encouraged but if returned transformed into a string. If
+  you need interoperability of complex `command` code with older versions,
+  use `isList(variable) ? variable[0] : variable` to get the value of previously
+  non-List values.
   (breaking change)
 * `default` values now are treated as values like user input. This means, no
   orb tags are interpreted within this field anymore. The `default` value will
   be processed by the `flag` if specified, just as user input would be. If no
-  flag is present, it will be returned as a (list of; see previous item) string.
+  flag is present, it will be returned as a (list of; cf. previous item) string.
   Previous rules have to be rewritten if they make use of orb tags.
   (breaking change)
 * The `dvisvgm` rule now supports `dvi`, `xdv`, `eps` and `pdf` extensions as
