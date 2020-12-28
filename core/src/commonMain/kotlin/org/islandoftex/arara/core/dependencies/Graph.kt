@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.dependencies
 
-import java.util.LinkedList
-import java.util.Queue
-
 /**
  * A graph model for dependency resolution.
  */
@@ -24,8 +21,10 @@ internal open class Graph<T> {
      * @param vertex The new vertex.
      */
     fun addVertex(vertex: T) {
-        vertices.putIfAbsent(vertex, mutableSetOf())
-        indegree.putIfAbsent(vertex, 0)
+        if (vertex !in vertices)
+            vertices[vertex] = mutableSetOf()
+        if (vertex !in indegree)
+            indegree[vertex] = 0
     }
 
     /**
@@ -50,8 +49,8 @@ internal open class Graph<T> {
      * @return The vertices in order.
      */
     fun kahn(): List<T> {
-        val order: MutableList<T> = LinkedList<T>()
-        val queue: Queue<T> = LinkedList()
+        val order = mutableListOf<T>()
+        val queue = mutableListOf<T>()
 
         val work = indegree.toMutableMap()
 
@@ -59,8 +58,8 @@ internal open class Graph<T> {
                 .filter { it.value == 0 }
                 .forEach { queue.add(it.key) }
 
-        while (!queue.isEmpty()) {
-            val vertex: T = queue.poll()
+        while (queue.isNotEmpty()) {
+            val vertex: T = queue.removeFirst()
             order.add(vertex)
             vertices[vertex]?.forEach {
                 work[it] = work[it]!!.dec()
