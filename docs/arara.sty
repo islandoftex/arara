@@ -56,7 +56,6 @@
 \RequirePackage{comfortaa}
 \RequirePackage[regular]{sourcecodepro}
 
-\RequirePackage{adforn}
 \RequirePackage{fontawesome}
 
 \RequirePackage{forest}
@@ -441,8 +440,8 @@
 \renewcommand{\printpartname}{\centering\includegraphics[scale=.3]{logos/bird.pdf}\par\partnamefont \textcolor{araracolour}{part}}
 \renewcommand{\printpartnum}{\partnumfont\textcolor{araracolour}{\numtoname{\c@part}}}
 \cftpagenumbersoff{part}
-\renewcommand\partnumberline[1]{\hfil\hspace\@tocrmarg {\normalfont\normalsize\adforn{16}}\quad#1\hspace{0.5em}---\hspace{0.5em}}
-\renewcommand*{\cftpartafterpnum}{\quad\adforn{44}}
+\renewcommand\partnumberline[1]{\hfil\hspace\@tocrmarg#1\hspace{0.5em}---\hspace{0.5em}}
+\renewcommand*{\cftpartafterpnum}{}
 \setlength\cftchapternumwidth{2em}
 \setlength\cftsectionnumwidth{3em}
 
