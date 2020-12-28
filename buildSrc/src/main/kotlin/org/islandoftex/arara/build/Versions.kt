@@ -3,7 +3,7 @@ package org.islandoftex.arara.build
 
 object Versions {
     // plugin dependencies
-    const val detekt = "1.14.2"
+    const val detekt = "1.15.0"
     const val dokka = "1.4.20"
     const val kotlin = "1.4.21"
     const val shadow = "6.1.0"
