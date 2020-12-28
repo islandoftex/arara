@@ -411,6 +411,30 @@ It is important to observe that, in this case, \rbox{doc3.tex} is a plain \TeX\ 
 
 Even when a directive is interpreted with a file other than the one being processed by \arara\ (through the magic of the \abox{files} parameter), it is possible to use helper methods in the rule context to get access to the original file and reference. Such methods are detailed later on, in Section~\ref{sec:files}, on page~\pageref{sec:files}.
 
+\begin{messagebox}{Orb tag expansion in parameter values}{araracolour}{\icinfo}{white}
+From version 6.0 on, \arara\ is able to expand orb tags within a special \rbox{options} parameter in the directive context. For instance:
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: lualatex: {
+% arara: --> options: [ '--output-directory=@{getSession().
+% arara: -->                          get("arg:builddir")}'
+% arara: -->          ]
+% arara: --> }
+\end{codebox}
+
+This feature supports the following methods with their documented meanings, as seen in Chapter~\ref{chap:methods}, on page~\pageref{chap:methods}:
+
+\vspace{2ex}
+
+\begin{tabularx}{0.95\textwidth}{YYY}
+\mtbox{getBasename} & \mtbox{getSession} & \mtbox{getOriginalReference}
+\end{tabularx}
+
+\vspace{2ex}
+
+Keep in mind that this feature is disabled when \arara\ is running in safe mode, as seen in Chapter~\ref{chap:commandline}, on page~\pageref{chap:commandline}.
+\end{messagebox}
+
 \section{Important changes}
 \label{sec:migrationguide}
 

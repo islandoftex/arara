@@ -66,7 +66,7 @@ When executed in verbose mode, \arara\ will display the underlying system comman
 -----------------------------------------------------------------
 (BibTeX) The BibTeX reference management software
 -----------------------------------------------------------------
-This is BibTeX, Version 0.99d (TeX Live 2019)
+This is BibTeX, Version 0.99d (TeX Live 2020)
 The top-level auxiliary file: doc5.aux
 The style file: plain.bst
 Database file #1: mybib.bib
@@ -116,23 +116,31 @@ $ arara
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
 
-Usage: arara [OPTIONS] [file]...
+Usage: arara [OPTIONS] file...
 
 Options:
-  -l, --log                        Generate a log output
-  -v, --verbose / -s, --silent     Print the command output
-  -n, --dry-run                    Go through all the motions of running a
-                                   command, but with no actual calls
-  -H, --header                     Extract directives only in the file header
-  -t, --timeout INT                Set the execution timeout (in milliseconds)
-  -L, --language TEXT              Set the application language
-  -m, --max-loops INT              Set the maximum number of loops (> 0)
-  -p, --preamble TEXT              Set the file preamble based on the
-                                   configuration file
-  -d, --working-directory DIRECTORY
-                                   Set the working directory for all tools
-  -V, --version                    Show the version and exit
-  -h, --help                       Show this message and exit
+  -l, --log                     Generate a log output
+  -v, --verbose / -s, --silent  Print the command output
+  -n, --dry-run                 Go through all the motions of running
+                                a command, but with no actual calls
+  -s, --safe-run                Run in safe mode and disable
+                                potentially harmful features. Make
+                                sure your projects uses only allowed
+                                features.
+  -H, --header                  Extract directives only in the file
+                                header
+  -p, --preamble TEXT           Set the file preamble based on the
+                                configuration file
+  -t, --timeout INT             Set the execution timeout (in
+                                milliseconds)
+  -L, --language TEXT           Set the application language
+  -m, --max-loops INT           Set the maximum number of loops (> 0)
+  -d, --working-directory PATH  Set the working directory for all
+                                tools
+  -P, --call-property VALUE     Pass parameters to the application
+                                to be used within the session.
+  -V, --version                 Show the version and exit
+  -h, --help                    Show this message and exit
 
 Arguments:
   file  The file(s) to evaluate and process
@@ -157,7 +165,7 @@ When running \arara\ without this option, two directives will be extracted (the 
 
 \item[\describeop{l}{log}] This option enables the logging feature of our tool. All streams from all system commands will be logged and, at the end of the execution, a consolidated log file named \rbox{arara.log} will be generated. This option can also be activated by default in the configuration file (see Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). Refer to Chapter~\ref{chap:logging}, on page~\pageref{chap:logging}, for more details on the logging feature.
 
-\item[\describeopp{L}{language}{code}] This option sets the language of the current execution of \arara\ according to the language code identified by the \prbox{code} value provided as the parameter. The language code tries to follow the ISO 639 norm, standardized nomenclature used to classify languages. For example, this is our tool speaking Dutch:
+\item[\describeopp{L}{language}{code}] This option sets the language of the current execution of \arara\ according to the language code identified by the \prbox{code} value provided as the parameter. The language code tries to follow the IETF BCP 47 norm, standardized nomenclature used to classify languages. For example, this is our tool speaking Dutch:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ arara -L nl doc5.tex
@@ -169,10 +177,10 @@ $ arara -L nl doc5.tex
 Verwerken van 'doc5.tex' (grootte: 285 B, laatst gewijzigd:
 03/01/2020 19:25:40), een ogenblik geduld.
 
-(PDFLaTeX) PDFLaTeX engine .............................. SUCCESVOL
-(BibTeX) The BibTeX reference management software ....... SUCCESVOL
-(PDFLaTeX) PDFLaTeX engine .............................. SUCCESVOL
-(PDFLaTeX) PDFLaTeX engine .............................. SUCCESVOL
+(PDFLaTeX) PDFLaTeX engine ............................ SUCCESVOL
+(BibTeX) The BibTeX reference management software ..... SUCCESVOL
+(PDFLaTeX) PDFLaTeX engine ............................ SUCCESVOL
+(PDFLaTeX) PDFLaTeX engine ............................ SUCCESVOL
 
 Totaal: 1,07 seconden
 \end{codebox}
@@ -188,10 +196,10 @@ At time of writing, \arara\ is able to speak English, German, Dutch, Italian and
 \begin{tabular}{lll}
 \rbox[araracolour]{\hphantom{x}en\hphantom{x}} English &
 \rbox[araracolour]{\hphantom{x}de\hphantom{x}} German &
-\rbox[araracolour]{\hphantom{x}qn\hphantom{x}} Broad Norfolk \\
+\rbox[araracolour]{en-QN} Broad Norfolk \\
 \rbox[araracolour]{\hphantom{x}it\hphantom{x}} Italian &
 \rbox[araracolour]{\hphantom{x}nl\hphantom{x}} Dutch &
-\rbox[araracolour]{ptbr} Portuguese (BR)
+\rbox[araracolour]{pt-BR} Portuguese (BR)
 \end{tabular}\par}
 
 \vspace{1.4em}
@@ -200,6 +208,10 @@ Would you like to make \arara\ speak your own language? Splendid! We would love 
 \end{messagebox}
 
 This option can also be specified in the configuration file (see Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). However, one can always override this setting by running the tool with an explicit \opbox{L} option.
+
+\begin{messagebox}{Invalid language codes}{araracolour}{\icinfo}{white}
+From version 6.0 on, if you pass an invalid language code, \arara\ will now run in English and issue a log warning but not fail anymore. Failing due to the wrong language in the output was considered inappropriate.
+\end{messagebox}
 
 \item[\describeopp{m}{max-loops}{number}] As a means to avoid infinite iterations, \arara\ has a predefined maximum number of loops, with the default set to 10, as a technical solution (seen in Section~\ref{sec:directives}, on page~\pageref{sec:directives}). For instance, consider the following directive:
 
@@ -236,30 +248,30 @@ $ arara -n doc5.tex
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
 
-Processing 'doc5.tex' (size: 285 B, last modified: 03/01/2020
-19:25:40), please wait.
+Processing "doc5.tex" (size: 360 B, last modified: 12/28/2020
+13:03:32), please wait.
 
 [DR] (PDFLaTeX) PDFLaTeX engine
 -----------------------------------------------------------------
 Author: Island of TeX
-About to run: [ pdflatex, /home/paulo/Downloads/doc5.tex ] @
+About to run: [pdflatex, doc5.tex] @ /home/paulo/Downloads
 
 [DR] (BibTeX) The BibTeX reference management software
 -----------------------------------------------------------------
 Author: Island of TeX
-About to run: [ bibtex, doc5 ] @
+About to run: [bibtex, doc5] @ /home/paulo/Downloads
 
 [DR] (PDFLaTeX) PDFLaTeX engine
 -----------------------------------------------------------------
 Author: Island of TeX
-About to run: [ pdflatex, /home/paulo/Downloads/doc5.tex ] @
+About to run: [pdflatex, doc5.tex] @ /home/paulo/Downloads
 
 [DR] (PDFLaTeX) PDFLaTeX engine
 -----------------------------------------------------------------
 Author: Island of TeX
-About to run: [ pdflatex, /home/paulo/Downloads/doc5.tex ] @
+About to run: [pdflatex, doc5.tex] @ /home/paulo/Downloads
 
-Total: 0.23 seconds
+Total: 0.18 seconds
 \end{codebox}
 
 Note that the rule authors are displayed (so they can be blamed in case anything goes wrong), as well as the system command to be executed. It is an interesting approach to see everything that will happen to your document and in which order.
@@ -343,7 +355,30 @@ If left unattended, this particular execution would never finish (and probably c
 \item[\describeop{v}{verbose}] This option enables the verbose mode of \arara, as seen in Section~\ref{sec:userinterfacedesign}, on page~\pageref{sec:userinterfacedesign}. It also enables all streams to be flushed directly to the terminal, including potential user input interactions (the exact opposite of silent mode). This option can also be activated by default in the configuration file (see Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}).
 
 \item[\describeop{s}{silent}] This option disables the verbose mode of \arara\ (thus activating the default silent mode), if previously enabled by a proper configuration file (see Chapter~\ref{chap:configurationfile}, on page~\pageref{chap:configurationfile}). It is important to note that this command line option has higher priority over the \opbox{{-}verbose} counterpart.
-% It might be worth clarifying here that --silent doesn't completely stop all messages from being written to STDOUT, just the messages normally produced by the system commands called by the subtasks. The normal arara messages are still displayed.
+
+\item[\describeop{S}{safe-run}] This option enables the safe mode of \arara, protecting the system  by disallowing certain user actions. Currently, the following features are restricted:
+
+\begin{itemize}[label={--}]
+\item File lookup will only perform explicit file resolution. Wildcard filters are disabled.
+
+\item \mtbox{unsafelyExecuteSystemCommand} will raise an exception and abort the run. Keep in mind that rules are still allowed to construct arbitrary commands using \rbox{Command} objects, so this restriction only disallows arbitrary system commands that would not get logged and are thus invisible to the user.
+
+\item The \rbox{options} parameter does not expand orb tags in any directive.
+\end{itemize}
+
+\item[\describeopp{P}{call-property}{entry}] This option forwards the provided \prbox{entry}, in the \rbox{key=value} format, to the session map. For instance, consider the following call:
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+$ arara -P foo=bar hello.tex
+\end{codebox}
+
+In a rule, you may now retrieve the value associated to the \rbox{foo} key, which is \rbox{bar}, set at runtime, by calling the following method in your code:
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+getSession().get('arg:foo')
+\end{codebox}
+
+This option may be called multiple times, as a means to provide as many data pairs as needed. Please refer to \mtbox{getSession} in Chapter~\ref{chap:methods}, on page~\pageref{chap:methods}, for more details.
 \end{description}
 
 You can combine options, use long or short variations interchangeably and write them in any order, provided that a file name is given at some point in the command line, otherwise the usage will be printed. Use the provided features in order to enhance and optimize your automation workflow.
