@@ -6,46 +6,15 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.rules.Directive
-import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.core.localization.LanguageController
 
 /**
- * Hooks to allow the customization of the directive creation process,
- * intended to increase the flexibility for creating different implementations
- * of the [Directive] interface.
- */
-data class DirectiveFetchingHooks(
-    /**
-     * Whenever the parser found a potential directive, this will be
-     * executed. You may manipulate the *textual* representation of the
-     * directive here.
-     */
-    val processPotentialDirective: (Int, String) -> String = { _, s -> s },
-    /**
-     * Given the directive's characteristics identifier, parameters,
-     * conditional and line numbers choose a directive implementation and
-     * create a directive. Please make sure to resolve parameters.
-     */
-    val buildDirectiveRaw: (String, String?, DirectiveConditional, List<Int>) -> Directive = {
-        _, _, _, _ -> TODO("directives can't be built by default")
-    },
-    /**
-     * Given the directive's characteristics identifier, parameters,
-     * conditional and line numbers choose a directive implementation and
-     * create a directive. Please make sure to resolve parameters.
-     */
-    val buildDirective: (String, Map<String, Any>, DirectiveConditional, List<Int>) -> Directive = {
-        _, _, _, _ -> TODO("directives can't be built by default")
-    }
-)
-
-/**
  * Implements directive auxiliary methods.
  */
-object Directives {
+actual object Directives {
     @JvmStatic
-    var hooks = DirectiveFetchingHooks()
+    actual var hooks = DirectiveFetchingHooks()
 
     private const val directivestart = """^\s*(\w+)\s*(:\s*(\{.*\})\s*)?"""
     private const val pattern = """(\s+(if|while|until|unless)\s+(\S.*))?$"""
@@ -104,7 +73,7 @@ object Directives {
     @JvmStatic
     @Throws(AraraException::class)
     @Suppress("MagicNumber")
-    fun extractDirectives(
+    actual fun extractDirectives(
         lines: List<String>,
         parseOnlyHeader: Boolean,
         fileType: FileType
@@ -189,7 +158,7 @@ object Directives {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun replicateDirective(
+    actual fun replicateDirective(
         holder: Any,
         parameters: Map<String, Any>,
         directive: Directive
