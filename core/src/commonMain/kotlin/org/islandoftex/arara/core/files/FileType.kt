@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-import java.util.regex.PatternSyntaxException
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
 
@@ -11,8 +10,8 @@ data class FileType(
 ) : FileType {
     init {
         try {
-            pattern.toPattern()
-        } catch (e: PatternSyntaxException) {
+            pattern.toRegex()
+        } catch (e: IllegalArgumentException) {
             throw AraraException(
                     "The pattern you wanted to choose for this file type is invalid.",
                     e
@@ -25,9 +24,7 @@ data class FileType(
      * @return A string containing a textual representation of the current file
      * type object.
      */
-    override fun toString(): String {
-        return ".$extension"
-    }
+    override fun toString(): String = ".$extension"
 
     /**
      * Implements the file type equals method, checking if one file type is
@@ -37,10 +34,12 @@ data class FileType(
      */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+        if (other == null || this::class != other::class) return false
 
-        other as FileType
+        other as org.islandoftex.arara.core.files.FileType
+
         if (extension != other.extension) return false
+
         return true
     }
 
@@ -49,9 +48,7 @@ data class FileType(
      * considered.
      * @return An integer representing the file type hash code.
      */
-    override fun hashCode(): Int {
-        return extension.hashCode()
-    }
+    override fun hashCode(): Int = extension.hashCode()
 }
 
 /**
