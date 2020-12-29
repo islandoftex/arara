@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.configuration
 
-import kotlin.io.path.div
 import kotlin.time.Duration
 import kotlin.time.milliseconds
 import org.islandoftex.arara.api.configuration.ExecutionMode
@@ -18,7 +17,7 @@ data class ExecutionOptions(
     override val verbose: Boolean = false,
     override val executionMode: ExecutionMode = ExecutionMode.NORMAL_RUN,
     override val rulePaths: Set<MPPPath> = setOf(
-            MPPPath(ConfigurationUtils.applicationPath / "rules")),
+            ConfigurationUtils.applicationPath / "rules"),
     override val fileTypes: List<FileType> = ConfigurationUtils.defaultFileTypes,
     override val parseOnlyHeader: Boolean = false
 ) : ExecutionOptions {
