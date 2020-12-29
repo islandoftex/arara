@@ -59,6 +59,7 @@ kotlin {
             dependencies {
                 implementation("io.kotest:kotest-runner-junit5-jvm:${Versions.kotest}")
                 implementation("io.kotest:kotest-assertions-core-jvm:${Versions.kotest}")
+                runtimeOnly("org.slf4j:slf4j-simple:${Versions.slf4j}")
             }
         }
     }
