@@ -65,9 +65,3 @@ open class ProjectFile(
         return "ProjectFile(path=$path, fileType=$fileType, priority=$priority)"
     }
 }
-
-/**
- * Get the project's files in order of compilation.
- */
-val Iterable<ProjectFile>.byPriority: List<ProjectFile>
-    get() = this.sortedByDescending { it.priority }

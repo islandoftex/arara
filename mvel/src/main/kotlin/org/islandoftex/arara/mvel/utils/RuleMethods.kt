@@ -11,7 +11,6 @@ import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.files.FileSearching
-import org.islandoftex.arara.core.files.byPriority
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
@@ -56,7 +55,8 @@ object RuleMethods {
      */
     @JvmStatic
     val originalReference: File
-        get() = LinearExecutor.currentProject!!.files.byPriority.last()
+        get() = LinearExecutor.currentProject!!.files
+                .minByOrNull { it.priority }!!
                 .path.toJVMPath().toFile()
 
     /**
