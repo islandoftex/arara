@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
+import com.soywiz.korio.file.std.localVfs
+import com.soywiz.korio.util.checksum.CRC32
+import com.soywiz.korio.util.checksum.checksum
 import java.io.IOException
 import java.nio.file.Path
-import java.util.zip.CRC32
 import kotlin.io.path.isDirectory
-import kotlin.io.path.readBytes
+import kotlinx.coroutines.runBlocking
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.localization.LanguageController
@@ -68,10 +70,10 @@ object FileHandling {
     @Throws(AraraException::class)
     fun calculateHash(path: Path): Long =
             try {
-                CRC32().run {
-                    update(path.readBytes())
-                    value
-                }
+                runBlocking {
+                    localVfs(normalize(path).toString())
+                            .readBytes()
+                }.checksum(CRC32).toLong()
             } catch (exception: IOException) {
                 throw AraraException(
                         LanguageController.messages.ERROR_CALCULATEHASH_IO_EXCEPTION,
