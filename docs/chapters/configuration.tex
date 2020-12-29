@@ -81,7 +81,7 @@ paths:
 \end{codebox}
 \end{description}
 
-Observe that the \varbox{user} variable actually holds a map containing two keys (resulting in a map within a map). However, for didactic purposes, it is easier to use the property navigation feature of MVEL, detailed in Section~\ref{sec:propertynavigation}, on page~\pageref{sec:propertynavigation}, and consider the map references as three independent variables. You can use property navigation styles interchangeably. Note that you can also precede the path with the special keyword \rbox{<arara>} and save some quotes (see Section~\ref{sec:rule}, on page~\pageref{sec:rule}, but keep in mind that this special keyword is marked as deprecated and will be removed in future versions). In this specific scenario, the special keyword will be automatically removed afterwards.
+Observe that the \varbox{user} and \varbox{application} variables actually holds maps. However, for didactic purposes, it is easier to use the property navigation feature of MVEL, detailed in Section~\ref{sec:propertynavigation}, on page~\pageref{sec:propertynavigation}, and consider the map references as three independent variables. You can use property navigation styles interchangeably.
 
 \begin{messagebox}{Avoid folded and literal styles for scalars in a path}{attentioncolour}{\icattention}{black}
 Do not use folded or literal styles for scalars in a path! The orb tag resolution for a path in plain string should be kept as simple as possible, so \emph{always} use the inline style.
@@ -118,6 +118,10 @@ header: false
 \end{codebox}
 
 \item[\describecf{O}{string}{logname}{arara}] This key modifies the default log file name, according to the associated plain string value, plus the \rbox{log} extension. The value cannot be empty or contain invalid characters. There is no orb tag evaluation in this specific context, only a plain string value. The log file will be written by our tool if, and only if, the \opbox{{-}log} command line option is used.
+
+\begin{messagebox}{Log paths}{araracolour}{\icok}{white}
+From version 6.0 on, the log file may now be specified as path \emph{anywhere} on the file system. However, keep in mind that this behavior may be altered for future updates in safe mode.
+\end{messagebox}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 logname: mylog
@@ -164,6 +168,18 @@ preambles:
 \begin{messagebox}{Literal style when defining a preamble}{attentioncolour}{\icattention}{black}
 When defining preambles in the configuration file, \emph{always} use the literal style for scalar blocks. The reason for this requirement is the proper retention of line breaks, which are significant when parsing the strings into proper directive lines. Using the folded style in this particular scenario will almost surely be problematic.
 \end{messagebox}
+
+\item[\describecfn{O}{string}{defaultPreamble}] This key allows to specify a preamble for \arara\ to use even if there are no directives in the file nor preambles specified on the command-line. Preambles are resolved at execution time, which means that preambles from local configurations will take precedence over global preambles.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+defaultPreamble: twopdftex
+\end{codebox}
+
+\item[\describecfn{O}{boolean}{prependPreambleIfDirectivesGiven}] This key allows you to specify a boolean value indicating whether preambles should be applied to all files or only those without directives. It defaults to \rbox{true} to avoid breaking existing workflows.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+prependPreambleIfDirectivesGiven: false
+\end{codebox}
 
 \item[\describecfn{O}{file type list}{filetypes}] This key holds a list of file types supported by \arara\ when searching for a file name, as well as their corresponding directive lookup patterns. In order to properly set a file type, the keys used in this specification are defined inside the \rbox{filetypes$\rightarrow$} context and presented as follows.
 
