@@ -19,10 +19,8 @@ When running our tool on the previous example with the \opbox{{-}log} command li
 The very first entry to appear in the log file is the current version of \arara.
 
 \begin{codebox}{Log file}{teal}{\icnote}{white}
-Welcome to arara 5.0.0!
+Welcome to arara 6.0.0!
 \end{codebox}
-
-% TODO: review what will be output in the future
 
 The following entries in the log file are the absolute path of the current deployment of \arara\ (line 1), details about the current Java virtual machine (namely, vendor and absolute path, in lines 2 and 3, respectively), the underlying operating system information (namely, system name, architecture and eventually the kernel version, in line 4), home and working directories (lines 5 and 6, respectively), and the absolute path of the applied configuration file, if any (line 7). This block is very important to help with tracking possible issues related to the underlying operating system and the tool configuration itself.
 
@@ -42,7 +40,11 @@ We understand that the previous entries containing information about the underly
 From experience, these entries greatly help our users to track down errors in the execution, as well as learning more about the underlying operating system. However, be mindful of sharing your log file! Since the log file contains structured blocks, it is highly advisable to selectively choose the ones relevant to the current discussion.
 \end{messagebox}
 
-It is important to observe that localized messages are also applied to the log file. If a language other than English is selected, either through the \opbox{{-}language} command line option or the equivalent key in the configuration file, the logging framework will honour the current setting and entries will be available in the specified language. Having a log file in your own language might mitigate the traumatic experience of error tracking for \TeX\ newbies.
+It is important to observe that localized messages are also applied to the log file. If a language other than English is selected, either through the \opbox{{-}language} command line option or the equivalent key in the configuration file, the logging framework will honour the current setting and entries will be available in the specified language. Having a log file in your own language might mitigate the traumatic experience of error tracking for \TeX\ newbies. From version 6.0 on, if you pass an invalid language code (for instance, \rbox{-L foo} in the command line), \arara\ will default to English and issue a log warning:
+
+\begin{codebox}{Log file}{teal}{\icnote}{white}
+Language foo not available; defaulting to English.
+\end{codebox}
 
 \section{Directive extraction}
 \label{sec:directiveextraction}
@@ -161,3 +163,7 @@ Total: 0.33 seconds
 \end{codebox}
 
 The logging feature provides a consistent framework for event recording. It is highly recommended to include at least the \opbox{{-}log} command line option (or enable it in the configuration file) in your typical automation workflow, as relevant information is gathered into a single consolidated report.
+
+\begin{messagebox}{Log paths}{araracolour}{\icok}{white}
+From version 6.0 on, the log file may now be specified as path \emph{anywhere} on the file system. However, keep in mind that this behavior may be altered for future updates in safe mode. Please refer to Chapter~\ref{chap:configurationfile}, on page~\pageref{chap:configurationfile}, for more details.
+\end{messagebox}
