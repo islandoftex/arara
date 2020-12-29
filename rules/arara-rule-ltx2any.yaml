@@ -14,8 +14,8 @@ commands:
     @{
         return getCommand('ltx2any', clean, engine, parameters,
                           tikzimages, jobname, logname, logformat,
-                          loglevel, frequency, directory, options,
-                          reference.getName());
+                          loglevel, frequency, directory, synctex,
+                          options, reference.getName());
     }
 arguments:
 - identifier: clean
@@ -92,6 +92,11 @@ arguments:
   flag: >
     @{
         return [ '-t', parameters.directory ];
+    }
+- identifier: synctex
+  flag: >
+    @{
+        return isTrue(parameters.synctex, '-synctex');
     }
 - identifier: options
   flag: >
