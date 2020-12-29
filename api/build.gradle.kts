@@ -18,7 +18,6 @@ kotlin {
             }
         }
     }
-    linuxX64()
     /*wasm32()
     js {
         browser {
@@ -28,6 +27,7 @@ kotlin {
         }
     }
     linuxArm64()
+    linuxX64()
     macosX64()
     mingwX64()*/
 
@@ -46,7 +46,7 @@ kotlin {
                 implementation(kotlin("test-annotations-common"))
             }
         }
-        val nativeCommonMain by creating {
+        /*val nativeCommonMain by creating {
             dependsOn(commonMain)
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-native:${Versions.coroutines}")
@@ -55,7 +55,7 @@ kotlin {
         }
         val linuxX64Main by getting {
             dependsOn(nativeCommonMain)
-        }
+        }*/
         val jvmMain by getting {
             languageSettings.useExperimentalAnnotation("kotlin.io.path.ExperimentalPathApi")
         }
@@ -91,9 +91,9 @@ tasks {
             )
         }
     }
-    named("compileKotlinLinuxX64").configure {
+    /*named("compileKotlinLinuxX64").configure {
         dependsOn("createAraraAPIObject")
-    }
+    }*/
     named<Test>("jvmTest") {
         useJUnitPlatform()
 
