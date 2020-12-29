@@ -1432,6 +1432,33 @@ This rule runs \rbox{qpdf}, a command line application that does structural, con
 % arara: --> 'output.pdf' ] }
 \end{codebox}
 
+\item[\rulebox{sage}]
+This rule runs \rbox{sage}, a free open source mathematics software system, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{sage} extension (which can be overriden).
+
+\begin{description}
+\item[\rpbox{program}{sage}] This option, as the name indicates, sets the program name. If the tool is not directly available in your system path, make sure to use the full path to the installed \rbox{sage} binary.
+
+\item[\rpbox{extension}{sage}] This option, as the name indicates, sets the default extension to the input file to be processed by \rbox{sage}. Three possible values are available:
+
+\begin{description}
+\item[\povalue{sage}] This value, as the name indicates, sets the extension to refer to the Sage format, the default one used by the software system.
+
+\item[\povalue{py}] This value, as the name indicates, sets the extension to refer to a typical Python source code.
+
+\item[\povalue{spyx}] This value, as the name indicates, sets the extension to refer to the SPYX format, a specific Sage compiled source code.
+\end{description}
+
+\item[\abox{command}] This option, as the name indicates, forwards the provided value to the command line utility to be evaluated as a Sage code.
+
+\item[\rpsbox{dotsage}] This option, as the name indicates, sets whether the tool should consider using the \rbox{.sage} directory in the user home directory or a temporary one.
+
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: sage
+\end{codebox}
+
 \item[\rulebox{sketch}]
 This rule runs \rbox{sketch}, a system for producing line drawings of solid objects and scenes, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{sk} suffix. Note that one needs to add support for this particular file type, as seen in Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}.
 
@@ -1456,6 +1483,19 @@ This rule runs \rbox{songidx}, a song index generation script for the \rbox{song
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 % arara: songidx: { input: songs }
+\end{codebox}
+
+\item[\rulebox{spix}]
+This rule runs \rbox{spix}, an interesting command line \TeX\ automation tool written in Python, on the provided \mtbox{currentFile} reference.
+
+\begin{description}
+\item[\abox{dry}] This option sets whether the tool should display a list of commands to be executed without actually invoking them.
+
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual script call. An error is thrown if any data structure other than a proper list is provided as the value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: spix
 \end{codebox}
 
 \item[\rulebox{tex}]
