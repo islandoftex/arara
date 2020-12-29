@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
+import com.soywiz.korio.lang.Environment
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.LoggingOptions
 import org.islandoftex.arara.api.configuration.UserInterfaceOptions
@@ -121,7 +122,8 @@ object Session : Session {
                 .filterKeys(removalFilter)
                 .forEach { remove(it.key) }
         // add all relevant new environment variables
-        System.getenv().filterKeys(additionFilter)
-                .forEach { map["environment:${it.key}"] = it.value }
+        map.putAll(Environment.getAll()
+                .filterKeys(additionFilter)
+                .mapKeys { "environment:${it.key}" })
     }
 }
