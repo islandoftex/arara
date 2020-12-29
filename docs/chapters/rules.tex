@@ -287,7 +287,7 @@ This rule runs the \rbox{convert} program, a member of the ImageMagick suite of 
 \end{codebox}
 
 \item[\rulebox{copy}]
-This rule copies the \rbox{File} reference to the provided target using the underlying operating system copy operation. The target is \emph{always} overwritten.
+This rule copies the \rbox{File} reference to the provided target using the underlying operating system copy operation. The target is \emph{always} overwritten. However, be mindful that an error will be thrown if you try to overwrite the file referenced in \mtbox{getOriginalReference}.
 
 \begin{description}
 \item[\abox{target}~\rqbox] This option, as the name implies, specifies the target for the copy operation. Keep in mind that this option is required.
@@ -1093,6 +1093,18 @@ This rule runs \rbox{metapost}, a tool to compile the Metapost graphics programm
 % arara: metapost: { files: [ graphics.mp ] }
 \end{codebox}
 
+\item[\rulebox{move}]
+This rule moves the \rbox{File} reference to the provided target using the underlying operating system move operation. The target is \emph{always} overwritten. However, be mindful that an error will be thrown if you try to move or overwrite the file referenced in \mtbox{getOriginalReference}.
+
+\begin{description}
+\item[\abox{target}~\rqbox] This option, as the name implies, specifies the target for the move operation. Keep in mind that this option is required.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: move: { files: [ 'thesis.pdf' ],
+% arara: --> target: 'backup/thesis.pdf' }
+\end{codebox}
+
 \item[\rulebox{nomencl}]
 This rule runs \rbox{makeindex} in order to automatically generate a nomenclature list from \TeX\ documents that work with the \rbox{nomencl} package. The program itself is a general purpose hierarchical index generator and takes the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{nlo} suffix and a special style file in order to generate the nomenclature list as a special \rbox{nls} file.
 
@@ -1116,6 +1128,51 @@ This rule runs the \rbox{pbibtex} program, a reference management software, on t
 \begin{codebox}{Example}{teal}{\icnote}{white}
 % arara: pbibtex
 % arara: --> if exists(toFile('references.bib'))
+\end{codebox}
+
+\item[\rulebox{pdfcrop}]
+This rule runs \rbox{pdfcrop}, a command line utility to calculate and remove empty margins, on corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{pdf} suffix.
+
+\begin{description}
+\item[\abox{output}] This option, as the name indicates, sets the output file. When omitted, the tool uses the input base name with the \rbox{-crop.pdf} suffix.
+
+\item[\rpsbox{verbose}] This option, as the name indicates, sets whether the command line tool will be executed in verbose mode.
+
+\item[\rpsbox{debug}] This option, as the name indicates, sets whether the command line tool will be executed in debug mode.
+
+\item[\abox{engine}] This option, as the name indicates, sets the underlying \TeX\ engine to be used during the run. Three possible values are available:
+
+\begin{description}
+\item[\povalue{pdftex}] This value, as the name indicates, sets \rbox{pdftex} as the underlying \TeX\ engine to be used during the run.
+
+\item[\povalue{xetex}] This value, as the name indicates, sets \rbox{xetex} as the underlying \TeX\ engine to be used during the run.
+
+\item[\povalue{luatex}] This value, as the name indicates, sets \rbox{luatex} as the underlying \TeX\ engine to be used during the run.
+\end{description}
+
+\item[\abox{margins}] This option, as the name indicates, takes a list of four elements denoting left, top, right and bottom margins, respectivelly. An error will be thrown if no list is provided or if the list does not contain exactly four elements.
+
+\item[\rpsbox{clip}] This option, as the name indicates, sets whether the command line tool should include clipping support, if margins are set.
+
+\item[\rpsbox{hires}] This option, as the name indicates, sets whether the command line tool should use a high resolution bounding box feature.
+
+\item[\rpsbox{ini}] This option, as the name indicates, sets whether the \rbox{initex} variant of the underlying \TeX\ engine is used.
+
+\item[\rpsbox{restricted}] This option, as the name indicates, sets whether the command line tool should run on restricted mode.
+
+\item[\abox{papersize}] This option, as the name indicates, sets the paper size. According to the documentation, this option should only be used with older versions of \rbox{ghostscript}.
+
+\item[\abox{resolution}] This option, as the name indicates, sets the resolution by forwarding the value to the underlying \rbox{ghostscript} call.
+
+\item[\abox{bbox}] This option, as the name indicates, takes a list of four elements denoting left, bottom, right and top margins, respectivelly, to override bounding box values found by \rbox{ghostscript}. An error will be thrown if no list is provided or if the list does not contain exactly four elements.
+
+\item[\rpsbox{uncompress}] This option, as the name indicates, sets whether the tool should generate an uncompressed Portable Document Format file, useful for debugging.
+
+\item[\abox{options}] This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
+\end{description}
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: pdfcrop
 \end{codebox}
 
 \item[\rulebox{pdfcsplain}]
