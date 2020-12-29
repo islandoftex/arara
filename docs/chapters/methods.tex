@@ -511,6 +511,22 @@ if (isUnix()) { System.out.println('Running Unix.'); }
 if (isCygwin()) { System.out.println('Running Cygwin.'); }
 \end{codebox}
 
+\begin{messagebox}{Cygwin paths}{attentioncolour}{\icattention}{black}
+It is worth mentioning that Cygwin has its own path handling which is not reliable when (JVM) applications need to invoke system commands. For instance, the following invocation does not work:
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: pdflatex
+\end{codebox}
+
+Since \rbox{pdflatex} is a symbolic link to \rbox{pdftex} with the proper format, we encourage Cygwin users to rely on the following trick:
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+% arara: pdftex: { options: [ '--fmt=pdflatex' ] }
+\end{codebox}
+
+The same trick can be employed by other \TeX\ engines with appropriate \rbox{--fmt} flags as well. We are still investigating this issue and looking for potential alternatives.
+\end{messagebox}
+
 \item[\mdbox{R}{isWindows(Object yes, Object no)}{Object}] This method checks if the underlying operating system vendor is Microsoft Windows. If the result holds true, the first parameter is returned. Otherwise, the second parameter is returned.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
