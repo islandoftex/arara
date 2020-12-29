@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.rules
 
-import java.util.regex.Pattern
+import com.soywiz.korio.util.endExclusive
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
@@ -20,13 +20,13 @@ actual object Directives {
     private const val pattern = """(\s+(if|while|until|unless)\s+(\S.*))?$"""
 
     // pattern to match directives against
-    private val directivePattern = (directivestart + pattern).toPattern()
+    private val directivePattern = (directivestart + pattern).toRegex()
 
     // math the arara part in `% arara: pdflatex`
     private const val namePattern = "arara:\\s"
 
     // what to expect after a line break in a directive
-    private val linebreakPattern = "^\\s*-->\\s(.*)$".toPattern()
+    private val linebreakPattern = "^\\s*-->\\s(.*)$".toRegex()
 
     /**
      * This function filters the lines of a file to identify the potential
@@ -42,13 +42,13 @@ actual object Directives {
         parseOnlyHeader: Boolean,
         pattern: String
     ): Map<Int, String> {
-        val validLinePattern = pattern.toPattern()
-        val validLineStartPattern = (pattern + namePattern).toPattern()
+        val validLinePattern = pattern.toRegex()
+        val validLineStartPattern = (pattern + namePattern).toRegex()
         val map = mutableMapOf<Int, String>()
         for ((i, text) in lines.withIndex()) {
-            val validLineMatcher = validLineStartPattern.matcher(text)
-            if (validLineMatcher.find()) {
-                val line = text.substring(validLineMatcher.end())
+            val validLineMatch = validLineStartPattern.find(text)
+            if (validLineMatch != null) {
+                val line = text.substring(validLineMatch.range.endExclusive)
                 map[i + 1] = hooks.processPotentialDirective(i + 1, line)
             } else if (parseOnlyHeader && !checkLinePattern(validLinePattern, text)) {
                 // if we should only look within the file's header and reached
@@ -84,15 +84,15 @@ actual object Directives {
         val assemblers = mutableListOf<DirectiveAssembler>()
         var assembler = DirectiveAssembler()
         for ((lineno, content) in pairs) {
-            val linebreakMatcher = linebreakPattern.matcher(content)
-            if (linebreakMatcher.find()) {
+            val linebreakMatch = linebreakPattern.find(content)
+            if (linebreakMatch != null) {
                 if (!assembler.isAppendAllowed) {
                     throw AraraException(LanguageController
                             .messages.ERROR_VALIDATE_ORPHAN_LINEBREAK
                             .format(lineno))
                 } else {
                     assembler.addLineNumber(lineno)
-                    assembler.appendLine(linebreakMatcher.group(1))
+                    assembler.appendLine(linebreakMatch.groupValues[1])
                 }
             } else {
                 if (assembler.isAppendAllowed) {
@@ -121,7 +121,7 @@ actual object Directives {
     @Throws(AraraException::class)
     @Suppress("MagicNumber")
     internal fun generateDirective(assembler: DirectiveAssembler): Directive {
-        val matcher = directivePattern.matcher(assembler.text)
+        val matcher = directivePattern.toPattern().matcher(assembler.text)
         if (matcher.find()) {
             return hooks.buildDirectiveRaw(
                     // identifier
@@ -208,8 +208,8 @@ actual object Directives {
      * @return Logical value indicating if the provided line contains the
      * corresponding pattern, based on the file type, or an empty line.
      */
-    private fun checkLinePattern(pattern: Pattern, line: String): Boolean {
-        return line.isBlank() || pattern.matcher(line).find()
+    private fun checkLinePattern(pattern: Regex, line: String): Boolean {
+        return line.isBlank() || pattern.containsMatchIn(line)
     }
 }
 
