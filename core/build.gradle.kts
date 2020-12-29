@@ -38,6 +38,7 @@ kotlin {
             dependencies {
                 api(project(":api"))
                 implementation("io.github.microutils:kotlin-logging:${Versions.kotlinLogging}")
+                implementation("com.soywiz.korlibs.korio:korio:${Versions.korlibs}")
             }
         }
         val commonMain by getting {

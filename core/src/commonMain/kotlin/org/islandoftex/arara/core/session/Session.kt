@@ -7,6 +7,7 @@ import org.islandoftex.arara.api.configuration.LoggingOptions
 import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 import org.islandoftex.arara.api.session.Session
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.utils.formatString
 
 /**
  * Implements the session, i.e. one single run of the whole arara tool.
@@ -25,14 +26,12 @@ object Session : Session {
     /**
      * arara's user interface configuration.
      */
-    @JvmStatic
     var userInterfaceOptions: UserInterfaceOptions =
             org.islandoftex.arara.core.configuration.UserInterfaceOptions()
 
     /**
      * arara's logging configuration.
      */
-    @JvmStatic
     var loggingOptions: LoggingOptions =
         org.islandoftex.arara.core.configuration.LoggingOptions()
 
@@ -52,7 +51,7 @@ object Session : Session {
         } else {
             throw AraraException(
                 LanguageController.messages.ERROR_SESSION_OBTAIN_UNKNOWN_KEY
-                        .format(key)
+                        .formatString(key)
             )
         }
     }
@@ -83,7 +82,7 @@ object Session : Session {
         } else {
             throw AraraException(
                 LanguageController.messages.ERROR_SESSION_REMOVE_UNKNOWN_KEY
-                        .format(key)
+                        .formatString(key)
             )
         }
     }
@@ -112,7 +111,6 @@ object Session : Session {
      * @param removalFilter Which environment variables to remove beforehand.
      *   By default all values will be removed.
      */
-    @JvmStatic
     fun updateEnvironmentVariables(
         additionFilter: (String) -> Boolean = { true },
         removalFilter: (String) -> Boolean = { true }

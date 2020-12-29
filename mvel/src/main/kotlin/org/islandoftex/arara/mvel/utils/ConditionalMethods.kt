@@ -2,7 +2,6 @@
 package org.islandoftex.arara.mvel.utils
 
 import java.io.File
-import kotlin.io.path.div
 import kotlin.io.path.exists
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.core.files.FileHandling
