@@ -216,7 +216,7 @@ When in doubt, always remember that the \opbox{{-}dry-run} command line option i
 \end{codebox}
 
 \item[\rulebox{context}]
-This rule runs the \rbox{context} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document File format. Please refer to the user manual for further details.
+This rule runs the \rbox{context} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document Format. Please refer to the user manual for further details.
 
 \begin{description}
 \item[\rpsbox{make}] This option, as the name indicates, sets whether the engine should create context formats. Please refer to the user manual for further details on this option.
@@ -502,7 +502,7 @@ This rule runs \rbox{dvisvgm} in order to obtain a corresponding \rbox{svg} file
 
 \item[\povalue{eps}] This value sets the extension to be used for the initial reference as an encapsulated PostScript graphics format.
 
-\item[\povalue{pdf}] This value sets the extension to be used for the initial reference as a portable document format.
+\item[\povalue{pdf}] This value sets the extension to be used for the initial reference as a Portable Document Format.
 \end{description}
 
 \item[\abox{pages}] This value, as the name implies, takes a list of integers indicating the pages to be processed by the command line tool.
@@ -783,9 +783,9 @@ This rule runs \rbox{latexmk}, a fantastic command line tool for fully automated
 \item[\abox{clean}] This option, as the name indicates, removes all temporary files generated after a sequence of intermediate calls for document generation. Two possible values are available:
 
 \begin{description}
-\item[\povalue{all}] This value, as the name indicates, removes all temporary, intermediate files, as well as resulting, final formats such as PostScript and Portable Document File. Only relevant source files are kept.
+\item[\povalue{all}] This value, as the name indicates, removes all temporary, intermediate files, as well as resulting, final formats such as PostScript and Portable Document Format. Only relevant source files are kept.
 
-\item[\povalue{partial}] This value, as the name indicates, removes all temporary, intermediate files and keeps the resulting, final formats such as PostScript and Portable Document File.
+\item[\povalue{partial}] This value, as the name indicates, removes all temporary, intermediate files and keeps the resulting, final formats such as PostScript and Portable Document Format.
 \end{description}
 
 \item[\abox{engine}] This option, as the name indicates, sets the underlying \TeX\ engine of \rbox{latexmk} to be used for the compilation sequence. Possible values are:
@@ -824,9 +824,9 @@ This rule runs \rbox{llmk}, a command line tool specific for building \LaTeX\ do
 \item[\abox{clean}] This option, as the name indicates, removes all temporary files generated after a sequence of intermediate calls for document generation. Two possible values are available:
 
 \begin{description}
-\item[\povalue{all}] This value, as the name indicates, removes all temporary, intermediate files, as well as resulting, final formats such as PostScript and Portable Document File. Only relevant source files are kept.
+\item[\povalue{all}] This value, as the name indicates, removes all temporary, intermediate files, as well as resulting, final formats such as PostScript and Portable Document Format. Only relevant source files are kept.
 
-\item[\povalue{partial}] This value, as the name indicates, removes all temporary, intermediate files and keeps the resulting, final formats such as PostScript and Portable Document File.
+\item[\povalue{partial}] This value, as the name indicates, removes all temporary, intermediate files and keeps the resulting, final formats such as PostScript and Portable Document Format.
 \end{description}
 
 \item[\abox{debug}] This option activates the specified debug category, so debugging messages related to the activated category will be shown. Please refer to the documentation for more details.
@@ -899,7 +899,7 @@ This rule runs \rbox{ltx2any}, a command line tool written in Ruby that acts as 
 \end{codebox}
 
 \item[\rulebox{luahbtex}]
-This rule runs the \rbox{luahbtex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document File format, as expected.
+This rule runs the \rbox{luahbtex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document Format, as expected.
 
 \begin{description}
 \item[\abox{interaction}] This option alters the underlying engine behaviour. If this option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
@@ -929,7 +929,7 @@ This rule runs the \rbox{luahbtex} \TeX\ engine on the provided \mtbox{currentFi
 \end{codebox}
 
 \item[\rulebox{lualatex}]
-This rule runs the new \rbox{lualatex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document File format, as expected.
+This rule runs the new \rbox{lualatex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document Format, as expected.
 
 \begin{description}
 \item[\rpbox{branch}{stable}] This option allows branching formats for the current engine, mainly focused on package development. Users of current \TeX\ distributions might benefit from format branching in order to easily test documents and code against the upcoming releases. Possible values are:
@@ -967,7 +967,7 @@ This rule runs the new \rbox{lualatex} \TeX\ engine on the provided \mtbox{curre
 \end{codebox}
 
 \item[\rulebox{luatex}]
-This rule runs the \rbox{luatex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document File format, as expected.
+This rule runs the \rbox{luatex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document Format, as expected.
 
 \begin{description}
 \item[\abox{interaction}] This option alters the underlying engine behaviour. If this option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
@@ -1205,7 +1205,7 @@ This rule runs the \rbox{pdfcsplain} \TeX\ engine, a conservative extension of K
 \end{codebox}
 
 \item[\rulebox{pdflatex}]
-This rule runs the \rbox{pdflatex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document File format, as expected.
+This rule runs the \rbox{pdflatex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document Format, as expected.
 
 \begin{description}
 \item[\rpbox{branch}{stable}] This option allows branching formats for the current engine, mainly focused on package development. Users of current \TeX\ distributions might benefit from format branching in order to easily test documents and code against the upcoming releases. Possible values are:
@@ -1243,7 +1243,7 @@ This rule runs the \rbox{pdflatex} \TeX\ engine on the provided \mtbox{currentFi
 \end{codebox}
 
 \item[\rulebox{pdftex}]
-This rule runs the \rbox{pdftex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document File format, as expected.
+This rule runs the \rbox{pdftex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document Format, as expected.
 
 \begin{description}
 \item[\abox{interaction}] This option alters the underlying engine behaviour. If this option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
@@ -1371,7 +1371,7 @@ This rule runs the \rbox{platex} \TeX\ engine on the provided \mtbox{currentFile
 \end{codebox}
 
 \item[\rulebox{ps2pdf}]
-This rule runs \rbox{ps2pdf}, a tool that converts PostScript to Portable Document File, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{ps} suffix.
+This rule runs \rbox{ps2pdf}, a tool that converts PostScript to Portable Document Format, on the corresponding base name of the \mtbox{currentFile} reference (i.e, the name without the associated extension) as a string concatenated with the \rbox{ps} suffix.
 
 \begin{description}
 \item[\abox{output}] This option, as the name indicates, sets the output name for the generated \rbox{pdf} file. There is no need to provide an extension, as the value is always normalized with \mtbox{getBasename} such that only the name without the associated extension is used. The base name of the current file reference is used as the default value.
@@ -1421,7 +1421,7 @@ This rule runs \rbox{pythontex}, a wrapper that provides access to Python from w
 \end{codebox}
 
 \item[\rulebox{qpdf}]
-This rule runs \rbox{qpdf}, a command line application that does structural, content-preserving transformations of Portable Document Files, as well as providing capabilities to developers.
+This rule runs \rbox{qpdf}, a command line application that does structural, content-preserving transformations of Portable Document Format files, as well as providing capabilities to developers.
 
 \begin{description}
 \item[\abox{options}~\rqbox] This option, as the name indicates, takes a list of raw command line options and appends it to the actual script call. An error is thrown if any data structure other than a proper list is provided as the value.
@@ -1712,7 +1712,7 @@ This rule runs \rbox{xdvipdfmx}, the back end for the \rbox{xetex} \TeX\ engine 
 \end{codebox}
 
 \item[\rulebox{xelatex}]
-This rule runs the new \rbox{xelatex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document File format, as expected.
+This rule runs the new \rbox{xelatex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document Format, as expected.
 
 \begin{description}
 \item[\rpbox{branch}{stable}] This option allows branching formats for the current engine, mainly focused on package development. Users of current \TeX\ distributions might benefit from format branching in order to easily test documents and code against the upcoming releases. Possible values are:
@@ -1747,7 +1747,7 @@ This rule runs the new \rbox{xelatex} \TeX\ engine on the provided \mtbox{curren
 \end{codebox}
 
 \item[\rulebox{xetex}]
-This rule runs the \rbox{xetex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document File format, as expected.
+This rule runs the \rbox{xetex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document Format, as expected.
 
 \begin{description}
 \item[\abox{interaction}] This option alters the underlying engine behaviour. If this option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
