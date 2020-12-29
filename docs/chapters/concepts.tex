@@ -45,7 +45,7 @@ The default rules, i.e, the rules shipped with \arara, are placed inside a speci
 The following list describes the basic structure of an \arara\ rule by presenting the proper elements (or keys, if we consider the proper YAML nomenclature). Observe that elements marked as \rbox[araracolour]{M} are mandatory (i.e, the rule \emph{has} to have them in order to work). Similarly, elements marked as \rbox[araracolour]{O} are optional, so you can safely ignore them when writing a rule for our tool. A key preceded by \rbox{context$\rightarrow$} indicates a context and should be properly defined inside it.
 
 \begin{description}
-\item[\describe{M}{!config}] This keyword is mandatory and must be the first line of any \arara\ rule. It denotes the object mapping metadata to be internally used by the tool. The tool is too demanding on using it, so make sure to start all rules with a \abox{!config} keyword.
+\item[\describe{M}{!config}] This keyword is mandatory and must be the first line of any \arara\ rule. It denotes the object mapping metadata to be internally used by the tool. The tool requires it, so make sure to start all rules with a \abox{!config} keyword.
 
 \item[\describe{M}{identifier}] This key acts as a unique identifier for the rule (as expected). It is highly recommended to use lowercase letters without spaces, accents or punctuation symbols, as good practice (again). As a convention, if you have an identifier named \rbox{pdflatex}, the rule filename must be \rbox{pdflatex.yaml} (like our own instance). Please note that, although \rbox{yml} is known to be a valid YAML extension as well, \arara\ only considers files ending with the \rbox{yaml} extension. This is a deliberate decision.
 
@@ -181,7 +181,7 @@ From version 6.0 on, the return value for \abox{flag} is now transformed into a 
 \rbox[araracolour]{\hspace{1ex}3.1415\hspace{1ex}} $\implies$ \rbox[araracolour]{\hspace{1ex}[ '3.1415' ]\hspace{1ex}}
 \end{itemize}
 
-Other return types are not encouraged. However, if such types are used, they will be transformed into a list of strings, as previously seen. If you need interoperability of complex \abox{command} code with older versions, use the following trick to get the value of previously non-list values:
+Other return types than string or lists are not encouraged. However, if such types are used, they will be transformed into a list of strings, as previously seen. If you need interoperability of complex \abox{command} code with older versions, use the following trick to get the value of previously non-list values:
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 isList(variable) ? variable[0] : variable
@@ -547,17 +547,16 @@ It is worth mentioning that, although \arara\ provides the absolute, canonical p
 From version 6.0 on, \arara\ is now split into an API, a core implementation (library) and the implementation of the executable (command line interface). Projects relying on code in the \rbox{arara} JAR distributions have to be updated.
 \end{messagebox}
 
-\begin{messagebox}{Languages as IETF BCP 47 codes (6.0+)}{araracolour}{\icinfo}{white}
-From version 6.0 on, languages have to be passed as IETF BCP 47 codes. The old system has been
-  removed. Hence, please use \rbox{en-QN} instead of \rbox{qn}, and so forth.
-\end{messagebox}
+\begin{messagebox}{Localization updates (6.0+)}{araracolour}{\icinfo}{white}
+The localization framework was redesigned in version 6.0:
 
-\begin{messagebox}{Localization warning (6.0+)}{araracolour}{\icinfo}{white}
-If you pass an invalid language code, \arara\ will now run in English and issue a log warning but not fail anymore. Failing due to the wrong language in the output was considered inappropriate.
-\end{messagebox}
+\begin{itemize}[label={--}]
+\item Localization is now provided by classes as a library instead of property files in the tool resources.
 
-\begin{messagebox}{Localization as library (6.0+)}{araracolour}{\icinfo}{white}
-Localization is now provided by classes as library instead of property files in the tool resources.
+\item From version 6.0 on, languages have to be passed as IETF BCP 47 codes. The old system has been removed. Hence, please use \rbox{en-QN} instead of \rbox{qn}, and so forth.
+
+\item If you pass an invalid language code, \arara\ will now run in English and issue a log warning but not fail anymore. Failing due to the wrong language in the output was considered inappropriate.
+\end{itemize}
 \end{messagebox}
 
 \begin{messagebox}{Method signature changes (6.0+)}{araracolour}{\icinfo}{white}
