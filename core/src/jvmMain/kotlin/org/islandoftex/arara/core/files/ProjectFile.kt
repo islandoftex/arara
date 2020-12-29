@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-import java.io.IOException
+import com.soywiz.korio.file.std.localVfs
+import com.soywiz.korio.lang.IOException
+import kotlinx.coroutines.runBlocking
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
@@ -43,10 +45,12 @@ open class ProjectFile(
         return result
     }
 
-    override fun fetchDirectives(parseOnlyHeader: Boolean): List<Directive> {
+    override fun fetchDirectives(parseOnlyHeader: Boolean): List<Directive> =
         try {
-            return Directives.extractDirectives(
-                    path.readLines(),
+            Directives.extractDirectives(
+                    runBlocking {
+                        localVfs(path.toString()).readLines()
+                    }.toList(),
                     LinearExecutor.executionOptions.parseOnlyHeader,
                     fileType
             )
@@ -56,7 +60,6 @@ open class ProjectFile(
                     ioexception
             )
         }
-    }
 
     override fun toString(): String {
         return "ProjectFile(path=$path, fileType=$fileType, priority=$priority)"
