@@ -102,10 +102,7 @@ public actual class MPPPath {
         return true
     }
 
-    public operator fun div(p: String): MPPPath =
-            MPPPath(path / p)
-    public operator fun div(p: Path): MPPPath =
-            MPPPath(path / p)
-    public operator fun div(p: MPPPath): MPPPath =
-            MPPPath(path / p.path)
+    public actual operator fun div(p: String): MPPPath = resolve(p)
+    public actual operator fun div(p: MPPPath): MPPPath = resolve(p)
+    public operator fun div(p: Path): MPPPath = resolve(MPPPath(p))
 }

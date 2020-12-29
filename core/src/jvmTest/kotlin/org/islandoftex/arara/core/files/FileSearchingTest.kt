@@ -53,12 +53,14 @@ class FileSearchingTest : ShouldSpec({
     context("file lookup") {
         should("fail looking up inexistent file") {
             FileSearching.lookupFile("QUACK", Paths.get("."),
-                    ExecutionOptions()) shouldBe null
+                    ExecutionOptions()
+            ) shouldBe null
         }
 
         should("fail on existing directory") {
             FileSearching.lookupFile("../buildSrc", Paths.get("."),
-                    ExecutionOptions()) shouldBe null
+                    ExecutionOptions()
+            ) shouldBe null
         }
 
         should("succeed finding tex file with extension") {

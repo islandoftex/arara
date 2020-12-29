@@ -38,7 +38,7 @@ object LinearExecutor : Executor {
      * should not change while executing one project.
      */
     override var executionOptions: ExecutionOptions =
-            org.islandoftex.arara.core.configuration.ExecutionOptions()
+        org.islandoftex.arara.core.configuration.ExecutionOptions()
         set(value) {
             if (currentFile != null)
                 throw AraraException("Cannot change execution options while " +

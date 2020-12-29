@@ -27,7 +27,8 @@ class InterpreterTest : ShouldSpec({
                     conditional, lineNumbers)
         }
 
-        Interpreter(ExecutionOptions(rulePaths = setOf(rulePath)),
+        Interpreter(
+            ExecutionOptions(rulePaths = setOf(rulePath)),
                 ProjectFile(filePath, texFile), filePath.parent.toJVMPath())
                 .execute(haltDirective).exitCode shouldBe 0
     }
@@ -42,7 +43,8 @@ class InterpreterTest : ShouldSpec({
                     conditional, lineNumbers)
         }
 
-        Interpreter(ExecutionOptions(rulePaths = setOf(rulePath)),
+        Interpreter(
+            ExecutionOptions(rulePaths = setOf(rulePath)),
                 ProjectFile(filePath, texFile), rulePath.toJVMPath())
                 .execute(haltDirective).exitCode shouldNotBe 0
     }

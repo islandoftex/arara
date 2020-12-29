@@ -110,4 +110,14 @@ public expect class MPPPath {
      */
     @Throws(AraraIOException::class)
     public fun writeText(text: String)
+
+    /**
+     * Resolve the child [p] against the current path.
+     */
+    public operator fun div(p: String): MPPPath
+
+    /**
+     * Resolve the child [p] against the current path.
+     */
+    public operator fun div(p: MPPPath): MPPPath
 }
