@@ -9,7 +9,6 @@ import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.session.ExecutionReport
 import org.islandoftex.arara.api.session.Executor
 import org.islandoftex.arara.core.dependencies.ProjectGraph
-import org.islandoftex.arara.core.files.byPriority
 
 object LinearExecutor : Executor {
     /**
@@ -81,7 +80,7 @@ object LinearExecutor : Executor {
         var exitCode = 0
         currentProject = project
         hooks.executeBeforeProject(project)
-        for (file in project.files.byPriority) {
+        for (file in project.files.sortedByDescending { it.priority }) {
             hooks.executeBeforeFile(file)
             val executionReport = execute(file)
             exitCode = executionReport.exitCode
