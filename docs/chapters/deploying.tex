@@ -21,29 +21,31 @@ forked edges,
 [{\abox[araracolour]{ARARA\_HOME}}
   [{\rbox[araracolour]{arara.jar}}]
   [{\abox[araracolour]{rules/}},s sep=1mm
-    [{\rbox[araracolour]{animate.yaml}}]
-    [{\rbox[araracolour]{bib2gls.yaml}}]
+    [{\rbox[araracolour]{arara-rule-animate.yaml}}]
+    [{\rbox[araracolour]{arara-rule-bib2gls.yaml}}]
     [{\color{araracolour}\ldots},no edge]
-    [{\rbox[araracolour]{xetex.yaml}}]
-    [{\rbox[araracolour]{xindy.yaml}}]
+    [{\rbox[araracolour]{arara-rule-xetex.yaml}}]
+    [{\rbox[araracolour]{arara-rule-xindy.yaml}}]
   ]
 ]
 \end{forest}\par}
 
 \vspace{1.4em}
 
-Provided that this specific directory structure is honoured, the tool is ready for use off the shelf. In fact, the official \arara\ package available in the \href{https://gitlab.com/islandoftex/arara/-/releases}{release section} of our project repository. Once the package is properly downloaded, we simply need to extract it into a proper \abox[araracolour]{ARARA\_HOME} location.
+Provided that this specific directory structure is honoured, the tool is ready for use off the shelf. In fact, the official \arara\ CTAN package is available in the \href{https://gitlab.com/islandoftex/arara/-/jobs/artifacts/master/download?job=publish:tdszip}{artifacts section} of our project repository. Once the package is properly downloaded, we simply need to extract it into a proper \abox[araracolour]{ARARA\_HOME} location.
 
 \section{Defining a location}
 \label{sec:definingalocation}
 
-First and foremost, we need to obtain \rbox{arara-5.0.zip} from either our project repository at GitLab. As the name indicates, this is a compressed file format, so we need to extract it into a proper location. Run the following command in the terminal:
+First and foremost, we need to obtain \rbox{master-ctan.zip} from our project repository at GitLab, which is our CTAN package artifact. As the name indicates, this is a compressed file format, so we need to extract it into a proper location. Run the following commands in the terminal:
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
-$ unzip arara-5.0.zip
+$ unzip master-ctan.zip
+$ unzip arara.tds.zip
+$ mv scripts/arara .
 \end{codebox}
 
-As a result of the previous command, we obtained a directory named \abox[araracolour]{arara} with the exact structure presented in Section~\ref{sec:directorystructure} in our working directory. Now we need to decide where \arara\ should reside in our system. For example, I usually deploy my tools inside the \abox[araracolour]{/opt/paulo} path, so I need to run the following command in the terminal (please note that my personal directory already has the proper permissions, so I do not need superuser privileges):
+As a result of the previous commands, we obtained a directory named \abox[araracolour]{arara} with the exact structure presented in Section~\ref{sec:directorystructure} in our working directory (amongst other files and directories that can be safely discarded). Now we need to decide where \arara\ should reside in our system. For example, I usually deploy my tools inside the \abox[araracolour]{/opt/paulo} path, so I need to run the following command in the terminal (please note that my personal directory already has the proper permissions, so I do not need superuser privileges):
 
 \begin{codebox}{Terminal}{teal}{\icnote}{white}
 $ mv arara /opt/paulo/
@@ -69,11 +71,11 @@ forked edges,
       [{\abox[araracolour]{arara/}}
         [{\rbox[araracolour]{arara.jar}}]
         [{\abox[araracolour]{rules/}},s sep=1mm
-          [{\rbox[araracolour]{animate.yaml}}]
-          [{\rbox[araracolour]{bib2gls.yaml}}]
+          [{\rbox[araracolour]{arara-rule-animate.yaml}}]
+          [{\rbox[araracolour]{arara-rule-bib2gls.yaml}}]
           [{\color{araracolour}\ldots},no edge]
-          [{\rbox[araracolour]{xetex.yaml}}]
-          [{\rbox[araracolour]{xindy.yaml}}]
+          [{\rbox[araracolour]{arara-rule-xetex.yaml}}]
+          [{\rbox[araracolour]{arara-rule-xindy.yaml}}]
         ]
       ]
     ]
@@ -97,23 +99,31 @@ $ java -jar /opt/paulo/arara/arara.jar
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
 
-Usage: arara [OPTIONS] [file]...
+Usage: arara [OPTIONS] file...
 
 Options:
-  -l, --log                        Generate a log output
-  -v, --verbose / -s, --silent     Print the command output
-  -n, --dry-run                    Go through all the motions of running a
-                                   command, but with no actual calls
-  -H, --header                     Extract directives only in the file header
-  -t, --timeout INT                Set the execution timeout (in milliseconds)
-  -L, --language TEXT              Set the application language
-  -m, --max-loops INT              Set the maximum number of loops (> 0)
-  -p, --preamble TEXT              Set the file preamble based on the
-                                   configuration file
-  -d, --working-directory DIRECTORY
-                                   Set the working directory for all tools
-  -V, --version                    Show the version and exit
-  -h, --help                       Show this message and exit
+  -l, --log                     Generate a log output
+  -v, --verbose / -s, --silent  Print the command output
+  -n, --dry-run                 Go through all the motions of running
+                                a command, but with no actual calls
+  -s, --safe-run                Run in safe mode and disable
+                                potentially harmful features. Make
+                                sure your projects uses only allowed
+                                features.
+  -H, --header                  Extract directives only in the file
+                                header
+  -p, --preamble TEXT           Set the file preamble based on the
+                                configuration file
+  -t, --timeout INT             Set the execution timeout (in
+                                milliseconds)
+  -L, --language TEXT           Set the application language
+  -m, --max-loops INT           Set the maximum number of loops (> 0)
+  -d, --working-directory PATH  Set the working directory for all
+                                tools
+  -P, --call-property VALUE     Pass parameters to the application
+                                to be used within the session.
+  -V, --version                 Show the version and exit
+  -h, --help                    Show this message and exit
 
 Arguments:
   file  The file(s) to evaluate and process
@@ -187,23 +197,31 @@ $ arara
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
 
-Usage: arara [OPTIONS] [file]...
+Usage: arara [OPTIONS] file...
 
 Options:
-  -l, --log                        Generate a log output
-  -v, --verbose / -s, --silent     Print the command output
-  -n, --dry-run                    Go through all the motions of running a
-                                   command, but with no actual calls
-  -H, --header                     Extract directives only in the file header
-  -t, --timeout INT                Set the execution timeout (in milliseconds)
-  -L, --language TEXT              Set the application language
-  -m, --max-loops INT              Set the maximum number of loops (> 0)
-  -p, --preamble TEXT              Set the file preamble based on the
-                                   configuration file
-  -d, --working-directory DIRECTORY
-                                   Set the working directory for all tools
-  -V, --version                    Show the version and exit
-  -h, --help                       Show this message and exit
+  -l, --log                     Generate a log output
+  -v, --verbose / -s, --silent  Print the command output
+  -n, --dry-run                 Go through all the motions of running
+                                a command, but with no actual calls
+  -s, --safe-run                Run in safe mode and disable
+                                potentially harmful features. Make
+                                sure your projects uses only allowed
+                                features.
+  -H, --header                  Extract directives only in the file
+                                header
+  -p, --preamble TEXT           Set the file preamble based on the
+                                configuration file
+  -t, --timeout INT             Set the execution timeout (in
+                                milliseconds)
+  -L, --language TEXT           Set the application language
+  -m, --max-loops INT           Set the maximum number of loops (> 0)
+  -d, --working-directory PATH  Set the working directory for all
+                                tools
+  -P, --call-property VALUE     Pass parameters to the application
+                                to be used within the session.
+  -V, --version                 Show the version and exit
+  -h, --help                    Show this message and exit
 
 Arguments:
   file  The file(s) to evaluate and process
