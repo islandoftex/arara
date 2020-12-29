@@ -204,7 +204,15 @@ There are two variables available in the \abox{flag} context, described as follo
 \begin{description}
 \item[\varbox{parameters}] This variable holds a map of directive parameters available at runtime. For each argument identifier listed in the \abox{arguments} list in the rule context, there will be an entry in this variable. This is useful to get the actual values provided during execution and take proper actions. If a parameter is not set in the directive context, the reference will still exist in the map, but it will be mapped to an empty string.
 
+\begin{codebox}{Example}{teal}{\icnote}{white}
+check = parameters.contains("foo");
+\end{codebox}
+
 \item[\varbox{reference}] This variable holds the canonical, absolute path representation of the file name as a \rbox{File} object. This is useful if it is necessary to know the hierarchical structure of a project. Since the reference is a Java object, we can use methods available in the \rbox{File} class.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+parent = reference.getParent();
+\end{codebox}
 \end{description}
 
 In the previous example, observe that the MVEL expression defined in the \abox{flag} key checks if the user provided an affirmative value regarding shell escape, through comparing \varbox{parameters.shell} with a set of predefined affirmative values. In any case, the corresponding command flag is defined as result of such evaluation.
