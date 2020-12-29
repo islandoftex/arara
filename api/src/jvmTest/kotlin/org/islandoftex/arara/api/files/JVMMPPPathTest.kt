@@ -8,40 +8,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import org.islandoftex.arara.api.AraraIOException
 
-class MPPPathTest : ShouldSpec({
-    context("attributes") {
-        should("not classify relative as absolute paths") {
-            MPPPath(".").isAbsolute shouldBe false
-        }
-        should("correctly detect absolute paths") {
-            MPPPath("/test").isAbsolute shouldBe true
-        }
-        should("consider root absolute") {
-            // korio does not handle this
-            MPPPath("/").isAbsolute shouldBe true
-        }
-    }
-    context("path normalization") {
-        should("normalize dots") {
-            MPPPath("/tmp/./quack/..").normalize().toString() shouldBe
-                    MPPPath("/tmp/").normalize().toString()
-        }
-        should("not exceed root") {
-            MPPPath("/tmp/../../..").normalize().toString() shouldBe "/"
-        }
-    }
-    context("parenting") {
-        should("use root as parent of root") {
-            MPPPath("/").parent.toString() shouldBe
-                    MPPPath("/").toString()
-        }
-        should("determine parent of correctly") {
-            MPPPath("/tmp/./quack/..").parent.normalize().toString() shouldBe
-                    MPPPath("/tmp/quack").toString()
-            MPPPath("/tmp/./quack/..").normalize().parent.toString() shouldBe
-                    MPPPath("/").toString()
-        }
-    }
+class JVMMPPPathTest : ShouldSpec({
     context("read and write operations") {
         should("read from file") {
             val tmp = tempfile()

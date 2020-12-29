@@ -35,7 +35,17 @@ kotlin {
         all {
             languageSettings.useExperimentalAnnotation("kotlin.RequiresOptIn")
         }
-        val commonMain by getting { }
+        val commonMain by getting {
+            dependencies {
+                implementation(kotlin("stdlib-common"))
+            }
+        }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test-common"))
+                implementation(kotlin("test-annotations-common"))
+            }
+        }
         val nativeCommonMain by creating {
             dependsOn(commonMain)
             dependencies {
@@ -52,8 +62,10 @@ kotlin {
         val jvmTest by getting {
             languageSettings.useExperimentalAnnotation("kotlin.io.path.ExperimentalPathApi")
             dependencies {
+                implementation(kotlin("test-junit5"))
                 implementation("io.kotest:kotest-runner-junit5-jvm:${Versions.kotest}")
                 implementation("io.kotest:kotest-assertions-core-jvm:${Versions.kotest}")
+                runtimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0")
             }
         }
     }
