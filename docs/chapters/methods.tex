@@ -8,7 +8,7 @@
 As seen in Chapter~\ref{chap:mvel}, on page~\pageref{chap:mvel}, Java and MVEL code be used interchangeably within expressions and orb tags, including instantiation of classes into objects and invocation of methods. However, be mindful of explicitly importing Java packages and classes through the classic \rbox{import} statement, as MVEL does not automatically handle imports, or an exception will surely be raised. Alternatively, you can provide the full qualified name to classes as well.
 \end{messagebox}
 
-Methods are listed with their complete signatures, including potential  parameters and corresponding types. Also, the return type of a method is denoted by \rrbox{type} and refers to a typical Java data type (either class or primitive). Do not worry too much, as there are illustrative examples. A method available in the directive conditional context will be marked by \ctbox{C} next to the corresponding signature. Similarly, an entry marked by \ctbox{R} denotes that the corresponding method is available in the rule context.
+Methods are listed with their complete signatures, including potential  parameters and corresponding types. Also, the return type of a method is denoted by \rrbox{type} and refers to a typical Java data type (either class or primitive). Do not worry too much, as there are illustrative examples. A method available in the directive conditional context will be marked by \ctbox{C} next to the corresponding signature. Similarly, an entry marked by \ctbox{R} denotes that the corresponding method is available in the rule context. At last, an entry marked by \ctbox{E} denotes that the corresponding method is available in the orb tag expansion within a special \rbox{options} parameter in the directive context.
 
 \section{Files}
 \label{sec:files}
@@ -25,7 +25,7 @@ if (file == getOriginalFile()) {
 }
 \end{codebox}
 
-\item[\mdbox{R}{getOriginalReference()}{File}] This method returns the original file reference, as a \rbox{File} object, regardless of a potential reference override indirectly through the special \abox{files} parameter in the directive mapping, as seen in Section~\ref{sec:directives}, on page~\pageref{sec:directives}.
+\item[\mddbox{E}{R}{getOriginalReference()}{File}] This method returns the original file reference, as a \rbox{File} object, regardless of a potential reference override indirectly through the special \abox{files} parameter in the directive mapping, as seen in Section~\ref{sec:directives}, on page~\pageref{sec:directives}.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 if (reference.equals(getOriginalFile())) {
@@ -46,7 +46,7 @@ if (reference.equals(getOriginalFile())) {
 f = toFile('thesis.tex');
 \end{codebox}
 
-\item[\mdbox{R}{getBasename(File file)}{String}] This method returns the base name (i.e, the name without the associated extension) of the provided \rbox{File} reference, as a string. Observe that this method ignores a potential path reference when extracting the base name. Also, this method will throw an exception if the provided reference is not a proper file.
+\item[\mddbox{E}{R}{getBasename(File file)}{String}] This method returns the base name (i.e, the name without the associated extension) of the provided \rbox{File} reference, as a string. Observe that this method ignores a potential path reference when extracting the base name. Also, this method will throw an exception if the provided reference is not a proper file.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 basename = getBasename(toFile('thesis.tex'));
@@ -622,28 +622,32 @@ Please make sure to \emph{always} check the returned integer status when using c
 \end{messagebox}
 
 \begin{description}
-\item[\mddbox{C}{R}{loadClass(File file, String name)}{Pair<Integer, Class>}] This method loads a class based on the canonical name from the provided \rbox{File} reference and returns an ordered pair containing the status and the class reference itself. The file must contain the Java bytecode, either directly accessible from a \rbox{class} file or packaged inside a \rbox{jar} file. If an exception is raised, this method returns the \rbox{Object} class reference as second entry of the pair.
+\item[\mddbox{C}{R}{\parbox{0.32\textwidth}{loadClass(File file,\\ \hspace*{1em}String name)}}{\parbox{0.43\textwidth}{Pair<ClassLoading.\\
+\hspace*{1em}ClassLoadingStatus, Object>}}] This method loads a class based on the canonical name from the provided \rbox{File} reference and returns an ordered pair containing the status and the class reference itself. The file must contain the Java bytecode, either directly accessible from a \rbox{class} file or packaged inside a \rbox{jar} file. If an exception is raised, this method returns the \rbox{Object} class reference as second entry of the pair.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 result = loadClass(toFile('mymath.jar'),
          'com.github.cereda.mymath.Arithmetic');
 \end{codebox}
 
-\item[\mddbox{C}{R}{loadClass(String reference, String name)}{Pair<Integer, Class>}] This method loads a class based on the canonical name from the provided \rbox{String} reference and returns an ordered pair containing the status and the class reference itself. The file must contain the Java bytecode, either directly accessible from a \rbox{class} file or packaged inside a \rbox{jar} file.  If an exception is raised, this method returns the \rbox{Object} class reference as second entry of the pair.
+\item[\mddbox{C}{R}{\parbox{0.32\textwidth}{loadClass(String ref,\\ \hspace*{1em}String name)}}{\parbox{0.43\textwidth}{Pair<ClassLoading.\\
+\hspace*{1em}ClassLoadingStatus, Object>}}] This method loads a class based on the canonical name from the provided \rbox{String} reference and returns an ordered pair containing the status and the class reference itself. The file must contain the Java bytecode, either directly accessible from a \rbox{class} file or packaged inside a \rbox{jar} file.  If an exception is raised, this method returns the \rbox{Object} class reference as second entry of the pair.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 result = loadClass('mymath.jar',
          'com.github.cereda.mymath.Arithmetic');
 \end{codebox}
 
-\item[\mddbox{C}{R}{loadObject(File file, String name)}{Pair<Integer, Object>}] This method loads a class based on the canonical name from the provided \rbox{File} reference and returns an ordered pair containing the status and a proper corresponding object instantiation. The file must contain the Java bytecode, either directly accessible from a \rbox{class} file or packaged inside a \rbox{jar} file. If an exception is raised, this method returns an \rbox{Object} object as second entry of the pair.
+\item[\mddbox{C}{R}{\parbox{0.32\textwidth}{loadObject(File file,\\ \hspace*{1em}String name)}}{\parbox{0.43\textwidth}{Pair<ClassLoading.\\
+\hspace*{1em}ClassLoadingStatus, Object>}}] This method loads a class based on the canonical name from the provided \rbox{File} reference and returns an ordered pair containing the status and a proper corresponding object instantiation. The file must contain the Java bytecode, either directly accessible from a \rbox{class} file or packaged inside a \rbox{jar} file. If an exception is raised, this method returns an \rbox{Object} object as second entry of the pair.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 result = loadObject(toFile('mymath.jar'),
          'com.github.cereda.mymath.Trigonometric');
 \end{codebox}
 
-\item[\mddbox{C}{R}{loadObject(String reference, String name)}{Pair<Integer, Object>}] This method loads a class based on the canonical name from the provided \rbox{String} reference and returns an ordered pair containing the status and a proper corresponding object instantiation. The file must contain the Java bytecode, either directly accessible from a \rbox{class} file or packaged inside a \rbox{jar} file. If an exception is raised, this method returns an \rbox{Object} object as second entry of the pair.
+\item[\mddbox{C}{R}{\parbox{0.32\textwidth}{loadObject(String ref,\\ \hspace*{1em}String name)}}{\parbox{0.43\textwidth}{Pair<ClassLoading.\\
+\hspace*{1em}ClassLoadingStatus, Object>}}] This method loads a class based on the canonical name from the provided \rbox{String} reference and returns an ordered pair containing the status and a proper corresponding object instantiation. The file must contain the Java bytecode, either directly accessible from a \rbox{class} file or packaged inside a \rbox{jar} file. If an exception is raised, this method returns an \rbox{Object} object as second entry of the pair.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 result = loadObject('mymath.jar',
@@ -896,7 +900,7 @@ It is important to observe that the \rbox{Session} object provided by our tool f
 \end{messagebox}
 
 \begin{description}
-\item[\mdbox{R}{getSession()}{Session}] This method, as the name implies, returns the \rbox{Session} object for data sharing across rule contexts. Keep in mind that a session cannot contain duplicate keys. Each key can map to at most one value.
+\item[\mddbox{E}{R}{getSession()}{Session}] This method, as the name implies, returns the \rbox{Session} object for data sharing across rule contexts. Keep in mind that a session cannot contain duplicate keys. Each key can map to at most one value.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 name = getSession().get('name');
@@ -933,10 +937,6 @@ According to the \href{https://en.wikipedia.org/wiki/PATH_(variable)}{Wikipedia 
 result = unsafelyExecuteSystemCommand(getCommand('ls'));
 \end{codebox}
 
-\begin{messagebox}{Important change in version 5.0}{araracolour}{\icattention}{white}
-\textbf{Working directory support} -- \arara\ now executes commands obtained from \mtbox{getCommandWithWorkingDirectory} correctly. Previously, the working directory got silently ignored. This makes \arara\ even more powerful but we decided to change this for the sake of consistency.
-\end{messagebox}
-
 \begin{messagebox}{Hic sunt leones}{attentioncolour}{\icattention}{black}
 Please \emph{do not abuse} this method! Keep in mind that this particular feature is included for very specific scenarios in which the command streams are needed ahead of time for proper decision making.
 \end{messagebox}
@@ -946,20 +946,49 @@ Please \emph{do not abuse} this method! Keep in mind that this particular featur
 \begin{codebox}{Example}{teal}{\icnote}{white}
 valid = isSubdirectory(toFile('chapters/'));
 \end{codebox}
+
+\item[\mdbox{R}{getOrNull(List<String> list, int index)}{String}] This method attempts to retrieve
+a list element based on an integer index. If the index is out of bounds, a \rbox{null} value is returned instead.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+list = [ 'a', 'b', 'c' ];
+third = getOrNull(list, 2);
+\end{codebox}
+
+\item[\mdbox{R}{getOrNull(List<String> list)}{String}] This method attempts to retrieve
+the first element of the provided list. If the list is empty, a \rbox{null} value is returned instead.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+list = [ 'a', 'b', 'c' ];
+first = getOrNull(list);
+\end{codebox}
 \end{description}
 
 \begin{messagebox}{Flags and reserved storage in a session}{araracolour}{\icok}{white}
-Within a session there are two ``reserved'' namespaces: \verb|arara| and \verb|environment|. The latter is quite intuitive: \arara\ will store the current state of the systems environment variables in its session. You may alter these values in the session storage but they will not be written back to the system configuration. To access an environment variable, you can use its usual name prefixed by \verb|environment:|.
+From version 6.0 on, there are three reserved namespaces within a session. They are described as follows:
+
+\begin{description}
+\item[{\rbox[araracolour]{environment}}] This namespace is quite intuitive: \arara\ will store the current state of the systems environment variables in its session. You may alter these values in the session storage but they will not be written back to the system configuration. To access an environment variable, you can use its usual name prefixed by \rbox[araracolour]{environment:}:
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 path = getSession().get('environment:PATH');
 \end{codebox}
 
-The \verb|arara| namespace is a bit different. It provides flags that control \arara s behaviour. Flags are used in rules and may be manipulated by the user. Be aware, that every change in this namespace will result in \arara\ acting like you know what you did. Use this power with care. Currently, there is only one relevant flag: \verb|arara:FILENAME:halt|. This will stop the currently run command execution on the file with the specified file name. The value of this map entry is the exit status you want \arara\ to have.
+\item[{\rbox[araracolour]{arara}}] This namespace provides flags that control the underlying behaviour of \arara. Flags are used in rules and may be manipulated by the user. Be aware that every change in this namespace will result in the tool acting like you know what you did. Use this power with care. Currently, there is only one relevant flag: \rbox{arara:FILENAME:halt}. This will stop the currently run command execution on the file with the specified file name. The value of this map entry is the exit status you want \arara\ to have.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
-path = getSession().put('arara:myfile.tex:halt', 42);
+getSession().put('arara:myfile.tex:halt', 42);
 \end{codebox}
+
+\item[{\rbox[araracolour]{arg}}] This namespace acts as a bridge between contexts and the command line by providing access to key/value pairs defined at runtime by \opbox{{-}call-property} command line flags.
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+key = getSession().get('arg:key');
+\end{codebox}
+
+Please refer to Chapter~\ref{chap:commandline}, on page~\pageref{chap:commandline} for more details on the \opbox{{-}call-property} command line flag.
+
+\end{description}
 \end{messagebox}
 
 The methods presented in this section provide interesting features for persistent data sharing, error handling, early command execution, and templating. It is important to note that more classes, objects and methods can be incorporated into \arara\ through class loading and object instantiation, extending the features and enhancing the overall user experience.

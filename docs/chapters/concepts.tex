@@ -507,6 +507,8 @@ The following methods have been renamed:
 
 \vspace{1em}
 
+{\color{araracolour}\hrule}
+
 \item[\textcolor{warningcolour}{\faClose}] \mdbox{R}{(Session.)exists(String key)}{boolean}
 
 \vspace{.5em}
@@ -516,6 +518,8 @@ The following methods have been renamed:
 \item[\textcolor{okcolour}{\faCheck}] \mdbox{R}{(Session.)contains(String key)}{boolean}
 
 \vspace{1em}
+
+{\color{araracolour}\hrule}
 
 \item[\textcolor{warningcolour}{\faClose}] \mdbox{R}{(Session.)obtain(String key)}{Object}
 
@@ -571,6 +575,21 @@ The following method signatures have been altered:
 
 \vspace{1em}
 
+{\color{araracolour}\hrule}
+
+\item[\textcolor{warningcolour}{\faClose}]\mddbox{C}{R}{loadObject(String ref, String n)}{Pair<Integer, Object>}
+
+\vspace{.5em}
+
+\hspace{2cm}\textcolor{teal}{\faArrowDown}
+
+\item[\textcolor{okcolour}{\faCheck}]\mddbox{C}{R}{\parbox{0.32\textwidth}{loadObject(String ref,\\ \hspace*{1em}String n)}}{\parbox{0.43\textwidth}{Pair<ClassLoading.\\
+\hspace*{1em}ClassLoadingStatus, Object>}}
+
+\vspace{1em}
+
+{\color{araracolour}\hrule}
+
 \item[\textcolor{warningcolour}{\faClose}]\mddbox{C}{R}{loadClass(File file, String name)}{Pair<Integer, Object>}
 
 \vspace{.5em}
@@ -578,6 +597,19 @@ The following method signatures have been altered:
 \hspace{2cm}\textcolor{teal}{\faArrowDown}
 
 \item[\textcolor{okcolour}{\faCheck}]\mddbox{C}{R}{\parbox{0.32\textwidth}{loadClass(File file,\\ \hspace*{1em}String name)}}{\parbox{0.43\textwidth}{Pair<ClassLoading.\\
+\hspace*{1em}ClassLoadingStatus, Object>}}
+
+\vspace{1em}
+
+{\color{araracolour}\hrule}
+
+\item[\textcolor{warningcolour}{\faClose}]\mddbox{C}{R}{loadClass(String ref, String n)}{Pair<Integer, Object>}
+
+\vspace{.5em}
+
+\hspace{2cm}\textcolor{teal}{\faArrowDown}
+
+\item[\textcolor{okcolour}{\faCheck}]\mddbox{C}{R}{\parbox{0.32\textwidth}{loadClass(String ref,\\ \hspace*{1em}String n)}}{\parbox{0.43\textwidth}{Pair<ClassLoading.\\
 \hspace*{1em}ClassLoadingStatus, Object>}}
 \end{itemize}
 
