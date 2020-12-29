@@ -202,6 +202,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
             ))
             LinearExecutor.hooks = ExecutorHooks(
                     executeBeforeExecution = {
+                        Session.updateEnvironmentVariables()
                         // directive processing has to be initialized, so that the core
                         // component respects our MVEL processing
                         DirectiveUtils.initializeDirectiveCore()

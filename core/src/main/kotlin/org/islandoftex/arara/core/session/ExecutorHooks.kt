@@ -11,9 +11,7 @@ import org.islandoftex.arara.api.session.ExecutionReport
  * This is a collection of all hooks that are applicable.
  */
 data class ExecutorHooks(
-    val executeBeforeExecution: () -> Unit = {
-        Session.updateEnvironmentVariables()
-    },
+    val executeBeforeExecution: () -> Unit = { },
     val executeAfterExecution: (ExecutionReport) -> Unit = { _ -> },
     val executeBeforeProject: (Project) -> Unit = { _ -> },
     val executeAfterProject: (Project) -> Unit = { _ -> },
