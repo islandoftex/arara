@@ -223,7 +223,13 @@ In the previous example, observe that the MVEL expression defined in the \abox{f
 \setlength{\parskip}{1em}
 In earlier versions, \arara\ used to evaluate the \abox{default} key and return a plain, generic \rbox{Object} reference, which was then forwarded directly to the corresponding \abox{command} context. The workflow changed for version 6.0 on.
 
-From now on, \abox{default} always expects a string value, as if it were provided by the user in the directive context. No variables are available and no more evaluation is expected from this key.
+From now on, \abox{default} always expects a string value, as if it were provided by the user in the directive context. No variables are available and no more evaluation is expected from this key. Consider the following example:
+
+\begin{codebox}{Example}{teal}{\icnote}{white}
+default: "@{ 1 == 1 }"
+\end{codebox}
+
+There is an orb tag expression in this string, which should resolve to \rbox{true} in previous versions of \arara. However, from now on, it will not be evaluated at all and the literal string will be assigned to the \abox{default} key.
 
 The \abox{default} key, whenever available and in the scenario in which the user does not provide an explicit value for the current argument in the directive context, is forwarded to the \abox{flag} context for proper evaluation. Then the workflow proceeds as usual.
 \end{messagebox}
