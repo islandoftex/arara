@@ -74,8 +74,8 @@ class FileSearchingTest : ShouldSpec({
                         testDir,
                         ExecutionOptions()
                 ) as ProjectFile
-                FileHandling.normalize(projectFile.path.toJVMPath()).toString() shouldBe
-                        FileHandling.normalize(pathToTest).toString()
+                projectFile.path.normalize().toString() shouldBe
+                        pathToTest.normalize().toString()
                 projectFile.fileType.extension shouldBe "tex"
                 projectFile.fileType.pattern shouldBe "^\\s*%\\s+"
             }
@@ -91,8 +91,8 @@ class FileSearchingTest : ShouldSpec({
                         testDir,
                         ExecutionOptions()
                 ) as ProjectFile
-                FileHandling.normalize(projectFile.path.toJVMPath()).toString() shouldBe
-                        FileHandling.normalize(parent / "changes.tex").toString()
+                projectFile.path.normalize().toString() shouldBe
+                        (parent.normalize() / "changes.tex").toString()
                 projectFile.fileType.extension shouldBe "tex"
                 projectFile.fileType.pattern shouldBe "^\\s*%\\s+"
             }
@@ -109,8 +109,8 @@ class FileSearchingTest : ShouldSpec({
                         testDir,
                         ExecutionOptions().copy(executionMode = ExecutionMode.SAFE_RUN)
                 ) as ProjectFile
-                FileHandling.normalize(projectFile.path.toJVMPath()).toString() shouldBe
-                        FileHandling.normalize(pathToTest).toString()
+                projectFile.path.normalize().toString() shouldBe
+                        pathToTest.normalize().toString()
                 projectFile.fileType.extension shouldBe "tex"
                 projectFile.fileType.pattern shouldBe "^\\s*%\\s+"
             }

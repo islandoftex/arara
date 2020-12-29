@@ -7,8 +7,8 @@ import kotlin.io.path.readText
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.rules.Rule
-import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
 
 /**
@@ -58,7 +58,7 @@ data class Rule(
         @Throws(AraraException::class)
         fun parse(file: Path, identifier: String): Rule {
             ruleId = identifier
-            rulePath = FileHandling.normalize(file).toString()
+            rulePath = MPPPath(file).normalize().toString()
             val rule = file.runCatching {
                 val text = readText()
                 if (!text.startsWith("!config"))

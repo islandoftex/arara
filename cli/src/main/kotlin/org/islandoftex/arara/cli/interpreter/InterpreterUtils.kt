@@ -8,12 +8,12 @@ import kotlin.io.path.div
 import mu.KotlinLogging
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
+import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.cli.ruleset.RuleFormat
 import org.islandoftex.arara.cli.utils.DisplayUtils
-import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
@@ -111,7 +111,7 @@ internal object InterpreterUtils {
         workingDirectory: Path
     ): Path {
         val fileName = "$name.${format.extension}"
-        return FileHandling.normalize(
+        return MPPPath(
                 if (path.isAbsolute) {
                     path / fileName
                 } else {
@@ -121,6 +121,6 @@ internal object InterpreterUtils {
                     // directory, then the rule name we want to resolve
                     workingDirectory / path / fileName
                 }
-        )
+        ).normalize().toJVMPath()
     }
 }

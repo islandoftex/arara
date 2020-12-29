@@ -484,8 +484,8 @@ object RuleMethods {
     @JvmStatic
     @Throws(AraraException::class)
     fun isSubdirectory(directory: File): Boolean =
-            FileHandling.isSubDirectory(directory.toPath(),
-                    LinearExecutor.currentProject!!.workingDirectory.toJVMPath())
+            FileHandling.isSubDirectory(MPPPath(directory.toPath()),
+                    LinearExecutor.currentProject!!.workingDirectory)
 
     /**
      * Checks if the string is empty.

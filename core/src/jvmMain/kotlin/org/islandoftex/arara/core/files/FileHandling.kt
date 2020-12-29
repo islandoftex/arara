@@ -2,11 +2,9 @@
 package org.islandoftex.arara.core.files
 
 import com.soywiz.korio.file.std.localVfs
+import com.soywiz.korio.lang.IOException
 import com.soywiz.korio.util.checksum.CRC32
 import com.soywiz.korio.util.checksum.checksum
-import java.io.IOException
-import java.nio.file.Path
-import kotlin.io.path.isDirectory
 import kotlinx.coroutines.runBlocking
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
@@ -14,30 +12,16 @@ import org.islandoftex.arara.core.localization.LanguageController
 
 object FileHandling {
     /**
-     * Gets a normalized path from the provided path.
-     *
-     * Please note that this is not the real path but a normalized absolute
-     * path. The file represented by this does not have to exist.
-     *
-     * @param path The path to the file.
-     * @return The normalized path from the provided path.
-     */
-    @JvmStatic
-    @Throws(AraraException::class)
-    fun normalize(path: Path): Path = path.toAbsolutePath().normalize()
-
-    /**
      * Resolve the sibling of a file with just its extension changed.
      *
      * @param path The path to use as base.
      * @param extension The extension.
      * @return The full file path to the sibling.
      */
-    @JvmStatic
-    fun changeExtension(path: Path, extension: String): Path {
-        val name = path.fileName.toString().substringBeforeLast('.') +
+    fun changeExtension(path: MPPPath, extension: String): MPPPath {
+        val name = path.fileName.substringBeforeLast('.') +
                 ".$extension"
-        return normalize(path.resolveSibling(name))
+        return path.resolveSibling(name).normalize()
     }
 
     /**
@@ -48,11 +32,10 @@ object FileHandling {
      * @return Logical value indicating whether the directoy is under root.
      * @throws AraraException There was a problem with path retrieval.
      */
-    @JvmStatic
     @Throws(AraraException::class)
-    fun isSubDirectory(child: Path, parent: Path): Boolean {
-        return if (child.isDirectory() && parent.isDirectory()) {
-            normalize(child).startsWith(normalize(parent))
+    fun isSubDirectory(child: MPPPath, parent: MPPPath): Boolean {
+        return if (child.isDirectory && parent.isDirectory) {
+            child.normalize().startsWith(parent.normalize())
         } else {
             false
         }
@@ -66,12 +49,11 @@ object FileHandling {
      * @throws AraraException Something wrong happened, to be caught in the
      *   higher levels.
      */
-    @JvmStatic
     @Throws(AraraException::class)
-    fun calculateHash(path: Path): Long =
+    fun calculateHash(path: MPPPath): Long =
             try {
                 runBlocking {
-                    localVfs(normalize(path).toString())
+                    localVfs(path.normalize().toString())
                             .readBytes()
                 }.checksum(CRC32).toLong()
             } catch (exception: IOException) {
@@ -90,31 +72,31 @@ object FileHandling {
      *   last verification.
      */
     @JvmStatic
-    fun hasChanged(file: Path, databaseFile: Path): Boolean {
-        val database = Database.load(MPPPath(databaseFile))
-        val path = MPPPath(file).normalize()
+    fun hasChanged(file: MPPPath, databaseFile: MPPPath): Boolean {
+        val database = Database.load(databaseFile)
+        val path = file.normalize()
         return if (!path.exists) {
             if (path in database) {
                 database.remove(path)
-                database.save(MPPPath(databaseFile))
+                database.save(databaseFile)
                 true
             } else {
                 false
             }
         } else {
-            val hash = calculateHash(file)
+            val hash = calculateHash(path)
             if (path in database) {
                 val value = database[path]
                 if (hash == value) {
                     false
                 } else {
                     database[path] = hash
-                    database.save(MPPPath(databaseFile))
+                    database.save(databaseFile)
                     true
                 }
             } else {
                 database[path] = hash
-                database.save(MPPPath(databaseFile))
+                database.save(databaseFile)
                 true
             }
         }

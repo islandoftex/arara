@@ -4,6 +4,7 @@ package org.islandoftex.arara.mvel.utils
 import java.io.File
 import kotlin.io.path.exists
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.session.ClassLoading
 import org.islandoftex.arara.core.session.ClassLoading.ClassLoadingStatus
@@ -27,7 +28,8 @@ object ConditionalMethods {
     @JvmStatic
     @Throws(AraraException::class)
     fun exists(extension: String): Boolean = FileHandling.changeExtension(
-            LinearExecutor.currentFile!!.path.toJVMPath(), extension).exists()
+            LinearExecutor.currentFile!!.path, extension
+    ).exists
 
     /**
      * Checks if the file is missing according to its extension.
@@ -51,8 +53,11 @@ object ConditionalMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun changed(extension: String): Boolean = changed(FileHandling.changeExtension(
-            LinearExecutor.currentFile!!.path.toJVMPath(), extension).toFile())
+    fun changed(extension: String): Boolean = changed(
+            FileHandling.changeExtension(
+                    LinearExecutor.currentFile!!.path, extension
+            ).toJVMPath().toFile()
+    )
 
     /**
      * Checks if the file is unchanged according to its extension.
@@ -95,9 +100,9 @@ object ConditionalMethods {
     @JvmStatic
     @Throws(AraraException::class)
     fun changed(filename: File): Boolean = FileHandling.hasChanged(
-            filename.toPath(),
-            (LinearExecutor.currentProject!!.workingDirectory /
-                    LinearExecutor.executionOptions.databaseName).toJVMPath()
+            MPPPath(filename.toPath()),
+            LinearExecutor.currentProject!!.workingDirectory /
+                    LinearExecutor.executionOptions.databaseName
     )
 
     /**
@@ -125,8 +130,10 @@ object ConditionalMethods {
     @Throws(AraraException::class)
     fun found(extension: String, regex: String): Boolean = found(
             FileHandling.changeExtension(
-                    LinearExecutor.currentFile!!.path.toJVMPath(), extension)
-                    .toFile(), regex)
+                    LinearExecutor.currentFile!!.path, extension
+            ).toJVMPath().toFile(),
+            regex
+    )
 
     /**
      * Checks if the file contains the provided regex.

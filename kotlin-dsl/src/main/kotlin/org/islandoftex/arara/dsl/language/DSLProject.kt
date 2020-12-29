@@ -6,14 +6,13 @@ import java.nio.file.Paths
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
-import org.islandoftex.arara.core.files.FileHandling
 
 /**
  * A project model class to capture DSL methods within.
  */
 class DSLProject(private val name: String) {
     private val files = mutableSetOf<ProjectFile>()
-    private var workingDirectory = FileHandling.normalize(Paths.get(""))
+    private var workingDirectory = MPPPath("").normalize().toJVMPath()
     private val dependencyList = mutableSetOf<String>()
 
     /**
@@ -73,7 +72,7 @@ class DSLProject(private val name: String) {
      *   the application's working directory.
      */
     fun workingDirectory(name: String) {
-        workingDirectory = FileHandling.normalize(Paths.get(name))
+        workingDirectory = MPPPath(name).normalize().toJVMPath()
     }
 
     /**
@@ -83,7 +82,7 @@ class DSLProject(private val name: String) {
      *   against the application's working directory.
      */
     fun workingDirectory(file: File) {
-        workingDirectory = FileHandling.normalize(file.toPath())
+        workingDirectory = MPPPath(file.toPath()).normalize().toJVMPath()
     }
 
     /**
