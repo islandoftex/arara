@@ -3,6 +3,7 @@ package org.islandoftex.arara.core.ui
 
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.utils.formatString
 
 /**
  * Handle user and evaluation input in directives and rules.
@@ -16,7 +17,6 @@ object InputHandling {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
-    @JvmStatic
     @Throws(AraraException::class)
     fun checkBoolean(value: String): Boolean {
         val yes = listOf("yes", "true", "1", "on")
@@ -24,7 +24,7 @@ object InputHandling {
         return if (!yes.union(no).contains(value.toLowerCase())) {
             throw AraraException(
                     LanguageController.messages.ERROR_CHECKBOOLEAN_NOT_VALID_BOOLEAN
-                            .format(value)
+                            .formatString(value)
             )
         } else {
             yes.contains(value.toLowerCase())
@@ -38,7 +38,6 @@ object InputHandling {
      * @return The flattened list.
      */
     // TODO: check nullity
-    @JvmStatic
     fun flatten(list: List<*>): List<Any> =
         list.flatMap { item ->
             if (item is List<*>)
