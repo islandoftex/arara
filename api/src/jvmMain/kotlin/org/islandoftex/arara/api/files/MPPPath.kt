@@ -3,7 +3,6 @@ package org.islandoftex.arara.api.files
 
 import java.nio.file.Path
 import java.nio.file.Paths
-import kotlin.io.path.div
 import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
