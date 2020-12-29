@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
+import com.soywiz.korio.util.OS
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -9,7 +10,6 @@ import mu.KotlinLogging
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.session.Command
-import org.islandoftex.arara.core.localization.LanguageController
 import org.zeroturnaround.exec.ProcessExecutor
 import org.zeroturnaround.exec.listener.ShutdownHookProcessDestroyer
 import org.zeroturnaround.exec.stream.TeeOutputStream
@@ -63,6 +63,18 @@ object Environment {
     }
 
     /**
+     * The range of supported operating systems by the OS detection
+     * function [checkOS].
+     */
+    enum class SupportedOS {
+        WINDOWS,
+        LINUX,
+        MACOS,
+        UNIX,
+        CYGWIN
+    }
+
+    /**
      * Checks if the provided operating system string holds according to the
      * underlying operating system.
      *
@@ -82,28 +94,14 @@ object Environment {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun checkOS(value: String): Boolean {
-        fun checkOSProperty(key: String): Boolean =
-                getSystemPropertyOrNull("os.name")
-                        ?.toLowerCase()?.startsWith(key.toLowerCase()) ?: false
-
-        val values = mutableMapOf<String, Boolean>()
-        values["windows"] = checkOSProperty("Windows")
-        values["linux"] = checkOSProperty("Linux")
-        values["mac"] = checkOSProperty("Mac OS X")
-        values["unix"] = checkOSProperty("Mac OS X") ||
-                checkOSProperty("Linux")
-        values["cygwin"] = inCygwinEnvironment
-        if (!values.containsKey(value.toLowerCase())) {
-            throw AraraException(
-                    LanguageController.messages
-                            .ERROR_CHECKOS_INVALID_OPERATING_SYSTEM
-                            .format(value)
-            )
-        }
-        // will never throw, see check above
-        return values.getValue(value.toLowerCase())
-    }
+    fun checkOS(value: SupportedOS): Boolean =
+            when (value) {
+                SupportedOS.WINDOWS -> OS.isWindows
+                SupportedOS.LINUX -> OS.isLinux
+                SupportedOS.MACOS -> OS.isMac
+                SupportedOS.UNIX -> OS.isMac || OS.isLinux
+                SupportedOS.CYGWIN -> inCygwinEnvironment
+            }
 
     /**
      * Generates a list of filenames from the provided command based on a list
@@ -116,7 +114,7 @@ object Environment {
         // list of extensions, specific for
         // each operating system (in fact, it
         // is more Windows specific)
-        val extensions = if (checkOS("windows")) {
+        val extensions = if (checkOS(SupportedOS.WINDOWS)) {
             // the application is running on
             // Windows, so let's look for the
             // following extensions in order
@@ -224,8 +222,6 @@ object Environment {
 
             execute().exitValue to buffer.toString()
         }.getOrElse {
-            // quack, quack, do nothing, just
-            // return a default error code
             logger.debug {
                 "Caught an exception when executing " +
                         "$command returning $errorExitStatus"

@@ -31,7 +31,7 @@ class EnvironmentTest : ShouldSpec({
         Environment.isOnPath("echoQuackForArara") shouldBe false
     }
 
-    if (!Environment.checkOS("Windows")) {
+    if (!Environment.checkOS(Environment.SupportedOS.WINDOWS)) {
         // if we are not on Windows execute tests with execution
         should("run successfully") {
             val (exit, output) = Environment.executeSystemCommand(Command(listOf("true")))

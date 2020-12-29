@@ -51,6 +51,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:${Versions.kotlinxSerialization}")
                 implementation("com.charleskorn.kaml:kaml:${Versions.kaml}")
                 implementation("org.zeroturnaround:zt-exec:${Versions.ztExec}")
+                implementation("com.soywiz.korlibs.korio:korio:${Versions.korlibs}")
             }
         }
         val jvmTest by getting {

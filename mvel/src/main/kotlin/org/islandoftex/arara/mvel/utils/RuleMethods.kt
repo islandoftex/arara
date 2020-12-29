@@ -709,7 +709,7 @@ object RuleMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun isWindows(): Boolean = Environment.checkOS("windows")
+    fun isWindows(): Boolean = Environment.checkOS(Environment.SupportedOS.WINDOWS)
 
     /**
      * Checks if we are inside a Cygwin environment.
@@ -720,7 +720,7 @@ object RuleMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun isCygwin(): Boolean = Environment.checkOS("cygwin")
+    fun isCygwin(): Boolean = Environment.checkOS(Environment.SupportedOS.CYGWIN)
 
     /**
      * Checks if Linux is the underlying operating system.
@@ -731,7 +731,7 @@ object RuleMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun isLinux(): Boolean = Environment.checkOS("linux")
+    fun isLinux(): Boolean = Environment.checkOS(Environment.SupportedOS.LINUX)
 
     /**
      * Checks if Mac is the underlying operating system.
@@ -742,7 +742,7 @@ object RuleMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun isMac(): Boolean = Environment.checkOS("mac")
+    fun isMac(): Boolean = Environment.checkOS(Environment.SupportedOS.MACOS)
 
     /**
      * Checks if Unix is the underlying operating system.
@@ -753,7 +753,7 @@ object RuleMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun isUnix(): Boolean = Environment.checkOS("unix")
+    fun isUnix(): Boolean = Environment.checkOS(Environment.SupportedOS.UNIX)
 
     /**
      * Checks if Windows is the underlying operating system.
@@ -767,7 +767,7 @@ object RuleMethods {
     @JvmStatic
     @Throws(AraraException::class)
     fun isWindows(yes: Any?, no: Any?): Any? =
-            if (Environment.checkOS("windows")) yes else no
+            if (Environment.checkOS(Environment.SupportedOS.WINDOWS)) yes else no
 
     /**
      * Checks if we are inside a Cygwin environment.
@@ -781,7 +781,7 @@ object RuleMethods {
     @JvmStatic
     @Throws(AraraException::class)
     fun isCygwin(yes: Any?, no: Any?): Any? =
-            if (Environment.checkOS("cygwin")) yes else no
+            if (Environment.checkOS(Environment.SupportedOS.CYGWIN)) yes else no
 
     /**
      * Checks if Linux is the underlying operating system.
@@ -795,7 +795,7 @@ object RuleMethods {
     @JvmStatic
     @Throws(AraraException::class)
     fun isLinux(yes: Any?, no: Any?): Any? =
-            if (Environment.checkOS("linux")) yes else no
+            if (Environment.checkOS(Environment.SupportedOS.LINUX)) yes else no
 
     /**
      * Checks if Mac is the underlying operating system.
@@ -809,7 +809,7 @@ object RuleMethods {
     @JvmStatic
     @Throws(AraraException::class)
     fun isMac(yes: Any?, no: Any?): Any? =
-            if (Environment.checkOS("mac")) yes else no
+            if (Environment.checkOS(Environment.SupportedOS.MACOS)) yes else no
 
     /**
      * Checks if Unix is the underlying operating system.
@@ -823,5 +823,5 @@ object RuleMethods {
     @JvmStatic
     @Throws(AraraException::class)
     fun isUnix(yes: Any?, no: Any?): Any? =
-            if (Environment.checkOS("unix")) yes else no
+            if (Environment.checkOS(Environment.SupportedOS.UNIX)) yes else no
 }
