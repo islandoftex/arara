@@ -2,8 +2,8 @@
 package org.islandoftex.arara.core.files
 
 import com.charleskorn.kaml.Yaml
-import kotlin.io.path.readText
-import kotlin.io.path.writeText
+import com.soywiz.korio.file.std.localVfs
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.Database
@@ -87,7 +87,10 @@ data class Database(
         runCatching {
             val content = "!database\n" +
                     Yaml.default.encodeToString(serializer(), this)
-            path.toJVMPath().writeText(content)
+            runBlocking {
+                localVfs(path.normalize().toString())
+                        .writeString(content)
+            }
         }.getOrElse {
             throw AraraException(
                     LanguageController.messages.ERROR_SAVE_COULD_NOT_SAVE_XML
@@ -110,7 +113,9 @@ data class Database(
                 Database()
             } else {
                 runCatching {
-                    val text = path.toJVMPath().readText()
+                    val text = runBlocking {
+                        localVfs(path.normalize().toString()).readString()
+                    }
                     if (!text.startsWith("!database"))
                         throw AraraException("Database should start with !database")
                     Yaml.default.decodeFromString(serializer(), text)
