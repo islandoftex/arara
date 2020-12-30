@@ -2,6 +2,8 @@
 package org.islandoftex.arara.cli.utils
 
 import java.text.SimpleDateFormat
+import kotlin.io.path.fileSize
+import kotlin.io.path.getLastModifiedTime
 import kotlin.math.ln
 import kotlin.math.pow
 import mu.KotlinLogging
@@ -299,13 +301,13 @@ object DisplayUtils {
      * Displays the file information in the terminal.
      */
     fun printFileInformation(projectFile: ProjectFile) {
-        val file = projectFile.path.toJVMPath().toFile()
+        val file = projectFile.path.toJVMPath()
         val line = LanguageController.messages.INFO_DISPLAY_FILE_INFORMATION
                 .format(
-                        file.name,
-                        byteSizeToString(file.length()),
+                        projectFile.path.fileName,
+                        byteSizeToString(file.fileSize()),
                         SimpleDateFormat("MM/dd/yyyy HH:mm:ss")
-                                .format(file.lastModified())
+                                .format(file.getLastModifiedTime().toMillis())
                 )
         logger.info(LanguageController.messages.LOG_INFO_WELCOME_MESSAGE
                 .format(AraraAPI.version))

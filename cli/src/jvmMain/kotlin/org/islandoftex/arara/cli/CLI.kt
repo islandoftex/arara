@@ -12,7 +12,6 @@ import com.github.ajalt.clikt.parameters.options.versionOption
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import com.github.ajalt.clikt.parameters.types.restrictTo
-import java.nio.file.Paths
 import java.time.LocalDate
 import kotlin.time.TimeSource
 import kotlin.time.milliseconds
@@ -185,7 +184,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
 
         // resolve the working directory from the one that may be given
         // as command line parameter; otherwise resolve current directory
-        val workingDir = MPPPath(workingDirectory ?: Paths.get(""))
+        val workingDir = (workingDirectory?.let { MPPPath(it) } ?: MPPPath(""))
                 .normalize()
 
         // add all command line call parameters to the session
