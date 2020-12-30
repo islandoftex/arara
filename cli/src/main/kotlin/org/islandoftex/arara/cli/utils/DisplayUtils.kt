@@ -37,11 +37,14 @@ object DisplayUtils {
     /**
      * The length of the longest result match as integer.
      */
-    private val longestMatch: Int by lazy { listOf(
+    private val longestMatch: Int by lazy {
+        // lazy computation to wait for the language to be initialized
+        listOf(
             LanguageController.messages.INFO_LABEL_ON_SUCCESS,
             LanguageController.messages.INFO_LABEL_ON_FAILURE,
             LanguageController.messages.INFO_LABEL_ON_ERROR
-    ).map { it.length }.maxOrNull()!! }
+        ).map { it.length }.maxOrNull()!!
+    }
 
     /**
      * If the longest match is longer than the width, then it will be truncated
