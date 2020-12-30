@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.interpreter
 
-import java.nio.file.Path
-import kotlin.io.path.exists
 import mu.KotlinLogging
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.ExecutionOptions
+import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditional
@@ -36,7 +35,7 @@ import org.mvel2.templates.TemplateRuntime
 class Interpreter(
     private val executionOptions: ExecutionOptions,
     currentFile: ProjectFile,
-    private val workingDirectory: Path
+    private val workingDirectory: MPPPath
 ) {
     private val logger = KotlinLogging.logger { }
 
@@ -56,9 +55,9 @@ class Interpreter(
      * higher levels.
      */
     @Throws(AraraException::class)
-    private fun getRule(directive: Directive, workingDirectory: Path): Path =
+    private fun getRule(directive: Directive, workingDirectory: MPPPath): MPPPath =
             executionOptions.rulePaths.let { paths ->
-                paths.map { it.toJVMPath() }.flatMap { path ->
+                paths.flatMap { path ->
                     listOf(
                             InterpreterUtils.construct(path, directive.identifier,
                                     RuleFormat.MVEL, workingDirectory),
@@ -71,7 +70,7 @@ class Interpreter(
                             InterpreterUtils.construct(path, "arara-rule-" + directive.identifier,
                                     RuleFormat.MVEL, workingDirectory)
                     )
-                }.firstOrNull { it.exists() } ?: throw AraraException(
+                }.firstOrNull { it.exists } ?: throw AraraException(
                         LanguageController.messages.ERROR_INTERPRETER_RULE_NOT_FOUND.format(
                                 directive.identifier,
                                 directive.identifier,
@@ -250,7 +249,7 @@ class Interpreter(
         )
 
         // parse the rule identified by the directive (may throw an exception)
-        val rule = RuleUtils.parseRule(file, directive.identifier)
+        val rule = RuleUtils.parseRule(file.toJVMPath(), directive.identifier)
         val parameters = parseArguments(rule, directive).plus(MvelState.ruleMethods)
         val evaluator = DirectiveConditionalEvaluator(executionOptions)
         val available =

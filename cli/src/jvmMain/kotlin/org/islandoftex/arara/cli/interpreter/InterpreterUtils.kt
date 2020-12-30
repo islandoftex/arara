@@ -2,7 +2,6 @@
 package org.islandoftex.arara.cli.interpreter
 
 import java.io.IOException
-import java.nio.file.Path
 import java.util.concurrent.TimeoutException
 import kotlin.io.path.div
 import mu.KotlinLogging
@@ -105,22 +104,19 @@ internal object InterpreterUtils {
      */
     @Throws(AraraException::class)
     internal fun construct(
-        path: Path,
+        path: MPPPath,
         name: String,
         format: RuleFormat,
-        workingDirectory: Path
-    ): Path {
-        val fileName = "$name.${format.extension}"
-        return MPPPath(
-                if (path.isAbsolute) {
-                    path / fileName
-                } else {
-                    // when retrieving rules the current project is never null
-                    // because the executor always acts on a project file;
-                    // first resolve the path (rule path) against the working
-                    // directory, then the rule name we want to resolve
-                    workingDirectory / path / fileName
-                }
-        ).normalize().toJVMPath()
-    }
+        workingDirectory: MPPPath
+    ): MPPPath = "$name.${format.extension}".let { fileName ->
+        if (path.isAbsolute) {
+            path / fileName
+        } else {
+            // when retrieving rules the current project is never null
+            // because the executor always acts on a project file;
+            // first resolve the path (rule path) against the working
+            // directory, then the rule name we want to resolve
+            workingDirectory / path / fileName
+        }
+    }.normalize()
 }

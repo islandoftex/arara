@@ -26,7 +26,7 @@ class InterpreterTest : ShouldSpec({
 
         Interpreter(
             ExecutionOptions(rulePaths = setOf(rulePath)),
-                ProjectFile(filePath, texFile), filePath.parent.toJVMPath())
+                ProjectFile(filePath, texFile), filePath.parent)
                 .execute(haltDirective).exitCode shouldBe 0
     }
 
@@ -42,7 +42,7 @@ class InterpreterTest : ShouldSpec({
 
         Interpreter(
             ExecutionOptions(rulePaths = setOf(rulePath)),
-                ProjectFile(filePath, texFile), rulePath.toJVMPath())
+                ProjectFile(filePath, texFile), rulePath)
                 .execute(haltDirective).exitCode shouldNotBe 0
     }
 })

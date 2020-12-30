@@ -2,7 +2,6 @@
 package org.islandoftex.arara.mvel.configuration
 
 import com.charleskorn.kaml.Yaml
-import java.nio.file.Path
 import kotlin.io.path.readText
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
@@ -153,13 +152,12 @@ data class LocalConfiguration(
          * higher levels.
          */
         @Throws(AraraException::class)
-        fun load(file: Path): LocalConfiguration =
+        fun load(file: MPPPath): LocalConfiguration =
                 file.runCatching {
                     val text = file.readText()
                     if (!text.startsWith("!config"))
                         throw AraraException("Configuration should start with !config")
-                    Yaml.default.decodeFromString(LocalConfiguration.serializer(),
-                            text)
+                    Yaml.default.decodeFromString(serializer(), text)
                 }.getOrElse {
                     throw AraraException(
                             LanguageController.messages.ERROR_CONFIGURATION_GENERIC_ERROR,

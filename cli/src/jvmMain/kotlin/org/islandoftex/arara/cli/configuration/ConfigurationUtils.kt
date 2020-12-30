@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.configuration
 
-import java.nio.file.Path
-import java.nio.file.Paths
-import kotlin.io.path.div
-import kotlin.io.path.exists
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.cli.utils.LoggingUtils
 import org.islandoftex.arara.core.localization.LanguageController
@@ -30,16 +27,15 @@ object ConfigurationUtils {
      * if no configuration files are found in the user's working directory,
      * try to look up in a global directory, that is, the user home.
      */
-    fun configFileForProject(project: Project): Path? {
+    fun configFileForProject(project: Project): MPPPath? {
         val names = listOf(".araraconfig.yaml",
                 "araraconfig.yaml", ".arararc.yaml", "arararc.yaml")
         return project.workingDirectory.let { workingDir ->
             names.map { workingDir / it }.firstOrNull { it.exists }
-                    ?.toJVMPath()
         } ?: Environment.getSystemPropertyOrNull("user.home")
                 ?.let { userHome ->
-                    names.map { Paths.get(userHome) / it }
-                            .firstOrNull { it.exists() }
+                    names.map { MPPPath(userHome) / it }
+                            .firstOrNull { it.exists }
                 }
     }
 
@@ -52,8 +48,8 @@ object ConfigurationUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    private fun loadLocalConfiguration(file: Path): LocalConfiguration {
-        return if (file.fileName.toString().endsWith(".yaml"))
+    private fun loadLocalConfiguration(file: MPPPath): LocalConfiguration {
+        return if (file.fileName.endsWith(".yaml"))
             LocalConfiguration.load(file)
         else
             TODO("Kotlin DSL not implemented yet")
@@ -68,7 +64,7 @@ object ConfigurationUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun load(file: Path, currentProject: Project) {
+    fun load(file: MPPPath, currentProject: Project) {
         // then validate it and update the configuration accordingly
         val resource = loadLocalConfiguration(file)
         LinearExecutor.executionOptions = resource.toExecutionOptions(
