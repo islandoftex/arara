@@ -55,7 +55,7 @@ object FileHandling {
                 runBlocking {
                     localVfs(path.normalize().toString())
                             .readBytes()
-                }.checksum(CRC32).toLong()
+                }.checksum(CRC32).toUInt().toLong()
             } catch (exception: IOException) {
                 throw AraraException(
                         LanguageController.messages.ERROR_CALCULATEHASH_IO_EXCEPTION,

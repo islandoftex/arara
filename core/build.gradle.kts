@@ -34,6 +34,7 @@ kotlin {
         all {
             languageSettings.useExperimentalAnnotation("org.islandoftex.arara.api.localization.AraraMessages")
             languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+            languageSettings.useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
 
             dependencies {
                 api(project(":api"))
