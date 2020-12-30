@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
+import com.soywiz.korio.async.runBlockingNoJs
 import com.soywiz.korio.file.std.localVfs
 import com.soywiz.korio.lang.IOException
 import com.soywiz.korio.util.checksum.CRC32
 import com.soywiz.korio.util.checksum.checksum
-import kotlinx.coroutines.runBlocking
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.localization.LanguageController
@@ -52,7 +52,7 @@ object FileHandling {
     @Throws(AraraException::class)
     fun calculateHash(path: MPPPath): Long =
             try {
-                runBlocking {
+                runBlockingNoJs {
                     localVfs(path.normalize().toString())
                             .readBytes()
                 }.checksum(CRC32).toUInt().toLong()
@@ -71,7 +71,6 @@ object FileHandling {
      * @return A boolean value indicating if the file has changed since the
      *   last verification.
      */
-    @JvmStatic
     fun hasChanged(file: MPPPath, databaseFile: MPPPath): Boolean {
         val database = Database.load(databaseFile)
         val path = file.normalize()
