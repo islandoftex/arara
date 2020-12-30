@@ -2,10 +2,9 @@
 package org.islandoftex.arara.core.files
 
 import com.soywiz.korio.async.runBlockingNoJs
+import com.soywiz.korio.file.baseName
 import com.soywiz.korio.file.extension
 import com.soywiz.korio.file.std.LocalVfs
-import java.nio.file.FileSystems
-import java.nio.file.Paths
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
@@ -18,6 +17,7 @@ import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.utils.globToRegex
 
 /**
  * Implements file searching auxiliary methods.
@@ -84,9 +84,7 @@ object FileSearching {
         // return the result of the provided
         // search, with the wildcard filter
         // and a potential recursive search
-        val pathMatcher = patterns.map {
-            FileSystems.getDefault().getPathMatcher("glob:$it")
-        }
+        val regexes = patterns.map { it.globToRegex() }
         LocalVfs[directory.normalize().toString()].runCatching {
             // return the result of the
             // provided search
@@ -101,9 +99,7 @@ object FileSearching {
                 emptyFlow()
         ).filter { file ->
             !file.isDirectory() &&
-                    pathMatcher.any {
-                        it.matches(Paths.get(file.absolutePath).fileName)
-                    }
+                    regexes.any { it.matches(file.baseName) }
         }.map {
             MPPPath(it.absolutePath).normalize()
         }.toList()
