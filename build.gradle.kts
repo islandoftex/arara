@@ -126,7 +126,7 @@ allprojects {
 }
 subprojects {
     if (!path.contains("docs") && !path.contains("api") &&
-            !path.contains("core")) {
+            !path.contains("core") && !path.contains("cli")) {
         apply(plugin = "org.jetbrains.kotlin.jvm")
         apply(plugin = "org.jetbrains.dokka")
 

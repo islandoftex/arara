@@ -4,26 +4,53 @@ import org.islandoftex.arara.build.Versions
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    kotlin("multiplatform")
+    id("com.github.johnrengelman.shadow")
     application
     jacoco
 }
 
-dependencies {
-    implementation(project(":core"))
-    implementation(project(":mvel"))
+kotlin {
+    jvm {
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
 
-    implementation(kotlin("reflect", Versions.kotlin))
-    implementation(group = "com.github.ajalt.clikt", name = "clikt", version = Versions.clikt)
-    implementation(group = "org.mvel" , name = "mvel2", version = Versions.mvel)
-    implementation(group = "org.slf4j", name = "slf4j-api", version = Versions.slf4j)
-    implementation(group = "io.github.microutils", name = "kotlin-logging", version = Versions.kotlinLogging)
-    implementation(group = "org.apache.logging.log4j", name = "log4j-core", version = Versions.log4j)
-    implementation(group = "org.apache.logging.log4j", name = "log4j-slf4j-impl", version = Versions.log4j)
-    implementation(group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-yaml", version = Versions.jackson)
-    implementation(group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version = Versions.jackson)
+    sourceSets {
+        all {
+            languageSettings.useExperimentalAnnotation("org.islandoftex.arara.api.localization.AraraMessages")
+            languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+            languageSettings.useExperimentalAnnotation("kotlin.io.path.ExperimentalPathApi")
+            languageSettings.useExperimentalAnnotation("kotlin.RequiresOptIn")
+        }
 
-    testImplementation(group = "io.kotest", name = "kotest-runner-junit5-jvm", version = Versions.kotest)
-    testImplementation(group = "io.kotest", name = "kotest-assertions-core-jvm", version = Versions.kotest)
+        val jvmMain by getting {
+            dependencies {
+                implementation(project(":core"))
+                implementation(project(":mvel"))
+
+                implementation(kotlin("reflect", Versions.kotlin))
+                implementation("com.github.ajalt.clikt:clikt:${Versions.clikt}")
+                implementation("org.mvel:mvel2:${Versions.mvel}")
+                implementation("org.slf4j:slf4j-api:${Versions.slf4j}")
+                implementation("io.github.microutils:kotlin-logging:${Versions.kotlinLogging}")
+                implementation("org.apache.logging.log4j:log4j-core:${Versions.log4j}")
+                implementation("org.apache.logging.log4j:log4j-slf4j-impl:${Versions.log4j}")
+                implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${Versions.jackson}")
+                implementation("com.fasterxml.jackson.module:jackson-module-kotlin:${Versions.jackson}")
+            }
+        }
+        val jvmTest by getting {
+            dependencies {
+                implementation("io.kotest:kotest-runner-junit5-jvm:${Versions.kotest}")
+                implementation("io.kotest:kotest-assertions-core-jvm:${Versions.kotest}")
+                runtimeOnly("org.slf4j:slf4j-simple:${Versions.slf4j}")
+            }
+        }
+    }
 }
 
 application {
@@ -32,14 +59,6 @@ application {
 }
 
 tasks {
-    withType<KotlinCompile> {
-        kotlinOptions {
-            freeCompilerArgs = listOf("-Xopt-in=org.islandoftex.arara.api.localization.AraraMessages," +
-                    "kotlin.time.ExperimentalTime,kotlin.RequiresOptIn," +
-                    "kotlin.io.path.ExperimentalPathApi")
-        }
-    }
-
     named<JavaExec>("run") {
         if (JavaVersion.current() > JavaVersion.VERSION_1_8) {
             doFirst {
