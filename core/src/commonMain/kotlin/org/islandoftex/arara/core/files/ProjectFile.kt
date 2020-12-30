@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
+import com.soywiz.korio.async.runBlockingNoJs
 import com.soywiz.korio.file.std.localVfs
 import com.soywiz.korio.lang.IOException
-import kotlinx.coroutines.runBlocking
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
@@ -48,7 +48,10 @@ open class ProjectFile(
     override fun fetchDirectives(parseOnlyHeader: Boolean): List<Directive> =
         try {
             Directives.extractDirectives(
-                    runBlocking {
+                    runBlockingNoJs {
+                        // can't use path.readLines() because of still
+                        // undetermined exception handling
+                        // TODO: change when MPPPath uses VfsFile
                         localVfs(path.toString()).readLines()
                     }.toList(),
                     LinearExecutor.executionOptions.parseOnlyHeader,
