@@ -15,6 +15,7 @@ object Versions {
     const val clikt = "3.1.0"
     const val coroutines = "1.3.8"
     const val jna = "5.7.0"
+    const val junit = "5.7.0"
     const val kaml = "0.27.0"
     const val korlibs = "2.0.4"
     const val kotest = "4.4.1"

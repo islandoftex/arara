@@ -65,7 +65,7 @@ kotlin {
                 implementation(kotlin("test-junit5"))
                 implementation("io.kotest:kotest-runner-junit5-jvm:${Versions.kotest}")
                 implementation("io.kotest:kotest-assertions-core-jvm:${Versions.kotest}")
-                runtimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0")
+                runtimeOnly("org.junit.jupiter:junit-jupiter-engine:${Versions.junit}")
             }
         }
     }
