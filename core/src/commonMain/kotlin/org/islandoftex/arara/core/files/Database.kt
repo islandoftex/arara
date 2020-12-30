@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-import com.soywiz.korio.async.runBlockingNoSuspensions
+import com.soywiz.korio.async.runBlockingNoJs
 import com.soywiz.korio.file.std.localVfs
 import kotlinx.serialization.Serializable
 import net.mamoe.yamlkt.Yaml
@@ -88,7 +88,7 @@ data class Database(
         runCatching {
             val content = "!database\n" +
                     Yaml.default.encodeToString(serializer(), this)
-            runBlockingNoSuspensions {
+            runBlockingNoJs {
                 localVfs(path.normalize().toString())
                         .writeString(content)
             }
@@ -114,7 +114,7 @@ data class Database(
                 Database()
             } else {
                 runCatching {
-                    val text = runBlockingNoSuspensions {
+                    val text = runBlockingNoJs {
                         localVfs(path.normalize().toString()).readString()
                     }
                     if (!text.startsWith("!database"))
