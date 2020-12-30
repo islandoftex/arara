@@ -1,10 +1,15 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-import java.io.File
-import java.io.FileFilter
+import com.soywiz.korio.async.runBlockingNoJs
+import com.soywiz.korio.file.extension
+import com.soywiz.korio.file.std.LocalVfs
 import java.nio.file.FileSystems
-import kotlin.io.path.div
+import java.nio.file.Paths
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 import mu.KotlinLogging
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
@@ -40,26 +45,25 @@ object FileSearching {
         directory: MPPPath,
         extensions: List<String>,
         recursive: Boolean
-    ): List<MPPPath> = kotlin.runCatching {
-        val dir = directory.toJVMPath().toFile()
-        // return the result of the
-        // provided search
-        if (recursive)
-            dir.walkTopDown().asSequence()
-                    .filter { !it.isDirectory }
-                    .filter { extensions.contains(it.extension) }
-                    .toList()
-        else
-            dir.listFiles(
-                    FileFilter { extensions.contains(it.extension) })!!
-                    .toList()
-    }.getOrDefault(
-        // if something bad happens,
-        // gracefully fallback to
-        // an empty file list
-        emptyList()
-    ).map {
-        MPPPath(it.toPath())
+    ): List<MPPPath> = runBlockingNoJs {
+        LocalVfs[directory.normalize().toString()].runCatching {
+            // return the result of the
+            // provided search
+            if (recursive)
+                listRecursive()
+            else
+                list()
+        }.getOrDefault(
+                // if something bad happens,
+                // gracefully fallback to
+                // an empty file list
+                emptyFlow()
+        ).filter {
+            !it.isDirectory() &&
+                    extensions.contains(it.extension)
+        }.map {
+            MPPPath(it.absolutePath).normalize()
+        }.toList()
     }
 
     /**
@@ -76,31 +80,33 @@ object FileSearching {
         directory: MPPPath,
         patterns: List<String>,
         recursive: Boolean
-    ): List<MPPPath> = kotlin.runCatching {
+    ): List<MPPPath> = runBlockingNoJs {
         // return the result of the provided
         // search, with the wildcard filter
         // and a potential recursive search
         val pathMatcher = patterns.map {
             FileSystems.getDefault().getPathMatcher("glob:$it")
         }
-        val dir = directory.toJVMPath().toFile()
-        if (recursive)
-            dir.walkTopDown().asSequence()
-                    .filter { !it.isDirectory }
-                    .filter { file ->
-                        pathMatcher.any { it.matches(file.toPath().fileName) }
-                    }.toList()
-        else
-            dir.listFiles { file: File ->
-                pathMatcher.any { it.matches(file.toPath().fileName) }
-            }!!.toList()
-    }.getOrDefault(
-        // if something bad happens,
-        // gracefully fallback to
-        // an empty file list
-        emptyList()
-    ).map {
-        MPPPath(it.toPath())
+        LocalVfs[directory.normalize().toString()].runCatching {
+            // return the result of the
+            // provided search
+            if (recursive)
+                listRecursive()
+            else
+                list()
+        }.getOrDefault(
+                // if something bad happens,
+                // gracefully fallback to
+                // an empty file list
+                emptyFlow()
+        ).filter { file ->
+            !file.isDirectory() &&
+                    pathMatcher.any {
+                        it.matches(Paths.get(file.absolutePath).fileName)
+                    }
+        }.map {
+            MPPPath(it.absolutePath).normalize()
+        }.toList()
     }
 
     /**
