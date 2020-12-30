@@ -82,5 +82,5 @@ class BrazilianLanguage : Messages(
         LOG_INFO_SYSTEM_COMMAND = "Comando de sistema: %s",
         LOG_INFO_TASK_RESULT = "Resultado da tarefa:",
         LOG_INFO_VALIDATED_DIRECTIVES = "Todas as diretivas foram validadas. Estamos prontos para continuar.",
-        LOG_INFO_WELCOME_MESSAGE = "Olá, eu sou o arara %s (revisão %s)!"
+        LOG_INFO_WELCOME_MESSAGE = "Olá, eu sou o arara %s!"
 )
