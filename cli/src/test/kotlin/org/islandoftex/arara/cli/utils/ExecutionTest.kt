@@ -9,7 +9,6 @@ import io.kotest.matchers.string.shouldNotContain
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
-import java.nio.file.Paths
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
@@ -51,9 +50,9 @@ class ExecutionTest : ShouldSpec({
         val output = ByteArrayOutputStream()
         try {
             System.setOut(PrintStream(output))
-            val workingDirectory = Paths.get(getPathForTest(testName))
+            val workingDirectory = MPPPath(getPathForTest(testName))
             LinearExecutor.execute(listOf(
-                    Project("Test", MPPPath(workingDirectory),
+                    Project("Test", workingDirectory,
                             setOf(FileSearching.resolveFile(fileName,
                                     workingDirectory,
                                     LinearExecutor.executionOptions)

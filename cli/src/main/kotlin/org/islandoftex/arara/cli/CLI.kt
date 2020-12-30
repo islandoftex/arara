@@ -198,7 +198,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                     reference.map { fileName ->
                         FileSearching.resolveFile(
                                 fileName,
-                                workingDir.toJVMPath(),
+                                workingDir,
                                 LinearExecutor.executionOptions
                         )
                     }.toSet()

@@ -5,13 +5,13 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
 import kotlin.io.path.createDirectories
 import kotlin.io.path.div
 import kotlin.io.path.writeText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.islandoftex.arara.api.configuration.ExecutionMode
+import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 
@@ -28,37 +28,37 @@ class FileSearchingTest : ShouldSpec({
         }
 
         should("find file in listing by extension") {
-            val tempDir = prepareFileSystem()
-            FileSearching.listFilesByExtensions(tempDir.toFile(),
+            val tempDir = MPPPath(prepareFileSystem())
+            FileSearching.listFilesByExtensions(tempDir,
                     listOf("tex"), false).toSet() shouldBe
-                    setOf((tempDir / "quack.tex").toFile())
-            FileSearching.listFilesByExtensions(tempDir.toFile(),
+                    setOf(tempDir / "quack.tex")
+            FileSearching.listFilesByExtensions(tempDir,
                     listOf("tex"), true).toSet() shouldBe
                     listOf("quack", "quack/quack", "quack/quack/quack")
-                            .map { (tempDir / "$it.tex").toFile() }.toSet()
+                            .map { tempDir / "$it.tex" }.toSet()
         }
 
         should("find file in listing by pattern") {
-            val tempDir = prepareFileSystem()
-            FileSearching.listFilesByPatterns(tempDir.toFile(),
+            val tempDir = MPPPath(prepareFileSystem())
+            FileSearching.listFilesByPatterns(tempDir,
                     listOf("*q*.txt"), false).toSet() shouldBe
-                    setOf((tempDir / "quack.txt").toFile())
-            FileSearching.listFilesByPatterns(tempDir.toFile(),
+                    setOf(tempDir / "quack.txt")
+            FileSearching.listFilesByPatterns(tempDir,
                     listOf("q*.txt"), true).toSet() shouldBe
                     listOf("quack", "quack/quack", "quack/quack/quack")
-                            .map { (tempDir / "$it.txt").toFile() }.toSet()
+                            .map { tempDir / "$it.txt" }.toSet()
         }
     }
 
     context("file lookup") {
         should("fail looking up inexistent file") {
-            FileSearching.lookupFile("QUACK", Paths.get("."),
+            FileSearching.lookupFile("QUACK", MPPPath("."),
                     ExecutionOptions()
             ) shouldBe null
         }
 
         should("fail on existing directory") {
-            FileSearching.lookupFile("../buildSrc", Paths.get("."),
+            FileSearching.lookupFile("../buildSrc", MPPPath("."),
                     ExecutionOptions()
             ) shouldBe null
         }
@@ -71,7 +71,7 @@ class FileSearchingTest : ShouldSpec({
                 pathToTest.writeText("quack")
                 val projectFile = FileSearching.lookupFile(
                         pathToTest.toString(),
-                        testDir,
+                        MPPPath(testDir),
                         ExecutionOptions()
                 ) as ProjectFile
                 projectFile.path.normalize().toString() shouldBe
@@ -88,7 +88,7 @@ class FileSearchingTest : ShouldSpec({
                 (parent / "changes.tex").writeText("quack")
                 val projectFile = FileSearching.lookupFile(
                         (parent / "changes").toString(),
-                        testDir,
+                        MPPPath(testDir),
                         ExecutionOptions()
                 ) as ProjectFile
                 projectFile.path.normalize().toString() shouldBe
@@ -106,7 +106,7 @@ class FileSearchingTest : ShouldSpec({
                 val pathToTest = parent / "changes.tex"
                 val projectFile = FileSearching.lookupFile(
                         pathToTest.toString(),
-                        testDir,
+                        MPPPath(testDir),
                         ExecutionOptions().copy(executionMode = ExecutionMode.SAFE_RUN)
                 ) as ProjectFile
                 projectFile.path.normalize().toString() shouldBe
@@ -118,8 +118,8 @@ class FileSearchingTest : ShouldSpec({
 
         should("not succeed finding tex file without extension in safe mode") {
             FileSearching.lookupFile(
-                    Paths.get("src/test/resources/executiontests/changes/changes").toString(),
-                    Paths.get("."),
+                    MPPPath("src/test/resources/executiontests/changes/changes").toString(),
+                    MPPPath("."),
                     ExecutionOptions().copy(executionMode = ExecutionMode.SAFE_RUN)
             ) shouldBe null
         }

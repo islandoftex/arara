@@ -333,10 +333,12 @@ object RuleMethods {
         recursive: Boolean
     ): List<File> =
             FileSearching.listFilesByExtensions(
-                    directory,
+                    MPPPath(directory.toPath()),
                     extensions,
                     recursive
-            )
+            ).map {
+                it.toJVMPath().toFile()
+            }
 
     /**
      * List all files from the provided string path according to the list of
@@ -355,10 +357,12 @@ object RuleMethods {
         recursive: Boolean
     ): List<File> =
             FileSearching.listFilesByExtensions(
-                    File(path),
+                    MPPPath(path),
                     extensions,
                     recursive
-            )
+            ).map {
+                it.toJVMPath().toFile()
+            }
 
     /**
      * List all files from the provided directory matching the list of file
@@ -376,10 +380,12 @@ object RuleMethods {
         recursive: Boolean
     ): List<File> =
             FileSearching.listFilesByPatterns(
-                    directory,
+                    MPPPath(directory.toPath()),
                     patterns,
                     recursive
-            )
+            ).map {
+                it.toJVMPath().toFile()
+            }
 
     /**
      * List all files from the provided path matching the list of file
@@ -397,10 +403,12 @@ object RuleMethods {
         recursive: Boolean
     ): List<File> =
             FileSearching.listFilesByPatterns(
-                    File(path),
+                    MPPPath(path),
                     patterns,
                     recursive
-            )
+            ).map {
+                it.toJVMPath().toFile()
+            }
 
     /**
      * Writes the string to a file, using UTF-8 as default encoding.

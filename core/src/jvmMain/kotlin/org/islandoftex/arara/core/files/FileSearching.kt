@@ -4,7 +4,6 @@ package org.islandoftex.arara.core.files
 import java.io.File
 import java.io.FileFilter
 import java.nio.file.FileSystems
-import java.nio.file.Path
 import kotlin.io.path.div
 import mu.KotlinLogging
 import org.islandoftex.arara.api.AraraException
@@ -38,26 +37,29 @@ object FileSearching {
      */
     @JvmStatic
     fun listFilesByExtensions(
-        directory: File,
+        directory: MPPPath,
         extensions: List<String>,
         recursive: Boolean
-    ): List<File> = try {
+    ): List<MPPPath> = kotlin.runCatching {
+        val dir = directory.toJVMPath().toFile()
         // return the result of the
         // provided search
         if (recursive)
-            directory.walkTopDown().asSequence()
+            dir.walkTopDown().asSequence()
                     .filter { !it.isDirectory }
                     .filter { extensions.contains(it.extension) }
                     .toList()
         else
-            directory.listFiles(
+            dir.listFiles(
                     FileFilter { extensions.contains(it.extension) })!!
                     .toList()
-    } catch (_: Exception) {
+    }.getOrDefault(
         // if something bad happens,
         // gracefully fallback to
         // an empty file list
         emptyList()
+    ).map {
+        MPPPath(it.toPath())
     }
 
     /**
@@ -71,31 +73,34 @@ object FileSearching {
      */
     @JvmStatic
     fun listFilesByPatterns(
-        directory: File,
+        directory: MPPPath,
         patterns: List<String>,
         recursive: Boolean
-    ): List<File> = try {
+    ): List<MPPPath> = kotlin.runCatching {
         // return the result of the provided
         // search, with the wildcard filter
         // and a potential recursive search
         val pathMatcher = patterns.map {
             FileSystems.getDefault().getPathMatcher("glob:$it")
         }
+        val dir = directory.toJVMPath().toFile()
         if (recursive)
-            directory.walkTopDown().asSequence()
+            dir.walkTopDown().asSequence()
                     .filter { !it.isDirectory }
                     .filter { file ->
                         pathMatcher.any { it.matches(file.toPath().fileName) }
                     }.toList()
         else
-            directory.listFiles { file: File ->
+            dir.listFiles { file: File ->
                 pathMatcher.any { it.matches(file.toPath().fileName) }
             }!!.toList()
-    } catch (_: Exception) {
+    }.getOrDefault(
         // if something bad happens,
         // gracefully fallback to
         // an empty file list
         emptyList()
+    ).map {
+        MPPPath(it.toPath())
     }
 
     /**
@@ -110,7 +115,7 @@ object FileSearching {
     @Throws(AraraException::class)
     fun resolveFile(
         reference: String,
-        workingDirectory: Path,
+        workingDirectory: MPPPath,
         executionOptions: ExecutionOptions
     ): ProjectFile =
             lookupFile(reference, workingDirectory, executionOptions)
@@ -134,14 +139,14 @@ object FileSearching {
     @Throws(AraraException::class)
     internal fun lookupFile(
         reference: String,
-        workingDirectory: Path,
+        workingDirectory: MPPPath,
         executionOptions: ExecutionOptions
     ): ProjectFile? {
         val types = executionOptions.fileTypes
 
         // direct search, so we are considering
         // the reference as a complete name
-        val testFile = MPPPath(workingDirectory / reference).normalize()
+        val testFile = (workingDirectory / reference).normalize()
         return when {
             testFile.exists && testFile.isRegularFile -> {
                 types.firstOrNull {
