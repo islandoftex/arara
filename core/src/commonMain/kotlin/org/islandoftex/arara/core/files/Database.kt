@@ -1,14 +1,15 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-import com.charleskorn.kaml.Yaml
+import com.soywiz.korio.async.runBlockingNoSuspensions
 import com.soywiz.korio.file.std.localVfs
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
+import net.mamoe.yamlkt.Yaml
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.Database
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.utils.formatString
 
 /**
  * The database model, which keeps track on file changes.
@@ -87,14 +88,14 @@ data class Database(
         runCatching {
             val content = "!database\n" +
                     Yaml.default.encodeToString(serializer(), this)
-            runBlocking {
+            runBlockingNoSuspensions {
                 localVfs(path.normalize().toString())
                         .writeString(content)
             }
         }.getOrElse {
             throw AraraException(
                     LanguageController.messages.ERROR_SAVE_COULD_NOT_SAVE_XML
-                            .format(path.fileName), it
+                            .formatString(path.fileName), it
             )
         }
     }
@@ -113,16 +114,17 @@ data class Database(
                 Database()
             } else {
                 runCatching {
-                    val text = runBlocking {
+                    val text = runBlockingNoSuspensions {
                         localVfs(path.normalize().toString()).readString()
                     }
                     if (!text.startsWith("!database"))
                         throw AraraException("Database should start with !database")
-                    Yaml.default.decodeFromString(serializer(), text)
+                    Yaml.default.decodeFromString(serializer(), text.lines()
+                            .drop(1).joinToString("\n"))
                 }.getOrElse {
                     throw AraraException(LanguageController
                             .messages.ERROR_LOAD_COULD_NOT_LOAD_XML
-                            .format(path.fileName), it
+                            .formatString(path.fileName), it
                     )
                 }
             }

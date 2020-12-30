@@ -39,12 +39,14 @@ kotlin {
             dependencies {
                 api(project(":api"))
                 implementation("io.github.microutils:kotlin-logging:${Versions.kotlinLogging}")
-                implementation("com.soywiz.korlibs.korio:korio:${Versions.korlibs}")
             }
         }
         val commonMain by getting {
             dependencies {
                 kotlin("stdlib-common")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:${Versions.kotlinxSerialization}")
+                implementation("com.soywiz.korlibs.korio:korio:${Versions.korlibs}")
+                implementation("net.mamoe.yamlkt:yamlkt:${Versions.yamlkt}")
             }
         }
         val commonTest by getting {
@@ -56,8 +58,6 @@ kotlin {
         val jvmMain by getting {
             languageSettings.useExperimentalAnnotation("kotlin.io.path.ExperimentalPathApi")
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:${Versions.kotlinxSerialization}")
-                implementation("com.charleskorn.kaml:kaml:${Versions.kaml}")
                 implementation("org.zeroturnaround:zt-exec:${Versions.ztExec}")
                 implementation("com.soywiz.korlibs.korio:korio:${Versions.korlibs}")
             }

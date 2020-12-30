@@ -25,5 +25,6 @@ object Versions {
     const val log4j = "2.14.0"
     const val mvel = "2.4.12.Final"
     const val slf4j = "1.7.30"
+    const val yamlkt = "0.7.5"
     const val ztExec = "1.12"
 }
