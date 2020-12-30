@@ -17,6 +17,7 @@ import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.utils.formatString
 import org.islandoftex.arara.core.utils.globToRegex
 
 /**
@@ -40,7 +41,6 @@ object FileSearching {
      * @param recursive A flag indicating whether the search is recursive.
      * @return A list of files.
      */
-    @JvmStatic
     fun listFilesByExtensions(
         directory: MPPPath,
         extensions: List<String>,
@@ -75,7 +75,6 @@ object FileSearching {
      * @param recursive A flag indicating whether the search is recursive.
      * @return A list of files.
      */
-    @JvmStatic
     fun listFilesByPatterns(
         directory: MPPPath,
         patterns: List<String>,
@@ -113,7 +112,6 @@ object FileSearching {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
-    @JvmStatic
     @Throws(AraraException::class)
     fun resolveFile(
         reference: String,
@@ -123,7 +121,7 @@ object FileSearching {
             lookupFile(reference, workingDirectory, executionOptions)
                     ?: throw AraraException(
                             LanguageController.messages.ERROR_DISCOVERFILE_FILE_NOT_FOUND
-                                    .format(
+                                    .formatString(
                                             reference,
                                             executionOptions.fileTypes
                                                     .joinToString(" | ", "[ ", " ]")

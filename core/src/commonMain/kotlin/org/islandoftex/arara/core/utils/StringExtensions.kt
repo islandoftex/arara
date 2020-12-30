@@ -29,7 +29,7 @@ internal fun String.formatString(vararg stringReplacements: String): String {
  * @param pattern A glob pattern.
  * @return A regex to recognize the given glob pattern.
  */
-fun String.globToRegex(): Regex =
+internal fun String.globToRegex(): Regex =
     buildString(length) {
         var inGroup = 0
         var inClass = 0
