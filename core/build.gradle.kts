@@ -47,6 +47,12 @@ kotlin {
                 kotlin("stdlib-common")
             }
         }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test-common"))
+                implementation(kotlin("test-annotations-common"))
+            }
+        }
         val jvmMain by getting {
             languageSettings.useExperimentalAnnotation("kotlin.io.path.ExperimentalPathApi")
             dependencies {
@@ -59,9 +65,11 @@ kotlin {
         val jvmTest by getting {
             languageSettings.useExperimentalAnnotation("kotlin.io.path.ExperimentalPathApi")
             dependencies {
+                implementation(kotlin("test-junit5"))
                 implementation("io.kotest:kotest-runner-junit5-jvm:${Versions.kotest}")
                 implementation("io.kotest:kotest-assertions-core-jvm:${Versions.kotest}")
                 runtimeOnly("org.slf4j:slf4j-simple:${Versions.slf4j}")
+                runtimeOnly("org.junit.jupiter:junit-jupiter-engine:${Versions.junit}")
             }
         }
     }
