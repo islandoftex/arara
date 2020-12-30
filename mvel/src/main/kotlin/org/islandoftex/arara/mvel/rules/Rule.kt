@@ -2,8 +2,6 @@
 package org.islandoftex.arara.mvel.rules
 
 import com.charleskorn.kaml.Yaml
-import java.nio.file.Path
-import kotlin.io.path.readText
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
@@ -56,9 +54,9 @@ data class Rule(
          * higher levels.
          */
         @Throws(AraraException::class)
-        fun parse(file: Path, identifier: String): Rule {
+        fun parse(file: MPPPath, identifier: String): Rule {
             ruleId = identifier
-            rulePath = MPPPath(file).normalize().toString()
+            rulePath = file.normalize().toString()
             val rule = file.runCatching {
                 val text = readText()
                 if (!text.startsWith("!config"))

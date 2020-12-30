@@ -3,7 +3,6 @@ package org.islandoftex.arara.cli.interpreter
 
 import java.io.IOException
 import java.util.concurrent.TimeoutException
-import kotlin.io.path.div
 import mu.KotlinLogging
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode

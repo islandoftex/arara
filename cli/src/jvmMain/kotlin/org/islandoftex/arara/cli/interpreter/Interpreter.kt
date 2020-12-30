@@ -249,7 +249,7 @@ class Interpreter(
         )
 
         // parse the rule identified by the directive (may throw an exception)
-        val rule = RuleUtils.parseRule(file.toJVMPath(), directive.identifier)
+        val rule = RuleUtils.parseRule(file, directive.identifier)
         val parameters = parseArguments(rule, directive).plus(MvelState.ruleMethods)
         val evaluator = DirectiveConditionalEvaluator(executionOptions)
         val available =
