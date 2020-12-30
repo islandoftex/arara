@@ -41,7 +41,7 @@ class ExecutionTest : ShouldSpec({
         )
     }
 
-    fun getPathForTest(name: String): String = "src/test/resources/executiontests/$name"
+    fun getPathForTest(name: String): String = "src/jvmTest/resources/executiontests/$name"
     fun outputForTest(
         testName: String,
         fileName: String = "$testName.tex"

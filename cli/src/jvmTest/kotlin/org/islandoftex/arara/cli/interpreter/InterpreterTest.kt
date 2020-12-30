@@ -16,7 +16,7 @@ class InterpreterTest : ShouldSpec({
 
     should("return zero exit code for ordinary halt") {
         val rulePath = MPPPath("../rules").normalize()
-        val filePath = MPPPath("src/test/resources/executiontests/halt")
+        val filePath = MPPPath("src/jvmTest/resources/executiontests/halt")
                 .normalize() / "halt.tex"
         val haltDirective = Directives.extractDirectives(listOf("% arara: halt"),
                 false, texFile).single().run {
@@ -31,7 +31,7 @@ class InterpreterTest : ShouldSpec({
     }
 
     should("return non-zero exit code for error halt") {
-        val rulePath = MPPPath("src/test/resources/executiontests/halt-error")
+        val rulePath = MPPPath("src/jvmTest/resources/executiontests/halt-error")
                 .normalize()
         val filePath = MPPPath(rulePath / "halt-error.tex")
         val haltDirective = Directives.extractDirectives(listOf("% arara: halt"),

@@ -125,15 +125,12 @@ allprojects {
     version = rootProject.version
 }
 subprojects {
+    if (!path.contains("docs")) {
+        apply(plugin = "org.jetbrains.dokka")
+    }
     if (!path.contains("docs") && !path.contains("api") &&
             !path.contains("core") && !path.contains("cli")) {
         apply(plugin = "org.jetbrains.kotlin.jvm")
-        apply(plugin = "org.jetbrains.dokka")
-
-        dependencies {
-            "implementation"(kotlin("stdlib", Versions.kotlin))
-            "implementation"(kotlin("stdlib-jdk7", Versions.kotlin))
-        }
 
         val javaCompatibility = JavaVersion.VERSION_1_8
         configure<JavaPluginExtension> {
@@ -179,16 +176,6 @@ subprojects {
             named<Jar>("shadowJar") {
                 archiveBaseName.set("arara-${project.name}")
                 archiveClassifier.set("with-deps")
-            }
-
-            withType<Test> {
-                useJUnitPlatform()
-
-                testLogging {
-                    exceptionFormat = TestExceptionFormat.FULL
-                    events(TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR,
-                            TestLogEvent.SKIPPED, TestLogEvent.PASSED, TestLogEvent.FAILED)
-                }
             }
         }
 

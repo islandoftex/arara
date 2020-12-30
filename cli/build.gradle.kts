@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 import org.islandoftex.arara.build.Versions
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     kotlin("multiplatform")
@@ -47,7 +47,6 @@ kotlin {
             dependencies {
                 implementation("io.kotest:kotest-runner-junit5-jvm:${Versions.kotest}")
                 implementation("io.kotest:kotest-assertions-core-jvm:${Versions.kotest}")
-                runtimeOnly("org.slf4j:slf4j-simple:${Versions.slf4j}")
             }
         }
     }
@@ -66,6 +65,14 @@ tasks {
                         "--module-path", classpath.asPath
                 )
             }
+        }
+    }
+    withType<Test> {
+        useJUnitPlatform()
+
+        testLogging {
+            events(TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR,
+                    TestLogEvent.SKIPPED, TestLogEvent.PASSED, TestLogEvent.FAILED)
         }
     }
 }
