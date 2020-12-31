@@ -39,14 +39,11 @@ object InputHandling {
      */
     // TODO: check nullity
     @JvmStatic
-    fun flatten(list: List<*>): List<Any> {
-        val result = mutableListOf<Any>()
-        list.forEach { item ->
+    fun flatten(list: List<*>): List<Any> =
+        list.flatMap { item ->
             if (item is List<*>)
-                result.addAll(flatten(item))
+                flatten(item)
             else
-                result.add(item as Any)
+                listOf(item as Any)
         }
-        return result
-    }
 }

@@ -126,9 +126,8 @@ object DirectiveUtils {
     fun process(
         file: ProjectFile,
         directives: List<Directive>
-    ): List<Directive> {
-        val result = mutableListOf<Directive>()
-        directives.forEach { directive ->
+    ): List<Directive> =
+        directives.flatMap { directive ->
             val parameters = directive.parameters
 
             if (parameters.containsKey("reference"))
@@ -138,27 +137,24 @@ object DirectiveUtils {
                 )
 
             if (parameters.containsKey("files")) {
-                result.addAll(Directives.replicateDirective(
+                Directives.replicateDirective(
                         parameters.getValue("files"),
                         parameters.minus("files"),
                         directive
-                ))
+                )
             } else {
-                result.add(DirectiveImpl(
+                listOf(DirectiveImpl(
                         directive.identifier,
                         parameters.plus("reference" to file.path.toFile()),
                         directive.conditional,
                         directive.lineNumbers
                 ))
             }
+        }.also { result ->
+            logger.info(LanguageController.messages.LOG_INFO_VALIDATED_DIRECTIVES)
+            logger.info(DisplayUtils.displayOutputSeparator(
+                    LanguageController.messages.LOG_INFO_DIRECTIVES_BLOCK))
+            result.forEach { logger.info(it.toString()) }
+            logger.info(DisplayUtils.displaySeparator())
         }
-
-        logger.info(LanguageController.messages.LOG_INFO_VALIDATED_DIRECTIVES)
-        logger.info(DisplayUtils.displayOutputSeparator(
-                LanguageController.messages.LOG_INFO_DIRECTIVES_BLOCK))
-        result.forEach { logger.info(it.toString()) }
-        logger.info(DisplayUtils.displaySeparator())
-
-        return result
-    }
 }
