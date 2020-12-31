@@ -12,7 +12,6 @@ import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
-import org.islandoftex.arara.mvel.files.FileType
 
 /**
  * A local configuration which resembles configuration files in the working
@@ -25,7 +24,7 @@ import org.islandoftex.arara.mvel.files.FileType
 @Serializable
 data class LocalConfiguration(
     private val paths: List<String> = emptyList(),
-    private val filetypes: List<FileType> = emptyList(),
+    private val filetypes: List<SerialFileType> = emptyList(),
     private val language: String? = null,
     private val loops: Int? = null,
     private val verbose: Boolean? = null,
@@ -55,7 +54,7 @@ data class LocalConfiguration(
                 .map { input ->
                     input.replace("@{user.home}", Environment.getSystemPropertyOrNull("user.home") ?: "")
                             .replace("@{user.name}", Environment.getSystemPropertyOrNull("user.name") ?: "")
-                            .replace("@{application.workingDirectory}", currentProject.workingDirectory.toAbsolutePath().toString())
+                            .replace("@{application.workingDirectory}", currentProject.workingDirectory.normalize().toString())
                 }
                 .map { MPPPath(it) }
                 .map { path ->
@@ -84,7 +83,7 @@ data class LocalConfiguration(
                         maxLoops = maxLoops,
                         verbose = verbose ?: baseOptions.verbose,
                         databaseName = databaseName,
-                        fileTypes = filetypes
+                        fileTypes = filetypes.map { it.toFileType() }
                                 .plus(baseOptions.fileTypes),
                         rulePaths = preprocessedPaths
                                 .plus(baseOptions.rulePaths),
