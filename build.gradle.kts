@@ -147,7 +147,7 @@ subprojects {
                     attributes["Automatic-Module-Name"] = rootProject.group
                 }
 
-        if (!path.contains("mvel") && !path.contains("dsl")) {
+        if (!path.contains("mvel")) {
             apply(plugin = "org.jetbrains.kotlin.multiplatform")
             configure<KotlinMultiplatformExtension> {
                 jvm {
@@ -225,7 +225,7 @@ subprojects {
 
         apply<AraraPublication>()
     }
-    if (path.contains("mvel") || path.contains("dsl")) {
+    if (path.contains("mvel")) {
         apply(plugin = "org.jetbrains.kotlin.jvm")
         val javaCompatibility = JavaVersion.VERSION_1_8
         configure<JavaPluginExtension> {

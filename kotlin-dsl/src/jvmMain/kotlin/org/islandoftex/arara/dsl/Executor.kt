@@ -32,7 +32,7 @@ object Executor {
         val path = URLDecoder.decode(Executor::class.java.protectionDomain
                 .codeSource.location.path, "UTF-8")
         val scriptSource = Paths.get(File(path).toURI()).parent.toAbsolutePath()
-                .resolve("../../../src/test/resources/org/islandoftex/arara/dsl/samples/rule.kts")
+                .resolve("../../../src/jvmTest/resources/org/islandoftex/arara/dsl/samples/rule.kts")
                 .readText().trimIndent().toScriptSource()
 
         BasicJvmScriptingHost().evalWithTemplate<SimpleScriptTemplate>(
