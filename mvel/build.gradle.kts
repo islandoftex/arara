@@ -1,30 +1,28 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 import org.islandoftex.arara.build.Versions
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
-    kotlin("jvm")
     kotlin("plugin.serialization")
-    `java-library`
 }
 
-dependencies {
-    api(project(":api"))
-    implementation(project(":core"))
-    implementation(kotlin("stdlib-jdk7"))
-    implementation(group = "org.slf4j", name = "slf4j-api", version = Versions.slf4j)
-    implementation(group = "org.mvel" , name = "mvel2", version = Versions.mvel)
-    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version = Versions.kotlinxSerialization)
-    implementation(group = "com.charleskorn.kaml", name = "kaml", version = Versions.kaml)
-}
-
-tasks {
-    withType<KotlinCompile> {
-        kotlinOptions {
-            freeCompilerArgs = listOf("-Xopt-in=org.islandoftex.arara.api.localization.AraraMessages," +
-                    "kotlin.time.ExperimentalTime,kotlin.io.path.ExperimentalPathApi")
+kotlin {
+    sourceSets {
+        all {
+            languageSettings.useExperimentalAnnotation("org.islandoftex.arara.api.localization.AraraMessages")
+            languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+            languageSettings.useExperimentalAnnotation("kotlin.io.path.ExperimentalPathApi")
+        }
+        val jvmMain by getting {
+            dependencies {
+                api(project(":api"))
+                implementation(project(":core"))
+                implementation(kotlin("stdlib-jdk7"))
+                implementation("org.slf4j:slf4j-api:${Versions.slf4j}")
+                implementation("org.mvel:mvel2:${Versions.mvel}")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:${Versions.kotlinxSerialization}")
+                implementation("com.charleskorn.kaml:kaml:${Versions.kaml}")
+            }
         }
     }
 }

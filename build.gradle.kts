@@ -147,58 +147,54 @@ subprojects {
                     attributes["Automatic-Module-Name"] = rootProject.group
                 }
 
-        if (!path.contains("mvel")) {
-            apply(plugin = "org.jetbrains.kotlin.multiplatform")
-            configure<KotlinMultiplatformExtension> {
-                jvm {
-                    withJava()
-                    compilations.all {
-                        kotlinOptions {
-                            jvmTarget = "1.8"
-                        }
-                    }
-                }
 
-                sourceSets {
-                    all {
-                        languageSettings.apply {
-                            languageVersion = "1.4"
-                            apiVersion = "1.4"
-                        }
-                    }
-                    val commonMain by getting {
-                        dependencies {
-                            implementation(kotlin("stdlib-common"))
-                        }
-                    }
-                    val commonTest by getting {
-                        dependencies {
-                            implementation(kotlin("test-common"))
-                            implementation(kotlin("test-annotations-common"))
-                        }
-                    }
-                    val jvmTest by getting {
-                        dependencies {
-                            implementation(kotlin("test-junit5"))
-                            runtimeOnly("org.junit.jupiter:junit-jupiter-engine:${Versions.junit}")
-                        }
+        apply(plugin = "org.jetbrains.kotlin.multiplatform")
+        configure<KotlinMultiplatformExtension> {
+            jvm {
+                withJava()
+                compilations.all {
+                    kotlinOptions {
+                        jvmTarget = "1.8"
                     }
                 }
             }
-            tasks {
-                named<Test>("jvmTest") {
-                    useJUnitPlatform()
 
-                    testLogging {
-                        exceptionFormat = TestExceptionFormat.FULL
-                        events(TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR,
-                                TestLogEvent.SKIPPED, TestLogEvent.PASSED, TestLogEvent.FAILED)
+            sourceSets {
+                all {
+                    languageSettings.apply {
+                        languageVersion = "1.4"
+                        apiVersion = "1.4"
+                    }
+                }
+                val commonMain by getting {
+                    dependencies {
+                        implementation(kotlin("stdlib-common"))
+                    }
+                }
+                val commonTest by getting {
+                    dependencies {
+                        implementation(kotlin("test-common"))
+                        implementation(kotlin("test-annotations-common"))
+                    }
+                }
+                val jvmTest by getting {
+                    dependencies {
+                        implementation(kotlin("test-junit5"))
+                        runtimeOnly("org.junit.jupiter:junit-jupiter-engine:${Versions.junit}")
                     }
                 }
             }
         }
-
         tasks {
+            named<Test>("jvmTest") {
+                useJUnitPlatform()
+
+                testLogging {
+                    exceptionFormat = TestExceptionFormat.FULL
+                    events(TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR,
+                            TestLogEvent.SKIPPED, TestLogEvent.PASSED, TestLogEvent.FAILED)
+                }
+            }
             withType<Jar> {
                 archiveBaseName.set("arara-${project.name}")
                 manifest.attributes.putAll(mainManifest.attributes)
@@ -224,33 +220,5 @@ subprojects {
         }
 
         apply<AraraPublication>()
-    }
-    if (path.contains("mvel")) {
-        apply(plugin = "org.jetbrains.kotlin.jvm")
-        val javaCompatibility = JavaVersion.VERSION_1_8
-        configure<JavaPluginExtension> {
-            sourceCompatibility = javaCompatibility
-            targetCompatibility = javaCompatibility
-
-            withSourcesJar()
-            withJavadocJar()
-        }
-
-        tasks {
-            withType<Test> {
-                useJUnitPlatform()
-
-                testLogging {
-                    events(TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR,
-                            TestLogEvent.SKIPPED, TestLogEvent.PASSED, TestLogEvent.FAILED)
-                }
-            }
-            named<Jar>("sourcesJar") {
-                archiveClassifier.set("sources")
-            }
-            named<Jar>("javadocJar") {
-                from(project.tasks.getByPath("dokkaJavadoc"))
-            }
-        }
     }
 }
