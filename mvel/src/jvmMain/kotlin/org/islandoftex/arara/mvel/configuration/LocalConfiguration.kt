@@ -2,7 +2,6 @@
 package org.islandoftex.arara.mvel.configuration
 
 import com.charleskorn.kaml.Yaml
-import kotlin.io.path.readText
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionOptions
@@ -14,7 +13,6 @@ import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.mvel.files.FileType
-import org.mvel2.templates.TemplateRuntime
 
 /**
  * A local configuration which resembles configuration files in the working
@@ -52,25 +50,12 @@ data class LocalConfiguration(
         currentProject: Project,
         baseOptions: ExecutionOptions = org.islandoftex.arara.core.configuration.ExecutionOptions()
     ): ExecutionOptions {
-        val templateContext = mapOf(
-                "user" to mapOf(
-                        "home" to (Environment.getSystemPropertyOrNull("user.home") ?: ""),
-                        "name" to (Environment.getSystemPropertyOrNull("user.name") ?: "")
-                ),
-                "application" to mapOf(
-                        "workingDirectory" to currentProject.workingDirectory.toAbsolutePath().toString()
-                )
-        )
         val preprocessedPaths = paths.asSequence()
                 .map { it.trim() }
                 .map { input ->
-                    try {
-                        TemplateRuntime.eval(input, templateContext) as String
-                    } catch (_: RuntimeException) {
-                        // do nothing, gracefully fallback to
-                        // the default, unparsed path
-                        input
-                    }
+                    input.replace("@{user.home}", Environment.getSystemPropertyOrNull("user.home") ?: "")
+                            .replace("@{user.name}", Environment.getSystemPropertyOrNull("user.name") ?: "")
+                            .replace("@{application.workingDirectory}", currentProject.workingDirectory.toAbsolutePath().toString())
                 }
                 .map { MPPPath(it) }
                 .map { path ->
