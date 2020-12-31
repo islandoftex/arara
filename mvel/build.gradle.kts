@@ -13,6 +13,12 @@ kotlin {
             languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
             languageSettings.useExperimentalAnnotation("kotlin.io.path.ExperimentalPathApi")
         }
+        val commonMain by getting {
+            dependencies {
+                implementation(project(":core"))
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:${Versions.kotlinxSerialization}")
+            }
+        }
         val jvmMain by getting {
             dependencies {
                 api(project(":api"))

@@ -6,7 +6,7 @@ package org.islandoftex.arara.core.utils
  * `%s` in the string. As such mostly compatible with the usual
  * `kotlin.text.format` function for strings.
  */
-internal fun String.formatString(vararg stringReplacements: String): String {
+fun String.formatString(vararg stringReplacements: String): String {
     var final = this
     for (replacement in stringReplacements) {
         final = final.replaceFirst("%s", replacement)
