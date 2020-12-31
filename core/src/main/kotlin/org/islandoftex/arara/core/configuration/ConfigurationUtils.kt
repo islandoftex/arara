@@ -33,7 +33,7 @@ object ConfigurationUtils {
         defaultFileTypePatterns
                 .map { (extension, pattern) ->
                     org.islandoftex.arara.core.files.FileType(extension, pattern)
-                }.toSet().toList()
+                }.distinct()
     }
 
     /**

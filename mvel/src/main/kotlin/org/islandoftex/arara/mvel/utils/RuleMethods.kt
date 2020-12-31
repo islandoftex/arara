@@ -176,10 +176,8 @@ object RuleMethods {
      * @return A string built from the array.
      */
     @JvmStatic
-    @Suppress("SpreadOperator")
-    fun buildString(vararg objects: Any?): String? {
-        return MethodUtils.generateString(*objects.filterNotNull().toTypedArray())
-    }
+    fun buildString(vararg objects: Any?): String =
+        MethodUtils.generateString(objects.filterNotNull().toTypedArray())
 
     /**
      * Gets the command based on a list of strings.
@@ -200,7 +198,7 @@ object RuleMethods {
      */
     @JvmStatic
     fun getCommand(vararg elements: Any?): Command =
-            getCommand(InputHandling.flatten(elements.toList().filterNotNull())
+            getCommand(InputHandling.flatten(elements.filterNotNull())
                             .map { it.toString() }
                             .filter { it.isNotEmpty() })
 
@@ -215,9 +213,9 @@ object RuleMethods {
     @JvmStatic
     fun getCommandWithWorkingDirectory(
         path: String,
-        vararg elements: Any
+        vararg elements: Any?
     ): Command = org.islandoftex.arara.core.session.Command(
-            InputHandling.flatten(elements.toList())
+            InputHandling.flatten(elements.filterNotNull())
                     .map { it.toString() }
                     .filter { it.isNotEmpty() },
             Paths.get(path)
@@ -234,9 +232,9 @@ object RuleMethods {
     @JvmStatic
     fun getCommandWithWorkingDirectory(
         file: File,
-        vararg elements: Any
+        vararg elements: Any?
     ): Command = org.islandoftex.arara.core.session.Command(
-            InputHandling.flatten(elements.toList())
+            InputHandling.flatten(elements.filterNotNull())
                     .map { it.toString() }
                     .filter { it.isNotEmpty() },
             file.toPath()
