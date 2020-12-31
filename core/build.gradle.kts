@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 import org.islandoftex.arara.build.Versions
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
-    kotlin("multiplatform")
-    id("org.jetbrains.kotlin.plugin.serialization")
+    kotlin("plugin.serialization")
 }
 
 kotlin {
@@ -32,9 +29,11 @@ kotlin {
 
     sourceSets {
         all {
-            languageSettings.useExperimentalAnnotation("org.islandoftex.arara.api.localization.AraraMessages")
-            languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
-            languageSettings.useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
+            languageSettings.apply {
+                useExperimentalAnnotation("org.islandoftex.arara.api.localization.AraraMessages")
+                useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+                useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
+            }
 
             dependencies {
                 api(project(":api"))
@@ -43,16 +42,9 @@ kotlin {
         }
         val commonMain by getting {
             dependencies {
-                kotlin("stdlib-common")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:${Versions.kotlinxSerialization}")
                 implementation("com.soywiz.korlibs.korio:korio:${Versions.korlibs}")
                 implementation("net.mamoe.yamlkt:yamlkt:${Versions.yamlkt}")
-            }
-        }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
             }
         }
         val jvmMain by getting {
@@ -65,24 +57,10 @@ kotlin {
         val jvmTest by getting {
             languageSettings.useExperimentalAnnotation("kotlin.io.path.ExperimentalPathApi")
             dependencies {
-                implementation(kotlin("test-junit5"))
                 implementation("io.kotest:kotest-runner-junit5-jvm:${Versions.kotest}")
                 implementation("io.kotest:kotest-assertions-core-jvm:${Versions.kotest}")
                 runtimeOnly("org.slf4j:slf4j-simple:${Versions.slf4j}")
-                runtimeOnly("org.junit.jupiter:junit-jupiter-engine:${Versions.junit}")
             }
-        }
-    }
-}
-
-tasks {
-    named<Test>("jvmTest") {
-        useJUnitPlatform()
-
-        testLogging {
-            exceptionFormat = TestExceptionFormat.FULL
-            events(TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR,
-                    TestLogEvent.SKIPPED, TestLogEvent.PASSED, TestLogEvent.FAILED)
         }
     }
 }

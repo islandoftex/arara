@@ -5,8 +5,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
+    kotlin("jvm")
+    kotlin("plugin.serialization")
     `java-library`
-    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 dependencies {
@@ -24,14 +25,6 @@ tasks {
         kotlinOptions {
             freeCompilerArgs = listOf("-Xopt-in=org.islandoftex.arara.api.localization.AraraMessages," +
                     "kotlin.time.ExperimentalTime,kotlin.io.path.ExperimentalPathApi")
-        }
-    }
-    withType<Test> {
-        useJUnitPlatform()
-
-        testLogging {
-            events(TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR,
-                    TestLogEvent.SKIPPED, TestLogEvent.PASSED, TestLogEvent.FAILED)
         }
     }
 }

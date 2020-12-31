@@ -5,8 +5,15 @@ import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.java.archives.internal.DefaultManifest
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.islandoftex.arara.build.*
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.islandoftex.arara.build.Versions
+import org.islandoftex.arara.build.AraraPublication
+import org.islandoftex.arara.build.SourceZipBuilderTask
+import org.islandoftex.arara.build.CTANTreeBuilderTask
+import org.islandoftex.arara.build.CTANZipBuilderTask
+import org.islandoftex.arara.build.TDSTreeBuilderTask
+import org.islandoftex.arara.build.TDSZipBuilderTask
+import org.jetbrains.dokka.gradle.DokkaTask
 
 buildscript {
     repositories {
@@ -22,7 +29,7 @@ if (!project.hasProperty("jobToken")) {
 
 plugins {
     val versions = org.islandoftex.arara.build.Versions
-    kotlin("jvm") version versions.kotlin apply false                                   // Apache 2.0
+    kotlin("multiplatform") version versions.kotlin apply false                         // Apache 2.0
     kotlin("plugin.serialization") version versions.kotlin apply false                  // Apache 2.0
     id("com.github.johnrengelman.shadow") version versions.shadow apply false           // Apache 2.0
     id("com.github.ben-manes.versions") version versions.versionsPlugin                 // Apache 2.0
@@ -116,32 +123,18 @@ tasks.register("assembleCTAN", CTANZipBuilderTask::class.java) {
 
 version = spotlessChangelog.versionNext
 allprojects {
+    group = "org.islandoftex.arara"
+    description = "TeX automation tool based on rules and directives"
+    version = rootProject.version
+}
+subprojects {
     repositories {
         jcenter()
         maven("https://dl.bintray.com/korlibs/korlibs/")
     }
 
-    group = "org.islandoftex.arara"
-    version = rootProject.version
-}
-subprojects {
     if (!path.contains("docs")) {
         apply(plugin = "org.jetbrains.dokka")
-    }
-    if (!path.contains("docs") && !path.contains("api") &&
-            !path.contains("core") && !path.contains("cli")) {
-        apply(plugin = "org.jetbrains.kotlin.jvm")
-
-        val javaCompatibility = JavaVersion.VERSION_1_8
-        configure<JavaPluginExtension> {
-            sourceCompatibility = javaCompatibility
-            targetCompatibility = javaCompatibility
-
-            withSourcesJar()
-            withJavadocJar()
-        }
-
-        apply(plugin = "com.github.johnrengelman.shadow")
         val mainManifest: Manifest = DefaultManifest((project as ProjectInternal).fileResolver)
                 .apply {
                     attributes["Implementation-Title"] = "arara-${project.name}"
@@ -153,133 +146,110 @@ subprojects {
                     attributes["Multi-Release"] = "true"
                     attributes["Automatic-Module-Name"] = rootProject.group
                 }
-        tasks {
-            withType<KotlinCompile> {
-                kotlinOptions {
-                    jvmTarget = "1.8"
+
+        if (!path.contains("mvel") && !path.contains("dsl")) {
+            apply(plugin = "org.jetbrains.kotlin.multiplatform")
+            configure<KotlinMultiplatformExtension> {
+                jvm {
+                    withJava()
+                    compilations.all {
+                        kotlinOptions {
+                            jvmTarget = "1.8"
+                        }
+                    }
+                }
+
+                sourceSets {
+                    all {
+                        languageSettings.apply {
+                            languageVersion = "1.4"
+                            apiVersion = "1.4"
+                        }
+                    }
+                    val commonMain by getting {
+                        dependencies {
+                            implementation(kotlin("stdlib-common"))
+                        }
+                    }
+                    val commonTest by getting {
+                        dependencies {
+                            implementation(kotlin("test-common"))
+                            implementation(kotlin("test-annotations-common"))
+                        }
+                    }
+                    val jvmTest by getting {
+                        dependencies {
+                            implementation(kotlin("test-junit5"))
+                            runtimeOnly("org.junit.jupiter:junit-jupiter-engine:${Versions.junit}")
+                        }
+                    }
                 }
             }
+            tasks {
+                named<Test>("jvmTest") {
+                    useJUnitPlatform()
 
+                    testLogging {
+                        exceptionFormat = TestExceptionFormat.FULL
+                        events(TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR,
+                                TestLogEvent.SKIPPED, TestLogEvent.PASSED, TestLogEvent.FAILED)
+                    }
+                }
+            }
+        }
+
+        tasks {
             withType<Jar> {
                 archiveBaseName.set("arara-${project.name}")
                 manifest.attributes.putAll(mainManifest.attributes)
             }
-            named<Jar>("sourcesJar") {
-                archiveBaseName.set("arara-${project.name}")
-                archiveClassifier.set("sources")
-            }
-            named<Jar>("javadocJar") {
-                archiveBaseName.set("arara-${project.name}")
-                from(project.tasks.getByPath("dokkaJavadoc"))
-                archiveClassifier.set("javadoc")
-            }
-            named<Jar>("shadowJar") {
-                archiveBaseName.set("arara-${project.name}")
-                archiveClassifier.set("with-deps")
+            named<DokkaTask>("dokkaHtml").configure {
+                dokkaSourceSets.configureEach {
+                    jdkVersion.set(8)
+                    moduleName.set("arara (${project.name})")
+                    includeNonPublic.set(false)
+                    skipDeprecated.set(false)
+                    reportUndocumented.set(true)
+                    skipEmptyPackages.set(true)
+                    platform.set(org.jetbrains.dokka.Platform.common)
+                    sourceLink {
+                        localDirectory.set(file("./"))
+                        remoteUrl.set(uri("https://gitlab.com/islandoftex/arara").toURL())
+                        remoteLineSuffix.set("#L")
+                    }
+                    noStdlibLink.set(false)
+                    noJdkLink.set(false)
+                }
             }
         }
 
-        apply(plugin = "maven-publish")
-        configure<PublishingExtension> {
-            publications {
-                register<MavenPublication>("GitLab") {
-                    groupId = project.group.toString()
-                    artifactId = "arara-${project.name}"
-                    version = version
+        apply<AraraPublication>()
+    }
+    if (path.contains("mvel") || path.contains("dsl")) {
+        apply(plugin = "org.jetbrains.kotlin.jvm")
+        val javaCompatibility = JavaVersion.VERSION_1_8
+        configure<JavaPluginExtension> {
+            sourceCompatibility = javaCompatibility
+            targetCompatibility = javaCompatibility
 
-                    pom {
-                        name.set("arara-${project.group}")
-                        description.set("arara is a TeX automation tool based on " +
-                                "rules and directives. It gives you a way to enhance " +
-                                "your TeX experience.")
-                        inceptionYear.set("2012")
-                        url.set("https://gitlab.com/islandoftex/arara")
-                        organization {
-                            name.set("Island of TeX")
-                            url.set("https://gitlab.com/islandoftex")
-                        }
-                        licenses {
-                            license {
-                                name.set("New BSD License")
-                                url.set("http://www.opensource.org/licenses/bsd-license.php")
-                                distribution.set("repo")
-                            }
-                        }
-                        developers {
-                            developer {
-                                name.set("Paulo Roberto Massa Cereda")
-                                email.set("cereda@users.sf.net")
-                                id.set("cereda")
-                                url.set("https://tex.stackexchange.com/users/3094")
-                                roles.set(listOf("Lead developer", "Creator", "Duck enthusiast"))
-                            }
-                            developer {
-                                name.set("Ben Frank")
-                                id.set("benfrank")
-                                url.set("https://gitlab.com/benfrank")
-                                roles.set(listOf("Release coordinator v5 and v6"))
-                            }
-                            developer {
-                                name.set("Marco Daniel")
-                                email.set("marco.daniel@mada-nada.de")
-                                id.set("marcodaniel")
-                                url.set("https://tex.stackexchange.com/users/5239")
-                                roles.set(listOf("Contributor", "Tester", "Fast driver"))
-                            }
-                            developer {
-                                name.set("Brent Longborough")
-                                email.set("brent@longborough.org")
-                                id.set("brent")
-                                url.set("https://tex.stackexchange.com/users/344")
-                                roles.set(listOf("Developer", "Contributor", "Tester",
-                                        "Haskell fanatic"))
-                            }
-                            developer {
-                                name.set("Nicola Talbot")
-                                email.set("nicola.lc.talbot@gmail.com")
-                                id.set("nlct")
-                                url.set("https://tex.stackexchange.com/users/19862")
-                                roles.set(listOf("Developer", "Contributor", "Tester",
-                                        "Hat enthusiast"))
-                            }
-                        }
-                        scm {
-                            connection.set("scm:git:https://gitlab.com/islandoftex/arara.git")
-                            developerConnection.set("scm:git:https://gitlab.com/islandoftex/arara.git")
-                            url.set("https://gitlab.com/islandoftex/arara")
-                        }
-                        ciManagement {
-                            system.set("GitLab")
-                            url.set("https://gitlab.com/islandoftex/arara/pipelines")
-                        }
-                        issueManagement {
-                            system.set("GitLab")
-                            url.set("https://gitlab.com/islandoftex/arara/issues")
-                        }
-                    }
+            withSourcesJar()
+            withJavadocJar()
+        }
 
-                    artifact(tasks["sourcesJar"])
-                    artifact(tasks["javadocJar"])
-                    artifact(tasks["shadowJar"])
-                    artifact(tasks["jar"])
+        tasks {
+            withType<Test> {
+                useJUnitPlatform()
+
+                testLogging {
+                    events(TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR,
+                            TestLogEvent.SKIPPED, TestLogEvent.PASSED, TestLogEvent.FAILED)
                 }
-
-                System.getenv("CI_PROJECT_ID")?.let {
-                    repositories {
-                        maven {
-                            url = uri("https://gitlab.com/api/v4/projects/$it/packages/maven")
-                            credentials(HttpHeaderCredentials::class) {
-                                if (project.hasProperty("jobToken")) {
-                                    name = "Job-Token"
-                                    value = project.property("jobToken").toString()
-                                }
-                            }
-                            authentication {
-                                create<HttpHeaderAuthentication>("header")
-                            }
-                        }
-                    }
-                }
+            }
+            named<Jar>("sourcesJar") {
+                archiveClassifier.set("sources")
+            }
+            named<Jar>("javadocJar") {
+                from(project.tasks.getByPath("dokkaJavadoc"))
             }
         }
     }

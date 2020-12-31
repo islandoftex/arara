@@ -14,6 +14,18 @@ stages:
   - test
   - publish
 
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+
+.cachetemplate: &cachedefinition
+  key: "$CI_COMMIT_REF_NAME-$JAVA_VERSION"
+  paths:
+    - build
+    - api/build
+    - core/build
+    - cli/build
+    - .gradle
+
 .buildtemplate: &builddefinition
   stage: build
   script:
@@ -31,14 +43,8 @@ stages:
       - bin
     expire_in: 1 week
   cache:
-    key: "$CI_COMMIT_REF_NAME-$JAVA_VERSION"
+    <<: *cachedefinition
     policy: push
-    paths:
-      - build
-      - api/build
-      - core/build
-      - cli/build
-      - .gradle
 
 build:linux:jdk8:
   image: openjdk:8
@@ -54,14 +60,8 @@ build:linux:jdk11:
     - ./gradlew test
     - ./gradlew detekt
   cache:
-    key: "$CI_COMMIT_REF_NAME-$JAVA_VERSION"
+    <<: *cachedefinition
     policy: pull
-    paths:
-      - build
-      - api/build
-      - core/build
-      - cli/build
-      - .gradle
 
 test:dependencies:
   stage: test
@@ -70,14 +70,8 @@ test:dependencies:
   script:
     - ./gradlew dependencyUpdates
   cache:
-    key: "$CI_COMMIT_REF_NAME-$JAVA_VERSION"
+    <<: *cachedefinition
     policy: pull
-    paths:
-      - build
-      - api/build
-      - core/build
-      - cli/build
-      - .gradle
 
 test:spotless:
   stage: test
@@ -86,14 +80,8 @@ test:spotless:
   script:
     - ./gradlew spotlessCheck
   cache:
-    key: "$CI_COMMIT_REF_NAME-$JAVA_VERSION"
+    <<: *cachedefinition
     policy: pull
-    paths:
-      - build
-      - api/build
-      - core/build
-      - cli/build
-      - .gradle
 
 test:linux:jdk8:
   needs: ["build:linux:jdk8"]
@@ -109,23 +97,17 @@ publish:gitlab:
   image: openjdk:8
   stage: publish
   script:
-    - ./gradlew publishGitLabPublicationToMavenRepository -PjobToken=$CI_JOB_TOKEN -Prelease=true
+    - ./gradlew publishAllPublicationsToGitLabRepository -PjobToken=$CI_JOB_TOKEN -Prelease=true
   cache:
-    key: "$CI_COMMIT_REF_NAME-$JAVA_VERSION"
+    <<: *cachedefinition
     policy: pull
-    paths:
-      - build
-      - api/build
-      - core/build
-      - cli/build
-      - .gradle
   rules:
     - if: '$CI_COMMIT_TAG != null'
 
 .ctantemplate: &ctandefinition
   stage: publish
   image: registry.gitlab.com/islandoftex/images/texlive:latest
-  needs: ["test:linux:jdk8", "build:linux:jdk11"]
+  needs: ["test:linux:jdk8", "test:linux:jdk11"]
   script:
     - apt-get update
     - apt-get install -y --no-install-recommends zip
@@ -138,14 +120,9 @@ publish:gitlab:
       - docs/*.pdf
     expire_in: 1 week
   cache:
-    key: "$CI_COMMIT_REF_NAME-$JAVA_VERSION"
+    <<: *cachedefinition
     policy: pull
-    paths:
-      - build
-      - api/build
-      - core/build
-      - cli/build
-      - .gradle
+
 publish:snapshot_tdszip:
   variables:
     PRELEASE: "false"
