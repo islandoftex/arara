@@ -458,9 +458,9 @@ object RuleMethods {
     fun readFromFile(file: File): List<String> = try {
         file.toPath().readLines(Charsets.UTF_8)
     } catch (e: IOException) {
-        listOf()
+        emptyList()
     } catch (e: SecurityException) {
-        listOf()
+        emptyList()
     }
 
     /**

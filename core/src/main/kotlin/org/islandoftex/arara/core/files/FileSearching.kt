@@ -58,7 +58,7 @@ object FileSearching {
         // if something bad happens,
         // gracefully fallback to
         // an empty file list
-        listOf()
+        emptyList()
     }
 
     /**
@@ -96,7 +96,7 @@ object FileSearching {
         // if something bad happens,
         // gracefully fallback to
         // an empty file list
-        listOf()
+        emptyList()
     }
 
     /**

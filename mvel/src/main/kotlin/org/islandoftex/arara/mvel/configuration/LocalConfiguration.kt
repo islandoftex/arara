@@ -30,8 +30,8 @@ import org.mvel2.templates.TemplateRuntime
  */
 @Serializable
 data class LocalConfiguration(
-    private val paths: List<String> = listOf(),
-    private val filetypes: List<FileType> = listOf(),
+    private val paths: List<String> = emptyList(),
+    private val filetypes: List<FileType> = emptyList(),
     private val language: String? = null,
     private val loops: Int? = null,
     private val verbose: Boolean? = null,

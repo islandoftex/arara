@@ -23,9 +23,9 @@ data class Rule(
     override val identifier: String,
     @SerialName("name")
     override val displayName: String? = null,
-    override val authors: List<String> = listOf(),
-    override val commands: List<SerialRuleCommand> = listOf(),
-    override val arguments: List<RuleArgument> = listOf()
+    override val authors: List<String> = emptyList(),
+    override val commands: List<SerialRuleCommand> = emptyList(),
+    override val arguments: List<RuleArgument> = emptyList()
 ) : Rule {
     companion object {
         private var ruleId: String? = null

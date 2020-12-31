@@ -109,7 +109,7 @@ object DirectiveUtils {
                                     it
                             )
                         }
-                    } ?: listOf()))
+                    } ?: emptyList()))
         } else map
     }
 

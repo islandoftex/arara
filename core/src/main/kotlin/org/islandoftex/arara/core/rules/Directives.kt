@@ -111,7 +111,7 @@ object Directives {
         fileType: FileType
     ): List<Directive> {
         val pairs = getPotentialDirectiveLines(lines, parseOnlyHeader, fileType.pattern)
-                .takeIf { it.isNotEmpty() } ?: return listOf()
+                .takeIf { it.isNotEmpty() } ?: return emptyList()
 
         val assemblers = mutableListOf<DirectiveAssembler>()
         var assembler = DirectiveAssembler()

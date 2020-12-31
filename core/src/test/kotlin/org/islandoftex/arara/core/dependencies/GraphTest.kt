@@ -6,14 +6,14 @@ import io.kotest.matchers.shouldBe
 
 class GraphTest : ShouldSpec({
     should("operate correctly on empty list") {
-        Graph<Int>().kahn() shouldBe listOf()
+        Graph<Int>().kahn() shouldBe emptyList()
     }
     should("operate correctly on single element list") {
         Graph<Int>().apply { addVertex(1) }.kahn() shouldBe listOf(1)
     }
     should("be empty on cycles") {
         // TODO: is that the correct behavior we want to enforce?
-        Graph<Int>().apply { addEdge(1, 1) }.kahn() shouldBe listOf()
+        Graph<Int>().apply { addEdge(1, 1) }.kahn() shouldBe emptyList()
     }
     should("return the right order") {
         Graph<Int>().apply {
