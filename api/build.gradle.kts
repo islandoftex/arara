@@ -34,6 +34,9 @@ kotlin {
         }*/
         val jvmMain by getting {
             languageSettings.useExperimentalAnnotation("kotlin.io.path.ExperimentalPathApi")
+            dependencies {
+                implementation("com.soywiz.korlibs.korio:korio:${Versions.korlibs}")
+            }
         }
         val jvmTest by getting {
             languageSettings.useExperimentalAnnotation("kotlin.io.path.ExperimentalPathApi")

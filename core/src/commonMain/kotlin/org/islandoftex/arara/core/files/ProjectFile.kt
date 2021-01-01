@@ -1,10 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-import com.soywiz.korio.async.runBlockingNoJs
-import com.soywiz.korio.file.std.localVfs
-import com.soywiz.korio.lang.IOException
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.ProjectFile
@@ -48,16 +46,11 @@ open class ProjectFile(
     override fun fetchDirectives(parseOnlyHeader: Boolean): List<Directive> =
         try {
             Directives.extractDirectives(
-                    runBlockingNoJs {
-                        // can't use path.readLines() because of still
-                        // undetermined exception handling
-                        // TODO: change when MPPPath uses VfsFile
-                        localVfs(path.toString()).readLines()
-                    }.toList(),
+                    path.readLines(),
                     LinearExecutor.executionOptions.parseOnlyHeader,
                     fileType
             )
-        } catch (ioexception: IOException) {
+        } catch (ioexception: AraraIOException) {
             throw AraraException(
                     LanguageController.messages.ERROR_EXTRACTOR_IO_ERROR,
                     ioexception
