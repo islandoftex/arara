@@ -124,12 +124,6 @@ public actual class MPPPath {
             MPPPath(path.resolveSibling(p.path))
 
     /**
-     * Convert the path to an absolute path.
-     */
-    public actual fun toAbsolutePath(): MPPPath =
-            MPPPath(path.toAbsolutePath())
-
-    /**
      * Return a JVM [Path] representation of this multiplatform path.
      */
     public fun toJVMPath(): Path = path
@@ -194,9 +188,4 @@ public actual class MPPPath {
      * Resolve the child [p] against the current path.
      */
     public actual operator fun div(p: MPPPath): MPPPath = resolve(p)
-
-    /**
-     * Resolve the child [p] against the current path.
-     */
-    public operator fun div(p: Path): MPPPath = resolve(MPPPath(p))
 }

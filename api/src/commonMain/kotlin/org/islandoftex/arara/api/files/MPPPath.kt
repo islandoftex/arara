@@ -83,11 +83,6 @@ public expect class MPPPath {
     public fun resolveSibling(p: MPPPath): MPPPath
 
     /**
-     * Convert the path to an absolute path.
-     */
-    public fun toAbsolutePath(): MPPPath
-
-    /**
      * Read lines from the file specified at the current path. Fails with an
      * [AraraIOException] exception if the file is a directory or access is
      * impossible.
