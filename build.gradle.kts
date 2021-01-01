@@ -94,11 +94,15 @@ spotless {
 detekt {
     failFast = false
     input = files(
-            "api/src/main/kotlin",
-            "core/src/main/kotlin",
-            "mvel/src/main/kotlin",
+            "api/src/commonMain/kotlin",
+            "api/src/jvmMain/kotlin",
+            "core/src/commonMain/kotlin",
+            "core/src/jvmMain/kotlin",
+            "mvel/src/commonMain/kotlin",
+            "mvel/src/jvmMain/kotlin",
             "kotlin-dsl/src/main/kotlin",
-            "cli/src/main/kotlin",
+            "cli/src/commonMain/kotlin",
+            "cli/src/jvmMain/kotlin",
             "buildSrc/src/main/kotlin"
     )
     buildUponDefaultConfig = true
@@ -126,13 +130,13 @@ allprojects {
     group = "org.islandoftex.arara"
     description = "TeX automation tool based on rules and directives"
     version = rootProject.version
-}
-subprojects {
+
     repositories {
         jcenter()
         maven("https://dl.bintray.com/korlibs/korlibs/")
     }
-
+}
+subprojects {
     if (!path.contains("docs")) {
         apply(plugin = "org.jetbrains.dokka")
         val mainManifest: Manifest = DefaultManifest((project as ProjectInternal).fileResolver)
