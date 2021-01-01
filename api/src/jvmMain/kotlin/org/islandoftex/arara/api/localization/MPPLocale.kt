@@ -8,6 +8,9 @@ public actual class MPPLocale actual constructor(tag: String) {
 
     public actual val displayLanguage: String = locale.displayLanguage
 
+    /**
+     * Convert the multiplatform locale to a JVM [Locale].
+     */
     public fun toJVMLocale(): Locale = locale
 
     override fun hashCode(): Int =

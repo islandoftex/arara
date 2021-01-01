@@ -52,9 +52,12 @@ data class LocalConfiguration(
         val preprocessedPaths = paths.asSequence()
                 .map { it.trim() }
                 .map { input ->
-                    input.replace("@{user.home}", Environment.getSystemPropertyOrNull("user.home") ?: "")
-                            .replace("@{user.name}", Environment.getSystemPropertyOrNull("user.name") ?: "")
-                            .replace("@{application.workingDirectory}", currentProject.workingDirectory.normalize().toString())
+                    input.replace("@{user.home}",
+                            Environment.getSystemPropertyOrNull("user.home") ?: "")
+                            .replace("@{user.name}",
+                                    Environment.getSystemPropertyOrNull("user.name") ?: "")
+                            .replace("@{application.workingDirectory}",
+                                    currentProject.workingDirectory.normalize().toString())
                 }
                 .map { MPPPath(it) }
                 .map { path ->

@@ -24,7 +24,8 @@ fun String.formatString(vararg stringReplacements: String): String {
  *
  * Code by [Neil Traft](https://stackoverflow.com/users/213525/neil-traft)
  * (see https://stackoverflow.com/a/17369948, released into public domain as
- * per [his comment](https://stackoverflow.com/questions/1247772/is-there-an-equivalent-of-java-util-regex-for-glob-type-patterns#comment108405664_17369948).
+ * per [his comment](https://stackoverflow.com/questions/1247772/is-there-an-
+ * equivalent-of-java-util-regex-for-glob-type-patterns#comment108405664_17369948).
  *
  * @param pattern A glob pattern.
  * @return A regex to recognize the given glob pattern.

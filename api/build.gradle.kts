@@ -61,6 +61,7 @@ tasks {
                     package org.islandoftex.arara.api
 
                     public actual object AraraAPI {
+                        @Suppress("MayBeConst")
                         public actual val version: String = "${project.version}"
                     }
 

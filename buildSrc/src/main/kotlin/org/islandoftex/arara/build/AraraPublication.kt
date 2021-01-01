@@ -32,7 +32,7 @@ open class AraraPublication : Plugin<Project> {
                     "linuxX64" ->
                         "${target.name}-linuxX64"
                     else ->
-                        throw Exception("Unknown publication type $name")
+                        throw IllegalArgumentException("Unknown publication type $name")
                 }
                 groupId = target.group.toString()
                 version = target.version.toString()
