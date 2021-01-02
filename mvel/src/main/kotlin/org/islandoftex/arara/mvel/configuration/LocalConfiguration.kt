@@ -2,7 +2,6 @@
 package org.islandoftex.arara.mvel.configuration
 
 import com.charleskorn.kaml.Yaml
-import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.Locale
@@ -85,7 +84,7 @@ data class LocalConfiguration(
                 }
                 .map { FileHandling.normalize(it) }
                 .toSet()
-        val databaseName = dbname?.let { Paths.get(cleanFileName(it)) }
+        val databaseName = dbname?.let { Paths.get(it.trim()).fileName }
                 ?: baseOptions.databaseName
         val maxLoops = loops?.let {
             if (loops > 0) {
@@ -121,7 +120,7 @@ data class LocalConfiguration(
     fun toLoggingOptions(
         baseOptions: LoggingOptions = org.islandoftex.arara.core.configuration.LoggingOptions()
     ): LoggingOptions {
-        val logName = logname?.let { Paths.get(cleanFileName(it)) }
+        val logName = logname?.runCatching { Paths.get(this) }?.getOrNull()
                 ?: baseOptions.logFile
         return org.islandoftex.arara.core.configuration.LoggingOptions(
                 enableLogging = logging ?: baseOptions.enableLogging,
@@ -144,17 +143,6 @@ data class LocalConfiguration(
                         ?: baseOptions.locale,
                 swingLookAndFeel = laf ?: baseOptions.swingLookAndFeel
         )
-    }
-
-    /**
-     * Cleans the file name to avoid invalid entries.
-     *
-     * @param name The file name.
-     * @return A cleaned file name.
-     */
-    private fun cleanFileName(name: String): String {
-        val result = File(name).name.trim()
-        return if (result.isEmpty()) "arara" else result.trim()
     }
 
     companion object {
