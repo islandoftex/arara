@@ -22,6 +22,11 @@ kotlin {
         all {
             languageSettings.useExperimentalAnnotation("kotlin.RequiresOptIn")
         }
+        val commonMain by getting {
+            dependencies {
+                api("com.soywiz.korlibs.klock:klock:${Versions.klock}")
+            }
+        }
         /*val nativeCommonMain by creating {
             dependsOn(commonMain)
             dependencies {

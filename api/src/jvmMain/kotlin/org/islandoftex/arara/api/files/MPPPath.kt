@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.files
 
+import com.soywiz.klock.DateTime
 import com.soywiz.korio.async.runBlockingNoJs
 import com.soywiz.korio.file.VfsFile
 import com.soywiz.korio.file.baseName
@@ -52,6 +53,22 @@ public actual class MPPPath {
      */
     public actual val fileName: String
         get() = vfsFile.baseName
+
+    /**
+     * Get the file size of this file in bytes.
+     */
+    public actual val fileSize: Long
+        get() = runBlockingNoJs {
+            vfsFile.size()
+        }
+
+    /**
+     * Get the last modification date of this file as timestamp.
+     */
+    public actual val lastModified: DateTime
+        get() = runBlockingNoJs {
+            vfsFile.stat().modifiedTime
+        }
 
     /**
      * Get the parent object of the currently represented path. If it has no

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.files
 
+import com.soywiz.klock.DateTime
 import org.islandoftex.arara.api.AraraIOException
 
 /**
@@ -22,6 +23,16 @@ public expect class MPPPath {
      * Get the last segment of a path which by definition is the file name.
      */
     public val fileName: String
+
+    /**
+     * Get the file size of this file in bytes.
+     */
+    public val fileSize: Long
+
+    /**
+     * Get the last modification date of this file as timestamp.
+     */
+    public val lastModified: DateTime
 
     /**
      * Get the parent object of the currently represented path. If it has no

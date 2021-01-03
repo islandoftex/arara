@@ -17,6 +17,7 @@ object Versions {
     const val jna = "5.7.0"
     const val junit = "5.7.0"
     const val kaml = "0.27.0"
+    const val klock = "2.0.3"
     const val korlibs = "2.0.4"
     const val kotest = "4.4.1"
     const val kotlinLogging = "2.0.4"
