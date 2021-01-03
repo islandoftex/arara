@@ -3,7 +3,6 @@ package org.islandoftex.arara.mvel.utils
 
 import java.io.File
 import java.io.IOException
-import kotlin.io.path.readLines
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.SafeRunViolationException
 import org.islandoftex.arara.api.configuration.ExecutionMode
@@ -466,7 +465,7 @@ object RuleMethods {
      */
     @JvmStatic
     fun readFromFile(file: File): List<String> = try {
-        file.toPath().readLines(Charsets.UTF_8)
+        MPPPath(file.toPath()).readLines()
     } catch (e: IOException) {
         emptyList()
     } catch (e: SecurityException) {

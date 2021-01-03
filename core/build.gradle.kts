@@ -48,7 +48,6 @@ kotlin {
             }
         }
         val jvmMain by getting {
-            languageSettings.useExperimentalAnnotation("kotlin.io.path.ExperimentalPathApi")
             dependencies {
                 implementation("org.zeroturnaround:zt-exec:${Versions.ztExec}")
                 implementation("com.soywiz.korlibs.korio:korio:${Versions.korlibs}")
