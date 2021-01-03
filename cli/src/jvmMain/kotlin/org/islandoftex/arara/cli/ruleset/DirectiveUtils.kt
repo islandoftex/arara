@@ -34,10 +34,11 @@ object DirectiveUtils {
         Directives.hooks = DirectiveFetchingHooks(
                 processPotentialDirective = { line, directive ->
                     directive.trim().also {
-                        logger.info(LanguageController.messages
-                                .LOG_INFO_POTENTIAL_PATTERN_FOUND
-                                .format(line, it)
-                        )
+                        logger.info {
+                            LanguageController.messages
+                                    .LOG_INFO_POTENTIAL_PATTERN_FOUND
+                                    .format(line, it)
+                        }
                     }
                 },
                 buildDirectiveRaw = { id, parameters, conditional, lines ->
@@ -148,11 +149,14 @@ object DirectiveUtils {
                 ))
             }
         }.also { result ->
-            logger.info(LanguageController.messages.LOG_INFO_VALIDATED_DIRECTIVES)
-            logger.info(
-                DisplayUtils.displayOutputSeparator(
-                    LanguageController.messages.LOG_INFO_DIRECTIVES_BLOCK))
-            result.forEach { logger.info(it.toString()) }
-            logger.info(DisplayUtils.displaySeparator())
+            logger.info {
+                """
+                    ${LanguageController.messages.LOG_INFO_VALIDATED_DIRECTIVES}
+                    ${DisplayUtils.displayOutputSeparator(
+                        LanguageController.messages.LOG_INFO_DIRECTIVES_BLOCK)}
+                    ${result.joinToString("\n")}
+                    ${DisplayUtils.displaySeparator()}
+                """.trimIndent()
+            }
         }
 }

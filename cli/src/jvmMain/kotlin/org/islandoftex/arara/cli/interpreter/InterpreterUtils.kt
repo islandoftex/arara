@@ -76,17 +76,15 @@ internal object InterpreterUtils {
                     }, AraraException(output)
             )
         }
-        logger.info(
-                DisplayUtils.displayOutputSeparator(
-                        LanguageController.messages.LOG_INFO_BEGIN_BUFFER
-                )
-        )
-        logger.info(output)
-        logger.info(
-                DisplayUtils.displayOutputSeparator(
-                        LanguageController.messages.LOG_INFO_END_BUFFER
-                )
-        )
+        logger.info {
+            """
+                ${DisplayUtils.displayOutputSeparator(
+                    LanguageController.messages.LOG_INFO_BEGIN_BUFFER)}
+                $output
+                ${DisplayUtils.displayOutputSeparator(
+                    LanguageController.messages.LOG_INFO_END_BUFFER)}
+            """.trimIndent()
+        }
         exitCode
     }
 

@@ -94,17 +94,17 @@ class Interpreter(
         value: Boolean,
         conditional: DirectiveConditional,
         authors: List<String>
-    ): Boolean {
-        logger.info(LanguageController.messages.LOG_INFO_BOOLEAN_MODE.format(value))
+    ): Boolean = value.also {
+        logger.info {
+            LanguageController.messages.LOG_INFO_BOOLEAN_MODE.format(it)
+        }
 
         if (executionOptions.executionMode == ExecutionMode.DRY_RUN) {
             DisplayUtils.printAuthors(authors)
             DisplayUtils.printWrapped(LanguageController.messages
-                    .INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE.format(value))
+                    .INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE.format(it))
             DisplayUtils.printConditional(conditional)
         }
-
-        return value
     }
 
     /**
@@ -125,7 +125,9 @@ class Interpreter(
         authors: List<String>,
         ruleCommandExitValue: String?
     ): Boolean {
-        logger.info(LanguageController.messages.LOG_INFO_SYSTEM_COMMAND.format(command))
+        logger.info {
+            LanguageController.messages.LOG_INFO_SYSTEM_COMMAND.format(command)
+        }
         var success = true
 
         if (executionOptions.executionMode != ExecutionMode.DRY_RUN) {
@@ -235,18 +237,18 @@ class Interpreter(
     @Throws(AraraException::class)
     @Suppress("NestedBlockDepth")
     fun execute(directive: Directive): ExecutionStatus {
-        logger.info(
-                LanguageController.messages.LOG_INFO_INTERPRET_RULE.format(
-                        directive.identifier
-                )
-        )
+        logger.info {
+            LanguageController.messages.LOG_INFO_INTERPRET_RULE.format(
+                    directive.identifier
+            )
+        }
 
         val file = getRule(directive, workingDirectory)
-        logger.info(
-                LanguageController.messages.LOG_INFO_RULE_LOCATION.format(
-                        file.parent
-                )
-        )
+        logger.info {
+            LanguageController.messages.LOG_INFO_RULE_LOCATION.format(
+                    file.parent
+            )
+        }
 
         // parse the rule identified by the directive (may throw an exception)
         val rule = RuleUtils.parseRule(file, directive.identifier)
