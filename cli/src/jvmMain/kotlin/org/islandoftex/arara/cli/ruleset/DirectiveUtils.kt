@@ -151,7 +151,8 @@ object DirectiveUtils {
             }
         }.also { result ->
             logger.info(LanguageController.messages.LOG_INFO_VALIDATED_DIRECTIVES)
-            logger.info(DisplayUtils.displayOutputSeparator(
+            logger.info(
+                DisplayUtils.displayOutputSeparator(
                     LanguageController.messages.LOG_INFO_DIRECTIVES_BLOCK))
             result.forEach { logger.info(it.toString()) }
             logger.info(DisplayUtils.displaySeparator())

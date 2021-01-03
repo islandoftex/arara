@@ -13,4 +13,9 @@ public expect class MPPLocale(tag: String) {
      * falls back to language tag.
      */
     public val displayLanguage: String
+
+    /**
+     * The decimal separator of that language.
+     */
+    public val decimalSeparator: Char
 }

@@ -1,22 +1,19 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
-import com.soywiz.klock.DateFormat
-import com.soywiz.klock.format
 import kotlin.math.ln
 import kotlin.math.pow
+import kotlin.time.seconds
 import mu.KotlinLogging
-import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
-import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
+import org.islandoftex.arara.core.utils.formatString
 
 /**
  * Implements display utilitary methods.
@@ -73,7 +70,7 @@ object DisplayUtils {
     /**
      * The application path.
      */
-    private val applicationPath: String
+    internal val applicationPath: String
         get() = try {
             ConfigurationUtils.applicationPath.toString()
         } catch (ae: AraraException) {
@@ -111,10 +108,10 @@ object DisplayUtils {
         displayLine = false
         displayResult = true
 
-        logger.info(
-                LanguageController.messages.LOG_INFO_TASK_RESULT + " " +
-                        getResult(value)
-        )
+        logger.info {
+            LanguageController.messages.LOG_INFO_TASK_RESULT + " " +
+                    getResult(value)
+        }
         if (!isDryRunMode) {
             println(
                     if (!isVerboseMode) {
@@ -134,10 +131,10 @@ object DisplayUtils {
      * @param task The task name.
      */
     fun printEntry(name: String, task: String) {
-        logger.info(
-                LanguageController.messages.LOG_INFO_INTERPRET_TASK
-                        .format(task, name)
-        )
+        logger.info {
+            LanguageController.messages.LOG_INFO_INTERPRET_TASK
+                    .formatString(task, name)
+        }
         displayLine = true
         displayResult = false
         if (!isDryRunMode) {
@@ -214,13 +211,13 @@ object DisplayUtils {
         else
             exception.message) ?: "EXCEPTION PROVIDES NO MESSAGE"
         // TODO: check null handling
-        logger.error(text)
+        logger.error { text }
         printWrapped(text)
         if (exception.hasException()) {
             println()
             displayDetailsLine()
             val details = exception.exception!!.message!!
-            logger.error(details)
+            logger.error { details }
             printWrapped(details)
         }
     }
@@ -288,56 +285,17 @@ object DisplayUtils {
         return if (size < conversionFactor) "$size B"
         else
             (ln(size.toDouble()) / ln(conversionFactor)).toInt().let { exp ->
-                "%.1f %sB".format(
-                        Session.userInterfaceOptions.locale.toJVMLocale(),
-                        size / conversionFactor.pow(exp.toDouble()),
-                        "kMGTPE"[exp - 1]
+                val baseSize = size / conversionFactor.pow(exp.toDouble())
+                val ones = baseSize.toInt()
+                val tenths = ((baseSize - ones) * 10).toInt()
+                "%s%s%s %sB".formatString(
+                        ones.toString(),
+                        Session.userInterfaceOptions.locale
+                                .decimalSeparator.toString(),
+                        tenths.toString(),
+                        "kMGTPE"[exp - 1].toString()
                 )
             }
-    }
-
-    /**
-     * Displays the file information in the terminal.
-     */
-    fun printFileInformation(projectFile: ProjectFile) {
-        val line = LanguageController.messages.INFO_DISPLAY_FILE_INFORMATION
-                .format(
-                        projectFile.path.fileName,
-                        byteSizeToString(projectFile.path.fileSize),
-                        DateFormat("yyyy-MM-dd HH:mm:ss")
-                                .format(projectFile.path.lastModified)
-                )
-        logger.info(LanguageController.messages.LOG_INFO_WELCOME_MESSAGE
-                .format(AraraAPI.version))
-        logger.info(displaySeparator())
-        logger.debug("::: arara @ $applicationPath")
-        logger.debug("::: Java %s, %s".format(
-                Environment.getSystemProperty("java.version",
-                        "[unknown version]"),
-                Environment.getSystemProperty("java.vendor",
-                        "[unknown vendor]")
-        ))
-        logger.debug("::: %s".format(
-                Environment.getSystemProperty("java.home",
-                        "[unknown location]")
-        ))
-        logger.debug("::: %s, %s, %s".format(
-                Environment.getSystemProperty("os.name",
-                        "[unknown OS name]"),
-                Environment.getSystemProperty("os.arch",
-                        "[unknown OS arch]"),
-                Environment.getSystemProperty("os.version",
-                        "[unknown OS version]")
-        ))
-        logger.debug("::: user.home @ %s".format(
-                Environment.getSystemProperty("user.home",
-                        "[unknown user's home directory]")
-        ))
-        logger.debug("::: CF @ %s".format(configurationFileName))
-        logger.debug(displaySeparator())
-        logger.info(line)
-        printWrapped(line)
-        println()
     }
 
     /**
@@ -349,14 +307,18 @@ object DisplayUtils {
         if (displayLine || displayException)
             println()
 
+        val secondDuration = seconds.seconds
         val text = LanguageController.messages.INFO_DISPLAY_EXECUTION_TIME
-                .format(
-                        "%1.2f".format(
-                                Session.userInterfaceOptions.locale.toJVMLocale(),
-                                seconds
+                .formatString(
+                        "%s%s%s".formatString(
+                                secondDuration.inSeconds.toInt().toString(),
+                                Session.userInterfaceOptions.locale
+                                        .decimalSeparator.toString(),
+                                (secondDuration - secondDuration.inSeconds.toInt().seconds)
+                                        .inMilliseconds.toInt().toString()
                         )
                 )
-        logger.info(text)
+        logger.info { text }
         printWrapped(text)
     }
 

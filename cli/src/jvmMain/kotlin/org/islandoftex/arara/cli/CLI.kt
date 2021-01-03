@@ -27,6 +27,7 @@ import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.LoggingUtils
+import org.islandoftex.arara.cli.utils.printFileInformation
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.LoggingOptions
 import org.islandoftex.arara.core.configuration.UserInterfaceOptions
@@ -218,7 +219,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
                     executeBeforeFile = {
                         // TODO: do we have to reset some more file-specific config?
                         updateConfigurationFromCommandLine()
-                        DisplayUtils.printFileInformation(it)
+                        it.printFileInformation()
                     },
                     executeAfterFile = {
                         // add an empty line between file executions
