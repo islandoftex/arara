@@ -1,6 +1,8 @@
 variables:
   # disable the Gradle daemon for Continuous Integration servers
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  GIT_SUBMODULE_STRATEGY: recursive
+  ZOLA_VERSION: "v0.12.0"
 
 include:
   - template: SAST.gitlab-ci.yml
@@ -158,6 +160,21 @@ publish:tdszip:
   variables:
     PRELEASE: "true"
   <<: *ctandefinition
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "master"'
+    - if: '$CI_COMMIT_TAG'
+
+pages:
+  image: alpine:latest
+  stage: publish
+  script:
+    - tail -n +8 README.md | sed 's/## /# /g' >> website/content/_index.md
+    - tail -n +3 CHANGELOG.md | sed 's/## /# /g' >> website/content/CHANGELOG.md
+    - apk add --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community/ zola
+    - cd website && zola build
+  artifacts:
+    paths:
+      - public
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'
     - if: '$CI_COMMIT_TAG'
