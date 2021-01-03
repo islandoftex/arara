@@ -14,6 +14,7 @@ import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.credentials
 
 open class AraraPublication : Plugin<Project> {
+    @Suppress("LongMethod")
     override fun apply(target: Project) {
         target.apply(plugin = "maven-publish")
         target.configure<PublishingExtension> {

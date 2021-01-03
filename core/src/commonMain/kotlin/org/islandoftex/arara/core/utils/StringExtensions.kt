@@ -30,6 +30,7 @@ fun String.formatString(vararg stringReplacements: String): String {
  * @param pattern A glob pattern.
  * @return A regex to recognize the given glob pattern.
  */
+@Suppress("ComplexMethod")
 internal fun String.globToRegex(): Regex =
     buildString(length) {
         var inGroup = 0
