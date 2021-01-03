@@ -30,13 +30,12 @@ kotlin {
 
                 implementation(kotlin("reflect", Versions.kotlin))
                 implementation("com.github.ajalt.clikt:clikt:${Versions.clikt}")
+                implementation("net.mamoe.yamlkt:yamlkt:${Versions.yamlkt}")
                 implementation("org.mvel:mvel2:${Versions.mvel}")
                 implementation("org.slf4j:slf4j-api:${Versions.slf4j}")
                 implementation("io.github.microutils:kotlin-logging:${Versions.kotlinLogging}")
                 implementation("org.apache.logging.log4j:log4j-core:${Versions.log4j}")
                 implementation("org.apache.logging.log4j:log4j-slf4j-impl:${Versions.log4j}")
-                implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${Versions.jackson}")
-                implementation("com.fasterxml.jackson.module:jackson-module-kotlin:${Versions.jackson}")
             }
         }
         val jvmTest by getting {
