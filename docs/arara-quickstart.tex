@@ -1,0 +1,94 @@
+% arara: quickstart
+
+% Arara, the cool TeX automation tool
+% Copyright (c) 2012 -- 2020, Island of TeX
+% All rights reserved.
+%
+% Redistribution and  use in source  and binary forms, with  or without
+% modification, are  permitted provided  that the  following conditions
+% are met:
+%
+% 1. Redistributions  of source  code must  retain the  above copyright
+% notice, this list of conditions and the following disclaimer.
+%
+% 2. Redistributions in binary form  must reproduce the above copyright
+% notice, this list  of conditions and the following  disclaimer in the
+% documentation and/or other materials provided with the distribution.
+%
+% 3. Neither  the name  of the  project's author nor  the names  of its
+% contributors may be used to  endorse or promote products derived from
+% this software without specific prior written permission.
+%
+% THIS SOFTWARE IS  PROVIDED BY THE COPYRIGHT  HOLDERS AND CONTRIBUTORS
+% "AS IS"  AND ANY  EXPRESS OR IMPLIED  WARRANTIES, INCLUDING,  BUT NOT
+% LIMITED  TO, THE  IMPLIED WARRANTIES  OF MERCHANTABILITY  AND FITNESS
+% FOR  A PARTICULAR  PURPOSE  ARE  DISCLAIMED. IN  NO  EVENT SHALL  THE
+% COPYRIGHT HOLDER OR CONTRIBUTORS BE  LIABLE FOR ANY DIRECT, INDIRECT,
+% INCIDENTAL, SPECIAL, EXEMPLARY,  OR CONSEQUENTIAL DAMAGES (INCLUDING,
+% BUT  NOT LIMITED  TO, PROCUREMENT  OF SUBSTITUTE  GOODS OR  SERVICES;
+% LOSS  OF USE,  DATA, OR  PROFITS; OR  BUSINESS INTERRUPTION)  HOWEVER
+% CAUSED AND  ON ANY THEORY  OF LIABILITY, WHETHER IN  CONTRACT, STRICT
+% LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
+% WAY  OUT  OF  THE USE  OF  THIS  SOFTWARE,  EVEN  IF ADVISED  OF  THE
+% POSSIBILITY OF SUCH DAMAGE.
+
+\pdfobjcompresslevel=1
+\pdfpageattr {/Group << /S /Transparency /I true /CS /DeviceRGB>>}
+
+\documentclass[a4paper,oneside,12pt,article]{memoir}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{arara}
+
+\usepackage{tikzlings}
+
+\newcommand{\araraversion}{%
+  \InputIfFileExists{version.tex}{}{undefined}}
+
+\newcommand{\peter}[1][1]{\begin{tikzpicture}[scale=#1, transform shape]
+\node[
+  draw=araracolour,
+  thick,
+  fill=araracolour!20!white,
+  rectangle,
+  minimum width=4cm,
+  minimum height=3cm,
+  rounded corners
+] (box) {};
+
+\begin{scope} 
+  \clip (box.south west) rectangle (box.north east);
+  \anteater[
+    yshift=-3.2cm,
+    xshift=-.3cm,
+    scale=2,
+    hat=warningcolour
+]
+\end{scope}
+\end{tikzpicture}}
+
+\newtcolorbox{talkbox}{
+  sidebyside,
+  lower separated=false,
+  lefthand width=4.2cm,
+  sidebyside gap=10pt,
+  colback=white,
+  boxrule=0pt,
+  frame hidden,
+  colframe=white,
+  left=0pt,
+  right=0pt,
+  top=0pt,
+  bottom=0pt
+}
+
+\title{A quickstart guide to \arara}
+\author{Peter, the anteater, for the Island of \TeX}
+
+\begin{document}
+
+\maketitle
+
+\end{document}
