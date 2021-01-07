@@ -25,7 +25,7 @@ if (file == getOriginalFile()) {
 }
 \end{codebox}
 
-\item[\mddbox{E}{R}{getOriginalReference()}{File}] This method returns the original file reference, as a \rbox{File} object, regardless of a potential reference override indirectly through the special \abox{files} parameter in the directive mapping, as seen in Section~\ref{sec:directives}, on page~\pageref{sec:directives}.
+\item[\mdddbox{C}{E}{R}{getOriginalReference()}{File}] This method returns the original file reference, as a \rbox{File} object, regardless of a potential reference override indirectly through the special \abox{files} parameter in the directive mapping, as seen in Section~\ref{sec:directives}, on page~\pageref{sec:directives}.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 if (reference.equals(getOriginalFile())) {
@@ -46,7 +46,7 @@ if (reference.equals(getOriginalFile())) {
 f = toFile('thesis.tex');
 \end{codebox}
 
-\item[\mddbox{E}{R}{getBasename(File file)}{String}] This method returns the base name (i.e, the name without the associated extension) of the provided \rbox{File} reference, as a string. Observe that this method ignores a potential path reference when extracting the base name. Also, this method will throw an exception if the provided reference is not a proper file.
+\item[\mdddbox{C}{E}{R}{getBasename(File file)}{String}] This method returns the base name (i.e, the name without the associated extension) of the provided \rbox{File} reference, as a string. Observe that this method ignores a potential path reference when extracting the base name. Also, this method will throw an exception if the provided reference is not a proper file.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 basename = getBasename(toFile('thesis.tex'));
@@ -916,7 +916,7 @@ It is important to observe that the \rbox{Session} object provided by our tool f
 \end{messagebox}
 
 \begin{description}
-\item[\mddbox{E}{R}{getSession()}{Session}] This method, as the name implies, returns the \rbox{Session} object for data sharing across rule contexts. Keep in mind that a session cannot contain duplicate keys. Each key can map to at most one value.
+\item[\mdddbox{C}{E}{R}{getSession()}{Session}] This method, as the name implies, returns the \rbox{Session} object for data sharing across rule contexts. Keep in mind that a session cannot contain duplicate keys. Each key can map to at most one value.
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
 name = getSession().get('name');
