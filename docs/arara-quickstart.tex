@@ -646,6 +646,73 @@ In this particular case, the test is evaluated beforehand, and the directive is 
 \em These conditionals can help me dictate how my workflow should behave on certain scenarios! I gather there are several possible ways of tackling them, right? 
 \end{talkbox}
 
-Correct, Peter. In the previous example, we used the \rbox[attentioncolour]{\color{black}if} operator, but we could have used \rbox[attentioncolour]{\color{black}while} or \rbox[attentioncolour]{\color{black}until} as well. The logical expression could also be rewritten. We could even have combined these two directives into one! So you see, there is always room for improvement. Please refer to the reference manual for more details on directive conditionals and available methods.
+Correct, Peter. In the previous example, we used the \rbox[attentioncolour]{\color{black}if} operator, but we could have used \rbox[attentioncolour]{\color{black}while} or \rbox[attentioncolour]{\color{black}until} as well. The logical expression could also be rewritten. We could even have combined these two directives into one! So you see, there is always room for improvement. If this subject caught your attention, take a look at the reference manual for more details on directive conditionals and available methods.
+
+\begin{talkbox}
+\peter[.7]
+\tcblower
+\em I will certainly check them out! Now, I am curious to see other directives in action together, so let us try a different yet common scenario: bibliographies and citations. Consider the following bibliography file, containing a reference to my doctoral thesis: 
+\end{talkbox}
+
+\begin{ncodebox}{Source file}{teal}{\icnote}{white}{bibliography.bib}
+@phdthesis{peter:2020,
+  author  = {Peter Anteater}, 
+  title   = {On flexibility: \LaTeX, latex and rubber},
+  school  = {Polytechnic University of P{\^{a}}ntano Fundo},
+  year    = 2020,
+  address = {Pantanal},
+  month   = {jan}
+}
+\end{ncodebox}
+
+\begin{talkbox}
+\peter[.7]
+\tcblower
+\em I want to cite my thesis in the article you and I are writing for this quickstart guide. From the \TeX\ side, it is quite straightforward! How about \arara? Here is my code:
+\end{talkbox}
+
+\begin{ncodebox}{Source file}{teal}{\icnote}{white}{article.tex}
+\documentclass{article}
+
+\begin{document}
+\section{Termite recipes}
+\label{sec:termiterecipes}
+
+A citation from my thesis~\cite{peter:2020}.
+
+\bibliographystyle{alpha}
+\bibliography{bibliography}
+\end{document}
+\end{ncodebox}
+
+Peter, remember that \arara\ does not employ any guesswork, so do not expect it to magically compile your document and get all the citations correctly. We need to explicitly tell it what to do, as if we were explaining the compilation steps to a friend. \arara\ is focused on reproducibility. We, as users, can learn a great deal about \TeX\ and friends by organising our workflow into directives. Let us review what should be done in order to correctly compile your document:
+
+\begin{enumerate}
+\item For starters, we need to run the \TeX\ engine in order to write (amongst other things) the relevant bibliography information to the auxiliary file. We can achieve this by inserting the following directive:
+
+\begin{codebox}{Directive}{teal}{\icnote}{white}
+% arara: pdflatex
+\end{codebox}
+
+\item Once the auxiliary file holds the relevant bibliography information, we need to run the Bib\TeX\ tool as a means to map entries from the bibliography database to the existing citations into an intermediate bibliography file. We can achieve this by inserting the following directive:
+
+\begin{codebox}{Directive}{teal}{\icnote}{white}
+% arara: bibtex
+\end{codebox}
+
+\item Once the intermediate bibliography file is generated, we can now have a proper bibliography section in our document, so we need to run the \TeX\ engine again. We can achieve this by inserting the following directive:
+
+\begin{codebox}{Directive}{teal}{\icnote}{white}
+% arara: pdflatex
+\end{codebox}
+
+\item However, the citations are still not yet referenced in the document, so a final run of the \TeX\ engine is required in order to correctly adjust these references. We can achieve this by inserting the following directive:
+
+\begin{codebox}{Directive}{teal}{\icnote}{white}
+% arara: pdflatex
+\end{codebox}
+\end{enumerate}
+
+And we are done! These are the compilation steps required to correctly generate your article from the given source and bibliography files. Note that the entire workflow involves two different tools working together: the \TeX\ engine and the Bib\TeX\ tool.
 
 \end{document}
