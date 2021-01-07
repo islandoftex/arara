@@ -31,6 +31,9 @@ from version 5.0.0 on.
   Supported methods are `getBasename`, `getSession` and `getOriginalReference`
   with their documented meanings.
   (see #38, #46)
+* The methods above (`getBasename`, `getSession` and `getOriginalReference`)
+  have also been added to the conditional context, i.e. you may use them in
+  conditional expressions in directives.
 * A new safe mode (`-S` or `--safe-run`) protects the system by disallowing
   certain user actions.
   (see #18)
