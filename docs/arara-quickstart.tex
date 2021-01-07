@@ -715,4 +715,30 @@ Peter, remember that \arara\ does not employ any guesswork, so do not expect it 
 
 And we are done! These are the compilation steps required to correctly generate your article from the given source and bibliography files. Note that the entire workflow involves two different tools working together: the \TeX\ engine and the Bib\TeX\ tool.
 
+\begin{talkbox}
+\peter[.7]
+\tcblower
+\em Wait a minute, no less than four compilation steps? I would never guessed it! This is great: \arara\ is also helping me understand better how the \TeX\ workflow works!
+\end{talkbox}
+
+Quite true, Peter! \arara\ tries its best to help users think out of the box! Now that we know the exact compilation steps to be taken, we just need to arrange them in the correct order in our document:
+
+\begin{ncodebox}{Source file}{teal}{\icnote}{white}{article.tex}
+% arara: pdflatex
+% arara: bibtex
+% arara: pdflatex
+% arara: pdflatex
+\documentclass{article}
+
+\begin{document}
+\section{Termite recipes}
+\label{sec:termiterecipes}
+
+A citation from my thesis~\cite{peter:2020}.
+
+\bibliographystyle{alpha}
+\bibliography{bibliography}
+\end{document}
+\end{ncodebox}
+
 \end{document}
