@@ -35,7 +35,7 @@
 \pdfobjcompresslevel=1
 \pdfpageattr {/Group << /S /Transparency /I true /CS /DeviceRGB>>}
 
-\documentclass[a4paper,oneside,12pt,article]{memoir}
+\documentclass[a4paper,oneside,11pt]{memoir}
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -365,7 +365,7 @@ with Peter's mum}};
 \newtcolorbox{talkbox}{
   sidebyside,
   lower separated=false,
-  lefthand width=4.2cm,
+  lefthand width=3.3cm,
   sidebyside gap=10pt,
   colback=white,
   boxrule=0pt,
@@ -415,5 +415,133 @@ with Peter's mum}};
 \begin{document}
 
 \maketitle
+
+\parskip=1em
+
+Welcome to \arara, the cool \TeX\ automation tool! This document is intended to be quickstart guide, providing the basic instructions to start using our tool. We will help our good friend Peter\footnote{Peter was graduated from Termite High School, Alta Floresta, and is now teaching as a fellow at Mato Grosso University. He is a corresponding member of Duckpond Academy, Sempione Park, Milano, Italy. His doctoral thesis ``On flexibility: \LaTeX, latex and rubber'' was published at Manaus. Some of his scientific works arose from a fruitful cooperation with the well known Brazilian-Italian savant Professore P.\ van Duck.}, the anteater, in his learning adventure. He is very excited about it! Hello, Peter!
+
+\begin{talkbox}
+\peter[.7]
+\tcblower
+\em Hello, nice to meet you, person from the Island of \TeX! I am Peter, the anteater. So I heard about this tool named \arara, what is it? Is there anything to do with \TeX\ and friends?
+\end{talkbox}
+
+As a matter of fact, it is! \arara\ is a \TeX\ automation tool. The name was chosen as an homage to a Brazilian bird of the same name, which is a macaw. The word \emph{arara} comes from the Tupian word \emph{a'rara}, which means \emph{big bird}. The tool is an effort to provide a concise way to automate the daily \TeX\ workflow for users and also package writers.
+
+\begin{talkbox}
+\peter[.7]
+\tcblower
+\em It definitely sounds intriguing! So tell me, how does \arara\ work? Does it do everything automatically for me, like other tools? Do things happen by magic?
+\end{talkbox}
+
+A very good question, Peter. The best way to explain how \arara\ works is to provide a quick comparison with similar tools. I believe you are familiar with \TeX\ documents, right? Let us use the following file \rbox{article.tex} as an example:
+
+\begin{ncodebox}{Source file}{teal}{\icnote}{white}{article.tex}
+\documentclass{article}
+
+\begin{document}
+Hello world!
+\end{document}
+\end{ncodebox}
+
+How would one successfully compile \rbox{article.tex} with \rbox{latexmk} and \rbox{rubber}, for instance? It is quite straightforward: it is just a matter of providing the file to the tool and letting it do the hard work:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ latexmk -pdf article.tex
+$ rubber --pdf article.tex
+\end{codebox}
+
+The mentioned tools perform an analysis on the file and decide what has to be done. However, if one tries to invoke \rbox{arara} on \rbox{article.tex}, I am afraid \emph{nothing} will be generated; the truth is, \arara\ does not know what to do with your file, and the tool will even raise an error message complaining about this issue:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ arara article.tex
+  __ _ _ __ __ _ _ __ __ _
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+Processing "article.tex" (size: 70 B, last modified: 12/28/2020
+07:03:16), please wait.
+
+  ERROR
+
+It looks like no directives were found in the provided file. Make
+sure to include at least one directive and try again.
+
+Total: 0.04 seconds
+\end{codebox}
+
+Peter, this is the major difference of \arara\ when compared to other tools: \emph{it is not an automatic process and the tool does not employ any guesswork on its own}. You are in control of your documents; \arara\ will not do anything unless you \emph{teach it how to do a task and explicitly tell it to execute the task}. So, it is not magic.
+
+\begin{talkbox}
+\peter[.7]
+\tcblower
+\em I see. On the other hand, this approach gives me, as user, full control of my document compilation. Being aware of the compilation steps makes me understand the \TeX\ tooling better. Quite clever! Now, do tell me: how does one tell \arara\ to do a task?
+\end{talkbox}
+
+First of all, Peter, \arara\ has to know \emph{how} to do a task. This is done by defining rules. A rule is a formal description of how the tool should handle a certain task. For example, if we want to use \rbox{pdflatex} with \arara, we need a rule for that. Once a rule is defined, the tool automatically provides an access layer to the user. Note that \arara\ is distributed with dozens of predefined rules, so you already have several options out of the box to set up your workflow.
+
+Now, back to your question. Once we know how to execute a task, we need to explicitly tell \arara\ when to do it. That is actually the easy part, provided that you have everything up and running. We accomplish the task by adding a special comment line, hereafter known as \emph{directive}, somewhere in our document to indicate how the tool should work, e.g: 
+
+\begin{codebox}{Source file}{teal}{\icnote}{white}
+% arara: pdflatex
+\end{codebox}
+
+\begin{talkbox}
+\peter[.7]
+\tcblower
+\em Makes sense. So, a directive is a special comment line which is not the command to be executed, but the name of the rule associated with that directive. Is that correct?
+\end{talkbox}
+
+Perfect, Peter! That is basically how \arara\ works: we teach the tool to do a task by providing a rule, and tell it to execute it
+via directives in the source code. Let us see how our \rbox{article.tex} file should be:
+
+\begin{ncodebox}{Source file}{teal}{\icnote}{white}{article.tex}
+% arara: pdflatex
+\documentclass{article}
+
+\begin{document}
+Hello world!
+\end{document}
+\end{ncodebox}
+
+Note, Peter, that the tool expects \emph{you} to provide a list of tasks, and this is done by inserting special comments, i.e, directives, in the source file. Since we just added one directive in our document, let us see how \arara\ behaves with this updated code:
+
+\begin{codebox}{Terminal}{teal}{\icnote}{white}
+$ arara article.tex
+  __ _ _ __ __ _ _ __ __ _
+ / _` | '__/ _` | '__/ _` |
+| (_| | | | (_| | | | (_| |
+ \__,_|_|  \__,_|_|  \__,_|
+
+Processing "article.tex" (size: 88 B, last modified: 12/28/2020
+07:05:05), please wait.
+
+(PDFLaTeX) PDFLaTeX engine .............................. SUCCESS
+
+Total: 0.56 seconds
+\end{codebox}
+
+\begin{talkbox}
+\peter[.7]
+\tcblower
+\em Goodness me, it worked like a charm! The moment we specified a directive, \arara\ knew exactly what I wanted to do with that particular file! Awesome!
+\end{talkbox}
+
+Exactly! You see, Peter, there is no guesswork from \arara. The tool will do exactly what you tell it to do, no more, no less. There is a lot of freedom to this design, which gives you an interesting way to enhance your \TeX\ experience.
+
+\begin{talkbox}
+\peter[.7]
+\tcblower
+\em I have been wondering: there are scenarios in which we need to provide additional information to the underlying commands~---~for instance, we need to enable shell escape when using the \rbox[araracolour]{minted} package. How can we achieve this? 
+\end{talkbox}
+
+For such scenarios, \arara\ provides a second type of directive, a parametrized one, which allows passing arguments to the corresponding rule. From your example, to enable shell escape, one simply needs to write the following directive:
+
+\begin{codebox}{Source file}{teal}{\icnote}{white}
+% arara: pdflatex: { shell: yes }
+\end{codebox}
+
+Of course, \rbox[cyan]{shell} is not taken randomnly, but defined in the rule scope, otherwise \arara\ would raise an error about an invalid key. The reference manual has a list of all available keys for each predefined rule. It is worth a read.
 
 \end{document}
