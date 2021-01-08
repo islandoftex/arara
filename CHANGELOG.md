@@ -53,6 +53,8 @@ from version 5.0.0 on.
   feedback and enhancements: `ghostscript`, `copy`, `move`, `ltx2any`, `llmk`,
   `spix`, `pdfcrop`, `sage`.
   (see #47 and https://github.com/cereda/arara/issues/83)
+* A new quickstart guide has been written to complement to the reference manual.
+  (see #9 and #59)
 
 ### Changed
 
