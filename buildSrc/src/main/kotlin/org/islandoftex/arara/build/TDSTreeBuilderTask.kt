@@ -47,7 +47,7 @@ open class TDSTreeBuilderTask : DefaultTask() {
 
         logger.debug("Compiling the documentation")
         project.copy {
-            from(project.files(project.tasks.findByPath(":docs:buildManual")))
+            from(project.files(project.tasks.findByPath(":docs:buildDocs")))
             into(temporaryDir.resolve("doc/support/arara"))
         }
 

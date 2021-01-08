@@ -101,7 +101,7 @@ detekt {
 tasks.register("assembleCTANSourceZip", SourceZipBuilderTask::class.java)
 tasks.register("assembleTDSTree", TDSTreeBuilderTask::class.java) {
     dependsOn(":cli:shadowJar")
-    dependsOn(":docs:buildManual")
+    dependsOn(":docs:buildDocs")
     dependsOn("assembleCTANSourceZip")
 }
 tasks.register("assembleTDSZip", TDSZipBuilderTask::class.java) {
