@@ -241,7 +241,7 @@ controls (488.6381,530.3962) and (521.8381,528.0962) .. (564.1381,532.2962) -- c
   rounded corners=2pt,
   fill=araracolour!20!white,
   inner sep=4pt
-] at ([yshift=-.53cm]box.south) {\parbox{3.5cm}{\centering\small\em Anteater facts\\
+] at ([yshift=-.5cm]box.south) {\parbox{3.5cm}{\centering\small\em Anteater facts\\
 with Peter's dad}};
 \end{tikzpicture}}
 
@@ -358,7 +358,7 @@ controls (161.0198,67.7657) and (161.9222,71.2014) ..
   rounded corners=2pt,
   fill=warningcolour!20!white,
   inner sep=4pt
-] at ([yshift=-.53cm]box.south) {\parbox{3.5cm}{\centering\small\em Smart writing tips\\
+] at ([yshift=-.5cm]box.south) {\parbox{3.5cm}{\centering\small\em Interesting tips\\
 with Peter's mum}};
 \end{tikzpicture}}
 
@@ -390,7 +390,7 @@ with Peter's mum}};
   right=6pt,
   top=4pt,
   bottom=4pt,
-  width=.8\textwidth
+  width=1\textwidth
 }
 
 \newtcolorbox{tipbox}{
@@ -406,7 +406,7 @@ with Peter's mum}};
   right=6pt,
   top=4pt,
   bottom=4pt,
-  width=.8\textwidth
+  width=1\textwidth
 }
 
 \title{A quickstart guide to \arara}
@@ -481,6 +481,12 @@ Peter, this is the major difference of \arara\ when compared to other tools: \em
 
 First of all, Peter, \arara\ has to know \emph{how} to do a task. This is done by defining rules. A rule is a formal description of how the tool should handle a certain task. For example, if we want to use \rbox{pdflatex} with \arara, we need a rule for that. Once a rule is defined, the tool automatically provides an access layer to the user. Note that \arara\ is distributed with dozens of predefined rules, so you already have several options out of the box to set up your workflow.
 
+\begin{factbox}
+\small\em Giant anteaters can be found throughout South and Central America, though their numbers have diminished considerably from the latter. To thrive, they need to be able to move throughout large areas with patches of forest. They can often be found in tropical and dry forests, savannas, and open grasslands, where the ants upon which they feed are abundant.~\href{https://www.nationalgeographic.com/animals/mammals/g/giant-anteater/}{\faExternalLink}
+\tcblower
+\dad[.7]
+\end{factbox}
+
 Now, back to your question. Once we know how to execute a task, we need to explicitly tell \arara\ when to do it. That is actually the easy part, provided that you have everything up and running. We accomplish the task by adding a special comment line, hereafter known as \emph{directive}, somewhere in our document to indicate how the tool should work, e.g: 
 
 \begin{codebox}{Source file}{teal}{\icnote}{white}
@@ -530,6 +536,12 @@ Total: 0.56 seconds
 
 Exactly! You see, Peter, there is no guesswork from \arara. The tool will do exactly what you tell it to do, no more, no less. There is a lot of freedom to this design, which gives you an interesting way to enhance your \TeX\ experience.
 
+\begin{factbox}
+\small\em Anteaters are not aggressive, but they can be fierce. A cornered anteater will rear up on its hind legs, using its tail for balance, and lash out with dangerous claws. The giant anteater's claws are some four inches long, and the animal can fight off even a puma or jaguar.~\href{https://www.nationalgeographic.com/animals/mammals/g/giant-anteater/}{\faExternalLink}
+\tcblower
+\dad[.7]
+\end{factbox}
+
 \begin{talkbox}
 \peter[.7]
 \tcblower
@@ -543,6 +555,13 @@ For such scenarios, \arara\ provides a second type of directive, a parametrized 
 \end{codebox}
 
 Of course, \rbox[cyan]{shell} is not taken randomnly, but defined in the rule scope, otherwise \arara\ would raise an error about an invalid key. The reference manual has a list of all available keys for each predefined rule. It is worth a read.
+
+
+\begin{tipbox}
+\small\em Do you know that a directive can be split into multiple lines? Simply use the \abox[araracolour]{arara: {-}{-}>} mark to each line which should compose the directive. Although it is possible to spread lines of a multiline directive all over the code, it is considered good practice to keep them together for easier reading and editing.
+\tcblower
+\mum[.7]
+\end{tipbox}
 
 \begin{talkbox}
 \peter[.7]
@@ -640,13 +659,27 @@ Total: 0.97 seconds
 
 In this particular case, the test is evaluated beforehand, and the directive is processed if, and only if, the result of such evaluation is true. This directive, when the conditional holds true, is executed at most once.
 
+\begin{tipbox}
+\small\em When using certain conditional operators, there are no conceptual guarantees for proper halting of unbounded loops. However, do not worry, dear! The team has provided a technical solution for potentially infinite iterations: \arara\ has a predefined maximum number of loops. The default value is set to 10, but it can be overridden.
+\tcblower
+\mum[.7]
+\end{tipbox}
+
 \begin{talkbox}
 \peter[.7]
 \tcblower
 \em These conditionals can help me dictate how my workflow should behave on certain scenarios! I gather there are several possible ways of tackling them, right? 
 \end{talkbox}
 
-Correct, Peter. In the previous example, we used the \rbox[attentioncolour]{\color{black}if} operator, but we could have used \rbox[attentioncolour]{\color{black}while} or \rbox[attentioncolour]{\color{black}until} as well. The logical expression could also be rewritten. We could even have combined these two directives into one! So you see, there is always room for improvement. If this subject caught your attention, take a look at the reference manual for more details on directive conditionals and available methods.
+Correct, Peter. In the previous example, we used the \rbox[attentioncolour]{\color{black}if} operator, but we could have used \rbox[attentioncolour]{\color{black}while} or \rbox[attentioncolour]{\color{black}until} as well. The logical expression could also be rewritten. We could even have combined these two directives into one! So you see, there is always room for improvement.
+
+\begin{factbox}
+\small\em The giant anteater uses its sharp claws to tear an opening into an anthill and put its long snout, sticky saliva, and efficient tongue to work. But it has to eat quickly, flicking its tongue up to 150 times per minute. Ants fight back with painful stings, so an anteater may spend only a minute feasting on each mound.~\href{https://www.nationalgeographic.com/animals/mammals/g/giant-anteater/}{\faExternalLink}
+\tcblower
+\dad[.7]
+\end{factbox}
+
+If this subject caught your attention, take a look at the reference manual for more details on directive conditionals and available methods. There are multiple code excerpts to help you understand better the inner workings.
 
 \begin{talkbox}
 \peter[.7]
@@ -685,7 +718,15 @@ A citation from my thesis~\cite{peter:2020}.
 \end{document}
 \end{ncodebox}
 
-Peter, remember that \arara\ does not employ any guesswork, so do not expect it to magically compile your document and get all the citations correctly. We need to explicitly tell it what to do, as if we were explaining the compilation steps to a friend. \arara\ is focused on reproducibility. We, as users, can learn a great deal about \TeX\ and friends by organising our workflow into directives. Let us review what should be done in order to correctly compile your document:
+Peter, remember that \arara\ does not employ any guesswork, so do not expect it to magically compile your document and get all the citations correctly. We need to explicitly tell it what to do, as if we were explaining the compilation steps to a friend. \arara\ is focused on reproducibility.
+
+\begin{factbox}
+\small\em Anteaters are edentate animals -- they have no teeth. But their long tongues are more than sufficient to lap up the 35,000 ants and termites they swallow whole each day. As the largest of all four anteater species, the giant anteater can reach eight feet long from the tip of its snout to the end of its tail.~\href{https://www.nationalgeographic.com/animals/mammals/g/giant-anteater/}{\faExternalLink}
+\tcblower
+\dad[.7]
+\end{factbox}
+
+We, as users, can learn a great deal about \TeX\ and friends by organising our workflow into directives. Let us review what should be done in order to correctly compile your document:
 
 \begin{enumerate}
 \item For starters, we need to run the \TeX\ engine in order to write (amongst other things) the relevant bibliography information to the auxiliary file. We can achieve this by inserting the following directive:
