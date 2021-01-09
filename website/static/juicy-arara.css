@@ -3,10 +3,24 @@
   font-weight: 600;
 }
 
-.img-demonstration {
-    max-height: 70%;
+.demonstration-gif {
+  padding: 10px;
+  max-height: 70%;
+  max-width: 70%;
 }
 
 .content code {
   background-color: transparent;
+}
+
+.heading-text {
+  padding-top: 100px;
+}
+
+@media screen and (max-width: 768px) {
+
+  .explore-more, .demonstration-gif {
+    display: none;
+  }
+
 }
