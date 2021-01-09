@@ -418,7 +418,7 @@ with Peter's mum}};
 
 \parskip=1em
 
-Welcome to \arara, the cool \TeX\ automation tool! This document is intended to be quickstart guide, providing the basic instructions to start using our tool. We will help our good friend Peter\footnote{Peter was graduated from Termite High School, Alta Floresta, and is now teaching as a fellow at Mato Grosso University. He is a corresponding member of Duckpond Academy, Sempione Park, Milano, Italy. His doctoral thesis ``On flexibility: \LaTeX, latex and rubber'' was published at Manaus. Some of his scientific works arose from a fruitful cooperation with the well known Brazilian-Italian savant Professore P.\ van Duck.}, the anteater, in his learning adventure. He is very excited about it! Hello, Peter!
+Welcome to \arara, the cool \TeX\ automation tool! This document is intended to be a quickstart guide, providing the basic instructions to start using our tool. We will help our good friend Peter,\footnote{Peter was graduated from Termite High School, Alta Floresta, and is now teaching as a fellow at Mato Grosso University. He is a corresponding member of Duckpond Academy, Sempione Park, Milano, Italy. His doctoral thesis ``On flexibility: \LaTeX, latex and rubber'' was published at Manaus. Some of his scientific works arose from a fruitful cooperation with the well known Brazilian-Italian savant Professore P.\ van Duck.}\ the anteater, in his learning adventure. He is very excited about it! Hello, Peter!
 
 \begin{talkbox}
 \peter[.7]
@@ -487,7 +487,7 @@ First of all, Peter, \arara\ has to know \emph{how} to do a task. This is done b
 \dad[.7]
 \end{factbox}
 
-Now, back to your question. Once we know how to execute a task, we need to explicitly tell \arara\ when to do it. That is actually the easy part, provided that you have everything up and running. We accomplish the task by adding a special comment line, hereafter known as \emph{directive}, somewhere in our document to indicate how the tool should work, e.g: 
+Now, back to your question. Once we know how to execute a task, we need to explicitly tell \arara\ when to do it. That is actually the easy part, provided that you have everything up and running. We accomplish the task by adding a special comment line, hereafter known as a \emph{directive}, somewhere in our document to indicate how the tool should work, e.g: 
 
 \begin{codebox}{Source file}{teal}{\icnote}{white}
 % arara: pdflatex
@@ -554,7 +554,7 @@ For such scenarios, \arara\ provides a second type of directive, a parametrized 
 % arara: pdflatex: { shell: yes }
 \end{codebox}
 
-Of course, \rbox[cyan]{shell} is not taken randomnly, but defined in the rule scope, otherwise \arara\ would raise an error about an invalid key. The reference manual has a list of all available keys for each predefined rule. It is worth a read.
+Of course, \rbox[cyan]{shell} is not taken randomly, but defined in the rule scope, otherwise \arara\ would raise an error about an invalid key. The reference manual has a list of all available keys for each predefined rule. It is worth a read.
 
 
 \begin{tipbox}
@@ -668,7 +668,7 @@ In this particular case, the test is evaluated beforehand, and the directive is 
 \begin{talkbox}
 \peter[.7]
 \tcblower
-\em These conditionals can help me dictate how my workflow should behave on certain scenarios! I gather there are several possible ways of tackling them, right? 
+\em These conditionals can help me dictate how my workflow should behave in certain scenarios! I gather there are several possible ways of tackling them, right? 
 \end{talkbox}
 
 Correct, Peter. In the previous example, we used the \rbox[attentioncolour]{\color{black}if} operator, but we could have used \rbox[attentioncolour]{\color{black}while} or \rbox[attentioncolour]{\color{black}until} as well. The logical expression could also be rewritten. We could even have combined these two directives into one! So you see, there is always room for improvement.
