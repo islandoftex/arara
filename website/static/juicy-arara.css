@@ -3,6 +3,10 @@
   font-weight: 600;
 }
 
+.img-demonstration {
+    max-height: 70%;
+}
+
 .content code {
   background-color: transparent;
 }
