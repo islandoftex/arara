@@ -1,12 +1,17 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
+import com.soywiz.korio.async.async
+import com.soywiz.korio.async.runBlockingNoJs
+import com.soywiz.korio.file.baseName
+import com.soywiz.korio.file.std.localVfs
 import com.soywiz.korio.lang.Environment
 import com.soywiz.korio.util.OS
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
+import kotlinx.coroutines.awaitAll
 import mu.KotlinLogging
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
@@ -151,21 +156,24 @@ object Environment {
         // operating system
         val filenames = appendExtensions(command)
         return kotlin.runCatching {
-            // break the path into several parts
-            // based on the path separator symbol
-            (Environment["PATH"] ?: Environment["Path"])
-                    ?.split(File.pathSeparator)
-                    ?.asSequence()
-                    ?.mapNotNull { File(it).listFiles() }
-                    // if the search does not return an empty
-                    // list, one of the filenames got a match,
-                    // and the command is available somewhere
-                    // in the system path
-                    ?.firstOrNull {
-                        it.any { file ->
-                            filenames.contains(file.name) && !file.isDirectory
-                        }
-                    }?.let { true }
+            runBlockingNoJs {
+                // break the path into several parts
+                // based on the path separator symbol
+                (Environment["PATH"] ?: Environment["Path"])
+                        ?.split(File.pathSeparator)
+                        ?.map { async { localVfs(it).listSimple() } }
+                        ?.awaitAll()
+                        // if the search does not return an empty
+                        // list, one of the filenames got a match,
+                        // and the command is available somewhere
+                        // in the system path
+                        ?.firstOrNull {
+                            it.any { file ->
+                                filenames.contains(file.baseName) &&
+                                        !file.isDirectory()
+                            }
+                        }?.let { true }
+            }
         }.getOrNull() ?: false
         // otherwise (and in case of an exception) it is not in the path
     }
