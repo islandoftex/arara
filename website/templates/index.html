@@ -7,10 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     {% include "_variables.html" %}
     <link rel="icon" href="favicon.svg">
-    <link rel="stylesheet" href="/normalize.css">
+    <link rel="stylesheet" href="{{ get_url(path="normalize.css") }}">
     <link rel="stylesheet" href="{{ get_url(path="juice.css") }}">
-    <link rel="stylesheet" href="/fonts/fonts.css">
-    <link rel="stylesheet" href="/juicy-arara.css">
+    <link rel="stylesheet" href="{{ get_url(path="/fonts/fonts.css") }}">
+    <link rel="stylesheet" href="{{ get_url(path="juicy-arara.css") }}">
     {% block head %}
     <meta name="keywords" content="tex, latex, context, build tool, automation">
     <meta itemprop="name" content="{{ config.extra.meta_title }}">
@@ -27,37 +27,37 @@
     <div class="hero">
       {% block hero %}
       <section style="padding:10px">
-	<h1 class="text-center heading-text" style="font-size:50px;">
+        <h1 class="text-center heading-text" style="font-size:50px;">
           {{ config.extra.meta_title }}
-	</h1>
-	<h3 class="title-text text-center">
+        </h1>
+        <h3 class="title-text text-center">
           {{ config.extra.meta_description }}
-	</h3>
-	<div style="height: 50px;"></div>
-	<div class="text-center">
-	  <a href="https://gitlab.com/islandoftex/arara/-/releases">
-	    <img src="https://img.shields.io/badge/dynamic/json.svg?color=blue&label=Latest%20release&query=%24.0.name&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2F14349047%2Frepository%2Ftags&style=for-the-badge&logo=GitLab">
-	  </a>
-	  &nbsp;
-	  <a href="https://ctan.org/pkg/arara">
-	    <img src="https://img.shields.io/ctan/v/arara?label=CTAN%20packaging&style=for-the-badge">
-	  </a>
-	</div>
-	<div class="text-center" style="padding-top: 10px;">
-	  <a href="https://gitter.im/Island-of-TeX/arara">
-	    <img src="https://img.shields.io/gitter/room/Island-of-TeX/community?label=arara%20chat&style=for-the-badge&logo=Gitter">
-	  </a>
-	  &nbsp;
-	  <a href="https://matrix.to/#/!HfEWIEvFtDplCLSQvz:matrix.org?via=matrix.org">
-	    <img src="https://img.shields.io/matrix/arara:matrix.org?label=%23arara%3Amatrix.org&style=for-the-badge&logo=Matrix">
-	  </a>
-	</div>
+        </h3>
+        <div style="height: 50px;"></div>
+        <div class="text-center">
+          <a href="https://gitlab.com/islandoftex/arara/-/releases">
+            <img src="https://img.shields.io/badge/dynamic/json.svg?color=blue&label=Latest%20release&query=%24.0.name&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2F14349047%2Frepository%2Ftags&style=for-the-badge&logo=GitLab">
+          </a>
+          &nbsp;
+          <a href="https://ctan.org/pkg/arara">
+            <img src="https://img.shields.io/ctan/v/arara?label=CTAN%20packaging&style=for-the-badge">
+          </a>
+        </div>
+        <div class="text-center" style="padding-top: 10px;">
+          <a href="https://gitter.im/Island-of-TeX/arara">
+            <img src="https://img.shields.io/gitter/room/Island-of-TeX/community?label=arara%20chat&style=for-the-badge&logo=Gitter">
+          </a>
+          &nbsp;
+          <a href="https://matrix.to/#/!HfEWIEvFtDplCLSQvz:matrix.org?via=matrix.org">
+            <img src="https://img.shields.io/matrix/arara:matrix.org?label=%23arara%3Amatrix.org&style=for-the-badge&logo=Matrix">
+          </a>
+        </div>
       </section>
       <img class="demonstration-gif" src="{{ get_url(path="/images/demonstration.gif") }}" alt="demonstration-gif">
 
       <div class="explore-more text"
-	   onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})">
-	Explore More ⇩
+           onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})">
+        Explore More ⇩
       </div>
       <style>
         .hero section {
@@ -115,7 +115,7 @@
     {% block footer %}
     <footer>
       <small class="subtext">
-	{{ config.extra.footer }}
+        {{ config.extra.footer }}
       </small>
     </footer>
     {% endblock footer %}
