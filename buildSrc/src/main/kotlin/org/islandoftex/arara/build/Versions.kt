@@ -17,7 +17,7 @@ object Versions {
     const val kaml = "0.26.0"
     const val kotest = "4.3.2"
     const val kotlinxSerialization = "1.0.1"
-    const val jackson = "2.12.0"
+    const val jackson = "2.12.1"
     const val log4j = "2.14.0"
     const val mvel = "2.4.11.Final"
     const val slf4j = "1.7.30"
