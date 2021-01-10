@@ -124,9 +124,10 @@ pages:
     - tail -n +3 CHANGELOG.md | sed 's/## /# /g' >> website/content/CHANGELOG.md
     - apk add --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community/ zola
     - cd website && zola build
+    - cd .. && mv website/public ./public
   artifacts:
     paths:
-      - website/public
+      - public
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'
     - if: '$CI_COMMIT_TAG'
