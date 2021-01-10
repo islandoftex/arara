@@ -1,27 +1,21 @@
 @font-face {
-  font-family: 'Comfortaa';
-  font-style: normal;
-  font-weight: 600;
-  src: url(/fonts/Comfortaa-Bold.ttf) format('truetype');
-}
-@font-face {
   font-family: 'Fira Sans';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(/fonts/FiraSans-Regular.ttf) format('truetype');
+  src: url(https://islandoftex.gitlab.io/arara/fonts/FiraSans-Regular.ttf) format('truetype');
 }
 @font-face {
   font-family: 'Fira Sans';
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url(/fonts/FiraSans-Medium.ttf) format('truetype');
+  src: url(https://islandoftex.gitlab.io/arara/fonts/FiraSans-Medium.ttf) format('truetype');
 }
 @font-face {
   font-family: 'Fira Sans';
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url(/fonts/FiraSans-Bold.ttf) format('truetype');
+  src: url(https://islandoftex.gitlab.io/arara/fonts/FiraSans-Bold.ttf) format('truetype');
 }
