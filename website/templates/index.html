@@ -1,3 +1,4 @@
+{% import "_macros.html" as macros %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -6,10 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     {% include "_variables.html" %}
     <link rel="icon" href="favicon.svg">
-    <link rel="stylesheet" href="/normalize.css">
+    <link rel="stylesheet" href="{{ get_url(path="normalize.css") }}">
     <link rel="stylesheet" href="{{ get_url(path="juice.css") }}">
-    <link rel="stylesheet" href="/fonts/fonts.css">
-    <link rel="stylesheet" href="/juicy-arara.css">
+    <link rel="stylesheet" href="{{ get_url(path="/fonts/fonts.css") }}">
+    <link rel="stylesheet" href="{{ get_url(path="juicy-arara.css") }}">
     {% block head %}
     <meta name="keywords" content="tex, latex, context, build tool, automation">
     <meta itemprop="name" content="{{ config.extra.meta_title }}">
@@ -20,23 +21,7 @@
   <body>
     {% block header %}
     <header class="pos-absolute" style="background-color: transparent">
-      {% set section = get_section(path="_index.md") %}
-      <a href="{{ section.permalink }}">
-        <div class="logo">
-          <img src="{{ get_url(path=config.extra.juice_logo_path) }}" alt="logo">
-        </div>
-      </a>
-
-      <nav>
-        {% for page in section.pages %}
-        <a class="nav-item subtitle-text" href="{{ page.permalink }}">{{ page.title }}</a>
-        {% endfor %}
-        {% if config.extra.juice_extra_menu %}
-        {% for menu in config.extra.juice_extra_menu %}
-        <a class="nav-item subtitle-text" href="{{ menu.link }}">{{ menu.title }}</a>
-        {% endfor %}
-        {% endif %}
-      </nav>
+      {{ macros::render_header() }}
     </header>
 
     <div class="hero">
