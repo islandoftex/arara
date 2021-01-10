@@ -120,31 +120,32 @@ actual object Directives {
      */
     @Throws(AraraException::class)
     @Suppress("MagicNumber")
-    internal fun generateDirective(assembler: DirectiveAssembler): Directive {
-        val matcher = directivePattern.toPattern().matcher(assembler.text)
-        if (matcher.find()) {
-            return hooks.buildDirectiveRaw(
+    internal fun generateDirective(assembler: DirectiveAssembler): Directive =
+        directivePattern.find(assembler.text)?.let { match ->
+            // NOTE: in match.groupValues all capture group have a string value;
+            //       if the group was optional and empty, there's an empty
+            //       string indicating this behavior
+            hooks.buildDirectiveRaw(
                     // identifier
-                    matcher.group(1)!!,
+                    match.groupValues[1],
                     // parameters
-                    matcher.group(3),
+                    match.groupValues[3].takeIf { it.isNotEmpty() },
                     // conditional
                     DirectiveConditional(
-                            type = matcher.group(5).toDirectiveConditional(),
-                            condition = matcher.group(6) ?: ""
+                            type = match.groupValues[5]
+                                    .takeIf { it.isNotEmpty() }
+                                    .toDirectiveConditional(),
+                            condition = match.groupValues[6]
                     ),
                     // line numbers
                     assembler.getLineNumbers()
             )
-        } else {
-            throw AraraException(
-                    LanguageController.messages.ERROR_VALIDATE_INVALID_DIRECTIVE_FORMAT
-                            .format(
-                                    assembler.getLineNumbers().joinToString(", ", "(", ")")
-                            )
-            )
-        }
-    }
+        } ?: throw AraraException(
+                LanguageController.messages.ERROR_VALIDATE_INVALID_DIRECTIVE_FORMAT
+                        .format(
+                                assembler.getLineNumbers().joinToString(", ", "(", ")")
+                        )
+        )
 
     /**
      * Replicate a directive for given files.
