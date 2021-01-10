@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.mvel.utils
 
-import java.io.File
 import java.io.IOException
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.SafeRunViolationException
@@ -41,7 +40,7 @@ object RuleMethods {
      */
     @JvmStatic
     val originalFile: String
-        get() = originalReference.name
+        get() = originalReference.fileName
 
     /**
      * Gets the original reference, i.e. the file arara has been called on or
@@ -53,10 +52,10 @@ object RuleMethods {
      * @return The original reference.
      */
     @JvmStatic
-    val originalReference: File
+    val originalReference: MPPPath
         get() = LinearExecutor.currentProject!!.files
                 .minByOrNull { it.priority }!!
-                .path.toJVMPath().toFile()
+                .path
 
     /**
      * Trim spaces from the string.
@@ -77,13 +76,13 @@ object RuleMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun getBasename(file: File): String =
-            if (file.isFile) {
-                file.nameWithoutExtension
+    fun getBasename(file: MPPPath): String =
+            if (file.isRegularFile) {
+                file.fileName.substringBeforeLast(".")
             } else {
                 throw AraraExceptionWithHeader(
                     LanguageController.messages
-                        .ERROR_BASENAME_NOT_A_FILE.format(file.name))
+                        .ERROR_BASENAME_NOT_A_FILE.format(file.fileName))
             }
 
     /**
@@ -93,7 +92,7 @@ object RuleMethods {
      * @return The basename.
      */
     @JvmStatic
-    fun getBasename(filename: String): String = File(filename).nameWithoutExtension
+    fun getBasename(filename: String): String = getBasename(MPPPath(filename))
 
     /**
      * Gets the file type.
@@ -105,13 +104,13 @@ object RuleMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun getFiletype(file: File): String =
-            if (file.isFile) {
-                file.extension
+    fun getFiletype(file: MPPPath): String =
+            if (file.isRegularFile) {
+                file.fileName.substringAfterLast(".")
             } else {
                 throw AraraExceptionWithHeader(
                     LanguageController.messages
-                        .ERROR_FILETYPE_NOT_A_FILE.format(file.name))
+                        .ERROR_FILETYPE_NOT_A_FILE.format(file.fileName))
             }
 
     /**
@@ -121,7 +120,7 @@ object RuleMethods {
      * @return The file type.
      */
     @JvmStatic
-    fun getFiletype(filename: String): String = File(filename).extension
+    fun getFiletype(filename: String): String = getFiletype(MPPPath(filename))
 
     /**
      * Attempts to retrieve an index-based element from a list of strings.
@@ -232,13 +231,13 @@ object RuleMethods {
      */
     @JvmStatic
     fun getCommandWithWorkingDirectory(
-        file: File,
+        file: MPPPath,
         vararg elements: Any?
     ): Command = org.islandoftex.arara.core.session.Command(
             InputHandling.flatten(elements.filterNotNull())
                     .map { it.toString() }
                     .filter { it.isNotEmpty() },
-            MPPPath(file.toPath())
+            file
     )
 
     /**
@@ -266,10 +265,9 @@ object RuleMethods {
      */
     @JvmStatic
     fun getCommandWithWorkingDirectory(
-        file: File,
+        file: MPPPath,
         elements: List<String>
-    ): Command = org.islandoftex.arara.core.session.Command(
-            elements, MPPPath(file.toPath()))
+    ): Command = org.islandoftex.arara.core.session.Command(elements, file)
 
     /**
      * Checks if the execution is in verbose mode.
@@ -327,17 +325,15 @@ object RuleMethods {
      */
     @JvmStatic
     fun listFilesByExtensions(
-        directory: File,
+        directory: MPPPath,
         extensions: List<String>,
         recursive: Boolean
-    ): List<File> =
+    ): List<MPPPath> =
             FileSearching.listFilesByExtensions(
-                    MPPPath(directory.toPath()),
+                    directory,
                     extensions,
                     recursive
-            ).map {
-                it.toJVMPath().toFile()
-            }
+            )
 
     /**
      * List all files from the provided string path according to the list of
@@ -354,14 +350,8 @@ object RuleMethods {
         path: String,
         extensions: List<String>,
         recursive: Boolean
-    ): List<File> =
-            FileSearching.listFilesByExtensions(
-                    MPPPath(path),
-                    extensions,
-                    recursive
-            ).map {
-                it.toJVMPath().toFile()
-            }
+    ): List<MPPPath> =
+            listFilesByExtensions(MPPPath(path), extensions, recursive)
 
     /**
      * List all files from the provided directory matching the list of file
@@ -374,17 +364,15 @@ object RuleMethods {
      */
     @JvmStatic
     fun listFilesByPatterns(
-        directory: File,
+        directory: MPPPath,
         patterns: List<String>,
         recursive: Boolean
-    ): List<File> =
+    ): List<MPPPath> =
             FileSearching.listFilesByPatterns(
-                    MPPPath(directory.toPath()),
+                    directory,
                     patterns,
                     recursive
-            ).map {
-                it.toJVMPath().toFile()
-            }
+            )
 
     /**
      * List all files from the provided path matching the list of file
@@ -400,14 +388,8 @@ object RuleMethods {
         path: String,
         patterns: List<String>,
         recursive: Boolean
-    ): List<File> =
-            FileSearching.listFilesByPatterns(
-                    MPPPath(path),
-                    patterns,
-                    recursive
-            ).map {
-                it.toJVMPath().toFile()
-            }
+    ): List<MPPPath> =
+            listFilesByPatterns(MPPPath(path), patterns, recursive)
 
     /**
      * Writes the string to a file, using UTF-8 as default encoding.
@@ -418,7 +400,7 @@ object RuleMethods {
      * @return A logical value indicating whether it was successful.
      */
     @JvmStatic
-    fun writeToFile(file: File, text: String, append: Boolean): Boolean =
+    fun writeToFile(file: MPPPath, text: String, append: Boolean): Boolean =
             MethodUtils.writeToFile(file, text, append)
 
     /**
@@ -431,7 +413,7 @@ object RuleMethods {
      */
     @JvmStatic
     fun writeToFile(path: String, text: String, append: Boolean): Boolean =
-            MethodUtils.writeToFile(File(path), text, append)
+            MethodUtils.writeToFile(MPPPath(path), text, append)
 
     /**
      * Writes the string list to a file, using UTF-8 as default encoding.
@@ -442,7 +424,7 @@ object RuleMethods {
      * @return A logical value indicating whether it was successful.
      */
     @JvmStatic
-    fun writeToFile(file: File, lines: List<String>, append: Boolean): Boolean =
+    fun writeToFile(file: MPPPath, lines: List<String>, append: Boolean): Boolean =
             MethodUtils.writeToFile(file, lines.joinToString(System.lineSeparator()), append)
 
     /**
@@ -455,7 +437,7 @@ object RuleMethods {
      */
     @JvmStatic
     fun writeToFile(path: String, lines: List<String>, append: Boolean): Boolean =
-            MethodUtils.writeToFile(File(path), lines.joinToString(System.lineSeparator()), append)
+            MethodUtils.writeToFile(MPPPath(path), lines.joinToString(System.lineSeparator()), append)
 
     /**
      * Reads the provided file into a list of strings.
@@ -464,8 +446,8 @@ object RuleMethods {
      * @return A list of strings.
      */
     @JvmStatic
-    fun readFromFile(file: File): List<String> = try {
-        MPPPath(file.toPath()).readLines()
+    fun readFromFile(file: MPPPath): List<String> = try {
+        file.readLines()
     } catch (e: IOException) {
         emptyList()
     } catch (e: SecurityException) {
@@ -479,7 +461,7 @@ object RuleMethods {
      * @return A list of strings.
      */
     @JvmStatic
-    fun readFromFile(path: String): List<String> = readFromFile(File(path))
+    fun readFromFile(path: String): List<String> = readFromFile(MPPPath(path))
 
     /**
      * Checks whether a directory is under the project directory.
@@ -490,8 +472,8 @@ object RuleMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun isSubdirectory(directory: File): Boolean =
-            FileHandling.isSubDirectory(MPPPath(directory.toPath()),
+    fun isSubdirectory(directory: MPPPath): Boolean =
+            FileHandling.isSubDirectory(directory,
                     LinearExecutor.currentProject!!.workingDirectory)
 
     /**
@@ -548,7 +530,8 @@ object RuleMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun isTrue(string: String): Boolean = !isEmpty(string) && InputHandling.checkBoolean(string)
+    fun isTrue(string: String): Boolean =
+            !isEmpty(string) && InputHandling.checkBoolean(string)
 
     /**
      * Checks if the string holds a false value.
@@ -560,7 +543,8 @@ object RuleMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun isFalse(string: String): Boolean = !isEmpty(string) && !InputHandling.checkBoolean(string)
+    fun isFalse(string: String): Boolean =
+            !isEmpty(string) && !InputHandling.checkBoolean(string)
 
     /**
      * Checks if the string holds a true value.

@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
-import java.io.File
 import java.lang.reflect.InvocationTargetException
 import java.net.MalformedURLException
 import java.net.URLClassLoader
+import org.islandoftex.arara.api.files.MPPPath
 
 /**
  * Implements utilitary methods for classloading and object instantiation.
@@ -28,13 +28,15 @@ object ClassLoading {
 
     /**
      * Loads a class from the provided file, potentially a Java archive.
-     * @param file File containing the Java bytecode (namely, a JAR).
+     * @param path File containing the Java bytecode (namely, a JAR).
      * @param name The canonical name of the class.
      * @return A pair representing the status and the class.
      */
     @JvmStatic
-    fun loadClass(file: File, name: String):
+    fun loadClass(path: MPPPath, name: String):
             Pair<ClassLoadingStatus, Class<*>> {
+        val file = path.toJVMPath().toFile()
+
         // status and class to be returned,
         // it defaults to an object class
         var value: Class<*> = Any::class.java
@@ -73,15 +75,15 @@ object ClassLoading {
 
     /**
      * Loads a class from the provided file, instantiating it.
-     * @param file File containing the Java bytecode (namely, a JAR).
+     * @param path File containing the Java bytecode (namely, a JAR).
      * @param name The canonical name of the class.
      * @return A pair representing the status and the class object.
      */
     @JvmStatic
-    fun loadObject(file: File, name: String): Pair<ClassLoadingStatus, Any> {
+    fun loadObject(path: MPPPath, name: String): Pair<ClassLoadingStatus, Any> {
         // load the corresponding class
         // based on the qualified name
-        val pair = loadClass(file, name)
+        val pair = loadClass(path, name)
 
         // status and object to be returned,
         // it defaults to an object

@@ -168,7 +168,6 @@ actual object Directives {
             holder.filterIsInstance<Any>()
                     .asSequence()
                     .map { MPPPath(it.toString()).normalize() }
-                    .map { it.toJVMPath().toFile() }
                     // and because we want directives, we replicate our
                     // directive to be applied to that file
                     .map { reference ->

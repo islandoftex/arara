@@ -1,18 +1,18 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.mvel.utils
 
-import java.io.File
 import java.io.IOException
 import java.util.MissingFormatArgumentException
-import java.util.regex.Pattern
+import kotlin.io.path.appendText
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.localization.LanguageController
 
 object MethodUtils {
     /**
      * Checks if the file contains the provided regex.
      *
-     * As we use [File.readText] this should not be called on files > 2GB.
+     * As we use [MPPPath.readText] this should not be called on files > 2GB.
      *
      * @param file The file.
      * @param regex The regex.
@@ -23,16 +23,15 @@ object MethodUtils {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun checkRegex(file: File, regex: String): Boolean {
+    fun checkRegex(file: MPPPath, regex: String): Boolean {
         try {
             val text = file.readText()
-            val pattern = Pattern.compile(regex)
-            val matcher = pattern.matcher(text)
-            return matcher.find()
+            val pattern = regex.toRegex()
+            return pattern.containsMatchIn(text)
         } catch (exception: IOException) {
             throw AraraException(
                     LanguageController.messages.ERROR_CHECKREGEX_IO_EXCEPTION
-                            .format(file.name),
+                            .format(file.fileName),
                     exception
             )
         }
@@ -86,15 +85,15 @@ object MethodUtils {
      * @return A logical value indicating whether it was successful.
      */
     @JvmStatic
-    fun writeToFile(file: File, text: String, append: Boolean): Boolean {
+    fun writeToFile(file: MPPPath, text: String, append: Boolean): Boolean {
         return try {
             // try to write the provided
             // string to the file, with
             // UTF-8 as encoding
             if (append)
-                file.appendText(text, Charsets.UTF_8)
+                file.toJVMPath().appendText(text)
             else
-                file.writeText(text, Charsets.UTF_8)
+                file.writeText(text)
             true
         } catch (_: IOException) {
             // if something bad happens,

@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project tries to adhere to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 from version 5.0.0 on.
 
+## MPP/v7
+
+### Changed
+
+* The MVEL API now uses our `MPPPath` object instead of `java.io.File`. That
+  way we are in control of the actual methods called which makes maintenance
+  easier. There are substitutes for the most common file operations. Users
+  of the `toFile()` method are safe as this is properly casted.
+  (breaking change)
+
 ## [Unreleased]
 
 ## [6.0.0] - 2021-02-26
