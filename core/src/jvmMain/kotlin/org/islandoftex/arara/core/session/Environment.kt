@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
+import com.soywiz.korio.lang.Environment
 import com.soywiz.korio.util.OS
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -152,15 +153,15 @@ object Environment {
         return kotlin.runCatching {
             // break the path into several parts
             // based on the path separator symbol
-            (System.getenv("PATH") ?: System.getenv("Path"))
-                    .split(File.pathSeparator)
-                    .asSequence()
-                    .mapNotNull { File(it).listFiles() }
+            (Environment["PATH"] ?: Environment["Path"])
+                    ?.split(File.pathSeparator)
+                    ?.asSequence()
+                    ?.mapNotNull { File(it).listFiles() }
                     // if the search does not return an empty
                     // list, one of the filenames got a match,
                     // and the command is available somewhere
                     // in the system path
-                    .firstOrNull {
+                    ?.firstOrNull {
                         it.any { file ->
                             filenames.contains(file.name) && !file.isDirectory
                         }
