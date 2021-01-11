@@ -16,11 +16,6 @@ internal annotation class AraraMessages
  *
  * All properties except [providedLocale] and [translators] are strings and
  * intended to be used in a [String.format] call.
- *
- * TODO: Translate ERROR_INTERPRETER_WRONG_RETURN_TYPE,
- *   ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT,
- *   ERROR_INTERPRETER_USER_REQUESTED_HALT,
- *   ERROR_EXTRACTOR_INTERPOLATION_FAILURE
  */
 @AraraMessages
 @Suppress("MaxLineLength", "ConstructorParameterNaming", "LongParameterList")
