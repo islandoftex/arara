@@ -6,6 +6,7 @@ import com.soywiz.korio.async.runBlockingNoJs
 import com.soywiz.korio.file.VfsFile
 import com.soywiz.korio.file.baseName
 import com.soywiz.korio.file.std.localVfs
+import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
 import org.islandoftex.arara.api.AraraIOException
@@ -138,12 +139,7 @@ public actual class MPPPath {
      * Resolve the sibling [p] of the current path.
      */
     public actual fun resolveSibling(p: MPPPath): MPPPath =
-            MPPPath(path.resolveSibling(p.path))
-
-    /**
-     * Return a JVM [Path] representation of this multiplatform path.
-     */
-    public fun toJVMPath(): Path = path
+            MPPPath(vfsFile.parent[p.vfsFile.path].absolutePath)
 
     /**
      * Read lines from the file specified at the current path. Fails with an
@@ -206,3 +202,13 @@ public actual class MPPPath {
      */
     public actual operator fun div(p: MPPPath): MPPPath = resolve(p)
 }
+
+/**
+ * Return a JVM [Path] representation of this multiplatform path.
+ */
+public fun MPPPath.toJVMPath(): Path = Paths.get(this.vfsFile.absolutePath)
+
+/**
+ * Return a JVM [File] representation of this multiplatform path.
+ */
+public fun MPPPath.toJVMFile(): File = File(this.vfsFile.absolutePath)

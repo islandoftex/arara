@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException
 import java.net.MalformedURLException
 import java.net.URLClassLoader
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.toJVMFile
 
 /**
  * Implements utilitary methods for classloading and object instantiation.
@@ -35,7 +36,7 @@ object ClassLoading {
     @JvmStatic
     fun loadClass(path: MPPPath, name: String):
             Pair<ClassLoadingStatus, Class<*>> {
-        val file = path.toJVMPath().toFile()
+        val file = path.toJVMFile()
 
         // status and class to be returned,
         // it defaults to an object class

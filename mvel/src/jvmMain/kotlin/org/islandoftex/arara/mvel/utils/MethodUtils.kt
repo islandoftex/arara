@@ -6,6 +6,7 @@ import java.util.MissingFormatArgumentException
 import kotlin.io.path.appendText
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.toJVMPath
 import org.islandoftex.arara.core.localization.LanguageController
 
 object MethodUtils {

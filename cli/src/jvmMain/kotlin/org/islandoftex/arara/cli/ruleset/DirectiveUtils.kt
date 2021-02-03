@@ -7,6 +7,7 @@ import net.mamoe.yamlkt.Yaml
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.ProjectFile
+import org.islandoftex.arara.api.files.toJVMFile
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.localization.LanguageController
@@ -143,7 +144,7 @@ object DirectiveUtils {
             } else {
                 listOf(DirectiveImpl(
                         directive.identifier,
-                        parameters.plus("reference" to file.path.toJVMPath().toFile()),
+                        parameters.plus("reference" to file.path.toJVMFile()),
                         directive.conditional,
                         directive.lineNumbers
                 ))

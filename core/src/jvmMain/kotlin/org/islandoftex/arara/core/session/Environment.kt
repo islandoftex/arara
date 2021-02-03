@@ -15,6 +15,7 @@ import kotlinx.coroutines.awaitAll
 import mu.KotlinLogging
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.toJVMFile
 import org.islandoftex.arara.api.session.Command
 import org.zeroturnaround.exec.ProcessExecutor
 import org.zeroturnaround.exec.listener.ShutdownHookProcessDestroyer
@@ -212,7 +213,7 @@ object Environment {
             // arara's execution directory by default
             val workingDirectory = command.workingDirectory
                     ?: MPPPath("")
-            directory(workingDirectory.toJVMPath().toFile().absoluteFile)
+            directory(workingDirectory.toJVMFile())
 
             // implement output redirection if necessary for verbose
             // output

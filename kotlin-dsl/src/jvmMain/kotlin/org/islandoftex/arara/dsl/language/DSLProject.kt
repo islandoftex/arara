@@ -12,7 +12,7 @@ import org.islandoftex.arara.api.files.ProjectFile
  */
 class DSLProject(private val name: String) {
     private val files = mutableSetOf<ProjectFile>()
-    private var workingDirectory = MPPPath("").normalize().toJVMPath()
+    private var workingDirectory = MPPPath("").normalize()
     private val dependencyList = mutableSetOf<String>()
 
     /**
@@ -72,7 +72,7 @@ class DSLProject(private val name: String) {
      *   the application's working directory.
      */
     fun workingDirectory(name: String) {
-        workingDirectory = MPPPath(name).normalize().toJVMPath()
+        workingDirectory = MPPPath(name).normalize()
     }
 
     /**
@@ -82,7 +82,7 @@ class DSLProject(private val name: String) {
      *   against the application's working directory.
      */
     fun workingDirectory(file: File) {
-        workingDirectory = MPPPath(file.toPath()).normalize().toJVMPath()
+        workingDirectory = MPPPath(file.toPath()).normalize()
     }
 
     /**
@@ -109,6 +109,6 @@ class DSLProject(private val name: String) {
      * @return A [Project] resembling the user's configuration.
      */
     internal fun toProject(): Project = org.islandoftex.arara.core.files.Project(
-            name, MPPPath(workingDirectory), files, dependencyList
+            name, workingDirectory, files, dependencyList
     )
 }

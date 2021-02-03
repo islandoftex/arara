@@ -9,6 +9,7 @@ import kotlin.io.path.deleteIfExists
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.toJVMPath
 
 class JVMFileHandlingTest : ShouldSpec({
     should("detect changes on file") {
