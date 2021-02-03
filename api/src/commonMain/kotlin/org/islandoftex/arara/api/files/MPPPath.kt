@@ -63,11 +63,6 @@ public expect class MPPPath {
     public fun startsWith(p: MPPPath): Boolean
 
     /**
-     * Checks whether the path ends with [p].
-     */
-    public fun endsWith(p: MPPPath): Boolean
-
-    /**
      * Normalizes the path. For [MPPPath] this means, the path is transformed
      * into an absolute path and then normalized.
      */
@@ -110,12 +105,12 @@ public expect class MPPPath {
     public fun readText(): String
 
     /**
-     * Write [text] to the file specified at the current path. Fails with an
-     * [AraraIOException] exception if the file is a directory or access is
-     * impossible.
+     * Write [text] to the file specified at the current path. Overwrite by
+     * default if [append] is not set. Fails with an [AraraIOException]
+     * exception if the file is a directory or access is impossible.
      */
     @Throws(AraraIOException::class)
-    public fun writeText(text: String)
+    public fun writeText(text: String, append: Boolean = false)
 
     /**
      * Resolve the child [p] against the current path.

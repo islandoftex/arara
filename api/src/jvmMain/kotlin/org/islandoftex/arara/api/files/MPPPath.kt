@@ -3,9 +3,17 @@ package org.islandoftex.arara.api.files
 
 import com.soywiz.klock.DateTime
 import com.soywiz.korio.async.runBlockingNoJs
+import com.soywiz.korio.async.use
 import com.soywiz.korio.file.VfsFile
+import com.soywiz.korio.file.VfsOpenMode
 import com.soywiz.korio.file.baseName
+import com.soywiz.korio.file.fullPathNormalized
+import com.soywiz.korio.file.getPathComponents
+import com.soywiz.korio.file.normalize
 import com.soywiz.korio.file.std.localVfs
+import com.soywiz.korio.lang.lastIndexOfOrNull
+import com.soywiz.korio.stream.copyTo
+import com.soywiz.korio.stream.openAsync
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -68,7 +76,15 @@ public actual class MPPPath {
      * parent, i.e. it is the root, it is returned itself.
      */
     public actual val parent: MPPPath
-        get() = this.takeIf { path == path.root } ?: MPPPath(path.parent.toString())
+        get() = this.takeIf { vfsFile == vfsFile.root }
+                ?: vfsFile.fullPathNormalized
+                        .substring(0, vfsFile.fullPathNormalized.lastIndexOfOrNull('/') ?: 0)
+                        .takeIf { it.isNotBlank() }
+                        ?.let { MPPPath(it) }
+                // prevent fallback to current working directory as korio
+                // would do; we fall back to the file system root
+                // TODO: check behavior for relative paths
+                ?: MPPPath("/")
 
     /**
      * Indicates whether the file exists.
@@ -93,21 +109,32 @@ public actual class MPPPath {
     /**
      * Checks whether the path starts with [p].
      */
-    public actual fun startsWith(p: MPPPath): Boolean =
-        path.startsWith(p.path)
+    public actual fun startsWith(p: MPPPath): Boolean {
+        val components = vfsFile.getPathComponents()
+        val otherComponents = p.vfsFile.getPathComponents()
 
-    /**
-     * Checks whether the path ends with [p].
-     */
-    public actual fun endsWith(p: MPPPath): Boolean =
-        path.endsWith(p.path)
+        return if (otherComponents.size > components.size ||
+                otherComponents.isEmpty() && isAbsolute) {
+            // other path is longer or has no name elements
+            false
+        } else {
+            // check component-wise
+            otherComponents.forEachIndexed { i, element ->
+                if (element != components[i])
+                    return false
+            }
+            true
+        }
+    }
 
     /**
      * Normalizes the path. For [MPPPath] this means, the path is transformed
      * into an absolute path and then normalized.
      */
     public actual fun normalize(): MPPPath =
-            MPPPath(path.toAbsolutePath().normalize().toString())
+            // TODO: align with parent, check relative paths
+            MPPPath(vfsFile.absolutePathInfo.normalize()
+                    .takeIf { it.isNotBlank() } ?: "/")
 
     /**
      * Resolve the child [p] of the current path.
@@ -125,13 +152,13 @@ public actual class MPPPath {
      * Resolve the sibling [p] of the current path.
      */
     public actual fun resolveSibling(p: String): MPPPath =
-            MPPPath(vfsFile.parent[p].absolutePath)
+            MPPPath(parent.resolve(p))
 
     /**
      * Resolve the sibling [p] of the current path.
      */
     public actual fun resolveSibling(p: MPPPath): MPPPath =
-            MPPPath(vfsFile.parent[p.vfsFile.path].absolutePath)
+            MPPPath(parent.resolve(p))
 
     /**
      * Read lines from the file specified at the current path. Fails with an
@@ -158,16 +185,27 @@ public actual class MPPPath {
     }
 
     /**
-     * Write [text] to the file specified at the current path. Fails with an
-     * [AraraIOException] exception if the file is a directory or access is
-     * impossible.
+     * Write [text] to the file specified at the current path. Overwrite by
+     * default if [append] is not set. Fails with an [AraraIOException]
+     * exception if the file is a directory or access is impossible.
      */
-    public actual fun writeText(text: String): Unit = runBlockingNoJs {
-        if (isRegularFile)
-            vfsFile.writeString(text)
-        else
-            throw AraraIOException("Can only write text to files.")
-    }
+    public actual fun writeText(text: String, append: Boolean): Unit =
+            runBlockingNoJs {
+                if (isRegularFile) {
+                    val openMode = if (append)
+                        VfsOpenMode.APPEND
+                    else
+                        // if not appending choose the same open mode
+                        // korio would use instead
+                        VfsOpenMode.CREATE_OR_TRUNCATE
+                    vfsFile.vfs.open(vfsFile.absolutePath, openMode)
+                        .use {
+                            text.openAsync().copyTo(this)
+                        }
+                } else {
+                    throw AraraIOException("Can only write text to files.")
+                }
+            }
 
     override fun toString(): String = vfsFile.absolutePath
 

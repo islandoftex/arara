@@ -43,7 +43,7 @@ class MPPPathTest {
     @Test
     fun shouldDetermineParentCorrectly() {
         assertEquals(MPPPath("/tmp/./quack/..").parent.normalize().toString(),
-                MPPPath("/tmp/quack").toString())
+                MPPPath("/").toString())
         assertEquals(MPPPath("/tmp/./quack/..").normalize().parent.toString(),
                 MPPPath("/").toString())
     }
