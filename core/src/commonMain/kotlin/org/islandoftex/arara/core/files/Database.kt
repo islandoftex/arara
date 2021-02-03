@@ -87,7 +87,7 @@ data class Database(
     override fun save(path: MPPPath) {
         runCatching {
             val content = "!database\n" +
-                    Yaml.default.encodeToString(serializer(), this)
+                    Yaml.Default.encodeToString(serializer(), this)
             runBlockingNoJs {
                 localVfs(path.normalize().toString())
                         .writeString(content)
@@ -119,7 +119,7 @@ data class Database(
                     }
                     if (!text.startsWith("!database"))
                         throw AraraException("Database should start with !database")
-                    Yaml.default.decodeFromString(serializer(), text.lines()
+                    Yaml.Default.decodeFromString(serializer(), text.lines()
                             .drop(1).joinToString("\n"))
                 }.getOrElse {
                     throw AraraException(LanguageController

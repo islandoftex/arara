@@ -13,18 +13,18 @@ object Versions {
 
     // non-plugin dependencies
     const val clikt = "3.1.0"
-    const val coroutines = "1.3.8"
+    const val coroutines = "1.4.2"
     const val jna = "5.7.0"
     const val junit = "5.7.0"
     const val kaml = "0.27.0"
-    const val klock = "2.0.3"
-    const val korlibs = "2.0.4"
+    const val klock = "2.0.5"
+    const val korlibs = "2.0.6"
     const val kotest = "4.4.1"
     const val kotlinLogging = "2.0.4"
     const val kotlinxSerialization = "1.0.1"
     const val log4j = "2.14.0"
     const val mvel = "2.4.12.Final"
     const val slf4j = "1.7.30"
-    const val yamlkt = "0.7.5"
+    const val yamlkt = "0.8.0"
     const val ztExec = "1.12"
 }

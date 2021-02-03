@@ -79,7 +79,7 @@ object DirectiveUtils {
             return mapOf()
 
         val map = kotlin.runCatching {
-            Yaml.default.decodeFromString<Map<String, Any>>(text)
+            Yaml.Default.decodeFromString<Map<String, Any>>(text)
         }.getOrElse {
             throw AraraException(
                     LanguageController.messages.ERROR_VALIDATE_YAML_EXCEPTION
