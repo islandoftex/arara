@@ -27,19 +27,11 @@ public actual class MPPPath {
     }
 
     /**
-     * Check whether a path is absolute. Does not guarantee it is normalized.
-     */
-    public constructor(initPath: Path) {
-        path = initPath
-        vfsFile = localVfs(path.toAbsolutePath().normalize().toString())
-    }
-
-    /**
      * Get the last segment of a path which by definition is the file name.
      */
     public constructor(initPath: MPPPath) {
         path = initPath.path
-        vfsFile = localVfs(path.toAbsolutePath().normalize().toString())
+        vfsFile = initPath.vfsFile
     }
 
     /**
@@ -76,7 +68,7 @@ public actual class MPPPath {
      * parent, i.e. it is the root, it is returned itself.
      */
     public actual val parent: MPPPath
-        get() = this.takeIf { path == path.root } ?: MPPPath(path.parent)
+        get() = this.takeIf { path == path.root } ?: MPPPath(path.parent.toString())
 
     /**
      * Indicates whether the file exists.
@@ -115,7 +107,7 @@ public actual class MPPPath {
      * into an absolute path and then normalized.
      */
     public actual fun normalize(): MPPPath =
-            MPPPath(path.toAbsolutePath().normalize())
+            MPPPath(path.toAbsolutePath().normalize().toString())
 
     /**
      * Resolve the child [p] of the current path.
@@ -127,7 +119,7 @@ public actual class MPPPath {
      * Resolve the child [p] of the current path.
      */
     public actual fun resolve(p: MPPPath): MPPPath =
-            MPPPath(path.resolve(p.path))
+            MPPPath(vfsFile[p.path.toString()].absolutePath)
 
     /**
      * Resolve the sibling [p] of the current path.
@@ -212,3 +204,13 @@ public fun MPPPath.toJVMPath(): Path = Paths.get(this.vfsFile.absolutePath)
  * Return a JVM [File] representation of this multiplatform path.
  */
 public fun MPPPath.toJVMFile(): File = File(this.vfsFile.absolutePath)
+
+/**
+ * Simple wrapper to transform a JVM [Path] into a [MPPPath].
+ */
+public fun Path.toMPPPath(): MPPPath = MPPPath(this.toString())
+
+/**
+ * Simple wrapper to transform a JVM [File] into a [MPPPath].
+ */
+public fun File.toMPPPath(): MPPPath = MPPPath(this.toString())

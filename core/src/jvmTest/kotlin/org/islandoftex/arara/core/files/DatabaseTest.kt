@@ -9,6 +9,7 @@ import io.kotest.matchers.string.shouldContain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.toMPPPath
 
 class DatabaseTest : ShouldSpec({
     should("normalize paths") {
@@ -32,7 +33,7 @@ class DatabaseTest : ShouldSpec({
 
     should("be able to perform save-load cycle") {
         withContext(Dispatchers.IO) {
-            val tmp = MPPPath(tempfile("db").toPath())
+            val tmp = tempfile("db").toMPPPath()
             val db = Database()
             db[MPPPath("")] = 1L
             db[MPPPath("quack")] = 2L

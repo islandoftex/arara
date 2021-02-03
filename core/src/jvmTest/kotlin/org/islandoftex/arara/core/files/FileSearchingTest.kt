@@ -13,6 +13,7 @@ import kotlinx.coroutines.withContext
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.ProjectFile
+import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 
 class FileSearchingTest : ShouldSpec({
@@ -28,7 +29,7 @@ class FileSearchingTest : ShouldSpec({
         }
 
         should("find file in listing by extension") {
-            val tempDir = MPPPath(prepareFileSystem())
+            val tempDir = prepareFileSystem().toMPPPath()
             FileSearching.listFilesByExtensions(tempDir,
                     listOf("tex"), false).toSet() shouldBe
                     setOf(tempDir / "quack.tex")
@@ -39,7 +40,7 @@ class FileSearchingTest : ShouldSpec({
         }
 
         should("find file in listing by pattern") {
-            val tempDir = MPPPath(prepareFileSystem())
+            val tempDir = prepareFileSystem().toMPPPath()
             FileSearching.listFilesByPatterns(tempDir,
                     listOf("*q*.txt"), false).toSet() shouldBe
                     setOf(tempDir / "quack.txt")
@@ -71,7 +72,7 @@ class FileSearchingTest : ShouldSpec({
                 pathToTest.writeText("quack")
                 val projectFile = FileSearching.lookupFile(
                         pathToTest.toString(),
-                        MPPPath(testDir),
+                        testDir.toMPPPath(),
                         ExecutionOptions()
                 ) as ProjectFile
                 projectFile.path.normalize().toString() shouldBe
@@ -88,7 +89,7 @@ class FileSearchingTest : ShouldSpec({
                 (parent / "changes.tex").writeText("quack")
                 val projectFile = FileSearching.lookupFile(
                         (parent / "changes").toString(),
-                        MPPPath(testDir),
+                        testDir.toMPPPath(),
                         ExecutionOptions()
                 ) as ProjectFile
                 projectFile.path.normalize().toString() shouldBe
@@ -106,7 +107,7 @@ class FileSearchingTest : ShouldSpec({
                 val pathToTest = parent / "changes.tex"
                 val projectFile = FileSearching.lookupFile(
                         pathToTest.toString(),
-                        MPPPath(testDir),
+                        testDir.toMPPPath(),
                         ExecutionOptions().copy(executionMode = ExecutionMode.SAFE_RUN)
                 ) as ProjectFile
                 projectFile.path.normalize().toString() shouldBe

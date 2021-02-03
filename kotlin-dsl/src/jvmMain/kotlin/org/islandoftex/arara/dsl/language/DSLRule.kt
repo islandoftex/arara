@@ -3,7 +3,7 @@ package org.islandoftex.arara.dsl.language
 
 import java.nio.file.Path
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.api.rules.RuleArgument
 import org.islandoftex.arara.api.rules.RuleCommand
@@ -53,7 +53,7 @@ class DSLRule(
         workingDirectory: Path? = null
     ): Command = org.islandoftex.arara.dsl.session.Command(
             listOf(command).plus(parameters),
-            workingDirectory?.let { MPPPath(it) }
+            workingDirectory?.toMPPPath()
     ).also {
         commands.add(org.islandoftex.arara.dsl.rules.RuleCommand(command) {
             Environment.executeSystemCommand(it).first

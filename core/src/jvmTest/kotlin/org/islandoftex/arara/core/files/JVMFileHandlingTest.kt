@@ -8,14 +8,14 @@ import kotlin.io.path.deleteExisting
 import kotlin.io.path.deleteIfExists
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMPath
+import org.islandoftex.arara.api.files.toMPPPath
 
 class JVMFileHandlingTest : ShouldSpec({
     should("detect changes on file") {
         withContext(Dispatchers.IO) {
-            val file = MPPPath(tempfile().toPath())
-            val databaseFile = MPPPath(tempfile().toPath())
+            val file = tempfile().toMPPPath()
+            val databaseFile = tempfile().toMPPPath()
             databaseFile.toJVMPath().deleteIfExists()
             FileHandling.hasChanged(file, databaseFile) shouldBe true
             FileHandling.hasChanged(file, databaseFile) shouldBe false

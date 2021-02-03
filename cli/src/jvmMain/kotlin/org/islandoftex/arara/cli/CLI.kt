@@ -20,6 +20,7 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.session.ExecutionStatus
@@ -185,7 +186,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
 
         // resolve the working directory from the one that may be given
         // as command line parameter; otherwise resolve current directory
-        val workingDir = (workingDirectory?.let { MPPPath(it) } ?: MPPPath(""))
+        val workingDir = (workingDirectory?.toMPPPath() ?: MPPPath(""))
                 .normalize()
 
         // add all command line call parameters to the session

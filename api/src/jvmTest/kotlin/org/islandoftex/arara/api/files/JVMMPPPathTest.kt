@@ -25,13 +25,13 @@ class JVMMPPPathTest : ShouldSpec({
         should("fail reading from directory") {
             val tmp = Files.createTempDirectory("read")
             shouldThrow<AraraIOException> {
-                MPPPath(tmp).readText()
+                tmp.toMPPPath().readText()
             }.message shouldContain "read text from file"
         }
         should("fail writing to directory") {
             val tmp = Files.createTempDirectory("write")
             shouldThrow<AraraIOException> {
-                MPPPath(tmp).writeText("quack")
+                tmp.toMPPPath().writeText("quack")
             }.message shouldContain "write text to file"
         }
     }
