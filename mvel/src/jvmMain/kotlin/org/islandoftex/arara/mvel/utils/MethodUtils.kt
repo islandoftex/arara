@@ -3,10 +3,8 @@ package org.islandoftex.arara.mvel.utils
 
 import java.io.IOException
 import java.util.MissingFormatArgumentException
-import kotlin.io.path.appendText
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.api.files.toJVMPath
 import org.islandoftex.arara.core.localization.LanguageController
 
 object MethodUtils {
@@ -91,10 +89,7 @@ object MethodUtils {
             // try to write the provided
             // string to the file, with
             // UTF-8 as encoding
-            if (append)
-                file.toJVMPath().appendText(text)
-            else
-                file.writeText(text)
+            file.writeText(text, append)
             true
         } catch (_: IOException) {
             // if something bad happens,
