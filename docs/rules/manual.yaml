@@ -34,7 +34,7 @@ commands:
                      .concat('.').concat(extension)));
         }
         foreach (match : matches) {
-            removals.add(getCommand(prefix, match.getCanonicalPath()));
+            removals.add(getCommand(prefix, match.normalize()));
         }
         return removals;
     }
