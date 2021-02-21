@@ -54,7 +54,7 @@ class FileHandlingTest : ShouldSpec({
             }
         }
         should("generate correct CRC sums") {
-            FileHandling.calculateHash(Paths.get("../LICENSE")) shouldBe 597079266
+            FileHandling.calculateHash(Paths.get("../LICENSE")) shouldBe 608305299
             FileHandling.calculateHash(Paths.get("../CODE_OF_CONDUCT.md")) shouldBe 3856623865
         }
 
