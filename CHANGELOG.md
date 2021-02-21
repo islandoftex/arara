@@ -55,6 +55,8 @@ from version 5.0.0 on.
   (see #47 and https://github.com/cereda/arara/issues/83)
 * A new quickstart guide has been written to complement to the reference manual.
   (see #9 and #59)
+* A new website at https://islandoftex.gitlab.io/arara/ presents arara briefly
+  and is to be extended with future releases.
 
 ### Changed
 
