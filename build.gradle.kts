@@ -167,14 +167,17 @@ subprojects {
                 manifest.attributes.putAll(mainManifest.attributes)
             }
             named<Jar>("sourcesJar") {
+                archiveBaseName.set("arara-${project.name}")
                 archiveClassifier.set("sources")
             }
             named<Jar>("javadocJar") {
+                archiveBaseName.set("arara-${project.name}")
                 from(project.tasks.getByPath("dokkaJavadoc"))
+                archiveClassifier.set("javadoc")
             }
             named<Jar>("shadowJar") {
-                archiveAppendix.set("with-deps")
-                archiveClassifier.set("")
+                archiveBaseName.set("arara-${project.name}")
+                archiveClassifier.set("with-deps")
             }
 
             withType<Test> {
@@ -191,7 +194,7 @@ subprojects {
         apply(plugin = "maven-publish")
         configure<PublishingExtension> {
             publications {
-                create<MavenPublication>("GitLab") {
+                register<MavenPublication>("GitLab") {
                     groupId = project.group.toString()
                     artifactId = "arara-${project.name}"
                     version = version
@@ -267,9 +270,10 @@ subprojects {
                         }
                     }
 
-                    from(components["java"])
                     artifact(tasks["sourcesJar"])
                     artifact(tasks["javadocJar"])
+                    artifact(tasks["shadowJar"])
+                    artifact(tasks["jar"])
                 }
 
                 System.getenv("CI_PROJECT_ID")?.let {

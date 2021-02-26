@@ -11,7 +11,7 @@ open class TDSTreeBuilderTask : DefaultTask() {
 
         // depend on shadow Jar input
         inputs.files(project.fileTree("cli/build/libs/")
-                .include("*-with-deps-*.jar"))
+                .include("*-with-deps*.jar"))
         // depend on source zip as required by CTAN
         inputs.file(project.buildDir.resolve("arara-${project.version}-src.zip"))
         // depend on documentation (it should be compiled)
