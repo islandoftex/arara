@@ -34,7 +34,7 @@ juice_logo_name = "arara"
 juice_logo_path = "images/arara-text.svg"
 juice_extra_menu = [
     { title = "GitLab", link = "https://gitlab.com/islandoftex/arara" },
-    { title = "News", link = "news" },
+    { title = "News", link = "https://islandoftex.gitlab.io/arara/news" },
 ]
 meta_title = "The cool TeX automation tool"
 meta_description = "arara is a TeX automation tool based on directives and rules."
