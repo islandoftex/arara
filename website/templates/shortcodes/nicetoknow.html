@@ -2,7 +2,7 @@
     <small>
         <strong>Nice to know: {% if title %} – {{title}}{% endif %}</strong>
         <br/>
-        {{ body }}
+        {{ body | markdown(inline=true) | safe }}
         {% if reference %}<a href="{{reference}}" target="_blank">Read more</a>{% endif %}
     </small>
 </blockquote>
