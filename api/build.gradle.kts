@@ -53,7 +53,6 @@ kotlin {
     }
 }
 
-
 tasks {
     create("createAraraAPIObject") {
         listOf(

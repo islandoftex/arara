@@ -5,15 +5,15 @@ import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.java.archives.internal.DefaultManifest
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.islandoftex.arara.build.Versions
 import org.islandoftex.arara.build.AraraPublication
-import org.islandoftex.arara.build.SourceZipBuilderTask
 import org.islandoftex.arara.build.CTANTreeBuilderTask
 import org.islandoftex.arara.build.CTANZipBuilderTask
+import org.islandoftex.arara.build.SourceZipBuilderTask
 import org.islandoftex.arara.build.TDSTreeBuilderTask
 import org.islandoftex.arara.build.TDSZipBuilderTask
+import org.islandoftex.arara.build.Versions
 import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 buildscript {
     repositories {
@@ -29,14 +29,14 @@ if (!project.hasProperty("jobToken")) {
 
 plugins {
     val versions = org.islandoftex.arara.build.Versions
-    kotlin("multiplatform") version versions.kotlin apply false                         // Apache 2.0
-    kotlin("plugin.serialization") version versions.kotlin apply false                  // Apache 2.0
-    id("com.github.johnrengelman.shadow") version versions.shadow apply false           // Apache 2.0
-    id("com.github.ben-manes.versions") version versions.versionsPlugin                 // Apache 2.0
-    id("com.diffplug.spotless-changelog") version versions.spotlessChangelog            // Apache 2.0
-    id("org.jetbrains.dokka") version versions.dokka apply false                        // Apache 2.0
-    id("io.gitlab.arturbosch.detekt") version versions.detekt                           // Apache 2.0
-    id("com.diffplug.spotless") version versions.spotless                               // Apache 2.0
+    kotlin("multiplatform") version versions.kotlin apply false // Apache 2.0
+    kotlin("plugin.serialization") version versions.kotlin apply false // Apache 2.0
+    id("com.github.johnrengelman.shadow") version versions.shadow apply false // Apache 2.0
+    id("com.github.ben-manes.versions") version versions.versionsPlugin // Apache 2.0
+    id("com.diffplug.spotless-changelog") version versions.spotlessChangelog // Apache 2.0
+    id("org.jetbrains.dokka") version versions.dokka apply false // Apache 2.0
+    id("io.gitlab.arturbosch.detekt") version versions.detekt // Apache 2.0
+    id("com.diffplug.spotless") version versions.spotless // Apache 2.0
 }
 
 // exclude alpha and beta versions
@@ -71,6 +71,7 @@ spotless {
                 "kotlin-dsl/build.gradle.kts",
                 "cli/build.gradle.kts")
         targetExclude("src/test/**/*.kts")
+        ktlint()
         trimTrailingWhitespace()
         indentWithSpaces()
         endWithNewline()
@@ -150,7 +151,6 @@ subprojects {
                     attributes["Multi-Release"] = "true"
                     attributes["Automatic-Module-Name"] = rootProject.group
                 }
-
 
         apply(plugin = "org.jetbrains.kotlin.multiplatform")
         configure<KotlinMultiplatformExtension> {
