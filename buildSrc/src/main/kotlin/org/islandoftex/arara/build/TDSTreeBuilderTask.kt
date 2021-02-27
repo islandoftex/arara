@@ -4,6 +4,10 @@ package org.islandoftex.arara.build
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
+/**
+ * Create a TDS compliant directory tree. Requires the result
+ * of [SourceZipBuilderTask].
+ */
 open class TDSTreeBuilderTask : DefaultTask() {
     init {
         group = "distribution"

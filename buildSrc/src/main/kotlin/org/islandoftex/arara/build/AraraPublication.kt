@@ -13,6 +13,9 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.credentials
 
+/**
+ * A simple wrapper around arara's publication logic.
+ */
 open class AraraPublication : Plugin<Project> {
     @Suppress("LongMethod")
     override fun apply(target: Project) {
@@ -109,6 +112,7 @@ open class AraraPublication : Plugin<Project> {
                     }
                 }
             }
+
             System.getenv("CI_PROJECT_ID")?.let {
                 repositories {
                     maven {

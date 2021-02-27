@@ -3,6 +3,10 @@ package org.islandoftex.arara.build
 
 import org.gradle.api.tasks.bundling.Zip
 
+/**
+ * Zip the result of [TDSTreeBuilderTask] to create a valid
+ * TDS zip.
+ */
 open class TDSZipBuilderTask : Zip() {
     init {
         group = "distribution"

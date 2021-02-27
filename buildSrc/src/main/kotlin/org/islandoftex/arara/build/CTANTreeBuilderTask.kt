@@ -4,6 +4,10 @@ package org.islandoftex.arara.build
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
+/**
+ * Create a CTAN compiliant directory tree based on the TDS zip
+ * created by [TDSZipBuilderTask].
+ */
 open class CTANTreeBuilderTask : DefaultTask() {
     init {
         group = "distribution"

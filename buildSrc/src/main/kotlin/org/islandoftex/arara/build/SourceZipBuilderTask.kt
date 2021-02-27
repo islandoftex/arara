@@ -3,6 +3,9 @@ package org.islandoftex.arara.build
 
 import org.gradle.api.tasks.bundling.Zip
 
+/**
+ * Zip relevant source files to meet CTAN's requirements.
+ */
 open class SourceZipBuilderTask : Zip() {
     init {
         group = "distribution"

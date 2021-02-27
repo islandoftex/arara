@@ -7,6 +7,9 @@ import java.nio.file.Path
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+/**
+ * Collection of auxiliary functions to aid generating CTAN zips.
+ */
 object TaskHelper {
     /**
      * Creates a shell script file for arara.

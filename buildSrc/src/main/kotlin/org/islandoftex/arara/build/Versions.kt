@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.build
 
+/**
+ * The plugin and non-plugin versions used during arara's build.
+ */
 object Versions {
     // plugin dependencies
     const val detekt = "1.15.0"
