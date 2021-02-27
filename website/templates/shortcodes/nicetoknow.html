@@ -1,0 +1,8 @@
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+    <small>
+        <strong>Nice to know: {% if title %} – {{title}}{% endif %}</strong>
+        <br/>
+        {{ body }}
+        {% if reference %}<a href="{{reference}}" target="_blank">Read more</a>{% endif %}
+    </small>
+</blockquote>
