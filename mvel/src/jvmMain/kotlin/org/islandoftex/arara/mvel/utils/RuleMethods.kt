@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.mvel.utils
 
-import java.io.IOException
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.SafeRunViolationException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
@@ -448,9 +448,7 @@ object RuleMethods {
     @JvmStatic
     fun readFromFile(file: MPPPath): List<String> = try {
         file.readLines()
-    } catch (e: IOException) {
-        emptyList()
-    } catch (e: SecurityException) {
+    } catch (_: AraraIOException) {
         emptyList()
     }
 

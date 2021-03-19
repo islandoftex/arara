@@ -73,7 +73,7 @@ object DisplayUtils {
     internal val applicationPath: String
         get() = try {
             ConfigurationUtils.applicationPath.toString()
-        } catch (ae: AraraException) {
+        } catch (_: AraraException) {
             "[unknown application path]"
         }
 
