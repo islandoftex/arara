@@ -8,6 +8,11 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
+### Fixed
+
+* The help message did not mention the tool's purpose.
+  (see #65)
+
 ## [6.0.0] - 2021-02-26
 
 ### Added
