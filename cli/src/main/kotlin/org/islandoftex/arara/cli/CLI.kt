@@ -47,7 +47,13 @@ import org.islandoftex.arara.mvel.utils.MvelState
  * @version 5.0
  * @since 5.0
  */
-class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true) {
+class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true, help = """
+    The cool TeX automation tool.
+
+    arara executes the TeX workflow you tell it to execute. Simply specify
+    your needs within your TeX file and let arara do the work. These directives
+    feature conditional execution and parameter expansion.
+    """) {
     private val log by option("-l", "--log",
             help = "Generate a log output")
             .flag()
