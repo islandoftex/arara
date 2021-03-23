@@ -155,9 +155,7 @@ subprojects {
         apply(plugin = "org.jetbrains.kotlin.multiplatform")
         configure<KotlinMultiplatformExtension> {
             jvm {
-                // TODO: withJava seems incompatible with Gradle 7
-                //       check consequences of removal on publishing
-                // withJava()
+                withJava()
                 compilations.all {
                     kotlinOptions {
                         jvmTarget = "1.8"
