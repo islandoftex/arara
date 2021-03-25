@@ -4,28 +4,29 @@ description = "A quickstart guide to arara"
 weight = 2
 +++
 
-Welcome to arara, the cool TeX automation tool! This document is intended to be
-a quickstart guide, providing the basic instructions to start using our tool. We
-will help our good friend Peter,[^1] the anteater, in his learning adventure. He
-is very excited about it! Hello, Peter!
+Welcome to arara, the cool {{ tex() }} automation tool! This document is
+intended to be a quickstart guide, providing the basic instructions to start
+using our tool. We will help our good friend Peter,[^1] the anteater, in his
+learning adventure. He is very excited about it! Hello, Peter!
 
-> PETER: Hello, nice to meet you, person from the Island of TeX! I am Peter, the
-> anteater. So I heard about this tool named arara, what is it? Is there
-> anything to do with TeX and friends?
+> PETER: Hello, nice to meet you, person from the Island of {{ tex() }}! I am
+> Peter, the anteater. So I heard about this tool named arara, what is it? Is
+> there anything to do with {{ tex() }} and friends?
 
-As a matter of fact, it is! arara is a TeX automation tool. The name was chosen
+As a matter of fact, it is! arara is a {{ tex() }} automation tool. The name was chosen
 as an homage to a Brazilian bird of the same name, which is a macaw. The word
-*arara* comes from the Tupian word *a'rara*, which means *big bird*. The tool is
-an effort to provide a concise way to automate the daily TeX workflow for users
-and also package writers.
+*arara* comes from the Tupian word *a'rara*, which means *big bird*. The tool
+is an effort to provide a concise way to automate the daily {{ tex() }}
+workflow for users and also package writers.
 
 > PETER: It definitely sounds intriguing! So tell me, how does arara work? Does
 > it do everything automatically for me, like other tools? Do things happen by
 > magic?
 
 A very good question, Peter. The best way to explain how arara works is to
-provide a quick comparison with similar tools. I believe you are familiar with
-TeX documents, right? Let us use the following file `article.tex` as an example:
+provide a quick comparison with similar tools. I believe you are familiar
+with {{ tex() }} documents, right? Let us use the following file `article.tex`
+as an example:
 
 ```tex
 \documentclass{article}
@@ -76,7 +77,7 @@ it is not magic.
 
 > PETER: I see. On the other hand, this approach gives me, as user, full control
 > of my document compilation. Being aware of the compilation steps makes me
-> understand the TeX tooling better. Quite clever! Now, do tell me: how does one
+> understand the {{ tex() }} tooling better. Quite clever! Now, do tell me: how does one
 > tell arara to do a task?
 
 First of all, Peter, arara has to know *how* to do a task. This is done by
@@ -148,7 +149,8 @@ Total: 0.56 seconds
 
 Exactly! You see, Peter, there is no guesswork from arara. The tool will do
 exactly what you tell it to do, no more, no less. There is a lot of freedom to
-this design, which gives you an interesting way to enhance your TeX experience.
+this design, which gives you an interesting way to enhance your {{ tex() }}
+experience.
 
 {% nicetoknow(reference = "https://www.nationalgeographic.com/animals/mammals/g/giant-anteater/") %}
 Anteaters are not aggressive, but they can be fierce. A cornered anteater will
@@ -325,7 +327,7 @@ code excerpts to help you understand better the inner workings.
 > }
 > ```
 > I want to cite my thesis in the article you and I are writing for this
-> quickstart guide. From the TeX side, it is quite straightforward! How about
+> quickstart guide. From the {{ tex() }} side, it is quite straightforward! How about
 > arara? Here is my code:
 > ```tex
 > \documentclass{article}
@@ -353,31 +355,31 @@ each day. As the largest of all four anteater species, the giant anteater can
 reach eight feet long from the tip of its snout to the end of its tail.
 {% end %}
 
-We, as users, can learn a great deal about TeX and friends by organising our
+We, as users, can learn a great deal about {{ tex() }} and friends by organising our
 workflow into directives. Let us review what should be done in order to
 correctly compile your document:
 
-1. For starters, we need to run the TeX engine in order to write (amongst other
+1. For starters, we need to run the {{ tex() }} engine in order to write (amongst other
     things) the relevant bibliography information to the auxiliary file. We can
     achieve this by inserting the following directive:
     ```tex
     % arara: pdflatex
     ```
 1. Once the auxiliary file holds the relevant bibliography information, we need
-    to run the BibTeX tool as a means to map entries from the bibliography
+    to run the Bib{{ tex() }} tool as a means to map entries from the bibliography
     database to the existing citations into an intermediate bibliography
     file. We can achieve this by inserting the following directive:
     ```tex
     % arara: bibtex
     ```
 1. Once the intermediate bibliography file is generated, we can now have a
-    proper bibliography section in our document, so we need to run the TeX
+    proper bibliography section in our document, so we need to run the {{ tex() }}
     engine again. We can achieve this by inserting the following directive:
     ```tex
     % arara: pdflatex
     ```
 1. However, the citations are still not yet referenced in the document, so a
-    final run of the TeX engine is required in order to correctly adjust these
+    final run of the {{ tex() }} engine is required in order to correctly adjust these
     references. We can achieve this by inserting the following directive:
     ```tex
     % arara: pdflatex
@@ -385,12 +387,12 @@ correctly compile your document:
 
 And we are done! These are the compilation steps required to correctly generate
 your article from the given source and bibliography files. Note that the entire
-workflow involves two different tools working together: the TeX engine and the
-BibTeX tool.
+workflow involves two different tools working together: the {{ tex() }} engine and the
+Bib{{ tex() }} tool.
 
 > PETER: Wait a minute, no less than four compilation steps? I would never
-> guessed it! This is great: arara is also helping me understand better how the
-> TeX workflow works!
+> guessed it! This is great: arara is also helping me understand better how
+> the {{ tex() }} workflow works!
 
 Quite true, Peter! arara tries its best to help users think out of the box! Now
 that we know the exact compilation steps to be taken, we just need to arrange
@@ -448,12 +450,12 @@ argument passing through command line flags, configuration files, default
 preambles, file hashing, safe mode, and much more. There is a world of
 possibilities!
 
-> PETER: Thank you very much, person from the Island of TeX! I am sure I will
+> PETER: Thank you very much, person from the Island of {{ tex() }}! I am sure I will
 > have a lot of fun with arara! Should I need any assistance, how can I contact
 > the team?
 
 Great talking to you, Peter! If you run into any issue with arara, please let us
-know. We all have very active profiles in the [TeX community at
+know. We all have very active profiles in the [{{ tex() }} community at
 StackExchange](https://tex.stackexchange.com/), so just use the `arara` tag in
 your question and we will help you the best we can (also, take a look at their
 [starter guide](https://tex.meta.stackexchange.com/q/1436)). We also have
@@ -461,16 +463,19 @@ your question and we will help you the best we can (also, take a look at their
 [Matrix](https://matrix.to/#/!HfEWIEvFtDplCLSQvz:matrix.org?via=matrix.org) chat
 rooms, in which we occasionally hang out. Also, if you think the report is
 worthy of an issue, open one in our [GitLab
-repository](https://gitlab.com/islandoftex/arara/issues). Happy TeXing with
+repository](https://gitlab.com/islandoftex/arara/issues). Happy {{ tex() }}ing with
 arara, Peter!
 
-[^1] Peter was graduated from Termite High School, Alta Floresta, Mato Grosso,
+---
+
+[^1]: Peter was graduated from Termite High School, Alta Floresta, Mato Grosso,
 Brazil. He went on to study at the California Institute of Ti*k*Zlings with a
 scholarship from San Diego Zoo. He completed his university education at the
 Rain Forest Academy, Manaus. He is currently teaching as a Fellow of the Federal
 University for the Advancement of Furry Animals, Cuiabá. He is a Corresponding
 Member of Duckpond Academy, Sempione Park, Milano, Italy.
-[^2] Peter’s doctoral thesis “On flexibilty: LaTeX, latex and rubber” was
+
+[^2]: Peter’s doctoral thesis “On flexibilty: {{ latex() }}, latex and rubber” was
 published at Manaus. His reputation in the academic world is based on his famous
 study “The Mandelbrot heritage: towards a fractal topology of formicaries”. Some
 of his works arose from a fruitful cooperation with the well known
