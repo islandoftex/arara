@@ -8,10 +8,17 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
+### Added
+
+* The quickstart guide has been integrated in the website as a first step
+  towards providing web based documentation.
+
 ### Fixed
 
 * The help message did not mention the tool's purpose.
   (see #65)
+* The `makeindex` rule did not use the list access syntax as required by v6.
+  (see https://chat.stackexchange.com/transcript/message/57484552#57484552)
 
 ## [6.0.0] - 2021-02-26
 
