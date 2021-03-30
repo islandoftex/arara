@@ -605,12 +605,12 @@ The methods presented in this section cover the most common types used in direct
 \arara\ can be extended at runtime with code from JVM languages, such as Groovy, Scala, Clojure and Kotlin. The tool can load classes from \rbox{class} and \rbox{jar} files and even instantiate them. This section introduces methods related to class loading and object instantiation.
 
 \begin{messagebox}{Ordered pairs}{araracolour}{\icok}{white}
-According to the \href{https://en.wikipedia.org/wiki/Ordered_pair}{Wikipedia entry}, in mathematics, an \emph{ordered pair} $(a, b)$ is a pair of objects. The order in which the objects appear in the pair is significant: the ordered pair $(a, b)$ is different from the ordered pair $(b, a)$ unless $a = b$. In the ordered pair $(a, b)$, the object $a$ is called the \emph{first} entry, and the object $b$ the \emph{second} entry of the pair. \arara\ relies on this concept with the helper \rbox{Pair<A, B>} class, in which \rbox{A} and \rbox{B} denote the component classes, i.e, the types associated to the pair elements. In order to access the pair entries, the class provides two methods:
+According to the \href{https://en.wikipedia.org/wiki/Ordered_pair}{Wikipedia entry}, in mathematics, an \emph{ordered pair} $(a, b)$ is a pair of objects. The order in which the objects appear in the pair is significant: the ordered pair $(a, b)$ is different from the ordered pair $(b, a)$ unless $a = b$. In the ordered pair $(a, b)$, the object $a$ is called the \emph{first} entry, and the object $b$ the \emph{second} entry of the pair. \arara\ relies on this concept with the helper \rbox{Pair<A, B>} class, in which \rbox{A} and \rbox{B} denote the component classes, i.e, the types associated to the pair elements. In order to access the pair entries, the class provides two property accessors:
 
 \begin{description}
-\item[\mtbox{first()}\hfill\rrbox{A}] This method, as the name implies, returns the first entry of the ordered pair, as an \rbox{A} object. It is important to observe that, from the MVEL context, as the method constitutes a property accessor (namely, a getter), the parentheses can be safely omitted.
+\item[\mtbox{first}\hfill\rrbox{A}] This property accessor, as the name implies, returns the first entry of the ordered pair, as an \rbox{A} object.
 
-\item[\mtbox{second()}\hfill\rrbox{B}] This method, as the name implies, returns the second entry of the ordered pair, as a \rbox{B} object. It is important to observe that, from the MVEL context, as the method constitutes a property accessor (namely, a getter), the parentheses can be safely omitted.
+\item[\mtbox{second}\hfill\rrbox{B}] This property accessor, as the name implies, returns the second entry of the ordered pair, as a \rbox{B} object.
 \end{description}
 
 Keep in mind that the entries in the \rbox{Pair} class, once defined, cannot be modified to other values. The initial values are set during instantiation and, therefore, only entry getters are available to the user during the object life cycle.
