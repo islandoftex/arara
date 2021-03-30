@@ -455,9 +455,9 @@ object RuleMethods {
     @JvmStatic
     fun readFromFile(file: File): List<String> = try {
         file.toPath().readLines(Charsets.UTF_8)
-    } catch (e: IOException) {
+    } catch (_: IOException) {
         emptyList()
-    } catch (e: SecurityException) {
+    } catch (_: SecurityException) {
         emptyList()
     }
 
