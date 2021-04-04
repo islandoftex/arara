@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli
 
+import com.github.ajalt.clikt.completion.completionOption
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.parameters.arguments.argument
@@ -268,7 +269,10 @@ fun main(args: Array<String>) {
     // fixed-width fonts, otherwise the logo will be messed
     DisplayUtils.printLogo()
 
-    CLI().versionOption(AraraAPI.version, names = setOf("-V", "--version"),
+    CLI().completionOption(help = "Generate a completion script for arara. " +
+                    "Add 'source <(arara --generate-completion <shell>)' " +
+                    "to your shell's init file.")
+            .versionOption(AraraAPI.version, names = setOf("-V", "--version"),
             message = {
                 "arara ${AraraAPI.version}\n" +
                         "Copyright (c) ${LocalDate.now().year}, Island of TeX\n" +

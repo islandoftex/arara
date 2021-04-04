@@ -8,6 +8,11 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
+### Added
+
+* The CLI now supports generating shell completions for bash, zsh and fish using
+  `--generate-completions`.
+
 ### Changed
 
 * The MVEL API now uses our `MPPPath` object instead of `java.io.File`. That
