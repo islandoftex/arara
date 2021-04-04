@@ -8,6 +8,11 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
+### Added
+
+* The CLI now supports generating shell completions for bash, zsh and fish using
+  `--generate-completions`.
+
 ## [6.0.2] - 2021-03-31
 
 ### Fixed
