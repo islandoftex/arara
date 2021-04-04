@@ -13,6 +13,11 @@ from version 5.0.0 on.
 * The CLI now supports generating shell completions for bash, zsh and fish using
   `--generate-completions`.
 
+### Fixed
+
+* `arara` would raise a null pointer exception when running from the root
+  directory in the underlying file system hierarchy. (see #69)
+
 ## [6.0.2] - 2021-03-31
 
 ### Fixed

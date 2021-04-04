@@ -197,7 +197,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true, help = """
 
         try {
             val projects = listOf(Project(
-                    workingDir.fileName.toString(),
+                    workingDir.fileName?.toString() ?: "Untitled",
                     workingDir,
                     reference.map { fileName ->
                         FileSearching.resolveFile(
