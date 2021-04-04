@@ -20,6 +20,9 @@ from version 5.0.0 on.
   easier. There are substitutes for the most common file operations. Users
   of the `toFile()` method are safe as this is properly casted.
   (breaking change)
+* The error message for IO errors has been changed to indicate potential
+  encoding problems.
+  (see #68)
 
 ## [6.0.2] - 2021-03-31
 

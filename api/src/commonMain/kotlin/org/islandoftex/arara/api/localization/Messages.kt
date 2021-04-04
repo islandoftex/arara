@@ -8,6 +8,9 @@ package org.islandoftex.arara.api.localization
         RequiresOptIn.Level.WARNING)
 internal annotation class AraraMessages
 
+// TODO: translate for v7:
+//  * ERROR_EXTRACTOR_IO_ERROR
+
 /**
  * The messages arara will use. They should be treated semi-public and are no
  * stable API.
@@ -29,7 +32,7 @@ public open class Messages(
     public val ERROR_DISCOVERFILE_FILE_NOT_FOUND: String = "I could not find the provided file \"%s\" %s. Please make sure the file exists and it has a valid extension.",
     public val ERROR_EVALUATE_COMPILATION_FAILED: String = "For whatever reason, I could not compile the expression in the provided conditional. This part is quite tricky, since it involves aspects of the underlying expression language. I will do my best to help you in any way I can.",
     public val ERROR_EVALUATE_NOT_BOOLEAN_VALUE: String = "The conditional evaluation was expecting a boolean value as result. This should be an easy fix. Just make sure the conditional evaluation resolves to a boolean value in the end.",
-    public val ERROR_EXTRACTOR_IO_ERROR: String = "There was an IO error while I was trying to extract the directives. I have no idea why it failed, though. Perhaps the file was moved or deleted before or during the extraction operation. Or maybe I do not have the proper permissions to read the file.",
+    public val ERROR_EXTRACTOR_IO_ERROR: String = "There was an IO error while I was trying to extract the directives. I have no idea why it failed, though. Perhaps the file was moved or deleted before or during the extraction operation. Or maybe the file uses a different encoding than UTF-8. Or maybe I do not have the proper permissions to read the file.",
     public val ERROR_EXTRACTOR_INTERPOLATION_FAILURE: String = "Your 'options' field contains an entry the MVEL parser is unable to cope with. Please revise your options not to contain any malformed '@{…}' parts.",
     public val ERROR_FILETYPE_NOT_A_FILE: String = "The \"filetype\" method requires a file, not a directory. It looks like \"%s\" does not appear to be a file at all. If you need to perform tasks on a directory, you could use a couple of methods from the Java API.",
     public val ERROR_FILETYPE_UNKNOWN_EXTENSION: String = "I cannot recognize \"%s\" as a default extension. If you want to define a new file type, make sure to provide the extension and pattern. These are the default extensions: %s",
