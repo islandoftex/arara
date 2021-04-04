@@ -8,11 +8,6 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
-### Added
-
-* The CLI now supports generating shell completions for bash, zsh and fish using
-  `--generate-completions`.
-
 ### Changed
 
 * The MVEL API now uses our `MPPPath` object instead of `java.io.File`. That
@@ -23,6 +18,19 @@ from version 5.0.0 on.
 * The error message for IO errors has been changed to indicate potential
   encoding problems.
   (see #68)
+
+## [6.1.0] - 2021-04-04
+
+### Added
+
+* The CLI now supports generating shell completions for bash, zsh and fish using
+  `--generate-completions`.
+
+### Fixed
+
+* `arara` would raise a null pointer exception when running from the root
+  directory in the underlying file system hierarchy.
+  (see #69)
 
 ## [6.0.2] - 2021-03-31
 
@@ -391,7 +399,8 @@ from version 5.0.0 on.
 For versions previous to version 5.0.0, there has not been any persistent record
 of changes. Please refer to the commit history for details.
 
-[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v6.0.2...master
+[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v6.1.0...master
+[6.1.0]: https://gitlab.com/islandoftex/arara/compare/v6.0.2...v6.1.0
 [6.0.2]: https://gitlab.com/islandoftex/arara/compare/v6.0.1...v6.0.2
 [6.0.1]: https://gitlab.com/islandoftex/arara/compare/v6.0.0...v6.0.1
 [6.0.0]: https://gitlab.com/islandoftex/arara/compare/v5.1.3...v6.0.0
