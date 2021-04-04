@@ -19,7 +19,7 @@ commands:
         else {
             prefix = [ 'cmd', '/c', 'del' ];
         }
-        if (extensions == '') {
+        if (extensions.isEmpty()) {
             if (getOriginalReference() == reference) {
                 throwError('I cannot remove the main file reference.');
             }

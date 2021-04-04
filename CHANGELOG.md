@@ -16,6 +16,15 @@ from version 5.0.0 on.
   of the `toFile()` method are safe as this is properly casted.
   (breaking change)
 
+## [6.0.2] - 2021-03-31
+
+### Fixed
+
+* The `clean` rule did not use the list size property as required by v6.
+  (see https://chat.stackexchange.com/transcript/message/57489291#57489291)
+* Documentation for `Pair` now refers to its values as `first` and `second`
+  property accessors.
+
 ## [6.0.1] - 2021-03-30
 
 ### Added
@@ -374,7 +383,8 @@ from version 5.0.0 on.
 For versions previous to version 5.0.0, there has not been any persistent record
 of changes. Please refer to the commit history for details.
 
-[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v6.0.1...master
+[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v6.0.2...master
+[6.0.2]: https://gitlab.com/islandoftex/arara/compare/v6.0.1...v6.0.2
 [6.0.1]: https://gitlab.com/islandoftex/arara/compare/v6.0.0...v6.0.1
 [6.0.0]: https://gitlab.com/islandoftex/arara/compare/v5.1.3...v6.0.0
 [5.1.3]: https://gitlab.com/islandoftex/arara/compare/v5.1.2...v5.1.3
