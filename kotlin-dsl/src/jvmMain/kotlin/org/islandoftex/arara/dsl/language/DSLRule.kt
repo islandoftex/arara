@@ -93,7 +93,7 @@ class DSLRule(
             throw AraraException("Two rule arguments can't have the same " +
                     "identifier.")
         return DSLRuleArgument<T>(identifier).apply(configure)
-                .toRuleArgument<T>().also { ruleArguments.add(it) }
+                .toRuleArgument().also { ruleArguments.add(it) }
     }
 
     /**

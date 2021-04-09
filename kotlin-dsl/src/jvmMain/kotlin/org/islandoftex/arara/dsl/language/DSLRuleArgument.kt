@@ -13,7 +13,9 @@ class DSLRuleArgument<T>(val identifier: String) {
      * The final processor function of the argument to transform the directive
      * option into the string that may be used later on.
      */
-    private var processor: (T) -> String = { it.toString() }
+    private var processor: (T, Map<String, Any>) -> List<String> = { it, _ ->
+        listOf(it.toString())
+    }
 
     /**
      * Whether this argument is required in a directive.
@@ -30,7 +32,23 @@ class DSLRuleArgument<T>(val identifier: String) {
      * Set the processor function to process the argument give in the directive.
      */
     fun processor(fn: RuleMethods.(T) -> String) {
-        processor = { fn(RuleMethods, it) }
+        processor = { it, _ -> listOf(fn(RuleMethods, it)) }
+    }
+
+    /**
+     * Set the processor function to process the argument give in the directive.
+     */
+    @JvmName("processorStringList")
+    fun processor(fn: RuleMethods.(T) -> List<String>) {
+        processor = { it, _ -> fn(RuleMethods, it) }
+    }
+
+    /**
+     * Set the processor function to process the argument give in the directive.
+     */
+    @JvmName("processorStringListWithContext")
+    fun processor(fn: RuleMethods.(T, Map<String, Any>) -> List<String>) {
+        processor = { it, ctx -> fn(RuleMethods, it, ctx) }
     }
 
     /**
@@ -38,14 +56,12 @@ class DSLRuleArgument<T>(val identifier: String) {
      *
      * @return A [RuleArgument] resembling the user's configuration.
      */
-    inline fun <reified T> toRuleArgument(): RuleArgument<T> {
-        val default = if (defaultValue is T)
-            defaultValue as T
-        else
-            throw AraraException("The default value has to match the given " +
-                    "rule type.")
+    fun toRuleArgument(): RuleArgument<T> {
+        val default = defaultValue
+                ?: throw AraraException("The default value must not be null.")
         return org.islandoftex.arara.dsl.rules.RuleArgument(
-                identifier, isRequired = required, defaultValue = default
+                identifier, isRequired = required, defaultValue = default,
+                processor = processor
         )
     }
 }
