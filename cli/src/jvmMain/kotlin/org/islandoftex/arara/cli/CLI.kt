@@ -5,9 +5,11 @@ import com.github.ajalt.clikt.completion.completionOption
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.clikt.parameters.arguments.help
 import com.github.ajalt.clikt.parameters.arguments.multiple
 import com.github.ajalt.clikt.parameters.options.associate
 import com.github.ajalt.clikt.parameters.options.flag
+import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.versionOption
 import com.github.ajalt.clikt.parameters.types.int
@@ -58,43 +60,42 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true, help = """
     your needs within your TeX file and let arara do the work. These directives
     feature conditional execution and parameter expansion.
     """) {
-    private val log by option("-l", "--log",
-            help = "Generate a log output")
+    private val log by option("-l", "--log")
+            .help("Generate a log output")
             .flag()
-    private val verbose by option("-v", "--verbose",
-            help = "Print the command output")
+    private val verbose by option("-v", "--verbose")
+            .help("Print the command output")
             .flag("-s", "--silent")
-    private val dryRun by option("-n", "--dry-run",
-            help = "Go through all the motions of running a command, but " +
+    private val dryRun by option("-n", "--dry-run")
+            .help("Go through all the motions of running a command, but " +
                     "with no actual calls")
             .flag()
-    private val safeRun by option("-S", "--safe-run",
-            help = "Run in safe mode and disable potentially harmful features. " +
+    private val safeRun by option("-S", "--safe-run")
+            .help("Run in safe mode and disable potentially harmful features. " +
                     "Make sure your projects uses only allowed features.")
             .flag()
-    private val onlyHeader by option("-H", "--header",
-            help = "Extract directives only in the file header")
+    private val onlyHeader by option("-H", "--header")
+            .help("Extract directives only in the file header")
             .flag()
-    private val preamble by option("-p", "--preamble",
-            help = "Set the file preamble based on the configuration file")
-    private val timeout by option("-t", "--timeout",
-            help = "Set the execution timeout (in milliseconds)")
+    private val preamble by option("-p", "--preamble")
+            .help("Set the file preamble based on the configuration file")
+    private val timeout by option("-t", "--timeout")
+            .help("Set the execution timeout (in milliseconds)")
             .int().restrictTo(min = 1)
-    private val language by option("-L", "--language",
-            help = "Set the application language")
-    private val maxLoops by option("-m", "--max-loops",
-            help = "Set the maximum number of loops (> 0)")
+    private val language by option("-L", "--language")
+            .help("Set the application language")
+    private val maxLoops by option("-m", "--max-loops")
+            .help("Set the maximum number of loops (> 0)")
             .int().restrictTo(min = 1)
-    private val workingDirectory by option("-d", "--working-directory",
-            help = "Set the working directory for all tools")
+    private val workingDirectory by option("-d", "--working-directory")
+            .help("Set the working directory for all tools")
             .path(mustExist = true, canBeFile = false, mustBeReadable = true)
-    private val parameters: Map<String, String> by option("-P", "--call-property",
-            help = "Pass parameters to the application to be used within the " +
-                    "session.")
+    private val parameters: Map<String, String> by option("-P", "--call-property")
+            .help("Pass parameters to the application to be used within the session.")
             .associate()
 
-    private val reference by argument("file",
-            help = "The file(s) to evaluate and process")
+    private val reference by argument("file")
+            .help("The file(s) to evaluate and process")
             .multiple(required = true)
 
     /**
