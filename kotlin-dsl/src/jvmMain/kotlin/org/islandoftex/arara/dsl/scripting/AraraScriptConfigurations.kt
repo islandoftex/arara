@@ -31,7 +31,7 @@ import org.islandoftex.arara.dsl.language.DSLInstance
  */
 class AraraScriptCompilationConfiguration : ScriptCompilationConfiguration({
     defaultImports("java.io.*")
-    implicitReceivers(DSLInstance::class)
+    implicitReceivers(RuleMethods::class, DSLInstance::class)
     jvm {
         val keyResource = AraraScriptCompilationConfiguration::class.java
                 .name.replace('.', '/') + ".class"
@@ -70,7 +70,7 @@ class AraraScriptCompilationConfiguration : ScriptCompilationConfiguration({
 })
 
 class AraraScriptEvaluationConfiguration : ScriptEvaluationConfiguration({
-    implicitReceivers(DSLInstance)
+    implicitReceivers(RuleMethods, DSLInstance)
 })
 
 private fun compiledScriptUniqueName(
