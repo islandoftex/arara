@@ -30,24 +30,16 @@ class DSLRuleArgument<T>(val identifier: String) {
     /**
      * Set the processor function to process the argument give in the directive.
      */
-    fun processor(fn: RuleMethods.(T) -> String) {
-        processor = { it, _ -> listOf(fn(RuleMethods, it)) }
-    }
-
-    /**
-     * Set the processor function to process the argument give in the directive.
-     */
+    // TODO: only accept String and List<String>
     @JvmName("processorStringList")
-    fun processor(fn: RuleMethods.(T) -> List<String>) {
-        processor = { it, _ -> fn(RuleMethods, it) }
-    }
-
-    /**
-     * Set the processor function to process the argument give in the directive.
-     */
-    @JvmName("processorStringListWithContext")
-    fun processor(fn: RuleMethods.(T, Map<String, Any>) -> List<String>) {
-        processor = { it, ctx -> fn(RuleMethods, it, ctx) }
+    fun processor(fn: RuleMethods.(T) -> Any) {
+        processor = { it, _ ->
+            val result = fn(RuleMethods, it)
+            if (result is List<*>)
+                result.map { it.toString() }
+            else
+                listOf(it.toString())
+        }
     }
 
     /**
