@@ -49,10 +49,11 @@ class DSLRule(
      */
     fun command(
         command: String,
-        vararg parameters: String,
+        vararg parameters: String?,
         workingDirectory: Path? = null
     ): Command = org.islandoftex.arara.core.session.Command(
-            listOf(command).plus(parameters),
+            listOf(command)
+                    .plus(parameters.filterNotNull().filterNot { it.isBlank() }),
             workingDirectory?.toMPPPath()
     ).also {
         commands.add(org.islandoftex.arara.dsl.rules.RuleCommand(command) {
@@ -86,12 +87,12 @@ class DSLRule(
      */
     inline fun <reified T> argument(
         identifier: String,
-        configure: DSLRuleArgument.() -> Unit
+        configure: DSLRuleArgument<T>.() -> Unit
     ): RuleArgument<T> {
         if (identifier in arguments)
             throw AraraException("Two rule arguments can't have the same " +
                     "identifier.")
-        return DSLRuleArgument(identifier).apply(configure)
+        return DSLRuleArgument<T>(identifier).apply(configure)
                 .toRuleArgument<T>().also { ruleArguments.add(it) }
     }
 
@@ -103,7 +104,7 @@ class DSLRule(
      * @return A [RuleArgument] with the given specifics.
      */
     @JvmName("nullableStringArgument")
-    fun argument(identifier: String, configure: DSLRuleArgument.() -> Unit) =
+    fun argument(identifier: String, configure: DSLRuleArgument<String?>.() -> Unit) =
             argument<String?>(identifier, configure)
 
     /**
