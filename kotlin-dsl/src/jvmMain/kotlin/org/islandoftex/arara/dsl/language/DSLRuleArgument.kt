@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.dsl.language
 
-import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.rules.RuleArgument
 import org.islandoftex.arara.dsl.scripting.RuleMethods
 
@@ -57,10 +56,8 @@ class DSLRuleArgument<T>(val identifier: String) {
      * @return A [RuleArgument] resembling the user's configuration.
      */
     fun toRuleArgument(): RuleArgument<T> {
-        val default = defaultValue
-                ?: throw AraraException("The default value must not be null.")
         return org.islandoftex.arara.dsl.rules.RuleArgument(
-                identifier, isRequired = required, defaultValue = default,
+                identifier, isRequired = required, defaultValue = defaultValue,
                 processor = processor
         )
     }
