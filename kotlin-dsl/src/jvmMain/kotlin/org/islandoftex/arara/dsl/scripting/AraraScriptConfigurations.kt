@@ -17,6 +17,7 @@ import kotlin.script.experimental.api.implicitReceivers
 import kotlin.script.experimental.host.ScriptingHostConfiguration
 import kotlin.script.experimental.jvm.compilationCache
 import kotlin.script.experimental.jvm.dependenciesFromClassContext
+import kotlin.script.experimental.jvm.dependenciesFromCurrentContext
 import kotlin.script.experimental.jvm.jvm
 import kotlin.script.experimental.jvmhost.CompiledScriptJarsCache
 import org.islandoftex.arara.dsl.language.DSLInstance
@@ -36,11 +37,7 @@ class AraraScriptCompilationConfiguration : ScriptCompilationConfiguration({
         val thisJarFile = AraraScriptCompilationConfiguration::class.java
                 .classLoader.getResource(keyResource)?.toContainingJarOrNull()
         if (thisJarFile != null) {
-            dependenciesFromClassContext(
-                    AraraScriptCompilationConfiguration::class,
-                    thisJarFile.name, "kotlin-stdlib", "kotlin-reflect",
-                    "kotlin-scripting-dependencies"
-            )
+            dependenciesFromCurrentContext(thisJarFile.name, wholeClasspath = true)
         } else {
             dependenciesFromClassContext(
                     AraraScriptCompilationConfiguration::class,
