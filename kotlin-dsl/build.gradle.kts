@@ -2,10 +2,6 @@
 
 import org.islandoftex.arara.build.Versions
 
-plugins {
-    application
-}
-
 kotlin {
     sourceSets {
         all {
@@ -15,11 +11,14 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 api(project(":api"))
+                api(kotlin("scripting-jvm"))
+                api(kotlin("scripting-jvm-host"))
+
                 implementation(project(":core"))
                 implementation(kotlin("script-util"))
-                implementation(kotlin("scripting-jvm"))
-                implementation(kotlin("scripting-jvm-host"))
+
                 runtimeOnly(kotlin("compiler-embeddable"))
+                runtimeOnly(kotlin("scripting-dependencies"))
                 runtimeOnly("net.java.dev.jna:jna:${Versions.jna}")
             }
         }
@@ -30,10 +29,4 @@ kotlin {
             }
         }
     }
-}
-
-// this is temporarily a full-featured application
-application {
-    applicationName = project.name
-    mainClassName = "org.islandoftex.arara.dsl.Executor"
 }
