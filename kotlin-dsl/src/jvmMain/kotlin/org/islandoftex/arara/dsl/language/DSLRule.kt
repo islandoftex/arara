@@ -9,6 +9,7 @@ import org.islandoftex.arara.api.rules.RuleArgument
 import org.islandoftex.arara.api.rules.RuleCommand
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.core.session.Environment
+import org.islandoftex.arara.core.session.LinearExecutor
 
 /**
  * A rule model class to capture DSL methods within.
@@ -57,7 +58,11 @@ class DSLRule(
             workingDirectory?.toMPPPath()
     ).also {
         commands.add(org.islandoftex.arara.dsl.rules.RuleCommand(command) {
-            Environment.executeSystemCommand(it).first
+            Environment.executeSystemCommand(
+                    it,
+                    !LinearExecutor.executionOptions.verbose,
+                    LinearExecutor.executionOptions.timeoutValue
+            ).first
         })
     }
 
