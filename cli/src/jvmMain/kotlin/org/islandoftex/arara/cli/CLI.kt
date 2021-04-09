@@ -4,6 +4,7 @@ package org.islandoftex.arara.cli
 import com.github.ajalt.clikt.completion.completionOption
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.ProgramResult
+import com.github.ajalt.clikt.core.context
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.help
 import com.github.ajalt.clikt.parameters.arguments.multiple
@@ -272,7 +273,12 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true, help = """
  * @param args A string array containing all command line arguments.
  */
 fun main(args: Array<String>) {
-    CLI().completionOption(help = "Generate a completion script for arara. " +
+    CLI().context {
+        correctionSuggestor = { enteredValue, possibleValues ->
+            possibleValues.filter { it.startsWith(enteredValue) }
+        }
+    }
+            .completionOption(help = "Generate a completion script for arara. " +
                     "Add 'source <(arara --generate-completion <shell>)' " +
                     "to your shell's init file.")
             .versionOption(AraraAPI.version, names = setOf("-V", "--version"),
