@@ -14,7 +14,7 @@ object DSLInstance {
      * The DSL's main task is to provide an easy project configuration format.
      * All projects obtained from build configuration files are collected here.
      */
-    internal val projects = mutableListOf<Project>()
+    val projects = mutableListOf<Project>()
 
     /**
      * Rules are specified in the DSL as well. This saves all rules.

@@ -27,6 +27,7 @@ kotlin {
             dependencies {
                 implementation(project(":core"))
                 implementation(project(":mvel"))
+                implementation(project(":kotlin-dsl"))
 
                 implementation(kotlin("reflect", Versions.kotlin))
                 implementation("com.github.ajalt.clikt:clikt:${Versions.clikt}")

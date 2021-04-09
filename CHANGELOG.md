@@ -8,6 +8,13 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
+### Added
+
+* Kotlin DSL to configure projects to be run. Specify your projects in a
+  `.kts` file within your directory and then run `arara file.kts` to run all
+  projects from this script.
+  (experimental; may be significantly altered or removed in the next version)
+
 ### Changed
 
 * The MVEL API now uses our `MPPPath` object instead of `java.io.File`. That

@@ -17,9 +17,11 @@ import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import com.github.ajalt.clikt.parameters.types.restrictTo
 import java.time.LocalDate
+import kotlin.script.experimental.api.valueOrNull
+import kotlin.script.experimental.host.toScriptSource
+import kotlin.script.experimental.jvmhost.BasicJvmScriptingHost
 import kotlin.time.Duration
 import kotlin.time.TimeSource
-import kotlin.time.milliseconds
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
@@ -44,6 +46,9 @@ import org.islandoftex.arara.core.rules.Directives
 import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
+import org.islandoftex.arara.dsl.language.DSLInstance
+import org.islandoftex.arara.dsl.scripting.AraraScriptCompilationConfiguration
+import org.islandoftex.arara.dsl.scripting.AraraScriptEvaluationConfiguration
 import org.islandoftex.arara.mvel.utils.MvelState
 
 /**
@@ -112,11 +117,18 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true, help = """
                 .normalize()
 
         return reference.singleOrNull()
-                ?.takeIf { it.trim().endsWith(".yaml") }
+                ?.trim()
+                ?.takeIf { it.endsWith(".yaml") || it.endsWith(".kts") }
                 ?.let { workingDir.resolve(it) }
                 ?.takeIf { it.exists }
                 ?.let {
-                    emptyList()
+                    BasicJvmScriptingHost().eval(
+                            it.readText().toScriptSource(),
+                            AraraScriptCompilationConfiguration(),
+                            AraraScriptEvaluationConfiguration()
+                    ).valueOrNull()?.run {
+                        DSLInstance.projects
+                    }
                 }
                 ?: listOf(Project(
                         "Untitled",
