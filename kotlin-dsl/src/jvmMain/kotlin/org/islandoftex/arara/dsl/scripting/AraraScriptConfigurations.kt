@@ -20,6 +20,7 @@ import kotlin.script.experimental.jvm.dependenciesFromClassContext
 import kotlin.script.experimental.jvm.dependenciesFromCurrentContext
 import kotlin.script.experimental.jvm.jvm
 import kotlin.script.experimental.jvmhost.CompiledScriptJarsCache
+import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.dsl.language.DSLInstance
 
 /**
@@ -50,7 +51,8 @@ class AraraScriptCompilationConfiguration : ScriptCompilationConfiguration({
     }
     hostConfiguration(ScriptingHostConfiguration {
         jvm {
-            System.getProperty("java.io.tmpdir")?.let(::File)
+            Environment.getSystemPropertyOrNull("java.io.tmpdir")
+                    ?.let(::File)
                     ?.takeIf { it.exists() && it.isDirectory }
                     ?.let {
                         File(it, "org.islandoftex.arara.kts.cache")
