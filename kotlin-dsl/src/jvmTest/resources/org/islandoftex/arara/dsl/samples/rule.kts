@@ -6,12 +6,12 @@ rule("id",
         required = true
         // we also need a way for a choices value etc.
     }
-    argument<Int>("identifier") {
+    argument<Int>("second identifier") {
         required = true
         defaultValue = 0
     }
 
-    command("pdflatex", arguments["identifier"]!!, arguments["quack"]!!)
+    command("pdflatex", arguments["identifier"]!!, arguments["second identifier"]!!)
     execute {
         println("Test")
         exit(1)
