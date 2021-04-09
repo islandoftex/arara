@@ -25,9 +25,10 @@ public interface RuleArgument<T> {
 
     /**
      * The argument's default value. It will be used when the argument's
-     * identifier is given without value.
+     * identifier is given without value. Null if the argument does not
+     * have a default value.
      */
-    public val defaultValue: T
+    public val defaultValue: T?
 
     /**
      * Process the argument value of type [T] into a list of string. If
