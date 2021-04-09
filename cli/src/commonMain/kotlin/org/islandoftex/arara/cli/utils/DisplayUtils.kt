@@ -26,6 +26,16 @@ object DisplayUtils {
     private val logger = KotlinLogging.logger { }
 
     /**
+     * The application logo for the terminal.
+     */
+    val logoString: String = """
+              __ _ _ __ __ _ _ __ __ _
+             / _` | '__/ _` | '__/ _` |
+            | (_| | | | (_| | | | (_| |
+             \__,_|_|  \__,_|_|  \__,_|
+    """.trimIndent()
+
+    /**
      * The file name of the configuration file in use. It is only needed for
      * logging purposes.
      */
@@ -320,19 +330,6 @@ object DisplayUtils {
                 )
         logger.info { text }
         printWrapped(text)
-    }
-
-    /**
-     * Displays the application logo in the terminal.
-     */
-    fun printLogo() {
-        println("""
-              __ _ _ __ __ _ _ __ __ _
-             / _` | '__/ _` | '__/ _` |
-            | (_| | | | (_| | | | (_| |
-             \__,_|_|  \__,_|_|  \__,_|
-        """.trimIndent())
-        println()
     }
 
     /**

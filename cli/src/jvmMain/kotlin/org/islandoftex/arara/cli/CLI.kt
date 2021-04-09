@@ -50,6 +50,8 @@ import org.islandoftex.arara.mvel.utils.MvelState
  * @since 5.0
  */
 class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true, help = """
+    ${DisplayUtils.logoString.replace('\n', '\u0085').replace(' ', '\u00A0')}
+
     The cool TeX automation tool.
 
     arara executes the TeX workflow you tell it to execute. Simply specify
@@ -182,6 +184,11 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true, help = """
         // the terminal
         LoggingUtils.init()
 
+        // print the arara logo in the terminal; I just
+        // hope people use this tool in a good terminal with
+        // fixed-width fonts, otherwise the logo will be messed
+        println("${DisplayUtils.logoString}\n")
+
         // start the internal stopwatch before any of arara's real working
         // starts
         val executionStart = TimeSource.Monotonic.markNow()
@@ -264,17 +271,13 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true, help = """
  * @param args A string array containing all command line arguments.
  */
 fun main(args: Array<String>) {
-    // print the arara logo in the terminal; I just
-    // hope people use this tool in a good terminal with
-    // fixed-width fonts, otherwise the logo will be messed
-    DisplayUtils.printLogo()
-
     CLI().completionOption(help = "Generate a completion script for arara. " +
                     "Add 'source <(arara --generate-completion <shell>)' " +
                     "to your shell's init file.")
             .versionOption(AraraAPI.version, names = setOf("-V", "--version"),
             message = {
-                "arara ${AraraAPI.version}\n" +
+                "${DisplayUtils.logoString}\n\n" +
+                        "arara ${AraraAPI.version}\n" +
                         "Copyright (c) ${LocalDate.now().year}, Island of TeX\n" +
                         LanguageController.messages.INFO_PARSER_NOTES + "\n\n" +
                         "New features in version ${AraraAPI.version}:\n" +

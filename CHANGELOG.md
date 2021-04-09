@@ -19,6 +19,13 @@ from version 5.0.0 on.
   encoding problems.
   (see #68)
 
+### Fixed
+
+* The arara logo has been printed into the completion script output. This
+  caused failures when sourcing directly. The logo has been removed from the
+  completion script output.
+  (see #70)
+
 ## [6.1.0] - 2021-04-04
 
 ### Added
