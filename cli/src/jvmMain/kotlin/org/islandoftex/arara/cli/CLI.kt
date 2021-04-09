@@ -101,6 +101,37 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true, help = """
             .multiple(required = true)
 
     /**
+     * Resolve the projects to be run from either a configuration file that
+     * configures the run or by creating a single project from the called
+     * files.
+     */
+    private fun resolveProjects(): List<org.islandoftex.arara.api.files.Project> {
+        // resolve the working directory from the one that may be given
+        // as command line parameter; otherwise resolve current directory
+        val workingDir = (workingDirectory?.toMPPPath() ?: MPPPath(""))
+                .normalize()
+
+        return reference.singleOrNull()
+                ?.takeIf { it.trim().endsWith(".yaml") }
+                ?.let { workingDir.resolve(it) }
+                ?.takeIf { it.exists }
+                ?.let {
+                    emptyList()
+                }
+                ?: listOf(Project(
+                        "Untitled",
+                        workingDir,
+                        reference.map { fileName ->
+                            FileSearching.resolveFile(
+                                    fileName,
+                                    workingDir,
+                                    LinearExecutor.executionOptions
+                            )
+                        }.toSet()
+                ))
+    }
+
+    /**
      * Update arara's configuration with the command line arguments.
      */
     private fun updateConfigurationFromCommandLine() {
@@ -201,26 +232,10 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true, help = """
         updateConfigurationFromCommandLine()
         LoggingUtils.setupLogging(Session.loggingOptions)
 
-        // resolve the working directory from the one that may be given
-        // as command line parameter; otherwise resolve current directory
-        val workingDir = (workingDirectory?.toMPPPath() ?: MPPPath(""))
-                .normalize()
-
         // add all command line call parameters to the session
         parameters.forEach { (key, value) -> Session.put("arg:$key", value) }
 
         try {
-            val projects = listOf(Project(
-                    "Untitled",
-                    workingDir,
-                    reference.map { fileName ->
-                        FileSearching.resolveFile(
-                                fileName,
-                                workingDir,
-                                LinearExecutor.executionOptions
-                        )
-                    }.toSet()
-            ))
             LinearExecutor.hooks = ExecutorHooks(
                     executeBeforeExecution = {
                         Session.updateEnvironmentVariables()
@@ -249,6 +264,8 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true, help = """
                                 ?: prependPreambleDirectives(file.fileType, list))
                     }
             )
+
+            val projects = resolveProjects()
             if (LinearExecutor.execute(projects).exitCode != 0)
                 ExecutionStatus.ExternalCallFailed()
             else
