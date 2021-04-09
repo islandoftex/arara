@@ -20,7 +20,6 @@ kotlin {
                 implementation(kotlin("scripting-jvm"))
                 implementation(kotlin("scripting-jvm-host"))
                 runtimeOnly(kotlin("compiler-embeddable"))
-                runtimeOnly(kotlin("scripting-compiler-embeddable"))
                 runtimeOnly("net.java.dev.jna:jna:${Versions.jna}")
             }
         }

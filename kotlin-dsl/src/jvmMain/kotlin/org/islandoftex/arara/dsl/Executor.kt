@@ -6,15 +6,12 @@ import java.net.URLDecoder
 import java.nio.file.Paths
 import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.readText
-import kotlin.script.experimental.api.defaultImports
 import kotlin.script.experimental.api.valueOrThrow
 import kotlin.script.experimental.host.toScriptSource
-import kotlin.script.experimental.jvm.updateClasspath
-import kotlin.script.experimental.jvm.util.classpathFromClass
 import kotlin.script.experimental.jvmhost.BasicJvmScriptingHost
-import kotlin.script.templates.standard.SimpleScriptTemplate
-import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.dsl.language.DSLInstance
+import org.islandoftex.arara.dsl.scripting.AraraScriptCompilationConfiguration
+import org.islandoftex.arara.dsl.scripting.AraraScriptEvaluationConfiguration
 
 /**
  * The executor object for projects specified in arara's Kotlin DSL.
@@ -32,23 +29,18 @@ object Executor {
         val path = URLDecoder.decode(Executor::class.java.protectionDomain
                 .codeSource.location.path, "UTF-8")
         val scriptSource = Paths.get(File(path).toURI()).parent.toAbsolutePath()
-                .resolve("../../../src/jvmTest/resources/org/islandoftex/arara/dsl/samples/rule.kts")
+                .resolve("../../../../src/jvmTest/resources/org/islandoftex/arara/dsl/samples/project.kts")
                 .readText().trimIndent().toScriptSource()
 
-        BasicJvmScriptingHost().evalWithTemplate<SimpleScriptTemplate>(
+        BasicJvmScriptingHost().eval(
                 scriptSource,
-                {
-                    updateClasspath(classpathFromClass<Executor>())
-                    updateClasspath(classpathFromClass<Project>())
-                    defaultImports.put(listOf(
-                            "java.io.*",
-                            DSLInstance::class.qualifiedName + ".project",
-                            DSLInstance::class.qualifiedName + ".rule"
-                    ))
-                }
+                AraraScriptCompilationConfiguration(),
+                AraraScriptEvaluationConfiguration()
         ).valueOrThrow()
 
+        println(DSLInstance.projects.size)
         println(DSLInstance.projects)
+        println(DSLInstance.rules.size)
         println(DSLInstance.rules)
     }
 }

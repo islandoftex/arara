@@ -8,6 +8,7 @@ import org.islandoftex.arara.api.rules.Rule
  * An object holding all public members that are available as top-level
  * objects in DSL files.
  */
+@Suppress("Unused")
 object DSLInstance {
     /**
      * The DSL's main task is to provide an easy project configuration format.

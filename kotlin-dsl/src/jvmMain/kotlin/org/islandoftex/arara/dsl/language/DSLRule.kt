@@ -51,7 +51,7 @@ class DSLRule(
         command: String,
         vararg parameters: String,
         workingDirectory: Path? = null
-    ): Command = org.islandoftex.arara.dsl.session.Command(
+    ): Command = org.islandoftex.arara.core.session.Command(
             listOf(command).plus(parameters),
             workingDirectory?.toMPPPath()
     ).also {
@@ -87,7 +87,7 @@ class DSLRule(
     inline fun <reified T> argument(
         identifier: String,
         configure: DSLRuleArgument.() -> Unit
-    ): RuleArgument<*> {
+    ): RuleArgument<T> {
         if (identifier in arguments)
             throw AraraException("Two rule arguments can't have the same " +
                     "identifier.")
