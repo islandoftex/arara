@@ -17,6 +17,7 @@ import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import com.github.ajalt.clikt.parameters.types.restrictTo
 import java.time.LocalDate
+import kotlin.time.Duration
 import kotlin.time.TimeSource
 import kotlin.time.milliseconds
 import org.islandoftex.arara.api.AraraAPI
@@ -115,7 +116,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true, help = """
                 .copy(
                         maxLoops = maxLoops
                                 ?: LinearExecutor.executionOptions.maxLoops,
-                        timeoutValue = timeout?.milliseconds
+                        timeoutValue = timeout?.let { Duration.milliseconds(it) }
                                 ?: LinearExecutor.executionOptions.timeoutValue,
                         verbose = if (verbose)
                             true

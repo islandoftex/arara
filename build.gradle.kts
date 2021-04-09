@@ -166,8 +166,8 @@ subprojects {
             sourceSets {
                 all {
                     languageSettings.apply {
-                        languageVersion = "1.4"
-                        apiVersion = "1.4"
+                        languageVersion = "1.5"
+                        apiVersion = "1.5"
                     }
                 }
                 val commonMain by getting {

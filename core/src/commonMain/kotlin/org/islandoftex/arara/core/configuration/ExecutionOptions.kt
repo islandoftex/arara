@@ -2,7 +2,6 @@
 package org.islandoftex.arara.core.configuration
 
 import kotlin.time.Duration
-import kotlin.time.milliseconds
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.files.FileType
@@ -10,7 +9,7 @@ import org.islandoftex.arara.api.files.MPPPath
 
 data class ExecutionOptions(
     override val maxLoops: Int = 10,
-    override val timeoutValue: Duration = 0.milliseconds,
+    override val timeoutValue: Duration = Duration.ZERO,
     override val parallelExecution: Boolean = false,
     override val haltOnErrors: Boolean = true,
     override val databaseName: MPPPath = MPPPath("arara.yaml"),

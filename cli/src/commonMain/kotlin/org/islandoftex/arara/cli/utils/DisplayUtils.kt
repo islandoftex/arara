@@ -3,7 +3,7 @@ package org.islandoftex.arara.cli.utils
 
 import kotlin.math.ln
 import kotlin.math.pow
-import kotlin.time.seconds
+import kotlin.time.Duration
 import mu.KotlinLogging
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
@@ -317,14 +317,14 @@ object DisplayUtils {
         if (displayLine || displayException)
             println()
 
-        val secondDuration = seconds.seconds
+        val secondDuration = Duration.seconds(seconds)
         val text = LanguageController.messages.INFO_DISPLAY_EXECUTION_TIME
                 .formatString(
                         "%s%s%s".formatString(
                                 secondDuration.inSeconds.toInt().toString(),
                                 Session.userInterfaceOptions.locale
                                         .decimalSeparator.toString(),
-                                (secondDuration - secondDuration.inSeconds.toInt().seconds)
+                                (secondDuration - Duration.seconds(secondDuration.inSeconds.toInt()))
                                         .inMilliseconds.toInt().toString()
                         )
                 )

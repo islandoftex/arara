@@ -6,6 +6,7 @@ import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import java.util.concurrent.TimeoutException
+import kotlin.time.Duration
 import kotlin.time.milliseconds
 
 class EnvironmentTest : ShouldSpec({
@@ -45,7 +46,7 @@ class EnvironmentTest : ShouldSpec({
         }
         should("error with timeout exception") {
             val (exit, output) = Environment.executeSystemCommand(
-                    Command(listOf("sleep", "1s")), true, 500.milliseconds)
+                    Command(listOf("sleep", "1s")), true, Duration.milliseconds(500))
             exit shouldBe Environment.errorExitStatus
             output shouldContain TimeoutException::class.java.name
         }
