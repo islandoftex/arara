@@ -119,7 +119,7 @@ class DSLRule(
      */
     internal fun toRule(): Rule = org.islandoftex.arara.dsl.rules.Rule(
             identifier = id,
-            displayName = label?.let { "$label ($description)" } ?: description,
+            displayName = label ?: description,
             authors = authors,
             commands = commands,
             arguments = ruleArguments
