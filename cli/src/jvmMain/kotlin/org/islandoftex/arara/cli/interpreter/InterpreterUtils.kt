@@ -8,7 +8,6 @@ import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.api.session.Command
-import org.islandoftex.arara.cli.ruleset.RuleFormat
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
@@ -92,26 +91,15 @@ internal object InterpreterUtils {
      * Constructs the path given the current path and the rule name.
      *
      * @param path The current path.
-     * @param name The rule name.
      * @return The constructed path.
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
     @Throws(AraraException::class)
-    internal fun construct(
+    internal fun resolveAgainstDirectory(
         path: MPPPath,
-        name: String,
-        format: RuleFormat,
         workingDirectory: MPPPath
-    ): MPPPath = "$name.${format.extension}".let { fileName ->
-        if (path.isAbsolute) {
-            path / fileName
-        } else {
-            // when retrieving rules the current project is never null
-            // because the executor always acts on a project file;
-            // first resolve the path (rule path) against the working
-            // directory, then the rule name we want to resolve
-            workingDirectory / path / fileName
-        }
-    }.normalize()
+    ): MPPPath =
+            (path.takeIf { it.isAbsolute } ?: workingDirectory.resolve(path))
+                    .normalize()
 }

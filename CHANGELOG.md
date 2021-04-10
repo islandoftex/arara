@@ -25,6 +25,11 @@ from version 5.0.0 on.
 * The error message for IO errors has been changed to indicate potential
   encoding problems.
   (see #68)
+* Rules are now cached during one execution. This implies that any changes to
+  rule files during an execution will not affect the run in any way anymore.
+  This is beneficial to speed (especially for Kotlin DSL) and stability
+  (because rule changes do not influence a current run).
+  (breaking change)
 
 ### Fixed
 

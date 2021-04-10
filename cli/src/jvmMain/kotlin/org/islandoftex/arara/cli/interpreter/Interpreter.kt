@@ -11,11 +11,12 @@ import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.api.rules.RuleArgument
+import org.islandoftex.arara.api.rules.RuleCommand
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.api.session.ExecutionStatus
-import org.islandoftex.arara.cli.ruleset.RuleFormat
 import org.islandoftex.arara.cli.ruleset.RuleUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
+import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.InputHandling
@@ -49,117 +50,107 @@ class Interpreter(
      * Gets the rule according to the provided directive.
      *
      * @param directive The provided directive.
+     * @param workingDirectory The working directory to search.
      * @return The absolute canonical path of the rule, given the provided
-     * directive.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     *   directive, or null if the rule could not be found by looking up
+     *   the respective path.
      */
     @Throws(AraraException::class)
-    private fun getRule(directive: Directive, workingDirectory: MPPPath): MPPPath =
+    private fun getRuleFromSingleRuleFile(directive: Directive, workingDirectory: MPPPath): MPPPath? =
             executionOptions.rulePaths.let { paths ->
                 paths.flatMap { path ->
                     listOf(
-                            InterpreterUtils.construct(path, directive.identifier,
-                                    RuleFormat.MVEL, workingDirectory),
-                            InterpreterUtils.construct(path, directive.identifier,
-                                    RuleFormat.KOTLIN_DSL, workingDirectory),
+                            InterpreterUtils.resolveAgainstDirectory(path, workingDirectory)
+                                    .resolve("${directive.identifier}.yaml"),
                             // this lookup adds support for the rules distributed with
                             // arara (in TL names should be unique, hence we avoided
                             // going for pdflatex.yaml in favor of arara-rule-pdflatex.yaml
                             // from version 6 on)
-                            InterpreterUtils.construct(path, "arara-rule-" + directive.identifier,
-                                    RuleFormat.MVEL, workingDirectory)
+                            InterpreterUtils.resolveAgainstDirectory(path, workingDirectory)
+                                    .resolve("arara-rule-${directive.identifier}.yaml")
                     )
-                }.firstOrNull { it.exists } ?: throw AraraException(
-                        LanguageController.messages.ERROR_INTERPRETER_RULE_NOT_FOUND.format(
-                                directive.identifier,
-                                directive.identifier,
-                                paths.joinToString("; ", "(", ")") {
-                                    it.normalize().toString()
-                                }
-                        )
-                )
+                }.firstOrNull { it.exists }
             }
 
-    // TODO: in the following, extract the printing into the higher level
-    // function
+    /**
+     * Gets the rule according to the provided directive.
+     *
+     * @param directive The provided directive.
+     * @param workingDirectory The working directory to search.
+     * @return The rule for the directive.
+     * @throws AraraException No rule has been found, to be caught in the
+     *   higher levels.
+     */
+    private fun getRuleFor(directive: Directive, workingDirectory: MPPPath): Rule =
+            getRuleFromSingleRuleFile(directive, workingDirectory)
+                    ?.let {
+                        // check for the YAML rule found
+                        logger.info(
+                                LanguageController.messages.LOG_INFO_RULE_LOCATION
+                                        .format(it.parent)
+                        )
+                        RuleUtils.parseYAMLRule(it, directive.identifier)
+                    }
+            // otherwise check potential Kotlin DSL rules
+            // TODO: try cache and only act on miss
+                    ?: executionOptions.rulePaths.forEach {
+                        val dir = InterpreterUtils.resolveAgainstDirectory(it, workingDirectory)
+                        FileSearching.listFilesByExtensions(dir, listOf("kts"), false)
+                                .forEach { rule ->
+                                    RuleUtils.parseKotlinDSLRuleFile(rule)
+                                }
+                    }.let { RuleUtils.getRule(directive.identifier) }
+                    ?: throw AraraException(
+                            LanguageController.messages.ERROR_INTERPRETER_RULE_NOT_FOUND.format(
+                                    directive.identifier,
+                                    directive.identifier,
+                                    executionOptions.rulePaths.joinToString("; ", "(", ")") {
+                                        it.normalize().toString()
+                                    }
+                            )
+                    )
+
     /**
      * "Run" a boolean return value
      * @param value The boolean.
-     * @param conditional The conditional to print in dry-run mode.
-     * @param authors The authors of the rule.
      * @return Returns [value]
      */
-    private fun runBoolean(
-        value: Boolean,
-        conditional: DirectiveConditional,
-        authors: List<String>
-    ): Boolean = value.also {
-        logger.info {
-            LanguageController.messages.LOG_INFO_BOOLEAN_MODE.format(it)
-        }
-
-        if (executionOptions.executionMode == ExecutionMode.DRY_RUN) {
-            DisplayUtils.printAuthors(authors)
-            DisplayUtils.printWrapped(LanguageController.messages
-                    .INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE.format(it))
-            DisplayUtils.printConditional(conditional)
-        }
-    }
+    private fun runBoolean(value: Boolean): Boolean = value
+            .also {
+                logger.info(LanguageController.messages.LOG_INFO_BOOLEAN_MODE
+                        .format(it))
+            }
 
     /**
      * Run a command
      *
      * @param command The command to run.
-     * @param conditional The conditional applied to the run (only for printing).
-     * @param authors The rule authors (only for printing).
      * @param ruleCommandExitValue The exit value of the rule command.
      * @return Success of the execution.
      * @throws AraraException Execution failed.
      */
     @Throws(AraraException::class)
-    @Suppress("TooGenericExceptionCaught")
     private fun runCommand(
         command: Command,
-        conditional: DirectiveConditional,
-        authors: List<String>,
         ruleCommandExitValue: String?
     ): Boolean {
-        logger.info {
-            LanguageController.messages.LOG_INFO_SYSTEM_COMMAND.format(command)
+        logger.info(LanguageController.messages.LOG_INFO_SYSTEM_COMMAND.format(command))
+        val code = InterpreterUtils.run(command)
+        val context = mapOf<String, Any>("value" to code)
+        return kotlin.runCatching {
+            TemplateRuntime.eval(
+                    "@{ " + (ruleCommandExitValue ?: "value == 0") + " }",
+                    context)
+        }.getOrElse {
+            throw AraraExceptionWithHeader(LanguageController.messages
+                    .ERROR_INTERPRETER_EXIT_RUNTIME_ERROR, it)
+        }.let { check ->
+            check as? Boolean
+                    ?: throw AraraExceptionWithHeader(
+                            LanguageController.messages
+                                    .ERROR_INTERPRETER_WRONG_EXIT_CLOSURE_RETURN
+                    )
         }
-        var success = true
-
-        if (executionOptions.executionMode != ExecutionMode.DRY_RUN) {
-            val code = InterpreterUtils.run(command)
-            val check: Any = try {
-                val context = mapOf<String, Any>("value" to code)
-                TemplateRuntime.eval(
-                        "@{ " + (ruleCommandExitValue ?: "value == 0") + " }",
-                        context)
-            } catch (exception: RuntimeException) {
-                throw AraraExceptionWithHeader(LanguageController.messages
-                        .ERROR_INTERPRETER_EXIT_RUNTIME_ERROR,
-                        exception
-                )
-            }
-
-            success = if (check is Boolean) {
-                check
-            } else {
-                throw AraraExceptionWithHeader(
-                        LanguageController.messages
-                                .ERROR_INTERPRETER_WRONG_EXIT_CLOSURE_RETURN
-                )
-            }
-        } else {
-            DisplayUtils.printAuthors(authors)
-            DisplayUtils.printWrapped(LanguageController.messages
-                    .INFO_INTERPRETER_DRYRUN_MODE_SYSTEM_COMMAND.format(command))
-            DisplayUtils.printConditional(conditional)
-        }
-
-        return success
     }
 
     /**
@@ -176,35 +167,30 @@ class Interpreter(
     /**
      * Execute a command.
      * @param command The command to evaluate.
-     * @param conditional Under which condition to execute.
      * @param rule The rule (only passed for output purposes).
      * @param parameters The parameters for evaluation
      * @throws AraraException Running the command failed.
      */
     @Throws(AraraException::class)
-    @Suppress("TooGenericExceptionCaught", "ThrowsCount")
     private fun executeCommand(
         command: SerialRuleCommand,
-        conditional: DirectiveConditional,
         rule: Rule,
         parameters: Map<String, Any>
-    ) = try {
+    ) = kotlin.runCatching {
         resultToList(TemplateRuntime.eval(command.commandString!!, parameters))
-    } catch (exception: RuntimeException) {
-        throw AraraExceptionWithHeader(LanguageController
-                .messages.ERROR_INTERPRETER_COMMAND_RUNTIME_ERROR,
-                exception
-        )
-    }.filter { it.toString().isNotBlank() }
+    }
+            .getOrElse {
+                throw AraraExceptionWithHeader(LanguageController
+                        .messages.ERROR_INTERPRETER_COMMAND_RUNTIME_ERROR, it)
+            }
+            .filter { it.toString().isNotBlank() }
             .fold(ExecutionStatus.Processing() as ExecutionStatus) { _, current ->
                 DisplayUtils.printEntry(rule.displayName!!, command.name
                         ?: LanguageController.messages.INFO_LABEL_UNNAMED_TASK)
 
                 val success = when (current) {
-                    is Boolean -> runBoolean(current, conditional,
-                            rule.authors)
-                    is Command -> runCommand(current, conditional,
-                            rule.authors, command.exit)
+                    is Boolean -> runBoolean(current)
+                    is Command -> runCommand(current, command.exit)
                     else ->
                         throw AraraExceptionWithHeader(LanguageController
                                 .messages.ERROR_INTERPRETER_WRONG_RETURN_TYPE)
@@ -228,6 +214,86 @@ class Interpreter(
             }
 
     /**
+     * Execute a DSL command.
+     *
+     * This is a very shallow copy of the logic from [executeCommand].
+     *
+     * @param command The command to evaluate.
+     * @param rule The rule (only passed for output purposes).
+     * @throws AraraException Running the command failed.
+     */
+    // TODO: remove code duplication
+    private fun executeDSLCommand(command: RuleCommand, rule: Rule): ExecutionStatus {
+        DisplayUtils.printEntry(rule.displayName!!, command.name
+                ?: LanguageController.messages.INFO_LABEL_UNNAMED_TASK)
+
+        val exitStatus = ExecutionStatus.FinishedWithCode(command.command())
+        DisplayUtils.printEntryResult(exitStatus.exitCode == 0)
+
+        return when {
+            Session.contains(haltKey) ->
+                throw HaltExpectedException(LanguageController.messages
+                        .ERROR_INTERPRETER_USER_REQUESTED_HALT,
+                        ExecutionStatus.FinishedWithCode(
+                                Session[haltKey].toString().toInt()))
+            executionOptions.haltOnErrors && exitStatus.exitCode != 0 ->
+                throw HaltExpectedException(LanguageController
+                        .messages.ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT
+                        .format(command.name),
+                        ExecutionStatus.ExternalCallFailed())
+            exitStatus.exitCode == 0 -> ExecutionStatus.Processing()
+            else -> ExecutionStatus.ExternalCallFailed()
+        }
+    }
+
+    /**
+     * Execute the dry run on a command, printing helpful debug information.
+     *
+     * @param ruleCommand The rule command that will be used to determine the
+     *   commands to run.
+     * @param rule The rule which is executed.
+     * @param conditional The conditions under which this command is executed.
+     * @param parameters The parameters for MVEL interpolation.
+     */
+    @Suppress("TooGenericExceptionCaught")
+    private fun dryRunCommand(
+        ruleCommand: RuleCommand,
+        rule: Rule,
+        conditional: DirectiveConditional,
+        parameters: Map<String, Any>
+    ) {
+        DisplayUtils.printEntry(rule.displayName!!, ruleCommand.name
+                ?: LanguageController.messages.INFO_LABEL_UNNAMED_TASK)
+        DisplayUtils.printAuthors(rule.authors)
+
+        if (ruleCommand is SerialRuleCommand) {
+            try {
+                resultToList(TemplateRuntime.eval(ruleCommand.commandString!!, parameters))
+            } catch (exception: RuntimeException) {
+                throw AraraExceptionWithHeader(LanguageController
+                        .messages.ERROR_INTERPRETER_COMMAND_RUNTIME_ERROR,
+                        exception
+                )
+            }.filter { it.toString().isNotBlank() }.forEach { current ->
+                DisplayUtils.printWrapped(
+                        when (current) {
+                            is Boolean -> LanguageController.messages
+                                    .INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE
+                            is Command -> LanguageController.messages
+                                    .INFO_INTERPRETER_DRYRUN_MODE_SYSTEM_COMMAND
+                            else ->
+                                throw AraraExceptionWithHeader(LanguageController
+                                        .messages.ERROR_INTERPRETER_WRONG_RETURN_TYPE)
+                        }.format(current)
+                )
+            }
+        }
+        // TODO: “about to run …” is missing for Kotlin DSL
+
+        DisplayUtils.printConditional(conditional)
+    }
+
+    /**
      * Executes each directive, throwing an exception if something bad has
      * happened.
      *
@@ -237,21 +303,13 @@ class Interpreter(
     @Throws(AraraException::class)
     @Suppress("NestedBlockDepth")
     fun execute(directive: Directive): ExecutionStatus {
-        logger.info {
-            LanguageController.messages.LOG_INFO_INTERPRET_RULE.format(
-                    directive.identifier
-            )
-        }
+        logger.info(
+                LanguageController.messages.LOG_INFO_INTERPRET_RULE.format(
+                        directive.identifier
+                )
+        )
 
-        val file = getRule(directive, workingDirectory)
-        logger.info {
-            LanguageController.messages.LOG_INFO_RULE_LOCATION.format(
-                    file.parent
-            )
-        }
-
-        // parse the rule identified by the directive (may throw an exception)
-        val rule = RuleUtils.parseRule(file, directive.identifier)
+        val rule = getRuleFor(directive, workingDirectory)
         val parameters = parseArguments(rule, directive).plus(MvelState.ruleMethods)
         val evaluator = DirectiveConditionalEvaluator(executionOptions)
         val available =
@@ -275,13 +333,22 @@ class Interpreter(
                     do {
                         retValue = rule.commands.fold(ExecutionStatus.Processing()
                                 as ExecutionStatus) { _, command ->
-                            executeCommand(
-                                    // TODO: remove cast
-                                    command as SerialRuleCommand,
-                                    directive.conditional,
-                                    rule,
-                                    parameters
-                            )
+                            when {
+                                executionOptions.executionMode == ExecutionMode.DRY_RUN ->
+                                    dryRunCommand(
+                                            command,
+                                            rule,
+                                            directive.conditional,
+                                            parameters
+                                    ).let { ExecutionStatus.Processing() }
+                                command is SerialRuleCommand ->
+                                    executeCommand(
+                                            command,
+                                            rule,
+                                            parameters
+                                    )
+                                else -> executeDSLCommand(command, rule)
+                            }
                         }
                     } while (evaluator.evaluate(directive.conditional))
                     retValue
@@ -295,7 +362,10 @@ class Interpreter(
                     // header where possible
                     throw AraraException(
                             LanguageController.messages.ERROR_RULE_IDENTIFIER_AND_PATH
-                                    .format(directive.identifier, file.parent.toString()) + " " +
+                                    .format(
+                                            directive.identifier,
+                                            getRuleFromSingleRuleFile(directive, workingDirectory)?.parent.toString()
+                                    ) + " " +
                                     e.message, e.exception ?: e)
                 }
             }
@@ -312,7 +382,7 @@ class Interpreter(
      */
     private fun getUnknownKeys(
         parameters: Map<String, Any>,
-        arguments: List<org.islandoftex.arara.api.rules.RuleArgument<*>>
+        arguments: List<RuleArgument<*>>
     ): Set<String> {
         val found = parameters.keys
         val expected = arguments.map { it.identifier }
@@ -330,6 +400,7 @@ class Interpreter(
      * higher levels.
      */
     @Throws(AraraException::class)
+    @Suppress("UNCHECKED_CAST")
     private fun parseArguments(rule: Rule, directive: Directive):
             Map<String, Any> {
         val unknown = getUnknownKeys(directive.parameters, rule.arguments)

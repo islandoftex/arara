@@ -19,7 +19,7 @@ object DSLInstance {
     /**
      * Rules are specified in the DSL as well. This saves all rules.
      */
-    internal val rules = mutableListOf<Rule>()
+    val rules = mutableListOf<Rule>()
 
     /**
      * The DSL's way to specify a project.
