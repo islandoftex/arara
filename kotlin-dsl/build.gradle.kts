@@ -30,3 +30,7 @@ kotlin {
         }
     }
 }
+
+tasks.withType<Copy> {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}

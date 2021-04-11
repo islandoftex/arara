@@ -53,6 +53,9 @@ application {
 }
 
 tasks {
+    withType<Copy> {
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    }
     named<JavaExec>("run") {
         if (JavaVersion.current() > JavaVersion.VERSION_1_8) {
             doFirst {
