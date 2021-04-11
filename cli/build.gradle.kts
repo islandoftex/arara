@@ -11,10 +11,12 @@ plugins {
 kotlin {
     sourceSets {
         all {
-            languageSettings.useExperimentalAnnotation("org.islandoftex.arara.api.AraraMessages")
-            languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
-            languageSettings.useExperimentalAnnotation("kotlin.io.path.ExperimentalPathApi")
-            languageSettings.useExperimentalAnnotation("kotlin.RequiresOptIn")
+            languageSettings.apply {
+                useExperimentalAnnotation("org.islandoftex.arara.api.Incubating")
+                useExperimentalAnnotation("org.islandoftex.arara.api.AraraMessages")
+                useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+                useExperimentalAnnotation("kotlin.io.path.ExperimentalPathApi")
+            }
         }
 
         val commonMain by getting {

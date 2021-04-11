@@ -5,8 +5,11 @@ import org.islandoftex.arara.build.Versions
 kotlin {
     sourceSets {
         all {
-            languageSettings.useExperimentalAnnotation("org.islandoftex.arara.api.AraraMessages")
-            languageSettings.useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+            languageSettings.apply {
+                useExperimentalAnnotation("org.islandoftex.arara.api.Incubating")
+                useExperimentalAnnotation("org.islandoftex.arara.api.AraraMessages")
+                useExperimentalAnnotation("kotlin.time.ExperimentalTime")
+            }
         }
         val jvmMain by getting {
             dependencies {
