@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.build
 
+import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.tasks.bundling.Zip
 
 /**
@@ -25,5 +26,7 @@ open class SourceZipBuilderTask : Zip() {
         from(project.projectDir.resolve("core"))
         from(project.projectDir.resolve("cli"))
         exclude("build")
+
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
     }
 }
