@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.files.FileType
@@ -11,7 +13,9 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.Directives
 import org.islandoftex.arara.core.session.LinearExecutor
 
+@Serializable
 open class ProjectFile(
+    @Contextual
     override val path: MPPPath,
     override val fileType: FileType,
     override val priority: Int = DEFAULT_PRIORITY

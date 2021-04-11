@@ -8,6 +8,13 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
+### Added
+
+* arara now accepts `.yaml` files as input files. These are treated as project
+  specification and will let arara run all files specified in the project(s).
+  When run as `arara project.yaml` you cannot run on multiple files.
+  (see #11)
+
 ### Changed
 
 * The MVEL API now uses our `MPPPath` object instead of `java.io.File`. That

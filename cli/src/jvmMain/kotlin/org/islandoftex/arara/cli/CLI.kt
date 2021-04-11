@@ -19,7 +19,8 @@ import com.github.ajalt.clikt.parameters.types.restrictTo
 import java.time.LocalDate
 import kotlin.time.Duration
 import kotlin.time.TimeSource
-import kotlin.time.milliseconds
+import kotlinx.serialization.decodeFromString
+import net.mamoe.yamlkt.Yaml
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
@@ -114,9 +115,18 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true, help = """
         return reference.singleOrNull()
                 ?.takeIf { it.trim().endsWith(".yaml") }
                 ?.let { workingDir.resolve(it) }
-                ?.takeIf { it.exists }
+                ?.takeIf { it.exists }?.readText()
                 ?.let {
-                    emptyList()
+                    // try project resolution in the following order:
+                    // - treat project file as list of projects
+                    // - treat project file as a single project
+                    // - do not consider it a project
+                    kotlin.runCatching {
+                        Yaml.Default.decodeFromString<List<Project>>(it)
+                    }.getOrNull() ?: kotlin.runCatching {
+                        listOf(Yaml.Default.decodeFromString<Project>(it))
+                    }.getOrNull() ?: throw AraraException(
+                            LanguageController.messages.ERROR_INVALID_PROJECT_FILE)
                 }
                 ?: listOf(Project(
                         "Untitled",

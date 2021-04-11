@@ -10,6 +10,7 @@ internal annotation class AraraMessages
 
 // TODO: translate for v7:
 //  * ERROR_EXTRACTOR_IO_ERROR
+//  * ERROR_INVALID_PROJECT_FILE
 
 /**
  * The messages arara will use. They should be treated semi-public and are no
@@ -47,6 +48,7 @@ public open class Messages(
     public val ERROR_INTERPRETER_UNKNOWN_KEYS: String = "I found these unknown keys in the directive: %s. This should be an easy fix, just remove them from your map.",
     public val ERROR_INTERPRETER_WRONG_EXIT_CLOSURE_RETURN: String = "The 'exit' expression must always return a boolean value (even if there is no computation in the closure body). This should be an easy fix: make sure to correct the type return statement and try again.",
     public val ERROR_INTERPRETER_WRONG_RETURN_TYPE: String = "A rule should only return a boolean or a command. Other return types are not supported.",
+    public val ERROR_INVALID_PROJECT_FILE: String = "I have read a file that was supposed to be a project. Unfortunately, it turned out it was neither a project nor a list of projects. Please double-check that your project file follows the documented format.",
     public val ERROR_LOAD_COULD_NOT_LOAD_XML: String = "I could not load the YAML database named \"%s\". I have no idea why it failed, though. Perhaps the file was moved or deleted before or during the reading operation. Or maybe I do not have the proper permissions to read the file. By the way, make sure the YAML file is well-formed.",
     public val ERROR_PARSER_INVALID_PREAMBLE: String = "I am sorry, but the preamble \"%s\" could not be found. Please make sure this key exists in the configuration file.",
     public val ERROR_PARSERULE_GENERIC_ERROR: String = "I could not parse the rule, something bad happened. This part is quite tricky, since it involves aspects of the underlying data serialization format. I will do my best to help you in any way I can.",
