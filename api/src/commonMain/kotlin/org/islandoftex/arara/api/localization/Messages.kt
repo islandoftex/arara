@@ -1,12 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.localization
 
-@Target(AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.BINARY)
-@RequiresOptIn("arara's messages are not considered stable API. Only " +
-        "use them in testing scenarios and arara's core projects.",
-        RequiresOptIn.Level.WARNING)
-internal annotation class AraraMessages
+import org.islandoftex.arara.api.AraraMessages
 
 // TODO: translate for v7:
 //  * ERROR_EXTRACTOR_IO_ERROR

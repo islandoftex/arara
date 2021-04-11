@@ -30,7 +30,7 @@ kotlin {
     sourceSets {
         all {
             languageSettings.apply {
-                useExperimentalAnnotation("org.islandoftex.arara.api.localization.AraraMessages")
+                useExperimentalAnnotation("org.islandoftex.arara.api.AraraMessages")
                 useExperimentalAnnotation("kotlin.time.ExperimentalTime")
                 useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
             }
