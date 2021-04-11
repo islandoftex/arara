@@ -2,6 +2,7 @@
 package org.islandoftex.arara.mvel.utils
 
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.AraraExceptionWithHeader
 import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.SafeRunViolationException
 import org.islandoftex.arara.api.configuration.ExecutionMode
@@ -15,7 +16,6 @@ import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.GUIDialogs
 import org.islandoftex.arara.core.ui.InputHandling
-import org.islandoftex.arara.mvel.interpreter.AraraExceptionWithHeader
 
 @Suppress("unused", "TooManyFunctions")
 object RuleMethods {

@@ -58,3 +58,14 @@ public class SafeRunViolationException(msg: String) : AraraException(msg)
  * error occurs.
  */
 public class AraraIOException(msg: String) : AraraException(msg)
+
+/**
+ * A general interpreter exception to be thrown with the intention of
+ * formatting it with appropriate debug context.
+ */
+@Incubating
+public class AraraExceptionWithHeader : AraraException {
+    public constructor(message: String) : super(message)
+    public constructor(message: String, exception: Exception) : super(message, exception)
+    public constructor(message: String, throwable: Throwable) : super(message, throwable)
+}
