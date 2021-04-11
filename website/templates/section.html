@@ -16,21 +16,23 @@
     {% for page in section.pages %}
     <li>
       <div>
-	<a href="{{ page.permalink | safe }}">
-	  <strong class="title article-title">{{ page.title }}</strong>
-	</a>
-	<div>
-	  <span>{{ page.date | date(format="%F") }}</span>
-	</div>
+        <a href="{{ page.permalink | safe }}">
+          <strong class="title article-title">{{ page.title }}</strong>
+        </a>
+        {% if page.date %}
+        <div>
+          <span>{{ page.date | date(format="%F") }}</span>
+        </div>
+        {% endif %}
       </div>
       {% if page.summary %}
       <div itemprop="summary" class="content article-body">
-	{{ page.summary | safe }}
-	<nav class="readmore">
-	  <a itemprop="url" href="{{ page.permalink | safe }}">Read
-	    More&nbsp;&raquo;
-	  </a>
-	</nav>
+        {{ page.summary | safe }}
+        <nav class="readmore">
+          <a itemprop="url" href="{{ page.permalink | safe }}">Read
+            More&nbsp;&raquo;
+          </a>
+        </nav>
       </div>
       {% endif %}
     </li>
