@@ -329,6 +329,7 @@ class Interpreter(
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
+    @Suppress("UNCHECKED_CAST")
     @Throws(AraraException::class)
     private fun parseArguments(rule: Rule, directive: Directive):
             Map<String, Any> {
