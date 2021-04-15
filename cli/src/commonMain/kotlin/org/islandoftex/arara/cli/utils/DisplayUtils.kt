@@ -321,11 +321,11 @@ object DisplayUtils {
         val text = LanguageController.messages.INFO_DISPLAY_EXECUTION_TIME
                 .formatString(
                         "%s%s%s".formatString(
-                                secondDuration.inSeconds.toInt().toString(),
+                                secondDuration.inWholeSeconds.toString(),
                                 Session.userInterfaceOptions.locale
                                         .decimalSeparator.toString(),
-                                (secondDuration - Duration.seconds(secondDuration.inSeconds.toInt()))
-                                        .inMilliseconds.toInt().toString()
+                                (secondDuration - Duration.seconds(secondDuration.inWholeSeconds))
+                                        .inWholeMilliseconds.toString()
                         )
                 )
         logger.info { text }

@@ -4,7 +4,6 @@ package org.islandoftex.arara.dsl
 import java.io.File
 import java.net.URLDecoder
 import java.nio.file.Paths
-import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.readText
 import kotlin.script.experimental.api.valueOrThrow
 import kotlin.script.experimental.host.toScriptSource
@@ -22,7 +21,6 @@ object Executor {
      * testing purposes).
      */
     @JvmStatic
-    @ExperimentalPathApi
     fun main(args: Array<String>) {
         println("Starting execution")
 

@@ -21,13 +21,13 @@ object InputHandling {
     fun checkBoolean(value: String): Boolean {
         val yes = listOf("yes", "true", "1", "on")
         val no = listOf("no", "false", "0", "off")
-        return if (!yes.union(no).contains(value.toLowerCase())) {
+        return if (!yes.union(no).contains(value.lowercase())) {
             throw AraraException(
                     LanguageController.messages.ERROR_CHECKBOOLEAN_NOT_VALID_BOOLEAN
                             .formatString(value)
             )
         } else {
-            yes.contains(value.toLowerCase())
+            yes.contains(value.lowercase())
         }
     }
 

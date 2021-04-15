@@ -18,6 +18,7 @@ import com.github.ajalt.clikt.parameters.types.path
 import com.github.ajalt.clikt.parameters.types.restrictTo
 import java.time.LocalDate
 import kotlin.time.Duration
+import kotlin.time.DurationUnit
 import kotlin.time.TimeSource
 import kotlinx.serialization.decodeFromString
 import net.mamoe.yamlkt.Yaml
@@ -289,7 +290,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true, help = """
             // print the execution time if the command line parsing does not
             // return false as result (it makes no sense to print the execution
             // time for a help message)
-            DisplayUtils.printTime(executionStart.elapsedNow().inSeconds)
+            DisplayUtils.printTime(executionStart.elapsedNow().toDouble(DurationUnit.SECONDS))
 
             throw ProgramResult(executionStatus.exitCode)
         }

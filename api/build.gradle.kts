@@ -38,13 +38,11 @@ kotlin {
             dependsOn(nativeCommonMain)
         }*/
         val jvmMain by getting {
-            languageSettings.useExperimentalAnnotation("kotlin.io.path.ExperimentalPathApi")
             dependencies {
                 implementation("com.soywiz.korlibs.korio:korio:${Versions.korlibs}")
             }
         }
         val jvmTest by getting {
-            languageSettings.useExperimentalAnnotation("kotlin.io.path.ExperimentalPathApi")
             dependencies {
                 implementation("io.kotest:kotest-runner-junit5-jvm:${Versions.kotest}")
                 implementation("io.kotest:kotest-assertions-core-jvm:${Versions.kotest}")

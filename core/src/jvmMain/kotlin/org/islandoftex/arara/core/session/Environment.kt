@@ -66,7 +66,7 @@ object Environment {
                 // execute the Cygwin detection; we do not specify a working
                 // directory because for the test it is irrelevant
                 Command(listOf("uname", "-s"))
-        ).second.toLowerCase().startsWith("cygwin")
+        ).second.lowercase().startsWith("cygwin")
     }
 
     /**
@@ -227,7 +227,7 @@ object Environment {
 
             // add non-zero timeout to the executor to restrict runtime
             if (timeout != Duration.ZERO) {
-                timeout(timeout.toLongNanoseconds(), TimeUnit.NANOSECONDS)
+                timeout(timeout.inWholeNanoseconds, TimeUnit.NANOSECONDS)
             }
 
             execute().exitValue to buffer.toString()
