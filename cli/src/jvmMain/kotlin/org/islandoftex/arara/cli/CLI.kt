@@ -110,7 +110,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true, help = """
     private fun resolveProjects(): List<org.islandoftex.arara.api.files.Project> {
         // resolve the working directory from the one that may be given
         // as command line parameter; otherwise resolve current directory
-        val workingDir = (workingDirectory?.toMPPPath() ?: MPPPath(""))
+        val workingDir = (workingDirectory?.toMPPPath() ?: MPPPath("."))
                 .normalize()
 
         return reference.singleOrNull()

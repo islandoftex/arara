@@ -212,7 +212,7 @@ object Environment {
             // directory; although it may be missing in which case we will use
             // arara's execution directory by default
             val workingDirectory = command.workingDirectory
-                    ?: MPPPath("")
+                    ?: MPPPath(".")
             directory(workingDirectory.toJVMFile())
 
             // implement output redirection if necessary for verbose

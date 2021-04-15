@@ -13,7 +13,7 @@ import org.islandoftex.arara.api.files.toMPPPath
  */
 class DSLProject(private val name: String) {
     private val files = mutableSetOf<ProjectFile>()
-    private var workingDirectory = MPPPath("").normalize()
+    private var workingDirectory = MPPPath(".").normalize()
     private val dependencyList = mutableSetOf<String>()
 
     /**

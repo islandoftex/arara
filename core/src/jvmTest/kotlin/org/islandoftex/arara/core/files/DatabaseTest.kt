@@ -20,14 +20,14 @@ class DatabaseTest : ShouldSpec({
 
     should("remove existent elements") {
         val db = Database()
-        (MPPPath("") in db) shouldBe false
-        db[MPPPath("")] = 1L
-        (MPPPath("") in db) shouldBe true
-        db.remove(MPPPath(""))
-        (MPPPath("") in db) shouldBe false
+        (MPPPath(".") in db) shouldBe false
+        db[MPPPath(".")] = 1L
+        (MPPPath(".") in db) shouldBe true
+        db.remove(MPPPath("."))
+        (MPPPath(".") in db) shouldBe false
     }
     should("throw when removing non-existent path") {
-        shouldThrow<NoSuchElementException> { Database().remove(MPPPath("")) }
+        shouldThrow<NoSuchElementException> { Database().remove(MPPPath(".")) }
                 .message shouldContain "non-existent path"
     }
 
@@ -35,12 +35,12 @@ class DatabaseTest : ShouldSpec({
         withContext(Dispatchers.IO) {
             val tmp = tempfile("db").toMPPPath()
             val db = Database()
-            db[MPPPath("")] = 1L
+            db[MPPPath(".")] = 1L
             db[MPPPath("quack")] = 2L
             db.save(tmp)
             val dbCopy = Database.load(tmp)
-            (MPPPath("") in db) shouldBe true
-            (MPPPath("") in dbCopy) shouldBe true
+            (MPPPath(".") in db) shouldBe true
+            (MPPPath(".") in dbCopy) shouldBe true
             (MPPPath("quack") in db) shouldBe true
             (MPPPath("quack") in db) shouldBe true
             (MPPPath("no") in db) shouldBe false
