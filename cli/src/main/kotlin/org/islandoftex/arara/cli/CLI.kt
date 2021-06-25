@@ -196,10 +196,17 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true, help = """
         parameters.forEach { (key, value) -> Session.put("arg:$key", value) }
 
         try {
-            val projects = listOf(Project(
+            val project = Project(
                     workingDir.fileName?.toString() ?: "Untitled",
                     workingDir,
-                    reference.map { fileName ->
+                    emptySet()
+            )
+            ConfigurationUtils.configFileForProject(project)?.let {
+                DisplayUtils.configurationFileName = it.toString()
+                ConfigurationUtils.load(it, project)
+            }
+            val projects = listOf(project.copy(
+                    files = reference.map { fileName ->
                         FileSearching.resolveFile(
                                 fileName,
                                 workingDir,
@@ -214,11 +221,8 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true, help = """
                         // component respects our MVEL processing
                         DirectiveUtils.initializeDirectiveCore()
                     },
-                    executeBeforeProject = { project ->
-                        ConfigurationUtils.configFileForProject(project)?.let {
-                            DisplayUtils.configurationFileName = it.toString()
-                            ConfigurationUtils.load(it, project)
-                        }
+                    executeBeforeProject = {
+                        // TODO: load config file here
                     },
                     executeBeforeFile = {
                         // TODO: do we have to reset some more file-specific config?

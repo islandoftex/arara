@@ -8,6 +8,12 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
+### Fixed
+
+* Configuration files have been loaded after files have been resolved which
+  conflicts with the configuration options for file resolution.
+  (see #71)
+
 ## [6.1.0] - 2021-04-04
 
 ### Added
