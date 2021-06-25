@@ -8,6 +8,10 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
+### Changed
+
+* Updated dependencies.
+
 ### Fixed
 
 * Configuration files have been loaded after files have been resolved which
