@@ -14,16 +14,13 @@ from version 5.0.0 on.
 
 ### Fixed
 
-* Configuration files have been loaded after files have been resolved which
-  conflicts with the configuration options for file resolution.
-  (see #71)
-
-### Fixed
-
 * The arara logo has been printed into the completion script output. This
   caused failures when sourcing directly. The logo has been removed from the
   completion script output.
   (see #70)
+* Configuration files have been loaded after files have been resolved which
+  conflicts with the configuration options for file resolution.
+  (see #71)
 
 ## [6.1.0] - 2021-04-04
 
