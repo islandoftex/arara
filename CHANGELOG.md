@@ -25,6 +25,11 @@ from version 5.0.0 on.
 * The error message for IO errors has been changed to indicate potential
   encoding problems.
   (see #68)
+* Use header-mode by default instead of scanning the whole document for
+  directives. The `-H` flag has been removed, to get the old behavior back use
+  `arara -w`. This change is experimental, and we might return to the old
+  behavior based on user feedback.
+  (see #63; breaking change)
 
 ## [6.1.1] - 2021-06-26
 

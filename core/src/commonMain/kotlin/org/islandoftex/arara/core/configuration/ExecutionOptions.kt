@@ -18,7 +18,7 @@ data class ExecutionOptions(
     override val rulePaths: Set<MPPPath> = setOf(
             ConfigurationUtils.applicationPath / "rules"),
     override val fileTypes: List<FileType> = ConfigurationUtils.defaultFileTypes,
-    override val parseOnlyHeader: Boolean = false
+    override val parseOnlyHeader: Boolean = true
 ) : ExecutionOptions {
     companion object {
         /**

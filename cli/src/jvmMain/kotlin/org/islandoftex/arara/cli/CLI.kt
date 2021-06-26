@@ -78,8 +78,8 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true, help = """
             .help("Run in safe mode and disable potentially harmful features. " +
                     "Make sure your projects uses only allowed features.")
             .flag()
-    private val onlyHeader by option("-H", "--header")
-            .help("Extract directives only in the file header")
+    private val wholeFile by option("-w", "--whole-file")
+            .help("Extract directives in the file, not only in the header")
             .flag()
     private val preamble by option("-p", "--preamble")
             .help("Set the file preamble based on the configuration file")
@@ -180,8 +180,8 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true, help = """
                             safeRun -> ExecutionMode.SAFE_RUN
                             else -> LinearExecutor.executionOptions.executionMode
                         },
-                        parseOnlyHeader = if (onlyHeader)
-                            true
+                        parseOnlyHeader = if (wholeFile)
+                            false
                         else
                             LinearExecutor.executionOptions.parseOnlyHeader
                 )
