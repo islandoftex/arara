@@ -16,6 +16,8 @@ import com.github.ajalt.clikt.parameters.types.restrictTo
 import java.nio.file.Paths
 import java.time.LocalDate
 import java.util.Locale
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
 import kotlin.time.TimeSource
 import kotlin.time.milliseconds
 import org.islandoftex.arara.api.AraraAPI
@@ -112,7 +114,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true, help = """
                 .copy(
                         maxLoops = maxLoops
                                 ?: LinearExecutor.executionOptions.maxLoops,
-                        timeoutValue = timeout?.milliseconds
+                        timeoutValue = timeout?.let { Duration.milliseconds(it) }
                                 ?: LinearExecutor.executionOptions.timeoutValue,
                         verbose = if (verbose)
                             true
@@ -259,7 +261,7 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true, help = """
             // print the execution time if the command line parsing does not
             // return false as result (it makes no sense to print the execution
             // time for a help message)
-            DisplayUtils.printTime(executionStart.elapsedNow().inSeconds)
+            DisplayUtils.printTime(executionStart.elapsedNow().toDouble(DurationUnit.SECONDS))
 
             throw ProgramResult(executionStatus.exitCode)
         }

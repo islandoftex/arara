@@ -59,7 +59,7 @@ object Environment {
                 // execute the Cygwin detection; we do not specify a working
                 // directory because for the test it is irrelevant
                 Command(listOf("uname", "-s"))
-        ).second.toLowerCase().startsWith("cygwin")
+        ).second.lowercase().startsWith("cygwin")
     }
 
     /**
@@ -85,7 +85,7 @@ object Environment {
     fun checkOS(value: String): Boolean {
         fun checkOSProperty(key: String): Boolean =
                 Environment.getSystemPropertyOrNull("os.name")
-                        ?.toLowerCase()?.startsWith(key.toLowerCase()) ?: false
+                        ?.lowercase()?.startsWith(key.lowercase()) ?: false
 
         val values = mutableMapOf<String, Boolean>()
         values["windows"] = checkOSProperty("Windows")
@@ -94,7 +94,7 @@ object Environment {
         values["unix"] = checkOSProperty("Mac OS X") ||
                 checkOSProperty("Linux")
         values["cygwin"] = inCygwinEnvironment
-        if (!values.containsKey(value.toLowerCase())) {
+        if (!values.containsKey(value.lowercase())) {
             throw AraraException(
                     LanguageController.messages
                             .ERROR_CHECKOS_INVALID_OPERATING_SYSTEM
@@ -102,7 +102,7 @@ object Environment {
             )
         }
         // will never throw, see check above
-        return values.getValue(value.toLowerCase())
+        return values.getValue(value.lowercase())
     }
 
     /**
@@ -219,7 +219,7 @@ object Environment {
 
             // add non-zero timeout to the executor to restrict runtime
             if (timeout != Duration.ZERO) {
-                timeout(timeout.toLongNanoseconds(), TimeUnit.NANOSECONDS)
+                timeout(timeout.inWholeNanoseconds, TimeUnit.NANOSECONDS)
             }
 
             execute().exitValue to buffer.toString()
