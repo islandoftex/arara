@@ -133,12 +133,11 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true, help = """
                         "Untitled",
                         workingDir,
                         emptySet()
-                ).let { project ->
+                ).also { project ->
                     ConfigurationUtils.configFileForProject(project)?.let {
                         DisplayUtils.configurationFileName = it.toString()
                         ConfigurationUtils.load(it, project)
                     }
-                    project
                 }.let { project ->
                     listOf(Project(
                             project.name,
