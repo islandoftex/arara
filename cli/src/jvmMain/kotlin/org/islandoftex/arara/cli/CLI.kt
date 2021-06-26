@@ -129,17 +129,29 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true, help = """
                     }.getOrNull() ?: throw AraraException(
                             LanguageController.messages.ERROR_INVALID_PROJECT_FILE)
                 }
-                ?: listOf(Project(
+                ?: Project(
                         "Untitled",
                         workingDir,
-                        reference.map { fileName ->
-                            FileSearching.resolveFile(
-                                    fileName,
-                                    workingDir,
-                                    LinearExecutor.executionOptions
-                            )
-                        }.toSet()
-                ))
+                        emptySet()
+                ).let { project ->
+                    ConfigurationUtils.configFileForProject(project)?.let {
+                        DisplayUtils.configurationFileName = it.toString()
+                        ConfigurationUtils.load(it, project)
+                    }
+                    project
+                }.let { project ->
+                    listOf(Project(
+                            project.name,
+                            project.workingDirectory,
+                            reference.map { fileName ->
+                                FileSearching.resolveFile(
+                                        fileName,
+                                        workingDir,
+                                        LinearExecutor.executionOptions
+                                )
+                            }.toSet()
+                    ))
+                }
     }
 
     /**
@@ -254,11 +266,8 @@ class CLI : CliktCommand(name = "arara", printHelpOnEmptyArgs = true, help = """
                         // component respects our MVEL processing
                         DirectiveUtils.initializeDirectiveCore()
                     },
-                    executeBeforeProject = { project ->
-                        ConfigurationUtils.configFileForProject(project)?.let {
-                            DisplayUtils.configurationFileName = it.toString()
-                            ConfigurationUtils.load(it, project)
-                        }
+                    executeBeforeProject = {
+                        // TODO: load config file here
                     },
                     executeBeforeFile = {
                         // TODO: do we have to reset some more file-specific config?
