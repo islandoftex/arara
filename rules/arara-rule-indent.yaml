@@ -109,7 +109,7 @@ arguments:
           return opts[parameters.check];
       }
       else {
-          throwError('You provided an invalid value for check');
+          throwError('You provided an invalid value for check.');
       }
     }
 - identifier: options
