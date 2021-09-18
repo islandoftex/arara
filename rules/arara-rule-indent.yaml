@@ -13,9 +13,9 @@ commands:
 - name: The latexindent.pl script
   command: >
     @{
-        return getCommand('latexindent', silent, trace, screenlog,
+        return getCommand('latexindent', silent, trace, screenlog, lines,
                settings, cruft, overwrite, output, reference.getName(),
-               modifylinebreaks, replacement, options, logfile);
+               modifylinebreaks, check, replacement, options, logfile);
     }
 arguments:
 - identifier: silent
@@ -76,6 +76,11 @@ arguments:
     @{
         [ '-o', parameters.output ]
     }
+- identifier: lines
+  flag: >
+    @{
+      [ '--lines', parameters.lines ]
+    }
 - identifier: where
   flag: >
     @{
@@ -96,7 +101,17 @@ arguments:
           throwError('You provided an invalid value for replacement.');
       }
     }
-
+- identifier: check
+  flag: >
+    @{
+      opts = [ 'standard' : '--check', 'verbose' : '--checkv' ];
+      if (opts.keySet().contains(parameters.check)) {
+          return opts[parameters.check];
+      }
+      else {
+          throwError('You provided an invalid value for check');
+      }
+    }
 - identifier: options
   flag: >
     @{
