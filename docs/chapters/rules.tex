@@ -714,6 +714,16 @@ This rule runs \rbox{latexindent}, a Perl script that indents \TeX\ files accord
 
 \item[\povalue{noindent}] This value, as the name implies, will not perform indentation, and will perform replacements not respecting verbatim code blocks.
 \end{description}
+
+\item[\abox{check}] This option, as the name indicates, checks whether the text after indentation matches that given in the original file. Two possible values are available:
+
+\begin{description}
+\item[\povalue{standard}] This value, as the name indicates, refers to the standard behaviour. Please refer to the documentation for further details.
+
+\item[\povalue{verbose}] This value, as the name indicates, refers to including more details to the check. The tool will print the result in the standard output, as well as in its own log file. Please refer to the documentation for further details.
+\end{description}
+
+\item[\abox{lines}] This option instructs the tool to operate only on specific line ranges within the file being inspected. Please refer to the documentation for further details.
 \end{description}
 
 \begin{codebox}{Example}{teal}{\icnote}{white}
