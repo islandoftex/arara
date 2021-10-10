@@ -17,32 +17,42 @@ class InterpreterTest : ShouldSpec({
     should("return zero exit code for ordinary halt") {
         val rulePath = MPPPath("../rules").normalize()
         val filePath = MPPPath("src/jvmTest/resources/executiontests/halt")
-                .normalize() / "halt.tex"
-        val haltDirective = Directives.extractDirectives(listOf("% arara: halt"),
-                false, texFile).single().run {
-            DirectiveImpl(identifier, parameters.plus("reference" to filePath.toString()),
-                    conditional, lineNumbers)
+            .normalize() / "halt.tex"
+        val haltDirective = Directives.extractDirectives(
+            listOf("% arara: halt"),
+            false, texFile
+        ).single().run {
+            DirectiveImpl(
+                identifier, parameters.plus("reference" to filePath.toString()),
+                conditional, lineNumbers
+            )
         }
 
         Interpreter(
             ExecutionOptions(rulePaths = setOf(rulePath)),
-                ProjectFile(filePath, texFile), filePath.parent)
-                .execute(haltDirective).exitCode shouldBe 0
+            ProjectFile(filePath, texFile), filePath.parent
+        )
+            .execute(haltDirective).exitCode shouldBe 0
     }
 
     should("return non-zero exit code for error halt") {
         val rulePath = MPPPath("src/jvmTest/resources/executiontests/halt-error")
-                .normalize()
+            .normalize()
         val filePath = MPPPath(rulePath / "halt-error.tex")
-        val haltDirective = Directives.extractDirectives(listOf("% arara: halt"),
-                false, texFile).single().run {
-            DirectiveImpl(identifier, parameters.plus("reference" to filePath.toString()),
-                    conditional, lineNumbers)
+        val haltDirective = Directives.extractDirectives(
+            listOf("% arara: halt"),
+            false, texFile
+        ).single().run {
+            DirectiveImpl(
+                identifier, parameters.plus("reference" to filePath.toString()),
+                conditional, lineNumbers
+            )
         }
 
         Interpreter(
             ExecutionOptions(rulePaths = setOf(rulePath)),
-                ProjectFile(filePath, texFile), rulePath)
-                .execute(haltDirective).exitCode shouldNotBe 0
+            ProjectFile(filePath, texFile), rulePath
+        )
+            .execute(haltDirective).exitCode shouldNotBe 0
     }
 })

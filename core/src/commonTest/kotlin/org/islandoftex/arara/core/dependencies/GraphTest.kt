@@ -27,7 +27,8 @@ class GraphTest {
                 addEdge(4, 3)
                 addEdge(4, 2)
                 addEdge(3, 1)
-            }.kahn(), listOf(6, 4, 5, 3, 2, 1)
+            }.kahn(),
+            listOf(6, 4, 5, 3, 2, 1)
         )
     }
 }

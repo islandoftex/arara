@@ -54,35 +54,38 @@ internal object InterpreterUtils {
      */
     @Throws(AraraException::class)
     internal fun run(command: Command): Int = Environment.executeSystemCommand(
-            command,
-            !LinearExecutor.executionOptions.verbose,
-            LinearExecutor.executionOptions.timeoutValue
+        command,
+        !LinearExecutor.executionOptions.verbose,
+        LinearExecutor.executionOptions.timeoutValue
     ).let {
         val (exitCode, output) = it
         if (exitCode == Environment.errorExitStatus) {
             throw AraraException(
-                    LanguageController.messages.run {
-                        when (output.substringBefore(":")) {
-                            "java.io.IOException" ->
-                                ERROR_RUN_IO_EXCEPTION
-                            "java.util.concurrent.TimeoutException" ->
-                                ERROR_RUN_TIMEOUT_EXCEPTION
-                            "java.lang.InterruptedException" ->
-                                ERROR_RUN_INTERRUPTED_EXCEPTION
-                            "org.zeroturnaround.exec.InvalidExitValueException" ->
-                                ERROR_RUN_INVALID_EXIT_VALUE_EXCEPTION
-                            else -> ERROR_RUN_GENERIC_EXCEPTION
-                        }
-                    }, AraraException(output)
+                LanguageController.messages.run {
+                    when (output.substringBefore(":")) {
+                        "java.io.IOException" ->
+                            ERROR_RUN_IO_EXCEPTION
+                        "java.util.concurrent.TimeoutException" ->
+                            ERROR_RUN_TIMEOUT_EXCEPTION
+                        "java.lang.InterruptedException" ->
+                            ERROR_RUN_INTERRUPTED_EXCEPTION
+                        "org.zeroturnaround.exec.InvalidExitValueException" ->
+                            ERROR_RUN_INVALID_EXIT_VALUE_EXCEPTION
+                        else -> ERROR_RUN_GENERIC_EXCEPTION
+                    }
+                },
+                AraraException(output)
             )
         }
         logger.info {
             """
                 ${DisplayUtils.displayOutputSeparator(
-                    LanguageController.messages.LOG_INFO_BEGIN_BUFFER)}
+                LanguageController.messages.LOG_INFO_BEGIN_BUFFER
+            )}
                 $output
                 ${DisplayUtils.displayOutputSeparator(
-                    LanguageController.messages.LOG_INFO_END_BUFFER)}
+                LanguageController.messages.LOG_INFO_END_BUFFER
+            )}
             """.trimIndent()
         }
         exitCode

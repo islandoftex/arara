@@ -28,7 +28,7 @@ class DatabaseTest : ShouldSpec({
     }
     should("throw when removing non-existent path") {
         shouldThrow<NoSuchElementException> { Database().remove(MPPPath(".")) }
-                .message shouldContain "non-existent path"
+            .message shouldContain "non-existent path"
     }
 
     should("be able to perform save-load cycle") {

@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.mvel.utils
 
-import java.io.IOException
-import java.util.MissingFormatArgumentException
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.localization.LanguageController
+import java.io.IOException
+import java.util.MissingFormatArgumentException
 
 object MethodUtils {
     /**
@@ -29,9 +29,9 @@ object MethodUtils {
             return pattern.containsMatchIn(text)
         } catch (exception: IOException) {
             throw AraraException(
-                    LanguageController.messages.ERROR_CHECKREGEX_IO_EXCEPTION
-                            .format(file.fileName),
-                    exception
+                LanguageController.messages.ERROR_CHECKREGEX_IO_EXCEPTION
+                    .format(file.fileName),
+                exception
             )
         }
     }
@@ -46,8 +46,8 @@ object MethodUtils {
      */
     @JvmStatic
     fun generateString(vararg objects: Any): String = objects
-            .map { it.toString() }.filter { it.isNotEmpty() }
-            .joinToString(" ")
+        .map { it.toString() }.filter { it.isNotEmpty() }
+        .joinToString(" ")
 
     /**
      * Replicates a string pattern based on a list of objects, generating a list
@@ -70,8 +70,8 @@ object MethodUtils {
             values.map { pattern.format(it) }
         } catch (exception: MissingFormatArgumentException) {
             throw AraraException(
-                    LanguageController.messages.ERROR_REPLICATELIST_MISSING_FORMAT_ARGUMENTS_EXCEPTION,
-                    exception
+                LanguageController.messages.ERROR_REPLICATELIST_MISSING_FORMAT_ARGUMENTS_EXCEPTION,
+                exception
             )
         }
     }

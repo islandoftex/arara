@@ -20,12 +20,12 @@ data class DirectiveImpl(
     override val lineNumbers: List<Int>
 ) : Directive {
     override fun execute(): Int = Interpreter(
-            LinearExecutor.executionOptions, LinearExecutor.currentFile!!,
-            LinearExecutor.currentProject!!.workingDirectory
+        LinearExecutor.executionOptions, LinearExecutor.currentFile!!,
+        LinearExecutor.currentProject!!.workingDirectory
     ).execute(this).exitCode
 
     override fun toString(): String {
         return "Directive(identifier='$identifier', parameters=$parameters," +
-                "conditional=$conditional, lineNumbers=$lineNumbers)"
+            "conditional=$conditional, lineNumbers=$lineNumbers)"
     }
 }

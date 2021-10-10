@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.ui
 
+import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 import javax.swing.JOptionPane
 import javax.swing.UIManager
-import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 
 /**
  * Implements utilitary methods for displaying messages.
@@ -16,9 +16,9 @@ class GUIDialogs
 @JvmOverloads constructor(
     uiOptions: UserInterfaceOptions,
     /**
- * The default width for the message body, in pixels.
- */
-val defaultWidth: Int = 250
+     * The default width for the message body, in pixels.
+     */
+    val defaultWidth: Int = 250
 ) {
     init {
         applyUIOptions(uiOptions)
@@ -97,11 +97,13 @@ val defaultWidth: Int = 250
     ) {
         // effectively shows the message based
         // on the provided parameters
-        JOptionPane.showMessageDialog(null,
-                "<html><body style=\"width:%dpx\">$text</body></html>".format(
-                        normalizeMessageWidth(width)),
-                title,
-                normalizeIconType(type)
+        JOptionPane.showMessageDialog(
+            null,
+            "<html><body style=\"width:%dpx\">$text</body></html>".format(
+                normalizeMessageWidth(width)
+            ),
+            title,
+            normalizeIconType(type)
         )
     }
 
@@ -124,14 +126,16 @@ val defaultWidth: Int = 250
     ): Int {
         // returns the index of the selected button,
         // zero if nothing is selected
-        return JOptionPane.showOptionDialog(null,
-                "<html><body style=\"width:%dpx\">$text</body></html>".format(
-                        normalizeMessageWidth(width)),
-                title,
-                JOptionPane.DEFAULT_OPTION,
-                normalizeIconType(type), null,
-                buttons,
-                buttons[0]
+        return JOptionPane.showOptionDialog(
+            null,
+            "<html><body style=\"width:%dpx\">$text</body></html>".format(
+                normalizeMessageWidth(width)
+            ),
+            title,
+            JOptionPane.DEFAULT_OPTION,
+            normalizeIconType(type), null,
+            buttons,
+            buttons[0]
         ) + 1
     }
 
@@ -152,11 +156,14 @@ val defaultWidth: Int = 250
     ): String {
         // get the string from the
         // input text, if any
-        val input = JOptionPane.showInputDialog(null,
-                "<html><body style=\"width:%dpx\">$text</body></html>".format(
-                        normalizeMessageWidth(width)),
-                title,
-                normalizeIconType(type))
+        val input = JOptionPane.showInputDialog(
+            null,
+            "<html><body style=\"width:%dpx\">$text</body></html>".format(
+                normalizeMessageWidth(width)
+            ),
+            title,
+            normalizeIconType(type)
+        )
 
         // if the input is not null, that is,
         // the user actually typed something
@@ -183,13 +190,16 @@ val defaultWidth: Int = 250
         elements: Array<out Any>
     ): Int {
         // show the dropdown list and get the selected object, if any
-        val index = JOptionPane.showInputDialog(null,
-                "<html><body style=\"width:%dpx\">$text</body></html>".format(
-                        normalizeMessageWidth(width)),
-                title,
-                normalizeIconType(type), null,
-                elements,
-                elements[0])
+        val index = JOptionPane.showInputDialog(
+            null,
+            "<html><body style=\"width:%dpx\">$text</body></html>".format(
+                normalizeMessageWidth(width)
+            ),
+            title,
+            normalizeIconType(type), null,
+            elements,
+            elements[0]
+        )
 
         // if it's not a null object, let's find the corresponding index
         if (index != null) {

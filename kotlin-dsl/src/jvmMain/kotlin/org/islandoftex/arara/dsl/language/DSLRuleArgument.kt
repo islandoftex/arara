@@ -49,8 +49,8 @@ class DSLRuleArgument<T>(val identifier: String) {
      */
     fun toRuleArgument(): RuleArgument<T> {
         return org.islandoftex.arara.dsl.rules.RuleArgument(
-                identifier, isRequired = required, defaultValue = defaultValue,
-                processor = processor
+            identifier, isRequired = required, defaultValue = defaultValue,
+            processor = processor
         )
     }
 }

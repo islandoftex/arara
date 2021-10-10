@@ -21,6 +21,6 @@ data class Command(
      */
     override fun toString(): String {
         return elements.joinToString(", ", "[", "]") +
-                " @ $workingDirectory"
+            " @ $workingDirectory"
     }
 }

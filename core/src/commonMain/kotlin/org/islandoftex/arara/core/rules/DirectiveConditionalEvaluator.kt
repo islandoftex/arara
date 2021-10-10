@@ -47,9 +47,11 @@ abstract class DirectiveConditionalEvaluator(
         type: DirectiveConditionalType,
         haltCheck: Boolean = true
     ): Boolean =
-            (type == DirectiveConditionalType.IF ||
-                    type == DirectiveConditionalType.UNLESS) &&
-                    halt == haltCheck
+        (
+            type == DirectiveConditionalType.IF ||
+                type == DirectiveConditionalType.UNLESS
+            ) &&
+            halt == haltCheck
 
     /**
      * Only run the evaluation of the conditional including a check whether
@@ -73,8 +75,9 @@ abstract class DirectiveConditionalEvaluator(
         // conditional, arara always ignores conditional
         // evaluations
         if (conditional.type == DirectiveConditionalType.NONE ||
-                executionOptions.executionMode == ExecutionMode.DRY_RUN ||
-                isIfUnlessAndHalt(conditional.type, true))
+            executionOptions.executionMode == ExecutionMode.DRY_RUN ||
+            isIfUnlessAndHalt(conditional.type, true)
+        )
             return false
         else if (isIfUnlessAndHalt(conditional.type, false)) {
             halt = true
@@ -85,10 +88,10 @@ abstract class DirectiveConditionalEvaluator(
         // thus breaking the cycles
         counter++
         return when {
-            conditional.type == DirectiveConditionalType.WHILE
-                    && counter > maxLoops -> false
-            conditional.type == DirectiveConditionalType.UNTIL
-                    && counter >= maxLoops -> false
+            conditional.type == DirectiveConditionalType.WHILE &&
+                counter > maxLoops -> false
+            conditional.type == DirectiveConditionalType.UNTIL &&
+                counter >= maxLoops -> false
             else -> evaluateCondition(conditional)
         }
     }

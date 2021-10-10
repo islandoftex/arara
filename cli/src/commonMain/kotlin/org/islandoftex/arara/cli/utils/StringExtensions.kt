@@ -37,7 +37,7 @@ internal fun String.center(width: Int, padChar: Char): String {
     else {
         val charsLeft = width - this.length
         padChar.toString().repeat(charsLeft / 2) + this +
-                padChar.toString().repeat(ceil(charsLeft.toDouble() / 2.0).toInt())
+            padChar.toString().repeat(ceil(charsLeft.toDouble() / 2.0).toInt())
     }
 }
 

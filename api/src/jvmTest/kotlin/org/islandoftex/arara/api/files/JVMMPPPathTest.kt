@@ -6,8 +6,8 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.engine.spec.tempfile
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import java.nio.file.Files
 import org.islandoftex.arara.api.AraraIOException
+import java.nio.file.Files
 
 class JVMMPPPathTest : ShouldSpec({
     context("read and write operations") {

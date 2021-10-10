@@ -32,8 +32,10 @@ open class CTANTreeBuilderTask : DefaultTask() {
 
         logger.debug("Copying the TDS archive file to the temporary directory")
         val tdsZip = project.buildDir.resolve("arara.tds.zip")
-                .copyTo(temporaryDir.resolve("arara.tds.zip"),
-                        overwrite = true)
+            .copyTo(
+                temporaryDir.resolve("arara.tds.zip"),
+                overwrite = true
+            )
 
         logger.debug("Extracting the temporary TDS structure")
         project.copy {
@@ -43,39 +45,39 @@ open class CTANTreeBuilderTask : DefaultTask() {
 
         logger.debug("Renaming the structure")
         temporaryDir.resolve("arara/doc")
-                .renameTo(temporaryDir.resolve("arara/doc-old"))
+            .renameTo(temporaryDir.resolve("arara/doc-old"))
         temporaryDir.resolve("arara/scripts")
-                .renameTo(temporaryDir.resolve("arara/scripts-old"))
+            .renameTo(temporaryDir.resolve("arara/scripts-old"))
         temporaryDir.resolve("arara/source")
-                .renameTo(temporaryDir.resolve("arara/source-old"))
+            .renameTo(temporaryDir.resolve("arara/source-old"))
 
         logger.debug("Copying the documentation directory")
         temporaryDir.resolve("arara/doc-old/support/arara")
-                .copyRecursively(temporaryDir.resolve("arara/doc"))
+            .copyRecursively(temporaryDir.resolve("arara/doc"))
 
         logger.debug("Copying the man page")
         temporaryDir.resolve("${project.name}/doc-old/man/man1/${project.name}.1")
-                .copyTo(temporaryDir.resolve("${project.name}/doc/${project.name}.1"))
+            .copyTo(temporaryDir.resolve("${project.name}/doc/${project.name}.1"))
 
         logger.debug("Removing the old documentation structure")
         temporaryDir.resolve("arara/doc-old").deleteRecursively()
 
         logger.debug("Copying the scripts directory")
         temporaryDir.resolve("arara/scripts-old/arara")
-                .copyRecursively(temporaryDir.resolve("arara/scripts"))
+            .copyRecursively(temporaryDir.resolve("arara/scripts"))
 
         logger.debug("Removing the old scripts structure")
         temporaryDir.resolve("arara/scripts-old").deleteRecursively()
 
         logger.debug("Copying the source code directory")
         temporaryDir.resolve("arara/source-old/support/arara")
-                .copyRecursively(temporaryDir.resolve("arara/source"))
+            .copyRecursively(temporaryDir.resolve("arara/source"))
 
         logger.debug("Removing the old source code structure")
         temporaryDir.resolve("arara/source-old").deleteRecursively()
 
         logger.debug("Copying the README file to the top level")
         temporaryDir.resolve("arara/doc/README.md")
-                .renameTo(temporaryDir.resolve("arara/README.md"))
+            .renameTo(temporaryDir.resolve("arara/README.md"))
     }
 }

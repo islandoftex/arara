@@ -26,13 +26,15 @@ object LoggingUtils {
     fun setupLogging(loggingOptions: LoggingOptions) {
         if (loggingOptions.enableLogging) {
             // TODO: check for multi-threading
-            ThreadContext.put("araraLogFile",
-                    loggingOptions.logFile.normalize().toString())
+            ThreadContext.put(
+                "araraLogFile",
+                loggingOptions.logFile.normalize().toString()
+            )
             val loggerContext = LogManager.getContext(false)
-                    as org.apache.logging.log4j.core.LoggerContext
+                as org.apache.logging.log4j.core.LoggerContext
             loggerContext.configLocation = LoggingUtils::class.java
-                    .getResource("/org/islandoftex/arara/cli/configuration/log4j2.xml")
-                    .toURI()
+                .getResource("/org/islandoftex/arara/cli/configuration/log4j2.xml")
+                .toURI()
             loggerContext.reconfigure()
         } else {
             Configurator.setRootLevel(Level.OFF)

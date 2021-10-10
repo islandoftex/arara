@@ -14,10 +14,10 @@ import com.soywiz.korio.file.std.localVfs
 import com.soywiz.korio.lang.lastIndexOfOrNull
 import com.soywiz.korio.stream.copyTo
 import com.soywiz.korio.stream.openAsync
+import org.islandoftex.arara.api.AraraIOException
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
-import org.islandoftex.arara.api.AraraIOException
 
 /**
  * Platform-independent object to deal with paths.
@@ -77,14 +77,14 @@ public actual class MPPPath {
      */
     public actual val parent: MPPPath
         get() = this.takeIf { vfsFile == vfsFile.root }
-                ?: vfsFile.fullPathNormalized
-                        .substring(0, vfsFile.fullPathNormalized.lastIndexOfOrNull('/') ?: 0)
-                        .takeIf { it.isNotBlank() }
-                        ?.let { MPPPath(it) }
-                // prevent fallback to current working directory as korio
-                // would do; we fall back to the file system root
-                // TODO: check behavior for relative paths
-                ?: MPPPath("/")
+            ?: vfsFile.fullPathNormalized
+                .substring(0, vfsFile.fullPathNormalized.lastIndexOfOrNull('/') ?: 0)
+                .takeIf { it.isNotBlank() }
+                ?.let { MPPPath(it) }
+            // prevent fallback to current working directory as korio
+            // would do; we fall back to the file system root
+            // TODO: check behavior for relative paths
+            ?: MPPPath("/")
 
     /**
      * Indicates whether the file exists.
@@ -114,7 +114,8 @@ public actual class MPPPath {
         val otherComponents = p.vfsFile.getPathComponents()
 
         return if (otherComponents.size > components.size ||
-                otherComponents.isEmpty() && isAbsolute) {
+            otherComponents.isEmpty() && isAbsolute
+        ) {
             // other path is longer or has no name elements
             false
         } else {
@@ -132,33 +133,35 @@ public actual class MPPPath {
      * into an absolute path and then normalized.
      */
     public actual fun normalize(): MPPPath =
-            // TODO: align with parent, check relative paths
-            MPPPath(vfsFile.absolutePathInfo.normalize()
-                    .takeIf { it.isNotBlank() } ?: "/")
+        // TODO: align with parent, check relative paths
+        MPPPath(
+            vfsFile.absolutePathInfo.normalize()
+                .takeIf { it.isNotBlank() } ?: "/"
+        )
 
     /**
      * Resolve the child [p] of the current path.
      */
     public actual fun resolve(p: String): MPPPath =
-            MPPPath(vfsFile[p].absolutePath)
+        MPPPath(vfsFile[p].absolutePath)
 
     /**
      * Resolve the child [p] of the current path.
      */
     public actual fun resolve(p: MPPPath): MPPPath =
-            MPPPath(vfsFile[p.path.toString()].absolutePath)
+        MPPPath(vfsFile[p.path.toString()].absolutePath)
 
     /**
      * Resolve the sibling [p] of the current path.
      */
     public actual fun resolveSibling(p: String): MPPPath =
-            MPPPath(parent.resolve(p))
+        MPPPath(parent.resolve(p))
 
     /**
      * Resolve the sibling [p] of the current path.
      */
     public actual fun resolveSibling(p: MPPPath): MPPPath =
-            MPPPath(parent.resolve(p))
+        MPPPath(parent.resolve(p))
 
     /**
      * Read lines from the file specified at the current path. Fails with an
@@ -190,22 +193,22 @@ public actual class MPPPath {
      * exception if the file is a directory or access is impossible.
      */
     public actual fun writeText(text: String, append: Boolean): Unit =
-            runBlockingNoJs {
-                if (isRegularFile) {
-                    val openMode = if (append)
-                        VfsOpenMode.APPEND
-                    else
-                        // if not appending choose the same open mode
-                        // korio would use instead
-                        VfsOpenMode.CREATE_OR_TRUNCATE
-                    vfsFile.vfs.open(vfsFile.absolutePath, openMode)
-                        .use {
-                            text.openAsync().copyTo(this)
-                        }
-                } else {
-                    throw AraraIOException("Can only write text to files.")
-                }
+        runBlockingNoJs {
+            if (isRegularFile) {
+                val openMode = if (append)
+                    VfsOpenMode.APPEND
+                else
+                // if not appending choose the same open mode
+                // korio would use instead
+                    VfsOpenMode.CREATE_OR_TRUNCATE
+                vfsFile.vfs.open(vfsFile.absolutePath, openMode)
+                    .use {
+                        text.openAsync().copyTo(this)
+                    }
+            } else {
+                throw AraraIOException("Can only write text to files.")
             }
+        }
 
     override fun toString(): String = vfsFile.absolutePath
 

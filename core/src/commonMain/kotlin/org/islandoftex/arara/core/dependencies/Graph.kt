@@ -55,8 +55,8 @@ internal open class Graph<T> {
         val work = indegree.toMutableMap()
 
         work.entries
-                .filter { it.value == 0 }
-                .forEach { queue.add(it.key) }
+            .filter { it.value == 0 }
+            .forEach { queue.add(it.key) }
 
         while (queue.isNotEmpty()) {
             val vertex: T = queue.removeFirst()

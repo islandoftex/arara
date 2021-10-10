@@ -39,30 +39,36 @@ class RuleArgument : RuleArgument<Any?> {
 
     @Transient
     override val processor: (Any?, Map<String, Any>) -> List<String> = { input, context ->
-            try {
-                val resolvedContext = context.plus("parameters" to (context
-                        .getValue("parameters") as Map<*, *>)
-                        .plus(identifier to input!!))
-                flag?.let { fn ->
-                    when (val output = TemplateRuntime.eval(fn, resolvedContext)) {
-                        is String -> listOf(output)
-                        is List<*> -> InputHandling.flatten(output).map { it.toString() }
-                        else -> {
-                            logger.warn("You are using an unsupported return type " +
-                                    "which may be deprecated in future versions of " +
-                                    "arara. Please use String or List<String> instead.")
-                            listOf(output.toString())
-                        }
+        try {
+            val resolvedContext = context.plus(
+                "parameters" to (
+                    context
+                        .getValue("parameters") as Map<*, *>
+                    )
+                    .plus(identifier to input!!)
+            )
+            flag?.let { fn ->
+                when (val output = TemplateRuntime.eval(fn, resolvedContext)) {
+                    is String -> listOf(output)
+                    is List<*> -> InputHandling.flatten(output).map { it.toString() }
+                    else -> {
+                        logger.warn(
+                            "You are using an unsupported return type " +
+                                "which may be deprecated in future versions of " +
+                                "arara. Please use String or List<String> instead."
+                        )
+                        listOf(output.toString())
                     }
-                } ?: listOf(input.toString())
-            } catch (exception: RuntimeException) {
-                throw AraraExceptionWithHeader(
-                    LanguageController.messages
-                        .ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION,
-                        exception
-                )
-            }
+                }
+            } ?: listOf(input.toString())
+        } catch (exception: RuntimeException) {
+            throw AraraExceptionWithHeader(
+                LanguageController.messages
+                    .ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION,
+                exception
+            )
         }
+    }
 
     /**
      * Validate the argument for later processing.
@@ -71,16 +77,20 @@ class RuleArgument : RuleArgument<Any?> {
         if (flag != null || defaultValue != null) {
             true
         } else {
-            throw AraraException(ruleErrorHeader + LanguageController
-                    .messages.ERROR_VALIDATEBODY_MISSING_KEYS)
+            throw AraraException(
+                ruleErrorHeader + LanguageController
+                    .messages.ERROR_VALIDATEBODY_MISSING_KEYS
+            )
         }
     } else {
-        throw AraraException(ruleErrorHeader + LanguageController
-                .messages.ERROR_VALIDATEBODY_NULL_ARGUMENT_ID)
+        throw AraraException(
+            ruleErrorHeader + LanguageController
+                .messages.ERROR_VALIDATEBODY_NULL_ARGUMENT_ID
+        )
     }
 
     override fun toString(): String {
         return "RuleArgument(identifier='$identifier', isRequired=$isRequired, " +
-                "flag=$flag, defaultValue=$defaultValue)"
+            "flag=$flag, defaultValue=$defaultValue)"
     }
 }

@@ -30,23 +30,26 @@ class DirectiveConditionalEvaluator(executionOptions: ExecutionOptions) :
     @Suppress("TooGenericExceptionCaught")
     override fun evaluateCondition(conditional: DirectiveConditional): Boolean {
         try {
-            val result = TemplateRuntime.eval("@{ ${conditional.condition} }",
-                    MvelState.conditionalMethods)
+            val result = TemplateRuntime.eval(
+                "@{ ${conditional.condition} }",
+                MvelState.conditionalMethods
+            )
             return if (result is Boolean) {
                 if (conditional.type == DirectiveConditionalType.UNLESS ||
-                        conditional.type == DirectiveConditionalType.UNTIL)
+                    conditional.type == DirectiveConditionalType.UNTIL
+                )
                     !result
                 else
                     result
             } else {
                 throw AraraException(
-                        LanguageController.messages.ERROR_EVALUATE_NOT_BOOLEAN_VALUE
+                    LanguageController.messages.ERROR_EVALUATE_NOT_BOOLEAN_VALUE
                 )
             }
         } catch (exception: RuntimeException) {
             throw AraraException(
-                    LanguageController.messages.ERROR_EVALUATE_COMPILATION_FAILED,
-                    exception
+                LanguageController.messages.ERROR_EVALUATE_COMPILATION_FAILED,
+                exception
             )
         }
     }

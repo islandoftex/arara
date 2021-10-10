@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.configuration
 
-import kotlin.time.Duration
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
+import kotlin.time.Duration
 
 data class ExecutionOptions(
     override val maxLoops: Int = 10,
@@ -16,7 +16,8 @@ data class ExecutionOptions(
     override val verbose: Boolean = false,
     override val executionMode: ExecutionMode = ExecutionMode.NORMAL_RUN,
     override val rulePaths: Set<MPPPath> = setOf(
-            ConfigurationUtils.applicationPath / "rules"),
+        ConfigurationUtils.applicationPath / "rules"
+    ),
     override val fileTypes: List<FileType> = ConfigurationUtils.defaultFileTypes,
     override val parseOnlyHeader: Boolean = true
 ) : ExecutionOptions {
@@ -26,7 +27,7 @@ data class ExecutionOptions(
          * conversion method.
          */
         fun from(options: ExecutionOptions):
-                org.islandoftex.arara.core.configuration.ExecutionOptions {
+            org.islandoftex.arara.core.configuration.ExecutionOptions {
             return ExecutionOptions(
                 maxLoops = options.maxLoops,
                 timeoutValue = options.timeoutValue,

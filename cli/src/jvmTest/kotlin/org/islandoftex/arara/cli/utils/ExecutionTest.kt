@@ -6,9 +6,6 @@ import io.kotest.core.spec.DoNotParallelize
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.PrintStream
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
@@ -19,6 +16,9 @@ import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LinearExecutor
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.PrintStream
 
 @DoNotParallelize
 class ExecutionTest : ShouldSpec({
@@ -26,18 +26,18 @@ class ExecutionTest : ShouldSpec({
         DirectiveUtils.initializeDirectiveCore()
 
         LinearExecutor.hooks = ExecutorHooks(
-                executeBeforeProject = { project ->
-                    ConfigurationUtils.configFileForProject(project)?.let {
-                        DisplayUtils.configurationFileName = it.toString()
-                        ConfigurationUtils.load(it, project)
-                    }
-                },
-                executeBeforeFile = {
-                    it.printFileInformation()
-                },
-                processDirectives = { file, list ->
-                    DirectiveUtils.process(file, list)
+            executeBeforeProject = { project ->
+                ConfigurationUtils.configFileForProject(project)?.let {
+                    DisplayUtils.configurationFileName = it.toString()
+                    ConfigurationUtils.load(it, project)
                 }
+            },
+            executeBeforeFile = {
+                it.printFileInformation()
+            },
+            processDirectives = { file, list ->
+                DirectiveUtils.process(file, list)
+            }
         )
     }
 
@@ -51,14 +51,20 @@ class ExecutionTest : ShouldSpec({
         try {
             System.setOut(PrintStream(output))
             val workingDirectory = MPPPath(getPathForTest(testName))
-            LinearExecutor.execute(listOf(
-                    Project("Test", workingDirectory,
-                            setOf(FileSearching.resolveFile(fileName,
-                                    workingDirectory,
-                                    LinearExecutor.executionOptions)
+            LinearExecutor.execute(
+                listOf(
+                    Project(
+                        "Test", workingDirectory,
+                        setOf(
+                            FileSearching.resolveFile(
+                                fileName,
+                                workingDirectory,
+                                LinearExecutor.executionOptions
                             )
+                        )
                     )
-            ))
+                )
+            )
             return output.toByteArray().toString(Charsets.UTF_8)
         } catch (ex: Exception) {
             throw ex
@@ -165,7 +171,7 @@ class ExecutionTest : ShouldSpec({
     should("not interpret orb tags in directives in safe mode") {
         val options = LinearExecutor.executionOptions
         LinearExecutor.executionOptions = ExecutionOptions.from(options)
-                .copy(executionMode = ExecutionMode.SAFE_RUN)
+            .copy(executionMode = ExecutionMode.SAFE_RUN)
         val output = outputForTest("directive-with-mvel-options")
         output shouldNotContain "testdirective-with-mvel-optionsquack"
         output shouldContain "test@{getBasename(getOriginalReference())}quack"

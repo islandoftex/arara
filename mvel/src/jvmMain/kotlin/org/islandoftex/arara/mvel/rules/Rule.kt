@@ -38,7 +38,7 @@ data class Rule(
                 return ruleId?.let { id ->
                     rulePath?.let { path ->
                         LanguageController.messages.ERROR_RULE_IDENTIFIER_AND_PATH
-                                .format(id, path) + " "
+                            .format(id, path) + " "
                     }
                 } ?: ""
             }
@@ -62,10 +62,14 @@ data class Rule(
                 if (!text.startsWith("!config"))
                     throw AraraException("Rule should start with !config")
                 Yaml.default.decodeFromString(
-                        org.islandoftex.arara.mvel.rules.Rule.serializer(), text)
+                    org.islandoftex.arara.mvel.rules.Rule.serializer(), text
+                )
             }.getOrElse {
-                throw AraraException(ruleErrorHeader + LanguageController
-                        .messages.ERROR_PARSERULE_GENERIC_ERROR, it)
+                throw AraraException(
+                    ruleErrorHeader + LanguageController
+                        .messages.ERROR_PARSERULE_GENERIC_ERROR,
+                    it
+                )
             }
 
             validateHeader(rule, identifier)
@@ -85,14 +89,17 @@ data class Rule(
         @Suppress("ThrowsCount")
         private fun validateHeader(rule: Rule, identifier: String) {
             if (rule.identifier != identifier) {
-                throw AraraException(ruleErrorHeader +
+                throw AraraException(
+                    ruleErrorHeader +
                         LanguageController.messages.ERROR_VALIDATEHEADER_WRONG_IDENTIFIER
-                                .format(rule.identifier, identifier)
+                            .format(rule.identifier, identifier)
                 )
             }
             if (rule.displayName == null) {
-                throw AraraException(ruleErrorHeader + LanguageController
-                        .messages.ERROR_VALIDATEHEADER_NULL_NAME)
+                throw AraraException(
+                    ruleErrorHeader + LanguageController
+                        .messages.ERROR_VALIDATEHEADER_NULL_NAME
+                )
             }
         }
 
@@ -107,21 +114,26 @@ data class Rule(
         @Suppress("ThrowsCount")
         private fun validateBody(rule: org.islandoftex.arara.mvel.rules.Rule) {
             if (rule.commands.any { it.commandString == null })
-                throw AraraException(ruleErrorHeader + LanguageController
-                        .messages.ERROR_VALIDATEBODY_NULL_COMMAND)
+                throw AraraException(
+                    ruleErrorHeader + LanguageController
+                        .messages.ERROR_VALIDATEBODY_NULL_COMMAND
+                )
 
             val arguments = rule.arguments.filter { it.validate(ruleErrorHeader) }
 
             arguments.intersect(listOf("files", "reference")).forEach {
-                throw AraraException(ruleErrorHeader + LanguageController
+                throw AraraException(
+                    ruleErrorHeader + LanguageController
                         .messages.ERROR_VALIDATEBODY_ARGUMENT_ID_IS_RESERVED
                         .format(it)
                 )
             }
 
             if (arguments.size != arguments.toSet().size) {
-                throw AraraException(ruleErrorHeader + LanguageController.messages
-                        .ERROR_VALIDATEBODY_DUPLICATE_ARGUMENT_IDENTIFIERS)
+                throw AraraException(
+                    ruleErrorHeader + LanguageController.messages
+                        .ERROR_VALIDATEBODY_DUPLICATE_ARGUMENT_IDENTIFIERS
+                )
             }
         }
     }

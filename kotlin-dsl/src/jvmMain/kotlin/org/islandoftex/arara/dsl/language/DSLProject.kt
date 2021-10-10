@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.dsl.language
 
-import java.io.File
-import java.nio.file.Paths
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.files.toMPPPath
+import java.io.File
+import java.nio.file.Paths
 
 /**
  * A project model class to capture DSL methods within.
@@ -36,10 +36,10 @@ class DSLProject(private val name: String) {
      *   directives manually or specify the priority.
      */
     fun file(name: String, configure: DSLProjectFile.() -> Unit = {}) =
-            files.add(
-                    DSLProjectFile(Paths.get(name))
-                            .apply(configure).toProjectFile()
-            )
+        files.add(
+            DSLProjectFile(Paths.get(name))
+                .apply(configure).toProjectFile()
+        )
 
     /**
      * Add a file.
@@ -61,10 +61,10 @@ class DSLProject(private val name: String) {
      *   directives manually or specify the priority.
      */
     fun file(file: File, configure: DSLProjectFile.() -> Unit) =
-            files.add(
-                    DSLProjectFile(file.toPath())
-                            .apply(configure).toProjectFile()
-            )
+        files.add(
+            DSLProjectFile(file.toPath())
+                .apply(configure).toProjectFile()
+        )
 
     /**
      * Set the project's working directory.
@@ -101,7 +101,7 @@ class DSLProject(private val name: String) {
      */
     override fun toString(): String {
         return "DSLProject(name=$name, workingDirectory=$workingDirectory, " +
-                "files=$files, dependencies=$dependencyList)"
+            "files=$files, dependencies=$dependencyList)"
     }
 
     /**
@@ -110,6 +110,6 @@ class DSLProject(private val name: String) {
      * @return A [Project] resembling the user's configuration.
      */
     internal fun toProject(): Project = org.islandoftex.arara.core.files.Project(
-            name, workingDirectory, files, dependencyList
+        name, workingDirectory, files, dependencyList
     )
 }

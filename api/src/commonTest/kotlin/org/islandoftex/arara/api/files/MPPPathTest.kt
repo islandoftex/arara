@@ -25,26 +25,36 @@ class MPPPathTest {
     // path normalization
     @Test
     fun shouldNormalizeDots() {
-        assertEquals(MPPPath("/tmp/./quack/..").normalize().toString(),
-                MPPPath("/tmp/").normalize().toString())
+        assertEquals(
+            MPPPath("/tmp/./quack/..").normalize().toString(),
+            MPPPath("/tmp/").normalize().toString()
+        )
     }
     @Test
     fun shouldNoExceedRoot() {
-        assertEquals(MPPPath("/tmp/../../..").normalize().toString(),
-                MPPPath("/").toString())
+        assertEquals(
+            MPPPath("/tmp/../../..").normalize().toString(),
+            MPPPath("/").toString()
+        )
     }
 
     // parenting
     @Test
     fun shouldUseRootAsParentOfRoot() {
-        assertEquals(MPPPath("/").parent.toString(),
-                MPPPath("/").toString())
+        assertEquals(
+            MPPPath("/").parent.toString(),
+            MPPPath("/").toString()
+        )
     }
     @Test
     fun shouldDetermineParentCorrectly() {
-        assertEquals(MPPPath("/tmp/./quack/..").parent.normalize().toString(),
-                MPPPath("/").toString())
-        assertEquals(MPPPath("/tmp/./quack/..").normalize().parent.toString(),
-                MPPPath("/").toString())
+        assertEquals(
+            MPPPath("/tmp/./quack/..").parent.normalize().toString(),
+            MPPPath("/").toString()
+        )
+        assertEquals(
+            MPPPath("/tmp/./quack/..").normalize().parent.toString(),
+            MPPPath("/").toString()
+        )
     }
 }

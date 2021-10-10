@@ -10,7 +10,7 @@ public actual class MPPLocale actual constructor(tag: String) {
     public actual val displayLanguage: String = locale.displayLanguage
 
     public actual val decimalSeparator: Char = DecimalFormatSymbols(locale)
-            .decimalSeparator
+        .decimalSeparator
 
     /**
      * Convert the multiplatform locale to a JVM [Locale].
@@ -18,9 +18,9 @@ public actual class MPPLocale actual constructor(tag: String) {
     public fun toJVMLocale(): Locale = locale
 
     override fun hashCode(): Int =
-            locale.hashCode()
+        locale.hashCode()
     override fun toString(): String =
-            locale.toString()
+        locale.toString()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

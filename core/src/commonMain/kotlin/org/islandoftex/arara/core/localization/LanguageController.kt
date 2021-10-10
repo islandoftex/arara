@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.localization
 
-import kotlin.jvm.JvmStatic
 import mu.KotlinLogging
 import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.api.localization.Messages
+import kotlin.jvm.JvmStatic
 
 /**
  * The language controller arara's core relies on.
@@ -33,7 +33,7 @@ object LanguageController {
             else -> {
                 logger.warn {
                     "Language ${locale.displayLanguage} not available; " +
-                            "defaulting to English."
+                        "defaulting to English."
                 }
                 Messages()
             }

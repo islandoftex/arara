@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
+import org.islandoftex.arara.api.AraraException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import org.islandoftex.arara.api.AraraException
 
 class SessionTest {
     @Test
@@ -14,8 +14,10 @@ class SessionTest {
         Session.clear()
         Session.updateEnvironmentVariables()
         // on Linux it is called PATH, on Windows it may be Path
-        assertTrue(Session.contains("environment:PATH") ||
-                Session.contains("environment:Path"))
+        assertTrue(
+            Session.contains("environment:PATH") ||
+                Session.contains("environment:Path")
+        )
     }
 
     @Test

@@ -22,9 +22,11 @@ buildscript {
 }
 
 if (!project.hasProperty("jobToken")) {
-    logger.warn("Will be unable to publish (jobToken missing)\n" +
+    logger.warn(
+        "Will be unable to publish (jobToken missing)\n" +
             "Ignore this warning if you are not running the publish task " +
-            "for the GitLab package repository.")
+            "for the GitLab package repository."
+    )
 }
 
 plugins {
@@ -44,9 +46,9 @@ plugins {
 tasks.withType<DependencyUpdatesTask> {
     rejectVersionIf {
         val stableKeyword = listOf("RELEASE", "FINAL", "GA")
-                .any { candidate.version.toUpperCase().contains(it) }
+            .any { candidate.version.toUpperCase().contains(it) }
         val isStable = stableKeyword || "^[0-9,.v-]+$".toRegex()
-                .matches(candidate.version)
+            .matches(candidate.version)
         isStable.not()
     }
 }
@@ -63,13 +65,15 @@ spotlessChangelog {
 
 spotless {
     kotlinGradle {
-        target("build.gradle.kts",
-                "buildSrc/build.gradle.kts",
-                "api/build.gradle.kts",
-                "core/build.gradle.kts",
-                "mvel/build.gradle.kts",
-                "kotlin-dsl/build.gradle.kts",
-                "cli/build.gradle.kts")
+        target(
+            "build.gradle.kts",
+            "buildSrc/build.gradle.kts",
+            "api/build.gradle.kts",
+            "core/build.gradle.kts",
+            "mvel/build.gradle.kts",
+            "kotlin-dsl/build.gradle.kts",
+            "cli/build.gradle.kts"
+        )
         targetExclude("src/test/**/*.kts")
         ktlint()
         trimTrailingWhitespace()
@@ -77,12 +81,14 @@ spotless {
         endWithNewline()
     }
     kotlin {
-        target("api/src/**/*.kt",
-                "core/src/**/*.kt",
-                "mvel/src/**/*.kt",
-                "kotlin-dsl/src/**/*.kt",
-                "cli/src/**/*.kt",
-                "buildSrc/src/**/*.kt")
+        target(
+            "api/src/**/*.kt",
+            "core/src/**/*.kt",
+            "mvel/src/**/*.kt",
+            "kotlin-dsl/src/**/*.kt",
+            "cli/src/**/*.kt",
+            "buildSrc/src/**/*.kt"
+        )
         targetExclude("src/test/**/*.kts")
         ktlint()
         licenseHeader("// SPDX-License-Identifier: BSD-3-Clause")
@@ -95,16 +101,16 @@ spotless {
 detekt {
     failFast = false
     input = files(
-            "api/src/commonMain/kotlin",
-            "api/src/jvmMain/kotlin",
-            "core/src/commonMain/kotlin",
-            "core/src/jvmMain/kotlin",
-            "mvel/src/commonMain/kotlin",
-            "mvel/src/jvmMain/kotlin",
-            "kotlin-dsl/src/main/kotlin",
-            "cli/src/commonMain/kotlin",
-            "cli/src/jvmMain/kotlin",
-            "buildSrc/src/main/kotlin"
+        "api/src/commonMain/kotlin",
+        "api/src/jvmMain/kotlin",
+        "core/src/commonMain/kotlin",
+        "core/src/jvmMain/kotlin",
+        "mvel/src/commonMain/kotlin",
+        "mvel/src/jvmMain/kotlin",
+        "kotlin-dsl/src/main/kotlin",
+        "cli/src/commonMain/kotlin",
+        "cli/src/jvmMain/kotlin",
+        "buildSrc/src/main/kotlin"
     )
     buildUponDefaultConfig = true
     config = files("detekt-config.yml")
@@ -141,16 +147,16 @@ subprojects {
     if (!path.contains("docs")) {
         apply(plugin = "org.jetbrains.dokka")
         val mainManifest: Manifest = DefaultManifest((project as ProjectInternal).fileResolver)
-                .apply {
-                    attributes["Implementation-Title"] = "arara-${project.name}"
-                    attributes["Implementation-Version"] = version
-                    if (project.name == "cli") {
-                        attributes["Main-Class"] = "${project.group}.Arara"
-                    }
-                    // for Java 9+ compatibility of log4j
-                    attributes["Multi-Release"] = "true"
-                    attributes["Automatic-Module-Name"] = rootProject.group
+            .apply {
+                attributes["Implementation-Title"] = "arara-${project.name}"
+                attributes["Implementation-Version"] = version
+                if (project.name == "cli") {
+                    attributes["Main-Class"] = "${project.group}.Arara"
                 }
+                // for Java 9+ compatibility of log4j
+                attributes["Multi-Release"] = "true"
+                attributes["Automatic-Module-Name"] = rootProject.group
+            }
 
         apply(plugin = "org.jetbrains.kotlin.multiplatform")
         configure<KotlinMultiplatformExtension> {
@@ -195,8 +201,10 @@ subprojects {
 
                 testLogging {
                     exceptionFormat = TestExceptionFormat.FULL
-                    events(TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR,
-                            TestLogEvent.SKIPPED, TestLogEvent.PASSED, TestLogEvent.FAILED)
+                    events(
+                        TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR,
+                        TestLogEvent.SKIPPED, TestLogEvent.PASSED, TestLogEvent.FAILED
+                    )
                 }
             }
             withType<Jar> {

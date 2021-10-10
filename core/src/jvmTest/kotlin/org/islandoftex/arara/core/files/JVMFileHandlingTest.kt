@@ -4,12 +4,12 @@ package org.islandoftex.arara.core.files
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.engine.spec.tempfile
 import io.kotest.matchers.shouldBe
-import kotlin.io.path.deleteExisting
-import kotlin.io.path.deleteIfExists
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.islandoftex.arara.api.files.toJVMPath
 import org.islandoftex.arara.api.files.toMPPPath
+import kotlin.io.path.deleteExisting
+import kotlin.io.path.deleteIfExists
 
 class JVMFileHandlingTest : ShouldSpec({
     should("detect changes on file") {

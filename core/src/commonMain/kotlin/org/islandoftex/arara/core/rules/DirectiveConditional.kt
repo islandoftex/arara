@@ -22,8 +22,8 @@ data class DirectiveConditional(
      */
     override fun toString(): String {
         return "{ $type" +
-                if (type != DirectiveConditionalType.NONE)
-                    ", expression: ${condition.trim()}"
-                else "" + " }"
+            if (type != DirectiveConditionalType.NONE)
+                ", expression: ${condition.trim()}"
+            else "" + " }"
     }
 }

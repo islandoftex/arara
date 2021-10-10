@@ -28,15 +28,17 @@ object ConfigurationUtils {
      * try to look up in a global directory, that is, the user home.
      */
     fun configFileForProject(project: Project): MPPPath? {
-        val names = listOf(".araraconfig.yaml",
-                "araraconfig.yaml", ".arararc.yaml", "arararc.yaml")
+        val names = listOf(
+            ".araraconfig.yaml",
+            "araraconfig.yaml", ".arararc.yaml", "arararc.yaml"
+        )
         return project.workingDirectory.let { workingDir ->
             names.map { workingDir / it }.firstOrNull { it.exists }
         } ?: Environment.getSystemPropertyOrNull("user.home")
-                ?.let { userHome ->
-                    names.map { MPPPath(userHome) / it }
-                            .firstOrNull { it.exists }
-                }
+            ?.let { userHome ->
+                names.map { MPPPath(userHome) / it }
+                    .firstOrNull { it.exists }
+            }
     }
 
     /**
@@ -68,14 +70,14 @@ object ConfigurationUtils {
         // then validate it and update the configuration accordingly
         val resource = loadLocalConfiguration(file)
         LinearExecutor.executionOptions = resource.toExecutionOptions(
-                currentProject,
-                LinearExecutor.executionOptions
+            currentProject,
+            LinearExecutor.executionOptions
         )
         Session.loggingOptions = resource.toLoggingOptions(
-                Session.loggingOptions
+            Session.loggingOptions
         )
         Session.userInterfaceOptions = resource.toUserInterfaceOptions(
-                Session.userInterfaceOptions
+            Session.userInterfaceOptions
         )
 
         MvelState.preambles += resource.preambles

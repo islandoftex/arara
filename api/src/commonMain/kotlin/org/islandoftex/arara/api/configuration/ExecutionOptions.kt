@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.configuration
 
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 /**
  * arara's different execution modes. They have to be chosen before a run is

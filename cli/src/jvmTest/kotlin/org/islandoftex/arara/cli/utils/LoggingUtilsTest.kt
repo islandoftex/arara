@@ -12,6 +12,6 @@ class LoggingUtilsTest : ShouldSpec({
         ThreadContext.get("araraLogFile") shouldBe null
         LoggingUtils.setupLogging(defaultEnable)
         ThreadContext.get("araraLogFile") shouldBe defaultEnable.logFile
-                .normalize().toString()
+            .normalize().toString()
     }
 })

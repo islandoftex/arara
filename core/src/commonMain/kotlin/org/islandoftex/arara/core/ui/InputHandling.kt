@@ -23,8 +23,8 @@ object InputHandling {
         val no = listOf("no", "false", "0", "off")
         return if (!yes.union(no).contains(value.lowercase())) {
             throw AraraException(
-                    LanguageController.messages.ERROR_CHECKBOOLEAN_NOT_VALID_BOOLEAN
-                            .formatString(value)
+                LanguageController.messages.ERROR_CHECKBOOLEAN_NOT_VALID_BOOLEAN
+                    .formatString(value)
             )
         } else {
             yes.contains(value.lowercase())

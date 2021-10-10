@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.dsl.language
 
-import java.nio.file.Path
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.api.rules.Rule
@@ -10,6 +9,7 @@ import org.islandoftex.arara.api.rules.RuleCommand
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
+import java.nio.file.Path
 
 /**
  * A rule model class to capture DSL methods within.
@@ -25,9 +25,11 @@ class DSLRule(
     /**
      * The currently collected arguments.
      */
-    @Deprecated("This should not be used to fetch the arguments and " +
+    @Deprecated(
+        "This should not be used to fetch the arguments and " +
             "will be removed as soon as we found a way to remove the " +
-            "inline/reified classification of argument.")
+            "inline/reified classification of argument."
+    )
     val ruleArguments = mutableListOf<RuleArgument<*>>()
 
     /**
@@ -53,17 +55,19 @@ class DSLRule(
         vararg parameters: String?,
         workingDirectory: Path? = null
     ): Command = org.islandoftex.arara.core.session.Command(
-            listOf(command)
-                    .plus(parameters.filterNotNull().filterNot { it.isBlank() }),
-            workingDirectory?.toMPPPath()
+        listOf(command)
+            .plus(parameters.filterNotNull().filterNot { it.isBlank() }),
+        workingDirectory?.toMPPPath()
     ).also {
-        commands.add(org.islandoftex.arara.dsl.rules.RuleCommand(command) {
-            Environment.executeSystemCommand(
+        commands.add(
+            org.islandoftex.arara.dsl.rules.RuleCommand(command) {
+                Environment.executeSystemCommand(
                     it,
                     !LinearExecutor.executionOptions.verbose,
                     LinearExecutor.executionOptions.timeoutValue
-            ).first
-        })
+                ).first
+            }
+        )
     }
 
     /**
@@ -95,10 +99,12 @@ class DSLRule(
         configure: DSLRuleArgument<T>.() -> Unit
     ): RuleArgument<T> {
         if (identifier in arguments)
-            throw AraraException("Two rule arguments can't have the same " +
-                    "identifier.")
+            throw AraraException(
+                "Two rule arguments can't have the same " +
+                    "identifier."
+            )
         return DSLRuleArgument<T>(identifier).apply(configure)
-                .toRuleArgument().also { ruleArguments.add(it) }
+            .toRuleArgument().also { ruleArguments.add(it) }
     }
 
     /**
@@ -110,7 +116,7 @@ class DSLRule(
      */
     @JvmName("nullableStringArgument")
     fun argument(identifier: String, configure: DSLRuleArgument<String?>.() -> Unit) =
-            argument<String?>(identifier, configure)
+        argument<String?>(identifier, configure)
 
     /**
      * Turn this DSL object into arara's core object.
@@ -118,10 +124,10 @@ class DSLRule(
      * @return A [Rule] resembling the user's configuration.
      */
     internal fun toRule(): Rule = org.islandoftex.arara.dsl.rules.Rule(
-            identifier = id,
-            displayName = label ?: description,
-            authors = authors,
-            commands = commands,
-            arguments = ruleArguments
+        identifier = id,
+        displayName = label ?: description,
+        authors = authors,
+        commands = commands,
+        arguments = ruleArguments
     )
 }

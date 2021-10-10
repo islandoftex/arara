@@ -54,13 +54,13 @@ object FileSearching {
             else
                 list()
         }.getOrDefault(
-                // if something bad happens,
-                // gracefully fallback to
-                // an empty file list
-                emptyFlow()
+            // if something bad happens,
+            // gracefully fallback to
+            // an empty file list
+            emptyFlow()
         ).filter {
             !it.isDirectory() &&
-                    extensions.contains(it.extension)
+                extensions.contains(it.extension)
         }.map {
             MPPPath(it.absolutePath).normalize()
         }.toList()
@@ -92,13 +92,13 @@ object FileSearching {
             else
                 list()
         }.getOrDefault(
-                // if something bad happens,
-                // gracefully fallback to
-                // an empty file list
-                emptyFlow()
+            // if something bad happens,
+            // gracefully fallback to
+            // an empty file list
+            emptyFlow()
         ).filter { file ->
             !file.isDirectory() &&
-                    regexes.any { it.matches(file.baseName) }
+                regexes.any { it.matches(file.baseName) }
         }.map {
             MPPPath(it.absolutePath).normalize()
         }.toList()
@@ -118,15 +118,15 @@ object FileSearching {
         workingDirectory: MPPPath,
         executionOptions: ExecutionOptions
     ): ProjectFile =
-            lookupFile(reference, workingDirectory, executionOptions)
-                    ?: throw AraraException(
-                            LanguageController.messages.ERROR_DISCOVERFILE_FILE_NOT_FOUND
-                                    .formatString(
-                                            reference,
-                                            executionOptions.fileTypes
-                                                    .joinToString(" | ", "[ ", " ]")
-                                    )
+        lookupFile(reference, workingDirectory, executionOptions)
+            ?: throw AraraException(
+                LanguageController.messages.ERROR_DISCOVERFILE_FILE_NOT_FOUND
+                    .formatString(
+                        reference,
+                        executionOptions.fileTypes
+                            .joinToString(" | ", "[ ", " ]")
                     )
+            )
 
     /**
      * Performs a file lookup based on a string reference.
@@ -154,9 +154,9 @@ object FileSearching {
                 }?.let {
                     val extension = reference.substringAfterLast('.')
                     ProjectFile(
-                            path = testFile,
-                            fileType = types.firstOrNull { extension == it.extension }
-                                    ?: FileType.UNKNOWN_TYPE
+                        path = testFile,
+                        fileType = types.firstOrNull { extension == it.extension }
+                            ?: FileType.UNKNOWN_TYPE
                     )
                 }
             }
@@ -164,7 +164,7 @@ object FileSearching {
             executionOptions.executionMode == ExecutionMode.SAFE_RUN -> {
                 logger.info {
                     "Skipping indirect file search with extension " +
-                            "completion due to safe mode restrictions."
+                        "completion due to safe mode restrictions."
                 }
                 null
             }
@@ -174,19 +174,21 @@ object FileSearching {
             else -> {
                 val name = testFile.fileName
                 types.map { testFile.parent / "$name.${it.extension}" }
-                        .union(types.map {
+                    .union(
+                        types.map {
                             testFile.parent /
-                                    "${name.removeSuffix(".").trim()}.${it.extension}"
-                        })
-                        .firstOrNull { it.exists && it.isRegularFile }
-                        ?.let { found ->
-                            val extension = found.toString().substringAfterLast('.')
-                            ProjectFile(
-                                    found,
-                                    types.firstOrNull { extension == it.extension }
-                                            ?: FileType.UNKNOWN_TYPE
-                            )
+                                "${name.removeSuffix(".").trim()}.${it.extension}"
                         }
+                    )
+                    .firstOrNull { it.exists && it.isRegularFile }
+                    ?.let { found ->
+                        val extension = found.toString().substringAfterLast('.')
+                        ProjectFile(
+                            found,
+                            types.firstOrNull { extension == it.extension }
+                                ?: FileType.UNKNOWN_TYPE
+                        )
+                    }
             }
         }
     }

@@ -14,8 +14,10 @@ open class TDSTreeBuilderTask : DefaultTask() {
         description = "Create a TDS compliant directory tree."
 
         // depend on shadow Jar input
-        inputs.files(project.fileTree("cli/build/libs/")
-                .include("*-with-deps*.jar"))
+        inputs.files(
+            project.fileTree("cli/build/libs/")
+                .include("*-with-deps*.jar")
+        )
         // depend on source zip as required by CTAN
         inputs.file(project.buildDir.resolve("arara-${project.version}-src.zip"))
         // depend on documentation (it should be compiled)
@@ -68,9 +70,11 @@ open class TDSTreeBuilderTask : DefaultTask() {
         temporaryDir.resolve("doc/man/man1").mkdirs()
 
         logger.debug("Creating the man page")
-        TaskHelper.createManPage(temporaryDir
+        TaskHelper.createManPage(
+            temporaryDir
                 .resolve("doc/man/man1/${project.name}.1").toPath(),
-                project.version.toString())
+            project.version.toString()
+        )
 
         logger.info("Building the scripts directory")
 

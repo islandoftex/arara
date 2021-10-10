@@ -50,48 +50,54 @@ data class LocalConfiguration(
         baseOptions: ExecutionOptions = org.islandoftex.arara.core.configuration.ExecutionOptions()
     ): ExecutionOptions {
         val preprocessedPaths = paths.asSequence()
-                .map { it.trim() }
-                .map { input ->
-                    input.replace("@{user.home}",
-                            Environment.getSystemPropertyOrNull("user.home") ?: "")
-                            .replace("@{user.name}",
-                                    Environment.getSystemPropertyOrNull("user.name") ?: "")
-                            .replace("@{application.workingDirectory}",
-                                    currentProject.workingDirectory.normalize().toString())
-                }
-                .map { MPPPath(it) }
-                .map { path ->
-                    if (path.isAbsolute)
-                        path
-                    else
-                        currentProject.workingDirectory / path
-                }
-                .map { it.normalize() }
-                .toSet()
+            .map { it.trim() }
+            .map { input ->
+                input.replace(
+                    "@{user.home}",
+                    Environment.getSystemPropertyOrNull("user.home") ?: ""
+                )
+                    .replace(
+                        "@{user.name}",
+                        Environment.getSystemPropertyOrNull("user.name") ?: ""
+                    )
+                    .replace(
+                        "@{application.workingDirectory}",
+                        currentProject.workingDirectory.normalize().toString()
+                    )
+            }
+            .map { MPPPath(it) }
+            .map { path ->
+                if (path.isAbsolute)
+                    path
+                else
+                    currentProject.workingDirectory / path
+            }
+            .map { it.normalize() }
+            .toSet()
         val databaseName = dbname?.let { MPPPath(MPPPath(it.trim()).fileName) }
-                ?: baseOptions.databaseName
+            ?: baseOptions.databaseName
         val maxLoops = loops?.let {
             if (loops > 0) {
                 loops
             } else {
                 throw AraraException(
-                        LanguageController.messages.ERROR_CONFIGURATION_LOOPS_INVALID_RANGE
+                    LanguageController.messages.ERROR_CONFIGURATION_LOOPS_INVALID_RANGE
                 )
             }
         } ?: baseOptions.maxLoops
 
         return org.islandoftex.arara.core.configuration.ExecutionOptions
-                .from(baseOptions)
-                .copy(
-                        maxLoops = maxLoops,
-                        verbose = verbose ?: baseOptions.verbose,
-                        databaseName = databaseName,
-                        fileTypes = filetypes.map { it.toFileType() }
-                                .plus(baseOptions.fileTypes),
-                        rulePaths = preprocessedPaths
-                                .plus(baseOptions.rulePaths),
-                        parseOnlyHeader = header ?: baseOptions.parseOnlyHeader
-                )
+            .from(baseOptions)
+            .copy(
+                maxLoops = maxLoops,
+                verbose = verbose ?: baseOptions.verbose,
+                databaseName = databaseName,
+                fileTypes = filetypes.map { it.toFileType() }
+                    .plus(baseOptions.fileTypes),
+                rulePaths = preprocessedPaths
+                    .plus(baseOptions.rulePaths),
+                parseOnlyHeader = header ?: baseOptions.parseOnlyHeader
+            )
     }
 
     /**
@@ -105,10 +111,10 @@ data class LocalConfiguration(
         baseOptions: LoggingOptions = org.islandoftex.arara.core.configuration.LoggingOptions()
     ): LoggingOptions {
         val logName = logname?.let { MPPPath(it) }
-                ?: baseOptions.logFile
+            ?: baseOptions.logFile
         return org.islandoftex.arara.core.configuration.LoggingOptions(
-                enableLogging = logging ?: baseOptions.enableLogging,
-                logFile = logName
+            enableLogging = logging ?: baseOptions.enableLogging,
+            logFile = logName
         )
     }
 
@@ -123,9 +129,9 @@ data class LocalConfiguration(
         baseOptions: UserInterfaceOptions = org.islandoftex.arara.core.configuration.UserInterfaceOptions()
     ): UserInterfaceOptions {
         return org.islandoftex.arara.core.configuration.UserInterfaceOptions(
-                locale = language?.let { MPPLocale(it) }
-                        ?: baseOptions.locale,
-                swingLookAndFeel = laf ?: baseOptions.swingLookAndFeel
+            locale = language?.let { MPPLocale(it) }
+                ?: baseOptions.locale,
+            swingLookAndFeel = laf ?: baseOptions.swingLookAndFeel
         )
     }
 
@@ -140,16 +146,16 @@ data class LocalConfiguration(
          */
         @Throws(AraraException::class)
         fun load(file: MPPPath): LocalConfiguration =
-                file.runCatching {
-                    val text = file.readText()
-                    if (!text.startsWith("!config"))
-                        throw AraraException("Configuration should start with !config")
-                    Yaml.default.decodeFromString(serializer(), text)
-                }.getOrElse {
-                    throw AraraException(
-                            LanguageController.messages.ERROR_CONFIGURATION_GENERIC_ERROR,
-                            it
-                    )
-                }
+            file.runCatching {
+                val text = file.readText()
+                if (!text.startsWith("!config"))
+                    throw AraraException("Configuration should start with !config")
+                Yaml.default.decodeFromString(serializer(), text)
+            }.getOrElse {
+                throw AraraException(
+                    LanguageController.messages.ERROR_CONFIGURATION_GENERIC_ERROR,
+                    it
+                )
+            }
     }
 }

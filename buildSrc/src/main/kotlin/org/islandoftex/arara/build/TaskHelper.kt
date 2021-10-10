@@ -19,7 +19,9 @@ object TaskHelper {
     @Throws(IOException::class)
     fun createScript(file: Path) {
         try {
-            Files.write(file, """
+            Files.write(
+                file,
+                """
                 #!/bin/sh
                 # Public domain. Originally written by Norbert Preining and Karl Berry, 2018.
                 # Note from Paulo: this script provides better Cygwin support than our original
@@ -37,12 +39,15 @@ object TaskHelper {
                 fi
 
                 exec java -jar "${'$'}jarpath" "${'$'}@"
-            """.trimIndent().lines())
+                """.trimIndent().lines()
+            )
         } catch (_: IOException) {
-            throw IOException("I could not create the shell script for " +
+            throw IOException(
+                "I could not create the shell script for " +
                     "arara due to an IO error. Please make sure the " +
                     "current directory has the correct permissions " +
-                    "and try again. The application will halt now.")
+                    "and try again. The application will halt now."
+            )
         }
     }
 
@@ -56,7 +61,9 @@ object TaskHelper {
     fun createManPage(file: Path, version: String) {
         val today = LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))
         try {
-            Files.write(file, """
+            Files.write(
+                file,
+                """
                 .TH ARARA 1 "$today" "v$version"
                 .SH NAME
                 arara \- a TeX automation tool based on rules and directives.
@@ -104,12 +111,15 @@ object TaskHelper {
                 Issue tracker at
                 .UR https://gitlab.com/islandoftex/arara/-/issues
                 .UE .
-            """.trimIndent().lines())
+                """.trimIndent().lines()
+            )
         } catch (_: IOException) {
-            throw IOException("I could not create the man page for " +
+            throw IOException(
+                "I could not create the man page for " +
                     "arara due to an IO error. Please make sure the " +
                     "current directory has the correct permissions " +
-                    "and try again. The application will halt now.")
+                    "and try again. The application will halt now."
+            )
         }
     }
 }

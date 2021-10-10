@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
-import kotlin.time.TimeSource
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.files.Project
@@ -9,6 +8,7 @@ import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.session.ExecutionReport
 import org.islandoftex.arara.api.session.Executor
 import org.islandoftex.arara.core.dependencies.ProjectGraph
+import kotlin.time.TimeSource
 
 object LinearExecutor : Executor {
     /**
@@ -39,14 +39,18 @@ object LinearExecutor : Executor {
     override var executionOptions: ExecutionOptions =
         org.islandoftex.arara.core.configuration.ExecutionOptions()
         set(value) {
-            if (currentFile != null)
-                throw AraraException("Cannot change execution options while " +
-                        "executing the file ${currentFile?.path}.")
-            if (value.parallelExecution)
-                throw AraraException("This executor does not support " +
-                        "parallel execution.")
-            field = value
-        }
+                if (currentFile != null)
+                    throw AraraException(
+                        "Cannot change execution options while " +
+                            "executing the file ${currentFile?.path}."
+                    )
+                if (value.parallelExecution)
+                    throw AraraException(
+                        "This executor does not support " +
+                            "parallel execution."
+                    )
+                field = value
+            }
 
     /**
      * Execute rules based on the projects. Should roughly implement the
@@ -102,8 +106,8 @@ object LinearExecutor : Executor {
         currentFile = file
         val executionStarted = TimeSource.Monotonic.markNow()
         val directives = hooks.processDirectives(
-                file,
-                file.fetchDirectives(executionOptions.parseOnlyHeader)
+            file,
+            file.fetchDirectives(executionOptions.parseOnlyHeader)
         )
         var exitCode = 0
         for (directive in directives) {
@@ -114,7 +118,7 @@ object LinearExecutor : Executor {
         }
         currentFile = null
         return ExecutionReport(
-                executionStarted, TimeSource.Monotonic.markNow(), exitCode
+            executionStarted, TimeSource.Monotonic.markNow(), exitCode
         )
     }
 }

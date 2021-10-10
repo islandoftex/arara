@@ -26,7 +26,7 @@ object ConditionalMethods {
     @JvmStatic
     @Throws(AraraException::class)
     fun exists(extension: String): Boolean = FileHandling.changeExtension(
-            LinearExecutor.currentFile!!.path, extension
+        LinearExecutor.currentFile!!.path, extension
     ).exists
 
     /**
@@ -52,9 +52,9 @@ object ConditionalMethods {
     @JvmStatic
     @Throws(AraraException::class)
     fun changed(extension: String): Boolean = changed(
-            FileHandling.changeExtension(
-                    LinearExecutor.currentFile!!.path, extension
-            )
+        FileHandling.changeExtension(
+            LinearExecutor.currentFile!!.path, extension
+        )
     )
 
     /**
@@ -98,9 +98,9 @@ object ConditionalMethods {
     @JvmStatic
     @Throws(AraraException::class)
     fun changed(filename: MPPPath): Boolean = FileHandling.hasChanged(
-            filename,
-            LinearExecutor.currentProject!!.workingDirectory /
-                    LinearExecutor.executionOptions.databaseName
+        filename,
+        LinearExecutor.currentProject!!.workingDirectory /
+            LinearExecutor.executionOptions.databaseName
     )
 
     /**
@@ -127,10 +127,10 @@ object ConditionalMethods {
     @JvmStatic
     @Throws(AraraException::class)
     fun found(extension: String, regex: String): Boolean = found(
-            FileHandling.changeExtension(
-                    LinearExecutor.currentFile!!.path, extension
-            ),
-            regex
+        FileHandling.changeExtension(
+            LinearExecutor.currentFile!!.path, extension
+        ),
+        regex
     )
 
     /**
@@ -145,7 +145,7 @@ object ConditionalMethods {
     @JvmStatic
     @Throws(AraraException::class)
     fun found(file: MPPPath, regex: String): Boolean =
-            MethodUtils.checkRegex(file, regex)
+        MethodUtils.checkRegex(file, regex)
 
     /**
      * Returns a file object based on the provided name.

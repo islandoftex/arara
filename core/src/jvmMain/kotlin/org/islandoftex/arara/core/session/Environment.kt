@@ -7,10 +7,6 @@ import com.soywiz.korio.file.baseName
 import com.soywiz.korio.file.std.localVfs
 import com.soywiz.korio.lang.Environment
 import com.soywiz.korio.util.OS
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.util.concurrent.TimeUnit
-import kotlin.time.Duration
 import kotlinx.coroutines.awaitAll
 import mu.KotlinLogging
 import org.islandoftex.arara.api.AraraException
@@ -20,6 +16,10 @@ import org.islandoftex.arara.api.session.Command
 import org.zeroturnaround.exec.ProcessExecutor
 import org.zeroturnaround.exec.listener.ShutdownHookProcessDestroyer
 import org.zeroturnaround.exec.stream.TeeOutputStream
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.util.concurrent.TimeUnit
+import kotlin.time.Duration
 
 /**
  * An object to handle interaction with the operating system.
@@ -38,9 +38,9 @@ object Environment {
      */
     @JvmStatic
     fun getSystemProperty(key: String, fallback: String): String =
-            System.getProperties().runCatching {
-                getOrDefault(key, fallback).toString().takeIf { it != "" }
-            }.getOrNull() ?: fallback
+        System.getProperties().runCatching {
+            getOrDefault(key, fallback).toString().takeIf { it != "" }
+        }.getOrNull() ?: fallback
 
     /**
      * Access a system property.
@@ -51,8 +51,8 @@ object Environment {
      */
     @JvmStatic
     fun getSystemPropertyOrNull(key: String): String? =
-            System.getProperties().runCatching { getValue(key).toString() }
-                    .getOrNull()
+        System.getProperties().runCatching { getValue(key).toString() }
+            .getOrNull()
 
     /**
      * Determine whether arara is executed in a Cygwin environment (lazily to
@@ -63,9 +63,9 @@ object Environment {
      */
     private val inCygwinEnvironment by lazy {
         executeSystemCommand(
-                // execute the Cygwin detection; we do not specify a working
-                // directory because for the test it is irrelevant
-                Command(listOf("uname", "-s"))
+            // execute the Cygwin detection; we do not specify a working
+            // directory because for the test it is irrelevant
+            Command(listOf("uname", "-s"))
         ).second.lowercase().startsWith("cygwin")
     }
 
@@ -102,13 +102,13 @@ object Environment {
     @JvmStatic
     @Throws(AraraException::class)
     fun checkOS(value: SupportedOS): Boolean =
-            when (value) {
-                SupportedOS.WINDOWS -> OS.isWindows
-                SupportedOS.LINUX -> OS.isLinux
-                SupportedOS.MACOS -> OS.isMac
-                SupportedOS.UNIX -> OS.isMac || OS.isLinux
-                SupportedOS.CYGWIN -> inCygwinEnvironment
-            }
+        when (value) {
+            SupportedOS.WINDOWS -> OS.isWindows
+            SupportedOS.LINUX -> OS.isLinux
+            SupportedOS.MACOS -> OS.isMac
+            SupportedOS.UNIX -> OS.isMac || OS.isLinux
+            SupportedOS.CYGWIN -> inCygwinEnvironment
+        }
 
     /**
      * Generates a list of filenames from the provided command based on a list
@@ -161,19 +161,19 @@ object Environment {
                 // break the path into several parts
                 // based on the path separator symbol
                 (Environment["PATH"] ?: Environment["Path"])
-                        ?.split(File.pathSeparator)
-                        ?.map { async { localVfs(it).listSimple() } }
-                        ?.awaitAll()
-                        // if the search does not return an empty
-                        // list, one of the filenames got a match,
-                        // and the command is available somewhere
-                        // in the system path
-                        ?.firstOrNull {
-                            it.any { file ->
-                                filenames.contains(file.baseName) &&
-                                        !file.isDirectory()
-                            }
-                        }?.let { true }
+                    ?.split(File.pathSeparator)
+                    ?.map { async { localVfs(it).listSimple() } }
+                    ?.awaitAll()
+                    // if the search does not return an empty
+                    // list, one of the filenames got a match,
+                    // and the command is available somewhere
+                    // in the system path
+                    ?.firstOrNull {
+                        it.any { file ->
+                            filenames.contains(file.baseName) &&
+                                !file.isDirectory()
+                        }
+                    }?.let { true }
             }
         }.getOrNull() ?: false
         // otherwise (and in case of an exception) it is not in the path
@@ -212,7 +212,7 @@ object Environment {
             // directory; although it may be missing in which case we will use
             // arara's execution directory by default
             val workingDirectory = command.workingDirectory
-                    ?: MPPPath(".")
+                ?: MPPPath(".")
             directory(workingDirectory.toJVMFile())
 
             // implement output redirection if necessary for verbose
@@ -234,7 +234,7 @@ object Environment {
         }.getOrElse {
             logger.debug {
                 "Caught an exception when executing " +
-                        "$command returning $errorExitStatus"
+                    "$command returning $errorExitStatus"
             }
             errorExitStatus to "${it::class.java.name}: ${it.message}"
         }

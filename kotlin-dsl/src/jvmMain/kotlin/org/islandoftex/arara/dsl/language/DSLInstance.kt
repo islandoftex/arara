@@ -30,9 +30,9 @@ object DSLInstance {
      * @return The configured project.
      */
     fun project(name: String, configure: DSLProject.() -> Unit): Project =
-            DSLProject(name).apply(configure).toProject().also {
-                projects.add(it)
-            }
+        DSLProject(name).apply(configure).toProject().also {
+            projects.add(it)
+        }
 
     /**
      * The DSL's way to specify a rule.
@@ -51,5 +51,5 @@ object DSLInstance {
         authors: List<String> = listOf(),
         configure: DSLRule.() -> Unit
     ): Rule = DSLRule(id, label, description, authors)
-            .apply(configure).toRule().also { rules.add(it) }
+        .apply(configure).toRule().also { rules.add(it) }
 }

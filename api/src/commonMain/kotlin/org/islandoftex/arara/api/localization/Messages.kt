@@ -3,9 +3,11 @@ package org.islandoftex.arara.api.localization
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.BINARY)
-@RequiresOptIn("arara's messages are not considered stable API. Only " +
+@RequiresOptIn(
+    "arara's messages are not considered stable API. Only " +
         "use them in testing scenarios and arara's core projects.",
-        RequiresOptIn.Level.WARNING)
+    RequiresOptIn.Level.WARNING
+)
 internal annotation class AraraMessages
 
 // TODO: translate for v7:

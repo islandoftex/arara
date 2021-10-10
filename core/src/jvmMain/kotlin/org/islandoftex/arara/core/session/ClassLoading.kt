@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
+import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.toJVMFile
 import java.lang.reflect.InvocationTargetException
 import java.net.MalformedURLException
 import java.net.URLClassLoader
-import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.api.files.toJVMFile
 
 /**
  * Implements utilitary methods for classloading and object instantiation.
@@ -35,7 +35,7 @@ object ClassLoading {
      */
     @JvmStatic
     fun loadClass(path: MPPPath, name: String):
-            Pair<ClassLoadingStatus, Class<*>> {
+        Pair<ClassLoadingStatus, Class<*>> {
         val file = path.toJVMFile()
 
         // status and class to be returned,
@@ -55,8 +55,10 @@ object ClassLoading {
                 // creates a new classloader with
                 // the provided file (potentially
                 // a JAR file)
-                val classloader = URLClassLoader(arrayOf(file.toURI().toURL()),
-                        ClassLoading::class.java.classLoader)
+                val classloader = URLClassLoader(
+                    arrayOf(file.toURI().toURL()),
+                    ClassLoading::class.java.classLoader
+                )
 
                 // fetches the class from the
                 // instantiated classloader

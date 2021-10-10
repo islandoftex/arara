@@ -50,14 +50,14 @@ open class ProjectFile(
     override fun fetchDirectives(parseOnlyHeader: Boolean): List<Directive> =
         try {
             Directives.extractDirectives(
-                    path.readLines(),
-                    LinearExecutor.executionOptions.parseOnlyHeader,
-                    fileType
+                path.readLines(),
+                LinearExecutor.executionOptions.parseOnlyHeader,
+                fileType
             )
         } catch (ioexception: AraraIOException) {
             throw AraraException(
-                    LanguageController.messages.ERROR_EXTRACTOR_IO_ERROR,
-                    ioexception
+                LanguageController.messages.ERROR_EXTRACTOR_IO_ERROR,
+                ioexception
             )
         }
 

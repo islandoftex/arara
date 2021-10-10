@@ -39,6 +39,6 @@ object RuleMethods {
     @JvmStatic
     val originalReference: MPPPath
         get() = LinearExecutor.currentProject!!.files
-                .maxByOrNull { it.priority }!!
-                .path
+            .maxByOrNull { it.priority }!!
+            .path
 }

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.dsl.scripting
 
+import org.islandoftex.arara.core.session.Environment
+import org.islandoftex.arara.dsl.language.DSLInstance
 import java.io.File
 import java.net.JarURLConnection
 import java.net.URL
@@ -20,8 +22,6 @@ import kotlin.script.experimental.jvm.dependenciesFromClassContext
 import kotlin.script.experimental.jvm.dependenciesFromCurrentContext
 import kotlin.script.experimental.jvm.jvm
 import kotlin.script.experimental.jvmhost.CompiledScriptJarsCache
-import org.islandoftex.arara.core.session.Environment
-import org.islandoftex.arara.dsl.language.DSLInstance
 
 /**
  * The compiler configurationfor arara's configuration scripts.
@@ -34,39 +34,41 @@ class AraraScriptCompilationConfiguration : ScriptCompilationConfiguration({
     implicitReceivers(RuleMethods::class, DSLInstance::class)
     jvm {
         val keyResource = AraraScriptCompilationConfiguration::class.java
-                .name.replace('.', '/') + ".class"
+            .name.replace('.', '/') + ".class"
         val thisJarFile = AraraScriptCompilationConfiguration::class.java
-                .classLoader.getResource(keyResource)?.toContainingJarOrNull()
+            .classLoader.getResource(keyResource)?.toContainingJarOrNull()
         if (thisJarFile != null) {
             dependenciesFromCurrentContext(thisJarFile.name, wholeClasspath = true)
         } else {
             dependenciesFromClassContext(
-                    AraraScriptCompilationConfiguration::class,
-                    wholeClasspath = true
+                AraraScriptCompilationConfiguration::class,
+                wholeClasspath = true
             )
         }
     }
     ide {
         acceptedLocations(ScriptAcceptedLocation.Everywhere)
     }
-    hostConfiguration(ScriptingHostConfiguration {
-        jvm {
-            Environment.getSystemPropertyOrNull("java.io.tmpdir")
+    hostConfiguration(
+        ScriptingHostConfiguration {
+            jvm {
+                Environment.getSystemPropertyOrNull("java.io.tmpdir")
                     ?.let(::File)
                     ?.takeIf { it.exists() && it.isDirectory }
                     ?.let {
                         File(it, "org.islandoftex.arara.kts.cache")
-                                .apply { mkdir() }
+                            .apply { mkdir() }
                     }
                     ?.let {
                         compilationCache(
-                                CompiledScriptJarsCache { script, compilationConfiguration ->
-                                    it.resolve(compiledScriptUniqueName(script, compilationConfiguration) + ".jar")
-                                }
+                            CompiledScriptJarsCache { script, compilationConfiguration ->
+                                it.resolve(compiledScriptUniqueName(script, compilationConfiguration) + ".jar")
+                            }
                         )
                     }
+            }
         }
-    })
+    )
 })
 
 class AraraScriptEvaluationConfiguration : ScriptEvaluationConfiguration({
@@ -80,29 +82,29 @@ private fun compiledScriptUniqueName(
     val digestWrapper = MessageDigest.getInstance("MD5")
     digestWrapper.update(script.text.toByteArray())
     scriptCompilationConfiguration.notTransientData.entries
-            .sortedBy { it.key.name }
-            .forEach {
-                digestWrapper.update(it.key.name.toByteArray())
-                digestWrapper.update(it.value.toString().toByteArray())
-            }
+        .sortedBy { it.key.name }
+        .forEach {
+            digestWrapper.update(it.key.name.toByteArray())
+            digestWrapper.update(it.value.toString().toByteArray())
+        }
     return digestWrapper.digest().toHexString()
 }
 
 private fun ByteArray.toHexString(): String = joinToString("", transform = { "%02x".format(it) })
 
 internal fun URL.toContainingJarOrNull(): File? =
-        if (protocol == "jar") {
-            (openConnection() as? JarURLConnection)?.jarFileURL?.toFileOrNull()
-        } else null
+    if (protocol == "jar") {
+        (openConnection() as? JarURLConnection)?.jarFileURL?.toFileOrNull()
+    } else null
 
 internal fun URL.toFileOrNull() =
-        try {
-            File(toURI())
-        } catch (e: IllegalArgumentException) {
-            null
-        } catch (e: java.net.URISyntaxException) {
-            null
-        } ?: run {
-            if (protocol != "file") null
-            else File(file)
-        }
+    try {
+        File(toURI())
+    } catch (e: IllegalArgumentException) {
+        null
+    } catch (e: java.net.URISyntaxException) {
+        null
+    } ?: run {
+        if (protocol != "file") null
+        else File(file)
+    }

@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.session
 
-import kotlin.time.ExperimentalTime
 import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
+import kotlin.time.ExperimentalTime
 
 /**
  * An [Executor] is arara's core and performs the execution of directive

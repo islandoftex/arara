@@ -59,7 +59,7 @@ tasks {
         if (JavaVersion.current() > JavaVersion.VERSION_1_8) {
             doFirst {
                 jvmArgs = listOf(
-                        "--module-path", classpath.asPath
+                    "--module-path", classpath.asPath
                 )
             }
         }

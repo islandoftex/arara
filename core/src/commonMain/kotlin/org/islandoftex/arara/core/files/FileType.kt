@@ -15,8 +15,8 @@ data class FileType(
             pattern.toRegex()
         } catch (e: IllegalArgumentException) {
             throw AraraException(
-                    "The pattern you wanted to choose for this file type is invalid.",
-                    e
+                "The pattern you wanted to choose for this file type is invalid.",
+                e
             )
         }
     }

@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.dsl.files
 
-import java.nio.file.Path
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.core.files.ProjectFile
 import org.islandoftex.arara.core.rules.Directives
+import java.nio.file.Path
 
 /**
  * Implementation of a project file with the option to specify directives

@@ -2,7 +2,6 @@
 package org.islandoftex.arara.core.rules
 
 import com.soywiz.korio.util.endExclusive
-import kotlin.jvm.JvmStatic
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
@@ -10,6 +9,7 @@ import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.utils.formatString
+import kotlin.jvm.JvmStatic
 
 /**
  * Implements directive auxiliary methods.
@@ -81,7 +81,7 @@ object Directives {
         fileType: FileType
     ): List<Directive> {
         val pairs = getPotentialDirectiveLines(lines, parseOnlyHeader, fileType.pattern)
-                .takeIf { it.isNotEmpty() } ?: return emptyList()
+            .takeIf { it.isNotEmpty() } ?: return emptyList()
 
         val assemblers = mutableListOf<DirectiveAssembler>()
         var assembler = DirectiveAssembler()
@@ -89,9 +89,11 @@ object Directives {
             val linebreakMatch = linebreakPattern.find(content)
             if (linebreakMatch != null) {
                 if (!assembler.isAppendAllowed) {
-                    throw AraraException(LanguageController
+                    throw AraraException(
+                        LanguageController
                             .messages.ERROR_VALIDATE_ORPHAN_LINEBREAK
-                            .formatString(lineno.toString()))
+                            .formatString(lineno.toString())
+                    )
                 } else {
                     assembler.addLineNumber(lineno)
                     assembler.appendLine(linebreakMatch.groupValues[1])
@@ -123,30 +125,32 @@ object Directives {
     @Throws(AraraException::class)
     @Suppress("MagicNumber")
     internal fun generateDirective(assembler: DirectiveAssembler): Directive =
-            directivePattern.find(assembler.text)?.let { match ->
-                // NOTE: in match.groupValues all capture group have a string value;
-                //       if the group was optional and empty, there's an empty
-                //       string indicating this behavior
-                hooks.buildDirectiveRaw(
-                        // identifier
-                        match.groupValues[1],
-                        // parameters
-                        match.groupValues[3].takeIf { it.isNotEmpty() },
-                        // conditional
-                        DirectiveConditional(
-                                type = match.groupValues[5]
-                                        .takeIf { it.isNotEmpty() }
-                                        .toDirectiveConditional(),
-                                condition = match.groupValues[6]
-                        ),
-                        // line numbers
-                        assembler.getLineNumbers()
-                )
-            } ?: throw AraraException(
-                    LanguageController.messages.ERROR_VALIDATE_INVALID_DIRECTIVE_FORMAT
-                            .formatString(assembler.getLineNumbers()
-                                    .joinToString(", ", "(", ")"))
+        directivePattern.find(assembler.text)?.let { match ->
+            // NOTE: in match.groupValues all capture group have a string value;
+            //       if the group was optional and empty, there's an empty
+            //       string indicating this behavior
+            hooks.buildDirectiveRaw(
+                // identifier
+                match.groupValues[1],
+                // parameters
+                match.groupValues[3].takeIf { it.isNotEmpty() },
+                // conditional
+                DirectiveConditional(
+                    type = match.groupValues[5]
+                        .takeIf { it.isNotEmpty() }
+                        .toDirectiveConditional(),
+                    condition = match.groupValues[6]
+                ),
+                // line numbers
+                assembler.getLineNumbers()
             )
+        } ?: throw AraraException(
+            LanguageController.messages.ERROR_VALIDATE_INVALID_DIRECTIVE_FORMAT
+                .formatString(
+                    assembler.getLineNumbers()
+                        .joinToString(", ", "(", ")")
+                )
+        )
 
     /**
      * Replicate a directive for given files.
@@ -168,32 +172,36 @@ object Directives {
         return if (holder is List<*>) {
             // we received a file list, so we map that list to files
             holder.filterIsInstance<Any>()
-                    .asSequence()
-                    .map { MPPPath(it.toString()).normalize() }
-                    // and because we want directives, we replicate our
-                    // directive to be applied to that file
-                    .map { reference ->
-                        hooks.buildDirective(
-                                directive.identifier,
-                                parameters.plus("reference" to reference),
-                                directive.conditional,
-                                directive.lineNumbers
-                        )
-                    }
-                    .toList()
-                    // we take the result if and only if we have at least one
-                    // file and we did not filter out any invalid argument
-                    .takeIf { it.isNotEmpty() && holder.size == it.size }
-                    ?: throw AraraException(
-                            LanguageController.messages.ERROR_VALIDATE_EMPTY_FILES_LIST
-                                    .formatString(directive.lineNumbers
-                                            .joinToString(", ", "(", ")"))
+                .asSequence()
+                .map { MPPPath(it.toString()).normalize() }
+                // and because we want directives, we replicate our
+                // directive to be applied to that file
+                .map { reference ->
+                    hooks.buildDirective(
+                        directive.identifier,
+                        parameters.plus("reference" to reference),
+                        directive.conditional,
+                        directive.lineNumbers
                     )
+                }
+                .toList()
+                // we take the result if and only if we have at least one
+                // file and we did not filter out any invalid argument
+                .takeIf { it.isNotEmpty() && holder.size == it.size }
+                ?: throw AraraException(
+                    LanguageController.messages.ERROR_VALIDATE_EMPTY_FILES_LIST
+                        .formatString(
+                            directive.lineNumbers
+                                .joinToString(", ", "(", ")")
+                        )
+                )
         } else {
             throw AraraException(
-                    LanguageController.messages.ERROR_VALIDATE_FILES_IS_NOT_A_LIST
-                            .formatString(directive.lineNumbers
-                                    .joinToString(", ", "(", ")"))
+                LanguageController.messages.ERROR_VALIDATE_FILES_IS_NOT_A_LIST
+                    .formatString(
+                        directive.lineNumbers
+                            .joinToString(", ", "(", ")")
+                    )
             )
         }
     }

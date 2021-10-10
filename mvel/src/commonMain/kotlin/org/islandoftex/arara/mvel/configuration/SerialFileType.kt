@@ -29,17 +29,17 @@ data class SerialFileType(
      * @throws AraraException If the pattern is invalid.
      */
     fun toFileType(): FileType = org.islandoftex.arara.core.files.FileType(
-            extension,
-            pattern.takeUnless { pattern == FileType.INVALID_PATTERN }
-                ?: ConfigurationUtils.defaultFileTypePatterns[extension]
-                ?: throw AraraException(
-                        LanguageController.messages
-                                .ERROR_FILETYPE_UNKNOWN_EXTENSION
-                                .formatString(
-                                        extension,
-                                        LinearExecutor.executionOptions.fileTypes
-                                                .joinToString(" | ", "[ ", " ]")
-                                )
-                )
+        extension,
+        pattern.takeUnless { pattern == FileType.INVALID_PATTERN }
+            ?: ConfigurationUtils.defaultFileTypePatterns[extension]
+            ?: throw AraraException(
+                LanguageController.messages
+                    .ERROR_FILETYPE_UNKNOWN_EXTENSION
+                    .formatString(
+                        extension,
+                        LinearExecutor.executionOptions.fileTypes
+                            .joinToString(" | ", "[ ", " ]")
+                    )
+            )
     )
 }

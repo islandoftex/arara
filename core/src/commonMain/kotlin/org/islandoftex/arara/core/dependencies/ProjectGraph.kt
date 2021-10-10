@@ -20,9 +20,9 @@ internal class ProjectGraph : Graph<Project>() {
             addVertex(project)
             project.dependencies.forEach { dependency ->
                 addEdge(
-                        projects.find { it.name == dependency }
-                                ?: throw AraraException("Stray project dependencies"),
-                        project
+                    projects.find { it.name == dependency }
+                        ?: throw AraraException("Stray project dependencies"),
+                    project
                 )
             }
         }

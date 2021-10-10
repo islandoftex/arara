@@ -27,7 +27,7 @@ object Session : Session {
      * arara's user interface configuration.
      */
     var userInterfaceOptions: UserInterfaceOptions =
-            org.islandoftex.arara.core.configuration.UserInterfaceOptions()
+        org.islandoftex.arara.core.configuration.UserInterfaceOptions()
 
     /**
      * arara's logging configuration.
@@ -51,7 +51,7 @@ object Session : Session {
         } else {
             throw AraraException(
                 LanguageController.messages.ERROR_SESSION_OBTAIN_UNKNOWN_KEY
-                        .formatString(key)
+                    .formatString(key)
             )
         }
     }
@@ -82,7 +82,7 @@ object Session : Session {
         } else {
             throw AraraException(
                 LanguageController.messages.ERROR_SESSION_REMOVE_UNKNOWN_KEY
-                        .formatString(key)
+                    .formatString(key)
             )
         }
     }
@@ -117,11 +117,13 @@ object Session : Session {
     ) {
         // remove all current environment variables to clean up the session
         map.filterKeys { it.startsWith("environment:") }
-                .filterKeys(removalFilter)
-                .forEach { remove(it.key) }
+            .filterKeys(removalFilter)
+            .forEach { remove(it.key) }
         // add all relevant new environment variables
-        map.putAll(Environment.getAll()
+        map.putAll(
+            Environment.getAll()
                 .filterKeys(additionFilter)
-                .mapKeys { "environment:${it.key}" })
+                .mapKeys { "environment:${it.key}" }
+        )
     }
 }

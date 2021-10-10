@@ -22,62 +22,62 @@ public actual class MPPPath {
     }
 
     public actual val isAbsolute: Boolean =
-            runBlockingNoSuspensions {
-                vfsFile.pathInfo.isAbsolute()
-            }
+        runBlockingNoSuspensions {
+            vfsFile.pathInfo.isAbsolute()
+        }
 
     public actual val fileName: String = vfsFile.baseName
 
     public actual val parent: MPPPath = MPPPath(vfsFile.parent.path)
 
     public actual val exists: Boolean =
-            runBlockingNoJs { vfsFile.exists() }
+        runBlockingNoJs { vfsFile.exists() }
 
     public actual val isDirectory: Boolean =
-            runBlockingNoJs { vfsFile.isDirectory() }
+        runBlockingNoJs { vfsFile.isDirectory() }
 
     public actual val isRegularFile: Boolean =
-            runBlockingNoJs { vfsFile.isFile() }
+        runBlockingNoJs { vfsFile.isFile() }
 
     public actual fun startsWith(p: MPPPath): Boolean =
-            vfsFile.path.startsWith(p.toString())
+        vfsFile.path.startsWith(p.toString())
 
     public actual fun endsWith(p: MPPPath): Boolean =
-            vfsFile.path.endsWith(p.toString())
+        vfsFile.path.endsWith(p.toString())
 
     // TODO: implement proper normalization
     public actual fun normalize(): MPPPath = MPPPath(
-            LocalVfs[vfsFile.fullPathNormalized].absolutePath
-                    .replace("/./", "/")
-                    .replace("//", "/")
+        LocalVfs[vfsFile.fullPathNormalized].absolutePath
+            .replace("/./", "/")
+            .replace("//", "/")
     )
 
     public actual fun resolve(p: String): MPPPath =
-            MPPPath(vfsFile[p].path)
+        MPPPath(vfsFile[p].path)
 
     public actual fun resolve(p: MPPPath): MPPPath =
-            resolve(p.toString())
+        resolve(p.toString())
 
     public actual fun resolveSibling(p: String): MPPPath =
-            MPPPath(vfsFile.parent[p].path)
+        MPPPath(vfsFile.parent[p].path)
 
     public actual fun resolveSibling(p: MPPPath): MPPPath =
-            MPPPath(vfsFile.parent[p.toString()].path)
+        MPPPath(vfsFile.parent[p.toString()].path)
 
     public actual fun toAbsolutePath(): MPPPath =
-            MPPPath(vfsFile.absolutePath)
+        MPPPath(vfsFile.absolutePath)
 
     @Throws(AraraIOException::class)
     public actual fun readLines(): List<String> =
-            runBlockingNoJs {
-                vfsFile.readLines()
-            }.toList()
+        runBlockingNoJs {
+            vfsFile.readLines()
+        }.toList()
 
     @Throws(AraraIOException::class)
     public actual fun readText(): String =
-            runBlockingNoJs {
-                vfsFile.readString()
-            }
+        runBlockingNoJs {
+            vfsFile.readString()
+        }
 
     @Throws(AraraIOException::class)
     public actual fun writeText(text: String) {

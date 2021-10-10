@@ -33,32 +33,32 @@ object DirectiveUtils {
      */
     fun initializeDirectiveCore() {
         Directives.hooks = DirectiveFetchingHooks(
-                processPotentialDirective = { line, directive ->
-                    directive.trim().also {
-                        logger.info {
-                            LanguageController.messages
-                                    .LOG_INFO_POTENTIAL_PATTERN_FOUND
-                                    .format(line, it)
-                        }
+            processPotentialDirective = { line, directive ->
+                directive.trim().also {
+                    logger.info {
+                        LanguageController.messages
+                            .LOG_INFO_POTENTIAL_PATTERN_FOUND
+                            .format(line, it)
                     }
-                },
-                buildDirectiveRaw = { id, parameters, conditional, lines ->
-                    val parameterMap = getParameters(parameters, lines)
-                    DirectiveImpl(
-                            identifier = id,
-                            parameters = parameterMap,
-                            conditional = conditional,
-                            lineNumbers = lines
-                    )
-                },
-                buildDirective = { id, parameters, conditional, lines ->
-                    DirectiveImpl(
-                            identifier = id,
-                            parameters = parameters,
-                            conditional = conditional,
-                            lineNumbers = lines
-                    )
                 }
+            },
+            buildDirectiveRaw = { id, parameters, conditional, lines ->
+                val parameterMap = getParameters(parameters, lines)
+                DirectiveImpl(
+                    identifier = id,
+                    parameters = parameterMap,
+                    conditional = conditional,
+                    lineNumbers = lines
+                )
+            },
+            buildDirective = { id, parameters, conditional, lines ->
+                DirectiveImpl(
+                    identifier = id,
+                    parameters = parameters,
+                    conditional = conditional,
+                    lineNumbers = lines
+                )
+            }
         )
     }
 
@@ -83,32 +83,38 @@ object DirectiveUtils {
             Yaml.Default.decodeFromString<Map<String, Any>>(text)
         }.getOrElse {
             throw AraraException(
-                    LanguageController.messages.ERROR_VALIDATE_YAML_EXCEPTION
-                            .format(
-                                    numbers.joinToString(", ", "(", ")")
-                            ),
-                    it
+                LanguageController.messages.ERROR_VALIDATE_YAML_EXCEPTION
+                    .format(
+                        numbers.joinToString(", ", "(", ")")
+                    ),
+                it
             )
         }
 
         return if ("options" in map.keys && LinearExecutor.executionOptions
-                        .executionMode != ExecutionMode.SAFE_RUN) {
+            .executionMode != ExecutionMode.SAFE_RUN
+        ) {
             // perform directive interpolation by applying MVEL methods to the
             // directive arguments
-            map.plus("options" to (map["options"]?.takeIf { it is List<*> }
-                    ?.let { list ->
-                        (list as List<*>).map { it.toString() }
-                    }
-                    ?.map { value ->
-                        kotlin.runCatching {
-                            TemplateRuntime.eval(value, MvelState.directiveMethods)
-                        }.getOrElse {
-                            throw AraraException(LanguageController.messages
-                                    .ERROR_EXTRACTOR_INTERPOLATION_FAILURE,
-                                    it
-                            )
+            map.plus(
+                "options" to (
+                    map["options"]?.takeIf { it is List<*> }
+                        ?.let { list ->
+                            (list as List<*>).map { it.toString() }
                         }
-                    } ?: emptyList()))
+                        ?.map { value ->
+                            kotlin.runCatching {
+                                TemplateRuntime.eval(value, MvelState.directiveMethods)
+                            }.getOrElse {
+                                throw AraraException(
+                                    LanguageController.messages
+                                        .ERROR_EXTRACTOR_INTERPOLATION_FAILURE,
+                                    it
+                                )
+                            }
+                        } ?: emptyList()
+                    )
+            )
         } else map
     }
 
@@ -131,30 +137,33 @@ object DirectiveUtils {
 
             if (parameters.containsKey("reference"))
                 throw AraraException(
-                        LanguageController.messages.ERROR_VALIDATE_REFERENCE_IS_RESERVED
-                                .format(directive.lineNumbers.joinToString(", ", "(", ")"))
+                    LanguageController.messages.ERROR_VALIDATE_REFERENCE_IS_RESERVED
+                        .format(directive.lineNumbers.joinToString(", ", "(", ")"))
                 )
 
             if (parameters.containsKey("files")) {
                 Directives.replicateDirective(
-                        parameters.getValue("files"),
-                        parameters.minus("files"),
-                        directive
+                    parameters.getValue("files"),
+                    parameters.minus("files"),
+                    directive
                 )
             } else {
-                listOf(DirectiveImpl(
+                listOf(
+                    DirectiveImpl(
                         directive.identifier,
                         parameters.plus("reference" to file.path.toJVMFile()),
                         directive.conditional,
                         directive.lineNumbers
-                ))
+                    )
+                )
             }
         }.also { result ->
             logger.info {
                 """
                     ${LanguageController.messages.LOG_INFO_VALIDATED_DIRECTIVES}
                     ${DisplayUtils.displayOutputSeparator(
-                        LanguageController.messages.LOG_INFO_DIRECTIVES_BLOCK)}
+                    LanguageController.messages.LOG_INFO_DIRECTIVES_BLOCK
+                )}
                     ${result.joinToString("\n")}
                     ${DisplayUtils.displaySeparator()}
                 """.trimIndent()

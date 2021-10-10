@@ -20,7 +20,7 @@ object FileHandling {
      */
     fun changeExtension(path: MPPPath, extension: String): MPPPath {
         val name = path.fileName.substringBeforeLast('.') +
-                ".$extension"
+            ".$extension"
         return path.resolveSibling(name).normalize()
     }
 
@@ -51,17 +51,17 @@ object FileHandling {
      */
     @Throws(AraraException::class)
     fun calculateHash(path: MPPPath): Long =
-            try {
-                runBlockingNoJs {
-                    localVfs(path.normalize().toString())
-                            .readBytes()
-                }.checksum(CRC32).toUInt().toLong()
-            } catch (exception: IOException) {
-                throw AraraException(
-                        LanguageController.messages.ERROR_CALCULATEHASH_IO_EXCEPTION,
-                        exception
-                )
-            }
+        try {
+            runBlockingNoJs {
+                localVfs(path.normalize().toString())
+                    .readBytes()
+            }.checksum(CRC32).toUInt().toLong()
+        } catch (exception: IOException) {
+            throw AraraException(
+                LanguageController.messages.ERROR_CALCULATEHASH_IO_EXCEPTION,
+                exception
+            )
+        }
 
     /**
      * Checks if a file has changed since the last verification.

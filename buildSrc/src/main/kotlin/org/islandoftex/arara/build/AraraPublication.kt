@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.build
 
-import java.net.URI
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.credentials.HttpHeaderCredentials
@@ -12,6 +11,7 @@ import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.credentials
+import java.net.URI
 
 /**
  * A simple wrapper around arara's publication logic.
@@ -43,9 +43,11 @@ open class AraraPublication : Plugin<Project> {
 
                 pom {
                     name.set(artifactId)
-                    description.set("arara is a TeX automation tool based on " +
+                    description.set(
+                        "arara is a TeX automation tool based on " +
                             "rules and directives. It gives you a way to enhance " +
-                            "your TeX experience.")
+                            "your TeX experience."
+                    )
                     inceptionYear.set("2012")
                     url.set("https://gitlab.com/islandoftex/arara")
                     organization {
@@ -85,16 +87,24 @@ open class AraraPublication : Plugin<Project> {
                             email.set("brent@longborough.org")
                             id.set("brent")
                             url.set("https://tex.stackexchange.com/users/344")
-                            roles.set(listOf("Developer", "Contributor", "Tester",
-                                    "Haskell fanatic"))
+                            roles.set(
+                                listOf(
+                                    "Developer", "Contributor", "Tester",
+                                    "Haskell fanatic"
+                                )
+                            )
                         }
                         developer {
                             name.set("Nicola Talbot")
                             email.set("nicola.lc.talbot@gmail.com")
                             id.set("nlct")
                             url.set("https://tex.stackexchange.com/users/19862")
-                            roles.set(listOf("Developer", "Contributor", "Tester",
-                                    "Hat enthusiast"))
+                            roles.set(
+                                listOf(
+                                    "Developer", "Contributor", "Tester",
+                                    "Hat enthusiast"
+                                )
+                            )
                         }
                     }
                     scm {

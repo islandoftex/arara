@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
-import kotlin.math.ln
-import kotlin.math.pow
-import kotlin.time.Duration
 import mu.KotlinLogging
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
@@ -14,6 +11,9 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.utils.formatString
+import kotlin.math.ln
+import kotlin.math.pow
+import kotlin.time.Duration
 
 /**
  * Implements display utilitary methods.
@@ -69,7 +69,7 @@ object DisplayUtils {
      */
     private val isDryRunMode: Boolean
         get() = LinearExecutor.executionOptions.executionMode ==
-                ExecutionMode.DRY_RUN
+            ExecutionMode.DRY_RUN
 
     /**
      * Checks if the execution is in verbose mode.
@@ -120,16 +120,16 @@ object DisplayUtils {
 
         logger.info {
             LanguageController.messages.LOG_INFO_TASK_RESULT + " " +
-                    getResult(value)
+                getResult(value)
         }
         if (!isDryRunMode) {
             println(
-                    if (!isVerboseMode) {
-                        getResult(value).padStart(longestMatch)
-                    } else {
-                        "\n" + (" " + getResult(value))
-                                .padStart(outputWidth, '-')
-                    }
+                if (!isVerboseMode) {
+                    getResult(value).padStart(longestMatch)
+                } else {
+                    "\n" + (" " + getResult(value))
+                        .padStart(outputWidth, '-')
+                }
             )
         }
     }
@@ -143,7 +143,7 @@ object DisplayUtils {
     fun printEntry(name: String, task: String) {
         logger.info {
             LanguageController.messages.LOG_INFO_INTERPRET_TASK
-                    .formatString(task, name)
+                .formatString(task, name)
         }
         displayLine = true
         displayResult = false
@@ -171,8 +171,10 @@ object DisplayUtils {
             displayRolling = true
         }
         println(displaySeparator())
-        println("($name) $task"
-                .abbreviate(outputWidth))
+        println(
+            "($name) $task"
+                .abbreviate(outputWidth)
+        )
         println(displaySeparator())
     }
 
@@ -205,21 +207,23 @@ object DisplayUtils {
         if (displayLine) {
             if (!isDryRunMode) {
                 println(
-                        if (!isVerboseMode) {
-                            LanguageController.messages.INFO_LABEL_ON_ERROR.padStart(longestMatch)
-                        } else {
-                            (" " + LanguageController.messages.INFO_LABEL_ON_ERROR)
-                                    .padStart(outputWidth, '-')
-                        }
+                    if (!isVerboseMode) {
+                        LanguageController.messages.INFO_LABEL_ON_ERROR.padStart(longestMatch)
+                    } else {
+                        (" " + LanguageController.messages.INFO_LABEL_ON_ERROR)
+                            .padStart(outputWidth, '-')
+                    }
                 )
                 println()
             }
         }
-        val text = (if (exception.hasException())
-            exception.message + " " + LanguageController.messages
+        val text = (
+            if (exception.hasException())
+                exception.message + " " + LanguageController.messages
                     .INFO_DISPLAY_EXCEPTION_MORE_DETAILS
-        else
-            exception.message) ?: "EXCEPTION PROVIDES NO MESSAGE"
+            else
+                exception.message
+            ) ?: "EXCEPTION PROVIDES NO MESSAGE"
         // TODO: check null handling
         logger.error { text }
         printWrapped(text)
@@ -277,9 +281,11 @@ object DisplayUtils {
      */
     fun printConditional(conditional: DirectiveConditional) {
         if (conditional.type !== DirectiveConditionalType.NONE) {
-            printWrapped(LanguageController.messages.INFO_LABEL_CONDITIONAL +
+            printWrapped(
+                LanguageController.messages.INFO_LABEL_CONDITIONAL +
                     " (" + conditional.type + ") " +
-                    conditional.condition)
+                    conditional.condition
+            )
         }
     }
 
@@ -299,11 +305,11 @@ object DisplayUtils {
                 val ones = baseSize.toInt()
                 val tenths = ((baseSize - ones) * 10).toInt()
                 "%s%s%s %sB".formatString(
-                        ones.toString(),
-                        Session.userInterfaceOptions.locale
-                                .decimalSeparator.toString(),
-                        tenths.toString(),
-                        "kMGTPE"[exp - 1].toString()
+                    ones.toString(),
+                    Session.userInterfaceOptions.locale
+                        .decimalSeparator.toString(),
+                    tenths.toString(),
+                    "kMGTPE"[exp - 1].toString()
                 )
             }
     }
@@ -319,15 +325,15 @@ object DisplayUtils {
 
         val secondDuration = Duration.seconds(seconds)
         val text = LanguageController.messages.INFO_DISPLAY_EXECUTION_TIME
-                .formatString(
-                        "%s%s%s".formatString(
-                                secondDuration.inWholeSeconds.toString(),
-                                Session.userInterfaceOptions.locale
-                                        .decimalSeparator.toString(),
-                                (secondDuration - Duration.seconds(secondDuration.inWholeSeconds))
-                                        .inWholeMilliseconds.toString()
-                        )
+            .formatString(
+                "%s%s%s".formatString(
+                    secondDuration.inWholeSeconds.toString(),
+                    Session.userInterfaceOptions.locale
+                        .decimalSeparator.toString(),
+                    (secondDuration - Duration.seconds(secondDuration.inWholeSeconds))
+                        .inWholeMilliseconds.toString()
                 )
+            )
         logger.info { text }
         printWrapped(text)
     }
@@ -336,9 +342,9 @@ object DisplayUtils {
      * Displays a line containing details.
      */
     private fun displayDetailsLine() = println(
-            (LanguageController.messages.INFO_LABEL_ON_DETAILS + " ")
-                    .abbreviate(outputWidth)
-                    .padEnd(outputWidth, '-')
+        (LanguageController.messages.INFO_LABEL_ON_DETAILS + " ")
+            .abbreviate(outputWidth)
+            .padEnd(outputWidth, '-')
     )
 
     /**

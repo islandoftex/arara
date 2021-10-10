@@ -46,7 +46,8 @@ class EnvironmentTest : ShouldSpec({
         }
         should("error with timeout exception") {
             val (exit, output) = Environment.executeSystemCommand(
-                    Command(listOf("sleep", "1s")), true, Duration.milliseconds(500))
+                Command(listOf("sleep", "1s")), true, Duration.milliseconds(500)
+            )
             exit shouldBe Environment.errorExitStatus
             output shouldContain TimeoutException::class.java.name
         }

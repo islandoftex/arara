@@ -38,7 +38,7 @@ data class Database(
      * @return Whether the object represented by the path is in the database.
      */
     override fun contains(path: MPPPath): Boolean =
-            path.normalize().toString() in map
+        path.normalize().toString() in map
 
     /**
      * Get the hash value associated with a file.
@@ -49,7 +49,7 @@ data class Database(
      *   the element is not in the database.
      */
     override fun get(path: MPPPath): Long? =
-            map[path.normalize().toString()]
+        map[path.normalize().toString()]
 
     /**
      * Set the hash value for a given file.
@@ -74,8 +74,10 @@ data class Database(
         if (normalPath in map)
             map.remove(normalPath)
         else
-            throw NoSuchElementException("Attempt to remove non-existent path " +
-                    "from database.")
+            throw NoSuchElementException(
+                "Attempt to remove non-existent path " +
+                    "from database."
+            )
     }
 
     /**
@@ -87,15 +89,16 @@ data class Database(
     override fun save(path: MPPPath) {
         runCatching {
             val content = "!database\n" +
-                    Yaml.Default.encodeToString(serializer(), this)
+                Yaml.Default.encodeToString(serializer(), this)
             runBlockingNoJs {
                 localVfs(path.normalize().toString())
-                        .writeString(content)
+                    .writeString(content)
             }
         }.getOrElse {
             throw AraraException(
-                    LanguageController.messages.ERROR_SAVE_COULD_NOT_SAVE_XML
-                            .formatString(path.fileName), it
+                LanguageController.messages.ERROR_SAVE_COULD_NOT_SAVE_XML
+                    .formatString(path.fileName),
+                it
             )
         }
     }
@@ -119,12 +122,17 @@ data class Database(
                     }
                     if (!text.startsWith("!database"))
                         throw AraraException("Database should start with !database")
-                    Yaml.Default.decodeFromString(serializer(), text.lines()
-                            .drop(1).joinToString("\n"))
+                    Yaml.Default.decodeFromString(
+                        serializer(),
+                        text.lines()
+                            .drop(1).joinToString("\n")
+                    )
                 }.getOrElse {
-                    throw AraraException(LanguageController
+                    throw AraraException(
+                        LanguageController
                             .messages.ERROR_LOAD_COULD_NOT_LOAD_XML
-                            .formatString(path.fileName), it
+                            .formatString(path.fileName),
+                        it
                     )
                 }
             }

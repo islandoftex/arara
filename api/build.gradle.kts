@@ -54,11 +54,11 @@ kotlin {
 tasks {
     create("createAraraAPIObject") {
         listOf(
-                "src/nativeCommonMain/kotlin/org/islandoftex/arara/api/AraraAPI.kt",
-                "src/jvmMain/kotlin/org/islandoftex/arara/api/AraraAPI.kt"
+            "src/nativeCommonMain/kotlin/org/islandoftex/arara/api/AraraAPI.kt",
+            "src/jvmMain/kotlin/org/islandoftex/arara/api/AraraAPI.kt"
         ).forEach {
             file(it).writeText(
-                    """
+                """
                     // SPDX-License-Identifier: BSD-3-Clause
                     package org.islandoftex.arara.api
 
@@ -67,7 +67,7 @@ tasks {
                         public actual val version: String = "${project.version}"
                     }
 
-                    """.trimIndent()
+                """.trimIndent()
             )
         }
     }

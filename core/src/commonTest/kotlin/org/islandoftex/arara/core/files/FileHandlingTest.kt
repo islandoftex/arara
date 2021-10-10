@@ -1,27 +1,27 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
+import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.files.MPPPath
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.files.MPPPath
 
 class FileHandlingTest {
     @Test
     fun shouldChangeExtensionOfFileWithExtension() {
         assertEquals(
-                FileHandling.changeExtension(MPPPath("quack.tex"), "log").fileName,
-                MPPPath("quack.log").fileName
+            FileHandling.changeExtension(MPPPath("quack.tex"), "log").fileName,
+            MPPPath("quack.log").fileName
         )
     }
     @Test
     fun shouldChangeExtensionOfFileWithoutExtension() {
         assertEquals(
-                FileHandling.changeExtension(MPPPath("quack"), "log").fileName,
-                MPPPath("quack.log").fileName
+            FileHandling.changeExtension(MPPPath("quack"), "log").fileName,
+            MPPPath("quack.log").fileName
         )
     }
 

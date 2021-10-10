@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.localization
 
+import org.islandoftex.arara.api.localization.MPPLocale
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import org.islandoftex.arara.api.localization.MPPLocale
 
 class LanguageControllerTest {
     @Test
@@ -11,11 +11,11 @@ class LanguageControllerTest {
         assertEquals(LanguageController.messages.providedLocale, MPPLocale("en"))
 
         listOf(
-                MPPLocale("de"),
-                MPPLocale("it"),
-                MPPLocale("nl"),
-                MPPLocale("en-QN"),
-                MPPLocale("pt-BR")
+            MPPLocale("de"),
+            MPPLocale("it"),
+            MPPLocale("nl"),
+            MPPLocale("en-QN"),
+            MPPLocale("pt-BR")
         ).forEach {
             LanguageController.loadMessagesFor(it)
             assertEquals(LanguageController.messages.providedLocale, it)
