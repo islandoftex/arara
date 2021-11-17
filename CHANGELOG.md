@@ -8,6 +8,13 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
+### Fixed
+
+* The `indent` rule did not honour subdirectories. Only file names
+  were used (paths were stripped) and thus the system command failed
+  on such scenarios.
+  (see #76)
+
 ## [6.1.2] - 2021-10-17
 
 ### Added
