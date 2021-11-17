@@ -14,7 +14,7 @@ commands:
   command: >
     @{
         return getCommand('latexindent', silent, trace, screenlog, lines,
-               settings, cruft, overwrite, output, reference.getName(),
+               settings, cruft, overwrite, output, reference,
                modifylinebreaks, check, replacement, options, logfile);
     }
 arguments:
