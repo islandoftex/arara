@@ -8,6 +8,13 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
+## [6.1.4] - 2021-12-14
+
+### Fixed
+
+* Fixed shipping a vulnerable `log4j` version.
+  (see #77)
+
 ## [6.1.3] - 2021-11-17
 
 ### Fixed
@@ -420,7 +427,8 @@ from version 5.0.0 on.
 For versions previous to version 5.0.0, there has not been any persistent record
 of changes. Please refer to the commit history for details.
 
-[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v6.1.3...master
+[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v6.1.4...master
+[6.1.4]: https://gitlab.com/islandoftex/arara/compare/v6.1.3...v6.1.4
 [6.1.3]: https://gitlab.com/islandoftex/arara/compare/v6.1.2...v6.1.3
 [6.1.2]: https://gitlab.com/islandoftex/arara/compare/v6.1.1...v6.1.2
 [6.1.1]: https://gitlab.com/islandoftex/arara/compare/v6.1.0...v6.1.1
