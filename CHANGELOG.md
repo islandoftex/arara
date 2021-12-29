@@ -31,6 +31,36 @@ from version 5.0.0 on.
   behavior based on user feedback.
   (see #63; breaking change)
 
+## [6.1.5] - 2021-12-21
+
+### Fixed
+
+* Fixed shipping a vulnerable `log4j` version.
+  (see #78)
+
+## [6.1.4] - 2021-12-14
+
+### Fixed
+
+* Fixed shipping a vulnerable `log4j` version.
+  (see #77)
+
+## [6.1.3] - 2021-11-17
+
+### Fixed
+
+* The `indent` rule did not honour subdirectories. Only file names
+  were used (paths were stripped) and thus the system command failed
+  on such scenarios.
+  (see #76)
+
+## [6.1.2] - 2021-10-17
+
+### Added
+
+* The `indent` rule was updated to include three new switches.
+  (see #73)
+
 ## [6.1.1] - 2021-06-26
 
 ### Changed
@@ -427,8 +457,12 @@ from version 5.0.0 on.
 For versions previous to version 5.0.0, there has not been any persistent record
 of changes. Please refer to the commit history for details.
 
-[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v6.1.1...master
-[6.1.0]: https://gitlab.com/islandoftex/arara/compare/v6.1.0...v6.1.1
+[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v6.1.5...master
+[6.1.5]: https://gitlab.com/islandoftex/arara/compare/v6.1.4...v6.1.5
+[6.1.4]: https://gitlab.com/islandoftex/arara/compare/v6.1.3...v6.1.4
+[6.1.3]: https://gitlab.com/islandoftex/arara/compare/v6.1.2...v6.1.3
+[6.1.2]: https://gitlab.com/islandoftex/arara/compare/v6.1.1...v6.1.2
+[6.1.1]: https://gitlab.com/islandoftex/arara/compare/v6.1.0...v6.1.1
 [6.1.0]: https://gitlab.com/islandoftex/arara/compare/v6.0.2...v6.1.0
 [6.0.2]: https://gitlab.com/islandoftex/arara/compare/v6.0.1...v6.0.2
 [6.0.1]: https://gitlab.com/islandoftex/arara/compare/v6.0.0...v6.0.1
