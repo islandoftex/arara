@@ -8,6 +8,10 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
+### Changed
+
+* Updated dependencies.
+
 ## [6.1.5] - 2021-12-21
 
 ### Fixed
