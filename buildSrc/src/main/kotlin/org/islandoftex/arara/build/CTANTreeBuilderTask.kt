@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.build
 
-import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.TaskAction
 import java.nio.file.Files
 import java.nio.file.attribute.PosixFilePermission
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
 
 open class CTANTreeBuilderTask : DefaultTask() {
     init {
