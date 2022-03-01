@@ -3,6 +3,8 @@ package org.islandoftex.arara.build
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
+import java.nio.file.Files
+import java.nio.file.attribute.PosixFilePermission
 
 open class CTANTreeBuilderTask : DefaultTask() {
     init {
@@ -73,5 +75,19 @@ open class CTANTreeBuilderTask : DefaultTask() {
         logger.debug("Copying the README file to the top level")
         temporaryDir.resolve("arara/doc/README.md")
                 .renameTo(temporaryDir.resolve("arara/README.md"))
+
+        logger.debug("Updating script permissions")
+        Files.setPosixFilePermissions(
+                temporaryDir.resolve("arara/scripts/arara.sh").toPath(),
+                setOf(
+                        PosixFilePermission.OWNER_READ,
+                        PosixFilePermission.GROUP_READ,
+                        PosixFilePermission.OTHERS_READ,
+                        PosixFilePermission.OWNER_WRITE,
+                        PosixFilePermission.OWNER_EXECUTE,
+                        PosixFilePermission.GROUP_EXECUTE,
+                        PosixFilePermission.OTHERS_EXECUTE
+                )
+        )
     }
 }
