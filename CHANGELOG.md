@@ -31,6 +31,12 @@ from version 5.0.0 on.
   behavior based on user feedback.
   (see #63; breaking change)
 
+## [6.1.6] - 2022-02-27
+
+### Changed
+
+* Updated dependencies.
+
 ## [6.1.5] - 2021-12-21
 
 ### Fixed
@@ -457,7 +463,8 @@ from version 5.0.0 on.
 For versions previous to version 5.0.0, there has not been any persistent record
 of changes. Please refer to the commit history for details.
 
-[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v6.1.5...master
+[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v6.1.6...master
+[6.1.6]: https://gitlab.com/islandoftex/arara/compare/v6.1.5...v6.1.6
 [6.1.5]: https://gitlab.com/islandoftex/arara/compare/v6.1.4...v6.1.5
 [6.1.4]: https://gitlab.com/islandoftex/arara/compare/v6.1.3...v6.1.4
 [6.1.3]: https://gitlab.com/islandoftex/arara/compare/v6.1.2...v6.1.3
