@@ -17,7 +17,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
     }
 }
 
@@ -101,8 +101,8 @@ spotless {
 }
 
 detekt {
-    failFast = false
-    input = files(
+    allRules = false
+    source = files(
         "api/src/commonMain/kotlin",
         "api/src/jvmMain/kotlin",
         "core/src/commonMain/kotlin",
@@ -142,7 +142,7 @@ allprojects {
     version = rootProject.version
 
     repositories {
-        jcenter()
+        mavenCentral()
         maven("https://dl.bintray.com/korlibs/korlibs/")
     }
 }
