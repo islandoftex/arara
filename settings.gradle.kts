@@ -1,2 +1,2 @@
 rootProject.name = "arara"
-include("api", "core", "mvel", "kotlin-dsl", "cli", "docs")
+include("api", "core", "lua", "mvel", "kotlin-dsl", "cli", "docs")

@@ -27,6 +27,7 @@ object Versions {
     const val kotlinxSerialization = "1.3.2"
     const val jackson = "2.13.1"
     const val log4j = "2.17.2"
+    const val luak = "2.4.12"
     const val mvel = "2.4.14.Final"
     const val slf4j = "1.7.36"
     const val yamlkt = "0.10.2"
