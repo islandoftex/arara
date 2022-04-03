@@ -33,8 +33,8 @@ instance? It is quite straightforward: it is just a matter of providing the file
 to the tool and letting it do the hard work:
 
 ```sh
-$ latexmk -pdf mydoc.tex
-$ rubber --pdf mydoc.tex
+$ latexmk -pdf hello.tex
+$ rubber --pdf hello.tex
 ```
 
 The mentioned tools perform an analysis on the file and decide what has to be
@@ -75,7 +75,7 @@ it how to do a task and explicitly tell it to execute the task*.
 Now, how does one tell arara to do a task? That is actually the easy part,
 provided that you have everything up and running. We accomplish the task by
 adding a special comment line, hereafter known as *directive*, somewhere in our
-*hello.tex* file (preferably in the first lines):
+`hello.tex` file (preferably in the first lines):
 
 ```tex
 % arara: pdflatex
@@ -87,8 +87,7 @@ Hello world!
 ```
 
 For now, do not worry too much about the terms, we will come back to them later
-on, in Chapter~\ref{chap:importantconcepts}, on
-page~\pageref{chap:importantconcepts}. It suffices to say that arara expects
+on, in [Important concepts](/manual/concepts). It suffices to say that arara expects
 *you* to provide a list of tasks, and this is done by inserting special comments
 in the source file. Let us see how arara behaves with this updated code:
 
@@ -156,12 +155,11 @@ quickly spread to the whole TeX world.
 Now that we informally introduced rules and directives, let us take a look on
 how arara actually works given those two elements. The whole idea is pretty
 straightforward, and I promise to revisit these concepts later on in this manual
-for a comprehensive explanation (more precisely, in
-Chapter~\ref{chap:importantconcepts}).
+for a comprehensive explanation (more precisely, in [Important concepts](/manual/concepts)).
 
 First and foremost, we need to add at least one instruction in the source code
 to tell arara what to do. This instruction is named a *directive* and it will be
-parsed during the preparation phase. Observe that \arara\ will tell you if no
+parsed during the preparation phase. Observe that arara will tell you if no
 directive was found in a file, as seen in our first interaction with the tool.
 
 An arara directive is usually defined in a line of its own, started with a comment (denoted by a percent sign in TeX and friends), followed by the word `arara:` and task name:
@@ -180,13 +178,12 @@ Once arara finds a directive, it will look for the associated *rule*. In our
 example, it will look for a rule named `pdflatex` which will evidently run the
 `pdflatex` command line application. Rules are YAML files named according to
 their identifiers followed by the `yaml` extension and follow a strict
-structure. This concept is covered in Section~\ref{sec:rule}, on
-page~\pageref{sec:rule}.
+structure. This concept is covered in [Important concepts](/manual/concepts).
 
-Now, we have a queue of pairs $(\textit{directive}, \textit{rule})$ to
+Now, we have a queue of pairs *(directive, rule)* to
 process. For each pair, arara will map the directive to its corresponding rule,
 evaluate it and run the proper command. The execution chain requires that
-command $i$ was successfully executed to then proceed to command $i+1$, and so
+command *i* was successfully executed to then proceed to command *i + 1*, and so
 forth. This is also by design: arara will halt the execution if any of the
 commands in the queue had raised an error. How does one know if a command was
 successfully executed? arara checks the corresponding *exit status* available
@@ -197,24 +194,23 @@ In order to decide whether a command execution is successful, arara relies on
 exit status checking. Typically, a command is successful if, and only if, its
 resulting exit status is 0 and no other value. However, we can define any value,
 or even forget about it and make it always return a valid status regardless of
-execution (for instance, in a rule that always is successful -- see, for
+execution (for instance, in a rule that always is successful — see, for
 instance, the `clean` rule).
 
 That is pretty much how arara works: directives in the source code are mapped to
 rules. These pairs are added to a queue. The queue is then executed and the
 status is reported. More details about the expansion process are presented in
-Chapter~\ref{chap:importantconcepts}, on
-page~\pageref{chap:importantconcepts}. In short, we teach arara to do a task by
+[Important concepts](/manual/concepts). In short, we teach arara to do a task by
 providing a rule, and tell it to execute it through directives in the source
 code.
 
 # Operating system remarks
 
 The application is written using the Kotlin language, so arara runs on top of a
-Java virtual machine, available on all the major operating systems~--~in some
+Java virtual machine, available on all the major operating systems — in some
 cases, you might need to install the proper virtual machine. We tried very hard
 to keep both code and libraries compatible with older virtual machines or from
-other vendors. Currently, arara is known to run on Java 8 to 15, from any
+other vendors. Currently, arara is known to run on Java 8 to 18, from any
 vendor.
 
 {% messagebox(title="Outdated Java virtual machines") %}
@@ -226,8 +222,7 @@ still runs arara on very old hardware. If you are not in this particular
 scenario, get the latest virtual machine.
 {% end %}
 
-In Chapter~\ref{chap:buildingfromsource}, on
-page~\pageref{chap:buildingfromsource}, we provide instructions on how to build
+In [Building arara](/manual/building), we provide instructions on how to build
 arara from sources using Gradle. Even if you use multiple operating systems,
 arara should behave the same, including the rules. There are helper functions
 available in order to provide support for system-specific rules based on the
