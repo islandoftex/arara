@@ -16,8 +16,6 @@ import com.github.ajalt.clikt.parameters.options.versionOption
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import com.github.ajalt.clikt.parameters.types.restrictTo
-import kotlinx.serialization.decodeFromString
-import net.mamoe.yamlkt.Yaml
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
@@ -121,7 +119,7 @@ class CLI : CliktCommand(
             .normalize()
 
         return reference.singleOrNull()
-            ?.takeIf { it.trim().endsWith(".yaml") }
+            ?.takeIf { it.trim().endsWith(".lua") }
             ?.let { workingDir.resolve(it) }
             ?.takeIf { it.exists }?.readText()
             ?.let {
@@ -129,13 +127,12 @@ class CLI : CliktCommand(
                 // - treat project file as list of projects
                 // - treat project file as a single project
                 // - do not consider it a project
-                kotlin.runCatching {
-                    Yaml.Default.decodeFromString<List<Project>>(it)
-                }.getOrNull() ?: kotlin.runCatching {
-                    listOf(Yaml.Default.decodeFromString<Project>(it))
-                }.getOrNull() ?: throw AraraException(
-                    LanguageController.messages.ERROR_INVALID_PROJECT_FILE
-                )
+                // TODO: every Lua file is invalid for now as it's NIY
+                // TODO: one could run Lua files with arara, so probably this
+                //       should simply return null and only on parse error throw
+                //       an exception:
+                //       throw AraraException(LanguageController.messages.ERROR_INVALID_PROJECT_FILE)
+                null
             }
             ?: Project(
                 "Untitled",
