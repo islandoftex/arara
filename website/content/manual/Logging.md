@@ -1,16 +1,11 @@
 +++
 title = "Logging"
-description = "arara's log file and detailed output"
+description = "Logging"
 weight = 5
 +++
 
 The logging feature of arara, as discussed earlier on, is activated through
-either the `--log` command line option (Section~\ref{sec:options}, on
-page~\pageref{sec:options}) or the equivalent key in the configuration file
-(Section~\ref{sec:basicstructure}, on page~\pageref{sec:basicstructure}). This
-chapter covers the basic structure of a typical log file provided by our tool,
-including the important blocks that can be used to identify potential
-issues. The following example is used to illustrate this feature:
+either the `--log` command line option or the equivalent key in the configuration file. This chapter covers the basic structure of a typical log file provided by our tool, including the important blocks that can be used to identify potential issues. The following example is used to illustrate this feature:
 
 ```tex
 % arara: pdftex
@@ -74,7 +69,7 @@ file. If a language other than English is selected, either through the
 `--language` command line option or the equivalent key in the configuration
 file, the logging framework will honour the current setting and entries will be
 available in the specified language. Having a log file in your own language
-might mitigate the traumatic experience of error tracking for Te\ newbies. From
+might mitigate the traumatic experience of error tracking for TeX newbies. From
 version 6.0 on, if you pass an invalid language code (for instance, `-L foo` in
 the command line), arara will default to English and issue a log warning:
 
@@ -125,9 +120,7 @@ proceeds to validate parameters and normalize such directives.
 
 Once all directives are properly composed, the tool checks for potential
 inconsistencies, such as invalid or reserved parameter keys. Then all directives
-are validated and internally mapped with special parameters, as previously
-described in Section~\ref{sec:directivenormalization}, on
-page~\pageref{sec:directivenormalization}.
+are validated and internally mapped with special parameters.
 
 ```text
 All directives were validated. We are good to go.
@@ -172,10 +165,7 @@ Rule location: '/opt/paulo/arara/rules'
 
 For each task (or subtask, as it is part of a rule task) defined in the rule
 context, arara will interpret it and return the corresponding system
-command. The return types can be found in Section~\ref{sec:rule}, on
-page~\pageref{sec:rule}. In this specific scenario, there is just one task
-associated with the `pdftex` rule. Both task name and system command are
-shown:
+command. The return types can be found in [Concepts](/manual/concepts). In this specific scenario, there is just one task associated with the `pdftex` rule. Both task name and system command are shown:
 
 ```text
 I am ready to interpret task 'PDFTeX engine' from rule 'PDFTeX'.
@@ -252,6 +242,5 @@ relevant information is gathered into a single consolidated report.
 {% messagebox(title="Log paths") %}
 From version 6.0 on, the log file may now be specified as path *anywhere* on the
 file system. However, keep in mind that this behavior may be altered for future
-updates in safe mode. Please refer to Chapter~\ref{chap:configurationfile}, on
-page~\pageref{chap:configurationfile}, for more details.
+updates in safe mode. Please refer to [Configuration](/manual/configuration) for more details.
 {% end %}
