@@ -24,7 +24,7 @@ kotlin {
         }
         val commonMain by getting {
             dependencies {
-                api("com.soywiz.korlibs.klock:klock:${Versions.klock}")
+                api("com.soywiz.korlibs.klock:klock:${Versions.korlibs}")
             }
         }
         /*val nativeCommonMain by creating {
