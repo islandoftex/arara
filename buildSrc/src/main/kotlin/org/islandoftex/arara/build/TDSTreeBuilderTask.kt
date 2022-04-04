@@ -31,6 +31,7 @@ open class TDSTreeBuilderTask : DefaultTask() {
      * The task's main action: Creating a TDS directory hierarchy.
      */
     @TaskAction
+    @Suppress("LongMethod")
     fun run() {
         val temporaryDir = project.buildDir.resolve("tds")
         if (temporaryDir.exists())
@@ -99,8 +100,6 @@ open class TDSTreeBuilderTask : DefaultTask() {
         TaskHelper.createScript(temporaryDir.resolve("scripts/arara/arara.sh").toPath())
 
         logger.info("Building the source code structure")
-
-        logger.debug("Creating the source code structure")
         project.copy {
             from(project.buildDir.resolve("arara-${project.version}-src.zip"))
             into(temporaryDir.resolve("source/support/arara"))

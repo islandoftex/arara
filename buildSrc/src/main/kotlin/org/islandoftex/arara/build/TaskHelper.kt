@@ -58,6 +58,7 @@ object TaskHelper {
      * @throws IOException The file could not be written.
      */
     @Throws(IOException::class)
+    @Suppress("LongMethod")
     fun createManPage(file: Path, version: String) {
         val today = LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))
         try {
