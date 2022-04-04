@@ -272,38 +272,34 @@ This is the rule structure in the YAML format used by arara. Keep in mind that a
 
 # Directives
 
-A \emph{directive} is a special comment inserted in the source file in which you indicate how \arara\ should behave. You can insert as many directives as you want and in any position of the file. The tool will read the whole file and extract the directives.
+A *directive* is a special comment inserted in the source file in which you indicate how arara should behave. You can insert as many directives as you want and in any position of the file. The tool will read the whole file and extract the directives.
 
-There are two types of directives in \arara\ which determine the way the corresponding rules will be instantiated. They are listed as follows. Note that directives are always preceded by the \rbox{arara:} pattern.
+There are two types of directives in arara which determine the way the corresponding rules will be instantiated. They are listed as follows. Note that directives are always preceded by the `arara:` pattern.
 
-\begin{description}
-\item[empty directive] This type of directive has already been mentioned in Chapter~\ref{chap:introduction}, on page~\pageref{chap:introduction}, it has only the rule name (which refers to the \abox{identifier} key from the rule of the same name). All rule arguments are mapped to empty lists, except the ones with \abox{default} values, mapped to lists containing single elements.
+- **Empty directive**: This type of directive has already been mentioned in [Introduction](/manual/introduction), it has only the rule name (which refers to the `identifier` key from the rule of the same name). All rule arguments are mapped to empty lists, except the ones with `default` values, mapped to lists containing single elements.
 
-\begin{codebox}{Empty directive}{teal}{\icnote}{white}
-% arara: pdflatex
-\end{codebox}
+  ```tex
+  % arara: pdflatex
+  ```
 
-\item[parametrized directive] This type of directive also has the rule name (which refers to the \abox{identifier} key from the rule of the same name), and also contains a map of parameters in order to provide additional information to the corresponding rule. This map is defined in the YAML format, based on the inline style.
+- **Parametrized directive**: This type of directive also has the rule name (which refers to the `identifier` key from the rule of the same name), and also contains a map of parameters in order to provide additional information to the corresponding rule. This map is defined in the YAML format, based on the inline style.
 
-\begin{codebox}{Parametrized directive}{teal}{\icnote}{white}
-% arara: pdflatex: { shell: yes }
-\end{codebox}
+  ```tex
+  % arara: pdflatex: { shell: yes }
+  ```
 
-Observe that \arara\ relies on named parameters, so they are mapped by their corresponding argument identifiers and not by their positions. The syntax for a parameter is described as follows. Please refer to the map definition in Section~\ref{sec:yamlcollections}, on page~\pageref{sec:yamlcollections}.
+  Observe that arara relies on named parameters, so they are mapped by their corresponding argument identifiers and not by their positions. The syntax for a parameter is described as follows. Please refer to the map definition in [YAML](/manual/yaml).
 
-\begin{codebox}{Parameter syntax}{teal}{\icnote}{white}
-key : value
-\end{codebox}
+  ```
+  key : value
+  ```
 
-Note that virtually any type of data can be used as parameter value, so lists, integers, booleans, sets and other maps are available as well. However, there must be the correct handling of such types in the rule context.
-\end{description}
+  Note that virtually any type of data can be used as parameter value, so lists, integers, booleans, sets and other maps are available as well. However, there must be the correct handling of such types in the rule context.
 
-When handling parametrized directives, \arara\ always checks if directive parameters and rule arguments match. If we try to inject a non-existent parameter in a parametrized directive, the tool will raise an error about it:
+When handling parametrized directives, arara always checks if directive parameters and rule arguments match. If we try to inject a non-existent parameter in a parametrized directive, the tool will raise an error about it:
 
-\begin{codebox}{Terminal}{teal}{\icnote}{white}
-
+```sh
   __ _ _ __ __ _ _ __ __ _
-
  / _` | '__/ _` | '__/ _` |
 | (_| | | | (_| | | | (_| |
  \__,_|_|  \__,_|_|  \__,_|
@@ -317,63 +313,61 @@ I found these unknown keys in the directive: (foo). This should
 be an easy fix, just remove them from your map.
 
 Total: 0.21 seconds
-\end{codebox}
+```
 
 As the message suggests, we need to remove the unknown parameter key from our directive or rewrite the rule in order to include it as an argument. The first option is, of course, easier.
 
-Sometimes, directives can span several columns of a line, particularly the ones with several parameters. We can split a directive into multiple lines by using the \rbox{arara: {-}{-}>} mark (also known as \emph{arrow notation} during development) to each line which should compose the directive. We call it a \emph{multiline directive}. Let us see an example:
+Sometimes, directives can span several columns of a line, particularly the ones with several parameters. We can split a directive into multiple lines by using the `arara: -->` mark (also known as *arrow notation* during development) to each line which should compose the directive. We call it a *multiline directive*. Let us see an example:
 
-\begin{codebox}{Multiline directive}{teal}{\icnote}{white}
+```tex
 % arara: pdflatex: {
 % arara: --> shell: yes,
 % arara: --> synctex: yes
 % arara: --> }
-\end{codebox}
+```
 
-It is important to observe that there is no need of them to be in contiguous lines, i.e, provided that the syntax for parametrized directives hold for the line composition, lines can be distributed all over the code. In fact, the log file (when enabled) will contain a list of all line numbers that compose a directive. This feature is discussed later on, in Section~\ref{sec:directiveextraction}, on page~\pageref{sec:directiveextraction}.
+It is important to observe that there is no need of them to be in contiguous lines, i.e, provided that the syntax for parametrized directives hold for the line composition, lines can be distributed all over the code. In fact, the log file (when enabled) will contain a list of all line numbers that compose a directive. This feature is discussed later on.
 
-\begin{messagebox}{Keep lines together}{araracolour}{\icinfo}{white}
+{% messagebox(title="Keep lines together") %}
 Although it is possible to spread lines of a multiline directive all over the code, it is considered good practice to keep them together for easier reading and editing. In any case, you can always see which lines compose a directive by inspecting the log file.
-\end{messagebox}
+{% end %}
 
-\arara\ provides logical expressions, written in the MVEL language, and special operators processed at runtime in order to determine whether and how a directive should be processed. This feature is named \emph{directive conditional}, or simply \emph{conditional} as an abbreviation. The following list describes all conditional operators available in the directive context.
+arara provides logical expressions, written in the MVEL language, and special operators processed at runtime in order to determine whether and how a directive should be processed. This feature is named *directive conditional*, or simply *conditional* as an abbreviation. The following list describes all conditional operators available in the directive context.
 
-\begin{description}
-\item[\describeconditional{a priori}{if}] The associated MVEL expression is evaluated beforehand, and the directive is interpreted if, and only if, the result of such evaluation is true. This directive, when the conditional holds true, is executed at most once.
+- **[a priori]** `if`: The associated MVEL expression is evaluated beforehand, and the directive is interpreted if, and only if, the result of such evaluation is true. This directive, when the conditional holds true, is executed at most once.
 
-\begin{codebox}{Conditional}{teal}{\icnote}{white}
-% arara: pdflatex if missing('pdf') || changed('tex')
-\end{codebox}
+  ```tex
+  % arara: pdflatex if missing('pdf') || changed('tex')
+  ```
 
-\item[\describeconditional{a posteriori}{until}] The directive is interpreted the first time, then the associated MVEL expression evaluation is done. While the result holds false, the directive is interpreted again and again. There are no guarantees of proper halting.
+- **[a posteriori]** `until`: The directive is interpreted the first time, then the associated MVEL expression evaluation is done. While the result holds false, the directive is interpreted again and again. There are no guarantees of proper halting.
 
-\begin{codebox}{Conditional}{teal}{\icnote}{white}
-% arara: pdflatex until !found('log', 'undefined references')
-\end{codebox}
+  ```tex
+  % arara: pdflatex until !found('log', 'undefined references')
+  ```
 
-\item[\describeconditional{a priori}{unless}] Technically an inverted \cdbox{if} conditional, the associated MVEL expression is evaluated beforehand, and the directive is interpreted if, and only if, the result is false. This directive, when the conditional holds false, is executed at most once.
+- **[a priori]** `unless`: Technically an inverted `if` conditional, the associated MVEL expression is evaluated beforehand, and the directive is interpreted if, and only if, the result is false. This directive, when the conditional holds false, is executed at most once.
 
-\begin{codebox}{Conditional}{teal}{\icnote}{white}
-% arara: pdflatex unless unchanged('tex') && exists('pdf')
-\end{codebox}
+  ```tex
+  % arara: pdflatex unless unchanged('tex') && exists('pdf')
+  ```
 
-\item[\describeconditional{a priori}{while}] The associated MVEL expression is evaluated beforehand, the directive is interpreted if, and only if, the result is true, and the process is repeated while the result still holds true. There are no guarantees of proper halting.
+- **[a priori]** `while`: The associated MVEL expression is evaluated beforehand, the directive is interpreted if, and only if, the result is true, and the process is repeated while the result still holds true. There are no guarantees of proper halting.
 
-\begin{codebox}{Conditional}{teal}{\icnote}{white}
-% arara: pdflatex while missing('pdf') ||
-% arara: --> found('log', 'undefined references')
-\end{codebox}
-\end{description}
+  ```tex
+  % arara: pdflatex while missing('pdf') ||
+  % arara: --> found('log', 'undefined references')
+  ```
 
-Several methods are available in the directive context in order to ease the writing of conditionals, such as \mtbox{missing}, \mtbox{changed}, \mtbox{found}, \mtbox{unchanged}, and \mtbox{exists} featured in the previous examples. They will be properly detailed later on, in Section~\ref{sec:files}, on page~\pageref{sec:files}.
+Several methods are available in the directive context in order to ease the writing of conditionals, such as `❖ missing`, `❖ changed`, `❖ found`, `❖ unchanged`, and `❖ exists` featured in the previous examples. They will be properly detailed later on.
 
-\begin{messagebox}{No infinite loops}{araracolour}{\icinfo}{white}
-Although there are no conceptual guarantees for proper halting of unbounded loops, we have provided a technical solution for potentially infinite iterations: \arara\ has a predefined maximum number of loops. The default value is set to 10, but it can be overridden either in the configuration file or with a command line flag. We discuss this feature later on, in Sections~\ref{sec:options} and~\ref{sec:basicstructure}, on pages~\pageref{sec:options} and~\pageref{sec:basicstructure}, respectively.
-\end{messagebox}
+{% messagebox(title="No infinite loops") %}
+Although there are no conceptual guarantees for proper halting of unbounded loops, we have provided a technical solution for potentially infinite iterations: arara has a predefined maximum number of loops. The default value is set to 10, but it can be overridden either in the configuration file or with a command line flag. We discuss this feature later on.
+{% end %}
 
-All directives, regardless of their type, are internally mapped alongside with the \abox{reference} parameter, discussed earlier on, in Section~\ref{sec:coreconcepts}, on page~\pageref{sec:coreconcepts}, as a special variable in the rule context. When inspecting the log file, you will find all map keys and values for each extracted directive (actually, there is an entire log section devoted to detailing directives found in the code). This feature is covered in Section~\ref{sec:directivenormalization}, on page~\pageref{sec:directivenormalization}. See, for instance, the report of the directive extraction and normalization process performed by \arara\ when inspecting \rbox{doc2.tex}, available in the log file. Note that timestamps were deliberately removed in order to declutter the output, and line breaks were included in order to easily spot the log entries.
+All directives, regardless of their type, are internally mapped alongside with the `reference` parameter, discussed earlier on, as a special variable in the rule context. When inspecting the log file, you will find all map keys and values for each extracted directive (actually, there is an entire log section devoted to detailing directives found in the code). See, for instance, the report of the directive extraction and normalization process performed by arara when inspecting `doc2.tex`, available in the log file. Note that timestamps were deliberately removed in order to declutter the output, and line breaks were included in order to easily spot the log entries.
 
-\begin{ncodebox}{Source file}{teal}{\icnote}{white}{doc2.tex}
+```tex
 % arara: pdflatex
 % arara: pdflatex: { shell: yes }
 \documentclass{article}
@@ -382,8 +376,9 @@ All directives, regardless of their type, are internally mapped alongside with t
 Hello world.
 \end{document}
 \end{ncodebox}
+```
 
-\begin{codebox}{An excerpt of the log file (directive section)}{teal}{\icnote}{white}
+```
 Directive: { identifier: pdflatex, parameters:
 {reference=/home/paulo/doc2.tex},
 conditional: { NONE }, lines: [1] }
@@ -391,17 +386,17 @@ conditional: { NONE }, lines: [1] }
 Directive: { identifier: pdflatex, parameters:
 {shell=yes, reference=/home/paulo/doc2.tex},
 conditional: { NONE }, lines: [2] }
-\end{codebox}
+```
 
-The directive context also features another special parameter named \abox{files} which expects a non-empty list of file names as plain string values. For each element of this list, \arara\ will replicate the current directive and point the element being iterated as current \abox{reference} value (resolved to a proper absolute, canonical path of the file name). See, for instance, the report of the directive extraction and normalization process performed by \arara\ when inspecting \rbox{doc3.tex}, available in the log file.
+The directive context also features another special parameter named `files` which expects a non-empty list of file names as plain string values. For each element of this list, arara will replicate the current directive and point the element being iterated as current `reference` value (resolved to a proper absolute, canonical path of the file name). See, for instance, the report of the directive extraction and normalization process performed by arara when inspecting `doc3.tex`, available in the log file.
 
-\begin{ncodebox}{Source file}{teal}{\icnote}{white}{doc3.tex}
+```tex
 % arara: pdflatex: { files: [ doc1.tex, doc2.tex ] }
 Hello world.
 \bye
-\end{ncodebox}
+```
 
-\begin{codebox}{An excerpt of the log file (directive section)}{teal}{\icnote}{white}
+```
 Directive: { identifier: pdflatex, parameters:
 {reference=/home/paulo/doc1.tex},
 conditional: { NONE }, lines: [1] }
@@ -409,117 +404,64 @@ conditional: { NONE }, lines: [1] }
 Directive: { identifier: pdflatex, parameters:
 {reference=/home/paulo/doc2.tex},
 conditional: { NONE }, lines: [1] }
-\end{codebox}
+```
 
-It is important to observe that, in this case, \rbox{doc3.tex} is a plain \TeX\ file, but \rbox{pdflatex} is actually being called on two \LaTeX\ documents, first \rbox{doc1.tex} and then, at last, \rbox{doc2.tex}.
+It is important to observe that, in this case, `doc3.tex` is a plain TeX file, but `pdflatex` is actually being called on two LaTeX documents, first `doc1.tex` and then, at last, `doc2.tex`.
 
-Even when a directive is interpreted with a file other than the one being processed by \arara\ (through the magic of the \abox{files} parameter), it is possible to use helper methods in the rule context to get access to the original file and reference. Such methods are detailed later on, in Section~\ref{sec:files}, on page~\pageref{sec:files}.
+Even when a directive is interpreted with a file other than the one being processed by arara (through the magic of the `files` parameter), it is possible to use helper methods in the rule context to get access to the original file and reference. Such methods are detailed later on.
 
-\begin{messagebox}{Orb tag expansion in parameter values}{araracolour}{\icinfo}{white}
-From version 6.0 on, \arara\ is able to expand orb tags within a special \rbox{options} parameter in the directive context. For instance:
+{% messagebox(title="Orb tag expansion in parameter values") %}
+From version 6.0 on, arara is able to expand orb tags within a special `options` parameter in the directive context. For instance:
 
-\begin{codebox}{Example}{teal}{\icnote}{white}
+```tex
 % arara: lualatex: {
 % arara: --> options: [ '--output-directory=@{getSession().
 % arara: -->                          get("arg:builddir")}'
 % arara: -->          ]
 % arara: --> }
-\end{codebox}
+```
 
-This feature supports the following methods with their documented meanings, as seen in Chapter~\ref{chap:methods}, on page~\pageref{chap:methods}:
+This feature supports the following methods with their documented meanings, as seen in [Methods](/manual/methods): `❖ getBasename`, `❖ getSession` and `❖ getOriginalReference`.
 
-\vspace{2ex}
+Keep in mind that this feature is disabled when arara is running in safe mode, as seen in [Command line](/manual/cli).
+{% end %}
 
-\begin{tabularx}{0.95\textwidth}{YYY}
-\mtbox{getBasename} & \mtbox{getSession} & \mtbox{getOriginalReference}
-\end{tabularx}
+# Important changes in version 6
 
-\vspace{2ex}
+{% messagebox(title="A note to users") %}
+If this is your first time using arara or you do not have custom rules in the old format, you can safely ignore this section. All rules shipped with our tool are already written in the new format.
+{% end %}
 
-Keep in mind that this feature is disabled when \arara\ is running in safe mode, as seen in Chapter~\ref{chap:commandline}, on page~\pageref{chap:commandline}.
-\end{messagebox}
+{% messagebox(title="API, CLI and library") %}
+From version 6.0 on, arara is now split into an API, a core implementation (library) and the implementation of the executable (command line interface). Projects relying on code in the `arara` JAR distributions have to be updated.
+{% end %}
 
-\section{Important changes in version 6}
-\label{sec:migrationguide}
-
-\begin{messagebox}{A note to users}{araracolour}{\icattention}{white}
-If this is your first time using \arara\ or you do not have custom rules in the old format, you can safely ignore this section. All rules shipped with our tool are already written in the new format.
-\end{messagebox}
-
-\begin{messagebox}{{API, CLI} and library}{araracolour}{\icinfo}{white}
-From version 6.0 on, \arara\ is now split into an API, a core implementation (library) and the implementation of the executable (command line interface). Projects relying on code in the \rbox{arara} JAR distributions have to be updated.
-\end{messagebox}
-
-\begin{messagebox}{Localization updates}{araracolour}{\icinfo}{white}
+{% messagebox(title="Localization updates") %}
 The localization framework was redesigned in version 6.0:
 
-\begin{itemize}[label={--}]
-\item Localization is now provided by classes as a library instead of property files in the tool resources.
+- Localization is now provided by classes as a library instead of property files in the tool resources.
 
-\item From version 6.0 on, languages have to be passed as IETF BCP 47 codes. The old system has been removed. Hence, please use \rbox{en-QN} instead of \rbox{qn}, and so forth.
+- From version 6.0 on, languages have to be passed as IETF BCP 47 codes. The old system has been removed. Hence, please use `en-QN` instead of `qn`, and so forth.
 
-\item If you pass an invalid language code, \arara\ will now run in English and issue a log warning but not fail anymore. Failing due to the wrong language in the output was considered inappropriate.
-\end{itemize}
-\end{messagebox}
+- If you pass an invalid language code, arara will now run in English and issue a log warning but not fail anymore. Failing due to the wrong language in the output was considered inappropriate.
+{% end %}
 
-\begin{messagebox}{Method signature changes}{araracolour}{\icinfo}{white}
+{% messagebox(title="Method signature changes") %}
 The following method signatures have been altered:
 
-\begin{itemize}
-\item[\textcolor{warningcolour}{\faClose}]\mddbox{C}{R}{loadObject(File file, String name)}{Pair<Integer, Object>}
+- **[C|R]** `loadObject(File file, String name): Pair<Integer, Object>` `→` **[C|R]** `loadObject(File file, String name): Pair<ClassLoading.ClassLoadingStatus, Object>`
 
-\vspace{.5em}
+- **[C|R]** `loadObject(String ref, String n): Pair<Integer, Object>` `→` **[C|R]** `loadObject(String ref, String n): Pair<ClassLoading.ClassLoadingStatus, Object>`
 
-\hspace{2cm}\textcolor{teal}{\faArrowDown}
+- **[C|R]** `loadClass(File file, String name): Pair<Integer, Object>` `→` **[C|R]** `loadClass(File file, String name): Pair<ClassLoading.ClassLoadingStatus, Object>`
 
-\item[\textcolor{okcolour}{\faCheck}]\mddbox{C}{R}{\parbox{0.32\textwidth}{loadObject(File file,\\ \hspace*{1em}String name)}}{\parbox{0.43\textwidth}{Pair<ClassLoading.\\
-\hspace*{1em}ClassLoadingStatus, Object>}}
-
-\vspace{1em}
-
-{\color{araracolour}\hrule}
-
-\item[\textcolor{warningcolour}{\faClose}]\mddbox{C}{R}{loadObject(String ref, String n)}{Pair<Integer, Object>}
-
-\vspace{.5em}
-
-\hspace{2cm}\textcolor{teal}{\faArrowDown}
-
-\item[\textcolor{okcolour}{\faCheck}]\mddbox{C}{R}{\parbox{0.32\textwidth}{loadObject(String ref,\\ \hspace*{1em}String n)}}{\parbox{0.43\textwidth}{Pair<ClassLoading.\\
-\hspace*{1em}ClassLoadingStatus, Object>}}
-
-\vspace{1em}
-
-{\color{araracolour}\hrule}
-
-\item[\textcolor{warningcolour}{\faClose}]\mddbox{C}{R}{loadClass(File file, String name)}{Pair<Integer, Object>}
-
-\vspace{.5em}
-
-\hspace{2cm}\textcolor{teal}{\faArrowDown}
-
-\item[\textcolor{okcolour}{\faCheck}]\mddbox{C}{R}{\parbox{0.32\textwidth}{loadClass(File file,\\ \hspace*{1em}String name)}}{\parbox{0.43\textwidth}{Pair<ClassLoading.\\
-\hspace*{1em}ClassLoadingStatus, Object>}}
-
-\vspace{1em}
-
-{\color{araracolour}\hrule}
-
-\item[\textcolor{warningcolour}{\faClose}]\mddbox{C}{R}{loadClass(String ref, String n)}{Pair<Integer, Object>}
-
-\vspace{.5em}
-
-\hspace{2cm}\textcolor{teal}{\faArrowDown}
-
-\item[\textcolor{okcolour}{\faCheck}]\mddbox{C}{R}{\parbox{0.32\textwidth}{loadClass(String ref,\\ \hspace*{1em}String n)}}{\parbox{0.43\textwidth}{Pair<ClassLoading.\\
-\hspace*{1em}ClassLoadingStatus, Object>}}
-\end{itemize}
+- **[C|R]** `loadClass(String ref, String n): Pair<Integer, Object>` `→` **[C|R]** `loadClass(String ref, String n): Pair<ClassLoading.ClassLoadingStatus, Object>`
 
 You can now access the status values as enumeration.
-\end{messagebox}
+{% end %}
 
-\begin{messagebox}{Null handling}{araracolour}{\icinfo}{white}
-The implementation of methods available within rules has been moved to Kotlin causing \rbox{null} values to be handled differently. Previously undefined behavior will now cause an error.
-\end{messagebox}
+{% messagebox(title="Null handling") %}
+The implementation of methods available within rules has been moved to Kotlin causing `null` values to be handled differently. Previously undefined behavior will now cause an error.
+{% end %}
 
-This section pretty much covered the basics of the changes to this version. Of course, it is highly advisable to make use of the new features available in \arara\ 6.0 for achieving better results. If you need any help, please do not hesitate to contact us. See Section~\ref{sec:support}, on page~\pageref{sec:support}, for more details on how to get help.
+This section pretty much covered the basics of the changes to this version. Of course, it is highly advisable to make use of the new features available in arara 6.0 for achieving better results. If you need any help, please do not hesitate to contact us. See [Introduction](/manual/introduction) for more details on how to get help.
