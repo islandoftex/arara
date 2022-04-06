@@ -1,5 +1,7 @@
-<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
-    <strong>💡TIP{% if title %} – {{title}}{% endif %}</strong>
-    <br/>
-    {{ body | markdown(inline=true) | safe }}
+<blockquote style="padding: 14px; margin-top: 10px; margin-bottom: 10px; background-color: #9FE2BF; border-left: 8px solid #6B8E23;">
+    <small>
+        <strong>&#128161; A useful tip{% if title %} – {{title}}{% endif %}</strong>
+        <br/>
+        {{ body | markdown(inline=true) | safe }}
+    </small>
 </blockquote>
