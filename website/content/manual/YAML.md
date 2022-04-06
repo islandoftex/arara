@@ -12,19 +12,16 @@ circumstances:
 
 1. *Parametrized directives*, as the set of attribute/value pairs (namely,
    argument name and corresponding value) is represented by a map. This
-   particular type of directive is formally introduced in
-   Section~\ref{sec:directives}, on page~\pageref{sec:directives}.
+   particular type of directive is formally introduced in [Concepts](/manual/concepts).
 
-1. *Rules*, as their entire structure is represented by a set of specific keys
+2. *Rules*, as their entire structure is represented by a set of specific keys
    and their corresponding values (a proper YAML document). A rule follows a
-   very strict model, detailed in Section~\ref{sec:rule}, on
-   page~\pageref{sec:rule}.
+   very strict model, detailed in [Concepts](/manual/concepts).
 
-1. *Configuration files*, as the general settings are represented by a set of
+3. *Configuration files*, as the general settings are represented by a set of
    specific keys and their corresponding values (a proper YAML
    document). Configuration files are covered in
-   Chapter~\ref{chap:configurationfile}, on
-   page~\pageref{chap:configurationfile}.
+   [Configuration](/manual/configuration).
 
 This chapter only covers the relevant parts of the YAML format for a consistent
 use with arara. For advanced topics, I highly recommend the complete format
@@ -68,8 +65,7 @@ country: Brazil
 ```
 
 Similarly, the flow mapping uses curly braces. Observe that this is the form
-adopted by a parametrized directive (see syntax in Section~\ref{sec:directives},
-on page~\pageref{sec:directives}):
+adopted by a parametrized directive (see syntax in [Concepts](/manual/concepts)):
 
 ```yaml
 developer: { name: Paulo, country: Brazil }
@@ -102,15 +98,15 @@ page~\pageref{sec:rule}). Let us see an example:
 
 ```yaml
 logo: |
-This is the arara logo
-in its ASCII glory!
-__ _ _ __ __ _ _ __ __ _
-/ _` | '__/ _` | '__/ _` |
-| (_| | | | (_| | | | (_| |
-\__,_|_|  \__,_|_|  \__,_|
+  This is the arara logo
+  in its ASCII glory!
+    __ _ _ __ __ _ _ __ __ _
+   / _` | '__/ _` | '__/ _` |
+  | (_| | | | (_| | | | (_| |
+   \__,_|_|  \__,_|_|  \__,_|
 slogan: >
-The cool TeX
-automation tool
+  The cool TeX
+  automation tool
 ```
 
 As seen in the previous code, `logo` holds the ASCII logo of our tool,
@@ -135,7 +131,7 @@ YAML's flow scalars include the plain style and two quoted styles. The
 double-quoted style provides escape sequences. The single-quoted style is useful
 when escaping is not needed. All flow scalars can span multiple lines. Note that
 line breaks are always folded. Since arara uses MVEL as its underlying scripting
-language (Chapter~\ref{chap:mvel}, on page~\pageref{chap:mvel}), it might be
+language (see [MVEL](/manual/mvel) for reference), it might be
 advisable to quote scalars when starting with forbidden symbols in YAML.
 
 # Tags
@@ -154,8 +150,7 @@ make sure to add `!config` as global tag:
 ```
 
 In particular, rules and configuration files of arara are properly covered in
-Section~\ref{sec:rule} and Chapter~\ref{chap:configurationfile}, on
-pages~\pageref{sec:rule} and~\pageref{chap:configurationfile}, respectively. For
+[Concepts](/manual/concepts) and [Configuration](/manual/configuration). For
 now, it suffices to say that the `!config` global tag is necessary to provide
 the correct mapping of values inside our tool.
 
