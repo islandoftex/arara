@@ -1549,6 +1549,8 @@ This rule runs the new `xelatex` TeX engine on the provided `❖ currentFile` re
 
   - `developer`: For experienced users, this value enables the experimental, developer engine format branch.
 
+  - `unsafe`: This value enables the unsafe engine format branch. According to the documentation, at all costs, avoid using this, or any, unsafe invocation with documents off the net or that are otherwise untrusted in any way.
+
 - `interaction`: This option alters the underlying engine behaviour. If this option is omitted, TeX will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
 
   - `batchmode`: In this mode, nothing is printed on the terminal, and errors are scrolled as if the `return` key is hit at every error. Missing files that TeX tries to input or request from keyboard input cause the job to abort.
@@ -1572,6 +1574,12 @@ This rule runs the new `xelatex` TeX engine on the provided `❖ currentFile` re
 # `xetex`
 
 This rule runs the `xetex` TeX engine on the provided `❖ currentFile` reference, generating a corresponding file in the Portable Document Format, as expected.
+
+- `branch` (default: `stable`): This option allows branching formats for the current engine, mainly focused on package development. Users of current TeX distributions might benefit from format branching in order to easily test documents and code against the upcoming releases. Possible values are:
+
+  - `stable`: This value, as the name implies, enables the stable engine format branch. Note that this is the default format.
+
+  - `unsafe`: This value enables the unsafe engine format branch. According to the documentation, at all costs, avoid using this, or any, unsafe invocation with documents off the net or that are otherwise untrusted in any way.
 
 - `interaction`: This option alters the underlying engine behaviour. If this option is omitted, TeX will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
 
