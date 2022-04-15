@@ -8,6 +8,10 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
+### Fixed
+
+* Fix shell script permissions for CTAN-distributed shell scripts.
+
 ## [6.1.6] - 2022-02-27
 
 ### Changed
