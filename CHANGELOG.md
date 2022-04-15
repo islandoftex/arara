@@ -8,6 +8,11 @@ from version 5.0.0 on.
 
 ## [Unreleased]
 
+### Changed
+
+* `xelatex` and `xetex` rules were updated to include the `unsafe` execution branch.
+  (see #79)
+
 ### Fixed
 
 * Fix shell script permissions for CTAN-distributed shell scripts.
