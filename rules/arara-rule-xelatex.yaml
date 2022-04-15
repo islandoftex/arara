@@ -19,7 +19,8 @@ arguments:
 - identifier: branch
   flag: >
     @{
-        engines = [ 'stable' : 'xelatex', 'developer' : 'xelatex-dev' ];
+        engines = [ 'stable' : 'xelatex', 'developer' : 'xelatex-dev',
+                    'unsafe' : 'xelatex-unsafe' ];
         if (engines.keySet().contains(parameters.branch)) {
             return engines.get(parameters.branch);
         } else {
