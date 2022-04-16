@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua
 
+import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.Project
+import org.islandoftex.arara.api.files.ProjectFile
+import org.islandoftex.arara.core.files.FileType
+import org.islandoftex.arara.core.files.FileType.Companion.UNKNOWN_TYPE
 import org.luaj.vm2.LuaFunction
 import org.luaj.vm2.LuaNumber
 import org.luaj.vm2.LuaString
@@ -29,26 +34,13 @@ object LuaInterpreter {
         }
     }
 
-    private data class Project(
-        val name: String,
-        val workingDirectory: String,
-        val files: Set<ProjectFile>,
-        val dependencies: Set<String> = setOf()
-    )
-
-    private data class ProjectFile(
-        val path: String,
-        val fileType: String,
-        val priority: Int,
-    )
-
     private fun extractProjectFile(path: String, table: LuaTable): ProjectFile {
-        val fileType = table["fileType"].takeIf { it is LuaString }?.toString()
-            ?: "TeX"
+        val fileType = table["fileType"].takeIf { it is LuaTable }?.toString()
+            ?: FileType.UNKNOWN_TYPE
         val priority = table["priority"].takeIf { it is LuaNumber }?.toint()
             ?: 0
 
-        return ProjectFile(path, fileType, priority)
+        return org.islandoftex.arara.core.files.ProjectFile(MPPPath(path), FileType("", ""), priority)
     }
 
     private fun extractProject(table: LuaTable): Project {
@@ -81,7 +73,7 @@ object LuaInterpreter {
                 .toSet()
         } ?: setOf()
 
-        return Project(name, workingDirectory, files, dependencies)
+        return org.islandoftex.arara.core.files.Project(name, MPPPath(workingDirectory), files, dependencies)
     }
 
     /**
