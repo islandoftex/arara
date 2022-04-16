@@ -13,6 +13,7 @@ compile_sass = true
 # Whether to do syntax highlighting
 # Theme can be customised by setting the `highlight_theme` variable to a theme supported by Zola
 highlight_code = true
+highlight_theme = "solarized-light"
 
 # When set to "true", emoji aliases translated to their corresponding
 # Unicode emoji equivalent in the rendered Markdown files. (e.g.: :smile: => 😄)
@@ -33,8 +34,9 @@ build_search_index = true
 juice_logo_name = "arara"
 juice_logo_path = "images/arara-text.svg"
 juice_extra_menu = [
-    { title = "GitLab", link = "https://gitlab.com/islandoftex/arara" },
+    { title = "Manual", link = "https://islandoftex.gitlab.io/arara/manual" },
     { title = "News", link = "https://islandoftex.gitlab.io/arara/news" },
+    { title = "GitLab", link = "https://gitlab.com/islandoftex/arara" },
 ]
 meta_title = "The cool TeX automation tool"
 meta_description = "arara is a TeX automation tool based on directives and rules."

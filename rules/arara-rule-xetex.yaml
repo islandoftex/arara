@@ -12,10 +12,21 @@ commands:
 - name: XeTeX engine
   command: >
     @{
-        return getCommand('xetex', interaction, shell,
+        return getCommand(branch, interaction, shell,
                synctex, options, reference.getName());
     }
 arguments:
+- identifier: branch
+  flag: >
+    @{
+        engines = [ 'stable' : 'xetex', 'unsafe' : 'xetex-unsafe' ];
+        if (engines.keySet().contains(parameters.branch)) {
+            return engines.get(parameters.branch);
+        } else {
+            throwError('The valid branch values are: ' + engines.keySet());
+        }
+    }
+  default: 'stable'
 - identifier: interaction
   flag: >
     @{

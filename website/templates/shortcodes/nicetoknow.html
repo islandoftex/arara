@@ -1,8 +1,8 @@
-<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+<blockquote style="padding: 15px; margin-top: 10px; margin-bottom: 10px; background-color: #AFEEEE; border-left: 8px solid #00CED1;">
     <small>
-        <strong>Nice to know: {% if title %} – {{title}}{% endif %}</strong>
+        <strong>{% if title %}{{title}}{% else %}Nice to know:{% endif %}</strong>
         <br/>
         {{ body | markdown(inline=true) | safe }}
-        {% if reference %}<a href="{{reference}}" target="_blank">Read more</a>{% endif %}
+        {% if reference %}<a href="{{reference}}" target="_blank">Read more &#8594;</a>{% endif %}
     </small>
 </blockquote>

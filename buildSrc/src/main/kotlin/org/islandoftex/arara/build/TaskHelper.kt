@@ -4,6 +4,7 @@ package org.islandoftex.arara.build
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.attribute.PosixFilePermission
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -40,6 +41,18 @@ object TaskHelper {
 
                 exec java -jar "${'$'}jarpath" "${'$'}@"
                 """.trimIndent().lines()
+            )
+            Files.setPosixFilePermissions(
+                file,
+                setOf(
+                    PosixFilePermission.OWNER_READ,
+                    PosixFilePermission.GROUP_READ,
+                    PosixFilePermission.OTHERS_READ,
+                    PosixFilePermission.OWNER_WRITE,
+                    PosixFilePermission.OWNER_EXECUTE,
+                    PosixFilePermission.GROUP_EXECUTE,
+                    PosixFilePermission.OTHERS_EXECUTE
+                )
             )
         } catch (_: IOException) {
             throw IOException(

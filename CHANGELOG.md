@@ -31,6 +31,17 @@ from version 5.0.0 on.
   behavior based on user feedback.
   (see #63; breaking change)
 
+## [6.1.7] - 2022-04-16
+
+### Changed
+
+* `xelatex` and `xetex` rules were updated to include the `unsafe` execution branch.
+  (see #79)
+
+### Fixed
+
+* Fix shell script permissions for CTAN-distributed shell scripts.
+
 ## [6.1.6] - 2022-02-27
 
 ### Changed
@@ -463,7 +474,8 @@ from version 5.0.0 on.
 For versions previous to version 5.0.0, there has not been any persistent record
 of changes. Please refer to the commit history for details.
 
-[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v6.1.6...master
+[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v6.1.7...master
+[6.1.7]: https://gitlab.com/islandoftex/arara/compare/v6.1.6...v6.1.7
 [6.1.6]: https://gitlab.com/islandoftex/arara/compare/v6.1.5...v6.1.6
 [6.1.5]: https://gitlab.com/islandoftex/arara/compare/v6.1.4...v6.1.5
 [6.1.4]: https://gitlab.com/islandoftex/arara/compare/v6.1.3...v6.1.4

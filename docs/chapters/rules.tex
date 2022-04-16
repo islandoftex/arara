@@ -1731,6 +1731,8 @@ This rule runs the new \rbox{xelatex} \TeX\ engine on the provided \mtbox{curren
 \item[\povalue{stable}] This value, as the name implies, enables the stable engine format branch. Note that this is the default format.
 
 \item[\povalue{developer}] For experienced users, this value enables the experimental, developer engine format branch.
+
+\item[\povalue{unsafe}] This value enables the unsafe engine format branch. According to the documentation, at all costs, avoid using this, or any, unsafe invocation with documents off the net or that are otherwise untrusted in any way.
 \end{description}
 
 \item[\abox{interaction}] This option alters the underlying engine behaviour. If this option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
@@ -1760,6 +1762,14 @@ This rule runs the new \rbox{xelatex} \TeX\ engine on the provided \mtbox{curren
 This rule runs the \rbox{xetex} \TeX\ engine on the provided \mtbox{currentFile} reference, generating a corresponding file in the Portable Document Format, as expected.
 
 \begin{description}
+\item[\rpbox{branch}{stable}] This option allows branching formats for the current engine, mainly focused on package development. Users of current \TeX\ distributions might benefit from format branching in order to easily test documents and code against the upcoming releases. Possible values are:
+
+\begin{description}
+\item[\povalue{stable}] This value, as the name implies, enables the stable engine format branch. Note that this is the default format.
+
+\item[\povalue{unsafe}] This value enables the unsafe engine format branch. According to the documentation, at all costs, avoid using this, or any, unsafe invocation with documents off the net or that are otherwise untrusted in any way.
+\end{description}
+
 \item[\abox{interaction}] This option alters the underlying engine behaviour. If this option is omitted, \TeX\ will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
 
 \begin{description}
