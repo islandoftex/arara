@@ -41,7 +41,7 @@
 
         devShell = pkgs.mkShell {
           inputsFrom = builtins.attrValues self.defaultPackage;
-          buildInputs = [ pkgs.zola pkgs.nixpkgs-fmt ];
+          buildInputs = [ pkgs.nixpkgs-fmt pkgs.pup pkgs.python3Packages.weasyprint pkgs.wget pkgs.zola ];
         };
       }
     );
