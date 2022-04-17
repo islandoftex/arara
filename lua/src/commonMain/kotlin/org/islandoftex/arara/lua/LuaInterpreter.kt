@@ -65,7 +65,7 @@ object LuaInterpreter {
             ?: "."
 
         val files = table["files"].takeIf { it is LuaTable }?.let {
-            // TODO: check that keys are actual files
+            // TODO: check that keys are actual files resolved against working directory
             val fileTable = it as LuaTable
             fileTable.keys()
                 .mapNotNull { key ->
@@ -75,8 +75,9 @@ object LuaInterpreter {
                 }
                 .toSet()
         } ?: setOf()
-        if (files.isEmpty()) {
-            throw IllegalArgumentException("A project must contain at least one file")
+
+        require(files.isEmpty()) {
+            "A project must contain at least one file"
         }
 
         val dependencies = table["dependencies"].takeIf { it is LuaTable }?.let {
