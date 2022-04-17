@@ -45,6 +45,7 @@ object LuaInterpreter {
 
         return org.islandoftex.arara.core.files.FileType(extension, pattern)
     }
+
     private fun extractProjectFile(path: String, table: LuaTable): ProjectFile {
         val fileType = table["fileType"]
             .takeIf { it is LuaTable }
