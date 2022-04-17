@@ -10,7 +10,7 @@ As previously mentioned, arara runs on top of a Java virtual machine, available 
 
 From the early development stages, our tool employs a very straightforward directory structure. In short, we provide the `ARARA_HOME` alias to the directory path in which the `arara.jar` Java archive file is located. This particular file is the heart and soul of our tool and dictates the default rule search path, which is a special directory named `rules` available from the same level. This directory contains all rules specified in the YAML format. The structure overview is presented as follows.
 
-<img src="/images/manual/structure1.png" alt="Structure 1" width="648"/>
+<img src="/arara/images/manual/structure1.svg" alt="Structure 1" width="648"/>
 
 Provided that this specific directory structure is honoured, the tool is ready for use off the shelf. In fact, the official arara CTAN package is available in the [artifacts section](https://gitlab.com/islandoftex/arara/-/jobs/artifacts/master/download?job=publish:tdszip) of our project repository. Once the package is properly downloaded, we simply need to extract it into a proper `ARARA_HOME` location.
 
@@ -32,7 +32,7 @@ $ mv arara /opt/paulo/
 
 The tool has found a comfortable home inside my system! Observe that the full path of the `ARARA_HOME` reference points out to `/opt/paulo/arara` since this is my deployment location of choice. The resulting structure overview, from the root directory, is presented as follows:
 
-<img src="/images/manual/structure2.png" alt="Structure 1" width="896"/>
+<img src="/arara/images/manual/structure2.svg" alt="Structure 1" width="896"/>
 
 If the tool was built from source (as indicated in [Building](/manual/building)), make sure to construct the provided directory structure previously presented. We can test the deployment by running the following command in the terminal (please note the full path):
 

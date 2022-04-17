@@ -605,7 +605,7 @@ The UI method signatures are followed by a visual representation of the provided
 
 - **[R]** `showMessage(int width, int icon, String title, String text): void`
 
-<img src="/images/manual/messagebox1.png" alt="UI 1" width="701"/>
+<img src="/arara/images/manual/messagebox1.svg" alt="UI 1" width="701"/>
 
   This method shows a message box according to the provided parameters. The dialog box is disposed when the user either presses the confirmation button or closes the window. It is important to observe that arara temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time includes the idle period as well.
 
@@ -615,7 +615,7 @@ The UI method signatures are followed by a visual representation of the provided
 
 - **[R]** `showMessage(int icon, String title, String text): void`
 
-  <img src="/images/manual/messagebox2.png" alt="UI 2" width="701"/>
+  <img src="/arara/images/manual/messagebox2.svg" alt="UI 2" width="701"/>
 
   This method shows a message box according to the provided parameters. The dialog box is disposed when the user either presses the confirmation button or closes the window. It is important to observe that arara temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time includes the idle period as well.
 
@@ -625,7 +625,7 @@ The UI method signatures are followed by a visual representation of the provided
 
 - **[C|R]** `showOptions(int width, int icon, String title, String text, Object... options): int`
 
-  <img src="/images/manual/optionbox1.png" alt="UI 3" width="701"/>
+  <img src="/arara/images/manual/optionbox1.svg" alt="UI 3" width="701"/>
 
   This method shows a message box according to the provided parameters, including options represented as an array of `Object` objects. This array is portrayed in the dialog box as a list of buttons. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the natural index of the selected button, starting from `1`. If no button is pressed (e.g, the window is closed), `0` is returned. Note that the object array is denoted by a  comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters. It is important to observe that arara temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time includes the idle period as well.
 
@@ -640,7 +640,7 @@ Keep in mind that your window manager might render the button orientation differ
 
 - **[C|R]** `showOptions(int icon, String title, String text, Object... options): int`
 
-  <img src="/images/manual/optionbox2.png" alt="UI 4" width="701"/>
+  <img src="/arara/images/manual/optionbox2.svg" alt="UI 4" width="701"/>
 
   This method shows a message box according to the provided parameters, including options represented as an array of `Object` objects. This array is portrayed in the dialog box as a list of buttons. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the natural index of the selected button, starting from `1`. If no button is pressed (e.g, the window is closed), `0` is returned. Note that the object array is denoted by a  comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters. It is important to observe that arara temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time includes the idle period as well.
 
@@ -651,7 +651,7 @@ Keep in mind that your window manager might render the button orientation differ
 
 - **[C|R]** `showDropdown(int width, int icon, String title, String text, Object... options): int`
 
-  <img src="/images/manual/dropdown1.png" alt="UI 5" width="701"/>
+  <img src="/arara/images/manual/dropdown1.svg" alt="UI 5" width="701"/>
 
   This method shows a dialog box according to the provided parameters, including options represented as an array of `Object` objects. This array is portrayed in the dialog box as a dropdown list. The first element from the array is automatically selected. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the natural index of the selected item, starting from `1`. If the user cancels the dialog or closes the window, `0` is returned.  Note that the object array is denoted by a comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters. It is important to observe that arara temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time includes the idle period as well.
 
@@ -668,7 +668,7 @@ According to the [Wikipedia entry](https://en.wikipedia.org/wiki/Combo_box), a *
 
 - **[C|R]** `showDropdown(int icon, String title, String text, Object... options): int`
 
-  <img src="/images/manual/dropdown2.png" alt="UI 6" width="701"/>
+  <img src="/arara/images/manual/dropdown2.svg" alt="UI 6" width="701"/>
 
   This method shows a dialog box according to the provided parameters, including options represented as an array of `Object` objects. This array is portrayed in the dialog box as a dropdown list. The first element from the array is automatically selected. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the natural index of the selected item, starting from `1`. If the user cancels the dialog or closes the window, `0` is returned.  Note that the object array is denoted by a comma-separated sequence of elements in the actual method call, resulting in a variable number of parameters. It is important to observe that arara temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time includes the idle period as well.
 
@@ -685,7 +685,7 @@ According to the [Wikipedia entry](https://en.wikipedia.org/wiki/Swing_(Java)), 
 
 - **[C|R]** `showInput(int width, int icon, String title, String text): String`
 
-  <img src="/images/manual/inputbox1.png" alt="UI 7" width="701"/>
+  <img src="/arara/images/manual/inputbox1.svg" alt="UI 7" width="701"/>
 
   This method shows an input dialog box according to the provided parameters. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the content of the input text field, as a trimmed `String` object. If the user cancels the dialog or closes the window, an empty string is returned. It is important to observe that arara temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time includes the idle period as well.
 
@@ -696,7 +696,7 @@ According to the [Wikipedia entry](https://en.wikipedia.org/wiki/Swing_(Java)), 
 
 - **[C|R]** `showInput(int icon, String title, String text): String`
 
-  <img src="/images/manual/inputbox2.png" alt="UI 8" width="701"/>
+  <img src="/arara/images/manual/inputbox2.svg" alt="UI 8" width="701"/>
 
   This method shows an input dialog box according to the provided parameters. The dialog box is disposed when the user either presses one of the buttons or closes the window. The method returns the content of the input text field, as a trimmed `String` object. If the user cancels the dialog or closes the window, an empty string is returned. It is important to observe that arara temporarily interrupts the execution and waits for the dialog box disposal. Also note that the total time includes the idle period as well.
 
