@@ -13,3 +13,7 @@ repos:
   hooks:
   - id: gradle-task
     args: ['spotlessCheck']
+- repo: https://github.com/nix-community/nixpkgs-fmt
+  rev: v1.2.0
+  hooks:
+  - id: nixpkgs-fmt
