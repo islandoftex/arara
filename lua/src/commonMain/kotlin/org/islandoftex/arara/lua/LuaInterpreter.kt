@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua
 
+import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
-import org.islandoftex.arara.core.files.FileType
+import org.islandoftex.arara.core.files.UNKNOWN_TYPE
 import org.luaj.vm2.LuaFunction
 import org.luaj.vm2.LuaNumber
 import org.luaj.vm2.LuaString
@@ -33,13 +34,28 @@ object LuaInterpreter {
         }
     }
 
-    private fun extractProjectFile(path: String, table: LuaTable): ProjectFile {
-        val fileType = table["fileType"].takeIf { it is LuaTable }?.toString()
-            ?: FileType.UNKNOWN_TYPE
-        val priority = table["priority"].takeIf { it is LuaNumber }?.toint()
-            ?: 0
+    private fun extractFileType(fileType: LuaTable): FileType {
+        val extension = requireNotNull(fileType["extension"].takeIf { it is LuaString }?.toString()) {
+            "An extension is required to identify the file type."
+        }
+        val pattern = requireNotNull(fileType["extension"].takeIf { it is LuaString }?.toString()) {
+            // TODO: follow documentation and only require it for non-default filetypes
+            "A pattern is missing (unknown and not in the default file types)."
+        }
 
-        return org.islandoftex.arara.core.files.ProjectFile(MPPPath(path), FileType("", ""), priority)
+        return org.islandoftex.arara.core.files.FileType(extension, pattern)
+    }
+    private fun extractProjectFile(path: String, table: LuaTable): ProjectFile {
+        val fileType = table["fileType"]
+            .takeIf { it is LuaTable }
+            ?.let { extractFileType(it as LuaTable) }
+            ?: FileType.UNKNOWN_TYPE
+        val priority = table["priority"]
+            .takeIf { it is LuaNumber }
+            ?.toint()
+            ?: org.islandoftex.arara.core.files.ProjectFile.DEFAULT_PRIORITY
+
+        return org.islandoftex.arara.core.files.ProjectFile(MPPPath(path), fileType, priority)
     }
 
     private fun extractProject(table: LuaTable): Project {
