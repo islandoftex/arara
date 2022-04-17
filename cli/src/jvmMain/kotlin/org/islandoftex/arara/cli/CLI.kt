@@ -249,18 +249,13 @@ class CLI : CliktCommand(
         // the terminal
         LoggingUtils.init()
 
-        // print the arara logo in the terminal; I just
-        // hope people use this tool in a good terminal with
-        // fixed-width fonts, otherwise the logo will be messed
         println("${DisplayUtils.logoString}\n")
 
-        // start the internal stopwatch before any of arara's real working
-        // starts
         val executionStart = TimeSource.Monotonic.markNow()
+        updateConfigurationFromCommandLine()
 
         // logging has to be initialized only once and for all because
         // context resets lead to missing output
-        updateConfigurationFromCommandLine()
         LoggingUtils.setupLogging(Session.loggingOptions)
 
         // add all command line call parameters to the session
