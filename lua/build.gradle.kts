@@ -19,5 +19,17 @@ kotlin {
                 implementation("com.soywiz.korlibs.luak:luak:${Versions.luak}")
             }
         }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test-common"))
+                implementation(kotlin("test-annotations-common"))
+            }
+        }
+        val jvmTest by getting {
+            dependencies {
+                implementation(kotlin("test-junit5"))
+                runtimeOnly("org.junit.jupiter:junit-jupiter-engine:${Versions.junit}")
+            }
+        }
     }
 }

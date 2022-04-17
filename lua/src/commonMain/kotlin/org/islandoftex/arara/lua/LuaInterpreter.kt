@@ -126,29 +126,4 @@ object LuaInterpreter {
                 .toList()
         }
     }
-
-    /**
-     * Try a toy example for Lua interpretation. To be extended to the
-     * real project parsing.
-     */
-    fun tryProjectToyExample() {
-        val globals = CommonPlatform.Companion.standardGlobals()
-        val script = """
-            return {
-              name = "My awesome book",
-              workingDirectory = ".",
-              files = {
-                ["a.mp"] = { directives = { "metapost" } },
-                ["file.tex"] = {
-                  dependencies = { "a.mp" }
-                }
-              },
-              dependencies = { "project b" }
-            }
-        """.trimIndent()
-        val f = globals.load(script) as LuaFunction
-        val c = f.checkclosure()!!
-        val t = c.call() as? LuaTable
-        println(extractProject(t!!))
-    }
 }
