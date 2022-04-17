@@ -227,7 +227,7 @@ This rule runs the \rbox{context} \TeX\ engine on the provided \mtbox{currentFil
 
 \item[\rpsbox{autopdf}] This option, as the name indicates, closes the corresponding \rbox{pdf} file in viewer and then reopens it afterwards.
 
-\item[\abox{purge}] This option, as the name indicates, purges files according to the provided rule. Possible values are: 
+\item[\abox{purge}] This option, as the name indicates, purges files according to the provided rule. Possible values are:
 
 \begin{description}
 \item[\povalue{partial}] This value, as the name suggests, purges files either or not after a proper run, defined through a pattern. Please refer to the user manual for further details.
@@ -1417,7 +1417,7 @@ This rule runs \rbox{pythontex}, a wrapper that provides access to Python from w
 \item[\povalue{always}] When this value is used, as the name indicates, the wrapper executes all code, regardless of modification or errors and warnings. It is useful when code has not been modified, but a dependency such as a library or external data has changed.
 \end{description}
 
-\item[\rpsbox{hashdependencies}] This option, as the name suggests, determines whether dependencies are checked for changes via their hashes or modification times. 
+\item[\rpsbox{hashdependencies}] This option, as the name suggests, determines whether dependencies are checked for changes via their hashes or modification times.
 
 \item[\abox{jobs}] This option, as the name suggests, takes an integer value denoting the maximum number of concurrent processes. By default, the wrapper relies on the number of CPUs in the system.
 
@@ -1534,7 +1534,7 @@ This rule runs the \rbox{tex} \TeX\ engine on the provided \mtbox{currentFile} r
 \end{codebox}
 
 \item[\rulebox{texcount}]
-This rule runs \rbox{texcount}, a Perl script designed to count words in \TeX\ and \LaTeX\ files, ignoring macros, tables, formulae and more on the provided \mtbox{currentFile} reference. The script is highly configurable, so make sure to check the manual for further information. 
+This rule runs \rbox{texcount}, a Perl script designed to count words in \TeX\ and \LaTeX\ files, ignoring macros, tables, formulae and more on the provided \mtbox{currentFile} reference. The script is highly configurable, so make sure to check the manual for further information.
 
 \begin{description}
 \item[\abox{rules}] This option, as the name suggests, sets the rules which dictate how the script should work regarding word counting and option handling. Possible values are:

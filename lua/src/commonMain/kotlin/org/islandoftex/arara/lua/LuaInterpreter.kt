@@ -5,7 +5,6 @@ import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.files.FileType
-import org.islandoftex.arara.core.files.FileType.Companion.UNKNOWN_TYPE
 import org.luaj.vm2.LuaFunction
 import org.luaj.vm2.LuaNumber
 import org.luaj.vm2.LuaString

@@ -159,7 +159,7 @@ The available options for our tool are detailed as follows. Each option contains
     % arara: pdftex
     Hello world.
     \bye
-    
+
     % arara: pdftex
     ```
 
@@ -175,15 +175,15 @@ The available options for our tool are detailed as follows. Each option contains
      / _` | '__/ _` | '__/ _` |
     | (_| | | | (_| | | | (_| |
      \__,_|_|  \__,_|_|  \__,_|
-    
+
     Verwerken van 'doc5.tex' (grootte: 285 B, laatst gewijzigd:
     03/01/2020 19:25:40), een ogenblik geduld.
-    
+
     (PDFLaTeX) PDFLaTeX engine ............................ SUCCESVOL
     (BibTeX) The BibTeX reference management software ..... SUCCESVOL
     (PDFLaTeX) PDFLaTeX engine ............................ SUCCESVOL
     (PDFLaTeX) PDFLaTeX engine ............................ SUCCESVOL
-    
+
     Totaal: 1,07 seconden
     ```
 
@@ -215,13 +215,13 @@ From version 6.0 on, if you pass an invalid language code, arara will now run in
      / _` | '__/ _` | '__/ _` |
     | (_| | | | (_| | | | (_| |
      \__,_|_|  \__,_|_|  \__,_|
-    
+
     Processing 'doc8.tex' (size: 45 B, last modified: 05/29/2018
     12:32:14), please wait.
-    
+
     (PDFTeX) PDFTeX engine .................................. SUCCESS
     (PDFTeX) PDFTeX engine .................................. SUCCESS
-    
+
     Total: 0.58 seconds
     ```
 
@@ -235,30 +235,30 @@ From version 6.0 on, if you pass an invalid language code, arara will now run in
      / _` | '__/ _` | '__/ _` |
     | (_| | | | (_| | | | (_| |
      \__,_|_|  \__,_|_|  \__,_|
-    
+
     Processing "doc5.tex" (size: 360 B, last modified: 12/28/2020
     13:03:32), please wait.
-    
+
     [DR] (PDFLaTeX) PDFLaTeX engine
     -----------------------------------------------------------------
     Author: Island of TeX
     About to run: [pdflatex, doc5.tex] @ /home/paulo/Downloads
-    
+
     [DR] (BibTeX) The BibTeX reference management software
     -----------------------------------------------------------------
     Author: Island of TeX
     About to run: [bibtex, doc5] @ /home/paulo/Downloads
-    
+
     [DR] (PDFLaTeX) PDFLaTeX engine
     -----------------------------------------------------------------
     Author: Island of TeX
     About to run: [pdflatex, doc5.tex] @ /home/paulo/Downloads
-    
+
     [DR] (PDFLaTeX) PDFLaTeX engine
     -----------------------------------------------------------------
     Author: Island of TeX
     About to run: [pdflatex, doc5.tex] @ /home/paulo/Downloads
-    
+
     Total: 0.18 seconds
     ```
 
@@ -289,13 +289,13 @@ It is very important to observe that conditionals are not evaluated when our too
      / _` | '__/ _` | '__/ _` |
     | (_| | | | (_| | | | (_| |
      \__,_|_|  \__,_|_|  \__,_|
-    
+
     Processing 'doc9.tex' (size: 18 B, last modified: 05/29/2018
     14:39:21), please wait.
-    
+
     (PDFTeX) PDFTeX engine .................................. SUCCESS
     (PDFTeX) PDFTeX engine .................................. SUCCESS
-    
+
     Total: 0.96 seconds
     ```
 
@@ -316,21 +316,21 @@ It is very important to observe that conditionals are not evaluated when our too
      / _` | '__/ _` | '__/ _` |
     | (_| | | | (_| | | | (_| |
      \__,_|_|  \__,_|_|  \__,_|
-    
+
     Processing 'doc10.tex' (size: 63 B, last modified: 05/29/2018
     15:24:06), please wait.
-    
+
     (PDFTeX) PDFTeX engine .................................   ERROR
-    
+
     The system command execution reached the provided timeout value
     and was aborted. If the time was way too short, make sure to
     provide a longer value. There are more details available on this
     exception:
-    
+
     DETAILS ---------------------------------------------------------
     Timed out waiting for java.lang.UNIXProcess@6b53e23f to finish,
     timeout: 3000 milliseconds, executed command [pdftex, doc10.tex]
-    
+
     Total: 3.37 seconds
     ```
 
@@ -382,12 +382,12 @@ Note that other extensions can be added through a proper mapping in the configur
      / _` | '__/ _` | '__/ _` |
     | (_| | | | (_| | | | (_| |
      \__,_|_|  \__,_|_|  \__,_|
-    
+
     Processing 'doc11.tex' (size: 34 B, last modified: 05/29/2018
     19:40:35), please wait.
-    
+
     (PDFTeX) PDFTeX engine .................................. SUCCESS
-    
+
     Total: 0.69 seconds
     ```
 
@@ -399,12 +399,12 @@ Note that other extensions can be added through a proper mapping in the configur
      / _` | '__/ _` | '__/ _` |
     | (_| | | | (_| | | | (_| |
      \__,_|_|  \__,_|_|  \__,_|
-    
+
     Processing 'doc11.tex' (size: 34 B, last modified: 05/29/2018
     19:40:35), please wait.
-    
+
     (PDFTeX) PDFTeX engine .................................. SUCCESS
-    
+
     Total: 0.69 seconds
     ```
 
@@ -416,12 +416,12 @@ Note that other extensions can be added through a proper mapping in the configur
      / _` | '__/ _` | '__/ _` |
     | (_| | | | (_| | | | (_| |
      \__,_|_|  \__,_|_|  \__,_|
-    
+
     Processing 'doc11.tex' (size: 34 B, last modified: 05/29/2018
     19:40:35), please wait.
-    
+
     (PDFTeX) PDFTeX engine .................................. SUCCESS
-    
+
     Total: 0.69 seconds
     ```
 

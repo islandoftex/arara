@@ -100,7 +100,7 @@ The following list describes the basic structure of an arara rule by presenting 
     - `⋄ reference`: This variable holds the canonical, absolute path representation of the file name as a `File` object. This is useful if it's necessary to know the hierarchical structure of a project. Since the reference is a Java object, we can use methods available in the `File` class.
 
     {% messagebox(title="Quote handling") %}
-The YAML format disallows key values starting with `@` without proper quoting. This is the reason we had to use double quotes for the value and internally using single quotes for the command string. Also, we could use the other way around, or even using only one type and then escaping them when needed. This is excessively verbose but needed due to the format requirement. 
+The YAML format disallows key values starting with `@` without proper quoting. This is the reason we had to use double quotes for the value and internally using single quotes for the command string. Also, we could use the other way around, or even using only one type and then escaping them when needed. This is excessively verbose but needed due to the format requirement.
 
 From version 6.0 on, the `<arara>` shorthand is not supported anymore. We encourage the use of a YAML feature named *folded style* when writing such values. The idea here is to use the scalar content in folded style. The new code will look like this:
 
@@ -128,7 +128,7 @@ Mind the indentation, as YAML requires it to properly identify blocks. If your c
   commands:
   - name: The PDFLaTeX engine
     command: >
-      @{ 
+      @{
         return getCommand('pdflatex', file)
       }
     exit: value == 0
@@ -259,7 +259,7 @@ As seen previously, both `flag` and `default` are marked as optional, but at lea
   arguments:
   - identifier: shell
     flag: >
-      @{ 
+      @{
           isTrue(parameters.shell,
                  '--shell-escape',
                  '--no-shell-escape')

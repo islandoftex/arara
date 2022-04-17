@@ -25,12 +25,12 @@ following items are available:
   in the repository. In order to check if `git` is available in your operating
   system, run the following command in the terminal (version numbers might
   vary):
-  
+
   ```sh
   $ git --version
   git version 2.29.2
   ```
-  
+
     Please refer to the [git project website](https://git-scm.com/) in order to
     obtain specific installation instructions for your operating system. In
     general, most recent Unix systems have \rbox{git} installed out of the
@@ -42,12 +42,12 @@ following items are available:
   including Oracle, OpenJDK, and Azul Systems. In order to check if your
   operating system has the proper tools, run the following command in the
   terminal (version numbers might vary):
-  
+
   ```sh
   $ javac -version
   javac 1.8.0_171
   ```
-  
+
     The previous command, as the name suggests, refers to the `javac` tool,
     which is the Java compiler itself. The most common Java Development Kit out
     there is from
@@ -63,16 +63,16 @@ following items are available:
   build framework to provide support for the JVM ecosystem. In order to check if
   `gradle`, the Gradle binary, is available in your operating system, run the
   following command in the terminal (version numbers might vary):
-  
+
   ```sh
   $ gradle --version
   ------------------------------------------------------------
   Gradle 6.0.1
   ------------------------------------------------------------
-  
+
   Build time:   2019-11-21 11:47:01 UTC
   Revision:     <unknown>
-  
+
   Kotlin:       1.3.50
   Groovy:       2.5.8
   Ant:          Apache Ant(TM) version 1.10.7 compiled
@@ -80,7 +80,7 @@ following items are available:
   JVM:          1.8.0_232 (Oracle Corporation 25.232-b09)
   OS:           Linux 5.5.0-1-MANJARO amd64
   ```
-  
+
     Please refer to the Gradle [project website](https://gradle.org) in order to
     obtain specific installation instructions for your operating system. In
     general, most recent Linux distributions have the Gradle binary, as well the

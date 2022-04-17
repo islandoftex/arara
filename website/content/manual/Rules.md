@@ -39,33 +39,33 @@ The best solution to avoid possible future name conflicts, according to the Imag
 This rule executes the `asy` command line program, referring to Asymptote, a powerful descriptive vector graphics language for technical drawings, inspired by Metapost but with an improved syntax. Please note that you will have to make the `.asy` extension known to arara in order to compile Asymptote files. Furthermore, it is advised to use this in your regular TeX document specifying the `files` parameter to include all graphics you want to compile for inclusion in your document.
 
 - `color`: This option, as the name suggests, provides the underlying color model to be used in the current execution. Possible values are:
-  
+
   - `bw`: This option value, as the name suggests, converts all colors to a black and white model.
-  
+
   - `cmyk`: This option value converts the RGB (red, green an blue) color model to the CMYK (cyan, magenta, yellow and black) counterpart.
-  
+
   - `rgb`: This option value converts the CMYK (cyan, magenta, yellow and black)  color model to the RGB (red, green an blue) counterpart.
-  
+
   - `gray`: This option value, as the name suggests, converts all colors to a grayscale model.
 
 - `engine` (default: `latex`): This option, as the name indicates, sets the underlying TeX engine to be used for the current compilation. Make sure to take a look at the Asymptote manual for further details on this option. Possible values are:
-  
+
   - `latex`: This value, as the name suggests, sets the underlying TeX engine to `latex` for the current compilation. Note that the engine might play a major role in the generated code.
-  
+
   - `pdflatex`: This value, as the name indicates, sets the underlying TeX engine to `pdflatex` for the current compilation. Note that the engine might play a major role in the generated code.
-  
+
   - `xelatex`: This value, as the name suggests, sets the underlying TeX engine to `xelatex` for the current compilation. Note that the engine might play a major role in the generated code.
-  
+
   - `lualatex`: This value, as the name indicates, sets the underlying TeX engine to `lualatex` for the current compilation. Note that the engine might play a major role in the generated code.
-  
+
   - `tex`: This value, as the name suggests, sets the underlying TeX engine to `tex` for the current compilation. Note that the engine might play a major role in the generated code.
-  
+
   - `pdftex`: This value, as the name indicates, sets the underlying TeX engine to `pdftex` for the current compilation. Note that the engine might play a major role in the generated code.
-  
+
   - `luatex`: This value, as the name suggests, sets the underlying TeX engine to `luatex` for the current compilation. Note that the engine might play a major role in the generated code.
-  
+
   - `context`: This value, as the name indicates, sets the underlying TeX engine to `context` for the current compilation. Note that the engine might play a major role in the generated code.
-  
+
   - `none`: This value, as the name suggests, sets the underlying TeX engine to `none` for the current compilation. In this case, there will be no associated engine.
 
 - `format`: This option, as the name suggests, converts each output file to a specified format. Make sure to take a look at the Asymptote manual for further details.
@@ -214,12 +214,12 @@ This rule runs the `context` TeX engine on the provided `❖ currentFile` refere
 
 - **[S]** `autopdf`: This option, as the name indicates, closes the corresponding `pdf` file in viewer and then reopens it afterwards.
 
-- `purge`: This option, as the name indicates, purges files according to the provided rule. Possible values are: 
-  
+- `purge`: This option, as the name indicates, purges files according to the provided rule. Possible values are:
+
   - `partial`: This value, as the name suggests, purges files either or not after a proper run, defined through a pattern. Please refer to the user manual for further details.
-  
+
   - `all`: This value, as the name suggests, purges all files either or not after a proper run, defined through a pattern. Please refer to the user manual for further details.
-  
+
   - `result`: This value, as the name suggests, purges the resulting file before the actual run. Please refer to the user manual for further details.
 
 - `modules`: This option, as the name indicates, sets a list of modules and styles to be loaded, normally part of the distribution.
@@ -243,9 +243,9 @@ This rule runs the `context` TeX engine on the provided `❖ currentFile` refere
 - **[S]** `synctex`: This option sets whether `synctex`, an input and output synchronization feature that allows navigation from source to typeset material and vice versa, available in most TeX engines, is activated.
 
 - `interaction`: This option alters the underlying engine behaviour. If this option is omitted, the engine will prompt the user for interaction in the event of an error. Possible values are, in order of increasing user interaction (courtesy of our master Enrico Gregorio):
-  
+
   - `batchmode`: In this mode, nothing is printed on the terminal, and errors are scrolled as if the `return` key is hit at every error. Missing files that TeX tries to input or request from keyboard input cause the job to abort.
-  
+
   - `nonstopmode`: In this mode, the diagnostic message will appear on the terminal, but there is no possibility of user interaction just like in batch mode, previously described.
 
 - `options`: This option, as the name indicates, takes a list of raw command line options and appends it to the actual system call. An error is thrown if any data structure other than a proper list is provided as the value.
@@ -1267,7 +1267,7 @@ This rule runs `pythontex`, a wrapper that provides access to Python from within
 
   - `always`: When this value is used, as the name indicates, the wrapper executes all code, regardless of modification or errors and warnings. It is useful when code has not been modified, but a dependency such as a library or external data has changed.
 
-- **[S]** `hashdependencies`: This option, as the name suggests, determines whether dependencies are checked for changes via their hashes or modification times. 
+- **[S]** `hashdependencies`: This option, as the name suggests, determines whether dependencies are checked for changes via their hashes or modification times.
 
 - `jobs`: This option, as the name suggests, takes an integer value denoting the maximum number of concurrent processes. By default, the wrapper relies on the number of CPUs in the system.
 
@@ -1374,7 +1374,7 @@ This rule runs the `tex` TeX engine on the provided `❖ currentFile` reference,
 
 # `texcount`
 
-This rule runs `texcount`, a Perl script designed to count words in TeX and LaTeX files, ignoring macros, tables, formulae and more on the provided `❖ currentFile` reference. The script is highly configurable, so make sure to check the manual for further information. 
+This rule runs `texcount`, a Perl script designed to count words in TeX and LaTeX files, ignoring macros, tables, formulae and more on the provided `❖ currentFile` reference. The script is highly configurable, so make sure to check the manual for further information.
 
 - `rules`: This option, as the name suggests, sets the rules which dictate how the script should work regarding word counting and option handling. Possible values are:
 

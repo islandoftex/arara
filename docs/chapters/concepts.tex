@@ -106,7 +106,7 @@ There are at least one variable available in the \abox{command} context and is d
 
 \begin{messagebox}{Quote handling}{araracolour}{\icinfo}{white}
 \setlength{\parskip}{1em}
-The YAML format disallows key values starting with \rbox{@} without proper quoting. This is the reason we had to use double quotes for the value and internally using single quotes for the command string. Also, we could use the other way around, or even using only one type and then escaping them when needed. This is excessively verbose but needed due to the format requirement. 
+The YAML format disallows key values starting with \rbox{@} without proper quoting. This is the reason we had to use double quotes for the value and internally using single quotes for the command string. Also, we could use the other way around, or even using only one type and then escaping them when needed. This is excessively verbose but needed due to the format requirement.
 
 From version 6.0 on, the \rbox{<arara>} shorthand is not supported anymore. We encourage the use of a YAML feature named \emph{folded style} when writing such values. The idea here is to use the scalar content in folded style, as seen in Section~\ref{sec:yamlscalars}, on page~\pageref{sec:yamlscalars}. The new code will look like this:
 

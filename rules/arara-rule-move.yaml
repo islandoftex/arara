@@ -36,4 +36,3 @@ arguments:
         return parameters.target;
     }
   required: true
-

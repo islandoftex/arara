@@ -54,4 +54,3 @@ arguments:
             throwError('Invalid mode name.');
         }
     }
-

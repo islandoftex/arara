@@ -367,7 +367,7 @@ correctly compile your document:
 1. For starters, we need to run the {{ tex() }} engine in order to write (amongst other
     things) the relevant bibliography information to the auxiliary file. We can
     achieve this by inserting the following directive:
-   
+
    ```tex
    % arara: pdflatex
    ```
@@ -376,7 +376,7 @@ correctly compile your document:
     to run the Bib{{ tex() }} tool as a means to map entries from the bibliography
     database to the existing citations into an intermediate bibliography
     file. We can achieve this by inserting the following directive:
-   
+
    ```tex
    % arara: bibtex
    ```
@@ -384,7 +384,7 @@ correctly compile your document:
 3. Once the intermediate bibliography file is generated, we can now have a
     proper bibliography section in our document, so we need to run the {{ tex() }}
     engine again. We can achieve this by inserting the following directive:
-   
+
    ```tex
    % arara: pdflatex
    ```
@@ -392,7 +392,7 @@ correctly compile your document:
 4. However, the citations are still not yet referenced in the document, so a
     final run of the {{ tex() }} engine is required in order to correctly adjust these
     references. We can achieve this by inserting the following directive:
-   
+
    ```tex
    % arara: pdflatex
    ```
