@@ -44,7 +44,7 @@ class FileHandlingTest {
     }
     @Test
     fun shouldGenerateCorrectCRCSums() {
-        assertEquals(FileHandling.calculateHash(MPPPath("../LICENSE")), 608305299)
+        assertEquals(FileHandling.calculateHash(MPPPath("../LICENSE")), 2951375576)
         assertEquals(FileHandling.calculateHash(MPPPath("../CODE_OF_CONDUCT.md")), 3856623865)
     }
 }
