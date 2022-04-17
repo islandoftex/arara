@@ -93,6 +93,41 @@ object LuaInterpreter {
     }
 
     /**
+     * Execute a lua script to get a list of projects.
+     *
+     * This tries to resolve the return value of the lua script/closure to
+     * a single project and, if that fails, to a list of projects.
+     *
+     * @param luaScript The Lua string to be interpreted.
+     * @throws IllegalArgumentException if the parsing fails.
+     * @return List of projects extracted from the Lua run.
+     */
+    fun parseProjectsFromLua(luaScript: String): List<Project> {
+        val globals = CommonPlatform.Companion.standardGlobals()
+        val f = globals.load(luaScript) as LuaFunction
+        val c = f.checkclosure()!!
+        val t = c.call() as? LuaTable
+
+        requireNotNull(t) {
+            "The return type of the Lua project specification has to be a table " +
+                "(project or list of projects)."
+        }
+
+// try extracting a single project from the Lua result and if that
+        // fails try to extract a list of projects; only if that fails, fail
+        // parsing
+        return kotlin.runCatching {
+            listOf(extractProject(t))
+        }.getOrElse {
+// TODO: log "illegal" values in the list which are filtered
+            t.keys()
+                .mapNotNull { key -> t[key].takeIf { it is LuaTable } }
+                .map { extractProject(it as LuaTable) }
+                .toList()
+        }
+    }
+
+    /**
      * Try a toy example for Lua interpretation. To be extended to the
      * real project parsing.
      */
