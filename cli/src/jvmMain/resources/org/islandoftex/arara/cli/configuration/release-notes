@@ -1,11 +1,6 @@
-* Split arara into API, core and implementation packages.
-* Refactored localization to use IETF BCP 47 codes.
-* Added quite a number of rules and improved syntax.
-* Rules now have a unique file name to be identifiable in a texmf tree.
-* New ability to specify default preamble for files without directives.
-* Added safe mode for disabling easily exploitable features.
-* Removed arara shorthands (<arara>).
-* Multiple bug fixes (exit codes, currentFile handling, ...)
+* Add (Lua) project support to arara.
+* Use a defined domain-specific file system API instead of `java.io.File`.
+* Use header mode by default (`-w` restores the old behavior).
 
 See the full changelog of this release at
 https://gitlab.com/islandoftex/arara/-/blob/development/CHANGELOG.md
