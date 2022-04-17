@@ -113,13 +113,13 @@ object LuaInterpreter {
                 "(project or list of projects)."
         }
 
-// try extracting a single project from the Lua result and if that
+        // try extracting a single project from the Lua result and if that
         // fails try to extract a list of projects; only if that fails, fail
         // parsing
         return kotlin.runCatching {
             listOf(extractProject(t))
         }.getOrElse {
-// TODO: log "illegal" values in the list which are filtered
+            // TODO: log "illegal" values in the list which are filtered
             t.keys()
                 .mapNotNull { key -> t[key].takeIf { it is LuaTable } }
                 .map { extractProject(it as LuaTable) }
