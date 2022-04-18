@@ -40,6 +40,7 @@ import org.islandoftex.arara.core.rules.Directives
 import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
+import org.islandoftex.arara.lua.LuaInterpreter
 import org.islandoftex.arara.mvel.utils.MvelState
 import java.time.LocalDate
 import kotlin.time.Duration
@@ -122,17 +123,20 @@ class CLI : CliktCommand(
             ?.takeIf { it.trim().endsWith(".lua") }
             ?.let { workingDir.resolve(it) }
             ?.takeIf { it.exists }?.readText()
-            ?.let {
+            ?.let { luaScript ->
                 // try project resolution in the following order:
                 // - treat project file as list of projects
                 // - treat project file as a single project
                 // - do not consider it a project
-                // TODO: every Lua file is invalid for now as it's NIY
-                // TODO: one could run Lua files with arara, so probably this
-                //       should simply return null and only on parse error throw
-                //       an exception:
+                // if it is not a project this Lua file should be subject
+                // to ordinary arara execution rules (maybe someone has
+                // defined a lua filetype), so if there is an exception/it
+                // is not a project we simply return null
+                // TODO: throw exception on parse error:
                 //       throw AraraException(LanguageController.messages.ERROR_INVALID_PROJECT_FILE)
-                null
+                kotlin.runCatching {
+                    LuaInterpreter.parseProjectsFromLua(luaScript)
+                }.getOrNull()
             }
             ?: Project(
                 "Untitled",
