@@ -8,6 +8,14 @@ pdffile="manual.pdf"
 cat <<EOF > $htmlfile
 <!DOCTYPE html>
 <html>
+<head>
+  <meta charset="UTF-8">
+  <title>arara</title>
+
+  <meta name="keywords" content="tex, latex, context, build tool, automation">
+  <meta itemprop="name" content="The cool TeX automation tool">
+  <meta itemprop="description" content="arara is a TeX automation tool based on directives and rules.">
+</head>
 <body>
 EOF
 
