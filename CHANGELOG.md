@@ -10,9 +10,10 @@ from version 5.0.0 on.
 
 ### Added
 
-* arara now accepts `.yaml` files as input files. These are treated as project
+* arara now accepts `.lua` files as input files. These are treated as project
   specification and will let arara run all files specified in the project(s).
-  When run as `arara project.yaml` you cannot run on multiple files.
+  When run as `arara project.yaml` you cannot run on multiple files. If you
+  run Lua files with arara directives they will continue to work as before.
   (see #11)
 
 ### Changed
