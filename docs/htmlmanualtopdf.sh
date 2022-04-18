@@ -85,9 +85,9 @@ do
   chapter_title="$(cat "tmp-$htmlfile" | pup '[class="heading-text"] text{}' \
                  | sed '/^[[:space:]]*$/d' | sed 's/ *$//g' | sed 's/^ *//g')"
   cat <<EOF >> $htmlfile
-<article id="$chapter">
-<h1>$chapter_title</h1>
-$(cat "tmp-$htmlfile" | pup ':parent-of([class="heading-text"])' \
+<article>
+<h1 id="$chapter">$chapter_title</h1>
+$(cat "tmp-$htmlfile" | pup --pre ':parent-of([class="heading-text"])' \
   | tail -n +5 | head -n -1 \
   | sed -r 's/<(\/?)h5/<\1h6/g' | sed -r 's/<(\/?)h4/<\1h5/g' \
   | sed -r 's/<(\/?)h3/<\1h4/g' | sed -r 's/<(\/?)h2/<\1h3/g' \
