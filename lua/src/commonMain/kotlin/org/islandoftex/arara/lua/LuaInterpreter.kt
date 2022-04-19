@@ -85,7 +85,7 @@ object LuaInterpreter {
             (it as LuaTable)
                 .keys()
                 .mapNotNull { key ->
-                    table[key].takeIf { value -> value is LuaString }?.toString()
+                    it[key].takeIf { value -> value is LuaString }?.toString()
                 }
                 .toSet()
         } ?: setOf()
