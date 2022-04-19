@@ -46,7 +46,7 @@ object LuaInterpreter {
         return org.islandoftex.arara.core.files.FileType(extension, pattern)
     }
 
-    private fun extractProjectFile(path: String, table: LuaTable): ProjectFile {
+    private fun extractProjectFile(path: MPPPath, table: LuaTable): ProjectFile {
         val fileType = table["fileType"]
             .takeIf { it is LuaTable }
             ?.let { extractFileType(it as LuaTable) }
@@ -56,23 +56,35 @@ object LuaInterpreter {
             ?.toint()
             ?: org.islandoftex.arara.core.files.ProjectFile.DEFAULT_PRIORITY
 
-        return org.islandoftex.arara.core.files.ProjectFile(MPPPath(path), fileType, priority)
+        return org.islandoftex.arara.core.files.ProjectFile(path, fileType, priority)
     }
 
-    private fun extractProject(table: LuaTable): Project {
+    private fun extractProject(table: LuaTable, fallbackWorkingDirectory: MPPPath): Project {
         val name = table["name"].takeIf { it is LuaString }?.toString()
             ?: "Untitled project"
-        val workingDirectory = table["workingDirectory"].takeIf { it is LuaString }?.toString()
-            ?: "."
+        val workingDirectory = table["workingDirectory"]
+            .takeIf { it is LuaString }
+            ?.toString()
+            ?.let { MPPPath(it) }
+            ?: fallbackWorkingDirectory
 
         val files = table["files"].takeIf { it is LuaTable }?.let {
-            // TODO: check that keys are actual files resolved against working directory
             val fileTable = it as LuaTable
             fileTable.keys()
                 .mapNotNull { key ->
+                    val path = workingDirectory.resolve(key.toString())
+                    // TODO: check if path exists and issue warning otherwise
+                    require(!path.isDirectory) {
+                        "A project file must not be a directory."
+                    }
                     fileTable[key]
                         .takeIf { value -> value is LuaTable }
-                        ?.let { fileSpec -> extractProjectFile(key.toString(), fileSpec as LuaTable) }
+                        ?.let { fileSpec ->
+                            extractProjectFile(
+                                path,
+                                fileSpec as LuaTable
+                            )
+                        }
                 }
                 .toSet()
         } ?: setOf()
@@ -118,12 +130,12 @@ object LuaInterpreter {
         // fails try to extract a list of projects; only if that fails, fail
         // parsing
         return kotlin.runCatching {
-            listOf(extractProject(t))
+            listOf(extractProject(t, MPPPath(".")))
         }.getOrElse {
             // TODO: log "illegal" values in the list which are filtered
             t.keys()
                 .mapNotNull { key -> t[key].takeIf { it is LuaTable } }
-                .map { extractProject(it as LuaTable) }
+                .map { extractProject(it as LuaTable, MPPPath(".")) }
                 .toList()
         }
     }
