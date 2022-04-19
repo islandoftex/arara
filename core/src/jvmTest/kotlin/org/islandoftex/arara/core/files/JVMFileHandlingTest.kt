@@ -27,6 +27,9 @@ class JVMFileHandlingTest : ShouldSpec({
             file.toJVMPath().deleteExisting()
             FileHandling.hasChanged(file, databaseFile) shouldBe true
             FileHandling.hasChanged(file, databaseFile) shouldBe false
+            // kotest does not handle that we deleted the file ourselves
+            // so we have to restore it by writing new text
+            file.writeText("")
         }
     }
 })
