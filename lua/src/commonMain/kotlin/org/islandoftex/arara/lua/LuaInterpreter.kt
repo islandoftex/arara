@@ -77,7 +77,7 @@ object LuaInterpreter {
                 .toSet()
         } ?: setOf()
 
-        require(files.isEmpty()) {
+        require(files.isNotEmpty()) {
             "A project must contain at least one file"
         }
 
