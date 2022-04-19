@@ -29,4 +29,30 @@ class LuaInterpreterTest {
         assertEquals(2, project.files.size)
         assertEquals(1, project.dependencies.size)
     }
+
+    @Test
+    fun shouldParseMultipleProjects() {
+        val script = """
+            return {
+              {
+                name = "My awesome book",
+                files = {
+                  ["a.tex"] = { }
+                }
+              },
+              {
+                name = "My awesome book v2",
+                files = {
+                  ["b.tex"] = { }
+                }
+              }
+            }
+        """.trimIndent()
+        val projects = LuaInterpreter.parseProjectsFromLua(script)
+
+        assertEquals(2, projects.size)
+
+        assertEquals("My awesome book", projects[0].name)
+        assertEquals("My awesome book v2", projects[1].name)
+    }
 }
