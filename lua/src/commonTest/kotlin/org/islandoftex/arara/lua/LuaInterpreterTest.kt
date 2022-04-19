@@ -22,7 +22,7 @@ class LuaInterpreterTest {
         """.trimIndent()
         val projects = LuaInterpreter.parseProjectsFromLua(script)
 
-        assert(projects.size == 1)
+        assertEquals(1, projects.size)
         val project = projects[0]
 
         assertEquals("My awesome book", project.name)
