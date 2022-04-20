@@ -135,7 +135,7 @@ class CLI : CliktCommand(
                 // TODO: throw exception on parse error:
                 //       throw AraraException(LanguageController.messages.ERROR_INVALID_PROJECT_FILE)
                 kotlin.runCatching {
-                    LuaInterpreter.parseProjectsFromLua(luaScript)
+                    LuaInterpreter(workingDir).parseProjectsFromLua(luaScript)
                 }.getOrNull()
             }
             ?: Project(

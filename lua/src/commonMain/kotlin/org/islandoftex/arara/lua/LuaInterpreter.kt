@@ -13,7 +13,7 @@ import org.luaj.vm2.LuaTable
 import org.luaj.vm2.LuaValue
 import org.luaj.vm2.lib.common.CommonPlatform
 
-object LuaInterpreter {
+class LuaInterpreter(private val appWorkingDir: MPPPath) {
     /**
      * Dump the lua value to a string. Useful for debugging.
      */
@@ -59,14 +59,14 @@ object LuaInterpreter {
         return org.islandoftex.arara.core.files.ProjectFile(path, fileType, priority)
     }
 
-    private fun extractProject(table: LuaTable, fallbackWorkingDirectory: MPPPath): Project {
+    private fun extractProject(table: LuaTable): Project {
         val name = table["name"].takeIf { it is LuaString }?.toString()
             ?: "Untitled project"
         val workingDirectory = table["workingDirectory"]
             .takeIf { it is LuaString }
             ?.toString()
             ?.let { MPPPath(it) }
-            ?: fallbackWorkingDirectory
+            ?: appWorkingDir
 
         val files = table["files"].takeIf { it is LuaTable }?.let {
             val fileTable = it as LuaTable
@@ -102,7 +102,7 @@ object LuaInterpreter {
                 .toSet()
         } ?: setOf()
 
-        return org.islandoftex.arara.core.files.Project(name, MPPPath(workingDirectory), files, dependencies)
+        return org.islandoftex.arara.core.files.Project(name, workingDirectory, files, dependencies)
     }
 
     /**
@@ -130,12 +130,12 @@ object LuaInterpreter {
         // fails try to extract a list of projects; only if that fails, fail
         // parsing
         return kotlin.runCatching {
-            listOf(extractProject(t, MPPPath(".")))
+            listOf(extractProject(t))
         }.getOrElse {
             // TODO: log "illegal" values in the list which are filtered
             t.keys()
                 .mapNotNull { key -> t[key].takeIf { it is LuaTable } }
-                .map { extractProject(it as LuaTable, MPPPath(".")) }
+                .map { extractProject(it as LuaTable) }
                 .toList()
         }
     }

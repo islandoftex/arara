@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua
 
+import org.islandoftex.arara.api.files.MPPPath
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -20,7 +21,7 @@ class LuaInterpreterTest {
               dependencies = { "project b" }
             }
         """.trimIndent()
-        val projects = LuaInterpreter.parseProjectsFromLua(script)
+        val projects = LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script)
 
         assertEquals(1, projects.size)
         val project = projects[0]
@@ -48,7 +49,7 @@ class LuaInterpreterTest {
               }
             }
         """.trimIndent()
-        val projects = LuaInterpreter.parseProjectsFromLua(script)
+        val projects = LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script)
 
         assertEquals(2, projects.size)
 
