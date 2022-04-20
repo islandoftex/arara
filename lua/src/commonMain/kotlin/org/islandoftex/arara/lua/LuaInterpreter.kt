@@ -5,6 +5,7 @@ import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
+import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.files.UNKNOWN_TYPE
 import org.luaj.vm2.LuaFunction
 import org.luaj.vm2.LuaNumber
@@ -38,8 +39,12 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         val extension = requireNotNull(fileType["extension"].takeIf { it is LuaString }?.toString()) {
             "An extension is required to identify the file type."
         }
-        val pattern = requireNotNull(fileType["extension"].takeIf { it is LuaString }?.toString()) {
-            // TODO: follow documentation and only require it for non-default filetypes
+        val pattern = requireNotNull(
+            fileType["pattern"]
+                .takeIf { it is LuaString }
+                ?.toString()
+                ?: ConfigurationUtils.defaultFileTypePatterns[extension]
+        ) {
             "A pattern is missing (unknown and not in the default file types)."
         }
 
