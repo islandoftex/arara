@@ -50,7 +50,7 @@ kotlin {
 
 application {
     applicationName = project.name
-    mainClassName = "$group.cli.CLIKt"
+    mainClass.set("$group.cli.CLIKt")
 }
 
 tasks {
