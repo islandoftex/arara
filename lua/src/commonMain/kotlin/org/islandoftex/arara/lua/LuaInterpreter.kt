@@ -138,10 +138,21 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
             listOf(extractProject(t))
         }.getOrElse {
             // TODO: log "illegal" values in the list which are filtered
-            t.keys()
-                .mapNotNull { key -> t[key].takeIf { it is LuaTable } }
-                .map { extractProject(it as LuaTable) }
-                .toList()
+            requireNotNull(
+                t.keys()
+                    .mapNotNull { key -> t[key].takeIf { it is LuaTable } }
+                    .map { extractProject(it as LuaTable) }
+                    .toList()
+                    .takeIf { projects ->
+                        projects.all { project ->
+                            project.dependencies.all { dep ->
+                                projects.find { it.name == dep } != null
+                            }
+                        }
+                    }
+            ) {
+                "Project dependencies have not been resolved successfully."
+            }
         }
     }
 }
