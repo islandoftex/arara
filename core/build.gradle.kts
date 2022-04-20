@@ -42,7 +42,6 @@ kotlin {
         }
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:${Versions.kotlinxSerialization}")
                 implementation("com.soywiz.korlibs.korio:korio:${Versions.korlibs}")
                 implementation("net.mamoe.yamlkt:yamlkt:${Versions.yamlkt}")
             }

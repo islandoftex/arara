@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
 
-@Serializable
 data class FileType(
     override val extension: String = FileType.INVALID_EXTENSION,
     override val pattern: String = FileType.INVALID_PATTERN
