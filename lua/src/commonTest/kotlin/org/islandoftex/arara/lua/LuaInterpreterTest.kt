@@ -13,10 +13,8 @@ class LuaInterpreterTest {
               name = "My awesome book",
               workingDirectory = ".",
               files = {
-                ["a.mp"] = { directives = { "metapost" } },
-                ["file.tex"] = {
-                  dependencies = { "a.mp" }
-                }
+                ["a.mp"] = { },
+                ["file.tex"] = { }
               },
               dependencies = { "project b" }
             }
