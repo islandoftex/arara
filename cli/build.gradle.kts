@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.islandoftex.arara.build.Versions
 
 plugins {
@@ -68,8 +69,14 @@ tasks {
     named<Task>("assembleDist").configure {
         dependsOn("shadowJar", "jacocoTestReport")
     }
-    named<Jar>("shadowJar").configure {
+    named<ShadowJar>("shadowJar").configure {
         archiveAppendix.set("with-deps")
         archiveClassifier.set("")
+
+        minimize {
+            exclude(dependency("org.jetbrains.kotlin:.*"))
+            exclude(dependency("org.apache.logging.log4j:log4j-slf4j-impl:.*"))
+            exclude(dependency("org.mvel:mvel2:.*"))
+        }
     }
 }
