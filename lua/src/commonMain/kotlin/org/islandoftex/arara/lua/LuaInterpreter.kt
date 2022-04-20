@@ -36,17 +36,13 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
     }
 
     private fun extractFileType(fileType: LuaTable): FileType {
-        val extension = requireNotNull(fileType["extension"].takeIf { it is LuaString }?.toString()) {
-            "An extension is required to identify the file type."
-        }
-        val pattern = requireNotNull(
-            fileType["pattern"]
-                .takeIf { it is LuaString }
-                ?.toString()
-                ?: ConfigurationUtils.defaultFileTypePatterns[extension]
-        ) {
-            "A pattern is missing (unknown and not in the default file types)."
-        }
+        val extension = fileType["extension"].takeIf { it is LuaString }?.toString()
+            ?: throw ProjectParseException("An extension is required to identify the file type.")
+        val pattern = fileType["pattern"]
+            .takeIf { it is LuaString }
+            ?.toString()
+            ?: ConfigurationUtils.defaultFileTypePatterns[extension]
+            ?: throw ProjectParseException("A pattern is missing (unknown and not in the default file types).")
 
         return org.islandoftex.arara.core.files.FileType(extension, pattern)
     }
@@ -79,9 +75,10 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
                 .mapNotNull { key ->
                     val path = workingDirectory.resolve(key.toString())
                     // TODO: check if path exists and issue warning otherwise
-                    require(!path.isDirectory) {
-                        "A project file must not be a directory."
+                    if (path.isDirectory) {
+                        throw ProjectParseException("A project file must not be a directory.")
                     }
+
                     fileTable[key]
                         .takeIf { value -> value is LuaTable }
                         ?.let { fileSpec ->
@@ -94,8 +91,8 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
                 .toSet()
         } ?: setOf()
 
-        require(files.isNotEmpty()) {
-            "A project must contain at least one file"
+        if (files.isEmpty()) {
+            throw ProjectParseException("A project must contain at least one file")
         }
 
         val dependencies = table["dependencies"].takeIf { it is LuaTable }?.let {
@@ -125,40 +122,33 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         val f = globals.load(luaScript) as LuaFunction
         val c = f.checkclosure()!!
         val t = c.call() as? LuaTable
-
-        requireNotNull(t) {
-            "The return type of the Lua project specification has to be a table " +
-                "(project or list of projects)."
-        }
+            ?: throw ProjectParseException(
+                "The return type of the Lua project specification has to be a table " +
+                    "(project or list of projects)."
+            )
 
         // try extracting a single project from the Lua result and if that
         // fails try to extract a list of projects; only if that fails, fail
         // parsing
         return kotlin.runCatching {
-            requireNotNull(
-                extractProject(t)
-                    .takeIf { it.dependencies.isEmpty() }
-                    ?.let { listOf(it) }
-            ) {
-                "Single project has dependencies which are not declared."
-            }
+            extractProject(t)
+                .takeIf { it.dependencies.isEmpty() }
+                ?.let { listOf(it) }
+                ?: throw ProjectValidationException("Single project has dependencies which are not declared.")
         }.getOrElse {
             // TODO: log "illegal" values in the list which are filtered
-            requireNotNull(
-                t.keys()
-                    .mapNotNull { key -> t[key].takeIf { it is LuaTable } }
-                    .map { extractProject(it as LuaTable) }
-                    .toList()
-                    .takeIf { projects ->
-                        projects.all { project ->
-                            project.dependencies.all { dep ->
-                                projects.find { it.name == dep } != null
-                            }
+            t.keys()
+                .mapNotNull { key -> t[key].takeIf { it is LuaTable } }
+                .map { extractProject(it as LuaTable) }
+                .toList()
+                .takeIf { projects ->
+                    projects.all { project ->
+                        project.dependencies.all { dep ->
+                            projects.find { it.name == dep } != null
                         }
                     }
-            ) {
-                "Project dependencies have not been resolved successfully."
-            }
+                }
+                ?: throw ProjectValidationException("Project dependencies have not been resolved successfully.")
         }
     }
 }
