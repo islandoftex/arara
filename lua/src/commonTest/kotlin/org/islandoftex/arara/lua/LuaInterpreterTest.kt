@@ -16,8 +16,7 @@ class LuaInterpreterTest {
               files = {
                 ["a.mp"] = { },
                 ["file.tex"] = { }
-              },
-              dependencies = { "project b" }
+              }
             }
         """.trimIndent()
         val projects = LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script)
@@ -27,7 +26,7 @@ class LuaInterpreterTest {
 
         assertEquals("My awesome book", project.name)
         assertEquals(2, project.files.size)
-        assertEquals(1, project.dependencies.size)
+        assertEquals(0, project.dependencies.size)
     }
 
     @Test
@@ -92,6 +91,6 @@ class LuaInterpreterTest {
               }
             }
         """.trimIndent()
-        assertEquals(1, LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script).size)
+        assertEquals(2, LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script).size)
     }
 }

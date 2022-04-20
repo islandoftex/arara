@@ -135,7 +135,14 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
                 .takeIf { it.dependencies.isEmpty() }
                 ?.let { listOf(it) }
                 ?: throw ProjectValidationException("Single project has dependencies which are not declared.")
-        }.getOrElse {
+        }.getOrElse { exception ->
+            if (exception is ProjectValidationException) {
+                // rethrow validation exceptions as these mean that there is a
+                // single project but it has wrong dependency declarations;
+                // parsing a single project as multiple projects is not necessary
+                throw exception
+            }
+
             // TODO: log "illegal" values in the list which are filtered
             t.keys()
                 .mapNotNull { key -> t[key].takeIf { it is LuaTable } }
