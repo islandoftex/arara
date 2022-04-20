@@ -135,7 +135,13 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         // fails try to extract a list of projects; only if that fails, fail
         // parsing
         return kotlin.runCatching {
-            listOf(extractProject(t))
+            requireNotNull(
+                extractProject(t)
+                    .takeIf { it.dependencies.isEmpty() }
+                    ?.let { listOf(it) }
+            ) {
+                "Single project has dependencies which are not declared."
+            }
         }.getOrElse {
             // TODO: log "illegal" values in the list which are filtered
             requireNotNull(

@@ -4,6 +4,7 @@ package org.islandoftex.arara.lua
 import org.islandoftex.arara.api.files.MPPPath
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class LuaInterpreterTest {
     @Test
@@ -53,5 +54,44 @@ class LuaInterpreterTest {
 
         assertEquals("My awesome book", projects[0].name)
         assertEquals("My awesome book v2", projects[1].name)
+    }
+
+    @Test
+    fun shouldFailOnUnsatisfiedDependency() {
+        val script = """
+            return {
+              name = "My awesome book",
+              files = {
+                ["a.tex"] = { }
+              },
+              dependencies = { "My awesome book v2" }
+            }
+        """.trimIndent()
+        assertFailsWith<IllegalArgumentException> {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script)
+                .also { println(it) }
+        }
+    }
+
+    @Test
+    fun shouldNotFailOnSatisfiedDependency() {
+        val script = """
+            return {
+              {
+                name = "My awesome book",
+                files = {
+                  ["a.tex"] = { }
+                },
+                dependencies = { "My awesome book v2" }
+              },
+              {
+                name = "My awesome book v2",
+                files = {
+                  ["b.tex"] = { }
+                }
+              }
+            }
+        """.trimIndent()
+        assertEquals(1, LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script).size)
     }
 }
