@@ -57,7 +57,20 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
             ?.toint()
             ?: org.islandoftex.arara.core.files.ProjectFile.DEFAULT_PRIORITY
 
-        return org.islandoftex.arara.core.files.ProjectFile(path, fileType, priority)
+        val projectFile = LuaProjectFile(path, fileType, priority)
+        table["directives"]
+            .takeIf { it is LuaTable }
+            ?.let { luaDirectives ->
+                val directives = luaDirectives as LuaTable
+                directives.keys()
+                    .map { key -> table[key] }
+                    .mapNotNull { it as? LuaString }
+                    .map { it.toString() }.toList()
+            }
+            ?.run {
+                projectFile.directives = this
+            }
+        return projectFile
     }
 
     private fun extractProject(table: LuaTable): Project {
