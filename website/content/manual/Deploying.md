@@ -1,7 +1,7 @@
 +++
 title = "Deploying the tool"
 description = "Deploying the tool"
-weight = 9
+weight = 10
 +++
 
 As previously mentioned, arara runs on top of a Java virtual machine, available on all major operating systems -- in some cases, you might need to install the proper virtual machine. This chapter provides detailed instructions on how to properly deploy the tool in your computer from either the official package available in our project repository or a personal build generated from source (as seen in [Building](/manual/building)).

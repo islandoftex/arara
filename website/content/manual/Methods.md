@@ -1,7 +1,7 @@
 +++
 title = "Methods"
 description = "Methods"
-weight = 6
+weight = 7
 +++
 
 arara features several helper methods available in directive conditional and rule contexts which provide interesting features for enhancing the user experience, as well as improving the automation itself. This chapter provides a list of such methods. It is important to observe that virtually all classes from the Java runtime environment can be used within MVEL expressions, so your mileage might vary.

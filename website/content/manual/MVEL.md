@@ -1,7 +1,7 @@
 +++
 title = "MVEL"
 description = "MVEL"
-weight = 11
+weight = 12
 +++
 
 According to the [Wikipedia entry](https://en.wikipedia.org/wiki/MVEL), the MVFLEX Expression Language (hereafter referred as MVEL) is a hybrid, dynamic, statically typed, embeddable expression language and runtime for the Java platform. Originally started as a utility language for an application framework, the project is now developed completely independently. arara relies on this scripting language in two circumstances:

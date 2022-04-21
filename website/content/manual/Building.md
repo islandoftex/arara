@@ -1,7 +1,7 @@
 +++
 title = "Building arara"
 description = "Building arara"
-weight = 8
+weight = 9
 +++
 
 arara is a Kotlin application licensed under the [New BSD

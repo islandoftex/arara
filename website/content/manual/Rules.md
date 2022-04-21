@@ -1,7 +1,7 @@
 +++
 title = "The official rule pack"
 description = "The official rule pack"
-weight = 7
+weight = 8
 +++
 
 arara ships with a pack of default rules, placed inside a special subdirectory named `rules/` inside another special directory named `ARARA_HOME` (the place where our tool is installed). This chapter introduces the official rules, including proper listings and descriptions of associated parameters whenever applied. Note that such rules work off the shelf, without any special installation, configuration or modification. An option marked by **[S]** before the corresponding identifier indicates a natural boolean switch. Similarly, the occurrence of an **[R]** mark indicates that the corresponding option is required.

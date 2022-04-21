@@ -1,7 +1,7 @@
 +++
 title = "YAML"
 description = "Introduction to the YAML format"
-weight = 10
+weight = 11
 +++
 
 According to the [specification](http://yaml.org/spec/1.2/spec.html), YAML (a
