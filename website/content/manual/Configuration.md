@@ -89,7 +89,7 @@ Do not use folded or literal styles for scalars in a path! The orb tag resolutio
     logging: true
     ```
 
-- **[O]** *(boolean)* `header` (default: `false`): This key modifies the directive extraction, according to the associated boolean value. If enabled, arara will extract all directives from the beginning of the file until it reaches a line that is not empty and it is not a comment. Otherwise, the tool will resort to the default behaviour and extract all directives from the entire file. It is very important to observe that the `--header` command line option can override this setting if, and only if, this variable holds `false` as the value.
+- **[O]** *(boolean)* `header` (default: `true`): This key modifies the directive extraction, according to the associated boolean value. If enabled, arara will extract all directives from the beginning of the file until it reaches a line that is not empty and it is not a comment. Otherwise, the tool will resort to the default behaviour and extract all directives from the entire file. It is very important to observe that the `--whole-file` command line option can override this setting if, and only if, this variable holds `true` as the value.
 
     ```yaml
     header: false
