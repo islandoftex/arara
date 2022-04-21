@@ -24,7 +24,18 @@ make-like directive system and actual external specification of directives and
 dependencies. Though currently unable to express depdencies between single
 files, arara is able to handle dependencies between projects.
 
-TODO: expand on potential use cases
+We have built projects with the following use cases in mind:
+
+* You have dependencies between files and want to avoid abusing the `files`
+  parameter of arara's directives.
+* You want to compile multiple documents whenever you compile and want to avoid
+  specifying all of them on the command-line.
+* You want to use specific settings for some file but not for others
+  (e.g. another pattern for the same file type).
+
+However, the basic idea is to be explicit about what belongs to a project and
+what does not. In that sense, a declarative notion of a project spanning
+multiple files is what should be covered by this feature.
 
 # File structure
 
