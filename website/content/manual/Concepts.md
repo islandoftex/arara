@@ -426,42 +426,33 @@ This feature supports the following methods with their documented meanings, as s
 Keep in mind that this feature is disabled when arara is running in safe mode, as seen in [Command line](/manual/cli).
 {% end %}
 
-# Important changes in version 6
+# Important changes in version 7
 
 {% messagebox(title="A note to users") %}
-If this is your first time using arara or you do not have custom rules in the old format, you can safely ignore this section. All rules shipped with our tool are already written in the new format.
+If this is your first time using arara or you do not have custom rules in the
+old format, you can safely ignore this section. All rules shipped with our tool
+are already written in the new format.
 {% end %}
 
-{% messagebox(title="API, CLI and library") %}
-From version 6.0 on, arara is now split into an API, a core implementation (library) and the implementation of the executable (command line interface). Projects relying on code in the `arara` JAR distributions have to be updated.
+{% messagebox(title="Enabling header mode by default") %}
+The header mode (parse only the first commented lines of a file) is now enabled
+by default. You may return to the old behavior disabling header mode in the
+configuration file or using the `-w`/`--whole-file` command line flag.
 {% end %}
 
-{% messagebox(title="Localization updates") %}
-The localization framework was redesigned in version 6.0:
+TODO: changes of the method API to MPPPath
 
-- Localization is now provided by classes as a library instead of property files in the tool resources.
-
-- From version 6.0 on, languages have to be passed as IETF BCP 47 codes. The old system has been removed. Hence, please use `en-QN` instead of `qn`, and so forth.
-
-- If you pass an invalid language code, arara will now run in English and issue a log warning but not fail anymore. Failing due to the wrong language in the output was considered inappropriate.
+{% messagebox(title="Add projects") %}
+arara now supports projects. See the [chapter about projects](/manual/projects)
+for further information on this new feature.
 {% end %}
 
-{% messagebox(title="Method signature changes") %}
-The following method signatures have been altered:
+This section pretty much covered the basics of the changes to this version. Of
+course, it is highly advisable to make use of the new features available in
+arara 7.0 for achieving better results. If you need any help, please do not
+hesitate to contact us. See [Introduction](/manual/introduction) for more details on how to get help.
 
-- **[C|R]** `loadObject(File file, String name): Pair<Integer, Object>` `→` **[C|R]** `loadObject(File file, String name): Pair<ClassLoading.ClassLoadingStatus, Object>`
-
-- **[C|R]** `loadObject(String ref, String n): Pair<Integer, Object>` `→` **[C|R]** `loadObject(String ref, String n): Pair<ClassLoading.ClassLoadingStatus, Object>`
-
-- **[C|R]** `loadClass(File file, String name): Pair<Integer, Object>` `→` **[C|R]** `loadClass(File file, String name): Pair<ClassLoading.ClassLoadingStatus, Object>`
-
-- **[C|R]** `loadClass(String ref, String n): Pair<Integer, Object>` `→` **[C|R]** `loadClass(String ref, String n): Pair<ClassLoading.ClassLoadingStatus, Object>`
-
-You can now access the status values as enumeration.
-{% end %}
-
-{% messagebox(title="Null handling") %}
-The implementation of methods available within rules has been moved to Kotlin causing `null` values to be handled differently. Previously undefined behavior will now cause an error.
-{% end %}
-
-This section pretty much covered the basics of the changes to this version. Of course, it is highly advisable to make use of the new features available in arara 6.0 for achieving better results. If you need any help, please do not hesitate to contact us. See [Introduction](/manual/introduction) for more details on how to get help.
+If you are upgrading you may also be interested in reading our
+[changelog](https://gitlab.com/islandoftex/arara/-/blob/master/CHANGELOG.md) or
+the announcement blog post of this release in the [news section on our
+website](https://islandoftex.gitlab.io/arara/news/).
