@@ -211,36 +211,43 @@ resulting file by running the following command in the terminal:
 
 ```sh
 $ java -jar arara.jar
-  __ _ _ __ __ _ _ __ __ _
- / _` | '__/ _` | '__/ _` |
-| (_| | | | (_| | | | (_| |
- \__,_|_|  \__,_|_|  \__,_|
-
 Usage: arara [OPTIONS] file...
 
+    __ _ _ __ __ _ _ __ __ _
+   / _` | '__/ _` | '__/ _` |
+  | (_| | | | (_| | | | (_| |
+   \__,_|_|  \__,_|_|  \__,_|
+
+  The cool TeX automation tool.
+
+  arara executes the TeX workflow you tell it to execute. Simply specify your
+  needs within your TeX file and let arara do the work. These directives
+  feature conditional execution and parameter expansion.
+
 Options:
-  -l, --log                     Generate a log output
-  -v, --verbose / -s, --silent  Print the command output
-  -n, --dry-run                 Go through all the motions of running
-                                a command, but with no actual calls
-  -s, --safe-run                Run in safe mode and disable
-                                potentially harmful features. Make
-                                sure your projects uses only allowed
-                                features.
-  -H, --header                  Extract directives only in the file
-                                header
-  -p, --preamble TEXT           Set the file preamble based on the
-                                configuration file
-  -t, --timeout INT             Set the execution timeout (in
-                                milliseconds)
-  -L, --language TEXT           Set the application language
-  -m, --max-loops INT           Set the maximum number of loops (> 0)
-  -d, --working-directory PATH  Set the working directory for all
-                                tools
-  -P, --call-property VALUE     Pass parameters to the application
-                                to be used within the session.
-  -V, --version                 Show the version and exit
-  -h, --help                    Show this message and exit
+  -l, --log                        Generate a log output
+  -v, --verbose / -s, --silent     Print the command output
+  -n, --dry-run                    Go through all the motions of running a
+                                   command, but with no actual calls
+  -S, --safe-run                   Run in safe mode and disable potentially
+                                   harmful features. Make sure your projects
+                                   uses only allowed features.
+  -w, --whole-file                 Extract directives in the file, not only in
+                                   the header
+  -p, --preamble TEXT              Set the file preamble based on the
+                                   configuration file
+  -t, --timeout INT                Set the execution timeout (in milliseconds)
+  -L, --language TEXT              Set the application language
+  -m, --max-loops INT              Set the maximum number of loops (> 0)
+  -d, --working-directory PATH     Set the working directory for all tools
+  -P, --call-property VALUE        Pass parameters to the application to be
+                                   used within the session.
+  --generate-completion [bash|zsh|fish]
+                                   Generate a completion script for arara. Add
+                                   'source <(arara --generate-completion
+                                   <shell>)' to your shell's init file.
+  -V, --version                    Show the version and exit
+  -h, --help                       Show this message and exit
 
 Arguments:
   file  The file(s) to evaluate and process

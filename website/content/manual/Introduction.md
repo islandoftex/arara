@@ -106,7 +106,11 @@ Processing "hello.tex" (size: 88 B, last modified: 12/28/2020
 Total: 0.56 seconds
 ```
 
-Hurrah, we finally got our document properly compiled with a TeX engine by the inner workings of our beloved tool, resulting in an expected `hello.pdf` file created using the very same system call that typical automation tools like `latexmk` and `rubber` use. Observe that arara works practically on other side of the spectrum: you need to tell it how and when to do a task.
+Hurrah, we finally got our document properly compiled with a TeX engine by the
+inner workings of our beloved tool, resulting in an expected `hello.pdf` file
+created using the very same system call that typical automation tools like
+`latexmk` and `rubber` use. Observe that arara works practically on other side
+of the spectrum: you need to tell it how and when to do a task.
 
 # Core concepts
 
@@ -141,7 +145,8 @@ the current document, i.e, when and where the commands must be executed.
 {% messagebox(title="The name") %}
 ![We love araras!](/arara/images/manual/arara.png)
 
-*Do you like araras? We do, specially our tool which shares the same name of this colorful bird.*
+*Do you like araras? We do, specially our tool which shares the same name of
+ this colorful bird.*
 
 The tool name was chosen as an homage to a Brazilian bird of the same name,
 which is a macaw. The word *arara* comes from the Tupian word *a'rara*, which
@@ -162,7 +167,9 @@ to tell arara what to do. This instruction is named a *directive* and it will be
 parsed during the preparation phase. Observe that arara will tell you if no
 directive was found in a file, as seen in our first interaction with the tool.
 
-An arara directive is usually defined in a line of its own, started with a comment (denoted by a percent sign in TeX and friends), followed by the word `arara:` and task name:
+An arara directive is usually defined in a line of its own, started with a
+comment (denoted by a percent sign in TeX and friends), followed by the word
+`arara:` and task name:
 
 ```tex
 % arara: pdflatex
