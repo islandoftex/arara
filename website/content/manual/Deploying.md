@@ -21,7 +21,7 @@ search path, which is a special directory named `rules` available from the same
 level. This directory contains all rules specified in the YAML format. The
 structure overview is presented as follows.
 
-<img src="/arara/images/manual/structure1.svg" alt="Structure 1" width="648"/>
+<img src="{{ get_url(url="/images/manual/structure1.svg") }}" alt="Structure 1" width="648"/>
 
 Provided that this specific directory structure is honoured, the tool is ready
 for use off the shelf. In fact, the official arara CTAN package is available in
@@ -60,7 +60,7 @@ path of the `ARARA_HOME` reference points out to `/opt/paulo/arara` since this
 is my deployment location of choice. The resulting structure overview, from the
 root directory, is presented as follows:
 
-<img src="/arara/images/manual/structure2.svg" alt="Structure 1" width="896"/>
+<img src="{{ get_url(url="/images/manual/structure2.svg") }}" alt="Structure 1" width="896"/>
 
 If the tool was built from source (as indicated in
 [Building](/manual/building)), make sure to construct the provided directory

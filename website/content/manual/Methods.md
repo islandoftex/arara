@@ -1082,7 +1082,7 @@ associated number in the figure.
 
 - **[R]** `showMessage(int width, int icon, String title, String text): void`
 
-<img src="/arara/images/manual/messagebox1.svg" alt="UI 1" width="701"/>
+<img src="{{ get_url(url="/images/manual/messagebox1.svg") }}" alt="UI 1" width="701"/>
 
   This method shows a message box according to the provided parameters. The
   dialog box is disposed when the user either presses the confirmation button or
@@ -1096,7 +1096,7 @@ associated number in the figure.
 
 - **[R]** `showMessage(int icon, String title, String text): void`
 
-  <img src="/arara/images/manual/messagebox2.svg" alt="UI 2" width="701"/>
+  <img src="{{ get_url(url="/images/manual/messagebox2.svg") }}" alt="UI 2" width="701"/>
 
   This method shows a message box according to the provided parameters. The
   dialog box is disposed when the user either presses the confirmation button or
@@ -1110,7 +1110,7 @@ associated number in the figure.
 
 - **[C|R]** `showOptions(int width, int icon, String title, String text, Object... options): int`
 
-  <img src="/arara/images/manual/optionbox1.svg" alt="UI 3" width="701"/>
+  <img src="{{ get_url(url="/images/manual/optionbox1.svg") }}" alt="UI 3" width="701"/>
 
   This method shows a message box according to the provided parameters,
   including options represented as an array of `Object` objects. This array is
@@ -1140,7 +1140,7 @@ associated number in the figure.
 
 - **[C|R]** `showOptions(int icon, String title, String text, Object... options): int`
 
-  <img src="/arara/images/manual/optionbox2.svg" alt="UI 4" width="701"/>
+  <img src="{{ get_url(url="/images/manual/optionbox2.svg") }}" alt="UI 4" width="701"/>
 
   This method shows a message box according to the provided parameters,
   including options represented as an array of `Object` objects. This array is
@@ -1161,7 +1161,7 @@ associated number in the figure.
 
 - **[C|R]** `showDropdown(int width, int icon, String title, String text, Object... options): int`
 
-  <img src="/arara/images/manual/dropdown1.svg" alt="UI 5" width="701"/>
+  <img src="{{ get_url(url="/images/manual/dropdown1.svg") }}" alt="UI 5" width="701"/>
 
   This method shows a dialog box according to the provided parameters, including
   options represented as an array of `Object` objects. This array is portrayed
@@ -1194,7 +1194,7 @@ associated number in the figure.
 
 - **[C|R]** `showDropdown(int icon, String title, String text, Object... options): int`
 
-  <img src="/arara/images/manual/dropdown2.svg" alt="UI 6" width="701"/>
+  <img src="{{ get_url(url="/images/manual/dropdown2.svg") }}" alt="UI 6" width="701"/>
 
   This method shows a dialog box according to the provided parameters, including
   options represented as an array of `Object` objects. This array is portrayed
@@ -1230,7 +1230,7 @@ associated number in the figure.
 
 - **[C|R]** `showInput(int width, int icon, String title, String text): String`
 
-  <img src="/arara/images/manual/inputbox1.svg" alt="UI 7" width="701"/>
+  <img src="{{ get_url(url="/images/manual/inputbox1.svg") }}" alt="UI 7" width="701"/>
 
   This method shows an input dialog box according to the provided
   parameters. The dialog box is disposed when the user either presses one of the
@@ -1247,7 +1247,7 @@ associated number in the figure.
 
 - **[C|R]** `showInput(int icon, String title, String text): String`
 
-  <img src="/arara/images/manual/inputbox2.svg" alt="UI 8" width="701"/>
+  <img src="{{ get_url(url="/images/manual/inputbox2.svg") }}" alt="UI 8" width="701"/>
 
   This method shows an input dialog box according to the provided
   parameters. The dialog box is disposed when the user either presses one of the
