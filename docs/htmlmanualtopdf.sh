@@ -53,12 +53,15 @@ cat <<EOF > $htmlfile
 </head>
 <body>
 <article id="cover">
-  <h1>arara</h1>
-  <h2>The cool TeX automation tool</h2>
+  <img src="file://$tempdir/arara-logo-with-text-bottom.png"
+       alt="arara logo" />
   <div id="refbox">Reference manual</span>
   <div id="metadata">
     <span>The Island of TeX</span>
-    <!-- TODO: gitlab logo -->
+    <a href="https://gitlab.com/islandoftex/arara">
+      <img src="file://$tempdir/gitlab-icon.svg"
+           alt="GitLab" />
+    </a>
     <span>Version 6.1.7</span>
   </div>
 </article>
