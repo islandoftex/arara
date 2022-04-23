@@ -20,7 +20,7 @@ tasks.create<Exec>("buildManual") {
     commandLine("sh", "htmlmanualtopdf.sh")
 
     inputs.file("htmlmanualtopdf.sh")
-    inputs.file("resources")
+    inputs.dir("resources")
     outputs.files("arara-manual.pdf")
     outputs.upToDateWhen { false }
 }
@@ -32,7 +32,7 @@ tasks.create<Exec>("buildQuickstartGuide") {
     commandLine("sh", "htmlquickstarttopdf.sh")
 
     inputs.file("htmlquickstarttopdf.sh")
-    inputs.file("resources")
+    inputs.dir("resources")
     outputs.files("arara-quickstart.pdf")
     outputs.upToDateWhen { false }
 }
