@@ -32,6 +32,17 @@
 
 @font-face {
   font-family: 'Cascadia Mono';
+  font-weight: 200;
+  src: url('CascadiaMono-ExtraLight.otf');
+}
+@font-face {
+  font-family: 'Cascadia Mono';
+  font-style: italic;
+  font-weight: 200;
+  src: url('CascadiaMono-ExtraLightItalic.otf');
+}
+@font-face {
+  font-family: 'Cascadia Mono';
   font-weight: 300;
   src: url('CascadiaMono-Light.otf');
 }
@@ -139,7 +150,8 @@ pre {
 }
 
 code {
-  font-family: 'Cascadia Mono' !important;
+  font-family: 'Cascadia Mono';
+  font-weight: 200;
 }
 
 a {
