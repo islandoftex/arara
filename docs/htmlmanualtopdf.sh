@@ -183,7 +183,7 @@ rm "tmp-$htmlfile"
 
 cat <<EOF >> $htmlfile
 <article id="contents">
-<h1>Table of contents</h1>
+<h1>Contents</h1>
 <ul>
 $toc_content
 </ul>
