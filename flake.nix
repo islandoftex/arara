@@ -16,7 +16,7 @@
           with import nixpkgs { inherit system; };
           pkgs.stdenv.mkDerivation rec {
             pname = "arara";
-            version = "6.1.7";
+            version = "7.0.0";
 
             src = ./.;
 
