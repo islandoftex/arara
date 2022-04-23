@@ -20,7 +20,7 @@
 
             src = ./.;
 
-            nativeBuildInputs = [ pkgs.jdk8 ];
+            nativeBuildInputs = [ pkgs.jdk8 pkgs.gradle ];
 
             buildPhase = ''
               export GRADLE_USER_HOME=$PWD
