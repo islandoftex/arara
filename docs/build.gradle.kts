@@ -2,12 +2,7 @@ dependencies {
     project(":cli")
 }
 
-tasks.create("writeVersionFile") {
-    outputs.file("version.tex")
-    outputs.upToDateWhen { false }
-
-    file("version.tex").writeText(project.version.toString())
-}
+// TODO: update version in shell scripts?
 
 tasks.create("buildDocs") {
     group = "documentation"
@@ -18,28 +13,26 @@ tasks.create("buildDocs") {
     outputs.upToDateWhen { false }
 }
 
-tasks.create<JavaExec>("buildManual") {
+tasks.create<Exec>("buildManual") {
     group = "documentation"
     description = "Compile the manual's TeX file to PDF."
 
-    dependsOn("writeVersionFile")
+    commandLine("sh", "htmlmanualtopdf.sh")
 
-    classpath = files(project(":cli").tasks.findByPath("shadowJar"))
-    args = listOf("-l", "-v", "arara-manual.tex")
-    inputs.file("arara-manual.tex")
+    inputs.file("htmlmanualtopdf.sh")
+    inputs.file("resources")
     outputs.files("arara-manual.pdf")
     outputs.upToDateWhen { false }
 }
 
-tasks.create<JavaExec>("buildQuickstartGuide") {
+tasks.create<Exec>("buildQuickstartGuide") {
     group = "documentation"
     description = "Compile the quickstart guide's TeX file to PDF."
 
-    dependsOn("writeVersionFile")
+    commandLine("sh", "htmlquickstarttopdf.sh")
 
-    classpath = files(project(":cli").tasks.findByPath("shadowJar"))
-    args = listOf("-l", "-v", "arara-quickstart.tex")
-    inputs.file("arara-quickstart.tex")
+    inputs.file("htmlquickstarttopdf.sh")
+    inputs.file("resources")
     outputs.files("arara-quickstart.pdf")
     outputs.upToDateWhen { false }
 }
