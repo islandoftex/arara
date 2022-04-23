@@ -29,6 +29,17 @@
   font-weight: 700;
   src: url(firasans-bold.otf);
 }
+@font-face {
+  font-family: 'Cascadia Mono';
+  font-weight: 400;
+  src: url('cascadiamono.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Cascadia Mono';
+  font-style: italic;
+  font-weight: 400;
+  src: url('cascadiamono-italic.woff2') format('woff2');
+}
 
 :root {
   --highlight-bg-color: #cbe368;
@@ -113,7 +124,10 @@ pre {
   white-space: pre;
   word-wrap: normal;
   font-size: .875em;
-  font-family: monospace;
+}
+
+code {
+  font-family: 'Cascadia Mono' !important;
 }
 
 a {
