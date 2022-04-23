@@ -139,7 +139,6 @@ publish:gitlab:
 .ctantemplate: &ctandefinition
   stage: publish
   image: nixos/nix:latest
-  needs: ["test:linux:jdk8", "test:linux:jdk11"]
   script:
     - nix --extra-experimental-features nix-command --extra-experimental-features flakes develop -c gradle -Prelease=$PRELEASE assembleCTAN --info
     - cp build/*.zip ./
