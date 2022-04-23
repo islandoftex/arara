@@ -9,6 +9,7 @@ import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.files.toMPPPath
+import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import java.nio.file.Files
 import java.nio.file.Path
@@ -88,7 +89,7 @@ class FileSearchingTest : ShouldSpec({
                 projectFile.path.normalize().toString() shouldBe
                     pathToTest.normalize().toString()
                 projectFile.fileType.extension shouldBe "tex"
-                projectFile.fileType.pattern shouldBe "^\\s*%\\s+"
+                projectFile.fileType.pattern shouldBe ConfigurationUtils.defaultFileTypePatterns["tex"]
             }
         }
 
@@ -105,7 +106,7 @@ class FileSearchingTest : ShouldSpec({
                 projectFile.path.normalize().toString() shouldBe
                     (parent.normalize() / "changes.tex").toString()
                 projectFile.fileType.extension shouldBe "tex"
-                projectFile.fileType.pattern shouldBe "^\\s*%\\s+"
+                projectFile.fileType.pattern shouldBe ConfigurationUtils.defaultFileTypePatterns["tex"]
             }
         }
 
@@ -123,7 +124,7 @@ class FileSearchingTest : ShouldSpec({
                 projectFile.path.normalize().toString() shouldBe
                     pathToTest.normalize().toString()
                 projectFile.fileType.extension shouldBe "tex"
-                projectFile.fileType.pattern shouldBe "^\\s*%\\s+"
+                projectFile.fileType.pattern shouldBe ConfigurationUtils.defaultFileTypePatterns["tex"]
             }
         }
 
