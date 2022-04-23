@@ -166,13 +166,37 @@ th:last-of-type, td:last-of-type {
   flex-wrap: wrap;
   height: 297mm;
 }
-#cover .refbox {
-  background-color: #00b847;
-  margin: 0 0 1cm;
-  padding: 1cm;
-}
-#cover .metadata * {
+#cover #coverimg img {
   display: block;
+  width: 14cm;
+  margin-left: 3.5cm;
+  margin-top: 3cm;
+}
+#cover #refbox {
+  width: 12cm;
+  background-color: #00b847;
+  color: #ffffff;
+  font-size: 24pt;
+  margin-left: 3.5cm;
+  margin-top: 1.5cm;
+  margin-bottom: 1.5cm;
+  padding: .5cm 1cm;
+  text-align: center;
+}
+#cover #metadata {
+  width: 14cm;
+  margin-left: 3.5cm;
+  margin-bottom: 2.5cm;
+  font-size: 14pt;
+  text-align: center;
+}
+#cover #metadata * {
+  display: block;
+}
+#cover #metadata img {
+  height: 3.5cm;
+  margin-left: auto;
+  margin-right: auto;
 }
 #contents {
   break-before: right;
@@ -203,10 +227,29 @@ th:last-of-type, td:last-of-type {
 #contents a {
   font-variant: normal;
 }
-#contents ul li {
+#contents ul > li {
   border-top: .25pt solid #c1c1c1;
   margin: .25cm 0;
   padding-top: .25cm;
+}
+#contents ul > li li {
+  border: none;
+  margin-top: .1cm;
+  margin-bottom: .1cm;
+  margin-left: .75cm;
+  padding-top: 0;
+}
+#contents ul > li li li {
+  margin-left: 1.5cm;
+}
+#contents ul > li li li li {
+  margin-left: 2.25cm;
+}
+#contents ul > li li li li li {
+  margin-left: 3cm;
+}
+#contents ul > li li li li li li {
+  margin-left: 3.75cm;
 }
 #contents ul li::before {
   color: var(--highlight-bg-color);
