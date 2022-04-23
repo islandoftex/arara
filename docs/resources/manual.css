@@ -116,6 +116,8 @@ html {
   line-height: 1.5;
   font-variant-ligatures: common-ligatures;
   font-variant-numeric: oldstyle-nums tabular-nums;
+  text-align: justify;
+  hyphens: auto;
 }
 
 h1 {

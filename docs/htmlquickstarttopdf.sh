@@ -38,7 +38,7 @@ pdffile="arara-quickstart.pdf"
 
 cat <<EOF > $htmlfile
 <!DOCTYPE html>
-<html>
+<html lang="en-US">
 <head>
   <meta charset="UTF-8">
   <title>arara</title>
