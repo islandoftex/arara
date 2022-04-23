@@ -45,7 +45,6 @@
             nixpkgs-fmt
             pup
             python3Packages.weasyprint
-            wget
             zip
             zola
           ];
