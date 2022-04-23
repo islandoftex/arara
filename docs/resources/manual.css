@@ -70,7 +70,7 @@
   @top-center { content: none }
   @top-right { content: none }
 }
-@page :first {
+@page cover {
   margin: 0;
 }
 
@@ -165,6 +165,7 @@ th:last-of-type, td:last-of-type {
   display: flex;
   flex-wrap: wrap;
   height: 297mm;
+  page: cover;
 }
 #cover #coverimg img {
   display: block;
