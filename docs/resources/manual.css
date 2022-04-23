@@ -88,7 +88,7 @@ h1 {
   break-before: always;
   color: var(--highlight-bg-color);
   font-size: 38pt;
-  margin: 2cm 0 .5cm 0;
+  margin: 2cm 0 1cm 0;
   page: no-chapter;
   width: 100%;
 }
