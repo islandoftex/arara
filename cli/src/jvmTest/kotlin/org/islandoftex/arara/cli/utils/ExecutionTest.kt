@@ -4,6 +4,7 @@ package org.islandoftex.arara.cli.utils
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.DoNotParallelize
 import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
 import org.islandoftex.arara.api.AraraException
@@ -192,5 +193,10 @@ class ExecutionTest : ShouldSpec({
         output shouldContain "String test success"
         output shouldContain "List test success"
         output shouldContain "Map test success"
+    }
+
+    should("skip comments in header mode") {
+        val output = outputForTest("header-comments")
+        (output.length - output.replace("QuackOne", "").length) / "QuackOne".length shouldBe 3
     }
 })

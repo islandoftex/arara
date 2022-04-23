@@ -1,0 +1,6 @@
+!config
+verbose: true
+paths:
+  - './'
+filetypes:
+  - extension: tex
