@@ -46,6 +46,7 @@
             pup
             python3Packages.weasyprint
             wget
+            zip
             zola
           ];
         };
