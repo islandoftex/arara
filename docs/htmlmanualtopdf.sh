@@ -54,7 +54,7 @@ cat <<EOF > $htmlfile
 <body>
 <article id="cover">
   <div id="coverimg">
-    <img src="file://$tempdir/arara-logo-with-text-bottom.png"
+    <img src="file://$tempdir/arara-logo-with-text-bottom.svg"
          alt="arara logo" />
   </div>
   <div id="refbox">Reference manual</div>
