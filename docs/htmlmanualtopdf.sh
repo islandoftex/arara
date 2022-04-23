@@ -67,6 +67,53 @@ cat <<EOF > $htmlfile
     <span>Version 6.1.7</span>
   </div>
 </article>
+<article id="license">
+  <h1>License</h1>
+  <p>arara is licensed under the
+    <a href="https://opensource.org/licenses/BSD-3-Clause">New BSD
+    License</a>. It is important to observe that the New BSD License has been
+    verified as a GPL-compatible free software license by the
+    <a href=http://www.fsf.org/">Free Software Foundation</a>, and has been
+    vetted as an open source license by the
+    <a href="http://www.opensource.org/">Open Source Initiative</a>.
+  </p>
+  <blockquote>
+    <strong>New BSD License</strong>
+    <p>
+      Copyright 2012–2022, Island of TeX<br/>
+      All rights reserved.
+    </p>
+    <p>
+      Redistribution and use in source and binary forms, with or without
+      modification, are permitted provided that the following conditions are
+      met:
+    </p>
+    <ol>
+      <li>Redistributions of source code must retain the above copyright
+        notice, this list of conditions and the following disclaimer.</li>
+      <li>Redistributions in binary form must reproduce the above copyright
+        notice, this list of conditions and the following disclaimer in the
+        documentation and/or other materials provided with the distribution.
+      </li>
+      <li>Neither the name of the copyright holder nor the names of its
+        contributors may be used to endorse or promote products derived from
+        this software without specific prior written permission.</li>
+    </ol>
+    <p>
+      This software is provided by the copyright holders and contributors “as
+      is” and any express or implied warranties, including, but not limited to,
+      the implied warranties of merchantability and fitness for a particular
+      purpose are disclaimed. In no event shall the copyright holder or
+      contributors be liable for any direct, indirect, incidental, special,
+      exemplary, or consequential damages (including, but not limited to,
+      procurement of substitute goods or services; loss of use, data, or
+      profits; or business interruption) however caused and on any theory of
+      liability, whether in contract, strict liability, or tort (including
+      negligence or otherwise) arising in any way out of the use of this
+      software, even if advised of the possibility of such damage.
+    </p>
+  </blockquote>
+</article>
 EOF
 
 toc_content=""

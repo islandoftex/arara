@@ -198,6 +198,11 @@ th:last-of-type, td:last-of-type {
   margin-left: auto;
   margin-right: auto;
 }
+
+#license blockquote {
+  margin-top: 1cm;
+}
+
 #contents {
   break-before: right;
   break-after: left;
