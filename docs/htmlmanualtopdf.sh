@@ -121,7 +121,7 @@ toc_content=""
 chapter_content=""
 for chapter in "${chapters[@]}"
 do
-  wget -O "tmp-$htmlfile" "$baseurl/arara/manual/$chapter"
+  wget -O "tmp-$htmlfile" "$baseurl/arara/manual/$chapter" || continue
   chapter_title="$(cat "tmp-$htmlfile" | pup '[class="heading-text"] text{}' \
                  | sed '/^[[:space:]]*$/d' | sed 's/ *$//g' | sed 's/^ *//g')"
   this_chapter_content="$(cat <<EOF
