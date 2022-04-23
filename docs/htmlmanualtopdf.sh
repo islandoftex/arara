@@ -117,6 +117,8 @@ cat <<EOF > $htmlfile
 </article>
 EOF
 
+# assemble the manual content by fetching chapters from the webpage;
+# while doing so assemble the toc for that chapter as well
 toc_content=""
 chapter_content=""
 for chapter in "${chapters[@]}"
@@ -136,6 +138,9 @@ $(cat "tmp-$htmlfile" | pup --pre ':parent-of([class="heading-text"])' \
 EOF
 )"
 
+  # create toc entries by iterating over all headings of the chapter;
+  # because we normalized headings above and alredy added the chapter
+  # title, this will create the whole chapter toc
   toc_headings="$(echo "$this_chapter_content" \
                 | sed -n -r 's/^.*<h([1-6]) id="(.*)">.*$/\1;\2/p')"
   current_level=0
@@ -188,7 +193,9 @@ $chapter_content
 </html>
 EOF
 
+# convert the created HTML manual to PDF
 weasyprint -u "$baseurl" "$htmlfile" "$pdffile"
 
+# change back to the docs directory and copy output PDF there
 cd "$currdir"
 cp "$tempdir/$pdffile" ./
