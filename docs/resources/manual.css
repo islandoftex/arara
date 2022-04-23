@@ -200,6 +200,9 @@ th:last-of-type, td:last-of-type {
   list-style: none;
   padding-left: 0;
 }
+#contents a {
+  font-variant: normal;
+}
 #contents ul li {
   border-top: .25pt solid #c1c1c1;
   margin: .25cm 0;
