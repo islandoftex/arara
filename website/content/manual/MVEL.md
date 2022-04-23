@@ -326,7 +326,7 @@ a certain value, as seen earlier on, when discussing the *last value out*
 principle. In the example, the value to be returned will be a string containing
 a football team name (the result is of course based on the comparison outcome).
 
-# Further reading
+# Further documentation
 
 This chapter does not cover all features of the MVEL expression language, so
 further reading is advisable. I highly recommend the [MVEL language
