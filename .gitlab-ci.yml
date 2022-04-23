@@ -99,7 +99,7 @@ test:linux:jdk11:
   image: nixos/nix:latest
   needs: []
   script:
-    - nix-channel --update && nix-env --install sed
+    - nix-env --install gnused
     - tail -n +8 README.md | sed 's/## /# /g' >> website/content/_index.md
     - tail -n +3 CHANGELOG.md | sed 's/## /# /g' >> website/content/CHANGELOG.md
     - cd website && nix --extra-experimental-features nix-command --extra-experimental-features flakes develop -c zola build
