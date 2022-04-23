@@ -4,7 +4,7 @@ set -e
 
 # check the required tools; we make these available through the `nix develop`
 # shell so you may use that to build the manual
-required_tools=("iconv" "pup" "sed" "wget" "weasyprint")
+required_tools=("pup" "sed" "weasyprint")
 for tool in "${required_tools[@]}"
 do
   if ! [ -x "$(command -v "$tool")" ]; then
@@ -15,15 +15,22 @@ done
 
 # this script fetches the manual content from the remote rendered version at
 # arara's website; caveat: chapters have to be manually adjusted
-baseurl="https://islandoftex.gitlab.io/"
+currdir="$PWD"
+basedir="$(dirname "$currdir")/website/public/"
+baseurl="file://$basedir"
 chapters=("introduction" "concepts" "cli" "configuration" "logging"
           "projects" "methods" "rules" "building" "deploying" "yaml"
           "mvel")
 
+if [ ! -d "$basedir" ]
+then
+  echo "Please run zola before converting to PDF." >&2
+  exit 1
+fi
+
 # create a temporary directory to build the manual in; this will be created
 # in /tmp, so users of operating systems without that directory must change
 # it here
-currdir="$PWD"
 tempdir="/tmp/arara-manual"
 if [ -d "$tempdir" ]
 then
@@ -123,7 +130,7 @@ toc_content=""
 chapter_content=""
 for chapter in "${chapters[@]}"
 do
-  wget -O "tmp-$htmlfile" "$baseurl/arara/manual/$chapter" || continue
+  cp "$(echo "${baseurl}manual/$chapter/index.html" | cut -c8-)" "tmp-$htmlfile"
   chapter_title="$(cat "tmp-$htmlfile" | pup '[class="heading-text"] text{}' \
                  | sed '/^[[:space:]]*$/d' | sed 's/ *$//g' | sed 's/^ *//g')"
   this_chapter_content="$(cat <<EOF
