@@ -17,7 +17,8 @@ done
 # arara's website; caveat: chapters have to be manually adjusted
 baseurl="https://islandoftex.gitlab.io/"
 chapters=("introduction" "concepts" "cli" "configuration" "logging"
-          "methods" "rules" "building" "deploying" "yaml" "mvel")
+          "projects" "methods" "rules" "building" "deploying" "yaml"
+          "mvel")
 
 # create a temporary directory to build the manual in; this will be created
 # in /tmp, so users of operating systems without that directory must change
