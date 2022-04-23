@@ -34,7 +34,7 @@ cd "$tempdir"
 # anything at this point except that the name of the PDF file will be used
 # when copying back to the source directory
 htmlfile="quickstart.html"
-pdffile="quickstart.pdf"
+pdffile="arara-quickstart.pdf"
 
 cat <<EOF > $htmlfile
 <!DOCTYPE html>
