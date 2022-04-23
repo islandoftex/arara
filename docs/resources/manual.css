@@ -61,9 +61,9 @@
   }
 }
 @page :blank {
-  @top-left { background: none; content: '' }
-  @top-center { content: none }
-  @top-right { content: none }
+  @bottom-right { background: none; content: '' }
+  @bottom-center { content: none }
+  @bottom-left { content: none }
 }
 @page no-chapter {
   @top-left { background: none; content: none }
