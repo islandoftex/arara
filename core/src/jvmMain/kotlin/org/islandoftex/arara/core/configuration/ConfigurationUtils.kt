@@ -9,11 +9,11 @@ import org.islandoftex.arara.core.localization.LanguageController
 actual object ConfigurationUtils {
     @JvmStatic
     actual val defaultFileTypePatterns = mapOf(
-        "tex" to "^\\s*%\\s+",
-        "dtx" to "^\\s*%\\s+",
-        "ltx" to "^\\s*%\\s+",
-        "drv" to "^\\s*%\\s+",
-        "ins" to "^\\s*%\\s+"
+        "tex" to "^\\s*%\\s*",
+        "dtx" to "^\\s*%\\s*",
+        "ltx" to "^\\s*%\\s*",
+        "drv" to "^\\s*%\\s*",
+        "ins" to "^\\s*%\\s*"
     )
 
     @JvmStatic
