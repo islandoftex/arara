@@ -53,9 +53,11 @@ cat <<EOF > $htmlfile
 </head>
 <body>
 <article id="cover">
-  <img src="file://$tempdir/arara-logo-with-text-bottom.png"
-       alt="arara logo" />
-  <div id="refbox">Reference manual</span>
+  <div id="coverimg">
+    <img src="file://$tempdir/arara-logo-with-text-bottom.png"
+         alt="arara logo" />
+  </div>
+  <div id="refbox">Reference manual</div>
   <div id="metadata">
     <span>The Island of TeX</span>
     <a href="https://gitlab.com/islandoftex/arara">
@@ -65,31 +67,18 @@ cat <<EOF > $htmlfile
     <span>Version 6.1.7</span>
   </div>
 </article>
-<article id="contents">
-<h1>Table of contents</h1>
-<ul>
 EOF
 
-for chapter in "${chapters[@]}"
-do
-  # create table of contents; the link destination is sufficient, the actual
-  # title is inserted by CSS following the link
-  echo "<li><a href=\"#$chapter\"></a></li>" >> $htmlfile
-done
-
-cat <<EOF >> $htmlfile
-</ul>
-</article>
-EOF
-
+toc_content=""
+chapter_content=""
 for chapter in "${chapters[@]}"
 do
   wget -O "tmp-$htmlfile" "$baseurl/arara/manual/$chapter"
   chapter_title="$(cat "tmp-$htmlfile" | pup '[class="heading-text"] text{}' \
                  | sed '/^[[:space:]]*$/d' | sed 's/ *$//g' | sed 's/^ *//g')"
-  cat <<EOF >> $htmlfile
+  this_chapter_content="$(cat <<EOF
 <article>
-<h1 id="$chapter">$chapter_title</h1>
+<h1 id="chapter-$chapter">$chapter_title</h1>
 $(cat "tmp-$htmlfile" | pup --pre ':parent-of([class="heading-text"])' \
   | tail -n +5 | head -n -1 \
   | sed -r 's/<(\/?)h5/<\1h6/g' | sed -r 's/<(\/?)h4/<\1h5/g' \
@@ -97,10 +86,56 @@ $(cat "tmp-$htmlfile" | pup --pre ':parent-of([class="heading-text"])' \
   | sed -r 's/<(\/?)h1/<\1h2/g')
 </article>
 EOF
+)"
+
+  toc_headings="$(echo "$this_chapter_content" \
+                | sed -n -r 's/^.*<h([1-6]) id="(.*)">.*$/\1;\2/p')"
+  current_level=0
+  while IFS=";" read -r heading_level heading_id
+  do
+    if [ $heading_level -eq $current_level ]
+    then
+      toc_content+="</li>"
+    fi
+    # we are assuming well-formed content where a new heading will always
+    # be of the next lower level
+    if [ $heading_level -gt $current_level ]
+    then
+      toc_content+="<ul>"
+      current_level=$heading_level
+    fi
+    # the assumption above does not hold for closing so we have to process
+    # levels properly at this point
+    while [ $current_level -gt $heading_level ]
+    do
+      toc_content+="</ul></li>"
+      ((current_level--))
+    done
+    # create table of contents entry; the link destination is sufficient,
+    # the actual title is inserted by CSS following the link
+    toc_content+="<li><a href=\"#$heading_id\"></a>"
+  done <<< "$toc_headings"
+  toc_content+="</li>"
+  while [ $current_level -gt 1 ]
+  do
+    toc_content+="</ul></li>"
+    ((current_level--))
+  done
+  toc_content+="</ul>"
+
+  # append chapter content to actual content
+  chapter_content+="$this_chapter_content"
 done
 rm "tmp-$htmlfile"
 
 cat <<EOF >> $htmlfile
+<article id="contents">
+<h1>Table of contents</h1>
+<ul>
+$toc_content
+</ul>
+</article>
+$chapter_content
 </body>
 </html>
 EOF
