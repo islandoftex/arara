@@ -104,7 +104,7 @@ test:linux:jdk11:
     - tail -n +3 CHANGELOG.md | sed 's/## /# /g' >> website/content/CHANGELOG.md
     - cd website && nix --extra-experimental-features nix-command --extra-experimental-features flakes develop -c zola build
     # GL pages needs the artifact at the root directory
-    - cd .. && cp website/public ./public
+    - cd .. && cp -r website/public ./public
 
 pages:
   <<: *pagesdefinition
