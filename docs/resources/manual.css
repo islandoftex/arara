@@ -202,24 +202,30 @@ th:last-of-type, td:last-of-type {
 }
 
 .tex sub, .latex sub, .latex sup {
-    text-transform: uppercase;
+  text-transform: uppercase;
 }
 
 .tex sub, .latex sub {
-    vertical-align: -0.08cm;
-    margin-left: -0.15cm;
-    margin-right: -0.095cm;
+  vertical-align: -0.08cm;
+  margin-left: -0.15cm;
+  margin-right: -0.095cm;
 }
 
 .tex, .latex, .tex sub, .latex sub {
-    font-size: 100%;
+  font-size: 100%;
 }
 
 .latex sup {
-    font-size: 85%;
-    vertical-align: 0.06cm;
-    margin-left: -0.15cm;
-    margin-right: -0.09cm;
+  font-size: 85%;
+  vertical-align: 0.06cm;
+  margin-left: -0.15cm;
+  margin-right: -0.09cm;
+}
+
+.upright {
+  font-style: normal;
+  margin-left: -.11cm;
+  margin-right: -.11cm;
 }
 
 #cover {
