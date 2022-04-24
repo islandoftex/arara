@@ -79,10 +79,10 @@ configuration file for our tool.
 
   There are three variables available in the `paths` context and are described
   as follows (note that MVEL variables and orb tags are discussed in
-  [MVEL](/manual/mvel). A variable will be denoted by `⋄ variable` in
+  [MVEL](/manual/mvel). A variable will be denoted by `⋄ variable` in
   this list.
 
-  - `⋄ user.home`: This variable, as the name implies, holds the
+  - `⋄ user.home`: This variable, as the name implies, holds the
     value of the absolute, canonical path of `USER_HOME` which is the home
     directory of the current user, as plain string. Note that the specifics of
     the home directory (such as name and location) are defined by the operating
@@ -93,7 +93,7 @@ configuration file for our tool.
     - '@{user.home}/rules'
     ```
 
-  - `⋄ user.name`: This variable, as the name implies, holds the
+  - `⋄ user.name`: This variable, as the name implies, holds the
     value of the current user account name, as plain string. On certain
     operating systems, this value is used to build the home directory
     structure.
@@ -103,7 +103,7 @@ configuration file for our tool.
     - '/home/@{user.name}/rules'
     ```
 
-  - `⋄ application.workingDirectory`: This variable, as the name
+  - `⋄ application.workingDirectory`: This variable, as the name
     implies, holds the value of the absolute, canonical path of the working
     directory associated with the current execution, as plain string.
 
@@ -112,7 +112,7 @@ configuration file for our tool.
     - '@{application.workingDirectory}/rules'
     ```
 
-  Observe that the `⋄ user` and `⋄ application` variables
+  Observe that the `⋄ user` and `⋄ application` variables
   actually holds maps. However, for didactic purposes, it is easier to use the
   property navigation feature of MVEL and consider the map references as three
   independent variables. You can use property navigation styles

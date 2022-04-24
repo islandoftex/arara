@@ -175,12 +175,12 @@ properly defined inside it.
 
     There is at least one variable available in the `command` context and is
     described as follows (note that MVEL variables and orb tags are discussed in
-    [MVEL](/manual/mvel)). A variable will be denoted by `⋄ variable`
+    [MVEL](/manual/mvel)). A variable will be denoted by `⋄ variable`
     in this list. For each rule argument (defined later on), there will be a
     corresponding variable in the `command` context, directly accessed through
     its unique identifier.
 
-    - `⋄ reference`: This variable holds the canonical, absolute path
+    - `⋄ reference`: This variable holds the canonical, absolute path
       representation of the file name as a `File` object. This is useful if it's
       necessary to know the hierarchical structure of a project. Since the
       reference is a Java object, we can use methods available in the `File`
@@ -217,7 +217,7 @@ properly defined inside it.
     but sometimes we end up with tools or situations where we need to override
     this check for whatever reason. For this purpose, simply write a MVEL
     expression *without orb tags* as plain string and use the special variable
-    `⋄ value` if you need the actual exit status returned by the
+    `⋄ value` if you need the actual exit status returned by the
     command, available at runtime. For example, if the command returns a
     non-zero value indicating a successful execution, we can write this key
     as:
@@ -340,7 +340,7 @@ possible.
     example) which provide interesting features for rule writing. They are
     detailed later on, in [Methods](/manual/methods).
 
-    - `⋄ parameters`: This variable holds a map of directive
+    - `⋄ parameters`: This variable holds a map of directive
       parameters available at runtime. For each argument identifier listed in
       the `arguments` list in the rule context, there will be an entry in this
       variable. This is useful to get the actual values provided during
@@ -352,7 +352,7 @@ possible.
       check = parameters.contains("foo");
       ```
 
-    - `⋄ reference`: This variable holds the canonical, absolute path
+    - `⋄ reference`: This variable holds the canonical, absolute path
       representation of the file name as a `File` object. This is useful if it
       is necessary to know the hierarchical structure of a project. Since the
       reference is a Java object, we can use methods available in the `File`
@@ -364,7 +364,7 @@ possible.
 
     In the previous example, observe that the MVEL expression defined in the
     `flag` key checks if the user provided an affirmative value regarding shell
-    escape, through comparing `⋄ parameters.shell` with a set of
+    escape, through comparing `⋄ parameters.shell` with a set of
     predefined affirmative values. In any case, the corresponding command flag
     is defined as result of such evaluation.
 
@@ -412,7 +412,7 @@ transformed into a list of strings and then forwarded directly to the
 
 This scenario will directly forward `[ 'bar' ]` (a list of strings
 containing the specified value as single element) as the value for the
-`⋄ foo` variable in the corresponding `command` context.
+`⋄ foo` variable in the corresponding `command` context.
     {% end %}
 
     ```yaml
