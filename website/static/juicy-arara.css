@@ -18,6 +18,10 @@
   padding-top: 100px;
 }
 
+.upright {
+  font-style: normal;
+}
+
 @media screen and (max-width: 768px) {
   .explore-more, .demonstration-gif {
     display: none;

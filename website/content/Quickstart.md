@@ -483,11 +483,12 @@ with arara, Peter!
 ---
 
 [^1]: *Peter was graduated from Termite High School, Alta Floresta, Mato Grosso,
-Brazil. He went on to study at the California Institute of Ti*k*Zlings with a
-scholarship from San Diego Zoo. He completed his university education at the
-Rain Forest Academy, Manaus. He is currently teaching as a Fellow of the Federal
-University for the Advancement of Furry Animals, Cuiabá. He is a Corresponding
-Member of Duckpond Academy, Sempione Park, Milano, Italy.*
+Brazil. He went on to study at the California Institute of Ti<span
+class="upright">k</span>Zlings with a scholarship from San Diego Zoo. He
+completed his university education at the Rain Forest Academy, Manaus. He is
+currently teaching as a Fellow of the Federal University for the Advancement of
+Furry Animals, Cuiabá. He is a Corresponding Member of Duckpond Academy,
+Sempione Park, Milano, Italy.*
 
 [^2]: *Peter’s doctoral thesis “On flexibilty: {{ latex() }}, latex and rubber” was
 published at Manaus. His reputation in the academic world is based on his famous
