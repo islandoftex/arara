@@ -145,6 +145,7 @@ h4 {
 }
 
 pre {
+  background-color: #fcfcfc !important;
   padding: 1.25em 1.5em;
   white-space: pre;
   word-wrap: normal;
