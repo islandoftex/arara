@@ -3,8 +3,9 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project tries to adhere to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
-from version 5.0.0 on.
+and this project tries to adhere to
+[Semantic Versioning](https://semver.org/spec/v2.0.0.html) from version 5.0.0
+on.
 
 ## [Unreleased]
 
@@ -31,12 +32,29 @@ from version 5.0.0 on.
   `arara -w`. This change is experimental, and we might return to the old
   behavior based on user feedback.
   (see #63; breaking change)
+* arara's manual is now built from the markdown sources powering the website
+  using the [weasyprint](https://weasyprint.org) converter. Hence, all TeX files
+  related to documentation and quickstart guide have been removed from the
+  repository.
+  (see #60)
+
+### Fixed
+
+* The manual on the website now offers scrolling on long table of contents.
+  (see #80)
 
 ## [6.1.7] - 2022-04-16
 
+### Added
+
+* Documentation is now available on
+  [arara's homepage](https://islandoftex.gitlab.io/arara/manual/)
+  in addition to the PDF manual.
+
 ### Changed
 
-* `xelatex` and `xetex` rules were updated to include the `unsafe` execution branch.
+* `xelatex` and `xetex` rules were updated to include the `unsafe` execution
+  branch.
   (see #79)
 
 ### Fixed
@@ -53,14 +71,14 @@ from version 5.0.0 on.
 
 ### Fixed
 
-* Fixed shipping a vulnerable `log4j` version.
+* Fix shipping a vulnerable `log4j` version.
   (see #78)
 
 ## [6.1.4] - 2021-12-14
 
 ### Fixed
 
-* Fixed shipping a vulnerable `log4j` version.
+* Fix shipping a vulnerable `log4j` version.
   (see #77)
 
 ## [6.1.3] - 2021-11-17
