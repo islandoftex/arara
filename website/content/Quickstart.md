@@ -13,15 +13,15 @@ learning adventure. He is very excited about it! Hello, Peter!
 Peter, the anteater. So I heard about this tool named arara, what is it? Is
 there anything to do with {{ tex() }} and friends?*
 
-As a matter of fact, it is! arara is a {{ tex() }} automation tool. The name was chosen
-as an homage to a Brazilian bird of the same name, which is a macaw. The word
-*arara* comes from the Tupian word *a'rara*, which means *big bird*. The tool
-is an effort to provide a concise way to automate the daily {{ tex() }}
+As a matter of fact, it is! arara is a {{ tex() }} automation tool. The name was
+chosen as an homage to a Brazilian bird of the same name, which is a macaw. The
+word *arara* comes from the Tupian word *a'rara*, which means *big bird*. The
+tool is an effort to provide a concise way to automate the daily {{ tex() }}
 workflow for users and also package writers.
 
-***Peter:** It definitely sounds intriguing! So tell me, how does arara work? Does
-it do everything automatically for me, like other tools? Do things happen by
-magic?*
+***Peter:** It definitely sounds intriguing! So tell me, how does arara work?
+Does it do everything automatically for me, like other tools? Do things happen
+by magic?*
 
 A very good question, Peter. The best way to explain how arara works is to
 provide a quick comparison with similar tools. I believe you are familiar
@@ -75,10 +75,10 @@ own*. You are in control of your documents; arara will not do anything unless
 you *teach it how to do a task and explicitly tell it to execute the task*. So,
 it is not magic.
 
-***Peter:**  I see. On the other hand, this approach gives me, as user, full control
-of my document compilation. Being aware of the compilation steps makes me
-understand the {{ tex() }} tooling better. Quite clever! Now, do tell me: how does one
-tell arara to do a task?*
+***Peter:**  I see. On the other hand, this approach gives me, as user, full
+control of my document compilation. Being aware of the compilation steps makes
+me understand the {{ tex() }} tooling better. Quite clever! Now, do tell me: how
+does one tell arara to do a task?*
 
 First of all, Peter, arara has to know *how* to do a task. This is done by
 defining rules. A rule is a formal description of how the tool should handle a
@@ -106,8 +106,8 @@ document to indicate how the tool should work, e.g:
 % arara: pdflatex
 ```
 
-***Peter:**  Makes sense. So, a directive is a special comment line which is not the
-command to be executed, but the name of the rule associated with that
+***Peter:**  Makes sense. So, a directive is a special comment line which is not
+the command to be executed, but the name of the rule associated with that
 directive. Is that correct?*
 
 Perfect, Peter! That is basically how arara works: we teach the tool to do a
@@ -159,9 +159,10 @@ dangerous claws. The giant anteater's claws are some four inches long, and the
 animal can fight off even a puma or jaguar.
 {% end %}
 
-***Peter:** I have been wondering: there are scenarios in which we need to provide
-additional information to the underlying commands – for instance, we need to
-enable shell escape when using the `minted` package. How can we achieve this?*
+***Peter:** I have been wondering: there are scenarios in which we need to
+provide additional information to the underlying commands – for instance, we
+need to enable shell escape when using the `minted` package. How can we achieve
+this?*
 
 For such scenarios, arara provides a second type of directive, a parametrized
 one, which allows passing arguments to the corresponding rule. From your
@@ -183,8 +184,8 @@ is possible to spread lines of a multiline directive all over the code, it is
 considered good practice to keep them together for easier reading and editing.
 {% end %}
 
-***Peter:** Great, these directives are really convenient! I am now curious on how
-to explore arara: shall we move to a more complex document? Consider the
+***Peter:** Great, these directives are really convenient! I am now curious on
+how to explore arara: shall we move to a more complex document? Consider the
 following addition to my document:*
 
 ```tex
@@ -293,8 +294,8 @@ predefined maximum number of loops. The default value is set to 10, but it can
 be overridden.
 {% end %}
 
-***Peter:** These conditionals can help me dictate how my workflow should behave in
-certain scenarios! I gather there are several possible ways of tackling them,
+***Peter:** These conditionals can help me dictate how my workflow should behave
+in certain scenarios! I gather there are several possible ways of tackling them,
 right?*
 
 Correct, Peter. In the previous example, we used the `if` operator, but we could
@@ -331,8 +332,8 @@ containing a reference[^2] to my doctoral thesis:*
 ```
 
 *I want to cite my thesis in the article you and I are writing for this
-quickstart guide. From the {{ tex() }} side, it is quite straightforward! How about
-arara? Here is my code:*
+quickstart guide. From the {{ tex() }} side, it is quite straightforward! How
+about arara? Here is my code:*
 
 ```tex
 \documentclass{article}
@@ -360,38 +361,39 @@ each day. As the largest of all four anteater species, the giant anteater can
 reach eight feet long from the tip of its snout to the end of its tail.
 {% end %}
 
-We, as users, can learn a great deal about {{ tex() }} and friends by organising our
-workflow into directives. Let us review what should be done in order to
+We, as users, can learn a great deal about {{ tex() }} and friends by organising
+our workflow into directives. Let us review what should be done in order to
 correctly compile your document:
 
-1. For starters, we need to run the {{ tex() }} engine in order to write (amongst other
-    things) the relevant bibliography information to the auxiliary file. We can
-    achieve this by inserting the following directive:
+1. For starters, we need to run the {{ tex() }} engine in order to write
+    (amongst other things) the relevant bibliography information to the
+    auxiliary file. We can achieve this by inserting the following directive:
 
    ```tex
    % arara: pdflatex
    ```
 
 2. Once the auxiliary file holds the relevant bibliography information, we need
-    to run the Bib{{ tex() }} tool as a means to map entries from the bibliography
-    database to the existing citations into an intermediate bibliography
-    file. We can achieve this by inserting the following directive:
+    to run the Bib{{ tex() }} tool as a means to map entries from the
+    bibliography database to the existing citations into an intermediate
+    bibliography file. We can achieve this by inserting the following directive:
 
    ```tex
    % arara: bibtex
    ```
 
 3. Once the intermediate bibliography file is generated, we can now have a
-    proper bibliography section in our document, so we need to run the {{ tex() }}
-    engine again. We can achieve this by inserting the following directive:
+    proper bibliography section in our document, so we need to run the
+    {{ tex() }} engine again. We can achieve this by inserting the following
+    directive:
 
    ```tex
    % arara: pdflatex
    ```
 
 4. However, the citations are still not yet referenced in the document, so a
-    final run of the {{ tex() }} engine is required in order to correctly adjust these
-    references. We can achieve this by inserting the following directive:
+    final run of the {{ tex() }} engine is required in order to correctly adjust
+    these references. We can achieve this by inserting the following directive:
 
    ```tex
    % arara: pdflatex
@@ -399,8 +401,8 @@ correctly compile your document:
 
 And we are done! These are the compilation steps required to correctly generate
 your article from the given source and bibliography files. Note that the entire
-workflow involves two different tools working together: the {{ tex() }} engine and the
-Bib{{ tex() }} tool.
+workflow involves two different tools working together: the {{ tex() }} engine
+and the Bib{{ tex() }} tool.
 
 ***Peter:** Wait a minute, no less than four compilation steps? I would never
 guessed it! This is great: arara is also helping me understand better how
@@ -450,8 +452,8 @@ Processing 'article.tex' (size: 281 B, last modified: 01/08/2021
 Total: 2.49 seconds
 ```
 
-***Peter:** Great! I see arara is quite expressive! I am very curious: what about
-other possibilities, will I learn them by looking at the reference manual?
+***Peter:** Great! I see arara is quite expressive! I am very curious: what
+about other possibilities, will I learn them by looking at the reference manual?
 Surely there are way more features to discover.*
 
 Of course, Peter! The reference manual contains everything there is to know
@@ -462,9 +464,9 @@ argument passing through command line flags, configuration files, default
 preambles, file hashing, safe mode, and much more. There is a world of
 possibilities!
 
-***Peter:** Thank you very much, person from the Island of {{ tex() }}! I am sure I will
-have a lot of fun with arara! Should I need any assistance, how can I contact
-the team?*
+***Peter:** Thank you very much, person from the Island of {{ tex() }}! I am
+sure I will have a lot of fun with arara! Should I need any assistance, how can
+I contact the team?*
 
 Great talking to you, Peter! If you run into any issue with arara, please let us
 know. We all have very active profiles in the [{{ tex() }} community at
@@ -475,8 +477,8 @@ your question and we will help you the best we can (also, take a look at their
 [Matrix](https://matrix.to/#/!HfEWIEvFtDplCLSQvz:matrix.org?via=matrix.org) chat
 rooms, in which we occasionally hang out. Also, if you think the report is
 worthy of an issue, open one in our [GitLab
-repository](https://gitlab.com/islandoftex/arara/issues). Happy {{ tex() }}ing with
-arara, Peter!
+repository](https://gitlab.com/islandoftex/arara/issues). Happy {{ tex() }}ing
+with arara, Peter!
 
 ---
 
