@@ -25,7 +25,7 @@ discuss the inclusion of your rule in forthcoming updates.
 # `animate`
 
 This rule creates an animated `gif` file from the corresponding base name of the
-`❖ currentFile` reference (i.e, the name without the associated
+`❖ currentFile` reference (i.e, the name without the associated
 extension) as a string concatenated with the `pdf` suffix, using the `convert`
 command line utility from the ImageMagick suite.
 
@@ -190,7 +190,7 @@ index files, with the `ain` extension.
 This rule executes the `bib2gls` command line application which extracts
 glossary information stored in a `bib` file and converts it into glossary entry
 definitions in resource files. This rule passes the base name of the
-`❖ currentFile` reference (i.e, the name without the associated
+`❖ currentFile` reference (i.e, the name without the associated
 extension) as the mandatory argument.
 
 - `dir`: This option sets the directory used for writing auxiliary files. Note
@@ -274,7 +274,7 @@ extension) as the mandatory argument.
 # `biber`
 
 This rule runs `biber`, the backend bibliography processor for `biblatex`, on
-the corresponding base name of the `❖ currentFile` reference (i.e,
+the corresponding base name of the `❖ currentFile` reference (i.e,
 the name without the associated extension) as a string.
 
 - **[S]** `tool`:  This option sets whether the bibliography processor should be
@@ -293,7 +293,7 @@ the name without the associated extension) as a string.
 # `bibtex`
 
 This rule runs the `bibtex` program, a reference management software, on the
-corresponding base name of the `❖ currentFile` reference (i.e, the
+corresponding base name of the `❖ currentFile` reference (i.e, the
 name without the associated extension) as a string.
 
 - `options`: This option, as the name indicates, takes a list of raw command
@@ -308,7 +308,7 @@ name without the associated extension) as a string.
 # `bibtex8`
 
 This rule runs `bibtex8`, an enhanced, portable C version of `bibtex`, on the
-corresponding base name of the `❖ currentFile` reference (i.e, the
+corresponding base name of the `❖ currentFile` reference (i.e, the
 name without the associated extension) as a string. It is important to note that
 this tool can read a character set file containing encoding details.
 
@@ -324,7 +324,7 @@ this tool can read a character set file containing encoding details.
 
 This rule runs the `bibtexu` program, an enhanced version of `bibtex` with
 Unicode support and language features, on the corresponding base name of the
-`❖ currentFile` reference (i.e, the name without the associated
+`❖ currentFile` reference (i.e, the name without the associated
 extension) as a string.
 
 - `options`: This option, as the name indicates, takes a list of raw command
@@ -340,7 +340,7 @@ extension) as a string.
 This rule removes the provided file reference through the underlying system
 command, which can be `rm` in a Unix environment or `del` in Microsoft
 Windows. As a security lock, this rule will always throw an error if
-`❖ currentFile` is equal to `❖ getOriginalFile`, so the
+`❖ currentFile` is equal to `❖ getOriginalFile`, so the
 main file reference cannot be removed. It is highly recommended to use the
 special `files` parameter to indicate removal candidates. Alternatively, a list
 of file extensions can be provided as well. Be mindful that the security lock
@@ -348,7 +348,7 @@ also applies to file removals based on extensions.
 
 - `extensions`: This option, as the name indicates, takes a list of extensions
   and constructs a new list of removals commands according to the base name of
-  the `❖ currentFile` reference (i.e, the name without the associated
+  the `❖ currentFile` reference (i.e, the name without the associated
   extension) as a string concatenated with each extension from the original list
   as suffixes. Keep in mind that, if the special `files` parameter is used with
   this option, the resulting list will contain the cartesian product of file
@@ -485,7 +485,7 @@ more.
 This rule copies the `File` reference to the provided target using the
 underlying operating system copy operation. The target is *always*
 overwritten. However, be mindful that an error will be thrown if you try to
-overwrite the file referenced in `❖ getOriginalReference`.
+overwrite the file referenced in `❖ getOriginalReference`.
 
 - **[R]** `target`: This option, as the name implies, specifies the target for
   the copy operation. Keep in mind that this option is required.
@@ -498,7 +498,7 @@ overwrite the file referenced in `❖ getOriginalReference`.
 
 This rule runs the `csplain` TeX engine, a conservative extension of Knuth's
 plain TeX with direct processing characters and hyphenation patterns for Czech
-and Slovak, on the provided `❖ currentFile` reference.
+and Slovak, on the provided `❖ currentFile` reference.
 
 - `interaction`: This option alters the underlying engine behaviour. When such
   option is omitted, TeX will prompt the user for interaction in the event of an
@@ -662,7 +662,7 @@ requires `output` and one of the import options.
 # `detex`
 
 This rule runs `detex`, a command line application that, as the name indicates,
-reads the provided `❖ currentFile` reference, removes all comments
+reads the provided `❖ currentFile` reference, removes all comments
 and TeX control sequences and writes the remainder to the standard output or
 file.
 
@@ -703,13 +703,13 @@ file.
 # `dvipdfm`
 
 This rule runs `dvipdfm`, a command line utility for file format translation, on
-the corresponding base name of the `❖ currentFile` reference (i.e,
+the corresponding base name of the `❖ currentFile` reference (i.e,
 the name without the associated extension) as a string concatenated with the
 `dvi` suffix, generating a Portable Document Format `pdf` file.
 
 - `output`: This option, as the name indicates, sets the output name for the
   generated `pdf` file. There is no need to provide an extension, as the value
-  is always normalized with `❖ getBasename` such that only the name
+  is always normalized with `❖ getBasename` such that only the name
   without the associated extension is used. The base name of the current file
   reference is used as the default value.
 
@@ -725,13 +725,13 @@ the name without the associated extension) as a string concatenated with the
 
 This rule runs `dvipdfmx`, an extended version of `dvipdfm` created to support
 multibyte character encodings and large character sets for East Asian languages,
-on the corresponding base name of the `❖ currentFile` reference (i.e,
+on the corresponding base name of the `❖ currentFile` reference (i.e,
 the name without the associated extension) as a string concatenated with the
 `dvi` suffix, generating a Portable Document Format `pdf` file.
 
 - `output`: This option, as the name indicates, sets the output name for the
   generated `pdf` file. There is no need to provide an extension, as the value
-  is always normalized with `❖ getBasename` such that only the name
+  is always normalized with `❖ getBasename` such that only the name
   without the associated extension is used. The base name of the current file
   reference is used as the default value.
 
@@ -751,7 +751,7 @@ string concatenated with the `dvi` suffix, generating a PostScript `ps` file.
 
 - `output`: This option, as the name indicates, sets the output name for the
   generated `ps` file. There is no need to provide an extension, as the value is
-  always normalized with `❖ getBasename` such that only the name
+  always normalized with `❖ getBasename` such that only the name
   without the associated extension is used. The base name of the current file
   reference is used as the default value.
 
@@ -768,12 +768,12 @@ string concatenated with the `dvi` suffix, generating a PostScript `ps` file.
 This rule runs `dvips` in order to obtain a corresponding `ps` file from the
 initial `dvi` reference, and then runs `ps2pdf` on the previously generated `ps`
 file in order to obtain a `pdf` file. Note that all base names are acquired from
-the `❖ currentFile` reference (i.e, the name without the associated
+the `❖ currentFile` reference (i.e, the name without the associated
 extension) and used to construct the resulting files.
 
 - `output`: This option, as the name indicates, sets the output name for the
   generated `pdf` file. There is no need to provide an extension, as the value
-  is always normalized with `❖ getBasename` such that only the name
+  is always normalized with `❖ getBasename` such that only the name
   without the associated extension is used. The base name of the current file
   reference is used as the default value.
 
@@ -793,7 +793,7 @@ extension) and used to construct the resulting files.
 
 This rule runs `dvisvgm` in order to obtain a corresponding `svg` file, a vector
 graphics format based on XML, from the initial reference. It is important to
-observe that the base name is acquired from the `❖ currentFile`
+observe that the base name is acquired from the `❖ currentFile`
 reference (i.e, the name without the associated extension) and used to construct
 the resulting file.
 
@@ -828,7 +828,7 @@ the resulting file.
 # `etex`
 
 This rule runs the `etex` extended (plain) TeX engine on the provided
-`❖ currentFile` reference, generating a corresponding file in a
+`❖ currentFile` reference, generating a corresponding file in a
 device independent format.
 
 - `interaction`: This option alters the underlying engine behaviour. If this
@@ -869,7 +869,7 @@ device independent format.
 # `fig2dev`
 
 This rule runs `fig2dev`, a command line application that translates `fig` code
-in the corresponding base name of the `❖ currentFile` reference (i.e,
+in the corresponding base name of the `❖ currentFile` reference (i.e,
 the name without the associated extension) as a string concatenated with the
 `fig` suffix into the specified graphics language and puts them in the specified
 output file.
@@ -1032,7 +1032,7 @@ more information on flags.
 # `indent`
 
 This rule runs `latexindent`, a Perl script that indents TeX files according to
-an indentation scheme, on the provided `❖ currentFile`
+an indentation scheme, on the provided `❖ currentFile`
 reference. Environments, including those with alignment delimiters, and
 commands, including those that can split braces and brackets across lines, are
 usually handled correctly by the script.
@@ -1041,7 +1041,7 @@ usually handled correctly by the script.
   will operate in silent mode, in which no output is given to the terminal.
 
 - **[S]** `overwrite`: This option, as the name indicates, sets whether the
-  `❖ currentFile` reference will be overwritten. If activated, a
+  `❖ currentFile` reference will be overwritten. If activated, a
   copy will be made before the actual indentation process.
 
 - `trace`: This option, as the name indicates, enables the script tracing mode,
@@ -1085,7 +1085,7 @@ usually handled correctly by the script.
 
   - `local`: This value, as the name implies, acts a switch to indicate a local
     configuration. In this scenario, the script will look for a proper settings
-    file in the same directory as the `❖ currentFile` reference and
+    file in the same directory as the `❖ currentFile` reference and
     add the corresponding content to the indentation scheme. Optionally, a file
     location can be specified as well. Please refer to the `where` option for
     more details on such feature.
@@ -1163,7 +1163,7 @@ another file. It can also tangle R source code from the input document.
 
 # `latex`
 
-This rule runs the `latex` TeX engine on the provided `❖ currentFile`
+This rule runs the `latex` TeX engine on the provided `❖ currentFile`
 reference, generating a corresponding file in a device independent format.
 
 - `branch` (default: `stable`): This option allows branching formats for the
@@ -1219,7 +1219,7 @@ reference, generating a corresponding file in a device independent format.
 # `latexmk`
 
 This rule runs `latexmk`, a fantastic command line tool for fully automated TeX
-document generation, on the provided `❖ currentFile` reference.
+document generation, on the provided `❖ currentFile` reference.
 
 - `clean`: This option, as the name indicates, removes all temporary files
   generated after a sequence of intermediate calls for document generation. Two
@@ -1323,7 +1323,7 @@ workflow for each document.
 # `ltx2any`
 
 This rule runs `ltx2any`, a command line tool written in Ruby that acts as a
-LaTeX build wrapper, on the provided `❖ currentFile` reference.
+LaTeX build wrapper, on the provided `❖ currentFile` reference.
 
 - **[S]** `clean`: This option, as the name indicates, sets whether all
   intermediate results generated during the compilation to be deleted.
@@ -1561,7 +1561,7 @@ This rule runs `makeglossaries`, an efficient Perl script designed for use with
 TeX documents that work with the `glossaries` package. All the information
 required to be passed to the relevant indexing application should also be
 contained in the auxiliary file. The script takes the corresponding base name of
-the `❖ currentFile` reference (i.e, the name without the associated
+the `❖ currentFile` reference (i.e, the name without the associated
 extension) as the mandatory argument.
 
 - `options`: This option, as the name indicates, takes a list of raw command
@@ -1578,7 +1578,7 @@ This rule runs `makeglossaries-lite`, a lightweight Lua script designed for use
 with TeX documents that work with the `glossaries` package. All the information
 required to be passed to the relevant indexing application should also be
 contained in the auxiliary file. The script takes the corresponding base name of
-the `❖ currentFile` reference (i.e, the name without the associated
+the `❖ currentFile` reference (i.e, the name without the associated
 extension) as the mandatory argument.
 
 - `options`: This option, as the name indicates, takes a list of raw command
@@ -1592,7 +1592,7 @@ extension) as the mandatory argument.
 # `makeindex`
 
 This rule runs `makeindex`, a general purpose hierarchical index generator, on
-the corresponding base name of the `❖ currentFile` reference (i.e,
+the corresponding base name of the `❖ currentFile` reference (i.e,
 the name without the associated extension) as a string concatenated with the
 `idx` suffix, generating an index as a special `ind` file.
 
@@ -1621,7 +1621,7 @@ the name without the associated extension) as a string concatenated with the
 - `output` (default: `ind`): This option, as the name indicates, sets the
   default extension for the output file, according to the provided value. Later,
   this value will be concatenated as a suffix for the base name of the
-  `❖ currentFile` reference (i.e, the name without the associated
+  `❖ currentFile` reference (i.e, the name without the associated
   extension).
 
 - `log` (default: `ilg`): This option, as the name indicates, sets the default
@@ -1693,7 +1693,7 @@ graphics you want to compile for inclusion in your document.
 This rule moves the `File` reference to the provided target using the underlying
 operating system move operation. The target is *always* overwritten. However, be
 mindful that an error will be thrown if you try to move or overwrite the file
-referenced in `❖ getOriginalReference`.
+referenced in `❖ getOriginalReference`.
 
 - **[R]** `target`: This option, as the name implies, specifies the target for
   the move operation. Keep in mind that this option is required.
@@ -1708,7 +1708,7 @@ referenced in `❖ getOriginalReference`.
 This rule runs `makeindex` in order to automatically generate a nomenclature
 list from TeX documents that work with the `nomencl` package. The program itself
 is a general purpose hierarchical index generator and takes the corresponding
-base name of the `❖ currentFile` reference (i.e, the name without the
+base name of the `❖ currentFile` reference (i.e, the name without the
 associated extension) as a string concatenated with the `nlo` suffix and a
 special style file in order to generate the nomenclature list as a special `nls`
 file.
@@ -1729,7 +1729,7 @@ file.
 # `pbibtex`
 
 This rule runs the `pbibtex` program, a reference management software, on the
-corresponding base name of the `❖ currentFile` reference (i.e, the
+corresponding base name of the `❖ currentFile` reference (i.e, the
 name without the associated extension) as a string.
 
 - `options`: This option, as the name indicates, takes a list of raw command
@@ -1744,7 +1744,7 @@ name without the associated extension) as a string.
 # `pdfcrop`
 
 This rule runs `pdfcrop`, a command line utility to calculate and remove empty
-margins, on corresponding base name of the `❖ currentFile` reference
+margins, on corresponding base name of the `❖ currentFile` reference
 (i.e, the name without the associated extension) as a string concatenated with
 the `pdf` suffix.
 
@@ -1814,7 +1814,7 @@ the `pdf` suffix.
 
 This rule runs the `pdfcsplain` TeX engine, a conservative extension of Knuth's
 plain TeX with direct processing characters and hyphenation patterns for Czech
-and Slovak, on the provided `❖ currentFile` reference.
+and Slovak, on the provided `❖ currentFile` reference.
 
 - `interaction`: This option alters the underlying engine behaviour. If this
   option is omitted, TeX will prompt the user for interaction in the event of an
@@ -1976,7 +1976,7 @@ string concatenated with the `pdf` suffix.
 
 This rule runs `perltex`, a wrapper that enables a symbiosis between Perl, a
 popular general purpose programming language, and a TeX engine, on the provided
-`❖ currentFile` reference.
+`❖ currentFile` reference.
 
 - `engine` (default: `latex`): This option, as the name indicates, sets the
   underlying TeX engine to be used for the current compilation. Make sure to
@@ -2119,13 +2119,13 @@ format.
 # `ps2pdf`
 
 This rule runs `ps2pdf`, a tool that converts PostScript to Portable Document
-Format, on the corresponding base name of the `❖ currentFile`
+Format, on the corresponding base name of the `❖ currentFile`
 reference (i.e, the name without the associated extension) as a string
 concatenated with the `ps` suffix.
 
 - `output`: This option, as the name indicates, sets the output name for the
   generated `pdf` file. There is no need to provide an extension, as the value
-  is always normalized with `❖ getBasename` such that only the name
+  is always normalized with `❖ getBasename` such that only the name
   without the associated extension is used. The base name of the current file
   reference is used as the default value.
 
@@ -2140,7 +2140,7 @@ concatenated with the `ps` suffix.
 # `pythontex`
 
 This rule runs `pythontex`, a wrapper that provides access to Python from within
-typical TeX documents, on the provided `❖ currentFile`
+typical TeX documents, on the provided `❖ currentFile`
 reference. Make sure to take a look at the documentation for further details.
 
 - `encoding`: This option sets the encoding of the underlying TeX document and
@@ -2217,7 +2217,7 @@ providing capabilities to developers.
 # `sage`
 
 This rule runs `sage`, a free open source mathematics software system, on the
-corresponding base name of the `❖ currentFile` reference (i.e, the
+corresponding base name of the `❖ currentFile` reference (i.e, the
 name without the associated extension) as a string concatenated with the `sage`
 extension (which can be overriden).
 
@@ -2256,7 +2256,7 @@ extension (which can be overriden).
 # `sketch`
 
 This rule runs `sketch`, a system for producing line drawings of solid objects
-and scenes, on the corresponding base name of the `❖ currentFile`
+and scenes, on the corresponding base name of the `❖ currentFile`
 reference (i.e, the name without the associated extension) as a string
 concatenated with the `sk` suffix. Note that one needs to add support for this
 particular file type, as seen in [Configuration](/manual/configuration).
@@ -2281,7 +2281,7 @@ performed by the underlying `texlua` interpreter.
 - **[R]** `input`: This required option, as the name indicates, sets the input
   name for the song index file specified within the TeX document. There is no
   need to provide an extension, as the value is always normalized with
-  `❖ getBasename` such that only the name without the associated
+  `❖ getBasename` such that only the name without the associated
   extension is used.
 
 - `script` (default: `songidx.lua`): This option, as the name indicates, sets
@@ -2300,7 +2300,7 @@ performed by the underlying `texlua` interpreter.
 # `spix`
 
 This rule runs `spix`, an interesting command line TeX automation tool written
-in Python, on the provided `❖ currentFile` reference.
+in Python, on the provided `❖ currentFile` reference.
 
 - `dry`: This option sets whether the tool should display a list of commands to
   be executed without actually invoking them.
@@ -2315,7 +2315,7 @@ in Python, on the provided `❖ currentFile` reference.
 
 # `tex`
 
-This rule runs the `tex` TeX engine on the provided `❖ currentFile`
+This rule runs the `tex` TeX engine on the provided `❖ currentFile`
 reference, generating a corresponding file in a device independent format.
 
 - `interaction`: This option alters the underlying engine behaviour. If this
@@ -2354,7 +2354,7 @@ reference, generating a corresponding file in a device independent format.
 
 This rule runs `texcount`, a Perl script designed to count words in TeX and
 LaTeX files, ignoring macros, tables, formulae and more on the provided
-`❖ currentFile` reference. The script is highly configurable, so make
+`❖ currentFile` reference. The script is highly configurable, so make
 sure to check the manual for further information.
 
 - `rules`: This option, as the name suggests, sets the rules which dictate how
@@ -2455,7 +2455,7 @@ string concatenated with the `idx` suffix, generating an index as a special
 - `output` (default: `ind`): This option, as the name indicates, sets the
   default extension for the output file, according to the provided value. Later,
   this value will be concatenated as a suffix for the base name of the
-  `❖ currentFile` reference (i.e, the name without the associated
+  `❖ currentFile` reference (i.e, the name without the associated
   extension).
 
 - `log` (default: `ilg`): This option, as the name indicates, sets the default
@@ -2475,7 +2475,7 @@ string concatenated with the `idx` suffix, generating an index as a special
 
 This rule runs `make` on a very specific build file generated by the `tikzmake`
 package, as a means to simplify the externalization of Ti*k*Z pictures. This
-build file corresponds to the base name of the `❖ currentFile`
+build file corresponds to the base name of the `❖ currentFile`
 reference (i.e, the name without the associated extension) as a string
 concatenated with the `makefile` suffix.
 
@@ -2498,7 +2498,7 @@ concatenated with the `makefile` suffix.
 # `upbibtex`
 
 This rule runs the `upbibtex` program, a reference management software, on the
-corresponding base name of the `❖ currentFile` reference (i.e, the
+corresponding base name of the `❖ currentFile` reference (i.e, the
 name without the associated extension) as a string.
 
 - `options`: This option, as the name indicates, takes a list of raw command
@@ -2565,7 +2565,7 @@ format.
 
 # `uptex`
 
-This rule runs the `uptex` TeX engine on the provided `❖ currentFile`
+This rule runs the `uptex` TeX engine on the provided `❖ currentFile`
 reference, generating a corresponding file in a device independent format.
 
 - `interaction`: This option alters the underlying engine behaviour. If this
@@ -2608,7 +2608,7 @@ reference, generating a corresponding file in a device independent format.
 
 This rule runs `xdvipdfmx`, the back end for the `xetex` TeX engine (and not
 intended to be invoked directly), on the corresponding base name of the
-`❖ currentFile` reference (i.e, the name without the associated
+`❖ currentFile` reference (i.e, the name without the associated
 extension) as a string concatenated with a certain suffix, generating a Portable
 Document Format `pdf` file.
 
@@ -2625,7 +2625,7 @@ Document Format `pdf` file.
 
 - `output`: This option, as the name indicates, sets the output name for the
   generated `pdf` file. There is no need to provide an extension, as the value
-  is always normalized with `❖ getBasename` such that only the name
+  is always normalized with `❖ getBasename` such that only the name
   without the associated extension is used. The base name of the current file
   reference is used as the default value.
 
@@ -2696,7 +2696,7 @@ Format, as expected.
 
 # `xetex`
 
-This rule runs the `xetex` TeX engine on the provided `❖ currentFile`
+This rule runs the `xetex` TeX engine on the provided `❖ currentFile`
 reference, generating a corresponding file in the Portable Document Format, as
 expected.
 
@@ -2774,7 +2774,7 @@ This rule runs `xindex`, a flexible and powerful indexing system, on a provided
 # `xindy`
 
 This rule runs `xindy`, a flexible and powerful indexing system, on the
-corresponding base name of the `❖ currentFile` reference (i.e, the
+corresponding base name of the `❖ currentFile` reference (i.e, the
 name without the associated extension) as a string concatenated with the `idx`
 suffix, generating an index as a special `ind` file.
 
@@ -2819,7 +2819,7 @@ suffix, generating an index as a special `ind` file.
 - `output` (default: `ind`): This option, as the name indicates, sets the
   default extension for the output file, according to the provided value. Later,
   this value will be concatenated as a suffix for the base name of the
-  `❖ currentFile` reference (i.e, the name without the associated
+  `❖ currentFile` reference (i.e, the name without the associated
   extension).
 
 - `log` (default: `ilg`): This option, as the name indicates, sets the default

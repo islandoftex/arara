@@ -132,7 +132,7 @@ references, when applied.
   ```
 
 - **[C|R]** `exists(String extension): boolean` This method returns a boolean
-    value according to whether the base name of the `❖ currentFile`
+    value according to whether the base name of the `❖ currentFile`
     reference (i.e, the name without the associated extension) as a string
     concatenated with the provided `String` extension exists. This method eases
     the checking of files which share the current file name modulo extension
@@ -153,7 +153,7 @@ references, when applied.
   ```
 
 - **[C|R]** `missing(String extension): boolean` This method returns a boolean
-    value according to whether the base name of the `❖ currentFile`
+    value according to whether the base name of the `❖ currentFile`
     reference (i.e, the name without the associated extension) as a string
     concatenated with the provided `String` extension does not exist. This
     method eases the checking of files which share the current file name modulo
@@ -182,7 +182,7 @@ references, when applied.
 
   It is important to observe that this method *always* performs a database
   operation, either an insertion, removal or update on the corresponding
-  entry. When using `❖ changed` within a logical expression, make
+  entry. When using `❖ changed` within a logical expression, make
   sure the evaluation order is correct, specially regarding the use of
   short-circuiting operations. In some scenarios, order does matter.
 
@@ -210,7 +210,7 @@ references, when applied.
   {% end %}
 
 - **[C|R]** `changed(String extension): boolean` This method returns a boolean
-    value according to whether the base name of the `❖ currentFile`
+    value according to whether the base name of the `❖ currentFile`
     reference (i.e, the name without the associated extension) as a string
     concatenated with the provided `String` extension has changed since last
     verification, based on a traditional cyclic redundancy check. The file
@@ -230,7 +230,7 @@ references, when applied.
 
   It is important to observe that this method *always* performs a database
   operation, either an insertion, removal or update on the corresponding
-  entry. When using `❖ changed` within a logical expression, make
+  entry. When using `❖ changed` within a logical expression, make
   sure the evaluation order is correct, specially regarding the use of
   short-circuiting operations. In some scenarios, order does matter.
 
@@ -257,7 +257,7 @@ references, when applied.
 
   It is important to observe that this method *always* performs a database
   operation, either an insertion, removal or update on the corresponding
-  entry. When using `❖ unchanged` within a logical expression, make
+  entry. When using `❖ unchanged` within a logical expression, make
   sure the evaluation order is correct, specially regarding the use of
   short-circuiting operations. In some scenarios, order does matter.
 
@@ -266,7 +266,7 @@ references, when applied.
   ```
 
 - **[C|R]** `unchanged(String extension): boolean` This method returns a boolean
-    value according to whether the base name of the `❖ currentFile`
+    value according to whether the base name of the `❖ currentFile`
     reference (i.e, the name without the associated extension) as a string
     concatenated with the provided `String` extension has not changed since last
     verification, based on a traditional cyclic redundancy check. The file
@@ -286,7 +286,7 @@ references, when applied.
 
   It is important to observe that this method *always* performs a database
   operation, either an insertion, removal or update on the corresponding
-  entry. When using `❖ unchanged` within a logical expression, make
+  entry. When using `❖ unchanged` within a logical expression, make
   sure the evaluation order is correct, specially regarding the use of
   short-circuiting operations. In some scenarios, order does matter.
 
@@ -380,7 +380,7 @@ references, when applied.
     the content from the `File` reference and returns a `List<String>` object
     representing the lines as a list of strings. If the reference does not exist
     or an exception is raised due to access permission constraints, the
-    `❖ readFromFile` method returns an empty list. Keep in mind that,
+    `❖ readFromFile` method returns an empty list. Keep in mind that,
     as a design decision, UTF-8 is *always* used as character encoding for read
     operations.
 
@@ -393,7 +393,7 @@ references, when applied.
     reads the content from the `String` reference and returns a `List<String>`
     object representing the lines as a list of strings. If the reference does
     not exist or an exception is raised due to access permission constraints,
-    the `❖ readFromFile` method returns an empty list. Keep in mind
+    the `❖ readFromFile` method returns an empty list. Keep in mind
     that, as a design decision, UTF-8 is *always* used as character encoding for
     read operations.
 
@@ -411,7 +411,7 @@ references, when applied.
     acts as a switch indicating whether the search must be recursive, i.e,
     whether all subdirectories must be searched as well. If the reference is not
     a proper directory or an exception is raised due to access permission
-    constraints, the `❖ listFilesByExtensions` method returns an
+    constraints, the `❖ listFilesByExtensions` method returns an
     empty list.
 
   ```java
@@ -446,7 +446,7 @@ references, when applied.
     holds a `boolean` value and acts as a switch indicating whether the search
     must be recursive, i.e, whether all subdirectories must be searched as
     well. If the reference is not a proper directory or an exception is raised
-    due to access permission constraints, the `❖ listFilesByPatterns`
+    due to access permission constraints, the `❖ listFilesByPatterns`
     method returns an empty list. It is very important to observe that this file
     search operation might be slow depending on the provided directory. It is
     highly advisable to not rely on recursive searches whenever possible.
@@ -743,7 +743,7 @@ offer high level constructs for users.
 
 - **[C|R]** `found(String extension, String regex): boolean` This method returns
     a boolean value according to whether the content of the base name of the
-    `❖ currentFile` reference (i.e, the name without the associated
+    `❖ currentFile` reference (i.e, the name without the associated
     extension) as a string concatenated with the provided `String` extension
     contains at least one match of the provided `String` regular expression. It
     is important to observe that this method raises an exception if an invalid
@@ -913,7 +913,7 @@ support and verification for common data types.
     a boolean value according to whether the provided `Object` object is an
     instance or a subtype of the provided `Class` class. It is interesting to
     note that all methods presented in this section internally rely on
-    `❖ checkClass` for type checking.
+    `❖ checkClass` for type checking.
 
   ```java
   result = checkClass(List.class, [ 'a', 'b' ]);
@@ -921,7 +921,7 @@ support and verification for common data types.
 
 The methods presented in this section cover the most common types used in
 directive parameters and should suffice for expressing the rule requirements. If
-a general approach is needed, please refer to the `❖ checkClass`
+a general approach is needed, please refer to the `❖ checkClass`
 method for checking virtually any type available in the Java environment.
 
 # Classes and objects
@@ -942,10 +942,10 @@ is different from the ordered pair *(b, a)* unless *a = b*. In the ordered pair
 types associated to the pair elements. In order to access the pair entries, the
 class provides two property accessors:
 
-- `❖ first: A`: This property accessor, as the name implies, returns
+- `❖ first: A`: This property accessor, as the name implies, returns
   the first entry of the ordered pair, as an `A` object.
 
-- `❖ second: B`: This property accessor, as the name implies, returns
+- `❖ second: B`: This property accessor, as the name implies, returns
   the second entry of the ordered pair, as a `B` object.
 
 Keep in mind that the entries in the `Pair` class, once defined, cannot be
@@ -1292,7 +1292,7 @@ directory path can be explicitly set through specific method calls, described
 later on in this section.
 
 The list of objects is then completely flattened and all elements are mapped to
-their string representations through corresponding `❖ toString`
+their string representations through corresponding `❖ toString`
 calls. Finally, the proper `Command` object is constructed. Keep in mind that,
 although a command takes a list (or even an array) of objects, which can be of
 any type, the internal representation is *always* a list of strings.
@@ -1389,7 +1389,7 @@ describe the underlying rule logic and yet obtain a consistent representation.
 
 The methods presented in this section constitute the foundations of underlying
 system command execution. In particular, whenever possible, it is highly
-advisable to use `Command` objects through proper `❖ getCommand`
+advisable to use `Command` objects through proper `❖ getCommand`
 method calls, as the plain string approach used in previous versions of our tool
 is marked as deprecated and will be removed in future versions.
 
@@ -1408,25 +1408,25 @@ particular object is a global, persistent map composed of `String` keys and
 `Object` values available throughout the entire execution. The public methods of
 a session are described as follows:
 
-- `❖ put(String key, Object value): void` This method, as the name
+- `❖ put(String key, Object value): void` This method, as the name
   implies, inserts an object into the session, indexed by the provided
   key. Observe that, if the session previously contained a mapping for the
   provided key, the old value is replaced by the specified value.
 
-- `❖ remove(String key): void` This method, as the name implies,
+- `❖ remove(String key): void` This method, as the name implies,
   removes  the mapping for the provided key from the session. Be mindful that an
   attempt to remove a mapping for a nonexistent key will raise an exception.
 
-- `❖ contains(String key): boolean` This method, as the name implies,
+- `❖ contains(String key): boolean` This method, as the name implies,
   returns a boolean value according to whether the session contains a mapping
   for the provided key. It is highly advisable to use this method before
   attempting to remove a mapping from the session.
 
-- `❖ get(String key): Object` This method, as the name implies,
+- `❖ get(String key): Object` This method, as the name implies,
   returns the object value to which the specified key is mapped. Be mindful that
   an attempt to return a value for a nonexistent key will raise an exception.
 
-- `❖ forget(): void` This method, as the name implies, removes all
+- `❖ forget(): void` This method, as the name implies, removes all
   of the existing mappings from the session. The session object will be
   effectively empty after this call returns.
 

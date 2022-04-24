@@ -336,7 +336,7 @@ possible.
 
     There are two variables available in the `flag` context, described as
     follows. Note that are also several helper methods available in the rule
-    context (for instance, `❖ isTrue` presented in the previous
+    context (for instance, `❖ isTrue` presented in the previous
     example) which provide interesting features for rule writing. They are
     detailed later on, in [Methods](/manual/methods).
 
@@ -607,8 +607,8 @@ operators available in the directive context.
   ```
 
 Several methods are available in the directive context in order to ease the
-writing of conditionals, such as `❖ missing`, `❖ changed`,
-`❖ found`, `❖ unchanged`, and `❖ exists`
+writing of conditionals, such as `❖ missing`, `❖ changed`,
+`❖ found`, `❖ unchanged`, and `❖ exists`
 featured in the previous examples. They will be properly detailed later on.
 
 {% messagebox(title="No infinite loops") %}
@@ -696,8 +696,8 @@ parameter in the directive context. For instance:
 ```
 
 This feature supports the following methods with their documented meanings, as
-seen in [Methods](/manual/methods): `❖ getBasename`, `❖
-getSession` and `❖ getOriginalReference`.
+seen in [Methods](/manual/methods): `❖ getBasename`, `❖
+getSession` and `❖ getOriginalReference`.
 
 Keep in mind that this feature is disabled when arara is running in safe mode,
 as seen in [Command line](/manual/cli).

@@ -485,7 +485,7 @@ current option, it will be denoted by `parameter` in the description.
   - File lookup will only perform explicit file resolution. Wildcard filters are
     disabled.
 
-  - `❖ unsafelyExecuteSystemCommand` will raise an exception and
+  - `❖ unsafelyExecuteSystemCommand` will raise an exception and
     abort the run. Keep in mind that rules are still allowed to construct
     arbitrary commands using `Command` objects, so this restriction only
     disallows arbitrary system commands that would not get logged and are thus
@@ -509,7 +509,7 @@ current option, it will be denoted by `parameter` in the description.
     ```
 
     This option may be called multiple times, as a means to provide as many data
-    pairs as needed. Please refer to `❖ getSession` in
+    pairs as needed. Please refer to `❖ getSession` in
     [Methods](/manual/methods) for more details.
 
 You can combine options, use long or short variations interchangeably and write
