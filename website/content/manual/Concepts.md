@@ -187,28 +187,28 @@ properly defined inside it.
       class.
 
     {% messagebox(title="Quote handling") %}
-    The YAML format disallows key values starting with `@` without proper
-    quoting. This is the reason we had to use double quotes for the value and
-    internally using single quotes for the command string. Also, we could use
-    the other way around, or even using only one type and then escaping them
-    when needed. This is excessively verbose but needed due to the format
-    requirement.
+ The YAML format disallows key values starting with `@` without proper
+ quoting. This is the reason we had to use double quotes for the value and
+ internally using single quotes for the command string. Also, we could use
+ the other way around, or even using only one type and then escaping them
+ when needed. This is excessively verbose but needed due to the format
+ requirement.
 
-    From version 6.0 on, the `<arara>` shorthand is not supported anymore. We
-    encourage the use of a YAML feature named *folded style* when writing such
-    values. The idea here is to use the scalar content in folded style. The new
-    code will look like this:
+ From version 6.0 on, the `<arara>` shorthand is not supported anymore. We
+ encourage the use of a YAML feature named *folded style* when writing such
+ values. The idea here is to use the scalar content in folded style. The new
+ code will look like this:
 
-    ```yaml
-    command: >
-      @{
-        return getCommand('ls')
-      }
-    ```
+ ```yaml
+ command: >
+   @{
+     return getCommand('ls')
+   }
+ ```
 
-    Mind the indentation, as YAML requires it to properly identify blocks. If
-    your code still relies on the `<arara>` shorthand, please update it
-    accordingly to use YAML's folded style instead.
+ Mind the indentation, as YAML requires it to properly identify blocks. If
+ your code still relies on the `<arara>` shorthand, please update it
+ accordingly to use YAML's folded style instead.
     {% end %}
 
   - **[O]** `commands → exit`: This key holds a special purpose, as
@@ -287,43 +287,43 @@ properly defined inside it.
     will hold an empty list.
 
     {% messagebox(title="Return type") %}
-    From version 6.0 on, the return value for `flag` is now transformed into a
-    proper `List<String>` type instead of a plain, generic `Object` reference,
-    as seen in previous versions. The following rules apply:
+From version 6.0 on, the return value for `flag` is now transformed into a
+proper `List<String>` type instead of a plain, generic `Object` reference,
+as seen in previous versions. The following rules apply:
 
-    - If a list is returned, it will be flattened and all values will be turned
-      into strings.
+- If a list is returned, it will be flattened and all values will be turned
+  into strings.
 
-      ```java
-      [ 'a', 1, [ 2, 'b' ] ] → [ 'a', '1', '2', 'b' ]
-      ```
+  ```java
+  [ 'a', 1, [ 2, 'b' ] ] → [ 'a', '1', '2', 'b' ]
+  ```
 
-    - If a string is returned, a single list with only that string will be
-      returned.
+- If a string is returned, a single list with only that string will be
+  returned.
 
-      ```java
-      'hello world' → [ 'hello world' ]
-      ```
+  ```java
+  'hello world' → [ 'hello world' ]
+  ```
 
-    - If another type is returned, it will be turned into string.
+- If another type is returned, it will be turned into string.
 
-      ```java
-      3.1415 → [ '3.1415' ]
-      ```
+  ```java
+  3.1415 → [ '3.1415' ]
+  ```
 
-    Other return types than string or lists are not encouraged. However, if such
-    types are used, they will be transformed into a list of strings, as
-    previously seen. If you need interoperability of complex `command` code with
-    older versions, use the following trick to get the value of previously
-    non-list values:
+Other return types than string or lists are not encouraged. However, if such
+types are used, they will be transformed into a list of strings, as
+previously seen. If you need interoperability of complex `command` code with
+older versions, use the following trick to get the value of previously
+non-list values:
 
-    ```java
-    isList(variable) ? variable[0] : variable
-    ```
+```java
+isList(variable) ? variable[0] : variable
+```
 
-    In this way, one can keep a compatibility layer for older versions. However,
-    it is highly recommended to use the latest version of arara whenever
-    possible.
+In this way, one can keep a compatibility layer for older versions. However,
+it is highly recommended to use the latest version of arara whenever
+possible.
     {% end %}
 
     ```yaml
@@ -375,44 +375,44 @@ properly defined inside it.
     provided by the user in the directive context.
 
     {% messagebox(title="No more evaluation and variables") %}
-    In earlier versions, arara used to evaluate the `default` key and return a
-    plain, generic `Object` reference, which was then forwarded directly to the
-    corresponding `command` context. The workflow changed for version 6.0 on.
+In earlier versions, arara used to evaluate the `default` key and return a
+plain, generic `Object` reference, which was then forwarded directly to the
+corresponding `command` context. The workflow changed for version 6.0 on.
 
-    From now on, `default` always expects a string value, as if it were provided
-    by the user in the directive context. No variables are available and no more
-    evaluation is expected from this key. Consider the following example:
+From now on, `default` always expects a string value, as if it were provided
+by the user in the directive context. No variables are available and no more
+evaluation is expected from this key. Consider the following example:
 
-    ```yaml
-    default: "@{ 1 == 1 }"
-    ```
+```yaml
+default: "@{ 1 == 1 }"
+```
 
-    There is an orb tag expression in this string, which should resolve to
-    `true` in previous versions of arara. However, from now on, it will not be
-    evaluated at all and the literal string will be assigned to the `default`
-    key.
+There is an orb tag expression in this string, which should resolve to
+`true` in previous versions of arara. However, from now on, it will not be
+evaluated at all and the literal string will be assigned to the `default`
+key.
 
-    The `default` key, whenever available and in the scenario in which the user
-    does not provide an explicit value for the current argument in the directive
-    context, is forwarded to the `flag` context for proper evaluation. Then the
-    workflow proceeds as usual.
+The `default` key, whenever available and in the scenario in which the user
+does not provide an explicit value for the current argument in the directive
+context, is forwarded to the `flag` context for proper evaluation. Then the
+workflow proceeds as usual.
     {% end %}
 
     {% messagebox(title="Return type") %}
-    The `default` key, whenever available, returns a string to be evaluated in
-    the corresponding `flag` context. However, if the target evaluation context
-    does not exist (i.e, there is no corresponding `flag` key), the value is
-    transformed into a list of strings and then forwarded directly to the
-    `command` context. For instance:
+The `default` key, whenever available, returns a string to be evaluated in
+the corresponding `flag` context. However, if the target evaluation context
+does not exist (i.e, there is no corresponding `flag` key), the value is
+transformed into a list of strings and then forwarded directly to the
+`command` context. For instance:
 
-    ```yaml
-    - identifier: foo
-      default: 'bar'
-    ```
+```yaml
+- identifier: foo
+  default: 'bar'
+```
 
-    This scenario will directly forward `[ 'bar' ]` (a list of strings
-    containing the specified value as single element) as the value for the
-    `⋄ foo` variable in the corresponding `command` context.
+This scenario will directly forward `[ 'bar' ]` (a list of strings
+containing the specified value as single element) as the value for the
+`⋄ foo` variable in the corresponding `command` context.
     {% end %}
 
     ```yaml

@@ -398,15 +398,15 @@ resolution for a path in plain string should be kept as simple as possible, so
       ```
 
     {% messagebox(title="Do not escape backslashes") %}
-    When writing a file type pattern, there is no need for escaping backslashes
-    as one does for strings in a typical programming language (including MVEL
-    expressions). In this specific scenario, key values are represented as
-    plain, literal strings.
+When writing a file type pattern, there is no need for escaping backslashes
+as one does for strings in a typical programming language (including MVEL
+expressions). In this specific scenario, key values are represented as
+plain, literal strings.
 
-    However, please note that character escaping might be required by the
-    underlying regular expression in some scenarios (i.e, a literal dot in the
-    pattern). It is highly recommended to consult a proper regular expression
-    documentation for a comprehensive overview.
+However, please note that character escaping might be required by the
+underlying regular expression in some scenarios (i.e, a literal dot in the
+pattern). It is highly recommended to consult a proper regular expression
+documentation for a comprehensive overview.
     {% end %}
 
 Since arara allows four different names for configuration files, as well as
