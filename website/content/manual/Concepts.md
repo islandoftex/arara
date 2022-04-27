@@ -747,7 +747,7 @@ anything is in rules where you have accessed Java's `File` API yourself.
 {% end %}
 
 {% messagebox(title="Add projects") %}
-arara now supports projects. See the [chapter about projects](/manual/projects)
+arara now supports projects. See [Projects](/manual/projects)
 for further information on this new feature.
 {% end %}
 
