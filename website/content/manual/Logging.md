@@ -169,7 +169,7 @@ Rule location: '/opt/paulo/arara/rules'
 
 For each task (or subtask, as it is part of a rule task) defined in the rule
 context, arara will interpret it and return the corresponding system
-command. The return types can be found in [Concepts](/manual/concepts). In this
+command. The return types can be found in [Important concepts](/manual/concepts). In this
 specific scenario, there is just one task associated with the `pdftex`
 rule. Both task name and system command are shown:
 

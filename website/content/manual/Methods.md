@@ -21,6 +21,10 @@ raised. Alternatively, you can provide the full qualified name to classes as
 well.
 {% end %}
 
+{% messagebox(title="A file by any other name") %}
+As of version 7, we now avoid exposing any Java-specific API. When you see a mention to `File`, keep in mind that this is actually a wrapper to our new internal representation.
+{% end %}
+
 Methods are listed with their complete signatures, including potential
 parameters and corresponding types. Also, the return type of a method is denoted
 by `type` and refers to a typical Java data type (either class or primitive). Do
@@ -41,7 +45,7 @@ references, when applied.
 - **[R]** `getOriginalFile(): String` This method returns the original file
     name, as plain string, regardless of a potential override through the
     special `files` parameter in the directive mapping, as seen in
-    [Concepts](/manual/concepts).
+    [Important concepts](/manual/concepts).
 
   ```java
   if (file == getOriginalFile()) {
@@ -53,7 +57,7 @@ references, when applied.
 - **[C|E|R]** `getOriginalReference(): File` This method returns the original
     file reference, as a `File` object, regardless of a potential reference
     override indirectly through the special `files` parameter in the directive
-    mapping, as seen in [Concepts](/manual/concepts).
+    mapping, as seen in [Important concepts](/manual/concepts).
 
   ```java
   if (reference.equals(getOriginalFile())) {

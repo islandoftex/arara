@@ -12,11 +12,11 @@ circumstances:
 
 1. *Parametrized directives*, as the set of attribute/value pairs (namely,
    argument name and corresponding value) is represented by a map. This
-   particular type of directive is formally introduced in [Concepts](/manual/concepts).
+   particular type of directive is formally introduced in [Important concepts](/manual/concepts).
 
 2. *Rules*, as their entire structure is represented by a set of specific keys
    and their corresponding values (a proper YAML document). A rule follows a
-   very strict model, detailed in [Concepts](/manual/concepts).
+   very strict model, detailed in [Important concepts](/manual/concepts).
 
 3. *Configuration files*, as the general settings are represented by a set of
    specific keys and their corresponding values (a proper YAML
@@ -65,7 +65,7 @@ country: Brazil
 ```
 
 Similarly, the flow mapping uses curly braces. Observe that this is the form
-adopted by a parametrized directive (see syntax in [Concepts](/manual/concepts)):
+adopted by a parametrized directive (see syntax in [Important concepts](/manual/concepts)):
 
 ```yaml
 developer: { name: Paulo, country: Brazil }
@@ -150,7 +150,7 @@ make sure to add `!config` as global tag:
 ```
 
 In particular, rules and configuration files of arara are properly covered in
-[Concepts](/manual/concepts) and [Configuration](/manual/configuration). For
+[Important concepts](/manual/concepts) and [Configuration](/manual/configuration). For
 now, it suffices to say that the `!config` global tag is necessary to provide
 the correct mapping of values inside our tool.
 

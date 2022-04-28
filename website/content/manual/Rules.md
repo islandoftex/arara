@@ -15,7 +15,7 @@ occurrence of an **[R]** mark indicates that the corresponding option is
 required.
 
 {% messagebox(title="Can my rule be distributed within the official pack?") %}
-As seen in [Concepts](/manual/concepts), the default rule path can be extended
+As seen in [Important concepts](/manual/concepts), the default rule path can be extended
 to include a list of directories in which our tool should search for
 rules. However, if you believe your rule is comprehensive enough and deserves to
 be in the official pack, please contact us! We will be more  than happy to
