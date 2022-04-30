@@ -17,11 +17,17 @@ command-line you may pass one `.lua` file (the exact extension is
 important) with a project specification. arara will process the Lua script and
 then execute all the projects as specified in the Lua script.
 
+Important remark: If arara encounters a single Lua file as its argument, it
+tries to parse it as a project. If it fails for any reason (e.g. malformed Lua),
+it will treat the Lua file as regular input file and scan it for directives
+which will fail if you did not define a Lua input file type. However, that
+allows to continue using Lua files as input files to arara.
+
 # Rationale
 
 Projects have been identified as the sweet spot between arara's already
 make-like directive system and actual external specification of directives and
-dependencies. Though currently unable to express depdencies between single
+dependencies. Though currently unable to express dependencies between single
 files, arara is able to handle dependencies between projects.
 
 We have built projects with the following use cases in mind:
