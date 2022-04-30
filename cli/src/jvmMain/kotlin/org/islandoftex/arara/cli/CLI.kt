@@ -140,9 +140,15 @@ class CLI : CliktCommand(
                 }.getOrElse {
                     if (it is AraraException) {
                         val logger = KotlinLogging.logger {}
-                        logger.info {
+                        DisplayUtils.printWrapped(
                             "Found Lua file, attempted to parse it as a project but failed. " +
-                                "Continuing by treating the Lua file as regular input."
+                                "Continuing by treating the Lua file as regular input. " +
+                                "See log for details.\n"
+                        )
+                        logger.info {
+                            "Failed to parse Lua file argument as project: ${it.message}\n" +
+                                "This file is now treated as regular input file. " +
+                                "If it is a project specification, please fix the errors above."
                         }
                     }
                     null
