@@ -16,6 +16,7 @@ import com.github.ajalt.clikt.parameters.options.versionOption
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import com.github.ajalt.clikt.parameters.types.restrictTo
+import mu.KotlinLogging
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
@@ -136,7 +137,16 @@ class CLI : CliktCommand(
                 //       throw AraraException(LanguageController.messages.ERROR_INVALID_PROJECT_FILE)
                 kotlin.runCatching {
                     LuaInterpreter(workingDir).parseProjectsFromLua(luaScript)
-                }.getOrNull()
+                }.getOrElse {
+                    if (it is AraraException) {
+                        val logger = KotlinLogging.logger {}
+                        logger.info {
+                            "Found Lua file, attempted to parse it as a project but failed. " +
+                                "Continuing by treating the Lua file as regular input."
+                        }
+                    }
+                    null
+                }
             }
             ?: Project(
                 "Untitled",
