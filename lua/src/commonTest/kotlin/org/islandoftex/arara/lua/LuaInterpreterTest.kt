@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua
 
+import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -66,7 +67,7 @@ class LuaInterpreterTest {
               dependencies = { "My awesome book v2" }
             }
         """.trimIndent()
-        assertFailsWith<IllegalArgumentException> {
+        assertFailsWith<AraraException> {
             LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script)
                 .also { println(it) }
         }

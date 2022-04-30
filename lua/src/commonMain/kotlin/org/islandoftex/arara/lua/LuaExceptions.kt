@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua
 
-class ProjectParseException(s: String) : IllegalArgumentException(s)
-class ProjectValidationException(s: String) : IllegalArgumentException(s)
+import org.islandoftex.arara.api.AraraException
+
+class ProjectParseException(s: String) : AraraException(s)
+class ProjectValidationException(s: String) : AraraException(s)
