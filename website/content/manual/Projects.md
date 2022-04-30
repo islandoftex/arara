@@ -80,7 +80,7 @@ return {
     workingDirectory = "book",
     files = {
       ["a.mp"] = {
-        directives = { "metapost" },
+        directives = { "% arara: metapost" },
         priority = 1
       },
       ["file.tex"] = { }
@@ -102,7 +102,9 @@ additional parameters. For files, there are the following additional options:
   default priority is `0`. If a file *A* has higher priority than file *B* it
   means that *A* will be executed before *B*.
 * `directives`: Specify a list of directives that will be used instead of the
-  directives specified in the file.
+  directives specified in the file. They have to correspond to the file type's
+  directives, i.e. they will be accepted if they would be accepted by the
+  patterns of the file type.
 * `fileType`: Specify the file type of the file. The same rules as for
   specifying a file type in the configuration file apply. The `extension` is
   mandatory. If the extension is not among the default set of extensions, a
