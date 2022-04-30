@@ -132,10 +132,14 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
      * @return List of projects extracted from the Lua run.
      */
     fun parseProjectsFromLua(luaScript: String): List<Project> {
-        val globals = CommonPlatform.Companion.standardGlobals()
-        val f = globals.load(luaScript) as LuaFunction
-        val c = f.checkclosure()!!
-        val t = c.call() as? LuaTable
+        val luaTable = kotlin.runCatching {
+            val globals = CommonPlatform.Companion.standardGlobals()
+            val f = globals.load(luaScript) as LuaFunction
+            val c = f.checkclosure()!!
+            c.call() as? LuaTable
+        }.getOrElse {
+            throw ProjectParseException("Detected invalid Lua: ${it.message}")
+        }
             ?: throw ProjectParseException(
                 "The return type of the Lua project specification has to be a table " +
                     "(project or list of projects)."
@@ -145,7 +149,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         // fails try to extract a list of projects; only if that fails, fail
         // parsing
         return kotlin.runCatching {
-            extractProject(t)
+            extractProject(luaTable)
                 .takeIf { it.dependencies.isEmpty() }
                 ?.let { listOf(it) }
                 ?: throw ProjectValidationException("Single project has dependencies which are not declared.")
@@ -158,8 +162,8 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
             }
 
             // TODO: log "illegal" values in the list which are filtered
-            t.keys()
-                .mapNotNull { key -> t[key].takeIf { it is LuaTable } }
+            luaTable.keys()
+                .mapNotNull { key -> luaTable[key].takeIf { it is LuaTable } }
                 .map { extractProject(it as LuaTable) }
                 .toList()
                 .takeIf { projects ->
