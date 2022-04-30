@@ -133,13 +133,16 @@ class CLI : CliktCommand(
                 // to ordinary arara execution rules (maybe someone has
                 // defined a lua filetype), so if there is an exception/it
                 // is not a project we simply return null
-                // TODO: throw exception on parse error:
-                //       throw AraraException(LanguageController.messages.ERROR_INVALID_PROJECT_FILE)
+                val logger = KotlinLogging.logger {}
+
                 kotlin.runCatching {
+                    logger.info {
+                        "Guessing provided Lua file is a project specification, " +
+                            "trying to extract information from that."
+                    }
                     LuaInterpreter(workingDir).parseProjectsFromLua(luaScript)
                 }.getOrElse {
                     if (it is AraraException) {
-                        val logger = KotlinLogging.logger {}
                         DisplayUtils.printWrapped(
                             "Found Lua file, attempted to parse it as a project but failed. " +
                                 "Continuing by treating the Lua file as regular input. " +
