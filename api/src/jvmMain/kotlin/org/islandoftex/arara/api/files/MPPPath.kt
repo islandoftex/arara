@@ -220,7 +220,7 @@ public actual class MPPPath {
 
         other as MPPPath
 
-        if (vfsFile.absolutePath != vfsFile.absolutePath) return false
+        if (vfsFile.absolutePath != other.vfsFile.absolutePath) return false
 
         return true
     }
