@@ -63,9 +63,10 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
             ?.let { luaDirectives ->
                 val directives = luaDirectives as LuaTable
                 directives.keys()
-                    .map { key -> table[key] }
+                    .map { key -> directives[key] }
                     .mapNotNull { it as? LuaString }
-                    .map { it.toString() }.toList()
+                    .map { it.toString() }
+                    .toList()
             }
             ?.run {
                 projectFile.directives = this
