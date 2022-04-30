@@ -7,15 +7,15 @@ package org.islandoftex.arara.build
 object Versions {
     // plugin dependencies
     const val detekt = "1.20.0"
-    const val dokka = "1.6.20"
+    const val dokka = "1.6.21"
     const val kotlin = "1.6.21"
     const val shadow = "7.1.2"
-    const val spotless = "6.5.0"
+    const val spotless = "6.5.1"
     const val spotlessChangelog = "2.4.0"
     const val versionsPlugin = "0.42.0"
 
     // non-plugin dependencies
-    const val clikt = "3.4.1"
+    const val clikt = "3.4.2"
     const val coroutines = "1.4.2"
     const val jna = "5.11.0"
     const val junit = "5.8.2"
@@ -29,6 +29,6 @@ object Versions {
     const val luak = "2.4.13"
     const val mvel = "2.4.14.Final"
     const val slf4j = "1.7.36"
-    const val yamlkt = "0.10.2"
+    const val yamlkt = "0.11.0"
     const val ztExec = "1.12"
 }
