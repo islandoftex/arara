@@ -31,6 +31,35 @@ class LuaInterpreterTest {
     }
 
     @Test
+    fun shouldParseProjectFile() {
+        val script = """
+            return {
+              files = {
+                ["file.tex"] = {
+                  directives = { "% arara: pdftex" },
+                  priority = 1,
+                  fileType = {
+                    extension = "tex",
+                    pattern = ".*"
+                  }
+                }
+              }
+            }
+        """.trimIndent()
+        val projects = LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script)
+
+        assertEquals(1, projects.size)
+        assertEquals(1, projects[0].files.size)
+        val projectFile = projects[0].files.first()
+
+        assertEquals(MPPPath("file.tex"), projectFile.path)
+        assertEquals(1, projectFile.priority)
+        assertEquals(1, (projectFile as? LuaProjectFile)?.directives?.size)
+        assertEquals("tex", projectFile.fileType.extension)
+        assertEquals(".*", projectFile.fileType.pattern)
+    }
+
+    @Test
     fun shouldParseMultipleProjects() {
         val script = """
             return {
