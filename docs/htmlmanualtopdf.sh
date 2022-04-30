@@ -72,7 +72,7 @@ cat <<EOF > $htmlfile
       <img src="file://$tempdir/gitlab-icon.svg"
            alt="GitLab" />
     </a>
-    <span>Version 7.0.0</span>
+    <span>Version $(cat version.txt)</span>
   </div>
 </article>
 <article id="license">
