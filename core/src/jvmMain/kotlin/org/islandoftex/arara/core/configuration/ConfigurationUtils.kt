@@ -31,6 +31,12 @@ actual object ConfigurationUtils {
         get() = kotlin.runCatching {
             val codeLocation = requireNotNull(this::class.java.protectionDomain.codeSource?.location?.toURI()?.path)
                 .let {
+                    // Experiments have found that Windows might have paths like "/D:/…"
+                    // where the first slash is unexpected; this caused multiple issues,
+                    // e.g. #35 or #83. In the path, `Paths.get(File(path).toURI())`
+                    // was used for before getting parent and normalizing but this
+                    // conversion including three path types is also error-prone and not
+                    // understandable, hence the current workaround here to fix symptoms
                     if (Environment.checkOS(Environment.SupportedOS.WINDOWS) && it.startsWith('/')) {
                         it.removePrefix("/")
                     } else {
