@@ -8,6 +8,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.islandoftex.arara.build.AraraPublication
 import org.islandoftex.arara.build.CTANTreeBuilderTask
 import org.islandoftex.arara.build.CTANZipBuilderTask
+import org.islandoftex.arara.build.DocumentationSourceZipBuilderTask
 import org.islandoftex.arara.build.SourceZipBuilderTask
 import org.islandoftex.arara.build.TDSTreeBuilderTask
 import org.islandoftex.arara.build.TDSZipBuilderTask
@@ -120,10 +121,14 @@ detekt {
 }
 
 tasks.register("assembleCTANSourceZip", SourceZipBuilderTask::class.java)
+tasks.register("assembleDocumentationSourceZip", DocumentationSourceZipBuilderTask::class.java) {
+    dependsOn(":docs:buildDocs")
+}
 tasks.register("assembleTDSTree", TDSTreeBuilderTask::class.java) {
     dependsOn(":cli:shadowJar")
     dependsOn(":docs:buildDocs")
     dependsOn("assembleCTANSourceZip")
+    dependsOn("assembleDocumentationSourceZip")
 }
 tasks.register("assembleTDSZip", TDSZipBuilderTask::class.java) {
     dependsOn("assembleTDSTree")

@@ -18,8 +18,9 @@ open class TDSTreeBuilderTask : DefaultTask() {
             project.fileTree("cli/build/libs/")
                 .include("*-with-deps*.jar")
         )
-        // depend on source zip as required by CTAN
+        // depend on source zips as required by CTAN
         inputs.file(project.buildDir.resolve("arara-${project.version}-src.zip"))
+        inputs.file(project.buildDir.resolve("arara-${project.version}-docsrc.zip"))
         // depend on documentation (it should be compiled)
         inputs.dir("docs")
         inputs.dir("cli")
@@ -55,6 +56,12 @@ open class TDSTreeBuilderTask : DefaultTask() {
         logger.debug("Compiling the documentation")
         project.copy {
             from(project.files(project.tasks.findByPath(":docs:buildDocs")))
+            into(temporaryDir.resolve("doc/support/arara"))
+        }
+
+        logger.debug("Copying the zipped documentation sources")
+        project.copy {
+            from(project.files(project.buildDir.resolve("arara-${project.version}-docsrc.zip")))
             into(temporaryDir.resolve("doc/support/arara"))
         }
 
