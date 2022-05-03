@@ -28,10 +28,8 @@ actual object ConfigurationUtils {
     actual val applicationPath: MPPPath
         @Throws(AraraException::class)
         get() = kotlin.runCatching {
-            MPPPath(
-                this::class.java.protectionDomain.codeSource
-                    .location.toURI().path
-            ).parent.normalize()
+            val codeLocation = requireNotNull(this::class.java.protectionDomain.codeSource?.location?.toURI()?.path)
+            MPPPath(codeLocation).parent.normalize()
         }.getOrElse {
             throw AraraException(
                 LanguageController.messages.ERROR_GETAPPLICATIONPATH_ENCODING_EXCEPTION,
