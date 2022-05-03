@@ -14,6 +14,9 @@ on.
 * arara failed to load rules on Windows due to path problems when resolving the
   application's path.
   (see #83)
+* CTAN demands source files for the PDF which we did not provide since having
+  the HTML-based PDF. Now they are included.
+* The CTAN zip missed the sources for the Lua DSL component.
 
 ## [7.0.0] - 2022-05-01
 
