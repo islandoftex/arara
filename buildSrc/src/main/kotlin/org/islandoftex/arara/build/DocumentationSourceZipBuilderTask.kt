@@ -7,7 +7,7 @@ import org.gradle.api.tasks.bundling.Zip
 /**
  * Zip relevant source files to meet CTAN's requirements.
  */
-open class SourceZipBuilderTask : Zip() {
+open class DocumentationSourceZipBuilderTask : Zip() {
     init {
         group = "distribution"
         description = "Create a source ZIP as required by CTAN."
@@ -18,8 +18,6 @@ open class SourceZipBuilderTask : Zip() {
         inputs.file(project.projectDir.resolve("core/build.gradle.kts"))
         inputs.dir(project.projectDir.resolve("cli/src"))
         inputs.file(project.projectDir.resolve("cli/build.gradle.kts"))
-        inputs.dir(project.projectDir.resolve("lua/src"))
-        inputs.file(project.projectDir.resolve("lua/build.gradle.kts"))
         outputs.files(project.buildDir.resolve("arara-${project.version}-src.zip"))
         outputs.upToDateWhen { false }
 
@@ -27,7 +25,6 @@ open class SourceZipBuilderTask : Zip() {
         from(project.projectDir.resolve("api"))
         from(project.projectDir.resolve("core"))
         from(project.projectDir.resolve("cli"))
-        from(project.projectDir.resolve("lua"))
         exclude("build")
 
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
