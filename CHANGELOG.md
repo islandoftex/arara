@@ -9,6 +9,8 @@ on.
 
 ## [Unreleased]
 
+## [7.0.1] - 2022-05-03
+
 ### Fixed
 
 * arara failed to load rules on Windows due to path problems when resolving the
