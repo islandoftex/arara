@@ -5,6 +5,7 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.session.Environment
 
 actual object ConfigurationUtils {
     @JvmStatic
@@ -29,6 +30,13 @@ actual object ConfigurationUtils {
         @Throws(AraraException::class)
         get() = kotlin.runCatching {
             val codeLocation = requireNotNull(this::class.java.protectionDomain.codeSource?.location?.toURI()?.path)
+                .let {
+                    if (Environment.checkOS(Environment.SupportedOS.WINDOWS) && it.startsWith('/')) {
+                        it.removePrefix("/")
+                    } else {
+                        it
+                    }
+                }
             MPPPath(codeLocation).parent.normalize()
         }.getOrElse {
             throw AraraException(
