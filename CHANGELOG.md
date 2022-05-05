@@ -9,6 +9,8 @@ on.
 
 ## [Unreleased]
 
+## [7.0.2] - 2022-05-05
+
 ### Fixed
 
 * arara used Java File objects in rules instead of the new path API in nearly
@@ -512,7 +514,8 @@ on.
 For versions previous to version 5.0.0, there has not been any persistent record
 of changes. Please refer to the commit history for details.
 
-[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v7.0.1...master
+[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v7.0.2...master
+[7.0.2]: https://gitlab.com/islandoftex/arara/compare/v7.0.1...v7.0.2
 [7.0.1]: https://gitlab.com/islandoftex/arara/compare/v7.0.0...v7.0.1
 [7.0.0]: https://gitlab.com/islandoftex/arara/compare/v6.1.7...v7.0.0
 [6.1.7]: https://gitlab.com/islandoftex/arara/compare/v6.1.6...v6.1.7
