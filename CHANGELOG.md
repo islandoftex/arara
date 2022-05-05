@@ -9,6 +9,12 @@ on.
 
 ## [Unreleased]
 
+### Fixed
+
+* arara used Java File objects in rules instead of the new path API in nearly
+  all cases except when using the `files` parameter. It is now again compliant
+  with documented behavior and rules have been adjusted.
+
 ## [7.0.1] - 2022-05-03
 
 ### Fixed
