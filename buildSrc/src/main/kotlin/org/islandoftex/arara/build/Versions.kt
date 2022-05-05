@@ -10,7 +10,7 @@ object Versions {
     const val dokka = "1.6.21"
     const val kotlin = "1.6.21"
     const val shadow = "7.1.2"
-    const val spotless = "6.5.1"
+    const val spotless = "6.5.2"
     const val spotlessChangelog = "2.4.0"
     const val versionsPlugin = "0.42.0"
 
