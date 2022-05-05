@@ -13,7 +13,7 @@ commands:
   command: >
     @{
         return getCommand('upbibtex', options,
-                          getBasename(reference.getName()))
+                          getBasename(reference.fileName))
     }
 arguments:
 - identifier: options

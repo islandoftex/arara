@@ -12,7 +12,7 @@ commands:
 - name: The DVIPDFM program
   command: >
     @{
-        base = getBasename(reference.getName()).concat('.dvi');
+        base = getBasename(reference.fileName).concat('.dvi');
         out = getBasename(output[0]).concat('.pdf');
         return getCommand('dvipdfm', base, '-o', out, options);
     }
@@ -20,7 +20,7 @@ arguments:
 - identifier: output
   flag: >
     @{
-        isEmpty(parameters.output, reference.getName(), parameters.output)
+        isEmpty(parameters.output, reference.fileName, parameters.output)
     }
   default: ''
 - identifier: options

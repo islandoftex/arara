@@ -13,7 +13,7 @@ commands:
   command: >
     @{
         return getCommand('authorindex', draft, index, keep, print,
-                          recurse, options, getBasename(reference.getName()));
+                          recurse, options, getBasename(reference.fileName));
     }
 arguments:
 - identifier: draft

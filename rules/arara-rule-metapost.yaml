@@ -13,7 +13,7 @@ commands:
   command: >
     @{
         return getCommand('mpost', interaction, numbersystem,
-               options, reference.getName());
+               options, reference.fileName);
     }
 arguments:
 - identifier: interaction

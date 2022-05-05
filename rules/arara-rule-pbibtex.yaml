@@ -12,7 +12,7 @@ commands:
 - name: The pBibTeX reference management software
   command: >
     @{
-        return getCommand('pbibtex', options, getBasename(reference.getName()))
+        return getCommand('pbibtex', options, getBasename(reference.fileName))
     }
 arguments:
 - identifier: options

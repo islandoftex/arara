@@ -17,7 +17,7 @@ commands:
         }
         else {
             return getCommand('biber', options,
-                              getBasename(reference.getName()));
+                              getBasename(reference.fileName));
         }
     }
 arguments:

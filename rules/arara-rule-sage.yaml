@@ -12,7 +12,7 @@ commands:
 - name: The command line tool
   command: >
     @{
-        base = getBasename(reference.getName());
+        base = getBasename(reference.fileName);
         e = isList(extension) ? extension[0] : extension;
         input = base.concat('.').concat(e);
         return getCommand(program, command, dotsage,

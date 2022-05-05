@@ -13,7 +13,7 @@ commands:
   command: >
     @{
         return getCommand(branch, interaction, shell,
-               synctex, options, reference.getName());
+               synctex, options, reference.fileName);
     }
 arguments:
 - identifier: branch

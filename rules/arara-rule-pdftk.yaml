@@ -12,7 +12,7 @@ commands:
 - name: PDFtk
   command: >
    @{
-      input = getBasename(reference.getName()).concat('.pdf');
+      input = getBasename(reference.fileName).concat('.pdf');
       return getCommand('pdftk', input, options);
     }
 arguments:

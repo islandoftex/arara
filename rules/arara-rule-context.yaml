@@ -15,7 +15,7 @@ commands:
         return getCommand('context', make, ctx, interface, autopdf, purge,
                           modules, environments, mode, path, arguments,
                           trackers, directives, silent, errors, interaction,
-                          synctex, options, reference.getName());
+                          synctex, options, reference.fileName);
     }
 arguments:
 - identifier: make

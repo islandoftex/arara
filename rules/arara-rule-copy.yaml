@@ -20,7 +20,7 @@ commands:
             prefix = [ 'cmd', '/c', 'copy', '/Y' ];
         }
         t = isList(target) ? target[0] : target;
-        f = toFile(t).getCanonicalFile();
+        f = toFile(t).normalize();
         if (getOriginalReference().equals(f)) {
             throwError('I cannot overwrite the main file reference.');
         }

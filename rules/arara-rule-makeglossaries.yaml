@@ -15,7 +15,7 @@ commands:
         if (clean.isEmpty())
         {
            return getCommand('makeglossaries', options,
-                             getBasename(reference.getName()));
+                             getBasename(reference.fileName));
         }
         else {
            prefix = [];

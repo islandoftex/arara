@@ -12,7 +12,7 @@ commands:
 - name: The cropping tool
   command: >
     @{
-        base = getBasename(reference.getName());
+        base = getBasename(reference.fileName);
         input = base.concat('.pdf');
         return getCommand('pdfcrop', verbose, debug, engine,
                margins, clip, hires, ini, restricted, papersize,
@@ -23,7 +23,7 @@ arguments:
   flag: >
     @{
         return isEmpty(parameters.output,
-               getBasename(reference.getName()).
+               getBasename(reference.fileName).
                concat('-crop.pdf'),
                parameters.output);
     }

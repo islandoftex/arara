@@ -12,7 +12,7 @@ commands:
 - name: The PS2PDF program
   command: >
     @{
-        infile = getBasename(reference.getName()).concat('.ps');
+        infile = getBasename(reference.fileName).concat('.ps');
         outfile = getBasename(output[0]).concat('.pdf');
         return getCommand('ps2pdf', options, infile, outfile);
     }
@@ -20,7 +20,7 @@ arguments:
 - identifier: output
   flag: >
     @{
-        isEmpty(parameters.output, reference.getName(), parameters.output)
+        isEmpty(parameters.output, reference.fileName, parameters.output)
     }
   default: ''
 - identifier: options

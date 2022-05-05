@@ -14,7 +14,7 @@ commands:
     @{
         return getCommand('texcount', rules, verbosity, strict, html,
                           total, unicode, options, output,
-                          reference.getName());
+                          reference.fileName);
     }
 arguments:
 - identifier: rules

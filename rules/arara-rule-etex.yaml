@@ -13,7 +13,7 @@ commands:
   command: >
     @{
         return getCommand('etex', interaction, shell, options,
-                          reference.getName());
+                          reference.fileName);
     }
 arguments:
 - identifier: interaction

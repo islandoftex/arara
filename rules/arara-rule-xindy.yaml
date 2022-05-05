@@ -12,7 +12,7 @@ commands:
 - name: The Xindy software
   command: >
     @{
-        base = getBasename(reference.getName());
+        base = getBasename(reference.fileName);
         infile = base.concat('.').concat(input[0]);
         outfile = [ '-o', base.concat('.').concat(output[0]) ];
         logfile = [ '-t', base.concat('.').concat(log[0]) ];

@@ -14,7 +14,7 @@ commands:
     @{
         return getCommand('pythontex', encoding, errorcode, runall, rerun,
                           hashdependencies, jobs, verbose, options,
-                          reference.getName());
+                          reference.fileName);
     }
 arguments:
 - identifier: encoding

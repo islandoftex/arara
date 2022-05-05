@@ -14,7 +14,7 @@ commands:
     @{
         return getCommand('perltex', engine, safe, permit, standalone,
                           interaction, shell, synctex, options,
-                          reference.getName());
+                          reference.fileName);
     }
 arguments:
 - identifier: engine

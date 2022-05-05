@@ -15,18 +15,18 @@ commands:
   command: >
     @{
         return getCommand(engine, interaction, shell, options,
-                          reference.getName())
+                          reference.fileName)
     }
 - name: The frontispiece
   command: >
     @{
-        base = getBasename(reference.getName()).concat('-frn');
+        base = getBasename(reference.fileName).concat('-frn');
         return getCommand(engine, interaction, shell, base);
     }
 - name: The DVIPS program
   command: >
     @{
-        base = getBasename(reference.getName()).concat('-frn');
+        base = getBasename(reference.fileName).concat('-frn');
         eps = base.concat('.eps');
         return isTrue(engine == 'latex', getCommand('dvips', '-o',
                eps, base), '');
@@ -35,7 +35,7 @@ commands:
   command: >
     @{
         return getCommand(engine, interaction, shell, options,
-                          reference.getName());
+                          reference.fileName);
     }
 arguments:
 - identifier: engine

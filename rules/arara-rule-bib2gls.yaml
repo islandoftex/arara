@@ -63,7 +63,7 @@ commands:
                  breakspace, trimfields, recordcount, recordcountunit,
                  cite, verbose, merge, locale, uniscript, packages,
                  ignore, custom, mapformats, options,
-                 getBasename(reference.getName()));
+                 getBasename(reference.fileName));
        }
     }
 arguments:
@@ -80,7 +80,7 @@ arguments:
           throwError('Forbidden transcript extension');
        }
 
-       return ['--log-file', getBasename(reference.getName())+"."+parameters.trans]
+       return ['--log-file', getBasename(reference.fileName)+"."+parameters.trans]
     }
 - identifier: locale
   flag: >

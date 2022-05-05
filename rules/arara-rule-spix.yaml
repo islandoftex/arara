@@ -12,7 +12,7 @@ commands:
 - name: The automation tool
   command: >
     @{
-        return getCommand('spix', dry, options, reference.getName());
+        return getCommand('spix', dry, options, reference.fileName);
     }
 arguments:
 - identifier: dry

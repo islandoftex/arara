@@ -13,8 +13,8 @@ commands:
 - name: The Convert program
   command: >
     @{
-        input = getBasename(reference.getName()).concat('.pdf');
-        output = getBasename(reference.getName()).concat('.gif');
+        input = getBasename(reference.fileName).concat('.pdf');
+        output = getBasename(reference.fileName).concat('.gif');
         return getCommand(program, '-delay', delay, '-loop',
                loop, '-density', density, options, input, output);
     }

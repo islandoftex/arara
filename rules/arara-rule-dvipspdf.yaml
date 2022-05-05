@@ -12,14 +12,14 @@ commands:
 - name: The DVIPS program
   command: >
     @{
-        base = getBasename(reference.getName()).concat('.dvi');
-        out = getBasename(reference.getName()).concat('.ps');
+        base = getBasename(reference.fileName).concat('.dvi');
+        out = getBasename(reference.fileName).concat('.ps');
         return getCommand('dvips', base, '-o', out, options1);
     }
 - name: The PS2PDF program
   command: >
     @{
-        base = getBasename(reference.getName()).concat('.ps');
+        base = getBasename(reference.fileName).concat('.ps');
         out = getBasename(output[0]).concat('.pdf');
         return getCommand('ps2pdf', options2, base, '-o', out);
     }
@@ -27,7 +27,7 @@ arguments:
 - identifier: output
   flag: >
     @{
-        isEmpty(parameters.output, reference.getName(), parameters.output)
+        isEmpty(parameters.output, reference.fileName, parameters.output)
     }
   default: ''
 - identifier: options1

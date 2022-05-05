@@ -12,7 +12,7 @@ commands:
 - name: An 8-bit implementation of BibTeX 0.99 with a very large capacity
   command: >
     @{
-        return getCommand('bibtex8', options, getBasename(reference.getName()));
+        return getCommand('bibtex8', options, getBasename(reference.fileName));
     }
 arguments:
 - identifier: options

@@ -15,7 +15,7 @@ commands:
         return getCommand('ltx2any', clean, engine, parameters,
                           tikzimages, jobname, logname, logformat,
                           loglevel, frequency, directory, synctex,
-                          options, reference.getName());
+                          options, reference.fileName);
     }
 arguments:
 - identifier: clean

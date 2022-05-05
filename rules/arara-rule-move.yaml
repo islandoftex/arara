@@ -23,7 +23,7 @@ commands:
             throwError('I cannot move the main file reference.');
         }
         t = isList(target) ? target[0] : target;
-        f = toFile(t).getCanonicalFile();
+        f = toFile(t).normalize();
         if (getOriginalReference().equals(f)) {
             throwError('I cannot overwrite the main file reference.');
         }

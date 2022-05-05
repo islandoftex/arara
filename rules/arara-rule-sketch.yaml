@@ -13,8 +13,8 @@ commands:
 - name: The Sketch software
   command: >
     @{
-        output = getBasename(reference.getName()).concat('.tex');
-        return getCommand('sketch', options, reference.getName(),
+        output = getBasename(reference.fileName).concat('.tex');
+        return getCommand('sketch', options, reference.fileName,
                           '-o', output);
     }
 arguments:
