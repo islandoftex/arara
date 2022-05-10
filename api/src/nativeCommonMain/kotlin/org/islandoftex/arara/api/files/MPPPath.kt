@@ -1,13 +1,18 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.files
 
+import com.soywiz.klock.DateTime
 import com.soywiz.korio.async.runBlockingNoJs
 import com.soywiz.korio.async.runBlockingNoSuspensions
+import com.soywiz.korio.async.use
 import com.soywiz.korio.file.VfsFile
+import com.soywiz.korio.file.VfsOpenMode
 import com.soywiz.korio.file.baseName
 import com.soywiz.korio.file.fullPathNormalized
 import com.soywiz.korio.file.isAbsolute
 import com.soywiz.korio.file.std.LocalVfs
+import com.soywiz.korio.stream.copyTo
+import com.soywiz.korio.stream.openAsync
 import org.islandoftex.arara.api.AraraIOException
 
 public actual class MPPPath {
@@ -28,6 +33,16 @@ public actual class MPPPath {
 
     public actual val fileName: String = vfsFile.baseName
 
+    public actual val fileSize: Long
+        get() = runBlockingNoJs {
+            vfsFile.size()
+        }
+
+    public actual val lastModified: DateTime
+        get() = runBlockingNoJs {
+            vfsFile.stat().modifiedTime
+        }
+
     public actual val parent: MPPPath = MPPPath(vfsFile.parent.path)
 
     public actual val exists: Boolean =
@@ -41,9 +56,6 @@ public actual class MPPPath {
 
     public actual fun startsWith(p: MPPPath): Boolean =
         vfsFile.path.startsWith(p.toString())
-
-    public actual fun endsWith(p: MPPPath): Boolean =
-        vfsFile.path.endsWith(p.toString())
 
     // TODO: implement proper normalization
     public actual fun normalize(): MPPPath = MPPPath(
@@ -64,9 +76,6 @@ public actual class MPPPath {
     public actual fun resolveSibling(p: MPPPath): MPPPath =
         MPPPath(vfsFile.parent[p.toString()].path)
 
-    public actual fun toAbsolutePath(): MPPPath =
-        MPPPath(vfsFile.absolutePath)
-
     @Throws(AraraIOException::class)
     public actual fun readLines(): List<String> =
         runBlockingNoJs {
@@ -80,9 +89,22 @@ public actual class MPPPath {
         }
 
     @Throws(AraraIOException::class)
-    public actual fun writeText(text: String) {
+    public actual fun writeText(text: String, append: Boolean) {
         runBlockingNoJs {
-            vfsFile.write(text.encodeToByteArray())
+            if (isRegularFile) {
+                val openMode = if (append)
+                    VfsOpenMode.APPEND
+                else
+                // if not appending choose the same open mode
+                // korio would use instead
+                    VfsOpenMode.CREATE_OR_TRUNCATE
+                vfsFile.vfs.open(vfsFile.absolutePath, openMode)
+                    .use {
+                        text.openAsync().copyTo(this)
+                    }
+            } else {
+                throw AraraIOException("Can only write text to files.")
+            }
         }
     }
 
@@ -107,6 +129,6 @@ public actual class MPPPath {
         return true
     }
 
-    public operator fun div(p: String): MPPPath = resolve(p)
-    public operator fun div(p: MPPPath): MPPPath = resolve(p.vfsFile.path)
+    public actual operator fun div(p: String): MPPPath = resolve(p)
+    public actual operator fun div(p: MPPPath): MPPPath = resolve(p.vfsFile.path)
 }

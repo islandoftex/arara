@@ -16,7 +16,7 @@ object Versions {
 
     // non-plugin dependencies
     const val clikt = "3.4.2"
-    const val coroutines = "1.4.2"
+    const val coroutines = "1.6.1"
     const val jna = "5.11.0"
     const val junit = "5.8.2"
     const val kaml = "0.43.0"
