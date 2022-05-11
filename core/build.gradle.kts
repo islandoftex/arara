@@ -14,6 +14,8 @@ kotlin {
             }
         }
     }
+    linuxX64()
+
     /*wasm32()
     js {
         browser {
@@ -23,7 +25,6 @@ kotlin {
         }
     }
     linuxArm64()
-    linuxX64()
     macosX64()
     mingwX64()*/
 
@@ -45,6 +46,12 @@ kotlin {
                 implementation("com.soywiz.korlibs.korio:korio:${Versions.korlibs}")
                 implementation("net.mamoe.yamlkt:yamlkt:${Versions.yamlkt}")
             }
+        }
+        val nativeCommonMain by creating {
+            dependsOn(commonMain)
+        }
+        val linuxX64Main by getting {
+            dependsOn(nativeCommonMain)
         }
         val jvmMain by getting {
             dependencies {
