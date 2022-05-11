@@ -9,6 +9,11 @@ on.
 
 ## [Unreleased]
 
+### Fixed
+
+* arara did not use the correct file separator on Windows.
+  (see #84)
+
 ## [7.0.2] - 2022-05-05
 
 ### Fixed
