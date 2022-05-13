@@ -32,7 +32,7 @@ to easily spot each entry.
 The very first entry to appear in the log file is the current version of arara.
 
 ```text
-Welcome to arara 6.0.0!
+Welcome to arara 7.0.0!
 ```
 
 The following entries in the log file are the absolute path of the current
