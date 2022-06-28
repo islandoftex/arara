@@ -24,7 +24,7 @@ commands:
         if (getOriginalReference().equals(f)) {
             throwError('I cannot overwrite the main file reference.');
         }
-        return getCommand(prefix, reference, t);
+        return getCommand(prefix, reference, f);
     }
 arguments:
 - identifier: target
