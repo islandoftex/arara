@@ -31,8 +31,9 @@ Hello, world!
 
 Now when you run `arara myfile`, that directive (`% arara: ...`) will be seen
 and carried out as described by the `pdflatex` rule.  You can read more about
-rules and directives in the user manual available in our
-[releases](https://gitlab.com/islandoftex/arara/-/releases) section. In addition
+rules and directives in the user manual available on our
+[CTAN page](https://ctan.org/pkg/arara) or on
+[arara's website](https://islandoftex.gitlab.io/arara/manual/). In addition
 to documenting all of the rules that come standard with `arara`, the manual
 gives a detailed explanation of how `arara` works, as well as how to create and
 use your own rules.
