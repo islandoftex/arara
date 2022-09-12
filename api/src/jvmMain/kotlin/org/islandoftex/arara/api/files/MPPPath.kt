@@ -4,6 +4,7 @@ package org.islandoftex.arara.api.files
 import com.soywiz.klock.DateTime
 import com.soywiz.korio.async.runBlockingNoJs
 import com.soywiz.korio.async.use
+import com.soywiz.korio.file.File_separatorChar
 import com.soywiz.korio.file.VfsFile
 import com.soywiz.korio.file.VfsOpenMode
 import com.soywiz.korio.file.baseName
@@ -210,7 +211,7 @@ public actual class MPPPath {
             }
         }
 
-    override fun toString(): String = vfsFile.absolutePath
+    override fun toString(): String = vfsFile.absolutePath.replace('/', File_separatorChar)
 
     override fun hashCode(): Int = vfsFile.absolutePath.hashCode()
 

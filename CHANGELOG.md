@@ -9,6 +9,20 @@ on.
 
 ## [Unreleased]
 
+## [7.0.4] - 2022-06-28
+
+### Fixed
+
+* `copy` and `move` rules were fixed to properly normalise relative paths.
+  (see #91)
+
+## [7.0.3] - 2022-05-12
+
+### Fixed
+
+* arara did not use the correct file separator on Windows.
+  (see #84)
+
 ## [7.0.2] - 2022-05-05
 
 ### Fixed
@@ -514,7 +528,9 @@ on.
 For versions previous to version 5.0.0, there has not been any persistent record
 of changes. Please refer to the commit history for details.
 
-[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v7.0.2...master
+[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v7.0.4...master
+[7.0.4]: https://gitlab.com/islandoftex/arara/compare/v7.0.3...v7.0.4
+[7.0.3]: https://gitlab.com/islandoftex/arara/compare/v7.0.2...v7.0.3
 [7.0.2]: https://gitlab.com/islandoftex/arara/compare/v7.0.1...v7.0.2
 [7.0.1]: https://gitlab.com/islandoftex/arara/compare/v7.0.0...v7.0.1
 [7.0.0]: https://gitlab.com/islandoftex/arara/compare/v6.1.7...v7.0.0
