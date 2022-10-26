@@ -7,6 +7,11 @@ and this project tries to adhere to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html) from version 5.0.0
 on.
 
+> **Important**: This CHANGELOG documents the technical nature of changes.
+> While it is written for users, it does not attempt to provide migration
+> guides. For these, please read the announcement blog posts on our website
+> at https://islandoftex.gitlab.io/arara/news/.
+
 ## [Unreleased]
 
 ## [7.0.4] - 2022-06-28
