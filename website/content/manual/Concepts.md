@@ -111,7 +111,7 @@ properly defined inside it.
   - Paulo Cereda
   ```
 
-- **M** `commands`: This key denotes a potential list of commands. From the user
+- **[M]** `commands`: This key denotes a potential list of commands. From the user
   perspective, each command is called a *subtask* within a task (rule and
   directive) context. A task may represent only a single command (a single
   subtask), as well as a sequence of commands (subtasks). For instance, the
