@@ -73,8 +73,8 @@ configuration file for our tool.
 
     ```yaml
     paths:
-    - '/home/paulo/rules'
-    - '/opt/paulo/rules'
+    - '/home/islandoftex/rules'
+    - '/opt/islandoftex/rules'
     ```
 
   There are three variables available in the `paths` context and are described

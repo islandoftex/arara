@@ -332,22 +332,22 @@ current option, it will be denoted by `parameter` in the description.
     [DR] (PDFLaTeX) PDFLaTeX engine
     -----------------------------------------------------------------
     Author: Island of TeX
-    About to run: [pdflatex, doc5.tex] @ /home/paulo/Downloads
+    About to run: [pdflatex, doc5.tex] @ /home/islandoftex/Downloads
 
     [DR] (BibTeX) The BibTeX reference management software
     -----------------------------------------------------------------
     Author: Island of TeX
-    About to run: [bibtex, doc5] @ /home/paulo/Downloads
+    About to run: [bibtex, doc5] @ /home/islandoftex/Downloads
 
     [DR] (PDFLaTeX) PDFLaTeX engine
     -----------------------------------------------------------------
     Author: Island of TeX
-    About to run: [pdflatex, doc5.tex] @ /home/paulo/Downloads
+    About to run: [pdflatex, doc5.tex] @ /home/islandoftex/Downloads
 
     [DR] (PDFLaTeX) PDFLaTeX engine
     -----------------------------------------------------------------
     Author: Island of TeX
-    About to run: [pdflatex, doc5.tex] @ /home/paulo/Downloads
+    About to run: [pdflatex, doc5.tex] @ /home/islandoftex/Downloads
 
     Total: 0.18 seconds
     ```

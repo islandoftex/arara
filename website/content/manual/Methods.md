@@ -419,7 +419,7 @@ references, when applied.
     empty list.
 
   ```java
-  files = listFilesByExtensions(toFile('/home/paulo/Documents'),
+  files = listFilesByExtensions(toFile('/home/islandoftex/Documents'),
           [ 'aux', 'log' ], false);
   ```
 
@@ -437,7 +437,7 @@ references, when applied.
     listFilesByExtensions` method returns an empty list.
 
   ```java
-  files = listFilesByExtensions('/home/paulo/Documents',
+  files = listFilesByExtensions('/home/islandoftex/Documents',
           [ 'aux', 'log' ], false);
   ```
 
@@ -463,7 +463,7 @@ references, when applied.
   {% end %}
 
   ```java
-  files = listFilesByPatterns(toFile('/home/paulo/Documents'),
+  files = listFilesByPatterns(toFile('/home/islandoftex/Documents'),
           [ '*.tex', 'foo?.txt' ], false);
   ```
 
@@ -483,7 +483,7 @@ references, when applied.
     whenever possible.
 
   ```java
-  files = listFilesByPatterns('/home/paulo/Documents',
+  files = listFilesByPatterns('/home/islandoftex/Documents',
           [ '*.tex', 'foo?.txt' ], false);
   ```
 
@@ -1350,7 +1350,7 @@ describe the underlying rule logic and yet obtain a consistent representation.
     list is empty, the tool will ignore the execution.
 
   ```java
-  return getCommandWithWorkingDirectory(toFile('/home/paulo'),
+  return getCommandWithWorkingDirectory(toFile('/home/islandoftex'),
          [ 'ls', '-l' ]);
   ```
 
@@ -1361,7 +1361,7 @@ describe the underlying rule logic and yet obtain a consistent representation.
     the tool will ignore the execution.
 
   ```java
-  return getCommandWithWorkingDirectory('/home/paulo',
+  return getCommandWithWorkingDirectory('/home/islandoftex',
          [ 'ls', '-l' ]);
   ```
 
@@ -1374,7 +1374,7 @@ describe the underlying rule logic and yet obtain a consistent representation.
     in a variable number of parameters.
 
   ```java
-  return getCommandWithWorkingDirectory(toFile('/home/paulo'),
+  return getCommandWithWorkingDirectory(toFile('/home/islandoftex'),
          'pdflatex', '--shell-escape', 'thesis.tex');
   ```
 
@@ -1387,7 +1387,7 @@ describe the underlying rule logic and yet obtain a consistent representation.
     in a variable number of parameters.
 
   ```java
-  return getCommandWithWorkingDirectory('/home/paulo',
+  return getCommandWithWorkingDirectory('/home/islandoftex',
          'pdflatex', '--shell-escape', 'thesis.tex');
   ```
 
