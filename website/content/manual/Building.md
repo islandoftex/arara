@@ -167,14 +167,14 @@ build.gradle.kts
 ```
 
 Great, we are in the correct location! From the previous output, let us inspect
-the directory contents. The `application/` directory, as the name suggests,
-contains the source code of the main application organized in an established
+the directory contents. The `cli/` directory, as the name suggests, contains the
+source code of the main command-line application organized in an established
 package structure, whereas `build.gradle.kts` is the corresponding Gradle build
 file written to efficiently compile the project. In order to build our tool, run
 the following command in the terminal:
 
 ```sh
-$ gradle build
+$ ./gradlew :cli:build
 ```
 
 Gradle is based around the central concept of a build life cycle. The compile
@@ -259,7 +259,7 @@ project is then restored to the initial state without any generated Java
 bytecode. Run the following command in the terminal:
 
 ```sh
-$ gradle clean
+$ ./gradlew clean
 ```
 
 This section covered the compilation details for building arara from source. The

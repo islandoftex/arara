@@ -46,11 +46,11 @@ issues related to the underlying operating system and the tool configuration
 itself.
 
 ```text
-::: arara @ /opt/paulo/arara
+::: arara @ /opt/islandoftex/arara
 ::: Java 1.8.0_171, Oracle Corporation
 ::: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.171-4.b10.fc28.x86_64/jre
 ::: Linux, amd64, 4.16.12-300.fc28.x86_64
-::: user.home @ /home/paulo
+::: user.home @ /home/islandoftex
 ::: CF @ [none]
 ```
 
@@ -140,10 +140,10 @@ directives.
 ```text
 -------------------------- DIRECTIVES ---------------------------
 Directive: { identifier: pdftex, parameters:
-{reference=/home/paulo/Documents/doc12.tex},
+{reference=/home/islandoftex/Documents/doc12.tex},
 conditional: { NONE }, lines: [1] }
 Directive: { identifier: clean, parameters: {extensions=[log],
-reference=/home/paulo/Documents/doc12.tex},
+reference=/home/islandoftex/Documents/doc12.tex},
 conditional: { NONE }, lines: [2] }
 -----------------------------------------------------------------
 ```
@@ -164,7 +164,7 @@ default rule pack released with our tool:
 
 ```text
 I am ready to interpret rule 'pdftex'.
-Rule location: '/opt/paulo/arara/rules'
+Rule location: '/opt/islandoftex/arara/rules'
 ```
 
 For each task (or subtask, as it is part of a rule task) defined in the rule
@@ -215,7 +215,7 @@ not provide output at all when successful.
 
 ```text
 I am ready to interpret rule 'clean'.
-Rule location: '/opt/paulo/arara/rules'
+Rule location: '/opt/islandoftex/arara/rules'
 I am ready to interpret task 'Cleaning feature' from rule 'Clean'.
 System command: [ rm, -f, doc12.log ]
 ---------------------- BEGIN OUTPUT BUFFER ----------------------

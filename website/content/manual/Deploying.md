@@ -47,16 +47,16 @@ As a result of the previous commands, we obtained a directory named `arara` with
 the exact structure presented in the previous section in our working directory
 (amongst other files and directories that can be safely discarded). Now we need
 to decide where arara should reside in our system. For example, I usually deploy
-my tools inside the `/opt/paulo` path, so I need to run the following command in
+my tools inside the `/opt/islandoftex` path, so I need to run the following command in
 the terminal (please note that my personal directory already has the proper
 permissions, so I do not need superuser privileges):
 
 ```sh
-$ mv arara /opt/paulo/
+$ mv arara /opt/islandoftex/
 ```
 
 The tool has found a comfortable home inside my system! Observe that the full
-path of the `ARARA_HOME` reference points out to `/opt/paulo/arara` since this
+path of the `ARARA_HOME` reference points out to `/opt/islandoftex/arara` since this
 is my deployment location of choice. The resulting structure overview, from the
 root directory, is presented as follows:
 
@@ -68,7 +68,7 @@ structure previously presented. We can test the deployment by running the
 following command in the terminal (please note the full path):
 
 ```sh
-$ java -jar /opt/paulo/arara/arara.jar
+$ java -jar /opt/islandoftex/arara/arara.jar
 Usage: arara [OPTIONS] file...
 
     __ _ _ __ __ _ _ __ __ _
@@ -133,7 +133,7 @@ and passes a set of parameters to that command.
     preferably at the end:
 
   ```sh
-  alias arara='java -jar /opt/paulo/arara/arara.jar'
+  alias arara='java -jar /opt/islandoftex/arara/arara.jar'
   ```
 
   Save the file and restart your terminal. It is important to observe that the
@@ -150,7 +150,7 @@ and passes a set of parameters to that command.
 
   ```sh
   arara() {
-      java -jar /opt/paulo/arara/arara.jar "$@"
+      java -jar /opt/islandoftex/arara/arara.jar "$@"
   }
   ```
 
@@ -175,7 +175,7 @@ and passes a set of parameters to that command.
 
   ```sh
   #!/bin/bash
-  jarpath=/opt/paulo/arara/arara.jar
+  jarpath=/opt/islandoftex/arara/arara.jar
   java -jar "$jarpath" "$@"
   ```
 

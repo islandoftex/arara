@@ -30,7 +30,7 @@ Processing "doc1.tex" (size: 31 B, last modified: 12/28/2020
 I could not find a rule named "foo" in the provided rule paths.
 Perhaps a misspelled word? I was looking for a file named
 "foo.yaml" in the following paths in order of priority:
-(/opt/paulo/arara/rules)
+(/opt/islandoftex/arara/rules)
 
 Total: 0.03 seconds
 ```
@@ -111,7 +111,7 @@ properly defined inside it.
   - Paulo Cereda
   ```
 
-- **M** `commands`: This key denotes a potential list of commands. From the user
+- **[M]** `commands`: This key denotes a potential list of commands. From the user
   perspective, each command is called a *subtask* within a task (rule and
   directive) context. A task may represent only a single command (a single
   subtask), as well as a sequence of commands (subtasks). For instance, the
@@ -642,11 +642,11 @@ Hello world.
 
 ```
 Directive: { identifier: pdflatex, parameters:
-{reference=/home/paulo/doc2.tex},
+{reference=/home/islandoftex/doc2.tex},
 conditional: { NONE }, lines: [1] }
 
 Directive: { identifier: pdflatex, parameters:
-{shell=yes, reference=/home/paulo/doc2.tex},
+{shell=yes, reference=/home/islandoftex/doc2.tex},
 conditional: { NONE }, lines: [2] }
 ```
 
@@ -666,11 +666,11 @@ Hello world.
 
 ```
 Directive: { identifier: pdflatex, parameters:
-{reference=/home/paulo/doc1.tex},
+{reference=/home/islandoftex/doc1.tex},
 conditional: { NONE }, lines: [1] }
 
 Directive: { identifier: pdflatex, parameters:
-{reference=/home/paulo/doc2.tex},
+{reference=/home/islandoftex/doc2.tex},
 conditional: { NONE }, lines: [1] }
 ```
 
