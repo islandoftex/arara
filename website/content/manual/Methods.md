@@ -60,7 +60,7 @@ references, when applied.
     mapping, as seen in [Important concepts](/manual/concepts).
 
   ```java
-  if (reference.equals(getOriginalFile())) {
+  if (reference.equals(getOriginalReference())) {
       System.out.println("The 'reference' variable
          was not overridden.");
   }
