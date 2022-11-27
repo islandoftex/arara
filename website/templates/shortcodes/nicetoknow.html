@@ -3,6 +3,6 @@
         <strong>{% if title %}{{title}}{% else %}Nice to know:{% endif %}</strong>
         <br/>
         {{ body | markdown(inline=true) | safe }}
-        {% if reference %}<a href="{{reference}}" target="_blank">Read more &#8594;</a>{% endif %}
+        {% if reference %}<a href="{{ reference | safe }}" target="_blank">Read more &#8594;</a>{% endif %}
     </small>
 </blockquote>
