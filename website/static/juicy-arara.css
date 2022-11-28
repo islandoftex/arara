@@ -12,6 +12,7 @@
 
 .content code {
   background-color: transparent;
+  padding: 0.05em .1em;
 }
 
 .heading-text {

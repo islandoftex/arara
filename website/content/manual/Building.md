@@ -33,7 +33,7 @@ following items are available:
 
     Please refer to the [git project website](https://git-scm.com/) in order to
     obtain specific installation instructions for your operating system. In
-    general, most recent Unix systems have \rbox{git} installed out of the
+    general, most recent Unix systems have `git` installed out of the
     shelf.
 
 * Our tool is written in the Kotlin programming language, so we need a proper
