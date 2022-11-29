@@ -4,7 +4,7 @@ set -e
 
 # check the required tools; we make these available through the `nix develop`
 # shell so you may use that to build the manual
-required_tools=("pup" "sed" "weasyprint")
+required_tools=("htmlq" "sed" "weasyprint")
 for tool in "${required_tools[@]}"
 do
   if ! [ -x "$(command -v "$tool")" ]; then
@@ -64,8 +64,8 @@ EOF
 # assemble the manual content by fetching chapters from the webpage;
 # while doing so assemble the toc for that chapter as well
 cat <<EOF >> $htmlfile
-$(cat "$(echo "$baseurl" | cut -c8-)quickstart/index.html" | pup --pre ':parent-of([class="heading-text"])' \
-  | tail -n +5 | head -n -1 \
+$(cat "$(echo "$baseurl" | cut -c8-)quickstart/index.html" | htmlq 'div.content.text' --remove-nodes 'div.heading-text' \
+  | tail -n +3 | head -n -1 \
   | sed -r 's/<(\/?)h5/<\1h6/g' | sed -r 's/<(\/?)h4/<\1h5/g' \
   | sed -r 's/<(\/?)h3/<\1h4/g' | sed -r 's/<(\/?)h2/<\1h3/g' \
   | sed -r 's/<(\/?)h1/<\1h2/g')
