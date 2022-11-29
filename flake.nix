@@ -42,8 +42,8 @@
         devShell = pkgs.mkShell {
           inputsFrom = builtins.attrValues self.defaultPackage;
           buildInputs = with pkgs; [
+            htmlq
             nixpkgs-fmt
-            pup
             python3Packages.weasyprint
             zip
             zola
