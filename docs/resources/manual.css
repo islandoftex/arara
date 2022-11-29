@@ -207,8 +207,8 @@ th:last-of-type, td:last-of-type {
 
 .tex sub, .latex sub {
   vertical-align: -0.08cm;
-  margin-left: -0.15cm;
-  margin-right: -0.095cm;
+  margin-left: -0.065cm;
+  margin-right: 0cm;
 }
 
 .tex, .latex, .tex sub, .latex sub {
