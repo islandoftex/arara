@@ -18,11 +18,8 @@ jobs:
     - uses: gradle/gradle-build-action@v2
       with:
         gradle-version: current
-        arguments: build
-    - uses: gradle/gradle-build-action@v2
-      with:
-        gradle-version: current
-        arguments: :cli:shadowJar
+    - run: |
+        ./gradlew --no-daemon :cli:shadowJar
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
