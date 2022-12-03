@@ -1,14 +1,7 @@
 *.*~
-*.log
-*.aux
 *.pdf
 *.iml
-docs/**/*.*
-!docs/**/*.tex
-docs/version.tex
-!docs/figures/*.p*
-!docs/logos/*.pdf
-!docs/*.yaml
+docs/**/version.txt
 **/arara.yaml
 **/arara.log
 **/arara.xml
@@ -19,3 +12,4 @@ docs/version.tex
 !buildSrc/src/**/build/*
 api/src/**/AraraAPI.kt
 target
+website/public/*
