@@ -138,6 +138,7 @@ do
 <h1 id="chapter-$chapter">$chapter_title</h1>
 $(cat "tmp-$htmlfile" | htmlq 'div.content.text' --remove-nodes 'div.heading-text' \
   | tail -n +3 | head -n -1 \
+  | sed -r 's~href="/manual/(.*)"~href="#chapter-\1"~g' \
   | sed -r 's/<(\/?)h5/<\1h6/g' | sed -r 's/<(\/?)h4/<\1h5/g' \
   | sed -r 's/<(\/?)h3/<\1h4/g' | sed -r 's/<(\/?)h2/<\1h3/g' \
   | sed -r 's/<(\/?)h1/<\1h2/g')
