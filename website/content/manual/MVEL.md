@@ -330,5 +330,5 @@ a football team name (the result is of course based on the comparison outcome).
 
 This chapter does not cover all features of the MVEL expression language, so
 further reading is advisable. I highly recommend the [MVEL language
-guide](http://mvel.documentnode.com/) currently covering version 2.0 of the
+guide](https://mvel.documentnode.com/) currently covering version 2.0 of the
 language.

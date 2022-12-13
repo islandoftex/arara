@@ -4,7 +4,7 @@ description = "Introduction to the YAML format"
 weight = 11
 +++
 
-According to the [specification](http://yaml.org/spec/1.2/spec.html), YAML (a
+According to the [specification](https://yaml.org/spec/1.2.2/), YAML (a
 recursive acronym for *YAML Ain't Markup Language*) is a human-friendly, cross
 language, Unicode-based data serialization language designed around the common
 native data type of programming languages. arara uses this format in three
@@ -158,5 +158,5 @@ the correct mapping of values inside our tool.
 
 This chapter does not cover all features of the YAML format, so further reading
 is advisable. I highly recommend the [official YAML
-specification](http://yaml.org/spec/1.2/spec.html), currently covering the third
+specification](https://yaml.org/spec/1.2.2/), currently covering the third
 version of the format.

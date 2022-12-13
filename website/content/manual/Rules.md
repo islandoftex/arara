@@ -45,7 +45,7 @@ command line utility from the ImageMagick suite.
 
 {% messagebox(title="Microsoft Windows woes") %}
 According to the [ImageMagick
-website](http://www.imagemagick.org/Usage/windows/), the Windows installation
+website](https://imagemagick.org/Usage/windows/), the Windows installation
 routine adds the program directory to the system path, such that one can call
 command line tools directly from the command prompt, without providing a path
 name. However, `convert` is also the name of Windows system tool, located in the

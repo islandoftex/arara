@@ -207,7 +207,7 @@ and passes a set of parameters to that command.
   privileges are not required, as the operation is kept at the current user
   level. Run the following command in the terminal instead (please note that the
   `~` symbol is a shell feature called [tilde
-  expansion](http://www.gnu.org/software/bash/manual/html_node/Tilde-Expansion.html)
+  expansion](https://www.gnu.org/software/bash/manual/html_node/Tilde-Expansion.html)
   and refers to the home directory of the current user):
 
   ```sh

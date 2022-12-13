@@ -51,7 +51,7 @@ following items are available:
     The previous command, as the name suggests, refers to the `javac` tool,
     which is the Java compiler itself. The most common Java Development Kit out
     there is from
-    [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/index.html). However,
+    [Oracle](https://www.oracle.com/java/technologies/downloads/). However,
     several Linux distributions (as well as some developers, yours truly
     included) favour the OpenJDK vendor, so your mileage may vary. Please refer
     to the corresponding website of the vendor of your choice in order to obtain
