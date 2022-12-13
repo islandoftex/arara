@@ -12,16 +12,16 @@ circumstances:
 
 1. *Parametrized directives*, as the set of attribute/value pairs (namely,
    argument name and corresponding value) is represented by a map. This
-   particular type of directive is formally introduced in [Important concepts](/manual/concepts).
+   particular type of directive is formally introduced in [Important concepts](@/manual/Concepts.md).
 
 2. *Rules*, as their entire structure is represented by a set of specific keys
    and their corresponding values (a proper YAML document). A rule follows a
-   very strict model, detailed in [Important concepts](/manual/concepts).
+   very strict model, detailed in [Important concepts](@/manual/Concepts.md).
 
 3. *Configuration files*, as the general settings are represented by a set of
    specific keys and their corresponding values (a proper YAML
    document). Configuration files are covered in
-   [Configuration](/manual/configuration).
+   [Configuration](@/manual/Configuration.md).
 
 This chapter only covers the relevant parts of the YAML format for a consistent
 use with arara. For advanced topics, I highly recommend the complete format
@@ -65,7 +65,7 @@ country: Brazil
 ```
 
 Similarly, the flow mapping uses curly braces. Observe that this is the form
-adopted by a parametrized directive (see syntax in [Important concepts](/manual/concepts)):
+adopted by a parametrized directive (see syntax in [Important concepts](@/manual/Concepts.md)):
 
 ```yaml
 developer: { name: Paulo, country: Brazil }
@@ -131,7 +131,7 @@ YAML's flow scalars include the plain style and two quoted styles. The
 double-quoted style provides escape sequences. The single-quoted style is useful
 when escaping is not needed. All flow scalars can span multiple lines. Note that
 line breaks are always folded. Since arara uses MVEL as its underlying scripting
-language (see [MVEL](/manual/mvel) for reference), it might be
+language (see [MVEL](@/manual/MVEL.md) for reference), it might be
 advisable to quote scalars when starting with forbidden symbols in YAML.
 
 # Tags
@@ -150,7 +150,7 @@ make sure to add `!config` as global tag:
 ```
 
 In particular, rules and configuration files of arara are properly covered in
-[Important concepts](/manual/concepts) and [Configuration](/manual/configuration). For
+[Important concepts](@/manual/Concepts.md) and [Configuration](@/manual/Configuration.md). For
 now, it suffices to say that the `!config` global tag is necessary to provide
 the correct mapping of values inside our tool.
 

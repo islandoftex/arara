@@ -169,7 +169,7 @@ Rule location: '/opt/islandoftex/arara/rules'
 
 For each task (or subtask, as it is part of a rule task) defined in the rule
 context, arara will interpret it and return the corresponding system
-command. The return types can be found in [Important concepts](/manual/concepts). In this
+command. The return types can be found in [Important concepts](@/manual/Concepts.md). In this
 specific scenario, there is just one task associated with the `pdftex`
 rule. Both task name and system command are shown:
 
@@ -248,6 +248,6 @@ relevant information is gathered into a single consolidated report.
 {% messagebox(title="Log paths") %}
 From version 6.0 on, the log file may now be specified as path *anywhere* on the
 file system. However, keep in mind that this behavior may be altered for future
-updates in safe mode. Please refer to [Configuration](/manual/configuration) for
+updates in safe mode. Please refer to [Configuration](@/manual/Configuration.md) for
 more details.
 {% end %}

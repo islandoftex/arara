@@ -12,7 +12,7 @@ the Java runtime environment can be used within MVEL expressions, so your
 mileage might vary.
 
 {% messagebox(title="A note on writing code") %}
-As seen in [MVEL](/manual/mvel), Java and MVEL code be used interchangeably
+As seen in [MVEL](@/manual/MVEL.md), Java and MVEL code be used interchangeably
 within expressions and orb tags, including instantiation of classes into objects
 and invocation of methods. However, be mindful of explicitly importing Java
 packages and classes through the classic `import` statement, as MVEL does not
@@ -45,7 +45,7 @@ references, when applied.
 - **[R]** `getOriginalFile(): String` This method returns the original file
     name, as plain string, regardless of a potential override through the
     special `files` parameter in the directive mapping, as seen in
-    [Important concepts](/manual/concepts).
+    [Important concepts](@/manual/Concepts.md).
 
   ```java
   if (file == getOriginalFile()) {
@@ -57,7 +57,7 @@ references, when applied.
 - **[C|E|R]** `getOriginalReference(): File` This method returns the original
     file reference, as a `File` object, regardless of a potential reference
     override indirectly through the special `files` parameter in the directive
-    mapping, as seen in [Important concepts](/manual/concepts).
+    mapping, as seen in [Important concepts](@/manual/Concepts.md).
 
   ```java
   if (reference.equals(getOriginalReference())) {
@@ -221,7 +221,7 @@ references, when applied.
     reference, as well as the associated hash, is stored in a YAML database file
     named `arara.yaml` located in the same directory as the current file (the
     database name can be overridden in the configuration file, as discussed in
-    [Configuration](/manual/configuration). The method semantics (including the
+    [Configuration](@/manual/Configuration.md). The method semantics (including the
     return values) is presented as follows.
 
   | File exists? &nbsp;&nbsp;&nbsp; | Entry exists? &nbsp;&nbsp;&nbsp; | Has changed? &nbsp;&nbsp;&nbsp; | DB action &nbsp;&nbsp;&nbsp; | Result |
@@ -248,7 +248,7 @@ references, when applied.
     reference, as well as the associated hash, is stored in a YAML database file
     named `arara.yaml` located in the same directory as the current file (the
     database name can be overridden in the configuration file, as discussed in
-    [Configuration](/manual/configuration). The method semantics (including the
+    [Configuration](@/manual/Configuration.md). The method semantics (including the
     return values) is presented as follows.
 
   | File exists? &nbsp;&nbsp;&nbsp; | Entry exists? &nbsp;&nbsp;&nbsp; | Has changed? &nbsp;&nbsp;&nbsp; | DB action &nbsp;&nbsp;&nbsp; | Result |
@@ -277,7 +277,7 @@ references, when applied.
     reference, as well as the associated hash, is stored in a YAML database file
     named `arara.yaml` located in the same directory as the current file (the
     database name can be overridden in the configuration file, as discussed in
-    [Configuration](/manual/configuration). The method semantics (including the
+    [Configuration](@/manual/Configuration.md). The method semantics (including the
     return values) is presented as follows.
 
   | File exists? &nbsp;&nbsp;&nbsp; | Entry exists? &nbsp;&nbsp;&nbsp; | Has changed? &nbsp;&nbsp;&nbsp; | DB action &nbsp;&nbsp;&nbsp; | Result |
@@ -1046,7 +1046,7 @@ section introduces UI methods related to such interactions.
 The graphical elements are provided by the Swing toolkit from the Java runtime
 environment. Note that the default look and feel class reference can be modified
 through a key in the configuration file, as seen in
-[Configuration](/manual/configuration). It is important to observe that the
+[Configuration](@/manual/Configuration.md). It is important to observe that the
 methods presented in this section require a graphical interface. If arara is
 being executed in a headless environment (i.e, an environment with no graphical
 display available), an exception will be thrown when trying to use such UI
@@ -1577,7 +1577,7 @@ are described as follows:
   key = getSession().get('arg:key');
   ```
 
-Please refer to [Command line](/manual/cli) for more details on the
+Please refer to [Command line](@/manual/CLI.md) for more details on the
 `--call-property` command line flag.
 {% end %}
 

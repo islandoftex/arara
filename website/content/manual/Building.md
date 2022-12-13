@@ -206,7 +206,7 @@ $ mv cli/build/libs/arara-cli-with-deps-*.jar arara.jar
 
 Now, our current directory contains the final `arara.jar` Java archive file
 properly built from source. This file can be safely distributed and deployed, as
-seen later on, in [Deploying](/manual/deploying). You can also test the
+seen later on, in [Deploying](@/manual/Deploying.md). You can also test the
 resulting file by running the following command in the terminal:
 
 ```sh

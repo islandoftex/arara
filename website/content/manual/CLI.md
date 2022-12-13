@@ -58,7 +58,7 @@ parentheses), besides of course the usual execution result:
 (PDFLaTeX) PDFLaTeX engine .............................. SUCCESS
 ```
 
-As previously mentioned in [Important concepts](/manual/concepts), if a task
+As previously mentioned in [Important concepts](@/manual/Concepts.md), if a task
 fails, arara will halt the entire execution at once and immediately report back
 to the user. This is an example of how a failed task looks like:
 
@@ -226,7 +226,7 @@ current option, it will be denoted by `parameter` in the description.
   streams from all system commands will be logged and, at the end of the
   execution, a consolidated log file named `arara.log` will be generated. This
   option can also be activated by default in the configuration file. Refer to
-  [Logging](/manual/logging) for more details on the logging feature.
+  [Logging](@/manual/Logging.md) for more details on the logging feature.
 
 - `-L` / `--language`: This option sets the language of the current execution of
   arara according to the language code identified by the `code` value provided
@@ -474,7 +474,7 @@ current option, it will be denoted by `parameter` in the description.
 
 - `-s` / `--silent`: This option disables the verbose mode of arara (thus
   activating the default silent mode), if previously enabled by a proper
-  configuration file (see [Configuration file](/manual/configuration)). It is
+  configuration file (see [Configuration file](@/manual/Configuration.md)). It is
   important to note that this command line option has higher priority over the
   `--verbose` counterpart.
 
@@ -510,7 +510,7 @@ current option, it will be denoted by `parameter` in the description.
 
     This option may be called multiple times, as a means to provide as many data
     pairs as needed. Please refer to `❖ getSession` in
-    [Methods](/manual/methods) for more details.
+    [Methods](@/manual/Methods.md) for more details.
 
 You can combine options, use long or short variations interchangeably and write
 them in any order, provided that a file name is given at some point in the

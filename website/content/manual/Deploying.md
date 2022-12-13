@@ -9,7 +9,7 @@ on all major operating systems -- in some cases, you might need to install the
 proper virtual machine. This chapter provides detailed instructions on how to
 properly deploy the tool in your computer from either the official package
 available in our project repository or a personal build generated from source
-(as seen in [Building](/manual/building)).
+(as seen in [Building](@/manual/Building.md)).
 
 # Directory structure
 
@@ -63,7 +63,7 @@ root directory, is presented as follows:
 <img src="{{ get_url(url="/images/manual/structure2.svg") }}" alt="Structure 1" width="896"/>
 
 If the tool was built from source (as indicated in
-[Building](/manual/building)), make sure to construct the provided directory
+[Building](@/manual/Building.md)), make sure to construct the provided directory
 structure previously presented. We can test the deployment by running the
 following command in the terminal (please note the full path):
 

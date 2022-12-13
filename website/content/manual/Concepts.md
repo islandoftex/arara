@@ -48,7 +48,7 @@ upon.
 {% end %}
 
 In short, a rule is a plain text file written in the YAML format, described in
-[YAML](/manual/yaml). I opted for this format because back then it was cleaner
+[YAML](@/manual/YAML.md). I opted for this format because back then it was cleaner
 and more intuitive to use than other markup languages such as XML, besides of
 course being a data serialization standard for programming languages.
 
@@ -147,7 +147,7 @@ properly defined inside it.
 
     - A boolean value: it is also possible to exploit the expressive power of
       the underlying scripting language available in the rule context (see
-      [MVEL](/manual/mvel) for more details) for writing complex code. In this
+      [MVEL](@/manual/MVEL.md) for more details) for writing complex code. In this
       particular case, since the computation is being done by arara itself and
       not the underlying operating system, there will not be a command to be
       executed, so simply return a boolean value — either an explicit
@@ -175,7 +175,7 @@ properly defined inside it.
 
     There is at least one variable available in the `command` context and is
     described as follows (note that MVEL variables and orb tags are discussed in
-    [MVEL](/manual/mvel)). A variable will be denoted by `⋄ variable`
+    [MVEL](@/manual/MVEL.md)). A variable will be denoted by `⋄ variable`
     in this list. For each rule argument (defined later on), there will be a
     corresponding variable in the `command` context, directly accessed through
     its unique identifier.
@@ -338,7 +338,7 @@ possible.
     follows. Note that are also several helper methods available in the rule
     context (for instance, `❖ isTrue` presented in the previous
     example) which provide interesting features for rule writing. They are
-    detailed later on, in [Methods](/manual/methods).
+    detailed later on, in [Methods](@/manual/Methods.md).
 
     - `⋄ parameters`: This variable holds a map of directive
       parameters available at runtime. For each argument identifier listed in
@@ -466,7 +466,7 @@ This is the rule structure in the YAML format used by arara. Keep in mind that
 all subtasks in a rule are checked against their corresponding exit status. If
 an abnormal execution is detected, the tool will instantly halt and the rule
 will fail. Even arara itself will return an exit code different than zero when
-this situation happens (detailed in [Command line](/manual/cli)).
+this situation happens (detailed in [Command line](@/manual/CLI.md)).
 
 # Directives
 
@@ -480,7 +480,7 @@ corresponding rules will be instantiated. They are listed as follows. Note that
 directives are always preceded by the `arara:` pattern.
 
 - **Empty directive**: This type of directive has already been mentioned in
-  [Introduction](/manual/introduction), it has only the rule name (which
+  [Introduction](@/manual/Introduction.md), it has only the rule name (which
   refers to the `identifier` key from the rule of the same name). All rule
   arguments are mapped to empty lists, except the ones with `default` values,
   mapped to lists containing single elements.
@@ -502,7 +502,7 @@ directives are always preceded by the `arara:` pattern.
   Observe that arara relies on named parameters, so they are mapped by their
   corresponding argument identifiers and not by their positions. The syntax for
   a parameter is described as follows. Please refer to the map definition in
-  [YAML](/manual/yaml).
+  [YAML](@/manual/YAML.md).
 
   ```
   key : value
@@ -696,11 +696,11 @@ parameter in the directive context. For instance:
 ```
 
 This feature supports the following methods with their documented meanings, as
-seen in [Methods](/manual/methods): `❖ getBasename`, `❖
+seen in [Methods](@/manual/Methods.md): `❖ getBasename`, `❖
 getSession` and `❖ getOriginalReference`.
 
 Keep in mind that this feature is disabled when arara is running in safe mode,
-as seen in [Command line](/manual/cli).
+as seen in [Command line](@/manual/CLI.md).
 {% end %}
 
 # Important changes in version 7
@@ -747,14 +747,14 @@ anything is in rules where you have accessed Java's `File` API yourself.
 {% end %}
 
 {% messagebox(title="Add projects") %}
-arara now supports projects. See [Projects](/manual/projects)
+arara now supports projects. See [Projects](@/manual/Projects.md)
 for further information on this new feature.
 {% end %}
 
 This section pretty much covered the basics of the changes to this version. Of
 course, it is highly advisable to make use of the new features available in
 arara 7.0 for achieving better results. If you need any help, please do not
-hesitate to contact us. See [Introduction](/manual/introduction) for more details on how to get help.
+hesitate to contact us. See [Introduction](@/manual/Introduction.md) for more details on how to get help.
 
 If you are upgrading you may also be interested in reading our
 [changelog](https://gitlab.com/islandoftex/arara/-/blob/master/CHANGELOG.md) or

@@ -87,7 +87,7 @@ Hello world!
 ```
 
 For now, do not worry too much about the terms, we will come back to them later
-on, in [Important concepts](/manual/concepts). It suffices to say that arara expects
+on, in [Important concepts](@/manual/Concepts.md). It suffices to say that arara expects
 *you* to provide a list of tasks, and this is done by inserting special comments
 in the source file. Let us see how arara behaves with this updated code:
 
@@ -160,7 +160,7 @@ quickly spread to the whole TeX world.
 Now that we informally introduced rules and directives, let us take a look on
 how arara actually works given those two elements. The whole idea is pretty
 straightforward, and I promise to revisit these concepts later on in this manual
-for a comprehensive explanation (more precisely, in [Important concepts](/manual/concepts)).
+for a comprehensive explanation (more precisely, in [Important concepts](@/manual/Concepts.md)).
 
 First and foremost, we need to add at least one instruction in the source code
 to tell arara what to do. This instruction is named a *directive* and it will be
@@ -185,7 +185,7 @@ Once arara finds a directive, it will look for the associated *rule*. In our
 example, it will look for a rule named `pdflatex` which will evidently run the
 `pdflatex` command line application. Rules are YAML files named according to
 their identifiers followed by the `yaml` extension and follow a strict
-structure. This concept is covered in [Important concepts](/manual/concepts).
+structure. This concept is covered in [Important concepts](@/manual/Concepts.md).
 
 Now, we have a queue of pairs *(directive, rule)* to
 process. For each pair, arara will map the directive to its corresponding rule,
@@ -207,7 +207,7 @@ instance, the `clean` rule).
 That is pretty much how arara works: directives in the source code are mapped to
 rules. These pairs are added to a queue. The queue is then executed and the
 status is reported. More details about the expansion process are presented in
-[Important concepts](/manual/concepts). In short, we teach arara to do a task by
+[Important concepts](@/manual/Concepts.md). In short, we teach arara to do a task by
 providing a rule, and tell it to execute it through directives in the source
 code.
 
@@ -229,7 +229,7 @@ still runs arara on very old hardware. If you are not in this particular
 scenario, get the latest virtual machine.
 {% end %}
 
-In [Building arara](/manual/building), we provide instructions on how to build
+In [Building arara](@/manual/Building.md), we provide instructions on how to build
 arara from sources using Gradle. Even if you use multiple operating systems,
 arara should behave the same, including the rules. There are helper functions
 available in order to provide support for system-specific rules based on the
