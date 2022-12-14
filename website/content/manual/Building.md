@@ -5,7 +5,7 @@ weight = 9
 +++
 
 arara is a Kotlin application licensed under the [New BSD
-License](http://www.opensource.org/licenses/bsd-license.php), a verified
+License](https://www.opensource.org/licenses/bsd-license.php), a verified
 GPL-compatible free software license, and the source code is available in the
 project repository at [GitLab](https://gitlab.com/islandoftex/arara). This
 chapter provides detailed instructions on how to build our tool from source.

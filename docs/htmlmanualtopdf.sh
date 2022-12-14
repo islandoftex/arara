@@ -138,7 +138,6 @@ do
 <h1 id="chapter-$chapter">$chapter_title</h1>
 $(cat "tmp-$htmlfile" | htmlq 'div.content.text' --remove-nodes 'div.heading-text' \
   | tail -n +3 | head -n -1 \
-  | sed -r 's~href="/manual/(.*)"~href="#chapter-\1"~g' \
   | sed -r 's/<(\/?)h5/<\1h6/g' | sed -r 's/<(\/?)h4/<\1h5/g' \
   | sed -r 's/<(\/?)h3/<\1h4/g' | sed -r 's/<(\/?)h2/<\1h3/g' \
   | sed -r 's/<(\/?)h1/<\1h2/g')
@@ -200,6 +199,13 @@ $chapter_content
 </body>
 </html>
 EOF
+
+# convert absolute urls (manual sub-pages)
+#   <a href="https://.../manual/yaml/">text</a>
+# to internal links (page anchors of section titles)
+#   <a href="#chapter-yaml">text</a>
+# To avoid doing case conversions, this replacement is postponed to here.
+sed -i 's~<a href="https://.*/manual/\([^/]*\)/">~<a href="#chapter-\1">~g' "$htmlfile"
 
 # convert the created HTML manual to PDF
 weasyprint -u "$baseurl" "$htmlfile" "$pdffile"
