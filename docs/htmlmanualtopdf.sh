@@ -200,12 +200,17 @@ $chapter_content
 </html>
 EOF
 
+# respect non-empty PAGES_URL that holds a customized base_url
+if [ -z "${PAGES_URL}" ]; then
+    PAGES_URL="https://islandoftex.gitlab.io/arara"
+fi
+
 # convert absolute urls (manual sub-pages)
 #   <a href="https://.../manual/yaml/">text</a>
 # to internal links (page anchors of section titles)
 #   <a href="#chapter-yaml">text</a>
 # To avoid doing case conversions, this replacement is postponed to here.
-sed -i 's~<a href="https://.*/manual/\([^/]*\)/">~<a href="#chapter-\1">~g' "$htmlfile"
+sed -i 's~<a href="'$PAGES_URL'/manual/\([^/]*\)/">~<a href="#chapter-\1">~g' "$htmlfile"
 
 # convert the created HTML manual to PDF
 weasyprint -u "$baseurl" "$htmlfile" "$pdffile"
