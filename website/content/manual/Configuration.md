@@ -22,7 +22,7 @@ file. They dictate how the execution should behave and happen from a user
 perspective, and are described as follows.
 
 - **Global configuration file:** For this approach, the configuration file
-  should be located at `USER_HOME` which is the home directory of the current
+  should be located at `HOME` which is the home directory of the current
   user. All subsequent executions of arara will read this configuration file
   and apply the specified settings accordingly. However, it is important to
   note that this approach has the lowest lookup priority, which means that a
@@ -83,7 +83,7 @@ configuration file for our tool.
   this list.
 
   - `⋄ user.home`: This variable, as the name implies, holds the
-    value of the absolute, canonical path of `USER_HOME` which is the home
+    value of the absolute, canonical path of `HOME` which is the home
     directory of the current user, as plain string. Note that the specifics of
     the home directory (such as name and location) are defined by the operating
     system involved.
