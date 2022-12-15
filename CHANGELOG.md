@@ -14,6 +14,12 @@ on.
 
 ## [Unreleased]
 
+### Fixed
+
+* Various typos and style issues in the documentation (PDF and website). Thanks
+  to @muzimuzhi for spotting and fixing most of these.
+  (see !38, !39, !40, !43, !44, !46, #100, #102)
+
 ## [7.0.4] - 2022-06-28
 
 ### Fixed
