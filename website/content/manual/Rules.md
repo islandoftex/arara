@@ -15,7 +15,7 @@ occurrence of an **[R]** mark indicates that the corresponding option is
 required.
 
 {% messagebox(title="Can my rule be distributed within the official pack?") %}
-As seen in [Important concepts](/manual/concepts), the default rule path can be extended
+As seen in [Important concepts](@/manual/Concepts.md), the default rule path can be extended
 to include a list of directories in which our tool should search for
 rules. However, if you believe your rule is comprehensive enough and deserves to
 be in the official pack, please contact us! We will be more  than happy to
@@ -45,7 +45,7 @@ command line utility from the ImageMagick suite.
 
 {% messagebox(title="Microsoft Windows woes") %}
 According to the [ImageMagick
-website](http://www.imagemagick.org/Usage/windows/), the Windows installation
+website](https://imagemagick.org/Usage/windows/), the Windows installation
 routine adds the program directory to the system path, such that one can call
 command line tools directly from the command prompt, without providing a path
 name. However, `convert` is also the name of Windows system tool, located in the
@@ -357,7 +357,7 @@ also applies to file removals based on extensions.
 
 {% messagebox(title="Better safe than sorry!") %}
 When in doubt, always remember that the `--dry-run` command line option is your
-friend! As seen in [Command line](/manual/cli), this option makes arara go
+friend! As seen in [Command line](@/manual/CLI.md), this option makes arara go
 through all the motions of running tasks and subtasks, but with no actual
 calls. It is a very useful feature for testing the sequence of removal commands
 without actually losing your files! Also, as good practice, always write plain,
@@ -1022,7 +1022,7 @@ perform non-linear multi-dimensional multi-set weighted data fitting.
 
 This rule, as the name suggests, sets a `halt` flag, which stops the current
 interpretation workflow, such that subsequent directives are ignored. This rule
-contains no associated options. Please refer to [Methods](/manual/methods) for
+contains no associated options. Please refer to [Methods](@/manual/Methods.md) for
 more information on flags.
 
 ```tex
@@ -2259,7 +2259,7 @@ This rule runs `sketch`, a system for producing line drawings of solid objects
 and scenes, on the corresponding base name of the `❖ currentFile`
 reference (i.e, the name without the associated extension) as a string
 concatenated with the `sk` suffix. Note that one needs to add support for this
-particular file type, as seen in [Configuration](/manual/configuration).
+particular file type, as seen in [Configuration](@/manual/Configuration.md).
 
 - `options`: This option, as the name indicates, takes a list of raw command
   line options and appends it to the actual system call. An error is thrown if

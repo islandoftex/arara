@@ -47,7 +47,7 @@ configuration file at all. The available keys are described later on.
 If the logging feature is properly enabled, arara will indicate in the
 corresponding `arara.log` file whether a configuration file was used during the
 execution and, if so, the corresponding canonical, absolute path. Logging is
-detailed later on, in [Logging](/manual/logging).
+detailed later on, in [Logging](@/manual/Logging.md).
 
 # Basic structure
 
@@ -79,7 +79,7 @@ configuration file for our tool.
 
   There are three variables available in the `paths` context and are described
   as follows (note that MVEL variables and orb tags are discussed in
-  [MVEL](/manual/mvel). A variable will be denoted by `⋄ variable` in
+  [MVEL](@/manual/MVEL.md). A variable will be denoted by `⋄ variable` in
   this list.
 
   - `⋄ user.home`: This variable, as the name implies, holds the
@@ -215,7 +215,7 @@ resolution for a path in plain string should be kept as simple as possible, so
   our tool, according to the associated plain string value. The value cannot
   be empty or contain invalid characters. There is no orb tag evaluation in
   this specific context, only a plain string value. This look and feel setting
-  is used by UI methods, detailed in [Methods](/manual/methods). Note that
+  is used by UI methods, detailed in [Methods](@/manual/Methods.md). Note that
   this value is used by the underlying Java runtime environment, so a full
   qualified class name is expected.
 
@@ -239,7 +239,7 @@ resolution for a path in plain string should be kept as simple as possible, so
 
 - **[O]** *(string map)* `preambles`: This key holds a string map containing
   predefined preambles for later use with the `--preamble` option (see
-  [Command line](/manual/cli)). Note that each map key must be
+  [Command line](@/manual/CLI.md)). Note that each map key must be
   unique. Additionally, it it is highly recommended to use lowercase letters
   without spaces, accents or punctuation symbols, as key values. Only
   directives, line breaks and conditionals are recognized.
@@ -326,7 +326,7 @@ resolution for a path in plain string should be kept as simple as possible, so
       ```
 
     For instance, let us reverse the default file name lookup order presented in
-    [Command line](/manual/cli). Since the default lookup patterns will be
+    [Command line](@/manual/CLI.md). Since the default lookup patterns will be
     preserved, the corresponding `pattern` keys can be safely omitted. Now it is
     just a matter of rearranging the entries in the desired order, presented as
     follows.
@@ -413,4 +413,4 @@ Since arara allows four different names for configuration files, as well as
 global and local approaches, it is highly advisable to run our tool with the
 `--log` command line option enabled, in order to easily identify which file was
 considered for that specific execution. The logging feature is discussed later
-on, in [Logging](/manual/logging).
+on, in [Logging](@/manual/Logging.md).

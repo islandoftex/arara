@@ -4,7 +4,7 @@ set -e
 
 # check the required tools; we make these available through the `nix develop`
 # shell so you may use that to build the manual
-required_tools=("pup" "sed" "weasyprint")
+required_tools=("htmlq" "sed" "weasyprint")
 for tool in "${required_tools[@]}"
 do
   if ! [ -x "$(command -v "$tool")" ]; then
@@ -131,13 +131,13 @@ chapter_content=""
 for chapter in "${chapters[@]}"
 do
   cp "$(echo "${baseurl}manual/$chapter/index.html" | cut -c8-)" "tmp-$htmlfile"
-  chapter_title="$(cat "tmp-$htmlfile" | pup '[class="heading-text"] text{}' \
+  chapter_title="$(cat "tmp-$htmlfile" | htmlq -t 'div.heading-text' \
                  | sed '/^[[:space:]]*$/d' | sed 's/ *$//g' | sed 's/^ *//g')"
   this_chapter_content="$(cat <<EOF
 <article>
 <h1 id="chapter-$chapter">$chapter_title</h1>
-$(cat "tmp-$htmlfile" | pup --pre ':parent-of([class="heading-text"])' \
-  | tail -n +5 | head -n -1 \
+$(cat "tmp-$htmlfile" | htmlq 'div.content.text' --remove-nodes 'div.heading-text' \
+  | tail -n +3 | head -n -1 \
   | sed -r 's/<(\/?)h5/<\1h6/g' | sed -r 's/<(\/?)h4/<\1h5/g' \
   | sed -r 's/<(\/?)h3/<\1h4/g' | sed -r 's/<(\/?)h2/<\1h3/g' \
   | sed -r 's/<(\/?)h1/<\1h2/g')
@@ -199,6 +199,18 @@ $chapter_content
 </body>
 </html>
 EOF
+
+# respect non-empty PAGES_URL that holds a customized base_url
+if [ -z "${PAGES_URL}" ]; then
+    PAGES_URL="https://islandoftex.gitlab.io/arara"
+fi
+
+# convert absolute urls (manual sub-pages)
+#   <a href="https://.../manual/yaml/">text</a>
+# to internal links (page anchors of section titles)
+#   <a href="#chapter-yaml">text</a>
+# To avoid doing case conversions, this replacement is postponed to here.
+sed -i 's~<a href="'$PAGES_URL'/manual/\([^/]*\)/">~<a href="#chapter-\1">~g' "$htmlfile"
 
 # convert the created HTML manual to PDF
 weasyprint -u "$baseurl" "$htmlfile" "$pdffile"

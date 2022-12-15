@@ -126,11 +126,14 @@ h1 {
   font-size: 38pt;
   margin: 2cm 0 1cm 0;
   page: no-chapter;
+  /* see https://www.w3.org/TR/css-content-3/#bookmark-state */
+  bookmark-state: closed;
   width: 100%;
 }
 h2, h3, h4 {
   color: black;
   font-weight: 400;
+  bookmark-state: closed;
 }
 h2 {
   font-size: 28pt;
@@ -207,8 +210,8 @@ th:last-of-type, td:last-of-type {
 
 .tex sub, .latex sub {
   vertical-align: -0.08cm;
-  margin-left: -0.15cm;
-  margin-right: -0.095cm;
+  margin-left: -0.065cm;
+  margin-right: 0cm;
 }
 
 .tex, .latex, .tex sub, .latex sub {

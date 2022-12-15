@@ -13,11 +13,11 @@ scripting language in two circumstances:
 
 1. *Rules*, as nominal attributes gathered from directives are used to build
   complex command invocations and additional computations. A rule follows a very
-  strict model, detailed in [Important concepts](/manual/concepts).
+  strict model, detailed in [Important concepts](@/manual/Concepts.md).
 
 2. *Conditionals*, as logical expressions must be evaluated in order to decide
   whether and how a directive should be interpreted. Conditionals are detailed in
-  [Important concepts](/manual/concepts).
+  [Important concepts](@/manual/Concepts.md).
 
 This chapter only covers the relevant parts of the MVEL language for a
 consistent use with arara. For advanced topics, I highly recommend the official
@@ -40,7 +40,7 @@ extract a property out of a variable or context object, namely `user`. Property
 expressions are widely used by arara, as directive parameters are converted to a
 map inside the corresponding rule scope. For instance, a parameter `foo` in a
 directive will be mapped as `parameters.foo` inside a rule during
-interpretation. This topic is detailed in [Important concepts](/manual/concepts). The
+interpretation. This topic is detailed in [Important concepts](@/manual/Concepts.md). The
 scripting language can also be used for evaluating a boolean expression:
 
 ```java
@@ -312,7 +312,7 @@ runtime. arara heavily relies on this concept for runtime evaluation of
 conditionals and rules. For rules, we use orb tags to return either a string
 from a textual template or a proper command object. The former constituted the
 basis of command generation in previous versions of our tool; we highly
-recommend the latter, detailed in [Important concepts](/manual/concepts). Conditionals are
+recommend the latter, detailed in [Important concepts](@/manual/Concepts.md). Conditionals are
 in fact orb tags in disguise, such that the expression (or a sequence of
 expressions) is properly evaluated at runtime. Consider the following example:
 
@@ -330,5 +330,5 @@ a football team name (the result is of course based on the comparison outcome).
 
 This chapter does not cover all features of the MVEL expression language, so
 further reading is advisable. I highly recommend the [MVEL language
-guide](http://mvel.documentnode.com/) currently covering version 2.0 of the
+guide](https://mvel.documentnode.com/) currently covering version 2.0 of the
 language.

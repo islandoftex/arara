@@ -5,7 +5,7 @@ weight = 9
 +++
 
 arara is a Kotlin application licensed under the [New BSD
-License](http://www.opensource.org/licenses/bsd-license.php), a verified
+License](https://www.opensource.org/licenses/bsd-license.php), a verified
 GPL-compatible free software license, and the source code is available in the
 project repository at [GitLab](https://gitlab.com/islandoftex/arara). This
 chapter provides detailed instructions on how to build our tool from source.
@@ -51,7 +51,7 @@ following items are available:
     The previous command, as the name suggests, refers to the `javac` tool,
     which is the Java compiler itself. The most common Java Development Kit out
     there is from
-    [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/index.html). However,
+    [Oracle](https://www.oracle.com/java/technologies/downloads/). However,
     several Linux distributions (as well as some developers, yours truly
     included) favour the OpenJDK vendor, so your mileage may vary. Please refer
     to the corresponding website of the vendor of your choice in order to obtain
@@ -206,7 +206,7 @@ $ mv cli/build/libs/arara-cli-with-deps-*.jar arara.jar
 
 Now, our current directory contains the final `arara.jar` Java archive file
 properly built from source. This file can be safely distributed and deployed, as
-seen later on, in [Deploying](/manual/deploying). You can also test the
+seen later on, in [Deploying](@/manual/Deploying.md). You can also test the
 resulting file by running the following command in the terminal:
 
 ```sh
