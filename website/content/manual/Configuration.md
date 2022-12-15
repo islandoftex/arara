@@ -79,7 +79,7 @@ configuration file for our tool.
 
   There are three variables available in the `paths` context and are described
   as follows (note that MVEL variables and orb tags are discussed in
-  [MVEL](@/manual/MVEL.md). A variable will be denoted by `⋄ variable` in
+  [MVEL](@/manual/MVEL.md)). A variable will be denoted by `⋄ variable` in
   this list.
 
   - `⋄ user.home`: This variable, as the name implies, holds the
