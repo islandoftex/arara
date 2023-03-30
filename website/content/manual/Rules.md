@@ -1688,6 +1688,17 @@ graphics you want to compile for inclusion in your document.
 % arara: metapost: { files: [ graphics.mp ] }
 ```
 
+# `mkdir`
+
+This rule creates a new directory or does nothing if it already exists.
+
+- **[R]** `target`: This option, as the name implies, specifies the name of the
+  target directory to be created. Keep in mind that this option is required.
+
+```tex
+% arara: mkdir: { target: 'dir_to_make' }
+```
+
 # `move`
 
 This rule moves the `File` reference to the provided target using the underlying

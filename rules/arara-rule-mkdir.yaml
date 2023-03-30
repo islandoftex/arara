@@ -1,0 +1,37 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2022, Island of TeX
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: mkdir
+name: Create directory
+authors:
+- Island of TeX
+commands:
+- name: The OS mkdir call
+  command: >
+    @{
+        prefix = [];
+        if (isUnix()) {
+            prefix = [ 'mkdir', '-p' ];
+        }
+        else {
+            prefix = [ 'cmd', '/c', 'mkdir' ];
+        }
+        t = isList(target) ? target[0] : target;
+        d = toFile(t).normalize();
+        if (exists(d) && d.isDirectory()) {
+            return [];
+        }
+        else {
+            return getCommand(prefix, t);
+        }
+    }
+arguments:
+- identifier: target
+  flag: >
+    @{
+        return parameters.target;
+    }
+  required: true
