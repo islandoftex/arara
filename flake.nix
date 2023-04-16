@@ -16,6 +16,9 @@
           with import nixpkgs { inherit system; };
           pkgs.stdenv.mkDerivation rec {
             pname = "arara";
+            # This version corresponds to the major version of arara.
+            # If a more granular adjustment is needed, please raise an issue.
+            # see also https://gitlab.com/islandoftex/arara/-/issues/97
             version = "7.0.0";
 
             src = ./.;

@@ -146,7 +146,7 @@ This operation is way faster than the previous one, for obvious reasons.
 
 ## Building the executable
 
-Unix terminals typically start at `USER_HOME` as working directory, so, if you
+Unix terminals typically start at `HOME` as working directory, so, if you
 did not `cd` to another directory (as in the earlier example), the newly cloned
 `arara/` directory is almost certain to be accessible from that level. Now, we
 need to navigate to the directory named `arara/`. Run the following command in

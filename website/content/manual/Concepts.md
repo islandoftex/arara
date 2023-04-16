@@ -471,9 +471,9 @@ this situation happens (detailed in [Command line](@/manual/CLI.md)).
 # Directives
 
 A *directive* is a special comment inserted in the source file in which you
-indicate how arara should behave. You can insert as many directives as you want
-and in any position of the file. The tool will read the whole file and extract
-the directives.
+indicate how arara should behave. You can insert as many directives as you want.
+The tool will read and extract directives from beginning of the file by default.
+See _Enabling header mode by default_ in next section for more info.
 
 There are two types of directives in arara which determine the way the
 corresponding rules will be instantiated. They are listed as follows. Note that
