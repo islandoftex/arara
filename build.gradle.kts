@@ -219,6 +219,10 @@ subprojects {
                 archiveBaseName.set("arara-${project.name}")
                 manifest.attributes.putAll(mainManifest.attributes)
             }
+            withType<JavaCompile> {
+                sourceCompatibility = "1.8"
+                targetCompatibility = "1.8"
+            }
             named<DokkaTask>("dokkaHtml").configure {
                 dokkaSourceSets.configureEach {
                     jdkVersion.set(8)

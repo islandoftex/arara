@@ -22,7 +22,7 @@ kotlin {
             dependencies {
                 api(project(":api"))
                 implementation(project(":core"))
-                implementation(kotlin("stdlib-jdk7"))
+                implementation(kotlin("stdlib"))
                 implementation("org.slf4j:slf4j-api:${Versions.slf4j}")
                 implementation("org.mvel:mvel2:${Versions.mvel}")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:${Versions.kotlinxSerialization}")
