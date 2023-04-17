@@ -14,6 +14,8 @@ on.
 
 ## [Unreleased]
 
+## [7.0.5] - 2023-04-17
+
 ### Fixed
 
 * Various typos and style issues in the documentation (PDF and website). Thanks
@@ -542,7 +544,8 @@ on.
 For versions previous to version 5.0.0, there has not been any persistent record
 of changes. Please refer to the commit history for details.
 
-[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v7.0.4...master
+[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v7.0.5...master
+[7.0.5]: https://gitlab.com/islandoftex/arara/compare/v7.0.4...v7.0.5
 [7.0.4]: https://gitlab.com/islandoftex/arara/compare/v7.0.3...v7.0.4
 [7.0.3]: https://gitlab.com/islandoftex/arara/compare/v7.0.2...v7.0.3
 [7.0.2]: https://gitlab.com/islandoftex/arara/compare/v7.0.1...v7.0.2
