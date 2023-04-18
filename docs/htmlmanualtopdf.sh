@@ -88,7 +88,7 @@ cat <<EOF > $htmlfile
   <blockquote>
     <strong>New BSD License</strong>
     <p>
-      Copyright 2012–2022, Island of TeX<br/>
+      Copyright 2012–2023, Island of TeX<br/>
       All rights reserved.
     </p>
     <p>
