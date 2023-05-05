@@ -5,28 +5,15 @@
 #
 # This rule is part of arara.
 identifier: mkdir
-name: Create directory
+name: Create subdirectory
 authors:
 - Island of TeX
 commands:
-- name: The OS mkdir call
+- name: Create subdirectory
   command: >
     @{
-        prefix = [];
-        if (isUnix()) {
-            prefix = [ 'mkdir', '-p' ];
-        }
-        else {
-            prefix = [ 'cmd', '/c', 'mkdir' ];
-        }
         t = isList(target) ? target[0] : target;
-        d = toFile(t).normalize();
-        if (exists(d) && d.isDirectory()) {
-            return [];
-        }
-        else {
-            return getCommand(prefix, t);
-        }
+        mkdir(t);
     }
 arguments:
 - identifier: target
