@@ -28,7 +28,7 @@ object MvelState {
                 "isEmpty", "isNotEmpty", "isTrue", "isFalse",
                 "isWindows", "isLinux", "isMac", "isUnix", "isCygwin",
                 "checkClass", "isString", "isList", "isMap", "isBoolean",
-                "getOrNull"
+                "getOrNull", "mkdir"
             ).forEach { name: String ->
                 map[name] = methodsKotlin.first { it.name == name }
             }

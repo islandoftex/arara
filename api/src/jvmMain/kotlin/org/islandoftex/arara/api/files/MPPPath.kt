@@ -235,6 +235,17 @@ public actual class MPPPath {
      * Resolve the child [p] against the current path.
      */
     public actual operator fun div(p: MPPPath): MPPPath = resolve(p)
+
+    /**
+     * Create a subdirectory at the current location.
+     */
+    public actual fun createSubdirectory(dir: String): Unit = runBlockingNoJs {
+        if (vfsFile.isDirectory()) {
+            localVfs(vfsFile.absolutePath.plus(dir)).mkdirs()
+        } else if (vfsFile.isFile()) {
+            localVfs(parent.vfsFile.absolutePath.plus(dir)).mkdirs()
+        }
+    }
 }
 
 /**

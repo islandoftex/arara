@@ -121,4 +121,9 @@ public expect class MPPPath {
      * Resolve the child [p] against the current path.
      */
     public operator fun div(p: MPPPath): MPPPath
+
+    /**
+     * Create a subdirectory at the current location.
+     */
+    public fun createSubdirectory(dir: String)
 }
