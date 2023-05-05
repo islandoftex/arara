@@ -13,7 +13,8 @@ commands:
 - name: Create subdirectory
   command: >
     @{
-        toFile(target).createDirectories();
+        toFile(target[0]).createDirectories();
+        return true;
     }
 arguments:
 - identifier: target
