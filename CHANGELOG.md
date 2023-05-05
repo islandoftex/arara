@@ -14,6 +14,16 @@ on.
 
 ## [Unreleased]
 
+### Added
+
+* A new `mkdir` rule to create directories (thanks to @hackbaellchen).
+  (see !48)
+
+### Fixed
+
+* Copyright dates have been outdated throughout the codebase.
+  (see #108)
+
 ## [7.0.5] - 2023-04-17
 
 ### Fixed
