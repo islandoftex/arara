@@ -123,7 +123,13 @@ public expect class MPPPath {
     public operator fun div(p: MPPPath): MPPPath
 
     /**
-     * Create a subdirectory at the current location.
+     * Treat this path as a directory identifier and create a directory at
+     * this location including all missing parents.
+     * Does nothing if a directory exists at the current location.
+     *
+     * Fails with an [AraraIOException] if the directory could not be created
+     * or a regular file exists at the location.
      */
-    public fun createSubdirectory(dir: String)
+    @Throws(AraraIOException::class)
+    public fun createDirectories()
 }
