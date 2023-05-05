@@ -14,6 +14,8 @@ on.
 
 ## [Unreleased]
 
+## [7.1.0] - 2023-05-05
+
 ### Added
 
 * A new `mkdir` rule to create directories (thanks to @hackbaellchen).
@@ -558,7 +560,8 @@ on.
 For versions previous to version 5.0.0, there has not been any persistent record
 of changes. Please refer to the commit history for details.
 
-[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v7.0.5...master
+[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v7.1.0...master
+[7.1.0]: https://gitlab.com/islandoftex/arara/compare/v7.0.5...v7.1.0
 [7.0.5]: https://gitlab.com/islandoftex/arara/compare/v7.0.4...v7.0.5
 [7.0.4]: https://gitlab.com/islandoftex/arara/compare/v7.0.3...v7.0.4
 [7.0.3]: https://gitlab.com/islandoftex/arara/compare/v7.0.2...v7.0.3
