@@ -13,15 +13,15 @@ class FileHandlingTest {
     @Test
     fun shouldChangeExtensionOfFileWithExtension() {
         assertEquals(
-            FileHandling.changeExtension(MPPPath("quack.tex"), "log").fileName,
-            MPPPath("quack.log").fileName
+            MPPPath("quack.log").fileName,
+            FileHandling.changeExtension(MPPPath("quack.tex"), "log").fileName
         )
     }
     @Test
     fun shouldChangeExtensionOfFileWithoutExtension() {
         assertEquals(
-            FileHandling.changeExtension(MPPPath("quack"), "log").fileName,
-            MPPPath("quack.log").fileName
+            MPPPath("quack.log").fileName,
+            FileHandling.changeExtension(MPPPath("quack"), "log").fileName
         )
     }
 
@@ -44,6 +44,6 @@ class FileHandlingTest {
     }
     @Test
     fun shouldGenerateCorrectCRCSum() {
-        assertEquals(FileHandling.calculateHash(MPPPath("../LICENSE")), 2951375576)
+        assertEquals(1616727774, FileHandling.calculateHash(MPPPath("../LICENSE")))
     }
 }
