@@ -9,6 +9,12 @@ behaviour or enhancing the execution workflow through the concept of a
 configuration file. This chapter provides the basic structure of that file, as
 well as details on the file lookup in the operating system.
 
+Please note that a configuration file is not required for arara to work. If you
+do not specify one, arara will use the default values as detailed below. If you
+specify a configuration file, it will overwrite the defaults with the options
+given. Parts that have not been overwritten (omitted from the configuration
+file) will follow the default values.
+
 # File lookup
 
 Our tool looks for the presence of at least one of four very specific files
