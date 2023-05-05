@@ -18,6 +18,10 @@ on.
 
 * A new `mkdir` rule to create directories (thanks to @hackbaellchen).
   (see !48)
+* The `MPPPath` public API has been extended with a new method:
+  `createDirectories` which creates a directory and all relevant parents
+  at the current path. It can be used in rules by going through
+  `toFile(file).createDirectories()` access.
 
 ### Fixed
 
