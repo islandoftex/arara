@@ -1,19 +1,19 @@
 !config
 # Arara, the cool TeX automation tool
-# Copyright (c) 2022, Island of TeX
+# Copyright (c) 2023, Island of TeX
 # All rights reserved.
 #
 # This rule is part of arara.
 identifier: mkdir
 name: Create subdirectory
 authors:
+- hackbaellchen
 - Island of TeX
 commands:
 - name: Create subdirectory
   command: >
     @{
-        t = isList(target) ? target[0] : target;
-        mkdir(t);
+        toFile(target).createDirectories();
     }
 arguments:
 - identifier: target

@@ -237,13 +237,18 @@ public actual class MPPPath {
     public actual operator fun div(p: MPPPath): MPPPath = resolve(p)
 
     /**
-     * Create a subdirectory at the current location.
+     * Treat this path as a directory identifier and create a directory at
+     * this location including all missing parents.
+     * Does nothing if a directory exists at the current location.
+     *
+     * Fails with an [AraraIOException] if the directory could not be created
+     * or a regular file exists at the location.
      */
-    public actual fun createSubdirectory(dir: String): Unit = runBlockingNoJs {
-        if (vfsFile.isDirectory()) {
-            localVfs(vfsFile.absolutePath.plus(dir)).mkdirs()
-        } else if (vfsFile.isFile()) {
-            localVfs(parent.vfsFile.absolutePath.plus(dir)).mkdirs()
+    public actual fun createDirectories(): Unit = runBlockingNoJs {
+        if (!vfsFile.exists()) {
+            vfsFile.mkdirs()
+        } else if (!vfsFile.isDirectory()) {
+            throw AraraIOException("Directory already exists as a file.")
         }
     }
 }

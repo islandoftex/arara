@@ -484,18 +484,6 @@ object RuleMethods {
         )
 
     /**
-     * Creates a new directory.
-     *
-     * @param directory The name of the directory to be created.
-     */
-    @JvmStatic
-    @Throws(AraraException::class)
-    fun mkdir(directory: String): Unit = 
-        LinearExecutor.currentProject!!.workingDirectory.createSubdirectory(
-            directory
-        )
-
-    /**
      * Checks if the string is empty.
      *
      * @param string The string.

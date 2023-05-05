@@ -1690,7 +1690,8 @@ graphics you want to compile for inclusion in your document.
 
 # `mkdir`
 
-This rule creates a new directory or does nothing if it already exists.
+This rule creates a new directory at the current location and all parents as
+required. It does nothing if the directory already exists.
 
 - **[R]** `target`: This option, as the name implies, specifies the name of the
   target directory to be created. Keep in mind that this option is required.
