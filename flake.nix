@@ -1,3 +1,9 @@
+# WARNING: This flake is for development purposes only. Do not attempt
+# to build arara with it (see #113), it is broken in a currently-won't-fix
+# status, although you are welcome to provide us with a working Nix build.
+# If you want to build arara, please use gradle as documented. The Nix
+# development shell will pull in all relevant packages for your build
+# environment.
 {
   description = "arara - the cool TeX automation tool";
 
