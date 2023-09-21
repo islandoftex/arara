@@ -33,5 +33,5 @@ data class DirectiveFetchingHooks(
     val buildDirective: (String, Map<String, Any>, DirectiveConditional, List<Int>) -> Directive = {
             _, _, _, _ ->
         TODO("directives can't be built by default")
-    }
+    },
 )

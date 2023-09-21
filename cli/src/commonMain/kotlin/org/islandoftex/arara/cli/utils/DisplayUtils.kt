@@ -49,7 +49,7 @@ object DisplayUtils {
         listOf(
             LanguageController.messages.INFO_LABEL_ON_SUCCESS,
             LanguageController.messages.INFO_LABEL_ON_FAILURE,
-            LanguageController.messages.INFO_LABEL_ON_ERROR
+            LanguageController.messages.INFO_LABEL_ON_ERROR,
         ).map { it.length }.maxOrNull()!!
     }
 
@@ -100,10 +100,11 @@ object DisplayUtils {
      * @param task Task name.
      */
     private fun buildShortEntry(name: String, task: String) {
-        val result = if (longestMatch >= outputWidth)
+        val result = if (longestMatch >= outputWidth) {
             shortenedLongestMatch
-        else
+        } else {
             longestMatch
+        }
         val space = outputWidth - result - 1
         val line = "($name) $task ".abbreviate(space - "... ".length)
         print(line.padEnd(space, '.') + " ")
@@ -129,7 +130,7 @@ object DisplayUtils {
                 } else {
                     "\n" + (" " + getResult(value))
                         .padStart(outputWidth, '-')
-                }
+                },
             )
         }
     }
@@ -173,7 +174,7 @@ object DisplayUtils {
         println(displaySeparator())
         println(
             "($name) $task"
-                .abbreviate(outputWidth)
+                .abbreviate(outputWidth),
         )
         println(displaySeparator())
     }
@@ -202,8 +203,9 @@ object DisplayUtils {
     fun printException(exception: AraraException) {
         displayException = true
 
-        if (displayResult)
+        if (displayResult) {
             println()
+        }
         if (displayLine) {
             if (!isDryRunMode) {
                 println(
@@ -212,17 +214,18 @@ object DisplayUtils {
                     } else {
                         (" " + LanguageController.messages.INFO_LABEL_ON_ERROR)
                             .padStart(outputWidth, '-')
-                    }
+                    },
                 )
                 println()
             }
         }
         val text = (
-            if (exception.hasException())
+            if (exception.hasException()) {
                 exception.message + " " + LanguageController.messages
                     .INFO_DISPLAY_EXCEPTION_MORE_DETAILS
-            else
+            } else {
                 exception.message
+            }
             ) ?: "EXCEPTION PROVIDES NO MESSAGE"
         // TODO: check null handling
         logger.error { text }
@@ -243,10 +246,11 @@ object DisplayUtils {
      * @return The string representation.
      */
     private fun getResult(value: Boolean): String {
-        return if (value)
+        return if (value) {
             LanguageController.messages.INFO_LABEL_ON_SUCCESS
-        else
+        } else {
             LanguageController.messages.INFO_LABEL_ON_FAILURE
+        }
     }
 
     /**
@@ -263,14 +267,16 @@ object DisplayUtils {
      * @param authors The list of authors.
      */
     fun printAuthors(authors: List<String>) {
-        val line = if (authors.size == 1)
+        val line = if (authors.size == 1) {
             LanguageController.messages.INFO_LABEL_AUTHOR
-        else
+        } else {
             LanguageController.messages.INFO_LABEL_AUTHORS
-        val text = if (authors.isEmpty())
+        }
+        val text = if (authors.isEmpty()) {
             LanguageController.messages.INFO_LABEL_NO_AUTHORS
-        else
+        } else {
             authors.joinToString(", ") { it.trim() }
+        }
         printWrapped("$line $text")
     }
 
@@ -284,7 +290,7 @@ object DisplayUtils {
             printWrapped(
                 LanguageController.messages.INFO_LABEL_CONDITIONAL +
                     " (" + conditional.type + ") " +
-                    conditional.condition
+                    conditional.condition,
             )
         }
     }
@@ -298,8 +304,9 @@ object DisplayUtils {
     @Suppress("MagicNumber")
     internal fun byteSizeToString(size: Long): String {
         val conversionFactor = 1000.0
-        return if (size < conversionFactor) "$size B"
-        else
+        return if (size < conversionFactor) {
+            "$size B"
+        } else {
             (ln(size.toDouble()) / ln(conversionFactor)).toInt().let { exp ->
                 val baseSize = size / conversionFactor.pow(exp.toDouble())
                 val ones = baseSize.toInt()
@@ -309,9 +316,10 @@ object DisplayUtils {
                     Session.userInterfaceOptions.locale
                         .decimalSeparator.toString(),
                     tenths.toString(),
-                    "kMGTPE"[exp - 1].toString()
+                    "kMGTPE"[exp - 1].toString(),
                 )
             }
+        }
     }
 
     /**
@@ -320,8 +328,9 @@ object DisplayUtils {
      * @param seconds The elapsed seconds.
      */
     fun printTime(seconds: Double) {
-        if (displayLine || displayException)
+        if (displayLine || displayException) {
             println()
+        }
 
         val secondDuration = Duration.seconds(seconds)
         val text = LanguageController.messages.INFO_DISPLAY_EXECUTION_TIME
@@ -331,8 +340,8 @@ object DisplayUtils {
                     Session.userInterfaceOptions.locale
                         .decimalSeparator.toString(),
                     (secondDuration - Duration.seconds(secondDuration.inWholeSeconds))
-                        .inWholeMilliseconds.toString()
-                )
+                        .inWholeMilliseconds.toString(),
+                ),
             )
         logger.info { text }
         printWrapped(text)
@@ -344,7 +353,7 @@ object DisplayUtils {
     private fun displayDetailsLine() = println(
         (LanguageController.messages.INFO_LABEL_ON_DETAILS + " ")
             .abbreviate(outputWidth)
-            .padEnd(outputWidth, '-')
+            .padEnd(outputWidth, '-'),
     )
 
     /**

@@ -20,17 +20,20 @@ class InterpreterTest : ShouldSpec({
             .normalize() / "halt.tex"
         val haltDirective = Directives.extractDirectives(
             listOf("% arara: halt"),
-            false, texFile
+            false,
+            texFile,
         ).single().run {
             DirectiveImpl(
-                identifier, parameters.plus("reference" to filePath.toString()),
-                conditional, lineNumbers
+                identifier,
+                parameters.plus("reference" to filePath.toString()),
+                conditional,
+                lineNumbers,
             )
         }
 
         Interpreter(
             ExecutionOptions(rulePaths = setOf(rulePath)),
-            ProjectFile(filePath, texFile), filePath.parent
+            ProjectFile(filePath, texFile), filePath.parent,
         )
             .execute(haltDirective).exitCode shouldBe 0
     }
@@ -41,17 +44,20 @@ class InterpreterTest : ShouldSpec({
         val filePath = MPPPath(rulePath / "halt-error.tex")
         val haltDirective = Directives.extractDirectives(
             listOf("% arara: halt"),
-            false, texFile
+            false,
+            texFile,
         ).single().run {
             DirectiveImpl(
-                identifier, parameters.plus("reference" to filePath.toString()),
-                conditional, lineNumbers
+                identifier,
+                parameters.plus("reference" to filePath.toString()),
+                conditional,
+                lineNumbers,
             )
         }
 
         Interpreter(
             ExecutionOptions(rulePaths = setOf(rulePath)),
-            ProjectFile(filePath, texFile), rulePath
+            ProjectFile(filePath, texFile), rulePath,
         )
             .execute(haltDirective).exitCode shouldNotBe 0
     }

@@ -35,10 +35,11 @@ class DSLRuleArgument<T>(val identifier: String) {
     fun processor(fn: RuleMethods.(T) -> Any) {
         processor = { it, _ ->
             val result = fn(RuleMethods, it)
-            if (result is List<*>)
+            if (result is List<*>) {
                 result.map { it.toString() }
-            else
+            } else {
                 listOf(it.toString())
+            }
         }
     }
 
@@ -49,8 +50,10 @@ class DSLRuleArgument<T>(val identifier: String) {
      */
     fun toRuleArgument(): RuleArgument<T> {
         return org.islandoftex.arara.dsl.rules.RuleArgument(
-            identifier, isRequired = required, defaultValue = defaultValue,
-            processor = processor
+            identifier,
+            isRequired = required,
+            defaultValue = defaultValue,
+            processor = processor,
         )
     }
 }

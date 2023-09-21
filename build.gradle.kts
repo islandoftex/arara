@@ -26,7 +26,7 @@ if (!project.hasProperty("jobToken")) {
     logger.warn(
         "Will be unable to publish (jobToken missing)\n" +
             "Ignore this warning if you are not running the publish task " +
-            "for the GitLab package repository."
+            "for the GitLab package repository.",
     )
 }
 
@@ -74,7 +74,7 @@ spotless {
             "lua/build.gradle.kts",
             "mvel/build.gradle.kts",
             "kotlin-dsl/build.gradle.kts",
-            "cli/build.gradle.kts"
+            "cli/build.gradle.kts",
         )
         targetExclude("src/test/**/*.kts")
         ktlint()
@@ -90,7 +90,7 @@ spotless {
             "mvel/src/**/*.kt",
             "kotlin-dsl/src/**/*.kt",
             "cli/src/**/*.kt",
-            "buildSrc/src/**/*.kt"
+            "buildSrc/src/**/*.kt",
         )
         targetExclude("src/test/**/*.kts")
         ktlint()
@@ -103,21 +103,23 @@ spotless {
 
 detekt {
     allRules = false
-    source = files(
-        "api/src/commonMain/kotlin",
-        "api/src/jvmMain/kotlin",
-        "core/src/commonMain/kotlin",
-        "core/src/jvmMain/kotlin",
-        "lua/src/commonMain/kotlin",
-        "mvel/src/commonMain/kotlin",
-        "mvel/src/jvmMain/kotlin",
-        "kotlin-dsl/src/main/kotlin",
-        "cli/src/commonMain/kotlin",
-        "cli/src/jvmMain/kotlin",
-        "buildSrc/src/main/kotlin"
+    source.from(
+        files(
+            "api/src/commonMain/kotlin",
+            "api/src/jvmMain/kotlin",
+            "core/src/commonMain/kotlin",
+            "core/src/jvmMain/kotlin",
+            "lua/src/commonMain/kotlin",
+            "mvel/src/commonMain/kotlin",
+            "mvel/src/jvmMain/kotlin",
+            "kotlin-dsl/src/main/kotlin",
+            "cli/src/commonMain/kotlin",
+            "cli/src/jvmMain/kotlin",
+            "buildSrc/src/main/kotlin",
+        ),
     )
     buildUponDefaultConfig = true
-    config = files("detekt-config.yml")
+    config.from(files("detekt-config.yml"))
 }
 
 tasks.register("assembleCTANSourceZip", SourceZipBuilderTask::class.java)
@@ -210,8 +212,11 @@ subprojects {
                 testLogging {
                     exceptionFormat = TestExceptionFormat.FULL
                     events(
-                        TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR,
-                        TestLogEvent.SKIPPED, TestLogEvent.PASSED, TestLogEvent.FAILED
+                        TestLogEvent.STANDARD_OUT,
+                        TestLogEvent.STANDARD_ERROR,
+                        TestLogEvent.SKIPPED,
+                        TestLogEvent.PASSED,
+                        TestLogEvent.FAILED,
                     )
                 }
             }

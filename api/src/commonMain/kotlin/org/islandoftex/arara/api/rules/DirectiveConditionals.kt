@@ -53,5 +53,5 @@ public enum class DirectiveConditionalType {
      * result is true, and the process is repeated while the result still
      * holds true.
      */
-    WHILE
+    WHILE,
 }

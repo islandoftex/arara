@@ -15,7 +15,7 @@ class LanguageControllerTest {
             MPPLocale("it"),
             MPPLocale("nl"),
             MPPLocale("en-QN"),
-            MPPLocale("pt-BR")
+            MPPLocale("pt-BR"),
         ).forEach {
             LanguageController.loadMessagesFor(it)
             assertEquals(LanguageController.messages.providedLocale, it)

@@ -28,7 +28,7 @@ data class Database(
      * the key is the absolute canonical file and the value
      * is its corresponding CRC32 hash.
      */
-    private val map: MutableMap<String, Long> = mutableMapOf()
+    private val map: MutableMap<String, Long> = mutableMapOf(),
 ) : Database {
     /**
      * Check whether the database contains a file.
@@ -71,13 +71,14 @@ data class Database(
     @Throws(NoSuchElementException::class)
     override fun remove(path: MPPPath) {
         val normalPath = path.normalize().toString()
-        if (normalPath in map)
+        if (normalPath in map) {
             map.remove(normalPath)
-        else
+        } else {
             throw NoSuchElementException(
                 "Attempt to remove non-existent path " +
-                    "from database."
+                    "from database.",
             )
+        }
     }
 
     /**
@@ -98,7 +99,7 @@ data class Database(
             throw AraraException(
                 LanguageController.messages.ERROR_SAVE_COULD_NOT_SAVE_XML
                     .formatString(path.fileName),
-                it
+                it,
             )
         }
     }
@@ -120,19 +121,20 @@ data class Database(
                     val text = runBlockingNoJs {
                         localVfs(path.normalize().toString()).readString()
                     }
-                    if (!text.startsWith("!database"))
+                    if (!text.startsWith("!database")) {
                         throw AraraException("Database should start with !database")
+                    }
                     Yaml.Default.decodeFromString(
                         serializer(),
                         text.lines()
-                            .drop(1).joinToString("\n")
+                            .drop(1).joinToString("\n"),
                     )
                 }.getOrElse {
                     throw AraraException(
                         LanguageController
                             .messages.ERROR_LOAD_COULD_NOT_LOAD_XML
                             .formatString(path.fileName),
-                        it
+                        it,
                     )
                 }
             }

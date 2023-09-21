@@ -82,7 +82,7 @@ object RuleMethods {
         } else {
             throw AraraExceptionWithHeader(
                 LanguageController.messages
-                    .ERROR_BASENAME_NOT_A_FILE.format(file.fileName)
+                    .ERROR_BASENAME_NOT_A_FILE.format(file.fileName),
             )
         }
 
@@ -111,7 +111,7 @@ object RuleMethods {
         } else {
             throw AraraExceptionWithHeader(
                 LanguageController.messages
-                    .ERROR_FILETYPE_NOT_A_FILE.format(file.fileName)
+                    .ERROR_FILETYPE_NOT_A_FILE.format(file.fileName),
             )
         }
 
@@ -191,7 +191,7 @@ object RuleMethods {
     fun getCommand(elements: List<String>): Command =
         org.islandoftex.arara.core.session.Command(
             elements,
-            LinearExecutor.currentProject!!.workingDirectory
+            LinearExecutor.currentProject!!.workingDirectory,
         )
 
     /**
@@ -205,7 +205,7 @@ object RuleMethods {
         getCommand(
             InputHandling.flatten(elements.filterNotNull())
                 .map { it.toString() }
-                .filter { it.isNotEmpty() }
+                .filter { it.isNotEmpty() },
         )
 
     /**
@@ -219,12 +219,12 @@ object RuleMethods {
     @JvmStatic
     fun getCommandWithWorkingDirectory(
         path: String,
-        vararg elements: Any?
+        vararg elements: Any?,
     ): Command = org.islandoftex.arara.core.session.Command(
         InputHandling.flatten(elements.filterNotNull())
             .map { it.toString() }
             .filter { it.isNotEmpty() },
-        MPPPath(path)
+        MPPPath(path),
     )
 
     /**
@@ -238,12 +238,12 @@ object RuleMethods {
     @JvmStatic
     fun getCommandWithWorkingDirectory(
         file: MPPPath,
-        vararg elements: Any?
+        vararg elements: Any?,
     ): Command = org.islandoftex.arara.core.session.Command(
         InputHandling.flatten(elements.filterNotNull())
             .map { it.toString() }
             .filter { it.isNotEmpty() },
-        file
+        file,
     )
 
     /**
@@ -257,9 +257,10 @@ object RuleMethods {
     @JvmStatic
     fun getCommandWithWorkingDirectory(
         path: String,
-        elements: List<String>
+        elements: List<String>,
     ): Command = org.islandoftex.arara.core.session.Command(
-        elements, MPPPath(path)
+        elements,
+        MPPPath(path),
     )
 
     /**
@@ -273,7 +274,7 @@ object RuleMethods {
     @JvmStatic
     fun getCommandWithWorkingDirectory(
         file: MPPPath,
-        elements: List<String>
+        elements: List<String>,
     ): Command = org.islandoftex.arara.core.session.Command(elements, file)
 
     /**
@@ -298,7 +299,7 @@ object RuleMethods {
         width: Int = dialogs.defaultWidth,
         type: Int,
         title: String,
-        text: String
+        text: String,
     ) = dialogs.showMessage(width, type, title, text)
 
     /**
@@ -312,13 +313,14 @@ object RuleMethods {
      */
     @JvmStatic
     fun unsafelyExecuteSystemCommand(command: Command): Pair<Int, String> =
-        if (LinearExecutor.executionOptions.executionMode == ExecutionMode.SAFE_RUN)
+        if (LinearExecutor.executionOptions.executionMode == ExecutionMode.SAFE_RUN) {
             throw SafeRunViolationException(
                 "In safe mode, rules are not allowed to execute " +
-                    "arbitrary system commands within a step of execution."
+                    "arbitrary system commands within a step of execution.",
             )
-        else
+        } else {
             Environment.executeSystemCommand(command)
+        }
 
     /**
      * List all files from the provided directory according to the list of
@@ -334,12 +336,12 @@ object RuleMethods {
     fun listFilesByExtensions(
         directory: MPPPath,
         extensions: List<String>,
-        recursive: Boolean
+        recursive: Boolean,
     ): List<MPPPath> =
         FileSearching.listFilesByExtensions(
             directory,
             extensions,
-            recursive
+            recursive,
         )
 
     /**
@@ -356,7 +358,7 @@ object RuleMethods {
     fun listFilesByExtensions(
         path: String,
         extensions: List<String>,
-        recursive: Boolean
+        recursive: Boolean,
     ): List<MPPPath> =
         listFilesByExtensions(MPPPath(path), extensions, recursive)
 
@@ -373,12 +375,12 @@ object RuleMethods {
     fun listFilesByPatterns(
         directory: MPPPath,
         patterns: List<String>,
-        recursive: Boolean
+        recursive: Boolean,
     ): List<MPPPath> =
         FileSearching.listFilesByPatterns(
             directory,
             patterns,
-            recursive
+            recursive,
         )
 
     /**
@@ -394,7 +396,7 @@ object RuleMethods {
     fun listFilesByPatterns(
         path: String,
         patterns: List<String>,
-        recursive: Boolean
+        recursive: Boolean,
     ): List<MPPPath> =
         listFilesByPatterns(MPPPath(path), patterns, recursive)
 
@@ -480,7 +482,7 @@ object RuleMethods {
     fun isSubdirectory(directory: MPPPath): Boolean =
         FileHandling.isSubDirectory(
             directory,
-            LinearExecutor.currentProject!!.workingDirectory
+            LinearExecutor.currentProject!!.workingDirectory,
         )
 
     /**

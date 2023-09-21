@@ -24,7 +24,7 @@ object InputHandling {
         return if (!yes.union(no).contains(value.lowercase())) {
             throw AraraException(
                 LanguageController.messages.ERROR_CHECKBOOLEAN_NOT_VALID_BOOLEAN
-                    .formatString(value)
+                    .formatString(value),
             )
         } else {
             yes.contains(value.lowercase())
@@ -40,9 +40,10 @@ object InputHandling {
     // TODO: check nullity
     fun flatten(list: List<*>): List<Any> =
         list.flatMap { item ->
-            if (item is List<*>)
+            if (item is List<*>) {
                 flatten(item)
-            else
+            } else {
                 listOf(item as Any)
+            }
         }
 }

@@ -6,7 +6,7 @@ package org.islandoftex.arara.api.localization
 @RequiresOptIn(
     "arara's messages are not considered stable API. Only " +
         "use them in testing scenarios and arara's core projects.",
-    RequiresOptIn.Level.WARNING
+    RequiresOptIn.Level.WARNING,
 )
 internal annotation class AraraMessages
 
@@ -104,5 +104,5 @@ public open class Messages(
     public val LOG_INFO_SYSTEM_COMMAND: String = "System command: %s",
     public val LOG_INFO_TASK_RESULT: String = "Task result:",
     public val LOG_INFO_VALIDATED_DIRECTIVES: String = "All directives were validated. We are good to go.",
-    public val LOG_INFO_WELCOME_MESSAGE: String = "Welcome to arara %s!"
+    public val LOG_INFO_WELCOME_MESSAGE: String = "Welcome to arara %s!",
 )

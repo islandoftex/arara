@@ -26,7 +26,8 @@ object ConditionalMethods {
     @JvmStatic
     @Throws(AraraException::class)
     fun exists(extension: String): Boolean = FileHandling.changeExtension(
-        LinearExecutor.currentFile!!.path, extension
+        LinearExecutor.currentFile!!.path,
+        extension,
     ).exists
 
     /**
@@ -53,8 +54,9 @@ object ConditionalMethods {
     @Throws(AraraException::class)
     fun changed(extension: String): Boolean = changed(
         FileHandling.changeExtension(
-            LinearExecutor.currentFile!!.path, extension
-        )
+            LinearExecutor.currentFile!!.path,
+            extension,
+        ),
     )
 
     /**
@@ -100,7 +102,7 @@ object ConditionalMethods {
     fun changed(filename: MPPPath): Boolean = FileHandling.hasChanged(
         filename,
         LinearExecutor.currentProject!!.workingDirectory /
-            LinearExecutor.executionOptions.databaseName
+            LinearExecutor.executionOptions.databaseName,
     )
 
     /**
@@ -128,9 +130,10 @@ object ConditionalMethods {
     @Throws(AraraException::class)
     fun found(extension: String, regex: String): Boolean = found(
         FileHandling.changeExtension(
-            LinearExecutor.currentFile!!.path, extension
+            LinearExecutor.currentFile!!.path,
+            extension,
         ),
-        regex
+        regex,
     )
 
     /**
@@ -173,7 +176,7 @@ object ConditionalMethods {
         type: Int,
         title: String,
         text: String,
-        vararg buttons: Any
+        vararg buttons: Any,
     ): Int = dialogs.showOptions(width, type, title, text, buttons)
 
     /**
@@ -191,7 +194,7 @@ object ConditionalMethods {
         width: Int = dialogs.defaultWidth,
         type: Int,
         title: String,
-        text: String
+        text: String,
     ): String = dialogs.showInput(width, type, title, text)
 
     /**
@@ -211,7 +214,7 @@ object ConditionalMethods {
         type: Int,
         title: String,
         text: String,
-        vararg elements: Any
+        vararg elements: Any,
     ): Int = dialogs.showDropdown(width, type, title, text, elements)
 
     /**

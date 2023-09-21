@@ -28,7 +28,7 @@ object MvelState {
                 "isEmpty", "isNotEmpty", "isTrue", "isFalse",
                 "isWindows", "isLinux", "isMac", "isUnix", "isCygwin",
                 "checkClass", "isString", "isList", "isMap", "isBoolean",
-                "getOrNull"
+                "getOrNull",
             ).forEach { name: String ->
                 map[name] = methodsKotlin.first { it.name == name }
             }
@@ -47,7 +47,7 @@ object MvelState {
             listOf(
                 "exists", "missing", "changed", "unchanged",
                 "found", "toFile", "showDropdown", "showInput",
-                "showOptions", "currentFile", "loadClass", "loadObject"
+                "showOptions", "currentFile", "loadClass", "loadObject",
             ).forEach { name: String ->
                 map[name] = methodsKotlin.first { it.name == name }
             }

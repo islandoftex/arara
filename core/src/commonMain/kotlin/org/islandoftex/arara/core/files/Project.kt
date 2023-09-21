@@ -9,5 +9,5 @@ data class Project(
     override val name: String,
     override val workingDirectory: MPPPath,
     override val files: Set<ProjectFile>,
-    override val dependencies: Set<String> = setOf()
+    override val dependencies: Set<String> = setOf(),
 ) : Project

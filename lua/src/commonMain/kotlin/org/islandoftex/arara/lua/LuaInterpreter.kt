@@ -21,14 +21,14 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
     private fun dumpLuaValue(value: LuaValue): String {
         return if (value is LuaTable) {
             "{${
-            value.keys().joinToString(", ") { key ->
-                val k = if (key is LuaNumber) {
-                    key.toString()
-                } else {
-                    "\"${key}\""
+                value.keys().joinToString(", ") { key ->
+                    val k = if (key is LuaNumber) {
+                        key.toString()
+                    } else {
+                        "\"${key}\""
+                    }
+                    "[$k] = ${dumpLuaValue(value[key])}"
                 }
-                "[$k] = ${dumpLuaValue(value[key])}"
-            }
             }} "
         } else {
             value.toString()
@@ -98,7 +98,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
                         ?.let { fileSpec ->
                             extractProjectFile(
                                 path,
-                                fileSpec as LuaTable
+                                fileSpec as LuaTable,
                             )
                         }
                 }
@@ -142,7 +142,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         }
             ?: throw ProjectParseException(
                 "The return type of the Lua project specification has to be a table " +
-                    "(project or list of projects)."
+                    "(project or list of projects).",
             )
 
         // try extracting a single project from the Lua result and if that

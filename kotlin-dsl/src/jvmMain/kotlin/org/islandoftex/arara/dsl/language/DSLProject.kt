@@ -38,7 +38,7 @@ class DSLProject(private val name: String) {
     fun file(name: String, configure: DSLProjectFile.() -> Unit = {}) =
         files.add(
             DSLProjectFile(Paths.get(name))
-                .apply(configure).toProjectFile()
+                .apply(configure).toProjectFile(),
         )
 
     /**
@@ -63,7 +63,7 @@ class DSLProject(private val name: String) {
     fun file(file: File, configure: DSLProjectFile.() -> Unit) =
         files.add(
             DSLProjectFile(file.toPath())
-                .apply(configure).toProjectFile()
+                .apply(configure).toProjectFile(),
         )
 
     /**
@@ -110,6 +110,9 @@ class DSLProject(private val name: String) {
      * @return A [Project] resembling the user's configuration.
      */
     internal fun toProject(): Project = org.islandoftex.arara.core.files.Project(
-        name, workingDirectory, files, dependencyList
+        name,
+        workingDirectory,
+        files,
+        dependencyList,
     )
 }

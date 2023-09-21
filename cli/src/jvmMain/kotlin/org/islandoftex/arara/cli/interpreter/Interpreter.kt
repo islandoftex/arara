@@ -35,7 +35,7 @@ import org.mvel2.templates.TemplateRuntime
 class Interpreter(
     private val executionOptions: ExecutionOptions,
     currentFile: ProjectFile,
-    private val workingDirectory: MPPPath
+    private val workingDirectory: MPPPath,
 ) {
     private val logger = KotlinLogging.logger { }
 
@@ -61,11 +61,11 @@ class Interpreter(
                 listOf(
                     InterpreterUtils.construct(
                         path, directive.identifier,
-                        RuleFormat.MVEL, workingDirectory
+                        RuleFormat.MVEL, workingDirectory,
                     ),
                     InterpreterUtils.construct(
                         path, directive.identifier,
-                        RuleFormat.KOTLIN_DSL, workingDirectory
+                        RuleFormat.KOTLIN_DSL, workingDirectory,
                     ),
                     // this lookup adds support for the rules distributed with
                     // arara (in TL names should be unique, hence we avoided
@@ -73,8 +73,8 @@ class Interpreter(
                     // from version 6 on)
                     InterpreterUtils.construct(
                         path, "arara-rule-" + directive.identifier,
-                        RuleFormat.MVEL, workingDirectory
-                    )
+                        RuleFormat.MVEL, workingDirectory,
+                    ),
                 )
             }.firstOrNull { it.exists } ?: throw AraraException(
                 LanguageController.messages.ERROR_INTERPRETER_RULE_NOT_FOUND.format(
@@ -82,8 +82,8 @@ class Interpreter(
                     directive.identifier,
                     paths.joinToString("; ", "(", ")") {
                         it.normalize().toString()
-                    }
-                )
+                    },
+                ),
             )
         }
 
@@ -99,7 +99,7 @@ class Interpreter(
     private fun runBoolean(
         value: Boolean,
         conditional: DirectiveConditional,
-        authors: List<String>
+        authors: List<String>,
     ): Boolean = value.also {
         logger.info {
             LanguageController.messages.LOG_INFO_BOOLEAN_MODE.format(it)
@@ -109,7 +109,7 @@ class Interpreter(
             DisplayUtils.printAuthors(authors)
             DisplayUtils.printWrapped(
                 LanguageController.messages
-                    .INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE.format(it)
+                    .INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE.format(it),
             )
             DisplayUtils.printConditional(conditional)
         }
@@ -131,7 +131,7 @@ class Interpreter(
         command: Command,
         conditional: DirectiveConditional,
         authors: List<String>,
-        ruleCommandExitValue: String?
+        ruleCommandExitValue: String?,
     ): Boolean {
         logger.info {
             LanguageController.messages.LOG_INFO_SYSTEM_COMMAND.format(command)
@@ -144,13 +144,13 @@ class Interpreter(
                 val context = mapOf<String, Any>("value" to code)
                 TemplateRuntime.eval(
                     "@{ " + (ruleCommandExitValue ?: "value == 0") + " }",
-                    context
+                    context,
                 )
             } catch (exception: RuntimeException) {
                 throw AraraExceptionWithHeader(
                     LanguageController.messages
                         .ERROR_INTERPRETER_EXIT_RUNTIME_ERROR,
-                    exception
+                    exception,
                 )
             }
 
@@ -159,14 +159,14 @@ class Interpreter(
             } else {
                 throw AraraExceptionWithHeader(
                     LanguageController.messages
-                        .ERROR_INTERPRETER_WRONG_EXIT_CLOSURE_RETURN
+                        .ERROR_INTERPRETER_WRONG_EXIT_CLOSURE_RETURN,
                 )
             }
         } else {
             DisplayUtils.printAuthors(authors)
             DisplayUtils.printWrapped(
                 LanguageController.messages
-                    .INFO_INTERPRETER_DRYRUN_MODE_SYSTEM_COMMAND.format(command)
+                    .INFO_INTERPRETER_DRYRUN_MODE_SYSTEM_COMMAND.format(command),
             )
             DisplayUtils.printConditional(conditional)
         }
@@ -199,36 +199,39 @@ class Interpreter(
         command: SerialRuleCommand,
         conditional: DirectiveConditional,
         rule: Rule,
-        parameters: Map<String, Any>
+        parameters: Map<String, Any>,
     ) = try {
         resultToList(TemplateRuntime.eval(command.commandString!!, parameters))
     } catch (exception: RuntimeException) {
         throw AraraExceptionWithHeader(
             LanguageController
                 .messages.ERROR_INTERPRETER_COMMAND_RUNTIME_ERROR,
-            exception
+            exception,
         )
     }.filter { it.toString().isNotBlank() }
         .fold(ExecutionStatus.Processing() as ExecutionStatus) { _, current ->
             DisplayUtils.printEntry(
                 rule.displayName!!,
                 command.name
-                    ?: LanguageController.messages.INFO_LABEL_UNNAMED_TASK
+                    ?: LanguageController.messages.INFO_LABEL_UNNAMED_TASK,
             )
 
             val success = when (current) {
                 is Boolean -> runBoolean(
-                    current, conditional,
-                    rule.authors
+                    current,
+                    conditional,
+                    rule.authors,
                 )
                 is Command -> runCommand(
-                    current, conditional,
-                    rule.authors, command.exit
+                    current,
+                    conditional,
+                    rule.authors,
+                    command.exit,
                 )
                 else ->
                     throw AraraExceptionWithHeader(
                         LanguageController
-                            .messages.ERROR_INTERPRETER_WRONG_RETURN_TYPE
+                            .messages.ERROR_INTERPRETER_WRONG_RETURN_TYPE,
                     )
             }
 
@@ -239,15 +242,15 @@ class Interpreter(
                         LanguageController.messages
                             .ERROR_INTERPRETER_USER_REQUESTED_HALT,
                         ExecutionStatus.FinishedWithCode(
-                            Session[haltKey].toString().toInt()
-                        )
+                            Session[haltKey].toString().toInt(),
+                        ),
                     )
                 executionOptions.haltOnErrors && !success ->
                     throw HaltExpectedException(
                         LanguageController
                             .messages.ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT
                             .format(command.name),
-                        ExecutionStatus.ExternalCallFailed()
+                        ExecutionStatus.ExternalCallFailed(),
                     )
                 success -> ExecutionStatus.Processing()
                 else -> ExecutionStatus.ExternalCallFailed()
@@ -266,14 +269,14 @@ class Interpreter(
     fun execute(directive: Directive): ExecutionStatus {
         logger.info {
             LanguageController.messages.LOG_INFO_INTERPRET_RULE.format(
-                directive.identifier
+                directive.identifier,
             )
         }
 
         val file = getRule(directive, workingDirectory)
         logger.info {
             LanguageController.messages.LOG_INFO_RULE_LOCATION.format(
-                file.parent
+                file.parent,
             )
         }
 
@@ -282,9 +285,11 @@ class Interpreter(
         val parameters = parseArguments(rule, directive).plus(MvelState.ruleMethods)
         val evaluator = DirectiveConditionalEvaluator(executionOptions)
         val available =
-            if (InterpreterUtils.runPriorEvaluation(directive.conditional))
+            if (InterpreterUtils.runPriorEvaluation(directive.conditional)) {
                 evaluator.evaluate(directive.conditional)
-            else true
+            } else {
+                true
+            }
 
         return when {
             !available ->
@@ -302,14 +307,14 @@ class Interpreter(
                     do {
                         retValue = rule.commands.fold(
                             ExecutionStatus.Processing()
-                                as ExecutionStatus
+                                as ExecutionStatus,
                         ) { _, command ->
                             executeCommand(
                                 // TODO: remove cast
                                 command as SerialRuleCommand,
                                 directive.conditional,
                                 rule,
-                                parameters
+                                parameters,
                             )
                         }
                     } while (evaluator.evaluate(directive.conditional))
@@ -326,7 +331,7 @@ class Interpreter(
                         LanguageController.messages.ERROR_RULE_IDENTIFIER_AND_PATH
                             .format(directive.identifier, file.parent.toString()) + " " +
                             e.message,
-                        e.exception ?: e
+                        e.exception ?: e,
                     )
                 }
             }
@@ -343,7 +348,7 @@ class Interpreter(
      */
     private fun getUnknownKeys(
         parameters: Map<String, Any>,
-        arguments: List<org.islandoftex.arara.api.rules.RuleArgument<*>>
+        arguments: List<org.islandoftex.arara.api.rules.RuleArgument<*>>,
     ): Set<String> {
         val found = parameters.keys
         val expected = arguments.map { it.identifier }
@@ -362,24 +367,24 @@ class Interpreter(
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(AraraException::class)
-    private fun parseArguments(rule: Rule, directive: Directive):
-        Map<String, Any> {
+    private fun parseArguments(rule: Rule, directive: Directive): Map<String, Any> {
         val unknown = getUnknownKeys(directive.parameters, rule.arguments)
             .minus("reference")
-        if (unknown.isNotEmpty())
+        if (unknown.isNotEmpty()) {
             throw AraraExceptionWithHeader(
                 LanguageController.messages
                     .ERROR_INTERPRETER_UNKNOWN_KEYS.format(
-                        unknown.joinToString(", ", "(", ")")
-                    )
+                        unknown.joinToString(", ", "(", ")"),
+                    ),
             )
+        }
 
         val resolvedArguments = mutableMapOf<String, Any>()
         resolvedArguments["reference"] = directive.parameters.getValue("reference")
 
         val context = mapOf(
             "parameters" to directive.parameters,
-            "reference" to directive.parameters.getValue("reference")
+            "reference" to directive.parameters.getValue("reference"),
         ).plus(MvelState.ruleMethods)
 
         rule.arguments.forEach { argument ->
@@ -387,7 +392,7 @@ class Interpreter(
                 argument as RuleArgument<Any?>,
                 directive.parameters.containsKey(argument.identifier),
                 context,
-                directive.parameters[argument.identifier]
+                directive.parameters[argument.identifier],
             )
         }
 
@@ -410,19 +415,21 @@ class Interpreter(
         argument: RuleArgument<Any?>,
         idInDirectiveParams: Boolean,
         context: Map<String, Any>,
-        parameterValue: Any?
+        parameterValue: Any?,
     ): List<*> {
-        if (argument.isRequired && !idInDirectiveParams)
+        if (argument.isRequired && !idInDirectiveParams) {
             throw AraraExceptionWithHeader(
                 LanguageController.messages.ERROR_INTERPRETER_ARGUMENT_IS_REQUIRED
-                    .format(argument.identifier)
+                    .format(argument.identifier),
             )
+        }
 
-        return if (idInDirectiveParams)
+        return if (idInDirectiveParams) {
             argument.processor(parameterValue, context)
-        else
+        } else {
             argument.defaultValue?.let { default ->
                 argument.processor(default, context)
             } ?: emptyList<String>()
+        }
     }
 }

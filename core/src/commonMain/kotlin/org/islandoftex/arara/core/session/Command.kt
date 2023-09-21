@@ -13,7 +13,7 @@ import org.islandoftex.arara.api.session.Command
  */
 data class Command(
     override val elements: List<String>,
-    override val workingDirectory: MPPPath? = null
+    override val workingDirectory: MPPPath? = null,
 ) : Command {
     /**
      * Provides a textual representation of the current command.

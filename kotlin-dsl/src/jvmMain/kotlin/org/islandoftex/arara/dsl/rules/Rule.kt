@@ -10,5 +10,5 @@ data class Rule(
     override val displayName: String?,
     override val authors: List<String>,
     override val commands: List<RuleCommand>,
-    override val arguments: List<RuleArgument<*>>
+    override val arguments: List<RuleArgument<*>>,
 ) : Rule

@@ -14,11 +14,11 @@ class ProjectGraphTest {
                 addAll(
                     listOf(
                         Project("Test", MPPPath(""), setOf(), setOf("Test 2")),
-                        Project("Test 2", MPPPath(""), setOf())
-                    )
+                        Project("Test 2", MPPPath(""), setOf()),
+                    ),
                 )
             }.kahn().map { it.name },
-            listOf("Test 2", "Test")
+            listOf("Test 2", "Test"),
         )
     }
 }

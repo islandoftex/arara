@@ -47,7 +47,7 @@ object DirectiveUtils {
                     identifier = id,
                     parameters = parameterMap,
                     conditional = conditional,
-                    lineNumbers = lines
+                    lineNumbers = lines,
                 )
             },
             buildDirective = { id, parameters, conditional, lines ->
@@ -55,9 +55,9 @@ object DirectiveUtils {
                     identifier = id,
                     parameters = parameters,
                     conditional = conditional,
-                    lineNumbers = lines
+                    lineNumbers = lines,
                 )
-            }
+            },
         )
     }
 
@@ -73,10 +73,11 @@ object DirectiveUtils {
     @Throws(AraraException::class)
     private fun getParameters(
         text: String?,
-        numbers: List<Int>
+        numbers: List<Int>,
     ): Map<String, Any> {
-        if (text == null)
+        if (text == null) {
             return mapOf()
+        }
 
         val map = kotlin.runCatching {
             Yaml.Default.decodeFromString<Map<String, Any>>(text)
@@ -84,14 +85,14 @@ object DirectiveUtils {
             throw AraraException(
                 LanguageController.messages.ERROR_VALIDATE_YAML_EXCEPTION
                     .format(
-                        numbers.joinToString(", ", "(", ")")
+                        numbers.joinToString(", ", "(", ")"),
                     ),
-                it
+                it,
             )
         }
 
         return if ("options" in map.keys && LinearExecutor.executionOptions
-            .executionMode != ExecutionMode.SAFE_RUN
+                .executionMode != ExecutionMode.SAFE_RUN
         ) {
             // perform directive interpolation by applying MVEL methods to the
             // directive arguments
@@ -108,13 +109,15 @@ object DirectiveUtils {
                                 throw AraraException(
                                     LanguageController.messages
                                         .ERROR_EXTRACTOR_INTERPOLATION_FAILURE,
-                                    it
+                                    it,
                                 )
                             }
                         } ?: emptyList()
-                    )
+                    ),
             )
-        } else map
+        } else {
+            map
+        }
     }
 
     /**
@@ -129,22 +132,23 @@ object DirectiveUtils {
     @Throws(AraraException::class)
     fun process(
         file: ProjectFile,
-        directives: List<Directive>
+        directives: List<Directive>,
     ): List<Directive> =
         directives.flatMap { directive ->
             val parameters = directive.parameters
 
-            if (parameters.containsKey("reference"))
+            if (parameters.containsKey("reference")) {
                 throw AraraException(
                     LanguageController.messages.ERROR_VALIDATE_REFERENCE_IS_RESERVED
-                        .format(directive.lineNumbers.joinToString(", ", "(", ")"))
+                        .format(directive.lineNumbers.joinToString(", ", "(", ")")),
                 )
+            }
 
             if (parameters.containsKey("files")) {
                 Directives.replicateDirective(
                     parameters.getValue("files"),
                     parameters.minus("files"),
-                    directive
+                    directive,
                 )
             } else {
                 listOf(
@@ -152,8 +156,8 @@ object DirectiveUtils {
                         directive.identifier,
                         parameters.plus("reference" to file.path),
                         directive.conditional,
-                        directive.lineNumbers
-                    )
+                        directive.lineNumbers,
+                    ),
                 )
             }
         }.also { result ->
@@ -161,7 +165,7 @@ object DirectiveUtils {
                 """
                     ${LanguageController.messages.LOG_INFO_VALIDATED_DIRECTIVES}
                     ${DisplayUtils.displayOutputSeparator(
-                    LanguageController.messages.LOG_INFO_DIRECTIVES_BLOCK
+                    LanguageController.messages.LOG_INFO_DIRECTIVES_BLOCK,
                 )}
                     ${result.joinToString("\n")}
                     ${DisplayUtils.displaySeparator()}

@@ -13,5 +13,5 @@ enum class RuleFormat(val extension: String) {
     /**
      * The new and experimental Kotlin DSL format from version 6 on.
      */
-    KOTLIN_DSL("kts")
+    KOTLIN_DSL("kts"),
 }

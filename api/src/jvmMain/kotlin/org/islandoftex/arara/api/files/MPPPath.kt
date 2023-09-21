@@ -122,8 +122,9 @@ public actual class MPPPath {
         } else {
             // check component-wise
             otherComponents.forEachIndexed { i, element ->
-                if (element != components[i])
+                if (element != components[i]) {
                     return false
+                }
             }
             true
         }
@@ -137,7 +138,7 @@ public actual class MPPPath {
         // TODO: align with parent, check relative paths
         MPPPath(
             vfsFile.absolutePathInfo.normalize()
-                .takeIf { it.isNotBlank() } ?: "/"
+                .takeIf { it.isNotBlank() } ?: "/",
         )
 
     /**
@@ -170,10 +171,11 @@ public actual class MPPPath {
      * impossible.
      */
     public actual fun readLines(): List<String> = runBlockingNoJs {
-        if (isRegularFile)
+        if (isRegularFile) {
             vfsFile.readLines().toList()
-        else
+        } else {
             throw AraraIOException("Can only read lines from files.")
+        }
     }
 
     /**
@@ -182,10 +184,11 @@ public actual class MPPPath {
      * impossible.
      */
     public actual fun readText(): String = runBlockingNoJs {
-        if (isRegularFile)
+        if (isRegularFile) {
             vfsFile.readString()
-        else
+        } else {
             throw AraraIOException("Can only read text from files.")
+        }
     }
 
     /**
@@ -196,12 +199,13 @@ public actual class MPPPath {
     public actual fun writeText(text: String, append: Boolean): Unit =
         runBlockingNoJs {
             if (isRegularFile) {
-                val openMode = if (append)
+                val openMode = if (append) {
                     VfsOpenMode.APPEND
-                else
-                // if not appending choose the same open mode
-                // korio would use instead
+                } else {
+                    // if not appending choose the same open mode
+                    // korio would use instead
                     VfsOpenMode.CREATE_OR_TRUNCATE
+                }
                 vfsFile.vfs.open(vfsFile.absolutePath, openMode)
                     .use {
                         text.openAsync().copyTo(this)

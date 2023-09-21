@@ -13,10 +13,10 @@ open class DocumentationSourceZipBuilderTask : Zip() {
         description = "Create a documentation source ZIP as required by CTAN."
 
         inputs.dir(project.projectDir.resolve("website/public"))
-        outputs.files(project.buildDir.resolve("arara-${project.version}-docsrc.zip"))
+        outputs.files(project.layout.buildDirectory.file("arara-${project.version}-docsrc.zip").get().asFile)
         outputs.upToDateWhen { false }
 
-        archiveFileName.set(project.buildDir.resolve("arara-${project.version}-docsrc.zip").absolutePath)
+        archiveFileName.set(project.layout.buildDirectory.file("arara-${project.version}-docsrc.zip").get().asFile.absolutePath)
         from(project.projectDir.resolve("website/public"))
         exclude("build")
 

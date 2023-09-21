@@ -51,7 +51,7 @@ object Session : Session {
         } else {
             throw AraraException(
                 LanguageController.messages.ERROR_SESSION_OBTAIN_UNKNOWN_KEY
-                    .formatString(key)
+                    .formatString(key),
             )
         }
     }
@@ -82,7 +82,7 @@ object Session : Session {
         } else {
             throw AraraException(
                 LanguageController.messages.ERROR_SESSION_REMOVE_UNKNOWN_KEY
-                    .formatString(key)
+                    .formatString(key),
             )
         }
     }
@@ -113,7 +113,7 @@ object Session : Session {
      */
     fun updateEnvironmentVariables(
         additionFilter: (String) -> Boolean = { true },
-        removalFilter: (String) -> Boolean = { true }
+        removalFilter: (String) -> Boolean = { true },
     ) {
         // remove all current environment variables to clean up the session
         map.filterKeys { it.startsWith("environment:") }
@@ -123,7 +123,7 @@ object Session : Session {
         map.putAll(
             Environment.getAll()
                 .filterKeys(additionFilter)
-                .mapKeys { "environment:${it.key}" }
+                .mapKeys { "environment:${it.key}" },
         )
     }
 }

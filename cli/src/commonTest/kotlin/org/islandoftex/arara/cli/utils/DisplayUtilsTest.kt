@@ -15,7 +15,7 @@ class DisplayUtilsTest {
             800 to "800 B",
             1000 to "1.0 kB",
             1024 to "1.0 kB",
-            1000000 to "1.0 MB"
+            1000000 to "1.0 MB",
         ).forEach { (key, value) ->
             assertEquals(DisplayUtils.byteSizeToString(key.toLong()), value)
         }

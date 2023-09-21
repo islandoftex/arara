@@ -85,5 +85,5 @@ class DutchLanguage : Messages(
     LOG_INFO_SYSTEM_COMMAND = "Systeemopdracht: %s",
     LOG_INFO_TASK_RESULT = "Taakresultaat:",
     LOG_INFO_VALIDATED_DIRECTIVES = "Alle directives zijn gevalideerd, we kunnen beginnen.",
-    LOG_INFO_WELCOME_MESSAGE = "Welkom bij arara %s!"
+    LOG_INFO_WELCOME_MESSAGE = "Welkom bij arara %s!",
 )

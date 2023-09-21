@@ -65,7 +65,7 @@ object Environment {
         executeSystemCommand(
             // execute the Cygwin detection; we do not specify a working
             // directory because for the test it is irrelevant
-            Command(listOf("uname", "-s"))
+            Command(listOf("uname", "-s")),
         ).second.lowercase().startsWith("cygwin")
     }
 
@@ -78,7 +78,7 @@ object Environment {
         LINUX,
         MACOS,
         UNIX,
-        CYGWIN
+        CYGWIN,
     }
 
     /**
@@ -203,7 +203,7 @@ object Environment {
     fun executeSystemCommand(
         command: Command,
         silenceSystemOut: Boolean = true,
-        timeout: Duration = Duration.ZERO
+        timeout: Duration = Duration.ZERO,
     ): Pair<Int, String> = ByteArrayOutputStream().use { buffer ->
         ProcessExecutor(command.elements).runCatching {
             addDestroyer(ShutdownHookProcessDestroyer())

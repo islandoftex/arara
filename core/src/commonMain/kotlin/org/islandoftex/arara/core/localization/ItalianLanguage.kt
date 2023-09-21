@@ -85,5 +85,5 @@ class ItalianLanguage : Messages(
     LOG_INFO_SYSTEM_COMMAND = "Comando di sistema: %s",
     LOG_INFO_TASK_RESULT = "Risultato del compito:",
     LOG_INFO_VALIDATED_DIRECTIVES = "Tutte le direttive erano valide. Pronti a partire.",
-    LOG_INFO_WELCOME_MESSAGE = "Benvenuto in arara %s!"
+    LOG_INFO_WELCOME_MESSAGE = "Benvenuto in arara %s!",
 )

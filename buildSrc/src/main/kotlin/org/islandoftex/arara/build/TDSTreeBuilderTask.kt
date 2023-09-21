@@ -16,16 +16,16 @@ open class TDSTreeBuilderTask : DefaultTask() {
         // depend on shadow Jar input
         inputs.files(
             project.fileTree("cli/build/libs/")
-                .include("*-with-deps*.jar")
+                .include("*-with-deps*.jar"),
         )
         // depend on source zips as required by CTAN
-        inputs.file(project.buildDir.resolve("arara-${project.version}-src.zip"))
-        inputs.file(project.buildDir.resolve("arara-${project.version}-docsrc.zip"))
+        inputs.file(project.layout.buildDirectory.file("arara-${project.version}-src.zip").get().asFile)
+        inputs.file(project.layout.buildDirectory.file("arara-${project.version}-docsrc.zip").get().asFile)
         // depend on documentation (it should be compiled)
         inputs.dir("docs")
         inputs.dir("cli")
         inputs.dir("rules")
-        outputs.dir(project.buildDir.resolve("tds").absolutePath)
+        outputs.dir(project.layout.buildDirectory.dir("tds").get().asFile.absolutePath)
     }
 
     /**
@@ -34,9 +34,10 @@ open class TDSTreeBuilderTask : DefaultTask() {
     @TaskAction
     @Suppress("LongMethod")
     fun run() {
-        val temporaryDir = project.buildDir.resolve("tds")
-        if (temporaryDir.exists())
+        val temporaryDir = project.layout.buildDirectory.dir("tds").get().asFile
+        if (temporaryDir.exists()) {
             temporaryDir.deleteRecursively()
+        }
         temporaryDir.mkdirs()
 
         logger.lifecycle("Creating the TeX Directory Structure (TDS) archive")
@@ -61,7 +62,7 @@ open class TDSTreeBuilderTask : DefaultTask() {
 
         logger.debug("Copying the zipped documentation sources")
         project.copy {
-            from(project.files(project.buildDir.resolve("arara-${project.version}-docsrc.zip")))
+            from(project.files(project.layout.buildDirectory.file("arara-${project.version}-docsrc.zip").get().asFile))
             into(temporaryDir.resolve("doc/support/arara"))
         }
 
@@ -81,7 +82,7 @@ open class TDSTreeBuilderTask : DefaultTask() {
         TaskHelper.createManPage(
             temporaryDir
                 .resolve("doc/man/man1/${project.name}.1").toPath(),
-            project.version.toString()
+            project.version.toString(),
         )
 
         logger.info("Building the scripts directory")
@@ -108,7 +109,7 @@ open class TDSTreeBuilderTask : DefaultTask() {
 
         logger.info("Building the source code structure")
         project.copy {
-            from(project.buildDir.resolve("arara-${project.version}-src.zip"))
+            from(project.layout.buildDirectory.file("arara-${project.version}-src.zip").get().asFile)
             into(temporaryDir.resolve("source/support/arara"))
         }
     }

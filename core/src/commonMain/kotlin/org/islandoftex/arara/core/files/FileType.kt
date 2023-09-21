@@ -6,7 +6,7 @@ import org.islandoftex.arara.api.files.FileType
 
 data class FileType(
     override val extension: String = FileType.INVALID_EXTENSION,
-    override val pattern: String = FileType.INVALID_PATTERN
+    override val pattern: String = FileType.INVALID_PATTERN,
 ) : FileType {
     init {
         try {
@@ -14,7 +14,7 @@ data class FileType(
         } catch (e: IllegalArgumentException) {
             throw AraraException(
                 "The pattern you wanted to choose for this file type is invalid.",
-                e
+                e,
             )
         }
     }

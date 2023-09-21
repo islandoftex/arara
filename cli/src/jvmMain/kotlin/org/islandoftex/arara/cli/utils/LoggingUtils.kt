@@ -28,7 +28,7 @@ object LoggingUtils {
             // TODO: check for multi-threading
             ThreadContext.put(
                 "araraLogFile",
-                loggingOptions.logFile.normalize().toString()
+                loggingOptions.logFile.normalize().toString(),
             )
             val loggerContext = LogManager.getContext(false)
                 as org.apache.logging.log4j.core.LoggerContext

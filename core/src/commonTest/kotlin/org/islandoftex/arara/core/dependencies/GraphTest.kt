@@ -9,15 +9,18 @@ class GraphTest {
     fun shouldOperateCorrectlyOnEmptyList() {
         assertEquals(Graph<Int>().kahn(), emptyList())
     }
+
     @Test
     fun shouldOperateCorrectlyOnSingletonList() {
         assertEquals(Graph<Int>().apply { addVertex(1) }.kahn(), listOf(1))
     }
+
     @Test
     fun shouldBeEmptyOnCycles() {
         // TODO: is that the correct behavior we want to enforce?
         assertEquals(Graph<Int>().apply { addEdge(1, 1) }.kahn(), emptyList())
     }
+
     @Test
     fun shouldSortCorrectly() {
         assertEquals(
@@ -28,7 +31,7 @@ class GraphTest {
                 addEdge(4, 2)
                 addEdge(3, 1)
             }.kahn(),
-            listOf(6, 4, 5, 3, 2, 1)
+            listOf(6, 4, 5, 3, 2, 1),
         )
     }
 }

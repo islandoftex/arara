@@ -27,7 +27,7 @@ object Executor {
         val path = URLDecoder.decode(
             Executor::class.java.protectionDomain
                 .codeSource.location.path,
-            "UTF-8"
+            "UTF-8",
         )
         val scriptSource = Paths.get(File(path).toURI()).parent.toAbsolutePath()
             .resolve("../../../../src/jvmTest/resources/org/islandoftex/arara/dsl/samples/project.kts")
@@ -36,7 +36,7 @@ object Executor {
         BasicJvmScriptingHost().eval(
             scriptSource,
             AraraScriptCompilationConfiguration(),
-            AraraScriptEvaluationConfiguration()
+            AraraScriptEvaluationConfiguration(),
         ).valueOrThrow()
 
         println(DSLInstance.projects.size)

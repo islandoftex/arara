@@ -10,5 +10,5 @@ import org.islandoftex.arara.api.session.ExecutionStatus
  */
 internal class HaltExpectedException(
     msg: String,
-    val status: ExecutionStatus
+    val status: ExecutionStatus,
 ) : AraraException(msg)

@@ -38,7 +38,8 @@ internal object InterpreterUtils {
             when (conditional.type) {
                 DirectiveConditionalType.IF,
                 DirectiveConditionalType.WHILE,
-                DirectiveConditionalType.UNLESS -> true
+                DirectiveConditionalType.UNLESS,
+                -> true
                 else -> false
             }
         }
@@ -56,7 +57,7 @@ internal object InterpreterUtils {
     internal fun run(command: Command): Int = Environment.executeSystemCommand(
         command,
         !LinearExecutor.executionOptions.verbose,
-        LinearExecutor.executionOptions.timeoutValue
+        LinearExecutor.executionOptions.timeoutValue,
     ).let {
         val (exitCode, output) = it
         if (exitCode == Environment.errorExitStatus) {
@@ -74,17 +75,17 @@ internal object InterpreterUtils {
                         else -> ERROR_RUN_GENERIC_EXCEPTION
                     }
                 },
-                AraraException(output)
+                AraraException(output),
             )
         }
         logger.info {
             """
                 ${DisplayUtils.displayOutputSeparator(
-                LanguageController.messages.LOG_INFO_BEGIN_BUFFER
+                LanguageController.messages.LOG_INFO_BEGIN_BUFFER,
             )}
                 $output
                 ${DisplayUtils.displayOutputSeparator(
-                LanguageController.messages.LOG_INFO_END_BUFFER
+                LanguageController.messages.LOG_INFO_END_BUFFER,
             )}
             """.trimIndent()
         }
@@ -105,7 +106,7 @@ internal object InterpreterUtils {
         path: MPPPath,
         name: String,
         format: RuleFormat,
-        workingDirectory: MPPPath
+        workingDirectory: MPPPath,
     ): MPPPath = "$name.${format.extension}".let { fileName ->
         if (path.isAbsolute) {
             path / fileName

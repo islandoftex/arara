@@ -14,7 +14,7 @@ actual object ConfigurationUtils {
         "dtx" to "^\\s*%\\s*",
         "ltx" to "^\\s*%\\s*",
         "drv" to "^\\s*%\\s*",
-        "ins" to "^\\s*%\\s*"
+        "ins" to "^\\s*%\\s*",
     )
 
     @JvmStatic
@@ -47,7 +47,7 @@ actual object ConfigurationUtils {
         }.getOrElse {
             throw AraraException(
                 LanguageController.messages.ERROR_GETAPPLICATIONPATH_ENCODING_EXCEPTION,
-                it
+                it,
             )
         }
 }

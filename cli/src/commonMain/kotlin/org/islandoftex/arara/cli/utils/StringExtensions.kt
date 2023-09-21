@@ -33,8 +33,9 @@ internal fun String.abbreviate(maxWidth: Int, ellipsis: String = "…"): String 
  * @return The padded string.
  */
 internal fun String.center(width: Int, padChar: Char): String {
-    return if (this.length > width) this
-    else {
+    return if (this.length > width) {
+        this
+    } else {
         val charsLeft = width - this.length
         padChar.toString().repeat(charsLeft / 2) + this +
             padChar.toString().repeat(ceil(charsLeft.toDouble() / 2.0).toInt())

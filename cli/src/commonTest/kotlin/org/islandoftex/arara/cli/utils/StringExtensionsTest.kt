@@ -11,6 +11,7 @@ class StringExtensionsTest {
         assertEquals("Quack…", "Quack quack".abbreviate(6))
         assertEquals("Quack Quack", "Quack Quack".abbreviate(80))
     }
+
     @Test
     fun shouldFailAbbreviatingShorterThanEllipsis() {
         assertFailsWith<IllegalArgumentException> {

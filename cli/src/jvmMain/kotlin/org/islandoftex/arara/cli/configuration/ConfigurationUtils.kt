@@ -30,7 +30,9 @@ object ConfigurationUtils {
     fun configFileForProject(project: Project): MPPPath? {
         val names = listOf(
             ".araraconfig.yaml",
-            "araraconfig.yaml", ".arararc.yaml", "arararc.yaml"
+            "araraconfig.yaml",
+            ".arararc.yaml",
+            "arararc.yaml",
         )
         return project.workingDirectory.let { workingDir ->
             names.map { workingDir / it }.firstOrNull { it.exists }
@@ -51,10 +53,11 @@ object ConfigurationUtils {
      */
     @Throws(AraraException::class)
     private fun loadLocalConfiguration(file: MPPPath): LocalConfiguration {
-        return if (file.fileName.endsWith(".yaml"))
+        return if (file.fileName.endsWith(".yaml")) {
             LocalConfiguration.load(file)
-        else
+        } else {
             TODO("Kotlin DSL not implemented yet")
+        }
     }
 
     /**
@@ -71,13 +74,13 @@ object ConfigurationUtils {
         val resource = loadLocalConfiguration(file)
         LinearExecutor.executionOptions = resource.toExecutionOptions(
             currentProject,
-            LinearExecutor.executionOptions
+            LinearExecutor.executionOptions,
         )
         Session.loggingOptions = resource.toLoggingOptions(
-            Session.loggingOptions
+            Session.loggingOptions,
         )
         Session.userInterfaceOptions = resource.toUserInterfaceOptions(
-            Session.userInterfaceOptions
+            Session.userInterfaceOptions,
         )
 
         MvelState.preambles += resource.preambles

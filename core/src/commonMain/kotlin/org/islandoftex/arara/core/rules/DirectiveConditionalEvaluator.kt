@@ -16,7 +16,7 @@ import org.islandoftex.arara.api.rules.DirectiveConditionalType
  * @since 4.0
  */
 abstract class DirectiveConditionalEvaluator(
-    private val executionOptions: ExecutionOptions
+    private val executionOptions: ExecutionOptions,
 ) {
     /**
      * This attribute holds the maximum number of
@@ -45,7 +45,7 @@ abstract class DirectiveConditionalEvaluator(
      */
     private fun isIfUnlessAndHalt(
         type: DirectiveConditionalType,
-        haltCheck: Boolean = true
+        haltCheck: Boolean = true,
     ): Boolean =
         (
             type == DirectiveConditionalType.IF ||
@@ -77,9 +77,9 @@ abstract class DirectiveConditionalEvaluator(
         if (conditional.type == DirectiveConditionalType.NONE ||
             executionOptions.executionMode == ExecutionMode.DRY_RUN ||
             isIfUnlessAndHalt(conditional.type, true)
-        )
+        ) {
             return false
-        else if (isIfUnlessAndHalt(conditional.type, false)) {
+        } else if (isIfUnlessAndHalt(conditional.type, false)) {
             halt = true
         }
 

@@ -42,7 +42,7 @@ class AraraScriptCompilationConfiguration : ScriptCompilationConfiguration({
         } else {
             dependenciesFromClassContext(
                 AraraScriptCompilationConfiguration::class,
-                wholeClasspath = true
+                wholeClasspath = true,
             )
         }
     }
@@ -63,11 +63,11 @@ class AraraScriptCompilationConfiguration : ScriptCompilationConfiguration({
                         compilationCache(
                             CompiledScriptJarsCache { script, compilationConfiguration ->
                                 it.resolve(compiledScriptUniqueName(script, compilationConfiguration) + ".jar")
-                            }
+                            },
                         )
                     }
             }
-        }
+        },
     )
 })
 
@@ -77,7 +77,7 @@ class AraraScriptEvaluationConfiguration : ScriptEvaluationConfiguration({
 
 private fun compiledScriptUniqueName(
     script: SourceCode,
-    scriptCompilationConfiguration: ScriptCompilationConfiguration
+    scriptCompilationConfiguration: ScriptCompilationConfiguration,
 ): String {
     val digestWrapper = MessageDigest.getInstance("MD5")
     digestWrapper.update(script.text.toByteArray())
@@ -95,7 +95,9 @@ private fun ByteArray.toHexString(): String = joinToString("", transform = { "%0
 internal fun URL.toContainingJarOrNull(): File? =
     if (protocol == "jar") {
         (openConnection() as? JarURLConnection)?.jarFileURL?.toFileOrNull()
-    } else null
+    } else {
+        null
+    }
 
 internal fun URL.toFileOrNull() =
     try {
@@ -105,6 +107,9 @@ internal fun URL.toFileOrNull() =
     } catch (e: java.net.URISyntaxException) {
         null
     } ?: run {
-        if (protocol != "file") null
-        else File(file)
+        if (protocol != "file") {
+            null
+        } else {
+            File(file)
+        }
     }

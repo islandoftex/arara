@@ -38,14 +38,14 @@ class ExecutionTest : ShouldSpec({
             },
             processDirectives = { file, list ->
                 DirectiveUtils.process(file, list)
-            }
+            },
         )
     }
 
     fun getPathForTest(name: String): String = "src/jvmTest/resources/executiontests/$name"
     fun outputForTest(
         testName: String,
-        fileName: String = "$testName.tex"
+        fileName: String = "$testName.tex",
     ): String {
         val sysout = System.out
         val output = ByteArrayOutputStream()
@@ -55,16 +55,17 @@ class ExecutionTest : ShouldSpec({
             LinearExecutor.execute(
                 listOf(
                     Project(
-                        "Test", workingDirectory,
+                        "Test",
+                        workingDirectory,
                         setOf(
                             FileSearching.resolveFile(
                                 fileName,
                                 workingDirectory,
-                                LinearExecutor.executionOptions
-                            )
-                        )
-                    )
-                )
+                                LinearExecutor.executionOptions,
+                            ),
+                        ),
+                    ),
+                ),
             )
             return output.toByteArray().toString(Charsets.UTF_8)
         } catch (ex: Exception) {

@@ -18,7 +18,7 @@ class GUIDialogs
     /**
      * The default width for the message body, in pixels.
      */
-    val defaultWidth: Int = 250
+    val defaultWidth: Int = 250,
 ) {
     init {
         applyUIOptions(uiOptions)
@@ -93,17 +93,17 @@ class GUIDialogs
         width: Int = defaultWidth,
         type: Int,
         title: String,
-        text: String
+        text: String,
     ) {
         // effectively shows the message based
         // on the provided parameters
         JOptionPane.showMessageDialog(
             null,
             "<html><body style=\"width:%dpx\">$text</body></html>".format(
-                normalizeMessageWidth(width)
+                normalizeMessageWidth(width),
             ),
             title,
-            normalizeIconType(type)
+            normalizeIconType(type),
         )
     }
 
@@ -122,20 +122,20 @@ class GUIDialogs
         type: Int,
         title: String,
         text: String,
-        buttons: Array<out Any>
+        buttons: Array<out Any>,
     ): Int {
         // returns the index of the selected button,
         // zero if nothing is selected
         return JOptionPane.showOptionDialog(
             null,
             "<html><body style=\"width:%dpx\">$text</body></html>".format(
-                normalizeMessageWidth(width)
+                normalizeMessageWidth(width),
             ),
             title,
             JOptionPane.DEFAULT_OPTION,
             normalizeIconType(type), null,
             buttons,
-            buttons[0]
+            buttons[0],
         ) + 1
     }
 
@@ -152,17 +152,17 @@ class GUIDialogs
         width: Int = defaultWidth,
         type: Int,
         title: String,
-        text: String
+        text: String,
     ): String {
         // get the string from the
         // input text, if any
         val input = JOptionPane.showInputDialog(
             null,
             "<html><body style=\"width:%dpx\">$text</body></html>".format(
-                normalizeMessageWidth(width)
+                normalizeMessageWidth(width),
             ),
             title,
-            normalizeIconType(type)
+            normalizeIconType(type),
         )
 
         // if the input is not null, that is,
@@ -187,18 +187,19 @@ class GUIDialogs
         type: Int,
         title: String,
         text: String,
-        elements: Array<out Any>
+        elements: Array<out Any>,
     ): Int {
         // show the dropdown list and get the selected object, if any
         val index = JOptionPane.showInputDialog(
             null,
             "<html><body style=\"width:%dpx\">$text</body></html>".format(
-                normalizeMessageWidth(width)
+                normalizeMessageWidth(width),
             ),
             title,
-            normalizeIconType(type), null,
+            normalizeIconType(type),
+            null,
             elements,
-            elements[0]
+            elements[0],
         )
 
         // if it's not a null object, let's find the corresponding index

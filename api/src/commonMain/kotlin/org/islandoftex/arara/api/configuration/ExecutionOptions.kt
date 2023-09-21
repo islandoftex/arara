@@ -28,7 +28,7 @@ public enum class ExecutionMode {
      * In normal run mode, arara executes everything it is able to giving the
      * run the full flexibility.
      */
-    NORMAL_RUN
+    NORMAL_RUN,
 }
 
 /**

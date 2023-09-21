@@ -18,7 +18,7 @@ class DSLRule(
     private val id: String,
     private val label: String? = null,
     private val description: String = "",
-    private val authors: List<String> = listOf()
+    private val authors: List<String> = listOf(),
 ) {
     private val commands = mutableListOf<RuleCommand>()
 
@@ -28,7 +28,7 @@ class DSLRule(
     @Deprecated(
         "This should not be used to fetch the arguments and " +
             "will be removed as soon as we found a way to remove the " +
-            "inline/reified classification of argument."
+            "inline/reified classification of argument.",
     )
     val ruleArguments = mutableListOf<RuleArgument<*>>()
 
@@ -53,20 +53,20 @@ class DSLRule(
     fun command(
         command: String,
         vararg parameters: String?,
-        workingDirectory: Path? = null
+        workingDirectory: Path? = null,
     ): Command = org.islandoftex.arara.core.session.Command(
         listOf(command)
             .plus(parameters.filterNotNull().filterNot { it.isBlank() }),
-        workingDirectory?.toMPPPath()
+        workingDirectory?.toMPPPath(),
     ).also {
         commands.add(
             org.islandoftex.arara.dsl.rules.RuleCommand(command) {
                 Environment.executeSystemCommand(
                     it,
                     !LinearExecutor.executionOptions.verbose,
-                    LinearExecutor.executionOptions.timeoutValue
+                    LinearExecutor.executionOptions.timeoutValue,
                 ).first
-            }
+            },
         )
     }
 
@@ -78,7 +78,7 @@ class DSLRule(
      */
     fun execute(
         name: String? = null,
-        executable: DSLExecutable.() -> Unit
+        executable: DSLExecutable.() -> Unit,
     ): RuleCommand {
         val dslExecutable = DSLExecutable()
         return org.islandoftex.arara.dsl.rules.RuleCommand(name) {
@@ -96,13 +96,14 @@ class DSLRule(
      */
     inline fun <reified T> argument(
         identifier: String,
-        configure: DSLRuleArgument<T>.() -> Unit
+        configure: DSLRuleArgument<T>.() -> Unit,
     ): RuleArgument<T> {
-        if (identifier in arguments)
+        if (identifier in arguments) {
             throw AraraException(
                 "Two rule arguments can't have the same " +
-                    "identifier."
+                    "identifier.",
             )
+        }
         return DSLRuleArgument<T>(identifier).apply(configure)
             .toRuleArgument().also { ruleArguments.add(it) }
     }
@@ -128,6 +129,6 @@ class DSLRule(
         displayName = label ?: description,
         authors = authors,
         commands = commands,
-        arguments = ruleArguments
+        arguments = ruleArguments,
     )
 }

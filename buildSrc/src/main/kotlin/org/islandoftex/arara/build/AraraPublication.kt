@@ -46,7 +46,7 @@ open class AraraPublication : Plugin<Project> {
                     description.set(
                         "arara is a TeX automation tool based on " +
                             "rules and directives. It gives you a way to enhance " +
-                            "your TeX experience."
+                            "your TeX experience.",
                     )
                     inceptionYear.set("2012")
                     url.set("https://gitlab.com/islandoftex/arara")
@@ -89,9 +89,11 @@ open class AraraPublication : Plugin<Project> {
                             url.set("https://tex.stackexchange.com/users/344")
                             roles.set(
                                 listOf(
-                                    "Developer", "Contributor", "Tester",
-                                    "Haskell fanatic"
-                                )
+                                    "Developer",
+                                    "Contributor",
+                                    "Tester",
+                                    "Haskell fanatic",
+                                ),
                             )
                         }
                         developer {
@@ -101,9 +103,11 @@ open class AraraPublication : Plugin<Project> {
                             url.set("https://tex.stackexchange.com/users/19862")
                             roles.set(
                                 listOf(
-                                    "Developer", "Contributor", "Tester",
-                                    "Hat enthusiast"
-                                )
+                                    "Developer",
+                                    "Contributor",
+                                    "Tester",
+                                    "Hat enthusiast",
+                                ),
                             )
                         }
                     }

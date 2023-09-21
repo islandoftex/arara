@@ -56,7 +56,8 @@ import kotlin.time.TimeSource
  * @since 5.0
  */
 class CLI : CliktCommand(
-    name = "arara", printHelpOnEmptyArgs = true,
+    name = "arara",
+    printHelpOnEmptyArgs = true,
     help = """
     ${DisplayUtils.logoString.replace('\n', '\u0085').replace(' ', '\u00A0')}
 
@@ -65,7 +66,7 @@ class CLI : CliktCommand(
     arara executes the TeX workflow you tell it to execute. Simply specify
     your needs within your TeX file and let arara do the work. These directives
     feature conditional execution and parameter expansion.
-    """
+    """,
 ) {
     private val log by option("-l", "--log")
         .help("Generate a log output")
@@ -76,13 +77,13 @@ class CLI : CliktCommand(
     private val dryRun by option("-n", "--dry-run")
         .help(
             "Go through all the motions of running a command, but " +
-                "with no actual calls"
+                "with no actual calls",
         )
         .flag()
     private val safeRun by option("-S", "--safe-run")
         .help(
             "Run in safe mode and disable potentially harmful features. " +
-                "Make sure your projects uses only allowed features."
+                "Make sure your projects uses only allowed features.",
         )
         .flag()
     private val wholeFile by option("-w", "--whole-file")
@@ -146,7 +147,7 @@ class CLI : CliktCommand(
                         DisplayUtils.printWrapped(
                             "Found Lua file, attempted to parse it as a project but failed. " +
                                 "Continuing by treating the Lua file as regular input. " +
-                                "See log for details.\n"
+                                "See log for details.\n",
                         )
                         logger.info {
                             "Failed to parse Lua file argument as project: ${it.message}\n" +
@@ -160,7 +161,7 @@ class CLI : CliktCommand(
             ?: Project(
                 "Untitled",
                 workingDir,
-                emptySet()
+                emptySet(),
             ).also { project ->
                 ConfigurationUtils.configFileForProject(project)?.let {
                     DisplayUtils.configurationFileName = it.toString()
@@ -175,10 +176,10 @@ class CLI : CliktCommand(
                             FileSearching.resolveFile(
                                 fileName,
                                 workingDir,
-                                LinearExecutor.executionOptions
+                                LinearExecutor.executionOptions,
                             )
-                        }.toSet()
-                    )
+                        }.toSet(),
+                    ),
                 )
             }
     }
@@ -190,7 +191,7 @@ class CLI : CliktCommand(
         Session.userInterfaceOptions = UserInterfaceOptions(
             locale = language?.let { MPPLocale(it) }
                 ?: Session.userInterfaceOptions.locale,
-            swingLookAndFeel = Session.userInterfaceOptions.swingLookAndFeel
+            swingLookAndFeel = Session.userInterfaceOptions.swingLookAndFeel,
         )
         LanguageController.loadMessagesFor(Session.userInterfaceOptions.locale)
 
@@ -201,28 +202,31 @@ class CLI : CliktCommand(
                     ?: LinearExecutor.executionOptions.maxLoops,
                 timeoutValue = timeout?.let { Duration.milliseconds(it) }
                     ?: LinearExecutor.executionOptions.timeoutValue,
-                verbose = if (verbose)
+                verbose = if (verbose) {
                     true
-                else
-                    LinearExecutor.executionOptions.verbose,
+                } else {
+                    LinearExecutor.executionOptions.verbose
+                },
                 executionMode = when {
                     dryRun -> ExecutionMode.DRY_RUN
                     safeRun -> ExecutionMode.SAFE_RUN
                     else -> LinearExecutor.executionOptions.executionMode
                 },
-                parseOnlyHeader = if (wholeFile)
+                parseOnlyHeader = if (wholeFile) {
                     false
-                else
+                } else {
                     LinearExecutor.executionOptions.parseOnlyHeader
+                },
             )
 
         Session.loggingOptions = LoggingOptions(
-            enableLogging = if (log)
+            enableLogging = if (log) {
                 true
-            else
-                Session.loggingOptions.enableLogging,
+            } else {
+                Session.loggingOptions.enableLogging
+            },
             appendLog = Session.loggingOptions.appendLog,
-            logFile = Session.loggingOptions.logFile
+            logFile = Session.loggingOptions.logFile,
         )
     }
 
@@ -235,13 +239,13 @@ class CLI : CliktCommand(
      */
     private fun prependPreambleDirectives(
         fileType: FileType,
-        directives: List<Directive>
+        directives: List<Directive>,
     ): List<Directive> {
         val resolvedPreamble = preamble ?: MvelState.defaultPreamble
         if (resolvedPreamble != null && resolvedPreamble !in MvelState.preambles) {
             throw AraraException(
                 LanguageController.messages
-                    .ERROR_PARSER_INVALID_PREAMBLE.format(resolvedPreamble)
+                    .ERROR_PARSER_INVALID_PREAMBLE.format(resolvedPreamble),
             )
         }
         val allDirectives = resolvedPreamble
@@ -252,14 +256,15 @@ class CLI : CliktCommand(
                         .lines()
                         .filterNot { it.isEmpty() },
                     true,
-                    fileType
+                    fileType,
                 ).plus(directives)
             } ?: directives
-        if (allDirectives.isEmpty())
+        if (allDirectives.isEmpty()) {
             throw AraraException(
                 LanguageController
-                    .messages.ERROR_VALIDATE_NO_DIRECTIVES_FOUND
+                    .messages.ERROR_VALIDATE_NO_DIRECTIVES_FOUND,
             )
+        }
         return allDirectives
     }
 
@@ -309,16 +314,17 @@ class CLI : CliktCommand(
                         file,
                         list
                             .takeIf { list.isNotEmpty() && !MvelState.prependPreambleIfDirectivesGiven }
-                            ?: prependPreambleDirectives(file.fileType, list)
+                            ?: prependPreambleDirectives(file.fileType, list),
                     )
-                }
+                },
             )
 
             val projects = resolveProjects()
-            if (LinearExecutor.execute(projects).exitCode != 0)
+            if (LinearExecutor.execute(projects).exitCode != 0) {
                 ExecutionStatus.ExternalCallFailed()
-            else
+            } else {
                 ExecutionStatus.Processing()
+            }
         } catch (ex: AraraException) {
             // catch a propagated exception to replace intentionally left
             // out local treatment
@@ -348,10 +354,11 @@ fun main(args: Array<String>) {
         .completionOption(
             help = "Generate a completion script for arara. " +
                 "Add 'source <(arara --generate-completion <shell>)' " +
-                "to your shell's init file."
+                "to your shell's init file.",
         )
         .versionOption(
-            AraraAPI.version, names = setOf("-V", "--version"),
+            AraraAPI.version,
+            names = setOf("-V", "--version"),
             message = {
                 "${DisplayUtils.logoString}\n\n" +
                     "arara ${AraraAPI.version}\n" +
@@ -361,7 +368,7 @@ fun main(args: Array<String>) {
                     CLI::class.java
                         .getResource("/org/islandoftex/arara/cli/configuration/release-notes")
                         .readText()
-            }
+            },
         )
         .main(args)
 }

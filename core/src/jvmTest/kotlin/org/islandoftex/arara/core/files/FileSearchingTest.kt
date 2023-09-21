@@ -33,12 +33,12 @@ class FileSearchingTest : ShouldSpec({
             val tempDir = prepareFileSystem().toMPPPath()
             FileSearching.listFilesByExtensions(
                 tempDir,
-                listOf("tex"), false
+                listOf("tex"), false,
             ).toSet() shouldBe
                 setOf(tempDir / "quack.tex")
             FileSearching.listFilesByExtensions(
                 tempDir,
-                listOf("tex"), true
+                listOf("tex"), true,
             ).toSet() shouldBe
                 listOf("quack", "quack/quack", "quack/quack/quack")
                     .map { tempDir / "$it.tex" }.toSet()
@@ -48,12 +48,12 @@ class FileSearchingTest : ShouldSpec({
             val tempDir = prepareFileSystem().toMPPPath()
             FileSearching.listFilesByPatterns(
                 tempDir,
-                listOf("*q*.txt"), false
+                listOf("*q*.txt"), false,
             ).toSet() shouldBe
                 setOf(tempDir / "quack.txt")
             FileSearching.listFilesByPatterns(
                 tempDir,
-                listOf("q*.txt"), true
+                listOf("q*.txt"), true,
             ).toSet() shouldBe
                 listOf("quack", "quack/quack", "quack/quack/quack")
                     .map { tempDir / "$it.txt" }.toSet()
@@ -64,14 +64,14 @@ class FileSearchingTest : ShouldSpec({
         should("fail looking up inexistent file") {
             FileSearching.lookupFile(
                 "QUACK", MPPPath("."),
-                ExecutionOptions()
+                ExecutionOptions(),
             ) shouldBe null
         }
 
         should("fail on existing directory") {
             FileSearching.lookupFile(
                 "../buildSrc", MPPPath("."),
-                ExecutionOptions()
+                ExecutionOptions(),
             ) shouldBe null
         }
 
@@ -84,7 +84,7 @@ class FileSearchingTest : ShouldSpec({
                 val projectFile = FileSearching.lookupFile(
                     pathToTest.toString(),
                     testDir.toMPPPath(),
-                    ExecutionOptions()
+                    ExecutionOptions(),
                 ) as ProjectFile
                 projectFile.path.normalize().toString() shouldBe
                     pathToTest.normalize().toString()
@@ -101,7 +101,7 @@ class FileSearchingTest : ShouldSpec({
                 val projectFile = FileSearching.lookupFile(
                     (parent / "changes").toString(),
                     testDir.toMPPPath(),
-                    ExecutionOptions()
+                    ExecutionOptions(),
                 ) as ProjectFile
                 projectFile.path.normalize().toString() shouldBe
                     (parent.normalize() / "changes.tex").toString()
@@ -119,7 +119,7 @@ class FileSearchingTest : ShouldSpec({
                 val projectFile = FileSearching.lookupFile(
                     pathToTest.toString(),
                     testDir.toMPPPath(),
-                    ExecutionOptions().copy(executionMode = ExecutionMode.SAFE_RUN)
+                    ExecutionOptions().copy(executionMode = ExecutionMode.SAFE_RUN),
                 ) as ProjectFile
                 projectFile.path.normalize().toString() shouldBe
                     pathToTest.normalize().toString()
@@ -132,7 +132,7 @@ class FileSearchingTest : ShouldSpec({
             FileSearching.lookupFile(
                 MPPPath("src/test/resources/executiontests/changes/changes").toString(),
                 MPPPath("."),
-                ExecutionOptions().copy(executionMode = ExecutionMode.SAFE_RUN)
+                ExecutionOptions().copy(executionMode = ExecutionMode.SAFE_RUN),
             ) shouldBe null
         }
     }

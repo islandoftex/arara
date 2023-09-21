@@ -31,7 +31,7 @@ object MethodUtils {
             throw AraraException(
                 LanguageController.messages.ERROR_CHECKREGEX_IO_EXCEPTION
                     .format(file.fileName),
-                exception
+                exception,
             )
         }
     }
@@ -64,14 +64,14 @@ object MethodUtils {
     @Throws(AraraException::class)
     fun replicateList(
         pattern: String,
-        values: List<Any>
+        values: List<Any>,
     ): List<Any> {
         return try {
             values.map { pattern.format(it) }
         } catch (exception: MissingFormatArgumentException) {
             throw AraraException(
                 LanguageController.messages.ERROR_REPLICATELIST_MISSING_FORMAT_ARGUMENTS_EXCEPTION,
-                exception
+                exception,
             )
         }
     }

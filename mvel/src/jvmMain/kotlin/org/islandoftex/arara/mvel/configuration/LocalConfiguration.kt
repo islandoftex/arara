@@ -35,7 +35,7 @@ data class LocalConfiguration(
     private val laf: String? = null,
     val preambles: Map<String, String> = mapOf(),
     val defaultPreamble: String? = null,
-    val prependPreambleIfDirectivesGiven: Boolean = true
+    val prependPreambleIfDirectivesGiven: Boolean = true,
 ) {
     /**
      * Convert the relevant properties of the configuration to execution
@@ -47,30 +47,31 @@ data class LocalConfiguration(
     @Throws(AraraException::class)
     fun toExecutionOptions(
         currentProject: Project,
-        baseOptions: ExecutionOptions = org.islandoftex.arara.core.configuration.ExecutionOptions()
+        baseOptions: ExecutionOptions = org.islandoftex.arara.core.configuration.ExecutionOptions(),
     ): ExecutionOptions {
         val preprocessedPaths = paths.asSequence()
             .map { it.trim() }
             .map { input ->
                 input.replace(
                     "@{user.home}",
-                    Environment.getSystemPropertyOrNull("user.home") ?: ""
+                    Environment.getSystemPropertyOrNull("user.home") ?: "",
                 )
                     .replace(
                         "@{user.name}",
-                        Environment.getSystemPropertyOrNull("user.name") ?: ""
+                        Environment.getSystemPropertyOrNull("user.name") ?: "",
                     )
                     .replace(
                         "@{application.workingDirectory}",
-                        currentProject.workingDirectory.normalize().toString()
+                        currentProject.workingDirectory.normalize().toString(),
                     )
             }
             .map { MPPPath(it) }
             .map { path ->
-                if (path.isAbsolute)
+                if (path.isAbsolute) {
                     path
-                else
+                } else {
                     currentProject.workingDirectory / path
+                }
             }
             .map { it.normalize() }
             .toSet()
@@ -81,7 +82,7 @@ data class LocalConfiguration(
                 loops
             } else {
                 throw AraraException(
-                    LanguageController.messages.ERROR_CONFIGURATION_LOOPS_INVALID_RANGE
+                    LanguageController.messages.ERROR_CONFIGURATION_LOOPS_INVALID_RANGE,
                 )
             }
         } ?: baseOptions.maxLoops
@@ -96,7 +97,7 @@ data class LocalConfiguration(
                     .plus(baseOptions.fileTypes),
                 rulePaths = preprocessedPaths
                     .plus(baseOptions.rulePaths),
-                parseOnlyHeader = header ?: baseOptions.parseOnlyHeader
+                parseOnlyHeader = header ?: baseOptions.parseOnlyHeader,
             )
     }
 
@@ -108,13 +109,13 @@ data class LocalConfiguration(
      * @return The corresponding logging options.
      */
     fun toLoggingOptions(
-        baseOptions: LoggingOptions = org.islandoftex.arara.core.configuration.LoggingOptions()
+        baseOptions: LoggingOptions = org.islandoftex.arara.core.configuration.LoggingOptions(),
     ): LoggingOptions {
         val logName = logname?.let { MPPPath(it) }
             ?: baseOptions.logFile
         return org.islandoftex.arara.core.configuration.LoggingOptions(
             enableLogging = logging ?: baseOptions.enableLogging,
-            logFile = logName
+            logFile = logName,
         )
     }
 
@@ -126,12 +127,12 @@ data class LocalConfiguration(
      * @return The corresponding user interface options.
      */
     fun toUserInterfaceOptions(
-        baseOptions: UserInterfaceOptions = org.islandoftex.arara.core.configuration.UserInterfaceOptions()
+        baseOptions: UserInterfaceOptions = org.islandoftex.arara.core.configuration.UserInterfaceOptions(),
     ): UserInterfaceOptions {
         return org.islandoftex.arara.core.configuration.UserInterfaceOptions(
             locale = language?.let { MPPLocale(it) }
                 ?: baseOptions.locale,
-            swingLookAndFeel = laf ?: baseOptions.swingLookAndFeel
+            swingLookAndFeel = laf ?: baseOptions.swingLookAndFeel,
         )
     }
 
@@ -148,13 +149,14 @@ data class LocalConfiguration(
         fun load(file: MPPPath): LocalConfiguration =
             file.runCatching {
                 val text = file.readText()
-                if (!text.startsWith("!config"))
+                if (!text.startsWith("!config")) {
                     throw AraraException("Configuration should start with !config")
+                }
                 Yaml.default.decodeFromString(serializer(), text)
             }.getOrElse {
                 throw AraraException(
                     LanguageController.messages.ERROR_CONFIGURATION_GENERIC_ERROR,
-                    it
+                    it,
                 )
             }
     }

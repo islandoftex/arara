@@ -19,7 +19,7 @@ import org.islandoftex.arara.core.utils.formatString
 @Serializable
 data class SerialFileType(
     private var extension: String = FileType.INVALID_EXTENSION,
-    private var pattern: String = FileType.INVALID_PATTERN
+    private var pattern: String = FileType.INVALID_PATTERN,
 ) {
 
     /**
@@ -38,8 +38,8 @@ data class SerialFileType(
                     .formatString(
                         extension,
                         LinearExecutor.executionOptions.fileTypes
-                            .joinToString(" | ", "[ ", " ]")
-                    )
-            )
+                            .joinToString(" | ", "[ ", " ]"),
+                    ),
+            ),
     )
 }

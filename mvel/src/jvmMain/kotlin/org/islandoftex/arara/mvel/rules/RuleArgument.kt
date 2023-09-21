@@ -45,7 +45,7 @@ class RuleArgument : RuleArgument<Any?> {
                     context
                         .getValue("parameters") as Map<*, *>
                     )
-                    .plus(identifier to input!!)
+                    .plus(identifier to input!!),
             )
             flag?.let { fn ->
                 when (val output = TemplateRuntime.eval(fn, resolvedContext)) {
@@ -55,7 +55,7 @@ class RuleArgument : RuleArgument<Any?> {
                         logger.warn(
                             "You are using an unsupported return type " +
                                 "which may be deprecated in future versions of " +
-                                "arara. Please use String or List<String> instead."
+                                "arara. Please use String or List<String> instead.",
                         )
                         listOf(output.toString())
                     }
@@ -65,7 +65,7 @@ class RuleArgument : RuleArgument<Any?> {
             throw AraraExceptionWithHeader(
                 LanguageController.messages
                     .ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION,
-                exception
+                exception,
             )
         }
     }
@@ -79,13 +79,13 @@ class RuleArgument : RuleArgument<Any?> {
         } else {
             throw AraraException(
                 ruleErrorHeader + LanguageController
-                    .messages.ERROR_VALIDATEBODY_MISSING_KEYS
+                    .messages.ERROR_VALIDATEBODY_MISSING_KEYS,
             )
         }
     } else {
         throw AraraException(
             ruleErrorHeader + LanguageController
-                .messages.ERROR_VALIDATEBODY_NULL_ARGUMENT_ID
+                .messages.ERROR_VALIDATEBODY_NULL_ARGUMENT_ID,
         )
     }
 

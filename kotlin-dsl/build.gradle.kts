@@ -15,7 +15,7 @@ kotlin {
                 api(kotlin("scripting-jvm-host"))
 
                 implementation(project(":core"))
-                implementation(kotlin("script-util"))
+//                implementation(kotlin("script-util"))
 
                 runtimeOnly(kotlin("compiler-embeddable"))
                 runtimeOnly(kotlin("scripting-dependencies"))

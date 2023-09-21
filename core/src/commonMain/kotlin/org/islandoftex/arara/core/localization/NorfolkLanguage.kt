@@ -85,5 +85,5 @@ class NorfolkLanguage : Messages(
     LOG_INFO_SYSTEM_COMMAND = "System command: %s",
     LOG_INFO_TASK_RESULT = "Here's what that jarb say:",
     LOG_INFO_VALIDATED_DIRECTIVES = "Thass a masterous jarb, orl the directives are in good kelter. We can git troshin'.",
-    LOG_INFO_WELCOME_MESSAGE = "Hello, my bewty. Welcome to arara %s! (Thass one onnem hully big birds they git in Brazil.)"
+    LOG_INFO_WELCOME_MESSAGE = "Hello, my bewty. Welcome to arara %s! (Thass one onnem hully big birds they git in Brazil.)",
 )

@@ -16,18 +16,17 @@ data class ExecutionOptions(
     override val verbose: Boolean = false,
     override val executionMode: ExecutionMode = ExecutionMode.NORMAL_RUN,
     override val rulePaths: Set<MPPPath> = setOf(
-        ConfigurationUtils.applicationPath / "rules"
+        ConfigurationUtils.applicationPath / "rules",
     ),
     override val fileTypes: List<FileType> = ConfigurationUtils.defaultFileTypes,
-    override val parseOnlyHeader: Boolean = true
+    override val parseOnlyHeader: Boolean = true,
 ) : ExecutionOptions {
     companion object {
         /**
          * As the interface does not have a copy method, we provide this
          * conversion method.
          */
-        fun from(options: ExecutionOptions):
-            org.islandoftex.arara.core.configuration.ExecutionOptions {
+        fun from(options: ExecutionOptions): org.islandoftex.arara.core.configuration.ExecutionOptions {
             return ExecutionOptions(
                 maxLoops = options.maxLoops,
                 timeoutValue = options.timeoutValue,
@@ -38,7 +37,7 @@ data class ExecutionOptions(
                 executionMode = options.executionMode,
                 rulePaths = options.rulePaths,
                 fileTypes = options.fileTypes,
-                parseOnlyHeader = options.parseOnlyHeader
+                parseOnlyHeader = options.parseOnlyHeader,
             )
         }
     }

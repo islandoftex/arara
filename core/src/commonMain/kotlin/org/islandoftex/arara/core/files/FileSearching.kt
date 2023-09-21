@@ -44,20 +44,21 @@ object FileSearching {
     fun listFilesByExtensions(
         directory: MPPPath,
         extensions: List<String>,
-        recursive: Boolean
+        recursive: Boolean,
     ): List<MPPPath> = runBlockingNoJs {
         LocalVfs[directory.normalize().toString()].runCatching {
             // return the result of the
             // provided search
-            if (recursive)
+            if (recursive) {
                 listRecursive()
-            else
+            } else {
                 list()
+            }
         }.getOrDefault(
             // if something bad happens,
             // gracefully fallback to
             // an empty file list
-            emptyFlow()
+            emptyFlow(),
         ).filter {
             !it.isDirectory() &&
                 extensions.contains(it.extension)
@@ -78,7 +79,7 @@ object FileSearching {
     fun listFilesByPatterns(
         directory: MPPPath,
         patterns: List<String>,
-        recursive: Boolean
+        recursive: Boolean,
     ): List<MPPPath> = runBlockingNoJs {
         // return the result of the provided
         // search, with the wildcard filter
@@ -87,15 +88,16 @@ object FileSearching {
         LocalVfs[directory.normalize().toString()].runCatching {
             // return the result of the
             // provided search
-            if (recursive)
+            if (recursive) {
                 listRecursive()
-            else
+            } else {
                 list()
+            }
         }.getOrDefault(
             // if something bad happens,
             // gracefully fallback to
             // an empty file list
-            emptyFlow()
+            emptyFlow(),
         ).filter { file ->
             !file.isDirectory() &&
                 regexes.any { it.matches(file.baseName) }
@@ -116,7 +118,7 @@ object FileSearching {
     fun resolveFile(
         reference: String,
         workingDirectory: MPPPath,
-        executionOptions: ExecutionOptions
+        executionOptions: ExecutionOptions,
     ): ProjectFile =
         lookupFile(reference, workingDirectory, executionOptions)
             ?: throw AraraException(
@@ -124,8 +126,8 @@ object FileSearching {
                     .formatString(
                         reference,
                         executionOptions.fileTypes
-                            .joinToString(" | ", "[ ", " ]")
-                    )
+                            .joinToString(" | ", "[ ", " ]"),
+                    ),
             )
 
     /**
@@ -140,7 +142,7 @@ object FileSearching {
     internal fun lookupFile(
         reference: String,
         workingDirectory: MPPPath,
-        executionOptions: ExecutionOptions
+        executionOptions: ExecutionOptions,
     ): ProjectFile? {
         val types = executionOptions.fileTypes
 
@@ -156,7 +158,7 @@ object FileSearching {
                     ProjectFile(
                         path = testFile,
                         fileType = types.firstOrNull { extension == it.extension }
-                            ?: FileType.UNKNOWN_TYPE
+                            ?: FileType.UNKNOWN_TYPE,
                     )
                 }
             }
@@ -178,7 +180,7 @@ object FileSearching {
                         types.map {
                             testFile.parent /
                                 "${name.removeSuffix(".").trim()}.${it.extension}"
-                        }
+                        },
                     )
                     .firstOrNull { it.exists && it.isRegularFile }
                     ?.let { found ->
@@ -186,7 +188,7 @@ object FileSearching {
                         ProjectFile(
                             found,
                             types.firstOrNull { extension == it.extension }
-                                ?: FileType.UNKNOWN_TYPE
+                                ?: FileType.UNKNOWN_TYPE,
                         )
                     }
             }

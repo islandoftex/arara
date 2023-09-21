@@ -14,14 +14,15 @@ class FileHandlingTest {
     fun shouldChangeExtensionOfFileWithExtension() {
         assertEquals(
             MPPPath("quack.log").fileName,
-            FileHandling.changeExtension(MPPPath("quack.tex"), "log").fileName
+            FileHandling.changeExtension(MPPPath("quack.tex"), "log").fileName,
         )
     }
+
     @Test
     fun shouldChangeExtensionOfFileWithoutExtension() {
         assertEquals(
             MPPPath("quack.log").fileName,
-            FileHandling.changeExtension(MPPPath("quack"), "log").fileName
+            FileHandling.changeExtension(MPPPath("quack"), "log").fileName,
         )
     }
 
@@ -30,6 +31,7 @@ class FileHandlingTest {
         assertTrue(FileHandling.isSubDirectory(MPPPath("../docs"), MPPPath("..")))
         assertFalse(FileHandling.isSubDirectory(MPPPath(".."), MPPPath("../docs")))
     }
+
     @Test
     fun shouldNotTreatFilesAsSubdirectories() {
         assertFalse(FileHandling.isSubDirectory(MPPPath("../LICENSE"), MPPPath("..")))
@@ -42,6 +44,7 @@ class FileHandlingTest {
             FileHandling.calculateHash(MPPPath("QUACK"))
         }
     }
+
     @Test
     fun shouldGenerateCorrectCRCSum() {
         assertEquals(1616727774, FileHandling.calculateHash(MPPPath("../LICENSE")))

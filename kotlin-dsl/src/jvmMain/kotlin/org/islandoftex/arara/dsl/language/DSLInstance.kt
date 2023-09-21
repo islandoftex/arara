@@ -49,7 +49,7 @@ object DSLInstance {
         label: String? = null,
         description: String = "",
         authors: List<String> = listOf(),
-        configure: DSLRule.() -> Unit
+        configure: DSLRule.() -> Unit,
     ): Rule = DSLRule(id, label, description, authors)
         .apply(configure).toRule().also { rules.add(it) }
 }

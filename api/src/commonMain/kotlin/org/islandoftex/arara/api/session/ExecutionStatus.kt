@@ -14,7 +14,7 @@ public sealed class ExecutionStatus(
     /**
      * The exit code arara will use when in the given state.
      */
-    public val exitCode: Int
+    public val exitCode: Int,
 ) {
     /**
      * Everything went just fine (note that the

@@ -32,24 +32,25 @@ class DirectiveConditionalEvaluator(executionOptions: ExecutionOptions) :
         try {
             val result = TemplateRuntime.eval(
                 "@{ ${conditional.condition} }",
-                MvelState.conditionalMethods
+                MvelState.conditionalMethods,
             )
             return if (result is Boolean) {
                 if (conditional.type == DirectiveConditionalType.UNLESS ||
                     conditional.type == DirectiveConditionalType.UNTIL
-                )
+                ) {
                     !result
-                else
+                } else {
                     result
+                }
             } else {
                 throw AraraException(
-                    LanguageController.messages.ERROR_EVALUATE_NOT_BOOLEAN_VALUE
+                    LanguageController.messages.ERROR_EVALUATE_NOT_BOOLEAN_VALUE,
                 )
             }
         } catch (exception: RuntimeException) {
             throw AraraException(
                 LanguageController.messages.ERROR_EVALUATE_COMPILATION_FAILED,
-                exception
+                exception,
             )
         }
     }

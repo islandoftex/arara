@@ -42,7 +42,7 @@ object Directives {
     private fun getPotentialDirectiveLines(
         lines: List<String>,
         parseOnlyHeader: Boolean,
-        pattern: String
+        pattern: String,
     ): Map<Int, String> {
         val validLinePattern = pattern.toRegex()
         val validLineStartPattern = (pattern + namePattern).toRegex()
@@ -78,7 +78,7 @@ object Directives {
     fun extractDirectives(
         lines: List<String>,
         parseOnlyHeader: Boolean,
-        fileType: FileType
+        fileType: FileType,
     ): List<Directive> {
         val pairs = getPotentialDirectiveLines(lines, parseOnlyHeader, fileType.pattern)
             .takeIf { it.isNotEmpty() } ?: return emptyList()
@@ -92,7 +92,7 @@ object Directives {
                     throw AraraException(
                         LanguageController
                             .messages.ERROR_VALIDATE_ORPHAN_LINEBREAK
-                            .formatString(lineno.toString())
+                            .formatString(lineno.toString()),
                     )
                 } else {
                     assembler.addLineNumber(lineno)
@@ -139,17 +139,17 @@ object Directives {
                     type = match.groupValues[5]
                         .takeIf { it.isNotEmpty() }
                         .toDirectiveConditional(),
-                    condition = match.groupValues[6]
+                    condition = match.groupValues[6],
                 ),
                 // line numbers
-                assembler.getLineNumbers()
+                assembler.getLineNumbers(),
             )
         } ?: throw AraraException(
             LanguageController.messages.ERROR_VALIDATE_INVALID_DIRECTIVE_FORMAT
                 .formatString(
                     assembler.getLineNumbers()
-                        .joinToString(", ", "(", ")")
-                )
+                        .joinToString(", ", "(", ")"),
+                ),
         )
 
     /**
@@ -167,7 +167,7 @@ object Directives {
     fun replicateDirective(
         holder: Any,
         parameters: Map<String, Any>,
-        directive: Directive
+        directive: Directive,
     ): List<Directive> {
         return if (holder is List<*>) {
             // we received a file list, so we map that list to files
@@ -181,7 +181,7 @@ object Directives {
                         directive.identifier,
                         parameters.plus("reference" to reference),
                         directive.conditional,
-                        directive.lineNumbers
+                        directive.lineNumbers,
                     )
                 }
                 .toList()
@@ -192,16 +192,16 @@ object Directives {
                     LanguageController.messages.ERROR_VALIDATE_EMPTY_FILES_LIST
                         .formatString(
                             directive.lineNumbers
-                                .joinToString(", ", "(", ")")
-                        )
+                                .joinToString(", ", "(", ")"),
+                        ),
                 )
         } else {
             throw AraraException(
                 LanguageController.messages.ERROR_VALIDATE_FILES_IS_NOT_A_LIST
                     .formatString(
                         directive.lineNumbers
-                            .joinToString(", ", "(", ")")
-                    )
+                            .joinToString(", ", "(", ")"),
+                    ),
             )
         }
     }

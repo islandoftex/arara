@@ -55,7 +55,7 @@ tasks {
     create("createAraraAPIObject") {
         listOf(
             "src/nativeCommonMain/kotlin/org/islandoftex/arara/api/AraraAPI.kt",
-            "src/jvmMain/kotlin/org/islandoftex/arara/api/AraraAPI.kt"
+            "src/jvmMain/kotlin/org/islandoftex/arara/api/AraraAPI.kt",
         ).forEach {
             file(it).writeText(
                 """
@@ -67,7 +67,7 @@ tasks {
                         public actual val version: String = "${project.version}"
                     }
 
-                """.trimIndent()
+                """.trimIndent(),
             )
         }
     }

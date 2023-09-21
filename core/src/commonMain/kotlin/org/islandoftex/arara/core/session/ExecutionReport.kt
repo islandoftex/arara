@@ -7,5 +7,5 @@ import kotlin.time.TimeMark
 data class ExecutionReport(
     override val executionStarted: TimeMark,
     override val executionStopped: TimeMark,
-    override val exitCode: Int
+    override val exitCode: Int,
 ) : ExecutionReport

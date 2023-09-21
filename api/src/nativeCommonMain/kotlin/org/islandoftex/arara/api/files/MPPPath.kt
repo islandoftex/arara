@@ -49,7 +49,7 @@ public actual class MPPPath {
     public actual fun normalize(): MPPPath = MPPPath(
         LocalVfs[vfsFile.fullPathNormalized].absolutePath
             .replace("/./", "/")
-            .replace("//", "/")
+            .replace("//", "/"),
     )
 
     public actual fun resolve(p: String): MPPPath =
