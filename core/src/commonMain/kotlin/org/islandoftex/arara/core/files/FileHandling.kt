@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-import com.soywiz.korio.async.runBlockingNoJs
-import com.soywiz.korio.file.std.localVfs
-import com.soywiz.korio.lang.IOException
-import com.soywiz.korio.util.checksum.CRC32
-import com.soywiz.korio.util.checksum.checksum
+import korlibs.io.async.runBlockingNoJs
+import korlibs.io.file.std.localVfs
+import korlibs.io.lang.IOException
+import korlibs.io.util.checksum.CRC32
+import korlibs.io.util.checksum.checksum
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.localization.LanguageController
