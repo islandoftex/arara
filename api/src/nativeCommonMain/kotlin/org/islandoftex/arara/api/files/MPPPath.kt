@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.files
 
-import com.soywiz.korio.async.runBlockingNoJs
-import com.soywiz.korio.async.runBlockingNoSuspensions
-import com.soywiz.korio.file.VfsFile
-import com.soywiz.korio.file.baseName
-import com.soywiz.korio.file.fullPathNormalized
-import com.soywiz.korio.file.isAbsolute
-import com.soywiz.korio.file.std.LocalVfs
+import korlibs.io.async.runBlockingNoJs
+import korlibs.io.async.runBlockingNoSuspensions
+import korlibs.io.file.VfsFile
+import korlibs.io.file.baseName
+import korlibs.io.file.fullPathNormalized
+import korlibs.io.file.isAbsolute
+import korlibs.io.file.std.LocalVfs
 import org.islandoftex.arara.api.AraraIOException
 
 public actual class MPPPath {
