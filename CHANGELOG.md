@@ -14,6 +14,11 @@ on.
 
 ## [Unreleased]
 
+### Fixed
+
+* arara did not run on JVM 21 due to its MVEL dependency. Dependencies have
+  been updated.
+
 ## [7.1.0] - 2023-05-05
 
 ### Added
