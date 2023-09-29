@@ -44,7 +44,7 @@ import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.lua.LuaInterpreter
 import org.islandoftex.arara.mvel.utils.MvelState
 import java.time.LocalDate
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.DurationUnit
 import kotlin.time.TimeSource
 
@@ -199,7 +199,7 @@ class CLI : CliktCommand(
             .copy(
                 maxLoops = maxLoops
                     ?: LinearExecutor.executionOptions.maxLoops,
-                timeoutValue = timeout?.let { Duration.milliseconds(it) }
+                timeoutValue = timeout?.let { it.milliseconds }
                     ?: LinearExecutor.executionOptions.timeoutValue,
                 verbose = if (verbose)
                     true

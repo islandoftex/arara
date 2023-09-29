@@ -13,7 +13,7 @@ import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.utils.formatString
 import kotlin.math.ln
 import kotlin.math.pow
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * Implements display utilitary methods.
@@ -323,14 +323,14 @@ object DisplayUtils {
         if (displayLine || displayException)
             println()
 
-        val secondDuration = Duration.seconds(seconds)
+        val secondDuration = seconds.seconds
         val text = LanguageController.messages.INFO_DISPLAY_EXECUTION_TIME
             .formatString(
                 "%s%s%s".formatString(
                     secondDuration.inWholeSeconds.toString(),
                     Session.userInterfaceOptions.locale
                         .decimalSeparator.toString(),
-                    (secondDuration - Duration.seconds(secondDuration.inWholeSeconds))
+                    (secondDuration - secondDuration.inWholeSeconds.seconds)
                         .inWholeMilliseconds.toString()
                 )
             )
