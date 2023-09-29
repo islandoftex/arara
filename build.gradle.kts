@@ -47,7 +47,7 @@ plugins {
 tasks.withType<DependencyUpdatesTask> {
     rejectVersionIf {
         val stableKeyword = listOf("RELEASE", "FINAL", "GA")
-            .any { candidate.version.toUpperCase().contains(it) }
+            .any { candidate.version.uppercase().contains(it) }
         val isStable = stableKeyword || "^[0-9,.v-]+$".toRegex()
             .matches(candidate.version)
         isStable.not()
@@ -117,7 +117,7 @@ detekt {
         "buildSrc/src/main/kotlin"
     )
     buildUponDefaultConfig = true
-    config = files("detekt-config.yml")
+    config.from(files("detekt-config.yml"))
 }
 
 tasks.register("assembleCTANSourceZip", SourceZipBuilderTask::class.java)

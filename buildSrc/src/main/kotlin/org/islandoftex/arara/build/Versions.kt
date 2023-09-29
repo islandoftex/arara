@@ -11,7 +11,7 @@ object Versions {
     const val kotlin = "1.9.10"
     const val shadow = "8.1.1"
     const val spotless = "6.5.2"
-    const val spotlessChangelog = "3.0.2"
+    const val spotlessChangelog = "2.4.0"
     const val versionsPlugin = "0.48.0"
 
     // non-plugin dependencies
