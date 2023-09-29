@@ -28,7 +28,7 @@ object Versions {
     const val log4j = "2.20.0"
     const val luak = "3.4.0"
     const val mvel = "2.5.0.Final"
-    const val slf4j = "2.0.9"
+    const val slf4j = "1.7.36"
     const val yamlkt = "0.13.0"
     const val ztExec = "1.12"
 }
