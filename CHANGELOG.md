@@ -14,6 +14,13 @@ on.
 
 ## [Unreleased]
 
+## [7.1.1] - 2023-09-23
+
+### Fixed
+
+* `arara` would raise an error when running on Java 21.
+  (see #118)
+
 ## [7.1.0] - 2023-05-05
 
 ### Added
@@ -560,7 +567,8 @@ on.
 For versions previous to version 5.0.0, there has not been any persistent record
 of changes. Please refer to the commit history for details.
 
-[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v7.1.0...master
+[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v7.1.1...master
+[7.1.1]: https://gitlab.com/islandoftex/arara/compare/v7.1.0...v7.1.1
 [7.1.0]: https://gitlab.com/islandoftex/arara/compare/v7.0.5...v7.1.0
 [7.0.5]: https://gitlab.com/islandoftex/arara/compare/v7.0.4...v7.0.5
 [7.0.4]: https://gitlab.com/islandoftex/arara/compare/v7.0.3...v7.0.4
