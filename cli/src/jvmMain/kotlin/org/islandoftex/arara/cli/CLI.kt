@@ -5,6 +5,7 @@ import com.github.ajalt.clikt.completion.completionOption
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.core.context
+import com.github.ajalt.clikt.output.MordantHelpFormatter
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.help
 import com.github.ajalt.clikt.parameters.arguments.multiple
@@ -16,6 +17,8 @@ import com.github.ajalt.clikt.parameters.options.versionOption
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import com.github.ajalt.clikt.parameters.types.restrictTo
+import com.github.ajalt.mordant.rendering.Theme
+import com.github.ajalt.mordant.terminal.Terminal
 import mu.KotlinLogging
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
@@ -67,6 +70,19 @@ class CLI : CliktCommand(
     feature conditional execution and parameter expansion.
     """
 ) {
+    init {
+        context {
+            terminal = Terminal(
+                theme = Theme {
+                    flags["markdown.code.block.border"] = false
+                }
+            )
+            helpFormatter = {
+                MordantHelpFormatter(it)
+            }
+        }
+    }
+
     private val log by option("-l", "--log")
         .help("Generate a log output")
         .flag()
