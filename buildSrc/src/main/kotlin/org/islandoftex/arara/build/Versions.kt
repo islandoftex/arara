@@ -22,7 +22,7 @@ object Versions {
     const val kaml = "0.55.0"
     const val korlibs = "2.7.0"
     const val kotest = "4.6.3"
-    const val kotlinLogging = "3.0.5"
+    const val kotlinLogging = "2.1.21"
     const val kotlinxSerialization = "1.6.0"
     const val jackson = "2.13.1"
     const val log4j = "2.20.0"
