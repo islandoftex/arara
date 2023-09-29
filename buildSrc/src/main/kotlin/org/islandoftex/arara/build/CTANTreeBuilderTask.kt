@@ -16,8 +16,8 @@ open class CTANTreeBuilderTask : DefaultTask() {
         description = "Create a CTAN compliant directory tree."
 
         // depend on the TDS zip
-        inputs.files(project.buildDir.resolve("arara.tds.zip"))
-        outputs.dir(project.buildDir.resolve("ctan").absolutePath)
+        inputs.files(project.layout.buildDirectory.file("arara.tds.zip").get().asFile)
+        outputs.dir(project.layout.buildDirectory.dir("ctan").get().asFile.absolutePath)
     }
 
     /**
@@ -27,13 +27,14 @@ open class CTANTreeBuilderTask : DefaultTask() {
     fun run() {
         logger.lifecycle("Preparing the archive file for CTAN submission")
 
-        val temporaryDir = project.buildDir.resolve("ctan")
-        if (temporaryDir.exists())
+        val temporaryDir = project.layout.buildDirectory.dir("ctan").get().asFile
+        if (temporaryDir.exists()) {
             temporaryDir.deleteRecursively()
+        }
         temporaryDir.mkdirs()
 
         logger.debug("Copying the TDS archive file to the temporary directory")
-        val tdsZip = project.buildDir.resolve("arara.tds.zip")
+        val tdsZip = project.layout.buildDirectory.file("arara.tds.zip").get().asFile
             .copyTo(
                 temporaryDir.resolve("arara.tds.zip"),
                 overwrite = true
