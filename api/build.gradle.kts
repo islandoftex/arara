@@ -6,7 +6,6 @@ kotlin {
     explicitApi()
 
     jvm()
-    linuxX64()
     /*wasm32()
     js {
         browser {
@@ -16,6 +15,7 @@ kotlin {
         }
     }
     linuxArm64()
+    linuxX64()
     macosX64()
     mingwX64()*/
 
@@ -28,7 +28,7 @@ kotlin {
                 api("com.soywiz.korlibs.klock:klock:${Versions.korlibs}")
             }
         }
-        val nativeCommonMain by creating {
+        /*val nativeCommonMain by creating {
             dependsOn(commonMain)
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
@@ -37,7 +37,7 @@ kotlin {
         }
         val linuxX64Main by getting {
             dependsOn(nativeCommonMain)
-        }
+        }*/
         val jvmMain by getting {
             dependencies {
                 implementation("com.soywiz.korlibs.korio:korio:${Versions.korlibs}")
