@@ -77,6 +77,7 @@ tasks {
             exclude(dependency("org.jetbrains.kotlin:.*"))
             exclude(dependency("org.apache.logging.log4j:log4j-slf4j-impl:.*"))
             exclude(dependency("org.mvel:mvel2:.*"))
+            exclude(dependency("net.java.dev.jna:.*:.*"))
         }
     }
 }

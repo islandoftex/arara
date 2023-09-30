@@ -14,6 +14,12 @@ on.
 
 ## [Unreleased]
 
+### Fixed
+
+* `arara` failed to run on Windows, fixed by including JNA classes into the
+  JAR (thanks to @hackbaellchen).
+  (see #119)
+
 ## [7.1.1] - 2023-09-29
 
 ### Fixed
