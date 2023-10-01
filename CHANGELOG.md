@@ -14,6 +14,8 @@ on.
 
 ## [Unreleased]
 
+## [7.1.2] - 2023-10-01
+
 ### Fixed
 
 * `arara` failed to run on Windows, fixed by including JNA classes into the
@@ -573,7 +575,8 @@ on.
 For versions previous to version 5.0.0, there has not been any persistent record
 of changes. Please refer to the commit history for details.
 
-[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v7.1.1...master
+[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v7.1.2...master
+[7.1.2]: https://gitlab.com/islandoftex/arara/compare/v7.1.1...v7.1.2
 [7.1.1]: https://gitlab.com/islandoftex/arara/compare/v7.1.0...v7.1.1
 [7.1.0]: https://gitlab.com/islandoftex/arara/compare/v7.0.5...v7.1.0
 [7.0.5]: https://gitlab.com/islandoftex/arara/compare/v7.0.4...v7.0.5
