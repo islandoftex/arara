@@ -23,7 +23,7 @@ jobs:
     - name: Build jar
       run: ./gradlew :cli:shadowJar
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: arara-${{ matrix.os }}
         path: cli/build/libs/*-with-deps-*.jar
