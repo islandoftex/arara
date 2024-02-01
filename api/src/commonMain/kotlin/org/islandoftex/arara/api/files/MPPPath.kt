@@ -132,4 +132,15 @@ public expect class MPPPath {
      */
     @Throws(AraraIOException::class)
     public fun createDirectories()
+
+    /**
+     * Treat this path as a directory identifier and remove it at
+     * this location including its contents.
+     * Does nothing if this directory does not exist at the current location.
+     *
+     * Fails with an [AraraIOException] if the directory could not be removed
+     * or a regular file exists at the location.
+     */
+    @Throws(AraraIOException::class)
+    public fun removeDirectory()
 }

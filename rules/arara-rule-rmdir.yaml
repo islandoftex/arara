@@ -1,0 +1,25 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2024, Island of TeX
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: rmdir
+name: Remove subdirectory
+authors:
+- hackbaellchen
+- Island of TeX
+commands:
+- name: Remove subdirectory
+  command: >
+    @{
+        toFile(target[0]).removeDirectory();
+        return true;
+    }
+arguments:
+- identifier: target
+  flag: >
+    @{
+        return parameters.target;
+    }
+  required: true

@@ -251,6 +251,40 @@ public actual class MPPPath {
             throw AraraIOException("Directory already exists as a file.")
         }
     }
+
+    /**
+     * Treat this path as a directory identifier and remove it at
+     * this location including its contents.
+     * Does nothing if this directory does not exist at the current location.
+     * As VfsFile::delete can only remove empty directories, a recursive
+     * function call is made to clear the directory first.
+     *
+     * Fails with an [AraraIOException] if the directory could not be removed
+     * or a regular file exists at the location.
+     */
+    public actual fun removeDirectory() {
+        fun removePotentiallyNonEmptyDir(file: VfsFile) {
+            runBlockingNoJs {
+                if (file.exists()) {
+                    if (file.isDirectory()) {
+                        for (child in file.listSimple()) {
+                            removePotentiallyNonEmptyDir(child)
+                        }
+                    }
+                    file.delete()
+                }
+            }
+        }
+        runBlockingNoJs {
+            if (vfsFile.exists()) {
+                if (vfsFile.isDirectory()) {
+                    removePotentiallyNonEmptyDir(vfsFile)
+                } else {
+                    throw AraraIOException("Target directory is a file.")
+                }
+            }
+        }
+    }
 }
 
 /**

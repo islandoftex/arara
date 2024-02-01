@@ -2226,12 +2226,24 @@ providing capabilities to developers.
 % arara: --> 'output.pdf' ] }
 ```
 
+# `rmdir`
+
+This rule removes a directory including its contents at the current location.
+It does nothing if the directory does not exist.
+
+- **[R]** `target`: This option, as the name implies, specifies the name of the
+  target directory to be removed. Keep in mind that this option is required.
+
+```tex
+% arara: rmdir: { target: 'dir_to_remove' }
+```
+
 # `sage`
 
 This rule runs `sage`, a free open source mathematics software system, on the
 corresponding base name of the `❖ currentFile` reference (i.e, the
 name without the associated extension) as a string concatenated with the `sage`
-extension (which can be overriden).
+extension (which can be overridden).
 
 - `program` (default: `sage`): This option, as the name indicates, sets the
   program name. If the tool is not directly available in your system path, make

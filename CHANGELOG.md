@@ -14,6 +14,11 @@ on.
 
 ## [Unreleased]
 
+### Added
+
+* A new `rmdir` rule to remove directories (thanks to @hackbaellchen).
+  (see !53)
+
 ## [7.1.2] - 2023-10-01
 
 ### Fixed
