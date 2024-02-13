@@ -14,6 +14,8 @@ on.
 
 ## [Unreleased]
 
+## [7.1.3] - 2024-02-13
+
 ### Added
 
 * A new `rmdir` rule to remove directories (thanks to @hackbaellchen).
@@ -580,7 +582,8 @@ on.
 For versions previous to version 5.0.0, there has not been any persistent record
 of changes. Please refer to the commit history for details.
 
-[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v7.1.2...master
+[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v7.1.3...master
+[7.1.3]: https://gitlab.com/islandoftex/arara/compare/v7.1.2...v7.1.3
 [7.1.2]: https://gitlab.com/islandoftex/arara/compare/v7.1.1...v7.1.2
 [7.1.1]: https://gitlab.com/islandoftex/arara/compare/v7.1.0...v7.1.1
 [7.1.0]: https://gitlab.com/islandoftex/arara/compare/v7.0.5...v7.1.0
