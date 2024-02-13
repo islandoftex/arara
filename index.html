@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>arara</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+    :root {
+        /* Primary theme color */
+        --primary-color: #cbe368; /* #FED43F; */
+        /* Primary theme text color */
+        --primary-text-color: #543631;
+        /* Primary theme link color */
+        --primary-link-color: #719b25;
+        /* Secondary color: the background body color */
+        --secondary-color: #fcfaf6;
+        --secondary-text-color: #303030;
+        /* Highlight text color of table of content */
+        --toc-highlight-text-color: #d46e13;
+    }
+</style>
+
+    <link rel="icon" href="https://islandoftex.gitlab.io/arara/favicon.svg">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/normalize.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juice.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/fonts/fonts.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juicy-arara.css">
+    
+    <meta name="keywords" content="tex, latex, context, build tool, automation">
+    <meta itemprop="name" content="The cool TeX automation tool">
+    <meta itemprop="description" content="arara is a TeX automation tool based on directives and rules.">
+    
+  </head>
+
+  <body>
+    
+    <header class="pos-absolute" style="background-color: transparent">
+      
+
+<a href="https://islandoftex.gitlab.io/arara/">
+  <div class="logo">
+    <img src="https://islandoftex.gitlab.io/arara/images/arara-text.svg" alt="logo">
+  </div>
+</a>
+
+<nav>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/changelog/">Changelog</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/quickstart/">Quickstart</a>
+  
+  
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/manual">Manual</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/news">News</a>
+  
+  <a class="nav-item subtitle-text" href="https://gitlab.com/islandoftex/arara">GitLab</a>
+  
+  
+</nav>
+
+    </header>
+
+    <div class="hero">
+      
+      <section style="padding:10px">
+        <h1 class="text-center heading-text" style="font-size:50px;">
+          The cool TeX automation tool
+        </h1>
+        <h3 class="title-text text-center">
+          arara is a TeX automation tool based on directives and rules.
+        </h3>
+        <div style="height: 50px;"></div>
+        <div class="text-center">
+          <a href="https://gitlab.com/islandoftex/arara/-/releases">
+            <img src="https://img.shields.io/badge/dynamic/json.svg?color=blue&label=Latest%20release&query=%24.0.name&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2F14349047%2Frepository%2Ftags&style=for-the-badge&logo=GitLab">
+          </a>
+          &nbsp;
+          <a href="https://ctan.org/pkg/arara">
+            <img src="https://img.shields.io/ctan/v/arara?label=CTAN%20packaging&style=for-the-badge">
+          </a>
+        </div>
+        <div class="text-center" style="padding-top: 10px;">
+          <a href="https://gitter.im/Island-of-TeX/arara">
+            <img src="https://img.shields.io/gitter/room/Island-of-TeX/community?label=arara%20chat&style=for-the-badge&logo=Gitter">
+          </a>
+          &nbsp;
+          <a href="https://matrix.to/#/!HfEWIEvFtDplCLSQvz:matrix.org?via=matrix.org">
+            <img src="https://img.shields.io/matrix/arara:matrix.org?label=%23arara%3Amatrix.org&style=for-the-badge&logo=Matrix">
+          </a>
+        </div>
+      </section>
+      <img class="demonstration-gif" src="https://islandoftex.gitlab.io/arara/images/demonstration.gif" alt="demonstration-gif">
+
+      <div class="explore-more text"
+           onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})">
+        Explore More ⇩
+      </div>
+      <style>
+        .hero section {
+            padding: 0 5rem;
+        }
+        @media screen and (max-width: 768px) {
+            .hero section {
+                padding: 0 2rem;
+            }
+            .hero-image {
+                display: none
+            }
+        }
+      </style>
+      
+    </div>
+    
+
+    <main>
+      
+      
+      
+      
+
+      <div class="content text">
+        
+        <div id="features" class="heading-text">Overview</div>
+        
+        
+      </div>
+
+    </main>
+
+    
+    <footer>
+      <small class="subtext">
+        arara by the Island of TeX
+      </small>
+    </footer>
+    
+  </body>
+  <script>
+    function highlightNav(heading) {
+        let pathname = location.pathname;
+        document.querySelectorAll(".toc a").forEach((item) => {
+            item.classList.remove("active");
+        });
+        document.querySelector(".toc a[href$='" + pathname + "#" + heading + "']").classList.add("active");
+    }
+
+    let currentHeading = "";
+    window.onscroll = function () {
+        let h = document.querySelectorAll("h1,h2,h3,h4,h5,h6");
+        let elementArr = [];
+
+        h.forEach(item => {
+            if (item.id !== "") {
+                elementArr[item.id] = item.getBoundingClientRect().top;
+            }
+        });
+        elementArr.sort();
+        for (let key in elementArr) {
+            if (!elementArr.hasOwnProperty(key)) {
+                continue;
+            }
+            if (elementArr[key] > 0 && elementArr[key] < 300) {
+                if (currentHeading !== key) {
+                    highlightNav(key);
+                    currentHeading = key;
+                }
+                break;
+            }
+        }
+    }
+  </script>
+</html>

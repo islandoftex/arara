@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>YAML | arara </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+    :root {
+        /* Primary theme color */
+        --primary-color: #cbe368; /* #FED43F; */
+        /* Primary theme text color */
+        --primary-text-color: #543631;
+        /* Primary theme link color */
+        --primary-link-color: #719b25;
+        /* Secondary color: the background body color */
+        --secondary-color: #fcfaf6;
+        --secondary-text-color: #303030;
+        /* Highlight text color of table of content */
+        --toc-highlight-text-color: #d46e13;
+    }
+</style>
+
+    <link rel="icon" href="https://islandoftex.gitlab.io/arara/favicon.svg">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/normalize.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juice.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/fonts/fonts.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juicy-arara.css">
+    
+    <meta name="keywords" content="tex, latex, context, build tool, automation">
+    <meta itemprop="name" content="The cool TeX automation tool">
+    <meta itemprop="description" content="arara is a TeX automation tool based on directives and rules.">
+    
+  </head>
+
+  <body>
+    
+<header class="box-shadow">
+    
+
+<a href="https://islandoftex.gitlab.io/arara/">
+  <div class="logo">
+    <img src="https://islandoftex.gitlab.io/arara/images/arara-text.svg" alt="logo">
+  </div>
+</a>
+
+<nav>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/changelog/">Changelog</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/quickstart/">Quickstart</a>
+  
+  
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/manual">Manual</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/news">News</a>
+  
+  <a class="nav-item subtitle-text" href="https://gitlab.com/islandoftex/arara">GitLab</a>
+  
+  
+</nav>
+
+</header>
+
+
+    <main>
+      
+      
+      
+      
+      
+      <div class="toc">
+        <div class="toc-sticky">
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/yaml/#collections">Collections</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/yaml/#scalars">Scalars</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/yaml/#tags">Tags</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/yaml/#further-reading">Further reading</a>
+          </div>
+          
+          
+        </div>
+      </div>
+      
+      
+
+      <div class="content text">
+        
+<div class="heading-text">Introduction to the YAML format</div>
+<p>According to the <a rel="noopener noreferrer" target="_blank" href="https://yaml.org/spec/1.2.2/">specification</a>, YAML (a
+recursive acronym for <em>YAML Ain't Markup Language</em>) is a human-friendly, cross
+language, Unicode-based data serialization language designed around the common
+native data type of programming languages. arara uses this format in three
+circumstances:</p>
+<ol>
+<li>
+<p><em>Parametrized directives</em>, as the set of attribute/value pairs (namely,
+argument name and corresponding value) is represented by a map. This
+particular type of directive is formally introduced in <a href="https://islandoftex.gitlab.io/arara/manual/concepts/">Important concepts</a>.</p>
+</li>
+<li>
+<p><em>Rules</em>, as their entire structure is represented by a set of specific keys
+and their corresponding values (a proper YAML document). A rule follows a
+very strict model, detailed in <a href="https://islandoftex.gitlab.io/arara/manual/concepts/">Important concepts</a>.</p>
+</li>
+<li>
+<p><em>Configuration files</em>, as the general settings are represented by a set of
+specific keys and their corresponding values (a proper YAML
+document). Configuration files are covered in
+<a href="https://islandoftex.gitlab.io/arara/manual/configuration/">Configuration</a>.</p>
+</li>
+</ol>
+<p>This chapter only covers the relevant parts of the YAML format for a consistent
+use with arara. For advanced topics, I highly recommend the complete format
+specification, available online.</p>
+<h1 id="collections">Collections</h1>
+<p>According to the specification, YAML's block collections use indentation for
+scope and begin each entry on its own line. Block sequences indicate each entry
+with a dash and space. Mappings use a colon and space to mark each <em>key: value</em>
+pair. Comments begin with an octothorpe <code>#</code>. arara relies solely on mappings and
+a few scalars to sequences at some point. Let us see an example of a sequence of
+scalars:</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">team</span><span>:
+</span><span>- </span><span style="color:#009f78;">Paulo Cereda
+</span><span>- </span><span style="color:#009f78;">Marco Daniel
+</span><span>- </span><span style="color:#009f78;">Brent Longborough
+</span><span>- </span><span style="color:#009f78;">Nicola Talbot
+</span><span>- </span><span style="color:#009f78;">Ben Frank
+</span></code></pre>
+<p>It is quite straightforward: <code>team</code> holds a sequence of four scalars. YAML also
+has flow styles, using explicit indicators rather than indentation to denote
+scope. The flow sequence is written as a comma-separated list within square
+brackets:</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">primes</span><span>: [ </span><span style="color:#8c008a;">2</span><span>, </span><span style="color:#8c008a;">3</span><span>, </span><span style="color:#8c008a;">5</span><span>, </span><span style="color:#8c008a;">7</span><span>, </span><span style="color:#8c008a;">11 </span><span>]
+</span></code></pre>
+<p>Attribute maps are easily represented by nesting entries, respecting
+indentation. For instance, consider a map <code>developer</code> containing two keys,
+<code>name</code> and <code>country</code>. The YAML representation is presented as follows:</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">developer</span><span>:
+</span><span style="color:#00528b;">name</span><span>: </span><span style="color:#009f78;">Paulo
+</span><span style="color:#00528b;">country</span><span>: </span><span style="color:#009f78;">Brazil
+</span></code></pre>
+<p>Similarly, the flow mapping uses curly braces. Observe that this is the form
+adopted by a parametrized directive (see syntax in <a href="https://islandoftex.gitlab.io/arara/manual/concepts/">Important concepts</a>):</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">developer</span><span>: { </span><span style="color:#00528b;">name</span><span>: </span><span style="color:#009f78;">Paulo</span><span>, </span><span style="color:#00528b;">country</span><span>: </span><span style="color:#009f78;">Brazil </span><span>}
+</span></code></pre>
+<p>An attribute map can contain sequences as well. Consider the following code
+where <code>developers</code> holds a list of two developers containing their names
+and countries:</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">developers</span><span>:
+</span><span>- </span><span style="color:#00528b;">name</span><span>: </span><span style="color:#009f78;">Paulo
+</span><span>  </span><span style="color:#00528b;">country</span><span>: </span><span style="color:#009f78;">Brazil
+</span><span>- </span><span style="color:#00528b;">name</span><span>: </span><span style="color:#009f78;">Marco
+</span><span>  </span><span style="color:#00528b;">country</span><span>: </span><span style="color:#009f78;">Germany
+</span></code></pre>
+<p>The previous code can be easily represented in flow style by using square and
+curly brackets to represent sequences and attribute maps.</p>
+<h1 id="scalars">Scalars</h1>
+<p>Scalar content can be written in block notation, using a literal style,
+indicated by a vertical bar, where <em>all line breaks are
+significant</em>. Alternatively, they can be written with the folded style, denoted
+by a greater-than sign, where <em>each line break is folded to a space</em> unless it
+ends an empty or a more-indented line. It is mportant to note that arara
+intensively uses both styles (as seen in Section~\ref{sec:rule}, on
+page~\pageref{sec:rule}). Let us see an example:</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">logo</span><span>: </span><span style="color:#016692;">|
+</span><span style="color:#009f78;">  This is the arara logo
+</span><span style="color:#009f78;">  in its ASCII glory!
+</span><span style="color:#009f78;">    __ _ _ __ __ _ _ __ __ _
+</span><span style="color:#009f78;">   / _` | &#39;__/ _` | &#39;__/ _` |
+</span><span style="color:#009f78;">  | (_| | | | (_| | | | (_| |
+</span><span style="color:#009f78;">   \__,_|_|  \__,_|_|  \__,_|
+</span><span style="color:#00528b;">slogan</span><span>: </span><span style="color:#016692;">&gt;
+</span><span style="color:#009f78;">  The cool TeX
+</span><span style="color:#009f78;">  automation tool
+</span></code></pre>
+<p>As seen in the previous code, <code>logo</code> holds the ASCII logo of our tool,
+respecting line breaks. Similarly, observe that the <code>slogan</code> key holds the text
+with line breaks replaced by spaces (in the same fashion TeX does with
+consecutive, non-empty lines).</p>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Block indentation indicator</strong>
+  <br/>
+  According to the YAML specification, the indentation level of a block scalar is
+typically detected from its first non-empty line. It is an error for any of the
+leading empty lines to contain more spaces than the first non-empty line, hence
+the ASCII logo could not be represented, as it starts with a space.</p>
+<p>When detection would fail, YAML requires that the indentation level for the
+content be given using an explicit indentation indicator. This level is
+specified as the integer number of the additional indentation spaces used for
+the content, relative to its parent node. It would be the case if we want to
+represent our logo without the preceding text.
+</blockquote>
+<p>YAML's flow scalars include the plain style and two quoted styles. The
+double-quoted style provides escape sequences. The single-quoted style is useful
+when escaping is not needed. All flow scalars can span multiple lines. Note that
+line breaks are always folded. Since arara uses MVEL as its underlying scripting
+language (see <a href="https://islandoftex.gitlab.io/arara/manual/mvel/">MVEL</a> for reference), it might be
+advisable to quote scalars when starting with forbidden symbols in YAML.</p>
+<h1 id="tags">Tags</h1>
+<p>According to the specification, in YAML, untagged nodes are given a type
+depending on the application. The examples covered in this primer use the <code>seq</code>,
+<code>map</code> and <code>str</code> types from the fail safe schema. Explicit typing is denoted with
+a tag using the exclamation point symbol. Global tags are usually uniform
+resource identifiers and may be specified in a tag shorthand notation using a
+handle. Application-specific local tags may also be used. For arara, there is a
+special schema used for both rules and configuration files, so in those cases,
+make sure to add <code>!config</code> as global tag:</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#877611;">!config
+</span></code></pre>
+<p>In particular, rules and configuration files of arara are properly covered in
+<a href="https://islandoftex.gitlab.io/arara/manual/concepts/">Important concepts</a> and <a href="https://islandoftex.gitlab.io/arara/manual/configuration/">Configuration</a>. For
+now, it suffices to say that the <code>!config</code> global tag is necessary to provide
+the correct mapping of values inside our tool.</p>
+<h1 id="further-reading">Further reading</h1>
+<p>This chapter does not cover all features of the YAML format, so further reading
+is advisable. I highly recommend the <a rel="noopener noreferrer" target="_blank" href="https://yaml.org/spec/1.2.2/">official YAML
+specification</a>, currently covering the third
+version of the format.</p>
+
+
+      </div>
+
+    </main>
+
+    
+    <footer>
+      <small class="subtext">
+        arara by the Island of TeX
+      </small>
+    </footer>
+    
+  </body>
+  <script>
+    function highlightNav(heading) {
+        let pathname = location.pathname;
+        document.querySelectorAll(".toc a").forEach((item) => {
+            item.classList.remove("active");
+        });
+        document.querySelector(".toc a[href$='" + pathname + "#" + heading + "']").classList.add("active");
+    }
+
+    let currentHeading = "";
+    window.onscroll = function () {
+        let h = document.querySelectorAll("h1,h2,h3,h4,h5,h6");
+        let elementArr = [];
+
+        h.forEach(item => {
+            if (item.id !== "") {
+                elementArr[item.id] = item.getBoundingClientRect().top;
+            }
+        });
+        elementArr.sort();
+        for (let key in elementArr) {
+            if (!elementArr.hasOwnProperty(key)) {
+                continue;
+            }
+            if (elementArr[key] > 0 && elementArr[key] < 300) {
+                if (currentHeading !== key) {
+                    highlightNav(key);
+                    currentHeading = key;
+                }
+                break;
+            }
+        }
+    }
+  </script>
+</html>
