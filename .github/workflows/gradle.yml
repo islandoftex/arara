@@ -14,7 +14,7 @@ jobs:
       with:
         java-version: 8
         distribution: adopt
-    - uses: gradle/wrapper-validation-action@v2
+    - uses: gradle/wrapper-validation-action@v3
     - uses: gradle/action/setup-gradle@v3
       with:
         gradle-version: current
