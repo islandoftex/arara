@@ -1,0 +1,33 @@
+!config
+identifier: pdftocairo
+name: pdftocairo
+authors:
+- samcarter
+commands:
+- name: The pdftocairo program
+  command: >
+    @{
+      return getCommand('pdftocairo', '-' + format[0], getBasename(reference.fileName)+'.pdf', options, output);
+    }
+arguments:
+- identifier: format
+  flag: >
+    @{
+        return parameters.format;
+    }
+  default: png
+- identifier: output
+  flag: >
+    @{
+        return parameters.output;
+    }
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.');
+        }
+    }  

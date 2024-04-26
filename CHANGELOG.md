@@ -14,6 +14,10 @@ on.
 
 ## [Unreleased]
 
+### Added
+
+* a new `pdftocairo` rule to convert pdf's into various formats.
+
 ## [7.1.3] - 2024-02-13
 
 ### Added

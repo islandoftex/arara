@@ -1984,6 +1984,27 @@ string concatenated with the `pdf` suffix.
 % arara: pdftk: { options: [ burst ] }
 ```
 
+# `pdftocairo`
+
+This rule runs the `pdftocairo` program, which converts Portable Document Format documents to a number of possible output formats using the cairo output device of the poppler PDF library.
+
+- `format` (default: `png`): selects the desired outout format. Possible values are `png`, `jpeg`, `tiff`, `pdf`, `print`, `ps`, `eps` and `svg`.
+
+- `output`: sets the basename of the output file.
+
+- `options`: This option, as the name indicates, takes a list of raw
+  command line options and appends it to the actual script call. An error is
+  thrown if any data structure other than a proper list is provided as the
+  value.
+
+```tex
+% arara: pdftocairo: { 
+% arara: --> format: 'png',
+% arara: --> output: 'imagename',
+% arara: --> options: [ '-r', '150', '-transp', '-singlefile' ]
+% arara: --> }
+```
+
 # `perltex`
 
 This rule runs `perltex`, a wrapper that enables a symbiosis between Perl, a
