@@ -476,7 +476,7 @@ more.
   value.
 
 ```tex
-% arara: convert: { options: [ 'photo1.jpg', '--resize',
+% arara: convert: { options: [ 'photo1.jpg', '-resize',
 % arara: --> '50%', 'photo2.jpg' ] }
 ```
 
