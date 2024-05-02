@@ -16,7 +16,14 @@ on.
 
 ### Added
 
-* a new `pdftocairo` rule to convert pdf's into various formats.
+* A new `pdftocairo` rule to convert pdf's into various formats (thanks
+  to @samcarter).
+  (see !57)
+
+### Fixed
+
+* Documentation for imagemagick options (thanks to @samcarter).
+  (see !58)
 
 ## [7.1.3] - 2024-02-13
 
