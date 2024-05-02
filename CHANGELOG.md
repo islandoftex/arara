@@ -14,6 +14,8 @@ on.
 
 ## [Unreleased]
 
+## [7.1.4] - 2024-05-02
+
 ### Added
 
 * A new `pdftocairo` rule to convert pdf's into various formats (thanks
@@ -593,7 +595,8 @@ on.
 For versions previous to version 5.0.0, there has not been any persistent record
 of changes. Please refer to the commit history for details.
 
-[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v7.1.3...master
+[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v7.1.4...master
+[7.1.4]: https://gitlab.com/islandoftex/arara/compare/v7.1.3...v7.1.4
 [7.1.3]: https://gitlab.com/islandoftex/arara/compare/v7.1.2...v7.1.3
 [7.1.2]: https://gitlab.com/islandoftex/arara/compare/v7.1.1...v7.1.2
 [7.1.1]: https://gitlab.com/islandoftex/arara/compare/v7.1.0...v7.1.1
