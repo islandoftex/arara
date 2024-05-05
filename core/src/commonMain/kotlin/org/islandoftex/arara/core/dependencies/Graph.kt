@@ -59,7 +59,7 @@ internal open class Graph<T> {
             .forEach { queue.add(it.key) }
 
         while (queue.isNotEmpty()) {
-            val vertex: T = queue.removeFirst()
+            val vertex: T = queue.removeAt(0)
             order.add(vertex)
             vertices[vertex]?.forEach {
                 work[it] = work[it]!!.dec()
