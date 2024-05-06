@@ -20,7 +20,7 @@ object Versions {
     const val jackson = "2.13.1"
     const val jna = "5.13.0"
     const val junit = "5.10.2"
-    const val kaml = "0.59.0"
+    const val kaml = "0.55.0"
     const val korlibs = "2.7.0"
     const val kotest = "4.6.3"
     const val kotlinLogging = "2.1.21"
