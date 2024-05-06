@@ -102,8 +102,8 @@ object TaskHelper {
                 Go through all the motions of running a command but with no actual calls.
                 .IP \fB--safe-run\fP
                 Run in safe mode and disable potentially harmful features.
-                .IP \fB--header\fP
-                Extract directives only in the file header.
+                .IP \fB--whole-file\fP
+                Extract directives in the file, not only in the header.
                 .IP \fB--preamble\fP name
                 Set the file preamble as named based on the configuration file.
                 .IP \fB--timeout\fP milliseconds
@@ -117,6 +117,8 @@ object TaskHelper {
                 .IP \fB--call-property\fP value
                 Pass a property as \fCkey=value\fP parameter into the application
                 to be used within the session.
+                .IP \fB--generate-completion\fP shell
+                Generate a completion script for arara.
                 .IP \fB--version\fP
                 Show the version and exit.
                 .IP \fB--help\fP
