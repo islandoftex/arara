@@ -1,2 +1,16 @@
 rootProject.name = "arara"
-include("api", "core", "lua", "mvel", "kotlin-dsl", "cli", "docs")
+
+dependencyResolutionManagement {
+	repositories {
+		mavenCentral()
+	}
+}
+
+include(
+    "api",
+    "cli",
+    "core",
+    "kotlin-dsl",
+    "lua",
+    "mvel",
+)
