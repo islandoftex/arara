@@ -18,6 +18,30 @@
         "type": "github"
       }
     },
+    "gradle2nix": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1718325867,
+        "narHash": "sha256-UU9a/haXvr0qKo4noB40K7d47Zl9ZiigVE5rkeHBS7s=",
+        "owner": "tadfisher",
+        "repo": "gradle2nix",
+        "rev": "03c1b713ad139eb6dfc8d463b5bd348368125cf1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tadfisher",
+        "ref": "v2",
+        "repo": "gradle2nix",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1714906307,
@@ -36,6 +60,7 @@
     "root": {
       "inputs": {
         "flake-utils": "flake-utils",
+        "gradle2nix": "gradle2nix",
         "nixpkgs": "nixpkgs"
       }
     },

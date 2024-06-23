@@ -13,3 +13,5 @@ docs/**/version.txt
 api/src/**/AraraAPI.kt
 target
 website/public/*
+# nix build artifact
+result

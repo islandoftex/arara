@@ -1,56 +1,59 @@
-# WARNING: This flake is for development purposes only. Do not attempt
-# to build arara with it (see #113), it is broken in a currently-won't-fix
-# status, although you are welcome to provide us with a working Nix build.
-# If you want to build arara, please use gradle as documented. The Nix
-# development shell will pull in all relevant packages for your build
-# environment.
 {
   description = "arara - the cool TeX automation tool";
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    gradle2nix.url = "github:tadfisher/gradle2nix/v2";
+    gradle2nix.inputs = {
+      nixpkgs.follows = "nixpkgs";
+      flake-utils.follows = "flake-utils";
+    };
   };
 
-  outputs = { self, flake-utils, nixpkgs }:
+  outputs = { self, flake-utils, nixpkgs, gradle2nix }:
     flake-utils.lib.eachSystem [ "x86_64-linux" ] (system:
       let
-        pkgs = nixpkgs.legacyPackages.${system};
+        pkgs = import nixpkgs { inherit system; };
       in
       {
-        defaultPackage =
-          with import nixpkgs { inherit system; };
-          pkgs.stdenv.mkDerivation rec {
-            pname = "arara";
-            # This version corresponds to the major version of arara.
-            # If a more granular adjustment is needed, please raise an issue.
-            # see also https://gitlab.com/islandoftex/arara/-/issues/97
-            version = "7.0.0";
+        defaultPackage = gradle2nix.builders.${system}.buildGradlePackage rec {
+          pname = "arara";
+          # This version corresponds to the major version of arara.
+          # If a more granular adjustment is needed, please raise an issue.
+          # see also https://gitlab.com/islandoftex/arara/-/issues/97
+          version = "7.0.0";
 
-            src = ./.;
+          src = ./.;
 
-            nativeBuildInputs = [ pkgs.jdk8 pkgs.gradle ];
+          # generated using `gradle2nix` (no arguments required)
+          lockFile = ./gradle.lock;
 
-            buildPhase = ''
-              export GRADLE_USER_HOME=$PWD
-              ./gradlew --no-daemon :cli:shadowJar
-            '';
+          nativeBuildInputs = [ pkgs.makeWrapper ];
 
-            installPhase = ''
-              mkdir -p $out/bin
-              cp cli/build/libs/arara-cli-with-deps*.jar $out/bin/arara.jar
-            '';
+          gradleBuildFlags = [ "--no-daemon" ":cli:shadowJar" ];
 
-            meta = with pkgs.lib; {
-              homepage = "https://gitlab.com/islandoftex/arara";
-              description = "arara is a TeX automation tool based on rules and directives. It gives you a way to enhance your TeX experience.";
-              license = licenses.bsd3;
-            };
+          installPhase = ''
+            mkdir -p $out/share/java/
+
+            install -Dm644 cli/build/libs/arara-cli-with-deps-*.jar $out/share/java/arara-${version}.jar
+            install -Dm644 -t $out/share/java/rules rules/*
+
+            makeWrapper ${pkgs.jre}/bin/java $out/bin/arara \
+              --add-flags "-jar $out/share/java/arara-${version}.jar"
+          '';
+
+          meta = with pkgs.lib; {
+            homepage = "https://gitlab.com/islandoftex/arara";
+            description = "arara is a TeX automation tool based on rules and directives. It gives you a way to enhance your TeX experience.";
+            license = licenses.bsd3;
           };
+        };
 
         devShell = pkgs.mkShell {
           inputsFrom = builtins.attrValues self.defaultPackage;
           buildInputs = with pkgs; [
+            gradle2nix.packages.${system}.gradle2nix
             htmlq
             nixpkgs-fmt
             python3Packages.weasyprint
