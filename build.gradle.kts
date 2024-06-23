@@ -12,7 +12,6 @@ import org.islandoftex.arara.build.DocumentationSourceZipBuilderTask
 import org.islandoftex.arara.build.SourceZipBuilderTask
 import org.islandoftex.arara.build.TDSTreeBuilderTask
 import org.islandoftex.arara.build.TDSZipBuilderTask
-import org.islandoftex.arara.build.Versions
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
@@ -31,15 +30,14 @@ if (!project.hasProperty("jobToken")) {
 }
 
 plugins {
-    val versions = org.islandoftex.arara.build.Versions
-    kotlin("multiplatform") version versions.kotlin apply false // Apache 2.0
-    kotlin("plugin.serialization") version versions.kotlin apply false // Apache 2.0
-    id("io.github.goooler.shadow") version versions.shadow apply false // Apache 2.0
-    id("com.github.ben-manes.versions") version versions.versionsPlugin // Apache 2.0
-    id("com.diffplug.spotless-changelog") version versions.spotlessChangelog // Apache 2.0
-    id("org.jetbrains.dokka") version versions.dokka apply false // Apache 2.0
-    id("io.gitlab.arturbosch.detekt") version versions.detekt // Apache 2.0
-    id("com.diffplug.spotless") version versions.spotless // Apache 2.0
+    kotlin("multiplatform") version libs.versions.kotlin apply false // Apache 2.0
+    kotlin("plugin.serialization") version libs.versions.kotlin apply false // Apache 2.0
+    alias(libs.plugins.shadow) apply false // Apache 2.0
+    alias(libs.plugins.versions) // Apache 2.0
+    alias(libs.plugins.spotlessChangelog) // Apache 2.0
+    alias(libs.plugins.dokka) apply false // Apache 2.0
+    alias(libs.plugins.detekt) // Apache 2.0
+    alias(libs.plugins.spotless) // Apache 2.0
 }
 
 // exclude alpha and beta versions
@@ -151,6 +149,10 @@ allprojects {
         maven("https://dl.bintray.com/korlibs/korlibs/")
     }
 }
+
+// accessing `libs` does not work inside `subprojects` blocks (wont-fix issue),
+// workaround from https://github.com/gradle/gradle/issues/18237#issuecomment-928074251
+val junitEngine = libs.junit.jupiter.engine
 subprojects {
     if (!path.contains("docs")) {
         apply(plugin = "org.jetbrains.dokka")
@@ -198,7 +200,7 @@ subprojects {
                 val jvmTest by getting {
                     dependencies {
                         implementation(kotlin("test-junit5"))
-                        runtimeOnly("org.junit.jupiter:junit-jupiter-engine:${Versions.junit}")
+                        runtimeOnly(junitEngine)
                     }
                 }
             }

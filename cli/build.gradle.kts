@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.islandoftex.arara.build.Versions
 
 plugins {
-    id("io.github.goooler.shadow")
+    alias(libs.plugins.shadow)
     application
     jacoco
 }
@@ -21,7 +20,7 @@ kotlin {
             dependencies {
                 implementation(project(":core"))
                 implementation(project(":lua"))
-                implementation("io.github.microutils:kotlin-logging:${Versions.kotlinLogging}")
+                implementation(libs.kotlin.logging)
             }
         }
         val jvmMain by getting {
@@ -29,20 +28,20 @@ kotlin {
                 implementation(project(":core"))
                 implementation(project(":mvel"))
 
-                implementation(kotlin("reflect", Versions.kotlin))
-                implementation("com.github.ajalt.clikt:clikt:${Versions.clikt}")
-                implementation("net.mamoe.yamlkt:yamlkt:${Versions.yamlkt}")
-                implementation("org.mvel:mvel2:${Versions.mvel}")
-                implementation("org.slf4j:slf4j-api:${Versions.slf4j}")
-                implementation("io.github.microutils:kotlin-logging:${Versions.kotlinLogging}")
-                implementation("org.apache.logging.log4j:log4j-core:${Versions.log4j}")
-                implementation("org.apache.logging.log4j:log4j-slf4j-impl:${Versions.log4j}")
+                implementation(kotlin("reflect", libs.versions.kotlin.get()))
+                implementation(libs.clikt)
+                implementation(libs.yamlkt)
+                implementation(libs.mvel)
+                implementation(libs.slf4j.api)
+                implementation(libs.kotlin.logging)
+                implementation(libs.log4j.core)
+                implementation(libs.log4j.impl)
             }
         }
         val jvmTest by getting {
             dependencies {
-                implementation("io.kotest:kotest-runner-junit5-jvm:${Versions.kotest}")
-                implementation("io.kotest:kotest-assertions-core-jvm:${Versions.kotest}")
+                implementation(libs.kotest.runner.jvm)
+                implementation(libs.kotest.assertions.jvm)
             }
         }
     }

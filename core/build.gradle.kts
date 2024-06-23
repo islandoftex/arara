@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
-import org.islandoftex.arara.build.Versions
-
 plugins {
     kotlin("plugin.serialization")
 }
@@ -38,13 +36,13 @@ kotlin {
 
             dependencies {
                 api(project(":api"))
-                implementation("io.github.microutils:kotlin-logging:${Versions.kotlinLogging}")
+                implementation(libs.kotlin.logging)
             }
         }
         val commonMain by getting {
             dependencies {
-                implementation("com.soywiz.korlibs.korio:korio:${Versions.korlibs}")
-                implementation("net.mamoe.yamlkt:yamlkt:${Versions.yamlkt}")
+                implementation(libs.korlibs.korio)
+                implementation(libs.yamlkt)
             }
         }
         /*val nativeCommonMain by creating {
@@ -55,15 +53,15 @@ kotlin {
         }*/
         val jvmMain by getting {
             dependencies {
-                implementation("org.zeroturnaround:zt-exec:${Versions.ztExec}")
-                implementation("com.soywiz.korlibs.korio:korio:${Versions.korlibs}")
+                implementation(libs.ztexec)
+                implementation(libs.korlibs.korio)
             }
         }
         val jvmTest by getting {
             dependencies {
-                implementation("io.kotest:kotest-runner-junit5-jvm:${Versions.kotest}")
-                implementation("io.kotest:kotest-assertions-core-jvm:${Versions.kotest}")
-                runtimeOnly("org.slf4j:slf4j-simple:${Versions.slf4j}")
+                implementation(libs.kotest.runner.jvm)
+                implementation(libs.kotest.assertions.jvm)
+                runtimeOnly(libs.slf4j.simple)
             }
         }
     }

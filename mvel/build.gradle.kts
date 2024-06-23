@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
-import org.islandoftex.arara.build.Versions
-
 plugins {
     kotlin("plugin.serialization")
 }
@@ -15,7 +13,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":core"))
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:${Versions.kotlinxSerialization}")
+                implementation(libs.kotlinx.serialization)
             }
         }
         val jvmMain by getting {
@@ -23,10 +21,10 @@ kotlin {
                 api(project(":api"))
                 implementation(project(":core"))
                 implementation(kotlin("stdlib"))
-                implementation("org.slf4j:slf4j-api:${Versions.slf4j}")
-                implementation("org.mvel:mvel2:${Versions.mvel}")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:${Versions.kotlinxSerialization}")
-                implementation("com.charleskorn.kaml:kaml:${Versions.kaml}")
+                implementation(libs.slf4j.api)
+                implementation(libs.mvel)
+                implementation(libs.kotlinx.serialization)
+                implementation(libs.kaml)
             }
         }
     }

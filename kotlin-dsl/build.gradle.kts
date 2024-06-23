@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
-import org.islandoftex.arara.build.Versions
-
 kotlin {
     sourceSets {
         all {
@@ -18,13 +16,13 @@ kotlin {
 
                 runtimeOnly(kotlin("compiler-embeddable"))
                 runtimeOnly(kotlin("scripting-dependencies"))
-                runtimeOnly("net.java.dev.jna:jna:${Versions.jna}")
+                runtimeOnly(libs.jna)
             }
         }
         val jvmTest by getting {
             dependencies {
-                implementation("io.kotest:kotest-runner-junit5-jvm:${Versions.kotest}")
-                implementation("io.kotest:kotest-assertions-core-jvm:${Versions.kotest}")
+                implementation(libs.kotest.runner.jvm)
+                implementation(libs.kotest.assertions.jvm)
             }
         }
     }

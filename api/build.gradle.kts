@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
-import org.islandoftex.arara.build.Versions
-
 kotlin {
     explicitApi()
 
@@ -25,14 +23,14 @@ kotlin {
         }
         val commonMain by getting {
             dependencies {
-                api("com.soywiz.korlibs.klock:klock:${Versions.korlibs}")
+                api(libs.korlibs.klock)
             }
         }
         /*val nativeCommonMain by creating {
             dependsOn(commonMain)
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
-                implementation("com.soywiz.korlibs.korio:korio:${Versions.korlibs}")
+                implementation(libs.kotlinx.coroutines)
+                implementation(libs.korlibs.korio)
             }
         }
         val linuxX64Main by getting {
@@ -40,13 +38,13 @@ kotlin {
         }*/
         val jvmMain by getting {
             dependencies {
-                implementation("com.soywiz.korlibs.korio:korio:${Versions.korlibs}")
+                implementation(libs.korlibs.korio)
             }
         }
         val jvmTest by getting {
             dependencies {
-                implementation("io.kotest:kotest-runner-junit5-jvm:${Versions.kotest}")
-                implementation("io.kotest:kotest-assertions-core-jvm:${Versions.kotest}")
+                implementation(libs.kotest.runner.jvm)
+                implementation(libs.kotest.assertions.jvm)
             }
         }
     }

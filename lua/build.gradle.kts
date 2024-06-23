@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
-import org.islandoftex.arara.build.Versions
-
 plugins {
     kotlin("plugin.serialization")
 }
@@ -16,7 +14,7 @@ kotlin {
             dependencies {
                 api(project(":api"))
                 implementation(project(":core"))
-                implementation("com.soywiz.korlibs.luak:luak:${Versions.luak}")
+                implementation(libs.korlibs.luak)
             }
         }
         val commonTest by getting {
@@ -28,7 +26,7 @@ kotlin {
         val jvmTest by getting {
             dependencies {
                 implementation(kotlin("test-junit5"))
-                runtimeOnly("org.junit.jupiter:junit-jupiter-engine:${Versions.junit}")
+                runtimeOnly(libs.junit.jupiter.engine)
             }
         }
     }

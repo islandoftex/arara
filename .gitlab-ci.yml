@@ -87,10 +87,10 @@ test:flake-dependencies:
   rules:
     - changes:
         - build.gradle.kts
-        - buildSrc/**/Versions.kt
         - flake.lock
         - flake.nix
         - gradle.lock
+        - gradle/libs.versions.toml
         - gradle/wrapper/gradle-wrapper.properties
 
 test:spotless:
