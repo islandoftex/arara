@@ -14,6 +14,11 @@ on.
 
 ## [Unreleased]
 
+### Changed
+
+* Various build system improvements by @b-fein.
+  (see !61, !62)
+
 ## [7.1.5] - 2024-05-06
 
 ### Fixed
