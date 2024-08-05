@@ -2,7 +2,6 @@ variables:
   # disable the Gradle daemon for Continuous Integration servers
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
   GIT_SUBMODULE_STRATEGY: recursive
-  ZOLA_VERSION: "v0.13.0"
 
 include:
   - template: SAST.gitlab-ci.yml
