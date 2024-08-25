@@ -45,7 +45,13 @@ class EnvironmentTest : ShouldSpec({
         }
         should("error with timeout exception") {
             val (exit, output) = Environment.executeSystemCommand(
-                Command(listOf("sleep", "1s")), true, 500.milliseconds
+                if (Environment.checkOS(Environment.SupportedOS.MACOS)) {
+                    Command(listOf("sleep", "1"))
+                } else {
+                    Command(listOf("sleep", "1s"))
+                },
+                true,
+                500.milliseconds
             )
             exit shouldBe Environment.errorExitStatus
             output shouldContain TimeoutException::class.java.name
