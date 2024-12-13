@@ -14,7 +14,8 @@ commands:
   command: >
     @{
         return getCommand('tex-fmt', check, print, messages, tabs, stdin,
-                          config, wrap, tabsize, options, reference);
+                          config, location, wrap, length, tabsize, options,
+                          reference);
     }
 arguments:
 - identifier: check
@@ -47,19 +48,38 @@ arguments:
     @{
         isTrue(parameters.stdin, '--stdin')
     }
+- identifier: location
+  flag: >
+    @{
+        check = parameters.containsKey('config');
+        if (check && isTrue(parameters.config)) {
+            return [ '--config', parameters.location ];
+        }
+        else {
+            throwError('This key requires config to be enabled.');
+        }
+    }
 - identifier: config
   flag: >
     @{
-        config = parameters.config.toString().toLowerCase();
-        return isTrue([ 'no', 'false', '0', 'off' ].contains(config),
-                        '--noconfig', [ '--config', parameters.config ]);
+        isFalse(parameters.config, '--noconfig');
     }
 - identifier: wrap
   flag: >
     @{
-        wrap = parameters.wrap.toString().toLowerCase();
-        return isTrue([ 'no', 'false', '0', 'off' ].contains(wrap),
-                      '--nowrap', [ '--wraplen', parameters.wrap ]);
+        isFalse(parameters.wrap, '--nowrap');
+    }
+- identifier: length
+  flag: >
+    @{
+        check = parameters.containsKey('wrap');
+        wrap = check ? parameters.wrap : true;
+        if (isTrue(wrap)) {
+            return [ '--wraplen', parameters.length ];
+        }
+        else {
+            throwError('This key cannot be used when wrap is disabled.');
+        }
     }
 - identifier: tabsize
   flag: >
