@@ -1,0 +1,78 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2024, Island of TeX
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: texfmt
+name: tex-fmt
+authors:
+- William Underwood
+- Island of TeX
+commands:
+- name: The tex-fmt application
+  command: >
+    @{
+        return getCommand('tex-fmt', check, print, messages, tabs, stdin,
+                          config, wrap, tabsize, options, reference);
+    }
+arguments:
+- identifier: check
+  flag: >
+    @{
+        isTrue(parameters.check, '--check')
+    }
+- identifier: print
+  flag: >
+    @{
+        isTrue(parameters.print, '--print')
+    }
+- identifier: messages
+  flag: >
+    @{
+      if ([ 'verbose', 'quiet', 'trace' ].contains(parameters.messages)) {
+          return '--'.concat(parameters.messages);
+      }
+      else {
+          throwError('You provided an invalid value for messages.');
+      }
+    }
+- identifier: tabs
+  flag: >
+    @{
+        isTrue(parameters.tabs, '--usetabs')
+    }
+- identifier: stdin
+  flag: >
+    @{
+        isTrue(parameters.stdin, '--stdin')
+    }
+- identifier: config
+  flag: >
+    @{
+        config = parameters.config.toString().toLowerCase();
+        return isTrue([ 'no', 'false', '0', 'off' ].contains(config),
+                        '--noconfig', [ '--config', parameters.config ]);
+    }
+- identifier: wrap
+  flag: >
+    @{
+        wrap = parameters.wrap.toString().toLowerCase();
+        return isTrue([ 'no', 'false', '0', 'off' ].contains(wrap),
+                      '--nowrap', [ '--wraplen', parameters.wrap ]);
+    }
+- identifier: tabsize
+  flag: >
+    @{
+        [ '--tabsize', parameters.tabsize ]
+    }
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.');
+        }
+    }
