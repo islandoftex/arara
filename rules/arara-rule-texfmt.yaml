@@ -1,0 +1,98 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2024, Island of TeX
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: texfmt
+name: tex-fmt
+authors:
+- William Underwood
+- Island of TeX
+commands:
+- name: The tex-fmt application
+  command: >
+    @{
+        return getCommand('tex-fmt', check, print, messages, tabs, stdin,
+                          config, location, wrap, length, tabsize, options,
+                          reference);
+    }
+arguments:
+- identifier: check
+  flag: >
+    @{
+        isTrue(parameters.check, '--check')
+    }
+- identifier: print
+  flag: >
+    @{
+        isTrue(parameters.print, '--print')
+    }
+- identifier: messages
+  flag: >
+    @{
+      if ([ 'verbose', 'quiet', 'trace' ].contains(parameters.messages)) {
+          return '--'.concat(parameters.messages);
+      }
+      else {
+          throwError('You provided an invalid value for messages.');
+      }
+    }
+- identifier: tabs
+  flag: >
+    @{
+        isTrue(parameters.tabs, '--usetabs')
+    }
+- identifier: stdin
+  flag: >
+    @{
+        isTrue(parameters.stdin, '--stdin')
+    }
+- identifier: location
+  flag: >
+    @{
+        check = parameters.containsKey('config');
+        if (check && isTrue(parameters.config)) {
+            return [ '--config', parameters.location ];
+        }
+        else {
+            throwError('This key requires config to be enabled.');
+        }
+    }
+- identifier: config
+  flag: >
+    @{
+        isFalse(parameters.config, '--noconfig');
+    }
+- identifier: wrap
+  flag: >
+    @{
+        isFalse(parameters.wrap, '--nowrap');
+    }
+- identifier: length
+  flag: >
+    @{
+        check = parameters.containsKey('wrap');
+        wrap = check ? parameters.wrap : true;
+        if (isTrue(wrap)) {
+            return [ '--wraplen', parameters.length ];
+        }
+        else {
+            throwError('This key cannot be used when wrap is disabled.');
+        }
+    }
+- identifier: tabsize
+  flag: >
+    @{
+        [ '--tabsize', parameters.tabsize ]
+    }
+- identifier: options
+  flag: >
+    @{
+        if (isList(parameters.options)) {
+            return parameters.options;
+        }
+        else {
+            throwError('I was expecting a list of options.');
+        }
+    }
