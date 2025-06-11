@@ -15,17 +15,35 @@ open class TDSTreeBuilderTask : DefaultTask() {
 
         // depend on shadow Jar input
         inputs.files(
-            project.fileTree("cli/build/libs/")
-                .include("*-with-deps*.jar")
+            project
+                .fileTree("cli/build/libs/")
+                .include("*-with-deps*.jar"),
         )
         // depend on source zips as required by CTAN
-        inputs.file(project.layout.buildDirectory.file("arara-${project.version}-src.zip").get().asFile)
-        inputs.file(project.layout.buildDirectory.file("arara-${project.version}-docsrc.zip").get().asFile)
+        inputs.file(
+            project.layout.buildDirectory
+                .file(
+                    "arara-${project.version}-src.zip",
+                ).get()
+                .asFile,
+        )
+        inputs.file(
+            project.layout.buildDirectory
+                .file(
+                    "arara-${project.version}-docsrc.zip",
+                ).get()
+                .asFile,
+        )
         // depend on documentation (it should be compiled)
         inputs.dir("docs")
         inputs.dir("cli")
         inputs.dir("rules")
-        outputs.dir(project.layout.buildDirectory.dir("tds").get().asFile.absolutePath)
+        outputs.dir(
+            project.layout.buildDirectory
+                .dir("tds")
+                .get()
+                .asFile.absolutePath,
+        )
     }
 
     /**
@@ -34,7 +52,11 @@ open class TDSTreeBuilderTask : DefaultTask() {
     @TaskAction
     @Suppress("LongMethod")
     fun run() {
-        val temporaryDir = project.layout.buildDirectory.dir("tds").get().asFile
+        val temporaryDir =
+            project.layout.buildDirectory
+                .dir("tds")
+                .get()
+                .asFile
         if (temporaryDir.exists()) {
             temporaryDir.deleteRecursively()
         }
@@ -62,7 +84,15 @@ open class TDSTreeBuilderTask : DefaultTask() {
 
         logger.debug("Copying the zipped documentation sources")
         project.copy {
-            from(project.files(project.layout.buildDirectory.file("arara-${project.version}-docsrc.zip").get().asFile))
+            from(
+                project.files(
+                    project.layout.buildDirectory
+                        .file(
+                            "arara-${project.version}-docsrc.zip",
+                        ).get()
+                        .asFile,
+                ),
+            )
             into(temporaryDir.resolve("doc/support/arara"))
         }
 
@@ -81,8 +111,9 @@ open class TDSTreeBuilderTask : DefaultTask() {
         logger.debug("Creating the man page")
         TaskHelper.createManPage(
             temporaryDir
-                .resolve("doc/man/man1/${project.name}.1").toPath(),
-            project.version.toString()
+                .resolve("doc/man/man1/${project.name}.1")
+                .toPath(),
+            project.version.toString(),
         )
 
         logger.info("Building the scripts directory")
@@ -105,11 +136,19 @@ open class TDSTreeBuilderTask : DefaultTask() {
         }
 
         logger.debug("Creating the shell script wrapper")
-        TaskHelper.createScript(temporaryDir.resolve("scripts/arara/arara.sh").toPath())
+        TaskHelper.createScript(
+            temporaryDir.resolve("scripts/arara/arara.sh").toPath(),
+        )
 
         logger.info("Building the source code structure")
         project.copy {
-            from(project.layout.buildDirectory.file("arara-${project.version}-src.zip").get().asFile)
+            from(
+                project.layout.buildDirectory
+                    .file(
+                        "arara-${project.version}-src.zip",
+                    ).get()
+                    .asFile,
+            )
             into(temporaryDir.resolve("source/support/arara"))
         }
     }

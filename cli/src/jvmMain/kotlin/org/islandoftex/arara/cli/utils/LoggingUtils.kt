@@ -28,13 +28,16 @@ object LoggingUtils {
             // TODO: check for multi-threading
             ThreadContext.put(
                 "araraLogFile",
-                loggingOptions.logFile.normalize().toString()
+                loggingOptions.logFile.normalize().toString(),
             )
-            val loggerContext = LogManager.getContext(false)
-                as org.apache.logging.log4j.core.LoggerContext
-            loggerContext.configLocation = LoggingUtils::class.java
-                .getResource("/org/islandoftex/arara/cli/configuration/log4j2.xml")
-                .toURI()
+            val loggerContext =
+                LogManager.getContext(false)
+                    as org.apache.logging.log4j.core.LoggerContext
+            loggerContext.configLocation =
+                LoggingUtils::class.java
+                    .getResource(
+                        "/org/islandoftex/arara/cli/configuration/log4j2.xml",
+                    ).toURI()
             loggerContext.reconfigure()
         } else {
             Configurator.setRootLevel(Level.OFF)
@@ -46,6 +49,9 @@ object LoggingUtils {
      * behaviour out of the box.
      */
     fun init() {
-        setupLogging(org.islandoftex.arara.core.configuration.LoggingOptions())
+        setupLogging(
+            org.islandoftex.arara.core.configuration
+                .LoggingOptions(),
+        )
     }
 }

@@ -20,9 +20,8 @@ import kotlin.time.ExperimentalTime
 @Serializable
 data class SerialFileType(
     private var extension: String = FileType.INVALID_EXTENSION,
-    private var pattern: String = FileType.INVALID_PATTERN
+    private var pattern: String = FileType.INVALID_PATTERN,
 ) {
-
     /**
      * Convert this serialized file type object to a real file type API
      * object.
@@ -30,18 +29,19 @@ data class SerialFileType(
      * @throws AraraException If the pattern is invalid.
      */
     @OptIn(ExperimentalTime::class)
-    fun toFileType(): FileType = org.islandoftex.arara.core.files.FileType(
-        extension,
-        pattern.takeUnless { pattern == FileType.INVALID_PATTERN }
-            ?: ConfigurationUtils.defaultFileTypePatterns[extension]
-            ?: throw AraraException(
-                LanguageController.messages
-                    .ERROR_FILETYPE_UNKNOWN_EXTENSION
-                    .formatString(
-                        extension,
-                        LinearExecutor.executionOptions.fileTypes
-                            .joinToString(" | ", "[ ", " ]")
-                    )
-            )
-    )
+    fun toFileType(): FileType =
+        org.islandoftex.arara.core.files.FileType(
+            extension,
+            pattern.takeUnless { pattern == FileType.INVALID_PATTERN }
+                ?: ConfigurationUtils.defaultFileTypePatterns[extension]
+                ?: throw AraraException(
+                    LanguageController.messages
+                        .ERROR_FILETYPE_UNKNOWN_EXTENSION
+                        .formatString(
+                            extension,
+                            LinearExecutor.executionOptions.fileTypes
+                                .joinToString(" | ", "[ ", " ]"),
+                        ),
+                ),
+        )
 }

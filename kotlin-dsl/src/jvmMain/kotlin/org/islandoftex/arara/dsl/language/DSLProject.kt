@@ -11,7 +11,9 @@ import java.nio.file.Paths
 /**
  * A project model class to capture DSL methods within.
  */
-class DSLProject(private val name: String) {
+class DSLProject(
+    private val name: String,
+) {
     private val files = mutableSetOf<ProjectFile>()
     private var workingDirectory = MPPPath(".").normalize()
     private val dependencyList = mutableSetOf<String>()
@@ -25,7 +27,13 @@ class DSLProject(private val name: String) {
      *   want to set this, choose the configuration builder variant of this
      *   method.
      */
-    fun file(name: String, priority: Int) = file(name) { this.priority = priority }
+    fun file(
+        name: String,
+        priority: Int,
+    ) = file(name) {
+        this.priority =
+            priority
+    }
 
     /**
      * Add a file by name.
@@ -35,11 +43,14 @@ class DSLProject(private val name: String) {
      * @param configure Configure the [DSLProjectFile] object. You may add
      *   directives manually or specify the priority.
      */
-    fun file(name: String, configure: DSLProjectFile.() -> Unit = {}) =
-        files.add(
-            DSLProjectFile(Paths.get(name))
-                .apply(configure).toProjectFile()
-        )
+    fun file(
+        name: String,
+        configure: DSLProjectFile.() -> Unit = {},
+    ) = files.add(
+        DSLProjectFile(Paths.get(name))
+            .apply(configure)
+            .toProjectFile(),
+    )
 
     /**
      * Add a file.
@@ -50,7 +61,10 @@ class DSLProject(private val name: String) {
      *   want to set this, choose the configuration builder variant of this
      *   method.
      */
-    fun file(file: File, priority: Int) = file(file) { this.priority = priority }
+    fun file(
+        file: File,
+        priority: Int,
+    ) = file(file) { this.priority = priority }
 
     /**
      * Add a file.
@@ -60,11 +74,14 @@ class DSLProject(private val name: String) {
      * @param configure Configure the [DSLProjectFile] object. You may add
      *   directives manually or specify the priority.
      */
-    fun file(file: File, configure: DSLProjectFile.() -> Unit) =
-        files.add(
-            DSLProjectFile(file.toPath())
-                .apply(configure).toProjectFile()
-        )
+    fun file(
+        file: File,
+        configure: DSLProjectFile.() -> Unit,
+    ) = files.add(
+        DSLProjectFile(file.toPath())
+            .apply(configure)
+            .toProjectFile(),
+    )
 
     /**
      * Set the project's working directory.
@@ -94,22 +111,26 @@ class DSLProject(private val name: String) {
      * @param dependencies The names of other projects this project depends on.
      *   Order does not matter, arara uses graph resolution.
      */
-    fun dependsOn(vararg dependencies: String) = dependencyList.addAll(dependencies)
+    fun dependsOn(vararg dependencies: String) =
+        dependencyList.addAll(dependencies)
 
     /**
      * String representation of the project.
      */
-    override fun toString(): String {
-        return "DSLProject(name=$name, workingDirectory=$workingDirectory, " +
+    override fun toString(): String =
+        "DSLProject(name=$name, workingDirectory=$workingDirectory, " +
             "files=$files, dependencies=$dependencyList)"
-    }
 
     /**
      * Turn this DSL object into arara's core object.
      *
      * @return A [Project] resembling the user's configuration.
      */
-    internal fun toProject(): Project = org.islandoftex.arara.core.files.Project(
-        name, workingDirectory, files, dependencyList
-    )
+    internal fun toProject(): Project =
+        org.islandoftex.arara.core.files.Project(
+            name,
+            workingDirectory,
+            files,
+            dependencyList,
+        )
 }

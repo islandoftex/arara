@@ -24,7 +24,7 @@ object ClassLoading {
         MALFORMED_URL,
         CLASS_NOT_FOUND,
         ILLEGAL_ACCESS,
-        INSTANTIATION_EXCEPTION
+        INSTANTIATION_EXCEPTION,
     }
 
     /**
@@ -34,8 +34,10 @@ object ClassLoading {
      * @return A pair representing the status and the class.
      */
     @JvmStatic
-    fun loadClass(path: MPPPath, name: String):
-        Pair<ClassLoadingStatus, Class<*>> {
+    fun loadClass(
+        path: MPPPath,
+        name: String,
+    ): Pair<ClassLoadingStatus, Class<*>> {
         val file = path.toJVMFile()
 
         // status and class to be returned,
@@ -44,32 +46,34 @@ object ClassLoading {
 
         // if file does not exist, nothing
         // can be done, status is changed
-        val status = if (!file.exists()) {
-            ClassLoadingStatus.FILE_NOT_FOUND
-        } else {
-            // classloading involves defining
-            // a classloader and fetching the
-            // desired class from it, based on
-            // the provided file archive
-            try {
-                // creates a new classloader with
-                // the provided file (potentially
-                // a JAR file)
-                val classloader = URLClassLoader(
-                    arrayOf(file.toURI().toURL()),
-                    ClassLoading::class.java.classLoader
-                )
+        val status =
+            if (!file.exists()) {
+                ClassLoadingStatus.FILE_NOT_FOUND
+            } else {
+                // classloading involves defining
+                // a classloader and fetching the
+                // desired class from it, based on
+                // the provided file archive
+                try {
+                    // creates a new classloader with
+                    // the provided file (potentially
+                    // a JAR file)
+                    val classloader =
+                        URLClassLoader(
+                            arrayOf(file.toURI().toURL()),
+                            ClassLoading::class.java.classLoader,
+                        )
 
-                // fetches the class from the
-                // instantiated classloader
-                value = Class.forName(name, true, classloader)
-                ClassLoadingStatus.SUCCESS
-            } catch (_: MalformedURLException) {
-                ClassLoadingStatus.MALFORMED_URL
-            } catch (_: ClassNotFoundException) {
-                ClassLoadingStatus.CLASS_NOT_FOUND
+                    // fetches the class from the
+                    // instantiated classloader
+                    value = Class.forName(name, true, classloader)
+                    ClassLoadingStatus.SUCCESS
+                } catch (_: MalformedURLException) {
+                    ClassLoadingStatus.MALFORMED_URL
+                } catch (_: ClassNotFoundException) {
+                    ClassLoadingStatus.CLASS_NOT_FOUND
+                }
             }
-        }
 
         // return a new pair based on the
         // current status and class holder
@@ -83,7 +87,10 @@ object ClassLoading {
      * @return A pair representing the status and the class object.
      */
     @JvmStatic
-    fun loadObject(path: MPPPath, name: String): Pair<ClassLoadingStatus, Any> {
+    fun loadObject(
+        path: MPPPath,
+        name: String,
+    ): Pair<ClassLoadingStatus, Any> {
         // load the corresponding class
         // based on the qualified name
         val pair = loadClass(path, name)

@@ -6,12 +6,15 @@ import io.kotest.matchers.shouldBe
 import org.apache.logging.log4j.ThreadContext
 import org.islandoftex.arara.core.configuration.LoggingOptions
 
-class LoggingUtilsTest : ShouldSpec({
-    should("properly set log file path") {
-        val defaultEnable = LoggingOptions(true)
-        ThreadContext.get("araraLogFile") shouldBe null
-        LoggingUtils.setupLogging(defaultEnable)
-        ThreadContext.get("araraLogFile") shouldBe defaultEnable.logFile
-            .normalize().toString()
-    }
-})
+class LoggingUtilsTest :
+    ShouldSpec({
+        should("properly set log file path") {
+            val defaultEnable = LoggingOptions(true)
+            ThreadContext.get("araraLogFile") shouldBe null
+            LoggingUtils.setupLogging(defaultEnable)
+            ThreadContext.get("araraLogFile") shouldBe
+                defaultEnable.logFile
+                    .normalize()
+                    .toString()
+        }
+    })

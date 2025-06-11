@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-//import com.soywiz.korio.async.runBlockingNoJs
-//import com.soywiz.korio.file.baseName
-//import com.soywiz.korio.file.extension
-//import com.soywiz.korio.file.std.LocalVfs
+// import com.soywiz.korio.async.runBlockingNoJs
+// import com.soywiz.korio.file.baseName
+// import com.soywiz.korio.file.extension
+// import com.soywiz.korio.file.std.LocalVfs
 import korlibs.io.async.runBlockingNoJs
 import korlibs.io.file.baseName
 import korlibs.io.file.extension
@@ -49,27 +49,30 @@ object FileSearching {
     fun listFilesByExtensions(
         directory: MPPPath,
         extensions: List<String>,
-        recursive: Boolean
-    ): List<MPPPath> = runBlockingNoJs {
-        LocalVfs[directory.normalize().toString()].runCatching {
-            // return the result of the
-            // provided search
-            if (recursive)
-                listRecursive()
-            else
-                list()
-        }.getOrDefault(
-            // if something bad happens,
-            // gracefully fallback to
-            // an empty file list
-            emptyFlow()
-        ).filter {
-            !it.isDirectory() &&
-                extensions.contains(it.extension)
-        }.map {
-            MPPPath(it.absolutePath).normalize()
-        }.toList()
-    }
+        recursive: Boolean,
+    ): List<MPPPath> =
+        runBlockingNoJs {
+            LocalVfs[directory.normalize().toString()]
+                .runCatching {
+                    // return the result of the
+                    // provided search
+                    if (recursive) {
+                        listRecursive()
+                    } else {
+                        list()
+                    }
+                }.getOrDefault(
+                    // if something bad happens,
+                    // gracefully fallback to
+                    // an empty file list
+                    emptyFlow(),
+                ).filter {
+                    !it.isDirectory() &&
+                        extensions.contains(it.extension)
+                }.map {
+                    MPPPath(it.absolutePath).normalize()
+                }.toList()
+        }
 
     /**
      * List all files from the provided directory matching the list of file
@@ -83,31 +86,34 @@ object FileSearching {
     fun listFilesByPatterns(
         directory: MPPPath,
         patterns: List<String>,
-        recursive: Boolean
-    ): List<MPPPath> = runBlockingNoJs {
-        // return the result of the provided
-        // search, with the wildcard filter
-        // and a potential recursive search
-        val regexes = patterns.map { it.globToRegex() }
-        LocalVfs[directory.normalize().toString()].runCatching {
-            // return the result of the
-            // provided search
-            if (recursive)
-                listRecursive()
-            else
-                list()
-        }.getOrDefault(
-            // if something bad happens,
-            // gracefully fallback to
-            // an empty file list
-            emptyFlow()
-        ).filter { file ->
-            !file.isDirectory() &&
-                regexes.any { it.matches(file.baseName) }
-        }.map {
-            MPPPath(it.absolutePath).normalize()
-        }.toList()
-    }
+        recursive: Boolean,
+    ): List<MPPPath> =
+        runBlockingNoJs {
+            // return the result of the provided
+            // search, with the wildcard filter
+            // and a potential recursive search
+            val regexes = patterns.map { it.globToRegex() }
+            LocalVfs[directory.normalize().toString()]
+                .runCatching {
+                    // return the result of the
+                    // provided search
+                    if (recursive) {
+                        listRecursive()
+                    } else {
+                        list()
+                    }
+                }.getOrDefault(
+                    // if something bad happens,
+                    // gracefully fallback to
+                    // an empty file list
+                    emptyFlow(),
+                ).filter { file ->
+                    !file.isDirectory() &&
+                        regexes.any { it.matches(file.baseName) }
+                }.map {
+                    MPPPath(it.absolutePath).normalize()
+                }.toList()
+        }
 
     /**
      * Discovers the file through string reference lookup and sets the
@@ -122,7 +128,7 @@ object FileSearching {
     fun resolveFile(
         reference: String,
         workingDirectory: MPPPath,
-        executionOptions: ExecutionOptions
+        executionOptions: ExecutionOptions,
     ): ProjectFile =
         lookupFile(reference, workingDirectory, executionOptions)
             ?: throw AraraException(
@@ -130,8 +136,8 @@ object FileSearching {
                     .formatString(
                         reference,
                         executionOptions.fileTypes
-                            .joinToString(" | ", "[ ", " ]")
-                    )
+                            .joinToString(" | ", "[ ", " ]"),
+                    ),
             )
 
     /**
@@ -147,7 +153,7 @@ object FileSearching {
     internal fun lookupFile(
         reference: String,
         workingDirectory: MPPPath,
-        executionOptions: ExecutionOptions
+        executionOptions: ExecutionOptions,
     ): ProjectFile? {
         val types = executionOptions.fileTypes
 
@@ -156,16 +162,18 @@ object FileSearching {
         val testFile = (workingDirectory / reference).normalize()
         return when {
             testFile.exists && testFile.isRegularFile -> {
-                types.firstOrNull {
-                    reference.endsWith("." + it.extension)
-                }?.let {
-                    val extension = reference.substringAfterLast('.')
-                    ProjectFile(
-                        path = testFile,
-                        fileType = types.firstOrNull { extension == it.extension }
-                            ?: FileType.UNKNOWN_TYPE
-                    )
-                }
+                types
+                    .firstOrNull {
+                        reference.endsWith("." + it.extension)
+                    }?.let {
+                        val extension = reference.substringAfterLast('.')
+                        ProjectFile(
+                            path = testFile,
+                            fileType =
+                                types.firstOrNull { extension == it.extension }
+                                    ?: FileType.UNKNOWN_TYPE,
+                        )
+                    }
             }
             // when in safe mode we do not perform indirect search
             executionOptions.executionMode == ExecutionMode.SAFE_RUN -> {
@@ -180,20 +188,22 @@ object FileSearching {
             // so we need to add it and look again
             else -> {
                 val name = testFile.fileName
-                types.map { testFile.parent / "$name.${it.extension}" }
+                types
+                    .map { testFile.parent / "$name.${it.extension}" }
                     .union(
                         types.map {
                             testFile.parent /
-                                "${name.removeSuffix(".").trim()}.${it.extension}"
-                        }
-                    )
-                    .firstOrNull { it.exists && it.isRegularFile }
+                                "${name.removeSuffix(
+                                    ".",
+                                ).trim()}.${it.extension}"
+                        },
+                    ).firstOrNull { it.exists && it.isRegularFile }
                     ?.let { found ->
                         val extension = found.toString().substringAfterLast('.')
                         ProjectFile(
                             found,
                             types.firstOrNull { extension == it.extension }
-                                ?: FileType.UNKNOWN_TYPE
+                                ?: FileType.UNKNOWN_TYPE,
                         )
                     }
             }

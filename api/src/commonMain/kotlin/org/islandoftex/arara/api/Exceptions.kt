@@ -50,11 +50,15 @@ public open class AraraException : Exception {
  * this exception is thrown to indicate a violation of the safety contract
  * and that a certain feature was requested that is not allowed in safe run.
  */
-public class SafeRunViolationException(msg: String) : AraraException(msg)
+public class SafeRunViolationException(
+    msg: String,
+) : AraraException(msg)
 
 /**
  * When performing file system operations using
  * [org.islandoftex.arara.api.files.MPPPath] this exception is thrown if an
  * error occurs.
  */
-public class AraraIOException(msg: String) : AraraException(msg)
+public class AraraIOException(
+    msg: String,
+) : AraraException(msg)

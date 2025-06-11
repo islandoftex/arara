@@ -9,10 +9,11 @@ internal open class Graph<T> {
     private val indegree = mutableMapOf<T, Int>()
 
     private fun updateInDegree(vertex: T) {
-        if (vertex in indegree)
+        if (vertex in indegree) {
             indegree[vertex] = indegree[vertex]!!.inc()
-        else
+        } else {
             throw NoSuchElementException("Vertex $vertex in graph expected")
+        }
     }
 
     /**
@@ -21,10 +22,12 @@ internal open class Graph<T> {
      * @param vertex The new vertex.
      */
     fun addVertex(vertex: T) {
-        if (vertex !in vertices)
+        if (vertex !in vertices) {
             vertices[vertex] = mutableSetOf()
-        if (vertex !in indegree)
+        }
+        if (vertex !in indegree) {
             indegree[vertex] = 0
+        }
     }
 
     /**
@@ -34,7 +37,10 @@ internal open class Graph<T> {
      * @param source The vertex where the edge starts.
      * @param target The vertex where the edge ends.
      */
-    fun addEdge(source: T, target: T) {
+    fun addEdge(
+        source: T,
+        target: T,
+    ) {
         addVertex(source)
         addVertex(target)
 

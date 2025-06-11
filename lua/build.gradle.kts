@@ -7,20 +7,36 @@ plugins {
 kotlin {
     jvm()
 
-    sourceSets.commonMain.dependencies {
-        api(project(":api"))
-        implementation(project(":core"))
-        implementation(libs.korlibs.luak)
-    }
+    sourceSets {
 
-    sourceSets.commonTest.dependencies {
-        implementation(kotlin("test-common"))
-        implementation(kotlin("test-annotations-common"))
-    }
+        all {
+            with (languageSettings) {
+                optIn("org.islandoftex.arara.api.localization.AraraMessages")
+                optIn("kotlin.time.ExperimentalTime")
+                optIn("kotlin.RequiresOptIn")
+            }
+        }
 
-    sourceSets.jvmTest.dependencies {
-        implementation(kotlin("test-junit5"))
-        runtimeOnly(libs.junit.jupiter.engine)
+        commonMain {
+            dependencies {
+                api(project(":api"))
+                implementation(project(":core"))
+                implementation(libs.korlibs.luak)
+            }
+        }
+
+        commonTest {
+            dependencies {
+                implementation(kotlin("test-common"))
+                implementation(kotlin("test-annotations-common"))
+            }
+        }
+
+        jvmTest {
+            dependencies {
+                implementation(kotlin("test-junit5"))
+                runtimeOnly(libs.junit.jupiter.engine)
+            }
+        }
     }
 }
-

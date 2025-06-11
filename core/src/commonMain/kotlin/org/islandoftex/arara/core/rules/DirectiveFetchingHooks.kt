@@ -21,8 +21,12 @@ data class DirectiveFetchingHooks(
      * conditional and line numbers choose a directive implementation and
      * create a directive. Please make sure to resolve parameters.
      */
-    val buildDirectiveRaw: (String, String?, DirectiveConditional, List<Int>) -> Directive = {
-            _, _, _, _ ->
+    val buildDirectiveRaw: (
+        String,
+        String?,
+        DirectiveConditional,
+        List<Int>,
+    ) -> Directive = { _, _, _, _ ->
         TODO("directives can't be built by default")
     },
     /**
@@ -30,8 +34,12 @@ data class DirectiveFetchingHooks(
      * conditional and line numbers choose a directive implementation and
      * create a directive. Please make sure to resolve parameters.
      */
-    val buildDirective: (String, Map<String, Any>, DirectiveConditional, List<Int>) -> Directive = {
-            _, _, _, _ ->
+    val buildDirective: (
+        String,
+        Map<String, Any>,
+        DirectiveConditional,
+        List<Int>,
+    ) -> Directive = { _, _, _, _ ->
         TODO("directives can't be built by default")
-    }
+    },
 )

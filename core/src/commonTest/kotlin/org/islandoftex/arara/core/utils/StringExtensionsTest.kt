@@ -59,12 +59,18 @@ class StringExtensionsTest {
 
     @Test
     fun metachars_are_escaped() {
-        assertEquals("gl..*\\.\\(\\)\\+\\|\\^\\$\\@\\%b", "gl?*.()+|^$@%b".globToRegex().pattern)
+        assertEquals(
+            "gl..*\\.\\(\\)\\+\\|\\^\\$\\@\\%b",
+            "gl?*.()+|^$@%b".globToRegex().pattern,
+        )
     }
 
     @Test
     fun metachars_in_character_classes_dont_need_escaping() {
-        assertEquals("gl[?*.()+|^$@%]b", "gl[?*.()+|^$@%]b".globToRegex().pattern)
+        assertEquals(
+            "gl[?*.()+|^$@%]b",
+            "gl[?*.()+|^$@%]b".globToRegex().pattern,
+        )
     }
 
     @Test

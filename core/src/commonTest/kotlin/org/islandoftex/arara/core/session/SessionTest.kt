@@ -16,7 +16,7 @@ class SessionTest {
         // on Linux it is called PATH, on Windows it may be Path
         assertTrue(
             Session.contains("environment:PATH") ||
-                Session.contains("environment:Path")
+                Session.contains("environment:Path"),
         )
     }
 
@@ -78,6 +78,7 @@ class SessionTest {
             assertTrue(false)
         }
     }
+
     @Test
     fun shouldThrowOnUnknownRemoval() {
         Session.clear()

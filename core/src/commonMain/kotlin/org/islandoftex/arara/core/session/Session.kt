@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
-//import com.soywiz.korio.lang.Environment
+// import com.soywiz.korio.lang.Environment
 import korlibs.io.lang.Environment
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.LoggingOptions
@@ -28,13 +28,15 @@ object Session : Session {
      * arara's user interface configuration.
      */
     var userInterfaceOptions: UserInterfaceOptions =
-        org.islandoftex.arara.core.configuration.UserInterfaceOptions()
+        org.islandoftex.arara.core.configuration
+            .UserInterfaceOptions()
 
     /**
      * arara's logging configuration.
      */
     var loggingOptions: LoggingOptions =
-        org.islandoftex.arara.core.configuration.LoggingOptions()
+        org.islandoftex.arara.core.configuration
+            .LoggingOptions()
 
     /**
      * Gets the object indexed by the provided key from the session. This method
@@ -46,16 +48,15 @@ object Session : Session {
      * higher levels.
      */
     @Throws(AraraException::class)
-    override operator fun get(key: String): Any {
-        return if (contains(key)) {
+    override operator fun get(key: String): Any =
+        if (contains(key)) {
             map.getValue(key)
         } else {
             throw AraraException(
                 LanguageController.messages.ERROR_SESSION_OBTAIN_UNKNOWN_KEY
-                    .formatString(key)
+                    .formatString(key),
             )
         }
-    }
 
     /**
      * Inserts (or overwrites) the object indexed by the provided key into the
@@ -64,7 +65,10 @@ object Session : Session {
      * @param key The provided key.
      * @param value The value to be inserted.
      */
-    override fun put(key: String, value: Any) {
+    override fun put(
+        key: String,
+        value: Any,
+    ) {
         map[key] = value
     }
 
@@ -83,7 +87,7 @@ object Session : Session {
         } else {
             throw AraraException(
                 LanguageController.messages.ERROR_SESSION_REMOVE_UNKNOWN_KEY
-                    .formatString(key)
+                    .formatString(key),
             )
         }
     }
@@ -114,17 +118,19 @@ object Session : Session {
      */
     fun updateEnvironmentVariables(
         additionFilter: (String) -> Boolean = { true },
-        removalFilter: (String) -> Boolean = { true }
+        removalFilter: (String) -> Boolean = { true },
     ) {
         // remove all current environment variables to clean up the session
-        map.filterKeys { it.startsWith("environment:") }
+        map
+            .filterKeys { it.startsWith("environment:") }
             .filterKeys(removalFilter)
             .forEach { remove(it.key) }
         // add all relevant new environment variables
         map.putAll(
-            Environment.getAll()
+            Environment
+                .getAll()
                 .filterKeys(additionFilter)
-                .mapKeys { "environment:${it.key}" }
+                .mapKeys { "environment:${it.key}" },
         )
     }
 }

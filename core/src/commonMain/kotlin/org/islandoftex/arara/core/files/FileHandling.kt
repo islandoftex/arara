@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-//import com.soywiz.korio.async.runBlockingNoJs
-//import com.soywiz.korio.file.std.localVfs
-//import com.soywiz.korio.lang.IOException
-//import com.soywiz.korio.util.checksum.CRC32
-//import com.soywiz.korio.util.checksum.checksum
+// import com.soywiz.korio.async.runBlockingNoJs
+// import com.soywiz.korio.file.std.localVfs
+// import com.soywiz.korio.lang.IOException
+// import com.soywiz.korio.util.checksum.CRC32
+// import com.soywiz.korio.util.checksum.checksum
 import korlibs.io.async.runBlockingNoJs
 import korlibs.io.file.std.localVfs
 import korlibs.io.lang.IOException
@@ -23,9 +23,13 @@ object FileHandling {
      * @param extension The extension.
      * @return The full file path to the sibling.
      */
-    fun changeExtension(path: MPPPath, extension: String): MPPPath {
-        val name = path.fileName.substringBeforeLast('.') +
-            ".$extension"
+    fun changeExtension(
+        path: MPPPath,
+        extension: String,
+    ): MPPPath {
+        val name =
+            path.fileName.substringBeforeLast('.') +
+                ".$extension"
         return path.resolveSibling(name).normalize()
     }
 
@@ -38,13 +42,15 @@ object FileHandling {
      * @throws AraraException There was a problem with path retrieval.
      */
     @Throws(AraraException::class)
-    fun isSubDirectory(child: MPPPath, parent: MPPPath): Boolean {
-        return if (child.isDirectory && parent.isDirectory) {
+    fun isSubDirectory(
+        child: MPPPath,
+        parent: MPPPath,
+    ): Boolean =
+        if (child.isDirectory && parent.isDirectory) {
             child.normalize().startsWith(parent.normalize())
         } else {
             false
         }
-    }
 
     /**
      * Calculates the CRC32 checksum of the provided file.
@@ -64,7 +70,7 @@ object FileHandling {
         } catch (exception: IOException) {
             throw AraraException(
                 LanguageController.messages.ERROR_CALCULATEHASH_IO_EXCEPTION,
-                exception
+                exception,
             )
         }
 
@@ -76,7 +82,10 @@ object FileHandling {
      * @return A boolean value indicating if the file has changed since the
      *   last verification.
      */
-    fun hasChanged(file: MPPPath, databaseFile: MPPPath): Boolean {
+    fun hasChanged(
+        file: MPPPath,
+        databaseFile: MPPPath,
+    ): Boolean {
         val database = Database.load(databaseFile)
         val path = file.normalize()
         return if (!path.exists) {

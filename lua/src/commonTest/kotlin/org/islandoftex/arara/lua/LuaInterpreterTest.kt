@@ -10,7 +10,8 @@ import kotlin.test.assertFailsWith
 class LuaInterpreterTest {
     @Test
     fun shouldParseSingleProject() {
-        val script = """
+        val script =
+            """
             return {
               name = "My awesome book",
               workingDirectory = ".",
@@ -19,7 +20,7 @@ class LuaInterpreterTest {
                 ["file.tex"] = { }
               }
             }
-        """.trimIndent()
+            """.trimIndent()
         val projects = LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script)
 
         assertEquals(1, projects.size)
@@ -32,7 +33,8 @@ class LuaInterpreterTest {
 
     @Test
     fun shouldParseProjectFile() {
-        val script = """
+        val script =
+            """
             return {
               files = {
                 ["file.tex"] = {
@@ -45,7 +47,7 @@ class LuaInterpreterTest {
                 }
               }
             }
-        """.trimIndent()
+            """.trimIndent()
         val projects = LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script)
 
         assertEquals(1, projects.size)
@@ -61,7 +63,8 @@ class LuaInterpreterTest {
 
     @Test
     fun shouldParseMultipleProjects() {
-        val script = """
+        val script =
+            """
             return {
               {
                 name = "My awesome book",
@@ -76,7 +79,7 @@ class LuaInterpreterTest {
                 }
               }
             }
-        """.trimIndent()
+            """.trimIndent()
         val projects = LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script)
 
         assertEquals(2, projects.size)
@@ -87,7 +90,8 @@ class LuaInterpreterTest {
 
     @Test
     fun shouldFailOnUnsatisfiedDependency() {
-        val script = """
+        val script =
+            """
             return {
               name = "My awesome book",
               files = {
@@ -95,16 +99,18 @@ class LuaInterpreterTest {
               },
               dependencies = { "My awesome book v2" }
             }
-        """.trimIndent()
+            """.trimIndent()
         assertFailsWith<AraraException> {
-            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script)
+            LuaInterpreter(MPPPath("."))
+                .parseProjectsFromLua(script)
                 .also { println(it) }
         }
     }
 
     @Test
     fun shouldNotFailOnSatisfiedDependency() {
-        val script = """
+        val script =
+            """
             return {
               {
                 name = "My awesome book",
@@ -120,7 +126,10 @@ class LuaInterpreterTest {
                 }
               }
             }
-        """.trimIndent()
-        assertEquals(2, LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script).size)
+            """.trimIndent()
+        assertEquals(
+            2,
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script).size,
+        )
     }
 }

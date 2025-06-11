@@ -29,7 +29,10 @@ object DSLInstance {
      *   properties.
      * @return The configured project.
      */
-    fun project(name: String, configure: DSLProject.() -> Unit): Project =
+    fun project(
+        name: String,
+        configure: DSLProject.() -> Unit,
+    ): Project =
         DSLProject(name).apply(configure).toProject().also {
             projects.add(it)
         }
@@ -49,7 +52,10 @@ object DSLInstance {
         label: String? = null,
         description: String = "",
         authors: List<String> = listOf(),
-        configure: DSLRule.() -> Unit
-    ): Rule = DSLRule(id, label, description, authors)
-        .apply(configure).toRule().also { rules.add(it) }
+        configure: DSLRule.() -> Unit,
+    ): Rule =
+        DSLRule(id, label, description, authors)
+            .apply(configure)
+            .toRule()
+            .also { rules.add(it) }
 }

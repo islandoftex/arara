@@ -31,7 +31,10 @@ public interface Database {
      * @param path The path of a file. Try to resolve it to an absolute path.
      * @param hash The hash value of the file.
      */
-    public operator fun set(path: MPPPath, hash: Long)
+    public operator fun set(
+        path: MPPPath,
+        hash: Long,
+    )
 
     /**
      * Remove the entry associated with the key (file).

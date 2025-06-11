@@ -7,8 +7,8 @@ import kotlin.time.TimeMark
 
 @OptIn(kotlin.time.ExperimentalTime::class)
 data class ExecutionReport
-constructor(
-    override val executionStarted: TimeMark,
-    override val executionStopped: TimeMark,
-    override val exitCode: Int
-) : ExecutionReport
+    constructor(
+        override val executionStarted: TimeMark,
+        override val executionStopped: TimeMark,
+        override val exitCode: Int,
+    ) : ExecutionReport

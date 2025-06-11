@@ -54,9 +54,11 @@ object RuleMethods {
      */
     @JvmStatic
     val originalReference: MPPPath
-        get() = LinearExecutor.currentProject!!.files
-            .minByOrNull { it.priority }!!
-            .path
+        get() =
+            LinearExecutor.currentProject!!
+                .files
+                .minByOrNull { it.priority }!!
+                .path
 
     /**
      * Trim spaces from the string.
@@ -83,7 +85,8 @@ object RuleMethods {
         } else {
             throw AraraExceptionWithHeader(
                 LanguageController.messages
-                    .ERROR_BASENAME_NOT_A_FILE.format(file.fileName)
+                    .ERROR_BASENAME_NOT_A_FILE
+                    .format(file.fileName),
             )
         }
 
@@ -112,7 +115,8 @@ object RuleMethods {
         } else {
             throw AraraExceptionWithHeader(
                 LanguageController.messages
-                    .ERROR_FILETYPE_NOT_A_FILE.format(file.fileName)
+                    .ERROR_FILETYPE_NOT_A_FILE
+                    .format(file.fileName),
             )
         }
 
@@ -136,7 +140,10 @@ object RuleMethods {
      */
     @JvmStatic
     @JvmOverloads
-    fun getOrNull(list: List<String>, index: Int = 0) = list.getOrNull(index)
+    fun getOrNull(
+        list: List<String>,
+        index: Int = 0,
+    ) = list.getOrNull(index)
 
     /**
      * Replicates the pattern to each element of a list.
@@ -149,8 +156,10 @@ object RuleMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun replicatePattern(pattern: String, values: List<Any>): List<Any> =
-        MethodUtils.replicateList(pattern, values)
+    fun replicatePattern(
+        pattern: String,
+        values: List<Any>,
+    ): List<Any> = MethodUtils.replicateList(pattern, values)
 
     /**
      * Throws an exception.
@@ -160,9 +169,7 @@ object RuleMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun throwError(text: String) {
-        throw AraraExceptionWithHeader(text)
-    }
+    fun throwError(text: String): Unit = throw AraraExceptionWithHeader(text)
 
     /**
      * Gets the session.
@@ -192,7 +199,7 @@ object RuleMethods {
     fun getCommand(elements: List<String>): Command =
         org.islandoftex.arara.core.session.Command(
             elements,
-            LinearExecutor.currentProject!!.workingDirectory
+            LinearExecutor.currentProject!!.workingDirectory,
         )
 
     /**
@@ -204,9 +211,10 @@ object RuleMethods {
     @JvmStatic
     fun getCommand(vararg elements: Any?): Command =
         getCommand(
-            InputHandling.flatten(elements.filterNotNull())
+            InputHandling
+                .flatten(elements.filterNotNull())
                 .map { it.toString() }
-                .filter { it.isNotEmpty() }
+                .filter { it.isNotEmpty() },
         )
 
     /**
@@ -220,13 +228,15 @@ object RuleMethods {
     @JvmStatic
     fun getCommandWithWorkingDirectory(
         path: String,
-        vararg elements: Any?
-    ): Command = org.islandoftex.arara.core.session.Command(
-        InputHandling.flatten(elements.filterNotNull())
-            .map { it.toString() }
-            .filter { it.isNotEmpty() },
-        MPPPath(path)
-    )
+        vararg elements: Any?,
+    ): Command =
+        org.islandoftex.arara.core.session.Command(
+            InputHandling
+                .flatten(elements.filterNotNull())
+                .map { it.toString() }
+                .filter { it.isNotEmpty() },
+            MPPPath(path),
+        )
 
     /**
      * Gets the command based on an array of objects and with the provided
@@ -239,13 +249,15 @@ object RuleMethods {
     @JvmStatic
     fun getCommandWithWorkingDirectory(
         file: MPPPath,
-        vararg elements: Any?
-    ): Command = org.islandoftex.arara.core.session.Command(
-        InputHandling.flatten(elements.filterNotNull())
-            .map { it.toString() }
-            .filter { it.isNotEmpty() },
-        file
-    )
+        vararg elements: Any?,
+    ): Command =
+        org.islandoftex.arara.core.session.Command(
+            InputHandling
+                .flatten(elements.filterNotNull())
+                .map { it.toString() }
+                .filter { it.isNotEmpty() },
+            file,
+        )
 
     /**
      * Gets the command based on a list of strings and with the provided
@@ -258,10 +270,12 @@ object RuleMethods {
     @JvmStatic
     fun getCommandWithWorkingDirectory(
         path: String,
-        elements: List<String>
-    ): Command = org.islandoftex.arara.core.session.Command(
-        elements, MPPPath(path)
-    )
+        elements: List<String>,
+    ): Command =
+        org.islandoftex.arara.core.session.Command(
+            elements,
+            MPPPath(path),
+        )
 
     /**
      * Gets the command based on a list of strings and with the provided
@@ -274,8 +288,10 @@ object RuleMethods {
     @JvmStatic
     fun getCommandWithWorkingDirectory(
         file: MPPPath,
-        elements: List<String>
-    ): Command = org.islandoftex.arara.core.session.Command(elements, file)
+        elements: List<String>,
+    ): Command =
+        org.islandoftex.arara.core.session
+            .Command(elements, file)
 
     /**
      * Checks if the execution is in verbose mode.
@@ -300,7 +316,7 @@ object RuleMethods {
         width: Int = dialogs.defaultWidth,
         type: Int,
         title: String,
-        text: String
+        text: String,
     ) = dialogs.showMessage(width, type, title, text)
 
     /**
@@ -315,13 +331,16 @@ object RuleMethods {
     @OptIn(ExperimentalTime::class)
     @JvmStatic
     fun unsafelyExecuteSystemCommand(command: Command): Pair<Int, String> =
-        if (LinearExecutor.executionOptions.executionMode == ExecutionMode.SAFE_RUN)
+        if (LinearExecutor.executionOptions.executionMode ==
+            ExecutionMode.SAFE_RUN
+        ) {
             throw SafeRunViolationException(
                 "In safe mode, rules are not allowed to execute " +
-                    "arbitrary system commands within a step of execution."
+                    "arbitrary system commands within a step of execution.",
             )
-        else
+        } else {
             Environment.executeSystemCommand(command)
+        }
 
     /**
      * List all files from the provided directory according to the list of
@@ -337,12 +356,12 @@ object RuleMethods {
     fun listFilesByExtensions(
         directory: MPPPath,
         extensions: List<String>,
-        recursive: Boolean
+        recursive: Boolean,
     ): List<MPPPath> =
         FileSearching.listFilesByExtensions(
             directory,
             extensions,
-            recursive
+            recursive,
         )
 
     /**
@@ -359,7 +378,7 @@ object RuleMethods {
     fun listFilesByExtensions(
         path: String,
         extensions: List<String>,
-        recursive: Boolean
+        recursive: Boolean,
     ): List<MPPPath> =
         listFilesByExtensions(MPPPath(path), extensions, recursive)
 
@@ -376,12 +395,12 @@ object RuleMethods {
     fun listFilesByPatterns(
         directory: MPPPath,
         patterns: List<String>,
-        recursive: Boolean
+        recursive: Boolean,
     ): List<MPPPath> =
         FileSearching.listFilesByPatterns(
             directory,
             patterns,
-            recursive
+            recursive,
         )
 
     /**
@@ -397,9 +416,8 @@ object RuleMethods {
     fun listFilesByPatterns(
         path: String,
         patterns: List<String>,
-        recursive: Boolean
-    ): List<MPPPath> =
-        listFilesByPatterns(MPPPath(path), patterns, recursive)
+        recursive: Boolean,
+    ): List<MPPPath> = listFilesByPatterns(MPPPath(path), patterns, recursive)
 
     /**
      * Writes the string to a file, using UTF-8 as default encoding.
@@ -410,8 +428,11 @@ object RuleMethods {
      * @return A logical value indicating whether it was successful.
      */
     @JvmStatic
-    fun writeToFile(file: MPPPath, text: String, append: Boolean): Boolean =
-        MethodUtils.writeToFile(file, text, append)
+    fun writeToFile(
+        file: MPPPath,
+        text: String,
+        append: Boolean,
+    ): Boolean = MethodUtils.writeToFile(file, text, append)
 
     /**
      * Writes the string to a file, using UTF-8 as default encoding.
@@ -422,8 +443,11 @@ object RuleMethods {
      * @return A logical value indicating whether it was successful.
      */
     @JvmStatic
-    fun writeToFile(path: String, text: String, append: Boolean): Boolean =
-        MethodUtils.writeToFile(MPPPath(path), text, append)
+    fun writeToFile(
+        path: String,
+        text: String,
+        append: Boolean,
+    ): Boolean = MethodUtils.writeToFile(MPPPath(path), text, append)
 
     /**
      * Writes the string list to a file, using UTF-8 as default encoding.
@@ -434,8 +458,16 @@ object RuleMethods {
      * @return A logical value indicating whether it was successful.
      */
     @JvmStatic
-    fun writeToFile(file: MPPPath, lines: List<String>, append: Boolean): Boolean =
-        MethodUtils.writeToFile(file, lines.joinToString(System.lineSeparator()), append)
+    fun writeToFile(
+        file: MPPPath,
+        lines: List<String>,
+        append: Boolean,
+    ): Boolean =
+        MethodUtils.writeToFile(
+            file,
+            lines.joinToString(System.lineSeparator()),
+            append,
+        )
 
     /**
      * Writes the string list to a file, using UTF-8 as default encoding.
@@ -446,8 +478,16 @@ object RuleMethods {
      * @return A logical value indicating whether it was successful.
      */
     @JvmStatic
-    fun writeToFile(path: String, lines: List<String>, append: Boolean): Boolean =
-        MethodUtils.writeToFile(MPPPath(path), lines.joinToString(System.lineSeparator()), append)
+    fun writeToFile(
+        path: String,
+        lines: List<String>,
+        append: Boolean,
+    ): Boolean =
+        MethodUtils.writeToFile(
+            MPPPath(path),
+            lines.joinToString(System.lineSeparator()),
+            append,
+        )
 
     /**
      * Reads the provided file into a list of strings.
@@ -456,11 +496,12 @@ object RuleMethods {
      * @return A list of strings.
      */
     @JvmStatic
-    fun readFromFile(file: MPPPath): List<String> = try {
-        file.readLines()
-    } catch (_: AraraIOException) {
-        emptyList()
-    }
+    fun readFromFile(file: MPPPath): List<String> =
+        try {
+            file.readLines()
+        } catch (_: AraraIOException) {
+            emptyList()
+        }
 
     /**
      * Reads the provided file into a list of strings.
@@ -483,7 +524,7 @@ object RuleMethods {
     fun isSubdirectory(directory: MPPPath): Boolean =
         FileHandling.isSubDirectory(
             directory,
-            LinearExecutor.currentProject!!.workingDirectory
+            LinearExecutor.currentProject!!.workingDirectory,
         )
 
     /**
@@ -514,8 +555,11 @@ object RuleMethods {
      */
     @JvmStatic
     @JvmOverloads
-    fun isEmpty(string: String, yes: Any?, no: Any? = ""): Any? =
-        if (isEmpty(string)) yes else no
+    fun isEmpty(
+        string: String,
+        yes: Any?,
+        no: Any? = "",
+    ): Any? = if (isEmpty(string)) yes else no
 
     /**
      * Checks if the string is not empty.
@@ -527,8 +571,11 @@ object RuleMethods {
      */
     @JvmStatic
     @JvmOverloads
-    fun isNotEmpty(string: String, yes: Any?, no: Any? = ""): Any? =
-        if (isNotEmpty(string)) yes else no
+    fun isNotEmpty(
+        string: String,
+        yes: Any?,
+        no: Any? = "",
+    ): Any? = if (isNotEmpty(string)) yes else no
 
     /**
      * Checks if the string holds a true value.
@@ -569,8 +616,11 @@ object RuleMethods {
     @JvmStatic
     @JvmOverloads
     @Throws(AraraException::class)
-    fun isTrue(string: String, yes: Any?, no: Any? = ""): Any? =
-        if (isTrue(string)) yes else no
+    fun isTrue(
+        string: String,
+        yes: Any?,
+        no: Any? = "",
+    ): Any? = if (isTrue(string)) yes else no
 
     /**
      * Checks if the string holds a false value.
@@ -585,8 +635,11 @@ object RuleMethods {
     @JvmStatic
     @JvmOverloads
     @Throws(AraraException::class)
-    fun isFalse(string: String, yes: Any?, no: Any? = ""): Any? =
-        if (isFalse(string)) yes else no
+    fun isFalse(
+        string: String,
+        yes: Any?,
+        no: Any? = "",
+    ): Any? = if (isFalse(string)) yes else no
 
     /**
      * Checks if the string holds a true value.
@@ -601,8 +654,19 @@ object RuleMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun isTrue(string: String, yes: Any?, no: Any?, fallback: Any?): Any? =
-        if (isEmpty(string)) fallback else if (isTrue(string)) yes else no
+    fun isTrue(
+        string: String,
+        yes: Any?,
+        no: Any?,
+        fallback: Any?,
+    ): Any? =
+        if (isEmpty(string)) {
+            fallback
+        } else if (isTrue(string)) {
+            yes
+        } else {
+            no
+        }
 
     /**
      * Checks if the string holds a false value.
@@ -617,8 +681,19 @@ object RuleMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun isFalse(string: String, yes: Any?, no: Any?, fallback: Any?): Any? =
-        if (isEmpty(string)) fallback else if (isFalse(string)) yes else no
+    fun isFalse(
+        string: String,
+        yes: Any?,
+        no: Any?,
+        fallback: Any?,
+    ): Any? =
+        if (isEmpty(string)) {
+            fallback
+        } else if (isFalse(string)) {
+            yes
+        } else {
+            no
+        }
 
     /**
      * Checks if the expression resolves to true.
@@ -630,8 +705,11 @@ object RuleMethods {
      */
     @JvmStatic
     @JvmOverloads
-    fun isTrue(value: Boolean, yes: Any?, no: Any? = ""): Any? =
-        if (value) yes else no
+    fun isTrue(
+        value: Boolean,
+        yes: Any?,
+        no: Any? = "",
+    ): Any? = if (value) yes else no
 
     /**
      * Checks if the expression resolves to false.
@@ -643,8 +721,11 @@ object RuleMethods {
      */
     @JvmStatic
     @JvmOverloads
-    fun isFalse(value: Boolean, yes: Any?, no: Any? = ""): Any? =
-        if (!value) yes else no
+    fun isFalse(
+        value: Boolean,
+        yes: Any?,
+        no: Any? = "",
+    ): Any? = if (!value) yes else no
 
     /**
      * Checks if the object is an instance of the provided class.
@@ -654,7 +735,10 @@ object RuleMethods {
      * @return A boolean value.
      */
     @JvmStatic
-    fun checkClass(clazz: Class<*>, obj: Any?): Boolean = clazz.isInstance(obj)
+    fun checkClass(
+        clazz: Class<*>,
+        obj: Any?,
+    ): Boolean = clazz.isInstance(obj)
 
     /**
      * Checks if the object is a string.
@@ -663,7 +747,8 @@ object RuleMethods {
      * @return A boolean value.
      */
     @JvmStatic
-    fun isString(obj: Any?): Boolean = checkClass(java.lang.String::class.java, obj)
+    fun isString(obj: Any?): Boolean =
+        checkClass(java.lang.String::class.java, obj)
 
     /**
      * Checks if the object is a list.
@@ -690,7 +775,8 @@ object RuleMethods {
      * @return A boolean value.
      */
     @JvmStatic
-    fun isBoolean(obj: Any?): Boolean = checkClass(java.lang.Boolean::class.java, obj)
+    fun isBoolean(obj: Any?): Boolean =
+        checkClass(java.lang.Boolean::class.java, obj)
 
     /**
      * Checks if the provided command name is reachable from the system path.
@@ -710,7 +796,8 @@ object RuleMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun isWindows(): Boolean = Environment.checkOS(Environment.SupportedOS.WINDOWS)
+    fun isWindows(): Boolean =
+        Environment.checkOS(Environment.SupportedOS.WINDOWS)
 
     /**
      * Checks if we are inside a Cygwin environment.
@@ -721,7 +808,8 @@ object RuleMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun isCygwin(): Boolean = Environment.checkOS(Environment.SupportedOS.CYGWIN)
+    fun isCygwin(): Boolean =
+        Environment.checkOS(Environment.SupportedOS.CYGWIN)
 
     /**
      * Checks if Linux is the underlying operating system.
@@ -767,7 +855,10 @@ object RuleMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun isWindows(yes: Any?, no: Any?): Any? =
+    fun isWindows(
+        yes: Any?,
+        no: Any?,
+    ): Any? =
         if (Environment.checkOS(Environment.SupportedOS.WINDOWS)) yes else no
 
     /**
@@ -781,7 +872,10 @@ object RuleMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun isCygwin(yes: Any?, no: Any?): Any? =
+    fun isCygwin(
+        yes: Any?,
+        no: Any?,
+    ): Any? =
         if (Environment.checkOS(Environment.SupportedOS.CYGWIN)) yes else no
 
     /**
@@ -795,7 +889,10 @@ object RuleMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun isLinux(yes: Any?, no: Any?): Any? =
+    fun isLinux(
+        yes: Any?,
+        no: Any?,
+    ): Any? =
         if (Environment.checkOS(Environment.SupportedOS.LINUX)) yes else no
 
     /**
@@ -809,7 +906,10 @@ object RuleMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun isMac(yes: Any?, no: Any?): Any? =
+    fun isMac(
+        yes: Any?,
+        no: Any?,
+    ): Any? =
         if (Environment.checkOS(Environment.SupportedOS.MACOS)) yes else no
 
     /**
@@ -823,6 +923,8 @@ object RuleMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun isUnix(yes: Any?, no: Any?): Any? =
-        if (Environment.checkOS(Environment.SupportedOS.UNIX)) yes else no
+    fun isUnix(
+        yes: Any?,
+        no: Any?,
+    ): Any? = if (Environment.checkOS(Environment.SupportedOS.UNIX)) yes else no
 }

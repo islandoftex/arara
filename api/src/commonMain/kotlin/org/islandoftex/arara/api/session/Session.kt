@@ -23,7 +23,10 @@ public interface Session {
      * @param key The provided key.
      * @param value The value to be inserted.
      */
-    public fun put(key: String, value: Any)
+    public fun put(
+        key: String,
+        value: Any,
+    )
 
     /**
      * Removes the entry indexed by the provided key from the session. This method

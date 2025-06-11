@@ -40,7 +40,7 @@ object TaskHelper {
                 fi
 
                 exec java -jar "${'$'}jarpath" "${'$'}@"
-                """.trimIndent().lines()
+                """.trimIndent().lines(),
             )
             Files.setPosixFilePermissions(
                 file,
@@ -51,15 +51,15 @@ object TaskHelper {
                     PosixFilePermission.OWNER_WRITE,
                     PosixFilePermission.OWNER_EXECUTE,
                     PosixFilePermission.GROUP_EXECUTE,
-                    PosixFilePermission.OTHERS_EXECUTE
-                )
+                    PosixFilePermission.OTHERS_EXECUTE,
+                ),
             )
         } catch (_: IOException) {
             throw IOException(
                 "I could not create the shell script for " +
                     "arara due to an IO error. Please make sure the " +
                     "current directory has the correct permissions " +
-                    "and try again. The application will halt now."
+                    "and try again. The application will halt now.",
             )
         }
     }
@@ -72,8 +72,14 @@ object TaskHelper {
      */
     @Throws(IOException::class)
     @Suppress("LongMethod")
-    fun createManPage(file: Path, version: String) {
-        val today = LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))
+    fun createManPage(
+        file: Path,
+        version: String,
+    ) {
+        val today =
+            LocalDate.now().format(
+                DateTimeFormatter.ofPattern("dd MMMM yyyy"),
+            )
         try {
             Files.write(
                 file,
@@ -127,14 +133,14 @@ object TaskHelper {
                 Issue tracker at
                 .UR https://gitlab.com/islandoftex/arara/-/issues
                 .UE .
-                """.trimIndent().lines()
+                """.trimIndent().lines(),
             )
         } catch (_: IOException) {
             throw IOException(
                 "I could not create the man page for " +
                     "arara due to an IO error. Please make sure the " +
                     "current directory has the correct permissions " +
-                    "and try again. The application will halt now."
+                    "and try again. The application will halt now.",
             )
         }
     }

@@ -12,11 +12,32 @@ open class TDSZipBuilderTask : Zip() {
         group = "distribution"
         description = "Create a TDS compliant ZIP file."
 
-        inputs.dir(project.layout.buildDirectory.dir("tds").get().asFile)
-        outputs.file(project.layout.buildDirectory.file("arara.tds.zip").get().asFile)
+        inputs.dir(
+            project.layout.buildDirectory
+                .dir("tds")
+                .get()
+                .asFile,
+        )
+        outputs.file(
+            project.layout.buildDirectory
+                .file("arara.tds.zip")
+                .get()
+                .asFile,
+        )
         outputs.upToDateWhen { false }
 
-        archiveFileName.set(project.layout.buildDirectory.file("arara.tds.zip").get().asFile.absolutePath)
-        from(project.layout.buildDirectory.dir("tds").get().asFile)
+        archiveFileName.set(
+            project.layout.buildDirectory
+                .file(
+                    "arara.tds.zip",
+                ).get()
+                .asFile.absolutePath,
+        )
+        from(
+            project.layout.buildDirectory
+                .dir("tds")
+                .get()
+                .asFile,
+        )
     }
 }

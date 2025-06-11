@@ -39,20 +39,23 @@ object LinearExecutor : Executor {
      */
     @ExperimentalTime
     override var executionOptions: ExecutionOptions =
-        org.islandoftex.arara.core.configuration.ExecutionOptions()
+        org.islandoftex.arara.core.configuration
+            .ExecutionOptions()
         set(value) {
-                if (currentFile != null)
-                    throw AraraException(
-                        "Cannot change execution options while " +
-                            "executing the file ${currentFile?.path}."
-                    )
-                if (value.parallelExecution)
-                    throw AraraException(
-                        "This executor does not support " +
-                            "parallel execution."
-                    )
-                field = value
+            if (currentFile != null) {
+                throw AraraException(
+                    "Cannot change execution options while " +
+                        "executing the file ${currentFile?.path}.",
+                )
             }
+            if (value.parallelExecution) {
+                throw AraraException(
+                    "This executor does not support " +
+                        "parallel execution.",
+                )
+            }
+            field = value
+        }
 
     /**
      * Execute rules based on the projects. Should roughly implement the
@@ -74,11 +77,13 @@ object LinearExecutor : Executor {
         var exitCode = 0
         for (project in projectsInOrder) {
             exitCode = executeProject(project)
-            if (executionOptions.haltOnErrors && exitCode != 0)
+            if (executionOptions.haltOnErrors && exitCode != 0) {
                 break
+            }
         }
         val executionEnded = TimeSource.Monotonic.markNow()
-        val executionReport = ExecutionReport(executionStarted, executionEnded, exitCode)
+        val executionReport =
+            ExecutionReport(executionStarted, executionEnded, exitCode)
         hooks.executeAfterExecution(executionReport)
         return executionReport
     }
@@ -92,8 +97,9 @@ object LinearExecutor : Executor {
             hooks.executeBeforeFile(file)
             val executionReport = execute(file)
             exitCode = executionReport.exitCode
-            if (executionOptions.haltOnErrors && exitCode != 0)
+            if (executionOptions.haltOnErrors && exitCode != 0) {
                 return exitCode
+            }
             hooks.executeAfterFile(executionReport)
         }
         hooks.executeAfterProject(project)
@@ -110,10 +116,11 @@ object LinearExecutor : Executor {
     override fun execute(file: ProjectFile): ExecutionReport {
         currentFile = file
         val executionStarted = TimeSource.Monotonic.markNow()
-        val directives = hooks.processDirectives(
-            file,
-            file.fetchDirectives(executionOptions.parseOnlyHeader)
-        )
+        val directives =
+            hooks.processDirectives(
+                file,
+                file.fetchDirectives(executionOptions.parseOnlyHeader),
+            )
         var exitCode = 0
         for (directive in directives) {
             exitCode = directive.execute()
@@ -123,7 +130,9 @@ object LinearExecutor : Executor {
         }
         currentFile = null
         return ExecutionReport(
-            executionStarted, TimeSource.Monotonic.markNow(), exitCode
+            executionStarted,
+            TimeSource.Monotonic.markNow(),
+            exitCode,
         )
     }
 }

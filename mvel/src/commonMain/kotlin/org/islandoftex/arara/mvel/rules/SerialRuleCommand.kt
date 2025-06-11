@@ -17,7 +17,9 @@ import org.islandoftex.arara.api.rules.RuleCommand
 class SerialRuleCommand : RuleCommand {
     override var name: String? = null
     override val command: () -> Int
-        get() = throw AraraException("Operation not supported for SerialRuleCommand")
+        get() = throw AraraException(
+            "Operation not supported for SerialRuleCommand",
+        )
 
     // TODO: why is trimming needed?
     @SerialName("command")
@@ -29,7 +31,6 @@ class SerialRuleCommand : RuleCommand {
      */
     var exit: String? = null
 
-    override fun toString(): String {
-        return "RuleCommand(name=$name, commandString=$commandString)"
-    }
+    override fun toString(): String =
+        "RuleCommand(name=$name, commandString=$commandString)"
 }

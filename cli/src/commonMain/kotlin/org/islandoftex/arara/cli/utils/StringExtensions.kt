@@ -13,14 +13,16 @@ import kotlin.math.ceil
  * @return The abbreviated string.
  */
 @Throws(IllegalArgumentException::class)
-internal fun String.abbreviate(maxWidth: Int, ellipsis: String = "…"): String {
-    return when {
+internal fun String.abbreviate(
+    maxWidth: Int,
+    ellipsis: String = "…",
+): String =
+    when {
         maxWidth < ellipsis.length + 1 ->
             throw IllegalArgumentException("Can't abbreviate text further")
         this.length < maxWidth -> this
         else -> this.substring(0, maxWidth - ellipsis.length) + ellipsis
     }
-}
 
 /**
  * Center a string within a specified number of columns.
@@ -32,14 +34,17 @@ internal fun String.abbreviate(maxWidth: Int, ellipsis: String = "…"): String 
  * @param padChar The char to pad with.
  * @return The padded string.
  */
-internal fun String.center(width: Int, padChar: Char): String {
-    return if (this.length > width) this
-    else {
+internal fun String.center(
+    width: Int,
+    padChar: Char,
+): String =
+    if (this.length > width) {
+        this
+    } else {
         val charsLeft = width - this.length
         padChar.toString().repeat(charsLeft / 2) + this +
             padChar.toString().repeat(ceil(charsLeft.toDouble() / 2.0).toInt())
     }
-}
 
 /**
  * Wrap text at a specified width.
@@ -56,13 +61,14 @@ internal fun String.wrap(width: Int): String {
     var spaceLeft = width - wrapped.length
     words.drop(1).forEach {
         val len = it.length
-        wrapped += if (len + 1 > spaceLeft) {
-            spaceLeft = width - len
-            "\n$it"
-        } else {
-            spaceLeft -= len + 1
-            " $it"
-        }
+        wrapped +=
+            if (len + 1 > spaceLeft) {
+                spaceLeft = width - len
+                "\n$it"
+            } else {
+                spaceLeft -= len + 1
+                " $it"
+            }
     }
     return wrapped
 }

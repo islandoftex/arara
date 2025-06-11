@@ -9,5 +9,8 @@ import org.islandoftex.arara.api.AraraException
  */
 class AraraExceptionWithHeader : AraraException {
     constructor(message: String) : super(message)
-    constructor(message: String, exception: Exception) : super(message, exception)
+    constructor(
+        message: String,
+        exception: Exception,
+    ) : super(message, exception)
 }

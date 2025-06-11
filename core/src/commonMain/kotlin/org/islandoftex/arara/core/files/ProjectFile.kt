@@ -15,7 +15,7 @@ import kotlin.time.ExperimentalTime
 open class ProjectFile(
     override val path: MPPPath,
     override val fileType: FileType,
-    override val priority: Int = DEFAULT_PRIORITY
+    override val priority: Int = DEFAULT_PRIORITY,
 ) : ProjectFile {
     companion object {
         /**
@@ -50,16 +50,15 @@ open class ProjectFile(
             Directives.extractDirectives(
                 path.readLines(),
                 LinearExecutor.executionOptions.parseOnlyHeader,
-                fileType
+                fileType,
             )
         } catch (ioexception: AraraIOException) {
             throw AraraException(
                 LanguageController.messages.ERROR_EXTRACTOR_IO_ERROR,
-                ioexception
+                ioexception,
             )
         }
 
-    override fun toString(): String {
-        return "ProjectFile(path=$path, fileType=$fileType, priority=$priority)"
-    }
+    override fun toString(): String =
+        "ProjectFile(path=$path, fileType=$fileType, priority=$priority)"
 }

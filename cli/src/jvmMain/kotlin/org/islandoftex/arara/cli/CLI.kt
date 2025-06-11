@@ -63,7 +63,7 @@ import kotlin.time.TimeSource
  * @since 5.0
  */
 class CLI : CliktCommand(name = "arara") {
-    
+
     init {
         context {
             terminal = Terminal(

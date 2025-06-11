@@ -29,15 +29,20 @@ object ConfigurationUtils {
      * try to look up in a global directory, that is, the user home.
      */
     fun configFileForProject(project: Project): MPPPath? {
-        val names = listOf(
-            ".araraconfig.yaml",
-            "araraconfig.yaml", ".arararc.yaml", "arararc.yaml"
-        )
+        val names =
+            listOf(
+                ".araraconfig.yaml",
+                "araraconfig.yaml",
+                ".arararc.yaml",
+                "arararc.yaml",
+            )
         return project.workingDirectory.let { workingDir ->
             names.map { workingDir / it }.firstOrNull { it.exists }
-        } ?: Environment.getSystemPropertyOrNull("user.home")
+        } ?: Environment
+            .getSystemPropertyOrNull("user.home")
             ?.let { userHome ->
-                names.map { MPPPath(userHome) / it }
+                names
+                    .map { MPPPath(userHome) / it }
                     .firstOrNull { it.exists }
             }
     }
@@ -51,12 +56,12 @@ object ConfigurationUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    private fun loadLocalConfiguration(file: MPPPath): LocalConfiguration {
-        return if (file.fileName.endsWith(".yaml"))
+    private fun loadLocalConfiguration(file: MPPPath): LocalConfiguration =
+        if (file.fileName.endsWith(".yaml")) {
             LocalConfiguration.load(file)
-        else
+        } else {
             TODO("Kotlin DSL not implemented yet")
-    }
+        }
 
     /**
      * Loads the application configuration.
@@ -68,23 +73,30 @@ object ConfigurationUtils {
      */
     @OptIn(ExperimentalTime::class)
     @Throws(AraraException::class)
-    fun load(file: MPPPath, currentProject: Project) {
+    fun load(
+        file: MPPPath,
+        currentProject: Project,
+    ) {
         // then validate it and update the configuration accordingly
         val resource = loadLocalConfiguration(file)
-        LinearExecutor.executionOptions = resource.toExecutionOptions(
-            currentProject,
-            LinearExecutor.executionOptions
-        )
-        Session.loggingOptions = resource.toLoggingOptions(
-            Session.loggingOptions
-        )
-        Session.userInterfaceOptions = resource.toUserInterfaceOptions(
-            Session.userInterfaceOptions
-        )
+        LinearExecutor.executionOptions =
+            resource.toExecutionOptions(
+                currentProject,
+                LinearExecutor.executionOptions,
+            )
+        Session.loggingOptions =
+            resource.toLoggingOptions(
+                Session.loggingOptions,
+            )
+        Session.userInterfaceOptions =
+            resource.toUserInterfaceOptions(
+                Session.userInterfaceOptions,
+            )
 
         MvelState.preambles += resource.preambles
         MvelState.defaultPreamble = resource.defaultPreamble
-        MvelState.prependPreambleIfDirectivesGiven = resource.prependPreambleIfDirectivesGiven
+        MvelState.prependPreambleIfDirectivesGiven =
+            resource.prependPreambleIfDirectivesGiven
 
         // just to be sure, update the current locale in order to
         // display localized messages and reset logging status

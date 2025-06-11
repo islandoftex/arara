@@ -7,5 +7,8 @@ data class RuleArgument<T>(
     override val identifier: String,
     override val isRequired: Boolean,
     override val defaultValue: T?,
-    override val processor: (T, Map<String, Any>) -> List<String> = { _, _ -> listOf() }
+    override val processor: (
+        T,
+        Map<String, Any>,
+    ) -> List<String> = { _, _ -> listOf() },
 ) : RuleArgument<T>

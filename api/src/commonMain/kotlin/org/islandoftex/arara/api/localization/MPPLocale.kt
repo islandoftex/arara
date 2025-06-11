@@ -7,7 +7,9 @@ package org.islandoftex.arara.api.localization
  * Constructed from a locale tag, it is only used to hold th state of the
  * locale and provide a display language.
  */
-public expect class MPPLocale(tag: String) {
+public expect class MPPLocale(
+    tag: String,
+) {
     /**
      * Display language of the language in use. If not possible to provide,
      * falls back to language tag.

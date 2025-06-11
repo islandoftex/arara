@@ -18,16 +18,17 @@ data class DirectiveImpl(
     override val identifier: String,
     override val parameters: Map<String, Any>,
     override val conditional: DirectiveConditional,
-    override val lineNumbers: List<Int>
+    override val lineNumbers: List<Int>,
 ) : Directive {
     @OptIn(ExperimentalTime::class)
-    override fun execute(): Int = Interpreter(
-        LinearExecutor.executionOptions, LinearExecutor.currentFile!!,
-        LinearExecutor.currentProject!!.workingDirectory
-    ).execute(this).exitCode
+    override fun execute(): Int =
+        Interpreter(
+            LinearExecutor.executionOptions,
+            LinearExecutor.currentFile!!,
+            LinearExecutor.currentProject!!.workingDirectory,
+        ).execute(this).exitCode
 
-    override fun toString(): String {
-        return "Directive(identifier='$identifier', parameters=$parameters," +
+    override fun toString(): String =
+        "Directive(identifier='$identifier', parameters=$parameters," +
             "conditional=$conditional, lineNumbers=$lineNumbers)"
-    }
 }

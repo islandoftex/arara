@@ -24,20 +24,29 @@ object Executor {
     fun main(args: Array<String>) {
         println("Starting execution")
 
-        val path = URLDecoder.decode(
-            Executor::class.java.protectionDomain
-                .codeSource.location.path,
-            "UTF-8"
-        )
-        val scriptSource = Paths.get(File(path).toURI()).parent.toAbsolutePath()
-            .resolve("../../../../src/jvmTest/resources/org/islandoftex/arara/dsl/samples/project.kts")
-            .readText().trimIndent().toScriptSource()
+        val path =
+            URLDecoder.decode(
+                Executor::class.java.protectionDomain
+                    .codeSource.location.path,
+                "UTF-8",
+            )
+        val scriptSource =
+            Paths
+                .get(File(path).toURI())
+                .parent
+                .toAbsolutePath()
+                .resolve(
+                    "../../../../src/jvmTest/resources/org/islandoftex/arara/dsl/samples/project.kts",
+                ).readText()
+                .trimIndent()
+                .toScriptSource()
 
-        BasicJvmScriptingHost().eval(
-            scriptSource,
-            AraraScriptCompilationConfiguration(),
-            AraraScriptEvaluationConfiguration()
-        ).valueOrThrow()
+        BasicJvmScriptingHost()
+            .eval(
+                scriptSource,
+                AraraScriptCompilationConfiguration(),
+                AraraScriptEvaluationConfiguration(),
+            ).valueOrThrow()
 
         println(DSLInstance.projects.size)
         println(DSLInstance.projects)

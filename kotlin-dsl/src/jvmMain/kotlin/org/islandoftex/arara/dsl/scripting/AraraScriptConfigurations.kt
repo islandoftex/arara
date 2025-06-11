@@ -29,55 +29,74 @@ import kotlin.script.experimental.jvmhost.CompiledScriptJarsCache
  * Major influences from
  * https://github.com/Kotlin/kotlin-script-examples/blob/master/jvm/simple-main-kts/simple-main-kts/src/main/kotlin/org/jetbrains/kotlin/script/examples/simpleMainKts/scriptDef.kt
  */
-class AraraScriptCompilationConfiguration : ScriptCompilationConfiguration({
-    defaultImports("java.io.*")
-    implicitReceivers(RuleMethods::class, DSLInstance::class)
-    jvm {
-        val keyResource = AraraScriptCompilationConfiguration::class.java
-            .name.replace('.', '/') + ".class"
-        val thisJarFile = AraraScriptCompilationConfiguration::class.java
-            .classLoader.getResource(keyResource)?.toContainingJarOrNull()
-        if (thisJarFile != null) {
-            dependenciesFromCurrentContext(thisJarFile.name, wholeClasspath = true)
-        } else {
-            dependenciesFromClassContext(
-                AraraScriptCompilationConfiguration::class,
-                wholeClasspath = true
-            )
-        }
-    }
-    ide {
-        acceptedLocations(ScriptAcceptedLocation.Everywhere)
-    }
-    hostConfiguration(
-        ScriptingHostConfiguration {
-            jvm {
-                Environment.getSystemPropertyOrNull("java.io.tmpdir")
-                    ?.let(::File)
-                    ?.takeIf { it.exists() && it.isDirectory }
-                    ?.let {
-                        File(it, "org.islandoftex.arara.kts.cache")
-                            .apply { mkdir() }
-                    }
-                    ?.let {
-                        compilationCache(
-                            CompiledScriptJarsCache { script, compilationConfiguration ->
-                                it.resolve(compiledScriptUniqueName(script, compilationConfiguration) + ".jar")
-                            }
-                        )
-                    }
+class AraraScriptCompilationConfiguration :
+    ScriptCompilationConfiguration({
+        defaultImports("java.io.*")
+        implicitReceivers(RuleMethods::class, DSLInstance::class)
+        jvm {
+            val keyResource =
+                AraraScriptCompilationConfiguration::class.java
+                    .name
+                    .replace('.', '/') + ".class"
+            val thisJarFile =
+                AraraScriptCompilationConfiguration::class.java
+                    .classLoader
+                    .getResource(keyResource)
+                    ?.toContainingJarOrNull()
+            if (thisJarFile != null) {
+                dependenciesFromCurrentContext(
+                    thisJarFile.name,
+                    wholeClasspath = true,
+                )
+            } else {
+                dependenciesFromClassContext(
+                    AraraScriptCompilationConfiguration::class,
+                    wholeClasspath = true,
+                )
             }
         }
-    )
-})
+        ide {
+            acceptedLocations(ScriptAcceptedLocation.Everywhere)
+        }
+        hostConfiguration(
+            ScriptingHostConfiguration {
+                jvm {
+                    Environment
+                        .getSystemPropertyOrNull("java.io.tmpdir")
+                        ?.let(::File)
+                        ?.takeIf { it.exists() && it.isDirectory }
+                        ?.let {
+                            File(it, "org.islandoftex.arara.kts.cache")
+                                .apply { mkdir() }
+                        }?.let {
+                            compilationCache(
+                                CompiledScriptJarsCache {
+                                    script,
+                                    compilationConfiguration,
+                                    ->
+                                    it.resolve(
+                                        compiledScriptUniqueName(
+                                            script,
+                                            compilationConfiguration,
+                                        ) +
+                                            ".jar",
+                                    )
+                                },
+                            )
+                        }
+                }
+            },
+        )
+    })
 
-class AraraScriptEvaluationConfiguration : ScriptEvaluationConfiguration({
-    implicitReceivers(RuleMethods, DSLInstance)
-})
+class AraraScriptEvaluationConfiguration :
+    ScriptEvaluationConfiguration({
+        implicitReceivers(RuleMethods, DSLInstance)
+    })
 
 private fun compiledScriptUniqueName(
     script: SourceCode,
-    scriptCompilationConfiguration: ScriptCompilationConfiguration
+    scriptCompilationConfiguration: ScriptCompilationConfiguration,
 ): String {
     val digestWrapper = MessageDigest.getInstance("MD5")
     digestWrapper.update(script.text.toByteArray())
@@ -90,12 +109,17 @@ private fun compiledScriptUniqueName(
     return digestWrapper.digest().toHexString()
 }
 
-private fun ByteArray.toHexString(): String = joinToString("", transform = { "%02x".format(it) })
+private fun ByteArray.toHexString(): String =
+    joinToString("", transform = {
+        "%02x".format(it)
+    })
 
 internal fun URL.toContainingJarOrNull(): File? =
     if (protocol == "jar") {
         (openConnection() as? JarURLConnection)?.jarFileURL?.toFileOrNull()
-    } else null
+    } else {
+        null
+    }
 
 internal fun URL.toFileOrNull() =
     try {
@@ -105,6 +129,9 @@ internal fun URL.toFileOrNull() =
     } catch (e: java.net.URISyntaxException) {
         null
     } ?: run {
-        if (protocol != "file") null
-        else File(file)
+        if (protocol != "file") {
+            null
+        } else {
+            File(file)
+        }
     }

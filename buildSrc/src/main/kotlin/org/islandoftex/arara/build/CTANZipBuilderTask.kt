@@ -12,11 +12,32 @@ open class CTANZipBuilderTask : Zip() {
         group = "distribution"
         description = "Create a CTAN-ready ZIP file."
 
-        inputs.dir(project.layout.buildDirectory.dir("ctan").get().asFile)
-        outputs.file(project.layout.buildDirectory.file("arara-ctan.zip").get().asFile)
+        inputs.dir(
+            project.layout.buildDirectory
+                .dir("ctan")
+                .get()
+                .asFile,
+        )
+        outputs.file(
+            project.layout.buildDirectory
+                .file("arara-ctan.zip")
+                .get()
+                .asFile,
+        )
         outputs.upToDateWhen { false }
 
-        archiveFileName.set(project.layout.buildDirectory.file("arara-ctan.zip").get().asFile.absolutePath)
-        from(project.layout.buildDirectory.dir("ctan").get().asFile)
+        archiveFileName.set(
+            project.layout.buildDirectory
+                .file(
+                    "arara-ctan.zip",
+                ).get()
+                .asFile.absolutePath,
+        )
+        from(
+            project.layout.buildDirectory
+                .dir("ctan")
+                .get()
+                .asFile,
+        )
     }
 }

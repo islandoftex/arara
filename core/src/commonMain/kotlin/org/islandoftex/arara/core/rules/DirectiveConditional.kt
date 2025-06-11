@@ -14,16 +14,17 @@ import org.islandoftex.arara.api.rules.DirectiveConditionalType
  */
 data class DirectiveConditional(
     override val type: DirectiveConditionalType = DirectiveConditionalType.NONE,
-    override val condition: String = ""
+    override val condition: String = "",
 ) : DirectiveConditional {
     /**
      * Provides a textual representation of the conditional object.
      * @return A string representation of this object.
      */
-    override fun toString(): String {
-        return "{ $type" +
-            if (type != DirectiveConditionalType.NONE)
+    override fun toString(): String =
+        "{ $type" +
+            if (type != DirectiveConditionalType.NONE) {
                 ", expression: ${condition.trim()}"
-            else "" + " }"
-    }
+            } else {
+                "" + " }"
+            }
 }

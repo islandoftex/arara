@@ -3,5 +3,10 @@ package org.islandoftex.arara.lua
 
 import org.islandoftex.arara.api.AraraException
 
-class ProjectParseException(s: String) : AraraException(s)
-class ProjectValidationException(s: String) : AraraException(s)
+class ProjectParseException(
+    s: String,
+) : AraraException(s)
+
+class ProjectValidationException(
+    s: String,
+) : AraraException(s)

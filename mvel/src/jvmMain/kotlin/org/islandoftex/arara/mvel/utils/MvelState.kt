@@ -18,17 +18,42 @@ object MvelState {
         kotlin.runCatching {
             val methodsKotlin = RuleMethods::class.java.methods
             listOf(
-                "halt", "getOriginalFile", "getOriginalReference",
-                "trimSpaces", "getBasename", "getFiletype", "replicatePattern",
-                "throwError", "getSession", "buildString", "getCommand",
-                "getCommandWithWorkingDirectory", "isVerboseMode",
-                "showMessage", "isOnPath", "unsafelyExecuteSystemCommand",
-                "listFilesByExtensions", "listFilesByPatterns",
-                "writeToFile", "readFromFile", "isSubdirectory",
-                "isEmpty", "isNotEmpty", "isTrue", "isFalse",
-                "isWindows", "isLinux", "isMac", "isUnix", "isCygwin",
-                "checkClass", "isString", "isList", "isMap", "isBoolean",
-                "getOrNull"
+                "halt",
+                "getOriginalFile",
+                "getOriginalReference",
+                "trimSpaces",
+                "getBasename",
+                "getFiletype",
+                "replicatePattern",
+                "throwError",
+                "getSession",
+                "buildString",
+                "getCommand",
+                "getCommandWithWorkingDirectory",
+                "isVerboseMode",
+                "showMessage",
+                "isOnPath",
+                "unsafelyExecuteSystemCommand",
+                "listFilesByExtensions",
+                "listFilesByPatterns",
+                "writeToFile",
+                "readFromFile",
+                "isSubdirectory",
+                "isEmpty",
+                "isNotEmpty",
+                "isTrue",
+                "isFalse",
+                "isWindows",
+                "isLinux",
+                "isMac",
+                "isUnix",
+                "isCygwin",
+                "checkClass",
+                "isString",
+                "isList",
+                "isMap",
+                "isBoolean",
+                "getOrNull",
             ).forEach { name: String ->
                 map[name] = methodsKotlin.first { it.name == name }
             }
@@ -45,9 +70,18 @@ object MvelState {
         kotlin.runCatching {
             val methodsKotlin = ConditionalMethods::class.java.methods
             listOf(
-                "exists", "missing", "changed", "unchanged",
-                "found", "toFile", "showDropdown", "showInput",
-                "showOptions", "currentFile", "loadClass", "loadObject"
+                "exists",
+                "missing",
+                "changed",
+                "unchanged",
+                "found",
+                "toFile",
+                "showDropdown",
+                "showInput",
+                "showOptions",
+                "currentFile",
+                "loadClass",
+                "loadObject",
             ).forEach { name: String ->
                 map[name] = methodsKotlin.first { it.name == name }
             }

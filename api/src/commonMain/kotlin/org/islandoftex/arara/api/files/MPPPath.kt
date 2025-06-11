@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.files
 
-//import com.soywiz.klock.DateTime
+// import com.soywiz.klock.DateTime
 import korlibs.time.DateTime
 import org.islandoftex.arara.api.AraraIOException
 
@@ -111,7 +111,10 @@ public expect class MPPPath {
      * exception if the file is a directory or access is impossible.
      */
     @Throws(AraraIOException::class)
-    public fun writeText(text: String, append: Boolean = false)
+    public fun writeText(
+        text: String,
+        append: Boolean = false,
+    )
 
     /**
      * Resolve the child [p] against the current path.

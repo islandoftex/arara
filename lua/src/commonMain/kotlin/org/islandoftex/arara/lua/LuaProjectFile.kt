@@ -14,7 +14,7 @@ import org.islandoftex.arara.core.rules.Directives
 internal class LuaProjectFile(
     path: MPPPath,
     fileType: FileType,
-    priority: Int = DEFAULT_PRIORITY
+    priority: Int = DEFAULT_PRIORITY,
 ) : ProjectFile(path, fileType, priority) {
     /**
      * The directives to be used instead of fetching them from file. Used

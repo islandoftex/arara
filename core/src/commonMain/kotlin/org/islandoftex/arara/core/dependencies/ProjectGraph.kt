@@ -22,7 +22,7 @@ internal class ProjectGraph : Graph<Project>() {
                 addEdge(
                     projects.find { it.name == dependency }
                         ?: throw AraraException("Stray project dependencies"),
-                    project
+                    project,
                 )
             }
         }

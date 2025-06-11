@@ -24,10 +24,13 @@ object RuleUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun parseRule(file: MPPPath, identifier: String): org.islandoftex.arara.api.rules.Rule {
-        return if (file.toString().substringAfterLast('.') == "yaml")
+    fun parseRule(
+        file: MPPPath,
+        identifier: String,
+    ): org.islandoftex.arara.api.rules.Rule =
+        if (file.toString().substringAfterLast('.') == "yaml") {
             Rule.parse(file, identifier)
-        else
+        } else {
             TODO("Kotlin DSL not implemented yet")
-    }
+        }
 }

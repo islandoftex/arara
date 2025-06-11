@@ -12,10 +12,12 @@ class MPPPathTest {
     fun shouldNotClassifyRelativeAsAbsolutePaths() {
         assertFalse(MPPPath(".").isAbsolute)
     }
+
     @Test
     fun shouldCorrectlyDetectAbsolutePaths() {
         assertTrue(MPPPath("/test").isAbsolute)
     }
+
     @Test
     fun shouldConsiderRootAbsolute() {
         // korio does not handle this
@@ -27,14 +29,15 @@ class MPPPathTest {
     fun shouldNormalizeDots() {
         assertEquals(
             MPPPath("/tmp/./quack/..").normalize().toString(),
-            MPPPath("/tmp/").normalize().toString()
+            MPPPath("/tmp/").normalize().toString(),
         )
     }
+
     @Test
     fun shouldNoExceedRoot() {
         assertEquals(
             MPPPath("/tmp/../../..").normalize().toString(),
-            MPPPath("/").toString()
+            MPPPath("/").toString(),
         )
     }
 
@@ -43,18 +46,19 @@ class MPPPathTest {
     fun shouldUseRootAsParentOfRoot() {
         assertEquals(
             MPPPath("/").parent.toString(),
-            MPPPath("/").toString()
+            MPPPath("/").toString(),
         )
     }
+
     @Test
     fun shouldDetermineParentCorrectly() {
         assertEquals(
             MPPPath("/tmp/./quack/..").parent.normalize().toString(),
-            MPPPath("/").toString()
+            MPPPath("/").toString(),
         )
         assertEquals(
             MPPPath("/tmp/./quack/..").normalize().parent.toString(),
-            MPPPath("/").toString()
+            MPPPath("/").toString(),
         )
     }
 }

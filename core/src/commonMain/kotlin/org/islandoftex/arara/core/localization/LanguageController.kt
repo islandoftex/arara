@@ -27,20 +27,21 @@ object LanguageController {
      */
     @JvmStatic
     fun loadMessagesFor(locale: MPPLocale) {
-        messages = when (locale) {
-            MPPLocale("de") -> GermanLanguage()
-            MPPLocale("it") -> ItalianLanguage()
-            MPPLocale("nl") -> DutchLanguage()
-            MPPLocale("pt-BR") -> BrazilianLanguage()
-            MPPLocale("en-QN") -> NorfolkLanguage()
-            MPPLocale("en") -> Messages()
-            else -> {
-                logger.warn {
-                    "Language ${locale.displayLanguage} not available; " +
-                        "defaulting to English."
+        messages =
+            when (locale) {
+                MPPLocale("de") -> GermanLanguage()
+                MPPLocale("it") -> ItalianLanguage()
+                MPPLocale("nl") -> DutchLanguage()
+                MPPLocale("pt-BR") -> BrazilianLanguage()
+                MPPLocale("en-QN") -> NorfolkLanguage()
+                MPPLocale("en") -> Messages()
+                else -> {
+                    logger.warn {
+                        "Language ${locale.displayLanguage} not available; " +
+                            "defaulting to English."
+                    }
+                    Messages()
                 }
-                Messages()
             }
-        }
     }
 }

@@ -5,5 +5,5 @@ import org.islandoftex.arara.api.rules.RuleCommand
 
 data class RuleCommand(
     override val name: String?,
-    override val command: () -> Int
+    override val command: () -> Int,
 ) : RuleCommand

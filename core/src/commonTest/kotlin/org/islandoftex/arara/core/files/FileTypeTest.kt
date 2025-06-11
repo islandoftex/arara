@@ -11,13 +11,24 @@ class FileTypeTest {
     @Test
     fun shouldOnlyDependOnExtensionForEquality() {
         assertEquals(FileType("test", "^\\s*"), FileType("test", "^\\s*%\\s+"))
-        assertEquals(FileType("test", "^\\s*%\\s+"), FileType("test", "^\\s*%\\s+"))
+        assertEquals(
+            FileType("test", "^\\s*%\\s+"),
+            FileType("test", "^\\s*%\\s+"),
+        )
     }
+
     @Test
     fun shouldOnlyDependOnExtensionForInequality() {
-        assertNotEquals(FileType("test", "^\\s*"), FileType("tes", "^\\s*%\\s+"))
-        assertNotEquals(FileType("test", "^\\s*%\\s+"), FileType("tes", "^\\s*%\\s+"))
+        assertNotEquals(
+            FileType("test", "^\\s*"),
+            FileType("tes", "^\\s*%\\s+"),
+        )
+        assertNotEquals(
+            FileType("test", "^\\s*%\\s+"),
+            FileType("tes", "^\\s*%\\s+"),
+        )
     }
+
     @Test
     fun shouldExpectValidPattern() {
         assertFailsWith<AraraException> {

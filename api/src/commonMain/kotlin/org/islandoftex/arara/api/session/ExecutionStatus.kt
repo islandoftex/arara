@@ -14,7 +14,7 @@ public sealed class ExecutionStatus(
     /**
      * The exit code arara will use when in the given state.
      */
-    public val exitCode: Int
+    public val exitCode: Int,
 ) {
     /**
      * Everything went just fine (note that the
@@ -40,5 +40,7 @@ public sealed class ExecutionStatus(
      * This represents any case where a user defined code has to be handled
      * which shall not be represented by one of arara's default categories.
      */
-    public class FinishedWithCode(exitCode: Int) : ExecutionStatus(exitCode)
+    public class FinishedWithCode(
+        exitCode: Int,
+    ) : ExecutionStatus(exitCode)
 }

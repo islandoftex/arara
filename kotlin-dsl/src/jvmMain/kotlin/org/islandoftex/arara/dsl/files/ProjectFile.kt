@@ -15,7 +15,7 @@ import java.nio.file.Path
 internal class ProjectFile(
     path: Path,
     fileType: FileType,
-    priority: Int = DEFAULT_PRIORITY
+    priority: Int = DEFAULT_PRIORITY,
 ) : ProjectFile(path.toMPPPath(), fileType, priority) {
     /**
      * The directives to be used instead of fetching them from file. Used

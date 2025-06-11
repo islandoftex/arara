@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-//import com.soywiz.korio.async.runBlockingNoJs
-//import com.soywiz.korio.file.std.localVfs
+// import com.soywiz.korio.async.runBlockingNoJs
+// import com.soywiz.korio.file.std.localVfs
 import korlibs.io.async.runBlockingNoJs
 import korlibs.io.file.std.localVfs
 import kotlinx.serialization.Serializable
@@ -30,7 +30,7 @@ data class Database(
      * the key is the absolute canonical file and the value
      * is its corresponding CRC32 hash.
      */
-    private val map: MutableMap<String, Long> = mutableMapOf()
+    private val map: MutableMap<String, Long> = mutableMapOf(),
 ) : Database {
     /**
      * Check whether the database contains a file.
@@ -50,8 +50,7 @@ data class Database(
      * @return The hash value associated with the file if any and `null` if
      *   the element is not in the database.
      */
-    override fun get(path: MPPPath): Long? =
-        map[path.normalize().toString()]
+    override fun get(path: MPPPath): Long? = map[path.normalize().toString()]
 
     /**
      * Set the hash value for a given file.
@@ -59,7 +58,10 @@ data class Database(
      * @param path The path of a file. Try to resolve it to an absolute path.
      * @param hash The hash value of the file.
      */
-    override fun set(path: MPPPath, hash: Long) {
+    override fun set(
+        path: MPPPath,
+        hash: Long,
+    ) {
         map[path.normalize().toString()] = hash
     }
 
@@ -73,13 +75,14 @@ data class Database(
     @Throws(NoSuchElementException::class)
     override fun remove(path: MPPPath) {
         val normalPath = path.normalize().toString()
-        if (normalPath in map)
+        if (normalPath in map) {
             map.remove(normalPath)
-        else
+        } else {
             throw NoSuchElementException(
                 "Attempt to remove non-existent path " +
-                    "from database."
+                    "from database.",
             )
+        }
     }
 
     /**
@@ -90,8 +93,9 @@ data class Database(
     @Throws(AraraException::class)
     override fun save(path: MPPPath) {
         runCatching {
-            val content = "!database\n" +
-                Yaml.Default.encodeToString(serializer(), this)
+            val content =
+                "!database\n" +
+                    Yaml.Default.encodeToString(serializer(), this)
             runBlockingNoJs {
                 localVfs(path.normalize().toString())
                     .writeString(content)
@@ -100,7 +104,7 @@ data class Database(
             throw AraraException(
                 LanguageController.messages.ERROR_SAVE_COULD_NOT_SAVE_XML
                     .formatString(path.fileName),
-                it
+                it,
             )
         }
     }
@@ -114,30 +118,35 @@ data class Database(
          *   higher levels.
          */
         @Throws(AraraException::class)
-        fun load(path: MPPPath): Database {
-            return if (!path.exists) {
+        fun load(path: MPPPath): Database =
+            if (!path.exists) {
                 Database()
             } else {
                 runCatching {
-                    val text = runBlockingNoJs {
-                        localVfs(path.normalize().toString()).readString()
+                    val text =
+                        runBlockingNoJs {
+                            localVfs(path.normalize().toString()).readString()
+                        }
+                    if (!text.startsWith("!database")) {
+                        throw AraraException(
+                            "Database should start with !database",
+                        )
                     }
-                    if (!text.startsWith("!database"))
-                        throw AraraException("Database should start with !database")
                     Yaml.Default.decodeFromString(
                         serializer(),
-                        text.lines()
-                            .drop(1).joinToString("\n")
+                        text
+                            .lines()
+                            .drop(1)
+                            .joinToString("\n"),
                     )
                 }.getOrElse {
                     throw AraraException(
                         LanguageController
                             .messages.ERROR_LOAD_COULD_NOT_LOAD_XML
                             .formatString(path.fileName),
-                        it
+                        it,
                     )
                 }
             }
-        }
     }
 }

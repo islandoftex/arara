@@ -20,10 +20,22 @@ open class SourceZipBuilderTask : Zip() {
         inputs.file(project.projectDir.resolve("cli/build.gradle.kts"))
         inputs.dir(project.projectDir.resolve("lua/src"))
         inputs.file(project.projectDir.resolve("lua/build.gradle.kts"))
-        outputs.files(project.layout.buildDirectory.file("arara-${project.version}-src.zip").get().asFile)
+        outputs.files(
+            project.layout.buildDirectory
+                .file(
+                    "arara-${project.version}-src.zip",
+                ).get()
+                .asFile,
+        )
         outputs.upToDateWhen { false }
 
-        archiveFileName.set(project.layout.buildDirectory.file("arara-${project.version}-src.zip").get().asFile.absolutePath)
+        archiveFileName.set(
+            project.layout.buildDirectory
+                .file(
+                    "arara-${project.version}-src.zip",
+                ).get()
+                .asFile.absolutePath,
+        )
         from(project.projectDir.resolve("api"))
         from(project.projectDir.resolve("core"))
         from(project.projectDir.resolve("cli"))

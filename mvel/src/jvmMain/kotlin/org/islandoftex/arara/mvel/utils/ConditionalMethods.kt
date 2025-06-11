@@ -26,9 +26,12 @@ object ConditionalMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun exists(extension: String): Boolean = FileHandling.changeExtension(
-        LinearExecutor.currentFile!!.path, extension
-    ).exists
+    fun exists(extension: String): Boolean =
+        FileHandling
+            .changeExtension(
+                LinearExecutor.currentFile!!.path,
+                extension,
+            ).exists
 
     /**
      * Checks if the file is missing according to its extension.
@@ -52,11 +55,13 @@ object ConditionalMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun changed(extension: String): Boolean = changed(
-        FileHandling.changeExtension(
-            LinearExecutor.currentFile!!.path, extension
+    fun changed(extension: String): Boolean =
+        changed(
+            FileHandling.changeExtension(
+                LinearExecutor.currentFile!!.path,
+                extension,
+            ),
         )
-    )
 
     /**
      * Checks if the file is unchanged according to its extension.
@@ -99,11 +104,12 @@ object ConditionalMethods {
     @OptIn(ExperimentalTime::class)
     @JvmStatic
     @Throws(AraraException::class)
-    fun changed(filename: MPPPath): Boolean = FileHandling.hasChanged(
-        filename,
-        LinearExecutor.currentProject!!.workingDirectory /
-            LinearExecutor.executionOptions.databaseName
-    )
+    fun changed(filename: MPPPath): Boolean =
+        FileHandling.hasChanged(
+            filename,
+            LinearExecutor.currentProject!!.workingDirectory /
+                LinearExecutor.executionOptions.databaseName,
+        )
 
     /**
      * Checks if the file is unchanged.
@@ -128,12 +134,17 @@ object ConditionalMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun found(extension: String, regex: String): Boolean = found(
-        FileHandling.changeExtension(
-            LinearExecutor.currentFile!!.path, extension
-        ),
-        regex
-    )
+    fun found(
+        extension: String,
+        regex: String,
+    ): Boolean =
+        found(
+            FileHandling.changeExtension(
+                LinearExecutor.currentFile!!.path,
+                extension,
+            ),
+            regex,
+        )
 
     /**
      * Checks if the file contains the provided regex.
@@ -146,8 +157,10 @@ object ConditionalMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun found(file: MPPPath, regex: String): Boolean =
-        MethodUtils.checkRegex(file, regex)
+    fun found(
+        file: MPPPath,
+        regex: String,
+    ): Boolean = MethodUtils.checkRegex(file, regex)
 
     /**
      * Returns a file object based on the provided name.
@@ -175,7 +188,7 @@ object ConditionalMethods {
         type: Int,
         title: String,
         text: String,
-        vararg buttons: Any
+        vararg buttons: Any,
     ): Int = dialogs.showOptions(width, type, title, text, buttons)
 
     /**
@@ -193,7 +206,7 @@ object ConditionalMethods {
         width: Int = dialogs.defaultWidth,
         type: Int,
         title: String,
-        text: String
+        text: String,
     ): String = dialogs.showInput(width, type, title, text)
 
     /**
@@ -213,7 +226,7 @@ object ConditionalMethods {
         type: Int,
         title: String,
         text: String,
-        vararg elements: Any
+        vararg elements: Any,
     ): Int = dialogs.showDropdown(width, type, title, text, elements)
 
     /**
@@ -235,8 +248,10 @@ object ConditionalMethods {
      * @return A pair representing the status and the class.
      */
     @JvmStatic
-    fun loadClass(file: MPPPath, name: String): Pair<ClassLoadingStatus, Class<*>> =
-        ClassLoading.loadClass(file, name)
+    fun loadClass(
+        file: MPPPath,
+        name: String,
+    ): Pair<ClassLoadingStatus, Class<*>> = ClassLoading.loadClass(file, name)
 
     /**
      * Loads a class from the provided string reference, representing a file.
@@ -246,8 +261,10 @@ object ConditionalMethods {
      * @return A pair representing the status and the class.
      */
     @JvmStatic
-    fun loadClass(ref: String, name: String): Pair<ClassLoadingStatus, Class<*>> =
-        loadClass(MPPPath(ref), name)
+    fun loadClass(
+        ref: String,
+        name: String,
+    ): Pair<ClassLoadingStatus, Class<*>> = loadClass(MPPPath(ref), name)
 
     /**
      * Loads a class from the provided file, instantiating it.
@@ -257,8 +274,10 @@ object ConditionalMethods {
      * @return A pair representing the status and the class object.
      */
     @JvmStatic
-    fun loadObject(file: MPPPath, name: String): Pair<ClassLoadingStatus, Any> =
-        ClassLoading.loadObject(file, name)
+    fun loadObject(
+        file: MPPPath,
+        name: String,
+    ): Pair<ClassLoadingStatus, Any> = ClassLoading.loadObject(file, name)
 
     /**
      * Loads a class from the provided string reference, instantiating it.
@@ -268,6 +287,8 @@ object ConditionalMethods {
      * @return A pair representing the status and the class object.
      */
     @JvmStatic
-    fun loadObject(ref: String, name: String): Pair<ClassLoadingStatus, Any> =
-        loadObject(MPPPath(ref), name)
+    fun loadObject(
+        ref: String,
+        name: String,
+    ): Pair<ClassLoadingStatus, Any> = loadObject(MPPPath(ref), name)
 }

@@ -8,27 +8,36 @@ kotlin {
     jvm()
 
     sourceSets {
+
+        all {
+            with (languageSettings) {
+                optIn("org.islandoftex.arara.api.localization.AraraMessages")
+                optIn("kotlin.time.ExperimentalTime")
+                optIn("kotlin.RequiresOptIn")
+            }
+        }
+        
         all {
             dependencies {
                 api(project(":api"))
                 implementation(libs.kotlin.logging)
             }
         }
-        
+
         commonMain {
             dependencies {
                 implementation(libs.korlibs.korio)
                 implementation(libs.yamlkt)
             }
         }
-    
+
         jvmMain {
             dependencies {
                 implementation(libs.ztexec)
                 implementation(libs.korlibs.korio)
             }
         }
-    
+
         jvmTest {
             dependencies {
                 implementation(libs.kotest.runner.jvm)
@@ -36,7 +45,7 @@ kotlin {
                 runtimeOnly(libs.slf4j.simple)
             }
         }
-        
+
         commonTest {
             dependencies {
                 implementation(kotlin("test"))
@@ -44,4 +53,3 @@ kotlin {
         }
     }
 }
-
