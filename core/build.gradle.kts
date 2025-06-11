@@ -7,27 +7,41 @@ plugins {
 kotlin {
     jvm()
 
-    sourceSets.all {
-        dependencies {
-            api(project(":api"))
-            implementation(libs.kotlin.logging)
+    sourceSets {
+        all {
+            dependencies {
+                api(project(":api"))
+                implementation(libs.kotlin.logging)
+            }
         }
-    }
-
-    sourceSets.commonMain.dependencies {
-        implementation(libs.korlibs.korio)
-        implementation(libs.yamlkt)
-    }
-
-    sourceSets.jvmMain.dependencies {
-        implementation(libs.ztexec)
-        implementation(libs.korlibs.korio)
-    }
-
-    sourceSets.jvmTest.dependencies {
-        implementation(libs.kotest.runner.jvm)
-        implementation(libs.kotest.assertions.jvm)
-        runtimeOnly(libs.slf4j.simple)
+        
+        commonMain {
+            dependencies {
+                implementation(libs.korlibs.korio)
+                implementation(libs.yamlkt)
+            }
+        }
+    
+        jvmMain {
+            dependencies {
+                implementation(libs.ztexec)
+                implementation(libs.korlibs.korio)
+            }
+        }
+    
+        jvmTest {
+            dependencies {
+                implementation(libs.kotest.runner.jvm)
+                implementation(libs.kotest.assertions.jvm)
+                runtimeOnly(libs.slf4j.simple)
+            }
+        }
+        
+        commonTest {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
     }
 }
 

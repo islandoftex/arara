@@ -14,6 +14,7 @@ import org.islandoftex.arara.core.utils.formatString
 import kotlin.math.ln
 import kotlin.math.pow
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.ExperimentalTime
 
 /**
  * Implements display utilitary methods.
@@ -67,6 +68,7 @@ object DisplayUtils {
     /**
      * Checks if the execution is in dry-run mode.
      */
+    @OptIn(ExperimentalTime::class)
     private val isDryRunMode: Boolean
         get() = LinearExecutor.executionOptions.executionMode ==
             ExecutionMode.DRY_RUN
@@ -74,6 +76,7 @@ object DisplayUtils {
     /**
      * Checks if the execution is in verbose mode.
      */
+    @OptIn(ExperimentalTime::class)
     private val isVerboseMode: Boolean
         get() = LinearExecutor.executionOptions.verbose
 

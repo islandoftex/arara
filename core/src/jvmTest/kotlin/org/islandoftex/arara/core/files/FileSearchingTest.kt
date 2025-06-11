@@ -16,7 +16,9 @@ import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.div
 import kotlin.io.path.writeText
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class FileSearchingTest : ShouldSpec({
     context("file listings") {
         fun prepareFileSystem(): Path {

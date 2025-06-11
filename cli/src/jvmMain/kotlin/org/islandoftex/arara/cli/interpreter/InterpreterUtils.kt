@@ -13,6 +13,7 @@ import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
+import kotlin.time.ExperimentalTime
 
 /**
  * Implements interpreter auxiliary methods.
@@ -31,6 +32,7 @@ internal object InterpreterUtils {
      * @return A boolean value indicating if the current conditional has a prior
      * evaluation.
      */
+    @OptIn(ExperimentalTime::class)
     internal fun runPriorEvaluation(conditional: DirectiveConditional): Boolean {
         return if (LinearExecutor.executionOptions.executionMode == ExecutionMode.DRY_RUN) {
             false
@@ -52,6 +54,7 @@ internal object InterpreterUtils {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
+    @OptIn(ExperimentalTime::class)
     @Throws(AraraException::class)
     internal fun run(command: Command): Int = Environment.executeSystemCommand(
         command,

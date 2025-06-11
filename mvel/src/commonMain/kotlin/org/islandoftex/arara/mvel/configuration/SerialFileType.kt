@@ -8,6 +8,7 @@ import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.utils.formatString
+import kotlin.time.ExperimentalTime
 
 /**
  * Implements the file type model.
@@ -28,6 +29,7 @@ data class SerialFileType(
      *
      * @throws AraraException If the pattern is invalid.
      */
+    @OptIn(ExperimentalTime::class)
     fun toFileType(): FileType = org.islandoftex.arara.core.files.FileType(
         extension,
         pattern.takeUnless { pattern == FileType.INVALID_PATTERN }

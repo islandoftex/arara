@@ -20,7 +20,9 @@ import org.islandoftex.arara.core.session.LinearExecutor
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 @DoNotParallelize
 class ExecutionTest : ShouldSpec({
     beforeSpec {

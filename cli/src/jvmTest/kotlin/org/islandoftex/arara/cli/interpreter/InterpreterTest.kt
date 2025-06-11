@@ -10,7 +10,9 @@ import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.files.FileType
 import org.islandoftex.arara.core.files.ProjectFile
 import org.islandoftex.arara.core.rules.Directives
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class InterpreterTest : ShouldSpec({
     val texFile = FileType("tex", "^\\s*%\\s+")
 

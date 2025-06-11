@@ -6,6 +6,7 @@ import org.islandoftex.arara.core.files.ProjectFile
 import org.islandoftex.arara.core.files.UNKNOWN_TYPE
 import org.islandoftex.arara.core.session.LinearExecutor
 import java.nio.file.Path
+import kotlin.time.ExperimentalTime
 
 /**
  * A project file model to capture DSL methods within.
@@ -28,6 +29,7 @@ class DSLProjectFile(private val path: Path) {
      *
      * @return A [ProjectFile] resembling the user's configuration.
      */
+    @OptIn(ExperimentalTime::class)
     internal fun toProjectFile(): org.islandoftex.arara.api.files.ProjectFile {
         val fileType = LinearExecutor.executionOptions.fileTypes
             .find { it.extension == path.toString().substringAfterLast('.') }

@@ -24,6 +24,7 @@ import org.islandoftex.arara.mvel.rules.DirectiveConditionalEvaluator
 import org.islandoftex.arara.mvel.rules.SerialRuleCommand
 import org.islandoftex.arara.mvel.utils.MvelState
 import org.mvel2.templates.TemplateRuntime
+import kotlin.time.ExperimentalTime
 
 /**
  * Interprets the list of directives.
@@ -32,7 +33,7 @@ import org.mvel2.templates.TemplateRuntime
  * @version 5.0
  * @since 4.0
  */
-class Interpreter(
+class Interpreter @OptIn(ExperimentalTime::class) constructor(
     private val executionOptions: ExecutionOptions,
     currentFile: ProjectFile,
     private val workingDirectory: MPPPath
@@ -54,6 +55,7 @@ class Interpreter(
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
+    @OptIn(ExperimentalTime::class)
     @Throws(AraraException::class)
     private fun getRule(directive: Directive, workingDirectory: MPPPath): MPPPath =
         executionOptions.rulePaths.let { paths ->
@@ -96,6 +98,7 @@ class Interpreter(
      * @param authors The authors of the rule.
      * @return Returns [value]
      */
+    @OptIn(ExperimentalTime::class)
     private fun runBoolean(
         value: Boolean,
         conditional: DirectiveConditional,
@@ -125,6 +128,7 @@ class Interpreter(
      * @return Success of the execution.
      * @throws AraraException Execution failed.
      */
+    @OptIn(ExperimentalTime::class)
     @Throws(AraraException::class)
     @Suppress("TooGenericExceptionCaught")
     private fun runCommand(
@@ -193,6 +197,7 @@ class Interpreter(
      * @param parameters The parameters for evaluation
      * @throws AraraException Running the command failed.
      */
+    @OptIn(ExperimentalTime::class)
     @Throws(AraraException::class)
     @Suppress("TooGenericExceptionCaught", "ThrowsCount")
     private fun executeCommand(
@@ -261,6 +266,7 @@ class Interpreter(
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
+    @OptIn(ExperimentalTime::class)
     @Throws(AraraException::class)
     @Suppress("NestedBlockDepth")
     fun execute(directive: Directive): ExecutionStatus {

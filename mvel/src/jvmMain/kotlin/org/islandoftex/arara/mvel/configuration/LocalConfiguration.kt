@@ -12,6 +12,7 @@ import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
+import kotlin.time.ExperimentalTime
 
 /**
  * A local configuration which resembles configuration files in the working
@@ -44,6 +45,7 @@ data class LocalConfiguration(
      *
      * @return The corresponding execution options.
      */
+    @OptIn(ExperimentalTime::class)
     @Throws(AraraException::class)
     fun toExecutionOptions(
         currentProject: Project,

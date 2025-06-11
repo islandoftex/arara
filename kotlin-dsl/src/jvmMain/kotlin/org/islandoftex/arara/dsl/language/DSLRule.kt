@@ -10,6 +10,7 @@ import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 import java.nio.file.Path
+import kotlin.time.ExperimentalTime
 
 /**
  * A rule model class to capture DSL methods within.
@@ -50,6 +51,7 @@ class DSLRule(
      *   resolved to the current project's working directory if null.
      * @return A [Command] for the specified configuration.
      */
+    @OptIn(ExperimentalTime::class)
     fun command(
         command: String,
         vararg parameters: String?,

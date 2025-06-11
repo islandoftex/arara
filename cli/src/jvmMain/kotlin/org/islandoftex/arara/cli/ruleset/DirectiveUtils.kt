@@ -15,6 +15,7 @@ import org.islandoftex.arara.core.rules.Directives
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.mvel.utils.MvelState
 import org.mvel2.templates.TemplateRuntime
+import kotlin.time.ExperimentalTime
 
 /**
  * Implements directive utilitary methods.
@@ -70,6 +71,7 @@ object DirectiveUtils {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
+    @OptIn(ExperimentalTime::class)
     @Throws(AraraException::class)
     private fun getParameters(
         text: String?,

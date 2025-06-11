@@ -9,6 +9,7 @@ import org.islandoftex.arara.core.session.ClassLoading.ClassLoadingStatus
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.GUIDialogs
+import kotlin.time.ExperimentalTime
 
 @Suppress("unused", "TooManyFunctions")
 object ConditionalMethods {
@@ -95,6 +96,7 @@ object ConditionalMethods {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
+    @OptIn(ExperimentalTime::class)
     @JvmStatic
     @Throws(AraraException::class)
     fun changed(filename: MPPPath): Boolean = FileHandling.hasChanged(

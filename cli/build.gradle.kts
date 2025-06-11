@@ -49,6 +49,12 @@ kotlin {
                 implementation(libs.kotest.assertions.jvm)
             }
         }
+
+        commonTest {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
     }
 
 }

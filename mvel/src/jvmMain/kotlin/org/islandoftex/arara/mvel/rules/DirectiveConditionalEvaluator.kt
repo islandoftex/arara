@@ -9,6 +9,7 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.DirectiveConditionalEvaluator
 import org.islandoftex.arara.mvel.utils.MvelState
 import org.mvel2.templates.TemplateRuntime
+import kotlin.time.ExperimentalTime
 
 /**
  * Implements an evaluator for MVEL rule conditionals.
@@ -17,7 +18,7 @@ import org.mvel2.templates.TemplateRuntime
  * @version 5.0
  * @since 4.0
  */
-class DirectiveConditionalEvaluator(executionOptions: ExecutionOptions) :
+class DirectiveConditionalEvaluator @OptIn(ExperimentalTime::class) constructor(executionOptions: ExecutionOptions) :
     DirectiveConditionalEvaluator(executionOptions) {
 
     /**

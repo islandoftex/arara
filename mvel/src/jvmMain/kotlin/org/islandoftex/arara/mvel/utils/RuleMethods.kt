@@ -16,6 +16,7 @@ import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.GUIDialogs
 import org.islandoftex.arara.core.ui.InputHandling
 import org.islandoftex.arara.mvel.interpreter.AraraExceptionWithHeader
+import kotlin.time.ExperimentalTime
 
 @Suppress("unused", "TooManyFunctions")
 object RuleMethods {
@@ -281,6 +282,7 @@ object RuleMethods {
      *
      * @return A boolean value indicating if the execution is in verbose mode.
      */
+    @OptIn(ExperimentalTime::class)
     @JvmStatic
     fun isVerboseMode(): Boolean = LinearExecutor.executionOptions.verbose
 
@@ -310,6 +312,7 @@ object RuleMethods {
      * @return A pair containing the exit status and the system command output
      * as a string.
      */
+    @OptIn(ExperimentalTime::class)
     @JvmStatic
     fun unsafelyExecuteSystemCommand(command: Command): Pair<Int, String> =
         if (LinearExecutor.executionOptions.executionMode == ExecutionMode.SAFE_RUN)

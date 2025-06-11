@@ -5,6 +5,7 @@ import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.cli.interpreter.Interpreter
 import org.islandoftex.arara.core.session.LinearExecutor
+import kotlin.time.ExperimentalTime
 
 /**
  * Implements the directive model.
@@ -19,6 +20,7 @@ data class DirectiveImpl(
     override val conditional: DirectiveConditional,
     override val lineNumbers: List<Int>
 ) : Directive {
+    @OptIn(ExperimentalTime::class)
     override fun execute(): Int = Interpreter(
         LinearExecutor.executionOptions, LinearExecutor.currentFile!!,
         LinearExecutor.currentProject!!.workingDirectory

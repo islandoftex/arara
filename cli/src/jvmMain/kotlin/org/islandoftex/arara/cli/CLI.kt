@@ -2,9 +2,12 @@
 package org.islandoftex.arara.cli
 
 import com.github.ajalt.clikt.completion.completionOption
+import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.core.context
+import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.output.MordantHelpFormatter
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.help
@@ -49,6 +52,7 @@ import org.islandoftex.arara.mvel.utils.MvelState
 import java.time.LocalDate
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
 import kotlin.time.TimeSource
 
 /**
@@ -58,18 +62,8 @@ import kotlin.time.TimeSource
  * @version 5.0
  * @since 5.0
  */
-class CLI : CliktCommand(
-    name = "arara", printHelpOnEmptyArgs = true,
-    help = """
-    ${DisplayUtils.logoString.replace('\n', '\u0085').replace(' ', '\u00A0')}
-
-    The cool TeX automation tool.
-
-    arara executes the TeX workflow you tell it to execute. Simply specify
-    your needs within your TeX file and let arara do the work. These directives
-    feature conditional execution and parameter expansion.
-    """
-) {
+class CLI : CliktCommand(name = "arara") {
+    
     init {
         context {
             terminal = Terminal(
@@ -82,6 +76,17 @@ class CLI : CliktCommand(
             }
         }
     }
+
+    override val printHelpOnEmptyArgs = true
+    override fun help(context: Context) = """
+    ${DisplayUtils.logoString.replace('\n', '\u0085').replace(' ', '\u00A0')}
+
+    The cool TeX automation tool.
+
+    arara executes the TeX workflow you tell it to execute. Simply specify
+    your needs within your TeX file and let arara do the work. These directives
+    feature conditional execution and parameter expansion.
+    """
 
     private val log by option("-l", "--log")
         .help("Generate a log output")
@@ -130,6 +135,7 @@ class CLI : CliktCommand(
      * configures the run or by creating a single project from the called
      * files.
      */
+    @OptIn(ExperimentalTime::class)
     private fun resolveProjects(): List<org.islandoftex.arara.api.files.Project> {
         // resolve the working directory from the one that may be given
         // as command line parameter; otherwise resolve current directory
@@ -202,6 +208,7 @@ class CLI : CliktCommand(
     /**
      * Update arara's configuration with the command line arguments.
      */
+    @OptIn(ExperimentalTime::class)
     private fun updateConfigurationFromCommandLine() {
         Session.userInterfaceOptions = UserInterfaceOptions(
             locale = language?.let { MPPLocale(it) }
@@ -282,6 +289,7 @@ class CLI : CliktCommand(
     /**
      * The actual main method of arara (when run in command-line mode)
      */
+    @OptIn(ExperimentalTime::class)
     override fun run() {
         // initializing logging has to come first; init() actually disables
         // the logging, so early exceptions won't generate a lot of noise in
@@ -357,7 +365,7 @@ class CLI : CliktCommand(
  */
 fun main(args: Array<String>) {
     CLI().context {
-        correctionSuggestor = { enteredValue, possibleValues ->
+        suggestTypoCorrection = { enteredValue, possibleValues ->
             possibleValues.filter { it.startsWith(enteredValue) }
         }
     }

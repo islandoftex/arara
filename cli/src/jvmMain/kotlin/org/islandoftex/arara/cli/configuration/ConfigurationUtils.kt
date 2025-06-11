@@ -11,6 +11,7 @@ import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.mvel.configuration.LocalConfiguration
 import org.islandoftex.arara.mvel.utils.MvelState
+import kotlin.time.ExperimentalTime
 
 /**
  * Implements configuration utilitary methods.
@@ -65,6 +66,7 @@ object ConfigurationUtils {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
+    @OptIn(ExperimentalTime::class)
     @Throws(AraraException::class)
     fun load(file: MPPPath, currentProject: Project) {
         // then validate it and update the configuration accordingly
