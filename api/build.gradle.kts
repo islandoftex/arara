@@ -8,18 +8,24 @@ kotlin {
 
     // explicitApi()
 
-    sourceSets.commonMain.dependencies {
-        api("com.soywiz.korlibs.klock:klock:${Versions.korlibs}")
-    }
+    sourceSets {
+        commonMain {
+            dependencies {
+                api("com.soywiz.korlibs.klock:klock:2.7.0")
+            }
+        }
 
-    sourceSets.jvmMain.dependencies {
-        implementation("com.soywiz.korlibs.korio:korio:${Versions.korlibs}")
+        jvmMain {
+            dependencies {
+                implementation("com.soywiz.korlibs.korio:korio:2.7.0")
+            }
+        }    
     }
-
-    sourceSets.jvmTests.dependencies {
-        implementation("io.kotest:kotest-runner-junit5-jvm:${Versions.kotest}")
-        implementation("io.kotest:kotest-assertions-core-jvm:${Versions.kotest}")
-    }   
+    
+//    sourceSets.jvmTests.dependencies {
+//        implementation("io.kotest:kotest-runner-junit5-jvm:4.6.3")
+//        implementation("io.kotest:kotest-assertions-core-jvm:4.6.3")
+//    }   
 }
 
 // tasks {

@@ -10,24 +10,24 @@ kotlin {
     sourceSets.all {
         dependencies {
             api(project(":api"))
-            implementation("io.github.microutils:kotlin-logging:${Versions.kotlinLogging}")
+            implementation("io.github.microutils:kotlin-logging:2.1.21")
         }
     }
 
     sourceSets.commonMain.dependencies {
-        implementation("com.soywiz.korlibs.korio:korio:${Versions.korlibs}")
-        implementation("net.mamoe.yamlkt:yamlkt:${Versions.yamlkt}")
+        implementation("com.soywiz.korlibs.korio:korio:2.7.0")
+        implementation("net.mamoe.yamlkt:yamlkt:0.13.0")
     }
 
     sourceSets.jvmMain.dependencies {
-        implementation("org.zeroturnaround:zt-exec:${Versions.ztExec}")
-        implementation("com.soywiz.korlibs.korio:korio:${Versions.korlibs}")
+        implementation("org.zeroturnaround:zt-exec:1.12")
+        implementation("com.soywiz.korlibs.korio:korio:2.7.0")
     }
 
     sourceSets.jvmTest.dependencies {
-        implementation("io.kotest:kotest-runner-junit5-jvm:${Versions.kotest}")
-        implementation("io.kotest:kotest-assertions-core-jvm:${Versions.kotest}")
-        runtimeOnly("org.slf4j:slf4j-simple:${Versions.slf4j}")
+        implementation("io.kotest:kotest-runner-junit5-jvm:4.6.3")
+        implementation("io.kotest:kotest-assertions-core-jvm:4.6.3")
+        runtimeOnly("org.slf4j:slf4j-simple:1.7.36")
     }
 }
 

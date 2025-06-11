@@ -15,12 +15,12 @@ kotlin {
 
         runtimeOnly(kotlin("compiler-embeddable"))
         runtimeOnly(kotlin("scripting-dependencies"))
-        runtimeOnly("net.java.dev.jna:jna:${Versions.jna}")
+        runtimeOnly("net.java.dev.jna:jna:5.13.0")
     }
 
     sourceSets.jvmTest.dependencies {
-        implementation("io.kotest:kotest-runner-junit5-jvm:${Versions.kotest}")
-        implementation("io.kotest:kotest-assertions-core-jvm:${Versions.kotest}")
+        implementation("io.kotest:kotest-runner-junit5-jvm:4.6.3")
+        implementation("io.kotest:kotest-assertions-core-jvm:4.6.3")
     }
 }
 
