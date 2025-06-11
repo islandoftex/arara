@@ -6,6 +6,7 @@ import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
+import kotlin.time.ExperimentalTime
 
 /**
  * Implements the evaluator model, on which a conditional can be analyzed and
@@ -15,13 +16,14 @@ import org.islandoftex.arara.api.rules.DirectiveConditionalType
  * @version 5.0
  * @since 4.0
  */
-abstract class DirectiveConditionalEvaluator(
+abstract class DirectiveConditionalEvaluator @OptIn(ExperimentalTime::class) constructor(
     private val executionOptions: ExecutionOptions
 ) {
     /**
      * This attribute holds the maximum number of
      * loops arara will accept; it's like reaching infinity
      */
+    @OptIn(ExperimentalTime::class)
     private val maxLoops: Int = executionOptions.maxLoops
 
     /**
@@ -69,6 +71,7 @@ abstract class DirectiveConditionalEvaluator(
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
+    @OptIn(ExperimentalTime::class)
     @Throws(AraraException::class)
     fun evaluate(conditional: DirectiveConditional): Boolean {
         // when in dry-run mode or not evaluating a

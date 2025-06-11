@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
-import com.soywiz.korio.lang.Environment
+//import com.soywiz.korio.lang.Environment
+import korlibs.io.lang.Environment
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.LoggingOptions
 import org.islandoftex.arara.api.configuration.UserInterfaceOptions

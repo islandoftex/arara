@@ -5,8 +5,11 @@ plugins {
 
 kotlin {
     jvm()
+    explicitApi()
 
-//     explicitApi()
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
 
     sourceSets {
         commonMain {
@@ -27,26 +30,32 @@ kotlin {
                 implementation(libs.kotest.assertions.jvm)
             }
         }
+        
+        commonTest {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
     }
 }
 
 tasks {
-    create("createAraraAPIObject") {
+    register("createAraraAPIObject") {
         listOf(
                 "src/nativeCommonMain/kotlin/org/islandoftex/arara/api/AraraAPI.kt",
                 "src/jvmMain/kotlin/org/islandoftex/arara/api/AraraAPI.kt"
         ).forEach {
             file(it).writeText(
                     """
-                    // SPDX-License-Identifier: BSD-3-Clause
-                    package org.islandoftex.arara.api
-
-                    public actual object AraraAPI {
-                        @Suppress("MayBeConst")
-                        public actual val version: String = "${project.version}"
-                    }
-
-                """.trimIndent()
+                        // SPDX-License-Identifier: BSD-3-Clause
+                        package org.islandoftex.arara.api
+    
+                        public actual object AraraAPI {
+                            @Suppress("MayBeConst")
+                            public actual val version: String = "${project.version}"
+                        }
+    
+                    """.trimIndent()
             )
         }
     }

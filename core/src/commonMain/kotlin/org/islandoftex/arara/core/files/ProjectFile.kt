@@ -10,6 +10,7 @@ import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.Directives
 import org.islandoftex.arara.core.session.LinearExecutor
+import kotlin.time.ExperimentalTime
 
 open class ProjectFile(
     override val path: MPPPath,
@@ -43,6 +44,7 @@ open class ProjectFile(
         return result
     }
 
+    @OptIn(ExperimentalTime::class)
     override fun fetchDirectives(parseOnlyHeader: Boolean): List<Directive> =
         try {
             Directives.extractDirectives(

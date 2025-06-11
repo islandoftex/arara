@@ -8,6 +8,7 @@ import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.session.ExecutionReport
 import org.islandoftex.arara.api.session.Executor
 import org.islandoftex.arara.core.dependencies.ProjectGraph
+import kotlin.time.ExperimentalTime
 import kotlin.time.TimeSource
 
 object LinearExecutor : Executor {
@@ -36,6 +37,7 @@ object LinearExecutor : Executor {
      * The setup for all executions run by this executor. The execution options
      * should not change while executing one project.
      */
+    @ExperimentalTime
     override var executionOptions: ExecutionOptions =
         org.islandoftex.arara.core.configuration.ExecutionOptions()
         set(value) {
@@ -64,6 +66,7 @@ object LinearExecutor : Executor {
      *
      * @param projects The projects to act on.
      */
+    @ExperimentalTime
     override fun execute(projects: List<Project>): ExecutionReport {
         val projectsInOrder = ProjectGraph().apply { addAll(projects) }.kahn()
         hooks.executeBeforeExecution()
@@ -80,6 +83,7 @@ object LinearExecutor : Executor {
         return executionReport
     }
 
+    @OptIn(ExperimentalTime::class)
     internal fun executeProject(project: Project): Int {
         var exitCode = 0
         currentProject = project
@@ -102,6 +106,7 @@ object LinearExecutor : Executor {
      *
      * @param file The file to run.
      */
+    @ExperimentalTime
     override fun execute(file: ProjectFile): ExecutionReport {
         currentFile = file
         val executionStarted = TimeSource.Monotonic.markNow()

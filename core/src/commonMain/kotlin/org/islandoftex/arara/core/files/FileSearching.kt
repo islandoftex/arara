@@ -1,10 +1,14 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-import com.soywiz.korio.async.runBlockingNoJs
-import com.soywiz.korio.file.baseName
-import com.soywiz.korio.file.extension
-import com.soywiz.korio.file.std.LocalVfs
+//import com.soywiz.korio.async.runBlockingNoJs
+//import com.soywiz.korio.file.baseName
+//import com.soywiz.korio.file.extension
+//import com.soywiz.korio.file.std.LocalVfs
+import korlibs.io.async.runBlockingNoJs
+import korlibs.io.file.baseName
+import korlibs.io.file.extension
+import korlibs.io.file.std.LocalVfs
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
@@ -19,6 +23,7 @@ import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.utils.formatString
 import org.islandoftex.arara.core.utils.globToRegex
+import kotlin.time.ExperimentalTime
 
 /**
  * Implements file searching auxiliary methods.
@@ -112,6 +117,7 @@ object FileSearching {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
+    @OptIn(ExperimentalTime::class)
     @Throws(AraraException::class)
     fun resolveFile(
         reference: String,
@@ -136,6 +142,7 @@ object FileSearching {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
+    @OptIn(ExperimentalTime::class)
     @Throws(AraraException::class)
     internal fun lookupFile(
         reference: String,

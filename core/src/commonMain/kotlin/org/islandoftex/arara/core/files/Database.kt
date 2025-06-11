@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-import com.soywiz.korio.async.runBlockingNoJs
-import com.soywiz.korio.file.std.localVfs
+//import com.soywiz.korio.async.runBlockingNoJs
+//import com.soywiz.korio.file.std.localVfs
+import korlibs.io.async.runBlockingNoJs
+import korlibs.io.file.std.localVfs
 import kotlinx.serialization.Serializable
 import net.mamoe.yamlkt.Yaml
 import org.islandoftex.arara.api.AraraException

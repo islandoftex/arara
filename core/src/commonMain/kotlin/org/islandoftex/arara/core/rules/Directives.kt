@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.rules
 
-import com.soywiz.korio.util.endExclusive
+//import com.soywiz.korio.util.endExclusive
+import korlibs.io.util.endExclusiveWrapped
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
@@ -50,7 +51,8 @@ object Directives {
         for ((i, text) in lines.withIndex()) {
             val validLineMatch = validLineStartPattern.find(text)
             if (validLineMatch != null) {
-                val line = text.substring(validLineMatch.range.endExclusive)
+//                val line = text.substring(validLineMatch.range.endExclusive)
+                val line = text.substring(validLineMatch.range.endExclusiveWrapped)
                 map[i + 1] = hooks.processPotentialDirective(i + 1, line)
             } else if (parseOnlyHeader && !checkLinePattern(validLinePattern, text)) {
                 // if we should only look within the file's header and reached

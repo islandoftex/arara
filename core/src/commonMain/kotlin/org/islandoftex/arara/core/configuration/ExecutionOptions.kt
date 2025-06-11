@@ -7,6 +7,7 @@ import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import kotlin.time.Duration
 
+@OptIn(kotlin.time.ExperimentalTime::class)
 data class ExecutionOptions(
     override val maxLoops: Int = 10,
     override val timeoutValue: Duration = Duration.ZERO,
