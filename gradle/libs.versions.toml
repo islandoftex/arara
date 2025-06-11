@@ -1,0 +1,62 @@
+[versions]
+# --------------------------------
+# Kotlin itself
+# --------------------------------
+kotlin = "2.1.21"
+# --------------------------------
+# Plugins
+# --------------------------------
+detektPlugin = "1.23.8" # "1.20.0"
+dokkaPlugin = "2.0.0" # "1.9.0"
+shadowPlugin = "8.3.6"
+spotlessChangelogPlugin = "3.1.2" # "2.4.0"
+spotlessPlugin = "7.0.4" # "6.5.2"
+versionsPlugin = "0.52.0" # "0.51.0"
+# --------------------------------
+# Libraries
+# --------------------------------
+clikt = "5.0.3" # "4.4.0"
+jna = "5.17.0" # "5.13.0"
+junit = "5.10.2"
+kaml = "0.81.0" # "0.55.0"
+korlibs = "4.0.10" # "2.7.0"
+kotest = "5.9.1" # "4.6.3"
+kotlinLogging = "3.0.5" # "2.1.21"
+kotlinxCoroutines = "1.7.3"
+kotlinxSerialization = "1.8.1" # "1.6.3"
+log4j = "2.24.3" # "2.23.1"
+luak = "3.4.0"
+mvel = "2.5.2.Final" # "2.5.0.Final"
+slf4j = "2.0.17" # "1.7.36"
+yamlkt = "0.13.0"
+ztExec = "1.12"
+# --------------------------------
+
+[libraries]
+clikt = { group = "com.github.ajalt.clikt", name = "clikt", version.ref = "clikt" }
+jna = { group = "net.java.dev.jna", name = "jna", version.ref = "jna" }
+junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit" }
+kaml = { group = "com.charleskorn.kaml", name = "kaml", version.ref = "kaml" }
+korlibs-klock = { group = "com.soywiz.korlibs.klock", name = "klock", version.ref = "korlibs" }
+korlibs-korio = { group = "com.soywiz.korlibs.korio", name = "korio", version.ref = "korlibs" }
+korlibs-luak = { group = "com.soywiz.korlibs.luak", name = "luak", version.ref = "luak" }
+kotest-assertions-jvm = { group = "io.kotest", name = "kotest-assertions-core-jvm", version.ref = "kotest" }
+kotest-runner-jvm = { group = "io.kotest", name = "kotest-runner-junit5-jvm", version.ref = "kotest" }
+kotlin-logging = { group = "io.github.microutils", name = "kotlin-logging", version.ref = "kotlinLogging" }
+kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
+log4j-core = { group = "org.apache.logging.log4j", name = "log4j-core", version.ref = "log4j" }
+log4j-impl = { group = "org.apache.logging.log4j", name = "log4j-slf4j-impl", version.ref = "log4j" }
+mvel = { group = "org.mvel", name = "mvel2", version.ref = "mvel" }
+slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
+slf4j-simple = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j" }
+yamlkt = { group = "net.mamoe.yamlkt", name = "yamlkt", version.ref = "yamlkt" }
+ztexec = { group = "org.zeroturnaround", name = "zt-exec", version.ref = "ztExec" }
+
+[plugins]
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detektPlugin" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokkaPlugin" }
+shadow = { id = "com.gradleup.shadow", version.ref = "shadowPlugin" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotlessPlugin" }
+spotlessChangelog = { id = "com.diffplug.spotless-changelog", version.ref = "spotlessChangelogPlugin" }
+versions = { id = "com.github.ben-manes.versions", version.ref = "versionsPlugin" }

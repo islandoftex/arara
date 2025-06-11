@@ -9,17 +9,17 @@ kotlin {
 
     sourceSets.commonMain.dependencies {
         implementation(project(":core"))
-        implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.3")
+        implementation(libs.kotlinx.serialization)
     }
 
     sourceSets.jvmMain.dependencies {
         api(project(":api"))
         implementation(project(":core"))
         implementation(kotlin("stdlib"))
-        implementation("org.slf4j:slf4j-api:1.7.36")
-        implementation("org.mvel:mvel2:2.5.0.Final")
-        implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.3")
-        implementation("com.charleskorn.kaml:kaml:0.55.0")
+        implementation(libs.slf4j.api)
+        implementation(libs.mvel)
+        implementation(libs.kotlinx.serialization)
+        implementation(libs.kaml)
     }
 }
 

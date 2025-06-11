@@ -10,7 +10,7 @@ kotlin {
     sourceSets.commonMain.dependencies {
         api(project(":api"))
         implementation(project(":core"))
-        implementation("com.soywiz.korlibs.luak:luak:3.4.0")
+        implementation(libs.korlibs.luak)
     }
 
     sourceSets.commonTest.dependencies {
@@ -20,7 +20,7 @@ kotlin {
 
     sourceSets.jvmTest.dependencies {
         implementation(kotlin("test-junit5"))
-        runtimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.2")
+        runtimeOnly(libs.junit.jupiter.engine)
     }
 }
 
