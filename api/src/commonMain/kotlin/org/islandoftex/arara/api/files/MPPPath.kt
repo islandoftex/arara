@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.files
 
-import com.soywiz.klock.DateTime
+import korlibs.time.DateTime
 import org.islandoftex.arara.api.AraraIOException
 
 /**
