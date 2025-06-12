@@ -15,6 +15,10 @@ plugins {
 }
 
 kotlin {
+
+    // this seems interesting to have here
+    jvmToolchain(11)
+
     jvm {
 
         mainRun {
@@ -61,6 +65,8 @@ kotlin {
                 implementation(libs.kotlin.logging)
                 implementation(libs.log4j.core)
                 implementation(libs.log4j.impl)
+                // looks like we need this
+                implementation(libs.slf4j.simple)
             }
         }
 
@@ -69,6 +75,7 @@ kotlin {
                 implementation(libs.kotest.runner.jvm)
                 implementation(libs.kotest.assertions.jvm)
 //                runtimeOnly(libs.slf4j.simple)
+                
             }
         }
 
