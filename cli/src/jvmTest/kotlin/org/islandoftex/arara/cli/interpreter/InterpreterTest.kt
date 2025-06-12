@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.interpreter
 
-import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -15,49 +14,45 @@ import org.islandoftex.arara.core.rules.Directives
 class InterpreterTest : ShouldSpec({
     val texFile = FileType("tex", "^\\s*%\\s+")
 
-    should("throw exception for trying to return zero exit code for ordinary halt") {
-        shouldThrow< NotImplementedError> {
-            val rulePath = MPPPath("../rules").normalize()
-            val filePath = MPPPath("src/jvmTest/resources/executiontests/halt")
-                .normalize() / "halt.tex"
-            val haltDirective = Directives.extractDirectives(
-                listOf("% arara: halt"),
-                false, texFile
-            ).single().run {
-                DirectiveImpl(
-                    identifier, parameters.plus("reference" to filePath.toString()),
-                    conditional, lineNumbers
-                )
-            }
-
-            Interpreter(
-                ExecutionOptions(rulePaths = setOf(rulePath)),
-                ProjectFile(filePath, texFile), filePath.parent
+    should("return zero exit code for ordinary halt") {
+        val rulePath = MPPPath("../rules").normalize()
+        val filePath = MPPPath("src/jvmTest/resources/executiontests/halt")
+            .normalize() / "halt.tex"
+        val haltDirective = Directives.extractDirectives(
+            listOf("% arara: halt"),
+            false, texFile
+        ).single().run {
+            DirectiveImpl(
+                identifier, parameters.plus("reference" to filePath.toString()),
+                conditional, lineNumbers
             )
-                .execute(haltDirective).exitCode shouldBe 0
         }
+
+        Interpreter(
+            ExecutionOptions(rulePaths = setOf(rulePath)),
+            ProjectFile(filePath, texFile), filePath.parent
+        )
+            .execute(haltDirective).exitCode shouldBe 0
     }
 
-    should("throw exception for trying to return non-zero exit code for error halt") {
-        shouldThrow<NotImplementedError> {
-            val rulePath = MPPPath("src/jvmTest/resources/executiontests/halt-error")
-                .normalize()
-            val filePath = MPPPath(rulePath / "halt-error.tex")
-            val haltDirective = Directives.extractDirectives(
-                listOf("% arara: halt"),
-                false, texFile
-            ).single().run {
-                DirectiveImpl(
-                    identifier, parameters.plus("reference" to filePath.toString()),
-                    conditional, lineNumbers
-                )
-            }
-
-            Interpreter(
-                ExecutionOptions(rulePaths = setOf(rulePath)),
-                ProjectFile(filePath, texFile), rulePath
+    should("return non-zero exit code for error halt") {
+        val rulePath = MPPPath("src/jvmTest/resources/executiontests/halt-error")
+            .normalize()
+        val filePath = MPPPath(rulePath / "halt-error.tex")
+        val haltDirective = Directives.extractDirectives(
+            listOf("% arara: halt"),
+            false, texFile
+        ).single().run {
+            DirectiveImpl(
+                identifier, parameters.plus("reference" to filePath.toString()),
+                conditional, lineNumbers
             )
-                .execute(haltDirective).exitCode shouldNotBe 0
         }
+
+        Interpreter(
+            ExecutionOptions(rulePaths = setOf(rulePath)),
+            ProjectFile(filePath, texFile), rulePath
+        )
+            .execute(haltDirective).exitCode shouldNotBe 0
     }
 })
