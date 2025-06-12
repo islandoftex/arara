@@ -15,6 +15,7 @@ import org.islandoftex.arara.build.TDSZipBuilderTask
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 
 plugins {
     kotlin("multiplatform") version libs.versions.kotlin apply false // Apache 2.0
@@ -177,16 +178,16 @@ subprojects {
         apply(plugin = "org.jetbrains.kotlin.multiplatform")
 
         configure<KotlinMultiplatformExtension> {
-            
+
 //            kotlin {
-            
+
                 jvm {
                     compilerOptions {
                         jvmTarget.set(JavaVersionProfile.AS_VERSION)
                     }
                 }
             }
-        
+
 //        }
 
 
@@ -296,4 +297,3 @@ object JavaVersionProfile {
     const val AS_STRING = "$AS_INTEGER"
     val AS_VERSION = JvmTarget.JVM_11
 }
-
