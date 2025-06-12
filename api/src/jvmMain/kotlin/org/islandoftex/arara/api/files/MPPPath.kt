@@ -23,8 +23,8 @@ import korlibs.io.file.VfsOpenMode
 import korlibs.io.file.baseName
 import korlibs.io.file.fullPathNormalized
 import korlibs.io.file.getPathComponents
-import korlibs.io.file.std.localVfs
 import korlibs.io.file.normalize
+import korlibs.io.file.std.localVfs
 import korlibs.io.lang.lastIndexOfOrNull
 import korlibs.io.stream.copyTo
 import korlibs.io.stream.openAsync

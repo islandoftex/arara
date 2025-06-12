@@ -10,7 +10,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     kotlin("multiplatform")
-//    alias(libs.plugins.shadow)
+    alias(libs.plugins.shadow)
     jacoco
 }
 
@@ -54,6 +54,7 @@ kotlin {
 
                 implementation(kotlin("reflect", libs.versions.kotlin.get()))
                 implementation(libs.clikt)
+//                implementation(libs.cliktMarkdown)
                 implementation(libs.yamlkt)
                 implementation(libs.mvel)
                 implementation(libs.slf4j.api)
@@ -67,6 +68,7 @@ kotlin {
             dependencies {
                 implementation(libs.kotest.runner.jvm)
                 implementation(libs.kotest.assertions.jvm)
+//                runtimeOnly(libs.slf4j.simple)
             }
         }
 
@@ -94,23 +96,29 @@ tasks {
 //        }
 //    }
 //
-//    named<Task>("assembleDist").configure {
-//        dependsOn("shadowJar", "jacocoTestReport")
-//    }
-//
-//    named<ShadowJar>("shadowJar").configure {
-//        archiveAppendix.set("with-deps")
-//        archiveClassifier.set("")
-//
-//        manifest {
-//            attributes["Main-Class"] = "org.islandoftex.arara.cli.CLIKt"
-//        }
-//
-//        minimize {
-//            exclude(dependency("org.jetbrains.kotlin:.*"))
-//            exclude(dependency("org.apache.logging.log4j:log4j-slf4j-impl:.*"))
-//            exclude(dependency("org.mvel:mvel2:.*"))
-//            exclude(dependency("net.java.dev.jna:.*:.*"))
-//        }
-//    }
+    named<Task>("assembleDist").configure {
+        dependsOn("shadowJar", "jacocoTestReport")
+    }
+
+    build {
+        dependsOn("shadowJar")
+    }
+
+    named<ShadowJar>("shadowJar").configure {
+
+        archiveAppendix.set("with-deps")
+        archiveClassifier.set("")
+
+        manifest {
+            attributes["Main-Class"] = "org.islandoftex.arara.cli.CLIKt"
+        }
+
+        minimize {
+            exclude(dependency("org.jetbrains.kotlin:.*"))
+            exclude(dependency("org.apache.logging.log4j:log4j-slf4j-impl:.*"))
+            exclude(dependency("org.mvel:mvel2:.*"))
+            exclude(dependency("net.java.dev.jna:.*:.*"))
+            exclude(dependency("com.github.ajalt.mordant:.*"))
+        }
+    }
 }

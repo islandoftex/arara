@@ -16,7 +16,7 @@ kotlin {
                 optIn("kotlin.RequiresOptIn")
             }
         }
-        
+
         commonMain {
             dependencies {
                 implementation(project(":core"))

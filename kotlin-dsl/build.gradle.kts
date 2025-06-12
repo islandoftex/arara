@@ -16,7 +16,7 @@ kotlin {
                 optIn("kotlin.RequiresOptIn")
             }
         }
-        
+
         jvmMain {
             dependencies {
                 api(project(":api"))
@@ -45,4 +45,3 @@ tasks {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
     }
 }
-

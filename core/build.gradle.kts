@@ -16,7 +16,7 @@ kotlin {
                 optIn("kotlin.RequiresOptIn")
             }
         }
-        
+
         all {
             dependencies {
                 api(project(":api"))

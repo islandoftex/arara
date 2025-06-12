@@ -180,11 +180,12 @@ subprojects {
 //            kotlin {
                 jvm {
                     compilerOptions {
-                        jvmTarget.set(JvmTarget.JVM_1_8)
+                        jvmTarget.set(JvmTarget.JVM_11)
                     }
                 }
-//            }
-        }
+            }
+//        }
+
 
 //        configure<KotlinMultiplatformExtension> {
 //            jvm {
@@ -228,6 +229,10 @@ subprojects {
 
         tasks {
 
+//            named<Build>("build") {
+//
+//            }
+
 //            named<KotlinCompilationTask<*>>("compileKotlin") {
 //                compilerOptions {
 //                    jvmTarget = "1.8"
@@ -252,8 +257,8 @@ subprojects {
             }
 
             withType<JavaCompile> {
-                sourceCompatibility = "1.8"
-                targetCompatibility = "1.8"
+                sourceCompatibility = "11"
+                targetCompatibility = "11"
             }
 
 //            named<DokkaTask>("dokkaHtml").configure {

@@ -19,7 +19,7 @@ kotlin {
             languageSettings.optIn("kotlin.time.ExperimentalTime")
             languageSettings.optIn("kotlin.RequiresOptIn")
         }
-        
+
         commonMain {
             dependencies {
                 api(libs.korlibs.klock)
