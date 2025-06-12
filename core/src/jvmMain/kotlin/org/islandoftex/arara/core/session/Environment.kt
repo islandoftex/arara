@@ -239,4 +239,12 @@ object Environment {
             errorExitStatus to "${it::class.java.name}: ${it.message}"
         }
     }
+
+    private object OS {
+        private val rawName by lazy { System.getProperty("os.name").lowercase() }
+
+        val isWindows by lazy { rawName.contains("win") }
+        val isLinux by lazy { rawName.contains("nix") || rawName.contains("nux") || rawName.contains("aix") }
+        val isMac by lazy { rawName.contains("mac") }
+    }
 }
