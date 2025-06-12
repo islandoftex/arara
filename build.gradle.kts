@@ -177,13 +177,16 @@ subprojects {
         apply(plugin = "org.jetbrains.kotlin.multiplatform")
 
         configure<KotlinMultiplatformExtension> {
+            
 //            kotlin {
+            
                 jvm {
                     compilerOptions {
-                        jvmTarget.set(JvmTarget.JVM_11)
+                        jvmTarget.set(JavaVersionProfile.AS_VERSION)
                     }
                 }
             }
+        
 //        }
 
 
@@ -257,8 +260,10 @@ subprojects {
             }
 
             withType<JavaCompile> {
-                sourceCompatibility = "11"
-                targetCompatibility = "11"
+                with (JavaVersionProfile) {
+                    sourceCompatibility = AS_STRING
+                    targetCompatibility = AS_STRING
+                }
             }
 
 //            named<DokkaTask>("dokkaHtml").configure {
@@ -285,3 +290,10 @@ subprojects {
         apply<AraraPublication>()
     }
 }
+
+object JavaVersionProfile {
+    const val AS_INTEGER = 11
+    const val AS_STRING = "$AS_INTEGER"
+    val AS_VERSION = JvmTarget.JVM_11
+}
+
