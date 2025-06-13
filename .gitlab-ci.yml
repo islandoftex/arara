@@ -1,6 +1,6 @@
 variables:
   # disable the Gradle daemon for Continuous Integration servers
-  GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dkotlin.compiler.execution.strategy=\"in-process\""
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
   GIT_SUBMODULE_STRATEGY: recursive
 
 include:
