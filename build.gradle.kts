@@ -1,5 +1,3 @@
-// SPDX-License-Identifier: BSD-3-Clause
-
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.java.archives.internal.DefaultManifest
@@ -12,22 +10,8 @@ import org.islandoftex.arara.build.DocumentationSourceZipBuilderTask
 import org.islandoftex.arara.build.SourceZipBuilderTask
 import org.islandoftex.arara.build.TDSTreeBuilderTask
 import org.islandoftex.arara.build.TDSZipBuilderTask
-import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-}
-
-if (!project.hasProperty("jobToken")) {
-    logger.warn(
-        "Will be unable to publish (jobToken missing)\n" +
-            "Ignore this warning if you are not running the publish task " +
-            "for the GitLab package repository."
-    )
-}
 
 plugins {
     kotlin("multiplatform") version libs.versions.kotlin apply false // Apache 2.0
@@ -40,16 +24,16 @@ plugins {
     alias(libs.plugins.spotless) // Apache 2.0
 }
 
-// exclude alpha and beta versions
-// from the README (see https://github.com/ben-manes/gradle-versions-plugin)
-tasks.withType<DependencyUpdatesTask> {
-    rejectVersionIf {
-        val stableKeyword = listOf("RELEASE", "FINAL", "GA")
-            .any { candidate.version.uppercase().contains(it) }
-        val isStable = stableKeyword || "^[0-9,.v-]+$".toRegex()
-            .matches(candidate.version)
-        isStable.not()
-    }
+if (!project.hasProperty("JobToken")) {
+    logger.warn(
+            """
+            Island of TeX ----------------------------------------------
+            Will be unable to publish (jobToken missing)
+            Ignore this warning if you are not running the publish task
+            for the GitLab package registry.
+            ------------------------------------------------------------
+        """.trimIndent()
+    )
 }
 
 spotlessChangelog {
@@ -65,186 +49,234 @@ spotlessChangelog {
 spotless {
     kotlinGradle {
         target(
-            "build.gradle.kts",
-            "buildSrc/build.gradle.kts",
-            "api/build.gradle.kts",
-            "core/build.gradle.kts",
-            "lua/build.gradle.kts",
-            "mvel/build.gradle.kts",
-            "kotlin-dsl/build.gradle.kts",
-            "cli/build.gradle.kts"
+                "build.gradle.kts",
+                "buildSrc/build.gradle.kts",
+                "api/build.gradle.kts",
+                "core/build.gradle.kts",
+                "lua/build.gradle.kts",
+                "mvel/build.gradle.kts",
+                "kotlin-dsl/build.gradle.kts",
+                "cli/build.gradle.kts"
         )
         targetExclude("src/test/**/*.kts")
-        ktlint()
+        // ktlint() // TODO enable this later
         trimTrailingWhitespace()
-        indentWithSpaces()
+        leadingTabsToSpaces()
         endWithNewline()
     }
     kotlin {
         target(
-            "api/src/**/*.kt",
-            "core/src/**/*.kt",
-            "lua/src/**/*.kt",
-            "mvel/src/**/*.kt",
-            "kotlin-dsl/src/**/*.kt",
-            "cli/src/**/*.kt",
-            "buildSrc/src/**/*.kt"
+                "api/src/**/*.kt",
+                "core/src/**/*.kt",
+                "lua/src/**/*.kt",
+                "mvel/src/**/*.kt",
+                "kotlin-dsl/src/**/*.kt",
+                "cli/src/**/*.kt",
+                "buildSrc/src/**/*.kt"
         )
         targetExclude("src/test/**/*.kts")
-        ktlint()
+        // ktlint() // TODO enable this later
         licenseHeader("// SPDX-License-Identifier: BSD-3-Clause")
         trimTrailingWhitespace()
-        indentWithSpaces()
+        leadingTabsToSpaces()
         endWithNewline()
     }
 }
 
 detekt {
     allRules = false
-    source = files(
-        "api/src/commonMain/kotlin",
-        "api/src/jvmMain/kotlin",
-        "core/src/commonMain/kotlin",
-        "core/src/jvmMain/kotlin",
-        "lua/src/commonMain/kotlin",
-        "mvel/src/commonMain/kotlin",
-        "mvel/src/jvmMain/kotlin",
-        "kotlin-dsl/src/main/kotlin",
-        "cli/src/commonMain/kotlin",
-        "cli/src/jvmMain/kotlin",
-        "buildSrc/src/main/kotlin"
-    )
+    source.from(files(
+            "api/src/commonMain/kotlin",
+            "api/src/jvmMain/kotlin",
+            "core/src/commonMain/kotlin",
+            "core/src/jvmMain/kotlin",
+            "lua/src/commonMain/kotlin",
+            "mvel/src/commonMain/kotlin",
+            "mvel/src/jvmMain/kotlin",
+            "kotlin-dsl/src/main/kotlin",
+            "cli/src/commonMain/kotlin",
+            "cli/src/jvmMain/kotlin",
+            "buildSrc/src/main/kotlin"
+    ))
     buildUponDefaultConfig = true
     config.from(files("detekt-config.yml"))
 }
 
-tasks.register("assembleCTANSourceZip", SourceZipBuilderTask::class.java)
-tasks.register("assembleDocumentationSourceZip", DocumentationSourceZipBuilderTask::class.java) {
-    dependsOn(":docs:buildDocs")
-}
-tasks.register("assembleTDSTree", TDSTreeBuilderTask::class.java) {
-    dependsOn(":cli:shadowJar")
-    dependsOn(":docs:buildDocs")
-    dependsOn("assembleCTANSourceZip")
-    dependsOn("assembleDocumentationSourceZip")
-}
-tasks.register("assembleTDSZip", TDSZipBuilderTask::class.java) {
-    dependsOn("assembleTDSTree")
-}
-tasks.register("assembleCTANTree", CTANTreeBuilderTask::class.java) {
-    dependsOn("assembleTDSZip")
-}
-tasks.register("assembleCTAN", CTANZipBuilderTask::class.java) {
-    dependsOn("assembleCTANTree")
+tasks {
+
+    withType<DependencyUpdatesTask> {
+        rejectVersionIf {
+            fun isNonStable(version: String) = listOf("alpha", "beta", "rc", "cr", "m", "preview", "b", "ea")
+                    .any { qualifier ->
+                        version.matches(Regex("(?i).*[.-]$qualifier[.\\d-+]*"))
+                    }
+
+            isNonStable(candidate.version) && !isNonStable(currentVersion)
+        }
+
+        checkForGradleUpdate = false
+    }
+
+    register("assembleCTANSourceZip", SourceZipBuilderTask::class.java)
+
+    register("assembleDocumentationSourceZip", DocumentationSourceZipBuilderTask::class.java) {
+        dependsOn(":docs:buildDocs")
+    }
+
+    register("assembleTDSTree", TDSTreeBuilderTask::class.java) {
+        dependsOn(":cli:shadowJar")
+        dependsOn(":docs:buildDocs")
+        dependsOn("assembleCTANSourceZip")
+        dependsOn("assembleDocumentationSourceZip")
+    }
+
+    register("assembleTDSZip", TDSZipBuilderTask::class.java) {
+        dependsOn("assembleTDSTree")
+    }
+
+    register("assembleCTANTree", CTANTreeBuilderTask::class.java) {
+        dependsOn("assembleTDSZip")
+    }
+
+    register("assembleCTAN", CTANZipBuilderTask::class.java) {
+        dependsOn("assembleCTANTree")
+    }
+    
 }
 
 version = spotlessChangelog.versionNext
+
 allprojects {
     group = "org.islandoftex.arara"
     description = "TeX automation tool based on rules and directives"
     version = rootProject.version
-
-    repositories {
-        mavenCentral()
-        maven("https://dl.bintray.com/korlibs/korlibs/")
-    }
 }
 
 // accessing `libs` does not work inside `subprojects` blocks (wont-fix issue),
 // workaround from https://github.com/gradle/gradle/issues/18237#issuecomment-928074251
-val junitEngine = libs.junit.jupiter.engine
+val engine = libs.junit.jupiter.engine
+
 subprojects {
+
     if (!path.contains("docs")) {
+
         apply(plugin = "org.jetbrains.dokka")
+        
         val mainManifest: Manifest = DefaultManifest((project as ProjectInternal).fileResolver)
-            .apply {
-                attributes["Implementation-Title"] = "arara-${project.name}"
-                attributes["Implementation-Version"] = version
-                if (project.name == "cli") {
-                    attributes["Main-Class"] = "${project.group}.Arara"
+                .apply {
+                    attributes["Implementation-Title"] = "arara-${project.name}"
+                    attributes["Implementation-Version"] = version
+                    
+                    if (project.name == "cli") {
+                        attributes["Main-Class"] = "${project.group}.Arara"
+                    }
+                    
+                    // for Java 9+ compatibility of log4j
+                    attributes["Multi-Release"] = "true"
+                    attributes["Automatic-Module-Name"] = rootProject.group
                 }
-                // for Java 9+ compatibility of log4j
-                attributes["Multi-Release"] = "true"
-                attributes["Automatic-Module-Name"] = rootProject.group
-            }
 
         apply(plugin = "org.jetbrains.kotlin.multiplatform")
+
         configure<KotlinMultiplatformExtension> {
+
             jvm {
-                withJava()
-                compilations.all {
-                    kotlinOptions {
-                        jvmTarget = "1.8"
-                    }
+                compilerOptions {
+                    jvmTarget.set(JavaVersionProfile.AS_VERSION)
                 }
             }
 
             sourceSets {
                 all {
                     languageSettings.apply {
-                        languageVersion = "1.9"
-                        apiVersion = "1.9"
+                        languageVersion = KotlinVersionProfile.LANGUAGE
+                        apiVersion = KotlinVersionProfile.API
                     }
                 }
+
                 val commonMain by getting {
                     dependencies {
                         implementation(kotlin("stdlib-common"))
                     }
                 }
+
                 val commonTest by getting {
                     dependencies {
                         implementation(kotlin("test-common"))
                         implementation(kotlin("test-annotations-common"))
                     }
                 }
+
                 val jvmTest by getting {
                     dependencies {
                         implementation(kotlin("test-junit5"))
-                        runtimeOnly(junitEngine)
+                        runtimeOnly(engine)
                     }
                 }
             }
         }
+
         tasks {
+
             named<Test>("jvmTest") {
                 useJUnitPlatform()
 
                 testLogging {
                     exceptionFormat = TestExceptionFormat.FULL
                     events(
-                        TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR,
-                        TestLogEvent.SKIPPED, TestLogEvent.PASSED, TestLogEvent.FAILED
+                            TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR,
+                            TestLogEvent.SKIPPED, TestLogEvent.PASSED, TestLogEvent.FAILED
                     )
                 }
             }
+
             withType<Jar> {
                 archiveBaseName.set("arara-${project.name}")
                 manifest.attributes.putAll(mainManifest.attributes)
             }
+
             withType<JavaCompile> {
-                sourceCompatibility = "1.8"
-                targetCompatibility = "1.8"
-            }
-            named<DokkaTask>("dokkaHtml").configure {
-                dokkaSourceSets.configureEach {
-                    jdkVersion.set(8)
-                    moduleName.set("arara (${project.name})")
-                    includeNonPublic.set(false)
-                    skipDeprecated.set(false)
-                    reportUndocumented.set(true)
-                    skipEmptyPackages.set(true)
-                    platform.set(org.jetbrains.dokka.Platform.common)
-                    sourceLink {
-                        localDirectory.set(file("./"))
-                        remoteUrl.set(uri("https://gitlab.com/islandoftex/arara").toURL())
-                        remoteLineSuffix.set("#L")
-                    }
-                    noStdlibLink.set(false)
-                    noJdkLink.set(false)
+                with(JavaVersionProfile) {
+                    sourceCompatibility = AS_STRING
+                    targetCompatibility = AS_STRING
                 }
             }
+
+//            // TODO enable block later
+//            // -----------------------------------------------------------------------------
+//            named<DokkaTask>("dokkaHtml").configure {
+//                dokkaSourceSets.configureEach {
+//                    jdkVersion.set(8)
+//                    moduleName.set("arara (${project.name})")
+//                    includeNonPublic.set(false)
+//                    skipDeprecated.set(false)
+//                    reportUndocumented.set(true)
+//                    skipEmptyPackages.set(true)
+//                    platform.set(org.jetbrains.dokka.Platform.common)
+//                    sourceLink {
+//                        localDirectory.set(file("./"))
+//                        remoteUrl.set(uri("https://gitlab.com/islandoftex/arara").toURL())
+//                        remoteLineSuffix.set("#L")
+//                    }
+//                    noStdlibLink.set(false)
+//                    noJdkLink.set(false)
+//                }
+//            }
+//            // -----------------------------------------------------------------------------
+
         }
 
         apply<AraraPublication>()
     }
+}
+
+object JavaVersionProfile {
+    const val AS_INTEGER = 11
+    const val AS_STRING = "$AS_INTEGER"
+    val AS_VERSION = JvmTarget.JVM_11
+}
+
+object KotlinVersionProfile {
+    const val LANGUAGE= "2.1"
+    const val API = LANGUAGE
 }
