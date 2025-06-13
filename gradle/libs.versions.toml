@@ -1,28 +1,35 @@
-[versions]
-kotlin = "1.9.10"
-# plugins
-detektPlugin = "1.20.0"
-dokkaPlugin = "1.9.0"
-shadowPlugin = "8.1.7"
-spotlessChangelogPlugin = "2.4.0"
-spotlessPlugin = "6.5.2"
-versionsPlugin = "0.51.0"
-# libraries
-clikt = "4.4.0"
-jna = "5.13.0"
-junit = "5.10.2"
-kaml = "0.55.0"
-korlibs = "2.7.0"
-kotest = "4.6.3"
-kotlinLogging = "2.1.21"
+# --------------------------------
+# Kotlin itself
+# --------------------------------
+kotlin = "2.1.21"
+# --------------------------------
+# Plugins
+# --------------------------------
+detektPlugin = "1.23.8"
+dokkaPlugin = "2.0.0"
+shadowPlugin = "9.0.0-beta15" # TODO update to stable whenever possible
+spotlessChangelogPlugin = "3.1.2"
+spotlessPlugin = "7.0.4"
+versionsPlugin = "0.52.0"
+# --------------------------------
+# Libraries
+# --------------------------------
+clikt = "5.0.3"
+jna = "5.17.0"
+junit = "5.13.1"
+kaml = "0.81.0"
+korlibs = "4.0.10"
+kotest = "6.0.0.M4" # TODO update to stable whenever possible
+kotlinLogging = "3.0.5"
 kotlinxCoroutines = "1.7.3"
-kotlinxSerialization = "1.6.3"
-log4j = "2.23.1"
+kotlinxSerialization = "1.8.1"
+log4j = "2.24.3"
 luak = "3.4.0"
-mvel = "2.5.0.Final"
-slf4j = "1.7.36"
+mvel = "2.5.2.Final"
+slf4j = "2.0.17"
 yamlkt = "0.13.0"
 ztExec = "1.12"
+# --------------------------------
 
 [libraries]
 clikt = { group = "com.github.ajalt.clikt", name = "clikt", version.ref = "clikt" }
