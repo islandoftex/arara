@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: BSD-3-Clause
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.java.archives.internal.DefaultManifest
@@ -141,7 +142,7 @@ tasks {
     register("assembleCTAN", CTANZipBuilderTask::class.java) {
         dependsOn("assembleCTANTree")
     }
-    
+
 }
 
 version = spotlessChangelog.versionNext
@@ -160,17 +161,17 @@ subprojects {
 
     if (!path.contains("docs")) {
 
-        apply(plugin = "org.jetbrains.dokka")
-        
+//        apply(plugin = "org.jetbrains.dokka")
+
         val mainManifest: Manifest = DefaultManifest((project as ProjectInternal).fileResolver)
                 .apply {
                     attributes["Implementation-Title"] = "arara-${project.name}"
                     attributes["Implementation-Version"] = version
-                    
+
                     if (project.name == "cli") {
-                        attributes["Main-Class"] = "${project.group}.Arara"
+                        attributes["Main-Class"] = "org.islandoftex.arara.cli.CLIKt"
                     }
-                    
+
                     // for Java 9+ compatibility of log4j
                     attributes["Multi-Release"] = "true"
                     attributes["Automatic-Module-Name"] = rootProject.group

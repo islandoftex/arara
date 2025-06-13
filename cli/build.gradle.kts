@@ -1,14 +1,33 @@
 // SPDX-License-Identifier: BSD-3-Clause
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
+    kotlin("multiplatform")
     alias(libs.plugins.shadow)
-    application
     jacoco
 }
 
 kotlin {
+
+    // define the JVM toolchain
+    jvmToolchain(11)
+
+    jvm {
+
+        mainRun {
+            mainClass.set("org.islandoftex.arara.cli.CLIKt")
+        }
+
+        binaries {
+            executable {
+                mainClass.set("org.islandoftex.arara.cli.CLIKt")
+            }
+        }
+    }
+
     sourceSets {
         all {
             languageSettings.optIn("org.islandoftex.arara.api.localization.AraraMessages")
@@ -16,18 +35,18 @@ kotlin {
             languageSettings.optIn("kotlin.RequiresOptIn")
         }
 
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(project(":core"))
                 implementation(project(":lua"))
                 implementation(libs.kotlin.logging)
             }
         }
-        val jvmMain by getting {
+
+        jvmMain {
             dependencies {
                 implementation(project(":core"))
                 implementation(project(":mvel"))
-
                 implementation(kotlin("reflect", libs.versions.kotlin.get()))
                 implementation(libs.clikt)
                 implementation(libs.yamlkt)
@@ -38,7 +57,8 @@ kotlin {
                 implementation(libs.log4j.impl)
             }
         }
-        val jvmTest by getting {
+
+        jvmTest {
             dependencies {
                 implementation(libs.kotest.runner.jvm)
                 implementation(libs.kotest.assertions.jvm)
@@ -47,27 +67,31 @@ kotlin {
     }
 }
 
-application {
-    applicationName = project.name
-    mainClass.set("$group.cli.CLIKt")
-}
-
 tasks {
+
+    build {
+        dependsOn("shadowJar")
+    }
+
     withType<Copy> {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
     }
-    named<JavaExec>("run") {
-        if (JavaVersion.current() > JavaVersion.VERSION_1_8) {
-            doFirst {
-                jvmArgs = listOf(
-                    "--module-path", classpath.asPath
-                )
-            }
-        }
-    }
+
+// TODO remove later?
+//    named<JavaExec>("run") {
+//        if (JavaVersion.current() > JavaVersion.VERSION_1_8) {
+//            doFirst {
+//                jvmArgs = listOf(
+//                    "--module-path", classpath.asPath
+//                )
+//            }
+//        }
+//    }
+
     named<Task>("assembleDist").configure {
         dependsOn("shadowJar", "jacocoTestReport")
     }
+
     named<ShadowJar>("shadowJar").configure {
         archiveAppendix.set("with-deps")
         archiveClassifier.set("")
@@ -77,6 +101,7 @@ tasks {
             exclude(dependency("org.apache.logging.log4j:log4j-slf4j-impl:.*"))
             exclude(dependency("org.mvel:mvel2:.*"))
             exclude(dependency("net.java.dev.jna:.*:.*"))
-        }
+            exclude(dependency("com.github.ajalt.mordant:.*"))
+       }
     }
 }

@@ -1,29 +1,36 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
 plugins {
+    kotlin("multiplatform")
     kotlin("plugin.serialization")
 }
 
 kotlin {
+    jvm()
+
     sourceSets {
+
         all {
             languageSettings.optIn("org.islandoftex.arara.api.localization.AraraMessages")
             languageSettings.optIn("kotlin.time.ExperimentalTime")
+            languageSettings.optIn("kotlin.RequiresOptIn")
         }
-        val commonMain by getting {
+
+        commonMain {
             dependencies {
                 api(project(":api"))
                 implementation(project(":core"))
                 implementation(libs.korlibs.luak)
             }
         }
-        val commonTest by getting {
+
+        commonTest {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
             }
         }
-        val jvmTest by getting {
+
+        jvmTest {
             dependencies {
                 implementation(kotlin("test-junit5"))
                 runtimeOnly(libs.junit.jupiter.engine)

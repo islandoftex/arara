@@ -1,63 +1,63 @@
 // SPDX-License-Identifier: BSD-3-Clause
+plugins {
+    kotlin("multiplatform")
+    jacoco
+}
 
 kotlin {
+    jvm()
     explicitApi()
 
-    jvm()
-    /*wasm32()
-    js {
-        browser {
-            testTask {
-                enabled = false
-            }
-        }
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
     }
-    linuxArm64()
-    linuxX64()
-    macosX64()
-    mingwX64()*/
 
     sourceSets {
+
         all {
+            languageSettings.optIn("org.islandoftex.arara.api.localization.AraraMessages")
+            languageSettings.optIn("kotlin.time.ExperimentalTime")
             languageSettings.optIn("kotlin.RequiresOptIn")
         }
-        val commonMain by getting {
+
+        commonMain {
             dependencies {
                 api(libs.korlibs.klock)
             }
         }
-        /*val nativeCommonMain by creating {
-            dependsOn(commonMain)
-            dependencies {
-                implementation(libs.kotlinx.coroutines)
-                implementation(libs.korlibs.korio)
-            }
-        }
-        val linuxX64Main by getting {
-            dependsOn(nativeCommonMain)
-        }*/
-        val jvmMain by getting {
+
+        jvmMain {
             dependencies {
                 implementation(libs.korlibs.korio)
             }
         }
-        val jvmTest by getting {
+
+        jvmTest {
             dependencies {
                 implementation(libs.kotest.runner.jvm)
                 implementation(libs.kotest.assertions.jvm)
             }
         }
+
+// TODO add this?
+//        commonTest {
+//            dependencies {
+//                implementation(kotlin("test"))
+//            }
+//        }
     }
 }
 
 tasks {
-    create("createAraraAPIObject") {
+
+    register("createAraraAPIObject") {
+
         listOf(
-            "src/nativeCommonMain/kotlin/org/islandoftex/arara/api/AraraAPI.kt",
-            "src/jvmMain/kotlin/org/islandoftex/arara/api/AraraAPI.kt"
+//            "src/nativeCommonMain/kotlin/org/islandoftex/arara/api/AraraAPI.kt", // TDOO remove this?
+                "src/jvmMain/kotlin/org/islandoftex/arara/api/AraraAPI.kt",
         ).forEach {
             file(it).writeText(
-                """
+                    """
                     // SPDX-License-Identifier: BSD-3-Clause
                     package org.islandoftex.arara.api
 
@@ -70,7 +70,5 @@ tasks {
             )
         }
     }
-    /*named("compileKotlinLinuxX64").configure {
-        dependsOn("createAraraAPIObject")
-    }*/
+
 }
