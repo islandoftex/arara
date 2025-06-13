@@ -19,7 +19,7 @@ clikt = "5.0.3"
 jna = "5.17.0"
 junit = "5.13.1"
 kaml = "0.81.0"
-korlibs = "4.0.10"
+korlibs = "2.7.0" # TODO update to 4.0.10 whenever possible
 kotest = "6.0.0.M4" # TODO update to stable whenever possible
 kotlinLogging = "3.0.5"
 kotlinxCoroutines = "1.7.3"
@@ -56,7 +56,7 @@ ztexec = { group = "org.zeroturnaround", name = "zt-exec", version.ref = "ztExec
 [plugins]
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detektPlugin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokkaPlugin" }
-shadow = { id = "io.github.goooler.shadow", version.ref = "shadowPlugin" }
+shadow = { id = "com.gradleup.shadow", version.ref = "shadowPlugin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotlessPlugin" }
 spotlessChangelog = { id = "com.diffplug.spotless-changelog", version.ref = "spotlessChangelogPlugin" }
 versions = { id = "com.github.ben-manes.versions", version.ref = "versionsPlugin" }
