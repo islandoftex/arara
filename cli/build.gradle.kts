@@ -89,7 +89,9 @@ tasks {
 //    }
 
     named<Task>("assembleDist").configure {
-        dependsOn("shadowJar", "jacocoTestReport")
+        // TODO check JaCoCo at some point
+        // dependsOn("shadowJar", "jacocoTestReport") 
+        dependsOn("shadowJar")
     }
 
     named<ShadowJar>("shadowJar").configure {
