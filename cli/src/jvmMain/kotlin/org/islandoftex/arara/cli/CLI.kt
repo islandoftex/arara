@@ -3,8 +3,11 @@ package org.islandoftex.arara.cli
 
 import com.github.ajalt.clikt.completion.completionOption
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.core.context
+import com.github.ajalt.clikt.core.main
+import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.output.MordantHelpFormatter
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.help
@@ -58,18 +61,8 @@ import kotlin.time.TimeSource
  * @version 5.0
  * @since 5.0
  */
-class CLI : CliktCommand(
-    name = "arara", printHelpOnEmptyArgs = true,
-    help = """
-    ${DisplayUtils.logoString.replace('\n', '\u0085').replace(' ', '\u00A0')}
+class CLI : CliktCommand("arara") {
 
-    The cool TeX automation tool.
-
-    arara executes the TeX workflow you tell it to execute. Simply specify
-    your needs within your TeX file and let arara do the work. These directives
-    feature conditional execution and parameter expansion.
-    """
-) {
     init {
         context {
             terminal = Terminal(
@@ -82,6 +75,17 @@ class CLI : CliktCommand(
             }
         }
     }
+
+    override val printHelpOnEmptyArgs = true
+    override fun help(context: Context) = """
+    ${DisplayUtils.logoString.replace('\n', '\u0085').replace(' ', '\u00A0')}
+
+    The cool TeX automation tool.
+
+    arara executes the TeX workflow you tell it to execute. Simply specify
+    your needs within your TeX file and let arara do the work. These directives
+    feature conditional execution and parameter expansion.
+    """
 
     private val log by option("-l", "--log")
         .help("Generate a log output")
@@ -357,7 +361,7 @@ class CLI : CliktCommand(
  */
 fun main(args: Array<String>) {
     CLI().context {
-        correctionSuggestor = { enteredValue, possibleValues ->
+        suggestTypoCorrection = { enteredValue, possibleValues ->
             possibleValues.filter { it.startsWith(enteredValue) }
         }
     }
