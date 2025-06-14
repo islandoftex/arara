@@ -32,6 +32,7 @@ before_script:
     - ./gradlew --build-cache assembleDist --info
     - mkdir bin
     - cp cli/build/libs/*.jar bin/
+    - ls -lha cli/build/distributions/
     - cp cli/build/distributions/*.zip bin/
     # create checksum file to make sure we're distributing the right thing
     - cd bin
