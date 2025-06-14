@@ -1,6 +1,6 @@
 variables:
   # disable the Gradle daemon for Continuous Integration servers
-  GRADLE_OPTS: "-Dorg.gradle.daemon=false -Xmx6g -XX:MaxPermSize=512m -Dkotlin.compiler.execution.strategy=\"in-process\""
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false -Xmx6g -Dkotlin.compiler.execution.strategy=\"in-process\""
   GIT_SUBMODULE_STRATEGY: recursive
 
 include:
