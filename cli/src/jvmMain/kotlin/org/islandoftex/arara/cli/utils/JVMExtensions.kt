@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import korlibs.time.DateFormat
 import korlibs.time.format
-import mu.KotlinLogging
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.localization.LanguageController

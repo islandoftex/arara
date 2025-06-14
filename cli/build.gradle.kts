@@ -54,7 +54,6 @@ kotlin {
                 implementation(libs.yamlkt)
                 implementation(libs.mvel)
                 implementation(libs.slf4j.api)
-                implementation(libs.kotlin.logging)
                 implementation(libs.log4j.core)
                 implementation(libs.log4j.impl)
             }

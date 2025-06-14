@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import korlibs.io.async.async
 import korlibs.io.async.runBlockingNoJs
 import korlibs.io.file.baseName
 import korlibs.io.file.std.localVfs
 import korlibs.io.lang.Environment
 import kotlinx.coroutines.awaitAll
-import mu.KotlinLogging
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMFile

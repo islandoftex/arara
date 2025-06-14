@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.ruleset
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.serialization.decodeFromString
-import mu.KotlinLogging
 import net.mamoe.yamlkt.Yaml
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode

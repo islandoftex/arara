@@ -21,7 +21,7 @@ junit = "5.13.1"
 kaml = "0.81.0"
 korlibs = "4.0.10"
 kotest = "6.0.0.M4" # TODO update to stable whenever possible
-kotlinLogging = "3.0.5"
+kotlinLogging = "7.0.3"
 kotlinxCoroutines = "1.7.3"
 kotlinxSerialization = "1.8.1"
 log4j = "2.24.3"
@@ -42,7 +42,7 @@ korlibs-korio = { group = "com.soywiz.korlibs.korio", name = "korio", version.re
 korlibs-luak = { group = "com.soywiz.korlibs.luak", name = "luak", version.ref = "luak" }
 kotest-assertions-jvm = { group = "io.kotest", name = "kotest-assertions-core-jvm", version.ref = "kotest" }
 kotest-runner-jvm = { group = "io.kotest", name = "kotest-runner-junit5-jvm", version.ref = "kotest" }
-kotlin-logging = { group = "io.github.microutils", name = "kotlin-logging", version.ref = "kotlinLogging" }
+kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version.ref = "kotlinLogging" }
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
 log4j-core = { group = "org.apache.logging.log4j", name = "log4j-core", version.ref = "log4j" }
