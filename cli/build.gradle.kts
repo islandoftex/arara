@@ -10,6 +10,8 @@ plugins {
     distribution
 }
 
+val entryPath = "org.islandoftex.arara.cli.CLIKt"
+
 kotlin {
 
     // define the JVM toolchain
@@ -18,12 +20,12 @@ kotlin {
     jvm {
 
         mainRun {
-            mainClass.set("org.islandoftex.arara.cli.CLIKt")
+            mainClass.set(entryPath)
         }
 
         binaries {
             executable {
-                mainClass.set("org.islandoftex.arara.cli.CLIKt")
+                mainClass.set(entryPath)
             }
         }
     }
@@ -67,6 +69,31 @@ kotlin {
     }
 }
 
+distributions {
+    main {
+        val jvmRuntimeClasspath = files(
+                tasks.named("jvmJar"),
+                configurations.getByName("jvmRuntimeClasspath"),
+        )
+
+        val startScripts by tasks.registering(CreateStartScripts::class) {
+            mainClass = entryPath
+            classpath = jvmRuntimeClasspath
+            outputDir = layout.buildDirectory.file("scripts").get().asFile
+            applicationName = project.name
+        }
+
+        contents {
+            from(startScripts) {
+                into("bin")
+            }
+            from(jvmRuntimeClasspath) {
+                into("lib")
+            }
+        }
+    }
+}
+
 tasks {
 
     build {
@@ -77,19 +104,8 @@ tasks {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
     }
 
-// TODO remove later?
-//    named<JavaExec>("run") {
-//        if (JavaVersion.current() > JavaVersion.VERSION_1_8) {
-//            doFirst {
-//                jvmArgs = listOf(
-//                    "--module-path", classpath.asPath
-//                )
-//            }
-//        }
-//    }
-
     named<Task>("assembleDist").configure {
-        dependsOn("shadowJar", "distZip")
+        dependsOn("shadowJar")
     }
 
     named<ShadowJar>("shadowJar").configure {
