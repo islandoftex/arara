@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
-import com.soywiz.korio.async.async
-import com.soywiz.korio.async.runBlockingNoJs
-import com.soywiz.korio.file.baseName
-import com.soywiz.korio.file.std.localVfs
-import com.soywiz.korio.lang.Environment
-import com.soywiz.korio.util.OS
+import korlibs.io.async.async
+import korlibs.io.async.runBlockingNoJs
+import korlibs.io.file.baseName
+import korlibs.io.file.std.localVfs
+import korlibs.io.lang.Environment
 import kotlinx.coroutines.awaitAll
 import mu.KotlinLogging
 import org.islandoftex.arara.api.AraraException
@@ -239,4 +238,16 @@ object Environment {
             errorExitStatus to "${it::class.java.name}: ${it.message}"
         }
     }
+
+    /**
+     * Implements a simple OS check.
+     */
+    private object OS {
+        private val rawName by lazy { System.getProperty("os.name").lowercase() }
+
+        val isWindows by lazy { rawName.contains("win") }
+        val isLinux by lazy { rawName.contains("nix") || rawName.contains("nux") || rawName.contains("aix") }
+        val isMac by lazy { rawName.contains("mac") }
+    }
+
 }
