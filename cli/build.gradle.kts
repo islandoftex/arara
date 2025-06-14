@@ -7,6 +7,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
     kotlin("multiplatform")
     alias(libs.plugins.shadow)
+    distribution
 }
 
 kotlin {
@@ -88,7 +89,7 @@ tasks {
 //    }
 
     named<Task>("assembleDist").configure {
-        dependsOn("shadowJar")
+        dependsOn("shadowJar", "distZip")
     }
 
     named<ShadowJar>("shadowJar").configure {
