@@ -42,22 +42,25 @@ kotlin {
 
 tasks {
 
-    register("createAraraAPIObject") {
+    compileKotlinJvm {
+        dependsOn("createAraraAPIObject")
+    }
 
+    register("createAraraAPIObject") {
         listOf(
                 "src/jvmMain/kotlin/org/islandoftex/arara/api/AraraAPI.kt",
         ).forEach {
             file(it).writeText(
                     """
-                    // SPDX-License-Identifier: BSD-3-Clause
-                    package org.islandoftex.arara.api
+                // SPDX-License-Identifier: BSD-3-Clause
+                package org.islandoftex.arara.api
 
-                    public actual object AraraAPI {
-                        @Suppress("MayBeConst")
-                        public actual val version: String = "${project.version}"
-                    }
+                public actual object AraraAPI {
+                    @Suppress("MayBeConst")
+                    public actual val version: String = "${project.version}"
+                }
 
-                """.trimIndent()
+            """.trimIndent()
             )
         }
     }
