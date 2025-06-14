@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 plugins {
     kotlin("multiplatform")
-    jacoco
 }
 
 kotlin {
@@ -38,13 +37,6 @@ kotlin {
                 implementation(libs.kotest.assertions.jvm)
             }
         }
-
-// TODO add this?
-//        commonTest {
-//            dependencies {
-//                implementation(kotlin("test"))
-//            }
-//        }
     }
 }
 
@@ -53,7 +45,6 @@ tasks {
     register("createAraraAPIObject") {
 
         listOf(
-//            "src/nativeCommonMain/kotlin/org/islandoftex/arara/api/AraraAPI.kt", // TDOO remove this?
                 "src/jvmMain/kotlin/org/islandoftex/arara/api/AraraAPI.kt",
         ).forEach {
             file(it).writeText(

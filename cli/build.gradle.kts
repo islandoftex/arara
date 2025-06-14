@@ -7,7 +7,6 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
     kotlin("multiplatform")
     alias(libs.plugins.shadow)
-    jacoco
 }
 
 kotlin {
@@ -89,8 +88,6 @@ tasks {
 //    }
 
     named<Task>("assembleDist").configure {
-        // TODO check JaCoCo at some point
-        // dependsOn("shadowJar", "jacocoTestReport") 
         dependsOn("shadowJar")
     }
 
@@ -104,6 +101,6 @@ tasks {
             exclude(dependency("org.mvel:mvel2:.*"))
             exclude(dependency("net.java.dev.jna:.*:.*"))
             exclude(dependency("com.github.ajalt.mordant:.*"))
-       }
+        }
     }
 }

@@ -43,12 +43,5 @@ kotlin {
                 runtimeOnly(libs.slf4j.simple)
             }
         }
-
-// TODO add this?
-//        commonTest {
-//            dependencies {
-//                implementation(kotlin("test"))
-//            }
-//        }
     }
 }
