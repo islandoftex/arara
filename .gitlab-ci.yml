@@ -52,7 +52,7 @@ build:linux:jdk17:
 .testtemplate: &testdefinition
   stage: test
   script:
-    - ./gradlew test
+    - ./gradlew allTests
     - ./gradlew detekt
   cache:
     <<: *cachedefinition
