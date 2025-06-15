@@ -11,6 +11,7 @@ import org.islandoftex.arara.build.DocumentationSourceZipBuilderTask
 import org.islandoftex.arara.build.SourceZipBuilderTask
 import org.islandoftex.arara.build.TDSTreeBuilderTask
 import org.islandoftex.arara.build.TDSZipBuilderTask
+import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
@@ -161,7 +162,7 @@ subprojects {
 
     if (!path.contains("docs")) {
 
-//        apply(plugin = "org.jetbrains.dokka")
+        apply(plugin = "org.jetbrains.dokka")
 
         val mainManifest: Manifest = DefaultManifest((project as ProjectInternal).fileResolver)
                 .apply {
@@ -243,28 +244,24 @@ subprojects {
                 }
             }
 
-//            // TODO enable block later
-//            // -----------------------------------------------------------------------------
-//            named<DokkaTask>("dokkaHtml").configure {
-//                dokkaSourceSets.configureEach {
-//                    jdkVersion.set(8)
-//                    moduleName.set("arara (${project.name})")
-//                    includeNonPublic.set(false)
-//                    skipDeprecated.set(false)
-//                    reportUndocumented.set(true)
-//                    skipEmptyPackages.set(true)
-//                    platform.set(org.jetbrains.dokka.Platform.common)
-//                    sourceLink {
-//                        localDirectory.set(file("./"))
-//                        remoteUrl.set(uri("https://gitlab.com/islandoftex/arara").toURL())
-//                        remoteLineSuffix.set("#L")
-//                    }
-//                    noStdlibLink.set(false)
-//                    noJdkLink.set(false)
-//                }
-//            }
-//            // -----------------------------------------------------------------------------
-
+            named<DokkaTask>("dokkaHtml").configure {
+                dokkaSourceSets.configureEach {
+                    jdkVersion.set(JavaVersionProfile.AS_INTEGER)
+                    moduleName.set("arara (${project.name})")
+                    includeNonPublic.set(false)
+                    skipDeprecated.set(false)
+                    reportUndocumented.set(true)
+                    skipEmptyPackages.set(true)
+                    platform.set(org.jetbrains.dokka.Platform.common)
+                    sourceLink {
+                        localDirectory.set(file("./"))
+                        remoteUrl.set(uri("https://gitlab.com/islandoftex/arara").toURL())
+                        remoteLineSuffix.set("#L")
+                    }
+                    noStdlibLink.set(false)
+                    noJdkLink.set(false)
+                }
+            }
         }
 
         apply<AraraPublication>()
