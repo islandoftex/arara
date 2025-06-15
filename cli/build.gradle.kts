@@ -12,10 +12,18 @@ plugins {
 
 val entryPath = "org.islandoftex.arara.cli.CLIKt"
 
+// ----------------------------------------------------------------------
+// The JVM toolchain, with its corresponding default as fallback, defined
+// in gradle.properties (see key)
+// ----------------------------------------------------------------------
+val toolchain = runCatching { (extra["arara.jvm.target"] as String).toInt() }
+        .getOrDefault(11)
+// ----------------------------------------------------------------------
+
 kotlin {
 
     // define the JVM toolchain
-    jvmToolchain(11)
+    jvmToolchain(toolchain)
 
     jvm {
 

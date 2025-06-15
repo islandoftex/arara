@@ -61,7 +61,9 @@ spotless {
                 "cli/build.gradle.kts"
         )
         targetExclude("src/test/**/*.kts")
-        // ktlint() // TODO enable this later
+        // ktlint is a static code analysis tool for Kotlin that enforces
+        // code style conventions -- we will disable it for now
+        // ktlint()
         trimTrailingWhitespace()
         leadingTabsToSpaces()
         endWithNewline()
@@ -77,7 +79,9 @@ spotless {
                 "buildSrc/src/**/*.kt"
         )
         targetExclude("src/test/**/*.kts")
-        // ktlint() // TODO enable this later
+        // ktlint is a static code analysis tool for Kotlin that enforces
+        // code style conventions -- we will disable it for now
+        // ktlint()
         licenseHeader("// SPDX-License-Identifier: BSD-3-Clause")
         trimTrailingWhitespace()
         leadingTabsToSpaces()
@@ -148,6 +152,25 @@ tasks {
 
 version = spotlessChangelog.versionNext
 
+// ----------------------------------------------------------------------
+// JVM targets and Kotlin API and language versions, with corresponding
+// defaults as fallback, defined in gradle.properties (see keys)
+// ----------------------------------------------------------------------
+val araraJVMString = runCatching { extra["arara.jvm.target"] as String }
+        .getOrDefault("11")
+
+val araraJVMTarget = runCatching { JvmTarget.fromTarget(araraJVMString) }
+        .getOrDefault(JvmTarget.JVM_11)
+
+val araraJVMInt = araraJVMString.toIntOrNull() ?: 11
+
+val araraKotlinAPI = runCatching { extra["arara.kotlin.api"] as String }
+        .getOrDefault("2.1")
+
+val araraKotlinLanguage = runCatching { extra["arara.kotlin.language"] as String }
+        .getOrDefault("2.1")
+// ----------------------------------------------------------------------
+
 allprojects {
     group = "org.islandoftex.arara"
     description = "TeX automation tool based on rules and directives"
@@ -184,15 +207,15 @@ subprojects {
 
             jvm {
                 compilerOptions {
-                    jvmTarget.set(JavaVersionProfile.AS_VERSION)
+                    jvmTarget.set(araraJVMTarget)
                 }
             }
 
             sourceSets {
                 all {
                     languageSettings.apply {
-                        languageVersion = KotlinVersionProfile.LANGUAGE
-                        apiVersion = KotlinVersionProfile.API
+                        languageVersion = araraKotlinLanguage
+                        apiVersion = araraKotlinAPI
                     }
                 }
 
@@ -238,15 +261,13 @@ subprojects {
             }
 
             withType<JavaCompile> {
-                with(JavaVersionProfile) {
-                    sourceCompatibility = AS_STRING
-                    targetCompatibility = AS_STRING
-                }
+                sourceCompatibility = araraJVMString
+                targetCompatibility = araraJVMString
             }
 
             named<DokkaTask>("dokkaHtml").configure {
                 dokkaSourceSets.configureEach {
-                    jdkVersion.set(JavaVersionProfile.AS_INTEGER)
+                    jdkVersion.set(araraJVMInt)
                     moduleName.set("arara (${project.name})")
                     includeNonPublic.set(false)
                     skipDeprecated.set(false)
@@ -266,15 +287,4 @@ subprojects {
 
         apply<AraraPublication>()
     }
-}
-
-object JavaVersionProfile {
-    const val AS_INTEGER = 11
-    const val AS_STRING = "$AS_INTEGER"
-    val AS_VERSION = JvmTarget.JVM_11
-}
-
-object KotlinVersionProfile {
-    const val LANGUAGE= "2.1"
-    const val API = LANGUAGE
 }
