@@ -72,7 +72,9 @@ test:dependencies:
 # This job is responsible for checking and updating the Gradle lock file 
 # using the gradle2nix tool. It installs all necessary dependencies and 
 # compares the existing lock file with a newly generated one. The job is
-# currently disabled due to issues with dependency resolution.
+# currently disabled because we haven't had the chance to look into why 
+# it doesn't find a JRE in CI, even though dependency resolution works 
+# fine locally.
 # ----------------------------------------------------------------------
 # test:flake-dependencies:
 #   stage: test
