@@ -59,6 +59,7 @@ kotlin {
                 implementation(project(":mvel"))
                 implementation(kotlin("reflect", libs.versions.kotlin.get()))
                 implementation(libs.clikt)
+                implementation(libs.clikt.markdown)
                 implementation(libs.yamlkt)
                 implementation(libs.mvel)
                 implementation(libs.slf4j.api)

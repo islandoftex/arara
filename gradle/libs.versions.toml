@@ -34,6 +34,7 @@ ztExec = "1.12"
 
 [libraries]
 clikt = { group = "com.github.ajalt.clikt", name = "clikt", version.ref = "clikt" }
+clikt-markdown = { group = "com.github.ajalt.clikt", name = "clikt-markdown", version.ref = "clikt" }
 jna = { group = "net.java.dev.jna", name = "jna", version.ref = "jna" }
 junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit" }
 kaml = { group = "com.charleskorn.kaml", name = "kaml", version.ref = "kaml" }

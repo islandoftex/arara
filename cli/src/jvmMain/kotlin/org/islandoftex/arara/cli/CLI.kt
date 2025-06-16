@@ -6,6 +6,7 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.core.context
+import com.github.ajalt.clikt.core.installMordantMarkdown
 import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.core.terminal
 import com.github.ajalt.clikt.output.MordantHelpFormatter
@@ -74,18 +75,21 @@ class CLI : CliktCommand("arara") {
                 MordantHelpFormatter(it)
             }
         }
+        installMordantMarkdown()
     }
 
     override val printHelpOnEmptyArgs = true
     override fun help(context: Context) = """
-    ${DisplayUtils.logoString.replace('\n', '\u0085').replace(' ', '\u00A0')}
-
-    The cool TeX automation tool.
-
-    arara executes the TeX workflow you tell it to execute. Simply specify
-    your needs within your TeX file and let arara do the work. These directives
-    feature conditional execution and parameter expansion.
-    """
+        @```
+        ${DisplayUtils.logoString.lineSequence().joinToString("\n") { "@$it" }}
+        @```
+        @
+        @The cool TeX automation tool.
+        @
+        @arara executes the TeX workflow you tell it to execute. Simply specify
+        your needs within your TeX file and let arara do the work. These directives
+        feature conditional execution and parameter expansion.
+    """.trimMargin("@")
 
     private val log by option("-l", "--log")
         .help("Generate a log output")
