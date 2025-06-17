@@ -27,26 +27,25 @@ open class AraraPublication : Plugin<Project> {
                 artifactId = "arara-" + when (name) {
                     "kotlinMultiplatform" ->
                         target.name
+
                     "metadata" ->
                         "${target.name}-metadata"
+
                     "jvm" ->
                         "${target.name}-jvm"
-                    "js" ->
-                        "${target.name}-js"
-                    "linuxX64" ->
-                        "${target.name}-linuxX64"
+
                     else ->
                         throw IllegalArgumentException("Unknown publication type $name")
                 }
+
                 groupId = target.group.toString()
                 version = target.version.toString()
 
                 pom {
                     name.set(artifactId)
                     description.set(
-                        "arara is a TeX automation tool based on " +
-                            "rules and directives. It gives you a way to enhance " +
-                            "your TeX experience."
+                            "arara is a TeX automation tool based on rules and directives. " +
+                                    "It gives you a way to enhance your TeX experience."
                     )
                     inceptionYear.set("2012")
                     url.set("https://gitlab.com/islandoftex/arara")
@@ -61,61 +60,43 @@ open class AraraPublication : Plugin<Project> {
                             distribution.set("repo")
                         }
                     }
+
                     developers {
                         developer {
                             name.set("Paulo Roberto Massa Cereda")
-                            email.set("cereda@users.sf.net")
+                            email.set("cereda.paulo@gmail.com")
                             id.set("cereda")
-                            url.set("https://tex.stackexchange.com/users/3094")
-                            roles.set(listOf("Lead developer", "Creator", "Duck enthusiast"))
+                            url.set("https://gitlab.com/cereda")
+                            roles.set(listOf("Lead developer", "Creator"))
                         }
+
                         developer {
                             name.set("Ben Frank")
                             id.set("benfrank")
                             url.set("https://gitlab.com/benfrank")
                             roles.set(listOf("Release coordinator v5 and v6"))
                         }
-                        developer {
-                            name.set("Marco Daniel")
-                            email.set("marco.daniel@mada-nada.de")
-                            id.set("marcodaniel")
-                            url.set("https://tex.stackexchange.com/users/5239")
-                            roles.set(listOf("Contributor", "Tester", "Fast driver"))
-                        }
-                        developer {
-                            name.set("Brent Longborough")
-                            email.set("brent@longborough.org")
-                            id.set("brent")
-                            url.set("https://tex.stackexchange.com/users/344")
-                            roles.set(
-                                listOf(
-                                    "Developer", "Contributor", "Tester",
-                                    "Haskell fanatic"
-                                )
-                            )
-                        }
+
                         developer {
                             name.set("Nicola Talbot")
                             email.set("nicola.lc.talbot@gmail.com")
                             id.set("nlct")
-                            url.set("https://tex.stackexchange.com/users/19862")
-                            roles.set(
-                                listOf(
-                                    "Developer", "Contributor", "Tester",
-                                    "Hat enthusiast"
-                                )
-                            )
+                            url.set("https://www.dickimaw-books.com")
+                            roles.set(listOf("Developer", "Contributor", "Tester"))
                         }
                     }
+
                     scm {
                         connection.set("scm:git:https://gitlab.com/islandoftex/arara.git")
                         developerConnection.set("scm:git:https://gitlab.com/islandoftex/arara.git")
                         url.set("https://gitlab.com/islandoftex/arara")
                     }
+
                     ciManagement {
                         system.set("GitLab")
                         url.set("https://gitlab.com/islandoftex/arara/pipelines")
                     }
+
                     issueManagement {
                         system.set("GitLab")
                         url.set("https://gitlab.com/islandoftex/arara/issues")
