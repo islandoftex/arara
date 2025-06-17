@@ -67,14 +67,14 @@ open class AraraPublication : Plugin<Project> {
                             email.set("cereda.paulo@gmail.com")
                             id.set("cereda")
                             url.set("https://gitlab.com/cereda")
-                            roles.set(listOf("Lead developer", "Creator"))
+                            roles.set(listOf("Developer", "Tester"))
                         }
 
                         developer {
                             name.set("Ben Frank")
                             id.set("benfrank")
                             url.set("https://gitlab.com/benfrank")
-                            roles.set(listOf("Release coordinator v5 and v6"))
+                            roles.set(listOf("Developer", "Technical lead", "Code reviewer"))
                         }
 
                         developer {
