@@ -217,7 +217,7 @@ The application is written using the Kotlin language, so arara runs on top of a
 Java virtual machine, available on all the major operating systems — in some
 cases, you might need to install the proper virtual machine. We tried very hard
 to keep both code and libraries compatible with older virtual machines or from
-other vendors. Currently, arara is known to run on Java 8 to 18, from any
+other vendors. Currently, arara is known to run on Java 11 to 24, from any
 vendor.
 
 {% messagebox(title="Outdated Java virtual machines") %}
