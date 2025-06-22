@@ -8,7 +8,7 @@ kotlin = "2.1.21"
 # --------------------------------
 detektPlugin = "1.23.8"
 dokkaPlugin = "2.0.0"
-shadowPlugin = "9.0.0-beta16" # TODO update to stable whenever possible
+shadowPlugin = "9.0.0-beta17" # TODO update to stable whenever possible
 spotlessChangelogPlugin = "3.1.2"
 spotlessPlugin = "7.0.4"
 versionsPlugin = "0.52.0"
@@ -24,7 +24,7 @@ kotest = "6.0.0.M4" # TODO update to stable whenever possible
 kotlinLogging = "7.0.7"
 kotlinxCoroutines = "1.7.3"
 kotlinxSerialization = "1.8.1"
-log4j = "2.24.3"
+log4j = "2.25.0"
 luak = "3.4.0"
 mvel = "2.5.2.Final"
 slf4j = "2.0.17"
