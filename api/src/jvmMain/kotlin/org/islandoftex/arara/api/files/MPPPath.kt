@@ -16,6 +16,7 @@ import korlibs.io.lang.lastIndexOfOrNull
 import korlibs.io.stream.copyTo
 import korlibs.io.stream.openAsync
 import org.islandoftex.arara.api.AraraIOException
+import org.islandoftex.arara.api.utils.OS.isWindows
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -31,7 +32,7 @@ public actual class MPPPath {
      * A constructor that accepts a string to be converted into a native path.
      */
     public actual constructor(path: String) {
-        this.path = Paths.get(path)
+        this.path = Paths.get(adjustRoot(path))
         vfsFile = localVfs(this.path.toAbsolutePath().normalize().toString())
     }
 
@@ -285,6 +286,15 @@ public actual class MPPPath {
             }
         }
     }
+
+    /**
+     * Potentially adjusts root path in Windows to ensure correct resolution.
+     * See [issue #128](https://gitlab.com/islandoftex/arara/-/issues/128)
+     * for more details.
+     */
+    private fun adjustRoot(path: String): String =
+            path.takeIf { !(isWindows && it.length == 2
+                    && it[0].isLetter() && it[1] == ':') } ?: "${path}/"
 }
 
 /**

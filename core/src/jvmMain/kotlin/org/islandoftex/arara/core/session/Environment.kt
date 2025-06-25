@@ -12,6 +12,7 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMFile
 import org.islandoftex.arara.api.session.Command
+import org.islandoftex.arara.api.utils.OS
 import org.zeroturnaround.exec.ProcessExecutor
 import org.zeroturnaround.exec.listener.ShutdownHookProcessDestroyer
 import org.zeroturnaround.exec.stream.TeeOutputStream
@@ -238,16 +239,4 @@ object Environment {
             errorExitStatus to "${it::class.java.name}: ${it.message}"
         }
     }
-
-    /**
-     * Implements a simple OS check.
-     */
-    private object OS {
-        private val rawName by lazy { System.getProperty("os.name").lowercase() }
-
-        val isWindows by lazy { rawName.contains("win") }
-        val isLinux by lazy { rawName.contains("nix") || rawName.contains("nux") || rawName.contains("aix") }
-        val isMac by lazy { rawName.contains("mac") }
-    }
-
 }
