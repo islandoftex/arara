@@ -63,7 +63,6 @@ class MPPPathTest {
         // an attempt to go parent from root will make it resolve to the
         // actual letter (this was needed so our Windows runner would not
         // fail in case the tests were not running on C:)
-        val drive = getDriveLetter()
 
         val (expected, actual) = getValueByOS(
                 windows = "${drive}:/" to "${drive}:/",
@@ -95,6 +94,8 @@ class MPPPathTest {
     private inline fun <reified T> getValueByOS(windows: T, unix: T): T =
             if (OS.isWindows) windows else unix
 
-    private fun getDriveLetter(): String = if (OS.isWindows) Path(".")
-            .absolutePathString().substringBefore(":") else "C"
+    private val drive: String by lazy {
+        if (OS.isWindows) Path(".").absolutePathString()
+                .substringBefore(":") else "C"
+    }
 }
