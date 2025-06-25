@@ -2,6 +2,8 @@
 package org.islandoftex.arara.api.files
 
 import org.islandoftex.arara.api.utils.OS
+import kotlin.io.path.Path
+import kotlin.io.path.absolutePathString
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -56,8 +58,15 @@ class MPPPathTest {
     // parenting
     @Test
     fun shouldUseRootAsParentOfRoot() {
+
+        // for this test, we cannot mock the drive letter in Windows, as
+        // an attempt to go parent from root will make it resolve to the
+        // actual letter (this was needed so our Windows runner would not
+        // fail in case the tests were not running on C:)
+        val drive = getDriveLetter()
+
         val (expected, actual) = getValueByOS(
-                windows = "C:/" to "C:/",
+                windows = "${drive}:/" to "${drive}:/",
                 unix = "/" to "/"
         )
 
@@ -85,4 +94,7 @@ class MPPPathTest {
 
     private inline fun <reified T> getValueByOS(windows: T, unix: T): T =
             if (OS.isWindows) windows else unix
+
+    private fun getDriveLetter(): String = if (OS.isWindows) Path(".")
+            .absolutePathString().substringBefore(":") else "C"
 }
