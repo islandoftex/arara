@@ -14,6 +14,12 @@ on.
 
 ## [Unreleased]
 
+### Added
+
+* A new `texfmt` rule to format LaTeX documents (thanks to William
+  Underwood for suggesting it).
+  (see #127)
+
 ### Fixed
 
 * Resolved a potential issue with root path resolution in Windows under
@@ -28,10 +34,8 @@ on.
   (see !61, !62)
 * Updated dependencies.
 * `arara` now requires Java 11 or later to run.
-  (breaking change)
 * Kotlin Multiplatform updated to 2.2.0.
 * Compatibility mode for Kotlin API and language updated to 2.2.
-  (breaking change)
 * Gradle updated to 8.14.2.
 
 ## [7.1.5] - 2024-05-06
