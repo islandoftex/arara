@@ -3,7 +3,7 @@
 # arara
 
 ![Language: Kotlin](https://img.shields.io/badge/Language-Kotlin-blue.svg?style=flat-square)
-![Minimum JRE: 8.0](https://img.shields.io/badge/Minimum_JRE-8-blue.svg?style=flat-square)
+![Minimum JRE: 11](https://img.shields.io/badge/Minimum_JRE-11-blue.svg?style=flat-square)
 ![Current version](https://img.shields.io/badge/dynamic/json.svg?color=blue&label=Latest%20release&query=%24.0.name&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2F14349047%2Frepository%2Ftags&style=flat-square)
 
 `arara` is a TeX automation tool based on rules and directives. It gives you a
@@ -57,17 +57,14 @@ better.
 
 ## Get in touch
 
-We use a [Gitter](https://gitter.im/Island-of-TeX/arara) chatroom for discussing
-things related to `arara`. You are more than welcome to come join the fun and
-say *hi!* to us. We also have the
+We use a [Matrix](https://matrix.to/#/!HfEWIEvFtDplCLSQvz:matrix.org?via=matrix.org)
+chat room for discussing things related to `arara`. You are more than welcome to come
+join the fun and say *hi!* to us. We also have the
 [issues](https://gitlab.com/islandoftex/arara/issues) section in our repository
 as a valid channel to report problems, bugs and suggest improvements.
 
 If you want to stay in the loop of our other projects, feel free to visit our
-[community room on Gitter](https://gitter.im/Island-of-TeX/community) or
-alternatively, the Matrix rooms for
-[arara](https://matrix.to/#/!HfEWIEvFtDplCLSQvz:matrix.org?via=matrix.org) or
-the [community](https://matrix.to/#/!titTeSvZiqNOvRIKCv:matrix.org?via=matrix.org).
+[community room on Matrix](https://matrix.to/#/!titTeSvZiqNOvRIKCv:matrix.org?via=matrix.org).
 
 ## Localization
 
