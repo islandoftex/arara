@@ -16,6 +16,9 @@ on.
 
 ### Added
 
+* The new command line parameter `-F` allows specifying multiple entries
+  in the `key=value` format from a specified `.properties` file to be
+  passed to arara's session map.
 * A new `texfmt` rule to format LaTeX documents (thanks to William
   Underwood for suggesting it).
   (see #127)
