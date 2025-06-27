@@ -9,6 +9,10 @@ import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.utils.formatString
+import java.nio.charset.Charset
+import java.nio.file.Path
+import java.util.Properties
+import kotlin.io.path.bufferedReader
 
 private val logger = KotlinLogging.logger { }
 
@@ -74,3 +78,25 @@ fun ProjectFile.printFileInformation() {
             println()
         }
 }
+
+/**
+ * Loads properties from a file located at the specified [path] using the
+ * given [charset]. If the loading fails, it will catch the exception without
+ * throwing it.
+ *
+ * @param path The path to the properties file.
+ * @param charset The character set to use for reading the file. Defaults to
+ * UTF-8.
+ */
+fun Properties.load(path: Path, charset: Charset = Charsets.UTF_8) {
+    runCatching { path.bufferedReader(charset).use { load(it) } }
+}
+
+/**
+ * Converts the properties to a map of key/value string pairs.
+ *
+ * @return A map containing all entries from the properties, with keys and
+ * values as strings.
+ */
+fun Properties.toMap(): Map<String, String> =
+        entries.associate { "${it.key}" to "${it.value}" }

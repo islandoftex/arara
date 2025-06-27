@@ -14,6 +14,7 @@ import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.help
 import com.github.ajalt.clikt.parameters.arguments.multiple
 import com.github.ajalt.clikt.parameters.options.associate
+import com.github.ajalt.clikt.parameters.options.convert
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
@@ -37,7 +38,9 @@ import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.LoggingUtils
+import org.islandoftex.arara.cli.utils.load
 import org.islandoftex.arara.cli.utils.printFileInformation
+import org.islandoftex.arara.cli.utils.toMap
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.LoggingOptions
 import org.islandoftex.arara.core.configuration.UserInterfaceOptions
@@ -51,6 +54,7 @@ import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.lua.LuaInterpreter
 import org.islandoftex.arara.mvel.utils.MvelState
 import java.time.LocalDate
+import java.util.Properties
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.DurationUnit
 import kotlin.time.TimeSource
@@ -128,6 +132,10 @@ class CLI : CliktCommand("arara") {
     private val parameters: Map<String, String> by option("-P", "--call-property")
         .help("Pass parameters to the application to be used within the session.")
         .associate()
+    private val properties: Properties? by option("-F", "--properties-file")
+        .help("Pass a properties file to the application to be used within the session.")
+        .path(mustExist = true, canBeDir = false, mustBeReadable = true)
+        .convert { Properties().apply { load(it) } }
 
     private val reference by argument("file")
         .help("The file(s) to evaluate and process")
@@ -305,7 +313,12 @@ class CLI : CliktCommand("arara") {
         // context resets lead to missing output
         LoggingUtils.setupLogging(Session.loggingOptions)
 
+        // add all key/value pairs found in the properties file, if
+        // provided in the command line
+        properties?.toMap()?.forEach { (key, value) -> Session.put("arg:$key", value) }
+
         // add all command line call parameters to the session
+        // (command line parameters take precedence over properties)
         parameters.forEach { (key, value) -> Session.put("arg:$key", value) }
 
         try {
