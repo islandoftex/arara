@@ -7,10 +7,15 @@ import java.util.Properties
 import kotlin.io.path.Path
 
 class PropertiesTest : ShouldSpec({
-    context("duck translations (UTF-8 support)") {
+    context("UTF-8 support for properties files") {
         val path = Path("src/jvmTest/resources/executiontests/properties/duck.properties")
         val charset = Charsets.UTF_8
         val translations: Properties = Properties().apply { load(path, charset) }
+
+        should("not be empty") {
+            translations.isNotEmpty() shouldBe true
+        }
+
         val expected = mapOf(
                 "english" to "duck",
                 "spanish" to "patito",
@@ -31,7 +36,7 @@ class PropertiesTest : ShouldSpec({
         )
 
         expected.forEach { (language, translation) ->
-            should("translate $language to $translation") {
+            should("get the correct string for $language") {
                 translations[language] shouldBe translation
             }
         }
