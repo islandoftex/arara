@@ -107,9 +107,19 @@ test:spotless:
     <<: *cachedefinition
     policy: pull
 
+test:linux:jdk11:
+  needs: ["build:linux:jdk17"]
+  image: amazoncorretto:11
+  <<: *testdefinition
+
 test:linux:jdk17:
   needs: ["build:linux:jdk17"]
   image: amazoncorretto:17
+  <<: *testdefinition
+
+test:linux:jdk21:
+  needs: ["build:linux:jdk17"]
+  image: amazoncorretto:11
   <<: *testdefinition
 
 .pagestemplate: &pagesdefinition
