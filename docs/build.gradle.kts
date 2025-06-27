@@ -1,5 +1,5 @@
 dependencies {
-//    project(":cli")
+    project(":cli")
 }
 
 tasks {
