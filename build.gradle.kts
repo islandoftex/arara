@@ -62,7 +62,44 @@ spotless {
         )
         targetExclude("src/test/**/*.kts")
         // ktlint is a static code analysis tool for Kotlin that enforces
-        // code style conventions -- we will disable it for now
+        // code style conventions. There are some files in our code base
+        // that are not compliant with such conventions (e.g, localization
+        // files with very long lines); Spotless respects the .editorconfig
+        // settings, but it's possible to override them:
+        // -----------------------------------------------------------------
+        // ktlint()
+        //        // override what's supplied in .editorconfig
+        //        .editorConfigOverride(
+        //                mapOf(
+        //                        // rules to override go here
+        //                        "indent_size" to 2,
+        //                )
+        // -----------------------------------------------------------------
+        // Another idea to make Spotless ignore a specific code section is
+        // to use these specific tags:
+        // -----------------------------------------------------------------
+        // // in build.gradle.kts
+        // toggleOffOn()
+        //
+        // // in source code
+        // // spotless:off
+        // code to ignore
+        // ...
+        // // spotless:on
+        // -----------------------------------------------------------------
+        // It's also possible to change the tags to be any string or regex:
+        // -----------------------------------------------------------------
+        // // in build.gradle.kts
+        // toggleOffOn('fmt:off', 'fmt:on')
+        //
+        // // in source code
+        // // fmt:off
+        // code to ignore
+        // ...
+        // // fmt:on
+        // -----------------------------------------------------------------
+        // For now, we are disabling ktlint.
+        // -----------------------------------------------------------------
         // ktlint()
         trimTrailingWhitespace()
         leadingTabsToSpaces()
