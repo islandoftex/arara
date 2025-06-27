@@ -244,10 +244,9 @@ your question and we will help you the best we can (also, take a look at their
 [starter guide](https://tex.meta.stackexchange.com/q/1436)).
 
 We also have a
-[Matrix](https://matrix.to/#/!HfEWIEvFtDplCLSQvz:matrix.org?via=matrix.org) and
-[Gitter](https://gitter.im/Island-of-TeX/arara) chat rooms, in which we
-occasionally hang out. Also, if you think the report is worthy of an issue, open
-one in our [GitLab repository](https://gitlab.com/islandoftex/arara/issues).
+[Matrix](https://matrix.to/#/!HfEWIEvFtDplCLSQvz:matrix.org?via=matrix.org) chat room,
+in which we occasionally hang out. Also, if you think the report is worthy of an issue,
+open one in our [GitLab repository](https://gitlab.com/islandoftex/arara/issues).
 
 We really hope you like our humble contribution to the TeX community. Let arara
 enhance your TeX experience, it will help you when you will need it the

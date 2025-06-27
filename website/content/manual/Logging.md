@@ -47,10 +47,10 @@ itself.
 
 ```text
 ::: arara @ /opt/islandoftex/arara
-::: Java 1.8.0_171, Oracle Corporation
-::: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.171-4.b10.fc28.x86_64/jre
-::: Linux, amd64, 4.16.12-300.fc28.x86_64
-::: user.home @ /home/islandoftex
+::: Java 24.0.1, Red Hat, Inc.
+::: /usr/lib/jvm/java-24-openjdk
+::: Linux, amd64, 6.15.3-200.fc42.x86_64
+::: user.home @ /home/paulo
 ::: CF @ [none]
 ```
 

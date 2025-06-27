@@ -69,7 +69,7 @@ following command in the terminal (please note the full path):
 
 ```sh
 $ java -jar /opt/islandoftex/arara/arara.jar
-Usage: arara [OPTIONS] file...
+Usage: arara [<options>] <file>...
 
     __ _ _ __ __ _ _ __ __ _
    / _` | '__/ _` | '__/ _` |
@@ -83,32 +83,35 @@ Usage: arara [OPTIONS] file...
   feature conditional execution and parameter expansion.
 
 Options:
-  -l, --log                        Generate a log output
-  -v, --verbose / -s, --silent     Print the command output
-  -n, --dry-run                    Go through all the motions of running a
-                                   command, but with no actual calls
-  -S, --safe-run                   Run in safe mode and disable potentially
-                                   harmful features. Make sure your projects
-                                   uses only allowed features.
-  -w, --whole-file                 Extract directives in the file, not only in
-                                   the header
-  -p, --preamble TEXT              Set the file preamble based on the
-                                   configuration file
-  -t, --timeout INT                Set the execution timeout (in milliseconds)
-  -L, --language TEXT              Set the application language
-  -m, --max-loops INT              Set the maximum number of loops (> 0)
-  -d, --working-directory PATH     Set the working directory for all tools
-  -P, --call-property VALUE        Pass parameters to the application to be
-                                   used within the session.
-  --generate-completion [bash|zsh|fish]
-                                   Generate a completion script for arara. Add
-                                   'source <(arara --generate-completion
-                                   <shell>)' to your shell's init file.
-  -V, --version                    Show the version and exit
-  -h, --help                       Show this message and exit
+  -l, --log                     Generate a log output
+  -v, --verbose / -s, --silent  Print the command output
+  -n, --dry-run                 Go through all the motions of running a
+                                command, but with no actual calls
+  -S, --safe-run                Run in safe mode and disable potentially
+                                harmful features. Make sure your projects uses
+                                only allowed features.
+  -w, --whole-file              Extract directives in the file, not only in the
+                                header
+  -p, --preamble=<text>         Set the file preamble based on the
+                                configuration file
+  -t, --timeout=<int>           Set the execution timeout (in milliseconds)
+  -L, --language=<text>         Set the application language
+  -m, --max-loops=<int>         Set the maximum number of loops (> 0)
+  -d, --working-directory=<path>
+                                Set the working directory for all tools
+  -P, --call-property=<value>   Pass parameters to the application to be used
+                                within the session.
+  -F, --properties-file=<path>  Pass a properties file to the application to be
+                                used within the session.
+  --generate-completion=(bash|zsh|fish)
+                                Generate a completion script for arara. Add
+                                'source <(arara --generate-completion <shell>)'
+                                to your shell's init file.
+  -V, --version                 Show the version and exit
+  -h, --help                    Show this message and exit
 
 Arguments:
-  file  The file(s) to evaluate and process
+  <file>  The file(s) to evaluate and process
 ```
 
 Please observe that, provided that the underlying operating system has an
@@ -226,7 +229,7 @@ run the following command in the terminal:
 
 ```sh
 $ arara
-Usage: arara [OPTIONS] file...
+Usage: arara [<options>] <file>...
 
     __ _ _ __ __ _ _ __ __ _
    / _` | '__/ _` | '__/ _` |
@@ -240,32 +243,35 @@ Usage: arara [OPTIONS] file...
   feature conditional execution and parameter expansion.
 
 Options:
-  -l, --log                        Generate a log output
-  -v, --verbose / -s, --silent     Print the command output
-  -n, --dry-run                    Go through all the motions of running a
-                                   command, but with no actual calls
-  -S, --safe-run                   Run in safe mode and disable potentially
-                                   harmful features. Make sure your projects
-                                   uses only allowed features.
-  -w, --whole-file                 Extract directives in the file, not only in
-                                   the header
-  -p, --preamble TEXT              Set the file preamble based on the
-                                   configuration file
-  -t, --timeout INT                Set the execution timeout (in milliseconds)
-  -L, --language TEXT              Set the application language
-  -m, --max-loops INT              Set the maximum number of loops (> 0)
-  -d, --working-directory PATH     Set the working directory for all tools
-  -P, --call-property VALUE        Pass parameters to the application to be
-                                   used within the session.
-  --generate-completion [bash|zsh|fish]
-                                   Generate a completion script for arara. Add
-                                   'source <(arara --generate-completion
-                                   <shell>)' to your shell's init file.
-  -V, --version                    Show the version and exit
-  -h, --help                       Show this message and exit
+  -l, --log                     Generate a log output
+  -v, --verbose / -s, --silent  Print the command output
+  -n, --dry-run                 Go through all the motions of running a
+                                command, but with no actual calls
+  -S, --safe-run                Run in safe mode and disable potentially
+                                harmful features. Make sure your projects uses
+                                only allowed features.
+  -w, --whole-file              Extract directives in the file, not only in the
+                                header
+  -p, --preamble=<text>         Set the file preamble based on the
+                                configuration file
+  -t, --timeout=<int>           Set the execution timeout (in milliseconds)
+  -L, --language=<text>         Set the application language
+  -m, --max-loops=<int>         Set the maximum number of loops (> 0)
+  -d, --working-directory=<path>
+                                Set the working directory for all tools
+  -P, --call-property=<value>   Pass parameters to the application to be used
+                                within the session.
+  -F, --properties-file=<path>  Pass a properties file to the application to be
+                                used within the session.
+  --generate-completion=(bash|zsh|fish)
+                                Generate a completion script for arara. Add
+                                'source <(arara --generate-completion <shell>)'
+                                to your shell's init file.
+  -V, --version                 Show the version and exit
+  -h, --help                    Show this message and exit
 
 Arguments:
-  file  The file(s) to evaluate and process
+  <file>  The file(s) to evaluate and process
 ```
 
 It is important to observe that the wrapper initiative presented in this section

@@ -22,7 +22,9 @@ well.
 {% end %}
 
 {% messagebox(title="A file by any other name") %}
-As of version 7, we now avoid exposing any Java-specific API. When you see a mention to `File`, keep in mind that this is actually a wrapper to our new internal representation.
+As of version 7, we now avoid exposing any Java-specific API. When you see a
+mention to `File`, keep in mind that this is actually a wrapper to our new
+internal representation.
 {% end %}
 
 Methods are listed with their complete signatures, including potential
@@ -224,7 +226,7 @@ references, when applied.
     [Configuration](@/manual/Configuration.md). The method semantics (including the
     return values) is presented as follows.
 
-  | File exists? &nbsp;&nbsp;&nbsp; | Entry exists? &nbsp;&nbsp;&nbsp; | Has changed? &nbsp;&nbsp;&nbsp; | DB action &nbsp;&nbsp;&nbsp; | Result |
+  | File exists? | Entry exists? | Has changed? | DB action | Result |
   |:------------:|:-------------:|:------------:|:---------:|:------:|
   |      Yes     |      Yes      |      Yes     |   Update  |   Yes  |
   |      Yes     |      Yes      |      No      |     —     |   No   |
@@ -251,7 +253,7 @@ references, when applied.
     [Configuration](@/manual/Configuration.md). The method semantics (including the
     return values) is presented as follows.
 
-  | File exists? &nbsp;&nbsp;&nbsp; | Entry exists? &nbsp;&nbsp;&nbsp; | Has changed? &nbsp;&nbsp;&nbsp; | DB action &nbsp;&nbsp;&nbsp; | Result |
+  | File exists? | Entry exists? | Has changed? | DB action | Result |
   |:------------:|:-------------:|:------------:|:---------:|:------:|
   |      Yes     |      Yes      |      Yes     |   Update  |   No   |
   |      Yes     |      Yes      |      No      |     —     |   Yes  |
@@ -280,7 +282,7 @@ references, when applied.
     [Configuration](@/manual/Configuration.md). The method semantics (including the
     return values) is presented as follows.
 
-  | File exists? &nbsp;&nbsp;&nbsp; | Entry exists? &nbsp;&nbsp;&nbsp; | Has changed? &nbsp;&nbsp;&nbsp; | DB action &nbsp;&nbsp;&nbsp; | Result |
+  | File exists? | Entry exists? | Has changed? | DB action | Result |
   |:------------:|:-------------:|:------------:|:---------:|:------:|
   |      Yes     |      Yes      |      Yes     |   Update  |   No   |
   |      Yes     |      Yes      |      No      |     —     |   Yes  |
@@ -1547,7 +1549,7 @@ consistently shared across rule contexts.
 From version 6.0 on, there are three reserved namespaces within a session. They
 are described as follows:
 
-- `environment` This namespace is quite intuitive: arara will store the current
+- `environment`: This namespace is quite intuitive: arara will store the current
   state of the systems environment variables in its session. You may alter these
   values in the session storage but they will not be written back to the system
   configuration. To access an environment variable, you can use its usual name
@@ -1557,7 +1559,7 @@ are described as follows:
   path = getSession().get('environment:PATH');
   ```
 
-- `arara` This namespace provides flags that control the underlying behaviour of
+- `arara`: This namespace provides flags that control the underlying behaviour of
   arara. Flags are used in rules and may be manipulated by the user. Be aware
   that every change in this namespace will result in the tool acting like you
   know what you did. Use this power with care. Currently, there is only one
@@ -1569,16 +1571,16 @@ are described as follows:
   getSession().put('arara:myfile.tex:halt', 42);
   ```
 
-- `arg` This namespace acts as a bridge between contexts and the command line by
-  providing access to key/value pairs defined at runtime by `--call-property`
-  command line flags.
+- `arg`: This namespace acts as a bridge between contexts and the command line
+  and/or properties files by providing access to key/value pairs defined at 
+  runtime through `--call-property` or `--properties-file` command line flags.
 
   ```java
   key = getSession().get('arg:key');
   ```
 
-Please refer to [Command line](@/manual/CLI.md) for more details on the
-`--call-property` command line flag.
+Please refer to [Command line](@/manual/CLI.md) for more details on
+both `--call-property` and `--properties-file` command line flags.
 {% end %}
 
 The methods presented in this section provide interesting features for

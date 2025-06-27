@@ -753,8 +753,9 @@ for further information on this new feature.
 
 This section pretty much covered the basics of the changes to this version. Of
 course, it is highly advisable to make use of the new features available in
-arara 7.0 for achieving better results. If you need any help, please do not
-hesitate to contact us. See [Introduction](@/manual/Introduction.md) for more details on how to get help.
+arara for achieving better results. If you need any help, please do not hesitate
+to contact us. See [Introduction](@/manual/Introduction.md) for more details on
+how to get help.
 
 If you are upgrading you may also be interested in reading our
 [changelog](https://gitlab.com/islandoftex/arara/-/blob/master/CHANGELOG.md) or

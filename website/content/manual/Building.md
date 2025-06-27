@@ -28,7 +28,7 @@ following items are available:
 
   ```sh
   $ git --version
-  git version 2.29.2
+  git version 2.50.0
   ```
 
     Please refer to the [git project website](https://git-scm.com/) in order to
@@ -45,7 +45,7 @@ following items are available:
 
   ```sh
   $ javac -version
-  javac 1.8.0_171
+  javac 21.0.7
   ```
 
     The previous command, as the name suggests, refers to the `javac` tool,
@@ -65,20 +65,22 @@ following items are available:
   following command in the terminal (version numbers might vary):
 
   ```sh
-  $ gradle --version
+$ gradle --version
   ------------------------------------------------------------
-  Gradle 6.0.1
+  Gradle 8.14.2
   ------------------------------------------------------------
 
-  Build time:   2019-11-21 11:47:01 UTC
-  Revision:     <unknown>
+  Build time:    2025-06-05 13:32:01 UTC
+  Revision:      30db2a3bdfffa9f8b40e798095675f9dab990a9a
 
-  Kotlin:       1.3.50
-  Groovy:       2.5.8
-  Ant:          Apache Ant(TM) version 1.10.7 compiled
-                on September 1 2019
-  JVM:          1.8.0_232 (Oracle Corporation 25.232-b09)
-  OS:           Linux 5.5.0-1-MANJARO amd64
+  Kotlin:        2.0.21
+  Groovy:        3.0.24
+  Ant:           Apache Ant(TM) version 1.10.15
+               compiled on August 25 2024
+  Launcher JVM:  24.0.1 (Red Hat, Inc. 24.0.1+9)
+  Daemon JVM:    /usr/lib/jvm/java-24-openjdk (no JDK
+                 specified, using current Java home)
+  OS:            Linux 6.15.3-200.fc42.x86_64 amd64
   ```
 
     Please refer to the Gradle [project website](https://gradle.org) in order to
@@ -177,6 +179,12 @@ the following command in the terminal:
 $ ./gradlew :cli:build
 ```
 
+Alternatively, you can also run the following command in the terminal:
+
+```sh
+$ ./gradlew build
+```
+
 Gradle is based around the central concept of a build life cycle. The compile
 phase, as the name suggests, compiles the source code of the project using the
 underlying Java compiler. After compiling, the code can be packaged, tested and
@@ -211,7 +219,7 @@ resulting file by running the following command in the terminal:
 
 ```sh
 $ java -jar arara.jar
-Usage: arara [OPTIONS] file...
+Usage: arara [<options>] <file>...
 
     __ _ _ __ __ _ _ __ __ _
    / _` | '__/ _` | '__/ _` |
@@ -225,32 +233,35 @@ Usage: arara [OPTIONS] file...
   feature conditional execution and parameter expansion.
 
 Options:
-  -l, --log                        Generate a log output
-  -v, --verbose / -s, --silent     Print the command output
-  -n, --dry-run                    Go through all the motions of running a
-                                   command, but with no actual calls
-  -S, --safe-run                   Run in safe mode and disable potentially
-                                   harmful features. Make sure your projects
-                                   uses only allowed features.
-  -w, --whole-file                 Extract directives in the file, not only in
-                                   the header
-  -p, --preamble TEXT              Set the file preamble based on the
-                                   configuration file
-  -t, --timeout INT                Set the execution timeout (in milliseconds)
-  -L, --language TEXT              Set the application language
-  -m, --max-loops INT              Set the maximum number of loops (> 0)
-  -d, --working-directory PATH     Set the working directory for all tools
-  -P, --call-property VALUE        Pass parameters to the application to be
-                                   used within the session.
-  --generate-completion [bash|zsh|fish]
-                                   Generate a completion script for arara. Add
-                                   'source <(arara --generate-completion
-                                   <shell>)' to your shell's init file.
-  -V, --version                    Show the version and exit
-  -h, --help                       Show this message and exit
+  -l, --log                     Generate a log output
+  -v, --verbose / -s, --silent  Print the command output
+  -n, --dry-run                 Go through all the motions of running a
+                                command, but with no actual calls
+  -S, --safe-run                Run in safe mode and disable potentially
+                                harmful features. Make sure your projects uses
+                                only allowed features.
+  -w, --whole-file              Extract directives in the file, not only in the
+                                header
+  -p, --preamble=<text>         Set the file preamble based on the
+                                configuration file
+  -t, --timeout=<int>           Set the execution timeout (in milliseconds)
+  -L, --language=<text>         Set the application language
+  -m, --max-loops=<int>         Set the maximum number of loops (> 0)
+  -d, --working-directory=<path>
+                                Set the working directory for all tools
+  -P, --call-property=<value>   Pass parameters to the application to be used
+                                within the session.
+  -F, --properties-file=<path>  Pass a properties file to the application to be
+                                used within the session.
+  --generate-completion=(bash|zsh|fish)
+                                Generate a completion script for arara. Add
+                                'source <(arara --generate-completion <shell>)'
+                                to your shell's init file.
+  -V, --version                 Show the version and exit
+  -h, --help                    Show this message and exit
 
 Arguments:
-  file  The file(s) to evaluate and process
+  <file>  The file(s) to evaluate and process
 ```
 
 The following optional Gradle phase is used to handle the project cleaning,
