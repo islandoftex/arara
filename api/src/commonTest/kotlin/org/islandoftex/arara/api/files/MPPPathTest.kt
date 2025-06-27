@@ -1,15 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.files
 
-// In Kotlin Multiplatform projects, the common source set, as the name
-// implies, is intended for code that can be shared across all platforms.
-// However, the following object import is specific to the JVM platform.
-// The reason we might see it accessible in common could be due to the way
-// Kotlin Multiplatform handles dependencies and the visibility of certain
-// packages: while common is meant for shared code, it can still reference
-// certain platform-specific features if the project is set up to allow it.
-// This can happen if the project configuration includes dependencies that
-// expose JVM-specific APIs.
+// The following object import is specific to the JVM platform; while common
+// is meant for shared code, it can still reference certain platform-specific
+// features if the project is set up to allow it.
 import org.islandoftex.arara.api.utils.OS
 
 import kotlin.io.path.Path
