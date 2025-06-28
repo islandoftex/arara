@@ -176,6 +176,9 @@ publish:gitlab:
     policy: pull
 
 publish:snapshot_tdszip:
+  needs:
+    - build:linux:jdk11
+    - test:linux:jdk11
   variables:
     PRELEASE: "false"
   <<: *ctandefinition
