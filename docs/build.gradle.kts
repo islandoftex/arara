@@ -23,7 +23,7 @@ tasks {
 
     register<Exec>("buildManual") {
         group = "documentation"
-        description = "Compile the manual's TeX file to PDF."
+        description = "Compile the manual's HTML file to PDF."
 
         dependsOn("writeVersionFile")
         commandLine("sh", "htmlmanualtopdf.sh")
@@ -36,7 +36,7 @@ tasks {
 
     register<Exec>("buildQuickstartGuide") {
         group = "documentation"
-        description = "Compile the quickstart guide's TeX file to PDF."
+        description = "Compile the quickstart guide's HTML file to PDF."
 
         dependsOn("writeVersionFile")
         commandLine("sh", "htmlquickstarttopdf.sh")
