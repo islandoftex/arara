@@ -54,6 +54,7 @@
           inputsFrom = builtins.attrValues self.defaultPackage;
           buildInputs = with pkgs; [
             gradle2nix.packages.${system}.gradle2nix
+            corretto11
             htmlq
             nixpkgs-fmt
             python3Packages.weasyprint
