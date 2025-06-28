@@ -73,7 +73,7 @@ test:flake-dependencies:
   image: nixos/nix:latest
   needs: []
   script:
-    - nix-env -iA nixpkgs.diffutils nixpkgs.jdk17 nixpkgs.gnused
+    - nix-env -iA nixpkgs.diffutils
     - nix --extra-experimental-features nix-command --extra-experimental-features flakes run github:tadfisher/gradle2nix/v2 -- -l gradle.lock.new
     - diff gradle.lock gradle.lock.new
   cache:

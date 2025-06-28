@@ -31,7 +31,7 @@
 
           nativeBuildInputs = [ pkgs.makeWrapper ];
 
-          gradleBuildFlags = [ "--no-daemon" ":cli:shadowJar" ];
+          gradleBuildFlags = [ "--no-daemon" "assembleDist" ];
 
           installPhase = ''
             mkdir -p $out/share/java/
