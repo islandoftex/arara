@@ -2427,24 +2427,24 @@
       "hash": "sha256-pXu0ObpCYKJW8tYIRx1wgRiQd6Ck3fsCjdGBe+W8Ejc="
     }
   },
-  "org.gradle.toolchains:foojay-resolver:0.9.0": {
-    "foojay-resolver-0.9.0.jar": {
-      "url": "https://plugins.gradle.org/m2/org/gradle/toolchains/foojay-resolver/0.9.0/foojay-resolver-0.9.0.jar",
-      "hash": "sha256-woQImj+HVX92Ai2Z8t8oNlaKpIs/5OKSI5LVZrqBQXY="
+  "org.gradle.toolchains:foojay-resolver:0.10.0": {
+    "foojay-resolver-0.10.0.jar": {
+      "url": "https://plugins.gradle.org/m2/org/gradle/toolchains/foojay-resolver/0.10.0/foojay-resolver-0.10.0.jar",
+      "hash": "sha256-DNfKn57RuooyPxkCwFryHdYiOhMDRfvnj15I1YzNbUw="
     },
-    "foojay-resolver-0.9.0.module": {
-      "url": "https://plugins.gradle.org/m2/org/gradle/toolchains/foojay-resolver/0.9.0/foojay-resolver-0.9.0.module",
-      "hash": "sha256-huXl1QMWJYbAlW/QKippt22nwHIPSuAj82bRkaqXtLg="
+    "foojay-resolver-0.10.0.module": {
+      "url": "https://plugins.gradle.org/m2/org/gradle/toolchains/foojay-resolver/0.10.0/foojay-resolver-0.10.0.module",
+      "hash": "sha256-SduV7YEABA8dZfCWuied7msSeCSNL3k7z7itAg59HNA="
     },
-    "foojay-resolver-0.9.0.pom": {
-      "url": "https://plugins.gradle.org/m2/org/gradle/toolchains/foojay-resolver/0.9.0/foojay-resolver-0.9.0.pom",
-      "hash": "sha256-wdtMSmUHZ5Y7dl/Q3d7P4eqLjp9kQo+H3iB/V48DeOc="
+    "foojay-resolver-0.10.0.pom": {
+      "url": "https://plugins.gradle.org/m2/org/gradle/toolchains/foojay-resolver/0.10.0/foojay-resolver-0.10.0.pom",
+      "hash": "sha256-vndZUF4PPTTVzJzcaGwZxlIuhMzg+MEJ69LW9HsYqSU="
     }
   },
-  "org.gradle.toolchains.foojay-resolver-convention:org.gradle.toolchains.foojay-resolver-convention.gradle.plugin:0.9.0": {
-    "org.gradle.toolchains.foojay-resolver-convention.gradle.plugin-0.9.0.pom": {
-      "url": "https://plugins.gradle.org/m2/org/gradle/toolchains/foojay-resolver-convention/org.gradle.toolchains.foojay-resolver-convention.gradle.plugin/0.9.0/org.gradle.toolchains.foojay-resolver-convention.gradle.plugin-0.9.0.pom",
-      "hash": "sha256-23zxG+5ohO+yiQQTn2LAD4tFhT5gwPQXFc9pV2tr/fA="
+  "org.gradle.toolchains.foojay-resolver-convention:org.gradle.toolchains.foojay-resolver-convention.gradle.plugin:0.10.0": {
+    "org.gradle.toolchains.foojay-resolver-convention.gradle.plugin-0.10.0.pom": {
+      "url": "https://plugins.gradle.org/m2/org/gradle/toolchains/foojay-resolver-convention/org.gradle.toolchains.foojay-resolver-convention.gradle.plugin/0.10.0/org.gradle.toolchains.foojay-resolver-convention.gradle.plugin-0.10.0.pom",
+      "hash": "sha256-OpLrFa3uBcGiaCT2SIcqVx6fk99koO3L4TTjjtLY4Q8="
     }
   },
   "org.jcommander:jcommander:1.85": {
@@ -3046,10 +3046,6 @@
     }
   },
   "org.jetbrains.kotlin:kotlin-native-prebuilt:2.0.21": {
-    "kotlin-native-prebuilt-2.0.21-linux-x86_64.tar.gz": {
-      "url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-native-prebuilt/2.0.21/kotlin-native-prebuilt-2.0.21-linux-x86_64.tar.gz",
-      "hash": "sha256-8SXMZFcnRldupsPfHmVklSr9dpJcJNdc/4X4zdRG/ls="
-    },
     "kotlin-native-prebuilt-2.0.21.pom": {
       "url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-native-prebuilt/2.0.21/kotlin-native-prebuilt-2.0.21.pom",
       "hash": "sha256-Gv4wJE4ZR67Wy+01BBrTbFnw6nZK/bxv/56agY7loEE="
