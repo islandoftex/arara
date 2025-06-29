@@ -179,6 +179,8 @@ publish:snapshot_tdszip:
   needs:
     - build:linux:jdk11
     - test:linux:jdk11
+    - job: pages:for-manual
+      artifacts: true
   variables:
     PRELEASE: "false"
   <<: *ctandefinition
