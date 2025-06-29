@@ -22,11 +22,15 @@ val toolchain = runCatching { (extra["arara.jvm.target"] as String).toInt() }
 
 kotlin {
 
-    // define the JVM toolchain
-    jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(toolchain))
-        vendor.set(JvmVendorSpec.AMAZON)
-    }
+    // ----------------------------------------------------------------------
+    // define the JVM toolchain (we can also set the vendor, if needed)
+    // ----------------------------------------------------------------------
+    // jvmToolchain {
+    //    languageVersion.set(JavaLanguageVersion.of(toolchain))
+    //    vendor.set(JvmVendorSpec.AMAZON)
+    // }
+    // ----------------------------------------------------------------------
+    jvmToolchain(toolchain)
 
     jvm {
 
