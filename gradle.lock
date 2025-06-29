@@ -3046,6 +3046,10 @@
     }
   },
   "org.jetbrains.kotlin:kotlin-native-prebuilt:2.0.21": {
+    "kotlin-native-prebuilt-2.0.21-linux-x86_64.tar.gz": {
+      "url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-native-prebuilt/2.0.21/kotlin-native-prebuilt-2.0.21-linux-x86_64.tar.gz",
+      "hash": "sha256-8SXMZFcnRldupsPfHmVklSr9dpJcJNdc/4X4zdRG/ls="
+    },
     "kotlin-native-prebuilt-2.0.21.pom": {
       "url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-native-prebuilt/2.0.21/kotlin-native-prebuilt-2.0.21.pom",
       "hash": "sha256-Gv4wJE4ZR67Wy+01BBrTbFnw6nZK/bxv/56agY7loEE="
