@@ -117,6 +117,8 @@ object TaskHelper {
                 .IP \fB--call-property\fP value
                 Pass a property as \fCkey=value\fP parameter into the application
                 to be used within the session.
+                .IP \fB--properties-file\fP value
+                Pass a properties file to the application to be used within the session.
                 .IP \fB--generate-completion\fP shell
                 Generate a completion script for arara.
                 .IP \fB--version\fP
