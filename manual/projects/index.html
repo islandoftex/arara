@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Projects | arara </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+    :root {
+        /* Primary theme color */
+        --primary-color: #cbe368; /* #FED43F; */
+        /* Primary theme text color */
+        --primary-text-color: #543631;
+        /* Primary theme link color */
+        --primary-link-color: #719b25;
+        /* Secondary color: the background body color */
+        --secondary-color: #fcfaf6;
+        --secondary-text-color: #303030;
+        /* Highlight text color of table of content */
+        --toc-highlight-text-color: #d46e13;
+    }
+</style>
+
+    <link rel="icon" href="https://islandoftex.gitlab.io/arara/favicon.svg">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/normalize.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juice.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/fonts/fonts.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juicy-arara.css">
+    
+    <meta name="keywords" content="tex, latex, context, build tool, automation">
+    <meta itemprop="name" content="The cool TeX automation tool">
+    <meta itemprop="description" content="arara is a TeX automation tool based on directives and rules.">
+    
+  </head>
+
+  <body>
+    
+<header class="box-shadow">
+    
+
+<a href="https://islandoftex.gitlab.io/arara/">
+  <div class="logo">
+    <img src="https://islandoftex.gitlab.io/arara/images/arara-text.svg" alt="logo">
+  </div>
+</a>
+
+<nav>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/changelog/">Changelog</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/quickstart/">Quickstart</a>
+  
+  
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/manual">Manual</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/news">News</a>
+  
+  <a class="nav-item subtitle-text" href="https://gitlab.com/islandoftex/arara">GitLab</a>
+  
+  
+</nav>
+
+</header>
+
+
+    <main>
+      
+      
+      
+      
+      
+      <div class="toc">
+        <div class="toc-sticky">
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/projects/#rationale">Rationale</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/projects/#file-structure">File structure</a>
+          </div>
+          
+          
+        </div>
+      </div>
+      
+      
+
+      <div class="content text">
+        
+<div class="heading-text">Projects</div>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Compatibility information</strong>
+  <br/>
+  The project feature has been introduced in version 7 of arara and is still
+experimental. It will not vanish in the next versions but it might receive major
+changes based on user feedback. If you have certain use cases or ideas for
+projects, please open an issue in our
+<a rel="noopener noreferrer" target="_blank" href="https://gitlab.com/islandoftex/arara">repo</a>.
+</blockquote>
+<p>Instead of passing one or multiple files with directives to the arara
+command-line you may pass one <code>.lua</code> file (the exact extension is
+important) with a project specification. arara will process the Lua script and
+then execute all the projects as specified in the Lua script.</p>
+<p><strong>Important remark:</strong> If arara encounters a single Lua file as its argument, it
+tries to parse it as a project. If it fails for any reason (e.g. malformed Lua),
+it will treat the Lua file as regular input file and scan it for directives
+which will fail if you did not define a Lua input file type. However, that
+allows to continue using Lua files as input files to arara.</p>
+<h1 id="rationale">Rationale</h1>
+<p>Projects have been identified as the sweet spot between arara's already
+make-like directive system and actual external specification of directives and
+dependencies. Though currently unable to express dependencies between single
+files, arara is able to handle dependencies between projects.</p>
+<p>We have built projects with the following use cases in mind:</p>
+<ul>
+<li>You have dependencies between files and want to avoid abusing the <code>files</code>
+parameter of arara's directives.</li>
+<li>You want to compile multiple documents whenever you compile and want to avoid
+specifying all of them on the command-line.</li>
+<li>You want to use specific settings for some file but not for others
+(e.g. another pattern for the same file type).</li>
+</ul>
+<p>However, the basic idea is to be explicit about what belongs to a project and
+what does not. In that sense, a declarative notion of a project spanning
+multiple files is what should be covered by this feature.</p>
+<h1 id="file-structure">File structure</h1>
+<p>A project specification file is a Lua file which contains a script returning a
+list/table of project specfications or a project specification itself (if it is
+too technical at this point, stay with us, examples will follow). A single
+project minimally requires a list of files, so a minimal <code>project.lua</code> could
+look like</p>
+<pre data-lang="lua" style="background-color:#ffffff;color:#010101;" class="language-lua "><code class="language-lua" data-lang="lua"><span style="color:#016692;">return </span><span>{
+</span><span>  </span><span style="color:#009f78;">files </span><span>= { [</span><span style="color:#009f78;">&quot;file.tex&quot;</span><span>] = { } }
+</span><span>}
+</span></code></pre>
+<p>There are a number of optional parameters:</p>
+<ul>
+<li><code>name</code>: The project's name which is used to identify the project e.g. when
+depending on it. Otherwise, it is used for display purposes on the
+command-line only. If not specified, there will be a placeholder name for
+untitled projects.</li>
+<li><code>workingDirectory</code>: The working directory to execute the project
+in. Specifying a working directory with this option overrides any working
+directory given using the command-line option <code>-d</code>/<code>--working-directory</code>.</li>
+<li><code>dependencies</code>: Other projects a project depends on. Make sure this project is
+actually specified. Project specification files with invalid dependencies will
+be treated as invalid.</li>
+</ul>
+<p>A more complete example showcasing the list of project specifications approach
+would be</p>
+<pre data-lang="lua" style="background-color:#ffffff;color:#010101;" class="language-lua "><code class="language-lua" data-lang="lua"><span style="color:#016692;">return </span><span>{
+</span><span>  {
+</span><span>    </span><span style="color:#009f78;">name </span><span>= </span><span style="color:#009f78;">&quot;My awesome book&quot;</span><span>,
+</span><span>    </span><span style="color:#009f78;">workingDirectory </span><span>= </span><span style="color:#009f78;">&quot;book&quot;</span><span>,
+</span><span>    </span><span style="color:#009f78;">files </span><span>= {
+</span><span>      [</span><span style="color:#009f78;">&quot;a.mp&quot;</span><span>] = {
+</span><span>        </span><span style="color:#009f78;">directives </span><span>= { </span><span style="color:#009f78;">&quot;% arara: metapost&quot; </span><span>},
+</span><span>        </span><span style="color:#009f78;">priority </span><span>= </span><span style="color:#8c008a;">1
+</span><span>      },
+</span><span>      [</span><span style="color:#009f78;">&quot;file.tex&quot;</span><span>] = { }
+</span><span>    }
+</span><span>  },
+</span><span>  {
+</span><span>    </span><span style="color:#009f78;">name </span><span>= </span><span style="color:#009f78;">&quot;My awesome book vol. 2&quot;</span><span>,
+</span><span>    </span><span style="color:#009f78;">workingDirectory </span><span>= </span><span style="color:#009f78;">&quot;bookv2&quot;</span><span>,
+</span><span>    </span><span style="color:#009f78;">files </span><span>= { [</span><span style="color:#009f78;">&quot;file.tex&quot;</span><span>] = { } },
+</span><span>    </span><span style="color:#009f78;">dependencies </span><span>= { </span><span style="color:#009f78;">&quot;My awesome book&quot; </span><span>}
+</span><span>  }
+</span><span>}
+</span></code></pre>
+<p>Note how the second project depends on the first one and the <code>a.mp</code> file has
+additional parameters. For files, there are the following additional options:</p>
+<ul>
+<li><code>priority</code>: An integer value that specifies a priority within the project. The
+default priority is <code>0</code>. If a file <em>A</em> has higher priority than file <em>B</em> it
+means that <em>A</em> will be executed before <em>B</em>.</li>
+<li><code>directives</code>: Specify a list of directives that will be used instead of the
+directives specified in the file. They have to correspond to the file type's
+directives, i.e. they will be accepted if they would be accepted by the
+patterns of the file type.</li>
+<li><code>fileType</code>: Specify the file type of the file. The same rules as for
+specifying a file type in the configuration file apply. The <code>extension</code> is
+mandatory. If the extension is not among the default set of extensions, a
+<code>pattern</code> is mandatory as well.</li>
+</ul>
+<p>Apart from the return expression you are free to use Lua code to perform
+computations or other actions within the project specification file. Please note
+that for technical reasons arara's Lua interpreter only accepts Lua 5.2.</p>
+
+
+      </div>
+
+    </main>
+
+    
+    <footer>
+      <small class="subtext">
+        arara by the Island of TeX
+      </small>
+    </footer>
+    
+  </body>
+  <script>
+    function highlightNav(heading) {
+        let pathname = location.pathname;
+        document.querySelectorAll(".toc a").forEach((item) => {
+            item.classList.remove("active");
+        });
+        document.querySelector(".toc a[href$='" + pathname + "#" + heading + "']").classList.add("active");
+    }
+
+    let currentHeading = "";
+    window.onscroll = function () {
+        let h = document.querySelectorAll("h1,h2,h3,h4,h5,h6");
+        let elementArr = [];
+
+        h.forEach(item => {
+            if (item.id !== "") {
+                elementArr[item.id] = item.getBoundingClientRect().top;
+            }
+        });
+        elementArr.sort();
+        for (let key in elementArr) {
+            if (!elementArr.hasOwnProperty(key)) {
+                continue;
+            }
+            if (elementArr[key] > 0 && elementArr[key] < 300) {
+                if (currentHeading !== key) {
+                    highlightNav(key);
+                    currentHeading = key;
+                }
+                break;
+            }
+        }
+    }
+  </script>
+</html>

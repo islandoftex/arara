@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>arara version 7 released | arara </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+    :root {
+        /* Primary theme color */
+        --primary-color: #cbe368; /* #FED43F; */
+        /* Primary theme text color */
+        --primary-text-color: #543631;
+        /* Primary theme link color */
+        --primary-link-color: #719b25;
+        /* Secondary color: the background body color */
+        --secondary-color: #fcfaf6;
+        --secondary-text-color: #303030;
+        /* Highlight text color of table of content */
+        --toc-highlight-text-color: #d46e13;
+    }
+</style>
+
+    <link rel="icon" href="https://islandoftex.gitlab.io/arara/favicon.svg">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/normalize.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juice.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/fonts/fonts.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juicy-arara.css">
+    
+    <meta name="keywords" content="tex, latex, context, build tool, automation">
+    <meta itemprop="name" content="The cool TeX automation tool">
+    <meta itemprop="description" content="arara is a TeX automation tool based on directives and rules.">
+    
+  </head>
+
+  <body>
+    
+<header class="box-shadow">
+    
+
+<a href="https://islandoftex.gitlab.io/arara/">
+  <div class="logo">
+    <img src="https://islandoftex.gitlab.io/arara/images/arara-text.svg" alt="logo">
+  </div>
+</a>
+
+<nav>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/changelog/">Changelog</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/quickstart/">Quickstart</a>
+  
+  
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/manual">Manual</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/news">News</a>
+  
+  <a class="nav-item subtitle-text" href="https://gitlab.com/islandoftex/arara">GitLab</a>
+  
+  
+</nav>
+
+</header>
+
+
+    <main>
+      
+      
+      
+      
+      
+      <div class="toc">
+        <div class="toc-sticky">
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/news/release-v7/#important-changes">Important changes</a>
+          </div>
+          
+          
+          <div class="toc-item-child">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/news/release-v7/#making-header-mode-the-default"><small>- Making header mode the default</small></a>
+          </div>
+          
+          <div class="toc-item-child">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/news/release-v7/#using-an-own-i-o-api-instead-of-java-s-file-objects"><small>- Using an own I&#x2F;O API instead of Java&#x27;s File objects</small></a>
+          </div>
+          
+          <div class="toc-item-child">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/news/release-v7/#introducing-project-definitions"><small>- Introducing project definitions</small></a>
+          </div>
+          
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/news/release-v7/#the-next-steps">The next steps</a>
+          </div>
+          
+          
+          <div class="toc-item-child">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/news/release-v7/#improving-projects"><small>- Improving projects</small></a>
+          </div>
+          
+          <div class="toc-item-child">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/news/release-v7/#transitioning-the-rule-set-to-lua"><small>- Transitioning the rule set to Lua</small></a>
+          </div>
+          
+          <div class="toc-item-child">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/news/release-v7/#compiling-native-executables"><small>- Compiling native executables</small></a>
+          </div>
+          
+          
+          
+        </div>
+      </div>
+      
+      
+
+      <div class="content text">
+        
+<div class="heading-text">arara version 7 released</div>
+<p>After more than one year of on-and-off work, we are proud to announce the
+release of arara version 7, the TeX Live 2022 major release of arara. With this
+release, we implemented many long-standing feature requests and finally settled
+several technical questions concerning the future of arara.</p>
+<span id="continue-reading"></span><h1 id="important-changes">Important changes</h1>
+<p>Please consult our <a href="https://islandoftex.gitlab.io/arara/changelog/">changelog</a> for a detailed
+view on all changes and references to our issue tracker. This post is targeted
+at our users and will only cover the most relevant changes.</p>
+<h2 id="making-header-mode-the-default">Making header mode the default</h2>
+<p>Prior to this release, arara checked the whole input file for directives. Thus,
+a file like</p>
+<pre data-lang="latex" style="background-color:#ffffff;color:#010101;" class="language-latex "><code class="language-latex" data-lang="latex"><span style="color:#898989;">% arara: pdflatex
+</span><span style="color:#016692;">\documentclass</span><span>{</span><span style="color:#646409;">article</span><span>}
+</span><span style="color:#016692;">\begin</span><span>{</span><span style="color:#696989;">document</span><span>}
+</span><span>Hello World
+</span><span style="color:#898989;">% arara: pdflatex
+</span><span style="color:#016692;">\end</span><span>{</span><span style="color:#696989;">document</span><span>}
+</span></code></pre>
+<p>would execute <code>pdflatex</code> twice. This behavior repeatedly produced unwanted
+behavior. For years, arara ships with <code>-H</code> (header mode) which scans the
+beginning of the file for comments and directives skipping empty lines. Hence,
+the following will run <code>pdflatex</code> once.</p>
+<pre data-lang="latex" style="background-color:#ffffff;color:#010101;" class="language-latex "><code class="language-latex" data-lang="latex"><span style="color:#898989;">%!TeX program=pdflatex
+</span><span style="color:#898989;">% arara: pdflatex
+</span><span style="color:#016692;">\documentclass</span><span>{</span><span style="color:#646409;">article</span><span>}
+</span><span style="color:#016692;">\begin</span><span>{</span><span style="color:#696989;">document</span><span>}
+</span><span>Hello World
+</span><span style="color:#016692;">\end</span><span>{</span><span style="color:#696989;">document</span><span>}
+</span></code></pre>
+<p>This behavior is the new default. The new <code>-w</code> flag restores the old behavior.</p>
+<p>If this change does not work well for you, please consider giving feedback at
+<a rel="noopener noreferrer" target="_blank" href="https://gitlab.com/islandoftex/arara/-/issues/63">the respective issue</a>. We may
+consider returning to the old default if there are too many complaints. But
+please give the new scanning mode a sincere try before reporting, after all it
+is the more sensible default to increase arara's robustness.</p>
+<h2 id="using-an-own-i-o-api-instead-of-java-s-file-objects">Using an own I/O API instead of Java's File objects</h2>
+<p>In previous versions, arara's rules relied on Java's <code>File</code> API. That was bad
+for several reasons. Most importantly, we have switched to Java's <code>Path</code> API
+quite a while ago. Hence, what was used internally and what users accessed
+diverged.</p>
+<p>With our general refactoring, there has been a change of strategies: we now
+avoid exposing any Java-specific API. The new API which you have access to
+when using the <code>toFile("some file.txt")</code> method exposes the following properties
+and methods:</p>
+<ul>
+<li>The properties <code>isAbsolute</code>, <code>fileName</code>, <code>fileSize</code>, <code>lastModified</code>, <code>parent</code>,
+<code>exists</code>, <code>isDirectory</code>, and <code>isRegularFile</code> do what their names indicate.</li>
+<li>The method <code>startsWith(File)</code> checks if the string representation of the one
+file is prefix of the other one's.</li>
+<li><code>normalize()</code> turns a path into an absolute path and normalizes it.</li>
+<li><code>resolve(String | File)</code> resolves a child.</li>
+<li><code>resolveSibling(String | File)</code> resolves a sibling.</li>
+<li><code>readLines()</code> reads the file's content into a <code>List&lt;String&gt;</code>.</li>
+<li><code>readText()</code> reads the file's content into a continuous <code>String</code>.</li>
+<li><code>writeText(String, append? = false)</code> writes the argument to the file; the
+optional argument allows appending instead of overwriting.</li>
+</ul>
+<p>If you use the <code>toFile</code> method in your rules, you do not need to change
+anything. All the arara-internal methods like <code>exists(File)</code> have been adjusted
+to accept objects of the new format. In the end, the only need to change
+anything is in rules where you have accessed Java's <code>File</code> API yourself.</p>
+<h2 id="introducing-project-definitions">Introducing project definitions</h2>
+<p>The most important new feature in arara v7 is project support. Long awaited and
+announced, we finally managed to add projects to arara. This is a preliminary
+project format and definition. It will be extended in future versions.</p>
+<p>Currently, a project may be specified in any <code>.lua</code> file. Running a project
+boils down to calling <code>arara project.lua</code>. The Lua script must contain a return
+statement returning either</p>
+<ul>
+<li>a table which matches the project format (“a project definition”), or</li>
+<li>a table of tables matching the project format (“a list of project
+definitions”).</li>
+</ul>
+<p>As an example, consider the following <code>project.lua</code>:</p>
+<pre data-lang="lua" style="background-color:#ffffff;color:#010101;" class="language-lua "><code class="language-lua" data-lang="lua"><span style="color:#016692;">return </span><span>{
+</span><span>  {
+</span><span>    </span><span style="color:#009f78;">name </span><span>= </span><span style="color:#009f78;">&quot;My awesome book&quot;</span><span>,
+</span><span>    </span><span style="color:#009f78;">workingDirectory </span><span>= </span><span style="color:#009f78;">&quot;book&quot;</span><span>,
+</span><span>    </span><span style="color:#009f78;">files </span><span>= {
+</span><span>      [</span><span style="color:#009f78;">&quot;a.mp&quot;</span><span>] = {
+</span><span>        </span><span style="color:#009f78;">directives </span><span>= { </span><span style="color:#009f78;">&quot;metapost&quot; </span><span>},
+</span><span>        </span><span style="color:#009f78;">priority </span><span>= </span><span style="color:#8c008a;">1
+</span><span>      },
+</span><span>      [</span><span style="color:#009f78;">&quot;file.tex&quot;</span><span>] = { }
+</span><span>    }
+</span><span>  },
+</span><span>  {
+</span><span>    </span><span style="color:#009f78;">name </span><span>= </span><span style="color:#009f78;">&quot;My awesome book vol. 2&quot;</span><span>,
+</span><span>    </span><span style="color:#009f78;">workingDirectory </span><span>= </span><span style="color:#009f78;">&quot;bookv2&quot;</span><span>,
+</span><span>    </span><span style="color:#009f78;">files </span><span>= { [</span><span style="color:#009f78;">&quot;file.tex&quot;</span><span>] = { } },
+</span><span>    </span><span style="color:#009f78;">dependencies </span><span>= { </span><span style="color:#009f78;">&quot;My awesome book&quot; </span><span>}
+</span><span>  }
+</span><span>}
+</span></code></pre>
+<p>It contains all currently supported properties of Lua projects. This includes:</p>
+<ul>
+<li>defining multiple projects at once,</li>
+<li>specifying the working directory for a project,</li>
+<li>specifying the files belonging to a project and prioritizing those which are
+expected to be processed first, and</li>
+<li>overwriting directives from the project file (or specify directives if the
+file does not have some).</li>
+</ul>
+<p>A minimal project specification looks like this:</p>
+<pre data-lang="lua" style="background-color:#ffffff;color:#010101;" class="language-lua "><code class="language-lua" data-lang="lua"><span style="color:#016692;">return </span><span>{
+</span><span>  </span><span style="color:#009f78;">files </span><span>= { [</span><span style="color:#009f78;">&quot;file.tex&quot;</span><span>] = { } }
+</span><span>}
+</span></code></pre>
+<p>which is basically equivalent to saying <code>arara file.tex</code> on the command-line.</p>
+<p>The full Lua project specification format may be found in our documentation at
+<a rel="noopener noreferrer" target="_blank" href="https://islandoftex.gitlab.io/arara/manual/">our manual page</a>.</p>
+<p>Please consider giving us feedback on this feature. We would love to hear your
+use cases. See the next section to see how we are planning to extend projects in
+the next releases.</p>
+<h1 id="the-next-steps">The next steps</h1>
+<p>For version 8 of arara, i.e. TeX Live 2023, we have big plans (as always). While
+not all of them may eventually end up in the released version we still want to
+share our ideas with you.</p>
+<h2 id="improving-projects">Improving projects</h2>
+<p>Our project model allows defining projects which may depend on each
+other. Hence, there exists a proper execution order (topological
+sorting). Having such a order (in form of a directed acyclic graph) enables us
+to think about parallelizing dependencies.</p>
+<p>This does not only apply to projects but files within projects as
+well. Imagine compiling all metapost pictures or all standalone graphics listed
+as dependencies of the main file in parallel. This speedup will be significant
+in larger projects.</p>
+<p>Another important improvement to projects is to make them self-sufficient. That
+will most probably include making configuration options like where to look for
+rules available within the project specification. Once rules are available in
+Lua as well (see next section), we might even consider ad-hoc rules in the
+project definition.</p>
+<p>Furthermore, we are interested in exploring different build targets (okay, we do
+not want to be another make or l3build but after all it might be an interesting
+direction to think about). Having a target like <code>debug</code> and one like <code>release</code>
+might simplify workflows where a full build is not advisable most of the
+time. Still, we like to model explicit workflows and currently the typical
+solution would be to use two different preambles for both types which we
+consider not too elegant.</p>
+<h2 id="transitioning-the-rule-set-to-lua">Transitioning the rule set to Lua</h2>
+<p>In order to exploit the power of the Lua engine shipped by arara, we intend to
+replace YAML + MVEL with Lua in the long run. That implies, the next item on our
+list will be adding a proper Lua rule API. arara v8 will then only ship with Lua
+rules by default.</p>
+<p>There are several reasons why we think Lua rules will be a massive improvement:</p>
+<ul>
+<li>Lua is more widespread in the TeX community than Java-like MVEL.</li>
+<li>A proper programming language saves us from trying to fit inheritance or
+composition into a format like YAML.</li>
+<li>One rule file may bundle multiple related rules. This breaking change was
+planned anyway but we see a better potential of realizing this with Lua.</li>
+<li>And our actual main reason: it enables us to ship a rule format which is
+independent of the JVM (see the next section).</li>
+</ul>
+<h2 id="compiling-native-executables">Compiling native executables</h2>
+<p>We will not repeat the basics from arara v6's release post. But there have been
+a few updates on this, especially with respect to the Lua inclusion. Last
+release, we described MVEL as one of the blockers which we are now about to
+leave behind.</p>
+<p>Of course, we do not consider to drop MVEL just yet. After all, users have their
+YAML + MVEL rules since day one. We envision to provide a JVM version of arara
+which is able to process Lua and MVEL rules and a second, native, version which
+will only digest Lua rules.</p>
+<p>This split will not be forever, most likely only one or two releases but it will
+be long enough to iron out all problems with the Lua rules and safely
+transitioning. As with all arara upgrades, we will be helping our users to port
+their rules once the Lua rule format is stable.</p>
+
+
+      </div>
+
+    </main>
+
+    
+    <footer>
+      <small class="subtext">
+        arara by the Island of TeX
+      </small>
+    </footer>
+    
+  </body>
+  <script>
+    function highlightNav(heading) {
+        let pathname = location.pathname;
+        document.querySelectorAll(".toc a").forEach((item) => {
+            item.classList.remove("active");
+        });
+        document.querySelector(".toc a[href$='" + pathname + "#" + heading + "']").classList.add("active");
+    }
+
+    let currentHeading = "";
+    window.onscroll = function () {
+        let h = document.querySelectorAll("h1,h2,h3,h4,h5,h6");
+        let elementArr = [];
+
+        h.forEach(item => {
+            if (item.id !== "") {
+                elementArr[item.id] = item.getBoundingClientRect().top;
+            }
+        });
+        elementArr.sort();
+        for (let key in elementArr) {
+            if (!elementArr.hasOwnProperty(key)) {
+                continue;
+            }
+            if (elementArr[key] > 0 && elementArr[key] < 300) {
+                if (currentHeading !== key) {
+                    highlightNav(key);
+                    currentHeading = key;
+                }
+                break;
+            }
+        }
+    }
+  </script>
+</html>

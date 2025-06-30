@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Methods | arara </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+    :root {
+        /* Primary theme color */
+        --primary-color: #cbe368; /* #FED43F; */
+        /* Primary theme text color */
+        --primary-text-color: #543631;
+        /* Primary theme link color */
+        --primary-link-color: #719b25;
+        /* Secondary color: the background body color */
+        --secondary-color: #fcfaf6;
+        --secondary-text-color: #303030;
+        /* Highlight text color of table of content */
+        --toc-highlight-text-color: #d46e13;
+    }
+</style>
+
+    <link rel="icon" href="https://islandoftex.gitlab.io/arara/favicon.svg">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/normalize.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juice.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/fonts/fonts.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juicy-arara.css">
+    
+    <meta name="keywords" content="tex, latex, context, build tool, automation">
+    <meta itemprop="name" content="The cool TeX automation tool">
+    <meta itemprop="description" content="arara is a TeX automation tool based on directives and rules.">
+    
+  </head>
+
+  <body>
+    
+<header class="box-shadow">
+    
+
+<a href="https://islandoftex.gitlab.io/arara/">
+  <div class="logo">
+    <img src="https://islandoftex.gitlab.io/arara/images/arara-text.svg" alt="logo">
+  </div>
+</a>
+
+<nav>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/changelog/">Changelog</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/quickstart/">Quickstart</a>
+  
+  
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/manual">Manual</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/news">News</a>
+  
+  <a class="nav-item subtitle-text" href="https://gitlab.com/islandoftex/arara">GitLab</a>
+  
+  
+</nav>
+
+</header>
+
+
+    <main>
+      
+      
+      
+      
+      
+      <div class="toc">
+        <div class="toc-sticky">
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/methods/#files">Files</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/methods/#conditional-flow">Conditional flow</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/methods/#strings">Strings</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/methods/#operating-systems">Operating systems</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/methods/#type-checking">Type checking</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/methods/#classes-and-objects">Classes and objects</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/methods/#dialog-boxes">Dialog boxes</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/methods/#commands">Commands</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/methods/#others">Others</a>
+          </div>
+          
+          
+        </div>
+      </div>
+      
+      
+
+      <div class="content text">
+        
+<div class="heading-text">Methods</div>
+<p>arara features several helper methods available in directive conditional and
+rule contexts which provide interesting features for enhancing the user
+experience, as well as improving the automation itself. This chapter provides a
+list of such methods. It is important to observe that virtually all classes from
+the Java runtime environment can be used within MVEL expressions, so your
+mileage might vary.</p>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>A note on writing code</strong>
+  <br/>
+  As seen in <a href="https://islandoftex.gitlab.io/arara/manual/mvel/">MVEL</a>, Java and MVEL code be used interchangeably
+within expressions and orb tags, including instantiation of classes into objects
+and invocation of methods. However, be mindful of explicitly importing Java
+packages and classes through the classic <code>import</code> statement, as MVEL does not
+automatically handle imports, or an exception will surely be
+raised. Alternatively, you can provide the full qualified name to classes as
+well.
+</blockquote>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>A file by any other name</strong>
+  <br/>
+  As of version 7, we now avoid exposing any Java-specific API. When you see a
+mention to <code>File</code>, keep in mind that this is actually a wrapper to our new
+internal representation.
+</blockquote>
+<p>Methods are listed with their complete signatures, including potential
+parameters and corresponding types. Also, the return type of a method is denoted
+by <code>type</code> and refers to a typical Java data type (either class or primitive). Do
+not worry too much, as there are illustrative examples. A method available in
+the directive conditional context will be marked by <strong>[C]</strong> next to the
+corresponding signature. Similarly, an entry marked by <strong>[R]</strong> denotes that the
+corresponding method is available in the rule context. At last, an entry marked
+by <strong>[E]</strong> denotes that the corresponding method is available in the orb tag
+expansion within a special <code>options</code> parameter in the directive context.</p>
+<h1 id="files">Files</h1>
+<p>This section introduces methods related to file handling, searching and
+hashing. It is important to observe that no exception is thrown in case of an
+anomalous method call. In this particular scenario, the methods return empty
+references, when applied.</p>
+<ul>
+<li>
+<p><strong>[R]</strong> <code>getOriginalFile(): String</code> This method returns the original file
+name, as plain string, regardless of a potential override through the
+special <code>files</code> parameter in the directive mapping, as seen in
+<a href="https://islandoftex.gitlab.io/arara/manual/concepts/">Important concepts</a>.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#016692;">if </span><span>(file </span><span style="color:#016692;">== </span><span style="color:#696989;">getOriginalFile</span><span>()) {
+</span><span>    </span><span style="color:#646409;">System</span><span>.out.</span><span style="color:#696989;">println</span><span>(</span><span style="color:#009f78;">&quot;The &#39;file&#39; variable</span><span style="background-color:#df68d9bf;color:#a00294;">
+</span><span>       was not overridden.</span><span style="color:#009f78;">&quot;);</span><span style="background-color:#df68d9bf;color:#a00294;">
+</span><span>}
+</span></code></pre>
+</li>
+<li>
+<p><strong>[C|E|R]</strong> <code>getOriginalReference(): File</code> This method returns the original
+file reference, as a <code>File</code> object, regardless of a potential reference
+override indirectly through the special <code>files</code> parameter in the directive
+mapping, as seen in <a href="https://islandoftex.gitlab.io/arara/manual/concepts/">Important concepts</a>.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#016692;">if </span><span>(reference.</span><span style="color:#696989;">equals</span><span>(</span><span style="color:#696989;">getOriginalReference</span><span>())) {
+</span><span>    </span><span style="color:#646409;">System</span><span>.out.</span><span style="color:#696989;">println</span><span>(</span><span style="color:#009f78;">&quot;The &#39;reference&#39; variable</span><span style="background-color:#df68d9bf;color:#a00294;">
+</span><span>       was not overridden.</span><span style="color:#009f78;">&quot;);</span><span style="background-color:#df68d9bf;color:#a00294;">
+</span><span>}
+</span></code></pre>
+</li>
+<li>
+<p><strong>[C|R]</strong> <code>currentFile(): File</code> This method returns the file reference, as a
+<code>File</code> object, for the current directive. It is important to observe that
+arara replicates the directive when the special <code>files</code> parameter is
+detected amongst the parameters, so each instance will have a different
+reference.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex if currentFile().getName() == &#39;thesis.tex&#39;
+</span></code></pre>
+</li>
+<li>
+<p><strong>[C|R]</strong> <code>toFile(String reference): File</code> This method returns a file (or
+directory) reference, as a <code>File</code> object, based on the provided string. Note
+that the string can refer to either a relative entry or a complete, absolute
+path. It is worth mentioning that, in Java, despite the curious name, a
+<code>File</code> object can be assigned to either a file or a directory.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>f </span><span style="color:#016692;">= </span><span style="color:#696989;">toFile</span><span>(</span><span style="color:#009f78;">&#39;thesis.tex&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[C|E|R]</strong> <code>getBasename(File file): String</code> This method returns the base name
+(i.e, the name without the associated extension) of the provided <code>File</code>
+reference, as a string. Observe that this method ignores a potential path
+reference when extracting the base name. Also, this method will throw an
+exception if the provided reference is not a proper file.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>basename </span><span style="color:#016692;">= </span><span style="color:#696989;">getBasename</span><span>(</span><span style="color:#696989;">toFile</span><span>(</span><span style="color:#009f78;">&#39;thesis.tex&#39;</span><span>));
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>getBasename(String reference): String</code> This method returns the base
+name (i.e, the name without the associated extension) of the provided
+<code>String</code> reference, as a string. Observe that this method ignores a
+potential path reference when extracting the base name.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>basename </span><span style="color:#016692;">= </span><span style="color:#696989;">getBasename</span><span>(</span><span style="color:#009f78;">&#39;thesis.tex&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>getFiletype(File file): String</code> This method returns the file type
+(i.e, the associated extension specified as a suffix to the name, typically
+delimited with a full stop) of the provided <code>File</code> reference, as a
+string. This method will throw an exception if the provided reference is not
+a proper file. An empty string is returned if, and only if, the provided
+file name has no associated extension.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>extension </span><span style="color:#016692;">= </span><span style="color:#696989;">getFiletype</span><span>(</span><span style="color:#696989;">toFile</span><span>(</span><span style="color:#009f78;">&#39;thesis.pdf&#39;</span><span>));
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>getFiletype(String reference): String</code> This method returns the file
+type (i.e, the associated extension specified as a suffix to the name,
+typically delimited with a full stop) of the provided <code>String</code> reference, as
+a string. An empty string is returned if, and only if, the provided file
+name has no associated extension.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>extension </span><span style="color:#016692;">= </span><span style="color:#696989;">getFiletype</span><span>(</span><span style="color:#009f78;">&#39;thesis.pdf&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[C|R]</strong> <code>exists(File file): boolean</code> This method, as the name implies,
+returns a boolean value according to whether the provided <code>File</code> reference
+exists. Observe that the provided reference can be either a file or a
+directory.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: bibtex if exists(toFile(&#39;references.bib&#39;))
+</span></code></pre>
+</li>
+<li>
+<p><strong>[C|R]</strong> <code>exists(String extension): boolean</code> This method returns a boolean
+value according to whether the base name of the <code>❖ currentFile</code>
+reference (i.e, the name without the associated extension) as a string
+concatenated with the provided <code>String</code> extension exists. This method eases
+the checking of files which share the current file name modulo extension
+(e.g, log and auxiliary files). Note that the provided string refers to the
+extension, not the file name.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdftex if exists(&#39;tex&#39;)
+</span></code></pre>
+</li>
+<li>
+<p><strong>[C|R]</strong> <code>missing(File file): boolean</code> This method, as the name implies,
+returns a boolean value according to whether the provided <code>File</code> reference
+does not exist. It is important to observe that the provided reference can
+be either a file or a directory.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdftex if missing(toFile(&#39;thesis.pdf&#39;))
+</span></code></pre>
+</li>
+<li>
+<p><strong>[C|R]</strong> <code>missing(String extension): boolean</code> This method returns a boolean
+value according to whether the base name of the <code>❖ currentFile</code>
+reference (i.e, the name without the associated extension) as a string
+concatenated with the provided <code>String</code> extension does not exist. This
+method eases the checking of files which share the current file name modulo
+extension (e.g, log and auxiliary files). Note that the provided string
+refers to the extension, not the file name.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdftex if missing(&#39;pdf&#39;)
+</span></code></pre>
+</li>
+<li>
+<p><strong>[C|R]</strong> <code>changed(File file): boolean</code> This method returns a boolean value
+according to whether the provided <code>File</code> reference has changed since last
+verification, based on a traditional cyclic redundancy check. The file
+reference, as well as the associated hash, is stored in a YAML database file
+named <code>arara.yaml</code> located in the same directory as the current file (the
+database name can be overridden in the configuration file. The method
+semantics (including the return values) is presented as follows.</p>
+<table><thead><tr><th style="text-align: center">File exists?    </th><th style="text-align: center">Entry exists?    </th><th style="text-align: center">Has changed?    </th><th style="text-align: center">DB action    </th><th style="text-align: center">Result</th></tr></thead><tbody>
+<tr><td style="text-align: center">Yes</td><td style="text-align: center">Yes</td><td style="text-align: center">Yes</td><td style="text-align: center">Update</td><td style="text-align: center">Yes</td></tr>
+<tr><td style="text-align: center">Yes</td><td style="text-align: center">Yes</td><td style="text-align: center">No</td><td style="text-align: center">—</td><td style="text-align: center">No</td></tr>
+<tr><td style="text-align: center">Yes</td><td style="text-align: center">No</td><td style="text-align: center">—</td><td style="text-align: center">Insert</td><td style="text-align: center">Yes</td></tr>
+<tr><td style="text-align: center">No</td><td style="text-align: center">No</td><td style="text-align: center">—</td><td style="text-align: center">—</td><td style="text-align: center">No</td></tr>
+<tr><td style="text-align: center">No</td><td style="text-align: center">Yes</td><td style="text-align: center">—</td><td style="text-align: center">Remove</td><td style="text-align: center">Yes</td></tr>
+</tbody></table>
+<p>It is important to observe that this method <em>always</em> performs a database
+operation, either an insertion, removal or update on the corresponding
+entry. When using <code>❖ changed</code> within a logical expression, make
+sure the evaluation order is correct, specially regarding the use of
+short-circuiting operations. In some scenarios, order does matter.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex if changed(toFile(&#39;thesis.tex&#39;))
+</span></code></pre>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Short-circuit evaluation</strong>
+  <br/>
+  According to the <a rel="noopener noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Short-circuit_evaluation">Wikipedia
+entry</a>, a <em>short-circuit
+evaluation</em> is the semantics of some boolean operators in some programming
+languages in which the second argument is executed or evaluated only if the
+first argument does not suffice to determine the value of the expression. In
+Java (and consequently MVEL), both short-circuit and standard boolean operators
+are available.
+</blockquote>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>CRC as a hashing algorithm</strong>
+  <br/>
+  arara internally relies on a CRC32 implementation for file hashing. This
+particular choice, although not designed for hashing, offers an interesting
+trade-off between speed and quality. Besides, since it is not computationally
+expensive as strong algorithms such as MD5 and SHA1, CRC32 can be used for
+hashing typical TeX documents and plain text files with little to no
+collisions.
+</blockquote>
+</li>
+<li>
+<p><strong>[C|R]</strong> <code>changed(String extension): boolean</code> This method returns a boolean
+value according to whether the base name of the <code>❖ currentFile</code>
+reference (i.e, the name without the associated extension) as a string
+concatenated with the provided <code>String</code> extension has changed since last
+verification, based on a traditional cyclic redundancy check. The file
+reference, as well as the associated hash, is stored in a YAML database file
+named <code>arara.yaml</code> located in the same directory as the current file (the
+database name can be overridden in the configuration file, as discussed in
+<a href="https://islandoftex.gitlab.io/arara/manual/configuration/">Configuration</a>. The method semantics (including the
+return values) is presented as follows.</p>
+<table><thead><tr><th style="text-align: center">File exists?</th><th style="text-align: center">Entry exists?</th><th style="text-align: center">Has changed?</th><th style="text-align: center">DB action</th><th style="text-align: center">Result</th></tr></thead><tbody>
+<tr><td style="text-align: center">Yes</td><td style="text-align: center">Yes</td><td style="text-align: center">Yes</td><td style="text-align: center">Update</td><td style="text-align: center">Yes</td></tr>
+<tr><td style="text-align: center">Yes</td><td style="text-align: center">Yes</td><td style="text-align: center">No</td><td style="text-align: center">—</td><td style="text-align: center">No</td></tr>
+<tr><td style="text-align: center">Yes</td><td style="text-align: center">No</td><td style="text-align: center">—</td><td style="text-align: center">Insert</td><td style="text-align: center">Yes</td></tr>
+<tr><td style="text-align: center">No</td><td style="text-align: center">No</td><td style="text-align: center">—</td><td style="text-align: center">—</td><td style="text-align: center">No</td></tr>
+<tr><td style="text-align: center">No</td><td style="text-align: center">Yes</td><td style="text-align: center">—</td><td style="text-align: center">Remove</td><td style="text-align: center">Yes</td></tr>
+</tbody></table>
+<p>It is important to observe that this method <em>always</em> performs a database
+operation, either an insertion, removal or update on the corresponding
+entry. When using <code>❖ changed</code> within a logical expression, make
+sure the evaluation order is correct, specially regarding the use of
+short-circuiting operations. In some scenarios, order does matter.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex if changed(&#39;tex&#39;)
+</span></code></pre>
+</li>
+<li>
+<p><strong>[C|R]</strong> <code>unchanged(File file): boolean</code> This method returns a boolean value
+according to whether the provided <code>File</code> reference has not changed since
+last verification, based on a traditional cyclic redundancy check. The file
+reference, as well as the associated hash, is stored in a YAML database file
+named <code>arara.yaml</code> located in the same directory as the current file (the
+database name can be overridden in the configuration file, as discussed in
+<a href="https://islandoftex.gitlab.io/arara/manual/configuration/">Configuration</a>. The method semantics (including the
+return values) is presented as follows.</p>
+<table><thead><tr><th style="text-align: center">File exists?</th><th style="text-align: center">Entry exists?</th><th style="text-align: center">Has changed?</th><th style="text-align: center">DB action</th><th style="text-align: center">Result</th></tr></thead><tbody>
+<tr><td style="text-align: center">Yes</td><td style="text-align: center">Yes</td><td style="text-align: center">Yes</td><td style="text-align: center">Update</td><td style="text-align: center">No</td></tr>
+<tr><td style="text-align: center">Yes</td><td style="text-align: center">Yes</td><td style="text-align: center">No</td><td style="text-align: center">—</td><td style="text-align: center">Yes</td></tr>
+<tr><td style="text-align: center">Yes</td><td style="text-align: center">No</td><td style="text-align: center">—</td><td style="text-align: center">Insert</td><td style="text-align: center">No</td></tr>
+<tr><td style="text-align: center">No</td><td style="text-align: center">No</td><td style="text-align: center">—</td><td style="text-align: center">—</td><td style="text-align: center">Yes</td></tr>
+<tr><td style="text-align: center">No</td><td style="text-align: center">Yes</td><td style="text-align: center">—</td><td style="text-align: center">Remove</td><td style="text-align: center">No</td></tr>
+</tbody></table>
+<p>It is important to observe that this method <em>always</em> performs a database
+operation, either an insertion, removal or update on the corresponding
+entry. When using <code>❖ unchanged</code> within a logical expression, make
+sure the evaluation order is correct, specially regarding the use of
+short-circuiting operations. In some scenarios, order does matter.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex if !unchanged(toFile(&#39;thesis.tex&#39;))
+</span></code></pre>
+</li>
+<li>
+<p><strong>[C|R]</strong> <code>unchanged(String extension): boolean</code> This method returns a boolean
+value according to whether the base name of the <code>❖ currentFile</code>
+reference (i.e, the name without the associated extension) as a string
+concatenated with the provided <code>String</code> extension has not changed since last
+verification, based on a traditional cyclic redundancy check. The file
+reference, as well as the associated hash, is stored in a YAML database file
+named <code>arara.yaml</code> located in the same directory as the current file (the
+database name can be overridden in the configuration file, as discussed in
+<a href="https://islandoftex.gitlab.io/arara/manual/configuration/">Configuration</a>. The method semantics (including the
+return values) is presented as follows.</p>
+<table><thead><tr><th style="text-align: center">File exists?</th><th style="text-align: center">Entry exists?</th><th style="text-align: center">Has changed?</th><th style="text-align: center">DB action</th><th style="text-align: center">Result</th></tr></thead><tbody>
+<tr><td style="text-align: center">Yes</td><td style="text-align: center">Yes</td><td style="text-align: center">Yes</td><td style="text-align: center">Update</td><td style="text-align: center">No</td></tr>
+<tr><td style="text-align: center">Yes</td><td style="text-align: center">Yes</td><td style="text-align: center">No</td><td style="text-align: center">—</td><td style="text-align: center">Yes</td></tr>
+<tr><td style="text-align: center">Yes</td><td style="text-align: center">No</td><td style="text-align: center">—</td><td style="text-align: center">Insert</td><td style="text-align: center">No</td></tr>
+<tr><td style="text-align: center">No</td><td style="text-align: center">No</td><td style="text-align: center">—</td><td style="text-align: center">—</td><td style="text-align: center">Yes</td></tr>
+<tr><td style="text-align: center">No</td><td style="text-align: center">Yes</td><td style="text-align: center">—</td><td style="text-align: center">Remove</td><td style="text-align: center">No</td></tr>
+</tbody></table>
+<p>It is important to observe that this method <em>always</em> performs a database
+operation, either an insertion, removal or update on the corresponding
+entry. When using <code>❖ unchanged</code> within a logical expression, make
+sure the evaluation order is correct, specially regarding the use of
+short-circuiting operations. In some scenarios, order does matter.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex if !unchanged(&#39;tex&#39;)
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>writeToFile(File file, String text, boolean append): boolean</code> This
+method performs a write operation based on the provided parameters. In this
+case, the method writes the <code>String</code> text to the <code>File</code> reference and
+returns a boolean value according to whether the operation was
+successful. The third parameter holds a <code>boolean</code> value and acts as a switch
+indicating whether the text should be appended to the existing content of
+the provided file. Keep in mind that the existing content of a file is
+always overwritten if this switch is disabled. Also, note that the switch
+has no effect if the file is being created at that moment. It is important
+to observe that this method does not raise any exception.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">writeToFile</span><span>(</span><span style="color:#696989;">toFile</span><span>(</span><span style="color:#009f78;">&#39;foo.txt&#39;</span><span>), </span><span style="color:#009f78;">&#39;hello world&#39;</span><span>, </span><span style="color:#333366;">false</span><span>);
+</span></code></pre>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Read and write operations in Unicode</strong>
+  <br/>
+  arara <em>always</em> uses Unicode as the encoding format for read and write
+operations. This decision is deliberate as a means to offer a consistent
+representation and handling of text. Unicode can be implemented by different
+character encodings. In our case, the tool relies on UTF-8, which uses one
+byte for the first 128 code points, and up to 4 bytes for other
+characters. The first 128 Unicode code points are the ASCII characters, which
+means that any ASCII text is also UTF-8 text.
+</blockquote>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>File system permissions</strong>
+  <br/>
+  Most file systems have methods to assign permissions or access rights to
+specific users and groups of users. These permissions control the ability of
+the users to view, change, navigate, and execute the contents of the file
+system. Keep in mind that read and write operations depend on such
+permissions.
+</blockquote>
+</li>
+<li>
+<p><strong>[R]</strong> <code>writeToFile(String reference, String text, boolean append): boolean</code>
+This method performs a write operation based on the provided parameters. In
+this case, the method writes the <code>String</code> text to the <code>String</code> reference and
+returns a boolean value according to whether the operation was
+successful. The third parameter holds a <code>boolean</code> value and acts as a switch
+indicating whether the text should be appended to the existing content of
+the provided file. Keep in mind that the existing content of a file is
+always overwritten if this switch is disabled. Also, note that the switch
+has no effect if the file is being created at that moment. It is important
+to observe that this method does not raise any exception.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">writeToFile</span><span>(</span><span style="color:#009f78;">&#39;foo.txt&#39;</span><span>, </span><span style="color:#009f78;">&#39;hello world&#39;</span><span>, </span><span style="color:#333366;">false</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>writeToFile(File file, List&lt;String&gt; lines, boolean append): boolean</code>
+This method performs a write operation based on the provided parameters. In
+this case, the method writes the <code>List&lt;String&gt;</code> lines to the <code>File</code>
+reference and returns a boolean value according to whether the operation was
+successful. The third parameter holds a <code>boolean</code> value and acts as a switch
+indicating whether the text should be appended to the existing content of
+the provided file. Keep in mind that the existing content of a file is
+always overwritten if this switch is disabled. Also, note that the switch
+has no effect if the file is being created at that moment. It is important
+to observe that this method does not raise any exception.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">writeToFile</span><span>(</span><span style="color:#696989;">toFile</span><span>(</span><span style="color:#009f78;">&#39;foo.txt&#39;</span><span>),
+</span><span>         [ </span><span style="color:#009f78;">&#39;hello world&#39;</span><span>, </span><span style="color:#009f78;">&#39;how are you?&#39;</span><span> ], </span><span style="color:#333366;">false</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>writeToFile(String reference, List&lt;String&gt; lines, boolean append):   boolean</code> This method performs a write operation based on the provided
+parameters. In this case, the method writes the <code>List&lt;String&gt;</code> lines to the
+<code>String</code> reference and returns a boolean value according to whether the
+operation was successful. The third parameter holds a <code>boolean</code> value and
+acts as a switch indicating whether the text should be appended to the
+existing content of the provided file. Keep in mind that the existing
+content of a file is always overwritten if this switch is disabled. Also,
+note that the switch has no effect if the file is being created at that
+moment. It is important to observe that this method does not raise any
+exception.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">writeToFile</span><span>(</span><span style="color:#009f78;">&#39;foo.txt&#39;</span><span>, [ </span><span style="color:#009f78;">&#39;hello world&#39;</span><span>,
+</span><span>         </span><span style="color:#009f78;">&#39;how are you?&#39;</span><span> ], </span><span style="color:#333366;">false</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>readFromFile(File file): List&lt;String&gt;</code> This method performs a read
+operation based on the provided parameter. In this case, the method reads
+the content from the <code>File</code> reference and returns a <code>List&lt;String&gt;</code> object
+representing the lines as a list of strings. If the reference does not exist
+or an exception is raised due to access permission constraints, the
+<code>❖ readFromFile</code> method returns an empty list. Keep in mind that,
+as a design decision, UTF-8 is <em>always</em> used as character encoding for read
+operations.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>lines </span><span style="color:#016692;">= </span><span style="color:#696989;">readFromFile</span><span>(</span><span style="color:#696989;">toFile</span><span>(</span><span style="color:#009f78;">&#39;foo.txt&#39;</span><span>));
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>readFromFile(String reference): List&lt;String&gt;</code> This method performs a
+read operation based on the provided parameter. In this case, the method
+reads the content from the <code>String</code> reference and returns a <code>List&lt;String&gt;</code>
+object representing the lines as a list of strings. If the reference does
+not exist or an exception is raised due to access permission constraints,
+the <code>❖ readFromFile</code> method returns an empty list. Keep in mind
+that, as a design decision, UTF-8 is <em>always</em> used as character encoding for
+read operations.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>lines </span><span style="color:#016692;">= </span><span style="color:#696989;">readFromFile</span><span>(</span><span style="color:#009f78;">&#39;foo.txt&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>listFilesByExtensions(File file, List&lt;String&gt; extensions, boolean   recursive): List&lt;File&gt;</code> This method performs a file search operation based
+on the provided parameters. In this case, the method list all files from the
+provided <code>File</code> reference according to the <code>List&lt;String&gt;</code> extensions as a
+list of strings, and returns a <code>List&lt;File&gt;</code> object representing all matching
+files. The leading full stop in each extension must be omitted, unless it is
+part of the search pattern. The third parameter holds a <code>boolean</code> value and
+acts as a switch indicating whether the search must be recursive, i.e,
+whether all subdirectories must be searched as well. If the reference is not
+a proper directory or an exception is raised due to access permission
+constraints, the <code>❖ listFilesByExtensions</code> method returns an
+empty list.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>files </span><span style="color:#016692;">= </span><span style="color:#696989;">listFilesByExtensions</span><span>(</span><span style="color:#696989;">toFile</span><span>(</span><span style="color:#009f78;">&#39;/home/islandoftex/Documents&#39;</span><span>),
+</span><span>        [ </span><span style="color:#009f78;">&#39;aux&#39;</span><span>, </span><span style="color:#009f78;">&#39;log&#39;</span><span> ], </span><span style="color:#333366;">false</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>listFilesByExtensions(String reference, List&lt;String&gt; extensions,   boolean recursive): List&lt;File&gt;</code> This method performs a file search operation
+based on the provided parameters. In this case, the method list all files
+from the provided <code>String</code> reference according to the <code>List&lt;String&gt;</code>
+extensions as a list of strings, and returns a <code>List&lt;File&gt;</code> object
+representing all matching files. The leading full stop in each extension
+must be omitted, unless it is part of the search pattern. The third
+parameter holds a <code>boolean</code> value and acts as a switch indicating whether
+the search must be recursive, i.e, whether all subdirectories must be
+searched as well. If the reference is not a proper directory or an exception
+is raised due to access permission constraints, the <code>❖   listFilesByExtensions</code> method returns an empty list.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>files </span><span style="color:#016692;">= </span><span style="color:#696989;">listFilesByExtensions</span><span>(</span><span style="color:#009f78;">&#39;/home/islandoftex/Documents&#39;</span><span>,
+</span><span>        [ </span><span style="color:#009f78;">&#39;aux&#39;</span><span>, </span><span style="color:#009f78;">&#39;log&#39;</span><span> ], </span><span style="color:#333366;">false</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>listFilesByPatterns(File file, List&lt;String&gt; patterns, boolean   recursive): List&lt;File&gt;</code> This method performs a file search operation based
+on the provided parameters. In this case, the method lists all files from
+the provided <code>File</code> reference according to the <code>List&lt;String&gt;</code> patterns as a
+list of strings, and returns a <code>List&lt;File&gt;</code> object representing all matching
+files. The pattern specification is described below. The third parameter
+holds a <code>boolean</code> value and acts as a switch indicating whether the search
+must be recursive, i.e, whether all subdirectories must be searched as
+well. If the reference is not a proper directory or an exception is raised
+due to access permission constraints, the <code>❖ listFilesByPatterns</code>
+method returns an empty list. It is very important to observe that this file
+search operation might be slow depending on the provided directory. It is
+highly advisable to not rely on recursive searches whenever possible.</p>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Patterns for file search operations</strong>
+  <br/>
+  arara employs wildcard filters as patterns for file search operations. Testing
+is case sensitive by default. The wildcard matcher uses the characters <code>?</code> and
+<code>*</code> to represent a single or multiple wildcard characters. This is the same as
+often found on typical terminals.
+</blockquote>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>files </span><span style="color:#016692;">= </span><span style="color:#696989;">listFilesByPatterns</span><span>(</span><span style="color:#696989;">toFile</span><span>(</span><span style="color:#009f78;">&#39;/home/islandoftex/Documents&#39;</span><span>),
+</span><span>        [ </span><span style="color:#009f78;">&#39;*.tex&#39;</span><span>, </span><span style="color:#009f78;">&#39;foo?.txt&#39;</span><span> ], </span><span style="color:#333366;">false</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>listFilesByPatterns(String reference, List&lt;String&gt; patterns, boolean   recursive): List&lt;File&gt;</code> This method performs a file search operation based
+on the provided parameters. In this case, the method lists all files from
+the provided <code>String</code> reference according to the <code>List&lt;String&gt;</code> patterns as
+a list of strings, and returns a <code>List&lt;File&gt;</code> object representing all
+matching files. The pattern specification follows a wildcard filter. The
+third parameter holds a <code>boolean</code> value and acts as a switch indicating
+whether the search must be recursive, i.e, whether all subdirectories must
+be searched as well. If the reference is not a proper directory or an
+exception is raised due to access permission constraints, the <code>❖   listFilesByPatterns</code> method returns an empty list. It is very important to
+observe that this file search operation might be slow depending on the
+provided directory. It is highly advisable to not rely on recursive searches
+whenever possible.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>files </span><span style="color:#016692;">= </span><span style="color:#696989;">listFilesByPatterns</span><span>(</span><span style="color:#009f78;">&#39;/home/islandoftex/Documents&#39;</span><span>,
+</span><span>        [ </span><span style="color:#009f78;">&#39;*.tex&#39;</span><span>, </span><span style="color:#009f78;">&#39;foo?.txt&#39;</span><span> ], </span><span style="color:#333366;">false</span><span>);
+</span></code></pre>
+</li>
+</ul>
+<p>As the methods presented in this section have transparent error handling, the
+writing of rules and conditionals becomes more fluent and not too complex for
+the typical user.</p>
+<h1 id="conditional-flow">Conditional flow</h1>
+<p>This section introduces methods related to conditional flow based on <em>natural
+boolean values</em>, i.e, words that semantically represent truth and falsehood
+signs. Such concept provides a friendly representation of boolean values and
+eases the use of switches in directive parameters. The tool relies on the
+following set of natural boolean values:</p>
+<ul>
+<li>
+<p><strong>True:</strong> <code>yes</code>, <code>true</code>, <code>1</code>, <code>on</code></p>
+</li>
+<li>
+<p><strong>False:</strong> <code>no</code>, <code>false</code>, <code>0</code>, <code>off</code></p>
+</li>
+</ul>
+<p>All elements from the provided set of natural boolean values can be used
+interchangeably in directive parameters. It is important to observe that arara
+throws an exception if a value absent from the set is provided to the methods
+described in this section.</p>
+<ul>
+<li>
+<p><strong>[R]</strong> <code>isTrue(String string): boolean</code> This method returns a boolean value
+according to whether the provided <code>String</code> value is contained in the sub-set
+of natural true boolean values. It is worth mentioning that the verification
+is case insensitive, i.e, upper case and lower case symbols are treated as
+equivalent. If the provided value is an empty string, the method returns
+false.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">isTrue</span><span>(</span><span style="color:#009f78;">&#39;yes&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isFalse(String string): boolean</code> This method returns a boolean value
+according to whether the provided <code>String</code> value is contained in the sub-set
+of natural false boolean values. It is worth mentioning that the
+verification is case insensitive, i.e, upper case and lower case symbols are
+treated as equivalent. If the provided value is an empty string, the method
+returns false.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">isFalse</span><span>(</span><span style="color:#009f78;">&#39;off&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isTrue(String string, Object yes): Object</code> This method checks if the
+first parameter is contained in the sub-set of natural true boolean
+values. If the result holds true, the second parameter is
+returned. Otherwise, an empty string is returned. It is worth mentioning
+that the verification is case insensitive, i.e, upper case and lower case
+symbols are treated as equivalent. If the first parameter is an empty
+string, the method returns an empty string.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">isTrue</span><span>(</span><span style="color:#009f78;">&#39;on&#39;</span><span>, [ </span><span style="color:#009f78;">&#39;ls&#39;</span><span>, </span><span style="color:#009f78;">&#39;-la&#39;</span><span> ]);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isFalse(String string, Object yes): Object</code> This method checks if the
+first parameter is contained in the sub-set of natural false boolean
+values. If the result holds true, the second parameter is
+returned. Otherwise, an empty string is returned. It is worth mentioning
+that the verification is case insensitive, i.e, upper case and lower case
+symbols are treated as equivalent. If the first parameter is an empty
+string, the method returns an empty string.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">isFalse</span><span>(</span><span style="color:#009f78;">&#39;0&#39;</span><span>, </span><span style="color:#009f78;">&#39;pwd&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isTrue(String string, Object yes, Object no): Object</code> This method
+checks if the first parameter is contained in the sub-set of natural true
+boolean values. If the result holds true, the second parameter is
+returned. Otherwise, the third parameter is returned. It is worth mentioning
+that the verification is case insensitive, i.e, upper case and lower case
+symbols are treated as equivalent. If the first parameter is an empty
+string, the method returns the third parameter.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">isTrue</span><span>(</span><span style="color:#009f78;">&#39;on&#39;</span><span>, [ </span><span style="color:#009f78;">&#39;ls&#39;</span><span>, </span><span style="color:#009f78;">&#39;-la&#39;</span><span> ], </span><span style="color:#009f78;">&#39;pwd&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isFalse(String string, Object yes, Object no): Object</code> This method
+checks if the first parameter is contained in the sub-set of natural false
+boolean values. If the result holds true, the second parameter is
+returned. Otherwise, the third parameter is returned. It is worth mentioning
+that the verification is case insensitive, i.e, upper case and lower case
+symbols are treated as equivalent. If the first parameter is an empty
+string, the method returns the third parameter.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">isFalse</span><span>(</span><span style="color:#009f78;">&#39;0&#39;</span><span>, </span><span style="color:#009f78;">&#39;pwd&#39;</span><span>, </span><span style="color:#009f78;">&#39;ps&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isTrue(String string, Object yes, Object no, Object fallback):   Object</code> This method checks if the first parameter is contained in the
+sub-set of natural true boolean values. If the result holds true, the second
+parameter is returned. Otherwise, the third parameter is returned. It is
+worth mentioning that the verification is case insensitive, i.e, upper case
+and lower case symbols are treated as equivalent. If the first parameter is
+an empty string, the method returns the fourth parameter as default value.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">isTrue</span><span>(</span><span style="color:#009f78;">&#39;on&#39;</span><span>, </span><span style="color:#009f78;">&#39;ls&#39;</span><span>, </span><span style="color:#009f78;">&#39;pwd&#39;</span><span>, </span><span style="color:#009f78;">&#39;who&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isFalse(String string, Object yes, Object no, Object fallback):   Object</code> This method checks if the first parameter is contained in the
+sub-set of natural false boolean values. If the result holds true, the
+second parameter is returned. Otherwise, the third parameter is returned. It
+is worth mentioning that the verification is case insensitive, i.e, upper
+case and lower case symbols are treated as equivalent. If the first
+parameter is an empty string, the method returns the fourth parameter as
+default value.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">isFalse</span><span>(</span><span style="color:#009f78;">&#39;0&#39;</span><span>, </span><span style="color:#009f78;">&#39;pwd&#39;</span><span>, </span><span style="color:#009f78;">&#39;ps&#39;</span><span>, </span><span style="color:#009f78;">&#39;ls&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isTrue(boolean value, Object yes): Object</code> This method evaluates the
+first parameter as a boolean expression. If the result holds true, the
+second parameter is returned. Otherwise, an empty string is returned.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">isTrue</span><span>(</span><span style="color:#8c008a;">1 </span><span style="color:#016692;">== </span><span style="color:#8c008a;">1</span><span>, </span><span style="color:#009f78;">&#39;yes&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isFalse(boolean value, Object yes): Object</code> This method evaluates the
+first parameter as a boolean expression. If the result holds false, the
+second parameter is returned. Otherwise, an empty string is returned.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">isFalse</span><span>(</span><span style="color:#8c008a;">1 </span><span style="color:#016692;">!= </span><span style="color:#8c008a;">1</span><span>, </span><span style="color:#009f78;">&#39;yes&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isTrue(boolean value, Object yes, Object no): Object</code> This method
+evaluates the first parameter as a boolean expression. If the result holds
+true, the second parameter is returned. Otherwise, the third parameter is
+returned.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">isTrue</span><span>(</span><span style="color:#8c008a;">1 </span><span style="color:#016692;">== </span><span style="color:#8c008a;">1</span><span>, </span><span style="color:#009f78;">&#39;yes&#39;</span><span>, </span><span style="color:#009f78;">&#39;no&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isFalse(boolean value, Object yes, Object no): Object</code> This method
+evaluates the first parameter as a boolean expression. If the result holds
+false, the second parameter is returned. Otherwise, the third parameter is
+returned.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">isFalse</span><span>(</span><span style="color:#8c008a;">1 </span><span style="color:#016692;">!= </span><span style="color:#8c008a;">1</span><span>, </span><span style="color:#009f78;">&#39;yes&#39;</span><span>, </span><span style="color:#009f78;">&#39;no&#39;</span><span>);
+</span></code></pre>
+</li>
+</ul>
+<p>Supported by the concept of natural boolean values, the methods presented in
+this section ease the use of switches in directive parameters and can be adopted
+as valid alternatives for traditional conditional flows, when applied.</p>
+<h1 id="strings">Strings</h1>
+<p>String manipulation constitutes one of the foundations of rule interpretation in
+our tool. This section introduces methods for handling such types, as a means to
+offer high level constructs for users.</p>
+<ul>
+<li>
+<p><strong>[R]</strong> <code>isEmpty(String string): boolean</code> This method returns a boolean value
+according to whether the provided <code>String</code> value is empty, i.e, the string
+length is equal to zero.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">isEmpty</span><span>(</span><span style="color:#009f78;">&#39;not empty&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isNotEmpty(String string): boolean</code> This method returns a boolean
+value according to whether the provided <code>String</code> value is not empty, i.e,
+the string length is greater than zero.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">isNotEmpty</span><span>(</span><span style="color:#009f78;">&#39;not empty&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isEmpty(String string, Object yes): boolean</code> This method checks if
+the first parameter is empty, i.e, if the string length is equal to zero. If
+the result holds true, the second parameter is returned. Otherwise, an empty
+string is returned.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">isEmpty</span><span>(</span><span style="color:#009f78;">&#39;not empty&#39;</span><span>, </span><span style="color:#009f78;">&#39;ps&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isNotEmpty(String string, Object yes): boolean</code> This method checks if
+the first parameter is not empty, i.e, if the string length is greater than
+zero. If the result holds true, the second parameter is returned. Otherwise,
+an empty string is returned.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">isNotEmpty</span><span>(</span><span style="color:#009f78;">&#39;not empty&#39;</span><span>, </span><span style="color:#009f78;">&#39;ls&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isEmpty(String string, Object yes, Object no): boolean</code> This method
+checks if the first parameter is empty, i.e, if the string length is equal
+to zero. If the result holds true, the second parameter is
+returned. Otherwise, the third parameter is returned.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">isEmpty</span><span>(</span><span style="color:#009f78;">&#39;not empty&#39;</span><span>, </span><span style="color:#009f78;">&#39;ps&#39;</span><span>, </span><span style="color:#009f78;">&#39;ls&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isNotEmpty(String string, Object yes, Object no): boolean</code> This
+method checks if the first parameter is not empty, i.e, if the string length
+is greater than zero. If the result holds true, the second parameter is
+returned. Otherwise, the third parameter is returned.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">isNotEmpty</span><span>(</span><span style="color:#009f78;">&#39;not empty&#39;</span><span>, </span><span style="color:#009f78;">&#39;ls&#39;</span><span>, </span><span style="color:#009f78;">&#39;ps&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>buildString(Object... objects): String</code> This method returns a string
+based on the provided array of objects, separating each element by one blank
+space. It is important to observe that empty values are not
+considered. Also, note that the object array is denoted by a
+comma-separated sequence of elements in the actual method call, resulting in
+a variable number of parameters.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">buildString</span><span>(</span><span style="color:#009f78;">&#39;a&#39;</span><span>, </span><span style="color:#009f78;">&#39;b&#39;</span><span>, </span><span style="color:#009f78;">&#39;c&#39;</span><span>, </span><span style="color:#009f78;">&#39;d&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>trimSpaces(String string): String</code> This method trims spaces from the
+provided parameter, i.e, leading and trailing spaces in the <code>String</code>
+reference are removed, and returns the resulting string. It is important to
+observe that non-boundary spaces inside the string are not removed at all.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">trimSpaces</span><span>(</span><span style="color:#009f78;">&#39;   hello world   &#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>replicatePattern(String pattern, List&lt;Object&gt; values): List&lt;Object&gt;</code>
+This method replicates the provided pattern to each element of the second
+parameter and returns the resulting list. The pattern must contain exactly
+one placeholder. For instance, <code>\%s</code> denotes a string representation of the
+provided argument. Please refer to the <code>Formatter</code> class reference in the
+<a rel="noopener noreferrer" target="_blank" href="https://docs.oracle.com/javase/7/docs/api/java/util/Formatter.html">Java
+documentation</a>
+for more information on placeholders. This method raises an exception if an
+invalid pattern is applied.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>names </span><span style="color:#016692;">= </span><span style="color:#696989;">replicatePattern</span><span>(</span><span style="color:#009f78;">&#39;My name is %s&#39;</span><span>, [ </span><span style="color:#009f78;">&#39;Brent&#39;</span><span>, </span><span style="color:#009f78;">&#39;Nicola&#39;</span><span> ]);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[C|R]</strong> <code>found(File file, String regex): boolean</code> This method returns a
+boolean value according to whether the content of the provided <code>File</code>
+reference contains at least one match of the provided <code>String</code> regular
+expression. It is important to observe that this method raises an exception
+if an invalid regular expression is provided as the parameter or if the
+provided file reference does not exist.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex while found(toFile(&#39;article.log&#39;),
+</span><span style="color:#898989;">% arara: --&gt; &#39;undefined references&#39;)
+</span></code></pre>
+</li>
+<li>
+<p><strong>[C|R]</strong> <code>found(String extension, String regex): boolean</code> This method returns
+a boolean value according to whether the content of the base name of the
+<code>❖ currentFile</code> reference (i.e, the name without the associated
+extension) as a string concatenated with the provided <code>String</code> extension
+contains at least one match of the provided <code>String</code> regular expression. It
+is important to observe that this method raises an exception if an invalid
+regular expression is provided as the parameter or if the provided file
+reference does not exist.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex while found(&#39;log&#39;, &#39;undefined references&#39;)
+</span></code></pre>
+</li>
+</ul>
+<p>The string manipulation methods presented in this section constitute an
+interesting and straightforward approach to handling directive parameters
+without the usual verbosity in writing typical Java constructs.</p>
+<h1 id="operating-systems">Operating systems</h1>
+<p>This section introduces methods related to the underlying operating system
+detection, as a means of providing a straightforward approach to writing
+cross-platform rules.</p>
+<ul>
+<li>
+<p><strong>[R]</strong> <code>isWindows(): boolean</code> This method returns a boolean value according
+to whether the underlying operating system vendor is Microsoft Windows.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#016692;">if </span><span>(</span><span style="color:#696989;">isWindows</span><span>()) { </span><span style="color:#646409;">System</span><span>.out.</span><span style="color:#696989;">println</span><span>(</span><span style="color:#009f78;">&#39;Running Windows.&#39;</span><span>); }
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isLinux(): boolean</code> This method returns a boolean value according to
+whether the underlying operating system vendor is a Linux instance.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#016692;">if </span><span>(</span><span style="color:#696989;">isLinux</span><span>()) { </span><span style="color:#646409;">System</span><span>.out.</span><span style="color:#696989;">println</span><span>(</span><span style="color:#009f78;">&#39;Running Linux.&#39;</span><span>); }
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isMac(): boolean</code> This method returns a boolean value according to
+whether the underlying operating system vendor is Apple Mac OS.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#016692;">if </span><span>(</span><span style="color:#696989;">isMac</span><span>()) { </span><span style="color:#646409;">System</span><span>.out.</span><span style="color:#696989;">println</span><span>(</span><span style="color:#009f78;">&#39;Running Mac OS.&#39;</span><span>); }
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isUnix(): boolean</code> This method returns a boolean value according to
+whether the underlying operating system vendor is any Unix variation.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#016692;">if </span><span>(</span><span style="color:#696989;">isUnix</span><span>()) { </span><span style="color:#646409;">System</span><span>.out.</span><span style="color:#696989;">println</span><span>(</span><span style="color:#009f78;">&#39;Running Unix.&#39;</span><span>); }
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isCygwin(): boolean</code> This method returns a boolean value according to
+whether the underlying operating system vendor is Microsoft Windows and
+arara is being executed inside a Cygwin environment.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#016692;">if </span><span>(</span><span style="color:#696989;">isCygwin</span><span>()) { </span><span style="color:#646409;">System</span><span>.out.</span><span style="color:#696989;">println</span><span>(</span><span style="color:#009f78;">&#39;Running Cygwin.&#39;</span><span>); }
+</span></code></pre>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Cygwin paths</strong>
+  <br/>
+  It is worth mentioning that Cygwin has its own path handling which is not
+reliable when (JVM) applications need to invoke system commands. For instance,
+the following invocation does not work:</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex
+</span></code></pre>
+<p>Since <code>pdflatex</code> is a symbolic link to <code>pdftex</code> with the proper format, we
+encourage Cygwin users to rely on the following trick:</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdftex: { options: [ &#39;--fmt=pdflatex&#39; ] }
+</span></code></pre>
+<p>The same trick can be employed by other TeX engines with appropriate <code>--fmt</code>
+flags as well. We are still investigating this issue and looking for potential
+alternatives.
+</blockquote>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isWindows(Object yes, Object no): Object</code> This method checks if the
+underlying operating system vendor is Microsoft Windows. If the result holds
+true, the first parameter is returned. Otherwise, the second parameter is
+returned.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>command </span><span style="color:#016692;">= </span><span style="color:#696989;">isWindows</span><span>(</span><span style="color:#009f78;">&#39;del&#39;</span><span>, </span><span style="color:#009f78;">&#39;rm&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isLinux(Object yes, Object no): Object</code> This method checks if the
+underlying operating system vendor is a Linux instance. If the result holds
+true, the first parameter is returned. Otherwise, the second parameter is
+returned.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>command </span><span style="color:#016692;">= </span><span style="color:#696989;">isLinux</span><span>(</span><span style="color:#009f78;">&#39;rm&#39;</span><span>, </span><span style="color:#009f78;">&#39;del&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isMac(Object yes, Object no): Object</code> This method checks if the
+underlying operating system vendor is Apple Mac OS. If the result holds
+true, the first parameter is returned. Otherwise, the second parameter is
+returned.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>command </span><span style="color:#016692;">= </span><span style="color:#696989;">isMac</span><span>(</span><span style="color:#009f78;">&#39;ls&#39;</span><span>, </span><span style="color:#009f78;">&#39;dir&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isUnix(Object yes, Object no): Object</code> This method checks if the
+underlying operating system vendor is any Unix variation. If the result
+holds true, the first parameter is returned. Otherwise, the second parameter
+is returned.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>command </span><span style="color:#016692;">= </span><span style="color:#696989;">isUnix</span><span>(</span><span style="color:#009f78;">&#39;tree&#39;</span><span>, </span><span style="color:#009f78;">&#39;dir&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isCygwin(Object yes, Object no): Object</code> This method checks if the
+underlying operating system vendor is Microsoft Windows and if arara is
+being executed inside a Cygwin environment. If the result holds true, the
+first parameter is returned. Otherwise, the second parameter is returned.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>command </span><span style="color:#016692;">= </span><span style="color:#696989;">isCygwin</span><span>(</span><span style="color:#009f78;">&#39;ls&#39;</span><span>, </span><span style="color:#009f78;">&#39;dir&#39;</span><span>);
+</span></code></pre>
+</li>
+</ul>
+<p>The methods presented in the section provide useful information to help users
+write cross-platform rules and thus enhance the automation experience based on
+specific features of the underlying operating system.</p>
+<h1 id="type-checking">Type checking</h1>
+<p>In certain scenarios, a plain string representation of directive parameters
+might be inadequate or insufficient given the rule requirements. To this end,
+this section introduces methods related to type checking as a means to provide
+support and verification for common data types.</p>
+<ul>
+<li>
+<p><strong>[R]</strong> <code>isString(Object object): boolean</code> This method returns a boolean value
+according to whether the provided <code>Object</code> object is a string or any
+extended type.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">isString</span><span>(</span><span style="color:#009f78;">&#39;foo&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isList(Object object): boolean</code> This method returns a boolean value
+according to whether the provided <code>Object</code> object is a list or any extended
+type.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">isList</span><span>([ </span><span style="color:#8c008a;">1</span><span>, </span><span style="color:#8c008a;">2</span><span>, </span><span style="color:#8c008a;">3</span><span> ]);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isMap(Object object): boolean</code> This method returns a boolean value
+according to whether the provided <code>Object</code> object is a map or any extended
+type.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">isMap</span><span>([ </span><span style="color:#009f78;">&#39;Paulo&#39; </span><span style="color:#016692;">: </span><span style="color:#009f78;">&#39;Palmeiras&#39;</span><span>, </span><span style="color:#009f78;">&#39;Carla&#39; </span><span style="color:#016692;">: </span><span style="color:#009f78;">&#39;Inter&#39;</span><span> ]);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isBoolean(Object object): boolean</code> This method returns a boolean
+value according to whether the provided <code>Object</code> object is a boolean or any
+extended type.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">isBoolean</span><span>(</span><span style="color:#333366;">false</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>checkClass(Class clazz, Object object): boolean</code> This method returns
+a boolean value according to whether the provided <code>Object</code> object is an
+instance or a subtype of the provided <code>Class</code> class. It is interesting to
+note that all methods presented in this section internally rely on
+<code>❖ checkClass</code> for type checking.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">checkClass</span><span>(</span><span style="color:#646409;">List</span><span>.</span><span style="color:#696989;">class</span><span>, [ </span><span style="color:#009f78;">&#39;a&#39;</span><span>, </span><span style="color:#009f78;">&#39;b&#39;</span><span> ]);
+</span></code></pre>
+</li>
+</ul>
+<p>The methods presented in this section cover the most common types used in
+directive parameters and should suffice for expressing the rule requirements. If
+a general approach is needed, please refer to the <code>❖ checkClass</code>
+method for checking virtually any type available in the Java environment.</p>
+<h1 id="classes-and-objects">Classes and objects</h1>
+<p>arara can be extended at runtime with code from JVM languages, such as Groovy,
+Scala, Clojure and Kotlin. The tool can load classes from <code>class</code> and <code>jar</code>
+files and even instantiate them. This section introduces methods related to
+class loading and object instantiation.</p>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Ordered pairs</strong>
+  <br/>
+  According to the <a rel="noopener noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Ordered_pair">Wikipedia entry</a>,
+in mathematics, an <em>ordered pair</em> <em>(a, b)</em> is a pair of objects. The order in
+which the objects appear in the pair is significant: the ordered pair <em>(a, b)</em>
+is different from the ordered pair <em>(b, a)</em> unless <em>a = b</em>. In the ordered pair
+<em>(a, b)</em>, the object <em>a</em> is called the <em>first</em> entry, and the object <em>b</em> the
+<em>second</em> entry of the pair. arara relies on this concept with the helper
+<code>Pair&lt;A, B&gt;</code> class, in which <code>A</code> and <code>B</code> denote the component classes, i.e, the
+types associated to the pair elements. In order to access the pair entries, the
+class provides two property accessors:</p>
+<ul>
+<li>
+<p><code>❖ first: A</code>: This property accessor, as the name implies, returns
+the first entry of the ordered pair, as an <code>A</code> object.</p>
+</li>
+<li>
+<p><code>❖ second: B</code>: This property accessor, as the name implies, returns
+the second entry of the ordered pair, as a <code>B</code> object.</p>
+</li>
+</ul>
+<p>Keep in mind that the entries in the <code>Pair</code> class, once defined, cannot be
+modified to other values. The initial values are set during instantiation and,
+therefore, only entry getters are available to the user during the object life
+cycle.
+</blockquote>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Status for class loading and instantiation</strong>
+  <br/>
+  The class loading and instantiation methods provided by arara typically return a
+pair composed of an integer value and a class or object reference. This integer
+value acts as a status of the underlying operation itself and might indicate
+potential issues. The possible values are:</p>
+<ul>
+<li><code>0</code>: Successful execution</li>
+<li><code>1</code>: File does not exist</li>
+<li><code>2</code>: File URL is incorrect</li>
+<li><code>3</code>: Class was not found</li>
+<li><code>4</code>: Access policy violation</li>
+<li><code>5</code>: Instantiation exception</li>
+</ul>
+<p>Please make sure to <em>always</em> check the returned integer status when using class
+loading and instantiation methods in directive and rule contexts. This feature
+is quite powerful yet tricky and subtle!
+</blockquote>
+<ul>
+<li>
+<p><strong>[C|R]</strong> <code>loadClass(File file, String name):   Pair&lt;ClassLoading.ClassLoadingStatus, Object&gt;</code> This method loads a class
+based on the canonical name from the provided <code>File</code> reference and returns
+an ordered pair containing the status and the class reference itself. The
+file must contain the Java bytecode, either directly accessible from a
+<code>class</code> file or packaged inside a <code>jar</code> file. If an exception is raised,
+this method returns the <code>Object</code> class reference as second entry of the
+pair.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">loadClass</span><span>(</span><span style="color:#696989;">toFile</span><span>(</span><span style="color:#009f78;">&#39;mymath.jar&#39;</span><span>),
+</span><span>         </span><span style="color:#009f78;">&#39;com.github.cereda.mymath.Arithmetic&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[C|R]</strong> <code>loadClass(String ref,String name):   Pair&lt;ClassLoading.ClassLoadingStatus, Object&gt;</code> This method loads a class
+based on the canonical name from the provided <code>String</code> reference and returns
+an ordered pair containing the status and the class reference itself. The
+file must contain the Java bytecode, either directly accessible from a
+<code>class</code> file or packaged inside a <code>jar</code> file.  If an exception is raised,
+this method returns the <code>Object</code> class reference as second entry of the
+pair.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">loadClass</span><span>(</span><span style="color:#009f78;">&#39;mymath.jar&#39;</span><span>,
+</span><span>         </span><span style="color:#009f78;">&#39;com.github.cereda.mymath.Arithmetic&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[C|R]</strong> <code>loadObject(File file,String name):   Pair&lt;ClassLoading.ClassLoadingStatus, Object&gt;</code> This method loads a class
+based on the canonical name from the provided <code>File</code> reference and returns
+an ordered pair containing the status and a proper corresponding object
+instantiation. The file must contain the Java bytecode, either directly
+accessible from a <code>class</code> file or packaged inside a <code>jar</code> file. If an
+exception is raised, this method returns an <code>Object</code> object as second entry
+of the pair.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">loadObject</span><span>(</span><span style="color:#696989;">toFile</span><span>(</span><span style="color:#009f78;">&#39;mymath.jar&#39;</span><span>),
+</span><span>         </span><span style="color:#009f78;">&#39;com.github.cereda.mymath.Trigonometric&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[C|R]</strong> <code>loadObject(String ref, String name):   Pair&lt;ClassLoading.ClassLoadingStatus, Object&gt;</code> This method loads a class
+based on the canonical name from the provided <code>String</code> reference and returns
+an ordered pair containing the status and a proper corresponding object
+instantiation. The file must contain the Java bytecode, either directly
+accessible from a <code>class</code> file or packaged inside a <code>jar</code> file. If an
+exception is raised, this method returns an <code>Object</code> object as second entry
+of the pair.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">loadObject</span><span>(</span><span style="color:#009f78;">&#39;mymath.jar&#39;</span><span>,
+</span><span>         </span><span style="color:#009f78;">&#39;com.github.cereda.mymath.Trigonometric&#39;</span><span>);
+</span></code></pre>
+</li>
+</ul>
+<p>This section presented class loading and instantiation methods which may
+significantly enhance the expressiveness of rules and directives. However, make
+sure to use such feature with great care and attention.</p>
+<h1 id="dialog-boxes">Dialog boxes</h1>
+<p>A <em>dialog box</em> is a graphical control element, typically a small window, that
+communicates information to the user and prompts them for a response. This
+section introduces UI methods related to such interactions.</p>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>UI elements</strong>
+  <br/>
+  The graphical elements are provided by the Swing toolkit from the Java runtime
+environment. Note that the default look and feel class reference can be modified
+through a key in the configuration file, as seen in
+<a href="https://islandoftex.gitlab.io/arara/manual/configuration/">Configuration</a>. It is important to observe that the
+methods presented in this section require a graphical interface. If arara is
+being executed in a headless environment (i.e, an environment with no graphical
+display available), an exception will be thrown when trying to use such UI
+methods in either directive or rule contexts.
+</blockquote>
+<p>Each dialog box provided by the UI methods of arara requires the specification
+of an associated icon. An <em>icon</em> is a pictogram displayed on a computer screen
+in order to help the user quickly identify the message by conveying its meaning
+through a visual resemblance to a physical object. Our tool features five icon
+types, illustrated below, to be used with dialog boxes. Observe that each icon
+type is associated with a unique integer value which is provided later on to the
+actual method call. Also, it is worth mentioning that the visual appearance of
+such icons is based on the underlying Java virtual machine and the current look
+and feel, so your mileage might vary.</p>
+<ul>
+<li><code>1</code>: Error</li>
+<li><code>2</code>: Information</li>
+<li><code>3</code>: Attention</li>
+<li><code>4</code>: Question</li>
+<li><code>5</code>: Plain</li>
+</ul>
+<p>As good practice, make sure to provide descriptive messages to be placed in
+dialog boxes in order to ease and enhance the user experience. It is also highly
+advisable to always provide an associated icon, so avoid the plain option
+whenever possible.</p>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Message text width</strong>
+  <br/>
+  arara sets the default message text width to 250 pixels. Feel free to override
+this value according to your needs. Please refer to the appropriate method
+signatures for specifying a new width.
+</blockquote>
+<p>The UI method signatures are followed by a visual representation of the provided
+dialog box. For the sake of simplicity, each parameter index refers to the
+associated number in the figure.</p>
+<ul>
+<li><strong>[R]</strong> <code>showMessage(int width, int icon, String title, String text): void</code></li>
+</ul>
+<img src="https://islandoftex.gitlab.io/arara/images/manual/messagebox1.svg
+" alt="UI 1" width="701"/>
+<p>This method shows a message box according to the provided parameters. The
+dialog box is disposed when the user either presses the confirmation button or
+closes the window. It is important to observe that arara temporarily
+interrupts the execution and waits for the dialog box disposal. Also note that
+the total time includes the idle period as well.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#696989;">showMessage</span><span>(</span><span style="color:#8c008a;">250</span><span>, </span><span style="color:#8c008a;">2</span><span>, </span><span style="color:#009f78;">&#39;My title&#39;</span><span>, </span><span style="color:#009f78;">&#39;My message&#39;</span><span>);
+</span></code></pre>
+<ul>
+<li>
+<p><strong>[R]</strong> <code>showMessage(int icon, String title, String text): void</code></p>
+<img src="https://islandoftex.gitlab.io/arara/images/manual/messagebox2.svg
+" alt="UI 2" width="701"/>
+<p>This method shows a message box according to the provided parameters. The
+dialog box is disposed when the user either presses the confirmation button or
+closes the window. It is important to observe that arara temporarily
+interrupts the execution and waits for the dialog box disposal. Also note that
+the total time includes the idle period as well.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#696989;">showMessage</span><span>(</span><span style="color:#8c008a;">2</span><span>, </span><span style="color:#009f78;">&#39;My title&#39;</span><span>, </span><span style="color:#009f78;">&#39;My message&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[C|R]</strong> <code>showOptions(int width, int icon, String title, String text, Object... options): int</code></p>
+<img src="https://islandoftex.gitlab.io/arara/images/manual/optionbox1.svg
+" alt="UI 3" width="701"/>
+<p>This method shows a message box according to the provided parameters,
+including options represented as an array of <code>Object</code> objects. This array is
+portrayed in the dialog box as a list of buttons. The dialog box is disposed
+when the user either presses one of the buttons or closes the window. The
+method returns the natural index of the selected button, starting from <code>1</code>. If
+no button is pressed (e.g, the window is closed), <code>0</code> is returned. Note that
+the object array is denoted by a  comma-separated sequence of elements in the
+actual method call, resulting in a variable number of parameters. It is
+important to observe that arara temporarily interrupts the execution and waits
+for the dialog box disposal. Also note that the total time includes the idle
+period as well.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex if showOptions(250, 4, &#39;Important!&#39;,
+</span><span style="color:#898989;">% arara: --&gt; &#39;Do you like ice cream?&#39;, &#39;Yes!&#39;, &#39;No!&#39;) == 1
+</span></code></pre>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Button orientation</strong>
+  <br/>
+  Keep in mind that your window manager might render the button orientation
+differently than the original arrangement specified in your array of
+objects. For instance, I had a window manager that rendered the buttons in the
+reverse order. However, note that the visual appearance should not interfere
+with the programming logic! The indices shall remain the same, pristine as
+ever, regardless of the actual rendering. Trust your code, not your eyes.
+</blockquote>
+</li>
+<li>
+<p><strong>[C|R]</strong> <code>showOptions(int icon, String title, String text, Object... options): int</code></p>
+<img src="https://islandoftex.gitlab.io/arara/images/manual/optionbox2.svg
+" alt="UI 4" width="701"/>
+<p>This method shows a message box according to the provided parameters,
+including options represented as an array of <code>Object</code> objects. This array is
+portrayed in the dialog box as a list of buttons. The dialog box is disposed
+when the user either presses one of the buttons or closes the window. The
+method returns the natural index of the selected button, starting from <code>1</code>. If
+no button is pressed (e.g, the window is closed), <code>0</code> is returned. Note that
+the object array is denoted by a  comma-separated sequence of elements in the
+actual method call, resulting in a variable number of parameters. It is
+important to observe that arara temporarily interrupts the execution and waits
+for the dialog box disposal. Also note that the total time includes the idle
+period as well.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex if showOptions(4, &#39;Important!&#39;,
+</span><span style="color:#898989;">% arara: --&gt; &#39;Do you like ice cream?&#39;, &#39;Yes!&#39;, &#39;No!&#39;) == 1
+</span></code></pre>
+</li>
+<li>
+<p><strong>[C|R]</strong> <code>showDropdown(int width, int icon, String title, String text, Object... options): int</code></p>
+<img src="https://islandoftex.gitlab.io/arara/images/manual/dropdown1.svg
+" alt="UI 5" width="701"/>
+<p>This method shows a dialog box according to the provided parameters, including
+options represented as an array of <code>Object</code> objects. This array is portrayed
+in the dialog box as a dropdown list. The first element from the array is
+automatically selected. The dialog box is disposed when the user either
+presses one of the buttons or closes the window. The method returns the
+natural index of the selected item, starting from <code>1</code>. If the user cancels the
+dialog or closes the window, <code>0</code> is returned.  Note that the object array is
+denoted by a comma-separated sequence of elements in the actual method call,
+resulting in a variable number of parameters. It is important to observe that
+arara temporarily interrupts the execution and waits for the dialog box
+disposal. Also note that the total time includes the idle period as well.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex if showDropdown(250, 4, &#39;Important!&#39;,
+</span><span style="color:#898989;">% arara: --&gt; &#39;Who deserves the tick?&#39;, &#39;David Carlisle&#39;,
+</span><span style="color:#898989;">% arara: --&gt; &#39;Enrico Gregorio&#39;, &#39;Joseph Wright&#39;,
+</span><span style="color:#898989;">% arara: --&gt; &#39;Heiko Oberdiek&#39;) == 2
+</span></code></pre>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Combo boxes and dropdown lists</strong>
+  <br/>
+  According to the <a rel="noopener noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Combo_box">Wikipedia entry</a>, a
+<em>combo box</em> is a combination of a dropdown list or list box and a single line
+editable textbox, allowing the user to either type a value directly or select
+a value from the list. The term is sometimes used to mean a dropdown list, but
+in Java, the term is definitely not a synonym! A dropdown list is sometimes
+clarified with terms such as non-editable combo box to distinguish it from the
+original definition of a combo box.
+</blockquote>
+</li>
+<li>
+<p><strong>[C|R]</strong> <code>showDropdown(int icon, String title, String text, Object... options): int</code></p>
+<img src="https://islandoftex.gitlab.io/arara/images/manual/dropdown2.svg
+" alt="UI 6" width="701"/>
+<p>This method shows a dialog box according to the provided parameters, including
+options represented as an array of <code>Object</code> objects. This array is portrayed
+in the dialog box as a dropdown list. The first element from the array is
+automatically selected. The dialog box is disposed when the user either
+presses one of the buttons or closes the window. The method returns the
+natural index of the selected item, starting from <code>1</code>. If the user cancels the
+dialog or closes the window, <code>0</code> is returned.  Note that the object array is
+denoted by a comma-separated sequence of elements in the actual method call,
+resulting in a variable number of parameters. It is important to observe that
+arara temporarily interrupts the execution and waits for the dialog box
+disposal. Also note that the total time includes the idle period as well.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex if showDropdown(4, &#39;Important!&#39;,
+</span><span style="color:#898989;">% arara: --&gt; &#39;Who deserves the tick?&#39;, &#39;David Carlisle&#39;,
+</span><span style="color:#898989;">% arara: --&gt; &#39;Enrico Gregorio&#39;, &#39;Joseph Wright&#39;,
+</span><span style="color:#898989;">% arara: --&gt; &#39;Heiko Oberdiek&#39;) == 2
+</span></code></pre>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Swing toolkit</strong>
+  <br/>
+  According to the <a rel="noopener noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/Swing_(Java)">Wikipedia
+entry</a>, the Swing toolkit was
+developed to provide a more sophisticated set of GUI components than the
+earlier  AWT widget system. Swing provides a look and feel that emulates the
+look and feel of several platforms, and also supports a pluggable look and
+feel that allows applications to have a look and feel unrelated to the
+underlying platform. It has more powerful and flexible components than AWT. In
+addition to familiar components such as buttons, check boxes and labels, Swing
+provides several advanced components, such as scroll panes, trees, tables, and
+lists.
+</blockquote>
+</li>
+<li>
+<p><strong>[C|R]</strong> <code>showInput(int width, int icon, String title, String text): String</code></p>
+<img src="https://islandoftex.gitlab.io/arara/images/manual/inputbox1.svg
+" alt="UI 7" width="701"/>
+<p>This method shows an input dialog box according to the provided
+parameters. The dialog box is disposed when the user either presses one of the
+buttons or closes the window. The method returns the content of the input text
+field, as a trimmed <code>String</code> object. If the user cancels the dialog or closes
+the window, an empty string is returned. It is important to observe that arara
+temporarily interrupts the execution and waits for the dialog box
+disposal. Also note that the total time includes the idle period as well.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex if showInput(250, 4, &#39;Important!&#39;,
+</span><span style="color:#898989;">% arara: --&gt; &#39;Who wrote arara?&#39;) == &#39;Paulo&#39;
+</span></code></pre>
+</li>
+<li>
+<p><strong>[C|R]</strong> <code>showInput(int icon, String title, String text): String</code></p>
+<img src="https://islandoftex.gitlab.io/arara/images/manual/inputbox2.svg
+" alt="UI 8" width="701"/>
+<p>This method shows an input dialog box according to the provided
+parameters. The dialog box is disposed when the user either presses one of the
+buttons or closes the window. The method returns the content of the input text
+field, as a trimmed <code>String</code> object. If the user cancels the dialog or closes
+the window, an empty string is returned. It is important to observe that arara
+temporarily interrupts the execution and waits for the dialog box
+disposal. Also note that the total time includes the idle period as well.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex if showInput(4, &#39;Important!&#39;,
+</span><span style="color:#898989;">% arara: --&gt; &#39;Who wrote arara?&#39;) == &#39;Paulo&#39;
+</span></code></pre>
+</li>
+</ul>
+<p>The UI methods presented in this section can be used for writing TeX tutorials
+and assisted compilation workflows based on user interactions, including visual
+input and feedback through dialog boxes.</p>
+<h1 id="commands">Commands</h1>
+<p>arara features the <code>Command</code> object, a new approach for handling system commands
+based on a high level structure with explicit argument parsing.</p>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>The anatomy of a command</strong>
+  <br/>
+  From the user perspective, a <code>Command</code> object is simply a good old list of
+<code>Object</code> objects, in which the list head (i.e, the first element) is the
+underlying system command, and the list tail (i.e, the remaining elements), if
+any, contains the associated command line arguments. For instance, given <code>[ 'pdflatex', '--shell-escape', '--synctex=1', 'thesis.tex' ]</code>, we have:</p>
+<ul>
+<li>Head: <code>'pdflatex'</code></li>
+<li>Tail: <code>[ '--shell-escape', '--synctex=1', 'thesis.tex' ]</code></li>
+</ul>
+<p>From the previous example, it is important to observe that a potential file name
+quoting is not necessary. The underlying system command execution library
+handles the provided arguments accordingly.</p>
+<p>Behind the scenes, however, arara employs a different workflow when constructing
+a <code>Command</code> object. The tool sets the working directory path for the current
+command to <code>USER_DIR</code> which is based on the current execution. The working
+directory path can be explicitly set through specific method calls, described
+later on in this section.</p>
+<p>The list of objects is then completely flattened and all elements are mapped to
+their string representations through corresponding <code>❖ toString</code>
+calls. Finally, the proper <code>Command</code> object is constructed. Keep in mind that,
+although a command takes a list (or even an array) of objects, which can be of
+any type, the internal representation is <em>always</em> a list of strings.
+</blockquote>
+<p>A list of objects might contain nested lists, i.e, a list within another
+list. As previously mentioned, arara employs <em>list flattening</em> when handling a
+list of objects during a <code>Command</code> object instantiation. As a means to
+illustrate this handy feature, consider the following list of integers:</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>[ </span><span style="color:#8c008a;">1</span><span>, </span><span style="color:#8c008a;">2</span><span>, [ </span><span style="color:#8c008a;">3</span><span>, </span><span style="color:#8c008a;">4</span><span> ], </span><span style="color:#8c008a;">5</span><span>, [ [ </span><span style="color:#8c008a;">6</span><span>, </span><span style="color:#8c008a;">7</span><span> ], </span><span style="color:#8c008a;">8</span><span> ], </span><span style="color:#8c008a;">9</span><span>, [ [ </span><span style="color:#8c008a;">10</span><span> ] ]
+</span></code></pre>
+<p>Note that the above list of integers contains nested lists. When applying list
+flattening, arara recursively adds the elements of nested lists to the original
+list and then removes the nested occurrences. Please refer to the source code
+for implementation details. The new flattened list is presented as follows.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>[ </span><span style="color:#8c008a;">1</span><span>, </span><span style="color:#8c008a;">2</span><span>, </span><span style="color:#8c008a;">3</span><span>, </span><span style="color:#8c008a;">4</span><span>, </span><span style="color:#8c008a;">5</span><span>, </span><span style="color:#8c008a;">6</span><span>, </span><span style="color:#8c008a;">7</span><span>, </span><span style="color:#8c008a;">8</span><span>, </span><span style="color:#8c008a;">9</span><span>, </span><span style="color:#8c008a;">10</span><span> ]
+</span></code></pre>
+<p>List flattening and string mapping confer expressiveness and flexibility to the
+<code>Command</code> object construction, as users can virtually use any data type to
+describe the underlying rule logic and yet obtain a consistent representation.</p>
+<ul>
+<li>
+<p><strong>[R]</strong> <code>getCommand(List&lt;String&gt; elements): Command</code> This method, as the name
+implies, returns a <code>Command</code> object according to the provided list of
+<code>String</code> elements. If the list is empty, the tool will ignore the
+execution.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#016692;">return </span><span style="color:#696989;">getCommand</span><span>([ </span><span style="color:#009f78;">&#39;ls&#39;</span><span>, </span><span style="color:#009f78;">&#39;-l&#39;</span><span> ]);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>getCommand(Object... elements): Command</code> This method, as the name
+implies, returns a <code>Command</code> object according to the provided array of
+<code>Object</code> elements. If the array is empty, the tool will ignore the
+execution. Note that the object array is denoted by a comma-separated
+sequence of elements in the actual method call, resulting in a variable
+number of parameters.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#016692;">return </span><span style="color:#696989;">getCommand</span><span>(</span><span style="color:#009f78;">&#39;pdflatex&#39;</span><span>, </span><span style="color:#009f78;">&#39;--shell-escape&#39;</span><span>, </span><span style="color:#009f78;">&#39;thesis.tex&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>getCommandWithWorkingDirectory(File directory, List&lt;String&gt;   elements): Command</code> This method, as the name implies, sets the working
+directory based on the provided <code>File</code> reference and returns a proper
+<code>Command</code> object according to the provided list of <code>String</code> elements. If the
+list is empty, the tool will ignore the execution.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#016692;">return </span><span style="color:#696989;">getCommandWithWorkingDirectory</span><span>(</span><span style="color:#696989;">toFile</span><span>(</span><span style="color:#009f78;">&#39;/home/islandoftex&#39;</span><span>),
+</span><span>       [ </span><span style="color:#009f78;">&#39;ls&#39;</span><span>, </span><span style="color:#009f78;">&#39;-l&#39;</span><span> ]);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>getCommandWithWorkingDirectory(String path, List&lt;String&gt; elements):   Command</code> This method, as the name implies, sets the working directory based
+on the provided <code>String</code> reference and returns a proper <code>Command</code> object
+according to the provided list of <code>String</code> elements. If the list is empty,
+the tool will ignore the execution.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#016692;">return </span><span style="color:#696989;">getCommandWithWorkingDirectory</span><span>(</span><span style="color:#009f78;">&#39;/home/islandoftex&#39;</span><span>,
+</span><span>       [ </span><span style="color:#009f78;">&#39;ls&#39;</span><span>, </span><span style="color:#009f78;">&#39;-l&#39;</span><span> ]);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>getCommandWithWorkingDirectory(File directory, Object... elements):   Command</code> This method, as the name implies, sets the working directory based
+on the provided <code>File</code> reference and returns a proper <code>Command</code> object
+according to the provided array of <code>Object</code> elements. If the array is empty,
+the tool will ignore the execution. Note that the object array is denoted by
+a comma-separated sequence of elements in the actual method call, resulting
+in a variable number of parameters.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#016692;">return </span><span style="color:#696989;">getCommandWithWorkingDirectory</span><span>(</span><span style="color:#696989;">toFile</span><span>(</span><span style="color:#009f78;">&#39;/home/islandoftex&#39;</span><span>),
+</span><span>       </span><span style="color:#009f78;">&#39;pdflatex&#39;</span><span>, </span><span style="color:#009f78;">&#39;--shell-escape&#39;</span><span>, </span><span style="color:#009f78;">&#39;thesis.tex&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>getCommandWithWorkingDirectory(String path, Object... elements):   Command</code> This method, as the name implies, sets the working directory based
+on the provided <code>String</code> reference and returns a proper <code>Command</code> object
+according to the provided array of <code>Object</code> elements. If the array is empty,
+the tool will ignore the execution. Note that the object array is denoted by
+a comma-separated sequence of elements in the actual method call, resulting
+in a variable number of parameters.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#016692;">return </span><span style="color:#696989;">getCommandWithWorkingDirectory</span><span>(</span><span style="color:#009f78;">&#39;/home/islandoftex&#39;</span><span>,
+</span><span>       </span><span style="color:#009f78;">&#39;pdflatex&#39;</span><span>, </span><span style="color:#009f78;">&#39;--shell-escape&#39;</span><span>, </span><span style="color:#009f78;">&#39;thesis.tex&#39;</span><span>);
+</span></code></pre>
+</li>
+</ul>
+<p>The methods presented in this section constitute the foundations of underlying
+system command execution. In particular, whenever possible, it is highly
+advisable to use <code>Command</code> objects through proper <code>❖ getCommand</code>
+method calls, as the plain string approach used in previous versions of our tool
+is marked as deprecated and will be removed in future versions.</p>
+<h1 id="others">Others</h1>
+<p>This section introduces assorted methods provided by arara as a means to improve
+the automation itself with expressive rules and enhance the user
+experience. Such methods are properly described as follows.</p>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Session</strong>
+  <br/>
+  Rules are designed under the <em>encapsulation</em> notion, such that the direct access
+to internal workings of such structures is restricted. However, as a means to
+support framework awareness, arara provides a mechanism for data sharing across
+rule contexts, implemented as a <code>Session</code> object. In practical terms, this
+particular object is a global, persistent map composed of <code>String</code> keys and
+<code>Object</code> values available throughout the entire execution. The public methods of
+a session are described as follows:</p>
+<ul>
+<li>
+<p><code>❖ put(String key, Object value): void</code> This method, as the name
+implies, inserts an object into the session, indexed by the provided
+key. Observe that, if the session previously contained a mapping for the
+provided key, the old value is replaced by the specified value.</p>
+</li>
+<li>
+<p><code>❖ remove(String key): void</code> This method, as the name implies,
+removes  the mapping for the provided key from the session. Be mindful that an
+attempt to remove a mapping for a nonexistent key will raise an exception.</p>
+</li>
+<li>
+<p><code>❖ contains(String key): boolean</code> This method, as the name implies,
+returns a boolean value according to whether the session contains a mapping
+for the provided key. It is highly advisable to use this method before
+attempting to remove a mapping from the session.</p>
+</li>
+<li>
+<p><code>❖ get(String key): Object</code> This method, as the name implies,
+returns the object value to which the specified key is mapped. Be mindful that
+an attempt to return a value for a nonexistent key will raise an exception.</p>
+</li>
+<li>
+<p><code>❖ forget(): void</code> This method, as the name implies, removes all
+of the existing mappings from the session. The session object will be
+effectively empty after this call returns.</p>
+</li>
+</ul>
+<p>It is important to observe that the <code>Session</code> object provided by our tool
+follows the <em>singleton</em> pattern, i.e, a software design pattern that restricts
+the instantiation of a class to one object. Therefore, the same session is
+consistently shared across rule contexts.
+</blockquote>
+<ul>
+<li>
+<p><strong>[C|E|R]</strong> <code>getSession(): Session</code> This method, as the name implies, returns
+the <code>Session</code> object for data sharing across rule contexts. Keep in mind
+that a session cannot contain duplicate keys. Each key can map to at most
+one value.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>name </span><span style="color:#016692;">= </span><span style="color:#696989;">getSession</span><span>().</span><span style="color:#696989;">get</span><span>(</span><span style="color:#009f78;">&#39;name&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>throwError(String message): void</code> This method deliberately throws an
+error to be intercepted later on during execution. Consider using such
+method for an explicit notification about unexpected or unsought scenarios,
+e.g, wrong parameter types or values. The raised error has an associated
+message which is displayed in the terminal and added to the log file.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>options </span><span style="color:#016692;">= </span><span style="color:#009f78;">&#39;not a list&#39;</span><span>;
+</span><span style="color:#016692;">if </span><span>(</span><span style="color:#016692;">!</span><span style="color:#696989;">isList</span><span>(options)) {
+</span><span>    </span><span style="color:#696989;">throwError</span><span>(</span><span style="color:#009f78;">&#39;I was expecting a list.&#39;</span><span>);
+</span><span>}
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isVerboseMode(): boolean</code> This method, as the name implies, returns a
+boolean value according to whether arara is being executed in verbose mode,
+enabled through either the <code>--verbose</code> command line option or the
+corresponding key in the configuration file. Note that the logical negation
+of such method indicates whether the tool is being executed in silent mode.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>verbose </span><span style="color:#016692;">= </span><span style="color:#696989;">isVerboseMode</span><span>();
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isOnPath(String name): boolean</code> This method, as the name implies,
+returns a boolean value according to whether the provided <code>String</code> reference
+representing a command name is reachable from the system path.  For
+portability reasons, there is no need to provide extensions to Microsoft
+Windows command names, as arara will look for common patterns. This
+behaviour is expected and by design. However, be mindful that the search is
+case sensitive.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">isOnPath</span><span>(</span><span style="color:#009f78;">&#39;pdftex&#39;</span><span>);
+</span></code></pre>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Path inspection</strong>
+  <br/>
+  According to the <a rel="noopener noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/PATH_(variable)">Wikipedia
+entry</a>, <code>PATH</code> is an
+environment variable on Unix-like operating systems and Microsoft Windows,
+specifying a set of directories where executable programs are located. arara
+performs a file search operation based on all directories specified in the
+system path, filtering files by name (and extensions, when in Microsoft
+Windows). When an exact match is found, the search is
+concluded. Notwithstanding the great effort, it is very important to note that
+there is no guarantee that our tool will be able to correctly reach the
+command in all scenarios.
+</blockquote>
+</li>
+<li>
+<p><strong>[R]</strong> <code>unsafelyExecuteSystemCommand(Command command): Pair&lt;Integer, String&gt;</code>
+This method, which has a very spooky name, unsafely executes the provided
+<code>Command</code> reference and returns an ordered pair containing the exit status
+and the command output. Note that, if an exception is raised during the
+command execution, <code>-99</code> is assigned as exit status and an empty string is
+defined as command output. Please make sure to always check the returned
+integer status when using this method.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>result </span><span style="color:#016692;">= </span><span style="color:#696989;">unsafelyExecuteSystemCommand</span><span>(</span><span style="color:#696989;">getCommand</span><span>(</span><span style="color:#009f78;">&#39;ls&#39;</span><span>));
+</span></code></pre>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Hic sunt leones</strong>
+  <br/>
+  Please <em>do not abuse</em> this method! Keep in mind that this particular feature
+is included for very specific scenarios in which the command streams are
+needed ahead of time for proper decision making.
+</blockquote>
+</li>
+<li>
+<p><strong>[R]</strong> <code>isSubdirectory(File directory): boolean</code> This method checks whether
+the provided <code>File</code> reference is a valid subdirectory under the project
+hierarchy, return a corresponding boolean value. This is a check to impose a
+possible restriction in the rule scope, so that users can change down to
+subdirectories in their projects but not up, outside of the root directory.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>valid </span><span style="color:#016692;">= </span><span style="color:#696989;">isSubdirectory</span><span>(</span><span style="color:#696989;">toFile</span><span>(</span><span style="color:#009f78;">&#39;chapters/&#39;</span><span>));
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>getOrNull(List&lt;String&gt; list, int index): String</code> This method attempts to retrieve
+a list element based on an integer index. If the index is out of bounds, a
+<code>null</code> value is returned instead.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>list </span><span style="color:#016692;">=</span><span> [ </span><span style="color:#009f78;">&#39;a&#39;</span><span>, </span><span style="color:#009f78;">&#39;b&#39;</span><span>, </span><span style="color:#009f78;">&#39;c&#39;</span><span> ];
+</span><span>third </span><span style="color:#016692;">= </span><span style="color:#696989;">getOrNull</span><span>(list, </span><span style="color:#8c008a;">2</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><strong>[R]</strong> <code>getOrNull(List&lt;String&gt; list): String</code> This method attempts to retrieve
+the first element of the provided list. If the list is empty, a <code>null</code> value
+is returned instead.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>list </span><span style="color:#016692;">=</span><span> [ </span><span style="color:#009f78;">&#39;a&#39;</span><span>, </span><span style="color:#009f78;">&#39;b&#39;</span><span>, </span><span style="color:#009f78;">&#39;c&#39;</span><span> ];
+</span><span>first </span><span style="color:#016692;">= </span><span style="color:#696989;">getOrNull</span><span>(list);
+</span></code></pre>
+</li>
+</ul>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Flags and reserved storage in a session</strong>
+  <br/>
+  From version 6.0 on, there are three reserved namespaces within a session. They
+are described as follows:</p>
+<ul>
+<li>
+<p><code>environment</code>: This namespace is quite intuitive: arara will store the current
+state of the systems environment variables in its session. You may alter these
+values in the session storage but they will not be written back to the system
+configuration. To access an environment variable, you can use its usual name
+prefixed by <code>environment:</code>:</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>path </span><span style="color:#016692;">= </span><span style="color:#696989;">getSession</span><span>().</span><span style="color:#696989;">get</span><span>(</span><span style="color:#009f78;">&#39;environment:PATH&#39;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><code>arara</code>: This namespace provides flags that control the underlying behaviour of
+arara. Flags are used in rules and may be manipulated by the user. Be aware
+that every change in this namespace will result in the tool acting like you
+know what you did. Use this power with care. Currently, there is only one
+relevant flag: <code>arara:FILENAME:halt</code>. This will stop the currently run command
+execution on the file with the specified file name. The value of this map
+entry is the exit status you want arara to have.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#696989;">getSession</span><span>().</span><span style="color:#696989;">put</span><span>(</span><span style="color:#009f78;">&#39;arara:myfile.tex:halt&#39;</span><span>, </span><span style="color:#8c008a;">42</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><code>arg</code>: This namespace acts as a bridge between contexts and the command line
+and/or properties files by providing access to key/value pairs defined at
+runtime through <code>--call-property</code> or <code>--properties-file</code> command line flags.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>key </span><span style="color:#016692;">= </span><span style="color:#696989;">getSession</span><span>().</span><span style="color:#696989;">get</span><span>(</span><span style="color:#009f78;">&#39;arg:key&#39;</span><span>);
+</span></code></pre>
+</li>
+</ul>
+<p>Please refer to <a href="https://islandoftex.gitlab.io/arara/manual/cli/">Command line</a> for more details on
+both <code>--call-property</code> and <code>--properties-file</code> command line flags.
+</blockquote>
+<p>The methods presented in this section provide interesting features for
+persistent data sharing, error handling, early command execution, and
+templating. It is important to note that more classes, objects and methods can
+be incorporated into arara through class loading and object instantiation,
+extending the features and enhancing the overall user experience.</p>
+
+
+      </div>
+
+    </main>
+
+    
+    <footer>
+      <small class="subtext">
+        arara by the Island of TeX
+      </small>
+    </footer>
+    
+  </body>
+  <script>
+    function highlightNav(heading) {
+        let pathname = location.pathname;
+        document.querySelectorAll(".toc a").forEach((item) => {
+            item.classList.remove("active");
+        });
+        document.querySelector(".toc a[href$='" + pathname + "#" + heading + "']").classList.add("active");
+    }
+
+    let currentHeading = "";
+    window.onscroll = function () {
+        let h = document.querySelectorAll("h1,h2,h3,h4,h5,h6");
+        let elementArr = [];
+
+        h.forEach(item => {
+            if (item.id !== "") {
+                elementArr[item.id] = item.getBoundingClientRect().top;
+            }
+        });
+        elementArr.sort();
+        for (let key in elementArr) {
+            if (!elementArr.hasOwnProperty(key)) {
+                continue;
+            }
+            if (elementArr[key] > 0 && elementArr[key] < 300) {
+                if (currentHeading !== key) {
+                    highlightNav(key);
+                    currentHeading = key;
+                }
+                break;
+            }
+        }
+    }
+  </script>
+</html>

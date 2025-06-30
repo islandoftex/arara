@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Important concepts | arara </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+    :root {
+        /* Primary theme color */
+        --primary-color: #cbe368; /* #FED43F; */
+        /* Primary theme text color */
+        --primary-text-color: #543631;
+        /* Primary theme link color */
+        --primary-link-color: #719b25;
+        /* Secondary color: the background body color */
+        --secondary-color: #fcfaf6;
+        --secondary-text-color: #303030;
+        /* Highlight text color of table of content */
+        --toc-highlight-text-color: #d46e13;
+    }
+</style>
+
+    <link rel="icon" href="https://islandoftex.gitlab.io/arara/favicon.svg">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/normalize.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juice.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/fonts/fonts.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juicy-arara.css">
+    
+    <meta name="keywords" content="tex, latex, context, build tool, automation">
+    <meta itemprop="name" content="The cool TeX automation tool">
+    <meta itemprop="description" content="arara is a TeX automation tool based on directives and rules.">
+    
+  </head>
+
+  <body>
+    
+<header class="box-shadow">
+    
+
+<a href="https://islandoftex.gitlab.io/arara/">
+  <div class="logo">
+    <img src="https://islandoftex.gitlab.io/arara/images/arara-text.svg" alt="logo">
+  </div>
+</a>
+
+<nav>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/changelog/">Changelog</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/quickstart/">Quickstart</a>
+  
+  
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/manual">Manual</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/news">News</a>
+  
+  <a class="nav-item subtitle-text" href="https://gitlab.com/islandoftex/arara">GitLab</a>
+  
+  
+</nav>
+
+</header>
+
+
+    <main>
+      
+      
+      
+      
+      
+      <div class="toc">
+        <div class="toc-sticky">
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/concepts/#rules">Rules</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/concepts/#directives">Directives</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/concepts/#important-changes-in-version-7">Important changes in version 7</a>
+          </div>
+          
+          
+        </div>
+      </div>
+      
+      
+
+      <div class="content text">
+        
+<div class="heading-text">Important concepts</div>
+<p>Time for our first proper contact with arara! I must stress that is very
+important to understand a few concepts in which arara relies before we proceed
+to the usage itself. Do not worry, these concepts are easy to follow, yet they
+are vital to the comprehension of the application and the logic behind it.</p>
+<h1 id="rules">Rules</h1>
+<p>A <em>rule</em> is a formal description of how arara handles a certain task. For
+instance, if we want to use <code>pdflatex</code> with our tool, we should have a rule for
+that. Directives are mapped to rules, so a call to a non-existent rule <code>foo</code>,
+for instance, will indeed raise an error:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span>  </span><span style="color:#696989;">__</span><span> _ _ __ __ _ _ __ __ _
+</span><span> </span><span style="color:#696989;">/</span><span> _` </span><span style="color:#016692;">| </span><span style="color:#009f78;">&#39;__/ _` | &#39;</span><span style="color:#696989;">__/</span><span> _` </span><span style="color:#016692;">|
+</span><span style="color:#016692;">| </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| |
+</span><span> </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|
+</span><span>
+</span><span style="color:#696989;">Processing </span><span style="color:#009f78;">&quot;doc1.tex&quot;</span><span> (size: 31 B, last modified: 12/28/2020
+</span><span style="color:#696989;">07:37:37</span><span>), please wait.
+</span><span>
+</span><span>  </span><span style="color:#696989;">ERROR
+</span><span>
+</span><span style="color:#696989;">I</span><span> could not find a rule named </span><span style="color:#009f78;">&quot;foo&quot;</span><span> in the provided rule paths.
+</span><span style="color:#696989;">Perhaps</span><span> a misspelled word</span><span style="color:#016692;">?</span><span> I was looking for a file named
+</span><span style="color:#009f78;">&quot;foo.yaml&quot;</span><span> in the following paths in order of priority:
+</span><span>(</span><span style="color:#696989;">/opt/islandoftex/arara/rules</span><span>)
+</span><span>
+</span><span style="color:#696989;">Total:</span><span> 0.03 seconds
+</span></code></pre>
+<p>Once a rule is defined, arara automatically provides an access layer to that
+rule through directives in the source code, a concept to be formally introduced
+later on. Observe that a directive reflects a particular instance of a rule of
+the same name (i.e, a <code>foo</code> directive in a certain source code is an instance of
+the <code>foo</code> rule).</p>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>A note about rules</strong>
+  <br/>
+  From version 6.0 on, rules included in the core distribution have been renamed
+to have a unique prefix in the texmf tree. File names should not be relied
+upon.
+</blockquote>
+<p>In short, a rule is a plain text file written in the YAML format, described in
+<a href="https://islandoftex.gitlab.io/arara/manual/yaml/">YAML</a>. I opted for this format because back then it was cleaner
+and more intuitive to use than other markup languages such as XML, besides of
+course being a data serialization standard for programming languages.</p>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Animal jokes</strong>
+  <br/>
+  As a bonus, the acronym <em>YAML</em> rhymes with the word <em>camel</em>, so arara is heavily
+environmentally friendly. Speaking of camels, there is the programming reference
+as well, since this amusing animal is usually associated with Perl and friends.
+</blockquote>
+<p>The default rules, i.e, the rules shipped with arara, are placed inside a
+special subdirectory named <code>rules/</code> inside another special directory named
+<code>ARARA_HOME</code> (the place where our tool is installed). We will learn later on
+that we can add an arbitrary number of paths for storing our own rules, in order
+of priority, so do not worry too much about the location of the default rules,
+although it is important to understand and acknowledge their existence. Observe,
+however, that rules in the core distribution have a different naming scheme than
+the ones located in the user space.</p>
+<p>The following list describes the basic structure of an arara rule by presenting
+the proper elements (or keys, if we consider the proper YAML
+nomenclature). Observe that elements marked as <strong>[M]</strong> are mandatory (i.e, the
+rule <em>has</em> to have them in order to work). Similarly, elements marked as <strong>[O]</strong>
+are optional, so you can safely ignore them when writing a rule for our tool. A
+key preceded by <code>context →</code> indicates a context and should be
+properly defined inside it.</p>
+<ul>
+<li>
+<p><strong>[M]</strong> <code>!config</code>: This keyword is mandatory and must be the first line of any
+arara rule. It denotes the object mapping metadata to be internally used by
+the tool. The tool requires it, so make sure to start all rules with a
+<code>!config</code> keyword.</p>
+</li>
+<li>
+<p><strong>[M]</strong> <code>identifier</code>: This key acts as a unique identifier for the rule (as
+expected). It is highly recommended to use lowercase letters without spaces,
+accents or punctuation symbols, as good practice (again). As a convention,
+if you have an identifier named <code>pdflatex</code>, the rule filename must be
+<code>pdflatex.yaml</code> (like our own instance). Please note that, although <code>yml</code> is
+known to be a valid YAML extension as well, arara only considers files
+ending with the <code>yaml</code> extension. This is a deliberate decision.</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">identifier</span><span>: </span><span style="color:#009f78;">pdflatex
+</span></code></pre>
+</li>
+<li>
+<p><strong>[M]</strong> <code>name</code>: This key holds the name of the <em>task</em> (a rule instantiated
+through a directive) as a plain string. When running arara, this value will
+be displayed in the output enclosed in parentheses.</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">name</span><span>: </span><span style="color:#009f78;">PDFLaTeX
+</span></code></pre>
+</li>
+<li>
+<p><strong>[O]</strong> <code>authors</code>: We do love blaming people, so arara features a special key
+to name the rule authors (if any) so you can write stern electronic
+communications to them! This key holds a list of strings. If the rule has
+just one author, add it as the first (and only) element of the list.</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">authors</span><span>:
+</span><span>- </span><span style="color:#009f78;">Marco Daniel
+</span><span>- </span><span style="color:#009f78;">Paulo Cereda
+</span></code></pre>
+</li>
+<li>
+<p><strong>[M]</strong> <code>commands</code>: This key denotes a potential list of commands. From the user
+perspective, each command is called a <em>subtask</em> within a task (rule and
+directive) context. A task may represent only a single command (a single
+subtask), as well as a sequence of commands (subtasks). For instance, the
+<code>frontespizio</code> rule requires at least two commands. So, as a means of
+normalizing the representation, a task composed of a single command (single
+subtask) is defined as the only element of the list, as opposed to previous
+versions of arara, which had a specific key to hold just one command.</p>
+<p>In order to properly set a subtask, the keys used in this specification are
+defined inside the <code>commands →</code> context and presented as follows.</p>
+<ul>
+<li>
+<p><strong>[O]</strong> <code>commands → name</code>: This key holds the name of the subtask
+as a plain string. When running arara, this value will be displayed in the
+output. Subtask names are displayed after the main task name. By the way,
+did you notice that this key is entirely optional? That means that a
+subtask can simply be unnamed, if you decide so. However, such practice is
+not recommended, as it's always good to have a visual description of what
+arara is running at the moment, so name your subtasks properly.</p>
+</li>
+<li>
+<p><strong>[M]</strong> <code>commands → command</code>: This key holds the action to be
+performed, typically a system command. The tool offers two types of
+returned values:</p>
+<ul>
+<li>
+<p>A <code>Command</code> object: arara features an approach for handling system
+commands based on a high level structure with explicit argument parsing
+named <code>Command</code>. In order to use this approach, we need to rely on orb
+tags and use a helper method named <code>getCommand</code> to obtain the desired
+result. We will detail this method later on.</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">command</span><span>: </span><span style="color:#009f78;">&quot;@{ return getCommand(&#39;ls&#39;) }&quot;
+</span></code></pre>
+</li>
+<li>
+<p>A boolean value: it is also possible to exploit the expressive power of
+the underlying scripting language available in the rule context (see
+<a href="https://islandoftex.gitlab.io/arara/manual/mvel/">MVEL</a> for more details) for writing complex code. In this
+particular case, since the computation is being done by arara itself and
+not the underlying operating system, there will not be a command to be
+executed, so simply return a boolean value — either an explicit
+<code>true</code> or <code>false</code> value or a logical expression — to indicate
+whether the computation was successful.</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">command</span><span>: </span><span style="color:#009f78;">&quot;@{ return 1 == 1 }&quot;
+</span></code></pre>
+</li>
+</ul>
+<p>It is also worth mentioning that arara also supports lists of commands
+represented as <code>Command</code> objects, boolean values or a mix of them. This is
+useful if your rule has to decide whether more actions are required in order
+to accomplish a task. In this case, our tool will take care of the list and
+execute each element in the specified order.</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">command</span><span>: </span><span style="color:#009f78;">&quot;@{ return [ getCommand(&#39;ls&#39;), getCommand(&#39;ls&#39;) ] }&quot;
+</span></code></pre>
+<p>As an example, please refer to the official <code>clean</code> rule for a real scenario
+where a list of commands is successfully employed: for each provided
+extension, the rule creates a new cleaning command and adds it to a list of
+removals to be processed later.</p>
+<p>There is at least one variable available in the <code>command</code> context and is
+described as follows (note that MVEL variables and orb tags are discussed in
+<a href="https://islandoftex.gitlab.io/arara/manual/mvel/">MVEL</a>). A variable will be denoted by <code>⋄ variable</code>
+in this list. For each rule argument (defined later on), there will be a
+corresponding variable in the <code>command</code> context, directly accessed through
+its unique identifier.</p>
+<ul>
+<li><code>⋄ reference</code>: This variable holds the canonical, absolute path
+representation of the file name as a <code>File</code> object. This is useful if it's
+necessary to know the hierarchical structure of a project. Since the
+reference is a Java object, we can use methods available in the <code>File</code>
+class.</li>
+</ul>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Quote handling</strong>
+  <br/>
+  The YAML format disallows key values starting with <code>@</code> without proper
+quoting. This is the reason we had to use double quotes for the value and
+internally using single quotes for the command string. Also, we could use
+the other way around, or even using only one type and then escaping them
+when needed. This is excessively verbose but needed due to the format
+requirement.</p>
+<p>From version 6.0 on, the <code>&lt;arara&gt;</code> shorthand is not supported anymore. We
+encourage the use of a YAML feature named <em>folded style</em> when writing such
+values. The idea here is to use the scalar content in folded style. The new
+code will look like this:</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">command</span><span>: </span><span style="color:#016692;">&gt;
+</span><span style="color:#009f78;">  @{
+</span><span style="color:#009f78;">    return getCommand(&#39;ls&#39;)
+</span><span style="color:#009f78;">  }
+</span></code></pre>
+<p>Mind the indentation, as YAML requires it to properly identify blocks. If
+your code still relies on the <code>&lt;arara&gt;</code> shorthand, please update it
+accordingly to use YAML's folded style instead.
+</blockquote>
+</li>
+<li>
+<p><strong>[O]</strong> <code>commands → exit</code>: This key holds a special purpose, as
+it represents a custom exit status evaluation for the corresponding
+command. In general, a successful execution has zero as an exit status,
+but sometimes we end up with tools or situations where we need to override
+this check for whatever reason. For this purpose, simply write a MVEL
+expression <em>without orb tags</em> as plain string and use the special variable
+<code>⋄ value</code> if you need the actual exit status returned by the
+command, available at runtime. For example, if the command returns a
+non-zero value indicating a successful execution, we can write this key
+as:</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">exit</span><span>: </span><span style="color:#009f78;">value &gt; 0
+</span></code></pre>
+<p>If the execution should be marked as successful by arara regardless of the
+actual exit status, you can simply write <code>true</code> as the key value and this
+rule will never fail, for obvious reasons.</p>
+</li>
+</ul>
+<p>For instance, consider a full example of the <code>commands</code> key, defined with only
+one command, presented as follows. The hyphen denotes a list element, so mind
+the indentation for correctly specifying the component keys. Also, note that,
+in this case, the <code>exit</code> key was completely optional, as it does the default
+checking, and it was included for didactic purposes.</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">commands</span><span>:
+</span><span>- </span><span style="color:#00528b;">name</span><span>: </span><span style="color:#009f78;">The PDFLaTeX engine
+</span><span>  </span><span style="color:#00528b;">command</span><span>: </span><span style="color:#016692;">&gt;
+</span><span style="color:#009f78;">    @{
+</span><span style="color:#009f78;">      return getCommand(&#39;pdflatex&#39;, file)
+</span><span style="color:#009f78;">    }
+</span><span>  </span><span style="color:#00528b;">exit</span><span>: </span><span style="color:#009f78;">value == 0
+</span></code></pre>
+</li>
+<li>
+<p><strong>[M]</strong> <code>arguments</code>: This key holds a list of arguments for the current rule,
+if any. The arguments specified in this list will be available to the user
+later on for potential completion through directives. Once instantiated,
+they will become proper variables in the <code>command</code> contexts. This key is
+mandatory, so even if your rule does not have arguments, you need to specify
+a list regardless. In this case, use the empty list notation:</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">arguments</span><span>: []
+</span></code></pre>
+<p>In order to properly set an argument, the keys used in this specification are
+defined inside the <code>arguments →</code> context and presented as follows.</p>
+<ul>
+<li>
+<p><strong>[M]</strong> <code>arguments → identifier</code>: This key acts as a unique
+identifier for the argument. It is highly recommended to use lowercase
+letters without spaces, accents or punctuation symbols, as a good
+practice. This key will be used later on to set the corresponding value in
+the directive context.</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">identifier</span><span>: </span><span style="color:#009f78;">shell
+</span></code></pre>
+<p>It is important to mention that not all names are valid as argument
+identifiers. arara has restrictions on two names, described as follows,
+which cannot be used.</p>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Reserved names for rule arguments</strong>
+  <br/>
+  Our tool has two names reserved for internal use: <code>files</code>, and
+<code>reference</code>. Do not use them as argument identifiers!
+</blockquote>
+</li>
+<li>
+<p><strong>[O]</strong> <code>arguments → flag</code>: This key holds a plain string and is
+evaluated when the corresponding argument is defined in the directive
+context. After being evaluated, the result will be stored in a variable of
+the same name to be later accessed in the <code>command</code> context. In the
+scenario where the argument is not defined in the directive, the variable
+will hold an empty list.</p>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Return type</strong>
+  <br/>
+  From version 6.0 on, the return value for <code>flag</code> is now transformed into a
+proper <code>List&lt;String&gt;</code> type instead of a plain, generic <code>Object</code> reference,
+as seen in previous versions. The following rules apply:</p>
+<ul>
+<li>
+<p>If a list is returned, it will be flattened and all values will be turned
+into strings.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>[ </span><span style="color:#009f78;">&#39;a&#39;</span><span>, </span><span style="color:#8c008a;">1</span><span>, [ </span><span style="color:#8c008a;">2</span><span>, </span><span style="color:#009f78;">&#39;b&#39;</span><span> ] ] → [ </span><span style="color:#009f78;">&#39;a&#39;</span><span>, </span><span style="color:#009f78;">&#39;1&#39;</span><span>, </span><span style="color:#009f78;">&#39;2&#39;</span><span>, </span><span style="color:#009f78;">&#39;b&#39;</span><span> ]
+</span></code></pre>
+</li>
+<li>
+<p>If a string is returned, a single list with only that string will be
+returned.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#009f78;">&#39;hello world&#39;</span><span> → [ </span><span style="color:#009f78;">&#39;hello world&#39;</span><span> ]
+</span></code></pre>
+</li>
+<li>
+<p>If another type is returned, it will be turned into string.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#8c008a;">3.1415</span><span> → [ </span><span style="color:#009f78;">&#39;3.1415&#39;</span><span> ]
+</span></code></pre>
+</li>
+</ul>
+<p>Other return types than string or lists are not encouraged. However, if such
+types are used, they will be transformed into a list of strings, as
+previously seen. If you need interoperability of complex <code>command</code> code with
+older versions, use the following trick to get the value of previously
+non-list values:</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#696989;">isList</span><span>(variable) </span><span style="color:#016692;">?</span><span> variable[</span><span style="color:#8c008a;">0</span><span>] </span><span style="color:#016692;">:</span><span> variable
+</span></code></pre>
+<p>In this way, one can keep a compatibility layer for older versions. However,
+it is highly recommended to use the latest version of arara whenever
+possible.
+</blockquote>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">flag</span><span>: </span><span style="color:#016692;">&gt;
+</span><span style="color:#009f78;">  @{
+</span><span style="color:#009f78;">      isTrue(parameters.shell, &#39;--shell-escape&#39;,
+</span><span style="color:#009f78;">             &#39;--no-shell-escape&#39;)
+</span><span style="color:#009f78;">  }
+</span></code></pre>
+<p>There are two variables available in the <code>flag</code> context, described as
+follows. Note that are also several helper methods available in the rule
+context (for instance, <code>❖ isTrue</code> presented in the previous
+example) which provide interesting features for rule writing. They are
+detailed later on, in <a href="https://islandoftex.gitlab.io/arara/manual/methods/">Methods</a>.</p>
+<ul>
+<li>
+<p><code>⋄ parameters</code>: This variable holds a map of directive
+parameters available at runtime. For each argument identifier listed in
+the <code>arguments</code> list in the rule context, there will be an entry in this
+variable. This is useful to get the actual values provided during
+execution and take proper actions. If a parameter is not set in the
+directive context, the reference will still exist in the map, but it will
+be mapped to an empty string.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>check </span><span style="color:#016692;">=</span><span> parameters.</span><span style="color:#696989;">contains</span><span>(</span><span style="color:#009f78;">&quot;foo&quot;</span><span>);
+</span></code></pre>
+</li>
+<li>
+<p><code>⋄ reference</code>: This variable holds the canonical, absolute path
+representation of the file name as a <code>File</code> object. This is useful if it
+is necessary to know the hierarchical structure of a project. Since the
+reference is a Java object, we can use methods available in the <code>File</code>
+class.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>parent </span><span style="color:#016692;">=</span><span> reference.</span><span style="color:#696989;">getParent</span><span>();
+</span></code></pre>
+</li>
+</ul>
+<p>In the previous example, observe that the MVEL expression defined in the
+<code>flag</code> key checks if the user provided an affirmative value regarding shell
+escape, through comparing <code>⋄ parameters.shell</code> with a set of
+predefined affirmative values. In any case, the corresponding command flag
+is defined as result of such evaluation.</p>
+</li>
+<li>
+<p><strong>[O]</strong> <code>arguments → default</code>: As default behaviour, if a
+parameter is not set in the directive context, the reference will be
+mapped to an empty string. This key exists for the exact purpose of
+overriding such behaviour and always expects a string value, as if it were
+provided by the user in the directive context.</p>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>No more evaluation and variables</strong>
+  <br/>
+  In earlier versions, arara used to evaluate the <code>default</code> key and return a
+plain, generic <code>Object</code> reference, which was then forwarded directly to the
+corresponding <code>command</code> context. The workflow changed for version 6.0 on.</p>
+<p>From now on, <code>default</code> always expects a string value, as if it were provided
+by the user in the directive context. No variables are available and no more
+evaluation is expected from this key. Consider the following example:</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">default</span><span>: </span><span style="color:#009f78;">&quot;@{ 1 == 1 }&quot;
+</span></code></pre>
+<p>There is an orb tag expression in this string, which should resolve to
+<code>true</code> in previous versions of arara. However, from now on, it will not be
+evaluated at all and the literal string will be assigned to the <code>default</code>
+key.</p>
+<p>The <code>default</code> key, whenever available and in the scenario in which the user
+does not provide an explicit value for the current argument in the directive
+context, is forwarded to the <code>flag</code> context for proper evaluation. Then the
+workflow proceeds as usual.
+</blockquote>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Return type</strong>
+  <br/>
+  The <code>default</code> key, whenever available, returns a string to be evaluated in
+the corresponding <code>flag</code> context. However, if the target evaluation context
+does not exist (i.e, there is no corresponding <code>flag</code> key), the value is
+transformed into a list of strings and then forwarded directly to the
+<code>command</code> context. For instance:</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span>- </span><span style="color:#00528b;">identifier</span><span>: </span><span style="color:#009f78;">foo
+</span><span>  </span><span style="color:#00528b;">default</span><span>: </span><span style="color:#009f78;">&#39;bar&#39;
+</span></code></pre>
+<p>This scenario will directly forward <code>[ 'bar' ]</code> (a list of strings
+containing the specified value as single element) as the value for the
+<code>⋄ foo</code> variable in the corresponding <code>command</code> context.
+</blockquote>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">default</span><span>: </span><span style="color:#009f78;">&#39;stable&#39;
+</span></code></pre>
+</li>
+<li>
+<p><strong>[O]</strong> <code>arguments → required</code>: There might be certain scenarios
+in which a rule could make use of required arguments (for instance, a copy
+operation in which source and target must be provided). The <code>required</code> key
+acts as a boolean switch to indicate whether the corresponding argument
+should be mandatory. In this case, set the key value to <code>true</code> and the
+argument becomes required. Later on at runtime, arara will throw an error
+if a required parameter is missing in the directive.</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">required</span><span>: </span><span style="color:#333366;">false
+</span></code></pre>
+<p>Note that setting the <code>required</code> key value to <code>false</code> corresponds to
+omitting the key completely in the rule context, which resorts to the
+default behaviour (i.e, all arguments are optional).</p>
+</li>
+</ul>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Note on argument keys</strong>
+  <br/>
+  As seen previously, both <code>flag</code> and <code>default</code> are marked as optional, but at
+least one of them must occur in the argument specification, otherwise arara
+will throw an error, as it makes no sense to have no argument handling at
+all. Please make sure to specify at least one of them for a consistent
+behaviour!
+</blockquote>
+<p>For instance, consider a full example of the <code>arguments</code> key, defined with
+only one argument, presented as follows. The hyphen denotes a list element, so
+mind the indentation for correctly specifying the component keys. Also, note
+that, in this case, keys <code>required</code> and <code>default</code> were completely optional,
+and they were included for didactic purposes.</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">arguments</span><span>:
+</span><span>- </span><span style="color:#00528b;">identifier</span><span>: </span><span style="color:#009f78;">shell
+</span><span>  </span><span style="color:#00528b;">flag</span><span>: </span><span style="color:#016692;">&gt;
+</span><span style="color:#009f78;">    @{
+</span><span style="color:#009f78;">        isTrue(parameters.shell,
+</span><span style="color:#009f78;">               &#39;--shell-escape&#39;,
+</span><span style="color:#009f78;">               &#39;--no-shell-escape&#39;)
+</span><span style="color:#009f78;">    }
+</span><span>  </span><span style="color:#00528b;">required</span><span>: </span><span style="color:#333366;">false
+</span><span>  </span><span style="color:#00528b;">default</span><span>: </span><span style="color:#009f78;">&#39;false&#39;
+</span></code></pre>
+</li>
+</ul>
+<p>This is the rule structure in the YAML format used by arara. Keep in mind that
+all subtasks in a rule are checked against their corresponding exit status. If
+an abnormal execution is detected, the tool will instantly halt and the rule
+will fail. Even arara itself will return an exit code different than zero when
+this situation happens (detailed in <a href="https://islandoftex.gitlab.io/arara/manual/cli/">Command line</a>).</p>
+<h1 id="directives">Directives</h1>
+<p>A <em>directive</em> is a special comment inserted in the source file in which you
+indicate how arara should behave. You can insert as many directives as you want.
+The tool will read and extract directives from beginning of the file by default.
+See <em>Enabling header mode by default</em> in next section for more info.</p>
+<p>There are two types of directives in arara which determine the way the
+corresponding rules will be instantiated. They are listed as follows. Note that
+directives are always preceded by the <code>arara:</code> pattern.</p>
+<ul>
+<li>
+<p><strong>Empty directive</strong>: This type of directive has already been mentioned in
+<a href="https://islandoftex.gitlab.io/arara/manual/introduction/">Introduction</a>, it has only the rule name (which
+refers to the <code>identifier</code> key from the rule of the same name). All rule
+arguments are mapped to empty lists, except the ones with <code>default</code> values,
+mapped to lists containing single elements.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex
+</span></code></pre>
+</li>
+<li>
+<p><strong>Parametrized directive</strong>: This type of directive also has the rule name
+(which refers to the <code>identifier</code> key from the rule of the same name), and
+also contains a map of parameters in order to provide additional information
+to the corresponding rule. This map is defined in the YAML format, based on
+the inline style.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex: { shell: yes }
+</span></code></pre>
+<p>Observe that arara relies on named parameters, so they are mapped by their
+corresponding argument identifiers and not by their positions. The syntax for
+a parameter is described as follows. Please refer to the map definition in
+<a href="https://islandoftex.gitlab.io/arara/manual/yaml/">YAML</a>.</p>
+<pre style="background-color:#ffffff;color:#010101;"><code><span>key : value
+</span></code></pre>
+<p>Note that virtually any type of data can be used as parameter value, so lists,
+integers, booleans, sets and other maps are available as well. However, there
+must be the correct handling of such types in the rule context.</p>
+</li>
+</ul>
+<p>When handling parametrized directives, arara always checks if directive
+parameters and rule arguments match. If we try to inject a non-existent
+parameter in a parametrized directive, the tool will raise an error about it:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span>  </span><span style="color:#696989;">__</span><span> _ _ __ __ _ _ __ __ _
+</span><span> </span><span style="color:#696989;">/</span><span> _` </span><span style="color:#016692;">| </span><span style="color:#009f78;">&#39;__/ _` | &#39;</span><span style="color:#696989;">__/</span><span> _` </span><span style="color:#016692;">|
+</span><span style="color:#016692;">| </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| |
+</span><span> </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|
+</span><span>
+</span><span style="color:#696989;">Processing </span><span style="color:#009f78;">&quot;hello.tex&quot;</span><span> (size: 102 B, last modified: 12/28/2020
+</span><span style="color:#696989;">10:28:00</span><span>), please wait.
+</span><span>
+</span><span>  </span><span style="color:#696989;">ERROR
+</span><span>
+</span><span style="color:#696989;">I</span><span> found these unknown keys in the directive: (foo). This should
+</span><span style="color:#696989;">be</span><span> an easy fix, just remove them from your map.
+</span><span>
+</span><span style="color:#696989;">Total:</span><span> 0.21 seconds
+</span></code></pre>
+<p>As the message suggests, we need to remove the unknown parameter key from our
+directive or rewrite the rule in order to include it as an argument. The first
+option is, of course, easier.</p>
+<p>Sometimes, directives can span several columns of a line, particularly the ones
+with several parameters. We can split a directive into multiple lines by using
+the <code>arara: --&gt;</code> mark (also known as <em>arrow notation</em> during development) to
+each line which should compose the directive. We call it a <em>multiline
+directive</em>. Let us see an example:</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex: {
+</span><span style="color:#898989;">% arara: --&gt; shell: yes,
+</span><span style="color:#898989;">% arara: --&gt; synctex: yes
+</span><span style="color:#898989;">% arara: --&gt; }
+</span></code></pre>
+<p>It is important to observe that there is no need of them to be in contiguous
+lines, i.e, provided that the syntax for parametrized directives hold for the
+line composition, lines can be distributed all over the code. In fact, the log
+file (when enabled) will contain a list of all line numbers that compose a
+directive. This feature is discussed later on.</p>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Keep lines together</strong>
+  <br/>
+  Although it is possible to spread lines of a multiline directive all over the
+code, it is considered good practice to keep them together for easier reading
+and editing. In any case, you can always see which lines compose a directive by
+inspecting the log file.
+</blockquote>
+<p>arara provides logical expressions, written in the MVEL language, and special
+operators processed at runtime in order to determine whether and how a directive
+should be processed. This feature is named <em>directive conditional</em>, or simply
+<em>conditional</em> as an abbreviation. The following list describes all conditional
+operators available in the directive context.</p>
+<ul>
+<li>
+<p><strong>[a priori]</strong> <code>if</code>: The associated MVEL expression is evaluated beforehand,
+and the directive is interpreted if, and only if, the result of such
+evaluation is true. This directive, when the conditional holds true, is
+executed at most once.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex if missing(&#39;pdf&#39;) || changed(&#39;tex&#39;)
+</span></code></pre>
+</li>
+<li>
+<p><strong>[a posteriori]</strong> <code>until</code>: The directive is interpreted the first time, then
+the associated MVEL expression evaluation is done. While the result holds
+false, the directive is interpreted again and again. There are no guarantees
+of proper halting.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex until !found(&#39;log&#39;, &#39;undefined references&#39;)
+</span></code></pre>
+</li>
+<li>
+<p><strong>[a priori]</strong> <code>unless</code>: Technically an inverted <code>if</code> conditional, the
+associated MVEL expression is evaluated beforehand, and the directive is
+interpreted if, and only if, the result is false. This directive, when the
+conditional holds false, is executed at most once.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex unless unchanged(&#39;tex&#39;) &amp;&amp; exists(&#39;pdf&#39;)
+</span></code></pre>
+</li>
+<li>
+<p><strong>[a priori]</strong> <code>while</code>: The associated MVEL expression is evaluated
+beforehand, the directive is interpreted if, and only if, the result is
+true, and the process is repeated while the result still holds true. There
+are no guarantees of proper halting.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex while missing(&#39;pdf&#39;) ||
+</span><span style="color:#898989;">% arara: --&gt; found(&#39;log&#39;, &#39;undefined references&#39;)
+</span></code></pre>
+</li>
+</ul>
+<p>Several methods are available in the directive context in order to ease the
+writing of conditionals, such as <code>❖ missing</code>, <code>❖ changed</code>,
+<code>❖ found</code>, <code>❖ unchanged</code>, and <code>❖ exists</code>
+featured in the previous examples. They will be properly detailed later on.</p>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>No infinite loops</strong>
+  <br/>
+  Although there are no conceptual guarantees for proper halting of unbounded
+loops, we have provided a technical solution for potentially infinite
+iterations: arara has a predefined maximum number of loops. The default value is
+set to 10, but it can be overridden either in the configuration file or with a
+command line flag. We discuss this feature later on.
+</blockquote>
+<p>All directives, regardless of their type, are internally mapped alongside with
+the <code>reference</code> parameter, discussed earlier on, as a special variable in the
+rule context. When inspecting the log file, you will find all map keys and
+values for each extracted directive (actually, there is an entire log section
+devoted to detailing directives found in the code). See, for instance, the
+report of the directive extraction and normalization process performed by arara
+when inspecting <code>doc2.tex</code>, available in the log file. Note that timestamps were
+deliberately removed in order to declutter the output, and line breaks were
+included in order to easily spot the log entries.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex
+</span><span style="color:#898989;">% arara: pdflatex: { shell: yes }
+</span><span style="color:#016692;">\documentclass</span><span>{</span><span style="color:#646409;">article</span><span>}
+</span><span>
+</span><span style="color:#016692;">\begin</span><span>{</span><span style="color:#696989;">document</span><span>}
+</span><span>Hello world.
+</span><span style="color:#016692;">\end</span><span>{</span><span style="color:#696989;">document</span><span>}
+</span><span style="color:#016692;">\end</span><span>{</span><span style="color:#696989;">ncodebox</span><span>}
+</span></code></pre>
+<pre style="background-color:#ffffff;color:#010101;"><code><span>Directive: { identifier: pdflatex, parameters:
+</span><span>{reference=/home/islandoftex/doc2.tex},
+</span><span>conditional: { NONE }, lines: [1] }
+</span><span>
+</span><span>Directive: { identifier: pdflatex, parameters:
+</span><span>{shell=yes, reference=/home/islandoftex/doc2.tex},
+</span><span>conditional: { NONE }, lines: [2] }
+</span></code></pre>
+<p>The directive context also features another special parameter named <code>files</code>
+which expects a non-empty list of file names as plain string values. For each
+element of this list, arara will replicate the current directive and point the
+element being iterated as current <code>reference</code> value (resolved to a proper
+absolute, canonical path of the file name). See, for instance, the report of the
+directive extraction and normalization process performed by arara when
+inspecting <code>doc3.tex</code>, available in the log file.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex: { files: [ doc1.tex, doc2.tex ] }
+</span><span>Hello world.
+</span><span style="color:#7a7025;">\bye
+</span></code></pre>
+<pre style="background-color:#ffffff;color:#010101;"><code><span>Directive: { identifier: pdflatex, parameters:
+</span><span>{reference=/home/islandoftex/doc1.tex},
+</span><span>conditional: { NONE }, lines: [1] }
+</span><span>
+</span><span>Directive: { identifier: pdflatex, parameters:
+</span><span>{reference=/home/islandoftex/doc2.tex},
+</span><span>conditional: { NONE }, lines: [1] }
+</span></code></pre>
+<p>It is important to observe that, in this case, <code>doc3.tex</code> is a plain TeX file,
+but <code>pdflatex</code> is actually being called on two LaTeX documents, first <code>doc1.tex</code>
+and then, at last, <code>doc2.tex</code>.</p>
+<p>Even when a directive is interpreted with a file other than the one being
+processed by arara (through the magic of the <code>files</code> parameter), it is possible
+to use helper methods in the rule context to get access to the original file and
+reference. Such methods are detailed later on.</p>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Orb tag expansion in parameter values</strong>
+  <br/>
+  From version 6.0 on, arara is able to expand orb tags within a special <code>options</code>
+parameter in the directive context. For instance:</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: lualatex: {
+</span><span style="color:#898989;">% arara: --&gt; options: [ &#39;--output-directory=@{getSession().
+</span><span style="color:#898989;">% arara: --&gt;                          get(&quot;arg:builddir&quot;)}&#39;
+</span><span style="color:#898989;">% arara: --&gt;          ]
+</span><span style="color:#898989;">% arara: --&gt; }
+</span></code></pre>
+<p>This feature supports the following methods with their documented meanings, as
+seen in <a href="https://islandoftex.gitlab.io/arara/manual/methods/">Methods</a>: <code>❖ getBasename</code>, <code>❖ getSession</code> and <code>❖ getOriginalReference</code>.</p>
+<p>Keep in mind that this feature is disabled when arara is running in safe mode,
+as seen in <a href="https://islandoftex.gitlab.io/arara/manual/cli/">Command line</a>.
+</blockquote>
+<h1 id="important-changes-in-version-7">Important changes in version 7</h1>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>A note to users</strong>
+  <br/>
+  If this is your first time using arara or you do not have custom rules in the
+old format, you can safely ignore this section. All rules shipped with our tool
+are already written in the new format.
+</blockquote>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Enabling header mode by default</strong>
+  <br/>
+  The header mode (parse only the first commented lines of a file) is now enabled
+by default. You may return to the old behavior disabling header mode in the
+configuration file or using the <code>-w</code>/<code>--whole-file</code> command line flag.
+</blockquote>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Using an own I&#x2F;O API instead of Java&#x27;s File objects</strong>
+  <br/>
+  In previous versions, arara's rules relied on Java's <code>File</code> API. That was bad
+for several reasons. Most importantly, we have switched to Java's <code>Path</code> API
+quite a while ago. Hence, what was used internally and what users accessed
+diverged.</p>
+<p>With our general refactoring, there has been a change of strategies: we now
+avoid exposing any Java-specific API. The new API which you have access to
+when using the <code>toFile("some file.txt")</code> method exposes the following properties
+and methods:</p>
+<ul>
+<li>The properties <code>isAbsolute</code>, <code>fileName</code>, <code>fileSize</code>, <code>lastModified</code>, <code>parent</code>,
+<code>exists</code>, <code>isDirectory</code>, and <code>isRegularFile</code> do what their names indicate.</li>
+<li>The method <code>startsWith(File)</code> checks if the string representation of the one
+file is prefix of the other one's.</li>
+<li><code>normalize()</code> turns a path into an absolute path and normalizes it.</li>
+<li><code>resolve(String | File)</code> resolves a child.</li>
+<li><code>resolveSibling(String | File)</code> resolves a sibling.</li>
+<li><code>readLines()</code> reads the file's content into a <code>List&lt;String&gt;</code>.</li>
+<li><code>readText()</code> reads the file's content into a continuous <code>String</code>.</li>
+<li><code>writeText(String, append? = false)</code> writes the argument to the file; the
+optional argument allows appending instead of overwriting.</li>
+</ul>
+<p>If you use the <code>toFile</code> method in your rules, you do not need to change
+anything. All the arara-internal methods like <code>exists(File)</code> have been adjusted
+to accept objects of the new format. In the end, the only need to change
+anything is in rules where you have accessed Java's <code>File</code> API yourself.
+</blockquote>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Add projects</strong>
+  <br/>
+  arara now supports projects. See <a href="https://islandoftex.gitlab.io/arara/manual/projects/">Projects</a>
+for further information on this new feature.
+</blockquote>
+<p>This section pretty much covered the basics of the changes to this version. Of
+course, it is highly advisable to make use of the new features available in
+arara for achieving better results. If you need any help, please do not hesitate
+to contact us. See <a href="https://islandoftex.gitlab.io/arara/manual/introduction/">Introduction</a> for more details on
+how to get help.</p>
+<p>If you are upgrading you may also be interested in reading our
+<a rel="noopener noreferrer" target="_blank" href="https://gitlab.com/islandoftex/arara/-/blob/master/CHANGELOG.md">changelog</a> or
+the announcement blog post of this release in the <a rel="noopener noreferrer" target="_blank" href="https://islandoftex.gitlab.io/arara/news/">news section on our
+website</a>.</p>
+
+
+      </div>
+
+    </main>
+
+    
+    <footer>
+      <small class="subtext">
+        arara by the Island of TeX
+      </small>
+    </footer>
+    
+  </body>
+  <script>
+    function highlightNav(heading) {
+        let pathname = location.pathname;
+        document.querySelectorAll(".toc a").forEach((item) => {
+            item.classList.remove("active");
+        });
+        document.querySelector(".toc a[href$='" + pathname + "#" + heading + "']").classList.add("active");
+    }
+
+    let currentHeading = "";
+    window.onscroll = function () {
+        let h = document.querySelectorAll("h1,h2,h3,h4,h5,h6");
+        let elementArr = [];
+
+        h.forEach(item => {
+            if (item.id !== "") {
+                elementArr[item.id] = item.getBoundingClientRect().top;
+            }
+        });
+        elementArr.sort();
+        for (let key in elementArr) {
+            if (!elementArr.hasOwnProperty(key)) {
+                continue;
+            }
+            if (elementArr[key] > 0 && elementArr[key] < 300) {
+                if (currentHeading !== key) {
+                    highlightNav(key);
+                    currentHeading = key;
+                }
+                break;
+            }
+        }
+    }
+  </script>
+</html>

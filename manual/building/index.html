@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Building arara | arara </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+    :root {
+        /* Primary theme color */
+        --primary-color: #cbe368; /* #FED43F; */
+        /* Primary theme text color */
+        --primary-text-color: #543631;
+        /* Primary theme link color */
+        --primary-link-color: #719b25;
+        /* Secondary color: the background body color */
+        --secondary-color: #fcfaf6;
+        --secondary-text-color: #303030;
+        /* Highlight text color of table of content */
+        --toc-highlight-text-color: #d46e13;
+    }
+</style>
+
+    <link rel="icon" href="https://islandoftex.gitlab.io/arara/favicon.svg">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/normalize.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juice.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/fonts/fonts.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juicy-arara.css">
+    
+    <meta name="keywords" content="tex, latex, context, build tool, automation">
+    <meta itemprop="name" content="The cool TeX automation tool">
+    <meta itemprop="description" content="arara is a TeX automation tool based on directives and rules.">
+    
+  </head>
+
+  <body>
+    
+<header class="box-shadow">
+    
+
+<a href="https://islandoftex.gitlab.io/arara/">
+  <div class="logo">
+    <img src="https://islandoftex.gitlab.io/arara/images/arara-text.svg" alt="logo">
+  </div>
+</a>
+
+<nav>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/changelog/">Changelog</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/quickstart/">Quickstart</a>
+  
+  
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/manual">Manual</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/news">News</a>
+  
+  <a class="nav-item subtitle-text" href="https://gitlab.com/islandoftex/arara">GitLab</a>
+  
+  
+</nav>
+
+</header>
+
+
+    <main>
+      
+      
+      
+      
+      
+      <div class="toc">
+        <div class="toc-sticky">
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/building/#requirements">Requirements</a>
+          </div>
+          
+          
+          <div class="toc-item-child">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/building/#gradle-version"><small>- $ gradle --version</small></a>
+          </div>
+          
+          <div class="toc-item-child">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/building/#gradle-8-14-2"><small>- Gradle 8.14.2</small></a>
+          </div>
+          
+          <div class="toc-item-child">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/building/#building-the-executable"><small>- Building the executable</small></a>
+          </div>
+          
+          <div class="toc-item-child">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/building/#executing-the-fresh-build"><small>- Executing the fresh build</small></a>
+          </div>
+          
+          
+          
+        </div>
+      </div>
+      
+      
+
+      <div class="content text">
+        
+<div class="heading-text">Building arara</div>
+<p>arara is a Kotlin application licensed under the <a rel="noopener noreferrer" target="_blank" href="https://www.opensource.org/licenses/bsd-license.php">New BSD
+License</a>, a verified
+GPL-compatible free software license, and the source code is available in the
+project repository at <a rel="noopener noreferrer" target="_blank" href="https://gitlab.com/islandoftex/arara">GitLab</a>. This
+chapter provides detailed instructions on how to build our tool from source.</p>
+<h1 id="requirements">Requirements</h1>
+<p>In order to build our tool from source, we need to ensure that our development
+environment has the minimum requirements for a proper compilation. Make sure the
+following items are available:</p>
+<ul>
+<li>
+<p>On account of our project being hosted at <a rel="noopener noreferrer" target="_blank" href="https://gitlab.com/">GitLab</a>, an
+online source code repository, we highly recommend the installation of <code>git</code>,
+a version control system for tracking changes in computer files and
+coordinating work on those files among multiple people. Alternatively, you can
+directly obtain the source code by requesting a <a rel="noopener noreferrer" target="_blank" href="https://gitlab.com/islandoftex/arara/-/archive/master/arara-master.zip">source code
+download</a>
+in the repository. In order to check if <code>git</code> is available in your operating
+system, run the following command in the terminal (version numbers might
+vary):</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> git</span><span style="color:#696989;"> --version
+</span><span style="color:#696989;">git</span><span> version 2.50.0
+</span></code></pre>
+<p>Please refer to the <a rel="noopener noreferrer" target="_blank" href="https://git-scm.com/">git project website</a> in order to
+obtain specific installation instructions for your operating system. In
+general, most recent Unix systems have <code>git</code> installed out of the
+shelf.</p>
+</li>
+<li>
+<p>Our tool is written in the Kotlin programming language, so we need a proper
+Java Development Kit, a collection of programming tools for the Java
+platform. Our source code is known to be compliant with several vendors,
+including Oracle, OpenJDK, and Azul Systems. In order to check if your
+operating system has the proper tools, run the following command in the
+terminal (version numbers might vary):</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> javac</span><span style="color:#696989;"> -version
+</span><span style="color:#696989;">javac</span><span> 21.0.7
+</span></code></pre>
+<p>The previous command, as the name suggests, refers to the <code>javac</code> tool,
+which is the Java compiler itself. The most common Java Development Kit out
+there is from
+<a rel="noopener noreferrer" target="_blank" href="https://www.oracle.com/java/technologies/downloads/">Oracle</a>. However,
+several Linux distributions (as well as some developers, yours truly
+included) favour the OpenJDK vendor, so your mileage may vary. Please refer
+to the corresponding website of the vendor of your choice in order to obtain
+specific installation instructions for your operating system.</p>
+</li>
+<li>
+<p>As a means to provide a straightforward and simplified compilation workflow,
+arara relies on Gradle, a software project management and comprehension
+tool. Gradle is a build tool just like ours with a much more comprehensive
+build framework to provide support for the JVM ecosystem. In order to check if
+<code>gradle</code>, the Gradle binary, is available in your operating system, run the
+following command in the terminal (version numbers might vary):</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"></code></pre>
+</li>
+</ul>
+<h2 id="gradle-version">$ gradle --version</h2>
+<h2 id="gradle-8-14-2">Gradle 8.14.2</h2>
+<p>Build time:    2025-06-05 13:32:01 UTC
+Revision:      30db2a3bdfffa9f8b40e798095675f9dab990a9a</p>
+<p>Kotlin:        2.0.21
+Groovy:        3.0.24
+Ant:           Apache Ant(TM) version 1.10.15
+compiled on August 25 2024
+Launcher JVM:  24.0.1 (Red Hat, Inc. 24.0.1+9)
+Daemon JVM:    /usr/lib/jvm/java-24-openjdk (no JDK
+specified, using current Java home)
+OS:            Linux 6.15.3-200.fc42.x86_64 amd64</p>
+<pre style="background-color:#ffffff;color:#010101;"><code><span>
+</span><span>  Please refer to the Gradle [project website](https://gradle.org) in order to
+</span><span>  obtain specific installation instructions for your operating system. In
+</span><span>  general, most recent Linux distributions have the Gradle binary, as well the
+</span><span>  proper associated dependencies, available in their corresponding
+</span><span>  repositories.
+</span><span>
+</span><span>* For a proper repository cloning, as well as the first Gradle build, an active
+</span><span>Internet connection is required. In particular, Gradle dynamically downloads
+</span><span>Java libraries and plug-ins from one or more online repositories and stores
+</span><span>them in a local cache. Be mindful that subsequent builds can occur offline,
+</span><span>provided that the local Gradle cache exists.
+</span><span>
+</span><span>arara can be easily built from source, provided that the aforementioned
+</span><span>requirements are available. The next section presents the compilation details,
+</span><span>from repository cloning to a proper Java archive generation.
+</span><span>
+</span><span>&lt;blockquote style=&quot;padding: 20px; margin-top: 10px; margin-bottom: 10px;&quot;&gt;
+</span><span>  &lt;strong&gt;One tool to rule them all&lt;/strong&gt;
+</span><span>  &lt;br/&gt;
+</span><span>  For the brave, there is the &lt;a rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot; href=&quot;https://sdkman.io/&quot;&gt;Software Development Kit
+</span><span>Manager&lt;/a&gt;, an interesting tool for managing parallel versions
+</span><span>of multiple software development kits on most Unix based systems. In particular,
+</span><span>this tool provides off the shelf support for several Java Development Kit
+</span><span>vendors and versions, as well as most recent versions of Gradle.&lt;/p&gt;
+</span><span>&lt;p&gt;Personally, I prefer the packaged versions provided by my favourite Linux
+</span><span>distribution (Fedora), but this tool is a very interesting alternative to set up
+</span><span>a development environment with little to no effort.
+</span><span>&lt;/blockquote&gt;
+</span><span>
+</span><span>
+</span><span># Compiling the tool
+</span><span>
+</span><span>## Fetching the sources
+</span><span>
+</span><span>First and foremost, we need to clone the project repository into our development
+</span><span>environment, so we can build our tool from source. The cloning will create a
+</span><span>directory named `arara/` within the current working directory, so remember to
+</span><span>first ensure that you are in the appropriate directory. For example:
+</span><span>
+</span><span>```sh
+</span><span>$ mkdir git-projects
+</span><span>$ cd git-projects
+</span></code></pre>
+<p>Run the following command in the terminal to clone the arara project:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> git clone https://gitlab.com/islandoftex/arara.git
+</span></code></pre>
+<p>Wait a couple of seconds (or minutes, depending on your Internet connection)
+while the previous command clones the project repository hosted at GitLab. Be
+mindful that this operation pulls down every version of every file for the
+history of the project. Fortunately, the version control system has the notion
+of a <em>shallow clone</em>, which is a more succinctly meaningful way of describing a
+local repository with history truncated to a particular depth during the clone
+operation. If you want to get only the latest revision of everything in our
+repository, run the following command in the terminal:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> git clone https://gitlab.com/islandoftex/arara.git</span><span style="color:#696989;"> --depth</span><span> 1
+</span></code></pre>
+<p>This operation is way faster than the previous one, for obvious reasons.</p>
+<h2 id="building-the-executable">Building the executable</h2>
+<p>Unix terminals typically start at <code>HOME</code> as working directory, so, if you
+did not <code>cd</code> to another directory (as in the earlier example), the newly cloned
+<code>arara/</code> directory is almost certain to be accessible from that level. Now, we
+need to navigate to the directory named <code>arara/</code>. Run the following command in
+the terminal:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> cd arara
+</span></code></pre>
+<p>The previous command should take us inside the <code>arara/</code> directory of our
+project, where the source code and the corresponding build file are located. Let
+us make sure we are in the correct location by running the following command in
+the terminal:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> ls build.gradle.kts
+</span><span style="color:#696989;">build.gradle.kts
+</span></code></pre>
+<p>Great, we are in the correct location! From the previous output, let us inspect
+the directory contents. The <code>cli/</code> directory, as the name suggests, contains the
+source code of the main command-line application organized in an established
+package structure, whereas <code>build.gradle.kts</code> is the corresponding Gradle build
+file written to efficiently compile the project. In order to build our tool, run
+the following command in the terminal:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> ./gradlew :cli:build
+</span></code></pre>
+<p>Alternatively, you can also run the following command in the terminal:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> ./gradlew build
+</span></code></pre>
+<p>Gradle is based around the central concept of a build life cycle. The compile
+phase, as the name suggests, compiles the source code of the project using the
+underlying Java compiler. After compiling, the code can be packaged, tested and
+run. The <code>build</code> target actually compiles, tests and packages our
+tool. Afterwards, you will have a <code>cli/build/libs/</code> directory with multiple JAR
+files, one containing <code>with-deps</code>. That file is ready to run as it bundles all
+dependencies. Subsequent builds will be significantly faster than the first
+build because they do not fetch dependencies and rely on a build cache. Finally,
+after some time, Gradle will output the following message as result (please note
+that the entire compilation and packaging only took 4 seconds on my development
+machine due to an existing local cache):</p>
+<pre style="background-color:#ffffff;color:#010101;"><code><span>BUILD SUCCESSFUL in 4s
+</span><span>15 actionable tasks: 15 up-to-date
+</span></code></pre>
+<h2 id="executing-the-fresh-build">Executing the fresh build</h2>
+<p>Now, let us move the resulting Java archive file from that particular directory
+to our current directory. Run the following command in the terminal (please note
+that the Java archive file was also renamed during the move operation):</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> mv cli/build/libs/arara-cli-with-deps-</span><span style="color:#016692;">*</span><span>.jar arara.jar
+</span></code></pre>
+<p>Now, our current directory contains the final <code>arara.jar</code> Java archive file
+properly built from source. This file can be safely distributed and deployed, as
+seen later on, in <a href="https://islandoftex.gitlab.io/arara/manual/deploying/">Deploying</a>. You can also test the
+resulting file by running the following command in the terminal:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> java</span><span style="color:#696989;"> -jar</span><span> arara.jar
+</span><span style="color:#696989;">Usage:</span><span> arara </span><span style="color:#016692;">[</span><span>&lt;options&gt;</span><span style="color:#016692;">] &lt;</span><span>file</span><span style="color:#016692;">&gt;</span><span>...
+</span><span>
+</span><span>    </span><span style="color:#696989;">__</span><span> _ _ __ __ _ _ __ __ _
+</span><span>   </span><span style="color:#696989;">/</span><span> _` </span><span style="color:#016692;">| </span><span style="color:#009f78;">&#39;__/ _` | &#39;</span><span style="color:#696989;">__/</span><span> _` </span><span style="color:#016692;">|
+</span><span>  </span><span style="color:#016692;">| </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| |
+</span><span>   </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|
+</span><span>
+</span><span>  </span><span style="color:#696989;">The</span><span> cool TeX automation tool.
+</span><span>
+</span><span>  </span><span style="color:#696989;">arara</span><span> executes the TeX workflow you tell it to execute. Simply specify your
+</span><span>  </span><span style="color:#696989;">needs</span><span> within your TeX file and let arara do the work. These directives
+</span><span>  </span><span style="color:#696989;">feature</span><span> conditional execution and parameter expansion.
+</span><span>
+</span><span style="color:#696989;">Options:
+</span><span>  </span><span style="color:#696989;">-l, --log</span><span>                     Generate a log output
+</span><span>  </span><span style="color:#696989;">-v, --verbose</span><span> /</span><span style="color:#696989;"> -s</span><span>,</span><span style="color:#696989;"> --silent</span><span>  Print the command output
+</span><span>  </span><span style="color:#696989;">-n, --dry-run</span><span>                 Go through all the motions of running a
+</span><span>                                </span><span style="color:#696989;">command,</span><span> but with no actual calls
+</span><span>  </span><span style="color:#696989;">-S, --safe-run</span><span>                Run in safe mode and disable potentially
+</span><span>                                </span><span style="color:#696989;">harmful</span><span> features. Make sure your projects uses
+</span><span>                                </span><span style="color:#696989;">only</span><span> allowed features.
+</span><span>  </span><span style="color:#696989;">-w, --whole-file</span><span>              Extract directives in the file, not only in the
+</span><span>                                </span><span style="color:#696989;">header
+</span><span>  </span><span style="color:#696989;">-p, --preamble</span><span style="color:#016692;">=&lt;</span><span>text</span><span style="color:#016692;">&gt;</span><span>         Set the file preamble based on the
+</span><span>                                </span><span style="color:#696989;">configuration</span><span> file
+</span><span>  </span><span style="color:#696989;">-t, --timeout</span><span style="color:#016692;">=&lt;</span><span>int</span><span style="color:#016692;">&gt;</span><span>           Set the execution timeout (in milliseconds)
+</span><span>  </span><span style="color:#696989;">-L, --language</span><span style="color:#016692;">=&lt;</span><span>text</span><span style="color:#016692;">&gt;</span><span>         Set the application language
+</span><span>  </span><span style="color:#696989;">-m, --max-loops</span><span style="color:#016692;">=&lt;</span><span>int</span><span style="color:#016692;">&gt;</span><span>         Set the maximum number of loops (</span><span style="color:#016692;">&gt; </span><span style="color:#8c008a;">0</span><span>)
+</span><span>  </span><span style="color:#696989;">-d, --working-directory</span><span style="color:#016692;">=&lt;</span><span>path</span><span style="color:#016692;">&gt;
+</span><span>                                </span><span style="color:#696989;">Set</span><span> the working directory for all tools
+</span><span>  </span><span style="color:#696989;">-P, --call-property</span><span style="color:#016692;">=&lt;</span><span>value</span><span style="color:#016692;">&gt;</span><span>   Pass parameters to the application to be used
+</span><span>                                </span><span style="color:#696989;">within</span><span> the session.
+</span><span>  </span><span style="color:#696989;">-F, --properties-file</span><span style="color:#016692;">=&lt;</span><span>path</span><span style="color:#016692;">&gt;</span><span>  Pass a properties file to the application to be
+</span><span>                                </span><span style="color:#696989;">used</span><span> within the session.
+</span><span>  </span><span style="color:#696989;">--generate-completion</span><span style="color:#016692;">=</span><span>(bash|zsh|fish)
+</span><span>                                </span><span style="color:#696989;">Generate</span><span> a completion script for arara. Add
+</span><span>                                </span><span style="color:#009f78;">&#39;source &lt;(arara --generate-completion &lt;shell&gt;)&#39;
+</span><span>                                </span><span style="color:#696989;">to</span><span> your shell</span><span style="color:#009f78;">&#39;s init file.
+</span><span style="color:#009f78;">  -V, --version                 Show the version and exit
+</span><span style="color:#009f78;">  -h, --help                    Show this message and exit
+</span><span style="color:#009f78;">
+</span><span style="color:#009f78;">Arguments:
+</span><span style="color:#009f78;">  &lt;file&gt;  The file(s) to evaluate and process
+</span></code></pre>
+<p>The following optional Gradle phase is used to handle the project cleaning,
+including the complete removal of the <code>build/</code> directory. As a result, the
+project is then restored to the initial state without any generated Java
+bytecode. Run the following command in the terminal:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> ./gradlew clean
+</span></code></pre>
+<p>This section covered the compilation details for building arara from source. The
+aforementioned steps are straightforward and can be automated in order to
+generate snapshots and daily builds. If you run into any issue, please let us
+know. Happy compilation!</p>
+
+
+      </div>
+
+    </main>
+
+    
+    <footer>
+      <small class="subtext">
+        arara by the Island of TeX
+      </small>
+    </footer>
+    
+  </body>
+  <script>
+    function highlightNav(heading) {
+        let pathname = location.pathname;
+        document.querySelectorAll(".toc a").forEach((item) => {
+            item.classList.remove("active");
+        });
+        document.querySelector(".toc a[href$='" + pathname + "#" + heading + "']").classList.add("active");
+    }
+
+    let currentHeading = "";
+    window.onscroll = function () {
+        let h = document.querySelectorAll("h1,h2,h3,h4,h5,h6");
+        let elementArr = [];
+
+        h.forEach(item => {
+            if (item.id !== "") {
+                elementArr[item.id] = item.getBoundingClientRect().top;
+            }
+        });
+        elementArr.sort();
+        for (let key in elementArr) {
+            if (!elementArr.hasOwnProperty(key)) {
+                continue;
+            }
+            if (elementArr[key] > 0 && elementArr[key] < 300) {
+                if (currentHeading !== key) {
+                    highlightNav(key);
+                    currentHeading = key;
+                }
+                break;
+            }
+        }
+    }
+  </script>
+</html>

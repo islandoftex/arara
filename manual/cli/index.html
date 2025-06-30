@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Command line | arara </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+    :root {
+        /* Primary theme color */
+        --primary-color: #cbe368; /* #FED43F; */
+        /* Primary theme text color */
+        --primary-text-color: #543631;
+        /* Primary theme link color */
+        --primary-link-color: #719b25;
+        /* Secondary color: the background body color */
+        --secondary-color: #fcfaf6;
+        --secondary-text-color: #303030;
+        /* Highlight text color of table of content */
+        --toc-highlight-text-color: #d46e13;
+    }
+</style>
+
+    <link rel="icon" href="https://islandoftex.gitlab.io/arara/favicon.svg">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/normalize.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juice.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/fonts/fonts.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juicy-arara.css">
+    
+    <meta name="keywords" content="tex, latex, context, build tool, automation">
+    <meta itemprop="name" content="The cool TeX automation tool">
+    <meta itemprop="description" content="arara is a TeX automation tool based on directives and rules.">
+    
+  </head>
+
+  <body>
+    
+<header class="box-shadow">
+    
+
+<a href="https://islandoftex.gitlab.io/arara/">
+  <div class="logo">
+    <img src="https://islandoftex.gitlab.io/arara/images/arara-text.svg" alt="logo">
+  </div>
+</a>
+
+<nav>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/changelog/">Changelog</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/quickstart/">Quickstart</a>
+  
+  
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/manual">Manual</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/news">News</a>
+  
+  <a class="nav-item subtitle-text" href="https://gitlab.com/islandoftex/arara">GitLab</a>
+  
+  
+</nav>
+
+</header>
+
+
+    <main>
+      
+      
+      
+      
+      
+      <div class="toc">
+        <div class="toc-sticky">
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/cli/#user-interface-design">User interface design</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/cli/#options">Options</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/cli/#file-name-lookup">File name lookup</a>
+          </div>
+          
+          
+        </div>
+      </div>
+      
+      
+
+      <div class="content text">
+        
+<div class="heading-text">Command line</div>
+<p>arara is a command line tool. It can be used in a plethora of command
+interpreter implementations, from bash to a Windows prompt, provided that the
+Java runtime environment is accessible within the current session. This chapter
+covers the user interface design, as well as options (also known as flags or
+switches) that modify the underlying application behaviour.</p>
+<h1 id="user-interface-design">User interface design</h1>
+<p>The goal of a user interface design is to make the interaction as simple and
+efficient as possible. Good user interface design facilitates finishing the task
+at hand without drawing unnecessary attention to itself. We redesigned the
+interface in order to look more pleasant to the eye, after all, we work with TeX
+and friends:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span>  </span><span style="color:#696989;">__</span><span> _ _ __ __ _ _ __ __ _
+</span><span> </span><span style="color:#696989;">/</span><span> _` </span><span style="color:#016692;">| </span><span style="color:#009f78;">&#39;__/ _` | &#39;</span><span style="color:#696989;">__/</span><span> _` </span><span style="color:#016692;">|
+</span><span style="color:#016692;">| </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| |
+</span><span> </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|
+</span><span>
+</span><span style="color:#696989;">Processing </span><span style="color:#009f78;">&#39;doc5.tex&#39;</span><span> (size: 285 B, last modified: 03/01/2020
+</span><span style="color:#696989;">19:25:40</span><span>), please wait.
+</span><span>
+</span><span>(</span><span style="color:#696989;">PDFLaTeX</span><span>) PDFLaTeX engine .............................. SUCCESS
+</span><span>(</span><span style="color:#696989;">BibTeX</span><span>) The BibTeX reference management software ....... SUCCESS
+</span><span>(</span><span style="color:#696989;">PDFLaTeX</span><span>) PDFLaTeX engine .............................. SUCCESS
+</span><span>(</span><span style="color:#696989;">PDFLaTeX</span><span>) PDFLaTeX engine .............................. SUCCESS
+</span><span>
+</span><span style="color:#696989;">Total:</span><span> 1.14 seconds
+</span></code></pre>
+<p>First of all, we have the nice application logo, displayed using ASCII art. The
+entire layout is based on monospaced font spacing, usually used in terminal
+prompts. Hopefully you follow the conventional use of a monospaced font in your
+terminal, otherwise the visual effect will not be so pleasant. First and
+foremost, arara displays details about the file being processed, including size
+and modification status:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">Processing </span><span style="color:#009f78;">&#39;doc5.tex&#39;</span><span> (size: 285 B, last modified: 03/01/2020
+</span><span style="color:#696989;">19:25:40</span><span>)</span><span style="color:#696989;">,</span><span> please wait.
+</span></code></pre>
+<p>The list of tasks was also redesigned to be fully justified, and each entry
+displays both task and subtask names (the former being displayed enclosed in
+parentheses), besides of course the usual execution result:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span>(</span><span style="color:#696989;">PDFLaTeX</span><span>) PDFLaTeX engine .............................. SUCCESS
+</span><span>(</span><span style="color:#696989;">BibTeX</span><span>) The BibTeX reference management software ....... SUCCESS
+</span><span>(</span><span style="color:#696989;">PDFLaTeX</span><span>) PDFLaTeX engine .............................. SUCCESS
+</span><span>(</span><span style="color:#696989;">PDFLaTeX</span><span>) PDFLaTeX engine .............................. SUCCESS
+</span></code></pre>
+<p>As previously mentioned in <a href="https://islandoftex.gitlab.io/arara/manual/concepts/">Important concepts</a>, if a task
+fails, arara will halt the entire execution at once and immediately report back
+to the user. This is an example of how a failed task looks like:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span>(</span><span style="color:#696989;">PDFLaTeX</span><span>) PDFLaTeX engine .............................. FAILURE
+</span></code></pre>
+<p>Also, observe that our tool displays the execution time before terminating, in
+seconds. The execution time has a very simple precision, as it is meant to be
+easily readable, and should not be considered for command profiling.</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">Total:</span><span> 1.14 seconds
+</span></code></pre>
+<p>The tool has two execution modes: <em>silent</em>, which is the default, and <em>verbose</em>,
+which prints as much information about tasks as possible. When in silent mode,
+arara will simply display the task and subtask names, as well as the execution
+result. Nothing more is added to the output. For instance:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span>(</span><span style="color:#696989;">BibTeX</span><span>) The BibTeX reference management software ....... SUCCESS
+</span></code></pre>
+<p>When executed in verbose mode, arara will display the underlying system command
+output as well, when applied. In version 4.0 of our tool, this mode was also
+entirely redesigned in order to avoid unnecessary clutter, so it would be easier
+to spot each task. For instance:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">-----------------------------------------------------------------
+</span><span>(</span><span style="color:#696989;">BibTeX</span><span>) The BibTeX reference management software
+</span><span style="color:#696989;">-----------------------------------------------------------------
+</span><span>
+</span><span style="color:#696989;">This</span><span> is BibTeX, Version 0.99d (TeX Live 2020)
+</span><span style="color:#696989;">The</span><span> top-level auxiliary file: doc5.aux
+</span><span style="color:#696989;">The</span><span> style file: plain.bst
+</span><span style="color:#696989;">Database</span><span> file </span><span style="color:#898989;">#1: mybib.bib
+</span><span>
+</span><span style="color:#696989;">---------------------------------------------------------</span><span> SUCCESS
+</span></code></pre>
+<p>It is important to observe that, when in verbose mode, arara can offer proper
+interaction if the system command requires user intervention. However, when in
+silent mode, the tool will simply discard this requirement and the command will
+almost surely fail.</p>
+<h1 id="options">Options</h1>
+<p>In order to run arara on your TeX file, the simplest possible way is to provide
+the file name to the tool in your favourite command interpreter session,
+provided that the file has at least one directive:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> arara doc6.tex
+</span></code></pre>
+<p>From version 5.0 on, arara may receive more than one file as parameter. It will
+compile them sequentially (starting with the leftmost). The process fails on the
+first failure of these executions. For the files to be flawlessly compiled by
+TeX, they should be in the same working directory. If you process your files
+with other tools, this requirement could be lifted.</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> arara doc20.tex doc21.tex
+</span><span>
+</span><span>  </span><span style="color:#696989;">__</span><span> _ _ __ __ _ _ __ __ _
+</span><span> </span><span style="color:#696989;">/</span><span> _` </span><span style="color:#016692;">| </span><span style="color:#009f78;">&#39;__/ _` | &#39;</span><span style="color:#696989;">__/</span><span> _` </span><span style="color:#016692;">|
+</span><span style="color:#016692;">| </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| |
+</span><span> </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|
+</span><span>
+</span><span style="color:#696989;">Processing </span><span style="color:#009f78;">&#39;doc20.tex&#39;</span><span> (size: 28 B, last modified: 02/28/2020
+</span><span style="color:#696989;">07:15:02</span><span>), please wait.
+</span><span>
+</span><span>(</span><span style="color:#696989;">PDFTeX</span><span>) PDFTeX engine .................................. SUCCESS
+</span><span>
+</span><span style="color:#696989;">Processing </span><span style="color:#009f78;">&#39;doc21.tex&#39;</span><span> (size: 28 B, last modified: 02/28/2020
+</span><span style="color:#696989;">07:15:10</span><span>), please wait.
+</span><span>
+</span><span>(</span><span style="color:#696989;">PDFTeX</span><span>) PDFTeX engine .................................. SUCCESS
+</span><span>
+</span><span style="color:#696989;">Total:</span><span> 1.20 seconds
+</span></code></pre>
+<p>The tool has a set of command line options (also known as flags or switches)
+that modify the underlying execution behaviour or enhance the execution
+workflow. If you do not provide any parameters, arara will display the tool
+usage and the available options:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> arara
+</span><span style="color:#696989;">Usage:</span><span> arara </span><span style="color:#016692;">[</span><span>&lt;options&gt;</span><span style="color:#016692;">] &lt;</span><span>file</span><span style="color:#016692;">&gt;</span><span>...
+</span><span>
+</span><span>    </span><span style="color:#696989;">__</span><span> _ _ __ __ _ _ __ __ _
+</span><span>   </span><span style="color:#696989;">/</span><span> _` </span><span style="color:#016692;">| </span><span style="color:#009f78;">&#39;__/ _` | &#39;</span><span style="color:#696989;">__/</span><span> _` </span><span style="color:#016692;">|
+</span><span>  </span><span style="color:#016692;">| </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| |
+</span><span>   </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|
+</span><span>
+</span><span>  </span><span style="color:#696989;">The</span><span> cool TeX automation tool.
+</span><span>
+</span><span>  </span><span style="color:#696989;">arara</span><span> executes the TeX workflow you tell it to execute. Simply specify your
+</span><span>  </span><span style="color:#696989;">needs</span><span> within your TeX file and let arara do the work. These directives
+</span><span>  </span><span style="color:#696989;">feature</span><span> conditional execution and parameter expansion.
+</span><span>
+</span><span style="color:#696989;">Options:
+</span><span>  </span><span style="color:#696989;">-l, --log</span><span>                     Generate a log output
+</span><span>  </span><span style="color:#696989;">-v, --verbose</span><span> /</span><span style="color:#696989;"> -s</span><span>,</span><span style="color:#696989;"> --silent</span><span>  Print the command output
+</span><span>  </span><span style="color:#696989;">-n, --dry-run</span><span>                 Go through all the motions of running a
+</span><span>                                </span><span style="color:#696989;">command,</span><span> but with no actual calls
+</span><span>  </span><span style="color:#696989;">-S, --safe-run</span><span>                Run in safe mode and disable potentially
+</span><span>                                </span><span style="color:#696989;">harmful</span><span> features. Make sure your projects uses
+</span><span>                                </span><span style="color:#696989;">only</span><span> allowed features.
+</span><span>  </span><span style="color:#696989;">-w, --whole-file</span><span>              Extract directives in the file, not only in the
+</span><span>                                </span><span style="color:#696989;">header
+</span><span>  </span><span style="color:#696989;">-p, --preamble</span><span style="color:#016692;">=&lt;</span><span>text</span><span style="color:#016692;">&gt;</span><span>         Set the file preamble based on the
+</span><span>                                </span><span style="color:#696989;">configuration</span><span> file
+</span><span>  </span><span style="color:#696989;">-t, --timeout</span><span style="color:#016692;">=&lt;</span><span>int</span><span style="color:#016692;">&gt;</span><span>           Set the execution timeout (in milliseconds)
+</span><span>  </span><span style="color:#696989;">-L, --language</span><span style="color:#016692;">=&lt;</span><span>text</span><span style="color:#016692;">&gt;</span><span>         Set the application language
+</span><span>  </span><span style="color:#696989;">-m, --max-loops</span><span style="color:#016692;">=&lt;</span><span>int</span><span style="color:#016692;">&gt;</span><span>         Set the maximum number of loops (</span><span style="color:#016692;">&gt; </span><span style="color:#8c008a;">0</span><span>)
+</span><span>  </span><span style="color:#696989;">-d, --working-directory</span><span style="color:#016692;">=&lt;</span><span>path</span><span style="color:#016692;">&gt;
+</span><span>                                </span><span style="color:#696989;">Set</span><span> the working directory for all tools
+</span><span>  </span><span style="color:#696989;">-P, --call-property</span><span style="color:#016692;">=&lt;</span><span>value</span><span style="color:#016692;">&gt;</span><span>   Pass parameters to the application to be used
+</span><span>                                </span><span style="color:#696989;">within</span><span> the session.
+</span><span>  </span><span style="color:#696989;">-F, --properties-file</span><span style="color:#016692;">=&lt;</span><span>path</span><span style="color:#016692;">&gt;</span><span>  Pass a properties file to the application to be
+</span><span>                                </span><span style="color:#696989;">used</span><span> within the session.
+</span><span>  </span><span style="color:#696989;">--generate-completion</span><span style="color:#016692;">=</span><span>(bash|zsh|fish)
+</span><span>                                </span><span style="color:#696989;">Generate</span><span> a completion script for arara. Add
+</span><span>                                </span><span style="color:#009f78;">&#39;source &lt;(arara --generate-completion &lt;shell&gt;)&#39;
+</span><span>                                </span><span style="color:#696989;">to</span><span> your shell</span><span style="color:#009f78;">&#39;s init file.
+</span><span style="color:#009f78;">  -V, --version                 Show the version and exit
+</span><span style="color:#009f78;">  -h, --help                    Show this message and exit
+</span><span style="color:#009f78;">
+</span><span style="color:#009f78;">Arguments:
+</span><span style="color:#009f78;">  &lt;file&gt;  The file(s) to evaluate and process
+</span></code></pre>
+<p>The available options for our tool are detailed as follows. Each option contains
+short and long variations, which are denoted by <code>-o</code> and <code>--option</code> in the
+command line, respectively. Additionally, when a parameter is required by the
+current option, it will be denoted by <code>parameter</code> in the description.</p>
+<ul>
+<li>
+<p><code>-h</code> / <code>--help</code>: As the name indicates, this option prints the help message
+containing the tool usage and the list of all available options. The tool
+exits afterwards. When running arara without any options or a file to be
+processed, this is the default behaviour. This option has the highest priority
+over the others.</p>
+</li>
+<li>
+<p><code>-w</code> / <code>--whole-file</code>: This option changes the mechanics of how arara extracts
+the directives from the code. The tool always reads from the beginning of the
+file until it reaches a line that is not empty and it is not a
+comment. However, by activating this switch, arara will extract all directives
+from the entire file (hence the option name). Consider the following example:</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdftex
+</span><span>Hello world.
+</span><span style="color:#7a7025;">\bye
+</span><span>
+</span><span style="color:#898989;">% arara: pdftex
+</span></code></pre>
+<p>When running arara without this option, one directive will be extracted
+(line 1). However, with <code>-w</code> enabled, the directives in lines 1 and 5 will
+be extracted. This option can also be disabled by default in the
+configuration file.</p>
+</li>
+<li>
+<p><code>-l</code> / <code>--log</code>: This option enables the logging feature of our tool. All
+streams from all system commands will be logged and, at the end of the
+execution, a consolidated log file named <code>arara.log</code> will be generated. This
+option can also be activated by default in the configuration file. Refer to
+<a href="https://islandoftex.gitlab.io/arara/manual/logging/">Logging</a> for more details on the logging feature.</p>
+</li>
+<li>
+<p><code>-L</code> / <code>--language</code>: This option sets the language of the current execution of
+arara according to the language code identified by the <code>code</code> value provided
+as the parameter. The language code tries to follow the IETF BCP 47 norm,
+standardized nomenclature used to classify languages. For example, this is our
+tool speaking Dutch:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> arara</span><span style="color:#696989;"> -L</span><span> nl doc5.tex
+</span><span>  </span><span style="color:#696989;">__</span><span> _ _ __ __ _ _ __ __ _
+</span><span> </span><span style="color:#696989;">/</span><span> _` </span><span style="color:#016692;">| </span><span style="color:#009f78;">&#39;__/ _` | &#39;</span><span style="color:#696989;">__/</span><span> _` </span><span style="color:#016692;">|
+</span><span style="color:#016692;">| </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| |
+</span><span> </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|
+</span><span>
+</span><span style="color:#696989;">Verwerken</span><span> van </span><span style="color:#009f78;">&#39;doc5.tex&#39;</span><span> (grootte: 285 B, laatst gewijzigd:
+</span><span style="color:#696989;">03/01/2020</span><span> 19:25:40), een ogenblik geduld.
+</span><span>
+</span><span>(</span><span style="color:#696989;">PDFLaTeX</span><span>) PDFLaTeX engine ............................ SUCCESVOL
+</span><span>(</span><span style="color:#696989;">BibTeX</span><span>) The BibTeX reference management software ..... SUCCESVOL
+</span><span>(</span><span style="color:#696989;">PDFLaTeX</span><span>) PDFLaTeX engine ............................ SUCCESVOL
+</span><span>(</span><span style="color:#696989;">PDFLaTeX</span><span>) PDFLaTeX engine ............................ SUCCESVOL
+</span><span>
+</span><span style="color:#696989;">Totaal:</span><span> 1,07 seconden
+</span></code></pre>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Navis volitans mihi anguillis plena est</strong>
+  <br/>
+  At time of writing, arara is able to speak English, German, Dutch, Italian
+and Brazilian Portuguese out of the box. There is also a special dialect
+named Broad Norfolk, spoken by those living in the county of Norfolk in
+England.</p>
+<p><em>Available languages:</em> <code>en</code> for English, <code>de</code> for German, <code>en-QN</code> for Broad
+Norfolk, <code>it</code> for Italian, <code>nl</code> for Dutch, and <code>pt-BR</code> for Portuguese
+(BR).</p>
+<p>Would you like to make arara speak your own language? Splendid! We would
+love to have you in the team! Just send us an electronic mail, join our
+<a rel="noopener noreferrer" target="_blank" href="https://matrix.to/#/!HfEWIEvFtDplCLSQvz:matrix.org?via=matrix.org">dedicated
+chatroom</a>
+or <a rel="noopener noreferrer" target="_blank" href="https://gitlab.com/islandoftex/arara/issues">open an issue</a> about
+it. The localization process is quite straightforward, we can help you. Any
+language is welcome!
+</blockquote>
+<p>This option can also be specified in the configuration file. However, one can
+always override this setting by running the tool with an explicit <code>-L</code>
+option.</p>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Invalid language codes</strong>
+  <br/>
+  From version 6.0 on, if you pass an invalid language code, arara will now
+run in English and issue a log warning but not fail anymore. Failing due to
+the wrong language in the output was considered inappropriate.
+</blockquote>
+</li>
+<li>
+<p><code>-m</code> / <code>max-loops</code> <code>&lt;number&gt;</code>: As a means to avoid infinite iterations, arara
+has a predefined maximum number of loops, with the default set to 10, as a
+technical solution. For instance, consider the following directive:</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdftex while true
+</span></code></pre>
+<p>The <code>--max-loops</code> option is used to redefine the maximum number of loops our
+tool will allow for potentially infinite iterations. Any positive integer
+can be used as the <code>&lt;number&gt;</code> value for this option. An execution of the
+previous directive with a lower maximum number of loops is shown as follows:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> arara</span><span style="color:#696989;"> -m</span><span> 2 doc8.tex
+</span><span>  </span><span style="color:#696989;">__</span><span> _ _ __ __ _ _ __ __ _
+</span><span> </span><span style="color:#696989;">/</span><span> _` </span><span style="color:#016692;">| </span><span style="color:#009f78;">&#39;__/ _` | &#39;</span><span style="color:#696989;">__/</span><span> _` </span><span style="color:#016692;">|
+</span><span style="color:#016692;">| </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| |
+</span><span> </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|
+</span><span>
+</span><span style="color:#696989;">Processing </span><span style="color:#009f78;">&#39;doc8.tex&#39;</span><span> (size: 45 B, last modified: 05/29/2018
+</span><span style="color:#696989;">12:32:14</span><span>), please wait.
+</span><span>
+</span><span>(</span><span style="color:#696989;">PDFTeX</span><span>) PDFTeX engine .................................. SUCCESS
+</span><span>(</span><span style="color:#696989;">PDFTeX</span><span>) PDFTeX engine .................................. SUCCESS
+</span><span>
+</span><span style="color:#696989;">Total:</span><span> 0.58 seconds
+</span></code></pre>
+<p>This option can also be specified in the configuration file. However, one
+can always override this setting by running the tool with an explicit <code>-m</code>
+option.</p>
+</li>
+<li>
+<p><code>-n</code> / <code>--dry-run</code>: This option makes arara go through all the motions of
+running tasks and subtasks, but with no actual calls. It is a very useful
+feature for testing the sequence of underlying system commands to be performed
+on a file. For instance, consider the following execution:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> arara</span><span style="color:#696989;"> -n</span><span> doc5.tex
+</span><span>  </span><span style="color:#696989;">__</span><span> _ _ __ __ _ _ __ __ _
+</span><span> </span><span style="color:#696989;">/</span><span> _` </span><span style="color:#016692;">| </span><span style="color:#009f78;">&#39;__/ _` | &#39;</span><span style="color:#696989;">__/</span><span> _` </span><span style="color:#016692;">|
+</span><span style="color:#016692;">| </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| |
+</span><span> </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|
+</span><span>
+</span><span style="color:#696989;">Processing </span><span style="color:#009f78;">&quot;doc5.tex&quot;</span><span> (size: 360 B, last modified: 12/28/2020
+</span><span style="color:#696989;">13:03:32</span><span>), please wait.
+</span><span>
+</span><span style="color:#696989;">[DR]</span><span> (PDFLaTeX) PDFLaTeX engine
+</span><span style="color:#696989;">-----------------------------------------------------------------
+</span><span style="color:#696989;">Author:</span><span> Island of TeX
+</span><span style="color:#696989;">About</span><span> to run: </span><span style="color:#016692;">[</span><span>pdflatex, doc5.tex</span><span style="color:#016692;">]</span><span> @ /home/islandoftex/Downloads
+</span><span>
+</span><span style="color:#696989;">[DR]</span><span> (BibTeX) The BibTeX reference management software
+</span><span style="color:#696989;">-----------------------------------------------------------------
+</span><span style="color:#696989;">Author:</span><span> Island of TeX
+</span><span style="color:#696989;">About</span><span> to run: </span><span style="color:#016692;">[</span><span>bibtex, doc5</span><span style="color:#016692;">]</span><span> @ /home/islandoftex/Downloads
+</span><span>
+</span><span style="color:#696989;">[DR]</span><span> (PDFLaTeX) </span><span style="color:#696989;">PDFLaTeX</span><span> engine
+</span><span style="color:#696989;">-----------------------------------------------------------------
+</span><span style="color:#696989;">Author:</span><span> Island of TeX
+</span><span style="color:#696989;">About</span><span> to run: </span><span style="color:#016692;">[</span><span>pdflatex, doc5.tex</span><span style="color:#016692;">]</span><span> @ /home/islandoftex/Downloads
+</span><span>
+</span><span style="color:#696989;">[DR]</span><span> (PDFLaTeX) </span><span style="color:#696989;">PDFLaTeX</span><span> engine
+</span><span style="color:#696989;">-----------------------------------------------------------------
+</span><span style="color:#696989;">Author:</span><span> Island of TeX
+</span><span style="color:#696989;">About</span><span> to run: </span><span style="color:#016692;">[</span><span>pdflatex, doc5.tex</span><span style="color:#016692;">]</span><span> @ /home/islandoftex/Downloads
+</span><span>
+</span><span style="color:#696989;">Total:</span><span> 0.18 seconds
+</span></code></pre>
+<p>Note that the rule authors are displayed (so they can be blamed in case
+anything goes wrong), as well as the system command to be executed. It is an
+interesting approach to see everything that will happen to your document and
+in which order.</p>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Conditionals and boolean values</strong>
+  <br/>
+  It is very important to observe that conditionals are not evaluated when our
+tool is executed in the <code>--dry-run</code> mode, although they are properly
+listed. Also, when a rule returns a boolean value, the code is executed
+regardless of this mode.
+</blockquote>
+</li>
+<li>
+<p><code>p</code> / <code>--preamble</code> <code>&lt;name&gt;</code>: Some TeX documents require the same automation
+steps, e.g, a set of articles. To this end, so as to avoid repeating the same
+preamble over and over in this specific scenario, arara has the possibility of
+setting predefined preambles in a special section of the configuration file
+identified by a unique key for later use. This command line option prepends
+the predefined preamble referenced by the <code>&lt;name&gt;</code> key to the current document
+and then proceeds to extract directives, as usual. For instance:</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">twopdftex</span><span>: </span><span style="color:#016692;">|
+</span><span style="color:#009f78;">  % arara: pdftex
+</span><span style="color:#009f78;">  % arara: pdftex
+</span></code></pre>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span>Hello world.
+</span><span style="color:#7a7025;">\bye
+</span></code></pre>
+<p>In this example, we have a preamble named <code>twopdftex</code> and a TeX file named
+<code>doc9.tex</code> with no directives. Of course, our tool will complain about
+missing directives, unless we deliberately inject the two directives from
+the predefined preamble into the current execution:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> arara</span><span style="color:#696989;"> -p</span><span> twopdftex doc9.tex
+</span><span>  </span><span style="color:#696989;">__</span><span> _ _ __ __ _ _ __ __ _
+</span><span> </span><span style="color:#696989;">/</span><span> _` </span><span style="color:#016692;">| </span><span style="color:#009f78;">&#39;__/ _` | &#39;</span><span style="color:#696989;">__/</span><span> _` </span><span style="color:#016692;">|
+</span><span style="color:#016692;">| </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| |
+</span><span> </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|
+</span><span>
+</span><span style="color:#696989;">Processing </span><span style="color:#009f78;">&#39;doc9.tex&#39;</span><span> (size: 18 B, last modified: 05/29/2018
+</span><span style="color:#696989;">14:39:21</span><span>), please wait.
+</span><span>
+</span><span>(</span><span style="color:#696989;">PDFTeX</span><span>) PDFTeX engine .................................. SUCCESS
+</span><span>(</span><span style="color:#696989;">PDFTeX</span><span>) PDFTeX engine .................................. SUCCESS
+</span><span>
+</span><span style="color:#696989;">Total:</span><span> 0.96 seconds
+</span></code></pre>
+<p>It is important to note that this is just a directive-based preamble and
+nothing else, so a line other than a directive is discarded. Line breaks and
+conditionals are supported. Trying to exploit this area for other purposes
+will not work.</p>
+</li>
+<li>
+<p><code>-t</code> / <code>--timeout</code> <code>&lt;number&gt;</code>: This option sets an execution timeout for every
+task, in milliseconds. If the timeout is reached before the task ends, arara
+will kill it and halt the execution. Any positive integer can be used as the
+<code>&lt;number&gt;</code> value for this option. Of course, use a sensible value to allow
+proper time for a task to be executed. For instance, consider the following
+recursive call:</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdftex
+</span><span style="color:#014a69;">\def</span><span style="color:#a15001;">\foo</span><span>{</span><span style="color:#7a7025;">\foo</span><span>}
+</span><span>This will go </span><span style="color:#7a7025;">\foo</span><span> forever.
+</span><span style="color:#7a7025;">\bye
+</span></code></pre>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> arara</span><span style="color:#696989;"> --timeout</span><span> 3000 doc9.tex
+</span><span>  </span><span style="color:#696989;">__</span><span> _ _ __ __ _ _ __ __ _
+</span><span> </span><span style="color:#696989;">/</span><span> _` </span><span style="color:#016692;">| </span><span style="color:#009f78;">&#39;__/ _` | &#39;</span><span style="color:#696989;">__/</span><span> _` </span><span style="color:#016692;">|
+</span><span style="color:#016692;">| </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| |
+</span><span> </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|
+</span><span>
+</span><span style="color:#696989;">Processing </span><span style="color:#009f78;">&#39;doc10.tex&#39;</span><span> (size: 63 B, last modified: 05/29/2018
+</span><span style="color:#696989;">15:24:06</span><span>), please wait.
+</span><span>
+</span><span>(</span><span style="color:#696989;">PDFTeX</span><span>) PDFTeX engine .................................   ERROR
+</span><span>
+</span><span style="color:#696989;">The</span><span> system command execution reached the provided timeout value
+</span><span style="color:#696989;">and</span><span> was aborted. If the time was way too short, make sure to
+</span><span style="color:#696989;">provide</span><span> a longer value. There are more details available on this
+</span><span style="color:#696989;">exception:
+</span><span>
+</span><span style="color:#696989;">DETAILS</span><span> ---------------------------------------------------------
+</span><span style="color:#696989;">Timed</span><span> out waiting for java.lang.UNIXProcess@6b53e23f to finish,
+</span><span style="color:#696989;">timeout:</span><span> 3000 milliseconds, executed command </span><span style="color:#016692;">[</span><span>pdftex, doc10.tex</span><span style="color:#016692;">]
+</span><span>
+</span><span style="color:#696989;">Total:</span><span> 3.37 seconds
+</span></code></pre>
+<p>If left unattended, this particular execution would never finish (and
+probably crash the engine at a certain point), as expected by the recursive
+calls without a proper fixed point. The <code>--timeout</code> option was set at 3000
+milliseconds and the task was aborted when the time limit was reached. Note
+that the tool raised an error about it.</p>
+</li>
+<li>
+<p><code>d</code> / <code>--working-directory</code> <code>&lt;path&gt;</code> This option allows you to change the
+working directory to <code>&lt;path&gt;</code>. That is, the commands will run from a different
+directory than the directory you launched arara in. This is especially useful
+when calling a TeX engine as they resolve files against the working
+direcotry. For that reason, arara will also resolve each file you pass to it
+that has no absolute path against the working directory. The working directory
+is fixed for the whole call; passing multiple files to arara will resolve all
+of them against and execute all actions within that one working directory.</p>
+</li>
+<li>
+<p><code>-V</code> / <code>--version</code>: This option, as the name indicates, prints the current
+version. It also prints the current revision and a list of libraries with
+their corresponding licenses. Finally, it simply exits the application. Note
+that this option has the second highest priority over the others.</p>
+</li>
+<li>
+<p><code>-v</code> / <code>--verbose</code>: This option enables the verbose mode of arara. It also
+enables all streams to be flushed directly to the terminal, including
+potential user input interactions (the exact opposite of silent mode). This
+option can also be activated by default in the configuration file.</p>
+</li>
+<li>
+<p><code>-s</code> / <code>--silent</code>: This option disables the verbose mode of arara (thus
+activating the default silent mode), if previously enabled by a proper
+configuration file (see <a href="https://islandoftex.gitlab.io/arara/manual/configuration/">Configuration file</a>). It is
+important to note that this command line option has higher priority over the
+<code>--verbose</code> counterpart.</p>
+</li>
+<li>
+<p><code>-S</code> / <code>--safe-run</code>: This option enables the safe mode of arara, protecting
+the system  by disallowing certain user actions. Currently, the following
+features are restricted:</p>
+<ul>
+<li>
+<p>File lookup will only perform explicit file resolution. Wildcard filters are
+disabled.</p>
+</li>
+<li>
+<p><code>❖ unsafelyExecuteSystemCommand</code> will raise an exception and
+abort the run. Keep in mind that rules are still allowed to construct
+arbitrary commands using <code>Command</code> objects, so this restriction only
+disallows arbitrary system commands that would not get logged and are thus
+invisible to the user.</p>
+</li>
+<li>
+<p>The <code>--options</code> parameter does not expand orb tags in any directive.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>-P</code> / <code>--call-property</code> <code>&lt;entry&gt;</code>: This option forwards the provided
+<code>&lt;entry&gt;</code>, in the <code>key=value</code> format, to the session map. For instance,
+consider the following call:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> arara</span><span style="color:#696989;"> -P</span><span> foo=bar hello.tex
+</span></code></pre>
+<p>In a rule, you may now retrieve the value associated to the <code>foo</code> key, which
+is <code>bar</code>, set at runtime, by calling the following method in your code:</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#696989;">getSession</span><span>().</span><span style="color:#696989;">get</span><span>(</span><span style="color:#009f78;">&#39;arg:foo&#39;</span><span>)
+</span></code></pre>
+<p>This option may be called multiple times, as a means to provide as many data
+pairs as needed. Please refer to <code>❖ getSession</code> in
+<a href="https://islandoftex.gitlab.io/arara/manual/methods/">Methods</a> for more details. Please note that any entries
+defined with this option take precedence over entries with the same keys defined
+in a <code>.properties</code> file. This means that if a key exists in both the command line
+and a <code>.properties</code> file, the value from the command line will be used.</p>
+</li>
+<li>
+<p><code>-F</code> / <code>--properties-file</code> <code>&lt;path&gt;</code>: This option loads multiple entries in the
+<code>key=value</code> format from a specified <code>.properties</code> file into the session map.
+For instance, consider the following <code>env.properties</code> file:</p>
+<pre style="background-color:#ffffff;color:#010101;"><code><span># content of env.properties
+</span><span>foo=bar
+</span></code></pre>
+<p>The <code>.properties</code> file can be passed to the application via this option:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> arara</span><span style="color:#696989;"> -F</span><span> env.properties hello.tex
+</span></code></pre>
+<p>In a rule, you may now retrieve the value associated to the <code>foo</code> key, which
+is <code>bar</code>, set in the <code>.properties</code> file and loaded at runtime, by calling the
+following method in your code:</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#696989;">getSession</span><span>().</span><span style="color:#696989;">get</span><span>(</span><span style="color:#009f78;">&#39;arg:foo&#39;</span><span>)
+</span></code></pre>
+<p>Please refer to <code>❖ getSession</code> in <a href="https://islandoftex.gitlab.io/arara/manual/methods/">Methods</a> for more details.
+Note that this option has lower precedence over entries defined in the command line.</p>
+</li>
+<li>
+<p><code>--generate-completion</code> <code>&lt;shell&gt;</code>: This option generates a shell completion script
+for arara, enhancing the user experience by providing autocompletion for command
+line options and arguments. Possible values are <code>bash</code>, <code>zsh</code> and <code>fish</code>.</p>
+<p>To enable the generated completion script, add the following line to your shell's
+initialization file (e.g., <code>.bashrc</code> for Bash, <code>.zshrc</code> for Zsh, or <code>config.fish</code>
+for Fish):</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#010101;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#7a7025;">source </span><span style="color:#016692;">&lt;</span><span>(</span><span style="color:#696989;">arara --generate-completion </span><span style="color:#016692;">&lt;</span><span>shell</span><span style="color:#016692;">&gt;</span><span>)
+</span></code></pre>
+</li>
+</ul>
+<p>You can combine options, use long or short variations interchangeably and write
+them in any order, provided that a file name is given at some point in the
+command line, otherwise the usage will be printed. Use the provided features in
+order to enhance and optimize your automation workflow.</p>
+<h1 id="file-name-lookup">File name lookup</h1>
+<p>arara, as a command line application, provides support for a restricted range of
+file types. In particular, the tool recognizes five file types based on their
+extensions. These types are presented as follows, as well as the lookup order:
+<code>tex</code> <code>→</code> <code>dtx</code> <code>→</code> <code>ltx</code>  <code>→</code> <code>drv</code>
+<code>→</code> <code>ins</code>.</p>
+<p>Note that other extensions can be added through a proper mapping in the
+configuration file, as well as modifying the lookup order. This feature is
+detailed later on. arara employs the following scheme for file name lookup:</p>
+<ul>
+<li>
+<p>First and foremost, if the provided file name already contains a valid
+extension, the tool attempts an exact match. If the file exists, it will be
+selected. This is the best approach if your working directory contains other
+files sharing the same base name.</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> arara doc11.tex
+</span><span>  </span><span style="color:#696989;">__</span><span> _ _ __ __ _ _ __ __ _
+</span><span> </span><span style="color:#696989;">/</span><span> _` </span><span style="color:#016692;">| </span><span style="color:#009f78;">&#39;__/ _` | &#39;</span><span style="color:#696989;">__/</span><span> _` </span><span style="color:#016692;">|
+</span><span style="color:#016692;">| </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| |
+</span><span> </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|
+</span><span>
+</span><span style="color:#696989;">Processing </span><span style="color:#009f78;">&#39;doc11.tex&#39;</span><span> (size: 34 B, last modified: 05/29/2018
+</span><span style="color:#696989;">19:40:35</span><span>), please wait.
+</span><span>
+</span><span>(</span><span style="color:#696989;">PDFTeX</span><span>) PDFTeX engine .................................. SUCCESS
+</span><span>
+</span><span style="color:#696989;">Total:</span><span> 0.69 seconds
+</span></code></pre>
+</li>
+<li>
+<p>If the provided file name has an unsupported extension or no extension at all,
+the tool iterates through the list of default extensions, appending the
+current element to the file name and attempting an exact match. If the file
+exists, it will be selected.</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> arara doc11
+</span><span>  </span><span style="color:#696989;">__</span><span> _ _ __ __ _ _ __ __ _
+</span><span> </span><span style="color:#696989;">/</span><span> _` </span><span style="color:#016692;">| </span><span style="color:#009f78;">&#39;__/ _` | &#39;</span><span style="color:#696989;">__/</span><span> _` </span><span style="color:#016692;">|
+</span><span style="color:#016692;">| </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| |
+</span><span> </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|
+</span><span>
+</span><span style="color:#696989;">Processing </span><span style="color:#009f78;">&#39;doc11.tex&#39;</span><span> (size: 34 B, last modified: 05/29/2018
+</span><span style="color:#696989;">19:40:35</span><span>), please wait.
+</span><span>
+</span><span>(</span><span style="color:#696989;">PDFTeX</span><span>) PDFTeX engine .................................. SUCCESS
+</span><span>
+</span><span style="color:#696989;">Total:</span><span> 0.69 seconds
+</span></code></pre>
+</li>
+<li>
+<p>Many shells complete file names that have multiple extensions in the same
+directory, so that they end with a period. We try to resolve against them as
+well!</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> arara doc11.
+</span><span>  </span><span style="color:#696989;">__</span><span> _ _ __ __ _ _ __ __ _
+</span><span> </span><span style="color:#696989;">/</span><span> _` </span><span style="color:#016692;">| </span><span style="color:#009f78;">&#39;__/ _` | &#39;</span><span style="color:#696989;">__/</span><span> _` </span><span style="color:#016692;">|
+</span><span style="color:#016692;">| </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| |
+</span><span> </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|
+</span><span>
+</span><span style="color:#696989;">Processing </span><span style="color:#009f78;">&#39;doc11.tex&#39;</span><span> (size: 34 B, last modified: 05/29/2018
+</span><span style="color:#696989;">19:40:35</span><span>), please wait.
+</span><span>
+</span><span>(</span><span style="color:#696989;">PDFTeX</span><span>) PDFTeX engine .................................. SUCCESS
+</span><span>
+</span><span style="color:#696989;">Total:</span><span> 0.69 seconds
+</span></code></pre>
+</li>
+</ul>
+<p>It is highly recommended to use complete file names with our tool, in order to
+ensure the correct file is being processed. If your command line interpreter
+features tab completion, you can use it to automatically fill partially typed
+file names from your working directory.</p>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Exit status support</strong>
+  <br/>
+  arara follows the good practices of software development and provides three
+values for exit status, so our tool can be programmatically used in scripts and
+other complex workflows: <code>0</code> <code>→</code> successful execution, <code>1</code>
+<code>→</code> one of the rules failed, and <code>2</code> <code>→</code> an exception was
+raised.</p>
+<p>Please refer to the documentation of your favourite command line interpreter to
+learn more about exit status captures. Programming languages also offer methods
+for retrieving such information.
+</blockquote>
+
+
+      </div>
+
+    </main>
+
+    
+    <footer>
+      <small class="subtext">
+        arara by the Island of TeX
+      </small>
+    </footer>
+    
+  </body>
+  <script>
+    function highlightNav(heading) {
+        let pathname = location.pathname;
+        document.querySelectorAll(".toc a").forEach((item) => {
+            item.classList.remove("active");
+        });
+        document.querySelector(".toc a[href$='" + pathname + "#" + heading + "']").classList.add("active");
+    }
+
+    let currentHeading = "";
+    window.onscroll = function () {
+        let h = document.querySelectorAll("h1,h2,h3,h4,h5,h6");
+        let elementArr = [];
+
+        h.forEach(item => {
+            if (item.id !== "") {
+                elementArr[item.id] = item.getBoundingClientRect().top;
+            }
+        });
+        elementArr.sort();
+        for (let key in elementArr) {
+            if (!elementArr.hasOwnProperty(key)) {
+                continue;
+            }
+            if (elementArr[key] > 0 && elementArr[key] < 300) {
+                if (currentHeading !== key) {
+                    highlightNav(key);
+                    currentHeading = key;
+                }
+                break;
+            }
+        }
+    }
+  </script>
+</html>

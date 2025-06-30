@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Logging | arara </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+    :root {
+        /* Primary theme color */
+        --primary-color: #cbe368; /* #FED43F; */
+        /* Primary theme text color */
+        --primary-text-color: #543631;
+        /* Primary theme link color */
+        --primary-link-color: #719b25;
+        /* Secondary color: the background body color */
+        --secondary-color: #fcfaf6;
+        --secondary-text-color: #303030;
+        /* Highlight text color of table of content */
+        --toc-highlight-text-color: #d46e13;
+    }
+</style>
+
+    <link rel="icon" href="https://islandoftex.gitlab.io/arara/favicon.svg">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/normalize.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juice.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/fonts/fonts.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juicy-arara.css">
+    
+    <meta name="keywords" content="tex, latex, context, build tool, automation">
+    <meta itemprop="name" content="The cool TeX automation tool">
+    <meta itemprop="description" content="arara is a TeX automation tool based on directives and rules.">
+    
+  </head>
+
+  <body>
+    
+<header class="box-shadow">
+    
+
+<a href="https://islandoftex.gitlab.io/arara/">
+  <div class="logo">
+    <img src="https://islandoftex.gitlab.io/arara/images/arara-text.svg" alt="logo">
+  </div>
+</a>
+
+<nav>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/changelog/">Changelog</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/quickstart/">Quickstart</a>
+  
+  
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/manual">Manual</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/news">News</a>
+  
+  <a class="nav-item subtitle-text" href="https://gitlab.com/islandoftex/arara">GitLab</a>
+  
+  
+</nav>
+
+</header>
+
+
+    <main>
+      
+      
+      
+      
+      
+      <div class="toc">
+        <div class="toc-sticky">
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/logging/#system-information">System information</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/logging/#directive-extraction">Directive extraction</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/logging/#directive-normalization">Directive normalization</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/logging/#rule-interpretation">Rule interpretation</a>
+          </div>
+          
+          
+        </div>
+      </div>
+      
+      
+
+      <div class="content text">
+        
+<div class="heading-text">Logging</div>
+<p>The logging feature of arara, as discussed earlier on, is activated through
+either the <code>--log</code> command line option or the equivalent key in the
+configuration file. This chapter covers the basic structure of a typical log
+file provided by our tool, including the important blocks that can be used to
+identify potential issues. The following example is used to illustrate this
+feature:</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdftex
+</span><span style="color:#898989;">% arara: clean: { extensions: [ log ] }
+</span><span>Hello world.
+</span><span style="color:#7a7025;">\bye
+</span></code></pre>
+<p>When running our tool on the previous example with the <code>--log</code> command line
+option (otherwise, the logging framework will not provide a file at all), we
+will obtain the expected <code>arara.log</code> log file containing the most significant
+events that happened during this particular execution, as well as details
+regarding the underlying operating system. The contents of this file are
+discussed below. Note that timestamps were deliberated removed from the log
+entries in order to declutter the output, and line breaks were included in order
+to easily spot each entry.</p>
+<h1 id="system-information">System information</h1>
+<p>The very first entry to appear in the log file is the current version of arara.</p>
+<pre data-lang="text" style="background-color:#ffffff;color:#010101;" class="language-text "><code class="language-text" data-lang="text"><span>Welcome to arara 7.0.0!
+</span></code></pre>
+<p>The following entries in the log file are the absolute path of the current
+deployment of arara (line 1), details about the current Java virtual machine
+(namely, vendor and absolute path, in lines 2 and 3, respectively), the
+underlying operating system information (namely, system name, architecture and
+eventually the kernel version, in line 4), home and working directories (lines 5
+and 6, respectively), and the absolute path of the applied configuration file,
+if any (line 7). This block is very important to help with tracking possible
+issues related to the underlying operating system and the tool configuration
+itself.</p>
+<pre data-lang="text" style="background-color:#ffffff;color:#010101;" class="language-text "><code class="language-text" data-lang="text"><span>::: arara @ /opt/islandoftex/arara
+</span><span>::: Java 24.0.1, Red Hat, Inc.
+</span><span>::: /usr/lib/jvm/java-24-openjdk
+</span><span>::: Linux, amd64, 6.15.3-200.fc42.x86_64
+</span><span>::: user.home @ /home/paulo
+</span><span>::: CF @ [none]
+</span></code></pre>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>A privacy note</strong>
+  <br/>
+  We understand that the previous entries containing information about the
+underlying operating system might pose as a privacy threat to some
+users. However, it is worth noting that arara does not share any sensitive
+information about your system, as entries are listed in the log file for
+debugging purposes only, locally in your computer.</p>
+<p>From experience, these entries greatly help our users to track down errors in
+the execution, as well as learning more about the underlying operating
+system. However, be mindful of sharing your log file! Since the log file
+contains structured blocks, it is highly advisable to selectively choose the
+ones relevant to the current discussion.
+</blockquote>
+<p>It is important to observe that localized messages are also applied to the log
+file. If a language other than English is selected, either through the
+<code>--language</code> command line option or the equivalent key in the configuration
+file, the logging framework will honour the current setting and entries will be
+available in the specified language. Having a log file in your own language
+might mitigate the traumatic experience of error tracking for TeX newbies. From
+version 6.0 on, if you pass an invalid language code (for instance, <code>-L foo</code> in
+the command line), arara will default to English and issue a log warning:</p>
+<pre data-lang="text" style="background-color:#ffffff;color:#010101;" class="language-text "><code class="language-text" data-lang="text"><span>Language foo not available; defaulting to English.
+</span></code></pre>
+<h1 id="directive-extraction">Directive extraction</h1>
+<p>The following block in the log file refers to file information and directive
+extraction. First, as with the terminal output counterpart, the tool will
+display details about the file being processed, including size and modification
+status:</p>
+<pre data-lang="text" style="background-color:#ffffff;color:#010101;" class="language-text "><code class="language-text" data-lang="text"><span>Processing &#39;doc12.tex&#39; (size: 74 B, last modified:
+</span><span>06/02/2018 05:36:40), please wait.
+</span></code></pre>
+<p>The next entries refer to finding potential directive patterns in the code,
+including multiline support. All matching patterns contain the corresponding
+line numbers. Note that these numbers might refer to incorrect lines in the code
+if the <code>--preamble</code> command line option is used.</p>
+<pre data-lang="text" style="background-color:#ffffff;color:#010101;" class="language-text "><code class="language-text" data-lang="text"><span>I found a potential pattern in line 1: pdftex
+</span><span>I found a potential pattern in line 2: clean: { extensions: [ log ] }
+</span></code></pre>
+<p>When all matching patterns are collected from the code in the previous phase,
+arara composes the directives accordingly, including potential parameters and
+conditionals. Observe that all directives have an associated list of line
+numbers from which they were originally composed. This phase is known as
+<em>directive extraction</em>.</p>
+<pre data-lang="text" style="background-color:#ffffff;color:#010101;" class="language-text "><code class="language-text" data-lang="text"><span>I found a potential directive: Directive: { identifier: pdftex,
+</span><span>parameters: {}, conditional: { NONE }, lines: [1] }
+</span><span>I found a potential directive: Directive: { identifier: clean,
+</span><span>parameters: {extensions=[log]}, conditional: { NONE }, lines: [2] }
+</span></code></pre>
+<p>In this phase, directives are correctly extracted and composed, but are yet to
+be validated regarding invalid or reserved parameter keys. The tool then
+proceeds to validate parameters and normalize such directives.</p>
+<h1 id="directive-normalization">Directive normalization</h1>
+<p>Once all directives are properly composed, the tool checks for potential
+inconsistencies, such as invalid or reserved parameter keys. Then all directives
+are validated and internally mapped with special parameters.</p>
+<pre data-lang="text" style="background-color:#ffffff;color:#010101;" class="language-text "><code class="language-text" data-lang="text"><span>All directives were validated. We are good to go.
+</span></code></pre>
+<p>After validation, all directives are listed in a special block in the log file,
+including potential parameters and conditionals. This phase is known as
+<em>directive normalization</em>. Note that the special parameters are already
+included, regardless of the directive type. This particular block can be used
+specially for debugging purposes, since it contains all details regarding
+directives.</p>
+<pre data-lang="text" style="background-color:#ffffff;color:#010101;" class="language-text "><code class="language-text" data-lang="text"><span>-------------------------- DIRECTIVES ---------------------------
+</span><span>Directive: { identifier: pdftex, parameters:
+</span><span>{reference=/home/islandoftex/Documents/doc12.tex},
+</span><span>conditional: { NONE }, lines: [1] }
+</span><span>Directive: { identifier: clean, parameters: {extensions=[log],
+</span><span>reference=/home/islandoftex/Documents/doc12.tex},
+</span><span>conditional: { NONE }, lines: [2] }
+</span><span>-----------------------------------------------------------------
+</span></code></pre>
+<p>Note, however, that potential errors in directive conditionals, as well as
+similar inconsistencies in the corresponding rules, can only be caught at
+runtime. The next phase covers proper interpretation based on the provided
+directives.</p>
+<h1 id="rule-interpretation">Rule interpretation</h1>
+<p>Once all directives are normalized, arara proceeds to interpret the potential
+conditionals, if any, and the corresponding rules. Note that, when available,
+the conditional type dictates whether the rule should be interpreted first or
+not. For each rule, the tool informs the identifier and the absolute path of the
+corresponding YAML file. In this specific scenario, the rule is part of the
+default rule pack released with our tool:</p>
+<pre data-lang="text" style="background-color:#ffffff;color:#010101;" class="language-text "><code class="language-text" data-lang="text"><span>I am ready to interpret rule &#39;pdftex&#39;.
+</span><span>Rule location: &#39;/opt/islandoftex/arara/rules&#39;
+</span></code></pre>
+<p>For each task (or subtask, as it is part of a rule task) defined in the rule
+context, arara will interpret it and return the corresponding system
+command. The return types can be found in <a href="https://islandoftex.gitlab.io/arara/manual/concepts/">Important concepts</a>. In this
+specific scenario, there is just one task associated with the <code>pdftex</code>
+rule. Both task name and system command are shown:</p>
+<pre data-lang="text" style="background-color:#ffffff;color:#010101;" class="language-text "><code class="language-text" data-lang="text"><span>I am ready to interpret task &#39;PDFTeX engine&#39; from rule &#39;PDFTeX&#39;.
+</span><span>System command: [ pdftex, doc12.tex ]
+</span></code></pre>
+<p>After proper task interpretation, the underlying execution library of arara
+executes the provided system command and includes the output from both output
+and error streams in an <em>output buffer</em> block inside the log file.</p>
+<pre data-lang="text" style="background-color:#ffffff;color:#010101;" class="language-text "><code class="language-text" data-lang="text"><span>---------------------- BEGIN OUTPUT BUFFER ----------------------
+</span><span>This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018)
+</span><span>(preloaded format=pdftex)
+</span><span>restricted \write18 enabled.
+</span><span>entering extended mode
+</span><span>(./doc12.tex [1{/usr/local/texlive/2018/texmf-var/fonts/map/
+</span><span>pdftex/updmap/pdfte
+</span><span>x.map}] )&lt;/usr/local/texlive/2018/texmf-dist/fonts/type1/
+</span><span>public/amsfonts/cm/cmr
+</span><span>10.pfb&gt;
+</span><span>Output written on doc12.pdf (1 page, 11849 bytes).
+</span><span>Transcript written on doc12.log.
+</span><span>----------------------- END OUTPUT BUFFER -----------------------
+</span></code></pre>
+<p>Observe that the above output buffer block contains the relevant information
+about the <code>pdftex</code> execution on the provided file. It is possible to write a
+shell script to extract these blocks from the log file, as a means to provide
+individual information on each execution. Finally, the task result is shown:</p>
+<pre data-lang="text" style="background-color:#ffffff;color:#010101;" class="language-text "><code class="language-text" data-lang="text"><span>Task result: SUCCESS
+</span></code></pre>
+<p>The execution proceeds to the next directive in the list and then interprets the
+<code>clean</code> rule. The same steps previously described are applied in this
+scenario. Also note that the output buffer block is deliberately empty due to
+the nature of the underlying system command, as removal commands such as <code>rm</code> do
+not provide output at all when successful.</p>
+<pre data-lang="text" style="background-color:#ffffff;color:#010101;" class="language-text "><code class="language-text" data-lang="text"><span>I am ready to interpret rule &#39;clean&#39;.
+</span><span>Rule location: &#39;/opt/islandoftex/arara/rules&#39;
+</span><span>I am ready to interpret task &#39;Cleaning feature&#39; from rule &#39;Clean&#39;.
+</span><span>System command: [ rm, -f, doc12.log ]
+</span><span>---------------------- BEGIN OUTPUT BUFFER ----------------------
+</span><span>
+</span><span>----------------------- END OUTPUT BUFFER -----------------------
+</span><span>Task result: SUCCESS
+</span></code></pre>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Empty output buffer</strong>
+  <br/>
+  If the system command is simply a boolean value, the corresponding block will
+remain empty. Also note that not all commands from the underlying operating
+system path provide proper stream output, so the output buffer block might be
+empty in certain corner scenarios. This is the case, for example, of the
+provided <code>clean</code> rule.
+</blockquote>
+<p>Finally, as the last entry in the log file, the tool shows the execution time,
+in seconds. As previously mentioned, the execution time has a very simple
+precision and should not be considered for command profiling.</p>
+<pre data-lang="text" style="background-color:#ffffff;color:#010101;" class="language-text "><code class="language-text" data-lang="text"><span>Total: 0.33 seconds
+</span></code></pre>
+<p>The logging feature provides a consistent framework for event recording. It is
+highly recommended to include at least the <code>--log</code> command line option (or
+enable it in the configuration file) in your typical automation workflow, as
+relevant information is gathered into a single consolidated report.</p>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Log paths</strong>
+  <br/>
+  From version 6.0 on, the log file may now be specified as path <em>anywhere</em> on the
+file system. However, keep in mind that this behavior may be altered for future
+updates in safe mode. Please refer to <a href="https://islandoftex.gitlab.io/arara/manual/configuration/">Configuration</a> for
+more details.
+</blockquote>
+
+
+      </div>
+
+    </main>
+
+    
+    <footer>
+      <small class="subtext">
+        arara by the Island of TeX
+      </small>
+    </footer>
+    
+  </body>
+  <script>
+    function highlightNav(heading) {
+        let pathname = location.pathname;
+        document.querySelectorAll(".toc a").forEach((item) => {
+            item.classList.remove("active");
+        });
+        document.querySelector(".toc a[href$='" + pathname + "#" + heading + "']").classList.add("active");
+    }
+
+    let currentHeading = "";
+    window.onscroll = function () {
+        let h = document.querySelectorAll("h1,h2,h3,h4,h5,h6");
+        let elementArr = [];
+
+        h.forEach(item => {
+            if (item.id !== "") {
+                elementArr[item.id] = item.getBoundingClientRect().top;
+            }
+        });
+        elementArr.sort();
+        for (let key in elementArr) {
+            if (!elementArr.hasOwnProperty(key)) {
+                continue;
+            }
+            if (elementArr[key] > 0 && elementArr[key] < 300) {
+                if (currentHeading !== key) {
+                    highlightNav(key);
+                    currentHeading = key;
+                }
+                break;
+            }
+        }
+    }
+  </script>
+</html>

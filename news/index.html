@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>News | arara </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+    :root {
+        /* Primary theme color */
+        --primary-color: #cbe368; /* #FED43F; */
+        /* Primary theme text color */
+        --primary-text-color: #543631;
+        /* Primary theme link color */
+        --primary-link-color: #719b25;
+        /* Secondary color: the background body color */
+        --secondary-color: #fcfaf6;
+        --secondary-text-color: #303030;
+        /* Highlight text color of table of content */
+        --toc-highlight-text-color: #d46e13;
+    }
+</style>
+
+    <link rel="icon" href="https://islandoftex.gitlab.io/arara/favicon.svg">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/normalize.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juice.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/fonts/fonts.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juicy-arara.css">
+    
+    <meta name="keywords" content="tex, latex, context, build tool, automation">
+    <meta itemprop="name" content="The cool TeX automation tool">
+    <meta itemprop="description" content="arara is a TeX automation tool based on directives and rules.">
+    
+  </head>
+
+  <body>
+    
+<header class="box-shadow">
+  
+
+<a href="https://islandoftex.gitlab.io/arara/">
+  <div class="logo">
+    <img src="https://islandoftex.gitlab.io/arara/images/arara-text.svg" alt="logo">
+  </div>
+</a>
+
+<nav>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/changelog/">Changelog</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/quickstart/">Quickstart</a>
+  
+  
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/manual">Manual</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/news">News</a>
+  
+  <a class="nav-item subtitle-text" href="https://gitlab.com/islandoftex/arara">GitLab</a>
+  
+  
+</nav>
+
+</header>
+
+
+    <main>
+      
+      
+      
+      
+
+      <div class="content text">
+        
+<div class="margin-left:20vw; margin-right: 20vw;">
+  <div class="heading-text">News</div>
+  <ul>
+    
+    <li>
+      <div>
+        <a href="https://islandoftex.gitlab.io/arara/news/release-v7/">
+          <strong class="title article-title">arara version 7 released</strong>
+        </a>
+        
+        <div>
+          <span>2022-05-01</span>
+        </div>
+        
+      </div>
+      
+      <div itemprop="summary" class="content article-body">
+        <p>After more than one year of on-and-off work, we are proud to announce the
+release of arara version 7, the TeX Live 2022 major release of arara. With this
+release, we implemented many long-standing feature requests and finally settled
+several technical questions concerning the future of arara.</p>
+        <nav class="readmore">
+          <a itemprop="url" href="https://islandoftex.gitlab.io/arara/news/release-v7/">Read
+            More&nbsp;&raquo;
+          </a>
+        </nav>
+      </div>
+      
+    </li>
+    
+    <li>
+      <div>
+        <a href="https://islandoftex.gitlab.io/arara/news/release-v6/">
+          <strong class="title article-title">arara version 6 released</strong>
+        </a>
+        
+        <div>
+          <span>2021-02-26</span>
+        </div>
+        
+      </div>
+      
+      <div itemprop="summary" class="content article-body">
+        <p>After approximately one year, we are proud to announce the release of arara
+version 6. Just ready for TeX Live 2021, we have finished many exciting new
+features and are already prepared to work on a technically even more intriguing
+version 7.</p>
+        <nav class="readmore">
+          <a itemprop="url" href="https://islandoftex.gitlab.io/arara/news/release-v6/">Read
+            More&nbsp;&raquo;
+          </a>
+        </nav>
+      </div>
+      
+    </li>
+    
+  </ul>
+</div>
+
+      </div>
+
+    </main>
+
+    
+    <footer>
+      <small class="subtext">
+        arara by the Island of TeX
+      </small>
+    </footer>
+    
+  </body>
+  <script>
+    function highlightNav(heading) {
+        let pathname = location.pathname;
+        document.querySelectorAll(".toc a").forEach((item) => {
+            item.classList.remove("active");
+        });
+        document.querySelector(".toc a[href$='" + pathname + "#" + heading + "']").classList.add("active");
+    }
+
+    let currentHeading = "";
+    window.onscroll = function () {
+        let h = document.querySelectorAll("h1,h2,h3,h4,h5,h6");
+        let elementArr = [];
+
+        h.forEach(item => {
+            if (item.id !== "") {
+                elementArr[item.id] = item.getBoundingClientRect().top;
+            }
+        });
+        elementArr.sort();
+        for (let key in elementArr) {
+            if (!elementArr.hasOwnProperty(key)) {
+                continue;
+            }
+            if (elementArr[key] > 0 && elementArr[key] < 300) {
+                if (currentHeading !== key) {
+                    highlightNav(key);
+                    currentHeading = key;
+                }
+                break;
+            }
+        }
+    }
+  </script>
+</html>

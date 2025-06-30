@@ -1,0 +1,3899 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>The official rule pack | arara </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+    :root {
+        /* Primary theme color */
+        --primary-color: #cbe368; /* #FED43F; */
+        /* Primary theme text color */
+        --primary-text-color: #543631;
+        /* Primary theme link color */
+        --primary-link-color: #719b25;
+        /* Secondary color: the background body color */
+        --secondary-color: #fcfaf6;
+        --secondary-text-color: #303030;
+        /* Highlight text color of table of content */
+        --toc-highlight-text-color: #d46e13;
+    }
+</style>
+
+    <link rel="icon" href="https://islandoftex.gitlab.io/arara/favicon.svg">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/normalize.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juice.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/fonts/fonts.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juicy-arara.css">
+    
+    <meta name="keywords" content="tex, latex, context, build tool, automation">
+    <meta itemprop="name" content="The cool TeX automation tool">
+    <meta itemprop="description" content="arara is a TeX automation tool based on directives and rules.">
+    
+  </head>
+
+  <body>
+    
+<header class="box-shadow">
+    
+
+<a href="https://islandoftex.gitlab.io/arara/">
+  <div class="logo">
+    <img src="https://islandoftex.gitlab.io/arara/images/arara-text.svg" alt="logo">
+  </div>
+</a>
+
+<nav>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/changelog/">Changelog</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/quickstart/">Quickstart</a>
+  
+  
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/manual">Manual</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/news">News</a>
+  
+  <a class="nav-item subtitle-text" href="https://gitlab.com/islandoftex/arara">GitLab</a>
+  
+  
+</nav>
+
+</header>
+
+
+    <main>
+      
+      
+      
+      
+      
+      <div class="toc">
+        <div class="toc-sticky">
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#animate">animate</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#asymptote">asymptote</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#authorindex">authorindex</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#bib2gls">bib2gls</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#biber">biber</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#bibtex">bibtex</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#bibtex8">bibtex8</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#bibtexu">bibtexu</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#clean">clean</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#context">context</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#convert">convert</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#copy">copy</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#csplain">csplain</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#datatooltk">datatooltk</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#detex">detex</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#dvipdfm">dvipdfm</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#dvipdfmx">dvipdfmx</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#dvips">dvips</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#dvipspdf">dvipspdf</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#dvisvgm">dvisvgm</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#etex">etex</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#fig2dev">fig2dev</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#frontespizio">frontespizio</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#ghostscript">ghostscript</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#gnuplot">gnuplot</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#halt">halt</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#indent">indent</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#knitr">knitr</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#latex">latex</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#latexmk">latexmk</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#llmk">llmk</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#ltx2any">ltx2any</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#luahbtex">luahbtex</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#lualatex">lualatex</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#luatex">luatex</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#make">make</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#makeglossaries">makeglossaries</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#makeglossarieslite">makeglossarieslite</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#makeindex">makeindex</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#metapost">metapost</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#mkdir">mkdir</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#move">move</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#nomencl">nomencl</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#pbibtex">pbibtex</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#pdfcrop">pdfcrop</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#pdfcsplain">pdfcsplain</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#pdflatex">pdflatex</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#pdftex">pdftex</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#pdftk">pdftk</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#pdftocairo">pdftocairo</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#perltex">perltex</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#platex">platex</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#ps2pdf">ps2pdf</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#pythontex">pythontex</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#qpdf">qpdf</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#rmdir">rmdir</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#sage">sage</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#sketch">sketch</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#songidx">songidx</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#spix">spix</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#tex">tex</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#texcount">texcount</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#texindy">texindy</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#texfmt">texfmt</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#tikzmake">tikzmake</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#upbibtex">upbibtex</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#uplatex">uplatex</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#uptex">uptex</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#xdvipdfmx">xdvipdfmx</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#xelatex">xelatex</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#xetex">xetex</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#xindex">xindex</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/rules/#xindy">xindy</a>
+          </div>
+          
+          
+        </div>
+      </div>
+      
+      
+
+      <div class="content text">
+        
+<div class="heading-text">The official rule pack</div>
+<p>arara ships with a pack of default rules, placed inside a special subdirectory
+named <code>rules/</code> inside another special directory named <code>ARARA_HOME</code> (the place
+where our tool is installed). This chapter introduces the official rules,
+including proper listings and descriptions of associated parameters whenever
+applied. Note that such rules work off the shelf, without any special
+installation, configuration or modification. An option marked by <strong>[S]</strong> before
+the corresponding identifier indicates a natural boolean switch. Similarly, the
+occurrence of an <strong>[R]</strong> mark indicates that the corresponding option is
+required.</p>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Can my rule be distributed within the official pack?</strong>
+  <br/>
+  As seen in <a href="https://islandoftex.gitlab.io/arara/manual/concepts/">Important concepts</a>, the default rule path can be extended
+to include a list of directories in which our tool should search for
+rules. However, if you believe your rule is comprehensive enough and deserves to
+be in the official pack, please contact us! We will be more  than happy to
+discuss the inclusion of your rule in forthcoming updates.
+</blockquote>
+<h1 id="animate"><code>animate</code></h1>
+<p>This rule creates an animated <code>gif</code> file from the corresponding base name of the
+<code>❖ currentFile</code> reference (i.e, the name without the associated
+extension) as a string concatenated with the <code>pdf</code> suffix, using the <code>convert</code>
+command line utility from the ImageMagick suite.</p>
+<ul>
+<li>
+<p><code>delay</code> (default: <code>10</code>): This option regulates the number of ticks before the
+display of the next image sequence, acting as a pause between still frames.</p>
+</li>
+<li>
+<p><code>loop</code> (default: <code>0</code>): This option regulates the number of repetitions for the
+animation. When set to zero, the animation repeats itself an infinite number
+of times.</p>
+</li>
+<li>
+<p><code>density</code> (default: <code>300</code>): This option specifies the horizontal and vertical
+canvas resolution while rendering vector formats into a proper raster image.</p>
+</li>
+<li>
+<p><code>program</code> (default: <code>convert</code>): This option specifies the command utility path
+as a means to avoid potential clashes with underlying operating system
+commands.</p>
+</li>
+</ul>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Microsoft Windows woes</strong>
+  <br/>
+  According to the <a rel="noopener noreferrer" target="_blank" href="https://imagemagick.org/Usage/windows/">ImageMagick
+website</a>, the Windows installation
+routine adds the program directory to the system path, such that one can call
+command line tools directly from the command prompt, without providing a path
+name. However, <code>convert</code> is also the name of Windows system tool, located in the
+system directory, which converts file systems from one format to another.</p>
+<p>The best solution to avoid possible future name conflicts, according to the
+ImageMagick team, is to call such command line tools by their full path in any
+script. Therefore, the <code>convert</code> rule provides the <code>program</code> option for this
+specific scenario.
+</blockquote>
+<ul>
+<li><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: animate: { delay: 15, density: 150 }
+</span></code></pre>
+<h1 id="asymptote"><code>asymptote</code></h1>
+<p>This rule executes the <code>asy</code> command line program, referring to Asymptote, a
+powerful descriptive vector graphics language for technical drawings, inspired
+by Metapost but with an improved syntax. Please note that you will have to make
+the <code>.asy</code> extension known to arara in order to compile Asymptote
+files. Furthermore, it is advised to use this in your regular TeX document
+specifying the <code>files</code> parameter to include all graphics you want to compile for
+inclusion in your document.</p>
+<ul>
+<li>
+<p><code>color</code>: This option, as the name suggests, provides the underlying color
+model to be used in the current execution. Possible values are:</p>
+<ul>
+<li>
+<p><code>bw</code>: This option value, as the name suggests, converts all colors to a
+black and white model.</p>
+</li>
+<li>
+<p><code>cmyk</code>: This option value converts the RGB (red, green an blue) color model
+to the CMYK (cyan, magenta, yellow and black) counterpart.</p>
+</li>
+<li>
+<p><code>rgb</code>: This option value converts the CMYK (cyan, magenta, yellow and black)
+color model to the RGB (red, green an blue) counterpart.</p>
+</li>
+<li>
+<p><code>gray</code>: This option value, as the name suggests, converts all colors to a
+grayscale model.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>engine</code> (default: <code>latex</code>): This option, as the name indicates, sets the
+underlying TeX engine to be used for the current compilation. Make sure to
+take a look at the Asymptote manual for further details on this
+option. Possible values are:</p>
+<ul>
+<li>
+<p><code>latex</code>: This value, as the name suggests, sets the underlying TeX engine to
+<code>latex</code> for the current compilation. Note that the engine might play a major
+role in the generated code.</p>
+</li>
+<li>
+<p><code>pdflatex</code>: This value, as the name indicates, sets the underlying TeX
+engine to <code>pdflatex</code> for the current compilation. Note that the engine might
+play a major role in the generated code.</p>
+</li>
+<li>
+<p><code>xelatex</code>: This value, as the name suggests, sets the underlying TeX engine
+to <code>xelatex</code> for the current compilation. Note that the engine might play a
+major role in the generated code.</p>
+</li>
+<li>
+<p><code>lualatex</code>: This value, as the name indicates, sets the underlying TeX
+engine to <code>lualatex</code> for the current compilation. Note that the engine might
+play a major role in the generated code.</p>
+</li>
+<li>
+<p><code>tex</code>: This value, as the name suggests, sets the underlying TeX engine to
+<code>tex</code> for the current compilation. Note that the engine might play a major
+role in the generated code.</p>
+</li>
+<li>
+<p><code>pdftex</code>: This value, as the name indicates, sets the underlying TeX engine
+to <code>pdftex</code> for the current compilation. Note that the engine might play a
+major role in the generated code.</p>
+</li>
+<li>
+<p><code>luatex</code>: This value, as the name suggests, sets the underlying TeX engine
+to <code>luatex</code> for the current compilation. Note that the engine might play a
+major role in the generated code.</p>
+</li>
+<li>
+<p><code>context</code>: This value, as the name indicates, sets the underlying TeX engine
+to <code>context</code> for the current compilation. Note that the engine might play a
+major role in the generated code.</p>
+</li>
+<li>
+<p><code>none</code>: This value, as the name suggests, sets the underlying TeX engine to
+<code>none</code> for the current compilation. In this case, there will be no
+associated engine.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>format</code>: This option, as the name suggests, converts each output file to a
+specified format. Make sure to take a look at the Asymptote manual for further
+details.</p>
+</li>
+<li>
+<p><code>output</code>: This option, as the name suggests, sets an alternative output
+directory or file name. Make sure to take a look at the Asymptote manual for
+further details.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: asymptote: { files: [ mydrawing.asy ] }
+</span></code></pre>
+<h1 id="authorindex"><code>authorindex</code></h1>
+<p>This rule calls the <code>authorindex</code> wrapper, a Perl script that processes
+auxiliary files generated by the package of the same name, producing author
+index files, with the <code>ain</code> extension.</p>
+<ul>
+<li>
+<p><strong>[S]</strong> <code>draft</code>: This option sets whether the script should write additional
+information to the produced file. For each author, the labels of all
+references and the page numbers where they are cited are included as
+comments. This detail may help if you manually edit the generated author
+index.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>index</code>: This option sets whether the script should create a file
+suitable for further processing with <code>makeindex</code> or the like. For example,
+you could use that to make a common author and subject index. Note the
+extension of the generated file still will be the default one.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>keep</code>: This option sets whether the script should retain the
+temporarily generated <code>bst</code> file after the run finishes. This information
+will give you a good starting point for advanced customization of the author
+index.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>print</code>: This option, as the name indicates, sets whether the script
+should print the result to standard output instead of writing it to the
+output file.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>recurse</code>: This option sets whether the script should automatically
+process auxiliary files produced by included files. This behaviour is
+enabled by default.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: authorindex: { draft: yes }
+</span></code></pre>
+<h1 id="bib2gls"><code>bib2gls</code></h1>
+<p>This rule executes the <code>bib2gls</code> command line application which extracts
+glossary information stored in a <code>bib</code> file and converts it into glossary entry
+definitions in resource files. This rule passes the base name of the
+<code>❖ currentFile</code> reference (i.e, the name without the associated
+extension) as the mandatory argument.</p>
+<ul>
+<li>
+<p><code>dir</code>: This option sets the directory used for writing auxiliary files. Note
+that this option does not change the current working directory.</p>
+</li>
+<li>
+<p><code>trans</code>: This option sets the extension of the transcript file created by
+<code>bib2gls</code>. The value should be just the file extension without the leading
+dot. The default is <code>glg</code>.</p>
+</li>
+<li>
+<p><code>locale</code>: This option specifies the preferred language resource file. Please
+keep in mind that the provided value must be a valid IETF language tag. If
+omitted, the default is obtained by <code>bib2gls</code> from the JVM.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>group</code>: This option sets whether <code>bib2gls</code> will try to determine the
+letter group for each entry and add it to a new field called <code>group</code> when
+sorting. Be mindful that some <code>sort</code> options ignore this setting. The
+default value is off.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>interpret</code>: This option sets whether the interpreter mode of
+<code>bib2gls</code> is enabled. If the interpreter is on, <code>bib2gls</code> will attempt to
+convert any LaTeX markup in the sort value to the closest matching Unicode
+characters. If the interpreter is off, the <code>log</code> file will not be parsed for
+recognised packages. The default value is on.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>breakspace</code>: This option sets whether the interpreter will treat a
+tilde character as a non-breaking space (as with TeX) or a normal space. The
+default behaviour treats it as non-breakable.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>trimfields</code>: This option sets whether <code>bib2gls</code> will trim leading and
+trailing spaces from field values. The default behaviour does not trim
+spaces.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>recordcount</code>: This option sets whether the record counting will be
+enabled. If activated, <code>bib2gls</code> will add record count fields to
+entries. The default behaviour is off.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>recordcountunit</code>: This option sets whether <code>bib2gls</code> will add unit
+record count fields to entries. These fields can then be used with special
+commands. The default behaviour is off.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>cite</code>: This option sets whether <code>bib2gls</code> will treat citation
+instances found in the <code>aux</code> file as though it was actually an ignored
+record. The default behaviour is off.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>verbose</code>: This option sets whether <code>bib2gls</code> will be executed in
+verbose mode. When enabled, the application will write extra information to
+the terminal and transcript file. This option is unrelated to arara's
+verbose mode. The default behaviour is off.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>merge</code>: This option sets whether the program will merge <code>wrglossary</code>
+counter records. If disabled, one may end up with duplicate page numbers in
+the list of entry locations, but linking to different parts of the page. The
+default is on.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>uniscript</code>: This option sets whether text superscript and subscript
+will use the corresponding Unicode characters if available. The default is
+on.</p>
+</li>
+<li>
+<p><code>packages</code>: This option instructs the interpreter to assume the packages from
+the provided list have been used by the document.</p>
+</li>
+<li>
+<p><code>ignore</code>: This option instructs <code>bib2gls</code> to skip the check for any package
+from the provided list when parsing the corresponding log file.</p>
+</li>
+<li>
+<p><code>custom</code>: This option instructs the interpreter to parse the package files
+from the provided list. The package files need to be quite simple.</p>
+</li>
+<li>
+<p><code>mapformats</code>: This option takes a list and sets up the rule of precedence for
+partial location matches. Each element from the provided list must be another
+list of exactly two entries representing a conflict resolution.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: bib2gls: { group: true }
+</span><span style="color:#898989;">% arara: --&gt; if found(&#39;aux&#39;, &#39;glsxtr@resource&#39;)
+</span></code></pre>
+<h1 id="biber"><code>biber</code></h1>
+<p>This rule runs <code>biber</code>, the backend bibliography processor for <code>biblatex</code>, on
+the corresponding base name of the <code>❖ currentFile</code> reference (i.e,
+the name without the associated extension) as a string.</p>
+<ul>
+<li>
+<p><strong>[S]</strong> <code>tool</code>:  This option sets whether the bibliography processor should be
+executed in <em>tool mode</em>, intended for transformations and modifications of
+datasources. Since this mode is oriented towards a datasource rather than a
+document, make sure to use it alongside the <code>options</code> option.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: biber: { options: [ &#39;--wraplines&#39; ] }
+</span></code></pre>
+<h1 id="bibtex"><code>bibtex</code></h1>
+<p>This rule runs the <code>bibtex</code> program, a reference management software, on the
+corresponding base name of the <code>❖ currentFile</code> reference (i.e, the
+name without the associated extension) as a string.</p>
+<ul>
+<li><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: bibtex: { options: [ &#39;-terse&#39; ] }
+</span><span style="color:#898989;">% arara: --&gt; if exists(toFile(&#39;references.bib&#39;))
+</span></code></pre>
+<h1 id="bibtex8"><code>bibtex8</code></h1>
+<p>This rule runs <code>bibtex8</code>, an enhanced, portable C version of <code>bibtex</code>, on the
+corresponding base name of the <code>❖ currentFile</code> reference (i.e, the
+name without the associated extension) as a string. It is important to note that
+this tool can read a character set file containing encoding details.</p>
+<ul>
+<li><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: bibtex8: { options: [ &#39;--trace&#39;, &#39;--huge&#39; ] }
+</span></code></pre>
+<h1 id="bibtexu"><code>bibtexu</code></h1>
+<p>This rule runs the <code>bibtexu</code> program, an enhanced version of <code>bibtex</code> with
+Unicode support and language features, on the corresponding base name of the
+<code>❖ currentFile</code> reference (i.e, the name without the associated
+extension) as a string.</p>
+<ul>
+<li><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: bibtexu: { options: [ &#39;--language&#39;, &#39;fr&#39; ] }
+</span></code></pre>
+<h1 id="clean"><code>clean</code></h1>
+<p>This rule removes the provided file reference through the underlying system
+command, which can be <code>rm</code> in a Unix environment or <code>del</code> in Microsoft
+Windows. As a security lock, this rule will always throw an error if
+<code>❖ currentFile</code> is equal to <code>❖ getOriginalFile</code>, so the
+main file reference cannot be removed. It is highly recommended to use the
+special <code>files</code> parameter to indicate removal candidates. Alternatively, a list
+of file extensions can be provided as well. Be mindful that the security lock
+also applies to file removals based on extensions.</p>
+<ul>
+<li><code>extensions</code>: This option, as the name indicates, takes a list of extensions
+and constructs a new list of removals commands according to the base name of
+the <code>❖ currentFile</code> reference (i.e, the name without the associated
+extension) as a string concatenated with each extension from the original list
+as suffixes. Keep in mind that, if the special <code>files</code> parameter is used with
+this option, the resulting list will contain the cartesian product of file
+base names and extensions. An error is thrown if any data structure other than
+a proper list is provided as the value.</li>
+</ul>
+<blockquote style="padding: 20px; margin-top: 10px; margin-bottom: 10px;">
+  <strong>Better safe than sorry!</strong>
+  <br/>
+  When in doubt, always remember that the <code>--dry-run</code> command line option is your
+friend! As seen in <a href="https://islandoftex.gitlab.io/arara/manual/cli/">Command line</a>, this option makes arara go
+through all the motions of running tasks and subtasks, but with no actual
+calls. It is a very useful feature for testing the sequence of removal commands
+without actually losing your files! Also, as good practice, always write plain,
+simple, understandable <code>clean</code> directives and use as many as needed in your TeX
+documents.
+</blockquote>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: clean: { extensions: [ aux, log ] }
+</span></code></pre>
+<h1 id="context"><code>context</code></h1>
+<p>This rule runs the <code>context</code> TeX engine on the provided <code>❖ currentFile</code> reference, generating a corresponding file in the Portable Document
+Format. Please refer to the user manual for further details.</p>
+<ul>
+<li>
+<p><strong>[S]</strong> <code>make</code>: This option, as the name indicates, sets whether the engine
+should create context formats. Please refer to the user manual for further
+details on this option.</p>
+</li>
+<li>
+<p><code>ctx</code>: This option, as the name indicates, sets the <code>ctx</code> file for process
+management specification. Please refer to the user manual for further details
+on this option.</p>
+</li>
+<li>
+<p><code>interface</code>: This option, as the name indicates, sets the specified user
+interface. Please refer to the user manual for further details on this
+option.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>autopdf</code>: This option, as the name indicates, closes the
+corresponding <code>pdf</code> file in viewer and then reopens it afterwards.</p>
+</li>
+<li>
+<p><code>purge</code>: This option, as the name indicates, purges files according to the
+provided rule. Possible values are:</p>
+<ul>
+<li>
+<p><code>partial</code>: This value, as the name suggests, purges files either or not
+after a proper run, defined through a pattern. Please refer to the user
+manual for further details.</p>
+</li>
+<li>
+<p><code>all</code>: This value, as the name suggests, purges all files either or not
+after a proper run, defined through a pattern. Please refer to the user
+manual for further details.</p>
+</li>
+<li>
+<p><code>result</code>: This value, as the name suggests, purges the resulting file before
+the actual run. Please refer to the user manual for further details.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>modules</code>: This option, as the name indicates, sets a list of modules and
+styles to be loaded, normally part of the distribution.</p>
+</li>
+<li>
+<p><code>environments</code>: This option, as the name indicates, sets a list of environment
+files (document styles) to load first.</p>
+</li>
+<li>
+<p><code>mode</code>: This option, as the name indicates, enables modes according to the
+provided list (conditional processing in styles).</p>
+</li>
+<li>
+<p><code>path</code>: This option, as the name indicates, consults the given paths in the
+provided list during a file lookup.</p>
+</li>
+<li>
+<p><code>arguments</code>: This option, as the name indicates, sets variables that can be
+consulted during a run. Such variables are defined as key/value pairs.</p>
+</li>
+<li>
+<p><code>trackers</code>:  This option, as the name indicates, sets the list of tracker
+variables. Please refer to the user manual for further details.</p>
+</li>
+<li>
+<p><code>directives</code>:  This option, as the name indicates, sets the list of directive
+variables. Please refer to the user manual for further details.</p>
+</li>
+<li>
+<p><code>silent</code>: This option, as the name indicates, disables the log categories
+based on the provided list. Please refer to the user manual for further
+details.</p>
+</li>
+<li>
+<p><code>errors</code>:  This option, as the name indicates, shows errors at the end of a
+run and quits when it the provided list. Please refer to the user manual for
+further details.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>synctex</code>: This option sets whether <code>synctex</code>, an input and output
+synchronization feature that allows navigation from source to typeset
+material and vice versa, available in most TeX engines, is activated.</p>
+</li>
+<li>
+<p><code>interaction</code>: This option alters the underlying engine behaviour. If this
+option is omitted, the engine will prompt the user for interaction in the
+event of an error. Possible values are, in order of increasing user
+interaction (courtesy of our master Enrico Gregorio):</p>
+<ul>
+<li>
+<p><code>batchmode</code>: In this mode, nothing is printed on the terminal, and errors
+are scrolled as if the <code>return</code> key is hit at every error. Missing files
+that TeX tries to input or request from keyboard input cause the job to
+abort.</p>
+</li>
+<li>
+<p><code>nonstopmode</code>: In this mode, the diagnostic message will appear on the
+terminal, but there is no possibility of user interaction just like in batch
+mode, previously described.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: context
+</span></code></pre>
+<h1 id="convert"><code>convert</code></h1>
+<p>This rule runs the <code>convert</code> program, a member of the ImageMagick suite of
+tools. This program is used to convert between image formats as well  as  resize
+an  image, blur, crop, despeckle, dither, draw on, flip, join, resample, and
+more.</p>
+<ul>
+<li>
+<p><code>program</code> (default: <code>convert</code>): This option specifies the command utility path
+as a means to avoid potential clashes with underlying operating system
+commands.</p>
+</li>
+<li>
+<p><strong>[R]</strong> <code>options</code>: This option, as the name indicates, takes a list of raw
+command line options and appends it to the actual script call. An error is
+thrown if any data structure other than a proper list is provided as the
+value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: convert: { options: [ &#39;photo1.jpg&#39;, &#39;-resize&#39;,
+</span><span style="color:#898989;">% arara: --&gt; &#39;50%&#39;, &#39;photo2.jpg&#39; ] }
+</span></code></pre>
+<h1 id="copy"><code>copy</code></h1>
+<p>This rule copies the <code>File</code> reference to the provided target using the
+underlying operating system copy operation. The target is <em>always</em>
+overwritten. However, be mindful that an error will be thrown if you try to
+overwrite the file referenced in <code>❖ getOriginalReference</code>.</p>
+<ul>
+<li><strong>[R]</strong> <code>target</code>: This option, as the name implies, specifies the target for
+the copy operation. Keep in mind that this option is required.</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: copy: { target: &#39;backup/thesis.tex&#39; }
+</span></code></pre>
+<h1 id="csplain"><code>csplain</code></h1>
+<p>This rule runs the <code>csplain</code> TeX engine, a conservative extension of Knuth's
+plain TeX with direct processing characters and hyphenation patterns for Czech
+and Slovak, on the provided <code>❖ currentFile</code> reference.</p>
+<ul>
+<li>
+<p><code>interaction</code>: This option alters the underlying engine behaviour. When such
+option is omitted, TeX will prompt the user for interaction in the event of an
+error. Possible values are, in order of increasing user interaction (courtesy
+of our master Enrico Gregorio):</p>
+<ul>
+<li>
+<p><code>batchmode</code>: In this mode, nothing is printed on the terminal, and errors
+are scrolled as if the <code>return</code> key is hit at every error. Missing files
+that TeX tries to input or request from keyboard input cause the job to
+abort.</p>
+</li>
+<li>
+<p><code>nonstopmode</code>: In this mode, the diagnostic message will appear on the
+terminal, but there is no possibility of user interaction just like in batch
+mode, previously described.</p>
+</li>
+<li>
+<p><code>scrollmode</code>: In this mode, as the name indicates, TeX will stop only for
+missing files to input or if proper keyboard input is necessary. TeX fixes
+errors itself.</p>
+</li>
+<li>
+<p><code>errorstopmode</code>: In this mode, TeX will stop at each error, asking for
+proper user intervention. This is the most user interactive mode available.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>[S]</strong> <code>shell</code>: This option sets whether the possibility of running
+underlying system commands from within TeX is activated.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>synctex</code>: This option sets whether <code>synctex</code>, an input and output
+synchronization feature that allows navigation from source to typeset
+material and vice versa, available in most TeX engines, is activated.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>draft</code>: This option sets whether the draft mode, i.e, a mode that
+produces no output, so the engine can check the syntax, is activated.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: csplain: { interaction: batchmode, shell: yes }
+</span></code></pre>
+<h1 id="datatooltk"><code>datatooltk</code></h1>
+<p>This rule runs <code>datatooltk</code>, an application that creates <code>datatool</code> databases in
+raw format from several structured data formats, in batch mode. This rule
+requires <code>output</code> and one of the import options.</p>
+<ul>
+<li>
+<p><strong>[R]</strong> <code>output</code>: This option provides the database name to be saved as
+output. To guard against accidentally overwriting a document file,
+<code>datatooltk</code> now forbids the <code>tex</code> extension for output files. This option
+is required.</p>
+</li>
+<li>
+<p><code>csv</code>: This option, as the name indicates, imports data from the <code>csv</code> file
+reference provided as a plain string value.</p>
+</li>
+<li>
+<p><code>sep</code>: This option specifies the character used to separate values in the
+<code>csv</code> file. Defaults to a comma.</p>
+</li>
+<li>
+<p><code>delim</code>: This option specifies the character used to delimit values in the
+<code>csv</code> file. Defaults to a double quote.</p>
+</li>
+<li>
+<p><code>name</code>: This option, as the name indicates, sets the label reference of the
+newly created database according to the provided value.</p>
+</li>
+<li>
+<p><code>sql</code>: This option imports data from an SQL database where the provided value
+refers to a proper <code>select</code> SQL statement.</p>
+</li>
+<li>
+<p><code>sqldb</code>: This option, as the name indicates, sets the name of the SQL database
+according to the provided value.</p>
+</li>
+<li>
+<p><code>sqluser</code>: This option, as the name indicates, sets the name of the SQL user
+according to the provided value.</p>
+</li>
+<li>
+<p><code>noconsole</code> (default: <code>gui</code>): This action dictates the password request action
+if such information was not provided earlier. If there is no console
+available, the action is determined by the following values:</p>
+<ul>
+<li>
+<p><code>error</code>: As the name indicates, this action issues an error when no password
+was previously provided through the proper option.</p>
+</li>
+<li>
+<p><code>stdin</code>: This action requests the password via the standard input stream,
+which is less secure than using a console.</p>
+</li>
+<li>
+<p><code>gui</code>: This action displays a dialog box in which the user can enter the
+password for the SQL database.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>probsoln</code>: This option, as the name indicates, imports data in the <code>probsoln</code>
+format from the file name provided as the value.</p>
+</li>
+<li>
+<p><code>input</code>: This option, as the name indicates, imports data in the <code>datatool</code>
+format from the file name provided as the value.</p>
+</li>
+<li>
+<p><code>sort</code>: This option, as the name indicates, sorts the database according to
+the column whose label is provided as the value. The value may be preceded by
+<code>+</code> or <code>-</code> to indicate ascending or descending order, respectively. If the
+sign is omitted, ascending is assumed.</p>
+</li>
+<li>
+<p><code>sortlocale</code>: This option, as the name indicates, sorts the database according
+to alphabetical order rules of the locale provided as the value. If the value
+is set to <code>none</code> strings are sorted according to non-locale letter order.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>sortcase</code>: This option sets whether strings will be sorted using
+case-sensitive comparison for non-locale letter ordering. The default
+behaviour is case-insensitive.</p>
+</li>
+<li>
+<p><code>seed</code>: This option, as the name indicates, sets the random generator seed to
+the provided value. The seed is cleared if an empty value is provided.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>shuffle</code>: This option sets whether the database will be properly
+shuffled. Shuffle is always performed after sort, regardless of the option
+order.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>csvheader</code>: This option sets whether the <code>csv</code> file has a header
+row. The spreadsheet import functions also use this setting.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>debug</code>: This option, as the name indicates, sets whether the debug
+mode of <code>datatooltk</code> is activated. The debug mode is disabled by default.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>owneronly</code>: This option sets whether read and write permissions when
+saving <code>dbtex</code> files should be defined for the owner only. This option has
+no effect on some operating systems.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>maptex</code>: This option sets whether TeX special characters will be
+properly mapped when importing data from <code>csv</code> files or SQL databases.</p>
+</li>
+<li>
+<p><code>xls</code>: This option, as the name indicates, imports data from a Microsoft Excel
+<code>xls</code> file reference provided as a plain string value.</p>
+</li>
+<li>
+<p><code>ods</code>: This option, as the name indicates, imports data from an Open Document
+Spreadsheet <code>ods</code> file reference provided as a plain string value.</p>
+</li>
+<li>
+<p><code>sheet</code>: This option specifies the sheet to select from the Excel workbook or
+Open Document Spreadsheet. This may either be an index or the name of the
+sheet.</p>
+</li>
+<li>
+<p><code>filterop</code>: This option specifies the logical operator to be associated with a
+given filter. Filtering is always performed after sorting and
+shuffling. Possible values are:</p>
+<ul>
+<li>
+<p><code>or</code>: This value, as the name indicates, uses the logical <code>or</code> operator when
+filtering. This is the default behaviour. Note that this value has no effect
+if only one filter is supplied.</p>
+</li>
+<li>
+<p><code>and</code>: This value, as the name indicates, uses the logical <code>and</code> operator
+when filtering. Note that this value has no effect if only one filter is
+supplied.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>filters</code>: This option takes a list and sets up a sequence of filters. Each
+element from the provided list must be another list of exactly three entries
+representing a key, an operator and a value, respectively.</p>
+</li>
+<li>
+<p><code>truncate</code>: This option truncates the database to the number of rows provided
+as the value. Truncation is always performed after any sorting, shuffling and
+filtering, but before column removal.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: datatooltk: {
+</span><span style="color:#898989;">% arara: --&gt; output: books.dbtex,
+</span><span style="color:#898989;">% arara: --&gt; csv: booklist.csv }
+</span></code></pre>
+<h1 id="detex"><code>detex</code></h1>
+<p>This rule runs <code>detex</code>, a command line application that, as the name indicates,
+reads the provided <code>❖ currentFile</code> reference, removes all comments
+and TeX control sequences and writes the remainder to the standard output or
+file.</p>
+<ul>
+<li>
+<p><strong>[S]</strong> <code>references</code>: This option defines whether the tool should echo values
+from page counters, references and citations.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>follow</code>: This option defines whether the tool should follow files
+referenced through typical input mechanisms.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>math</code>: This option defines whether the tool should replace math with
+nouns and verbs in order to preserve grammar.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>spaces</code>: This option, as the name indicates, define whether the tool
+should replace control sequences with spaces.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>words</code>: This option, as the name indicates, define whether the tool
+should output only a list of words.</p>
+</li>
+<li>
+<p><code>environments</code>: This option takes a list of environments to be ignored by the
+tool during the text transformation.</p>
+</li>
+<li>
+<p><code>mode</code>: This option, as the name indicates, defines the operation mode for the
+tool. Possible values are:</p>
+<ul>
+<li>
+<p><code>latex</code>: This value, as the name suggests, enables and forces the LaTeX mode
+for the tool.</p>
+</li>
+<li>
+<p><code>tex</code>: This value, as the name suggests, enables and forces the plain TeX
+mode for the tool.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>output</code>: This value, as the name indicates, sets the output file in which the
+contents will be redirected.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: detex: { output: thesis.txt }
+</span></code></pre>
+<h1 id="dvipdfm"><code>dvipdfm</code></h1>
+<p>This rule runs <code>dvipdfm</code>, a command line utility for file format translation, on
+the corresponding base name of the <code>❖ currentFile</code> reference (i.e,
+the name without the associated extension) as a string concatenated with the
+<code>dvi</code> suffix, generating a Portable Document Format <code>pdf</code> file.</p>
+<ul>
+<li>
+<p><code>output</code>: This option, as the name indicates, sets the output name for the
+generated <code>pdf</code> file. There is no need to provide an extension, as the value
+is always normalized with <code>❖ getBasename</code> such that only the name
+without the associated extension is used. The base name of the current file
+reference is used as the default value.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: dvipdfm: { output: thesis }
+</span></code></pre>
+<h1 id="dvipdfmx"><code>dvipdfmx</code></h1>
+<p>This rule runs <code>dvipdfmx</code>, an extended version of <code>dvipdfm</code> created to support
+multibyte character encodings and large character sets for East Asian languages,
+on the corresponding base name of the <code>❖ currentFile</code> reference (i.e,
+the name without the associated extension) as a string concatenated with the
+<code>dvi</code> suffix, generating a Portable Document Format <code>pdf</code> file.</p>
+<ul>
+<li>
+<p><code>output</code>: This option, as the name indicates, sets the output name for the
+generated <code>pdf</code> file. There is no need to provide an extension, as the value
+is always normalized with <code>❖ getBasename</code> such that only the name
+without the associated extension is used. The base name of the current file
+reference is used as the default value.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: dvipdfmx: { options: [ &#39;-K&#39;, &#39;40&#39; ] }
+</span></code></pre>
+<h1 id="dvips"><code>dvips</code></h1>
+<p>This rule runs <code>dvips</code> on the corresponding base name of the <code>❖ currentFile</code> reference (i.e, the name without the associated extension) as a
+string concatenated with the <code>dvi</code> suffix, generating a PostScript <code>ps</code> file.</p>
+<ul>
+<li>
+<p><code>output</code>: This option, as the name indicates, sets the output name for the
+generated <code>ps</code> file. There is no need to provide an extension, as the value is
+always normalized with <code>❖ getBasename</code> such that only the name
+without the associated extension is used. The base name of the current file
+reference is used as the default value.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: dvips: { output: thesis }
+</span></code></pre>
+<h1 id="dvipspdf"><code>dvipspdf</code></h1>
+<p>This rule runs <code>dvips</code> in order to obtain a corresponding <code>ps</code> file from the
+initial <code>dvi</code> reference, and then runs <code>ps2pdf</code> on the previously generated <code>ps</code>
+file in order to obtain a <code>pdf</code> file. Note that all base names are acquired from
+the <code>❖ currentFile</code> reference (i.e, the name without the associated
+extension) and used to construct the resulting files.</p>
+<ul>
+<li>
+<p><code>output</code>: This option, as the name indicates, sets the output name for the
+generated <code>pdf</code> file. There is no need to provide an extension, as the value
+is always normalized with <code>❖ getBasename</code> such that only the name
+without the associated extension is used. The base name of the current file
+reference is used as the default value.</p>
+</li>
+<li>
+<p><code>options1</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the <code>dvips</code> program call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+<li>
+<p><code>options2</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the <code>ps2pdf</code> program call. An error is thrown
+if any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: dvipspdf: { output: article }
+</span></code></pre>
+<h1 id="dvisvgm"><code>dvisvgm</code></h1>
+<p>This rule runs <code>dvisvgm</code> in order to obtain a corresponding <code>svg</code> file, a vector
+graphics format based on XML, from the initial reference. It is important to
+observe that the base name is acquired from the <code>❖ currentFile</code>
+reference (i.e, the name without the associated extension) and used to construct
+the resulting file.</p>
+<ul>
+<li>
+<p><code>entry</code>: This option sets the extension to be used for the initial reference
+(i.e, the current file name) as input to the command line tool. The following
+values are available for this option:</p>
+<ul>
+<li>
+<p><code>dvi</code>: This value sets the extension to be used for the initial reference as
+a device independent format. This is the default value when no value is
+provided.</p>
+</li>
+<li>
+<p><code>xdv</code>: This value sets the extension to be used for the initial reference as
+an extended device independent format.</p>
+</li>
+<li>
+<p><code>eps</code>: This value sets the extension to be used for the initial reference as
+an encapsulated PostScript graphics format.</p>
+</li>
+<li>
+<p><code>pdf</code>: This value sets the extension to be used for the initial reference as
+a Portable Document Format.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>pages</code>: This value, as the name implies, takes a list of integers indicating
+the pages to be processed by the command line tool.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: dvisvgm
+</span></code></pre>
+<h1 id="etex"><code>etex</code></h1>
+<p>This rule runs the <code>etex</code> extended (plain) TeX engine on the provided
+<code>❖ currentFile</code> reference, generating a corresponding file in a
+device independent format.</p>
+<ul>
+<li>
+<p><code>interaction</code>: This option alters the underlying engine behaviour. If this
+option is omitted, TeX will prompt the user for interaction in the event of an
+error. Possible values are, in order of increasing user interaction (courtesy
+of our master Enrico Gregorio):</p>
+<ul>
+<li>
+<p><code>batchmode</code>: In this mode, nothing is printed on the terminal, and errors
+are scrolled as if the <code>return</code> key is hit at every error. Missing files
+that TeX tries to input or request from keyboard input cause the job to
+abort.</p>
+</li>
+<li>
+<p><code>nonstopmode</code>: In this mode, the diagnostic message will appear on the
+terminal, but there is no possibility of user interaction just like in batch
+mode, previously described.</p>
+</li>
+<li>
+<p><code>scrollmode</code>: In this mode, as the name indicates, TeX will stop only for
+missing files to input or if proper keyboard input is necessary. TeX fixes
+errors itself.</p>
+</li>
+<li>
+<p><code>errorstopmode</code>: In this mode, TeX will stop at each error, asking for
+proper user intervention. This is the most user interactive mode available.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>[S]</strong> <code>shell</code>: This option sets whether the possibility of running
+underlying system commands from within TeX is activated.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: etex: {
+</span><span style="color:#898989;">% arara: --&gt; shell: yes,
+</span><span style="color:#898989;">% arara: --&gt; interaction: batchmode
+</span><span style="color:#898989;">% arara: --&gt; }
+</span></code></pre>
+<h1 id="fig2dev"><code>fig2dev</code></h1>
+<p>This rule runs <code>fig2dev</code>, a command line application that translates <code>fig</code> code
+in the corresponding base name of the <code>❖ currentFile</code> reference (i.e,
+the name without the associated extension) as a string concatenated with the
+<code>fig</code> suffix into the specified graphics language and puts them in the specified
+output file.</p>
+<ul>
+<li>
+<p><strong>[R]</strong> <code>language</code>: This option, as the name indicates, sets the output
+graphics language for proper transformation. Possible values are listed as
+follows (you can infer their types as well, based on the values): <code>box</code>,
+<code>cgm</code>, <code>epic</code>, <code>eepic</code>, <code>eepicemu</code>, <code>emf</code>, <code>eps</code>, <code>gif</code>, <code>ibmgl</code>, <code>jpeg</code>,
+<code>latex</code>, <code>map</code>, <code>mf</code>, <code>mp</code>, <code>mmp</code>, <code>pcx</code>, <code>pdf</code>, <code>pdftex</code>, <code>pdftex_t</code>,
+<code>pic</code>, <code>pictex</code>, <code>png</code>, <code>ppm</code>, <code>ps</code>, <code>pstex</code>, <code>pstex_t</code>, <code>ptk</code>, <code>shape</code>,
+<code>sld</code>, <code>svg</code>, <code>textyl</code>, <code>tiff</code>, <code>tk</code>, <code>tpic</code>, <code>xbm</code>, and <code>xpm</code>.</p>
+</li>
+<li>
+<p><strong>[R]</strong> <code>output</code>: This option, as the name indicates, sets the output file
+which will contain the translated code based on the provided file and
+language.</p>
+</li>
+<li>
+<p><code>magnification</code>: This option, as the name suggests, sets the magnification
+level at which the figure is rendered.</p>
+</li>
+<li>
+<p><code>font</code>: This option sets the default font used for text objects to the
+provided value. Keep in mind that the format of this option depends on the
+graphics language in use.</p>
+</li>
+<li>
+<p><code>size</code>: This option, as the name suggests, set the default font size (in
+points) for text objects to the provided value.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: fig2dev: { language: mp, output: drawing.mp }
+</span></code></pre>
+<h1 id="frontespizio"><code>frontespizio</code></h1>
+<p>This rule automates the steps required by the <code>frontespizio</code> package in order to
+help Italian users generate the frontispiece to their thesis. First and
+foremost, the frontispiece is generated. If <code>latex</code> is used as the underlying
+engine, there is an additional intermediate conversion step to a proper <code>eps</code>
+file. Finally, the final document is compiled.</p>
+<ul>
+<li>
+<p><code>engine</code> (default: <code>pdflatex</code>): This option, as the name indicates, sets the
+underlying TeX engine to be used for both compilations (the frontispiece and
+the document itself). Possible values are:</p>
+<ul>
+<li>
+<p><code>latex</code>: This value, as the name indicates, sets the underlying TeX engine
+to <code>latex</code> for both compilations (frontispiece and document).</p>
+</li>
+<li>
+<p><code>pdflatex</code>: This value, as the name indicates, sets the underlying TeX
+engine to <code>pdflatex</code> for both compilations (frontispiece and document).</p>
+</li>
+<li>
+<p><code>xelatex</code>: This value, as the name indicates, sets the underlying TeX engine
+to <code>xelatex</code> for both compilations (frontispiece and document).</p>
+</li>
+<li>
+<p><code>lualatex</code>: This value, as the name indicates, sets the underlying TeX
+engine to <code>lualatex</code> for both compilations (frontispiece and document).</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>[S]</strong> <code>shell</code>: This option sets whether the possibility of running
+underlying system commands from within the selected TeX engine is activated.</p>
+</li>
+<li>
+<p><code>interaction</code>: This option alters the underlying engine behaviour. If this
+option is omitted, TeX will prompt the user for interaction in the event of an
+error. Possible values are, in order of increasing user interaction (courtesy
+of our master Enrico Gregorio):</p>
+<ul>
+<li>
+<p><code>batchmode</code>: In this mode, nothing is printed on the terminal, and errors
+are scrolled as if the <code>return</code> key is hit at every error. Missing files
+that TeX tries to input or request from keyboard input cause the job to
+abort.</p>
+</li>
+<li>
+<p><code>nonstopmode</code>: In this mode, the diagnostic message will appear on the
+terminal, but there is no possibility of user interaction just like in batch
+mode, previously described.</p>
+</li>
+<li>
+<p><code>scrollmode</code>: In this mode, as the name indicates, TeX will stop only for
+missing files to input or if proper keyboard input is necessary. TeX fixes
+errors itself.</p>
+</li>
+<li>
+<p><code>errorstopmode</code>: In this mode, TeX will stop at each error, asking for
+proper user intervention. This is the most user interactive mode available.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual TeX engine call. An error is thrown
+if any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: frontespizio: { engine: xelatex,
+</span><span style="color:#898989;">% arara: --&gt; shell: yes, interaction: nonstopmode }
+</span></code></pre>
+<h1 id="ghostscript"><code>ghostscript</code></h1>
+<p>This rule runs <code>ghostscript</code>, an interpreter for PostScript and Portable
+Document Format files, according to the provided parameters.</p>
+<ul>
+<li>
+<p><code>program</code> (default: <code>gs</code>): This option specifies the command utility path as a
+means to avoid potential clashes with underlying operating system commands or
+specific Windows naming schemes.</p>
+</li>
+<li>
+<p><strong>[R]</strong> <code>options</code>: This option, as the name indicates, takes a list of raw
+command line options and appends it to the actual <code>ghostscript</code> call. An
+error is thrown if any data structure other than a proper list is provided
+as the value. This option is required.</p>
+</li>
+<li>
+<p><code>device</code>: This option specifies which output device the tool should use. If
+this option is not given, the default device (usually a display device) is
+used.</p>
+</li>
+<li>
+<p><code>output</code>: This option, as the name indicates, specifies a file in which the
+tool should send the output. Please refer to the documentation for more
+details.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: ghostscript: { options: [ &#39;-dCompatibilityLevel=1.4&#39;,
+</span><span style="color:#898989;">% arara: --&gt; &#39;-dPDFSETTINGS=/printer&#39;, &#39;-dNOPAUSE&#39;, &#39;-dQUIET&#39;,
+</span><span style="color:#898989;">% arara: --&gt; &#39;-dBATCH&#39;, &#39;input.pdf&#39; ],
+</span><span style="color:#898989;">% arara: --&gt; output: output.pdf,
+</span><span style="color:#898989;">% arara: --&gt; device: pdfwrite }
+</span></code></pre>
+<h1 id="gnuplot"><code>gnuplot</code></h1>
+<p>This rule runs <code>gnuplot</code>, a command-driven plotting program that can generate
+plots of functions, data and data fits. The program also provides scripting
+capabilities, looping, functions, text processing, variables, macros, arbitrary
+pre-processing of input data (usually across columns), as well as the ability to
+perform non-linear multi-dimensional multi-set weighted data fitting.</p>
+<ul>
+<li>
+<p><strong>[S]</strong> <code>persist</code>: This option, as the name implies, sets whether the program
+should let plot windows survive after the main execution exits.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>default</code>: this option, as the name suggests, sets whether the program
+should read the default settings from either <code>gnuplotrc</code> or <code>~/.gnuplot</code> on
+entry.</p>
+</li>
+<li>
+<p><code>commands</code>: This option, as the name implies, executes the requested commands
+before loading the next input file. Please refer to the user manual for
+further details.</p>
+</li>
+<li>
+<p><strong>[R]</strong> <code>input</code>: This required option, as the name indicates, sets the list of
+input file names to be processed by the program. An error is thrown if any
+data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: gnuplot: { input: [ myplot.gnuplot ], default: yes }
+</span></code></pre>
+<h1 id="halt"><code>halt</code></h1>
+<p>This rule, as the name suggests, sets a <code>halt</code> flag, which stops the current
+interpretation workflow, such that subsequent directives are ignored. This rule
+contains no associated options. Please refer to <a href="https://islandoftex.gitlab.io/arara/manual/methods/">Methods</a> for
+more information on flags.</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: halt
+</span></code></pre>
+<h1 id="indent"><code>indent</code></h1>
+<p>This rule runs <code>latexindent</code>, a Perl script that indents TeX files according to
+an indentation scheme, on the provided <code>❖ currentFile</code>
+reference. Environments, including those with alignment delimiters, and
+commands, including those that can split braces and brackets across lines, are
+usually handled correctly by the script.</p>
+<ul>
+<li>
+<p><strong>[S]</strong> <code>silent</code>: This option, as the name indicates, sets whether the script
+will operate in silent mode, in which no output is given to the terminal.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>overwrite</code>: This option, as the name indicates, sets whether the
+<code>❖ currentFile</code> reference will be overwritten. If activated, a
+copy will be made before the actual indentation process.</p>
+</li>
+<li>
+<p><code>trace</code>: This option, as the name indicates, enables the script tracing mode,
+such that a verbose output will be given to the <code>indent.log</code> log
+file. Possible values are:</p>
+<ul>
+<li>
+<p><code>default</code>: This value, as the name indicates, refers to the default tracing
+level. Note that, especially for large files, this value does affect
+performance of the script.</p>
+</li>
+<li>
+<p><code>complete</code>: This value, as the name indicates, refers to the detailed,
+complete tracing level. Note that, especially for large files, performance
+of the script will be significantly affected when this value is used.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>[S]</strong> <code>screenlog</code>: This option, as the name indicates, sets whether
+<code>latexindent</code> will output the log file to the screen, as well as to the
+specified log file.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>modifylinebreaks</code>: This option, as the name indicates, sets whether
+the script will modify line breaks, according to specifications written in a
+configuration file.</p>
+</li>
+<li>
+<p><code>cruft</code>: This option sets the provided value as a cruft location in which the
+script will write backup and log files. The default behaviour sets the working
+directory as cruft location.</p>
+</li>
+<li>
+<p><code>logfile</code>: This option, as the name indicates, sets the name of the log file
+generated by <code>latexindent</code> according to the provided value.</p>
+</li>
+<li>
+<p><code>output</code>: This option, as the name indicates, sets the name of the output
+file. Please note that this option has higher priority over some switches, so
+options like <code>overwrite</code> will be ignored by the underlying script.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual script call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+<li>
+<p><code>settings</code>: This option, as the name indicates, dictates the indentation
+settings to be applied in the current script execution. Two possible values
+are available:</p>
+<ul>
+<li>
+<p><code>local</code>: This value, as the name implies, acts a switch to indicate a local
+configuration. In this scenario, the script will look for a proper settings
+file in the same directory as the <code>❖ currentFile</code> reference and
+add the corresponding content to the indentation scheme. Optionally, a file
+location can be specified as well. Please refer to the <code>where</code> option for
+more details on such feature.</p>
+</li>
+<li>
+<p><code>onlydefault</code>: This value, as the name indicates, ignores any local
+configuration, so the script will resort to the default indentation
+behaviour.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>where</code>: This option, as the name indicates, sets the file location containing
+the indentation settings according to the provided value. This option can only
+be used if, and only if, <code>local</code> is set as the value for the <code>settings</code>
+option, otherwise the rule will throw an error.</p>
+</li>
+<li>
+<p><code>replacement</code>: This option, as the name indicates, implements the replacement
+mode switches. Three possible values are available:</p>
+<ul>
+<li>
+<p><code>full</code>: This value, as the name indicates, performs indentation and
+replacements, not respecting verbatim code blocks.</p>
+</li>
+<li>
+<p><code>noverb</code>: This value, as the name indicates, performs indentation and
+replacements, and will respect verbatim code blocks.</p>
+</li>
+<li>
+<p><code>noindent</code>: This value, as the name implies, will not perform indentation,
+and will perform replacements not respecting verbatim code blocks.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>check</code>: This option, as the name indicates, checks whether the text after
+indentation matches that given in the original file. Two possible values are
+available:</p>
+<ul>
+<li>
+<p><code>standard</code>: This value, as the name indicates, refers to the standard
+behaviour. Please refer to the documentation for further details.</p>
+</li>
+<li>
+<p><code>verbose</code>: This value, as the name indicates, refers to including more
+details to the check. The tool will print the result in the standard output,
+as well as in its own log file. Please refer to the documentation for
+further details.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>lines</code>: This option instructs the tool to operate only on specific line
+ranges within the file being inspected. Please refer to the documentation for
+further details.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: indent: { overwrite: yes }
+</span></code></pre>
+<h1 id="knitr"><code>knitr</code></h1>
+<p>This rule calls the <code>knitr</code> package, a transparent engine for dynamic report
+generation with R. It takes an <code>.Rnw</code> file as input, extracts the R code in it
+according to a list of patterns, evaluates the code and writes the output in
+another file. It can also tangle R source code from the input document.</p>
+<ul>
+<li>
+<p><code>output</code> (default: <code>NULL</code>): This option sets the output file. when absent,
+<code>knitr</code> will try to guess a default, which will be under the current working
+directory.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>tangle</code>: This option sets whether to tangle the R code from the input
+file. Note that, when used, this option requires <code>output</code> to be specified as
+well, otherwise an error is thrown.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>quiet</code>: This option, as the name indicates, sets whether the tool
+should suppress both progress bar and messages.</p>
+</li>
+<li>
+<p><code>envir</code> (default: <code>parent.frame()</code>): This option sets the environment in which
+code chunks are to be evaluated. Please refer to the documentation for further
+details.</p>
+</li>
+<li>
+<p><code>encoding</code> (default: <code>getOption("encoding")</code>): This option, as the name
+indicates, sets the encoding of the input file. Please refer to the
+documentation for further details.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: knitr: { quiet: yes }
+</span></code></pre>
+<h1 id="latex"><code>latex</code></h1>
+<p>This rule runs the <code>latex</code> TeX engine on the provided <code>❖ currentFile</code>
+reference, generating a corresponding file in a device independent format.</p>
+<ul>
+<li>
+<p><code>branch</code> (default: <code>stable</code>): This option allows branching formats for the
+current engine, mainly focused on package development. Users of current TeX
+distributions might benefit from format branching in order to easily test
+documents and code against the upcoming releases. Possible values are:</p>
+<ul>
+<li>
+<p><code>stable</code>: This value, as the name implies, enables the stable engine format
+branch. Note that this is the default format.</p>
+</li>
+<li>
+<p><code>developer</code>: For experienced users, this value enables the experimental,
+developer engine format branch.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>interaction</code>: This option alters the underlying engine behaviour. If this
+option is omitted, TeX will prompt the user for interaction in the event of an
+error. Possible values are, in order of increasing user interaction (courtesy
+of our master Enrico Gregorio):</p>
+<ul>
+<li>
+<p><code>batchmode</code>: In this mode, nothing is printed on the terminal, and errors
+are scrolled as if the <code>return</code> key is hit at every error. Missing files
+that TeX tries to input or request from keyboard input cause the job to
+abort.</p>
+</li>
+<li>
+<p><code>nonstopmode</code>: In this mode, the diagnostic message will appear on the
+terminal, but there is no possibility of user interaction just like in batch
+mode, previously described.</p>
+</li>
+<li>
+<p><code>scrollmode</code>: In this mode, as the name indicates, TeX will stop only for
+missing files to input or if proper keyboard input is necessary. TeX fixes
+errors itself.</p>
+</li>
+<li>
+<p><code>errorstopmode</code>: In this mode, TeX will stop at each error, asking for
+proper user intervention. This is the most user interactive mode available.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>[S]</strong> <code>shell</code>: This option sets whether the possibility of running
+underlying system commands from within TeX is activated.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>synctex</code>: This option sets whether <code>synctex</code>, an input and output
+synchronization feature that allows navigation from source to typeset
+material and vice versa, available in most TeX engines, is activated.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>draft</code>: This option sets whether the draft mode, i.e, a mode that
+produces no output, so the engine can check the syntax, is activated.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: latex: { interaction: scrollmode, draft: yes }
+</span></code></pre>
+<h1 id="latexmk"><code>latexmk</code></h1>
+<p>This rule runs <code>latexmk</code>, a fantastic command line tool for fully automated TeX
+document generation, on the provided <code>❖ currentFile</code> reference.</p>
+<ul>
+<li>
+<p><code>clean</code>: This option, as the name indicates, removes all temporary files
+generated after a sequence of intermediate calls for document generation. Two
+possible values are available:</p>
+<ul>
+<li>
+<p><code>all</code>: This value, as the name indicates, removes all temporary,
+intermediate files, as well as resulting, final formats such as PostScript
+and Portable Document Format. Only relevant source files are kept.</p>
+</li>
+<li>
+<p><code>partial</code>: This value, as the name indicates, removes all temporary,
+intermediate files and keeps the resulting, final formats such as PostScript
+and Portable Document Format.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>engine</code>: This option, as the name indicates, sets the underlying TeX engine
+of <code>latexmk</code> to be used for the compilation sequence. Possible values are:</p>
+<ul>
+<li>
+<p><code>latex</code>: This value, as the name indicates, sets the underlying TeX engine
+of the script to <code>latex</code> for the compilation sequence.</p>
+</li>
+<li>
+<p><code>latex-dev</code>: This value, as the name indicates, sets the underlying TeX
+engine of the script to <code>latex-dev</code> (the development branch) for the
+compilation sequence.</p>
+</li>
+<li>
+<p><code>pdflatex</code>: This value, as the name indicates, sets the underlying TeX
+engine of the script to <code>pdflatex</code> for the compilation sequence.</p>
+</li>
+<li>
+<p><code>pdflatex-dev</code>: This value, as the name indicates, sets the underlying TeX
+engine of the script to <code>pdflatex-dev</code> (the development branch) for the
+compilation sequence.</p>
+</li>
+<li>
+<p><code>xelatex</code>: This value, as the name indicates, sets the underlying TeX engine
+of the script to <code>xelatex</code> for the compilation sequence.</p>
+</li>
+<li>
+<p><code>xelatex-dev</code>: This value, as the name indicates, sets the underlying TeX
+engine of the script to <code>xelatex-dev</code> (the development branch) for the
+compilation sequence.</p>
+</li>
+<li>
+<p><code>lualatex</code>: This value, as the name indicates, sets the underlying TeX
+engine of the script to <code>lualatex</code> for the compilation sequence.</p>
+</li>
+<li>
+<p><code>lualatex-dev</code>: This value, as the name indicates, sets the underlying TeX
+engine of the script to <code>lualatex-dev</code> (the development branch) for the
+compilation sequence.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>program</code>: This option, as the name suggests, sets the TeX engine according to
+the provided value. It is important to note that this option has higher
+priority over <code>engine</code> values, so the latter will be discarded.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual script call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: latexmk: { engine: pdflatex }
+</span></code></pre>
+<h1 id="llmk"><code>llmk</code></h1>
+<p>This rule runs <code>llmk</code>, a command line tool specific for building LaTeX
+documents. The tool's aim is to provide a simple way to specify a workflow of
+processing documents and encourage people to always explicitly show the right
+workflow for each document.</p>
+<ul>
+<li>
+<p><code>clean</code>: This option, as the name indicates, removes all temporary files
+generated after a sequence of intermediate calls for document generation. Two
+possible values are available:</p>
+<ul>
+<li>
+<p><code>all</code>: This value, as the name indicates, removes all temporary,
+intermediate files, as well as resulting, final formats such as PostScript
+and Portable Document Format. Only relevant source files are kept.</p>
+</li>
+<li>
+<p><code>partial</code>: This value, as the name indicates, removes all temporary,
+intermediate files and keeps the resulting, final formats such as PostScript
+and Portable Document Format.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>debug</code>: This option activates the specified debug category, so debugging
+messages related to the activated category will be shown. Please refer to the
+documentation for more details.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>dry</code>: This option sets whether the tool should display a list of
+commands to be executed without actually invoking them.</p>
+</li>
+<li>
+<p><code>mode</code>: This option sets the verbosity level of messages to be displayed
+during a run. Three possible values are available:</p>
+<ul>
+<li>
+<p><code>quiet</code>: This value, as the name indicates, suppresses most of the messages
+from the program during execution.</p>
+</li>
+<li>
+<p><code>silent</code>: This value, as the name indicates, silences messages from invoked
+programs by redirecting both standard output and standard error streams to
+the null device.</p>
+</li>
+<li>
+<p><code>verbose</code>: This value, as the name indicates, displays additional
+information such as invoked commands with options and arguments by the
+program.</p>
+</li>
+</ul>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: llmk: { mode: verbose }
+</span></code></pre>
+<h1 id="ltx2any"><code>ltx2any</code></h1>
+<p>This rule runs <code>ltx2any</code>, a command line tool written in Ruby that acts as a
+LaTeX build wrapper, on the provided <code>❖ currentFile</code> reference.</p>
+<ul>
+<li>
+<p><strong>[S]</strong> <code>clean</code>: This option, as the name indicates, sets whether all
+intermediate results generated during the compilation to be deleted.</p>
+</li>
+<li>
+<p><code>engine</code>: This option, as the name indicates, sets the engine to be using
+during the current execution.</p>
+</li>
+<li>
+<p><code>parameters</code>: This option, as the name indicates, takes a list of parameters
+to be passed to the engine. An error is thrown if any data structure other
+than a proper list is provided as the value.</p>
+</li>
+<li>
+<p><code>tikzimages</code>: This option takes a list of externalised Ti<em>k</em>Z images to
+rebuild. An error is thrown if any data structure other than a proper list is
+provided as the value.</p>
+</li>
+<li>
+<p><code>jobname</code>: This option, as the name indicates, sets the job name to be used in
+the resulting file.</p>
+</li>
+<li>
+<p><code>logname</code>: This option, as the name indicates, sets the log file name to be
+used during the current execution.</p>
+</li>
+<li>
+<p><code>logformat</code>: This option, as the name indicates, sets the log format to be
+used during the current execution. Three possible values are available:</p>
+<ul>
+<li>
+<p><code>raw</code>: This value, as the name indicates, sets the log format to be raw,
+i.e, as generated by the underlying engines.</p>
+</li>
+<li>
+<p><code>markdown</code>: This value, as the name indicates, sets the log format to be
+displayed in Markdown.</p>
+</li>
+<li>
+<p><code>pdf</code>: This value, as the name indicates, sets the log format to be
+displayed in the Portable Document Format.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>loglevel</code>: This option, as the name indicates, sets the log level to be used
+during the current execution. Three possible values are available:</p>
+<ul>
+<li>
+<p><code>error</code>: This value, as the name indicates, sets the base log level to
+report errors only. No other information is appended.</p>
+</li>
+<li>
+<p><code>warning</code>: This value, as the name indicates, sets the base log level to
+report warnings and errors. No other information is appended.</p>
+</li>
+<li>
+<p><code>info</code>: This value, as the name indicates, set the base log level to report
+all information available, regardless of message categories.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>frequency</code>: This option, as the name indicates, sets how often the engine
+runs. Values smaller than one will cause it to run until the resulting file no
+longer changes.</p>
+</li>
+<li>
+<p><code>directory</code>: This option, as the name indicates, sets the directory to hold
+intermediate files during the compilation.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>synctex</code>: This option sets whether <code>synctex</code>, an input and output
+synchronization feature that allows navigation from source to typeset
+material and vice versa, available in most TeX engines, is activated.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: ltx2any: { synctex: yes }
+</span></code></pre>
+<h1 id="luahbtex"><code>luahbtex</code></h1>
+<p>This rule runs the <code>luahbtex</code> TeX engine on the provided <code>❖ currentFile</code> reference, generating a corresponding file in the Portable Document
+Format, as expected.</p>
+<ul>
+<li>
+<p><code>interaction</code>: This option alters the underlying engine behaviour. If this
+option is omitted, TeX will prompt the user for interaction in the event of an
+error. Possible values are, in order of increasing user interaction (courtesy
+of our master Enrico Gregorio):</p>
+<ul>
+<li>
+<p><code>batchmode</code>: In this mode, nothing is printed on the terminal, and errors
+are scrolled as if the <code>return</code> key is hit at every error. Missing files
+that TeX tries to input or request from keyboard input cause the job to
+abort.</p>
+</li>
+<li>
+<p><code>nonstopmode</code>: In this mode, the diagnostic message will appear on the
+terminal, but there is no possibility of user interaction just like in batch
+mode, previously described.</p>
+</li>
+<li>
+<p><code>scrollmode</code>: In this mode, as the name indicates, TeX will stop only for
+missing files to input or if proper keyboard input is necessary. TeX fixes
+errors itself.</p>
+</li>
+<li>
+<p><code>errorstopmode</code>: In this mode, TeX will stop at each error, asking for
+proper user intervention. This is the most user interactive mode available.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>[S]</strong> <code>shell</code>: This option sets whether the possibility of running
+underlying system commands from within TeX is activated.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>synctex</code>: This option sets whether <code>synctex</code>, an input and output
+synchronization feature that allows navigation from source to typeset
+material and vice versa, available in most TeX engines, is activated.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>draft</code>: This option sets whether the draft mode, i.e, a mode that
+produces no output, so the engine can check the syntax, is activated.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: luahbtex: { interaction: batchmode,
+</span><span style="color:#898989;">% arara: --&gt; shell: yes, draft: yes }
+</span></code></pre>
+<h1 id="lualatex"><code>lualatex</code></h1>
+<p>This rule runs the new <code>lualatex</code> TeX engine on the provided <code>❖ currentFile</code> reference, generating a corresponding file in the Portable Document
+Format, as expected.</p>
+<ul>
+<li>
+<p><code>branch</code> (default: <code>stable</code>): This option allows branching formats for the
+current engine, mainly focused on package development. Users of current TeX
+distributions might benefit from format branching in order to easily test
+documents and code against the upcoming releases. Possible values are:</p>
+<ul>
+<li>
+<p><code>stable</code>: This value, as the name implies, enables the stable engine format
+branch. Note that this is the default format.</p>
+</li>
+<li>
+<p><code>developer</code>: For experienced users, this value enables the experimental,
+developer engine format branch.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>interaction</code>: This option alters the underlying engine behaviour. If this
+option is omitted, TeX will prompt the user for interaction in the event of an
+error. Possible values are, in order of increasing user interaction (courtesy
+of our master Enrico Gregorio):</p>
+<ul>
+<li>
+<p><code>batchmode</code>: In this mode, nothing is printed on the terminal, and errors
+are scrolled as if the <code>return</code> key is hit at every error. Missing files
+that TeX tries to input or request from keyboard input cause the job to
+abort.</p>
+</li>
+<li>
+<p><code>nonstopmode</code>: In this mode, the diagnostic message will appear on the
+terminal, but there is no possibility of user interaction just like in batch
+mode, previously described.</p>
+</li>
+<li>
+<p><code>scrollmode</code>: In this mode, as the name indicates, TeX will stop only for
+missing files to input or if proper keyboard input is necessary. TeX fixes
+errors itself.</p>
+</li>
+<li>
+<p><code>errorstopmode</code>: In this mode, TeX will stop at each error, asking for
+proper user intervention. This is the most user interactive mode available.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>[S]</strong> <code>shell</code>: This option sets whether the possibility of running
+underlying system commands from within TeX is activated.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>synctex</code>: This option sets whether <code>synctex</code>, an input and output
+synchronization feature that allows navigation from source to typeset
+material and vice versa, available in most TeX engines, is activated.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>draft</code>: This option sets whether the draft mode, i.e, a mode that
+produces no output, so the engine can check the syntax, is activated.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: lualatex: { interaction: errorstopmode,
+</span><span style="color:#898989;">% arara: --&gt; synctex: yes }
+</span></code></pre>
+<h1 id="luatex"><code>luatex</code></h1>
+<p>This rule runs the <code>luatex</code> TeX engine on the provided <code>❖ currentFile</code> reference, generating a corresponding file in the Portable Document
+Format, as expected.</p>
+<ul>
+<li>
+<p><code>interaction</code>: This option alters the underlying engine behaviour. If this
+option is omitted, TeX will prompt the user for interaction in the event of an
+error. Possible values are, in order of increasing user interaction (courtesy
+of our master Enrico Gregorio):</p>
+<ul>
+<li>
+<p><code>batchmode</code>: In this mode, nothing is printed on the terminal, and errors
+are scrolled as if the <code>return</code> key is hit at every error. Missing files
+that TeX tries to input or request from keyboard input cause the job to
+abort.</p>
+</li>
+<li>
+<p><code>nonstopmode</code>: In this mode, the diagnostic message will appear on the
+terminal, but there is no possibility of user interaction just like in batch
+mode, previously described.</p>
+</li>
+<li>
+<p><code>scrollmode</code>: In this mode, as the name indicates, TeX will stop only for
+missing files to input or if proper keyboard input is necessary. TeX fixes
+errors itself.</p>
+</li>
+<li>
+<p><code>errorstopmode</code>: In this mode, TeX will stop at each error, asking for
+proper user intervention. This is the most user interactive mode available.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>[S]</strong> <code>shell</code>: This option sets whether the possibility of running
+underlying system commands from within TeX is activated.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>synctex</code>: This option sets whether <code>synctex</code>, an input and output
+synchronization feature that allows navigation from source to typeset
+material and vice versa, available in most TeX engines, is activated.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>draft</code>: This option sets whether the draft mode, i.e, a mode that
+produces no output, so the engine can check the syntax, is activated.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: luatex: { interaction: batchmode,
+</span><span style="color:#898989;">% arara: --&gt; shell: yes, draft: yes }
+</span></code></pre>
+<h1 id="make"><code>make</code></h1>
+<p>This rule runs <code>make</code>, a build automation tool that automatically builds
+executable programs and libraries from source code, according to a special file
+which specifies how to derive the target program.</p>
+<ul>
+<li>
+<p><code>targets</code>: This option takes a list of targets. Note that <code>make</code> updates a
+target if it depends on files that have been modified since the target was
+last modified, or if the target does not exist.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: make: { targets: [ compile, package ] }
+</span></code></pre>
+<h1 id="makeglossaries"><code>makeglossaries</code></h1>
+<p>This rule runs <code>makeglossaries</code>, an efficient Perl script designed for use with
+TeX documents that work with the <code>glossaries</code> package. All the information
+required to be passed to the relevant indexing application should also be
+contained in the auxiliary file. The script takes the corresponding base name of
+the <code>❖ currentFile</code> reference (i.e, the name without the associated
+extension) as the mandatory argument.</p>
+<ul>
+<li><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual script call. An error is thrown if
+any data structure other than a proper list is provided as the value.</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: makeglossaries if found(&#39;aux&#39;, &#39;@istfilename&#39;)
+</span></code></pre>
+<h1 id="makeglossarieslite"><code>makeglossarieslite</code></h1>
+<p>This rule runs <code>makeglossaries-lite</code>, a lightweight Lua script designed for use
+with TeX documents that work with the <code>glossaries</code> package. All the information
+required to be passed to the relevant indexing application should also be
+contained in the auxiliary file. The script takes the corresponding base name of
+the <code>❖ currentFile</code> reference (i.e, the name without the associated
+extension) as the mandatory argument.</p>
+<ul>
+<li><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual script call. An error is thrown if
+any data structure other than a proper list is provided as the value.</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: makeglossarieslite if found(&#39;aux&#39;, &#39;@istfilename&#39;)
+</span></code></pre>
+<h1 id="makeindex"><code>makeindex</code></h1>
+<p>This rule runs <code>makeindex</code>, a general purpose hierarchical index generator, on
+the corresponding base name of the <code>❖ currentFile</code> reference (i.e,
+the name without the associated extension) as a string concatenated with the
+<code>idx</code> suffix, generating an index as a special <code>ind</code> file.</p>
+<ul>
+<li>
+<p><code>style</code>: This option, as the name indicates, sets the underlying index style
+file. Make sure to provide a valid <code>ist</code> file when using this option.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>german</code>: This option, as the name indicates, sets whether German word
+ordering should be used when generating the index, according to the rules
+set forth in DIN 5007.</p>
+</li>
+<li>
+<p><code>order</code>: This option, as the name indicates, sets the default ordering scheme
+for the <code>makeindex</code> program. Two possible values are available:</p>
+<ul>
+<li>
+<p><code>letter</code>: This value, as the name indicates, activates the letter ordering
+scheme. In such scheme, a blank space does not precede any letter in the
+alphabet.</p>
+</li>
+<li>
+<p><code>word</code>: This value, as the name indicates, activates the word ordering
+scheme. In such scheme, a blank space precedes any letter in the alphabet.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>input</code> (default: <code>idx</code>): This option, as the name indicates, sets the default
+extension for the input file, according to the provided value. Later, this
+value will be concatenated as a suffix for the base name of the <code>❖ currentFile</code> reference (i.e, the name without the associated extension).</p>
+</li>
+<li>
+<p><code>output</code> (default: <code>ind</code>): This option, as the name indicates, sets the
+default extension for the output file, according to the provided value. Later,
+this value will be concatenated as a suffix for the base name of the
+<code>❖ currentFile</code> reference (i.e, the name without the associated
+extension).</p>
+</li>
+<li>
+<p><code>log</code> (default: <code>ilg</code>): This option, as the name indicates, sets the default
+extension for the log file, according to the provided value. Later, this value
+will be concatenated as a suffix for the base name of the <code>❖ currentFile</code> reference (i.e, the name without the associated extension).</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: makeindex: { style: book.ist }
+</span></code></pre>
+<h1 id="metapost"><code>metapost</code></h1>
+<p>This rule runs <code>metapost</code>, a tool to compile the Metapost graphics programming
+language. Please note that you will have to make the <code>.mp</code> extension known to
+arara in order to compile Metapost files. Furthermore, it is advised to use this
+in your regular TeX document specifying the <code>files</code> parameter to include all
+graphics you want to compile for inclusion in your document.</p>
+<ul>
+<li>
+<p><code>interaction</code>: This option alters the underlying engine behaviour. If this
+option is omitted, TeX will prompt the user for interaction in the event of an
+error. Possible values are, in order of increasing user interaction (courtesy
+of our master Enrico Gregorio):</p>
+<ul>
+<li>
+<p><code>batchmode</code>: In this mode, nothing is printed on the terminal, and errors
+are scrolled as if the <code>return</code> key is hit at every error. Missing files
+that TeX tries to input or request from keyboard input cause the job to
+abort.</p>
+</li>
+<li>
+<p><code>nonstopmode</code>: In this mode, the diagnostic message will appear on the
+terminal, but there is no possibility of user interaction just like in batch
+mode, previously described.</p>
+</li>
+<li>
+<p><code>scrollmode</code>: In this mode, as the name indicates, TeX will stop only for
+missing files to input or if proper keyboard input is necessary. TeX fixes
+errors itself.</p>
+</li>
+<li>
+<p><code>errorstopmode</code>: In this mode, TeX will stop at each error, asking for
+proper user intervention. This is the most user interactive mode available.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>numbersystem</code>: This option sets the number system Metapost will use for
+calculations.</p>
+<ul>
+<li>
+<p><code>scaled</code>: In this mode, 32-bit fixed-point arithmetics is used.</p>
+</li>
+<li>
+<p><code>double</code>: In this mode, IEEE floating-point arithmetics with 64 bits is
+used.</p>
+</li>
+<li>
+<p><code>binary</code>: This mode is similary to <code>double</code> but without a fixed-length
+mantissa.</p>
+</li>
+<li>
+<p><code>decimal</code>: In this mode, arbitrary precision arithmetics is used and numbers
+are internally represented in base 10.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: metapost: { files: [ graphics.mp ] }
+</span></code></pre>
+<h1 id="mkdir"><code>mkdir</code></h1>
+<p>This rule creates a new directory at the current location and all parents as
+required. It does nothing if the directory already exists.</p>
+<ul>
+<li><strong>[R]</strong> <code>target</code>: This option, as the name implies, specifies the name of the
+target directory to be created. Keep in mind that this option is required.</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: mkdir: { target: &#39;dir_to_make&#39; }
+</span></code></pre>
+<h1 id="move"><code>move</code></h1>
+<p>This rule moves the <code>File</code> reference to the provided target using the underlying
+operating system move operation. The target is <em>always</em> overwritten. However, be
+mindful that an error will be thrown if you try to move or overwrite the file
+referenced in <code>❖ getOriginalReference</code>.</p>
+<ul>
+<li><strong>[R]</strong> <code>target</code>: This option, as the name implies, specifies the target for
+the move operation. Keep in mind that this option is required.</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: move: { files: [ &#39;thesis.pdf&#39; ],
+</span><span style="color:#898989;">% arara: --&gt; target: &#39;backup/thesis.pdf&#39; }
+</span></code></pre>
+<h1 id="nomencl"><code>nomencl</code></h1>
+<p>This rule runs <code>makeindex</code> in order to automatically generate a nomenclature
+list from TeX documents that work with the <code>nomencl</code> package. The program itself
+is a general purpose hierarchical index generator and takes the corresponding
+base name of the <code>❖ currentFile</code> reference (i.e, the name without the
+associated extension) as a string concatenated with the <code>nlo</code> suffix and a
+special style file in order to generate the nomenclature list as a special <code>nls</code>
+file.</p>
+<ul>
+<li>
+<p><code>style</code> (default: <code>nomencl.ist</code>): This option, as the name indicates, sets the
+underlying index style file. The default value is set to the one automatically
+provided by the <code>nomencl</code> package, so it is highly recommended to not override
+it.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: nomencl
+</span></code></pre>
+<h1 id="pbibtex"><code>pbibtex</code></h1>
+<p>This rule runs the <code>pbibtex</code> program, a reference management software, on the
+corresponding base name of the <code>❖ currentFile</code> reference (i.e, the
+name without the associated extension) as a string.</p>
+<ul>
+<li><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pbibtex
+</span><span style="color:#898989;">% arara: --&gt; if exists(toFile(&#39;references.bib&#39;))
+</span></code></pre>
+<h1 id="pdfcrop"><code>pdfcrop</code></h1>
+<p>This rule runs <code>pdfcrop</code>, a command line utility to calculate and remove empty
+margins, on corresponding base name of the <code>❖ currentFile</code> reference
+(i.e, the name without the associated extension) as a string concatenated with
+the <code>pdf</code> suffix.</p>
+<ul>
+<li>
+<p><code>output</code>: This option, as the name indicates, sets the output file. When
+omitted, the tool uses the input base name with the <code>-crop.pdf</code> suffix.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>verbose</code>: This option, as the name indicates, sets whether the
+command line tool will be executed in verbose mode.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>debug</code>: This option, as the name indicates, sets whether the command
+line tool will be executed in debug mode.</p>
+</li>
+<li>
+<p><code>engine</code>: This option, as the name indicates, sets the underlying TeX engine
+to be used during the run. Three possible values are available:</p>
+<ul>
+<li>
+<p><code>pdftex</code>: This value, as the name indicates, sets <code>pdftex</code> as the underlying
+TeX engine to be used during the run.</p>
+</li>
+<li>
+<p><code>xetex</code>: This value, as the name indicates, sets <code>xetex</code> as the underlying
+TeX engine to be used during the run.</p>
+</li>
+<li>
+<p><code>luatex</code>: This value, as the name indicates, sets <code>luatex</code> as the underlying
+TeX engine to be used during the run.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>margins</code>: This option, as the name indicates, takes a list of four elements
+denoting left, top, right and bottom margins, respectivelly. An error will be
+thrown if no list is provided or if the list does not contain exactly four
+elements.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>clip</code>: This option, as the name indicates, sets whether the command
+line tool should include clipping support, if margins are set.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>hires</code>: This option, as the name indicates, sets whether the command
+line tool should use a high resolution bounding box feature.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>ini</code>: This option, as the name indicates, sets whether the <code>initex</code>
+variant of the underlying TeX engine is used.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>restricted</code>: This option, as the name indicates, sets whether the
+command line tool should run on restricted mode.</p>
+</li>
+<li>
+<p><code>papersize</code>: This option, as the name indicates, sets the paper
+size. According to the documentation, this option should only be used with
+older versions of <code>ghostscript</code>.</p>
+</li>
+<li>
+<p><code>resolution</code>: This option, as the name indicates, sets the resolution by
+forwarding the value to the underlying <code>ghostscript</code> call.</p>
+</li>
+<li>
+<p><code>bbox</code>: This option, as the name indicates, takes a list of four elements
+denoting left, bottom, right and top margins, respectivelly, to override
+bounding box values found by <code>ghostscript</code>. An error will be thrown if no list
+is provided or if the list does not contain exactly four elements.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>uncompress</code>: This option, as the name indicates, sets whether the
+tool should generate an uncompressed Portable Document Format file, useful
+for debugging.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdfcrop
+</span></code></pre>
+<h1 id="pdfcsplain"><code>pdfcsplain</code></h1>
+<p>This rule runs the <code>pdfcsplain</code> TeX engine, a conservative extension of Knuth's
+plain TeX with direct processing characters and hyphenation patterns for Czech
+and Slovak, on the provided <code>❖ currentFile</code> reference.</p>
+<ul>
+<li>
+<p><code>interaction</code>: This option alters the underlying engine behaviour. If this
+option is omitted, TeX will prompt the user for interaction in the event of an
+error. Possible values are, in order of increasing user interaction (courtesy
+of our master Enrico Gregorio):</p>
+<ul>
+<li>
+<p><code>batchmode</code>: In this mode, nothing is printed on the terminal, and errors
+are scrolled as if the <code>return</code> key is hit at every error. Missing files
+that TeX tries to input or request from keyboard input cause the job to
+abort.</p>
+</li>
+<li>
+<p><code>nonstopmode</code>: In this mode, the diagnostic message will appear on the
+terminal, but there is no possibility of user interaction just like in batch
+mode, previously described.</p>
+</li>
+<li>
+<p><code>scrollmode</code>: In this mode, as the name indicates, TeX will stop only for
+missing files to input or if proper keyboard input is necessary. TeX fixes
+errors itself.</p>
+</li>
+<li>
+<p><code>errorstopmode</code>: In this mode, TeX will stop at each error, asking for
+proper user intervention. This is the most user interactive mode available.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>[S]</strong> <code>shell</code>: This option sets whether the possibility of running
+underlying system commands from within TeX is activated.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>synctex</code>: This option sets whether <code>synctex</code>, an input and output
+synchronization feature that allows navigation from source to typeset
+material and vice versa, available in most TeX engines, is activated.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>draft</code>: This option sets whether the draft mode, i.e, a mode that
+produces no output, so the engine can check the syntax, is activated.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdfcsplain: { shell: yes, synctex: yes }
+</span></code></pre>
+<h1 id="pdflatex"><code>pdflatex</code></h1>
+<p>This rule runs the <code>pdflatex</code> TeX engine on the provided <code>❖ currentFile</code> reference, generating a corresponding file in the Portable Document
+Format, as expected.</p>
+<ul>
+<li>
+<p><code>branch</code> (default: <code>stable</code>): This option allows branching formats for the
+current engine, mainly focused on package development. Users of current TeX
+distributions might benefit from format branching in order to easily test
+documents and code against the upcoming releases. Possible values are:</p>
+<ul>
+<li>
+<p><code>stable</code>: This value, as the name implies, enables the stable engine format
+branch. Note that this is the default format.</p>
+</li>
+<li>
+<p><code>developer</code>: For experienced users, this value enables the experimental,
+developer engine format branch.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>interaction</code>: This option alters the underlying engine behaviour. If this
+option is omitted, TeX will prompt the user for interaction in the event of an
+error. Possible values are, in order of increasing user interaction (courtesy
+of our master Enrico Gregorio):</p>
+<ul>
+<li>
+<p><code>batchmode</code>: In this mode, nothing is printed on the terminal, and errors
+are scrolled as if the <code>return</code> key is hit at every error. Missing files
+that TeX tries to input or request from keyboard input cause the job to
+abort.</p>
+</li>
+<li>
+<p><code>nonstopmode</code>: In this mode, the diagnostic message will appear on the
+terminal, but there is no possibility of user interaction just like in batch
+mode, previously described.</p>
+</li>
+<li>
+<p><code>scrollmode</code>: In this mode, as the name indicates, TeX will stop only for
+missing files to input or if proper keyboard input is necessary. TeX fixes
+errors itself.</p>
+</li>
+<li>
+<p><code>errorstopmode</code>: In this mode, TeX will stop at each error, asking for
+proper user intervention. This is the most user interactive mode available.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>[S]</strong> <code>shell</code>: This option sets whether the possibility of running
+underlying system commands from within TeX is activated.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>synctex</code>: This option sets whether <code>synctex</code>, an input and output
+synchronization feature that allows navigation from source to typeset
+material and vice versa, available in most TeX engines, is activated.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>draft</code>: This option sets whether the draft mode, i.e, a mode that
+produces no output, so the engine can check the syntax, is activated.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex: { interaction: batchmode }
+</span><span style="color:#898989;">% arara: --&gt; if missing(&#39;pdf&#39;) || changed(&#39;tex&#39;)
+</span></code></pre>
+<h1 id="pdftex"><code>pdftex</code></h1>
+<p>This rule runs the <code>pdftex</code> TeX engine on the provided <code>❖ currentFile</code> reference, generating a corresponding file in the Portable Document
+Format, as expected.</p>
+<ul>
+<li>
+<p><code>interaction</code>: This option alters the underlying engine behaviour. If this
+option is omitted, TeX will prompt the user for interaction in the event of an
+error. Possible values are, in order of increasing user interaction (courtesy
+of our master Enrico Gregorio):</p>
+<ul>
+<li>
+<p><code>batchmode</code>: In this mode, nothing is printed on the terminal, and errors
+are scrolled as if the <code>return</code> key is hit at every error. Missing files
+that TeX tries to input or request from keyboard input cause the job to
+abort.</p>
+</li>
+<li>
+<p><code>nonstopmode</code>: In this mode, the diagnostic message will appear on the
+terminal, but there is no possibility of user interaction just like in batch
+mode, previously described.</p>
+</li>
+<li>
+<p><code>scrollmode</code>: In this mode, as the name indicates, TeX will stop only for
+missing files to input or if proper keyboard input is necessary. TeX fixes
+errors itself.</p>
+</li>
+<li>
+<p><code>errorstopmode</code>: In this mode, TeX will stop at each error, asking for
+proper user intervention. This is the most user interactive mode available.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>[S]</strong> <code>shell</code>: This option sets whether the possibility of running
+underlying system commands from within TeX is activated.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>synctex</code>: This option sets whether <code>synctex</code>, an input and output
+synchronization feature that allows navigation from source to typeset
+material and vice versa, available in most TeX engines, is activated.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>draft</code>: This option sets whether the draft mode, i.e, a mode that
+produces no output, so the engine can check the syntax, is activated.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdftex: { draft: yes }
+</span></code></pre>
+<h1 id="pdftk"><code>pdftk</code></h1>
+<p>This rule runs <code>pdftk</code>, a command line tool for manipulating Portable Document
+Format documents, on the corresponding base name of the <code>❖ currentFile</code> reference (i.e, the name without the associated extension) as a
+string concatenated with the <code>pdf</code> suffix.</p>
+<ul>
+<li><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdftk: { options: [ burst ] }
+</span></code></pre>
+<h1 id="pdftocairo"><code>pdftocairo</code></h1>
+<p>This rule runs the <code>pdftocairo</code> program, which converts Portable Document Format documents to a number of possible output formats using the cairo output device of the poppler PDF library.</p>
+<ul>
+<li>
+<p><code>format</code> (default: <code>png</code>): selects the desired outout format. Possible values are <code>png</code>, <code>jpeg</code>, <code>tiff</code>, <code>pdf</code>, <code>print</code>, <code>ps</code>, <code>eps</code> and <code>svg</code>.</p>
+</li>
+<li>
+<p><code>output</code>: sets the basename of the output file.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw
+command line options and appends it to the actual script call. An error is
+thrown if any data structure other than a proper list is provided as the
+value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdftocairo: { 
+</span><span style="color:#898989;">% arara: --&gt; format: &#39;png&#39;,
+</span><span style="color:#898989;">% arara: --&gt; output: &#39;imagename&#39;,
+</span><span style="color:#898989;">% arara: --&gt; options: [ &#39;-r&#39;, &#39;150&#39;, &#39;-transp&#39;, &#39;-singlefile&#39; ]
+</span><span style="color:#898989;">% arara: --&gt; }
+</span></code></pre>
+<h1 id="perltex"><code>perltex</code></h1>
+<p>This rule runs <code>perltex</code>, a wrapper that enables a symbiosis between Perl, a
+popular general purpose programming language, and a TeX engine, on the provided
+<code>❖ currentFile</code> reference.</p>
+<ul>
+<li>
+<p><code>engine</code> (default: <code>latex</code>): This option, as the name indicates, sets the
+underlying TeX engine to be used for the current compilation. Make sure to
+take a look at the manual for further details on this option. Possible values
+are:</p>
+<ul>
+<li>
+<p><code>latex</code>: This value, as the name suggests, sets the underlying TeX engine to
+<code>latex</code> for the current compilation. Note that the engine might play a major
+role in the generated code.</p>
+</li>
+<li>
+<p><code>pdflatex</code>: This value, as the name indicates, sets the underlying TeX
+engine to <code>pdflatex</code> for the current compilation. Note that the engine might
+play a major role in the generated code.</p>
+</li>
+<li>
+<p><code>xelatex</code>: This value, as the name suggests, sets the underlying TeX engine
+to <code>xelatex</code> for the current compilation. Note that the engine might play a
+major role in the generated code.</p>
+</li>
+<li>
+<p><code>lualatex</code>: This value, as the name indicates, sets the underlying TeX
+engine to <code>lualatex</code> for the current compilation. Note that the engine might
+play a major role in the generated code.</p>
+</li>
+<li>
+<p><code>tex</code>: This value, as the name suggests, sets the underlying TeX engine to
+<code>tex</code> for the current compilation. Note that the engine might play a major
+role in the generated code.</p>
+</li>
+<li>
+<p><code>pdftex</code>: This value, as the name indicates, sets the underlying TeX engine
+to <code>pdftex</code> for the current compilation. Note that the engine might play a
+major role in the generated code.</p>
+</li>
+<li>
+<p><code>luatex</code>: This value, as the name suggests, sets the underlying TeX engine
+to <code>luatex</code> for the current compilation. Note that the engine might play a
+major role in the generated code.</p>
+</li>
+<li>
+<p><code>context</code>: This value, as the name indicates, sets the underlying TeX engine
+to <code>context</code> for the current compilation. Note that the engine might play a
+major role in the generated code.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>[S]</strong> <code>safe</code>: This option sets whether the wrapper should enable
+sandboxing. When explicitly disabled, the wrapper might execute any
+arbitrary Perl code, including that which can harm files.</p>
+</li>
+<li>
+<p><code>permit</code>: This option takes a list of values in which indicate particular Perl
+operations to be performed, enabling finer-grained control over the wrapper
+sandbox.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>standalone</code>: This option generates a specific style file to make the
+document suitable for distribution to users who do not have the wrapper
+installed. Please refer to the manual for further details on this option.</p>
+</li>
+<li>
+<p><code>interaction</code>: This option alters the underlying engine behaviour. If this
+option is omitted, TeX will prompt the user for interaction in the event of an
+error. Possible values are, in order of increasing user interaction (courtesy
+of our master Enrico Gregorio):</p>
+<ul>
+<li>
+<p><code>batchmode</code>: In this mode, nothing is printed on the terminal, and errors
+are scrolled as if the <code>return</code> key is hit at every error. Missing files
+that TeX tries to input or request from keyboard input cause the job to
+abort.</p>
+</li>
+<li>
+<p><code>nonstopmode</code>: In this mode, the diagnostic message will appear on the
+terminal, but there is no possibility of user interaction just like in batch
+mode, previously described.</p>
+</li>
+<li>
+<p><code>scrollmode</code>: In this mode, as the name indicates, TeX will stop only for
+missing files to input or if proper keyboard input is necessary. TeX fixes
+errors itself.</p>
+</li>
+<li>
+<p><code>errorstopmode</code>: In this mode, TeX will stop at each error, asking for
+proper user intervention. This is the most user interactive mode available.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>[S]</strong> <code>shell</code>: This option sets whether the possibility of running
+underlying system commands from within TeX is activated.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>synctex</code>: This option sets whether <code>synctex</code>, an input and output
+synchronization feature that allows navigation from source to typeset
+material and vice versa, available in most TeX engines, is activated.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: perltex: { safe: no, standalone: yes }
+</span></code></pre>
+<h1 id="platex"><code>platex</code></h1>
+<p>This rule runs the <code>platex</code> TeX engine on the provided <code>❖ currentFile</code> reference, generating a corresponding file in a device independent
+format.</p>
+<ul>
+<li>
+<p><code>branch</code> (default: <code>stable</code>): This option allows branching formats for the
+current engine, mainly focused on package development. Users of current TeX
+distributions might benefit from format branching in order to easily test
+documents and code against the upcoming releases. Possible values are:</p>
+<ul>
+<li>
+<p><code>stable</code>: This value, as the name implies, enables the stable engine format
+branch. Note that this is the default format.</p>
+</li>
+<li>
+<p><code>developer</code>: For experienced users, this value enables the experimental,
+developer engine format branch.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>interaction</code>: This option alters the underlying engine behaviour. If this
+option is omitted, TeX will prompt the user for interaction in the event of an
+error. Possible values are, in order of increasing user interaction (courtesy
+of our master Enrico Gregorio):</p>
+<ul>
+<li>
+<p><code>batchmode</code>: In this mode, nothing is printed on the terminal, and errors
+are scrolled as if the <code>return</code> key is hit at every error. Missing files
+that TeX tries to input or request from keyboard input cause the job to
+abort.</p>
+</li>
+<li>
+<p><code>nonstopmode</code>: In this mode, the diagnostic message will appear on the
+terminal, but there is no possibility of user interaction just like in batch
+mode, previously described.</p>
+</li>
+<li>
+<p><code>scrollmode</code>: In this mode, as the name indicates, TeX will stop only for
+missing files to input or if proper keyboard input is necessary. TeX fixes
+errors itself.</p>
+</li>
+<li>
+<p><code>errorstopmode</code>: In this mode, TeX will stop at each error, asking for
+proper user intervention. This is the most user interactive mode available.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>[S]</strong> <code>shell</code>: This option sets whether the possibility of running
+underlying system commands from within TeX is activated.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>synctex</code>: This option sets whether <code>synctex</code>, an input and output
+synchronization feature that allows navigation from source to typeset
+material and vice versa, available in most TeX engines, is activated.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: platex: { interaction: scrollmode, shell: yes }
+</span></code></pre>
+<h1 id="ps2pdf"><code>ps2pdf</code></h1>
+<p>This rule runs <code>ps2pdf</code>, a tool that converts PostScript to Portable Document
+Format, on the corresponding base name of the <code>❖ currentFile</code>
+reference (i.e, the name without the associated extension) as a string
+concatenated with the <code>ps</code> suffix.</p>
+<ul>
+<li>
+<p><code>output</code>: This option, as the name indicates, sets the output name for the
+generated <code>pdf</code> file. There is no need to provide an extension, as the value
+is always normalized with <code>❖ getBasename</code> such that only the name
+without the associated extension is used. The base name of the current file
+reference is used as the default value.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: ps2pdf: { output: article }
+</span></code></pre>
+<h1 id="pythontex"><code>pythontex</code></h1>
+<p>This rule runs <code>pythontex</code>, a wrapper that provides access to Python from within
+typical TeX documents, on the provided <code>❖ currentFile</code>
+reference. Make sure to take a look at the documentation for further details.</p>
+<ul>
+<li>
+<p><code>encoding</code>: This option sets the encoding of the underlying TeX document and
+all related files. If an encoding is not specified, Unicode is assumed.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>errorcode</code>: This option determines whether an exit code of 1 is
+returned if there were errors. On by default, but can be turned off since it
+is undesirable when working with some editors.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>runall</code>: This option sets whether all code to be executed, regardless
+of modification. It is useful when code has not been modified, but a
+dependency such as a library or external data has changed.</p>
+</li>
+<li>
+<p><code>rerun</code>: This option, as the name indicates, sets the underlying threshold for
+reexecuting code. By default, the wrapper will rerun code that has been
+modified or that produced errors on the last run. Possible values are:</p>
+<ul>
+<li>
+<p><code>never</code>: When this value is used, the wrapper never executes code. In this
+scenario, a warning is issued if there is modified code. Please refer to the
+documentation for further details.</p>
+</li>
+<li>
+<p><code>modified</code>: When this value is used, as the name indicates, the wrapper only
+executes code that has been modified or that has modified dependencies.</p>
+</li>
+<li>
+<p><code>errors</code>: When this value is used, as the name indicates, the wrapper
+executes code that has been modified as well as code that produced errors on
+the last run.</p>
+</li>
+<li>
+<p><code>warnings</code>: When this value is used, as the name indicates, the wrapper
+executes code that has been modified as well as code that produced errors or
+warnings on the last run.</p>
+</li>
+<li>
+<p><code>always</code>: When this value is used, as the name indicates, the wrapper
+executes all code, regardless of modification or errors and warnings. It is
+useful when code has not been modified, but a dependency such as a library
+or external data has changed.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>[S]</strong> <code>hashdependencies</code>: This option, as the name suggests, determines
+whether dependencies are checked for changes via their hashes or
+modification times.</p>
+</li>
+<li>
+<p><code>jobs</code>: This option, as the name suggests, takes an integer value denoting the
+maximum number of concurrent processes. By default, the wrapper relies on the
+number of CPUs in the system.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>verbose</code>: This option sets whether the wrapper should be executed in
+verbose mode, providing more output information, including a list of all
+processes that are launched.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pythontex: { jobs: 2, verbose: yes }
+</span></code></pre>
+<h1 id="qpdf"><code>qpdf</code></h1>
+<p>This rule runs <code>qpdf</code>, a command line application that does structural,
+content-preserving transformations of Portable Document Format files, as well as
+providing capabilities to developers.</p>
+<ul>
+<li><strong>[R]</strong> <code>options</code>: This option, as the name indicates, takes a list of raw
+command line options and appends it to the actual script call. An error is
+thrown if any data structure other than a proper list is provided as the
+value.</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: qpdf: { options: [ &#39;--linearize&#39;, &#39;input.pdf&#39;,
+</span><span style="color:#898989;">% arara: --&gt; &#39;output.pdf&#39; ] }
+</span></code></pre>
+<h1 id="rmdir"><code>rmdir</code></h1>
+<p>This rule removes a directory including its contents at the current location.
+It does nothing if the directory does not exist.</p>
+<ul>
+<li><strong>[R]</strong> <code>target</code>: This option, as the name implies, specifies the name of the
+target directory to be removed. Keep in mind that this option is required.</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: rmdir: { target: &#39;dir_to_remove&#39; }
+</span></code></pre>
+<h1 id="sage"><code>sage</code></h1>
+<p>This rule runs <code>sage</code>, a free open source mathematics software system, on the
+corresponding base name of the <code>❖ currentFile</code> reference (i.e, the
+name without the associated extension) as a string concatenated with the <code>sage</code>
+extension (which can be overridden).</p>
+<ul>
+<li>
+<p><code>program</code> (default: <code>sage</code>): This option, as the name indicates, sets the
+program name. If the tool is not directly available in your system path, make
+sure to use the full path to the installed <code>sage</code> binary.</p>
+</li>
+<li>
+<p><code>extension</code> (default: <code>sage</code>): This option, as the name indicates, sets the
+default extension to the input file to be processed by <code>sage</code>. Three possible
+values are available:</p>
+<ul>
+<li>
+<p><code>sage</code>: This value, as the name indicates, sets the extension to refer to
+the Sage format, the default one used by the software system.</p>
+</li>
+<li>
+<p><code>py</code>: This value, as the name indicates, sets the extension to refer to a
+typical Python source code.</p>
+</li>
+<li>
+<p><code>spyx</code>: This value, as the name indicates, sets the extension to refer to
+the SPYX format, a specific Sage compiled source code.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>command</code>: This option, as the name indicates, forwards the provided value to
+the command line utility to be evaluated as a Sage code.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>dotsage</code>: This option, as the name indicates, sets whether the tool
+should consider using the <code>.sage</code> directory in the user home directory or a
+temporary one.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: sage
+</span></code></pre>
+<h1 id="sketch"><code>sketch</code></h1>
+<p>This rule runs <code>sketch</code>, a system for producing line drawings of solid objects
+and scenes, on the corresponding base name of the <code>❖ currentFile</code>
+reference (i.e, the name without the associated extension) as a string
+concatenated with the <code>sk</code> suffix. Note that one needs to add support for this
+particular file type, as seen in <a href="https://islandoftex.gitlab.io/arara/manual/configuration/">Configuration</a>.</p>
+<ul>
+<li><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: sketch
+</span></code></pre>
+<h1 id="songidx"><code>songidx</code></h1>
+<p>This rule runs <code>songidx</code>, a song index generation script for the <code>songs</code>
+package, on the file reference provided as parameter, generating a proper index
+as a special <code>sbx</code> file. It is very important to observe that, at the time of
+writing, this script is not available off the shelf in TeX Live or MiKTeX
+distributions, so a manual deployment is required. The script execution is
+performed by the underlying <code>texlua</code> interpreter.</p>
+<ul>
+<li>
+<p><strong>[R]</strong> <code>input</code>: This required option, as the name indicates, sets the input
+name for the song index file specified within the TeX document. There is no
+need to provide an extension, as the value is always normalized with
+<code>❖ getBasename</code> such that only the name without the associated
+extension is used.</p>
+</li>
+<li>
+<p><code>script</code> (default: <code>songidx.lua</code>): This option, as the name indicates, sets
+the script path. The default value is set to the script name, so either make
+sure <code>songidx.lua</code> is located in the same directory of your TeX document or
+provide the correct location (preferably a full path).</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual script call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: songidx: { input: songs }
+</span></code></pre>
+<h1 id="spix"><code>spix</code></h1>
+<p>This rule runs <code>spix</code>, an interesting command line TeX automation tool written
+in Python, on the provided <code>❖ currentFile</code> reference.</p>
+<ul>
+<li>
+<p><code>dry</code>: This option sets whether the tool should display a list of commands to
+be executed without actually invoking them.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual script call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: spix
+</span></code></pre>
+<h1 id="tex"><code>tex</code></h1>
+<p>This rule runs the <code>tex</code> TeX engine on the provided <code>❖ currentFile</code>
+reference, generating a corresponding file in a device independent format.</p>
+<ul>
+<li>
+<p><code>interaction</code>: This option alters the underlying engine behaviour. If this
+option is omitted, TeX will prompt the user for interaction in the event of an
+error. Possible values are, in order of increasing user interaction (courtesy
+of our master Enrico Gregorio):</p>
+<ul>
+<li>
+<p><code>batchmode</code>: In this mode, nothing is printed on the terminal, and errors
+are scrolled as if the <code>return</code> key is hit at every error. Missing files
+that TeX tries to input or request from keyboard input cause the job to
+abort.</p>
+</li>
+<li>
+<p><code>nonstopmode</code>: In this mode, the diagnostic message will appear on the
+terminal, but there is no possibility of user interaction just like in batch
+mode, previously described.</p>
+</li>
+<li>
+<p><code>scrollmode</code>: In this mode, as the name indicates, TeX will stop only for
+missing files to input or if proper keyboard input is necessary. TeX fixes
+errors itself.</p>
+</li>
+<li>
+<p><code>errorstopmode</code>: In this mode, TeX will stop at each error, asking for
+proper user intervention. This is the most user interactive mode available.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>[S]</strong> <code>shell</code>: This option sets whether the possibility of running
+underlying system commands from within TeX is activated.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: tex: { shell: yes }
+</span></code></pre>
+<h1 id="texcount"><code>texcount</code></h1>
+<p>This rule runs <code>texcount</code>, a Perl script designed to count words in TeX and
+LaTeX files, ignoring macros, tables, formulae and more on the provided
+<code>❖ currentFile</code> reference. The script is highly configurable, so make
+sure to check the manual for further information.</p>
+<ul>
+<li>
+<p><code>rules</code>: This option, as the name suggests, sets the rules which dictate how
+the script should work regarding word counting and option handling. Possible
+values are:</p>
+<ul>
+<li>
+<p><code>relaxed</code>: This value, as the name indicates, sets a relaxed set of rules,
+allowing more general cases to be counted as either words and macros.</p>
+</li>
+<li>
+<p><code>restricted</code>: This value, as the name indicates, sets a more restricted set
+of rules for word counting and option handling.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>verbosity</code>: This option, as the name suggests, sets the verbosity level of
+the script according to the provided integer value. Possible values are:</p>
+<ul>
+<li>
+<p><code>0</code>: This value sets the lowest verbosity level of all, such that the script
+does not present parsing details.</p>
+</li>
+<li>
+<p><code>1</code>: This value raises the details a bit and sets the verbosity level to
+include parsed words and marked formulae.</p>
+</li>
+<li>
+<p><code>2</code>: This value adds more details from the previous verbosity level by
+including ignored text as well.</p>
+</li>
+<li>
+<p><code>3</code>: This value adds more details from the previous verbosity level by
+including comments and options.</p>
+</li>
+<li>
+<p><code>4</code>: This value sets the highest verbosity level of all, such that the
+script includes parsed worded, marked formulae, ignored text, comments,
+options and internal states.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>[S]</strong> <code>strict</code>: This option sets whether the tool should enable strict mode,
+so certain groups for which rules are not defined raise warnings.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>html</code>: This option, as the name suggests, defines whether the tool
+should output the report in the HTML format.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>total</code>: This option, as the name suggests, defines whether the tool
+should provide a total sum instead of partial sums (per file).</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>unicode</code>: This option, as the name indicates, defines whether the
+tool should select Unicode as encoding for both input and output.</p>
+</li>
+<li>
+<p><code>output</code>: This option, as the name suggests, sets the output file name in
+which the report will be written.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: texcount: { output: report.txt }
+</span></code></pre>
+<h1 id="texindy"><code>texindy</code></h1>
+<p>This rule runs <code>texindy</code>, a variant of the <code>xindy</code> indexing system focused on
+LaTeX documents, on the corresponding base name of the <code>❖ currentFile</code> reference (i.e, the name without the associated extension) as a
+string concatenated with the <code>idx</code> suffix, generating an index as a special
+<code>ind</code> file.</p>
+<ul>
+<li>
+<p><strong>[S]</strong> <code>quiet</code>: This option, as the name indicates, sets whether the tool
+will output progress messages. It is important to observe that <code>texindy</code>
+always outputs error messages, regardless of this option.</p>
+</li>
+<li>
+<p><code>codepage</code>: This option, as the name indicates, specifies the encoding to be
+used for letter group headings. Additionally, it specifies the encoding used
+internally for sorting, but that does not matter for the final result.</p>
+</li>
+<li>
+<p><code>language</code>: This option, as the name indicates, specifies the language that
+dictates the rules for index sorting. These rules are encoded in a module.</p>
+</li>
+<li>
+<p><code>markup</code>: This option, as the name indicates, specifies the input markup for
+the raw index. The following values are available:</p>
+<ul>
+<li>
+<p><code>latex</code>: This value, as the name implies, is emitted by default from the
+LaTeX kernel, and the raw input is encoded in the LaTeX Internal Character
+Representation format.</p>
+</li>
+<li>
+<p><code>xelatex</code>: This value, as the name implies, acts like the previous <code>latex</code>
+markup option, but without <code>inputenc</code> usage. Raw input is encoded in the
+UTF-8 format.</p>
+</li>
+<li>
+<p><code>omega</code>: This value, as the name implies, acts like the previous <code>latex</code>
+markup option, but with Omega's special notation as encoding for characters
+not in the ASCII set.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>modules</code>: This option, as the name indicates, takes a list of module
+names. Modules are searched in the usual application path. An error is thrown
+if any data structure other than a proper list is provided as the value.</p>
+</li>
+<li>
+<p><code>input</code> (default: <code>idx</code>): This option, as the name indicates, sets the default
+extension for the input file, according to the provided value. Later, this
+value will be concatenated as a suffix for the base name of the <code>❖ currentFile</code> reference (i.e, the name without the associated extension).</p>
+</li>
+<li>
+<p><code>output</code> (default: <code>ind</code>): This option, as the name indicates, sets the
+default extension for the output file, according to the provided value. Later,
+this value will be concatenated as a suffix for the base name of the
+<code>❖ currentFile</code> reference (i.e, the name without the associated
+extension).</p>
+</li>
+<li>
+<p><code>log</code> (default: <code>ilg</code>): This option, as the name indicates, sets the default
+extension for the log file, according to the provided value. Later, this value
+will be concatenated as a suffix for the base name of the <code>❖ currentFile</code> reference (i.e, the name without the associated extension).</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: texindy: { markup: latex }
+</span></code></pre>
+<h1 id="texfmt"><code>texfmt</code></h1>
+<p>This rule runs <code>tex-fmt</code>, a fast LaTeX formatter written in Rust, on the
+provided <code>❖ currentFile</code> reference.</p>
+<ul>
+<li>
+<p><strong>[S]</strong> <code>check</code>: This option, as the name implies, only checks formatting
+whithout modifying files.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>print</code>: This option, as the name implies, prints the result to the
+standard output without modifying files.</p>
+</li>
+<li>
+<p><code>messages</code>: This option, as the name implies, defines the level of verbosity
+for the emitted messages. Possible values are:</p>
+<ul>
+<li>
+<p><code>verbose</code>: This value, as the name implies, will show informational messages
+during the run.</p>
+</li>
+<li>
+<p><code>quiet</code>: This value, as the name implies, suppresses any warnings that would
+typically be displayed during the run.</p>
+</li>
+<li>
+<p><code>trace</code>: This value, as the name implies, enables trace messages, providing
+detailed information about the execution flow.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>[S]</strong> <code>tabs</code>: This option sets whether tabs should be used for indentation
+instead of spaces. See <code>tabsize</code> for the number of characters to use.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>stdin</code>: This option, as the name implies, processes the standard input
+as a single file and redirects the result to the standard output.</p>
+</li>
+<li>
+<p><code>location</code>: This option sets the path for the configuration file. It requires
+<code>config</code> to be enabled, otherwise an error is thrown.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>config</code>: This option sets whether a configuration file will be
+used. The path can be defined with the <code>location</code> option.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>wrap</code>: This option, as the name indicates, sets whether long lines
+will be wrapped. See <code>length</code> for the line length value.</p>
+</li>
+<li>
+<p><code>length</code>: This option specifies the line length for wrapping. It requires <code>wrap</code>
+to be enabled, otherwise an error is thrown.</p>
+</li>
+<li>
+<p><code>tabsize</code>: This option, as the name indicates, sets the number of characters to
+use as tab size.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: texfmt: { wrap: yes, length: 75 }
+</span></code></pre>
+<h1 id="tikzmake"><code>tikzmake</code></h1>
+<p>This rule runs <code>make</code> on a very specific build file generated by the <code>tikzmake</code>
+package, as a means to simplify the externalization of Ti<em>k</em>Z pictures. This
+build file corresponds to the base name of the <code>❖ currentFile</code>
+reference (i.e, the name without the associated extension) as a string
+concatenated with the <code>makefile</code> suffix.</p>
+<ul>
+<li>
+<p><strong>[S]</strong> <code>force</code>: This option, as the name indicates, sets whether all targets
+specified in the corresponding build file should be unconditionally made.</p>
+</li>
+<li>
+<p><code>jobs</code>: This option, as the name indicates, specifies the number of jobs
+(commands) to run simultaneously. Note that the provided value must be a
+positive integer. The default number of job slots is one, which means serial
+execution.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: tikzmake: { force: yes, jobs: 2 }
+</span></code></pre>
+<h1 id="upbibtex"><code>upbibtex</code></h1>
+<p>This rule runs the <code>upbibtex</code> program, a reference management software, on the
+corresponding base name of the <code>❖ currentFile</code> reference (i.e, the
+name without the associated extension) as a string.</p>
+<ul>
+<li><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pbibtex
+</span><span style="color:#898989;">% arara: --&gt; if exists(toFile(&#39;references.bib&#39;))
+</span></code></pre>
+<h1 id="uplatex"><code>uplatex</code></h1>
+<p>This rule runs the <code>uplatex</code> TeX engine on the provided <code>❖ currentFile</code> reference, generating a corresponding file in a device independent
+format.</p>
+<ul>
+<li>
+<p><code>branch</code> (default: <code>stable</code>): This option allows branching formats for the
+current engine, mainly focused on package development. Users of current TeX
+distributions might benefit from format branching in order to easily test
+documents and code against the upcoming releases. Possible values are:</p>
+<ul>
+<li>
+<p><code>stable</code>: This value, as the name implies, enables the stable engine format
+branch. Note that this is the default format.</p>
+</li>
+<li>
+<p><code>developer</code>: For experienced users, this value enables the experimental,
+developer engine format branch.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>interaction</code>: This option alters the underlying engine behaviour. If this
+option is omitted, TeX will prompt the user for interaction in the event of an
+error. Possible values are, in order of increasing user interaction (courtesy
+of our master Enrico Gregorio):</p>
+<ul>
+<li>
+<p><code>batchmode</code>: In this mode, nothing is printed on the terminal, and errors
+are scrolled as if the <code>return</code> key is hit at every error. Missing files
+that TeX tries to input or request from keyboard input cause the job to
+abort.</p>
+</li>
+<li>
+<p><code>nonstopmode</code>: In this mode, the diagnostic message will appear on the
+terminal, but there is no possibility of user interaction just like in batch
+mode, previously described.</p>
+</li>
+<li>
+<p><code>scrollmode</code>: In this mode, as the name indicates, TeX will stop only for
+missing files to input or if proper keyboard input is necessary. TeX fixes
+errors itself.</p>
+</li>
+<li>
+<p><code>errorstopmode</code>: In this mode, TeX will stop at each error, asking for
+proper user intervention. This is the most user interactive mode available.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>[S]</strong> <code>shell</code>: This option sets whether the possibility of running
+underlying system commands from within TeX is activated.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>synctex</code>: This option sets whether <code>synctex</code>, an input and output
+synchronization feature that allows navigation from source to typeset
+material and vice versa, available in most TeX engines, is activated.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: uplatex: { interaction: scrollmode, shell: yes }
+</span></code></pre>
+<h1 id="uptex"><code>uptex</code></h1>
+<p>This rule runs the <code>uptex</code> TeX engine on the provided <code>❖ currentFile</code>
+reference, generating a corresponding file in a device independent format.</p>
+<ul>
+<li>
+<p><code>interaction</code>: This option alters the underlying engine behaviour. If this
+option is omitted, TeX will prompt the user for interaction in the event of an
+error. Possible values are, in order of increasing user interaction (courtesy
+of our master Enrico Gregorio):</p>
+<ul>
+<li>
+<p><code>batchmode</code>: In this mode, nothing is printed on the terminal, and errors
+are scrolled as if the <code>return</code> key is hit at every error. Missing files
+that TeX tries to input or request from keyboard input cause the job to
+abort.</p>
+</li>
+<li>
+<p><code>nonstopmode</code>: In this mode, the diagnostic message will appear on the
+terminal, but there is no possibility of user interaction just like in batch
+mode, previously described.</p>
+</li>
+<li>
+<p><code>scrollmode</code>: In this mode, as the name indicates, TeX will stop only for
+missing files to input or if proper keyboard input is necessary. TeX fixes
+errors itself.</p>
+</li>
+<li>
+<p><code>errorstopmode</code>: In this mode, TeX will stop at each error, asking for
+proper user intervention. This is the most user interactive mode available.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>[S]</strong> <code>shell</code>: This option sets whether the possibility of running
+underlying system commands from within TeX is activated.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>synctex</code>: This option sets whether <code>synctex</code>, an input and output
+synchronization feature that allows navigation from source to typeset
+material and vice versa, available in most TeX engines, is activated.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: uptex
+</span></code></pre>
+<h1 id="xdvipdfmx"><code>xdvipdfmx</code></h1>
+<p>This rule runs <code>xdvipdfmx</code>, the back end for the <code>xetex</code> TeX engine (and not
+intended to be invoked directly), on the corresponding base name of the
+<code>❖ currentFile</code> reference (i.e, the name without the associated
+extension) as a string concatenated with a certain suffix, generating a Portable
+Document Format <code>pdf</code> file.</p>
+<ul>
+<li>
+<p><code>entry</code>: This option sets the extension to be used for the initial reference
+(i.e, the current file name) as input to the command line tool. The following
+values are available for this option:</p>
+<ul>
+<li>
+<p><code>dvi</code>: This value sets the extension to be used for the initial reference as
+a device independent format. This is the default value when no value is
+provided.</p>
+</li>
+<li>
+<p><code>xdv</code>: This value sets the extension to be used for the initial reference as
+an extended device independent format.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>output</code>: This option, as the name indicates, sets the output name for the
+generated <code>pdf</code> file. There is no need to provide an extension, as the value
+is always normalized with <code>❖ getBasename</code> such that only the name
+without the associated extension is used. The base name of the current file
+reference is used as the default value.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: xdvipdfmx: { output: thesis }
+</span></code></pre>
+<h1 id="xelatex"><code>xelatex</code></h1>
+<p>This rule runs the new <code>xelatex</code> TeX engine on the provided <code>❖ currentFile</code> reference, generating a corresponding file in the Portable Document
+Format, as expected.</p>
+<ul>
+<li>
+<p><code>branch</code> (default: <code>stable</code>): This option allows branching formats for the
+current engine, mainly focused on package development. Users of current TeX
+distributions might benefit from format branching in order to easily test
+documents and code against the upcoming releases. Possible values are:</p>
+<ul>
+<li>
+<p><code>stable</code>: This value, as the name implies, enables the stable engine format
+branch. Note that this is the default format.</p>
+</li>
+<li>
+<p><code>developer</code>: For experienced users, this value enables the experimental,
+developer engine format branch.</p>
+</li>
+<li>
+<p><code>unsafe</code>: This value enables the unsafe engine format branch. According to
+the documentation, at all costs, avoid using this, or any, unsafe invocation
+with documents off the net or that are otherwise untrusted in any way.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>interaction</code>: This option alters the underlying engine behaviour. If this
+option is omitted, TeX will prompt the user for interaction in the event of an
+error. Possible values are, in order of increasing user interaction (courtesy
+of our master Enrico Gregorio):</p>
+<ul>
+<li>
+<p><code>batchmode</code>: In this mode, nothing is printed on the terminal, and errors
+are scrolled as if the <code>return</code> key is hit at every error. Missing files
+that TeX tries to input or request from keyboard input cause the job to
+abort.</p>
+</li>
+<li>
+<p><code>nonstopmode</code>: In this mode, the diagnostic message will appear on the
+terminal, but there is no possibility of user interaction just like in batch
+mode, previously described.</p>
+</li>
+<li>
+<p><code>scrollmode</code>: In this mode, as the name indicates, TeX will stop only for
+missing files to input or if proper keyboard input is necessary. TeX fixes
+errors itself.</p>
+</li>
+<li>
+<p><code>errorstopmode</code>: In this mode, TeX will stop at each error, asking for
+proper user intervention. This is the most user interactive mode available.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>[S]</strong> <code>shell</code>: This option sets whether the possibility of running
+underlying system commands from within TeX is activated.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>synctex</code>: This option sets whether <code>synctex</code>, an input and output
+synchronization feature that allows navigation from source to typeset
+material and vice versa, available in most TeX engines, is activated.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: xelatex: { shell: yes, synctex: yes }
+</span></code></pre>
+<h1 id="xetex"><code>xetex</code></h1>
+<p>This rule runs the <code>xetex</code> TeX engine on the provided <code>❖ currentFile</code>
+reference, generating a corresponding file in the Portable Document Format, as
+expected.</p>
+<ul>
+<li>
+<p><code>branch</code> (default: <code>stable</code>): This option allows branching formats for the
+current engine, mainly focused on package development. Users of current TeX
+distributions might benefit from format branching in order to easily test
+documents and code against the upcoming releases. Possible values are:</p>
+<ul>
+<li>
+<p><code>stable</code>: This value, as the name implies, enables the stable engine format
+branch. Note that this is the default format.</p>
+</li>
+<li>
+<p><code>unsafe</code>: This value enables the unsafe engine format branch. According to
+the documentation, at all costs, avoid using this, or any, unsafe invocation
+with documents off the net or that are otherwise untrusted in any way.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>interaction</code>: This option alters the underlying engine behaviour. If this
+option is omitted, TeX will prompt the user for interaction in the event of an
+error. Possible values are, in order of increasing user interaction (courtesy
+of our master Enrico Gregorio):</p>
+<ul>
+<li>
+<p><code>batchmode</code>: In this mode, nothing is printed on the terminal, and errors
+are scrolled as if the <code>return</code> key is hit at every error. Missing files
+that TeX tries to input or request from keyboard input cause the job to
+abort.</p>
+</li>
+<li>
+<p><code>nonstopmode</code>: In this mode, the diagnostic message will appear on the
+terminal, but there is no possibility of user interaction just like in batch
+mode, previously described.</p>
+</li>
+<li>
+<p><code>scrollmode</code>: In this mode, as the name indicates, TeX will stop only for
+missing files to input or if proper keyboard input is necessary. TeX fixes
+errors itself.</p>
+</li>
+<li>
+<p><code>errorstopmode</code>: In this mode, TeX will stop at each error, asking for
+proper user intervention. This is the most user interactive mode available.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>[S]</strong> <code>shell</code>: This option sets whether the possibility of running
+underlying system commands from within TeX is activated.</p>
+</li>
+<li>
+<p><strong>[S]</strong> <code>synctex</code>: This option sets whether <code>synctex</code>, an input and output
+synchronization feature that allows navigation from source to typeset
+material and vice versa, available in most TeX engines, is activated.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: xetex: { interaction: scrollmode, synctex: yes }
+</span></code></pre>
+<h1 id="xindex"><code>xindex</code></h1>
+<p>This rule runs <code>xindex</code>, a flexible and powerful indexing system, on a provided
+<code>idx</code> input. This tool is completely with the <code>makeindex</code> program.</p>
+<ul>
+<li>
+<p><strong>[R]</strong> <code>input</code>: This option, as the name indicates, corresponds to the <code>idx</code>
+reference to be processed by the indexing system. Note that this option is
+required.</p>
+</li>
+<li>
+<p><code>config</code> (default: <code>cfg</code>): This option specifies a configuration
+extension. Make sure to take a look at the documentation for further details.</p>
+</li>
+<li>
+<p><code>language</code> (default: <code>en</code>): This option, as the name suggests, specifies the
+language. Make sure to take a look at the documentation for further details.</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: xindex: { input: mydoc.idx }
+</span></code></pre>
+<h1 id="xindy"><code>xindy</code></h1>
+<p>This rule runs <code>xindy</code>, a flexible and powerful indexing system, on the
+corresponding base name of the <code>❖ currentFile</code> reference (i.e, the
+name without the associated extension) as a string concatenated with the <code>idx</code>
+suffix, generating an index as a special <code>ind</code> file.</p>
+<ul>
+<li>
+<p><strong>[S]</strong> <code>quiet</code>: This option, as the name indicates, sets whether the tool
+will output progress messages. It is important to observe that <code>xindy</code>
+always outputs error messages, regardless of this option.</p>
+</li>
+<li>
+<p><code>codepage</code>: This option, as the name indicates, specifies the encoding to be
+used for letter group headings. Additionally, it specifies the encoding used
+internally for sorting, but that does not matter for the final result.</p>
+</li>
+<li>
+<p><code>language</code>: This option, as the name indicates, specifies the language that
+dictates the rules for index sorting. These rules are encoded in a module.</p>
+</li>
+<li>
+<p><code>markup</code>: This option, as the name indicates, specifies the input markup for
+the raw index. The following values are available:</p>
+<ul>
+<li>
+<p><code>latex</code>: This value, as the name implies, is emitted by default from the
+LaTeX kernel, and the raw input is encoded in the LaTeX Internal Character
+Representation format.</p>
+</li>
+<li>
+<p><code>xelatex</code>: This value, as the name implies, acts like the previous <code>latex</code>
+markup option, but without <code>inputenc</code> usage. Raw input is encoded in the
+UTF-8 format.</p>
+</li>
+<li>
+<p><code>omega</code>: This value, as the name implies, acts like the previous <code>latex</code>
+markup option, but with Omega's special notation as encoding for characters
+not in the ASCII set.</p>
+</li>
+<li>
+<p><code>xindy</code>: This value, as the name implies, uses the <code>xindy</code> input markup as
+specified in the <code>xindy</code> manual.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>modules</code>: This option, as the name indicates, takes a list of module
+names. Modules are searched in the usual application path. An error is thrown
+if any data structure other than a proper list is provided as the value.</p>
+</li>
+<li>
+<p><code>input</code> (default: <code>idx</code>): This option, as the name indicates, sets the default
+extension for the input file, according to the provided value. Later, this
+value will be concatenated as a suffix for the base name of the <code>❖ currentFile</code> reference (i.e, the name without the associated extension).</p>
+</li>
+<li>
+<p><code>output</code> (default: <code>ind</code>): This option, as the name indicates, sets the
+default extension for the output file, according to the provided value. Later,
+this value will be concatenated as a suffix for the base name of the
+<code>❖ currentFile</code> reference (i.e, the name without the associated
+extension).</p>
+</li>
+<li>
+<p><code>log</code> (default: <code>ilg</code>): This option, as the name indicates, sets the default
+extension for the log file, according to the provided value. Later, this value
+will be concatenated as a suffix for the base name of the <code>❖ currentFile</code> reference (i.e, the name without the associated extension).</p>
+</li>
+<li>
+<p><code>options</code>: This option, as the name indicates, takes a list of raw command
+line options and appends it to the actual system call. An error is thrown if
+any data structure other than a proper list is provided as the value.</p>
+</li>
+</ul>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: xindy: { markup: xelatex }
+</span></code></pre>
+<p>It is highly advisable to browse the relevant documentation about packages and
+tools described in this chapter as a means to learn more about features and
+corresponding advanced usage. For TeX Live users, we recommend the use of
+<code>texdoc</code>, a command line program to find and view documentation. For example,
+this manual can be viewed through the following command:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> texdoc arara
+</span></code></pre>
+<p>The primary function of the handy <code>texdoc</code> tool is to locate relevant
+documentation for a given keyword (typically, a package name) on your disk, and
+open it in an appropriate viewer. For MiKTeX users, the distribution provides a
+similar tool named <code>mthelp</code> to find and view documentation. Make sure to use
+these tools whenever needed!</p>
+
+
+      </div>
+
+    </main>
+
+    
+    <footer>
+      <small class="subtext">
+        arara by the Island of TeX
+      </small>
+    </footer>
+    
+  </body>
+  <script>
+    function highlightNav(heading) {
+        let pathname = location.pathname;
+        document.querySelectorAll(".toc a").forEach((item) => {
+            item.classList.remove("active");
+        });
+        document.querySelector(".toc a[href$='" + pathname + "#" + heading + "']").classList.add("active");
+    }
+
+    let currentHeading = "";
+    window.onscroll = function () {
+        let h = document.querySelectorAll("h1,h2,h3,h4,h5,h6");
+        let elementArr = [];
+
+        h.forEach(item => {
+            if (item.id !== "") {
+                elementArr[item.id] = item.getBoundingClientRect().top;
+            }
+        });
+        elementArr.sort();
+        for (let key in elementArr) {
+            if (!elementArr.hasOwnProperty(key)) {
+                continue;
+            }
+            if (elementArr[key] > 0 && elementArr[key] < 300) {
+                if (currentHeading !== key) {
+                    highlightNav(key);
+                    currentHeading = key;
+                }
+                break;
+            }
+        }
+    }
+  </script>
+</html>

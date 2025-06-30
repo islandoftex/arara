@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>arara version 6 released | arara </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+    :root {
+        /* Primary theme color */
+        --primary-color: #cbe368; /* #FED43F; */
+        /* Primary theme text color */
+        --primary-text-color: #543631;
+        /* Primary theme link color */
+        --primary-link-color: #719b25;
+        /* Secondary color: the background body color */
+        --secondary-color: #fcfaf6;
+        --secondary-text-color: #303030;
+        /* Highlight text color of table of content */
+        --toc-highlight-text-color: #d46e13;
+    }
+</style>
+
+    <link rel="icon" href="https://islandoftex.gitlab.io/arara/favicon.svg">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/normalize.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juice.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/fonts/fonts.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juicy-arara.css">
+    
+    <meta name="keywords" content="tex, latex, context, build tool, automation">
+    <meta itemprop="name" content="The cool TeX automation tool">
+    <meta itemprop="description" content="arara is a TeX automation tool based on directives and rules.">
+    
+  </head>
+
+  <body>
+    
+<header class="box-shadow">
+    
+
+<a href="https://islandoftex.gitlab.io/arara/">
+  <div class="logo">
+    <img src="https://islandoftex.gitlab.io/arara/images/arara-text.svg" alt="logo">
+  </div>
+</a>
+
+<nav>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/changelog/">Changelog</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/quickstart/">Quickstart</a>
+  
+  
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/manual">Manual</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/news">News</a>
+  
+  <a class="nav-item subtitle-text" href="https://gitlab.com/islandoftex/arara">GitLab</a>
+  
+  
+</nav>
+
+</header>
+
+
+    <main>
+      
+      
+      
+      
+      
+      <div class="toc">
+        <div class="toc-sticky">
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/news/release-v6/#important-changes">Important changes</a>
+          </div>
+          
+          
+          <div class="toc-item-child">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/news/release-v6/#more-configurable-and-default-preambles"><small>- More configurable and default preambles</small></a>
+          </div>
+          
+          <div class="toc-item-child">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/news/release-v6/#passing-command-line-parameters-in-arara-s-evaluation"><small>- Passing command-line parameters in arara&#x27;s evaluation</small></a>
+          </div>
+          
+          <div class="toc-item-child">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/news/release-v6/#expansion-within-options"><small>- Expansion within options</small></a>
+          </div>
+          
+          <div class="toc-item-child">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/news/release-v6/#a-new-safe-mode"><small>- A new safe mode</small></a>
+          </div>
+          
+          <div class="toc-item-child">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/news/release-v6/#improving-safety-of-flags-and-defaults-in-rules"><small>- Improving safety of flags and defaults in rules</small></a>
+          </div>
+          
+          <div class="toc-item-child">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/news/release-v6/#rule-updates"><small>- Rule updates</small></a>
+          </div>
+          
+          <div class="toc-item-child">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/news/release-v6/#being-forgiving-about-language-choices"><small>- Being forgiving about language choices</small></a>
+          </div>
+          
+          <div class="toc-item-child">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/news/release-v6/#removal-of-the-arara-shorthand"><small>- Removal of the arara shorthand</small></a>
+          </div>
+          
+          <div class="toc-item-child">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/news/release-v6/#fixed-some-minor-issues"><small>- Fixed some minor issues</small></a>
+          </div>
+          
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/news/release-v6/#the-next-steps">The next steps</a>
+          </div>
+          
+          
+          <div class="toc-item-child">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/news/release-v6/#trying-to-serve-more-platforms"><small>- Trying to serve more platforms</small></a>
+          </div>
+          
+          <div class="toc-item-child">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/news/release-v6/#exploring-new-grounds"><small>- Exploring new grounds</small></a>
+          </div>
+          
+          
+          
+        </div>
+      </div>
+      
+      
+
+      <div class="content text">
+        
+<div class="heading-text">arara version 6 released</div>
+<p>After approximately one year, we are proud to announce the release of arara
+version 6. Just ready for TeX Live 2021, we have finished many exciting new
+features and are already prepared to work on a technically even more intriguing
+version 7.</p>
+<span id="continue-reading"></span><h1 id="important-changes">Important changes</h1>
+<p>Please consult our <a href="https://islandoftex.gitlab.io/arara/changelog/">changelog</a> for a detailed view on all
+changes and references to our issue tracker. This post which is targeted at our
+users will only cover the most relevant changes.</p>
+<h2 id="more-configurable-and-default-preambles">More configurable and default preambles</h2>
+<p>Preambles are the user's way of not writing a rule yet reusing certain
+directives. Up to now, preambles have been prepended to the file regardless of
+it containing other directives. That means, if you have the following in your
+configuration:</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">preambles</span><span>:
+</span><span>  </span><span style="color:#00528b;">twopdflatex</span><span>: </span><span style="color:#016692;">|
+</span><span style="color:#009f78;">    % arara: pdflatex
+</span><span style="color:#009f78;">    % arara: pdflatex
+</span></code></pre>
+<p>and your <code>file.tex</code> contains</p>
+<pre data-lang="latex" style="background-color:#ffffff;color:#010101;" class="language-latex "><code class="language-latex" data-lang="latex"><span style="color:#898989;">% arara: lualatex
+</span></code></pre>
+<p>you might actually want to compile with <code>lualatex</code>. In version 5 and before, a
+call to <code>arara -p twopdflatex file.tex</code> would result in two compilations using
+<code>pdflatex</code> and one using <code>lualatex</code>.</p>
+<p>If you do not want <code>arara</code> to perform these preamble compilations if there are
+directives present in your file, you may now set the following option in your
+<code>arararc</code> file:</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">prependPreambleIfDirectivesGiven</span><span>: </span><span style="color:#333366;">false
+</span></code></pre>
+<p>The default is still <code>true</code> to preserve backward compatibility.</p>
+<p>Another major improvement for preambles is the ability to specify a
+<code>defaultPreamble</code>, i.e. you may now even omit <code>-p preamble</code> if you specified
+that key in your configuration file. This is especially useful if all files in
+your project shall be run with the same configuration. You may then set the
+following in your <code>arararc</code>:</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">preambles</span><span>:
+</span><span>  </span><span style="color:#00528b;">twopdflatex</span><span>: </span><span style="color:#016692;">|
+</span><span style="color:#009f78;">    % arara: pdflatex
+</span><span style="color:#009f78;">    % arara: pdflatex
+</span><span style="color:#00528b;">defaultPreamble</span><span>: </span><span style="color:#009f78;">twopdflatex
+</span></code></pre>
+<p>and can call <code>arara file.tex file2.tex file3.tex</code> where arara will automatically
+run the default preamble on each of these files.</p>
+<p>Combining those features is even more intriguing. If you insert a snippet like</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">preambles</span><span>:
+</span><span>  </span><span style="color:#00528b;">twopdflatex</span><span>: </span><span style="color:#016692;">|
+</span><span style="color:#009f78;">    % arara: pdflatex
+</span><span style="color:#009f78;">    % arara: pdflatex
+</span><span style="color:#00528b;">defaultPreamble</span><span>: </span><span style="color:#009f78;">twopdflatex
+</span><span style="color:#00528b;">prependPreambleIfDirectivesGiven</span><span>: </span><span style="color:#333366;">false
+</span></code></pre>
+<p>into your <em>global</em> arara configuration file, you can run <code>arara file.tex</code> on any
+file around there and it will either</p>
+<ul>
+<li>use the directives from the file if given or</li>
+<li>resort to the default preamble.</li>
+</ul>
+<p>That way, arara can be set as the default compiler in your editor and you can
+even compile before having inserted any arara directive.</p>
+<blockquote>
+<p>Important note: Of course, this destroys the portability arara directives use
+to create. Please do not get lazy and specify directives in documents you want
+to share.</p>
+</blockquote>
+<h2 id="passing-command-line-parameters-in-arara-s-evaluation">Passing command-line parameters in arara's evaluation</h2>
+<p>In previous versions, the only way to communicate with arara in rules and (with
+some trickery) directives were environment variables (as of version 5) and file
+I/O (since the beginning). This made automated builds only configurable with
+writing own rules which some users tend to avoid for simple directive patterns.</p>
+<p>In version 6, we introduce a new command line parameter <code>-P</code> to allow specifying
+command-line options to be passed to arara's session map. Calling arara like</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> arara</span><span style="color:#696989;"> -P</span><span> key=value file.tex
+</span></code></pre>
+<p>will allow you to write the following directives in <code>file.tex</code>:</p>
+<pre data-lang="latex" style="background-color:#ffffff;color:#010101;" class="language-latex "><code class="language-latex" data-lang="latex"><span style="color:#898989;">% arara: pdflatex
+</span><span style="color:#898989;">% arara: pdflatex if (getSession().get(&#39;arg:key&#39;) == &#39;value&#39;)
+</span></code></pre>
+<p>Of course this is a poor example. But you get the gist of what is now possible
+using this command-line parameter. Imagine writing preambles in your
+<code>arararc.yaml</code> file that perform tests like <code>getSession().get('arg:run') == 'fast')</code> to leave certain compilations out for fast runs.</p>
+<blockquote style="padding: 14px; margin-top: 10px; margin-bottom: 10px; background-color: #9FE2BF; border-left: 8px solid #6B8E23;">
+    <small>
+        <strong>&#128161; A useful tip</strong>
+        <br/>
+        Remember you can also use <code>getSession().get('environment:PATH')</code> and similar to
+get the <code>PATH</code> environment variable.
+    </small>
+</blockquote>
+<h2 id="expansion-within-options">Expansion within <code>options</code></h2>
+<p>The new command-line parameters are one of the few commands that have been made
+available within the <code>options</code> part of directives. This is especially useful to
+set output names or job names like</p>
+<pre data-lang="latex" style="background-color:#ffffff;color:#010101;" class="language-latex "><code class="language-latex" data-lang="latex"><span style="color:#898989;">% arara: pdflatex: { options: [&quot;-jobname=@{getSession().get(&quot;arg:key&quot;)}&quot;] }
+</span></code></pre>
+<p>Apart from <code>getSession</code> you may use <code>getBasename</code> and <code>getOriginalReference</code>
+with their documented meanings in the <code>options</code> expansion.</p>
+<h2 id="a-new-safe-mode">A new safe mode</h2>
+<p>For quite some time, arara has been a very powerful tool. With some of the new
+changes, e.g. letting the user specify a full path anywhere on the file system
+to place the log file at, the wishes for a safe mode seemed very sensible.</p>
+<p>The new safe mode may be enabled using the command-line flags <code>-S</code> or
+<code>--safe-run</code>. Currently, the following features are restricted:</p>
+<ul>
+<li>file lookup: Where arara called as <code>arara file</code> will usually try sensible
+extensions, in safe mode arara only does what it is asked to do which means
+only operating on files as given. It won't find <code>file.tex</code> in safe mode which
+would be operated on in a normal run.</li>
+<li><code>unsafelyExecuteSystemCommand</code> will raise an exception and abort the run
+(although rules are still allowed to construct arbitrary commands using
+a <code>return getCommand(…)</code> approach so this only disallows arbitrary system
+commands that would not get logged and are thus invisible to the user)</li>
+<li>the <code>options</code> parameter does not expand orb tags in any directive.</li>
+</ul>
+<h2 id="improving-safety-of-flags-and-defaults-in-rules">Improving safety of flags and defaults in rules</h2>
+<p>In rules, you specify <code>flag</code>s and <code>default</code>s for parameters. We changed the
+handling of both. Let's start with <code>default</code>. Up to now, <code>default</code> could compute
+expensive operations and in many cases duplicated lots of code from the
+corresponding <code>flag</code>. Because of that, arara changed behavior and now treats the
+<code>default</code> like user input. To make that more clear, let's consider the example
+directive</p>
+<pre data-lang="latex" style="background-color:#ffffff;color:#010101;" class="language-latex "><code class="language-latex" data-lang="latex"><span style="color:#898989;">% arara: pdflatex: {branch: stable}
+</span></code></pre>
+<p>where the <code>stable</code> branch is actually the default value. In previous versions,
+you would write (in your rule)</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">arguments</span><span>:
+</span><span>- </span><span style="color:#00528b;">identifier</span><span>: </span><span style="color:#009f78;">branch
+</span><span>  </span><span style="color:#00528b;">flag</span><span>: </span><span style="color:#016692;">&gt;
+</span><span style="color:#009f78;">    @{
+</span><span style="color:#009f78;">        return [ &#39;stable&#39; : &#39;pdflatex&#39;, &#39;developer&#39; : &#39;pdflatex-dev&#39; ]
+</span><span style="color:#009f78;">                 .get(parameters.branch);
+</span><span style="color:#009f78;">    }
+</span><span>  </span><span style="color:#00528b;">default</span><span>: </span><span style="color:#009f78;">&#39;pdflatex&#39;
+</span></code></pre>
+<p>which expresses that you want to run the <code>stable</code> branch by default but only
+because the rule author knows that if the user uses <code>stable</code> the <code>flag</code> will
+return <code>pdflatex</code>.</p>
+<p>To express the same thing in v6, i.e. to use the stable branch of this rule by
+default, you would now write</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">arguments</span><span>:
+</span><span>- </span><span style="color:#00528b;">identifier</span><span>: </span><span style="color:#009f78;">branch
+</span><span>  </span><span style="color:#00528b;">flag</span><span>: </span><span style="color:#016692;">&gt;
+</span><span style="color:#009f78;">    @{
+</span><span style="color:#009f78;">        return [ &#39;stable&#39; : &#39;pdflatex&#39;, &#39;developer&#39; : &#39;pdflatex-dev&#39; ]
+</span><span style="color:#009f78;">                 .get(parameters.branch);
+</span><span style="color:#009f78;">    }
+</span><span>  </span><span style="color:#00528b;">default</span><span>: </span><span style="color:#009f78;">&#39;stable&#39;
+</span></code></pre>
+<p>which is very clear, even to the user who only knows the documented options of
+the rule. Furthermore, it now expresses the intention. As with user input, the
+<code>flag</code> will be called on the default value and determine the real value.</p>
+<p>This change also implies that there is no orb tag expansion in the <code>default</code>
+field anymore.</p>
+<p>The other notable change for flags is the transformation into a
+<code>List&lt;String&gt;</code>. That means for the return types of a <code>flag</code>:</p>
+<ul>
+<li>If a <code>flag</code> returns a <code>List</code>, it will be flattened and all values will be
+turned into string.</li>
+<li>If a string is returned, a single list with only that string will be
+returned.</li>
+<li>Other values (which are explicitly discouraged) are transformed into a
+string.</li>
+</ul>
+<p>Consider the argument example above: This <code>branch</code> argument actually returns a
+<code>String</code>, e.g. <code>pdflatex</code>. Hence, it is part of the second category. Internally,
+arara transforms this return value into <code>['pdflatex']</code>, i.e. a list with one
+single element.</p>
+<p>If you need interoperability of complex <code>command</code> or <code>flag</code> code with older
+versions, use <code>isList(variable) ? variable[0] : variable</code> to get the value of
+previously non-List values.</p>
+<h2 id="rule-updates">Rule updates</h2>
+<p>Some rules have been updated or added. New rules include <code>ghostscript</code>, <code>copy</code>,
+<code>move</code>, <code>ltx2any</code>, <code>llmk</code>, <code>spix</code>, <code>pdfcrop</code> and <code>sage</code>. If you encounter any
+issues, please open an issue at GitLab. We are also always open to support
+more tools in future versions.</p>
+<blockquote>
+<p>Important note on rules: Those rules included in the core distribution have
+been renamed to have a unique prefix in the texmf tree. File names should not
+be relied upon (see deprecation notice in v5).</p>
+</blockquote>
+<h2 id="being-forgiving-about-language-choices">Being forgiving about language choices</h2>
+<p>Earlier last year, we started a poll about arara's localization and the users we
+have got feedback from stated they would be good with arara being focused on the
+English user interface. In version 5 we already removed the localized
+command-line interface/help, even without knowing about user feedback.</p>
+<p>For this version, we decided to let arara continue running in English if an
+invalid language is specified. Previously, specifying a language like <code>quack</code>
+would cause arara to end the execution which does not seem appropriate anymore.</p>
+<p>Another related change has been the switch to IETF BCP 47 codes for language
+selection. Please refer to the <a href="https://islandoftex.gitlab.io/arara/changelog/">changelog</a> for details.</p>
+<h2 id="removal-of-the-arara-shorthand">Removal of the arara shorthand</h2>
+<p>As announced, the (as of version 5.0.0) deprecated <code>&lt;arara&gt;</code> shorthand notation
+has been removed. This is a breaking change. If your document previously used
+rules with</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">flag</span><span>: </span><span style="color:#009f78;">&lt;arara&gt; return [&#39;a&#39;, &#39;b&#39;];
+</span></code></pre>
+<p>you will now have to write the more elaborate but much clearer</p>
+<pre data-lang="yaml" style="background-color:#ffffff;color:#010101;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#00528b;">flag</span><span>: </span><span style="color:#016692;">&gt;
+</span><span style="color:#009f78;">  @{
+</span><span style="color:#009f78;">    return [&#39;a&#39;, &#39;b&#39;];
+</span><span style="color:#009f78;">  }
+</span></code></pre>
+<h2 id="fixed-some-minor-issues">Fixed some minor issues</h2>
+<p>In arara version 5 and even before, the exit status handling did not conform to
+the documentation. We only differentiate the exit values 0, 1 and 2 as valid
+exit values for arara. Prior to this fix you have gotten the exit code of the
+failing command directly. For scripting purposes this could be a nice
+enhancement but we decided to aim for reestablishing documented behavior.</p>
+<p>The correct behavior of <code>currentFile</code> and <code>getOriginalReference</code> has been
+restored as version 5 incorrectly used the same object for both.</p>
+<h1 id="the-next-steps">The next steps</h1>
+<p>For version 7 of arara, i.e. TeX Live 2022 we have big plans. Not all of them
+may eventually end up in the released version but we still want to share our
+ideas with you.</p>
+<h2 id="trying-to-serve-more-platforms">Trying to serve more platforms</h2>
+<p>arara is written in Kotlin, a very versatile language. It has been designed with
+compilation to different platforms in mind. The usual base of operations for
+Kotlin is the JVM and the Java ecosystem. But one may also compile Kotlin to
+JavaScript or even native binaries.</p>
+<p>In version 6, we already made a split between an API, a core implementation, the
+MVEL rules and the CLI application to separate concerns. This was the first step
+in the direction of splitting out components that are bound to one
+platform. Aditionally, we hope to enable other people to develop their own tools
+based on the arara libraries if they wish to. With multiple library components
+this should be easy.</p>
+<p>For version 7, we want to take larger steps towards
+platform-independence. Hence, we will make use of Kotlin/Multiplatform (MPP) to
+use a single codebase for all target platforms. Some components will have to be
+rewritten, some need different interfaces for different platforms but in the
+end, we hope to provide an even more multitalented tool.</p>
+<p>The real challenge is a major change of the API so that we are able to interpret
+rules that have been written for MVEL (which is JVM-only) to work on native
+platforms (Windows/Linux/Mac binaries) with respective libraries. We will have
+to put quite some effort into improving our API.</p>
+<p>Last but not least, we want to drop some word about the background of these
+plans: arara has never known to be the fastest player among the TeX build tools
+but nevertheless performance is important to us. That, combined with some
+complaints (e.g. by a big player in the TeX world) about the reliance on the
+JVM, made us curious where we can take arara in that direction.</p>
+<h2 id="exploring-new-grounds">Exploring new grounds</h2>
+<p>Up to now, arara has been developed as a file-based build tool. The tool does
+not track dependencies nor does it manage projects. You throw a file at it and
+it makes the best out of it. That results in directives like the following
+snippet from <code>file.tex</code></p>
+<pre data-lang="latex" style="background-color:#ffffff;color:#010101;" class="language-latex "><code class="language-latex" data-lang="latex"><span style="color:#898989;">% arara: metapost: { files: [a.mp, b.mp] }
+</span><span style="color:#898989;">% arara: pdflatex
+</span></code></pre>
+<p>which in fact does not (only) specify how to compile <code>file.tex</code> but it specifies
+three things:</p>
+<ol>
+<li>how to compile <code>a.mp</code>,</li>
+<li>how to compile <code>b.mp</code> and</li>
+<li>how to compile <code>file.tex</code>.</li>
+</ol>
+<p>In fact, we are doing project management by hand. Obviously, the author intended
+to compile the metapost files before running LaTeX. That is a clear indication
+of dependency management.</p>
+<p>As we have been asked about <code>make</code>-like support of directive specifications out
+of the source file, we think the only sensible approach to tackle it is to
+actually introduce the concept of a project to kill two birds with one stone.</p>
+<p>Actually, we already worked on project support in combination with a new
+Kotlin-based DSL (domain-specific language) for version 6. To avoid major
+problems, we decided not to ship it and reconsider our plans. However, we
+already had project specifications like</p>
+<pre data-lang="kts" style="background-color:#ffffff;color:#010101;" class="language-kts "><code class="language-kts" data-lang="kts"><span>project(</span><span style="color:#009f78;">&quot;My awesome book&quot;</span><span>) {
+</span><span>  file(</span><span style="color:#009f78;">&quot;a.mp&quot;</span><span>) {
+</span><span>    directives </span><span style="color:#016692;">=</span><span> listOf(</span><span style="color:#009f78;">&quot;metapost&quot;</span><span>)
+</span><span>  }
+</span><span>  file(</span><span style="color:#009f78;">&quot;b.mp&quot;</span><span>) {
+</span><span>    directives </span><span style="color:#016692;">=</span><span> listOf(</span><span style="color:#009f78;">&quot;metapost&quot;</span><span>)
+</span><span>  }
+</span><span>  file(</span><span style="color:#009f78;">&quot;file.tex&quot;</span><span>) {
+</span><span>    dependsOn(</span><span style="color:#009f78;">&quot;a.mp&quot;</span><span>, </span><span style="color:#009f78;">&quot;b.mp&quot;</span><span>)
+</span><span>    </span><span style="color:#898989;">// directives omitted, take from file
+</span><span>  }
+</span><span>}
+</span></code></pre>
+<p>available, so stay tuned.</p>
+
+
+      </div>
+
+    </main>
+
+    
+    <footer>
+      <small class="subtext">
+        arara by the Island of TeX
+      </small>
+    </footer>
+    
+  </body>
+  <script>
+    function highlightNav(heading) {
+        let pathname = location.pathname;
+        document.querySelectorAll(".toc a").forEach((item) => {
+            item.classList.remove("active");
+        });
+        document.querySelector(".toc a[href$='" + pathname + "#" + heading + "']").classList.add("active");
+    }
+
+    let currentHeading = "";
+    window.onscroll = function () {
+        let h = document.querySelectorAll("h1,h2,h3,h4,h5,h6");
+        let elementArr = [];
+
+        h.forEach(item => {
+            if (item.id !== "") {
+                elementArr[item.id] = item.getBoundingClientRect().top;
+            }
+        });
+        elementArr.sort();
+        for (let key in elementArr) {
+            if (!elementArr.hasOwnProperty(key)) {
+                continue;
+            }
+            if (elementArr[key] > 0 && elementArr[key] < 300) {
+                if (currentHeading !== key) {
+                    highlightNav(key);
+                    currentHeading = key;
+                }
+                break;
+            }
+        }
+    }
+  </script>
+</html>

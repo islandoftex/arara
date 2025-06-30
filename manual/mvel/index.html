@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>MVEL | arara </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+    :root {
+        /* Primary theme color */
+        --primary-color: #cbe368; /* #FED43F; */
+        /* Primary theme text color */
+        --primary-text-color: #543631;
+        /* Primary theme link color */
+        --primary-link-color: #719b25;
+        /* Secondary color: the background body color */
+        --secondary-color: #fcfaf6;
+        --secondary-text-color: #303030;
+        /* Highlight text color of table of content */
+        --toc-highlight-text-color: #d46e13;
+    }
+</style>
+
+    <link rel="icon" href="https://islandoftex.gitlab.io/arara/favicon.svg">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/normalize.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juice.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/fonts/fonts.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juicy-arara.css">
+    
+    <meta name="keywords" content="tex, latex, context, build tool, automation">
+    <meta itemprop="name" content="The cool TeX automation tool">
+    <meta itemprop="description" content="arara is a TeX automation tool based on directives and rules.">
+    
+  </head>
+
+  <body>
+    
+<header class="box-shadow">
+    
+
+<a href="https://islandoftex.gitlab.io/arara/">
+  <div class="logo">
+    <img src="https://islandoftex.gitlab.io/arara/images/arara-text.svg" alt="logo">
+  </div>
+</a>
+
+<nav>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/changelog/">Changelog</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/quickstart/">Quickstart</a>
+  
+  
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/manual">Manual</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/news">News</a>
+  
+  <a class="nav-item subtitle-text" href="https://gitlab.com/islandoftex/arara">GitLab</a>
+  
+  
+</nav>
+
+</header>
+
+
+    <main>
+      
+      
+      
+      
+      
+      <div class="toc">
+        <div class="toc-sticky">
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/mvel/#basic-usage">Basic usage</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/mvel/#inline-lists-maps-and-arrays">Inline lists, maps and arrays</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/mvel/#property-navigation">Property navigation</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/mvel/#flow-control">Flow control</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/mvel/#projections-and-folds">Projections and folds</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/mvel/#assignments">Assignments</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/mvel/#basic-templating">Basic templating</a>
+          </div>
+          
+          
+          <div class="toc-item">
+            <a class="subtext" href="https://islandoftex.gitlab.io/arara/manual/mvel/#further-documentation">Further documentation</a>
+          </div>
+          
+          
+        </div>
+      </div>
+      
+      
+
+      <div class="content text">
+        
+<div class="heading-text">MVEL</div>
+<p>According to the <a rel="noopener noreferrer" target="_blank" href="https://en.wikipedia.org/wiki/MVEL">Wikipedia entry</a>, the
+MVFLEX Expression Language (hereafter referred as MVEL) is a hybrid, dynamic,
+statically typed, embeddable expression language and runtime for the Java
+platform. Originally started as a utility language for an application framework,
+the project is now developed completely independently. arara relies on this
+scripting language in two circumstances:</p>
+<ol>
+<li>
+<p><em>Rules</em>, as nominal attributes gathered from directives are used to build
+complex command invocations and additional computations. A rule follows a very
+strict model, detailed in <a href="https://islandoftex.gitlab.io/arara/manual/concepts/">Important concepts</a>.</p>
+</li>
+<li>
+<p><em>Conditionals</em>, as logical expressions must be evaluated in order to decide
+whether and how a directive should be interpreted. Conditionals are detailed in
+<a href="https://islandoftex.gitlab.io/arara/manual/concepts/">Important concepts</a>.</p>
+</li>
+</ol>
+<p>This chapter only covers the relevant parts of the MVEL language for a
+consistent use with arara. For advanced topics, I highly recommend the official
+language guide for MVEL 2.0, available online.</p>
+<h1 id="basic-usage">Basic usage</h1>
+<p>The following primer is provided by the <a rel="noopener noreferrer" target="_blank" href="https://mvel.documentnode.com/">official language
+guide</a>, almost verbatim, with a few
+modifications to make it more adherent to our needs with arara. Consider the
+following expression:</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>user.name
+</span></code></pre>
+<p>In this expression, we have a single identifier <code>user.name</code>, which by itself is
+a property expression, in that the only purpose of such an expression is to
+extract a property out of a variable or context object, namely <code>user</code>. Property
+expressions are widely used by arara, as directive parameters are converted to a
+map inside the corresponding rule scope. For instance, a parameter <code>foo</code> in a
+directive will be mapped as <code>parameters.foo</code> inside a rule during
+interpretation. This topic is detailed in <a href="https://islandoftex.gitlab.io/arara/manual/concepts/">Important concepts</a>. The
+scripting language can also be used for evaluating a boolean expression:</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>user.name </span><span style="color:#016692;">== </span><span style="color:#009f78;">&#39;John Doe&#39;
+</span></code></pre>
+<p>This expression yields a boolean result, either <code>true</code> or <code>false</code> based on a
+comparison operation. Like a typical programming language, MVEL supports the
+full gamut of operator precedence rules, including the ability to use bracketing
+to control execution order:</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>(user.name </span><span style="color:#016692;">== </span><span style="color:#009f78;">&#39;John Doe&#39;</span><span>) </span><span style="color:#016692;">&amp;&amp; </span><span>((x </span><span style="color:#016692;">* </span><span style="color:#8c008a;">2</span><span>) </span><span style="color:#016692;">- </span><span style="color:#8c008a;">1</span><span>) </span><span style="color:#016692;">&gt; </span><span style="color:#8c008a;">20
+</span></code></pre>
+<p>You may write scripts with an arbitrary number of statements using a semicolon
+to denote the termination of a statement. This is required in all cases except
+in cases where there is only one statement, or for the last statement in a
+script:</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>statement1; statement2; statement3
+</span></code></pre>
+<p>It is important to observe that MVEL expressions use a <em>last value out</em>
+principle. This means, that although MVEL supports the <code>return</code> keyword, it can
+be safely omitted. For example:</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>foo </span><span style="color:#016692;">= </span><span style="color:#8c008a;">10</span><span>;
+</span><span>bar </span><span style="color:#016692;">= </span><span>(foo </span><span style="color:#016692;">=</span><span> foo </span><span style="color:#016692;">* </span><span style="color:#8c008a;">2</span><span>) </span><span style="color:#016692;">+ </span><span style="color:#8c008a;">10</span><span>;
+</span><span>foo;
+</span></code></pre>
+<p>In this particular example, the expression automatically returns the value of
+<code>foo</code> as it is the last value of the expression. It is functionally identical
+to:</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>foo </span><span style="color:#016692;">= </span><span style="color:#8c008a;">10</span><span>;
+</span><span>bar </span><span style="color:#016692;">= </span><span>(foo </span><span style="color:#016692;">=</span><span> foo </span><span style="color:#016692;">* </span><span style="color:#8c008a;">2</span><span>) </span><span style="color:#016692;">+ </span><span style="color:#8c008a;">10</span><span>;
+</span><span style="color:#016692;">return</span><span> foo;
+</span></code></pre>
+<p>Personally, I like to explicitly add a <code>return</code> statement, as it provides a
+visual indication of the expression exit point. All rules released with arara
+favour this writing style. However, feel free to choose any writing style you
+want, as long as the resulting code is consistent.</p>
+<p>The type coercion system of MVEL is applied in cases where two incomparable
+types are presented by attempting to coerce the right value to that of the type
+of the left value, and then vice-versa. For example:</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#009f78;">&quot;123&quot; </span><span style="color:#016692;">== </span><span style="color:#8c008a;">123</span><span>;
+</span></code></pre>
+<p>Surprisingly, the evaluation of such expression holds <code>true</code> in MVEL because the
+underlying type coercion system will coerce the untyped number <code>123</code> to a string
+<code>123</code> in order to perform the comparison.</p>
+<h1 id="inline-lists-maps-and-arrays">Inline lists, maps and arrays</h1>
+<p>According to the documentation, MVEL allows you to express lists, maps and
+arrays using simple elegant syntax. Lists are expressed in the following format:</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>[ </span><span style="color:#009f78;">&quot;Jim&quot;</span><span>, </span><span style="color:#009f78;">&quot;Bob&quot;</span><span>, </span><span style="color:#009f78;">&quot;Smith&quot;</span><span> ]
+</span></code></pre>
+<p>Note that lists are denoted by comma-separated values delimited by square
+brackets. Similarly, maps (sets of key/value attributes) are expressed in the
+following format:</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>[ </span><span style="color:#009f78;">&quot;Foo&quot; </span><span style="color:#016692;">: </span><span style="color:#009f78;">&quot;Bar&quot;</span><span>, </span><span style="color:#009f78;">&quot;Bar&quot; </span><span style="color:#016692;">: </span><span style="color:#009f78;">&quot;Foo&quot;</span><span> ]
+</span></code></pre>
+<p>Note that attributes are composed by a key, a colon and the corresponding
+value. A map is denoted by comma-separated attributes delimited  by square
+brackets. Finally, arrays are expressed in the following format:</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>{ </span><span style="color:#009f78;">&quot;Jim&quot;</span><span>, </span><span style="color:#009f78;">&quot;Bob&quot;</span><span>, </span><span style="color:#009f78;">&quot;Smith&quot; </span><span>}
+</span></code></pre>
+<p>One important aspect about inline arrays is their special ability to be coerced
+to other array types. When you declare an inline array, it is untyped at first
+and later coerced to the type needed in context. For instance, consider the
+following code, in which <code>sum</code> takes an array of integers:</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>math.</span><span style="color:#696989;">sum</span><span>({ </span><span style="color:#8c008a;">1</span><span>, </span><span style="color:#8c008a;">2</span><span>, </span><span style="color:#8c008a;">3</span><span>, </span><span style="color:#8c008a;">4 </span><span>});
+</span></code></pre>
+<p>In this case, the scripting language will see that the target method accepts an
+integer array and automatically type the provided untyped array as such. This is
+an important feature exploited by arara when calling methods within the rule or
+conditional scope.</p>
+<h1 id="property-navigation">Property navigation</h1>
+<p>MVEL provides a single, unified syntax for accessing properties, static fields,
+maps and other structures. Lists are accessed the same as arrays. For example,
+these two constructs are equivalent (MVEL and Java access styles for lists and
+arrays, respectively):</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>user[</span><span style="color:#8c008a;">5</span><span>]
+</span></code></pre>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>user.</span><span style="color:#696989;">get</span><span>(</span><span style="color:#8c008a;">5</span><span>)
+</span></code></pre>
+<p>Observe that MVEL accepts plain Java methods as well. Maps are accessed in the
+same way as arrays except any object can be passed as the index value. For
+example, these two constructs are equivalent (MVEL and Java access styles for
+maps, respectively):</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>user[</span><span style="color:#009f78;">&quot;foobar&quot;</span><span>]
+</span><span>user.foobar
+</span></code></pre>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>user.</span><span style="color:#696989;">get</span><span>(</span><span style="color:#009f78;">&quot;foobar&quot;</span><span>)
+</span></code></pre>
+<p>It is advisable to favour such access styles over their Java counterparts when
+writing rules and conditionals for arara. The clean syntax helps to ensure more
+readable code.</p>
+<h1 id="flow-control">Flow control</h1>
+<p>The expression language goes beyond simple evaluations. In fact, MVEL supports
+an assortment of control flow operators (namely, conditionals and repetitions)
+which allows advanced scripting operations. Consider this conditional statement:</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#016692;">if </span><span>(var </span><span style="color:#016692;">&gt; </span><span style="color:#8c008a;">0</span><span>) {
+</span><span>   r </span><span style="color:#016692;">= </span><span style="color:#009f78;">&quot;greater than zero&quot;</span><span>;
+</span><span>}
+</span><span style="color:#016692;">else if </span><span>(var </span><span style="color:#016692;">== </span><span style="color:#8c008a;">0</span><span>) {
+</span><span>   r </span><span style="color:#016692;">= </span><span style="color:#009f78;">&quot;exactly zero&quot;</span><span>;
+</span><span>}
+</span><span style="color:#016692;">else </span><span>{
+</span><span>   r </span><span style="color:#016692;">= </span><span style="color:#009f78;">&quot;less than zero&quot;</span><span>;
+</span><span>}
+</span></code></pre>
+<p>As seen in the previous code, the syntax is very similar to the ones found in
+typical programming languages. MVEL also provides a shorter version, known as a
+ternary statement:</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>answer </span><span style="color:#016692;">== </span><span style="color:#333366;">true </span><span style="color:#016692;">? </span><span style="color:#009f78;">&quot;yes&quot; </span><span style="color:#016692;">: </span><span style="color:#009f78;">&quot;no&quot;</span><span>;
+</span></code></pre>
+<p>The <code>foreach</code> statement accepts two parameters separated by a colon, the first
+being the local variable holding the current element, and the second the
+collection or array to be iterated over. For example:</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#696989;">foreach </span><span>(name </span><span style="color:#016692;">:</span><span> people) {
+</span><span>    </span><span style="color:#646409;">System</span><span>.out.</span><span style="color:#696989;">println</span><span>(name);
+</span><span>}
+</span></code></pre>
+<p>As expected, MVEL also implements the standard C <code>for</code> loop. Observe that newer
+versions of MVEL allow an abbreviation of <code>foreach</code> to the usual <code>for</code>
+statement, as syntactic sugar. In order to explicitly indicate a collection
+iteration, we usually use <code>foreach</code> in the default rules for arara, but both
+statements behave exactly the same from a semantic point of view.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#016692;">for </span><span>(</span><span style="color:#877611;">int</span><span> i </span><span style="color:#016692;">= </span><span style="color:#8c008a;">0</span><span>; i </span><span style="color:#016692;">&lt; </span><span style="color:#8c008a;">100</span><span>; i</span><span style="color:#016692;">++</span><span>) {
+</span><span>   </span><span style="color:#646409;">System</span><span>.out.</span><span style="color:#696989;">println</span><span>(i);
+</span><span>}
+</span></code></pre>
+<p>The scripting language also provides two versions of the <code>do</code> statement: one
+with <code>while</code> and one with <code>until</code> (the latter being the exact inverse of the
+former):</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#016692;">do </span><span>{
+</span><span>    x </span><span style="color:#016692;">= </span><span style="color:#696989;">something</span><span>();
+</span><span>} </span><span style="color:#016692;">while </span><span>(x </span><span style="color:#016692;">!= </span><span style="color:#333366;">null</span><span>);
+</span></code></pre>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#016692;">do </span><span>{
+</span><span>   x </span><span style="color:#016692;">= </span><span style="color:#696989;">something</span><span>();
+</span><span>} </span><span style="color:#696989;">until </span><span>(x </span><span style="color:#016692;">== </span><span style="color:#333366;">null</span><span>);
+</span></code></pre>
+<p>Finally, MVEL also implements the standard <code>while</code>, with the significant
+addition of an <code>until</code> counterpart (for inverted logic):</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#016692;">while </span><span>(</span><span style="color:#696989;">isTrue</span><span>()) {
+</span><span>   </span><span style="color:#696989;">doSomething</span><span>();
+</span><span>}
+</span></code></pre>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#696989;">until </span><span>(</span><span style="color:#696989;">isFalse</span><span>()) {
+</span><span>   </span><span style="color:#696989;">doSomething</span><span>();
+</span><span>}
+</span></code></pre>
+<p>Since <code>while</code> and <code>until</code> are unbounded (i.e, the number of iterations required
+to solve a problem may be unpredictable), we usually tend to avoid using such
+statements when writing rules for arara.</p>
+<h1 id="projections-and-folds">Projections and folds</h1>
+<p>Projections are a way of representing collections. According to the official
+documentation, using a very simple syntax, one can inspect very complex object
+models inside collections in MVEL using the <code>in</code> operator. For example:</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>names </span><span style="color:#016692;">= </span><span>(user.name in users);
+</span></code></pre>
+<p>As seen in the above code, <code>names</code> holds all values from the <code>name</code> property of
+each element, represented locally by a placeholder <code>user</code>, from the collection
+<code>users</code> being inspected. This feature can even perform nested operations.</p>
+<h1 id="assignments">Assignments</h1>
+<p>According to the official documentation, the scripting language allows variable
+assignment in expressions, either for extraction from the runtime, or for use
+inside the expression. As MVEL is a dynamically typed language, there is no need
+to specify a type in order to declare a new variable. However, feel free to
+explicitly declare the type when desired.</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>str </span><span style="color:#016692;">= </span><span style="color:#009f78;">&quot;My string&quot;</span><span>;
+</span><span style="color:#646409;">String</span><span> str </span><span style="color:#016692;">= </span><span style="color:#009f78;">&quot;My string&quot;</span><span>;
+</span></code></pre>
+<p>Unlike Java, however, the scripting language provides automatic type conversion
+(when possible) when assigning a value to a typed variable. In the following
+example, an integer value is assigned to a string:</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#646409;">String</span><span> num </span><span style="color:#016692;">= </span><span style="color:#8c008a;">1</span><span>;
+</span></code></pre>
+<p>For dynamically typed variables, in order to perform a type conversion, it is
+just a matter of explicitly casting the value to the desired type. In the
+following example, an explicit string cast is assigned to the <code>num</code> variable:</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span>num </span><span style="color:#016692;">= </span><span>(</span><span style="color:#646409;">String</span><span>) </span><span style="color:#8c008a;">1</span><span>;
+</span></code></pre>
+<p>When writing rules for arara, is advisable to keep variables to a minimum in
+order to avoid unnecessary assignments and a potential performance
+drop. However, make sure to favour readability over unmaintained code.</p>
+<h1 id="basic-templating">Basic templating</h1>
+<p>MVEL templates are comprised of <em>orb</em> tags inside a plain text document. Orb
+tags denote dynamic elements of the template which the engine will evaluate at
+runtime. arara heavily relies on this concept for runtime evaluation of
+conditionals and rules. For rules, we use orb tags to return either a string
+from a textual template or a proper command object. The former constituted the
+basis of command generation in previous versions of our tool; we highly
+recommend the latter, detailed in <a href="https://islandoftex.gitlab.io/arara/manual/concepts/">Important concepts</a>. Conditionals are
+in fact orb tags in disguise, such that the expression (or a sequence of
+expressions) is properly evaluated at runtime. Consider the following example:</p>
+<pre data-lang="java" style="background-color:#ffffff;color:#010101;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#646409;">My</span><span> favourite team is @{ person.name </span><span style="color:#016692;">== </span><span style="color:#009f78;">&#39;Enrico&#39; </span><span style="color:#016692;">? </span><span style="color:#009f78;">&#39;Juventus&#39; </span><span style="color:#016692;">: </span><span style="color:#009f78;">&#39;Palmeiras&#39; </span><span>}</span><span style="color:#016692;">!
+</span></code></pre>
+<p>The above code features a basic form of orb tag named <em>expression orb</em>. It
+contains an expression (or a sequence of expressions) which will be evaluated to
+a certain value, as seen earlier on, when discussing the <em>last value out</em>
+principle. In the example, the value to be returned will be a string containing
+a football team name (the result is of course based on the comparison outcome).</p>
+<h1 id="further-documentation">Further documentation</h1>
+<p>This chapter does not cover all features of the MVEL expression language, so
+further reading is advisable. I highly recommend the <a rel="noopener noreferrer" target="_blank" href="https://mvel.documentnode.com/">MVEL language
+guide</a> currently covering version 2.0 of the
+language.</p>
+
+
+      </div>
+
+    </main>
+
+    
+    <footer>
+      <small class="subtext">
+        arara by the Island of TeX
+      </small>
+    </footer>
+    
+  </body>
+  <script>
+    function highlightNav(heading) {
+        let pathname = location.pathname;
+        document.querySelectorAll(".toc a").forEach((item) => {
+            item.classList.remove("active");
+        });
+        document.querySelector(".toc a[href$='" + pathname + "#" + heading + "']").classList.add("active");
+    }
+
+    let currentHeading = "";
+    window.onscroll = function () {
+        let h = document.querySelectorAll("h1,h2,h3,h4,h5,h6");
+        let elementArr = [];
+
+        h.forEach(item => {
+            if (item.id !== "") {
+                elementArr[item.id] = item.getBoundingClientRect().top;
+            }
+        });
+        elementArr.sort();
+        for (let key in elementArr) {
+            if (!elementArr.hasOwnProperty(key)) {
+                continue;
+            }
+            if (elementArr[key] > 0 && elementArr[key] < 300) {
+                if (currentHeading !== key) {
+                    highlightNav(key);
+                    currentHeading = key;
+                }
+                break;
+            }
+        }
+    }
+  </script>
+</html>

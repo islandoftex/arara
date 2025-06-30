@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Quickstart | arara </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+    :root {
+        /* Primary theme color */
+        --primary-color: #cbe368; /* #FED43F; */
+        /* Primary theme text color */
+        --primary-text-color: #543631;
+        /* Primary theme link color */
+        --primary-link-color: #719b25;
+        /* Secondary color: the background body color */
+        --secondary-color: #fcfaf6;
+        --secondary-text-color: #303030;
+        /* Highlight text color of table of content */
+        --toc-highlight-text-color: #d46e13;
+    }
+</style>
+
+    <link rel="icon" href="https://islandoftex.gitlab.io/arara/favicon.svg">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/normalize.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juice.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/fonts/fonts.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juicy-arara.css">
+    
+    <meta name="keywords" content="tex, latex, context, build tool, automation">
+    <meta itemprop="name" content="The cool TeX automation tool">
+    <meta itemprop="description" content="arara is a TeX automation tool based on directives and rules.">
+    
+  </head>
+
+  <body>
+    
+<header class="box-shadow">
+    
+
+<a href="https://islandoftex.gitlab.io/arara/">
+  <div class="logo">
+    <img src="https://islandoftex.gitlab.io/arara/images/arara-text.svg" alt="logo">
+  </div>
+</a>
+
+<nav>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/changelog/">Changelog</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/quickstart/">Quickstart</a>
+  
+  
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/manual">Manual</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/news">News</a>
+  
+  <a class="nav-item subtitle-text" href="https://gitlab.com/islandoftex/arara">GitLab</a>
+  
+  
+</nav>
+
+</header>
+
+
+    <main>
+      
+      
+      
+      
+
+      <div class="content text">
+        
+<div class="heading-text">A quickstart guide to arara</div>
+<p>Welcome to arara, the cool <span class="tex">T<sub>e</sub>X</span>
+ automation tool! This document is
+intended to be a quickstart guide, providing the basic instructions to start
+using our tool. We will help our good friend Peter,<sup class="footnote-reference"><a href="#1">1</a></sup> the anteater, in his
+learning adventure. He is very excited about it! Hello, Peter!</p>
+<p><em><strong>Peter:</strong> Hello, nice to meet you, person from the Island of <span class="tex">T<sub>e</sub>X</span>
+! I am
+Peter, the anteater. So I heard about this tool named arara, what is it? Is
+there anything to do with <span class="tex">T<sub>e</sub>X</span>
+ and friends?</em></p>
+<p>As a matter of fact, it is! arara is a <span class="tex">T<sub>e</sub>X</span>
+ automation tool. The name was
+chosen as an homage to a Brazilian bird of the same name, which is a macaw. The
+word <em>arara</em> comes from the Tupian word <em>a'rara</em>, which means <em>big bird</em>. The
+tool is an effort to provide a concise way to automate the daily <span class="tex">T<sub>e</sub>X</span>
+
+workflow for users and also package writers.</p>
+<p><em><strong>Peter:</strong> It definitely sounds intriguing! So tell me, how does arara work?
+Does it do everything automatically for me, like other tools? Do things happen
+by magic?</em></p>
+<p>A very good question, Peter. The best way to explain how arara works is to
+provide a quick comparison with similar tools. I believe you are familiar
+with <span class="tex">T<sub>e</sub>X</span>
+ documents, right? Let us use the following file <code>article.tex</code>
+as an example:</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#016692;">\documentclass</span><span>{</span><span style="color:#646409;">article</span><span>}
+</span><span>
+</span><span style="color:#016692;">\begin</span><span>{</span><span style="color:#696989;">document</span><span>}
+</span><span>Hello world!
+</span><span style="color:#016692;">\end</span><span>{</span><span style="color:#696989;">document</span><span>}
+</span></code></pre>
+<p>How would one successfully compile <code>article.tex</code> with <code>latexmk</code> and <code>rubber</code>,
+for instance? It is quite straightforward: it is just a matter of providing the
+file to the tool and letting it do the hard work:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> latexmk</span><span style="color:#696989;"> -pdf</span><span> article.tex
+</span><span style="color:#696989;">$</span><span> rubber</span><span style="color:#696989;"> --pdf</span><span> article.tex
+</span></code></pre>
+<p>The mentioned tools perform an analysis on the file and decide what has to be
+done. However, if one tries to invoke <code>arara</code> on <code>article.tex</code>, I am afraid
+<em>nothing</em> will be generated; the truth is, arara does not know what to do with
+your file, and the tool will even raise an error message complaining about this
+issue:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> arara article.tex
+</span><span>  </span><span style="color:#696989;">__</span><span> _ _ __ __ _ _ __ __ _
+</span><span style="color:#696989;">/</span><span> _` </span><span style="color:#016692;">| </span><span style="color:#009f78;">&#39;__/ _` | &#39;</span><span style="color:#696989;">__/</span><span> _` </span><span style="color:#016692;">|
+</span><span style="color:#016692;">| </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| |
+</span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|
+</span><span>
+</span><span style="color:#696989;">Processing </span><span style="color:#009f78;">&quot;article.tex&quot;</span><span> (size: 70 B, last modified: 12/28/2020
+</span><span style="color:#696989;">07:03:16</span><span>), please wait.
+</span><span>
+</span><span style="color:#696989;">ERROR
+</span><span>
+</span><span style="color:#696989;">It</span><span> looks like no directives were found in the provided file. Make
+</span><span style="color:#696989;">sure</span><span> to include at least one directive and try again.
+</span><span>
+</span><span style="color:#696989;">Total:</span><span> 0.04 seconds
+</span></code></pre>
+<p>Peter, this is the major difference of arara when compared to other tools: <em>it
+is not an automatic process and the tool does not employ any guesswork on its
+own</em>. You are in control of your documents; arara will not do anything unless
+you <em>teach it how to do a task and explicitly tell it to execute the task</em>. So,
+it is not magic.</p>
+<p><em><strong>Peter:</strong>  I see. On the other hand, this approach gives me, as user, full
+control of my document compilation. Being aware of the compilation steps makes
+me understand the <span class="tex">T<sub>e</sub>X</span>
+ tooling better. Quite clever! Now, do tell me: how
+does one tell arara to do a task?</em></p>
+<p>First of all, Peter, arara has to know <em>how</em> to do a task. This is done by
+defining rules. A rule is a formal description of how the tool should handle a
+certain task. For example, if we want to use <code>pdflatex</code> with arara, we need a
+rule for that. Once a rule is defined, the tool automatically provides an access
+layer to the user. Note that arara is distributed with dozens of predefined
+rules, so you already have several options out of the box to set up your
+workflow.</p>
+<blockquote style="padding: 15px; margin-top: 10px; margin-bottom: 10px; background-color: #AFEEEE; border-left: 8px solid #00CED1;">
+    <small>
+        <strong>Anteater facts:</strong>
+        <br/>
+        Giant anteaters can be found throughout South and Central America, though their
+numbers have diminished considerably from the latter. To thrive, they need to be
+able to move throughout large areas with patches of forest. They can often be
+found in tropical and dry forests, savannas, and open grasslands, where the ants
+upon which they feed are abundant.
+        <a href="https://www.nationalgeographic.com/animals/mammals/g/giant-anteater/" target="_blank">Read more &#8594;</a>
+    </small>
+</blockquote>
+<p>Now, back to your question. Once we know how to execute a task, we need to
+explicitly tell arara when to do it. That is actually the easy part, provided
+that you have everything up and running. We accomplish the task by adding a
+special comment line, hereafter known as a <em>directive</em>, somewhere in our
+document to indicate how the tool should work, e.g:</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex
+</span></code></pre>
+<p><em><strong>Peter:</strong>  Makes sense. So, a directive is a special comment line which is not
+the command to be executed, but the name of the rule associated with that
+directive. Is that correct?</em></p>
+<p>Perfect, Peter! That is basically how arara works: we teach the tool to do a
+task by providing a rule, and tell it to execute it via directives in the source
+code. Let us see how our <code>article.tex</code> file should be:</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex
+</span><span style="color:#016692;">\documentclass</span><span>{</span><span style="color:#646409;">article</span><span>}
+</span><span>
+</span><span style="color:#016692;">\begin</span><span>{</span><span style="color:#696989;">document</span><span>}
+</span><span>Hello world!
+</span><span style="color:#016692;">\end</span><span>{</span><span style="color:#696989;">document</span><span>}
+</span></code></pre>
+<p>Note, Peter, that the tool expects <em>you</em> to provide a list of tasks, and this is
+done by inserting special comments, i.e, directives, in the source file. Since
+we just added one directive in our document, let us see how arara behaves with
+this updated code:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> arara article.tex
+</span><span>  </span><span style="color:#696989;">__</span><span> _ _ __ __ _ _ __ __ _
+</span><span style="color:#696989;">/</span><span> _` </span><span style="color:#016692;">| </span><span style="color:#009f78;">&#39;__/ _` | &#39;</span><span style="color:#696989;">__/</span><span> _` </span><span style="color:#016692;">|
+</span><span style="color:#016692;">| </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| |
+</span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|
+</span><span>
+</span><span style="color:#696989;">Processing </span><span style="color:#009f78;">&quot;article.tex&quot;</span><span> (size: 88 B, last modified: 12/28/2020
+</span><span style="color:#696989;">07:05:05</span><span>), please wait.
+</span><span>
+</span><span>(</span><span style="color:#696989;">PDFLaTeX</span><span>) PDFLaTeX engine .............................. SUCCESS
+</span><span>
+</span><span style="color:#696989;">Total:</span><span> 0.56 seconds
+</span></code></pre>
+<p><em><strong>Peter:</strong>  Goodness me, it worked like a charm! The moment we specified a
+directive, arara knew exactly what I wanted to do with that particular file!
+Awesome!</em></p>
+<p>Exactly! You see, Peter, there is no guesswork from arara. The tool will do
+exactly what you tell it to do, no more, no less. There is a lot of freedom to
+this design, which gives you an interesting way to enhance your <span class="tex">T<sub>e</sub>X</span>
+
+experience.</p>
+<blockquote style="padding: 15px; margin-top: 10px; margin-bottom: 10px; background-color: #AFEEEE; border-left: 8px solid #00CED1;">
+    <small>
+        <strong>Anteater facts:</strong>
+        <br/>
+        Anteaters are not aggressive, but they can be fierce. A cornered anteater will
+rear up on its hind legs, using its tail for balance, and lash out with
+dangerous claws. The giant anteater's claws are some four inches long, and the
+animal can fight off even a puma or jaguar.
+        <a href="https://www.nationalgeographic.com/animals/mammals/g/giant-anteater/" target="_blank">Read more &#8594;</a>
+    </small>
+</blockquote>
+<p><em><strong>Peter:</strong> I have been wondering: there are scenarios in which we need to
+provide additional information to the underlying commands – for instance, we
+need to enable shell escape when using the <code>minted</code> package. How can we achieve
+this?</em></p>
+<p>For such scenarios, arara provides a second type of directive, a parametrized
+one, which allows passing arguments to the corresponding rule. From your
+example, to enable shell escape, one simply needs to write the following
+directive:</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex: { shell: yes }
+</span></code></pre>
+<p>Of course, <code>shell</code> is not taken randomly, but defined in the rule scope,
+otherwise arara would raise an error about an invalid key. The reference manual
+has a list of all available keys for each predefined rule. It is worth a read.</p>
+<blockquote style="padding: 14px; margin-top: 10px; margin-bottom: 10px; background-color: #9FE2BF; border-left: 8px solid #6B8E23;">
+    <small>
+        <strong>&#128161; A useful tip</strong>
+        <br/>
+        Do you know that a directive can be split into multiple lines? Simply use the
+<code>arara: --&gt;</code> mark to each line which should compose the directive. Although it
+is possible to spread lines of a multiline directive all over the code, it is
+considered good practice to keep them together for easier reading and editing.
+    </small>
+</blockquote>
+<p><em><strong>Peter:</strong> Great, these directives are really convenient! I am now curious on
+how to explore arara: shall we move to a more complex document? Consider the
+following addition to my document:</em></p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#016692;">\documentclass</span><span>{</span><span style="color:#646409;">article</span><span>}
+</span><span>
+</span><span style="color:#016692;">\begin</span><span>{</span><span style="color:#696989;">document</span><span>}
+</span><span style="color:#7a7025;">\section</span><span>{</span><span style="color:#a15001;">Termite recipes</span><span>}
+</span><span style="color:#877611;">\label</span><span>{</span><span style="color:#a15001;">sec:termiterecipes</span><span>}
+</span><span>
+</span><span>Hello, this is Section</span><span style="color:#333366;">~</span><span style="color:#016692;">\ref</span><span>{</span><span style="color:#333366;">sec:termiterecipes</span><span>}.
+</span><span style="color:#016692;">\end</span><span>{</span><span style="color:#696989;">document</span><span>}
+</span></code></pre>
+<p><em>As we can see, this document has to be compiled twice, or the reference to the
+first section will not be resolved accordingly. How can I tackle this scenario
+with arara?</em></p>
+<p>The solution is quite straightforward, Peter: how about adding two directives
+into your document? You can keep them together for convenience (usually at the
+top), but they can happen anywhere in your file. Let us update the code:</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex
+</span><span style="color:#898989;">% arara: pdflatex
+</span><span style="color:#016692;">\documentclass</span><span>{</span><span style="color:#646409;">article</span><span>}
+</span><span>
+</span><span style="color:#016692;">\begin</span><span>{</span><span style="color:#696989;">document</span><span>}
+</span><span style="color:#7a7025;">\section</span><span>{</span><span style="color:#a15001;">Termite recipes</span><span>}
+</span><span style="color:#877611;">\label</span><span>{</span><span style="color:#a15001;">sec:termiterecipes</span><span>}
+</span><span>
+</span><span>Hello, this is Section</span><span style="color:#333366;">~</span><span style="color:#016692;">\ref</span><span>{</span><span style="color:#333366;">sec:termiterecipes</span><span>}.
+</span><span style="color:#016692;">\end</span><span>{</span><span style="color:#696989;">document</span><span>}
+</span></code></pre>
+<p>The execution workflow is now as expected: our document was correctly compiled
+twice, as it should be, so references are resolved accordingly!</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> arara article.tex
+</span><span>  </span><span style="color:#696989;">__</span><span> _ _ __ __ _ _ __ __ _
+</span><span style="color:#696989;">/</span><span> _` </span><span style="color:#016692;">| </span><span style="color:#009f78;">&#39;__/ _` | &#39;</span><span style="color:#696989;">__/</span><span> _` </span><span style="color:#016692;">|
+</span><span style="color:#016692;">| </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| |
+</span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|
+</span><span>
+</span><span style="color:#696989;">Processing </span><span style="color:#009f78;">&#39;article.tex&#39;</span><span> (size: 196 B, last modified: 01/07/2021
+</span><span style="color:#696989;">08:18:00</span><span>), please wait.
+</span><span>
+</span><span>(</span><span style="color:#696989;">PDFLaTeX</span><span>) PDFLaTeX engine .............................. SUCCESS
+</span><span>(</span><span style="color:#696989;">PDFLaTeX</span><span>) PDFLaTeX engine .............................. SUCCESS
+</span><span>
+</span><span style="color:#696989;">Total:</span><span> 1.60 seconds
+</span></code></pre>
+<p><em><strong>Peter:</strong> Cool! But I have been wondering: once the references are resolved,
+subsequents runs will add an extra, unnecessary compilation. It would not do
+any harm, surely, but is there a way to avoid it?</em></p>
+<p>There is a way, Peter! We can use logical expressions and special operators and
+methods processed at runtime in order to determine whether and how a directive
+should be processed. This feature is named <em>directive conditional</em>, or simply
+<em>conditional</em> for short. Let us update the document to include this feature:</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex
+</span><span style="color:#898989;">% arara: pdflatex if found(&#39;log&#39;, &#39;undefined references&#39;)
+</span><span style="color:#016692;">\documentclass</span><span>{</span><span style="color:#646409;">article</span><span>}
+</span><span>
+</span><span style="color:#016692;">\begin</span><span>{</span><span style="color:#696989;">document</span><span>}
+</span><span style="color:#7a7025;">\section</span><span>{</span><span style="color:#a15001;">Termite recipes</span><span>}
+</span><span style="color:#877611;">\label</span><span>{</span><span style="color:#a15001;">sec:termiterecipes</span><span>}
+</span><span>
+</span><span>Hello, this is Section</span><span style="color:#333366;">~</span><span style="color:#016692;">\ref</span><span>{</span><span style="color:#333366;">sec:termiterecipes</span><span>}.
+</span><span style="color:#016692;">\end</span><span>{</span><span style="color:#696989;">document</span><span>}
+</span></code></pre>
+<p>Observe, Peter, that the first directive has no conditional, so it will always
+be processed. The second one, however, has an associated logical test: check if
+the log file contains a warning about undefined references and, if so, process
+the directive itself. When references are resolved accordingly, the tool will
+not process the second directive at all, as we can see in the following run:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> arara article.tex
+</span><span>  </span><span style="color:#696989;">__</span><span> _ _ __ __ _ _ __ __ _
+</span><span style="color:#696989;">/</span><span> _` </span><span style="color:#016692;">| </span><span style="color:#009f78;">&#39;__/ _` | &#39;</span><span style="color:#696989;">__/</span><span> _` </span><span style="color:#016692;">|
+</span><span style="color:#016692;">| </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| |
+</span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|
+</span><span>
+</span><span style="color:#696989;">Processing </span><span style="color:#009f78;">&#39;article.tex&#39;</span><span> (size: 236 B, last modified: 01/07/2021
+</span><span style="color:#696989;">08:42:02</span><span>), please wait.
+</span><span>
+</span><span>(</span><span style="color:#696989;">PDFLaTeX</span><span>) PDFLaTeX engine .............................. SUCCESS
+</span><span>
+</span><span style="color:#696989;">Total:</span><span> 0.97 seconds
+</span></code></pre>
+<p>In this particular case, the test is evaluated beforehand, and the directive is
+processed if, and only if, the result of such evaluation is true. This
+directive, when the conditional holds true, is executed at most once.</p>
+<blockquote style="padding: 14px; margin-top: 10px; margin-bottom: 10px; background-color: #9FE2BF; border-left: 8px solid #6B8E23;">
+    <small>
+        <strong>&#128161; A useful tip</strong>
+        <br/>
+        When using certain conditional operators, there are no conceptual guarantees for
+proper halting of unbounded loops. However, do not worry! The team has
+provided a technical solution for potentially infinite iterations: arara has a
+predefined maximum number of loops. The default value is set to 10, but it can
+be overridden.
+    </small>
+</blockquote>
+<p><em><strong>Peter:</strong> These conditionals can help me dictate how my workflow should behave
+in certain scenarios! I gather there are several possible ways of tackling them,
+right?</em></p>
+<p>Correct, Peter. In the previous example, we used the <code>if</code> operator, but we could
+have used <code>while</code> or <code>until</code> as well. The logical expression could also be
+rewritten. We could even have combined these two directives into one! So you
+see, there is always room for improvement.</p>
+<blockquote style="padding: 15px; margin-top: 10px; margin-bottom: 10px; background-color: #AFEEEE; border-left: 8px solid #00CED1;">
+    <small>
+        <strong>Anteater facts:</strong>
+        <br/>
+        The giant anteater uses its sharp claws to tear an opening into an anthill and
+put its long snout, sticky saliva, and efficient tongue to work. But it has to
+eat quickly, flicking its tongue up to 150 times per minute. Ants fight back
+with painful stings, so an anteater may spend only a minute feasting on each
+mound.
+        <a href="https://www.nationalgeographic.com/animals/mammals/g/giant-anteater/" target="_blank">Read more &#8594;</a>
+    </small>
+</blockquote>
+<p>If this subject caught your attention, take a look at the reference manual for
+more details on directive conditionals and available methods. There are multiple
+code excerpts to help you understand better the inner workings.</p>
+<p><em><strong>Peter:</strong> I will certainly check them out! Now, I am curious to see other
+directives in action together, so let us try a different yet common scenario:
+bibliographies and citations. Consider the following bibliography file,
+containing a reference<sup class="footnote-reference"><a href="#2">2</a></sup> to my doctoral thesis:</em></p>
+<pre data-lang="bib" style="background-color:#ffffff;color:#010101;" class="language-bib "><code class="language-bib" data-lang="bib"><span style="color:#016692;">@phdthesis</span><span>{</span><span style="text-decoration:underline;color:#646409;">peter:2020</span><span>,
+</span><span>  </span><span style="color:#009f78;">author  </span><span>= </span><span style="color:#009f78;">{Peter Anteater}</span><span>,
+</span><span>  </span><span style="color:#009f78;">title   </span><span>= </span><span style="color:#009f78;">{On flexibility: \LaTeX, latex and rubber}</span><span>,
+</span><span>  </span><span style="color:#009f78;">school  </span><span>= </span><span style="color:#009f78;">{Polytechnic University of P{\^{a}}ntano Fundo}</span><span>,
+</span><span>  </span><span style="color:#009f78;">year    </span><span>= </span><span style="color:#8c008a;">2020</span><span>,
+</span><span>  </span><span style="color:#009f78;">address </span><span>= </span><span style="color:#009f78;">{Pantanal}</span><span>,
+</span><span>  </span><span style="color:#009f78;">month   </span><span>= </span><span style="color:#009f78;">{jan}
+</span><span>}
+</span></code></pre>
+<p><em>I want to cite my thesis in the article you and I are writing for this
+quickstart guide. From the <span class="tex">T<sub>e</sub>X</span>
+ side, it is quite straightforward! How
+about arara? Here is my code:</em></p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#016692;">\documentclass</span><span>{</span><span style="color:#646409;">article</span><span>}
+</span><span>
+</span><span style="color:#016692;">\begin</span><span>{</span><span style="color:#696989;">document</span><span>}
+</span><span style="color:#7a7025;">\section</span><span>{</span><span style="color:#a15001;">Termite recipes</span><span>}
+</span><span style="color:#877611;">\label</span><span>{</span><span style="color:#a15001;">sec:termiterecipes</span><span>}
+</span><span>
+</span><span>A citation from my thesis</span><span style="color:#333366;">~</span><span style="color:#016692;">\cite</span><span>{</span><span style="color:#333366;">peter:2020</span><span>}.
+</span><span>
+</span><span style="color:#7a7025;">\bibliographystyle</span><span>{alpha}
+</span><span style="color:#7a7025;">\bibliography</span><span>{bibliography}
+</span><span style="color:#016692;">\end</span><span>{</span><span style="color:#696989;">document</span><span>}
+</span></code></pre>
+<p>Peter, remember that arara does not employ any guesswork, so do not expect it to
+magically compile your document and get all the citations correctly. We need to
+explicitly tell it what to do, as if we were explaining the compilation steps to
+a friend. arara is focused on reproducibility.</p>
+<blockquote style="padding: 15px; margin-top: 10px; margin-bottom: 10px; background-color: #AFEEEE; border-left: 8px solid #00CED1;">
+    <small>
+        <strong>Anteater facts:</strong>
+        <br/>
+        Anteaters are edentate animals — they have no teeth. But their long tongues are
+more than sufficient to lap up the 35,000 ants and termites they swallow whole
+each day. As the largest of all four anteater species, the giant anteater can
+reach eight feet long from the tip of its snout to the end of its tail.
+        <a href="https://www.nationalgeographic.com/animals/mammals/g/giant-anteater/" target="_blank">Read more &#8594;</a>
+    </small>
+</blockquote>
+<p>We, as users, can learn a great deal about <span class="tex">T<sub>e</sub>X</span>
+ and friends by organising
+our workflow into directives. Let us review what should be done in order to
+correctly compile your document:</p>
+<ol>
+<li>
+<p>For starters, we need to run the <span class="tex">T<sub>e</sub>X</span>
+ engine in order to write
+(amongst other things) the relevant bibliography information to the
+auxiliary file. We can achieve this by inserting the following directive:</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex
+</span></code></pre>
+</li>
+<li>
+<p>Once the auxiliary file holds the relevant bibliography information, we need
+to run the Bib<span class="tex">T<sub>e</sub>X</span>
+ tool as a means to map entries from the
+bibliography database to the existing citations into an intermediate
+bibliography file. We can achieve this by inserting the following directive:</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: bibtex
+</span></code></pre>
+</li>
+<li>
+<p>Once the intermediate bibliography file is generated, we can now have a
+proper bibliography section in our document, so we need to run the
+<span class="tex">T<sub>e</sub>X</span>
+ engine again. We can achieve this by inserting the following
+directive:</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex
+</span></code></pre>
+</li>
+<li>
+<p>However, the citations are still not yet referenced in the document, so a
+final run of the <span class="tex">T<sub>e</sub>X</span>
+ engine is required in order to correctly adjust
+these references. We can achieve this by inserting the following directive:</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex
+</span></code></pre>
+</li>
+</ol>
+<p>And we are done! These are the compilation steps required to correctly generate
+your article from the given source and bibliography files. Note that the entire
+workflow involves two different tools working together: the <span class="tex">T<sub>e</sub>X</span>
+ engine
+and the Bib<span class="tex">T<sub>e</sub>X</span>
+ tool.</p>
+<p><em><strong>Peter:</strong> Wait a minute, no less than four compilation steps? I would never
+guessed it! This is great: arara is also helping me understand better how
+the <span class="tex">T<sub>e</sub>X</span>
+ workflow works!</em></p>
+<p>Quite true, Peter! arara tries its best to help users think out of the box! Now
+that we know the exact compilation steps to be taken, we just need to arrange
+them in the correct order in our document:</p>
+<pre data-lang="tex" style="background-color:#ffffff;color:#010101;" class="language-tex "><code class="language-tex" data-lang="tex"><span style="color:#898989;">% arara: pdflatex
+</span><span style="color:#898989;">% arara: bibtex
+</span><span style="color:#898989;">% arara: pdflatex
+</span><span style="color:#898989;">% arara: pdflatex
+</span><span style="color:#016692;">\documentclass</span><span>{</span><span style="color:#646409;">article</span><span>}
+</span><span>
+</span><span style="color:#016692;">\begin</span><span>{</span><span style="color:#696989;">document</span><span>}
+</span><span style="color:#7a7025;">\section</span><span>{</span><span style="color:#a15001;">Termite recipes</span><span>}
+</span><span style="color:#877611;">\label</span><span>{</span><span style="color:#a15001;">sec:termiterecipes</span><span>}
+</span><span>
+</span><span>A citation from my thesis</span><span style="color:#333366;">~</span><span style="color:#016692;">\cite</span><span>{</span><span style="color:#333366;">peter:2020</span><span>}.
+</span><span>
+</span><span style="color:#7a7025;">\bibliographystyle</span><span>{alpha}
+</span><span style="color:#7a7025;">\bibliography</span><span>{bibliography}
+</span><span style="color:#016692;">\end</span><span>{</span><span style="color:#696989;">document</span><span>}
+</span></code></pre>
+<p>Now, let us take arara into action! By running the tool on our article, we can
+see all compilation steps being performed in the exact order we specified in the
+source code, as expected:</p>
+<pre data-lang="sh" style="background-color:#ffffff;color:#010101;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#696989;">$</span><span> arara article.tex
+</span><span>  </span><span style="color:#696989;">__</span><span> _ _ __ __ _ _ __ __ _
+</span><span style="color:#696989;">/</span><span> _` </span><span style="color:#016692;">| </span><span style="color:#009f78;">&#39;__/ _` | &#39;</span><span style="color:#696989;">__/</span><span> _` </span><span style="color:#016692;">|
+</span><span style="color:#016692;">| </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| | | | </span><span>(</span><span style="color:#696989;">_</span><span style="color:#016692;">| |
+</span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|</span><span style="color:#696989;">_</span><span style="color:#016692;">|  </span><span style="color:#333366;">\_</span><span style="color:#696989;">_,_</span><span style="color:#016692;">|
+</span><span>
+</span><span style="color:#696989;">Processing </span><span style="color:#009f78;">&#39;article.tex&#39;</span><span> (size: 281 B, last modified: 01/08/2021
+</span><span style="color:#696989;">06:17:20</span><span>), please wait.
+</span><span>
+</span><span>(</span><span style="color:#696989;">PDFLaTeX</span><span>) PDFLaTeX engine .............................. SUCCESS
+</span><span>(</span><span style="color:#696989;">BibTeX</span><span>) The BibTeX reference management software ....... SUCCESS
+</span><span>(</span><span style="color:#696989;">PDFLaTeX</span><span>) PDFLaTeX engine .............................. SUCCESS
+</span><span>(</span><span style="color:#696989;">PDFLaTeX</span><span>) PDFLaTeX engine .............................. SUCCESS
+</span><span>
+</span><span style="color:#696989;">Total:</span><span> 2.49 seconds
+</span></code></pre>
+<p><em><strong>Peter:</strong> Great! I see arara is quite expressive! I am very curious: what
+about other possibilities, will I learn them by looking at the reference manual?
+Surely there are way more features to discover.</em></p>
+<p>Of course, Peter! The reference manual contains everything there is to know
+about arara, so it is a great resource for learning! In this quickstart guide,
+we simply covered the basics, as an introductory material. The tool has several
+features, including support for working directory, processing of multiple files,
+argument passing through command line flags, configuration files, default
+preambles, file hashing, safe mode, and much more. There is a world of
+possibilities!</p>
+<p><em><strong>Peter:</strong> Thank you very much, person from the Island of <span class="tex">T<sub>e</sub>X</span>
+! I am
+sure I will have a lot of fun with arara! Should I need any assistance, how can
+I contact the team?</em></p>
+<p>Great talking to you, Peter! If you run into any issue with arara, please let us
+know. We all have very active profiles in the <a rel="noopener noreferrer" target="_blank" href="https://tex.stackexchange.com/"><span class="tex">T<sub>e</sub>X</span>
+ community at
+StackExchange</a>, so just use the <code>arara</code> tag in
+your question and we will help you the best we can (also, take a look at their
+<a rel="noopener noreferrer" target="_blank" href="https://tex.meta.stackexchange.com/q/1436">starter guide</a>). We also have
+<a rel="noopener noreferrer" target="_blank" href="https://gitter.im/Island-of-TeX/arara">Gitter</a> and
+<a rel="noopener noreferrer" target="_blank" href="https://matrix.to/#/!HfEWIEvFtDplCLSQvz:matrix.org?via=matrix.org">Matrix</a> chat
+rooms, in which we occasionally hang out. Also, if you think the report is
+worthy of an issue, open one in our <a rel="noopener noreferrer" target="_blank" href="https://gitlab.com/islandoftex/arara/issues">GitLab
+repository</a>. Happy <span class="tex">T<sub>e</sub>X</span>
+ing
+with arara, Peter!</p>
+<hr />
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p><em>Peter was graduated from Termite High School, Alta Floresta, Mato Grosso,
+Brazil. He went on to study at the California Institute of Ti<span
+class="upright">k</span>Zlings with a scholarship from San Diego Zoo. He
+completed his university education at the Rain Forest Academy, Manaus. He is
+currently teaching as a Fellow of the Federal University for the Advancement of
+Furry Animals, Cuiabá. He is a Corresponding Member of Duckpond Academy,
+Sempione Park, Milano, Italy.</em></p>
+</div>
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
+<p><em>Peter’s doctoral thesis “On flexibilty: <span class="latex">L<sup>a</sup>T<sub>e</sub>X</span>
+, latex and rubber” was
+published at Manaus. His reputation in the academic world is based on his famous
+study “The Mandelbrot heritage: towards a fractal topology of formicaries”. Some
+of his works arose from a fruitful cooperation with the well known
+Brazilian-Italian savant Professore P. van Duck.</em></p>
+</div>
+
+
+      </div>
+
+    </main>
+
+    
+    <footer>
+      <small class="subtext">
+        arara by the Island of TeX
+      </small>
+    </footer>
+    
+  </body>
+  <script>
+    function highlightNav(heading) {
+        let pathname = location.pathname;
+        document.querySelectorAll(".toc a").forEach((item) => {
+            item.classList.remove("active");
+        });
+        document.querySelector(".toc a[href$='" + pathname + "#" + heading + "']").classList.add("active");
+    }
+
+    let currentHeading = "";
+    window.onscroll = function () {
+        let h = document.querySelectorAll("h1,h2,h3,h4,h5,h6");
+        let elementArr = [];
+
+        h.forEach(item => {
+            if (item.id !== "") {
+                elementArr[item.id] = item.getBoundingClientRect().top;
+            }
+        });
+        elementArr.sort();
+        for (let key in elementArr) {
+            if (!elementArr.hasOwnProperty(key)) {
+                continue;
+            }
+            if (elementArr[key] > 0 && elementArr[key] < 300) {
+                if (currentHeading !== key) {
+                    highlightNav(key);
+                    currentHeading = key;
+                }
+                break;
+            }
+        }
+    }
+  </script>
+</html>
