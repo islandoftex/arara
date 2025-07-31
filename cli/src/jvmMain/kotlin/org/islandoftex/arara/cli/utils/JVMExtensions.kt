@@ -2,8 +2,6 @@
 package org.islandoftex.arara.cli.utils
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import korlibs.time.DateFormat
-import korlibs.time.format
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.localization.LanguageController
@@ -11,6 +9,8 @@ import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.utils.formatString
 import java.nio.charset.Charset
 import java.nio.file.Path
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Properties
 import kotlin.io.path.bufferedReader
 
@@ -69,9 +69,12 @@ fun ProjectFile.printFileInformation() {
     LanguageController.messages.INFO_DISPLAY_FILE_INFORMATION
         .formatString(
             path.fileName,
+            // ---------- KLPN ----------
+            // Replaced DateTime from KL by a simple
+            // date format parsing long
             DisplayUtils.byteSizeToString(path.fileSize),
-            DateFormat("yyyy-MM-dd HH:mm:ss")
-                .format(path.lastModified)
+                SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                .format(Date(path.lastModified))
         ).let {
             logger.info { it }
             DisplayUtils.printWrapped(it)

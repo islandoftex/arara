@@ -21,7 +21,8 @@ kotlin {
 
         commonMain {
             dependencies {
-                api(libs.korlibs.klock)
+                // ---------- KLPN ----------
+                // removed implementation reference of klock
             }
         }
 

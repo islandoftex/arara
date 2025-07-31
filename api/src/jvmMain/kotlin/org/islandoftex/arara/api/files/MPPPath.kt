@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.files
 
-import korlibs.time.DateTime
 import korlibs.io.async.runBlockingNoJs
 import korlibs.io.async.use
 import korlibs.io.file.File_separatorChar
@@ -66,11 +65,11 @@ public actual class MPPPath {
         }
 
     /**
-     * Get the last modification date of this file as timestamp.
+     * Get the last modification date of this file as long.
      */
-    public actual val lastModified: DateTime
+    public actual val lastModified: Long
         get() = runBlockingNoJs {
-            vfsFile.stat().modifiedTime
+            vfsFile.stat().modifiedTime.unixMillisLong
         }
 
     /**

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.files
 
-import korlibs.time.DateTime
 import org.islandoftex.arara.api.AraraIOException
 
 /**
@@ -27,12 +26,14 @@ public expect class MPPPath {
     /**
      * Get the file size of this file in bytes.
      */
+    // ---------- KLPN ----------
+    // Replaced DateTime by long
     public val fileSize: Long
 
     /**
-     * Get the last modification date of this file as timestamp.
+     * Get the last modification date of this file as long.
      */
-    public val lastModified: DateTime
+    public val lastModified: Long
 
     /**
      * Get the parent object of the currently represented path. If it has no
