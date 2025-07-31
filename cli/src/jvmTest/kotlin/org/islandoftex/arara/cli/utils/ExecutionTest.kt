@@ -2,7 +2,7 @@
 package org.islandoftex.arara.cli.utils
 
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.spec.DoNotParallelize
+import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
@@ -21,7 +21,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 
-@DoNotParallelize
+@Isolate
 class ExecutionTest : ShouldSpec({
     beforeSpec {
         DirectiveUtils.initializeDirectiveCore()

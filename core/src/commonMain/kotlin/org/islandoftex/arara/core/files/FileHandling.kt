@@ -1,14 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-import korlibs.io.async.runBlockingNoJs
-import korlibs.io.file.std.localVfs
-import korlibs.io.lang.IOException
-import korlibs.io.util.checksum.CRC32
-import korlibs.io.util.checksum.checksum
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.toJVMFile
 import org.islandoftex.arara.core.localization.LanguageController
+import java.io.IOException
+import java.util.zip.CRC32
 
 object FileHandling {
     /**
@@ -52,10 +50,12 @@ object FileHandling {
     @Throws(AraraException::class)
     fun calculateHash(path: MPPPath): Long =
         try {
-            runBlockingNoJs {
-                localVfs(path.normalize().toString())
-                    .readBytes()
-            }.checksum(CRC32).toUInt().toLong()
+            // ---------- KLPN  ----------
+            // Replaced CRC32 checksum by a JVM equivalent method
+            // (currently using MPPPath -> File)
+            CRC32().apply {
+                update(path.normalize().toJVMFile().readBytes())
+            }.value
         } catch (exception: IOException) {
             throw AraraException(
                 LanguageController.messages.ERROR_CALCULATEHASH_IO_EXCEPTION,
