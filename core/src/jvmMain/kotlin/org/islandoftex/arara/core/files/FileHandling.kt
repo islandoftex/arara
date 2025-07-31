@@ -28,7 +28,7 @@ object FileHandling {
      * @param child Directory to be inspected.
      * @param parent Root directory.
      * @return Logical value indicating whether the directoy is under root.
-     * @throws AraraException There was a problem with path retrieval.
+     * @throws org.islandoftex.arara.api.AraraException There was a problem with path retrieval.
      */
     @Throws(AraraException::class)
     fun isSubDirectory(child: MPPPath, parent: MPPPath): Boolean {

@@ -7,7 +7,6 @@ import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.files.toJVMFile
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.utils.formatString
@@ -135,7 +134,7 @@ object FileSearching {
      * configuration accordingly.
      *
      * @param reference The string reference.
-     * @throws AraraException Something wrong happened, to be caught in the
+     * @throws org.islandoftex.arara.api.AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
     @Throws(AraraException::class)
@@ -143,7 +142,7 @@ object FileSearching {
         reference: String,
         workingDirectory: MPPPath,
         executionOptions: ExecutionOptions
-    ): ProjectFile =
+    ): org.islandoftex.arara.api.files.ProjectFile =
         lookupFile(reference, workingDirectory, executionOptions)
             ?: throw AraraException(
                 LanguageController.messages.ERROR_DISCOVERFILE_FILE_NOT_FOUND
@@ -167,7 +166,7 @@ object FileSearching {
         reference: String,
         workingDirectory: MPPPath,
         executionOptions: ExecutionOptions
-    ): ProjectFile? {
+    ): org.islandoftex.arara.api.files.ProjectFile? {
         val types = executionOptions.fileTypes
 
         // direct search, so we are considering
@@ -182,7 +181,7 @@ object FileSearching {
                     ProjectFile(
                         path = testFile,
                         fileType = types.firstOrNull { extension == it.extension }
-                            ?: FileType.UNKNOWN_TYPE
+                            ?: FileType.Companion.UNKNOWN_TYPE
                     )
                 }
             }
@@ -212,7 +211,7 @@ object FileSearching {
                         ProjectFile(
                             found,
                             types.firstOrNull { extension == it.extension }
-                                ?: FileType.UNKNOWN_TYPE
+                                ?: FileType.Companion.UNKNOWN_TYPE
                         )
                     }
             }
