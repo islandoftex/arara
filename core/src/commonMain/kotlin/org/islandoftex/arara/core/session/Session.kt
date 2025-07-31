@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
-import korlibs.io.lang.Environment
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.LoggingOptions
 import org.islandoftex.arara.api.configuration.UserInterfaceOptions
@@ -121,7 +120,11 @@ object Session : Session {
             .forEach { remove(it.key) }
         // add all relevant new environment variables
         map.putAll(
-            Environment.getAll()
+
+                // ---------- KLPN ----------
+                // Replaced Environment by System.getenv() (Potential null
+                // somewhere? Keep an eye...)
+            System.getenv()
                 .filterKeys(additionFilter)
                 .mapKeys { "environment:${it.key}" }
         )

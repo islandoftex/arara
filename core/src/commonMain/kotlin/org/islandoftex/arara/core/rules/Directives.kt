@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.rules
 
-import korlibs.io.util.endExclusiveWrapped
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
@@ -18,14 +17,14 @@ object Directives {
     @JvmStatic
     var hooks = DirectiveFetchingHooks()
 
-    private const val directivestart = """^\s*(\w+)\s*(:\s*(\{.*\})\s*)?"""
-    private const val pattern = """(\s+(if|while|until|unless)\s+(\S.*))?$"""
+    private const val DIRECTIVE_START = """^\s*(\w+)\s*(:\s*(\{.*\})\s*)?"""
+    private const val PATTERN = """(\s+(if|while|until|unless)\s+(\S.*))?$"""
 
     // pattern to match directives against
-    private val directivePattern = (directivestart + pattern).toRegex()
+    private val directivePattern = (DIRECTIVE_START + PATTERN).toRegex()
 
     // math the arara part in `% arara: pdflatex`
-    private const val namePattern = "arara:\\s"
+    private const val NAME_PATTERN = "arara:\\s"
 
     // what to expect after a line break in a directive
     private val linebreakPattern = "^\\s*-->\\s(.*)$".toRegex()
@@ -45,12 +44,15 @@ object Directives {
         pattern: String
     ): Map<Int, String> {
         val validLinePattern = pattern.toRegex()
-        val validLineStartPattern = (pattern + namePattern).toRegex()
+        val validLineStartPattern = (pattern + NAME_PATTERN).toRegex()
         val map = mutableMapOf<Int, String>()
         for ((i, text) in lines.withIndex()) {
             val validLineMatch = validLineStartPattern.find(text)
             if (validLineMatch != null) {
-                val line = text.substring(validLineMatch.range.endExclusiveWrapped)
+                // ---------- KLPN ----------
+                // replaced endExclusiveWrapped by endInclusive (should test if
+                // values are still correct)
+                val line = text.substring(validLineMatch.range.endInclusive)
                 map[i + 1] = hooks.processPotentialDirective(i + 1, line)
             } else if (parseOnlyHeader && !checkLinePattern(validLinePattern, text)) {
                 // if we should only look within the file's header and reached
@@ -186,7 +188,7 @@ object Directives {
                 }
                 .toList()
                 // we take the result if and only if we have at least one
-                // file and we did not filter out any invalid argument
+                // file, and we did not filter out any invalid argument
                 .takeIf { it.isNotEmpty() && holder.size == it.size }
                 ?: throw AraraException(
                     LanguageController.messages.ERROR_VALIDATE_EMPTY_FILES_LIST

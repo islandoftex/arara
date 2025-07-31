@@ -59,7 +59,7 @@ internal object InterpreterUtils {
         LinearExecutor.executionOptions.timeoutValue
     ).let {
         val (exitCode, output) = it
-        if (exitCode == Environment.errorExitStatus) {
+        if (exitCode == Environment.ERROR_EXIT_STATUS) {
             throw AraraException(
                 LanguageController.messages.run {
                     when (output.substringBefore(":")) {

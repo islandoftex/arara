@@ -53,7 +53,7 @@ class EnvironmentTest : ShouldSpec({
                 true,
                 500.milliseconds
             )
-            exit shouldBe Environment.errorExitStatus
+            exit shouldBe Environment.ERROR_EXIT_STATUS
             output shouldContain TimeoutException::class.java.name
         }
     }

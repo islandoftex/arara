@@ -2,12 +2,6 @@
 package org.islandoftex.arara.core.session
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import korlibs.io.async.async
-import korlibs.io.async.runBlockingNoJs
-import korlibs.io.file.baseName
-import korlibs.io.file.std.localVfs
-import korlibs.io.lang.Environment
-import kotlinx.coroutines.awaitAll
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMFile
@@ -90,7 +84,7 @@ object Environment {
      *   * Windows
      *   * Linux
      *   * Mac OS X
-     *   * Unix (Linux || Mac OS)
+     *   * Unix (Linux || macOS)
      *   * Cygwin
      *
      * @param value A string representing an operating system.
@@ -156,25 +150,35 @@ object Environment {
         // of filenames based on the underlying
         // operating system
         val filenames = appendExtensions(command)
-        return kotlin.runCatching {
-            runBlockingNoJs {
+        return runCatching {
                 // break the path into several parts
                 // based on the path separator symbol
-                (Environment["PATH"] ?: Environment["Path"])
+                (System.getenv("PATH") ?: System.getenv("Path"))
                     ?.split(File.pathSeparator)
-                    ?.map { async { localVfs(it).listSimple() } }
-                    ?.awaitAll()
+
+                    // ---------- KLPN ----------
+                    // 1. Removed async / awaitAll
+                    // 2. MPPPath to File (maybe replace by Path or add this to
+                    //    the interface)
+                    // 3. For some reason, a null value was being added to the
+                    //    list, so mapNotNull { } was needed here
+                    ?.mapNotNull { MPPPath(it).toJVMFile().listFiles() }
+
                     // if the search does not return an empty
                     // list, one of the filenames got a match,
                     // and the command is available somewhere
                     // in the system path
+                        ?.also { println(">>> ${it.toList()}") }
                     ?.firstOrNull {
                         it.any { file ->
-                            filenames.contains(file.baseName) &&
-                                !file.isDirectory()
+
+                            // ---------- KLPN ----------
+                            // Any interface change might impact here
+                            // (File / Path / MPPPath)
+                            filenames.contains(file.name) &&
+                                !file.isDirectory
                         }
                     }?.let { true }
-            }
         }.getOrNull() ?: false
         // otherwise (and in case of an exception) it is not in the path
     }
@@ -182,7 +186,7 @@ object Environment {
     /**
      * When executing a system call goes wrong, this status code is returned.
      */
-    const val errorExitStatus = -99
+    const val ERROR_EXIT_STATUS = -99
 
     /**
      * Executes a system command from the underlying operating system and
@@ -196,7 +200,7 @@ object Environment {
      * @param timeout An optional timeout. Non-zero values will be applied to
      *   the executor.
      * @return A pair containing the exit status and the system command output
-     *   as a string. In case of an error, return a pair of [errorExitStatus]
+     *   as a string. In case of an error, return a pair of [ERROR_EXIT_STATUS]
      *   and the string representation of the throwable.
      */
     @JvmStatic
@@ -234,9 +238,9 @@ object Environment {
         }.getOrElse {
             logger.debug {
                 "Caught an exception when executing " +
-                    "$command returning $errorExitStatus"
+                    "$command returning $ERROR_EXIT_STATUS"
             }
-            errorExitStatus to "${it::class.java.name}: ${it.message}"
+            ERROR_EXIT_STATUS to "${it::class.java.name}: ${it.message}"
         }
     }
 }
