@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-import korlibs.io.async.runBlockingNoJs
-import korlibs.io.file.std.localVfs
 import kotlinx.serialization.Serializable
 import net.mamoe.yamlkt.Yaml
 import org.islandoftex.arara.api.AraraException
@@ -90,10 +88,9 @@ data class Database(
         runCatching {
             val content = "!database\n" +
                 Yaml.Default.encodeToString(serializer(), this)
-            runBlockingNoJs {
-                localVfs(path.normalize().toString())
-                    .writeString(content)
-            }
+            // ---------- KLPN ----------
+            // Replaced local VFS with MPPPath + writeText(...)
+            path.normalize().writeText(content)
         }.getOrElse {
             throw AraraException(
                 LanguageController.messages.ERROR_SAVE_COULD_NOT_SAVE_XML
@@ -117,9 +114,9 @@ data class Database(
                 Database()
             } else {
                 runCatching {
-                    val text = runBlockingNoJs {
-                        localVfs(path.normalize().toString()).readString()
-                    }
+                    // ---------- KLPN ----------
+                    // Replaced local VFS by MPPPath + readText()
+                    val text = path.normalize().readText()
                     if (!text.startsWith("!database"))
                         throw AraraException("Database should start with !database")
                     Yaml.Default.decodeFromString(

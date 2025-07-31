@@ -168,7 +168,6 @@ object Environment {
                     // list, one of the filenames got a match,
                     // and the command is available somewhere
                     // in the system path
-                        ?.also { println(">>> ${it.toList()}") }
                     ?.firstOrNull {
                         it.any { file ->
 

@@ -2,20 +2,13 @@
 package org.islandoftex.arara.core.files
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import korlibs.io.async.runBlockingNoJs
-import korlibs.io.file.baseName
-import korlibs.io.file.extension
-import korlibs.io.file.std.LocalVfs
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.toList
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.ProjectFile
+import org.islandoftex.arara.api.files.toJVMFile
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.utils.formatString
 import org.islandoftex.arara.core.utils.globToRegex
@@ -45,26 +38,42 @@ object FileSearching {
         directory: MPPPath,
         extensions: List<String>,
         recursive: Boolean
-    ): List<MPPPath> = runBlockingNoJs {
-        LocalVfs[directory.normalize().toString()].runCatching {
-            // return the result of the
-            // provided search
-            if (recursive)
-                listRecursive()
-            else
-                list()
+    ): List<MPPPath> =
+        // ---------- KLPN ----------
+        // Replaced local VFS by MPPPath -> File
+        runCatching {
+            // ---------- KLPN ----------
+            // Normalization + File
+            directory.normalize().toJVMFile().let {
+                // return the result of the
+                // provided search
+                if (recursive)
+                    // ---------- KLPN ----------
+                    // Filter file here and not later
+                    it.walk().filter { entry -> entry.isFile }
+                else
+                    // ---------- KLPN ----------
+                    // 1. Filter file here and not later
+                    // 2. maxDepth = 1 limits search to the
+                    //    current directory
+                    it.walk().maxDepth(1).filter { entry -> entry.isFile }
+            }
         }.getOrDefault(
             // if something bad happens,
             // gracefully fallback to
             // an empty file list
-            emptyFlow()
+
+            // ---------- KLPN ----------
+            // Result is now a sequence, not a flow
+            emptySequence()
         ).filter {
-            !it.isDirectory() &&
+                // ---------- KLPN ----------
+                // No need to check if it's a file, it's already
+                // been done in the walk(...) step
                 extensions.contains(it.extension)
         }.map {
             MPPPath(it.absolutePath).normalize()
         }.toList()
-    }
 
     /**
      * List all files from the provided directory matching the list of file
@@ -79,26 +88,43 @@ object FileSearching {
         directory: MPPPath,
         patterns: List<String>,
         recursive: Boolean
-    ): List<MPPPath> = runBlockingNoJs {
+    ): List<MPPPath> =
         // return the result of the provided
         // search, with the wildcard filter
         // and a potential recursive search
-        val regexes = patterns.map { it.globToRegex() }
-        LocalVfs[directory.normalize().toString()].runCatching {
-            // return the result of the
-            // provided search
-            if (recursive)
-                listRecursive()
-            else
-                list()
+        patterns.map { it.globToRegex() }.let { regexes ->
+
+        runCatching {
+            // ---------- KLPN ----------
+            // Replaced local VFS by MPPPath -> File
+            directory.normalize().toJVMFile().let {
+
+                // return the result of the
+                // provided search
+                if (recursive)
+                    // ---------- KLPN ----------
+                    // Filter file here and not later
+                    it.walk().filter { entry -> entry.isFile }
+                else
+                    // ---------- KLPN ----------
+                    // 1. Filter file here and not later
+                    // 2. maxDepth = 1 limits search to the
+                    //    current directory
+                    it.walk().maxDepth(1).filter { entry -> entry.isFile }
+            }
         }.getOrDefault(
             // if something bad happens,
             // gracefully fallback to
             // an empty file list
-            emptyFlow()
+
+            // ---------- KLPN ----------
+            // Result is now a sequence, not a flow
+            emptySequence()
         ).filter { file ->
-            !file.isDirectory() &&
-                regexes.any { it.matches(file.baseName) }
+                // ---------- KLPN ----------
+                // No need to check if it's a file, it's already
+                // been done in the walk(...) step
+                regexes.any { it.matches(file.name) }
         }.map {
             MPPPath(it.absolutePath).normalize()
         }.toList()
