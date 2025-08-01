@@ -9,8 +9,6 @@ import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.utils.formatString
 import java.nio.charset.Charset
 import java.nio.file.Path
-import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Properties
 import kotlin.io.path.bufferedReader
 
@@ -69,12 +67,8 @@ fun ProjectFile.printFileInformation() {
     LanguageController.messages.INFO_DISPLAY_FILE_INFORMATION
         .formatString(
             path.fileName,
-            // ---------- KLPN ----------
-            // Replaced DateTime from KL by a simple
-            // date format parsing long
             DisplayUtils.byteSizeToString(path.fileSize),
-                SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                .format(Date(path.lastModified))
+                path.lastModified.toString()
         ).let {
             logger.info { it }
             DisplayUtils.printWrapped(it)

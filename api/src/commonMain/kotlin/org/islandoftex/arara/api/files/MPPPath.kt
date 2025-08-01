@@ -2,6 +2,7 @@
 package org.islandoftex.arara.api.files
 
 import org.islandoftex.arara.api.AraraIOException
+import org.islandoftex.arara.api.time.DateTime
 
 /**
  * Platform-independent object to deal with paths.
@@ -26,14 +27,12 @@ public expect class MPPPath {
     /**
      * Get the file size of this file in bytes.
      */
-    // ---------- KLPN ----------
-    // Replaced DateTime by long
     public val fileSize: Long
 
     /**
-     * Get the last modification date of this file as long.
+     * Get the last modification date of this file as timestamp.
      */
-    public val lastModified: Long
+    public val lastModified: DateTime
 
     /**
      * Get the parent object of the currently represented path. If it has no
