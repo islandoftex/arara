@@ -19,6 +19,7 @@ class MPPPathTest {
     fun shouldNotClassifyRelativeAsAbsolutePaths() {
         assertFalse(MPPPath(".").isAbsolute)
     }
+
     @Test
     fun shouldCorrectlyDetectAbsolutePaths() {
         val path = getValueByOS(windows = "C:/test", unix = "/test")

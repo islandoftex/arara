@@ -28,7 +28,8 @@ kotlin {
 
         jvmMain {
             dependencies {
-                implementation(libs.korlibs.korio)
+                // ---------- KLPN ----------
+                // removed implementation reference of korio
             }
         }
 
