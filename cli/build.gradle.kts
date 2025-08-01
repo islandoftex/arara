@@ -52,6 +52,13 @@ kotlin {
             languageSettings.optIn("kotlin.RequiresOptIn")
         }
 
+        configurations {
+            jvmMainImplementation {
+                exclude(group = "com.github.ajalt.mordant", module = "mordant-jvm-ffm")
+                exclude(group = "com.github.ajalt.mordant", module = "mordant-jvm-jna")
+            }
+        }
+
         commonMain {
             dependencies {
                 implementation(project(":core"))
@@ -131,7 +138,6 @@ tasks {
             exclude(dependency("org.jetbrains.kotlin:.*"))
             exclude(dependency("org.apache.logging.log4j:log4j-slf4j2-impl:.*"))
             exclude(dependency("org.mvel:mvel2:.*"))
-            exclude(dependency("net.java.dev.jna:.*:.*"))
             exclude(dependency("com.github.ajalt.mordant:.*"))
         }
     }
