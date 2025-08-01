@@ -243,7 +243,9 @@ public actual class MPPPath {
      */
     public actual fun normalize(): MPPPath =
             // ---------- KLPN ----------
-            // Simply apply the Path method
+            // Simply get the absolute path + normalize it (technically,
+            // we could simply return referencePath instead, which is
+            // already absolute + normalized)
             MPPPath(providedPath.toAbsolutePath().normalize())
 
         // KLPN-remove
@@ -296,7 +298,7 @@ public actual class MPPPath {
     public actual fun readLines(): List<String> =
             // ---------- KLPN ----------
             // Simply forward the request to Path
-            providedPath.readLines()
+            referencePath.readLines()
 
 // KLPN-remove
 //            runBlockingNoJs {
@@ -317,7 +319,7 @@ public actual class MPPPath {
         // reference has to exist and be an actual
         // file; if so, forward request to Path,
         // otherwise throw an exception
-        if (isRegularFile) providedPath.readText()
+        if (isRegularFile) referencePath.readText()
         else throw AraraIOException("Can only read text from files.")
 
 // KLPN-remove
@@ -346,14 +348,14 @@ public actual class MPPPath {
         if (!isDirectory) {
             if (append) {
                 if (exists) {
-                    providedPath.appendText(text)
+                    referencePath.appendText(text)
                 }
                 else {
                     throw AraraIOException("Can only append text to existing files.")
                 }
             }
             else {
-                providedPath.writeText(text)
+                referencePath.writeText(text)
             }
         }
         else {
