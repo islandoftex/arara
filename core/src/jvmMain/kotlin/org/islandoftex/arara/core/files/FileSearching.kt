@@ -180,7 +180,7 @@ object FileSearching {
                         ProjectFile(
                             found,
                             types.firstOrNull { extension == it.extension }
-                                ?: FileType.Companion.UNKNOWN_TYPE
+                                ?: FileType.UNKNOWN_TYPE
                         )
                     }
             }
