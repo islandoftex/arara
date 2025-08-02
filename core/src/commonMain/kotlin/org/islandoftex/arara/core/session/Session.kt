@@ -121,9 +121,7 @@ object Session : Session {
         // add all relevant new environment variables
         map.putAll(
 
-                // ---------- KLPN ----------
-                // Replaced Environment by System.getenv() (Potential null
-                // somewhere? Keep an eye...)
+                // move this to jvmMain?
             System.getenv()
                 .filterKeys(additionFilter)
                 .mapKeys { "environment:${it.key}" }

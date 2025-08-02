@@ -10,7 +10,14 @@ public expect class DateTime {
      * Constructor that builds the object from each part of a date (year,
      * month, and day) and time (hour, minute, second).
      */
-    public constructor(year: Int, month: Int, day: Int, hour: Int, minute: Int, second: Int)
+    public constructor(
+            year: Int,
+            month: Int,
+            day: Int,
+            hour: Int,
+            minute: Int,
+            second: Int,
+    )
 
     /**
      * Constructor that builds the object from a long timestamp.

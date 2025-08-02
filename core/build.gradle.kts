@@ -28,8 +28,6 @@ kotlin {
 
         commonMain {
             dependencies {
-                //  ---------- KLPN  ----------
-                // Removed implementation reference of korio
                 implementation(libs.yamlkt)
             }
         }
@@ -37,8 +35,6 @@ kotlin {
         jvmMain {
             dependencies {
                 implementation(libs.ztexec)
-                //  ---------- KLPN  ----------
-                // Removed implementation reference of korio
             }
         }
 

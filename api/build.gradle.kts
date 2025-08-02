@@ -19,19 +19,9 @@ kotlin {
             languageSettings.optIn("kotlin.RequiresOptIn")
         }
 
-        commonMain {
-            dependencies {
-                // ---------- KLPN ----------
-                // removed implementation reference of klock
-            }
-        }
+        commonMain {}
 
-        jvmMain {
-            dependencies {
-                // ---------- KLPN ----------
-                // removed implementation reference of korio
-            }
-        }
+        jvmMain {}
 
         jvmTest {
             dependencies {

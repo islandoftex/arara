@@ -49,9 +49,6 @@ object Directives {
         for ((i, text) in lines.withIndex()) {
             val validLineMatch = validLineStartPattern.find(text)
             if (validLineMatch != null) {
-                // ---------- KLPN ----------
-                // replaced endExclusiveWrapped by endInclusive (should test if
-                // values are still correct)
                 val line = text.substring(validLineMatch.range.endInclusive)
                 map[i + 1] = hooks.processPotentialDirective(i + 1, line)
             } else if (parseOnlyHeader && !checkLinePattern(validLinePattern, text)) {

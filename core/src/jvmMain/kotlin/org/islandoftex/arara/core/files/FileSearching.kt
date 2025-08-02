@@ -8,6 +8,7 @@ import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMFile
+import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.utils.formatString
 import org.islandoftex.arara.core.utils.globToRegex
@@ -38,37 +39,19 @@ object FileSearching {
         extensions: List<String>,
         recursive: Boolean
     ): List<MPPPath> =
-        // ---------- KLPN ----------
-        // Replaced local VFS by MPPPath -> File
         runCatching {
-            // ---------- KLPN ----------
-            // Normalization + File
             directory.normalize().toJVMFile().let {
-                // return the result of the
-                // provided search
                 if (recursive)
-                    // ---------- KLPN ----------
-                    // Filter file here and not later
                     it.walk().filter { entry -> entry.isFile }
                 else
-                    // ---------- KLPN ----------
-                    // 1. Filter file here and not later
-                    // 2. maxDepth = 1 limits search to the
-                    //    current directory
                     it.walk().maxDepth(1).filter { entry -> entry.isFile }
             }
         }.getOrDefault(
             // if something bad happens,
             // gracefully fallback to
             // an empty file list
-
-            // ---------- KLPN ----------
-            // Result is now a sequence, not a flow
             emptySequence()
         ).filter {
-                // ---------- KLPN ----------
-                // No need to check if it's a file, it's already
-                // been done in the walk(...) step
                 extensions.contains(it.extension)
         }.map {
             MPPPath(it.absolutePath).normalize()
@@ -93,48 +76,34 @@ object FileSearching {
         // and a potential recursive search
         patterns.map { it.globToRegex() }.let { regexes ->
 
-        runCatching {
-            // ---------- KLPN ----------
-            // Replaced local VFS by MPPPath -> File
-            directory.normalize().toJVMFile().let {
+            runCatching {
+                directory.normalize().toJVMFile().let {
 
-                // return the result of the
-                // provided search
-                if (recursive)
-                    // ---------- KLPN ----------
-                    // Filter file here and not later
-                    it.walk().filter { entry -> entry.isFile }
-                else
-                    // ---------- KLPN ----------
-                    // 1. Filter file here and not later
-                    // 2. maxDepth = 1 limits search to the
-                    //    current directory
-                    it.walk().maxDepth(1).filter { entry -> entry.isFile }
-            }
-        }.getOrDefault(
-            // if something bad happens,
-            // gracefully fallback to
-            // an empty file list
-
-            // ---------- KLPN ----------
-            // Result is now a sequence, not a flow
-            emptySequence()
-        ).filter { file ->
-                // ---------- KLPN ----------
-                // No need to check if it's a file, it's already
-                // been done in the walk(...) step
-                regexes.any { it.matches(file.name) }
-        }.map {
-            MPPPath(it.absolutePath).normalize()
-        }.toList()
-    }
+                    // return the result of the
+                    // provided search
+                    if (recursive)
+                        it.walk().filter { entry -> entry.isFile }
+                    else
+                        it.walk().maxDepth(1).filter { entry -> entry.isFile }
+                }
+            }.getOrDefault(
+                // if something bad happens,
+                // gracefully fallback to
+                // an empty file list
+                emptySequence()
+            ).filter { file ->
+                    regexes.any { it.matches(file.name) }
+            }.map {
+                MPPPath(it.absolutePath).normalize()
+            }.toList()
+        }
 
     /**
      * Discovers the file through string reference lookup and sets the
      * configuration accordingly.
      *
      * @param reference The string reference.
-     * @throws org.islandoftex.arara.api.AraraException Something wrong happened, to be caught in the
+     * @throw AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
     @Throws(AraraException::class)
@@ -142,7 +111,7 @@ object FileSearching {
         reference: String,
         workingDirectory: MPPPath,
         executionOptions: ExecutionOptions
-    ): org.islandoftex.arara.api.files.ProjectFile =
+    ): ProjectFile =
         lookupFile(reference, workingDirectory, executionOptions)
             ?: throw AraraException(
                 LanguageController.messages.ERROR_DISCOVERFILE_FILE_NOT_FOUND
@@ -166,7 +135,7 @@ object FileSearching {
         reference: String,
         workingDirectory: MPPPath,
         executionOptions: ExecutionOptions
-    ): org.islandoftex.arara.api.files.ProjectFile? {
+    ): ProjectFile? {
         val types = executionOptions.fileTypes
 
         // direct search, so we are considering

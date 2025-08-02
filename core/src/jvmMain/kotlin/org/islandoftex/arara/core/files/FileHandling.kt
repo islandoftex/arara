@@ -27,8 +27,8 @@ object FileHandling {
      *
      * @param child Directory to be inspected.
      * @param parent Root directory.
-     * @return Logical value indicating whether the directoy is under root.
-     * @throws org.islandoftex.arara.api.AraraException There was a problem with path retrieval.
+     * @return Logical value indicating whether the directory is under root.
+     * @throws AraraException There was a problem with path retrieval.
      */
     @Throws(AraraException::class)
     fun isSubDirectory(child: MPPPath, parent: MPPPath): Boolean {
@@ -50,9 +50,6 @@ object FileHandling {
     @Throws(AraraException::class)
     fun calculateHash(path: MPPPath): Long =
         try {
-            // ---------- KLPN  ----------
-            // Replaced CRC32 checksum by a JVM equivalent method
-            // (currently using MPPPath -> File)
             CRC32().apply {
                 update(path.normalize().toJVMFile().readBytes())
             }.value

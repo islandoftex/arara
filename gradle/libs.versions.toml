@@ -19,7 +19,6 @@ clikt = "5.0.3"
 jna = "5.17.0"
 junit = "5.13.1"
 kaml = "0.85.0"
-korlibs = "4.0.10"
 kotest = "6.0.0.M8" # TODO update to stable whenever possible
 kotlinLogging = "7.0.7"
 kotlinxCoroutines = "1.7.3"
@@ -38,8 +37,6 @@ clikt-markdown = { group = "com.github.ajalt.clikt", name = "clikt-markdown", ve
 jna = { group = "net.java.dev.jna", name = "jna", version.ref = "jna" }
 junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit" }
 kaml = { group = "com.charleskorn.kaml", name = "kaml", version.ref = "kaml" }
-korlibs-klock = { group = "com.soywiz.korlibs.klock", name = "klock", version.ref = "korlibs" }
-korlibs-korio = { group = "com.soywiz.korlibs.korio", name = "korio", version.ref = "korlibs" }
 korlibs-luak = { group = "com.soywiz.korlibs.luak", name = "luak", version.ref = "luak" }
 kotest-assertions-jvm = { group = "io.kotest", name = "kotest-assertions-core-jvm", version.ref = "kotest" }
 kotest-runner-jvm = { group = "io.kotest", name = "kotest-runner-junit5-jvm", version.ref = "kotest" }

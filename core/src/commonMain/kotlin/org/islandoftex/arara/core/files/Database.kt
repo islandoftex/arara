@@ -88,8 +88,6 @@ data class Database(
         runCatching {
             val content = "!database\n" +
                 Yaml.Default.encodeToString(serializer(), this)
-            // ---------- KLPN ----------
-            // Replaced local VFS with MPPPath + writeText(...)
             path.normalize().writeText(content)
         }.getOrElse {
             throw AraraException(
@@ -114,8 +112,6 @@ data class Database(
                 Database()
             } else {
                 runCatching {
-                    // ---------- KLPN ----------
-                    // Replaced local VFS by MPPPath + readText()
                     val text = path.normalize().readText()
                     if (!text.startsWith("!database"))
                         throw AraraException("Database should start with !database")

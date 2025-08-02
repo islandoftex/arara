@@ -155,13 +155,6 @@ object Environment {
                 // based on the path separator symbol
                 (System.getenv("PATH") ?: System.getenv("Path"))
                     ?.split(File.pathSeparator)
-
-                    // ---------- KLPN ----------
-                    // 1. Removed async / awaitAll
-                    // 2. MPPPath to File (maybe replace by Path or add this to
-                    //    the interface)
-                    // 3. For some reason, a null value was being added to the
-                    //    list, so mapNotNull { } was needed here
                     ?.mapNotNull { MPPPath(it).toJVMFile().listFiles() }
 
                     // if the search does not return an empty
@@ -170,10 +163,6 @@ object Environment {
                     // in the system path
                     ?.firstOrNull {
                         it.any { file ->
-
-                            // ---------- KLPN ----------
-                            // Any interface change might impact here
-                            // (File / Path / MPPPath)
                             filenames.contains(file.name) &&
                                 !file.isDirectory
                         }
