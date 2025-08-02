@@ -49,7 +49,7 @@ object Directives {
         for ((i, text) in lines.withIndex()) {
             val validLineMatch = validLineStartPattern.find(text)
             if (validLineMatch != null) {
-                val line = text.substring(validLineMatch.range.endInclusive)
+                val line = text.substring(validLineMatch.range.endInclusive + 1)
                 map[i + 1] = hooks.processPotentialDirective(i + 1, line)
             } else if (parseOnlyHeader && !checkLinePattern(validLinePattern, text)) {
                 // if we should only look within the file's header and reached
