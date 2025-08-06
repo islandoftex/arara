@@ -10,6 +10,8 @@ public expect class DateTime {
      * Constructor that builds the object from each part of a date (year,
      * month, and day) and time (hour, minute, second).
      */
+    // detekt does not identify expect / actual classes yet
+    @Suppress("unused")
     public constructor(
             year: Int,
             month: Int,
@@ -22,5 +24,7 @@ public expect class DateTime {
     /**
      * Constructor that builds the object from a long timestamp.
      */
+    // detekt does not identify expect / actual classes yet
+    @Suppress("unused")
     public constructor(timestamp: Long)
 }

@@ -7,11 +7,17 @@ import org.islandoftex.arara.api.time.DateTime
 /**
  * Platform-independent object to deal with paths.
  */
+// since this should provide a fluent API to deal with paths,
+// we are adding an annotation to suppress detekt's warning
+// on too many functions
+@Suppress("TooManyFunctions")
 public expect class MPPPath {
     /**
      * Expect at least a constructor that accepts a string to be converted
      * into a native path.
      */
+    // detekt does not identify expect / actual classes yet
+    @Suppress("unused")
     public constructor(path: String)
 
     /**

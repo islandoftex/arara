@@ -153,7 +153,7 @@ object Environment {
         return runCatching {
                 // break the path into several parts
                 // based on the path separator symbol
-                (System.getenv("PATH") ?: System.getenv("Path"))
+                System.getenv("PATH")
                     ?.split(File.pathSeparator)
                     ?.mapNotNull { MPPPath(it).toJVMFile().listFiles() }
 

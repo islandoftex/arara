@@ -25,6 +25,10 @@ import kotlin.jvm.Throws
 /**
  * Platform-independent object to deal with paths.
  */
+// since this should provide a fluent API to deal with paths,
+// we are adding an annotation to suppress detekt's warning
+// on too many functions
+@Suppress("TooManyFunctions")
 public actual class MPPPath {
     internal val providedPath: Path
     internal val referencePath: Path
