@@ -15,4 +15,21 @@ class DateTimeTest : ShouldSpec({
         DateTime(2025, 8, 1, 3, 9, 11)
                 .toLong(ZoneId.of("UTC")) shouldBe 1754017751000
     }
+
+    should("correctly use system's default timezone") {
+        DateTime(2025, 8, 1, 3, 9, 11)
+                .toLong() shouldBe DateTime(2025, 8, 1, 3, 9, 11)
+                .toLong(ZoneId.systemDefault())
+    }
+
+    should("correctly get every date component") {
+        with (DateTime(2025, 8, 1, 3, 9, 11)) {
+            year shouldBe 2025
+            month shouldBe 8
+            day shouldBe 1
+            hour shouldBe 3
+            minute shouldBe 9
+            second shouldBe 11
+        }
+    }
 })
