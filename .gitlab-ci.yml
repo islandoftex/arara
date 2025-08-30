@@ -108,6 +108,13 @@ test:linux:jdk21:
   image: amazoncorretto:21
   <<: *testdefinition
 
+test:linux:jdk24:
+  needs: ["build:linux:jdk17"]
+  image: amazoncorretto:24
+  before_script:
+    - yum install findutils -y
+  <<: *testdefinition
+
 .pagestemplate: &pagesdefinition
   stage: pages
   image: nixos/nix:latest
