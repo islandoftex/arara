@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.build
 
+import org.islandoftex.scribeswan.LineType
+import org.islandoftex.scribeswan.bold
+import org.islandoftex.scribeswan.code
+import org.islandoftex.scribeswan.manpage
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
@@ -75,61 +79,114 @@ object TaskHelper {
     fun createManPage(file: Path, version: String) {
         val today = LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))
         try {
+            val mp = manpage {
+                header(
+                        title = "arara",
+                        section = "1",
+                        date = today,
+                        source = "v$version",
+                )
+
+                name(
+                        name = "arara",
+                        description = "a TeX automation tool based on rules and directives.",
+                )
+
+                synopsis {
+                    line(LineType.BOLD_FACE, "arara")
+                    line(LineType.REFERENCE_INPUT, "[ options ]")
+                    line(LineType.INPUT_REFERENCE, "documents...")
+                }
+
+                description {
+                    paragraph(
+                            "${bold("arara")} is a TeX automation tool based on rules and " +
+                                    "directives. It gives you a way to enhance your TeX experience. The tool is an " +
+                                    "effort to provide a concise way to automate the daily TeX workflow for users " +
+                                    "and also package writers. Users might write their own rules when the provided " +
+                                    "ones do not suffice.",
+                    )
+
+                    paragraph(
+                            "arara takes a list of documents as input. They will be processed according " +
+                                    "to their directives. Options apply to the execution of all documents.",
+                    )
+                }
+
+                options {
+                    option("--log") {
+                        "Generate a log output."
+                    }
+
+                    option(listOf("--verbose", "--silent")) {
+                        "Print or suppress command output."
+                    }
+
+                    option("--dry-run") {
+                        "Go through all the motions of running a command but with no actual calls."
+                    }
+
+                    option("--safe-run") {
+                        "Run in safe mode and disable potentially harmful features."
+                    }
+
+                    option("--whole-file") {
+                        "Extract directives in the file, not only in the header."
+                    }
+
+                    option("--preamble") {
+                        "Set the file preamble as named based on the configuration file."
+                    }
+
+                    option("--timeout", "milliseconds") {
+                        "Sets an execution timeout for spawned processes."
+                    }
+
+                    option("--language", "code") {
+                        "Set the localization to the language specified by code."
+                    }
+
+                    option("--max-loops", "number") {
+                        "Set the number > 0 of loops for looping directives."
+                    }
+
+                    option("--working-directory", "path") {
+                        "Set the working directory for the whole execution."
+                    }
+
+                    option("--call-property", "value") {
+                        "Pass a property as ${code("key=value")} parameter into the " +
+                                "application to be used within the session."
+                    }
+
+                    option("--properties-file", "value") {
+                        "Pass a properties file to the application to be used within the session."
+                    }
+
+                    option("--generate-completion", "shell") {
+                        "Generate a completion script for arara."
+                    }
+
+                    option("--version") {
+                        "Show the version and exit."
+                    }
+
+                    option("--help") {
+                        "Show a help message and exit."
+                    }
+                }
+
+                bugs {
+                    paragraph("Issue tracker at")
+                    line(LineType.UNIFORM_RESOURCE, "https://gitlab.com/islandoftex/arara/-/issues")
+                    line(LineType.UNIFORM_RESOURCE_END, ".")
+                }
+            }.render()
+
+
             Files.write(
                 file,
-                """
-                .TH ARARA 1 "$today" "v$version"
-                .SH NAME
-                arara \- a TeX automation tool based on rules and directives.
-                .SH SYNOPSIS
-                .B arara
-                .RI [ options ]
-                .IR documents ...
-                .SH DESCRIPTION
-                \fBarara\fP is a TeX automation tool based on rules and directives. It gives
-                you a way to enhance your TeX experience. The tool is an effort to provide a
-                concise way to automate the daily TeX workflow for users and also package
-                writers. Users might write their own rules when the provided ones do not suffice.
-                .PP
-                arara takes a list of documents as input. They will be processed according
-                to their directives. Options apply to the execution of all documents.
-                .SH OPTIONS
-                .IP \fB--log\fP
-                Generate a log output.
-                .IP \fB--verbose\fP / \fB--silent\fP
-                Print or suppress command output.
-                .IP \fB--dry-run\fP
-                Go through all the motions of running a command but with no actual calls.
-                .IP \fB--safe-run\fP
-                Run in safe mode and disable potentially harmful features.
-                .IP \fB--whole-file\fP
-                Extract directives in the file, not only in the header.
-                .IP \fB--preamble\fP name
-                Set the file preamble as named based on the configuration file.
-                .IP \fB--timeout\fP milliseconds
-                Sets an execution timeout for spawned processes.
-                .IP \fB--language\fP code
-                Set the localization to the language specified by code.
-                .IP \fB--max-loops\fP number
-                Set the number > 0 of loops for looping directives.
-                .IP \fB--working-directory\fP path
-                Set the working directory for the whole execution.
-                .IP \fB--call-property\fP value
-                Pass a property as \fCkey=value\fP parameter into the application
-                to be used within the session.
-                .IP \fB--properties-file\fP value
-                Pass a properties file to the application to be used within the session.
-                .IP \fB--generate-completion\fP shell
-                Generate a completion script for arara.
-                .IP \fB--version\fP
-                Show the version and exit.
-                .IP \fB--help\fP
-                Show a help message and exit.
-                .SH BUGS
-                Issue tracker at
-                .UR https://gitlab.com/islandoftex/arara/-/issues
-                .UE .
-                """.trimIndent().lines()
+                mp.lines()
             )
         } catch (_: IOException) {
             throw IOException(
