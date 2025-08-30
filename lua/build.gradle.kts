@@ -19,7 +19,12 @@ kotlin {
             dependencies {
                 api(project(":api"))
                 implementation(project(":core"))
-                implementation(libs.korlibs.luak)
+            }
+        }
+
+        jvmMain {
+            dependencies {
+                implementation(libs.luaj)
             }
         }
 

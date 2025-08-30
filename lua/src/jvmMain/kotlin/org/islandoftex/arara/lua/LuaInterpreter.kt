@@ -1,18 +1,24 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua
 
+import io.github.taoguan.luaj.LuaNumber
+import io.github.taoguan.luaj.LuaString
+import io.github.taoguan.luaj.LuaTable
+import io.github.taoguan.luaj.LuaValue
+import io.github.taoguan.luaj.LuaFunction
+import io.github.taoguan.luaj.lib.jse.JsePlatform
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.files.UNKNOWN_TYPE
-import org.luaj.vm2.LuaFunction
-import org.luaj.vm2.LuaNumber
-import org.luaj.vm2.LuaString
-import org.luaj.vm2.LuaTable
-import org.luaj.vm2.LuaValue
-import org.luaj.vm2.lib.common.CommonPlatform
+//import org.luaj.vm2.LuaFunction
+//import org.luaj.vm2.LuaNumber
+//import org.luaj.vm2.LuaString
+//import org.luaj.vm2.LuaTable
+//import org.luaj.vm2.LuaValue
+//import org.luaj.vm2.lib.common.CommonPlatform
 
 class LuaInterpreter(private val appWorkingDir: MPPPath) {
     /**
@@ -133,7 +139,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
      */
     fun parseProjectsFromLua(luaScript: String): List<Project> {
         val luaTable = kotlin.runCatching {
-            val globals = CommonPlatform.Companion.standardGlobals()
+            val globals = JsePlatform.standardGlobals()
             val f = globals.load(luaScript) as LuaFunction
             val c = f.checkclosure()!!
             c.call() as? LuaTable
