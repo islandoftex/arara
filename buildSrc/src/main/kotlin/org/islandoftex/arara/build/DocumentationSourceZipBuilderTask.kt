@@ -7,7 +7,7 @@ import org.gradle.api.tasks.bundling.Zip
 /**
  * Zip relevant documentation source files to meet CTAN's requirements.
  */
-open class DocumentationSourceZipBuilderTask : Zip() {
+abstract class DocumentationSourceZipBuilderTask : Zip() {
     init {
         group = "distribution"
         description = "Create a documentation source ZIP as required by CTAN."
