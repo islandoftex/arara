@@ -2,13 +2,13 @@
 # --------------------------------
 # Kotlin itself
 # --------------------------------
-kotlin = "2.2.0"
+kotlin = "2.2.10"
 # --------------------------------
 # Plugins
 # --------------------------------
 detektPlugin = "1.23.8"
 dokkaPlugin = "2.0.0"
-shadowPlugin = "9.0.0"
+shadowPlugin = "9.1.0"
 spotlessChangelogPlugin = "3.1.2"
 spotlessPlugin = "7.2.1"
 versionsPlugin = "0.52.0"
@@ -18,9 +18,9 @@ versionsPlugin = "0.52.0"
 clikt = "5.0.3"
 jna = "5.17.0"
 junit = "5.13.1"
-kaml = "0.85.0"
-kotest = "6.0.0.M12" # TODO update to stable whenever possible
-kotlinLogging = "7.0.12"
+kaml = "0.93.0"
+kotest = "6.0.1"
+kotlinLogging = "7.0.13"
 kotlinxCoroutines = "1.7.3"
 kotlinxSerialization = "1.9.0"
 log4j = "2.25.1"
