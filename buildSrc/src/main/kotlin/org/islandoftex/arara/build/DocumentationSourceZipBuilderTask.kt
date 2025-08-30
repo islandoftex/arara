@@ -3,10 +3,12 @@ package org.islandoftex.arara.build
 
 import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.tasks.bundling.Zip
+import org.gradle.work.DisableCachingByDefault
 
 /**
  * Zip relevant documentation source files to meet CTAN's requirements.
  */
+@DisableCachingByDefault(because = "simple wrapper around zip, not worth caching")
 abstract class DocumentationSourceZipBuilderTask : Zip() {
     init {
         group = "distribution"
