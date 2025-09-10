@@ -91,6 +91,18 @@ spotless {
         leadingTabsToSpaces()
         endWithNewline()
     }
+    yaml {
+        target("rules/*.yaml")
+        val header = """
+            !config
+            # arara, the cool TeX automation tool
+            # Copyright (c) 2025, Island of TeX
+            # All rights reserved.
+            #
+            # This rule is part of arara.
+        """.trimIndent()
+        licenseHeader(header, "identifier:")
+    }
 }
 
 detekt {
