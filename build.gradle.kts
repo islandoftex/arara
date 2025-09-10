@@ -124,6 +124,11 @@ detekt {
     config.from(files("detekt-config.yml"))
 }
 
+val validateYAML: Boolean = providers
+        .gradleProperty("validateYAML")
+        .map { it.toBoolean() }
+        .getOrElse(false)
+
 tasks {
 
     withType<DependencyUpdatesTask> {
@@ -164,6 +169,13 @@ tasks {
         dependsOn("assembleCTANTree")
     }
 
+    named("spotlessYamlCheck") {
+        enabled = validateYAML
+    }
+
+    named("spotlessYamlApply") {
+        enabled = validateYAML
+    }
 }
 
 version = spotlessChangelog.versionNext
