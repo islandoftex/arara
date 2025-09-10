@@ -1,4 +1,9 @@
 !config
+# arara, the cool TeX automation tool
+# Copyright (c) 2025, Island of TeX
+# All rights reserved.
+#
+# This rule is part of arara.
 identifier: pdftocairo
 name: pdftocairo
 authors:
