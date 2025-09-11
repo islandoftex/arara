@@ -10,5 +10,5 @@ plugins {
 }
 
 dependencies {
-    implementation("org.islandoftex:scribeswan:0.1.0")
+    implementation("org.islandoftex:scribeswan:0.1.1")
 }
