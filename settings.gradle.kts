@@ -6,9 +6,9 @@ plugins {
 rootProject.name = "arara"
 
 dependencyResolutionManagement {
-	repositories {
-		mavenCentral()
-	}
+    repositories {
+        mavenCentral()
+    }
 }
 
 include(

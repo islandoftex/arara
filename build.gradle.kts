@@ -52,7 +52,9 @@ spotless {
     kotlinGradle {
         target(
                 "build.gradle.kts",
+                "settings.gradle.kts",
                 "buildSrc/build.gradle.kts",
+                "buildSrc/settings.gradle.kts",
                 "api/build.gradle.kts",
                 "core/build.gradle.kts",
                 "lua/build.gradle.kts",

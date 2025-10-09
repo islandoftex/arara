@@ -30,6 +30,12 @@ slf4j = "2.0.17"
 yamlkt = "0.13.0"
 ztExec = "1.12"
 # --------------------------------
+# Libraries - buildSrc
+# --------------------------------
+kobats = "0.1.0"
+roastmyjar = "0.1.0"
+scribeswan = "0.1.1"
+# --------------------------------
 
 [libraries]
 clikt = { group = "com.github.ajalt.clikt", name = "clikt", version.ref = "clikt" }
@@ -41,7 +47,7 @@ kotest-assertions-jvm = { group = "io.kotest", name = "kotest-assertions-core-jv
 kotest-runner-jvm = { group = "io.kotest", name = "kotest-runner-junit5-jvm", version.ref = "kotest" }
 kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version.ref = "kotlinLogging" }
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
-luaj = { group = "io.github.taoguan", name="luaj", version.ref = "luaj" }
+luaj = { group = "io.github.taoguan", name = "luaj", version.ref = "luaj" }
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
 log4j-core = { group = "org.apache.logging.log4j", name = "log4j-core", version.ref = "log4j" }
 log4j-impl = { group = "org.apache.logging.log4j", name = "log4j-slf4j2-impl", version.ref = "log4j" }
@@ -50,6 +56,12 @@ slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
 slf4j-simple = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j" }
 yamlkt = { group = "net.mamoe.yamlkt", name = "yamlkt", version.ref = "yamlkt" }
 ztexec = { group = "org.zeroturnaround", name = "zt-exec", version.ref = "ztExec" }
+# --------------------------------
+# libraries used in buildSrc
+# --------------------------------
+support-kobats = { group = "org.islandoftex", name = "kobats", version.ref = "kobats" }
+support-roastmyjar = { group = "org.islandoftex", name = "roastmyjar", version.ref = "roastmyjar" }
+support-scribeswan = { group = "org.islandoftex", name = "scribeswan", version.ref = "scribeswan" }
 
 [plugins]
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detektPlugin" }
