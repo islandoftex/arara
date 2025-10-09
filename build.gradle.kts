@@ -173,7 +173,7 @@ tasks {
     }
 
     register("roast", RoastTask::class.java) {
-        dependsOn("build")
+        dependsOn(":cli:shadowJar")
     }
 
     named("spotlessYamlCheck") {

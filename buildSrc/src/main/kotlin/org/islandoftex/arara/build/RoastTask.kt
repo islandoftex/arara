@@ -7,7 +7,8 @@ import org.gradle.api.tasks.TaskAction
 import org.islandoftex.roastmyjar.core.JarFile
 import org.islandoftex.roastmyjar.report.Report
 import org.islandoftex.roastmyjar.util.SearchUtils
-import kotlin.io.path.Path
+import kotlin.io.path.div
+import kotlin.io.path.isDirectory
 
 /**
  * Obtains the highest bytecode version from the built Java archive artifact
@@ -24,8 +25,9 @@ open class  RoastTask : DefaultTask() {
 
     @TaskAction
     fun run() {
-        logger.info("Searching for the proper binary in cli/build/libs")
-        SearchUtils.findFirst(Path("cli/build/libs"), "arara-cli-with-deps-*.jar")
+        val searchPath = project.rootDir.toPath() / "cli/build/libs"
+        logger.info("Searching for the proper binary in: $searchPath")
+        SearchUtils.findFirst(searchPath, "arara-cli-with-deps-*.jar")
                 ?.let { path ->
 
                     logger.info("Found archive file: $path")
