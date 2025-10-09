@@ -8,6 +8,7 @@ import org.islandoftex.arara.build.AraraPublication
 import org.islandoftex.arara.build.CTANTreeBuilderTask
 import org.islandoftex.arara.build.CTANZipBuilderTask
 import org.islandoftex.arara.build.DocumentationSourceZipBuilderTask
+import org.islandoftex.arara.build.RoastTask
 import org.islandoftex.arara.build.SourceZipBuilderTask
 import org.islandoftex.arara.build.TDSTreeBuilderTask
 import org.islandoftex.arara.build.TDSZipBuilderTask
@@ -169,6 +170,10 @@ tasks {
 
     register("assembleCTAN", CTANZipBuilderTask::class.java) {
         dependsOn("assembleCTANTree")
+    }
+
+    register("roast", RoastTask::class.java) {
+        dependsOn("build")
     }
 
     named("spotlessYamlCheck") {

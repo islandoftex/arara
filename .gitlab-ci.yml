@@ -63,7 +63,17 @@ test:dependencies:
   needs: ["build:linux:jdk17"]
   image: amazoncorretto:17
   script:
-    - ./gradlew dependencyUpdates
+    - ./gradlew --no-parallel dependencyUpdates
+  cache:
+    <<: *cachedefinition
+    policy: pull
+
+test:roast:
+  stage: test
+  needs: ["build:linux:jdk17"]
+  image: amazoncorretto:17
+  script:
+    - ./gradlew roast
   cache:
     <<: *cachedefinition
     policy: pull
