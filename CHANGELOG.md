@@ -14,6 +14,14 @@ on.
 
 ## [Unreleased]
 
+## Changed
+
+* Removed the `korlibs` bundle.
+* Replaced `luak` by `luaj`.
+* Updated dependencies.
+* Kotlin platform updated to 2.2.20.
+* Gradle updated to 9.1.0.
+
 ## [7.2.0] - 2025-06-29
 
 ### Added
