@@ -460,7 +460,7 @@ current option, it will be denoted by `parameter` in the description.
   working directory to `<path>`. That is, the commands will run from a different
   directory than the directory you launched arara in. This is especially useful
   when calling a TeX engine as they resolve files against the working
-  direcotry. For that reason, arara will also resolve each file you pass to it
+  directory. For that reason, arara will also resolve each file you pass to it
   that has no absolute path against the working directory. The working directory
   is fixed for the whole call; passing multiple files to arara will resolve all
   of them against and execute all actions within that one working directory.
