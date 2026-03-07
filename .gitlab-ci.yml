@@ -119,8 +119,9 @@ test:linux:jdk21:
   needs: []
   script:
     - nix build .#website
-    # GL pages needs the artifact at the root directory
+    # GL pages needs the artifact at the root directory, the manual in website
     - cp -r result/public ./public
+    - cp -r result/public ./website/public
 
 pages:
   <<: *pagesdefinition
