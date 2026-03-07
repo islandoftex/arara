@@ -106,7 +106,7 @@
           };
 
         devShells.default = pkgs.mkShell {
-          inputsFrom = builtins.attrValues self.packages.${system}.default;
+          inputsFrom = [ self.packages.${system}.default ];
           buildInputs = with pkgs; [
             gradle2nix.packages.${system}.gradle2nix
             corretto11
