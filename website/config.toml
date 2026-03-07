@@ -15,7 +15,7 @@ build_search_index = true
 [markdown.highlighting]
 enable = true
 error_on_missing_language = true
-light_theme = "github-light"                                                                                     
+light_theme = "github-light"
 dark_theme = "github-dark"
 
 [markdown]

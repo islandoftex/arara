@@ -47,7 +47,7 @@ do not have the capacity to work on. For both Paulo and Ben, real life
 contributed a few “social elements” to their spare time slots so we enjoy
 working on other projects and aspects related to the Island of TeX where the
 effort-impact ratio or even the development fun is more prominent than in making
-changes to arara that are basically unncessary for now.
+changes to arara that are basically unnecessary for now.
 
 However, we are still listening to feedback. If you are lacking a new rule or
 want to contribute a new rule upstream, go for it, we definitely appreciate it.
@@ -58,7 +58,7 @@ yet, we are still always looking for contributors and would be happy to welcome
 new faces to the island's maintainer pool (no binding or large commitment
 required).
 
-# MacOS and notarization
+# macOS and notarization
 
 Every year, we will receive e-mails on the TeX Live mailing list about arara
 being marked as “forcibly removed” on new MacTeX installations. If you are on
