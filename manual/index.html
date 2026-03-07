@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Manual | arara </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+    :root {
+        /* Primary theme color */
+        --primary-color: #cbe368; /* #FED43F; */
+        /* Primary theme text color */
+        --primary-text-color: #543631;
+        /* Primary theme link color */
+        --primary-link-color: #719b25;
+        /* Secondary color: the background body color */
+        --secondary-color: #fcfaf6;
+        --secondary-text-color: #303030;
+        /* Highlight text color of table of content */
+        --toc-highlight-text-color: #d46e13;
+    }
+</style>
+
+    <link rel="icon" href="https://islandoftex.gitlab.io/arara/favicon.svg">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/normalize.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juice.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/fonts/fonts.css">
+    <link rel="stylesheet" href="https://islandoftex.gitlab.io/arara/juicy-arara.css">
+    
+    <meta name="keywords" content="tex, latex, context, build tool, automation">
+    <meta itemprop="name" content="The cool TeX automation tool">
+    <meta itemprop="description" content="arara is a TeX automation tool based on directives and rules.">
+    
+  </head>
+
+  <body>
+    
+<header class="box-shadow">
+  
+
+<a href="https://islandoftex.gitlab.io/arara/">
+  <div class="logo">
+    <img src="https://islandoftex.gitlab.io/arara/images/arara-text.svg" alt="logo">
+  </div>
+</a>
+
+<nav>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/changelog/">Changelog</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/quickstart/">Quickstart</a>
+  
+  
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/manual">Manual</a>
+  
+  <a class="nav-item subtitle-text" href="https://islandoftex.gitlab.io/arara/news">News</a>
+  
+  <a class="nav-item subtitle-text" href="https://gitlab.com/islandoftex/arara">GitLab</a>
+  
+  
+</nav>
+
+</header>
+
+
+    <main>
+      
+      
+      
+      
+
+      <div class="content text">
+        
+<div class="margin-left:20vw; margin-right: 20vw;">
+  <div class="heading-text">Manual</div>
+  <ul>
+    
+    <li>
+      <div>
+        <a href="https://islandoftex.gitlab.io/arara/manual/introduction/">
+          <strong class="title article-title">Introduction</strong>
+        </a>
+        
+      </div>
+      
+    </li>
+    
+    <li>
+      <div>
+        <a href="https://islandoftex.gitlab.io/arara/manual/concepts/">
+          <strong class="title article-title">Important concepts</strong>
+        </a>
+        
+      </div>
+      
+    </li>
+    
+    <li>
+      <div>
+        <a href="https://islandoftex.gitlab.io/arara/manual/cli/">
+          <strong class="title article-title">Command line</strong>
+        </a>
+        
+      </div>
+      
+    </li>
+    
+    <li>
+      <div>
+        <a href="https://islandoftex.gitlab.io/arara/manual/configuration/">
+          <strong class="title article-title">Configuration file</strong>
+        </a>
+        
+      </div>
+      
+    </li>
+    
+    <li>
+      <div>
+        <a href="https://islandoftex.gitlab.io/arara/manual/logging/">
+          <strong class="title article-title">Logging</strong>
+        </a>
+        
+      </div>
+      
+    </li>
+    
+    <li>
+      <div>
+        <a href="https://islandoftex.gitlab.io/arara/manual/projects/">
+          <strong class="title article-title">Projects</strong>
+        </a>
+        
+      </div>
+      
+    </li>
+    
+    <li>
+      <div>
+        <a href="https://islandoftex.gitlab.io/arara/manual/methods/">
+          <strong class="title article-title">Methods</strong>
+        </a>
+        
+      </div>
+      
+    </li>
+    
+    <li>
+      <div>
+        <a href="https://islandoftex.gitlab.io/arara/manual/rules/">
+          <strong class="title article-title">The official rule pack</strong>
+        </a>
+        
+      </div>
+      
+    </li>
+    
+    <li>
+      <div>
+        <a href="https://islandoftex.gitlab.io/arara/manual/building/">
+          <strong class="title article-title">Building arara</strong>
+        </a>
+        
+      </div>
+      
+    </li>
+    
+    <li>
+      <div>
+        <a href="https://islandoftex.gitlab.io/arara/manual/deploying/">
+          <strong class="title article-title">Deploying the tool</strong>
+        </a>
+        
+      </div>
+      
+    </li>
+    
+    <li>
+      <div>
+        <a href="https://islandoftex.gitlab.io/arara/manual/yaml/">
+          <strong class="title article-title">YAML</strong>
+        </a>
+        
+      </div>
+      
+    </li>
+    
+    <li>
+      <div>
+        <a href="https://islandoftex.gitlab.io/arara/manual/mvel/">
+          <strong class="title article-title">MVEL</strong>
+        </a>
+        
+      </div>
+      
+    </li>
+    
+  </ul>
+</div>
+
+      </div>
+
+    </main>
+
+    
+    <footer>
+      <small class="subtext">
+        arara by the Island of TeX
+      </small>
+    </footer>
+    
+  </body>
+  <script>
+    function highlightNav(heading) {
+        let pathname = location.pathname;
+        document.querySelectorAll(".toc a").forEach((item) => {
+            item.classList.remove("active");
+        });
+        document.querySelector(".toc a[href$='" + pathname + "#" + heading + "']").classList.add("active");
+    }
+
+    let currentHeading = "";
+    window.onscroll = function () {
+        let h = document.querySelectorAll("h1,h2,h3,h4,h5,h6");
+        let elementArr = [];
+
+        h.forEach(item => {
+            if (item.id !== "") {
+                elementArr[item.id] = item.getBoundingClientRect().top;
+            }
+        });
+        elementArr.sort();
+        for (let key in elementArr) {
+            if (!elementArr.hasOwnProperty(key)) {
+                continue;
+            }
+            if (elementArr[key] > 0 && elementArr[key] < 300) {
+                if (currentHeading !== key) {
+                    highlightNav(key);
+                    currentHeading = key;
+                }
+                break;
+            }
+        }
+    }
+  </script>
+</html>

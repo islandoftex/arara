@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+Allow: /
+Sitemap: https://islandoftex.gitlab.io/arara/sitemap.xml
