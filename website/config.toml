@@ -12,15 +12,13 @@ compile_sass = true
 # Whether to build a search index to be used later on by a JavaScript library
 build_search_index = true
 
-[markdown]
-highlight_code = true
-# themes at https://github.com/getzola/zola/tree/master/sublime/themes
-highlight_theme = "ir-white"
-# alternative light highlighting themes with medium to high contrast:
-# - Tomorrow             - base16-atelierdune-light (*)     - cheerfully-light
-# - demain               - dimmed-fluid                     - inspired-github
-# - ir-white (*)         - subway-moscow
+[markdown.highlighting]
+enable = true
+error_on_missing_language = true
+light_theme = "github-light"                                                                                     
+dark_theme = "github-dark"
 
+[markdown]
 # When set to "true", emoji aliases translated to their corresponding
 # Unicode emoji equivalent in the rendered Markdown files. (e.g.: :smile: => 😄)
 render_emoji = true
@@ -43,3 +41,4 @@ juice_extra_menu = [
 meta_title = "The cool TeX automation tool"
 meta_description = "arara is a TeX automation tool based on directives and rules."
 footer = "arara by the Island of TeX"
+repository_url = "https://gitlab.com/islandoftex/arara"
