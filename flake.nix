@@ -80,21 +80,27 @@
                 pname = "arara-website";
 
                 nativeBuildInputs = [
+                  pkgs.gnused
                   pkgs.zola
                 ];
 
-                src = ./website;
+                src = ./.;
 
                 # TODO: set updated date based on git if date != updated for all posts
                 buildPhase = ''
+                  tail -n +8 README.md | sed 's/## /# /g' >> website/content/_index.md
+                  tail -n +3 CHANGELOG.md | sed 's/## /# /g' >> website/content/CHANGELOG.md
+
+                  pushd website
                   mkdir -p themes/juice
                   cp -rf ${juiceTheme}/{theme.toml,sass,static,templates} themes/juice/
                   zola build
+                  popd
                 '';
 
                 installPhase = ''
                   mkdir -p $out/public
-                  cp -r public/. $out/public/
+                  cp -r ./website/public/. $out/public/
                 '';
               };
           };

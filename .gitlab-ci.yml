@@ -118,9 +118,6 @@ test:linux:jdk21:
   image: nixpkgs/nix-flakes:latest-x86_64-linux
   needs: []
   script:
-    - nix-env --install gnused
-    - tail -n +8 README.md | sed 's/## /# /g' >> website/content/_index.md
-    - tail -n +3 CHANGELOG.md | sed 's/## /# /g' >> website/content/CHANGELOG.md
     - nix build .#website
     # GL pages needs the artifact at the root directory
     - cp -r result/public ./public
