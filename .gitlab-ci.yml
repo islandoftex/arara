@@ -73,6 +73,8 @@ test:flake-dependencies:
   image: nixpkgs/nix-flakes:latest-x86_64-linux
   needs: []
   script:
+    # We use corretto 17 here to avoid an insecure package alert for corretto 11.
+    - nix-env -iA nixpkgs.corretto17
     - nix run github:tadfisher/gradle2nix/v2 -- -l gradle.lock.new
     - nix shell nixpkgs#diffutils -c diff gradle.lock gradle.lock.new
   cache:
