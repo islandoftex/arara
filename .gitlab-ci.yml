@@ -70,11 +70,11 @@ test:dependencies:
 
 test:flake-dependencies:
   stage: test
-  image: nixos/nix:latest
+  image: nixpkgs/nix-flakes:latest-x86_64-linux
   needs: []
   script:
-    - nix-env -iA nixpkgs.diffutils nixpkgs.corretto11 nixpkgs.gnused
-    - nix --extra-experimental-features nix-command --extra-experimental-features flakes run github:tadfisher/gradle2nix/v2 -- -l gradle.lock.new
+    - nix-env -iA nixpkgs.diffutils
+    - nix run github:tadfisher/gradle2nix/v2 -- -l gradle.lock.new
     - diff gradle.lock gradle.lock.new
   cache:
     <<: *cachedefinition
@@ -159,9 +159,9 @@ publish:gitlab:
 
 .ctantemplate: &ctandefinition
   stage: publish
-  image: nixos/nix:latest
+  image: nixpkgs/nix-flakes:latest-x86_64-linux
   script:
-    - nix --extra-experimental-features nix-command --extra-experimental-features flakes develop -c ./gradlew -Prelease=$PRELEASE assembleCTAN --info
+    - nix develop -c ./gradlew -Prelease=$PRELEASE assembleCTAN --info
     - cp build/*.zip ./
   artifacts:
     name: "$CI_COMMIT_REF_NAME-ctan"
