@@ -74,7 +74,7 @@ test:flake-dependencies:
   needs: []
   script:
     # We use corretto 17 here to avoid an insecure package alert for corretto 11.
-    - nix profile add nixpkgs#corretto17
+    - nix profile add nixpkgs#corretto17 nixpkgs#diffutils nixpkgs#findutils
     - nix run github:tadfisher/gradle2nix/v2 -- -l gradle.lock.new
     - nix shell nixpkgs#diffutils -c diff gradle.lock gradle.lock.new
   cache:
