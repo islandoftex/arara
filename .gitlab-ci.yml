@@ -73,9 +73,8 @@ test:flake-dependencies:
   image: nixpkgs/nix-flakes:latest-x86_64-linux
   needs: []
   script:
-    - nix-env -iA nixpkgs.diffutils
     - nix run github:tadfisher/gradle2nix/v2 -- -l gradle.lock.new
-    - diff gradle.lock gradle.lock.new
+    - nix shell nixpkgs#diffutils -c diff gradle.lock gradle.lock.new
   cache:
     <<: *cachedefinition
     policy: pull
