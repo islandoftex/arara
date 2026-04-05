@@ -14,6 +14,11 @@ on.
 
 ## [Unreleased]
 
+### Changed
+
+* animate+convert rules: change default program from `convert` to `magick` 
+  (`convert` was deprecated in ImageMagick v7)
+
 ## [7.2.0] - 2025-06-29
 
 ### Added

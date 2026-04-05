@@ -26,7 +26,7 @@ discuss the inclusion of your rule in forthcoming updates.
 
 This rule creates an animated `gif` file from the corresponding base name of the
 `❖ currentFile` reference (i.e, the name without the associated
-extension) as a string concatenated with the `pdf` suffix, using the `convert`
+extension) as a string concatenated with the `pdf` suffix, using the `magick`
 command line utility from the ImageMagick suite.
 
 - `delay` (default: `10`): This option regulates the number of ticks before the
@@ -39,23 +39,7 @@ command line utility from the ImageMagick suite.
 - `density` (default: `300`): This option specifies the horizontal and vertical
   canvas resolution while rendering vector formats into a proper raster image.
 
-- `program` (default: `convert`): This option specifies the command utility path
-  as a means to avoid potential clashes with underlying operating system
-  commands.
-
-{% messagebox(title="Microsoft Windows woes") %}
-According to the [ImageMagick
-website](https://imagemagick.org/Usage/windows/), the Windows installation
-routine adds the program directory to the system path, such that one can call
-command line tools directly from the command prompt, without providing a path
-name. However, `convert` is also the name of Windows system tool, located in the
-system directory, which converts file systems from one format to another.
-
-The best solution to avoid possible future name conflicts, according to the
-ImageMagick team, is to call such command line tools by their full path in any
-script. Therefore, the `convert` rule provides the `program` option for this
-specific scenario.
-{% end %}
+- `program` (default: `magick`): This option specifies the command utility path.
 
 - `options`: This option, as the name indicates, takes a list of raw command
   line options and appends it to the actual system call. An error is thrown if
@@ -461,14 +445,12 @@ Format. Please refer to the user manual for further details.
 
 # `convert`
 
-This rule runs the `convert` program, a member of the ImageMagick suite of
-tools. This program is used to convert between image formats as well  as  resize
-an  image, blur, crop, despeckle, dither, draw on, flip, join, resample, and
+This rule runs the `magick` program, a member of the ImageMagick suite of
+tools. This program is used to convert between image formats as well as resize
+an image, blur, crop, despeckle, dither, draw on, flip, join, resample, and
 more.
 
-- `program` (default: `convert`): This option specifies the command utility path
-  as a means to avoid potential clashes with underlying operating system
-  commands.
+- `program` (default: `magick`): This option specifies the command utility path.
 
 - **[R]** `options`: This option, as the name indicates, takes a list of raw
   command line options and appends it to the actual script call. An error is
