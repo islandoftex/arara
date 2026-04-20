@@ -80,12 +80,12 @@ test:roast:
 
 test:flake-dependencies:
   stage: test
-  image: nixos/nix:latest
+  image: nixpkgs/nix-flakes:latest-x86_64-linux
   needs: []
   script:
-    - nix-env -iA nixpkgs.diffutils nixpkgs.corretto17 nixpkgs.gnused
-    - nix --extra-experimental-features nix-command --extra-experimental-features flakes run github:tadfisher/gradle2nix/v2 -- -l gradle.lock.new
-    - diff gradle.lock gradle.lock.new
+    - nix profile add nixpkgs#corretto17 nixpkgs#diffutils nixpkgs#findutils nixpkgs#gnused
+    - nix run github:tadfisher/gradle2nix/v2 -- -l gradle.lock.new
+    - nix shell nixpkgs#diffutils -c diff gradle.lock gradle.lock.new
   cache:
     <<: *cachedefinition
     policy: pull
@@ -127,15 +127,13 @@ test:linux:jdk24:
 
 .pagestemplate: &pagesdefinition
   stage: pages
-  image: nixos/nix:latest
+  image: nixpkgs/nix-flakes:latest-x86_64-linux
   needs: []
   script:
-    - nix-env --install gnused
-    - tail -n +8 README.md | sed 's/## /# /g' >> website/content/_index.md
-    - tail -n +3 CHANGELOG.md | sed 's/## /# /g' >> website/content/CHANGELOG.md
-    - cd website && nix --extra-experimental-features nix-command --extra-experimental-features flakes develop -c zola build
-    # GL pages needs the artifact at the root directory
-    - cd .. && cp -r website/public ./public
+    - nix build .#website
+    # GL pages needs the artifact at the root directory, the manual in website
+    - cp -r result/public ./public
+    - cp -r result/public ./website/public
 
 pages:
   <<: *pagesdefinition
@@ -173,9 +171,9 @@ publish:gitlab:
 
 .ctantemplate: &ctandefinition
   stage: publish
-  image: nixos/nix:latest
+  image: nixpkgs/nix-flakes:latest-x86_64-linux
   script:
-    - nix --extra-experimental-features nix-command --extra-experimental-features flakes develop -c ./gradlew -Prelease=$PRELEASE assembleCTAN --info
+    - nix develop -c ./gradlew -Prelease=$PRELEASE assembleCTAN --info
     - cp build/*.zip ./
   artifacts:
     name: "$CI_COMMIT_REF_NAME-ctan"

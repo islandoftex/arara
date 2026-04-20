@@ -20,7 +20,7 @@ arguments:
     @{
         parameters.program
     }
-  default: convert
+  default: magick
 - identifier: options
   flag: >
     @{

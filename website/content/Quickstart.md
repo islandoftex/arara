@@ -320,7 +320,7 @@ directives in action together, so let us try a different yet common scenario:
 bibliographies and citations. Consider the following bibliography file,
 containing a reference[^2] to my doctoral thesis:*
 
-```bib
+```bibtex
 @phdthesis{peter:2020,
   author  = {Peter Anteater},
   title   = {On flexibility: \LaTeX, latex and rubber},
