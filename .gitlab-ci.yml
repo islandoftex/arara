@@ -78,7 +78,9 @@ test:roast:
     <<: *cachedefinition
     policy: pull
 
-test:flake-dependencies:
+# to enable this job, remove the period
+# from the start of its name
+.test:flake-dependencies:
   stage: test
   image: nixpkgs/nix-flakes:latest-x86_64-linux
   needs: []
