@@ -15,23 +15,28 @@ object MvelState {
     @JvmStatic
     val ruleMethods: Map<String, Any> by lazy {
         val map = conditionalMethods.toMutableMap()
-        kotlin.runCatching {
-            val methodsKotlin = RuleMethods::class.java.methods
-            listOf(
-                "halt", "getOriginalFile", "getOriginalReference",
-                "trimSpaces", "getBasename", "getFiletype", "replicatePattern",
-                "throwError", "getSession", "buildString", "getCommand",
-                "getCommandWithWorkingDirectory", "isVerboseMode",
-                "showMessage", "isOnPath", "unsafelyExecuteSystemCommand",
-                "listFilesByExtensions", "listFilesByPatterns",
-                "writeToFile", "readFromFile", "isSubdirectory",
-                "isEmpty", "isNotEmpty", "isTrue", "isFalse",
-                "isWindows", "isLinux", "isMac", "isUnix", "isCygwin",
-                "checkClass", "isString", "isList", "isMap", "isBoolean",
-                "getOrNull"
-            ).forEach { name: String ->
-                map[name] = methodsKotlin.first { it.name == name }
-            }
+        // a method that cannot be wired has to fail loudly: swallowing
+        // the failure would silently drop every method listed after it
+        val methodsKotlin = RuleMethods::class.java.methods
+        listOf(
+            "halt", "getOriginalFile", "getOriginalReference",
+            "trimSpaces", "getBasename", "getFiletype", "replicatePattern",
+            "throwError", "getSession", "buildString", "getCommand",
+            "getCommandWithWorkingDirectory", "isVerboseMode",
+            "showMessage", "isOnPath", "unsafelyExecuteSystemCommand",
+            "listFilesByExtensions", "listFilesByPatterns",
+            "writeToFile", "readFromFile", "isSubdirectory",
+            "isEmpty", "isNotEmpty", "isTrue", "isFalse",
+            "isWindows", "isLinux", "isMac", "isUnix", "isCygwin",
+            "checkClass", "isString", "isList", "isMap", "isBoolean",
+            "getOrNull"
+        ).forEach { name: String ->
+            map[name] = methodsKotlin.firstOrNull { it.name == name }
+                ?: throw IllegalStateException(
+                    "The rule method '$name' cannot be found; the " +
+                        "registry in MvelState is out of sync with " +
+                        "RuleMethods."
+                )
         }
         map
     }
@@ -42,21 +47,29 @@ object MvelState {
     @JvmStatic
     val conditionalMethods: Map<String, Any> by lazy {
         val map = mutableMapOf<String, Any>()
-        kotlin.runCatching {
-            val methodsKotlin = ConditionalMethods::class.java.methods
-            listOf(
-                "exists", "missing", "changed", "unchanged",
-                "found", "toFile", "showDropdown", "showInput",
-                "showOptions", "currentFile", "loadClass", "loadObject"
-            ).forEach { name: String ->
-                map[name] = methodsKotlin.first { it.name == name }
-            }
-            val ruleMethodsKotlin = RuleMethods::class.java.methods
-            listOf("getOriginalReference", "getBasename", "getSession")
-                .forEach { name: String ->
-                    map[name] = ruleMethodsKotlin.first { it.name == name }
-                }
+        val methodsKotlin = ConditionalMethods::class.java.methods
+        listOf(
+            "exists", "missing", "changed", "unchanged",
+            "found", "toFile", "showDropdown", "showInput",
+            "showOptions", "currentFile", "loadClass", "loadObject"
+        ).forEach { name: String ->
+            map[name] = methodsKotlin.firstOrNull { it.name == name }
+                ?: throw IllegalStateException(
+                    "The conditional method '$name' cannot be found; the " +
+                        "registry in MvelState is out of sync with " +
+                        "ConditionalMethods."
+                )
         }
+        val ruleMethodsKotlin = RuleMethods::class.java.methods
+        listOf("getOriginalReference", "getBasename", "getSession")
+            .forEach { name: String ->
+                map[name] = ruleMethodsKotlin.firstOrNull { it.name == name }
+                    ?: throw IllegalStateException(
+                        "The conditional method '$name' cannot be found; " +
+                            "the registry in MvelState is out of sync " +
+                            "with RuleMethods."
+                    )
+            }
         map
     }
 

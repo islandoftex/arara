@@ -44,16 +44,11 @@ object Session : Session {
      * higher levels.
      */
     @Throws(AraraException::class)
-    override operator fun get(key: String): Any {
-        return if (contains(key)) {
-            map.getValue(key)
-        } else {
-            throw AraraException(
-                    LanguageController.messages.ERROR_SESSION_OBTAIN_UNKNOWN_KEY
-                            .formatString(key)
-            )
-        }
-    }
+    override operator fun get(key: String): Any =
+        map[key] ?: throw AraraException(
+            LanguageController.messages.ERROR_SESSION_OBTAIN_UNKNOWN_KEY
+                .formatString(key)
+        )
 
     /**
      * Inserts (or overwrites) the object indexed by the provided key into the

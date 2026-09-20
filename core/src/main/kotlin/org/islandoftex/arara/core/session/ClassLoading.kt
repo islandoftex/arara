@@ -54,15 +54,17 @@ object ClassLoading {
             try {
                 // creates a new classloader with
                 // the provided file (potentially
-                // a JAR file)
-                val classloader = URLClassLoader(
+                // a JAR file); the loader keeps the
+                // underlying file open, so it has
+                // to be closed after use
+                URLClassLoader(
                     arrayOf(file.toURI().toURL()),
                     ClassLoading::class.java.classLoader
-                )
-
-                // fetches the class from the
-                // instantiated classloader
-                value = Class.forName(name, true, classloader)
+                ).use { classloader ->
+                    // fetches the class from the
+                    // instantiated classloader
+                    value = Class.forName(name, true, classloader)
+                }
                 ClassLoadingStatus.SUCCESS
             } catch (_: MalformedURLException) {
                 ClassLoadingStatus.MALFORMED_URL

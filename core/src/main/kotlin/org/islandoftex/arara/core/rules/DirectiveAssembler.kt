@@ -34,7 +34,9 @@ internal class DirectiveAssembler {
      *
      * @param line An integer representing the line number.
      */
-    fun addLineNumber(line: Int) = lineNumbers.add(line)
+    fun addLineNumber(line: Int) {
+        lineNumbers.add(line)
+    }
 
     /**
      * Appends the provided line to the assembler text.
@@ -45,8 +47,11 @@ internal class DirectiveAssembler {
     }
 
     /**
-     * Gets the list of line numbers.
+     * Gets the list of line numbers. The returned list is a copy, so
+     * later assembler mutations cannot rewrite the state of directives
+     * which already stored their line numbers.
+     *
      * @return The list of line numbers.
      */
-    fun getLineNumbers(): List<Int> = lineNumbers
+    fun getLineNumbers(): List<Int> = lineNumbers.toList()
 }

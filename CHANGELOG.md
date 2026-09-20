@@ -69,6 +69,17 @@ on.
 
 ## Fixed
 
+* MVEL flag evaluations returning lists that contain null values no
+  longer crash with a null pointer exception; null entries are skipped,
+  mirroring the behaviour of the Lua engine.
+* The MVEL helper registry now fails loudly when a helper method cannot
+  be wired, instead of silently dropping every helper listed after the
+  broken entry.
+* The `loadClass`/`loadObject` rule helpers no longer leak a class loader
+  (and thereby a file handle) on every invocation.
+* Interactive rule dialogs now honor look-and-feel settings from the
+  configuration file even when the dialog helper had been used before the
+  configuration was loaded.
 * Null-valued directive parameters are now treated as if the parameter had
   not been provided at all: a required argument reports the proper
   missing-argument error and an optional argument falls back to its

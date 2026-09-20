@@ -69,13 +69,9 @@ data class Database(
     @Throws(NoSuchElementException::class)
     override fun remove(path: MPPPath) {
         val normalPath = path.normalize().toString()
-        if (normalPath in map)
-            map.remove(normalPath)
-        else
-            throw NoSuchElementException(
-                "Attempt to remove non-existent path " +
-                    "from database."
-            )
+        map.remove(normalPath) ?: throw NoSuchElementException(
+            "Attempt to remove non-existent path from database."
+        )
     }
 
     /**

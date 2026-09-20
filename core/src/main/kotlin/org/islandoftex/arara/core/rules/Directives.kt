@@ -23,7 +23,7 @@ object Directives {
     // pattern to match directives against
     private val directivePattern = (DIRECTIVE_START + PATTERN).toRegex()
 
-    // math the arara part in `% arara: pdflatex`
+    // match the arara part in `% arara: pdflatex`
     private const val NAME_PATTERN = "arara:\\s"
 
     // what to expect after a line break in a directive

@@ -32,17 +32,18 @@ object InputHandling {
     }
 
     /**
-     * Flattens a potential list of lists into a list of objects.
+     * Flattens a potential list of lists into a list of objects. Null
+     * entries are skipped, mirroring the Lua conversion and the filtering
+     * performed by the command helper.
      *
      * @param list The list to be flattened.
      * @return The flattened list.
      */
-    // note: nullity has not been checked here
     fun flatten(list: List<*>): List<Any> =
         list.flatMap { item ->
             if (item is List<*>)
                 flatten(item)
             else
-                listOf(item as Any)
+                listOfNotNull(item)
         }
 }
