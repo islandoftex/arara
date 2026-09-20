@@ -8,7 +8,7 @@ import kotlin.io.path.Path
 
 class PropertiesTest : ShouldSpec({
     context("UTF-8 support for properties files") {
-        val path = Path("src/jvmTest/resources/executiontests/properties/duck.properties")
+        val path = Path("src/test/resources/executiontests/properties/duck.properties")
         val charset = Charsets.UTF_8
         val translations: Properties = Properties().apply { load(path, charset) }
 
