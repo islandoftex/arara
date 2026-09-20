@@ -106,15 +106,21 @@ object LuaRuleParser {
             ?: throw AraraException(
                 errorHeader + "The rule does not provide a name."
             )
-        val authors = stringList(table.get("authors"))
-        val commands = tableList(table.get("commands")).map { command ->
+        val authors = stringList(
+            table.get("authors"), "authors", errorHeader
+        )
+        val commands = tableList(
+            table.get("commands"), "commands", errorHeader
+        ).map { command ->
             extractCommand(command, errorHeader)
         }.ifEmpty {
             throw AraraException(
                 errorHeader + "The rule does not provide any command."
             )
         }
-        val arguments = tableList(table.get("arguments")).map { argument ->
+        val arguments = tableList(
+            table.get("arguments"), "arguments", errorHeader
+        ).map { argument ->
             extractArgument(argument, errorHeader)
         }
         validateArguments(arguments, errorHeader)
@@ -180,14 +186,37 @@ object LuaRuleParser {
         }
     }
 
-    private fun stringList(value: LuaValue): List<String> =
-        (value as? LuaTable)?.keys()
-            ?.mapNotNull { key ->
-                value.get(key).takeIf { it.isstring() }?.tojstring()
-            } ?: emptyList()
+    private fun stringList(
+        value: LuaValue,
+        key: String,
+        errorHeader: String
+    ): List<String> = when {
+        value.isnil() -> emptyList()
+        value is LuaTable -> value.keys().map { elementKey ->
+            value.get(elementKey).takeIf { it.isstring() }?.tojstring()
+                ?: throw AraraException(
+                    errorHeader + "Every '$key' entry has to be a string."
+                )
+        }
+        else -> throw AraraException(
+            errorHeader + "The '$key' key requires a list of strings."
+        )
+    }
 
-    private fun tableList(value: LuaValue): List<LuaTable> =
-        (value as? LuaTable)?.keys()
-            ?.mapNotNull { key -> value.get(key) as? LuaTable }
-            ?: emptyList()
+    private fun tableList(
+        value: LuaValue,
+        key: String,
+        errorHeader: String
+    ): List<LuaTable> = when {
+        value.isnil() -> emptyList()
+        value is LuaTable -> value.keys().map { elementKey ->
+            value.get(elementKey) as? LuaTable
+                ?: throw AraraException(
+                    errorHeader + "Every '$key' entry has to be a table."
+                )
+        }
+        else -> throw AraraException(
+            errorHeader + "The '$key' key requires a list of tables."
+        )
+    }
 }

@@ -54,7 +54,16 @@ internal object LuaConversion {
         value.type() == LuaValue.TBOOLEAN -> value.toboolean()
         value.type() == LuaValue.TNUMBER -> {
             val double = value.todouble()
-            if (double % 1.0 == 0.0) value.toint() else double
+            when {
+                // integral in-range numbers become integers; out-of-range
+                // integrals stay exact as longs because toint() would
+                // silently wrap them into unrelated values
+                double % 1.0 == 0.0 &&
+                    double in Int.MIN_VALUE.toDouble()..Int.MAX_VALUE.toDouble() ->
+                    double.toInt()
+                double % 1.0 == 0.0 -> double.toLong()
+                else -> double
+            }
         }
         value.type() == LuaValue.TSTRING -> value.tojstring()
         value is LuaTable -> tableToKotlin(value)

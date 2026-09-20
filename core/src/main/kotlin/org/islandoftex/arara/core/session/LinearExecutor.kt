@@ -83,17 +83,23 @@ object LinearExecutor : Executor {
     internal fun executeProject(project: Project): Int {
         var exitCode = 0
         currentProject = project
-        hooks.executeBeforeProject(project)
-        for (file in project.files.sortedByDescending { it.priority }) {
-            hooks.executeBeforeFile(file)
-            val executionReport = execute(file)
-            exitCode = executionReport.exitCode
-            if (executionOptions.haltOnErrors && exitCode != 0)
-                return exitCode
-            hooks.executeAfterFile(executionReport)
+        try {
+            hooks.executeBeforeProject(project)
+            for (file in project.files.sortedByDescending { it.priority }) {
+                hooks.executeBeforeFile(file)
+                val executionReport = execute(file)
+                exitCode = executionReport.exitCode
+                if (executionOptions.haltOnErrors && exitCode != 0)
+                    return exitCode
+                hooks.executeAfterFile(executionReport)
+            }
+            hooks.executeAfterProject(project)
+        } finally {
+            // the project has to be unset even when an exception escapes a
+            // hook or a file execution, as a stale project would make the
+            // executor reject all future execution option changes
+            currentProject = null
         }
-        hooks.executeAfterProject(project)
-        currentProject = null
         return exitCode
     }
 
@@ -104,21 +110,27 @@ object LinearExecutor : Executor {
      */
     override fun execute(file: ProjectFile): ExecutionReport {
         currentFile = file
-        val executionStarted = TimeSource.Monotonic.markNow()
-        val directives = hooks.processDirectives(
-            file,
-            file.fetchDirectives(executionOptions.parseOnlyHeader)
-        )
-        var exitCode = 0
-        for (directive in directives) {
-            exitCode = directive.execute()
-            if (executionOptions.haltOnErrors && exitCode != 0) {
-                break
+        try {
+            val executionStarted = TimeSource.Monotonic.markNow()
+            val directives = hooks.processDirectives(
+                file,
+                file.fetchDirectives(executionOptions.parseOnlyHeader)
+            )
+            var exitCode = 0
+            for (directive in directives) {
+                exitCode = directive.execute()
+                if (executionOptions.haltOnErrors && exitCode != 0) {
+                    break
+                }
             }
+            return ExecutionReport(
+                executionStarted, TimeSource.Monotonic.markNow(), exitCode
+            )
+        } finally {
+            // the file has to be unset even when directive processing or
+            // execution throws, as a stale file would make the executor
+            // reject all future execution option changes
+            currentFile = null
         }
-        currentFile = null
-        return ExecutionReport(
-            executionStarted, TimeSource.Monotonic.markNow(), exitCode
-        )
     }
 }

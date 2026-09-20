@@ -69,12 +69,21 @@ on.
 
 ## Fixed
 
-* Null-valued directive parameters (e.g. `% arara: rule: { opt: }`) are now
-  treated as if the parameter had not been provided at all: a required
-  argument reports the proper missing-argument error and an optional
-  argument falls back to its default. Previously such values bypassed the
-  required-argument check and failed deep inside the flag evaluation with
-  a generic runtime error.
+* Null-valued directive parameters are now treated as if the parameter had
+  not been provided at all: a required argument reports the proper
+  missing-argument error and an optional argument falls back to its
+  default. The YAML directive syntax cannot express them (the parser
+  rejects null values outright), but other parameter sources can supply
+  them; previously they bypassed the required-argument check and failed
+  deep inside the flag evaluation.
+* The linear executor no longer leaks its current file and project state
+  when a hook, directive processing or command execution fails;
+  previously any such failure made the executor reject every future
+  execution option change until the process was restarted.
+* `AraraException` chains its underlying exception as the standard JVM
+  cause, so stack traces and log reports now include the original failure
+  instead of only the wrapping message.
+* Restored the documented default parameters of `MPPPath.writeText` and
 * The `removalFilter` of `Session.updateEnvironmentVariables` now receives
   the plain environment variable name (like the `additionFilter` already
   did) instead of the session-prefixed key, so custom filters can actually
@@ -82,6 +91,13 @@ on.
 * Lua project files report their errors with context: failures while
   extracting explicit directives name the offending file, and the Lua
   parsing error carries the underlying exception as its cause.
+* Lua rules reject malformed list entries instead of silently dropping
+  them: a non-string `authors` entry or a non-table `commands`/`arguments`
+  entry now produces a parse error, matching the strictness of the YAML
+  format they are slated to replace.
+* Integral Lua numbers outside the integer range no longer wrap into
+  unrelated values when converted (a Lua argument value of `3000000000`
+  previously became `-1294967296`); they stay exact instead.
 * Restored the documented default parameters of `MPPPath.writeText` and
   `Session.updateEnvironmentVariables`, which the Kotlin Multiplatform
   migration had dropped and which broke compilation.
