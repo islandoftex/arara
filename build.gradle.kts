@@ -169,6 +169,12 @@ val araraJVMInt = araraJVMString.toIntOrNull() ?: 11
 val araraKotlinAPI = providers.gradleProperty("arara.kotlin.api").getOrElse("2.1")
 
 val araraKotlinLanguage = providers.gradleProperty("arara.kotlin.language").getOrElse("2.1")
+
+// opt-in gate: run the build with -PwarningsAsErrors=true to prove that
+// the tree compiles without a single warning
+val warningsAsErrors = providers.gradleProperty("warningsAsErrors")
+        .map { it.toBoolean() }
+        .getOrElse(false)
 // ----------------------------------------------------------------------
 
 allprojects {
@@ -193,6 +199,7 @@ subprojects {
             jvmTarget.set(araraJVMTarget)
             apiVersion.set(KotlinVersion.fromVersion(araraKotlinAPI))
             languageVersion.set(KotlinVersion.fromVersion(araraKotlinLanguage))
+            allWarningsAsErrors.set(warningsAsErrors)
             optIn.addAll(
                     "org.islandoftex.arara.api.localization.AraraMessages",
                     "kotlin.time.ExperimentalTime"

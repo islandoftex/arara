@@ -57,6 +57,8 @@ pins one minor behind). JVM toolchain is JDK 11
   steps (`spotlessYaml*`) are disabled unless `-PvalidateYAML=true`.
 - `./gradlew dependencyUpdates` — dependency upgrade report (pre-release
   versions filtered out).
+- `./gradlew -PwarningsAsErrors=true test detekt spotlessCheck` — the strict
+  gate proving the tree compiles without a single Kotlin warning.
 - The project **version is derived from `CHANGELOG.md`** by the
   spotless-changelog plugin — do not hardcode it anywhere. `changelogPrint`
   shows the mapping; `changelogBump`/`changelogCheck`/`changelogPush` drive a
@@ -87,6 +89,11 @@ Dependency chain: `api` → `core` → (`mvel`, `lua`) → `cli`.
   (`.yaml` → mvel parser with a one-time deprecation warning, `.lua` →
   `LuaRuleParser`), configuration file lookup (YAML names first, then Lua),
   the clikt command line, and the shadow jar.
+- `MPPPath` (in `api`) is a sharp edge: it carries **two** paths —
+  `providedPath` (exactly what the caller wrote; backs `isAbsolute`,
+  `startsWith`, `resolve`) and `referencePath` (absolutized and normalized;
+  backs `toString`, I/O, and **equality**). `MPPPath("a") ==
+  MPPPath("/abs/cwd/a")` is true. Never assume identity semantics.
 - `rules/` — every official rule ships in **both** formats
   (`arara-rule-*.yaml` + `.lua` twins). `scripts/yaml2lua.py` converts rules;
   `scripts/check_lua_rules.lua` smoke-tests all Lua rules with a plain `lua`

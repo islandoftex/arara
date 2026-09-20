@@ -15,6 +15,9 @@ import org.islandoftex.arara.core.utils.formatString
  * This database is a map because it maps files to hashes. So the key will
  * always be a file representation and the value always a string.
  *
+ * The class intentionally shares its simple name with the api interface
+ * it implements; the local declaration shadows the import on purpose.
+ *
  * @author Island of TeX
  * @version 5.0
  * @since 4.0

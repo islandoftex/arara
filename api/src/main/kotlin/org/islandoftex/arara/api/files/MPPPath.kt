@@ -196,9 +196,19 @@ public class MPPPath {
     override fun toString(): String =
         referencePath.toString()
 
+    /**
+     * The hash code is derived from the absolute, normalized reference
+     * path, consistent with [equals].
+     */
     override fun hashCode(): Int =
         referencePath.hashCode()
 
+    /**
+     * Two paths are equal if they denote the same location, that is, if
+     * their absolute, normalized reference paths match. The provided
+     * (raw) spellings are irrelevant: `MPPPath("a")` and the absolute
+     * form of the same location are equal.
+     */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

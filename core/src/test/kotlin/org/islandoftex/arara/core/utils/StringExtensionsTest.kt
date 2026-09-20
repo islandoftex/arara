@@ -3,6 +3,9 @@ package org.islandoftex.arara.core.utils
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
+import org.islandoftex.arara.api.AraraException
 
 /**
  * Tests for glob to regex conversion.
@@ -90,5 +93,16 @@ class StringExtensionsTest {
     @Test
     fun commas_dont_need_escaping() {
         assertEquals("(glob,regex),", "{glob\\,regex},".globToRegex().pattern)
+    }
+
+    @Test
+    fun malformed_globs_produce_a_friendly_error() {
+        // an unbalanced brace becomes an unbalanced group in the
+        // conversion, which has to surface as an arara error naming the
+        // pattern instead of a raw pattern syntax exception
+        val exception = assertFailsWith<AraraException> {
+            "gl{ob".globToRegex()
+        }
+        assertTrue(exception.message!!.contains("gl{ob"))
     }
 }

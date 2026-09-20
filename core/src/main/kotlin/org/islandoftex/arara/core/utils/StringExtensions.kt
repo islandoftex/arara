@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.utils
 
+import org.islandoftex.arara.api.AraraException
+
 /**
  * Format a string using [stringReplacements] to replace occurrences of
  * `%s` in the string. As such mostly compatible with the usual
@@ -91,4 +93,14 @@ internal fun String.globToRegex(): Regex =
             }
             i++
         }
-    }.toRegex()
+    }.let { pattern ->
+        // a malformed glob (e.g. an unbalanced brace) would otherwise
+        // surface as a raw pattern syntax exception deep inside a rule
+        // evaluation
+        runCatching { pattern.toRegex() }.getOrElse {
+            throw AraraException(
+                "The glob pattern '$this' could not be converted into a " +
+                    "regular expression: ${it.message}"
+            )
+        }
+    }

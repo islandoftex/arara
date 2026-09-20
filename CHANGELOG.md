@@ -69,6 +69,9 @@ on.
 
 ## Fixed
 
+* Malformed glob patterns in the `listFilesByPatterns` helper now produce
+  a friendly arara error naming the pattern instead of a raw pattern
+  syntax exception deep inside a rule evaluation.
 * MVEL flag evaluations returning lists that contain null values no
   longer crash with a null pointer exception; null entries are skipped,
   mirroring the behaviour of the Lua engine.
