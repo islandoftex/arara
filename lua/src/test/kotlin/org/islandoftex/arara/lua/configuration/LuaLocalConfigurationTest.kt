@@ -54,7 +54,11 @@ class LuaLocalConfigurationTest {
 
         val loggingOptions = configuration.toLoggingOptions()
         assertTrue(loggingOptions.enableLogging)
-        assertEquals("mylog", loggingOptions.logFile.toString())
+        // MPPPath keeps the user-provided string as `providedPath` (so
+        // `isAbsolute` reflects what the user wrote) while `toString` and
+        // friends operate on the absolutized `referencePath`; the configured
+        // name therefore survives as the file name
+        assertEquals("mylog", loggingOptions.logFile.fileName)
 
         val uiOptions = configuration.toUserInterfaceOptions()
         assertEquals(MPPLocale("de"), uiOptions.locale)

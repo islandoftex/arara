@@ -16,22 +16,23 @@ isolated environment and is **untested**. The standing task in this repo:
 A pristine pre-change checkout of the repository is available from the user on
 request — diff against it when in doubt about a change.
 
-## Known issues (verified 2026-09-19, fix and tick off)
+## Known issues (verified 2026-09-19; resolved during oc1..oc5)
 
-- The build configures but **does not compile**: `MPPPath.writeText(text, append)`
-  (`api/.../files/MPPPath.kt`) now takes two arguments, while call sites still
-  pass one — `core/.../files/Database.kt:91` and
-  `api/src/test/.../JVMMPPPathTest.kt:22,34` (fails `:core:compileKotlin` and
-  `:api:compileTestKotlin`, blocking everything downstream).
-- The KMP → plain-JVM migration moved sources to `src/main`/`src/test`, but
-  stale `src/jvmTest` paths remain: cli's `ExecutionTest.kt`,
-  `InterpreterTest.kt` and `PropertiesTest.kt` all reference
-  `src/jvmTest/resources/...`, which does not exist (`src/test/resources/...`
-  is the real location). Those tests break at runtime even once compilation is
-  fixed.
-- The full `./gradlew test` suite has never passed in this state; treat any
-  green run as the milestone, and check the Lua engine (`--engine lua`)
-  alongside the default YAML engine.
+- ~~The build configures but does not compile~~ — fixed in `oc3`: the
+  KMP migration had dropped documented parameter defaults
+  (`MPPPath.writeText`, `Session.updateEnvironmentVariables`); they are
+  restored.
+- ~~Stale `src/jvmTest` paths in tests~~ — fixed in `oc4`: ExecutionTest,
+  InterpreterTest and PropertiesTest now point at `src/test/resources`.
+- ~~The test suite has never passed~~ — fixed in `oc5`: the full suite is
+  green (from a clean build). The single remaining failure was a
+  machine-dependent assertion in `LuaLocalConfigurationTest` that assumed
+  `MPPPath.toString()` keeps relative paths (it does not — see the
+  `providedPath`/`referencePath` duality in `MPPPath`).
+
+Remaining caveat: the Lua engine must be checked alongside the default YAML
+engine (`--engine lua`) — the automated suite exercises both parsers, but the
+end-to-end runtime check happens in the smoke test.
 
 ## Commands
 
