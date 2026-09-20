@@ -53,6 +53,12 @@ on.
 
 ## Removed
 
+* Removed the unwired, experimental Kotlin DSL module (`kotlin-dsl`): it was
+  never reachable from the CLI (the `cli` module did not depend on it), its
+  rule format was never implemented, and the default YAML engine could
+  discover `.kts` rules that then crashed. The `RuleUtils` fallback now
+  reports unsupported rule formats with a proper error instead of a `TODO`
+  crash. The module code is preserved in the `oc0` tag.
 * Removed the `korlibs` bundle.
 
 ## [7.2.0] - 2025-06-29

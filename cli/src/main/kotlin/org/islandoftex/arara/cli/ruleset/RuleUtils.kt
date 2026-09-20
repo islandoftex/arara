@@ -39,7 +39,11 @@ object RuleUtils {
                 org.islandoftex.arara.mvel.rules.Rule.parse(file, identifier)
             }
             else ->
-                TODO("Kotlin DSL not implemented yet")
+                throw AraraException(
+                    "I found an error in rule '$identifier' located at " +
+                        "'${file.normalize().parent}'. The rule format of " +
+                        "'${file.fileName}' is not supported by arara."
+                )
         }
 
     private fun warnAboutYamlDeprecation() {

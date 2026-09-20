@@ -61,7 +61,6 @@ spotless {
                 "core/build.gradle.kts",
                 "lua/build.gradle.kts",
                 "mvel/build.gradle.kts",
-                "kotlin-dsl/build.gradle.kts",
                 "cli/build.gradle.kts"
         )
         targetExclude("src/test/**/*.kts")
@@ -80,7 +79,6 @@ spotless {
                 "core/src/**/*.kt",
                 "lua/src/**/*.kt",
                 "mvel/src/**/*.kt",
-                "kotlin-dsl/src/**/*.kt",
                 "cli/src/**/*.kt",
                 "buildSrc/src/**/*.kt"
         )
@@ -129,7 +127,6 @@ detekt {
             "core/src/main/kotlin",
             "lua/src/main/kotlin",
             "mvel/src/main/kotlin",
-            "kotlin-dsl/src/main/kotlin",
             "cli/src/main/kotlin",
             "buildSrc/src/main/kotlin"
     ))

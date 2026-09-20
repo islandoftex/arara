@@ -25,10 +25,10 @@ request — diff against it when in doubt about a change.
   `:api:compileTestKotlin`, blocking everything downstream).
 - The KMP → plain-JVM migration moved sources to `src/main`/`src/test`, but
   stale `src/jvmTest` paths remain: cli's `ExecutionTest.kt`,
-  `InterpreterTest.kt`, `PropertiesTest.kt` and main-source
-  `kotlin-dsl/.../Executor.kt` all reference `src/jvmTest/resources/...`,
-  which does not exist (`src/test/resources/...` is the real location). Those
-  tests break at runtime even once compilation is fixed.
+  `InterpreterTest.kt` and `PropertiesTest.kt` all reference
+  `src/jvmTest/resources/...`, which does not exist (`src/test/resources/...`
+  is the real location). Those tests break at runtime even once compilation is
+  fixed.
 - The full `./gradlew test` suite has never passed in this state; treat any
   green run as the milestone, and check the Lua engine (`--engine lua`)
   alongside the default YAML engine.
@@ -68,9 +68,8 @@ Gradle 9.2.0 wrapper (downloads on first run). JVM toolchain is JDK 11
 
 ## Layout and architecture
 
-Dependency chain: `api` → `core` → (`mvel`, `lua`, `kotlin-dsl`) → `cli`.
-`docs` builds the manuals; `buildSrc` holds custom Gradle tasks (TDS/CTAN
-packaging, `roast`, GitLab publication) and reuses the root version catalog.
+Dependency chain: `api` → `core` → (`mvel`, `lua`) → `cli`.
+`docs` holds the manual sources; `buildSrc` holds the publication logic.
 
 - `api` — the public, stable interface. Builds with `explicitApi()`, so
   public members must be explicitly `public`. **`api/.../AraraAPI.kt` is
@@ -83,8 +82,6 @@ packaging, `roast`, GitLab publication) and reuses the root version catalog.
 - `lua` — new Lua rule + config parsers (LuaJ fork `io.github.taoguan:luaj`).
   Depends on `mvel` temporarily for shared helper methods and the
   `LocalConfiguration` model — that edge is flagged for removal in `DEPREC.md`.
-- `kotlin-dsl` — future third engine; not implemented
-  (`cli/.../ruleset/RuleUtils.kt` ends in `TODO("Kotlin DSL not implemented yet")`).
 - `cli` — the application: directive parsing, rule dispatch by file extension
   (`.yaml` → mvel parser with a one-time deprecation warning, `.lua` →
   `LuaRuleParser`), configuration file lookup (YAML names first, then Lua),

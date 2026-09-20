@@ -16,7 +16,6 @@ versionsPlugin = "0.53.0"
 # Libraries
 # --------------------------------
 clikt = "5.0.3"
-jna = "5.18.1"
 junit = "5.14.0"
 kaml = "0.98.0"
 kotest = "6.0.3"
@@ -40,7 +39,6 @@ scribeswan = "0.1.1"
 [libraries]
 clikt = { group = "com.github.ajalt.clikt", name = "clikt", version.ref = "clikt" }
 clikt-markdown = { group = "com.github.ajalt.clikt", name = "clikt-markdown", version.ref = "clikt" }
-jna = { group = "net.java.dev.jna", name = "jna", version.ref = "jna" }
 junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit" }
 kaml = { group = "com.charleskorn.kaml", name = "kaml", version.ref = "kaml" }
 kotest-assertions-jvm = { group = "io.kotest", name = "kotest-assertions-core-jvm", version.ref = "kotest" }

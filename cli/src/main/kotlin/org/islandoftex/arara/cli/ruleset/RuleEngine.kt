@@ -24,7 +24,7 @@ enum class RuleEngine(val identifier: String) {
     @Suppress("DEPRECATION")
     val formats: List<RuleFormat>
         get() = when (this) {
-            YAML -> listOf(RuleFormat.MVEL, RuleFormat.KOTLIN_DSL)
+            YAML -> listOf(RuleFormat.MVEL)
             LUA -> listOf(RuleFormat.LUA)
         }
 

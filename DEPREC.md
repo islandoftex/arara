@@ -269,8 +269,11 @@ exactly this and must keep passing.
 
 ## Phase 4 — optional cleanup (separate release)
 
-- Retire the `--engine` option (`cli/…/CLI.kt`, `RuleEngine`) once only
-  one engine exists, or repurpose it for the Kotlin DSL. Removing a CLI
+- Retire the `--engine` option (`cli/…/CLI.kt`, `RuleEngine`) once only one
+  engine exists. (An earlier revision of this document suggested repurposing
+  the option for the Kotlin DSL; that module was removed from the tree in this
+  fork as it was never wired into the application, so the option has no third
+  engine to select.) Removing a CLI
   option is a user-visible break: deprecate it for one release (accept
   and warn) before dropping it.
 - Delete `scripts/yaml2lua.py` and the migration error messages.
