@@ -429,9 +429,8 @@ class Interpreter(
         rule.arguments.forEach { argument ->
             resolvedArguments[argument.identifier] = processArgument(
                 argument as RuleArgument<Any?>,
-                directive.parameters.containsKey(argument.identifier),
-                context,
-                directive.parameters[argument.identifier]
+                directive.parameters[argument.identifier],
+                context
             )
         }
 
@@ -452,10 +451,13 @@ class Interpreter(
     @Throws(AraraException::class)
     private fun processArgument(
         argument: RuleArgument<Any?>,
-        idInDirectiveParams: Boolean,
-        context: Map<String, Any>,
-        parameterValue: Any?
+        parameterValue: Any?,
+        context: Map<String, Any>
     ): List<*> {
+        // a directive parameter that is present but set to null counts
+        // as if it had not been provided at all
+        val idInDirectiveParams = parameterValue != null
+
         if (argument.isRequired && !idInDirectiveParams)
             throw AraraExceptionWithHeader(
                 LanguageController.messages.ERROR_INTERPRETER_ARGUMENT_IS_REQUIRED

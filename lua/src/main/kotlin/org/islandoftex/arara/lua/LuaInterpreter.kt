@@ -147,7 +147,10 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
             val c = f.checkclosure()!!
             c.call() as? LuaTable
         }.getOrElse {
-            throw ProjectParseException("Detected invalid Lua: ${it.message}")
+            throw ProjectParseException(
+                "Detected invalid Lua: ${it.message}",
+                it as? Exception ?: RuntimeException(it.toString())
+            )
         }
             ?: throw ProjectParseException(
                 "The return type of the Lua project specification has to be a table " +

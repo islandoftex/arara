@@ -114,14 +114,15 @@ object Session : Session {
             additionFilter: (String) -> Boolean = { true },
             removalFilter: (String) -> Boolean = { true }
     ) {
-        // remove all current environment variables to clean up the session
+        // remove all current environment variables to clean up the session;
+        // both filters operate on the plain environment variable names
         map.filterKeys { it.startsWith("environment:") }
-                .filterKeys(removalFilter)
-                .forEach { remove(it.key) }
+                .forEach { (key, _) ->
+                    if (removalFilter(key.removePrefix("environment:")))
+                        remove(key)
+                }
         // add all relevant new environment variables
         map.putAll(
-
-                // move this to jvmMain?
                 System.getenv()
                         .filterKeys(additionFilter)
                         .mapKeys { "environment:${it.key}" }

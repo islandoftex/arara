@@ -69,6 +69,19 @@ on.
 
 ## Fixed
 
+* Null-valued directive parameters (e.g. `% arara: rule: { opt: }`) are now
+  treated as if the parameter had not been provided at all: a required
+  argument reports the proper missing-argument error and an optional
+  argument falls back to its default. Previously such values bypassed the
+  required-argument check and failed deep inside the flag evaluation with
+  a generic runtime error.
+* The `removalFilter` of `Session.updateEnvironmentVariables` now receives
+  the plain environment variable name (like the `additionFilter` already
+  did) instead of the session-prefixed key, so custom filters can actually
+  match.
+* Lua project files report their errors with context: failures while
+  extracting explicit directives name the offending file, and the Lua
+  parsing error carries the underlying exception as its cause.
 * Restored the documented default parameters of `MPPPath.writeText` and
   `Session.updateEnvironmentVariables`, which the Kotlin Multiplatform
   migration had dropped and which broke compilation.
