@@ -5,13 +5,6 @@ plugins {
 
 kotlin {
     explicitApi()
-
-    compilerOptions {
-        optIn.addAll(
-                "org.islandoftex.arara.api.localization.AraraMessages",
-                "kotlin.time.ExperimentalTime"
-        )
-    }
 }
 
 dependencies {

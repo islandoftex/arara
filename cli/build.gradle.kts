@@ -13,8 +13,9 @@ val entryPath = "org.islandoftex.arara.cli.CLIKt"
 // The JVM toolchain, with its corresponding default as fallback, defined
 // in gradle.properties (see key)
 // ----------------------------------------------------------------------
-val toolchain = runCatching { (extra["arara.jvm.target"] as String).toInt() }
-        .getOrDefault(11)
+val toolchain = providers.gradleProperty("arara.jvm.target")
+        .map { it.toInt() }
+        .getOrElse(11)
 // ----------------------------------------------------------------------
 
 kotlin {
@@ -27,13 +28,6 @@ kotlin {
     // }
     // ----------------------------------------------------------------------
     jvmToolchain(toolchain)
-
-    compilerOptions {
-        optIn.addAll(
-                "org.islandoftex.arara.api.localization.AraraMessages",
-                "kotlin.time.ExperimentalTime"
-        )
-    }
 }
 
 application {

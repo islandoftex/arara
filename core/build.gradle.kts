@@ -6,11 +6,7 @@ plugins {
 
 kotlin {
     compilerOptions {
-        optIn.addAll(
-                "org.islandoftex.arara.api.localization.AraraMessages",
-                "kotlin.time.ExperimentalTime",
-                "kotlin.ExperimentalUnsignedTypes"
-        )
+        optIn.add("kotlin.ExperimentalUnsignedTypes")
     }
 }
 

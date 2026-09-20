@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
-import org.gradle.api.internal.project.ProjectInternal
-import org.gradle.api.java.archives.internal.DefaultManifest
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.islandoftex.arara.build.AraraPublication
@@ -159,22 +157,18 @@ tasks {
 version = spotlessChangelog.versionNext
 
 // ----------------------------------------------------------------------
-// JVM targets and Kotlin API and language versions, with corresponding
-// defaults as fallback, defined in gradle.properties (see keys)
+// JVM target and Kotlin API and language versions; the keys (and their
+// fallback defaults) are defined in gradle.properties
 // ----------------------------------------------------------------------
-val araraJVMString = runCatching { extra["arara.jvm.target"] as String }
-        .getOrDefault("11")
+val araraJVMString = providers.gradleProperty("arara.jvm.target").getOrElse("11")
 
-val araraJVMTarget = runCatching { JvmTarget.fromTarget(araraJVMString) }
-        .getOrDefault(JvmTarget.JVM_11)
+val araraJVMTarget = JvmTarget.fromTarget(araraJVMString)
 
 val araraJVMInt = araraJVMString.toIntOrNull() ?: 11
 
-val araraKotlinAPI = runCatching { extra["arara.kotlin.api"] as String }
-        .getOrDefault("2.1")
+val araraKotlinAPI = providers.gradleProperty("arara.kotlin.api").getOrElse("2.1")
 
-val araraKotlinLanguage = runCatching { extra["arara.kotlin.language"] as String }
-        .getOrDefault("2.1")
+val araraKotlinLanguage = providers.gradleProperty("arara.kotlin.language").getOrElse("2.1")
 // ----------------------------------------------------------------------
 
 allprojects {
@@ -191,20 +185,6 @@ subprojects {
 
     apply(plugin = "org.jetbrains.dokka")
 
-    val mainManifest: Manifest = DefaultManifest((project as ProjectInternal).fileResolver)
-            .apply {
-                attributes["Implementation-Title"] = "arara-${project.name}"
-                attributes["Implementation-Version"] = version
-
-                if (project.name == "cli") {
-                    attributes["Main-Class"] = "org.islandoftex.arara.cli.CLIKt"
-                }
-
-                // for Java 9+ compatibility of log4j
-                attributes["Multi-Release"] = "true"
-                attributes["Automatic-Module-Name"] = rootProject.group
-            }
-
     apply(plugin = "org.jetbrains.kotlin.jvm")
 
     configure<KotlinJvmProjectExtension> {
@@ -213,6 +193,10 @@ subprojects {
             jvmTarget.set(araraJVMTarget)
             apiVersion.set(KotlinVersion.fromVersion(araraKotlinAPI))
             languageVersion.set(KotlinVersion.fromVersion(araraKotlinLanguage))
+            optIn.addAll(
+                    "org.islandoftex.arara.api.localization.AraraMessages",
+                    "kotlin.time.ExperimentalTime"
+            )
         }
     }
 
@@ -235,14 +219,24 @@ subprojects {
             }
         }
 
-        withType<Jar> {
+        withType<Jar>().configureEach {
             archiveBaseName.set("arara-${project.name}")
-            manifest.attributes.putAll(mainManifest.attributes)
+            manifest {
+                attributes["Implementation-Title"] = "arara-${project.name}"
+                attributes["Implementation-Version"] = version
+
+                if (project.name == "cli") {
+                    attributes["Main-Class"] = "org.islandoftex.arara.cli.CLIKt"
+                }
+
+                // for Java 9+ compatibility of log4j
+                attributes["Multi-Release"] = "true"
+                attributes["Automatic-Module-Name"] = rootProject.group
+            }
         }
 
-        withType<JavaCompile> {
-            sourceCompatibility = araraJVMString
-            targetCompatibility = araraJVMString
+        withType<JavaCompile>().configureEach {
+            options.release.set(araraJVMInt)
         }
 
         // DGP v2 configuration (the v1 dokkaHtml task is gone as of Dokka

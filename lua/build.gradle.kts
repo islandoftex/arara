@@ -4,15 +4,6 @@ plugins {
     kotlin("plugin.serialization")
 }
 
-kotlin {
-    compilerOptions {
-        optIn.addAll(
-                "org.islandoftex.arara.api.localization.AraraMessages",
-                "kotlin.time.ExperimentalTime"
-        )
-    }
-}
-
 dependencies {
     api(project(":api"))
     implementation(project(":core"))

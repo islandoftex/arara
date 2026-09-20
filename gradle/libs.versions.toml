@@ -54,4 +54,4 @@ dokka = { id = "org.jetbrains.dokka", version.ref = "dokkaPlugin" }
 shadow = { id = "com.gradleup.shadow", version.ref = "shadowPlugin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotlessPlugin" }
 spotlessChangelog = { id = "com.diffplug.spotless-changelog", version.ref = "spotlessChangelogPlugin" }
-versions = { id = "com.github.ben-manes.versions", version.ref = "versionsPlugin" }
+versions = { id = "io.github.ben-manes.versions", version.ref = "versionsPlugin" }
