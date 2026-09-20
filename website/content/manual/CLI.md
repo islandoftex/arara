@@ -178,6 +178,8 @@ Options:
   -t, --timeout=<int>           Set the execution timeout (in milliseconds)
   -L, --language=<text>         Set the application language
   -m, --max-loops=<int>         Set the maximum number of loops (> 0)
+  -e, --engine=(yaml|lua)       Set the rule engine and thus the rule format
+                                to use: 'yaml' (deprecated) or 'lua'
   -d, --working-directory=<path>
                                 Set the working directory for all tools
   -P, --call-property=<value>   Pass parameters to the application to be used
@@ -316,6 +318,14 @@ current option, it will be denoted by `parameter` in the description.
     This option can also be specified in the configuration file. However, one
     can always override this setting by running the tool with an explicit `-m`
     option.
+
+- `-e` / `--engine` `(yaml|lua)`: This option sets the rule engine and thus the
+  rule format arara uses to resolve directives. The default `yaml` engine
+  interprets the traditional YAML rules with MVEL snippets; it is deprecated
+  and will be removed in a future version. The `lua` engine interprets rules
+  written as Lua scripts (`arara-rule-<name>.lua`), which is the format all
+  official rules are also shipped in. See the rules chapter for details on
+  the Lua rule format.
 
 - `-n` / `--dry-run`: This option makes arara go through all the motions of
   running tasks and subtasks, but with no actual calls. It is a very useful

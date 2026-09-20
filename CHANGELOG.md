@@ -14,14 +14,42 @@ on.
 
 ## [Unreleased]
 
+## Added
+
+* New Lua rule format: rules may now be written as Lua scripts returning a
+  rule table (see the `lua` module's `LuaRuleParser` documentation). The
+  helper methods known from the YAML format (`getCommand`, `isTrue`,
+  `throwError`, ...) are available as Lua globals.
+* New `-e`/`--engine` command line option to select the rule engine:
+  `yaml` (default, deprecated) or `lua`.
+* New Lua configuration file format: arara now also accepts
+  `.araraconfig.lua`, `araraconfig.lua`, `.arararc.lua` and `arararc.lua`
+  files (Lua scripts returning a table with the same keys as the YAML
+  format). YAML configuration files are looked up first; Lua configuration
+  files are only considered if no YAML configuration file is found.
+* All official rules have been converted to the Lua format and are shipped
+  alongside their YAML counterparts (`rules/arara-rule-*.lua`); the
+  converter lives in `scripts/yaml2lua.py`.
+
 ## Changed
 
 * Replaced `luak` by `luaj`.
 * Updated dependencies.
-* Kotlin platform updated to 2.2.20.
-* Gradle updated to 9.1.0.
+* Kotlin platform updated to 2.3.0.
+* Gradle updated to 9.2.0.
+* The build has been migrated from Kotlin Multiplatform (with JVM-only
+  targets) to plain Kotlin/JVM; source sets moved from
+  `src/commonMain`/`src/jvmMain` to `src/main` (and tests accordingly).
 * animate+convert rules: change default program from `convert` to `magick` 
   (`convert` was deprecated in ImageMagick v7)
+
+## Deprecated
+
+* The YAML/MVEL rule format and YAML configuration files are deprecated
+  and will be removed in a future version; arara logs a warning when YAML
+  rules are used. Please migrate to the Lua rule and configuration
+  formats. (Directive options and conditionals are unaffected.) The
+  removal playbook is documented in `DEPREC.md`.
 
 ## Removed
 

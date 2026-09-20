@@ -21,22 +21,15 @@ open class AraraPublication : Plugin<Project> {
     override fun apply(target: Project) {
         target.apply(plugin = "maven-publish")
         target.configure<PublishingExtension> {
+            // the project is JVM-only, hence a single publication derived
+            // from the java component is sufficient
+            publications.create<MavenPublication>("maven") {
+                from(target.components.getByName("java"))
+            }
             publications.configureEach {
                 this as MavenPublication
 
-                artifactId = "arara-" + when (name) {
-                    "kotlinMultiplatform" ->
-                        target.name
-
-                    "metadata" ->
-                        "${target.name}-metadata"
-
-                    "jvm" ->
-                        "${target.name}-jvm"
-
-                    else ->
-                        throw IllegalArgumentException("Unknown publication type $name")
-                }
+                artifactId = "arara-" + target.name
 
                 groupId = target.group.toString()
                 version = target.version.toString()

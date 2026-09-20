@@ -14,10 +14,11 @@ import org.islandoftex.arara.build.TDSTreeBuilderTask
 import org.islandoftex.arara.build.TDSZipBuilderTask
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
-    kotlin("multiplatform") version libs.versions.kotlin apply false // Apache 2.0
+    kotlin("jvm") version libs.versions.kotlin apply false // Apache 2.0
     kotlin("plugin.serialization") version libs.versions.kotlin apply false // Apache 2.0
     alias(libs.plugins.shadow) apply false // Apache 2.0
     alias(libs.plugins.versions) // Apache 2.0
@@ -106,21 +107,30 @@ spotless {
         """.trimIndent()
         licenseHeader(header, "identifier:")
     }
+    format("luaRules") {
+        target("rules/*.lua")
+        val header = $$"""
+            -- arara, the cool TeX automation tool
+            -- Copyright (c) $YEAR, Island of TeX
+            -- All rights reserved.
+            --
+            -- This rule is part of arara.
+        """.trimIndent()
+        licenseHeader(header, "return \\{")
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
 }
 
 detekt {
     allRules = false
     source.from(files(
-            "api/src/commonMain/kotlin",
-            "api/src/jvmMain/kotlin",
-            "core/src/commonMain/kotlin",
-            "core/src/jvmMain/kotlin",
-            "lua/src/commonMain/kotlin",
-            "mvel/src/commonMain/kotlin",
-            "mvel/src/jvmMain/kotlin",
+            "api/src/main/kotlin",
+            "core/src/main/kotlin",
+            "lua/src/main/kotlin",
+            "mvel/src/main/kotlin",
             "kotlin-dsl/src/main/kotlin",
-            "cli/src/commonMain/kotlin",
-            "cli/src/jvmMain/kotlin",
+            "cli/src/main/kotlin",
             "buildSrc/src/main/kotlin"
     ))
     buildUponDefaultConfig = true
@@ -236,49 +246,25 @@ subprojects {
                     attributes["Automatic-Module-Name"] = rootProject.group
                 }
 
-        apply(plugin = "org.jetbrains.kotlin.multiplatform")
+        apply(plugin = "org.jetbrains.kotlin.jvm")
 
-        configure<KotlinMultiplatformExtension> {
+        configure<KotlinJvmProjectExtension> {
 
-            jvm {
-                compilerOptions {
-                    jvmTarget.set(araraJVMTarget)
-                }
+            compilerOptions {
+                jvmTarget.set(araraJVMTarget)
+                apiVersion.set(KotlinVersion.fromVersion(araraKotlinAPI))
+                languageVersion.set(KotlinVersion.fromVersion(araraKotlinLanguage))
             }
+        }
 
-            sourceSets {
-                all {
-                    languageSettings.apply {
-                        languageVersion = araraKotlinLanguage
-                        apiVersion = araraKotlinAPI
-                    }
-                }
-
-                val commonMain by getting {
-                    dependencies {
-                        implementation(kotlin("stdlib-common"))
-                    }
-                }
-
-                val commonTest by getting {
-                    dependencies {
-                        implementation(kotlin("test-common"))
-                        implementation(kotlin("test-annotations-common"))
-                    }
-                }
-
-                val jvmTest by getting {
-                    dependencies {
-                        implementation(kotlin("test-junit5"))
-                        runtimeOnly(engine)
-                    }
-                }
-            }
+        dependencies {
+            "testImplementation"(kotlin("test-junit5"))
+            "testRuntimeOnly"(engine)
         }
 
         tasks {
 
-            named<Test>("jvmTest") {
+            named<Test>("test") {
                 useJUnitPlatform()
 
                 testLogging {
@@ -308,7 +294,7 @@ subprojects {
                     skipDeprecated.set(false)
                     reportUndocumented.set(true)
                     skipEmptyPackages.set(true)
-                    platform.set(org.jetbrains.dokka.Platform.common)
+                    platform.set(org.jetbrains.dokka.Platform.jvm)
                     sourceLink {
                         localDirectory.set(file("./"))
                         remoteUrl.set(uri("https://gitlab.com/islandoftex/arara").toURL())

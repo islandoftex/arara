@@ -1,45 +1,29 @@
 // SPDX-License-Identifier: BSD-3-Clause
 plugins {
-    kotlin("multiplatform")
+    kotlin("jvm")
     kotlin("plugin.serialization")
 }
 
 kotlin {
-    jvm()
-
-    sourceSets {
-
-        all {
-            languageSettings.optIn("org.islandoftex.arara.api.localization.AraraMessages")
-            languageSettings.optIn("kotlin.time.ExperimentalTime")
-            languageSettings.optIn("kotlin.RequiresOptIn")
-        }
-
-        commonMain {
-            dependencies {
-                api(project(":api"))
-                implementation(project(":core"))
-            }
-        }
-
-        jvmMain {
-            dependencies {
-                implementation(libs.luaj)
-            }
-        }
-
-        commonTest {
-            dependencies {
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
-            }
-        }
-
-        jvmTest {
-            dependencies {
-                implementation(kotlin("test-junit5"))
-                runtimeOnly(libs.junit.jupiter.engine)
-            }
-        }
+    compilerOptions {
+        optIn.addAll(
+                "org.islandoftex.arara.api.localization.AraraMessages",
+                "kotlin.time.ExperimentalTime"
+        )
     }
+}
+
+dependencies {
+    api(project(":api"))
+    implementation(project(":core"))
+    // the Lua-based rule and configuration formats reuse helper methods and
+    // the configuration model that historically live in the MVEL module;
+    // they will move to a dedicated module once the YAML format is removed
+    // (api scope because LuaLocalConfiguration returns the shared model)
+    api(project(":mvel"))
+    implementation(libs.luaj)
+    implementation(libs.kotlin.logging)
+
+    testImplementation(libs.kotest.runner.jvm)
+    testImplementation(libs.kotest.assertions.jvm)
 }

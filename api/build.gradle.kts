@@ -1,60 +1,52 @@
 // SPDX-License-Identifier: BSD-3-Clause
 plugins {
-    kotlin("multiplatform")
+    kotlin("jvm")
 }
 
 kotlin {
-    jvm()
     explicitApi()
 
     compilerOptions {
-        freeCompilerArgs.add("-Xexpect-actual-classes")
+        optIn.addAll(
+                "org.islandoftex.arara.api.localization.AraraMessages",
+                "kotlin.time.ExperimentalTime"
+        )
     }
+}
 
-    sourceSets {
-
-        all {
-            languageSettings.optIn("org.islandoftex.arara.api.localization.AraraMessages")
-            languageSettings.optIn("kotlin.time.ExperimentalTime")
-            languageSettings.optIn("kotlin.RequiresOptIn")
-        }
-
-        commonMain {}
-
-        jvmMain {}
-
-        jvmTest {
-            dependencies {
-                implementation(libs.kotest.runner.jvm)
-                implementation(libs.kotest.assertions.jvm)
-            }
-        }
-    }
+dependencies {
+    testImplementation(libs.kotest.runner.jvm)
+    testImplementation(libs.kotest.assertions.jvm)
 }
 
 tasks {
 
-    compileKotlinJvm {
+    compileKotlin {
         dependsOn("createAraraAPIObject")
     }
 
     register("createAraraAPIObject") {
         listOf(
-                "src/jvmMain/kotlin/org/islandoftex/arara/api/AraraAPI.kt",
+                "src/main/kotlin/org/islandoftex/arara/api/AraraAPI.kt",
         ).forEach {
             file(it).writeText(
                     """
                 // SPDX-License-Identifier: BSD-3-Clause
                 package org.islandoftex.arara.api
 
-                public actual object AraraAPI {
+                /**
+                 * Store information about arara's build.
+                 */
+                public object AraraAPI {
+                    /**
+                     * arara's version.
+                     */
                     @Suppress("MayBeConst")
-                    public actual val version: String = "${project.version}"
+                    public val version: String = "${project.version}"
                 }
 
             """.trimIndent()
             )
         }
     }
-
 }

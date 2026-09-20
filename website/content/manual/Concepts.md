@@ -52,6 +52,48 @@ In short, a rule is a plain text file written in the YAML format, described in
 and more intuitive to use than other markup languages such as XML, besides of
 course being a data serialization standard for programming languages.
 
+{% messagebox(title="The Lua rule format") %}
+From version 8.0 on, arara features a new rule format based on the Lua
+scripting language, selected with the `--engine lua` command line option. A
+Lua rule is a script returning a table with the rule's `identifier`, `name`,
+`authors`, `commands` and `arguments`; commands and argument flags are plain
+Lua functions receiving a context table, and the helper methods known from
+the YAML format (`getCommand`, `isTrue`, `throwError` and friends) are
+available as globals:
+
+```lua
+return {
+  identifier = "pdflatex",
+  name = "PDFLaTeX",
+  authors = { "Island of TeX" },
+  commands = {
+    {
+      name = "PDFLaTeX engine",
+      command = function(ctx)
+        return getCommand("pdflatex", ctx.options, ctx.reference.fileName)
+      end
+    }
+  },
+  arguments = {
+    {
+      identifier = "options",
+      flag = function(ctx, value)
+        if isList(value) then
+          return value
+        else
+          throwError("I was expecting a list of options.")
+        end
+      end
+    }
+  }
+}
+```
+
+All official rules ship in both formats. The YAML format described in this
+manual is deprecated and will be removed in a future version, at which point
+Lua becomes the default engine.
+{% end %}
+
 {% messagebox(title="Animal jokes") %}
 As a bonus, the acronym *YAML* rhymes with the word *camel*, so arara is heavily
 environmentally friendly. Speaking of camels, there is the programming reference

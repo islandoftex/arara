@@ -17,11 +17,15 @@ file) will follow the default values.
 
 # File lookup
 
-Our tool looks for the presence of at least one of four very specific files
-before execution. These files are presented as follows. Observe that the
-directories must have the correct permissions for proper lookup and access. The
-lookup order is also presented: `.araraconfig.yaml` `→`
-`araraconfig.yaml` `→` `.arararc.yaml` `→` `arararc.yaml`.
+Our tool looks for the presence of at least one of a set of very specific
+files before execution. These files are presented as follows. Observe that
+the directories must have the correct permissions for proper lookup and
+access. arara first looks for YAML configuration files in the lookup order
+`.araraconfig.yaml` `→` `araraconfig.yaml` `→` `.arararc.yaml` `→`
+`arararc.yaml`. If no YAML configuration file is found at all, arara then
+looks for Lua configuration files with the same base names, i.e,
+`.araraconfig.lua` `→` `araraconfig.lua` `→` `.arararc.lua` `→`
+`arararc.lua` (see the section on the Lua format below).
 
 arara provides two approaches regarding the location of a configuration
 file. They dictate how the execution should behave and happen from a user
@@ -415,8 +419,45 @@ pattern). It is highly recommended to consult a proper regular expression
 documentation for a comprehensive overview.
     {% end %}
 
-Since arara allows four different names for configuration files, as well as
-global and local approaches, it is highly advisable to run our tool with the
-`--log` command line option enabled, in order to easily identify which file was
-considered for that specific execution. The logging feature is discussed later
-on, in [Logging](@/manual/Logging.md).
+# The Lua configuration format
+
+From version 8.0 on, a configuration file may also be written as a Lua
+script returning a table. The keys are exactly the ones described above for
+the YAML format, with the natural Lua representations: string lists become
+Lua sequences, the `preambles` mapping becomes a Lua table, and the
+`filetypes` entries become tables with `extension` and an optional
+`pattern` field. There is no `!config` header in the Lua format. A complete
+example:
+
+```lua
+return {
+  paths = { "/home/islandoftex/rules", "/opt/islandoftex/rules" },
+  filetypes = {
+    { extension = "tex" },
+    { extension = "texw", pattern = "^\\s*%\\s+" }
+  },
+  language = "en",
+  loops = 10,
+  verbose = true,
+  logging = false,
+  header = true,
+  dbname = "arara",
+  logname = "arara",
+  preambles = {
+    ["twopdftex"] = "% arara: pdftex\n% arara: pdftex"
+  },
+  defaultPreamble = "twopdftex",
+  prependPreambleIfDirectivesGiven = true
+}
+```
+
+Note that, unlike YAML, Lua strings *do* require escaping backslashes, so a
+file type pattern like `^\s*%\s+` has to be written as `"^\\s*%\\s+"`.
+Remember that Lua configuration files are only considered if no YAML
+configuration file is found at all.
+
+Since arara allows several different names for configuration files, two
+formats, as well as global and local approaches, it is highly advisable to
+run our tool with the `--log` command line option enabled, in order to easily
+identify which file was considered for that specific execution. The logging
+feature is discussed later on, in [Logging](@/manual/Logging.md).

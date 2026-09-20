@@ -1,13 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
-@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
-
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
-    kotlin("multiplatform")
+    kotlin("jvm")
     alias(libs.plugins.shadow)
-    distribution
+    application
 }
 
 val entryPath = "org.islandoftex.arara.cli.CLIKt"
@@ -21,7 +18,6 @@ val toolchain = runCatching { (extra["arara.jvm.target"] as String).toInt() }
 // ----------------------------------------------------------------------
 
 kotlin {
-
     // ----------------------------------------------------------------------
     // define the JVM toolchain (we can also set the vendor, if needed)
     // ----------------------------------------------------------------------
@@ -32,88 +28,42 @@ kotlin {
     // ----------------------------------------------------------------------
     jvmToolchain(toolchain)
 
-    jvm {
-
-        mainRun {
-            mainClass.set(entryPath)
-        }
-
-        binaries {
-            executable {
-                mainClass.set(entryPath)
-            }
-        }
-    }
-
-    sourceSets {
-        all {
-            languageSettings.optIn("org.islandoftex.arara.api.localization.AraraMessages")
-            languageSettings.optIn("kotlin.time.ExperimentalTime")
-            languageSettings.optIn("kotlin.RequiresOptIn")
-        }
-
-        configurations {
-            jvmMainImplementation {
-                exclude(group = "com.github.ajalt.mordant", module = "mordant-jvm-ffm")
-                exclude(group = "com.github.ajalt.mordant", module = "mordant-jvm-jna")
-            }
-        }
-
-        commonMain {
-            dependencies {
-                implementation(project(":core"))
-                implementation(project(":lua"))
-                implementation(libs.kotlin.logging)
-            }
-        }
-
-        jvmMain {
-            dependencies {
-                implementation(project(":core"))
-                implementation(project(":mvel"))
-                implementation(kotlin("reflect", libs.versions.kotlin.get()))
-                implementation(libs.clikt)
-                implementation(libs.clikt.markdown)
-                implementation(libs.yamlkt)
-                implementation(libs.mvel)
-                implementation(libs.slf4j.api)
-                implementation(libs.log4j.core)
-                implementation(libs.log4j.impl)
-            }
-        }
-
-        jvmTest {
-            dependencies {
-                implementation(libs.kotest.runner.jvm)
-                implementation(libs.kotest.assertions.jvm)
-            }
-        }
+    compilerOptions {
+        optIn.addAll(
+                "org.islandoftex.arara.api.localization.AraraMessages",
+                "kotlin.time.ExperimentalTime"
+        )
     }
 }
 
-distributions {
-    main {
-        val jvmRuntimeClasspath = files(
-                tasks.named("jvmJar"),
-                configurations.getByName("jvmRuntimeClasspath"),
-        )
+application {
+    mainClass.set(entryPath)
+    applicationName = project.name
+}
 
-        val startScripts by tasks.registering(CreateStartScripts::class) {
-            mainClass = entryPath
-            classpath = jvmRuntimeClasspath
-            outputDir = layout.buildDirectory.file("scripts").get().asFile
-            applicationName = project.name
-        }
-
-        contents {
-            from(startScripts) {
-                into("bin")
-            }
-            from(jvmRuntimeClasspath) {
-                into("lib")
-            }
-        }
+configurations {
+    implementation {
+        exclude(group = "com.github.ajalt.mordant", module = "mordant-jvm-ffm")
+        exclude(group = "com.github.ajalt.mordant", module = "mordant-jvm-jna")
     }
+}
+
+dependencies {
+    implementation(project(":core"))
+    implementation(project(":lua"))
+    implementation(project(":mvel"))
+    implementation(kotlin("reflect"))
+    implementation(libs.kotlin.logging)
+    implementation(libs.clikt)
+    implementation(libs.clikt.markdown)
+    implementation(libs.yamlkt)
+    implementation(libs.mvel)
+    implementation(libs.slf4j.api)
+    implementation(libs.log4j.core)
+    implementation(libs.log4j.impl)
+
+    testImplementation(libs.kotest.runner.jvm)
+    testImplementation(libs.kotest.assertions.jvm)
 }
 
 tasks {
