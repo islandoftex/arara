@@ -134,7 +134,10 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
      * a single project and, if that fails, to a list of projects.
      *
      * @param luaScript The Lua string to be interpreted.
-     * @throws IllegalArgumentException if the parsing fails.
+     * @throws ProjectParseException The Lua script is invalid or does not
+     * return a project table.
+     * @throws ProjectValidationException The returned project specification
+     * violates the documented invariants.
      * @return List of projects extracted from the Lua run.
      */
     // the parse enforces the documented project table invariants, so it

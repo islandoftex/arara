@@ -86,7 +86,8 @@ object ConfigurationUtils {
      *
      * @param file The configuration file (YAML or Lua) to read the
      * configuration from.
-     *
+     * @param currentProject The project the configuration is loaded for;
+     *   its working directory anchors relative rule paths.
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */

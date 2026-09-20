@@ -15,6 +15,9 @@ public interface FileType {
      */
     public val pattern: String
 
+    /**
+     * Constants for invalid file types.
+     */
     public companion object {
         /**
          * This constant identifies an invalid extension. As unices do not

@@ -96,6 +96,9 @@ internal object InterpreterUtils {
      *
      * @param path The current path.
      * @param name The rule name.
+     * @param format The rule format determining the file extension.
+     * @param workingDirectory The working directory to resolve relative
+     *   rule paths against.
      * @return The constructed path.
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.

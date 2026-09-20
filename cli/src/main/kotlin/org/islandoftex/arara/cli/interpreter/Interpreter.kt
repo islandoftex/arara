@@ -52,6 +52,8 @@ class Interpreter(
      * Gets the rule according to the provided directive.
      *
      * @param directive The provided directive.
+     * @param workingDirectory The working directory of the file being
+     *   processed, used to resolve relative rule paths.
      * @return The absolute canonical path of the rule, given the provided
      * directive.
      * @throws AraraException Something wrong happened, to be caught in the
@@ -440,11 +442,13 @@ class Interpreter(
     /**
      * Process a single argument and return the evaluated result.
      *
+     * A parameter that is present in the directive but set to null counts
+     * as if it had not been provided at all.
+     *
      * @param argument The argument to process.
-     * @param idInDirectiveParams Whether the argument's identifier is
-     *   contained in the directive's parameters field.
+     * @param parameterValue The value as provided by the user, or null
+     *   when the parameter is absent.
      * @param context The context for the evaluation.
-     * @param parameterValue The value as passed by the user.
      * @return The result of the evaluation.
      * @throws AraraException The argument could not be processed.
      */

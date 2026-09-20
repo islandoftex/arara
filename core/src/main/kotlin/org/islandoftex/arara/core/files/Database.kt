@@ -13,7 +13,7 @@ import org.islandoftex.arara.core.utils.formatString
  * The database model, which keeps track on file changes.
  *
  * This database is a map because it maps files to hashes. So the key will
- * always be a file representation and the value always a string.
+ * always be a file representation and the value always a CRC32 hash.
  *
  * The class intentionally shares its simple name with the api interface
  * it implements; the local declaration shadows the import on purpose.

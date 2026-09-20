@@ -29,19 +29,38 @@ fun String.formatString(vararg stringReplacements: String): String {
  * per [his comment](https://stackoverflow.com/questions/1247772/is-there-an-
  * equivalent-of-java-util-regex-for-glob-type-patterns#comment108405664_17369948).
  *
- * @param pattern A glob pattern.
- * @return A regex to recognize the given glob pattern.
+ * @return A regex to recognize the glob pattern held by the receiver.
  */
-@Suppress("ComplexMethod")
 internal fun String.globToRegex(): Regex =
     buildString(length) {
-        var inGroup = 0
-        var inClass = 0
-        var firstIndexInClass = -1
-        val arr = toCharArray()
-        var i = 0
-        while (i < arr.size) {
-            when (val ch = arr[i]) {
+        appendGlobPattern(this@globToRegex)
+    }.let { pattern ->
+        // a malformed glob (e.g. an unbalanced brace) would otherwise
+        // surface as a raw pattern syntax exception deep inside a rule
+        // evaluation
+        runCatching { pattern.toRegex() }.getOrElse {
+            throw AraraException(
+                "The glob pattern '$this' could not be converted into a " +
+                    "regular expression: ${it.message}"
+            )
+        }
+    }
+
+/**
+ * Appends the regular expression equivalent of the glob pattern held by
+ * the receiver to this builder.
+ */
+// the algorithm is a faithful, branchy port of the public-domain
+// original; its control flow reflects the number of glob metacharacters
+@Suppress("ComplexMethod", "NestedBlockDepth")
+private fun StringBuilder.appendGlobPattern(glob: String) {
+    var inGroup = 0
+    var inClass = 0
+    var firstIndexInClass = -1
+    val arr = glob.toCharArray()
+    var i = 0
+    while (i < arr.size) {
+        when (val ch = arr[i]) {
                 '\\' -> {
                     i += 1
                     if (i >= arr.size) {
@@ -93,14 +112,4 @@ internal fun String.globToRegex(): Regex =
             }
             i++
         }
-    }.let { pattern ->
-        // a malformed glob (e.g. an unbalanced brace) would otherwise
-        // surface as a raw pattern syntax exception deep inside a rule
-        // evaluation
-        runCatching { pattern.toRegex() }.getOrElse {
-            throw AraraException(
-                "The glob pattern '$this' could not be converted into a " +
-                    "regular expression: ${it.message}"
-            )
-        }
-    }
+}

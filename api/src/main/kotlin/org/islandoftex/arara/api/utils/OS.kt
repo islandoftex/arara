@@ -13,7 +13,22 @@ public object OS {
                 .getOrDefault("Linux").lowercase()
     }
 
+    /**
+     * Whether the underlying operating system is Windows. The check is
+     * based on the `os.name` system property.
+     */
     public val isWindows: Boolean by lazy { fullName.contains("win") }
+
+    /**
+     * Whether the underlying operating system is Linux (also covering the
+     * `nix`, `nux` and `aix` spellings). The check is based on the
+     * `os.name` system property.
+     */
     public val isLinux: Boolean by lazy { setOf("nix", "nux", "aix").any { fullName.contains(it) } }
+
+    /**
+     * Whether the underlying operating system is macOS. The check is
+     * based on the `os.name` system property.
+     */
     public val isMac: Boolean by lazy { fullName.contains("mac") }
 }

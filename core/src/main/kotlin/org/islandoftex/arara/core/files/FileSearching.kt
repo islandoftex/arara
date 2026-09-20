@@ -103,7 +103,11 @@ object FileSearching {
      * configuration accordingly.
      *
      * @param reference The string reference.
-     * @throw AraraException Something wrong happened, to be caught in the
+     * @param workingDirectory The working directory to resolve the
+     *   reference against.
+     * @param executionOptions The execution options holding the known
+     *   file types.
+     * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
     @Throws(AraraException::class)
@@ -126,11 +130,13 @@ object FileSearching {
      * Performs a file lookup based on a string reference.
      *
      * @param reference The file reference as a string.
-     * @return The file as result of the lookup operation.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     * @param workingDirectory The working directory to resolve the
+     *   reference against.
+     * @param executionOptions The execution options holding the known
+     *   file types.
+     * @return The file as result of the lookup operation, or null if no
+     *   match was found.
      */
-    @Throws(AraraException::class)
     internal fun lookupFile(
         reference: String,
         workingDirectory: MPPPath,

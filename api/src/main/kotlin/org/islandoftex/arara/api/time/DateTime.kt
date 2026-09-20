@@ -9,11 +9,29 @@ import java.time.ZoneId
  * Platform-independent object to represent a date and time.
  */
 public class DateTime {
+    /**
+     * The year of the date.
+     */
     public val year: Int
+    /**
+     * The month of the year, from 1 (January) to 12 (December).
+     */
     public val month: Int
+    /**
+     * The day of the month, from 1 to 31.
+     */
     public val day: Int
+    /**
+     * The hour of the day, from 0 to 23.
+     */
     public val hour: Int
+    /**
+     * The minute of the hour, from 0 to 59.
+     */
     public val minute: Int
+    /**
+     * The second of the minute, from 0 to 59.
+     */
     public val second: Int
 
     private val timezone: ZoneId = ZoneId.systemDefault()
