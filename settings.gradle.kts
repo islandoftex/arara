@@ -16,6 +16,5 @@ include(
     "core",
     "lua",
     "mvel",
-    "cli",
-    "docs"
+    "cli"
 )

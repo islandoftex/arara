@@ -28,13 +28,6 @@ mvel = "2.5.2.Final"
 slf4j = "2.0.17"
 yamlkt = "0.13.0"
 ztExec = "1.12"
-# --------------------------------
-# Libraries - buildSrc
-# --------------------------------
-kobats = "0.1.0"
-roastmyjar = "0.1.0"
-scribeswan = "0.1.1"
-# --------------------------------
 
 [libraries]
 clikt = { group = "com.github.ajalt.clikt", name = "clikt", version.ref = "clikt" }
@@ -54,12 +47,6 @@ slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
 slf4j-simple = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j" }
 yamlkt = { group = "net.mamoe.yamlkt", name = "yamlkt", version.ref = "yamlkt" }
 ztexec = { group = "org.zeroturnaround", name = "zt-exec", version.ref = "ztExec" }
-# --------------------------------
-# libraries used in buildSrc
-# --------------------------------
-support-kobats = { group = "org.islandoftex", name = "kobats", version.ref = "kobats" }
-support-roastmyjar = { group = "org.islandoftex", name = "roastmyjar", version.ref = "roastmyjar" }
-support-scribeswan = { group = "org.islandoftex", name = "scribeswan", version.ref = "scribeswan" }
 
 [plugins]
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detektPlugin" }

@@ -5,13 +5,6 @@ import org.gradle.api.java.archives.internal.DefaultManifest
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.islandoftex.arara.build.AraraPublication
-import org.islandoftex.arara.build.CTANTreeBuilderTask
-import org.islandoftex.arara.build.CTANZipBuilderTask
-import org.islandoftex.arara.build.DocumentationSourceZipBuilderTask
-import org.islandoftex.arara.build.RoastTask
-import org.islandoftex.arara.build.SourceZipBuilderTask
-import org.islandoftex.arara.build.TDSTreeBuilderTask
-import org.islandoftex.arara.build.TDSZipBuilderTask
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
@@ -154,35 +147,6 @@ tasks {
         checkForGradleUpdate = false
     }
 
-    register("assembleCTANSourceZip", SourceZipBuilderTask::class.java)
-
-    register("assembleDocumentationSourceZip", DocumentationSourceZipBuilderTask::class.java) {
-        dependsOn(":docs:buildDocs")
-    }
-
-    register("assembleTDSTree", TDSTreeBuilderTask::class.java) {
-        dependsOn(":cli:shadowJar")
-        dependsOn(":docs:buildDocs")
-        dependsOn("assembleCTANSourceZip")
-        dependsOn("assembleDocumentationSourceZip")
-    }
-
-    register("assembleTDSZip", TDSZipBuilderTask::class.java) {
-        dependsOn("assembleTDSTree")
-    }
-
-    register("assembleCTANTree", CTANTreeBuilderTask::class.java) {
-        dependsOn("assembleTDSZip")
-    }
-
-    register("assembleCTAN", CTANZipBuilderTask::class.java) {
-        dependsOn("assembleCTANTree")
-    }
-
-    register("roast", RoastTask::class.java) {
-        dependsOn(":cli:shadowJar")
-    }
-
     named("spotlessYamlCheck") {
         enabled = validateYAML
     }
@@ -225,84 +189,81 @@ val engine = libs.junit.jupiter.engine
 
 subprojects {
 
-    if (!path.contains("docs")) {
+    apply(plugin = "org.jetbrains.dokka")
 
-        apply(plugin = "org.jetbrains.dokka")
+    val mainManifest: Manifest = DefaultManifest((project as ProjectInternal).fileResolver)
+            .apply {
+                attributes["Implementation-Title"] = "arara-${project.name}"
+                attributes["Implementation-Version"] = version
 
-        val mainManifest: Manifest = DefaultManifest((project as ProjectInternal).fileResolver)
-                .apply {
-                    attributes["Implementation-Title"] = "arara-${project.name}"
-                    attributes["Implementation-Version"] = version
-
-                    if (project.name == "cli") {
-                        attributes["Main-Class"] = "org.islandoftex.arara.cli.CLIKt"
-                    }
-
-                    // for Java 9+ compatibility of log4j
-                    attributes["Multi-Release"] = "true"
-                    attributes["Automatic-Module-Name"] = rootProject.group
+                if (project.name == "cli") {
+                    attributes["Main-Class"] = "org.islandoftex.arara.cli.CLIKt"
                 }
 
-        apply(plugin = "org.jetbrains.kotlin.jvm")
-
-        configure<KotlinJvmProjectExtension> {
-
-            compilerOptions {
-                jvmTarget.set(araraJVMTarget)
-                apiVersion.set(KotlinVersion.fromVersion(araraKotlinAPI))
-                languageVersion.set(KotlinVersion.fromVersion(araraKotlinLanguage))
+                // for Java 9+ compatibility of log4j
+                attributes["Multi-Release"] = "true"
+                attributes["Automatic-Module-Name"] = rootProject.group
             }
+
+    apply(plugin = "org.jetbrains.kotlin.jvm")
+
+    configure<KotlinJvmProjectExtension> {
+
+        compilerOptions {
+            jvmTarget.set(araraJVMTarget)
+            apiVersion.set(KotlinVersion.fromVersion(araraKotlinAPI))
+            languageVersion.set(KotlinVersion.fromVersion(araraKotlinLanguage))
         }
-
-        dependencies {
-            "testImplementation"(kotlin("test-junit5"))
-            "testRuntimeOnly"(engine)
-        }
-
-        tasks {
-
-            named<Test>("test") {
-                useJUnitPlatform()
-
-                testLogging {
-                    exceptionFormat = TestExceptionFormat.FULL
-                    events(
-                            TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR,
-                            TestLogEvent.SKIPPED, TestLogEvent.PASSED, TestLogEvent.FAILED
-                    )
-                }
-            }
-
-            withType<Jar> {
-                archiveBaseName.set("arara-${project.name}")
-                manifest.attributes.putAll(mainManifest.attributes)
-            }
-
-            withType<JavaCompile> {
-                sourceCompatibility = araraJVMString
-                targetCompatibility = araraJVMString
-            }
-
-            named<DokkaTask>("dokkaHtml").configure {
-                dokkaSourceSets.configureEach {
-                    jdkVersion.set(araraJVMInt)
-                    moduleName.set("arara (${project.name})")
-                    includeNonPublic.set(false)
-                    skipDeprecated.set(false)
-                    reportUndocumented.set(true)
-                    skipEmptyPackages.set(true)
-                    platform.set(org.jetbrains.dokka.Platform.jvm)
-                    sourceLink {
-                        localDirectory.set(file("./"))
-                        remoteUrl.set(uri("https://gitlab.com/islandoftex/arara").toURL())
-                        remoteLineSuffix.set("#L")
-                    }
-                    noStdlibLink.set(false)
-                    noJdkLink.set(false)
-                }
-            }
-        }
-
-        apply<AraraPublication>()
     }
+
+    dependencies {
+        "testImplementation"(kotlin("test-junit5"))
+        "testRuntimeOnly"(engine)
+    }
+
+    tasks {
+
+        named<Test>("test") {
+            useJUnitPlatform()
+
+            testLogging {
+                exceptionFormat = TestExceptionFormat.FULL
+                events(
+                        TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR,
+                        TestLogEvent.SKIPPED, TestLogEvent.PASSED, TestLogEvent.FAILED
+                )
+            }
+        }
+
+        withType<Jar> {
+            archiveBaseName.set("arara-${project.name}")
+            manifest.attributes.putAll(mainManifest.attributes)
+        }
+
+        withType<JavaCompile> {
+            sourceCompatibility = araraJVMString
+            targetCompatibility = araraJVMString
+        }
+
+        named<DokkaTask>("dokkaHtml").configure {
+            dokkaSourceSets.configureEach {
+                jdkVersion.set(araraJVMInt)
+                moduleName.set("arara (${project.name})")
+                includeNonPublic.set(false)
+                skipDeprecated.set(false)
+                reportUndocumented.set(true)
+                skipEmptyPackages.set(true)
+                platform.set(org.jetbrains.dokka.Platform.jvm)
+                sourceLink {
+                    localDirectory.set(file("./"))
+                    remoteUrl.set(uri("https://gitlab.com/islandoftex/arara").toURL())
+                    remoteLineSuffix.set("#L")
+                }
+                noStdlibLink.set(false)
+                noJdkLink.set(false)
+            }
+        }
+    }
+
+    apply<AraraPublication>()
 }

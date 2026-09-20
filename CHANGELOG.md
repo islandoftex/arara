@@ -53,6 +53,15 @@ on.
 
 ## Removed
 
+* Removed the Kotlin DSL module (see `oc1`) and the packaging build glue: the
+  `roast` bytecode gate, all CTAN/TDS zip and tree tasks and the `docs`
+  Gradle module are gone from the build. The manual sources stay in `docs/`
+  (inert) and every removed task remains recoverable from the `oc1` tag.
+  Rationale: the docs workflow shells out to `zola`, `weasyprint` and `htmlq`
+  and cannot run here; the packaging tasks depend on it, so they would be
+  permanently broken. The `kobats`, `roastmyjar` and `scribeswan` buildSrc
+  dependencies and their GitLab package registries went with them (`kobats`
+  was already an unused orphan).
 * Removed the unwired, experimental Kotlin DSL module (`kotlin-dsl`): it was
   never reachable from the CLI (the `cli` module did not depend on it), its
   rule format was never implemented, and the default YAML engine could

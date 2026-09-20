@@ -58,13 +58,11 @@ Gradle 9.2.0 wrapper (downloads on first run). JVM toolchain is JDK 11
   spotless-changelog plugin — do not hardcode it anywhere. `changelogPrint`
   shows the mapping; `changelogBump`/`changelogCheck`/`changelogPush` drive a
   release; the phrase `breaking change` in an entry bumps the major.
-- `./gradlew roast` — verifies the shadow jar's highest bytecode version does
-  not exceed `arara.jvm.target` (JRE-11 compatibility gate); rerun after
-  touching build/dependency configuration.
-- `./gradlew assembleCTAN` / `assembleTDSZip` — release packaging. These pull
-  in the docs build, which shells out and requires `htmlq`, `weasyprint` and a
-  pre-built `website/public/` (zola). Use `nix develop` (`flake.nix` provides
-  all of these) before building docs or CTAN/TDS artifacts.
+- The former packaging tasks (`roast`, `assembleCTAN*`, `assembleTDS*`, the
+  `docs` Gradle module) were removed from the build: the doc/CTAN toolchain
+  (zola, weasyprint, htmlq) is unavailable here and out of scope. The `docs/`
+  directory still holds the manual sources (inert), and the removed tasks
+  remain recoverable from the `oc1` tag.
 
 ## Layout and architecture
 
