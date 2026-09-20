@@ -34,9 +34,11 @@ on.
 ## Changed
 
 * Replaced `luak` by `luaj`.
-* Updated dependencies.
-* Kotlin platform updated to 2.3.0.
-* Gradle updated to 9.2.0.
+* Kotlin platform updated to 2.4.20, Gradle updated to 9.7.1, build
+  plugins updated (shadow 9.6.1, spotless 8.10.2, versions 0.64.0 and
+  Dokka 2.2.0, including the migration to the Dokka Gradle plugin v2
+  configuration) and dependencies updated (kotlin-logging 8.0.4,
+  kotlinx-serialization 1.11.0, mvel2 2.5.4.Final).
 * The build has been migrated from Kotlin Multiplatform (with JVM-only
   targets) to plain Kotlin/JVM; source sets moved from
   `src/commonMain`/`src/jvmMain` to `src/main` (and tests accordingly).
@@ -53,22 +55,27 @@ on.
 
 ## Removed
 
-* Removed the Kotlin DSL module (see `oc1`) and the packaging build glue: the
-  `roast` bytecode gate, all CTAN/TDS zip and tree tasks and the `docs`
-  Gradle module are gone from the build. The manual sources stay in `docs/`
-  (inert) and every removed task remains recoverable from the `oc1` tag.
-  Rationale: the docs workflow shells out to `zola`, `weasyprint` and `htmlq`
-  and cannot run here; the packaging tasks depend on it, so they would be
-  permanently broken. The `kobats`, `roastmyjar` and `scribeswan` buildSrc
-  dependencies and their GitLab package registries went with them (`kobats`
-  was already an unused orphan).
-* Removed the unwired, experimental Kotlin DSL module (`kotlin-dsl`): it was
-  never reachable from the CLI (the `cli` module did not depend on it), its
-  rule format was never implemented, and the default YAML engine could
-  discover `.kts` rules that then crashed. The `RuleUtils` fallback now
-  reports unsupported rule formats with a proper error instead of a `TODO`
-  crash. The module code is preserved in the `oc0` tag.
+* Removed the experimental Kotlin DSL module (`kotlin-dsl`): the CLI
+  never wired it up and its `.kts` rule format was never implemented, so
+  the default YAML engine could discover `.kts` rule files that then
+  crashed; `.kts` rule files are no longer part of the rule lookup.
+* Removed the packaging and documentation build tasks (CTAN/TDS trees
+  and zips, the documentation build and the `roast` bytecode check) and
+  the `docs` Gradle module: the documentation workflow requires external
+  tools (zola, weasyprint, htmlq) that are unavailable in this
+  environment, and the packaging tasks depended on it. The manual sources
+  remain in `docs/`.
 * Removed the `korlibs` bundle.
+
+## Fixed
+
+* Restored the documented default parameters of `MPPPath.writeText` and
+  `Session.updateEnvironmentVariables`, which the Kotlin Multiplatform
+  migration had dropped and which broke compilation.
+* Unsupported rule and configuration file formats now raise a proper
+  arara error instead of crashing with a `NotImplementedError`.
+* The end-to-end test fixtures referenced the pre-migration
+  `src/jvmTest` source set paths and are back on `src/test`.
 
 ## [7.2.0] - 2025-06-29
 

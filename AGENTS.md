@@ -6,15 +6,15 @@ This tree is `arara`, the TeX automation tool (Kotlin, JVM, Gradle multi-project
 Upstream development happens on GitLab (GitHub is only a mirror). This particular
 copy carries a large, externally generated change: the YAML/MVEL rule format was
 deprecated in favour of a new Lua rule and configuration format, selectable at
-runtime via `--engine yaml|lua` (default: YAML). That change was produced in an
-isolated environment and is **untested**. The standing task in this repo:
+runtime via `--engine yaml|lua` (default: YAML). The change arrived untested and
+was then repaired, modernized and simplified by the tagged sequence `oc0` through
+`oc12`: the full suite is green, detekt and spotless pass with zero findings, the
+tool is smoke-verified end-to-end on the provisioned JRE 11, and Kotlin, Gradle,
+the plugins and the libraries are at their latest stable versions.
 
-1. verify everything that was done and fix breakage (see known issues below),
-2. bump every library, Kotlin version, plugin, and Gradle to the latest release,
-3. simplify the build files, and make everything work again.
-
-A pristine pre-change checkout of the repository is available from the user on
-request — diff against it when in doubt about a change.
+`oc0` is the exact pre-repair baseline and every later `oc<n>` tag is one
+self-contained, verified step — diff or bisect against the tags when in doubt
+about a change.
 
 ## Known issues (verified 2026-09-19; resolved during oc1..oc5)
 
@@ -37,7 +37,8 @@ with `~/.gradle/jdks/eclipse_adoptium-11-*/bin/java`.
 
 ## Commands
 
-Gradle 9.2.0 wrapper (downloads on first run). JVM toolchain is JDK 11
+Gradle 9.7.1 wrapper, Kotlin 2.4.20 (with `arara.kotlin.api`/`arara.kotlin.language`
+pins one minor behind). JVM toolchain is JDK 11
 (`arara.jvm.target` in root `gradle.properties`; the foojay resolver in
 `settings.gradle.kts` auto-provisions it, so any local JDK can drive the build).
 
@@ -116,5 +117,6 @@ grep checklist). Read it before touching anything YAML/MVEL. Biggest trap:
   `gradle/libs.versions.toml`.
 - Kotest autoscan is disabled
   (`kotest.framework.classpath.scanning.autoscan.disable=true`).
-- This directory has no `.git`, so git tooling and pre-commit hooks cannot be
-  used here; rely on the Gradle checks above.
+- Git history starts at the `oc0` tag (the pristine baseline); every later
+  `oc<n>` tag marks one verified repair/modernization step, so regressions can
+  be bisected by tags.
