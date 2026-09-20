@@ -111,8 +111,8 @@ object Session : Session {
      *   By default all values will be removed.
      */
     fun updateEnvironmentVariables(
-            additionFilter: (String) -> Boolean,
-            removalFilter: (String) -> Boolean
+            additionFilter: (String) -> Boolean = { true },
+            removalFilter: (String) -> Boolean = { true }
     ) {
         // remove all current environment variables to clean up the session
         map.filterKeys { it.startsWith("environment:") }

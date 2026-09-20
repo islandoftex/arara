@@ -175,7 +175,7 @@ public class MPPPath {
      * exception if the file is a directory or access is impossible.
      */
     @Throws(AraraIOException::class)
-    public fun writeText(text: String, append: Boolean): Unit =
+    public fun writeText(text: String, append: Boolean = false): Unit =
         if (!isDirectory) {
             if (append) {
                 if (exists) {
