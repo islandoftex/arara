@@ -5,7 +5,7 @@ import org.gradle.api.java.archives.internal.DefaultManifest
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.islandoftex.arara.build.AraraPublication
-import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
@@ -245,22 +245,23 @@ subprojects {
             targetCompatibility = araraJVMString
         }
 
-        named<DokkaTask>("dokkaHtml").configure {
+        // DGP v2 configuration (the v1 dokkaHtml task is gone as of Dokka
+        // 2.2); non-public members stay undocumented by default, and the
+        // platform is derived from the Kotlin JVM plugin
+        configure<DokkaExtension> {
+            moduleName.set("arara (${project.name})")
             dokkaSourceSets.configureEach {
-                jdkVersion.set(araraJVMInt)
-                moduleName.set("arara (${project.name})")
-                includeNonPublic.set(false)
                 skipDeprecated.set(false)
                 reportUndocumented.set(true)
                 skipEmptyPackages.set(true)
-                platform.set(org.jetbrains.dokka.Platform.jvm)
+                jdkVersion.set(araraJVMInt)
                 sourceLink {
                     localDirectory.set(file("./"))
-                    remoteUrl.set(uri("https://gitlab.com/islandoftex/arara").toURL())
+                    remoteUrl.set(uri("https://gitlab.com/islandoftex/arara"))
                     remoteLineSuffix.set("#L")
                 }
-                noStdlibLink.set(false)
-                noJdkLink.set(false)
+                enableKotlinStdLibDocumentationLink.set(true)
+                enableJdkDocumentationLink.set(true)
             }
         }
     }

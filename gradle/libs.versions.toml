@@ -2,16 +2,16 @@
 # --------------------------------
 # Kotlin itself
 # --------------------------------
-kotlin = "2.3.0"
+kotlin = "2.4.20"
 # --------------------------------
 # Plugins
 # --------------------------------
 detektPlugin = "1.23.8"
-dokkaPlugin = "2.1.0"
-shadowPlugin = "9.2.2"
+dokkaPlugin = "2.2.0"
+shadowPlugin = "9.6.1"
 spotlessChangelogPlugin = "3.1.2"
-spotlessPlugin = "8.0.0"
-versionsPlugin = "0.53.0"
+spotlessPlugin = "8.10.2"
+versionsPlugin = "0.64.0"
 # --------------------------------
 # Libraries
 # --------------------------------
