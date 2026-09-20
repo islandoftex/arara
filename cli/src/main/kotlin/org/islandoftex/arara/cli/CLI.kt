@@ -197,6 +197,16 @@ class CLI : CliktCommand("arara") {
                         }
                     }
                     null
+                }?.also { projects ->
+                    // project specifications do not go through the fallback
+                    // branch below, so the configuration file of every
+                    // project has to be loaded right here
+                    projects.forEach { project ->
+                        ConfigurationUtils.configFileForProject(project)?.let {
+                            DisplayUtils.configurationFileName = it.toString()
+                            ConfigurationUtils.load(it, project)
+                        }
+                    }
                 }
             }
             ?: Project(
@@ -342,7 +352,10 @@ class CLI : CliktCommand("arara") {
                     DirectiveUtils.initializeDirectiveCore()
                 },
                 executeBeforeProject = {
-                    // the configuration file could be loaded here
+                    // the configuration file of each project is loaded in
+                    // resolveProjects, where it has to be available before
+                    // the file references are resolved against the file
+                    // types the configuration may provide
                 },
                 executeBeforeFile = {
                     // should more file-specific configuration be reset here?

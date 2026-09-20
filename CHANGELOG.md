@@ -69,6 +69,13 @@ on.
 
 ## Fixed
 
+* Project specifications (`.lua` files) now honor configuration files:
+  previously the configuration was loaded only for single file
+  invocations, so rule paths, file types, language and the other
+  settings were silently ignored when running a project.
+* Error messages for YAML rules report the directory the rule is located
+  in, consistent with the Lua engine and the interpreter's own reports;
+  previously they printed the full rule file path in the location field.
 * Malformed glob patterns in the `listFilesByPatterns` helper now produce
   a friendly arara error naming the pattern instead of a raw pattern
   syntax exception deep inside a rule evaluation.

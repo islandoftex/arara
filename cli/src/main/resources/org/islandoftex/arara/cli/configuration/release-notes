@@ -1,6 +1,11 @@
-* Add (Lua) project support to arara.
-* Use a defined domain-specific file system API instead of `java.io.File`.
-* Use header mode by default (`-w` restores the old behavior).
+* Add a Lua rule format in which rules are Lua scripts returning a rule
+  table, with the usual helper methods available as Lua globals.
+* Add a Lua configuration file format, considered when no YAML
+  configuration file is found.
+* Add the `-e`/`--engine` option to select the rule engine to use:
+  `yaml` (default, deprecated) or `lua`.
+* Ship every official rule in both formats, alongside the
+  `scripts/yaml2lua.py` converter.
 
 See the full changelog of this release at
 https://gitlab.com/islandoftex/arara/-/blob/development/CHANGELOG.md

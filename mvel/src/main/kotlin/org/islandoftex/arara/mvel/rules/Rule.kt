@@ -26,22 +26,13 @@ data class Rule(
     override val arguments: List<RuleArgument> = emptyList()
 ) : Rule {
     companion object {
-        private var ruleId: String? = null
-        private var rulePath: String? = null
-
         /**
-         * Gets the rule error header, containing the identifier and the path, if
-         * any.
+         * Builds the rule error header, containing the identifier and the
+         * location of the rule.
          */
-        private val ruleErrorHeader: String
-            get() {
-                return ruleId?.let { id ->
-                    rulePath?.let { path ->
-                        LanguageController.messages.ERROR_RULE_IDENTIFIER_AND_PATH
-                            .format(id, path) + " "
-                    }
-                } ?: ""
-            }
+        private fun ruleErrorHeader(identifier: String, path: String): String =
+            LanguageController.messages.ERROR_RULE_IDENTIFIER_AND_PATH
+                .format(identifier, path) + " "
 
         /**
          * Parses the provided file, checks the identifier and returns a rule
@@ -55,8 +46,9 @@ data class Rule(
          */
         @Throws(AraraException::class)
         fun parse(file: MPPPath, identifier: String): Rule {
-            ruleId = identifier
-            rulePath = file.normalize().toString()
+            val errorHeader = ruleErrorHeader(
+                identifier, file.normalize().parent.toString()
+            )
             val rule = file.runCatching {
                 val text = readText()
                 if (!text.startsWith("!config"))
@@ -66,14 +58,14 @@ data class Rule(
                 )
             }.getOrElse {
                 throw AraraException(
-                    ruleErrorHeader + LanguageController
+                    errorHeader + LanguageController
                         .messages.ERROR_PARSERULE_GENERIC_ERROR,
                     it
                 )
             }
 
-            validateHeader(rule, identifier)
-            validateBody(rule)
+            validateHeader(rule, identifier, errorHeader)
+            validateBody(rule, errorHeader)
             return rule
         }
 
@@ -82,22 +74,27 @@ data class Rule(
          *
          * @param rule The rule object.
          * @param identifier The directive identifier.
+         * @param errorHeader The rule error header for error messages.
          * @throws AraraException Something wrong happened, to be caught in the
          * higher levels.
          */
         @Throws(AraraException::class)
         @Suppress("ThrowsCount")
-        private fun validateHeader(rule: Rule, identifier: String) {
+        private fun validateHeader(
+            rule: Rule,
+            identifier: String,
+            errorHeader: String
+        ) {
             if (rule.identifier != identifier) {
                 throw AraraException(
-                    ruleErrorHeader +
+                    errorHeader +
                         LanguageController.messages.ERROR_VALIDATEHEADER_WRONG_IDENTIFIER
                             .format(rule.identifier, identifier)
                 )
             }
             if (rule.displayName == null) {
                 throw AraraException(
-                    ruleErrorHeader + LanguageController
+                    errorHeader + LanguageController
                         .messages.ERROR_VALIDATEHEADER_NULL_NAME
                 )
             }
@@ -107,23 +104,27 @@ data class Rule(
          * Validates the rule body.
          *
          * @param rule The rule object.
+         * @param errorHeader The rule error header for error messages.
          * @throws AraraException Something wrong happened, to be caught in the
          * higher levels.
          */
         @Throws(AraraException::class)
         @Suppress("ThrowsCount")
-        private fun validateBody(rule: org.islandoftex.arara.mvel.rules.Rule) {
+        private fun validateBody(
+            rule: org.islandoftex.arara.mvel.rules.Rule,
+            errorHeader: String
+        ) {
             if (rule.commands.any { it.commandString == null })
                 throw AraraException(
-                    ruleErrorHeader + LanguageController
+                    errorHeader + LanguageController
                         .messages.ERROR_VALIDATEBODY_NULL_COMMAND
                 )
 
-            val arguments = rule.arguments.filter { it.validate(ruleErrorHeader) }
+            val arguments = rule.arguments.filter { it.validate(errorHeader) }
 
             arguments.intersect(listOf("files", "reference")).forEach {
                 throw AraraException(
-                    ruleErrorHeader + LanguageController
+                    errorHeader + LanguageController
                         .messages.ERROR_VALIDATEBODY_ARGUMENT_ID_IS_RESERVED
                         .format(it)
                 )
@@ -131,7 +132,7 @@ data class Rule(
 
             if (arguments.size != arguments.toSet().size) {
                 throw AraraException(
-                    ruleErrorHeader + LanguageController.messages
+                    errorHeader + LanguageController.messages
                         .ERROR_VALIDATEBODY_DUPLICATE_ARGUMENT_IDENTIFIERS
                 )
             }

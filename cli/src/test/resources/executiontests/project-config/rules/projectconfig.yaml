@@ -1,0 +1,10 @@
+!config
+identifier: projectconfig
+name: Project configuration test rule
+commands:
+  - name: The echoer
+    command: >
+      @{
+          return isWindows(getCommand('cmd', '/c', 'echo', 'ProjectConfigWorks'), getCommand('echo', 'ProjectConfigWorks'));
+      }
+arguments: []
