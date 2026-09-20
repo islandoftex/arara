@@ -37,8 +37,8 @@ on.
 * Kotlin platform updated to 2.4.20, Gradle updated to 9.7.1, build
   plugins updated (shadow 9.6.1, spotless 8.10.2, versions 0.64.0 and
   Dokka 2.2.0, including the migration to the Dokka Gradle plugin v2
-  configuration) and dependencies updated (kotlin-logging 8.0.4,
-  kotlinx-serialization 1.11.0, mvel2 2.5.4.Final).
+  configuration) and dependencies updated (kaml 0.104.0,
+  kotlin-logging 8.0.4, kotlinx-serialization 1.11.0, mvel2 2.5.4.Final).
 * The build has been migrated from Kotlin Multiplatform (with JVM-only
   targets) to plain Kotlin/JVM; source sets moved from
   `src/commonMain`/`src/jvmMain` to `src/main` (and tests accordingly).

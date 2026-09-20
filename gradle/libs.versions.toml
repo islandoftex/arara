@@ -17,7 +17,7 @@ versionsPlugin = "0.64.0"
 # --------------------------------
 clikt = "5.0.3"
 junit = "5.14.0"
-kaml = "0.98.0"
+kaml = "0.104.0"
 kotest = "6.0.3"
 kotlinLogging = "8.0.4"
 kotlinxCoroutines = "1.10.2"
