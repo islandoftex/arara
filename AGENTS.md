@@ -110,7 +110,10 @@ grep checklist). Read it before touching anything YAML/MVEL. Biggest trap:
 - The end-to-end suite is fixture-driven:
   `cli/src/test/resources/executiontests/<scenario>/` (YAML rules + config per
   scenario), driven by the Kotest `ExecutionTest` (`@Isolate`). Fixture paths
-  in tests are relative to the `cli/` module directory.
+  in tests are relative to the `cli/` module directory. The `lua-engine`
+  scenario plus `LuaExecutionTest` run the same pipeline with
+  `RuleEngine.current` flipped to the Lua engine, so both engines have
+  automated end-to-end coverage.
 - Root `gradle.properties` also drives the build: `arara.jvm.target` (JVM
   target/toolchain) and `arara.kotlin.api` / `arara.kotlin.language`
   (Kotlin api/language versions); the version catalog is
