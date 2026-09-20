@@ -80,7 +80,13 @@ internal object LuaRuleEnvironment {
         else -> value.tojstring().isEmpty()
     }
 
-    @Suppress("LongMethod", "ComplexMethod")
+    // the bindings forward to Java vararg methods (hence the spread
+    // operators), access Lua arguments positionally (hence the argument
+    // index numbers) and report binding errors where they occur
+    @Suppress(
+        "LongMethod", "ComplexMethod",
+        "SpreadOperator", "MagicNumber", "ThrowsCount"
+    )
     private fun bindHelpers(globals: Globals) {
         globals.set(
             "throwError",
@@ -351,6 +357,8 @@ internal object LuaRuleEnvironment {
      * one argument yields a boolean, two to four arguments select between
      * the yes/no/fallback values (fallback applies to empty input).
      */
+    // the argument positions mirror the documented helper signatures
+    @Suppress("MagicNumber")
     private fun conditionalValue(args: Varargs, positive: Boolean): LuaValue {
         val value = args.arg(1)
         return when (args.narg()) {

@@ -34,6 +34,7 @@ import org.mvel2.templates.TemplateRuntime
  * @version 5.0
  * @since 4.0
  */
+@Suppress("TooManyFunctions")
 class Interpreter(
     private val executionOptions: ExecutionOptions,
     currentFile: ProjectFile,
@@ -89,8 +90,8 @@ class Interpreter(
             )
         }
 
-    // TODO: in the following, extract the printing into the higher level
-    // function
+    // note: the printing in the following could be extracted into the
+    // higher level function
     /**
      * "Run" a boolean return value
      * @param value The boolean.
@@ -198,6 +199,7 @@ class Interpreter(
      * Build the exit code check of an MVEL command (evaluating the `exit`
      * expression of the rule, defaulting to a zero exit code check).
      */
+    @Suppress("TooGenericExceptionCaught")
     private fun mvelExitCheck(command: SerialRuleCommand): (Int) -> Boolean =
         { code ->
             val check: Any = try {

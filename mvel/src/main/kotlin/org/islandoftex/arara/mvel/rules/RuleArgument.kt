@@ -38,6 +38,9 @@ class RuleArgument : RuleArgument<Any?> {
     private val default: String? = null
 
     @Transient
+    // user-provided MVEL flag expressions may throw anything, so the
+    // catch has to stay generic to wrap the failure into an arara error
+    @Suppress("TooGenericExceptionCaught")
     override val processor: (Any?, Map<String, Any>) -> List<String> = { input, context ->
         try {
             val resolvedContext = context.plus(

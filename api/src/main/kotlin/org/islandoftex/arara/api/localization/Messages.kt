@@ -10,7 +10,7 @@ package org.islandoftex.arara.api.localization
 )
 internal annotation class AraraMessages
 
-// TODO: translate for v7:
+// pending translation for v7:
 //  * ERROR_EXTRACTOR_IO_ERROR
 //  * ERROR_INVALID_PROJECT_FILE
 

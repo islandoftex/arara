@@ -20,6 +20,8 @@ internal object LuaConversion {
      * string keys, paths into their string representation and everything
      * else which is not a primitive is wrapped into a userdatum.
      */
+    // one branch per supported type: the complexity mirrors the type mapping
+    @Suppress("CyclomaticComplexMethod")
     fun toLua(value: Any?): LuaValue = when (value) {
         null -> LuaValue.NIL
         is LuaValue -> value

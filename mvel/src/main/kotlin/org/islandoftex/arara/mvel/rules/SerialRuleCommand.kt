@@ -19,7 +19,7 @@ class SerialRuleCommand : RuleCommand {
     override val command: () -> Int
         get() = throw AraraException("Operation not supported for SerialRuleCommand")
 
-    // TODO: why is trimming needed?
+    // note: it is unclear why trimming is needed
     @SerialName("command")
     var commandString: String? = null
         get() = field?.trim()

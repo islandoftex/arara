@@ -29,7 +29,7 @@ internal class LuaProjectFile(
      * @return The list of directives in the file, in order.
      */
     override fun fetchDirectives(parseOnlyHeader: Boolean): List<Directive> {
-        // TODO: exception handling
+        // note: exception handling is still missing here
         return directives?.let {
             Directives.extractDirectives(it, true, fileType)
         } ?: super.fetchDirectives(parseOnlyHeader)

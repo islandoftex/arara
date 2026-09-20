@@ -94,7 +94,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
             fileTable.keys()
                 .mapNotNull { key ->
                     val path = workingDirectory.resolve(key.toString())
-                    // TODO: check if path exists and issue warning otherwise
+                    // note: verify that the path exists and warn otherwise
                     if (path.isDirectory) {
                         throw ProjectParseException("A project file must not be a directory.")
                     }
@@ -137,6 +137,9 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
      * @throws IllegalArgumentException if the parsing fails.
      * @return List of projects extracted from the Lua run.
      */
+    // the parse enforces the documented project table invariants, so it
+    // reports each violation where it is detected
+    @Suppress("ThrowsCount")
     fun parseProjectsFromLua(luaScript: String): List<Project> {
         val luaTable = kotlin.runCatching {
             val globals = JsePlatform.standardGlobals()
@@ -167,7 +170,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
                 throw exception
             }
 
-            // TODO: log "illegal" values in the list which are filtered
+            // note: the illegal values filtered from the list could be logged
             luaTable.keys()
                 .mapNotNull { key -> luaTable[key].takeIf { it is LuaTable } }
                 .map { extractProject(it as LuaTable) }

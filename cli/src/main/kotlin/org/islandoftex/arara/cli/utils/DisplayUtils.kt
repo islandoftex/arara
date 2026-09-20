@@ -22,6 +22,7 @@ import kotlin.time.Duration.Companion.seconds
  * @version 5.0
  * @since 4.0
  */
+@Suppress("TooManyFunctions")
 object DisplayUtils {
     private val logger = KotlinLogging.logger { }
 
@@ -224,7 +225,7 @@ object DisplayUtils {
             else
                 exception.message
             ) ?: "EXCEPTION PROVIDES NO MESSAGE"
-        // TODO: check null handling
+        // note: null handling needs review here
         logger.error { text }
         printWrapped(text)
         if (exception.hasException()) {

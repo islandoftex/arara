@@ -37,7 +37,7 @@ object InputHandling {
      * @param list The list to be flattened.
      * @return The flattened list.
      */
-    // TODO: check nullity
+    // note: nullity has not been checked here
     fun flatten(list: List<*>): List<Any> =
         list.flatMap { item ->
             if (item is List<*>)

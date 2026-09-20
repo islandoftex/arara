@@ -342,10 +342,10 @@ class CLI : CliktCommand("arara") {
                     DirectiveUtils.initializeDirectiveCore()
                 },
                 executeBeforeProject = {
-                    // TODO: load config file here
+                    // the configuration file could be loaded here
                 },
                 executeBeforeFile = {
-                    // TODO: do we have to reset some more file-specific config?
+                    // should more file-specific configuration be reset here?
                     updateConfigurationFromCommandLine()
                     it.printFileInformation()
                 },

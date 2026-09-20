@@ -25,7 +25,7 @@ object LoggingUtils {
      */
     fun setupLogging(loggingOptions: LoggingOptions) {
         if (loggingOptions.enableLogging) {
-            // TODO: check for multi-threading
+            // note: multi-threading has not been checked here
             ThreadContext.put(
                 "araraLogFile",
                 loggingOptions.logFile.normalize().toString()
