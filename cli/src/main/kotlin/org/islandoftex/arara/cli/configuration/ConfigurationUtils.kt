@@ -75,7 +75,10 @@ object ConfigurationUtils {
         when (file.toString().substringAfterLast('.')) {
             "yaml" -> LocalConfiguration.load(file)
             "lua" -> LuaLocalConfiguration.load(file)
-            else -> TODO("Kotlin DSL not implemented yet")
+            else -> throw AraraException(
+                "The configuration file '$file' uses a format arara does " +
+                    "not support."
+            )
         }
 
     /**

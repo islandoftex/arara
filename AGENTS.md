@@ -30,9 +30,10 @@ request — diff against it when in doubt about a change.
   `MPPPath.toString()` keeps relative paths (it does not — see the
   `providedPath`/`referencePath` duality in `MPPPath`).
 
-Remaining caveat: the Lua engine must be checked alongside the default YAML
-engine (`--engine lua`) — the automated suite exercises both parsers, but the
-end-to-end runtime check happens in the smoke test.
+Remaining caveat: none — both engines and the Lua project pipeline are
+smoke-verified end-to-end on the provisioned JRE 11 (see oc7): build
+`:cli:shadowJar`, place the jar with a `rules/` sibling directory and run it
+with `~/.gradle/jdks/eclipse_adoptium-11-*/bin/java`.
 
 ## Commands
 
