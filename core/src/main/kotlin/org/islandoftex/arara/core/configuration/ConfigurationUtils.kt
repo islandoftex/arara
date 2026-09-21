@@ -7,6 +7,10 @@ import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 
+/**
+ * Implements configuration auxiliary methods, such as the default file
+ * types and the application path resolution.
+ */
 object ConfigurationUtils {
     @JvmStatic
     val defaultFileTypePatterns = mapOf(

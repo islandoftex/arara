@@ -18,6 +18,11 @@ import org.islandoftex.arara.core.ui.InputHandling
 import org.islandoftex.arara.mvel.interpreter.AraraExceptionWithHeader
 
 @Suppress("unused", "TooManyFunctions")
+/**
+ * Implements the helper methods available to MVEL rule commands and
+ * flags, such as command building, boolean checks and file operations.
+ * The Lua rule environment binds the very same helpers.
+ */
 object RuleMethods {
     // the GUI generator is built per call: the session's user interface
     // options may be replaced by a configuration file at any time, so a

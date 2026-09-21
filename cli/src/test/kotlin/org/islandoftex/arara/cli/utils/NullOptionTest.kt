@@ -33,6 +33,10 @@ class NullOptionTest : ShouldSpec({
     val rulePath = MPPPath("src/test/resources/executiontests/null-option")
         .normalize()
 
+    // the executor state saved for restoration once the spec is done
+    val savedOptions = LinearExecutor.executionOptions
+    val savedHooks = LinearExecutor.hooks
+
     fun executeWithNullifiedParameter(name: String): Int {
         LinearExecutor.executionOptions =
             ExecutionOptions(rulePaths = setOf(rulePath))
@@ -67,6 +71,13 @@ class NullOptionTest : ShouldSpec({
 
     beforeSpec {
         DirectiveUtils.initializeDirectiveCore()
+    }
+    afterSpec {
+        // this spec mutates the executor state, so it has to be
+        // restored once the spec is done, no matter whether the
+        // scenarios held
+        LinearExecutor.executionOptions = savedOptions
+        LinearExecutor.hooks = savedHooks
     }
 
     should("treat null directive parameters as absent so defaults apply") {

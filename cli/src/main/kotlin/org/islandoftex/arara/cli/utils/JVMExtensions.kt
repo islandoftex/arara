@@ -78,8 +78,8 @@ fun ProjectFile.printFileInformation() {
 
 /**
  * Loads properties from a file located at the specified [path] using the
- * given [charset]. If the loading fails, it will catch the exception without
- * throwing it.
+ * given [charset]. If the loading fails, it will catch the exception and
+ * log a warning instead of throwing it.
  *
  * @param path The path to the properties file.
  * @param charset The character set to use for reading the file. Defaults to
@@ -87,6 +87,14 @@ fun ProjectFile.printFileInformation() {
  */
 fun Properties.load(path: Path, charset: Charset = Charsets.UTF_8) {
     runCatching { path.bufferedReader(charset).use { load(it) } }
+        .onFailure {
+            // a properties file that cannot be read is ignored, but the
+            // user should still learn about it instead of silently
+            // receiving an empty properties map
+            logger.warn {
+                "Could not load the properties file $path: ${it.message}"
+            }
+        }
 }
 
 /**

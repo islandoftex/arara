@@ -11,6 +11,10 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.Directives
 import org.islandoftex.arara.core.session.LinearExecutor
 
+/**
+ * Implements the project file model: a file reference paired with its
+ * type and a priority deciding the execution order within a project.
+ */
 open class ProjectFile(
     override val path: MPPPath,
     override val fileType: FileType,

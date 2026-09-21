@@ -4,6 +4,9 @@ package org.islandoftex.arara.core.localization
 import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.api.localization.Messages
 
+/**
+ * German localization of the arara messages.
+ */
 @Suppress("MaxLineLength")
 class GermanLanguage : Messages(
     providedLocale = MPPLocale("de"),

@@ -4,6 +4,9 @@ package org.islandoftex.arara.core.localization
 import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.api.localization.Messages
 
+/**
+ * Dutch localization of the arara messages.
+ */
 @Suppress("MaxLineLength")
 class DutchLanguage : Messages(
     providedLocale = MPPLocale("nl"),

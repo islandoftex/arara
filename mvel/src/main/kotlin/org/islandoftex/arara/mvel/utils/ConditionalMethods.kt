@@ -10,6 +10,12 @@ import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.GUIDialogs
 
+/**
+ * Implements the helper methods available to MVEL directive
+ * conditionals, such as file existence and change checks, dialogs and
+ * class loading. The Lua conditional environment binds the very same
+ * helpers.
+ */
 @Suppress("unused", "TooManyFunctions")
 object ConditionalMethods {
     // the GUI generator is built per call: the session's user interface

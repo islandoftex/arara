@@ -7,6 +7,11 @@ import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import kotlin.time.Duration
 
+/**
+ * Implements the execution options model, i.e. the knobs controlling how
+ * arara runs: loop caps, timeouts, rule paths, file types, the execution
+ * mode and the file database settings.
+ */
 data class ExecutionOptions(
     override val maxLoops: Int = 10,
     override val timeoutValue: Duration = Duration.ZERO,

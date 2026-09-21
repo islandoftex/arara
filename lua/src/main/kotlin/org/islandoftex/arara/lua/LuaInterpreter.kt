@@ -20,6 +20,13 @@ import org.islandoftex.arara.core.files.UNKNOWN_TYPE
 //import org.luaj.vm2.LuaValue
 //import org.luaj.vm2.lib.common.CommonPlatform
 
+/**
+ * Interprets Lua project specification files, i.e. Lua scripts
+ * returning a project table or a list of project tables.
+ *
+ * @param appWorkingDir The working directory to resolve relative file
+ * references against.
+ */
 class LuaInterpreter(private val appWorkingDir: MPPPath) {
     /**
      * Dump the lua value to a string. Useful for debugging.

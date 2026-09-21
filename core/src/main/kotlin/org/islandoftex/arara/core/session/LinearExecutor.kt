@@ -10,6 +10,11 @@ import org.islandoftex.arara.api.session.Executor
 import org.islandoftex.arara.core.dependencies.ProjectGraph
 import kotlin.time.TimeSource
 
+/**
+ * Implements arara's linear executor, running the directives of every
+ * project file sequentially, driven by the executor hooks the command
+ * line application installs.
+ */
 object LinearExecutor : Executor {
     /**
      * Specify custom user hooks to run.

@@ -8,6 +8,10 @@ import org.islandoftex.arara.core.localization.LanguageController
 import java.io.IOException
 import java.util.zip.CRC32
 
+/**
+ * Implements file handling auxiliary methods, such as extension
+ * swapping, change tracking via the hash database and checksums.
+ */
 object FileHandling {
     /**
      * Resolve the sibling of a file with just its extension changed.

@@ -7,6 +7,10 @@ import org.islandoftex.arara.core.localization.LanguageController
 import java.io.IOException
 import java.util.MissingFormatArgumentException
 
+/**
+ * Implements the auxiliary methods shared by the MVEL helper objects,
+ * such as regex checks, string generation and file writing.
+ */
 object MethodUtils {
     /**
      * Checks if the file contains the provided regex.

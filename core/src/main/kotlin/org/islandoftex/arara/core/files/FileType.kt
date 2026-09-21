@@ -4,6 +4,10 @@ package org.islandoftex.arara.core.files
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
 
+/**
+ * Implements the file type model, pairing a file extension with the
+ * pattern arara uses to recognize directives in files of that type.
+ */
 data class FileType(
     override val extension: String = FileType.INVALID_EXTENSION,
     override val pattern: String = FileType.INVALID_PATTERN

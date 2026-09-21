@@ -173,11 +173,16 @@ class ExecutionTest : ShouldSpec({
         val options = LinearExecutor.executionOptions
         LinearExecutor.executionOptions = ExecutionOptions.from(options)
             .copy(executionMode = ExecutionMode.SAFE_RUN)
-        val output = outputForTest("directive-with-mvel-options")
-        output shouldNotContain "testdirective-with-mvel-optionsquack"
-        output shouldContain "test@{getBasename(getOriginalReference())}quack"
-        output shouldContain "nothing"
-        LinearExecutor.executionOptions = options
+        try {
+            val output = outputForTest("directive-with-mvel-options")
+            output shouldNotContain "testdirective-with-mvel-optionsquack"
+            output shouldContain "test@{getBasename(getOriginalReference())}quack"
+            output shouldContain "nothing"
+        } finally {
+            // restore no matter whether the assertions held, so a failure
+            // cannot leak the safe mode into the subsequent scenarios
+            LinearExecutor.executionOptions = options
+        }
     }
 
     should("process multiple files (files array)") {
