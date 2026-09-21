@@ -10,14 +10,21 @@ import kotlin.test.assertEquals
 class DisplayUtilsTest {
     @Test
     fun shouldFormatBytesCorrectly() {
-        Session.userInterfaceOptions = UserInterfaceOptions(MPPLocale("en"))
-        mapOf(
-            800 to "800 B",
-            1000 to "1.0 kB",
-            1024 to "1.0 kB",
-            1000000 to "1.0 MB"
-        ).forEach { (key, value) ->
-            assertEquals(DisplayUtils.byteSizeToString(key.toLong()), value)
+        val savedOptions = Session.userInterfaceOptions
+        try {
+            Session.userInterfaceOptions = UserInterfaceOptions(MPPLocale("en"))
+            mapOf(
+                800 to "800 B",
+                1000 to "1.0 kB",
+                1024 to "1.0 kB",
+                1000000 to "1.0 MB"
+            ).forEach { (key, value) ->
+                assertEquals(DisplayUtils.byteSizeToString(key.toLong()), value)
+            }
+        } finally {
+            // restore the session state no matter whether the formatting
+            // assertions held
+            Session.userInterfaceOptions = savedOptions
         }
     }
 }

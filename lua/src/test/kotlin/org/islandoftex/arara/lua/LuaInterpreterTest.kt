@@ -98,7 +98,6 @@ class LuaInterpreterTest {
         """.trimIndent()
         assertFailsWith<AraraException> {
             LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script)
-                .also { println(it) }
         }
     }
 

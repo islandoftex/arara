@@ -42,9 +42,11 @@ class DatabaseTest : ShouldSpec({
             (MPPPath(".") in db) shouldBe true
             (MPPPath(".") in dbCopy) shouldBe true
             (MPPPath("quack") in db) shouldBe true
-            (MPPPath("quack") in db) shouldBe true
+            // the loaded copy has to hold the very same entries as the
+            // saved one, otherwise the cycle is broken
+            (MPPPath("quack") in dbCopy) shouldBe true
             (MPPPath("no") in db) shouldBe false
-            (MPPPath("no") in db) shouldBe false
+            (MPPPath("no") in dbCopy) shouldBe false
         }
     }
 })
