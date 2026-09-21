@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
+import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
@@ -89,5 +92,24 @@ class LuaExecutionTest : ShouldSpec({
         output shouldContain "LuaEngineWorks"
         output shouldContain "SUCCESS"
         output shouldNotContain "FAILURE"
+    }
+
+    should("evaluate Lua directive conditionals on the Lua engine") {
+        val output = outputForTest("lua-engine-conditionals")
+        // unconditional and truthy conditions run...
+        output shouldContain "One"
+        output shouldContain "Three"
+        output shouldContain "Four"
+        // ...and the falsy one is skipped
+        output shouldNotContain "Two"
+    }
+
+    should("reject MVEL conditional syntax on the Lua engine") {
+        // '&&' does not parse in the Lua dialect; the failure has to
+        // surface as an arara error instead of crashing the run
+        val exception = shouldThrow<AraraException> {
+            outputForTest("lua-engine-conditionals", "broken.tex")
+        }
+        exception.message shouldNotBe null
     }
 })

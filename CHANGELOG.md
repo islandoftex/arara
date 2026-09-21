@@ -30,6 +30,14 @@ on.
 * All official rules have been converted to the Lua format and are shipped
   alongside their YAML counterparts (`rules/arara-rule-*.lua`); the
   converter lives in `scripts/yaml2lua.py`.
+* Under `--engine lua`, directive conditionals (`if`, `while`, `until`,
+  `unless`) are evaluated as Lua expressions. The condition has to yield a
+  proper boolean (like the MVEL dialect), the same conditional helpers
+  (`exists`, `found`, `changed`, `toFile`, ...) are available, and the
+  engine's decision carries the usual strictness. Single-call conditions
+  such as `if exists('log')` work in both dialects unchanged; compound
+  conditions use Lua's `and`, `or` and `not` instead of `&&`, `||` and
+  `!`. The default YAML engine keeps evaluating conditionals in MVEL.
 
 ## Changed
 

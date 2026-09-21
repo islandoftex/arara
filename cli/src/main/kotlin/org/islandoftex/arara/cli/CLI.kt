@@ -201,12 +201,7 @@ class CLI : CliktCommand("arara") {
                     // project specifications do not go through the fallback
                     // branch below, so the configuration file of every
                     // project has to be loaded right here
-                    projects.forEach { project ->
-                        ConfigurationUtils.configFileForProject(project)?.let {
-                            DisplayUtils.configurationFileName = it.toString()
-                            ConfigurationUtils.load(it, project)
-                        }
-                    }
+                    loadProjectConfigurations(projects)
                 }
             }
             ?: Project(
@@ -214,10 +209,7 @@ class CLI : CliktCommand("arara") {
                 workingDir,
                 emptySet()
             ).also { project ->
-                ConfigurationUtils.configFileForProject(project)?.let {
-                    DisplayUtils.configurationFileName = it.toString()
-                    ConfigurationUtils.load(it, project)
-                }
+                loadProjectConfigurations(listOf(project))
             }.let { project ->
                 listOf(
                     Project(
@@ -233,6 +225,24 @@ class CLI : CliktCommand("arara") {
                     )
                 )
             }
+    }
+
+    /**
+     * Load the configuration file of each project, if any. The working
+     * directory of a project decides where to look, so multi-directory
+     * project specifications work as well.
+     *
+     * @param projects The projects to load the configuration for.
+     */
+    private fun loadProjectConfigurations(
+        projects: List<org.islandoftex.arara.api.files.Project>
+    ) {
+        projects.forEach { project ->
+            ConfigurationUtils.configFileForProject(project)?.let {
+                DisplayUtils.configurationFileName = it.toString()
+                ConfigurationUtils.load(it, project)
+            }
+        }
     }
 
     /**

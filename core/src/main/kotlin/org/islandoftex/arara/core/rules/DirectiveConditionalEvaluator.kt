@@ -11,6 +11,9 @@ import org.islandoftex.arara.api.rules.DirectiveConditionalType
  * Implements the evaluator model, on which a conditional can be analyzed and
  * processed.
  *
+ * One evaluator instance is expected per directive, as the loop counter
+ * and the halt flag are tied to the lifetime of a single conditional.
+ *
  * @author Island of TeX
  * @version 5.0
  * @since 4.0

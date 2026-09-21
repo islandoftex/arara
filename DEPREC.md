@@ -44,7 +44,10 @@ remove them as part of this effort:
    that is a separate decision.)
 3. **MVEL directive conditionals.** The `if`/`while`/`until`/`unless`
    conditionals of a directive (`% arara: pdflatex if found('log', '!')`)
-   are MVEL expressions and are *not* deprecated. Consequently the
+   are MVEL expressions and are *not* deprecated. (A Lua-based
+   counterpart tied to the `--engine` flag exists, and conditionals turn
+   Lua with the phase 1 default flip; see the version 9 outlook at the
+   end of this document.) Consequently the
    following must survive the removal:
    - `mvel/…/rules/DirectiveConditionalEvaluator.kt`
    - `mvel/…/utils/ConditionalMethods.kt`, `mvel/…/utils/MethodUtils.kt`
@@ -287,3 +290,29 @@ exactly this and must keep passing.
 Removing a supported file format is a breaking change: schedule phase 2
 for the next **major** version after the phase 1 release, per the semantic
 versioning policy stated in `CHANGELOG.md`.
+
+## Version 9 outlook — replacing MVEL conditionals
+
+Directive conditionals follow the rule engine: with `--engine lua` they
+are evaluated as Lua expressions (`LuaConditionalEvaluator`), with the
+default YAML engine they keep the MVEL dialect. The Lua dialect offers
+the same helpers, requires a proper boolean result like MVEL, and
+inverts `unless`/`until` identically. Simple, single-call conditions
+such as `if exists('log')` work in both dialects unchanged; compound
+conditions use Lua's `and`, `or` and `not` instead of `&&`, `||` and
+`!`.
+
+Consequences for the plan above:
+
+- the phase 1 default flip turns conditionals Lua as well, so the
+  release notes of that release must tell users to port compound
+  conditionals (`&&`/`||`/`!` become `and`/`or`/`not`);
+- the MVEL conditional helpers (`ConditionalMethods`, and the
+  `RuleMethods` entries the registry reuses) have to move to a neutral
+  home together with the rule helpers, as the Lua conditional
+  environment binds the very same registry (a transitional `lua` -> `mvel`
+  edge, mirroring the one for `RuleMethods`, is documented in
+  `lua/build.gradle.kts`);
+- the remaining MVEL surface after that move is the orb tag
+  interpolation of directive `options` (see `DirectiveUtils`); once it
+  has a Lua counterpart, the `mvel` module can be deleted entirely.

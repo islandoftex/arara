@@ -20,6 +20,7 @@ import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.InputHandling
+import org.islandoftex.arara.lua.rules.LuaConditionalEvaluator
 import org.islandoftex.arara.lua.rules.LuaRuleCommand
 import org.islandoftex.arara.mvel.interpreter.AraraExceptionWithHeader
 import org.islandoftex.arara.mvel.rules.DirectiveConditionalEvaluator
@@ -327,7 +328,13 @@ class Interpreter(
         // the resolved arguments; engine-specific extras (e.g. the MVEL rule
         // methods) are added by the respective command evaluators
         val parameters = parseArguments(rule, directive)
-        val evaluator = DirectiveConditionalEvaluator(executionOptions)
+        // the conditional dialect follows the rule engine: the Lua engine
+        // evaluates directive conditionals as Lua expressions, the (default
+        // and deprecated) YAML engine keeps the MVEL dialect
+        val evaluator = when (RuleEngine.current) {
+            RuleEngine.LUA -> LuaConditionalEvaluator(executionOptions)
+            RuleEngine.YAML -> DirectiveConditionalEvaluator(executionOptions)
+        }
         val available =
             if (InterpreterUtils.runPriorEvaluation(directive.conditional))
                 evaluator.evaluate(directive.conditional)
