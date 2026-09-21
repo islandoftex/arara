@@ -7,6 +7,11 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
+/**
+ * Verifies the Lua orb tag interpolation for directive options: literal
+ * text preservation, multiple tags, nil results, quoted braces, the
+ * conditional helper access and the error paths.
+ */
 class LuaOrbTagsTest {
     @Test
     fun `keeps plain strings unchanged`() {

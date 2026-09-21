@@ -13,6 +13,12 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+/**
+ * Verifies the path attributes and normalization of [MPPPath] across
+ * operating systems: absolute path detection, dot segment resolution
+ * and parent lookup, including the root edge cases. Platform-specific
+ * expectations are selected by the [getValueByOS] helper.
+ */
 class MPPPathTest {
     // attributes
     @Test
@@ -110,6 +116,9 @@ class MPPPathTest {
         )
     }
 
+    /**
+     * Selects the operating system specific expectation for a test.
+     */
     private inline fun <reified T> getValueByOS(windows: T, unix: T): T =
             if (OS.isWindows) windows else unix
 

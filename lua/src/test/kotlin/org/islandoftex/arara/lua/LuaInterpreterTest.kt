@@ -7,6 +7,11 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
+/**
+ * Verifies the Lua project specification parser: single projects, file
+ * entries with their explicit directives, project lists and the
+ * dependency validation.
+ */
 class LuaInterpreterTest {
     @Test
     fun `parses a single project`() {

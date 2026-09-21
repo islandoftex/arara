@@ -10,6 +10,10 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
+/**
+ * Verifies the Lua configuration parser: the full key set, the defaults
+ * for omitted keys and the rejection of unknown keys and wrong types.
+ */
 class LuaLocalConfigurationTest {
     private fun configFile(content: String): MPPPath {
         val file = Files.createTempFile("araraconfig", ".lua")

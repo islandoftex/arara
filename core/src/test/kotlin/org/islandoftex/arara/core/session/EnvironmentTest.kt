@@ -10,6 +10,11 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.milliseconds
 
+/**
+ * Verifies the operating system interaction: system property access,
+ * path lookups and command execution. The command execution scenarios
+ * are skipped on Windows via JUnit assumptions.
+ */
 class EnvironmentTest {
     @Test
     fun `returns null on a non-existent system variable`() {

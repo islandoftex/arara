@@ -5,6 +5,10 @@ import java.time.ZoneId
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+/**
+ * Verifies the [DateTime] model: the string and epoch representations
+ * and the individual date components.
+ */
 class DateTimeTest {
     @Test
     fun `correctly parses a date to its string representation`() {

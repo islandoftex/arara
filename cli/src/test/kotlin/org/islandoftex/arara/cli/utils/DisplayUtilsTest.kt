@@ -7,6 +7,9 @@ import org.islandoftex.arara.core.session.Session
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+/**
+ * Verifies the terminal output helpers of [DisplayUtils].
+ */
 class DisplayUtilsTest {
     @Test
     fun `formats byte sizes correctly`() {

@@ -8,6 +8,10 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+/**
+ * Verifies the UTF-8 properties loading used by the command line
+ * application, using the duck fixture with its sixteen translations.
+ */
 class PropertiesTest {
     @Nested
     inner class `UTF8 support for properties files` {

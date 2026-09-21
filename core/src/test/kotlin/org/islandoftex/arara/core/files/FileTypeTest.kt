@@ -7,6 +7,10 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 
+/**
+ * Verifies the file type model: equality only considers the extension,
+ * and a malformed pattern is rejected at construction.
+ */
 class FileTypeTest {
     @Test
     fun `only depends on the extension for equality`() {

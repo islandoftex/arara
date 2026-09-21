@@ -45,6 +45,11 @@ class ForeignExtensionTest {
         )
     }
 
+    /**
+     * Runs the scenario through the linear executor and returns the
+     * captured terminal output, restoring the standard output stream
+     * no matter how the run ends.
+     */
     private fun outputForTest(
         testName: String,
         fileName: String

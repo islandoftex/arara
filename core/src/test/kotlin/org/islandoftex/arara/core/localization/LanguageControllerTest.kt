@@ -5,6 +5,10 @@ import org.islandoftex.arara.api.localization.MPPLocale
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+/**
+ * Verifies the language controller: all known locales load their
+ * message catalogs, and unknown locales fall back to English.
+ */
 class LanguageControllerTest {
     @Test
     fun `instantiates all known locales`() {

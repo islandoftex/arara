@@ -7,6 +7,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
+/**
+ * Verifies the log4j2 setup performed by [LoggingUtils].
+ */
 class LoggingUtilsTest {
     @Test
     fun `properly sets the log file path`() {

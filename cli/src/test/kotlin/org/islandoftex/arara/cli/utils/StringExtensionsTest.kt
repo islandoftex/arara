@@ -5,6 +5,10 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
+/**
+ * Verifies the terminal output string helpers of the command line
+ * application: abbreviation, centering and wrapping.
+ */
 class StringExtensionsTest {
     @Test
     fun `abbreviates strings correctly`() {

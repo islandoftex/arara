@@ -17,9 +17,18 @@ import kotlin.io.path.writeText
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
+/**
+ * Verifies the file searching helpers: extension and pattern listings
+ * over a temporary file system, and the reference lookup including the
+ * safe mode restriction on implicit extension completion.
+ */
 class FileSearchingTest {
     @Nested
     inner class `file listings` {
+        /**
+         * Builds the fixture file system inside the provided directory:
+         * a nested quack chain with tex and txt files at every level.
+         */
         private fun prepareFileSystem(tempDir: Path): MPPPath {
             (tempDir / "quack/quack").createDirectories()
             listOf("quack", "quack/quack", "quack/quack/quack").forEach {

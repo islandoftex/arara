@@ -13,6 +13,11 @@ import kotlin.io.path.writeText
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+/**
+ * Verifies the change tracking on the JVM: a file counts as changed on
+ * its first appearance, after modification and after deletion, and is
+ * not reported again until the next change.
+ */
 class JVMFileHandlingTest {
     @Test
     fun `detects changes on a file`(@TempDir tempDir: Path) {

@@ -4,6 +4,11 @@ package org.islandoftex.arara.core.dependencies
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+/**
+ * Verifies the topological ordering of the dependency graph, including
+ * the deliberate partial order for cyclic vertices (the linear executor
+ * enforces completeness at the project level).
+ */
 class GraphTest {
     @Test
     fun `operates correctly on an empty graph`() {

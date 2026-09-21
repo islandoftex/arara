@@ -9,6 +9,10 @@ import kotlin.test.assertFalse
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
+/**
+ * Verifies the file handling helpers: extension swapping, directory
+ * relationships and CRC32 checksums.
+ */
 class FileHandlingTest {
     @Test
     fun `changes the extension of a file with an extension`() {

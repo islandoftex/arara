@@ -8,6 +8,10 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+/**
+ * Verifies the session map wrapper: insertion, retrieval, removal,
+ * clearing and the environment variable import.
+ */
 class SessionTest {
     @Test
     fun `includes all environment variables`() {

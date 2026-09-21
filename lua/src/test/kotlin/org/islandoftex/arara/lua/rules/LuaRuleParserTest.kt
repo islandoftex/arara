@@ -10,6 +10,12 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+/**
+ * Verifies the Lua rule parser: the shape of a valid rule, exit
+ * closures, flag processing, surfaced rule errors and the rejection of
+ * invalid rules (mismatched identifiers, missing commands, reserved
+ * argument identifiers and arguments without flag or default).
+ */
 class LuaRuleParserTest {
     private fun ruleFile(content: String): MPPPath {
         val file = Files.createTempFile("arara-rule-", ".lua")

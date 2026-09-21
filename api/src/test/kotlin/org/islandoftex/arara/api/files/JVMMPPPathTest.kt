@@ -14,6 +14,11 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+/**
+ * Verifies the JVM path model of [MPPPath]: reading and writing text,
+ * and the value semantics of the two paths every model carries (the
+ * user-provided spelling and the absolutized reference).
+ */
 class JVMMPPPathTest {
     @Nested
     inner class `read and write operations` {

@@ -9,6 +9,12 @@ import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+/**
+ * Verifies the Lua directive conditional evaluator: truthiness,
+ * unless/until inversion, the at-most-once guarantee of if conditions,
+ * the maxLoops caps, the strict boolean requirement, syntax error
+ * wrapping and the session exposure.
+ */
 class LuaConditionalEvaluatorTest {
     private fun evaluator(maxLoops: Int = 10) =
         LuaConditionalEvaluator(ExecutionOptions(maxLoops = maxLoops))

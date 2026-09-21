@@ -10,6 +10,10 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+/**
+ * Verifies the file change database: path normalization on insertion,
+ * removal semantics and the yamlkt save-load round trip.
+ */
 class DatabaseTest {
     @Test
     fun `normalizes paths on insertion`() {

@@ -6,6 +6,10 @@ import org.islandoftex.arara.core.files.Project
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+/**
+ * Verifies that project graphs order dependencies before their
+ * dependents.
+ */
 class ProjectGraphTest {
     @Test
     fun `adds projects and their dependencies to the graph`() {

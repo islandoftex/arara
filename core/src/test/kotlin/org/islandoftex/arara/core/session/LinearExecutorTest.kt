@@ -8,6 +8,11 @@ import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
+/**
+ * Verifies the linear executor's project handling in isolation: cyclic
+ * dependencies are rejected naming their members, and acyclic chains
+ * run successfully without any hooks installed.
+ */
 class LinearExecutorTest {
     @Test
     fun `rejects cyclic project dependencies`() {

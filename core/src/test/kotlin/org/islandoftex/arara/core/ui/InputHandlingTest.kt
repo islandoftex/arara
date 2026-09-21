@@ -8,6 +8,10 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+/**
+ * Verifies the boolean interpretation and the list flattening used by
+ * the rule and conditional machinery.
+ */
 class InputHandlingTest {
     @Test
     fun `returns truthy values for common truthy input`() {

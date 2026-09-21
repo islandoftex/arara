@@ -23,6 +23,13 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+/**
+ * Runs the end-to-end execution scenarios on the default YAML engine:
+ * each scenario is a fixture directory under the execution tests holding
+ * its own configuration and rules, and the captured terminal output is
+ * asserted against the expected markers. The executor hooks install
+ * the command line application's wiring once per class.
+ */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ExecutionTest {
     @BeforeAll
@@ -48,6 +55,11 @@ class ExecutionTest {
     private fun getPathForTest(name: String): String =
         "src/test/resources/executiontests/$name"
 
+    /**
+     * Runs the scenario through the linear executor and returns the
+     * captured terminal output, restoring the standard output stream
+     * no matter how the run ends.
+     */
     private fun outputForTest(
         testName: String,
         fileName: String = "$testName.tex"
