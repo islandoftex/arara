@@ -8,8 +8,6 @@ kotlin {
 }
 
 dependencies {
-    testImplementation(libs.kotest.runner.jvm)
-    testImplementation(libs.kotest.assertions.jvm)
 }
 
 tasks {

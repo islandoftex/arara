@@ -1,11 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
-import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.annotation.Isolate
-import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldContain
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.cli.ruleset.DirectiveImpl
@@ -15,6 +10,13 @@ import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LinearExecutor
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+import kotlin.test.assertFailsWith
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  * Pins the semantics of null-valued directive parameters: they count as if
@@ -28,16 +30,30 @@ import org.islandoftex.arara.core.session.LinearExecutor
  * parameter source that does allow nulls. The runs go through the full
  * linear executor pipeline because the rule helpers rely on its state.
  */
-@Isolate
-class NullOptionTest : ShouldSpec({
-    val rulePath = MPPPath("src/test/resources/executiontests/null-option")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class NullOptionTest {
+    private val rulePath = MPPPath("src/test/resources/executiontests/null-option")
         .normalize()
 
     // the executor state saved for restoration once the spec is done
-    val savedOptions = LinearExecutor.executionOptions
-    val savedHooks = LinearExecutor.hooks
+    private val savedOptions = LinearExecutor.executionOptions
+    private val savedHooks = LinearExecutor.hooks
 
-    fun executeWithNullifiedParameter(name: String): Int {
+    @BeforeAll
+    fun setUp() {
+        DirectiveUtils.initializeDirectiveCore()
+    }
+
+    @AfterAll
+    fun tearDown() {
+        // this spec mutates the executor state, so it has to be
+        // restored once the spec is done, no matter whether the
+        // scenarios held
+        LinearExecutor.executionOptions = savedOptions
+        LinearExecutor.hooks = savedHooks
+    }
+
+    private fun executeWithNullifiedParameter(name: String): Int {
         LinearExecutor.executionOptions =
             ExecutionOptions(rulePaths = setOf(rulePath))
         LinearExecutor.hooks = ExecutorHooks(
@@ -69,32 +85,33 @@ class NullOptionTest : ShouldSpec({
         ).exitCode
     }
 
-    beforeSpec {
-        DirectiveUtils.initializeDirectiveCore()
-    }
-    afterSpec {
-        // this spec mutates the executor state, so it has to be
-        // restored once the spec is done, no matter whether the
-        // scenarios held
-        LinearExecutor.executionOptions = savedOptions
-        LinearExecutor.hooks = savedHooks
-    }
-
-    should("treat null directive parameters as absent so defaults apply") {
+    @Test
+    fun `treats null directive parameters as absent so defaults apply`() {
         // 'opt' is explicitly provided but replaced by null; the rule's
         // command guard throws unless the default is used, so a zero exit
         // code proves that the null fell back to the default
-        executeWithNullifiedParameter("opt") shouldBe 0
+        assertEquals(
+            0,
+            executeWithNullifiedParameter("opt"),
+            "the nullified optional parameter falls back to its default"
+        )
     }
 
-    should("still require required arguments provided as null") {
+    @Test
+    fun `still requires required arguments provided as null`() {
         // 'req' is explicitly provided but replaced by null, which counts
         // as absent; the message is localized, but every locale names the
         // offending argument. Previously the null bypassed the required
         // check and crashed the flag evaluation instead
-        val exception = shouldThrow<AraraException> {
+        val exception = assertFailsWith<AraraException>(
+            "a nullified required argument must report the missing " +
+                "argument error"
+        ) {
             executeWithNullifiedParameter("req")
         }
-        exception.message shouldContain "req"
+        assertTrue(
+            exception.message?.contains("req") == true,
+            "the error names the required argument"
+        )
     }
-})
+}

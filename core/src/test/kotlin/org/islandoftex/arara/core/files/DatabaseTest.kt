@@ -1,52 +1,83 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.engine.spec.tempfile
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldContain
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toMPPPath
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
+import java.nio.file.Path
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
-class DatabaseTest : ShouldSpec({
-    should("normalize paths") {
+class DatabaseTest {
+    @Test
+    fun `normalizes paths on insertion`() {
         val db = Database()
         db[MPPPath("./././")] = 1L
-        (MPPPath("./") in db) shouldBe true
+        assertTrue(
+            MPPPath("./") in db,
+            "the database must normalize the inserted path"
+        )
     }
 
-    should("remove existent elements") {
+    @Test
+    fun `removes existent elements`() {
         val db = Database()
-        (MPPPath(".") in db) shouldBe false
+        assertFalse(
+            MPPPath(".") in db,
+            "the database does not contain the path before insertion"
+        )
         db[MPPPath(".")] = 1L
-        (MPPPath(".") in db) shouldBe true
+        assertTrue(
+            MPPPath(".") in db,
+            "the database contains the path after insertion"
+        )
         db.remove(MPPPath("."))
-        (MPPPath(".") in db) shouldBe false
-    }
-    should("throw when removing non-existent path") {
-        shouldThrow<NoSuchElementException> { Database().remove(MPPPath(".")) }
-            .message shouldContain "non-existent path"
+        assertFalse(
+            MPPPath(".") in db,
+            "the database does not contain the path after removal"
+        )
     }
 
-    should("be able to perform save-load cycle") {
-        withContext(Dispatchers.IO) {
-            val tmp = tempfile("db").toMPPPath()
-            val db = Database()
-            db[MPPPath(".")] = 1L
-            db[MPPPath("quack")] = 2L
-            db.save(tmp)
-            val dbCopy = Database.load(tmp)
-            (MPPPath(".") in db) shouldBe true
-            (MPPPath(".") in dbCopy) shouldBe true
-            (MPPPath("quack") in db) shouldBe true
-            // the loaded copy has to hold the very same entries as the
-            // saved one, otherwise the cycle is broken
-            (MPPPath("quack") in dbCopy) shouldBe true
-            (MPPPath("no") in db) shouldBe false
-            (MPPPath("no") in dbCopy) shouldBe false
+    @Test
+    fun `throws when removing a nonexistent path`() {
+        val exception = assertFailsWith<NoSuchElementException>(
+            "removing an unknown path must be rejected"
+        ) {
+            Database().remove(MPPPath("."))
         }
+        assertTrue(
+            exception.message?.contains("non-existent path") == true,
+            "the removal error names the non-existent path"
+        )
     }
-})
+
+    @Test
+    fun `performs the save load cycle`(@TempDir tempDir: Path) {
+        val tmp = tempDir.resolve("arara.yaml").toMPPPath()
+        val db = Database()
+        db[MPPPath(".")] = 1L
+        db[MPPPath("quack")] = 2L
+        db.save(tmp)
+        val dbCopy = Database.load(tmp)
+        assertTrue(MPPPath(".") in db, "the original database holds the first entry")
+        assertTrue(
+            MPPPath(".") in dbCopy,
+            "the loaded copy holds the first entry"
+        )
+        assertTrue(
+            MPPPath("quack") in db,
+            "the original database holds the second entry"
+        )
+        assertTrue(
+            MPPPath("quack") in dbCopy,
+            "the loaded copy holds the second entry"
+        )
+        assertFalse(MPPPath("no") in db, "the original database omits an unknown path")
+        assertFalse(
+            MPPPath("no") in dbCopy,
+            "the loaded copy omits an unknown path"
+        )
+    }
+}

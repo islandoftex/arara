@@ -1,68 +1,129 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.files
 
-import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.engine.spec.tempfile
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldContain
 import org.islandoftex.arara.api.AraraIOException
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 import java.io.File
-import java.nio.file.Files
+import java.nio.file.Path
+import kotlin.io.path.readText
+import kotlin.io.path.writeText
+import kotlin.test.assertFailsWith
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
-class JVMMPPPathTest : ShouldSpec({
-    context("read and write operations") {
-        should("read from file") {
-            val tmp = tempfile()
+class JVMMPPPathTest {
+    @Nested
+    inner class `read and write operations` {
+        @Test
+        fun `reads from a file`(@TempDir tempDir: Path) {
+            val tmp = tempDir.resolve("quack.txt")
             tmp.writeText("quack")
-            MPPPath(tmp.toString()).readText() shouldBe "quack"
-            MPPPath(tmp.toString()).readLines() shouldBe listOf("quack")
+            assertEquals(
+                "quack",
+                MPPPath(tmp.toString()).readText(),
+                "text read back from the file"
+            )
+            assertEquals(
+                listOf("quack"),
+                MPPPath(tmp.toString()).readLines(),
+                "lines read back from the file"
+            )
         }
-        should("write to file") {
-            val tmp = tempfile()
+
+        @Test
+        fun `writes to a file`(@TempDir tempDir: Path) {
+            val tmp = tempDir.resolve("quack.txt")
             MPPPath(tmp.toString()).writeText("quack")
-            tmp.readText() shouldBe "quack"
+            assertEquals(
+                "quack",
+                tmp.readText(),
+                "text written to the file"
+            )
         }
-        should("fail reading from directory") {
-            val tmp = Files.createTempDirectory("read")
-            shouldThrow<AraraIOException> {
-                tmp.toMPPPath().readText()
-            }.message shouldContain "read text from file"
+
+        @Test
+        fun `fails reading from a directory`(@TempDir tempDir: Path) {
+            val exception = assertFailsWith<AraraIOException>(
+                "reading text from a directory must be rejected"
+            ) {
+                tempDir.toMPPPath().readText()
+            }
+            assertTrue(
+                exception.message?.contains("read text from file") == true,
+                "the read error names the offending operation"
+            )
         }
-        should("fail writing to directory") {
-            val tmp = Files.createTempDirectory("write")
-            shouldThrow<AraraIOException> {
-                tmp.toMPPPath().writeText("quack")
-            }.message shouldContain "write text to file"
+
+        @Test
+        fun `fails writing to a directory`(@TempDir tempDir: Path) {
+            val exception = assertFailsWith<AraraIOException>(
+                "writing text to a directory must be rejected"
+            ) {
+                tempDir.toMPPPath().writeText("quack")
+            }
+            assertTrue(
+                exception.message?.contains("write text to file") == true,
+                "the write error names the offending operation"
+            )
         }
     }
-    context("value semantics") {
-        should("treat different spellings of the same location as equal") {
+
+    @Nested
+    inner class `value semantics` {
+        @Test
+        fun `treats different spellings of the same location as equal`() {
             val relative = MPPPath("equality-probe.txt")
             val absolute = MPPPath(File("equality-probe.txt").absolutePath)
 
-            relative shouldBe absolute
-            relative.hashCode() shouldBe absolute.hashCode()
+            assertEquals(
+                absolute, relative,
+                "paths denoting the same location are equal"
+            )
+            assertEquals(
+                absolute.hashCode(), relative.hashCode(),
+                "hash codes of equal locations agree"
+            )
         }
-        should("deduplicate equal paths in sets") {
+
+        @Test
+        fun `deduplicates equal paths in sets`() {
             val relative = MPPPath("equality-probe.txt")
             val absolute = MPPPath(File("equality-probe.txt").absolutePath)
 
-            setOf(relative, absolute).size shouldBe 1
+            assertEquals(
+                1, setOf(relative, absolute).size,
+                "a set of equal paths holds a single element"
+            )
         }
-        should("preserve equality across normalization") {
-            MPPPath("equality-probe.txt") shouldBe
-                MPPPath("equality-probe.txt").normalize()
+
+        @Test
+        fun `preserves equality across normalization`() {
+            assertEquals(
+                MPPPath("equality-probe.txt").normalize(),
+                MPPPath("equality-probe.txt"),
+                "normalization keeps equality intact"
+            )
         }
-        should("answer isAbsolute from the provided, not the reference path") {
+
+        @Test
+        fun `answers isAbsolute from the provided path`() {
             val path = MPPPath("equality-probe.txt")
 
             // the duality of MPPPath: isAbsolute reflects what the caller
             // wrote, while toString operates on the absolutized reference
-            path.isAbsolute shouldBe false
-            path.toString() shouldBe File(
-                "equality-probe.txt"
-            ).toPath().toAbsolutePath().normalize().toString()
+            assertFalse(
+                path.isAbsolute,
+                "isAbsolute reports the user-provided spelling"
+            )
+            assertEquals(
+                File("equality-probe.txt").toPath()
+                    .toAbsolutePath().normalize().toString(),
+                path.toString(),
+                "toString reports the absolutized reference path"
+            )
         }
     }
-})
+}

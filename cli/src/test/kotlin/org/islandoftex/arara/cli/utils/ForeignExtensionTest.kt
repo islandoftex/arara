@@ -1,10 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
-import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.annotation.Isolate
-import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.string.shouldContain
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
@@ -13,8 +9,13 @@ import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LinearExecutor
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
+import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 /**
  * Verifies the handling of foreign file extensions: a file type provided
@@ -28,9 +29,10 @@ import java.io.PrintStream
  * before the file references are resolved, as the file types it provides
  * are required for the resolution itself.
  */
-@Isolate
-class ForeignExtensionTest : ShouldSpec({
-    beforeSpec {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class ForeignExtensionTest {
+    @BeforeAll
+    fun installHooks() {
         DirectiveUtils.initializeDirectiveCore()
 
         LinearExecutor.hooks = ExecutorHooks(
@@ -43,7 +45,7 @@ class ForeignExtensionTest : ShouldSpec({
         )
     }
 
-    fun outputForTest(
+    private fun outputForTest(
         testName: String,
         fileName: String
     ): String {
@@ -83,17 +85,24 @@ class ForeignExtensionTest : ShouldSpec({
         }
     }
 
-    should("read foreign extension") {
+    @Test
+    fun `reads a document with a foreign extension`() {
         // the configuration file registers the 'my' file type, so the
         // corresponding document is processed like any other
         val output = outputForTest("foreign-extension", "foreign-extension.my")
-        output shouldContain "QuackOne"
+        assertTrue(
+            output.contains("QuackOne"),
+            "the document with the configured foreign extension was executed"
+        )
     }
 
-    should("fail on unknown extension") {
+    @Test
+    fun `fails on an unknown extension`() {
         // no file type covers 'xy', so the reference cannot be resolved
-        shouldThrow<AraraException> {
+        assertFailsWith<AraraException>(
+            "a document with an uncovered extension must be rejected"
+        ) {
             outputForTest("foreign-extension", "foreign-extension.xy")
         }
     }
-})
+}

@@ -56,8 +56,6 @@ dependencies {
     implementation(libs.log4j.core)
     implementation(libs.log4j.impl)
 
-    testImplementation(libs.kotest.runner.jvm)
-    testImplementation(libs.kotest.assertions.jvm)
 }
 
 tasks {

@@ -183,9 +183,8 @@ allprojects {
     version = rootProject.version
 }
 
-// accessing `libs` does not work inside `subprojects` blocks (wont-fix issue),
-// workaround from https://github.com/gradle/gradle/issues/18237#issuecomment-928074251
-val engine = libs.junit.jupiter.engine
+// accessing `libs` inside `subprojects` blocks does not work (wont-fix
+// issue), so the test wiring relies on the Kotlin plugin helper alone
 
 subprojects {
 
@@ -208,8 +207,7 @@ subprojects {
     }
 
     dependencies {
-        "testImplementation"(kotlin("test-junit5"))
-        "testRuntimeOnly"(engine)
+        "testImplementation"(kotlin("test"))
     }
 
     tasks {

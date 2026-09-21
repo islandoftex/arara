@@ -1,23 +1,26 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
-import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.annotation.Isolate
-import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.shouldNotBe
-import io.kotest.matchers.string.shouldContain
-import io.kotest.matchers.string.shouldNotContain
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
 import org.islandoftex.arara.cli.ruleset.RuleEngine
+import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LinearExecutor
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 /**
  * Executes the end-to-end pipeline on the Lua rule engine, mirroring the
@@ -25,9 +28,10 @@ import java.io.PrintStream
  * rule lookup, parsing and command evaluation all have to happen through
  * the Lua implementations.
  */
-@Isolate
-class LuaExecutionTest : ShouldSpec({
-    beforeSpec {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class LuaExecutionTest {
+    @BeforeAll
+    fun setUp() {
         DirectiveUtils.initializeDirectiveCore()
 
         LinearExecutor.hooks = ExecutorHooks(
@@ -49,14 +53,13 @@ class LuaExecutionTest : ShouldSpec({
         // is restored afterwards so the engine switch cannot leak
         RuleEngine.current = RuleEngine.LUA
     }
-    afterSpec {
+
+    @AfterAll
+    fun tearDown() {
         RuleEngine.current = RuleEngine.YAML
     }
 
-    fun getPathForTest(name: String): String =
-        "src/test/resources/executiontests/$name"
-
-    fun outputForTest(
+    private fun outputForTest(
         testName: String,
         fileName: String = "$testName.tex"
     ): String {
@@ -64,7 +67,9 @@ class LuaExecutionTest : ShouldSpec({
         val output = ByteArrayOutputStream()
         try {
             System.setOut(PrintStream(output))
-            val workingDirectory = MPPPath(getPathForTest(testName))
+            val workingDirectory = MPPPath(
+                "src/test/resources/executiontests/$testName"
+            )
             LinearExecutor.execute(
                 listOf(
                     Project(
@@ -86,59 +91,75 @@ class LuaExecutionTest : ShouldSpec({
         }
     }
 
-    should("execute a Lua rule end-to-end on the Lua engine") {
+    @Test
+    fun `executes a Lua rule end to end on the Lua engine`() {
         val output = outputForTest("lua-engine")
-        output shouldContain "The echoer"
-        output shouldContain "LuaEngineWorks"
-        output shouldContain "SUCCESS"
-        output shouldNotContain "FAILURE"
+        assertTrue(output.contains("The echoer"), "the rule entry is displayed")
+        assertTrue(output.contains("LuaEngineWorks"), "the echoed marker")
+        assertTrue(output.contains("SUCCESS"), "the entry result")
+        assertFalse(output.contains("FAILURE"), "no failure is reported")
     }
 
-    should("evaluate Lua directive conditionals on the Lua engine") {
+    @Test
+    fun `evaluates Lua directive conditionals on the Lua engine`() {
         val output = outputForTest("lua-engine-conditionals")
         // unconditional and truthy conditions run...
-        output shouldContain "One"
-        output shouldContain "Three"
-        output shouldContain "Four"
+        assertTrue(output.contains("One"), "the unconditional directive ran")
+        assertTrue(output.contains("Three"), "the negated condition ran")
+        assertTrue(output.contains("Four"), "the compound condition ran")
         // ...and the falsy one is skipped
-        output shouldNotContain "Two"
+        assertFalse(
+            output.contains("Two"),
+            "the directive with a falsy condition is skipped"
+        )
     }
 
-    should("reject MVEL conditional syntax on the Lua engine") {
+    @Test
+    fun `rejects MVEL conditional syntax on the Lua engine`() {
         // '&&' does not parse in the Lua dialect; the failure has to
         // surface as an arara error instead of crashing the run
-        val exception = shouldThrow<AraraException> {
+        val exception = assertFailsWith<AraraException>(
+            "MVEL conditional syntax must not parse in the Lua dialect"
+        ) {
             outputForTest("lua-engine-conditionals", "broken.tex")
         }
-        exception.message shouldNotBe null
+        assertTrue(
+            exception.message != null,
+            "the rejection carries a diagnostic message"
+        )
     }
 
-    should("interpolate Lua orb tags in directive options") {
+    @Test
+    fun `interpolates Lua orb tags in directive options`() {
         val output = outputForTest("lua-engine-options")
         // the orb tag is evaluated at parse time, so the rule receives
         // the interpolated list containing the base name of the file
-        output shouldContain "name: lua-engine-options"
-        output shouldContain "SUCCESS"
+        assertTrue(
+            output.contains("name: lua-engine-options"),
+            "the orb tag was interpolated with the file base name"
+        )
+        assertTrue(output.contains("SUCCESS"), "the entry result")
     }
 
-    should("not interpolate orb tags in safe mode on the Lua engine") {
+    @Test
+    fun `does not interpolate orb tags in safe mode on the Lua engine`() {
         val options = LinearExecutor.executionOptions
-        LinearExecutor.executionOptions =
-            org.islandoftex.arara.core.configuration.ExecutionOptions
-                .from(options)
-                .copy(
-                    executionMode =
-                    org.islandoftex.arara.api.configuration.ExecutionMode
-                        .SAFE_RUN
-                )
+        LinearExecutor.executionOptions = ExecutionOptions.from(options)
+            .copy(executionMode = ExecutionMode.SAFE_RUN)
         try {
             val output = outputForTest("lua-engine-options")
             // safe mode must never evaluate user expressions, so the
             // orb tag passes through literally
-            output shouldContain "@{getBasename(getOriginalReference())}"
-            output shouldNotContain "name: lua-engine-options"
+            assertTrue(
+                output.contains("@{getBasename(getOriginalReference())}"),
+                "the orb tag passes through literally in safe mode"
+            )
+            assertFalse(
+                output.contains("name: lua-engine-options"),
+                "the orb tag was not interpolated in safe mode"
+            )
         } finally {
             LinearExecutor.executionOptions = options
         }
     }
-})
+}

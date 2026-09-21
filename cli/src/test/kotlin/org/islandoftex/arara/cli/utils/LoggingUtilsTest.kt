@@ -1,17 +1,25 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
-import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.shouldBe
 import org.apache.logging.log4j.ThreadContext
 import org.islandoftex.arara.core.configuration.LoggingOptions
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
-class LoggingUtilsTest : ShouldSpec({
-    should("properly set log file path") {
+class LoggingUtilsTest {
+    @Test
+    fun `properly sets the log file path`() {
         val defaultEnable = LoggingOptions(true)
-        ThreadContext.get("araraLogFile") shouldBe null
+        assertNull(
+            ThreadContext.get("araraLogFile"),
+            "no log file path is registered before logging is set up"
+        )
         LoggingUtils.setupLogging(defaultEnable)
-        ThreadContext.get("araraLogFile") shouldBe defaultEnable.logFile
-            .normalize().toString()
+        assertEquals(
+            defaultEnable.logFile.normalize().toString(),
+            ThreadContext.get("araraLogFile"),
+            "log file path registered for the logging context"
+        )
     }
-})
+}

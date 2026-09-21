@@ -1,12 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
-import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.annotation.Isolate
-import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldContain
-import io.kotest.matchers.string.shouldNotContain
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
@@ -17,13 +11,22 @@ import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LinearExecutor
+import org.islandoftex.arara.core.session.Session
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
+import kotlin.test.assertFailsWith
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
-@Isolate
-class ExecutionTest : ShouldSpec({
-    beforeSpec {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class ExecutionTest {
+    @BeforeAll
+    fun setUp() {
         DirectiveUtils.initializeDirectiveCore()
 
         LinearExecutor.hooks = ExecutorHooks(
@@ -42,8 +45,10 @@ class ExecutionTest : ShouldSpec({
         )
     }
 
-    fun getPathForTest(name: String): String = "src/test/resources/executiontests/$name"
-    fun outputForTest(
+    private fun getPathForTest(name: String): String =
+        "src/test/resources/executiontests/$name"
+
+    private fun outputForTest(
         testName: String,
         fileName: String = "$testName.tex"
     ): String {
@@ -67,105 +72,178 @@ class ExecutionTest : ShouldSpec({
                 )
             )
             return output.toByteArray().toString(Charsets.UTF_8)
-        } catch (ex: Exception) {
-            throw ex
         } finally {
             System.setOut(sysout)
             output.close()
         }
     }
 
-    should("be able to store variables sessions") {
-        outputForTest("sessions") shouldContain "MeowQuack"
+    @Test
+    fun `is able to store variables in sessions`() {
+        val output = outputForTest("sessions")
+        assertTrue(
+            output.contains("MeowQuack"),
+            "the session value is visible to the rule"
+        )
     }
 
-    should("honor falsy existence test") {
+    @Test
+    fun `honors the falsy existence test`() {
         val file = File(getPathForTest("conditionals") + "/conditionals.quack")
         if (file.exists()) file.delete()
         val output = outputForTest("conditionals")
-        output shouldContain "QuackOne"
-        output shouldContain "QuackFour"
-        output shouldNotContain "QuackTwo"
-        output shouldNotContain "QuackThree"
+        assertTrue(output.contains("QuackOne"), "the unconditional directive ran")
+        assertTrue(output.contains("QuackFour"), "the always true directive ran")
+        assertFalse(
+            output.contains("QuackTwo"),
+            "the directive with a falsy existence condition is skipped"
+        )
+        assertFalse(
+            output.contains("QuackThree"),
+            "the directive with a falsy contains condition is skipped"
+        )
     }
-    should("honor truthy existence (falsy contains) test") {
+
+    @Test
+    fun `honors the truthy existence and falsy contains test`() {
         val file = File(getPathForTest("conditionals") + "/conditionals.quack")
         file.writeText("Meow")
         val output = outputForTest("conditionals")
         file.delete()
-        output shouldContain "QuackOne"
-        output shouldContain "QuackFour"
-        output shouldContain "QuackTwo"
-        output shouldNotContain "QuackThree"
+        assertTrue(output.contains("QuackOne"), "the unconditional directive ran")
+        assertTrue(output.contains("QuackFour"), "the always true directive ran")
+        assertTrue(
+            output.contains("QuackTwo"),
+            "the directive with a truthy existence condition ran"
+        )
+        assertFalse(
+            output.contains("QuackThree"),
+            "the directive with a falsy contains condition is skipped"
+        )
     }
-    should("honor truthy contains test") {
+
+    @Test
+    fun `honors the truthy contains test`() {
         val file = File(getPathForTest("conditionals") + "/conditionals.quack")
         file.writeText("Duck")
         val output = outputForTest("conditionals")
         file.delete()
-        output shouldContain "QuackOne"
-        output shouldContain "QuackFour"
-        output shouldContain "QuackTwo"
-        output shouldContain "QuackThree"
+        assertTrue(output.contains("QuackOne"), "the unconditional directive ran")
+        assertTrue(output.contains("QuackFour"), "the always true directive ran")
+        assertTrue(output.contains("QuackTwo"), "the existence directive ran")
+        assertTrue(
+            output.contains("QuackThree"),
+            "the directive with a truthy contains condition ran"
+        )
     }
 
-    should("track changes") {
+    @Test
+    fun `tracks changes`() {
         val file = File(getPathForTest("changes") + "/arara.yaml")
         if (file.exists()) file.delete()
-        outputForTest("changes") shouldContain "QuackOne"
-        outputForTest("changes") shouldNotContain "QuackOne"
+        assertTrue(
+            outputForTest("changes").contains("QuackOne"),
+            "the first run executes the directive"
+        )
+        assertFalse(
+            outputForTest("changes").contains("QuackOne"),
+            "the second run skips the unchanged file"
+        )
     }
 
-    should("gracefully halt on halt rule") {
+    @Test
+    fun `gracefully halts on the halt rule`() {
+        // a fresh session keeps the scenario independent from any halt
+        // keys left behind by other specs or scenarios
+        Session.clear()
         val output = outputForTest("halt")
-        output shouldContain "QuackOne"
-        output shouldNotContain "QuackTwo"
-    }
-    should("forcefully halt on halt error rule") {
-        val output = outputForTest("halt-error")
-        output shouldContain "QuackOne"
-        output shouldNotContain "QuackTwo"
+        assertTrue(output.contains("QuackOne"), "the pre-halt directive ran")
+        assertFalse(
+            output.contains("QuackTwo"),
+            "the post-halt directive is skipped"
+        )
     }
 
-    should("fail on invalid config") {
-        val exception = shouldThrow<AraraException> {
+    @Test
+    fun `forcefully halts on the halt error rule`() {
+        // a fresh session keeps the scenario independent from any halt
+        // keys left behind by other specs or scenarios
+        Session.clear()
+        val output = outputForTest("halt-error")
+        assertTrue(output.contains("QuackOne"), "the pre-halt directive ran")
+        assertFalse(
+            output.contains("QuackTwo"),
+            "the post-halt directive is skipped"
+        )
+    }
+
+    @Test
+    fun `fails on an invalid config`() {
+        val exception = assertFailsWith<AraraException>(
+            "a broken configuration file must fail the run"
+        ) {
             outputForTest("invalid-config")
         }
-        exception.message shouldContain "could not parse the configuration"
+        assertTrue(
+            exception.message?.contains("could not parse the configuration") == true,
+            "the error names the configuration problem"
+        )
     }
 
-    should("accept empty pattern on known extension") {
+    @Test
+    fun `accepts an empty pattern on a known extension`() {
         val output = outputForTest("known-extension")
-        output shouldContain "QuackOne"
+        assertTrue(
+            output.contains("QuackOne"),
+            "the rule executes with an empty pattern for a known extension"
+        )
     }
 
-    should("execute option-less directives") {
+    @Test
+    fun `executes option-less directives`() {
         val output = outputForTest("simple-directive")
-        output shouldContain "The echoer"
-        output shouldContain "SUCCESS"
-    }
-    should("execute directive with options") {
-        val output = outputForTest("directive-with-options")
-        output shouldContain "The echoer"
-        output shouldContain "batchmode"
-        output shouldContain "SUCCESS"
-        output shouldNotContain "FAILURE"
+        assertTrue(
+            output.contains("The echoer"),
+            "the rule entry is displayed"
+        )
+        assertTrue(output.contains("SUCCESS"), "the entry result")
     }
 
-    should("interpret orb tags in directives") {
-        val output = outputForTest("directive-with-mvel-options")
-        output shouldContain "testdirective-with-mvel-optionsquack"
-        output shouldContain "nothing"
+    @Test
+    fun `executes a directive with options`() {
+        val output = outputForTest("directive-with-options")
+        assertTrue(output.contains("The echoer"), "the rule entry is displayed")
+        assertTrue(output.contains("batchmode"), "the evaluated option flag")
+        assertTrue(output.contains("SUCCESS"), "the entry result")
+        assertFalse(output.contains("FAILURE"), "no failure is reported")
     }
-    should("not interpret orb tags in directives in safe mode") {
+
+    @Test
+    fun `interprets orb tags in directives`() {
+        val output = outputForTest("directive-with-mvel-options")
+        assertTrue(
+            output.contains("testdirective-with-mvel-optionsquack"),
+            "the orb tag was interpolated with the file base name"
+        )
+        assertTrue(output.contains("nothing"), "the second directive ran")
+    }
+
+    @Test
+    fun `does not interpret orb tags in directives in safe mode`() {
         val options = LinearExecutor.executionOptions
         LinearExecutor.executionOptions = ExecutionOptions.from(options)
             .copy(executionMode = ExecutionMode.SAFE_RUN)
         try {
             val output = outputForTest("directive-with-mvel-options")
-            output shouldNotContain "testdirective-with-mvel-optionsquack"
-            output shouldContain "test@{getBasename(getOriginalReference())}quack"
-            output shouldContain "nothing"
+            assertFalse(
+                output.contains("testdirective-with-mvel-optionsquack"),
+                "the orb tag was not interpolated in safe mode"
+            )
+            assertTrue(
+                output.contains("test@{getBasename(getOriginalReference())}quack"),
+                "the orb tag passes through literally in safe mode"
+            )
+            assertTrue(output.contains("nothing"), "the second directive ran")
         } finally {
             // restore no matter whether the assertions held, so a failure
             // cannot leak the safe mode into the subsequent scenarios
@@ -173,23 +251,35 @@ class ExecutionTest : ShouldSpec({
         }
     }
 
-    should("process multiple files (files array)") {
+    @Test
+    fun `processes multiple files given a files array`() {
         val output = outputForTest("multiple-files")
-        output shouldContain "doc1.tex"
-        output shouldContain "doc2.tex"
-        output shouldNotContain "doc3.tex"
+        assertTrue(output.contains("doc1.tex"), "the first file was processed")
+        assertTrue(output.contains("doc2.tex"), "the second file was processed")
+        assertFalse(
+            output.contains("doc3.tex"),
+            "the file outside the array was not processed"
+        )
     }
 
-    should("identify types correctly") {
+    @Test
+    fun `identifies types correctly`() {
         val output = outputForTest("typetests")
-        output shouldContain "Bool test success"
-        output shouldContain "String test success"
-        output shouldContain "List test success"
-        output shouldContain "Map test success"
+        assertTrue(output.contains("Bool test success"), "the boolean test")
+        assertTrue(output.contains("String test success"), "the string test")
+        assertTrue(output.contains("List test success"), "the list test")
+        assertTrue(output.contains("Map test success"), "the map test")
     }
 
-    should("skip comments in header mode") {
+    @Test
+    fun `skips comments in header mode`() {
         val output = outputForTest("header-comments")
-        (output.length - output.replace("QuackOne", "").length) / "QuackOne".length shouldBe 3
+        val occurrences =
+            (output.length - output.replace("QuackOne", "").length) /
+                "QuackOne".length
+        assertEquals(
+            3, occurrences,
+            "the directives inside the header comments are not executed"
+        )
     }
-})
+}

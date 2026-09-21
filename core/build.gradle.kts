@@ -16,7 +16,5 @@ dependencies {
     implementation(libs.yamlkt)
     implementation(libs.ztexec)
 
-    testImplementation(libs.kotest.runner.jvm)
-    testImplementation(libs.kotest.assertions.jvm)
     testRuntimeOnly(libs.slf4j.simple)
 }

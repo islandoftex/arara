@@ -16,6 +16,4 @@ dependencies {
     implementation(libs.luaj)
     implementation(libs.kotlin.logging)
 
-    testImplementation(libs.kotest.runner.jvm)
-    testImplementation(libs.kotest.assertions.jvm)
 }

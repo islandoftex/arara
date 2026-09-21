@@ -16,11 +16,8 @@ versionsPlugin = "0.64.0"
 # Libraries
 # --------------------------------
 clikt = "5.0.3"
-junit = "5.14.0"
 kaml = "0.104.0"
-kotest = "6.0.3"
 kotlinLogging = "8.0.4"
-kotlinxCoroutines = "1.10.2"
 kotlinxSerialization = "1.11.0"
 log4j = "2.25.2"
 luaj = "1.0.3"
@@ -32,12 +29,8 @@ ztExec = "1.12"
 [libraries]
 clikt = { group = "com.github.ajalt.clikt", name = "clikt", version.ref = "clikt" }
 clikt-markdown = { group = "com.github.ajalt.clikt", name = "clikt-markdown", version.ref = "clikt" }
-junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit" }
 kaml = { group = "com.charleskorn.kaml", name = "kaml", version.ref = "kaml" }
-kotest-assertions-jvm = { group = "io.kotest", name = "kotest-assertions-core-jvm", version.ref = "kotest" }
-kotest-runner-jvm = { group = "io.kotest", name = "kotest-runner-junit5-jvm", version.ref = "kotest" }
 kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version.ref = "kotlinLogging" }
-kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 luaj = { group = "io.github.taoguan", name = "luaj", version.ref = "luaj" }
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
 log4j-core = { group = "org.apache.logging.log4j", name = "log4j-core", version.ref = "log4j" }

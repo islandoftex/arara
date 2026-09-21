@@ -3,12 +3,11 @@ package org.islandoftex.arara.cli
 
 import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.core.parse
-import io.kotest.core.annotation.Isolate
-import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldContain
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  * Runs the actual CLI entry point to verify behavior that only manifests
@@ -18,9 +17,8 @@ import java.io.PrintStream
  * loaded, as its rule is reachable exclusively through the rule paths
  * the configuration provides.
  */
-@Isolate
-class ProjectConfigurationTest : ShouldSpec({
-    fun runCLI(vararg args: String): Pair<Int, String> {
+class ProjectConfigurationTest {
+    private fun runCLI(vararg args: String): Pair<Int, String> {
         val sysout = System.out
         val output = ByteArrayOutputStream()
         return try {
@@ -38,16 +36,24 @@ class ProjectConfigurationTest : ShouldSpec({
         }
     }
 
-    should("load the configuration file for project specification runs") {
+    @Test
+    fun `loads the configuration file for project specification runs`() {
         val (status, output) = runCLI(
             "--working-directory",
             "src/test/resources/executiontests/project-config",
             "project.lua"
         )
-        status shouldBe 0
+        assertEquals(
+            0, status,
+            "the project run exits successfully"
+        )
         // the rule is only reachable through the rule paths provided by
         // the configuration file, and the echoed marker only shows up
         // because the configuration enables verbose output
-        output shouldContain "ProjectConfigWorks"
+        assertTrue(
+            output.contains("ProjectConfigWorks"),
+            "the rule was found through the configured rule paths and " +
+                "executed with the configured verbose output"
+        )
     }
-})
+}
