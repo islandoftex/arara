@@ -43,6 +43,10 @@ on.
   conditionals. Safe mode still skips interpolation entirely, and
   unterminated or malformed tags report the same interpolation error as
   the MVEL dialect.
+* The rule errors of the Lua engine now share the localized header with
+  the YAML engine, unsupported rule file formats report a new localized
+  message, and the previously untranslated project file message is now
+  available in all supported languages.
 
 ## Changed
 

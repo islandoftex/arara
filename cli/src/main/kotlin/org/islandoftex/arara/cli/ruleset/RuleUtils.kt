@@ -5,6 +5,8 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.rules.Rule
+import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.utils.formatString
 import org.islandoftex.arara.lua.rules.LuaRuleParser
 
 /**
@@ -40,9 +42,13 @@ object RuleUtils {
             }
             else ->
                 throw AraraException(
-                    "I found an error in rule '$identifier' located at " +
-                        "'${file.normalize().parent}'. The rule format of " +
-                        "'${file.fileName}' is not supported by arara."
+                    LanguageController.messages
+                        .ERROR_PARSERULE_UNSUPPORTED_FORMAT
+                        .formatString(
+                            identifier,
+                            file.normalize().parent.toString(),
+                            file.fileName
+                        )
                 )
         }
 
