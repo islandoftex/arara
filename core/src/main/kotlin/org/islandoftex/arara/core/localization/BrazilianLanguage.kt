@@ -40,6 +40,7 @@ class BrazilianLanguage : Messages(
     ERROR_PARSER_INVALID_PREAMBLE = "Sinto muito, mas o preâmbulo '%s' não foi encontrado. Por favor, certifique-se de que esta chave existe no arquivo de configuração.",
     ERROR_PARSERULE_GENERIC_ERROR = "Não consegui analisar a regra, alguma coisa de errado aconteceu. Esta parte é complicada, pois envolve aspectos do formato de serialização de dados subjacente. Eu farei o possível para te ajudar da melhor forma que puder.",
     ERROR_PARSERULE_UNSUPPORTED_FORMAT = "Encontrei um erro na regra \"%s\" localizada em \"%s\". O formato da regra \"%s\" não é suportado pelo arara.",
+    ERROR_PROJECT_CYCLE = "As dependências do projeto contêm um ciclo envolvendo %s. Dependências cíclicas não podem ser resolvidas. Por favor, revise a especificação do seu projeto.",
     ERROR_REPLICATELIST_MISSING_FORMAT_ARGUMENTS_EXCEPTION = "Não consegui replicar a lista por causa de um formato de argumento faltante. Meu palpite é que existem menos (ou mais) parâmetros do que o esperado. Certifique-se de corrigir o número de parâmetros e tente novamente.",
     ERROR_RULE_IDENTIFIER_AND_PATH = "Encontrei um erro na regra '%s' localizada em '%s'.",
     ERROR_RUN_GENERIC_EXCEPTION = "Não consegui executar o comando de sistema disponibilizado, alguma coisa de errado aconteceu. Esta parte é complicada, pois envolve aspectos da linguagem de expressão subjacente. Eu farei o possível para te ajudar da melhor forma que puder.",

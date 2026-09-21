@@ -8,6 +8,8 @@ import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.session.ExecutionReport
 import org.islandoftex.arara.api.session.Executor
 import org.islandoftex.arara.core.dependencies.ProjectGraph
+import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.utils.formatString
 import kotlin.time.TimeSource
 
 /**
@@ -71,6 +73,19 @@ object LinearExecutor : Executor {
      */
     override fun execute(projects: List<Project>): ExecutionReport {
         val projectsInOrder = ProjectGraph().apply { addAll(projects) }.kahn()
+        // Kahn's algorithm silently omits vertices involved in a cycle, so
+        // the topological order has to be verified to cover every project;
+        // otherwise cyclic projects would simply not be executed at all
+        if (projectsInOrder.size < projects.size) {
+            val cyclic = projects
+                .filter { project -> projectsInOrder.none { it.name == project.name } }
+                .map { it.name }
+                .joinToString(", ", "(", ")")
+            throw AraraException(
+                LanguageController.messages.ERROR_PROJECT_CYCLE
+                    .formatString(cyclic)
+            )
+        }
         hooks.executeBeforeExecution()
         val executionStarted = TimeSource.Monotonic.markNow()
         var exitCode = 0

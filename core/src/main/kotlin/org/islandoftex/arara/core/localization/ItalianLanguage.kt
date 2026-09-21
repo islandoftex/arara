@@ -40,6 +40,7 @@ class ItalianLanguage : Messages(
     ERROR_PARSER_INVALID_PREAMBLE = "Mi dispiace, ma non è stato possibile trovare il preambolo '%s'. Assicurati che questa chiave esista nel file di configurazione.",
     ERROR_PARSERULE_GENERIC_ERROR = "Non ho potuto analizzare la regola, qualcosa è andato storto. Questa parte è un po' complicata, perché riguarda aspetti del formato interno di serializzazione dei dati. Farò del mio meglio per darti una mano, per quanto posso.",
     ERROR_PARSERULE_UNSUPPORTED_FORMAT = "Ho trovato un errore nella regola \"%s\" situata in \"%s\". Il formato della regola \"%s\" non è supportato da arara.",
+    ERROR_PROJECT_CYCLE = "Le dipendenze del progetto contengono un ciclo che coinvolge %s. I cicli non possono essere risolti. Per favore, rivedi la specifica del tuo progetto.",
     ERROR_REPLICATELIST_MISSING_FORMAT_ARGUMENTS_EXCEPTION = "Non sono riuscito a replicare la lista perché manca un argomento per il formato. Penso che si tratti di un numero sbagliato di parametri. Assicurati che il numero di parametri sia corretto e riprova.",
     ERROR_RULE_IDENTIFIER_AND_PATH = "Ho trovato un errore nella regola '%s' alla posizione '%s'.",
     ERROR_RUN_GENERIC_EXCEPTION = "Non ho potuto lanciare il comando di sistema richiesto, qualcosa è andato storto. Questa parte è un po' complicata, perché riguarda aspetti del linguaggio interno per le espressioni. Farò del mio meglio per darti una mano, per quanto posso.",

@@ -86,6 +86,10 @@ on.
 
 ## Fixed
 
+* Project specifications whose dependencies contain a cycle now report a
+  proper error naming the projects involved, instead of silently
+  skipping them (Kahn's algorithm omits cyclic vertices from the
+  topological order, so cyclic projects were simply not executed).
 * Project specifications (`.lua` files) now honor configuration files:
   previously the configuration was loaded only for single file
   invocations, so rule paths, file types, language and the other

@@ -40,6 +40,7 @@ class DutchLanguage : Messages(
     ERROR_PARSER_INVALID_PREAMBLE = "Het spijt me, maar de preamble '%s' is niet gevonden. Zorg ervoor dat deze verwijzing bestaat in het configuratiebestand.",
     ERROR_PARSERULE_GENERIC_ERROR = "Ik kon de regel niet verwerken, er is iets verkeerd gegaan. Dit probleem is ingewikkeld, omdat het te maken heeft met aspecten van de onderliggende dataserialisatiesyntax. Ik zal mijn best doen om je zoveel mogelijk hiermee te helpen.",
     ERROR_PARSERULE_UNSUPPORTED_FORMAT = "Ik heb een fout gevonden in regel \"%s\", gelegen in \"%s\". Het regelformaat van \"%s\" wordt niet ondersteund door arara.",
+    ERROR_PROJECT_CYCLE = "De projectafhankelijkheden bevatten een cyclus waarin %s voorkomt. Cycles kunnen niet worden opgelost. Controleer je projectspecificatie.",
     ERROR_REPLICATELIST_MISSING_FORMAT_ARGUMENTS_EXCEPTION = "Ik kon de lijst niet genereren vanwege een ontbrekend format-argument. Ik denk dat er minder (of meer) parameters zijn dan verwacht. Geef het juiste aantal argumenten op en probeer het opnieuw.",
     ERROR_RULE_IDENTIFIER_AND_PATH = "Ik heb een fout gevonden in regel '%s' op positie '%s'.",
     ERROR_RUN_GENERIC_EXCEPTION = "Ik kon het opgegeven systeemcommando niet uitvoeren, er is iets misgegaan. Dit is een ingewikkeld probleem, omdat het te maken heeft met aspecten van de onderliggende expressietaal. Ik zal mijn best doen om je zoveel mogelijk hiermee te helpen.",

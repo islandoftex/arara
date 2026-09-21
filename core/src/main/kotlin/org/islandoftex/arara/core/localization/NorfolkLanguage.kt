@@ -40,6 +40,7 @@ class NorfolkLanguage : Messages(
     ERROR_PARSER_INVALID_PREAMBLE = "Thass a rum ole dew, ole partner, but I can't find the preamble '%s'. Do yew make sure that key exist in the configuration file.",
     ERROR_PARSERULE_GENERIC_ERROR = "Thass a rum ole dew, that rule is hully puttin' on its parts. Wuh, yew're gotta he'sum idear wot this is orl abowt ter git th' hang o'this bit else yew myte be in a rite ole puckaterry but I'll help yew git it done if I can, tergether.",
     ERROR_PARSERULE_UNSUPPORTED_FORMAT = "I've found a error in the rule \"%s\" located at \"%s\". The rule format of \"%s\" ent supported by arara, I'm afraid.",
+    ERROR_PROJECT_CYCLE = "Them project dependencies hev got a cycle in 'em, a-involvun' %s. Cycle dependencies can't be sorted aht, no how. Do please hev another look at your project specification.",
     ERROR_REPLICATELIST_MISSING_FORMAT_ARGUMENTS_EXCEPTION = "Blast, bor, but I coont replicate that duzzy ole list cors you ent giv' me a format argument. I rackon there's a slight more or less parameters than yew giv' me. Dew yew go an' check it and try agin.",
     ERROR_RULE_IDENTIFIER_AND_PATH = "Wuh, that ent right, ole partner. That rule '%s' have gone on the slosh at '%s'.",
     ERROR_RUN_GENERIC_EXCEPTION = "Thass a rum ole dew, my bewty, but I coont dew the system command but I ent got no idear wass gone wrong. Wuh, yew're gotta he'sum idear wot this is orl abowt ter git th' hang o'this bit else yew myte be in a rite ole puckaterry but I'll help yew git it done if I can, tergether.",

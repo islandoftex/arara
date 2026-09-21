@@ -51,6 +51,7 @@ public open class Messages(
     public val ERROR_PARSER_INVALID_PREAMBLE: String = "I am sorry, but the preamble \"%s\" could not be found. Please make sure this key exists in the configuration file.",
     public val ERROR_PARSERULE_GENERIC_ERROR: String = "I could not parse the rule, something bad happened. This part is quite tricky, since it involves aspects of the underlying data serialization format. I will do my best to help you in any way I can.",
     public val ERROR_PARSERULE_UNSUPPORTED_FORMAT: String = "I found an error in rule \"%s\" located at \"%s\". The rule format of \"%s\" is not supported by arara.",
+    public val ERROR_PROJECT_CYCLE: String = "The project dependencies contain a cycle involving %s. Cyclic dependencies cannot be resolved, so please revise your project specification.",
     public val ERROR_REPLICATELIST_MISSING_FORMAT_ARGUMENTS_EXCEPTION: String = "I could not replicate the list due to a missing format argument. My guess is that there are less (or more) parameters than expected. Make sure to correct the number of parameters and try again.",
     public val ERROR_RULE_IDENTIFIER_AND_PATH: String = "I have spotted an error in rule \"%s\" located at \"%s\".",
     public val ERROR_RUN_GENERIC_EXCEPTION: String = "I could not run the provided system command, something bad happened. This part is quite tricky, since it involves aspects of the underlying expression language. I will do my best to help you in any way I can.",

@@ -15,7 +15,10 @@ class GraphTest {
     }
     @Test
     fun shouldBeEmptyOnCycles() {
-        // TODO: is that the correct behavior we want to enforce?
+        // Kahn's algorithm deliberately returns a partial order when the
+        // graph contains a cycle; the linear executor enforces that the
+        // topological order covers every project, so cycles surface as
+        // proper errors at the project level
         assertEquals(Graph<Int>().apply { addEdge(1, 1) }.kahn(), emptyList())
     }
     @Test

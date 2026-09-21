@@ -71,12 +71,8 @@ class SessionTest {
     fun shouldNotThrowOnKnownRemoval() {
         Session.clear()
         Session.put("A", "B")
-        try {
-            Session.remove("A")
-            assertTrue(true)
-        } catch (_: AraraException) {
-            assertTrue(false)
-        }
+        // any exception thrown here fails the test naturally
+        Session.remove("A")
     }
     @Test
     fun shouldThrowOnUnknownRemoval() {
