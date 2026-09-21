@@ -16,7 +16,8 @@ class SessionTest {
         // on Linux it is called PATH, on Windows it may be Path
         assertTrue(
             Session.contains("environment:PATH") ||
-                Session.contains("environment:Path")
+                Session.contains("environment:Path"),
+            "the session holds the system path variable"
         )
     }
 
@@ -24,23 +25,23 @@ class SessionTest {
     fun shouldProperlyCheckExistence() {
         Session.clear()
         Session.put("A", "B")
-        assertTrue(Session.contains("A"))
-        assertFalse(Session.contains("C"))
+        assertTrue(Session.contains("A"), "the session contains the inserted key")
+        assertFalse(Session.contains("C"), "the session omits an unknown key")
     }
 
     @Test
     fun shouldSupportInsertion() {
         Session.clear()
-        assertFalse(Session.contains("A"))
+        assertFalse(Session.contains("A"), "the key is absent before insertion")
         Session.put("A", "B")
-        assertTrue(Session.contains("A"))
+        assertTrue(Session.contains("A"), "the key is present after insertion")
     }
 
     @Test
     fun shouldSupportGet() {
         Session.clear()
         Session.put("A", "B")
-        assertEquals(Session["A"], "B")
+        assertEquals("B", Session["A"], "the stored value of the key")
     }
 
     @Test
@@ -48,11 +49,11 @@ class SessionTest {
         Session.clear()
         Session.put("A", "B")
         Session.put("C", "D")
-        assertTrue(Session.contains("A"))
-        assertTrue(Session.contains("C"))
+        assertTrue(Session.contains("A"), "the first key is present")
+        assertTrue(Session.contains("C"), "the second key is present")
         Session.remove("A")
-        assertFalse(Session.contains("A"))
-        assertTrue(Session.contains("C"))
+        assertFalse(Session.contains("A"), "the removed key is absent")
+        assertTrue(Session.contains("C"), "the other key survives the removal")
     }
 
     @Test
@@ -60,11 +61,11 @@ class SessionTest {
         Session.clear()
         Session.put("A", "B")
         Session.put("C", "D")
-        assertTrue(Session.contains("A"))
-        assertTrue(Session.contains("C"))
+        assertTrue(Session.contains("A"), "the first key is present")
+        assertTrue(Session.contains("C"), "the second key is present")
         Session.clear()
-        assertFalse(Session.contains("A"))
-        assertFalse(Session.contains("C"))
+        assertFalse(Session.contains("A"), "the first key is gone after clearing")
+        assertFalse(Session.contains("C"), "the second key is gone after clearing")
     }
 
     @Test
@@ -77,7 +78,9 @@ class SessionTest {
     @Test
     fun shouldThrowOnUnknownRemoval() {
         Session.clear()
-        assertFailsWith<AraraException> {
+        assertFailsWith<AraraException>(
+            "removing an unknown key must be rejected"
+        ) {
             Session.remove("A")
         }
     }
@@ -86,8 +89,10 @@ class SessionTest {
     fun shouldThrowOnUnknownGetter() {
         Session.clear()
         Session.put("A", "B")
-        assertEquals(Session["A"], "B")
-        assertFailsWith<AraraException> {
+        assertEquals("B", Session["A"], "the stored value of the key")
+        assertFailsWith<AraraException>(
+            "reading an unknown key must be rejected"
+        ) {
             Session["C"]
         }
     }

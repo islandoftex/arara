@@ -19,7 +19,10 @@ class DisplayUtilsTest {
                 1024 to "1.0 kB",
                 1000000 to "1.0 MB"
             ).forEach { (key, value) ->
-                assertEquals(DisplayUtils.byteSizeToString(key.toLong()), value)
+                assertEquals(
+                    value, DisplayUtils.byteSizeToString(key.toLong()),
+                    "formatted size for $key bytes"
+                )
             }
         } finally {
             // restore the session state no matter whether the formatting

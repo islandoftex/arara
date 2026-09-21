@@ -7,6 +7,7 @@ import org.islandoftex.arara.api.files.MPPPath
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class LuaRuleParserTest {
@@ -57,23 +58,23 @@ class LuaRuleParserTest {
     @Test
     fun shouldParseAValidRule() {
         val rule = LuaRuleParser.parse(ruleFile(validRule), "demo")
-        assertEquals("demo", rule.identifier)
-        assertEquals("Demo", rule.displayName)
-        assertEquals(listOf("Island of TeX"), rule.authors)
-        assertEquals(1, rule.commands.size)
-        assertEquals("The demo tool", rule.commands[0].name)
-        assertEquals(2, rule.arguments.size)
-        assertEquals("shell", rule.arguments[0].identifier)
-        assertTrue(rule.arguments[1].isRequired)
-        assertEquals("normal", rule.arguments[1].defaultValue)
+        assertEquals("demo", rule.identifier, "the rule identifier matches the directive")
+        assertEquals("Demo", rule.displayName, "the rule display name")
+        assertEquals(listOf("Island of TeX"), rule.authors, "the rule authors")
+        assertEquals(1, rule.commands.size, "the rule holds a single command")
+        assertEquals("The demo tool", rule.commands[0].name, "the command name")
+        assertEquals(2, rule.arguments.size, "the rule holds two arguments")
+        assertEquals("shell", rule.arguments[0].identifier, "the first argument identifier")
+        assertTrue(rule.arguments[1].isRequired, "the second argument is required")
+        assertEquals("normal", rule.arguments[1].defaultValue, "the second argument default value")
     }
 
     @Test
     fun shouldEvaluateExitClosures() {
         val rule = LuaRuleParser.parse(ruleFile(validRule), "demo")
         val command = rule.commands[0]
-        assertTrue(command.exitCheck(1))
-        assertTrue(!command.exitCheck(2))
+        assertTrue(command.exitCheck(1), "exit code one satisfies the exit closure")
+        assertFalse(command.exitCheck(2), "exit code two violates the exit closure")
     }
 
     @Test
@@ -85,15 +86,18 @@ class LuaRuleParserTest {
         )
         assertEquals(
             listOf("--shell-escape"),
-            rule.arguments[0].processor("yes", context)
+            rule.arguments[0].processor("yes", context),
+            "the truthy flag value produces the enable option"
         )
         assertEquals(
             listOf("--no-shell-escape"),
-            rule.arguments[0].processor("no", context)
+            rule.arguments[0].processor("no", context),
+            "the falsy flag value produces the disable option"
         )
         assertEquals(
             listOf("--mode", "draft"),
-            rule.arguments[1].processor("draft", context)
+            rule.arguments[1].processor("draft", context),
+            "the choice flag echoes the selected mode"
         )
     }
 
@@ -104,15 +108,19 @@ class LuaRuleParserTest {
             "parameters" to mapOf<String, Any>(),
             "reference" to MPPPath("file.tex")
         )
-        val exception = assertFailsWith<AraraException> {
+        val exception = assertFailsWith<AraraException>(
+            "an invalid choice must surface the rule error"
+        ) {
             rule.arguments[1].processor("invalid", context)
         }
-        assertTrue(exception.message!!.contains("Invalid mode."))
+        assertTrue(exception.message!!.contains("Invalid mode."), "the rule error names the invalid mode")
     }
 
     @Test
     fun shouldRejectMismatchedIdentifiers() {
-        assertFailsWith<AraraException> {
+        assertFailsWith<AraraException>(
+            "a mismatched directive identifier must be rejected"
+        ) {
             LuaRuleParser.parse(ruleFile(validRule), "other")
         }
     }
@@ -127,7 +135,9 @@ class LuaRuleParserTest {
               arguments = {}
             }
         """.trimIndent()
-        assertFailsWith<AraraException> {
+        assertFailsWith<AraraException>(
+            "a rule without commands must be rejected"
+        ) {
             LuaRuleParser.parse(ruleFile(rule), "demo")
         }
     }
@@ -146,7 +156,9 @@ class LuaRuleParserTest {
               }
             }
         """.trimIndent()
-        assertFailsWith<AraraException> {
+        assertFailsWith<AraraException>(
+            "a reserved argument identifier must be rejected"
+        ) {
             LuaRuleParser.parse(ruleFile(rule), "demo")
         }
     }
@@ -165,7 +177,9 @@ class LuaRuleParserTest {
               }
             }
         """.trimIndent()
-        assertFailsWith<AraraException> {
+        assertFailsWith<AraraException>(
+            "an argument without flag and default must be rejected"
+        ) {
             LuaRuleParser.parse(ruleFile(rule), "demo")
         }
     }

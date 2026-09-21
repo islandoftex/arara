@@ -7,11 +7,11 @@ import kotlin.test.assertEquals
 class GraphTest {
     @Test
     fun shouldOperateCorrectlyOnEmptyList() {
-        assertEquals(Graph<Int>().kahn(), emptyList())
+        assertEquals(emptyList<Int>(), Graph<Int>().kahn(), "an empty graph has an empty order")
     }
     @Test
     fun shouldOperateCorrectlyOnSingletonList() {
-        assertEquals(Graph<Int>().apply { addVertex(1) }.kahn(), listOf(1))
+        assertEquals(listOf(1), Graph<Int>().apply { addVertex(1) }.kahn(), "a singleton graph keeps its single vertex")
     }
     @Test
     fun shouldBeEmptyOnCycles() {
@@ -19,7 +19,7 @@ class GraphTest {
         // graph contains a cycle; the linear executor enforces that the
         // topological order covers every project, so cycles surface as
         // proper errors at the project level
-        assertEquals(Graph<Int>().apply { addEdge(1, 1) }.kahn(), emptyList())
+        assertEquals(emptyList<Int>(), Graph<Int>().apply { addEdge(1, 1) }.kahn(), "vertices in a cycle are omitted from the order")
     }
     @Test
     fun shouldSortCorrectly() {
@@ -31,7 +31,8 @@ class GraphTest {
                 addEdge(4, 2)
                 addEdge(3, 1)
             }.kahn(),
-            listOf(6, 4, 5, 3, 2, 1)
+            listOf(6, 4, 5, 3, 2, 1),
+            "the topological order puts dependencies first"
         )
     }
 }

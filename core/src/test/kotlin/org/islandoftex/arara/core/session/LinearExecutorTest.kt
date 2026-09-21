@@ -11,7 +11,9 @@ import kotlin.test.assertTrue
 class LinearExecutorTest {
     @Test
     fun shouldRejectCyclicProjectDependencies() {
-        val exception = assertFailsWith<AraraException> {
+        val exception = assertFailsWith<AraraException>(
+            "a cyclic project specification must be rejected"
+        ) {
             LinearExecutor.execute(
                 listOf(
                     Project("A", MPPPath("."), setOf(), setOf("B")),
@@ -21,8 +23,8 @@ class LinearExecutorTest {
         }
         // the cycle members are named in the localized message
         val message = exception.message ?: ""
-        assertTrue(message.contains("A"))
-        assertTrue(message.contains("B"))
+        assertTrue(message.contains("A"), "the cycle message names project A")
+        assertTrue(message.contains("B"), "the cycle message names project B")
     }
 
     @Test
@@ -36,6 +38,6 @@ class LinearExecutorTest {
                 Project("B", MPPPath("."), setOf())
             )
         )
-        assertTrue(report.exitCode == 0)
+        assertTrue(report.exitCode == 0, "the acyclic project chain runs successfully")
     }
 }

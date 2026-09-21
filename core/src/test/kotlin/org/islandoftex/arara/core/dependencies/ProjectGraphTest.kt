@@ -18,7 +18,8 @@ class ProjectGraphTest {
                     )
                 )
             }.kahn().map { it.name },
-            listOf("Test 2", "Test")
+            listOf("Test 2", "Test"),
+            "dependencies are executed before their dependents"
         )
     }
 }

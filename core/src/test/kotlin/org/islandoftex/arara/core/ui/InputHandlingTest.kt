@@ -15,7 +15,10 @@ class InputHandlingTest {
             "yes", "true", "1", "on", "Yes", "True", "On", "YES", "TRUE",
             "ON", "YeS", "yEs", "TrUe", "oN"
         ).forEach {
-            assertTrue(InputHandling.checkBoolean(it))
+            assertTrue(
+                InputHandling.checkBoolean(it),
+                "$it must be recognized as a truthy value"
+            )
         }
     }
     @Test
@@ -24,16 +27,22 @@ class InputHandlingTest {
             "no", "false", "0", "off", "No", "False", "Off", "NO", "FALSE",
             "OFF", "nO", "oFf", "fAlsE"
         ).forEach {
-            assertFalse(InputHandling.checkBoolean(it))
+            assertFalse(
+                InputHandling.checkBoolean(it),
+                "$it must be recognized as a falsy value"
+            )
         }
     }
     @Test
     fun shouldThrowOnAmbiguousBooleanInput() {
         listOf("quack", "duck", "yess", "yyes", "noo", "nno").forEach {
             assertTrue(
-                assertFailsWith<AraraException> {
+                assertFailsWith<AraraException>(
+                    "$it must be rejected as an ambiguous boolean value"
+                ) {
                     InputHandling.checkBoolean(it)
-                }.message?.contains("not a valid boolean") == true
+                }.message?.contains("not a valid boolean") == true,
+                "the rejection of $it names the boolean problem"
             )
         }
     }
@@ -41,9 +50,10 @@ class InputHandlingTest {
     @Test
     fun shouldFlattenListsCorrectly() {
         assertEquals(
+            setOf(1, 2, 3, 4, 5, 6) as Set<Any>,
             InputHandling.flatten(listOf(1, 2, listOf(3, 4, listOf(5, 6))))
                 .toSet(),
-            (setOf(1, 2, 3, 4, 5, 6) as Set<Any>)
+            "the nested lists flatten into a single list of elements"
         )
     }
 }

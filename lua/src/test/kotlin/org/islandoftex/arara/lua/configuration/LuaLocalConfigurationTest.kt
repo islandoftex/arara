@@ -47,21 +47,22 @@ class LuaLocalConfigurationTest {
         )
         assertEquals(
             mapOf("twopdftex" to "% arara: pdftex\n% arara: pdftex"),
-            configuration.preambles
+            configuration.preambles,
+            "the preambles are loaded from the configuration"
         )
-        assertEquals("twopdftex", configuration.defaultPreamble)
-        assertEquals(false, configuration.prependPreambleIfDirectivesGiven)
+        assertEquals("twopdftex", configuration.defaultPreamble, "the default preamble")
+        assertEquals(false, configuration.prependPreambleIfDirectivesGiven, "preamble prepending follows the configuration")
 
         val loggingOptions = configuration.toLoggingOptions()
-        assertTrue(loggingOptions.enableLogging)
+        assertTrue(loggingOptions.enableLogging, "logging is enabled as configured")
         // MPPPath keeps the user-provided string as `providedPath` (so
         // `isAbsolute` reflects what the user wrote) while `toString` and
         // friends operate on the absolutized `referencePath`; the configured
         // name therefore survives as the file name
-        assertEquals("mylog", loggingOptions.logFile.fileName)
+        assertEquals("mylog", loggingOptions.logFile.fileName, "the log file name keeps the configured value")
 
         val uiOptions = configuration.toUserInterfaceOptions()
-        assertEquals(MPPLocale("de"), uiOptions.locale)
+        assertEquals(MPPLocale("de"), uiOptions.locale, "the locale is loaded from the configuration")
     }
 
     @Test
@@ -69,21 +70,26 @@ class LuaLocalConfigurationTest {
         val configuration = LuaLocalConfiguration.load(
             configFile("""return { language = "en" }""")
         )
-        assertEquals(emptyMap(), configuration.preambles)
-        assertEquals(null, configuration.defaultPreamble)
-        assertEquals(true, configuration.prependPreambleIfDirectivesGiven)
+        assertEquals(emptyMap(), configuration.preambles, "an omitted preambles key yields an empty map")
+        assertEquals(null, configuration.defaultPreamble, "an omitted default preamble yields null")
+        assertEquals(true, configuration.prependPreambleIfDirectivesGiven, "preamble prepending defaults to true")
     }
 
     @Test
     fun shouldRejectNonTableResults() {
-        assertFailsWith<AraraException> {
+        assertFailsWith<AraraException>(
+            "a non-table result must be rejected"
+        ) {
             LuaLocalConfiguration.load(configFile("return 42"))
         }
+        // the exception type itself carries the contract
     }
 
     @Test
     fun shouldRejectUnknownKeys() {
-        assertFailsWith<AraraException> {
+        assertFailsWith<AraraException>(
+            "unknown configuration keys must be rejected"
+        ) {
             LuaLocalConfiguration.load(
                 configFile("""return { unknownKey = true }""")
             )
@@ -92,17 +98,23 @@ class LuaLocalConfigurationTest {
 
     @Test
     fun shouldRejectWrongTypes() {
-        assertFailsWith<AraraException> {
+        assertFailsWith<AraraException>(
+            "wrongly typed configuration keys must be rejected"
+        ) {
             LuaLocalConfiguration.load(
                 configFile("""return { loops = "many" }""")
             )
         }
-        assertFailsWith<AraraException> {
+        assertFailsWith<AraraException>(
+            "wrongly typed configuration keys must be rejected"
+        ) {
             LuaLocalConfiguration.load(
                 configFile("""return { paths = "not-a-list" }""")
             )
         }
-        assertFailsWith<AraraException> {
+        assertFailsWith<AraraException>(
+            "wrongly typed configuration keys must be rejected"
+        ) {
             LuaLocalConfiguration.load(
                 configFile("""return { filetypes = { { pattern = "x" } } }""")
             )
