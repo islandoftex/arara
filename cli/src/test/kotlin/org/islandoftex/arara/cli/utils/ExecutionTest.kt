@@ -134,18 +134,6 @@ class ExecutionTest : ShouldSpec({
         exception.message shouldContain "could not parse the configuration"
     }
 
-    // TODO: uncomment tests (but not here because they do not test the
-    // linear executor but FileSearching)
-//    should("read foreign extension") {
-//        val output = outputForTest("foreign-extension", "foreign-extension.my")
-//        output shouldContain "QuackOne"
-//    }
-//    should("fail on unknown extension") {
-//        shouldThrow<AraraException> {
-//            outputForTest("foreign-extension", "foreign-extension.xy")
-//        }
-//    }
-
     should("accept empty pattern on known extension") {
         val output = outputForTest("known-extension")
         output shouldContain "QuackOne"
