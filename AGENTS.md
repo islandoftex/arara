@@ -79,7 +79,7 @@ Dependency chain: `api` → `core` → (`mvel`, `lua`) → `cli`.
   generated** by the `createAraraAPIObject` task at compile time (it embeds
   the project version); never edit it by hand.
 - `core` — implementations: linear executor/session, file handling, the
-  yamlkt-serialized file database (`arara.yaml`), localization.
+  kotaml-serialized file database (`arara.yaml`), localization.
 - `mvel` — legacy YAML rule + config parsing (kotaml, the supported fork of the
   archived kaml; the fork keeps the original `com.charleskorn.kaml` package),
   plus MVEL **directive
@@ -110,15 +110,18 @@ Dependency chain: `api` → `core` → (`mvel`, `lua`) → `cli`.
 ## The YAML deprecation — traps that are easy to miss
 
 `DEPREC.md` is the authoritative removal playbook (phases, keep/remove lists,
-grep checklist). Read it before touching anything YAML/MVEL. Biggest trap:
-**two YAML libraries with opposite fates.**
+grep checklist). Read it before touching anything YAML/MVEL. Note:
+**one YAML library (kotaml) with surfaces of opposite fate** — rules/config
+die with the YAML format removal; directive parameters and the file
+database stay.
 
-- `kotaml` — parses deprecated YAML *rules* and *config files* (mvel module);
-  it is removed together with them. The fork retains kaml's package name,
-  so imports still read `com.charleskorn.kaml`.
-- `yamlkt` — parses *directive parameters* (`% arara: pdflatex: { shell: yes }`,
-  in cli) and the *file database* (in core). It **stays**: directive syntax is
-  YAML by specification and is not deprecated. Same for MVEL conditionals
+- `kotaml` (`io.heapy.kotaml`, imports read `com.charleskorn.kaml`) — the
+  single YAML parser. In the mvel module it parses the deprecated *rules* and
+  *config files* (removed together with them); in cli it parses *directive
+  parameters* (`% arara: pdflatex: { shell: yes }`, via `parseToYamlNode` +
+  `YamlNodeConversion`) and in core the *file database* — both **stay**:
+  directive syntax is YAML by specification and is not deprecated. Same for
+  MVEL conditionals
   (`% arara: pdflatex if found('log', '!')`).
 
 ## Testing quirks

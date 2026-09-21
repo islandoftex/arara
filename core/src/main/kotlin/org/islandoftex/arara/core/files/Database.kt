@@ -2,7 +2,7 @@
 package org.islandoftex.arara.core.files
 
 import kotlinx.serialization.Serializable
-import net.mamoe.yamlkt.Yaml
+import com.charleskorn.kaml.Yaml
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.Database
 import org.islandoftex.arara.api.files.MPPPath
@@ -86,7 +86,7 @@ data class Database(
     override fun save(path: MPPPath) {
         runCatching {
             val content = "!database\n" +
-                Yaml.Default.encodeToString(serializer(), this)
+                Yaml.default.encodeToString(serializer(), this)
             path.normalize().writeText(content)
         }.getOrElse {
             throw AraraException(
@@ -114,7 +114,7 @@ data class Database(
                     val text = path.normalize().readText()
                     if (!text.startsWith("!database"))
                         throw AraraException("Database should start with !database")
-                    Yaml.Default.decodeFromString(
+                    Yaml.default.decodeFromString(
                         serializer(),
                         text.lines()
                             .drop(1).joinToString("\n")

@@ -44,13 +44,13 @@ configurations {
 
 dependencies {
     implementation(project(":core"))
+    implementation(libs.kotaml)
     implementation(project(":lua"))
     implementation(project(":mvel"))
     implementation(kotlin("reflect"))
     implementation(libs.kotlin.logging)
     implementation(libs.clikt)
     implementation(libs.clikt.markdown)
-    implementation(libs.yamlkt)
     implementation(libs.mvel)
     implementation(libs.slf4j.api)
     implementation(libs.log4j.core)

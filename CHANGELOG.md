@@ -55,6 +55,13 @@ on.
   fork (`io.heapy.kotaml`); the fork keeps the original package, so the
   API is unchanged. The stricter reader of the new version accepts all of
   arara's rules and configuration files without modification.
+* Replaced the dormant yamlkt parser with kotaml as well, unifying all
+  YAML handling (rules, configuration, directive parameters and the file
+  database) on a single, actively maintained library. Directive
+  parameters are now parsed through kotaml's YAML node model and
+  converted to the plain values the interpreter expects; quoting always
+  yields strings, `yes`/`no` remain strings (they are not YAML 1.2
+  booleans), and null parameter values keep being rejected.
 * Kotlin platform updated to 2.4.20, Gradle updated to 9.7.1, build
   plugins updated (shadow 9.6.1, spotless 8.10.2, versions 0.64.0 and
   Dokka 2.2.0, including the migration to the Dokka Gradle plugin v2

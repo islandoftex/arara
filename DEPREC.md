@@ -21,25 +21,27 @@ finally remove them in favor of the Lua formats introduced in version 8.0.
 These components look YAML- or MVEL-related but are **out of scope**; do not
 remove them as part of this effort:
 
-> **Two YAML libraries — do not confuse them.** The code base uses two
-> distinct YAML parsers:
+> **One YAML library.** Since yamlkt was replaced, the code base uses a
+> single YAML parser:
 >
 > | Library | Coordinates | Used by | Fate |
 > | --- | --- | --- | --- |
-> | **yamlkt** | `net.mamoe.yamlkt` | directive parameters (`cli/…/DirectiveUtils.kt`), file database (`core/…/Database.kt`) | **stays** (a future replacement by kotaml is sketched in the version 9 outlook) |
-> | **kotaml** | `io.heapy.kotaml` (a supported fork of the archived kaml; the fork keeps the original `com.charleskorn.kaml` package) | YAML rules (`mvel/…/rules/Rule.kt`), YAML config (`mvel/…/configuration/LocalConfiguration.kt`) | removed with them |
+> | **kotaml** | `io.heapy.kotaml` (a supported fork of the archived kaml; the fork keeps the original `com.charleskorn.kaml` package) | YAML rules (`mvel/…/rules/Rule.kt`), YAML config (`mvel/…/configuration/LocalConfiguration.kt`), directive parameters (`cli/…/DirectiveUtils.kt`), file database (`core/…/Database.kt`) | rules and config are removed with them; directive parameters and the database **stay** |
 >
-> Whenever this document says the YAML *library* is removed, it means
-> **kotaml only**. Directives keep being parsed as YAML via yamlkt.
+> Whenever this document says the YAML *library for rules and
+> configuration* is removed, it means the kotaml dependency **of the
+> mvel module only**. Directives keep being parsed as YAML, and the file
+> database keeps being serialized as YAML, both via kotaml in the cli
+> and core modules.
 
 1. **Directive parameter parsing.** `cli/…/ruleset/DirectiveUtils.kt` parses
-   the `{ key: value }` part of a directive with **yamlkt**
-   (`net.mamoe.yamlkt.Yaml.Default.decodeFromString<Map<String, Any>>`).
+   the `{ key: value }` part of a directive with **kotaml**
+   (`Yaml.default.parseToYamlNode` plus the `YamlNodeConversion` object).
    Directives are YAML by specification, independently of the rule format
-   the directive eventually resolves to. Keep `libs.yamlkt` in
+   the directive eventually resolves to. Keep `libs.kotaml` in
    `cli/build.gradle.kts`.
 2. **The file database.** `core/…/files/Database.kt` serializes arara's
-   hash database with yamlkt. Unrelated to rules/config; keep `libs.yamlkt`
+   hash database with kotaml. Unrelated to rules/config; keep `libs.kotaml`
    in `core/build.gradle.kts`. (If the database format should ever change,
    that is a separate decision.)
 3. **MVEL directive conditionals.** The `if`/`while`/`until`/`unless`

@@ -12,7 +12,7 @@ import kotlin.test.assertTrue
 
 /**
  * Verifies the file change database: path normalization on insertion,
- * removal semantics and the yamlkt save-load round trip.
+ * removal semantics and the YAML save-load round trip.
  */
 class DatabaseTest {
     @Test

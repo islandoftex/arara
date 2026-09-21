@@ -2,8 +2,7 @@
 package org.islandoftex.arara.cli.ruleset
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import kotlinx.serialization.decodeFromString
-import net.mamoe.yamlkt.Yaml
+import com.charleskorn.kaml.Yaml
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.ProjectFile
@@ -80,7 +79,13 @@ object DirectiveUtils {
             return mapOf()
 
         val map = kotlin.runCatching {
-            Yaml.Default.decodeFromString<Map<String, Any>>(text)
+            // the directive parameters are parsed into the YAML node
+            // model and converted into the plain Kotlin values the
+            // interpreter expects; null values are rejected, preserving
+            // the contract that directive parameters must carry a value
+            YamlNodeConversion.toParameterMap(
+                Yaml.default.parseToYamlNode(text)
+            )
         }.getOrElse {
             throw AraraException(
                 LanguageController.messages.ERROR_VALIDATE_YAML_EXCEPTION
