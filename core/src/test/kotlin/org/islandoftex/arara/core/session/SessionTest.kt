@@ -10,7 +10,7 @@ import kotlin.test.assertTrue
 
 class SessionTest {
     @Test
-    fun shouldIncludeAllEnvironmentVariables() {
+    fun `includes all environment variables`() {
         Session.clear()
         Session.updateEnvironmentVariables()
         // on Linux it is called PATH, on Windows it may be Path
@@ -22,7 +22,7 @@ class SessionTest {
     }
 
     @Test
-    fun shouldProperlyCheckExistence() {
+    fun `properly checks the existence of keys`() {
         Session.clear()
         Session.put("A", "B")
         assertTrue(Session.contains("A"), "the session contains the inserted key")
@@ -30,7 +30,7 @@ class SessionTest {
     }
 
     @Test
-    fun shouldSupportInsertion() {
+    fun `supports the insertion of keys`() {
         Session.clear()
         assertFalse(Session.contains("A"), "the key is absent before insertion")
         Session.put("A", "B")
@@ -38,14 +38,14 @@ class SessionTest {
     }
 
     @Test
-    fun shouldSupportGet() {
+    fun `gets the stored value for a key`() {
         Session.clear()
         Session.put("A", "B")
         assertEquals("B", Session["A"], "the stored value of the key")
     }
 
     @Test
-    fun shouldSupportRemoval() {
+    fun `supports the removal of keys`() {
         Session.clear()
         Session.put("A", "B")
         Session.put("C", "D")
@@ -57,7 +57,7 @@ class SessionTest {
     }
 
     @Test
-    fun shouldSupportClearing() {
+    fun `supports clearing the whole session`() {
         Session.clear()
         Session.put("A", "B")
         Session.put("C", "D")
@@ -69,14 +69,14 @@ class SessionTest {
     }
 
     @Test
-    fun shouldNotThrowOnKnownRemoval() {
+    fun `does not throw on the removal of a known key`() {
         Session.clear()
         Session.put("A", "B")
         // any exception thrown here fails the test naturally
         Session.remove("A")
     }
     @Test
-    fun shouldThrowOnUnknownRemoval() {
+    fun `throws on the removal of an unknown key`() {
         Session.clear()
         assertFailsWith<AraraException>(
             "removing an unknown key must be rejected"
@@ -86,7 +86,7 @@ class SessionTest {
     }
 
     @Test
-    fun shouldThrowOnUnknownGetter() {
+    fun `throws on reading an unknown key`() {
         Session.clear()
         Session.put("A", "B")
         assertEquals("B", Session["A"], "the stored value of the key")

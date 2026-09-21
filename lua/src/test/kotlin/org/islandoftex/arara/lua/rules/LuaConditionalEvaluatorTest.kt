@@ -19,7 +19,7 @@ class LuaConditionalEvaluatorTest {
     ): DirectiveConditional = DirectiveConditional(type, condition)
 
     @Test
-    fun shouldEvaluateTrueLuaConditions() {
+    fun `evaluates true Lua conditions`() {
         // like the interpreter, every conditional gets its own evaluator
         // instance as the loop counter and the halt flag are per-directive
         assertTrue(
@@ -40,7 +40,7 @@ class LuaConditionalEvaluatorTest {
     }
 
     @Test
-    fun shouldInvertUnlessAndUntilConditions() {
+    fun `inverts unless and until conditions`() {
         assertFalse(
             evaluator().evaluate(
                 conditional(DirectiveConditionalType.UNLESS, "1 == 1")
@@ -62,7 +62,7 @@ class LuaConditionalEvaluatorTest {
     }
 
     @Test
-    fun shouldRunIfConditionsAtMostOnce() {
+    fun `runs if conditions at most once`() {
         val evaluator = evaluator()
         val conditional =
             conditional(DirectiveConditionalType.IF, "1 == 1")
@@ -73,7 +73,7 @@ class LuaConditionalEvaluatorTest {
     }
 
     @Test
-    fun shouldCapWhileAndUntilLoopsAtMaxLoops() {
+    fun `caps while and until loops at the maximum number of loops`() {
         // while and until need separate evaluators, as the loop counter
         // is per-directive in the pipeline as well
         val whileEvaluator = evaluator(maxLoops = 2)
@@ -94,7 +94,7 @@ class LuaConditionalEvaluatorTest {
     }
 
     @Test
-    fun shouldRejectNonBooleanResults() {
+    fun `rejects non boolean results`() {
         val evaluator = evaluator()
         // Lua truthiness deliberately does not apply: the condition has to
         // yield a proper boolean, mirroring the MVEL dialect
@@ -109,7 +109,7 @@ class LuaConditionalEvaluatorTest {
     }
 
     @Test
-    fun shouldWrapLuaSyntaxErrors() {
+    fun `wraps Lua syntax errors`() {
         val evaluator = evaluator()
         // && is MVEL syntax; in the Lua dialect the condition does not
         // even parse, which has to surface as an arara error
@@ -127,7 +127,7 @@ class LuaConditionalEvaluatorTest {
     }
 
     @Test
-    fun shouldExposeTheSessionToConditions() {
+    fun `exposes the session to conditions`() {
         val evaluator = evaluator()
         assertFalse(
             evaluator.evaluate(

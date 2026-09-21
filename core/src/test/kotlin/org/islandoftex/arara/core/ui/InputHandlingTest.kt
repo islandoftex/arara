@@ -10,7 +10,7 @@ import kotlin.test.assertTrue
 
 class InputHandlingTest {
     @Test
-    fun shouldReturnTruthyValuesForCommonTruthyInput() {
+    fun `returns truthy values for common truthy input`() {
         listOf(
             "yes", "true", "1", "on", "Yes", "True", "On", "YES", "TRUE",
             "ON", "YeS", "yEs", "TrUe", "oN"
@@ -22,7 +22,7 @@ class InputHandlingTest {
         }
     }
     @Test
-    fun shouldReturnFalsyValuesForCommonFalsyInput() {
+    fun `returns falsy values for common falsy input`() {
         listOf(
             "no", "false", "0", "off", "No", "False", "Off", "NO", "FALSE",
             "OFF", "nO", "oFf", "fAlsE"
@@ -34,7 +34,7 @@ class InputHandlingTest {
         }
     }
     @Test
-    fun shouldThrowOnAmbiguousBooleanInput() {
+    fun `throws on ambiguous boolean input`() {
         listOf("quack", "duck", "yess", "yyes", "noo", "nno").forEach {
             assertTrue(
                 assertFailsWith<AraraException>(
@@ -48,7 +48,7 @@ class InputHandlingTest {
     }
 
     @Test
-    fun shouldFlattenListsCorrectly() {
+    fun `flattens nested lists correctly`() {
         assertEquals(
             setOf(1, 2, 3, 4, 5, 6) as Set<Any>,
             InputHandling.flatten(listOf(1, 2, listOf(3, 4, listOf(5, 6))))

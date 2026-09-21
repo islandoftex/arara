@@ -16,53 +16,64 @@ import kotlin.test.assertTrue
 class MPPPathTest {
     // attributes
     @Test
-    fun shouldNotClassifyRelativeAsAbsolutePaths() {
-        assertFalse(MPPPath(".").isAbsolute)
+    fun `does not classify relative paths as absolute`() {
+        assertFalse(
+            MPPPath(".").isAbsolute,
+            "a relative path is not reported as absolute"
+        )
     }
 
     @Test
-    fun shouldCorrectlyDetectAbsolutePaths() {
+    fun `correctly detects absolute paths`() {
         val path = getValueByOS(windows = "C:/test", unix = "/test")
 
-        assertTrue(MPPPath(path).isAbsolute)
+        assertTrue(
+            MPPPath(path).isAbsolute,
+            "an absolute path is reported as absolute"
+        )
     }
     @Test
-    fun shouldConsiderRootAbsolute() {
+    fun `considers the root absolute`() {
         val path = getValueByOS(windows = "C:/", unix = "/")
 
         // korio does not handle this
-        assertTrue(MPPPath(path).isAbsolute)
+        assertTrue(
+            MPPPath(path).isAbsolute,
+            "the root is reported as absolute"
+        )
     }
 
     // path normalization
     @Test
-    fun shouldNormalizeDots() {
+    fun `normalizes dots`() {
         val (expected, actual) = getValueByOS(
                 windows = "C:/tmp/./quack/.." to "C:/tmp/",
                 unix = "/tmp/./quack/.." to "/tmp/"
         )
 
         assertEquals(
+            MPPPath(actual).normalize().toString(),
             MPPPath(expected).normalize().toString(),
-            MPPPath(actual).normalize().toString()
+            "dot segments are resolved during normalization"
         )
     }
     @Test
-    fun shouldNoExceedRoot() {
+    fun `does not exceed the root when normalizing`() {
         val (expected, actual) = getValueByOS(
                 windows = "C:/tmp/../../.." to "C:/",
                 unix = "/tmp/../../.." to "/"
         )
 
         assertEquals(
-            MPPPath(expected).normalize().toString(),
-            MPPPath(actual).toString()
+            MPPPath(actual).toString(),
+            MPPPath(expected).toString(),
+            "normalization stops at the root"
         )
     }
 
     // parenting
     @Test
-    fun shouldUseRootAsParentOfRoot() {
+    fun `uses the root as the parent of the root`() {
 
         // for this test, we cannot mock the drive letter in Windows, as
         // an attempt to go parent from root will make it resolve to the
@@ -75,24 +86,27 @@ class MPPPathTest {
         )
 
         assertEquals(
+            MPPPath(actual).toString(),
             MPPPath(expected).parent.toString(),
-            MPPPath(actual).toString()
+            "the root is its own parent"
         )
     }
     @Test
-    fun shouldDetermineParentCorrectly() {
+    fun `determines the parent correctly`() {
         val (expected, actual) = getValueByOS(
                 windows = "C:/tmp/./quack/.." to "C:/",
                 unix = "/tmp/./quack/.." to "/"
         )
 
         assertEquals(
+            MPPPath(actual).toString(),
             MPPPath(expected).parent.normalize().toString(),
-            MPPPath(actual).toString()
+            "the parent of a path with dot segments resolves"
         )
         assertEquals(
+            MPPPath(actual).toString(),
             MPPPath(expected).normalize().parent.toString(),
-            MPPPath(actual).toString()
+            "the parent of a normalized path resolves equally"
         )
     }
 

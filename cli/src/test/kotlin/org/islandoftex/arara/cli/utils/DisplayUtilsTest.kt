@@ -9,7 +9,7 @@ import kotlin.test.assertEquals
 
 class DisplayUtilsTest {
     @Test
-    fun shouldFormatBytesCorrectly() {
+    fun `formats byte sizes correctly`() {
         val savedOptions = Session.userInterfaceOptions
         try {
             Session.userInterfaceOptions = UserInterfaceOptions(MPPLocale("en"))

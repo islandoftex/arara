@@ -9,7 +9,7 @@ import kotlin.test.assertTrue
 
 class LuaOrbTagsTest {
     @Test
-    fun keeps_plain_strings_unchanged() {
+    fun `keeps plain strings unchanged`() {
         assertEquals(
             "no tags here", LuaOrbTags.interpolate("no tags here"),
             "plain strings pass through unchanged"
@@ -17,7 +17,7 @@ class LuaOrbTagsTest {
     }
 
     @Test
-    fun interpolates_expressions_with_surrounding_text() {
+    fun `interpolates expressions with surrounding text`() {
         assertEquals(
             "pre2post", LuaOrbTags.interpolate("pre@{1 + 1}post"),
             "the orb tag result is spliced into the surrounding text"
@@ -25,7 +25,7 @@ class LuaOrbTagsTest {
     }
 
     @Test
-    fun interpolates_multiple_tags() {
+    fun `interpolates multiple tags`() {
         assertEquals(
             "1 and 2", LuaOrbTags.interpolate("@{1} and @{1 + 1}"),
             "multiple orb tags are all interpolated"
@@ -33,7 +33,7 @@ class LuaOrbTagsTest {
     }
 
     @Test
-    fun interpolates_nil_as_an_empty_string() {
+    fun `interpolates nil as an empty string`() {
         assertEquals(
             "xy", LuaOrbTags.interpolate("x@{nil}y"),
             "a nil result interpolates as an empty string"
@@ -41,7 +41,7 @@ class LuaOrbTagsTest {
     }
 
     @Test
-    fun honors_braces_inside_quoted_strings() {
+    fun `honors braces inside quoted strings`() {
         assertEquals(
             "a}b", LuaOrbTags.interpolate("@{'a}b'}"),
             "braces inside quoted strings do not terminate the tag"
@@ -49,7 +49,7 @@ class LuaOrbTagsTest {
     }
 
     @Test
-    fun exposes_the_conditional_helpers() {
+    fun `exposes the conditional helpers`() {
         // the conditional registry is available to orb tag expressions
         assertEquals(
             "false",
@@ -58,7 +58,7 @@ class LuaOrbTagsTest {
     }
 
     @Test
-    fun rejects_unterminated_tags() {
+    fun `rejects unterminated tags`() {
         assertFailsWith<AraraException>(
             "an unterminated orb tag must be rejected"
         ) {
@@ -67,7 +67,7 @@ class LuaOrbTagsTest {
     }
 
     @Test
-    fun wraps_evaluation_failures() {
+    fun `wraps evaluation failures`() {
         val exception = assertFailsWith<AraraException>(
             "a malformed orb tag expression must be rejected"
         ) {

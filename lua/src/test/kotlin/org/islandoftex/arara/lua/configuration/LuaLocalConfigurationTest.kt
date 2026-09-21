@@ -19,7 +19,7 @@ class LuaLocalConfigurationTest {
     }
 
     @Test
-    fun shouldLoadAFullConfiguration() {
+    fun `loads a full configuration`() {
         val configuration = LuaLocalConfiguration.load(
             configFile(
                 """
@@ -66,7 +66,7 @@ class LuaLocalConfigurationTest {
     }
 
     @Test
-    fun shouldFallBackToDefaultsForOmittedKeys() {
+    fun `falls back to defaults for omitted keys`() {
         val configuration = LuaLocalConfiguration.load(
             configFile("""return { language = "en" }""")
         )
@@ -76,7 +76,7 @@ class LuaLocalConfigurationTest {
     }
 
     @Test
-    fun shouldRejectNonTableResults() {
+    fun `rejects non table results`() {
         assertFailsWith<AraraException>(
             "a non-table result must be rejected"
         ) {
@@ -86,7 +86,7 @@ class LuaLocalConfigurationTest {
     }
 
     @Test
-    fun shouldRejectUnknownKeys() {
+    fun `rejects unknown keys`() {
         assertFailsWith<AraraException>(
             "unknown configuration keys must be rejected"
         ) {
@@ -97,7 +97,7 @@ class LuaLocalConfigurationTest {
     }
 
     @Test
-    fun shouldRejectWrongTypes() {
+    fun `rejects wrongly typed values`() {
         assertFailsWith<AraraException>(
             "wrongly typed configuration keys must be rejected"
         ) {

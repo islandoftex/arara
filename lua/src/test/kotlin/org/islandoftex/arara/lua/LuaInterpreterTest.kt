@@ -9,7 +9,7 @@ import kotlin.test.assertFailsWith
 
 class LuaInterpreterTest {
     @Test
-    fun shouldParseSingleProject() {
+    fun `parses a single project`() {
         val script = """
             return {
               name = "My awesome book",
@@ -31,7 +31,7 @@ class LuaInterpreterTest {
     }
 
     @Test
-    fun shouldParseProjectFile() {
+    fun `parses a project file entry`() {
         val script = """
             return {
               files = {
@@ -60,7 +60,7 @@ class LuaInterpreterTest {
     }
 
     @Test
-    fun shouldParseMultipleProjects() {
+    fun `parses multiple projects`() {
         val script = """
             return {
               {
@@ -86,7 +86,7 @@ class LuaInterpreterTest {
     }
 
     @Test
-    fun shouldFailOnUnsatisfiedDependency() {
+    fun `fails on an unsatisfied dependency`() {
         val script = """
             return {
               name = "My awesome book",
@@ -104,7 +104,7 @@ class LuaInterpreterTest {
     }
 
     @Test
-    fun shouldNotFailOnSatisfiedDependency() {
+    fun `accepts a satisfied dependency`() {
         val script = """
             return {
               {

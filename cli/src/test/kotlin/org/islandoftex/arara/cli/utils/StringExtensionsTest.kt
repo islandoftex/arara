@@ -7,7 +7,7 @@ import kotlin.test.assertFailsWith
 
 class StringExtensionsTest {
     @Test
-    fun shouldAbbreviateStringsCorrectly() {
+    fun `abbreviates strings correctly`() {
         assertEquals(
             "Quack…", "Quack quack".abbreviate(6),
             "abbreviating to the ellipsis width"
@@ -18,7 +18,7 @@ class StringExtensionsTest {
         )
     }
     @Test
-    fun shouldFailAbbreviatingShorterThanEllipsis() {
+    fun `fails when abbreviating below the ellipsis length`() {
         assertFailsWith<IllegalArgumentException>(
             "abbreviating below the ellipsis length must be rejected"
         ) {
@@ -27,7 +27,7 @@ class StringExtensionsTest {
     }
 
     @Test
-    fun shouldCenterStringsCorrectly() {
+    fun `centers strings correctly`() {
         assertEquals(
             "Quack", "Quack".center(3, '-'),
             "strings longer than the width are not padded"
@@ -39,7 +39,7 @@ class StringExtensionsTest {
     }
 
     @Test
-    fun shouldWrapStringsCorrectly() {
+    fun `wraps strings correctly`() {
         assertEquals(
             "This text\nshould be\nwrapped",
             "This text should be wrapped".wrap(10),

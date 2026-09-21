@@ -6,15 +6,15 @@ import kotlin.test.assertEquals
 
 class GraphTest {
     @Test
-    fun shouldOperateCorrectlyOnEmptyList() {
+    fun `operates correctly on an empty graph`() {
         assertEquals(emptyList<Int>(), Graph<Int>().kahn(), "an empty graph has an empty order")
     }
     @Test
-    fun shouldOperateCorrectlyOnSingletonList() {
+    fun `operates correctly on a singleton graph`() {
         assertEquals(listOf(1), Graph<Int>().apply { addVertex(1) }.kahn(), "a singleton graph keeps its single vertex")
     }
     @Test
-    fun shouldBeEmptyOnCycles() {
+    fun `omits cyclic vertices from the order`() {
         // Kahn's algorithm deliberately returns a partial order when the
         // graph contains a cycle; the linear executor enforces that the
         // topological order covers every project, so cycles surface as
@@ -22,7 +22,7 @@ class GraphTest {
         assertEquals(emptyList<Int>(), Graph<Int>().apply { addEdge(1, 1) }.kahn(), "vertices in a cycle are omitted from the order")
     }
     @Test
-    fun shouldSortCorrectly() {
+    fun `sorts the vertices topologically`() {
         assertEquals(
             Graph<Int>().apply {
                 addEdge(6, 4)

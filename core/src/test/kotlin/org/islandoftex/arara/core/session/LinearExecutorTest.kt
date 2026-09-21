@@ -10,7 +10,7 @@ import kotlin.test.assertTrue
 
 class LinearExecutorTest {
     @Test
-    fun shouldRejectCyclicProjectDependencies() {
+    fun `rejects cyclic project dependencies`() {
         val exception = assertFailsWith<AraraException>(
             "a cyclic project specification must be rejected"
         ) {
@@ -28,7 +28,7 @@ class LinearExecutorTest {
     }
 
     @Test
-    fun shouldExecuteAcyclicProjectDependenciesInOrder() {
+    fun `executes acyclic project dependencies in order`() {
         // the happy path is covered end-to-end by the cli scenarios; this
         // pins the core executor alone, running a project chain without
         // any hooks installed

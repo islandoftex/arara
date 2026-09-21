@@ -9,7 +9,7 @@ import kotlin.test.assertNotEquals
 
 class FileTypeTest {
     @Test
-    fun shouldOnlyDependOnExtensionForEquality() {
+    fun `only depends on the extension for equality`() {
         assertEquals(
             FileType("test", "^\\s*%\\s+"), FileType("test", "^\\s*"),
             "equality only considers the extension"
@@ -20,7 +20,7 @@ class FileTypeTest {
         )
     }
     @Test
-    fun shouldOnlyDependOnExtensionForInequality() {
+    fun `only depends on the extension for inequality`() {
         assertNotEquals(
             FileType("tes", "^\\s*%\\s+"), FileType("test", "^\\s*"),
             "different extensions make file types unequal"
@@ -31,7 +31,7 @@ class FileTypeTest {
         )
     }
     @Test
-    fun shouldExpectValidPattern() {
+    fun `rejects an invalid pattern`() {
         assertFailsWith<AraraException>(
             "a malformed pattern must be rejected"
         ) {

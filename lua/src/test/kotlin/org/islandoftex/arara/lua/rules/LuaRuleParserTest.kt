@@ -56,7 +56,7 @@ class LuaRuleParserTest {
     """.trimIndent()
 
     @Test
-    fun shouldParseAValidRule() {
+    fun `parses a valid rule`() {
         val rule = LuaRuleParser.parse(ruleFile(validRule), "demo")
         assertEquals("demo", rule.identifier, "the rule identifier matches the directive")
         assertEquals("Demo", rule.displayName, "the rule display name")
@@ -70,7 +70,7 @@ class LuaRuleParserTest {
     }
 
     @Test
-    fun shouldEvaluateExitClosures() {
+    fun `evaluates exit closures`() {
         val rule = LuaRuleParser.parse(ruleFile(validRule), "demo")
         val command = rule.commands[0]
         assertTrue(command.exitCheck(1), "exit code one satisfies the exit closure")
@@ -78,7 +78,7 @@ class LuaRuleParserTest {
     }
 
     @Test
-    fun shouldProcessFlags() {
+    fun `processes flags`() {
         val rule = LuaRuleParser.parse(ruleFile(validRule), "demo")
         val context = mapOf<String, Any>(
             "parameters" to mapOf("shell" to "yes"),
@@ -102,7 +102,7 @@ class LuaRuleParserTest {
     }
 
     @Test
-    fun shouldSurfaceRuleErrors() {
+    fun `surfaces rule errors`() {
         val rule = LuaRuleParser.parse(ruleFile(validRule), "demo")
         val context = mapOf<String, Any>(
             "parameters" to mapOf<String, Any>(),
@@ -117,7 +117,7 @@ class LuaRuleParserTest {
     }
 
     @Test
-    fun shouldRejectMismatchedIdentifiers() {
+    fun `rejects mismatched identifiers`() {
         assertFailsWith<AraraException>(
             "a mismatched directive identifier must be rejected"
         ) {
@@ -126,7 +126,7 @@ class LuaRuleParserTest {
     }
 
     @Test
-    fun shouldRejectRulesWithoutCommands() {
+    fun `rejects rules without commands`() {
         val rule = """
             return {
               identifier = "demo",
@@ -143,7 +143,7 @@ class LuaRuleParserTest {
     }
 
     @Test
-    fun shouldRejectReservedArgumentIdentifiers() {
+    fun `rejects reserved argument identifiers`() {
         val rule = """
             return {
               identifier = "demo",
@@ -164,7 +164,7 @@ class LuaRuleParserTest {
     }
 
     @Test
-    fun shouldRejectArgumentsWithoutFlagAndDefault() {
+    fun `rejects arguments without flag and default`() {
         val rule = """
             return {
               identifier = "demo",

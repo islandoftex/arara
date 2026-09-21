@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 
 class LanguageControllerTest {
     @Test
-    fun shouldInstantiateAllKnownLocales() {
+    fun `instantiates all known locales`() {
         assertEquals(MPPLocale("en"), LanguageController.messages.providedLocale, "the default messages are English")
 
         listOf(
@@ -25,7 +25,7 @@ class LanguageControllerTest {
     }
 
     @Test
-    fun shouldFallBackToEnglishOnUnknownLocales() {
+    fun `falls back to English on unknown locales`() {
         assertEquals(MPPLocale("en"), LanguageController.messages.providedLocale, "the default messages are English")
         LanguageController.loadMessagesFor(MPPLocale("quack"))
         assertEquals(MPPLocale("en"), LanguageController.messages.providedLocale, "the default messages are English")

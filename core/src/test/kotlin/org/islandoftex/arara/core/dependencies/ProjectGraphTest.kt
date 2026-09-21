@@ -8,7 +8,7 @@ import kotlin.test.assertEquals
 
 class ProjectGraphTest {
     @Test
-    fun shouldBeAbleToAddAll() {
+    fun `adds projects and their dependencies to the graph`() {
         assertEquals(
             ProjectGraph().apply {
                 addAll(
