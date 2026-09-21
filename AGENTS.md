@@ -80,7 +80,9 @@ Dependency chain: `api` → `core` → (`mvel`, `lua`) → `cli`.
   the project version); never edit it by hand.
 - `core` — implementations: linear executor/session, file handling, the
   yamlkt-serialized file database (`arara.yaml`), localization.
-- `mvel` — legacy YAML rule + config parsing (kaml), plus MVEL **directive
+- `mvel` — legacy YAML rule + config parsing (kotaml, the supported fork of the
+  archived kaml; the fork keeps the original `com.charleskorn.kaml` package),
+  plus MVEL **directive
   conditionals** which are *not* deprecated and must survive the YAML removal.
 - `lua` — new Lua rule + config parsers (LuaJ fork `io.github.taoguan:luaj`).
   Depends on `mvel` temporarily for shared helper methods and the
@@ -111,8 +113,9 @@ Dependency chain: `api` → `core` → (`mvel`, `lua`) → `cli`.
 grep checklist). Read it before touching anything YAML/MVEL. Biggest trap:
 **two YAML libraries with opposite fates.**
 
-- `kaml` — parses deprecated YAML *rules* and *config files* (mvel module);
-  it is removed together with them.
+- `kotaml` — parses deprecated YAML *rules* and *config files* (mvel module);
+  it is removed together with them. The fork retains kaml's package name,
+  so imports still read `com.charleskorn.kaml`.
 - `yamlkt` — parses *directive parameters* (`% arara: pdflatex: { shell: yes }`,
   in cli) and the *file database* (in core). It **stays**: directive syntax is
   YAML by specification and is not deprecated. Same for MVEL conditionals

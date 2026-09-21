@@ -51,6 +51,10 @@ on.
 ## Changed
 
 * Replaced `luak` by `luaj`.
+* Replaced the archived kaml YAML parser with kotaml, its supported
+  fork (`io.heapy.kotaml`); the fork keeps the original package, so the
+  API is unchanged. The stricter reader of the new version accepts all of
+  arara's rules and configuration files without modification.
 * Kotlin platform updated to 2.4.20, Gradle updated to 9.7.1, build
   plugins updated (shadow 9.6.1, spotless 8.10.2, versions 0.64.0 and
   Dokka 2.2.0, including the migration to the Dokka Gradle plugin v2

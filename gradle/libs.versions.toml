@@ -16,7 +16,7 @@ versionsPlugin = "0.64.0"
 # Libraries
 # --------------------------------
 clikt = "5.0.3"
-kaml = "0.104.0"
+kotaml = "0.111.0"
 kotlinLogging = "8.0.4"
 kotlinxSerialization = "1.11.0"
 log4j = "2.25.2"
@@ -29,7 +29,7 @@ ztExec = "1.12"
 [libraries]
 clikt = { group = "com.github.ajalt.clikt", name = "clikt", version.ref = "clikt" }
 clikt-markdown = { group = "com.github.ajalt.clikt", name = "clikt-markdown", version.ref = "clikt" }
-kaml = { group = "com.charleskorn.kaml", name = "kaml", version.ref = "kaml" }
+kotaml = { group = "io.heapy.kotaml", name = "kotaml", version.ref = "kotaml" }
 kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version.ref = "kotlinLogging" }
 luaj = { group = "io.github.taoguan", name = "luaj", version.ref = "luaj" }
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinxSerialization" }

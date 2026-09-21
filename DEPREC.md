@@ -26,11 +26,11 @@ remove them as part of this effort:
 >
 > | Library | Coordinates | Used by | Fate |
 > | --- | --- | --- | --- |
-> | **yamlkt** | `net.mamoe.yamlkt` | directive parameters (`cli/…/DirectiveUtils.kt`), file database (`core/…/Database.kt`) | **stays** |
-> | **kaml** | `com.charleskorn.kaml` | YAML rules (`mvel/…/rules/Rule.kt`), YAML config (`mvel/…/configuration/LocalConfiguration.kt`) | removed with them |
+> | **yamlkt** | `net.mamoe.yamlkt` | directive parameters (`cli/…/DirectiveUtils.kt`), file database (`core/…/Database.kt`) | **stays** (a future replacement by kotaml is sketched in the version 9 outlook) |
+> | **kotaml** | `io.heapy.kotaml` (a supported fork of the archived kaml; the fork keeps the original `com.charleskorn.kaml` package) | YAML rules (`mvel/…/rules/Rule.kt`), YAML config (`mvel/…/configuration/LocalConfiguration.kt`) | removed with them |
 >
 > Whenever this document says the YAML *library* is removed, it means
-> **kaml only**. Directives keep being parsed as YAML via yamlkt.
+> **kotaml only**. Directives keep being parsed as YAML via yamlkt.
 
 1. **Directive parameter parsing.** `cli/…/ruleset/DirectiveUtils.kt` parses
    the `{ key: value }` part of a directive with **yamlkt**
@@ -130,11 +130,12 @@ Small, reversible release:
 
 - Delete `mvel/…/rules/Rule.kt`, `mvel/…/rules/RuleArgument.kt` and
   `mvel/…/rules/SerialRuleCommand.kt`.
-- Remove `libs.kaml` from `mvel/build.gradle.kts` and drop the
-  `kaml` version/library entries from `gradle/libs.versions.toml`
-  (kaml's only two consumers are the YAML rule and configuration
+- Remove `libs.kotaml` from `mvel/build.gradle.kts` and drop the
+  `kotaml` version/library entries from `gradle/libs.versions.toml`
+  (kotaml's only two consumers are the YAML rule and configuration
   parsers — verify with `grep -rn "com.charleskorn" --include="*.kt" .`
-  before deleting). Do **not** touch `libs.yamlkt`: it parses directives
+  before deleting; the fork kept the original package, so the grep
+  below is unaffected by the coordinate change). Do **not** touch `libs.yamlkt`: it parses directives
   and the database (see [What stays](#what-stays)). Remove the
   `kotlin("plugin.serialization")` plugin from the mvel module if no
   `@Serializable` class remains there.
@@ -152,7 +153,7 @@ Small, reversible release:
   `mvel/…/configuration/` — `core/…/configuration/` is the natural home
   (`toExecutionOptions`/`toLoggingOptions`/`toUserInterfaceOptions` only
   use core and api types). While moving:
-  - delete the kaml-based `companion object { fun load(…) }` and the
+  - delete the kotaml-based `companion object { fun load(…) }` and the
     `@Serializable` annotations (the Lua parser constructs the class
     directly);
   - drop the `!config` header check, which was YAML-specific.

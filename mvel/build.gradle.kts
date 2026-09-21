@@ -10,5 +10,5 @@ dependencies {
     implementation(libs.slf4j.api)
     implementation(libs.mvel)
     implementation(libs.kotlinx.serialization)
-    implementation(libs.kaml)
+    implementation(libs.kotaml)
 }
