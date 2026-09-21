@@ -38,6 +38,11 @@ on.
   such as `if exists('log')` work in both dialects unchanged; compound
   conditions use Lua's `and`, `or` and `not` instead of `&&`, `||` and
   `!`. The default YAML engine keeps evaluating conditionals in MVEL.
+* Under `--engine lua`, orb tags (`@{ … }`) in directive `options` are
+  interpolated as Lua expressions using the same helper registry as the
+  conditionals. Safe mode still skips interpolation entirely, and
+  unterminated or malformed tags report the same interpolation error as
+  the MVEL dialect.
 
 ## Changed
 

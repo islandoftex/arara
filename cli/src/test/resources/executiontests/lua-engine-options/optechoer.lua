@@ -1,0 +1,26 @@
+return {
+  identifier = "optechoer",
+  name = "Lua orb tag options rule",
+  authors = { "Island of TeX" },
+  commands = {
+    {
+      name = "The echoer",
+      command = function(ctx)
+        return getCommand("echo", ctx.options)
+      end
+    }
+  },
+  arguments = {
+    {
+      identifier = "options",
+      default = {},
+      flag = function(ctx, value)
+        if isList(value) then
+          return value
+        else
+          throwError("I was expecting a list of options.")
+        end
+      end
+    }
+  }
+}

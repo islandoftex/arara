@@ -89,9 +89,10 @@ Dependency chain: `api` → `core` → (`mvel`, `lua`) → `cli`.
   (`.yaml` → mvel parser with a one-time deprecation warning, `.lua` →
   `LuaRuleParser`), configuration file lookup (YAML names first, then Lua),
   the clikt command line, and the shadow jar. **Directive conditionals
-  (`if`/`while`/`until`/`unless`) follow the engine too**: `--engine lua`
-  evaluates them as Lua (`LuaConditionalEvaluator`, strict boolean, same
-  helper registry as the MVEL dialect); the default engine keeps MVEL.
+  (`if`/`while`/`until`/`unless`) and orb tags (`@{ … }`) in directive
+  `options` follow the engine too**: `--engine lua` evaluates them as Lua
+  (`LuaConditionalEvaluator` / `LuaOrbTags`, strict boolean, same helper
+  registry as the MVEL dialect); the default engine keeps MVEL.
   Single-call conditions are valid in both dialects; compound ones differ
   (`&&`/`||`/`!` vs `and`/`or`/`not`).
 - `MPPPath` (in `api`) is a sharp edge: it carries **two** paths —

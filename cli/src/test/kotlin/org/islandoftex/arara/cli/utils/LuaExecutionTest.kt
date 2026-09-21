@@ -112,4 +112,33 @@ class LuaExecutionTest : ShouldSpec({
         }
         exception.message shouldNotBe null
     }
+
+    should("interpolate Lua orb tags in directive options") {
+        val output = outputForTest("lua-engine-options")
+        // the orb tag is evaluated at parse time, so the rule receives
+        // the interpolated list containing the base name of the file
+        output shouldContain "name: lua-engine-options"
+        output shouldContain "SUCCESS"
+    }
+
+    should("not interpolate orb tags in safe mode on the Lua engine") {
+        val options = LinearExecutor.executionOptions
+        LinearExecutor.executionOptions =
+            org.islandoftex.arara.core.configuration.ExecutionOptions
+                .from(options)
+                .copy(
+                    executionMode =
+                    org.islandoftex.arara.api.configuration.ExecutionMode
+                        .SAFE_RUN
+                )
+        try {
+            val output = outputForTest("lua-engine-options")
+            // safe mode must never evaluate user expressions, so the
+            // orb tag passes through literally
+            output shouldContain "@{getBasename(getOriginalReference())}"
+            output shouldNotContain "name: lua-engine-options"
+        } finally {
+            LinearExecutor.executionOptions = options
+        }
+    }
 })

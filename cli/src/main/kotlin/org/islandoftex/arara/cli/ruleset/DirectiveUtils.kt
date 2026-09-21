@@ -13,6 +13,7 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.DirectiveFetchingHooks
 import org.islandoftex.arara.core.rules.Directives
 import org.islandoftex.arara.core.session.LinearExecutor
+import org.islandoftex.arara.lua.rules.LuaOrbTags
 import org.islandoftex.arara.mvel.utils.MvelState
 import org.mvel2.templates.TemplateRuntime
 
@@ -93,8 +94,8 @@ object DirectiveUtils {
         return if ("options" in map.keys && LinearExecutor.executionOptions
             .executionMode != ExecutionMode.SAFE_RUN
         ) {
-            // perform directive interpolation by applying MVEL methods to the
-            // directive arguments
+            // perform directive interpolation by applying the methods of
+            // the selected engine to the directive arguments
             map.plus(
                 "options" to (
                     map["options"]?.takeIf { it is List<*> }
@@ -102,14 +103,19 @@ object DirectiveUtils {
                             (list as List<*>).map { it.toString() }
                         }
                         ?.map { value ->
-                            kotlin.runCatching {
-                                TemplateRuntime.eval(value, MvelState.directiveMethods)
-                            }.getOrElse {
-                                throw AraraException(
-                                    LanguageController.messages
-                                        .ERROR_EXTRACTOR_INTERPOLATION_FAILURE,
-                                    it
-                                )
+                            when (RuleEngine.current) {
+                                RuleEngine.LUA ->
+                                    LuaOrbTags.interpolate(value)
+                                RuleEngine.YAML ->
+                                    kotlin.runCatching {
+                                        TemplateRuntime.eval(value, MvelState.directiveMethods)
+                                    }.getOrElse {
+                                        throw AraraException(
+                                            LanguageController.messages
+                                                .ERROR_EXTRACTOR_INTERPOLATION_FAILURE,
+                                            it
+                                        )
+                                    }
                             }
                         } ?: emptyList()
                     )

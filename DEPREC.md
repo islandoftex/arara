@@ -313,6 +313,8 @@ Consequences for the plan above:
   environment binds the very same registry (a transitional `lua` -> `mvel`
   edge, mirroring the one for `RuleMethods`, is documented in
   `lua/build.gradle.kts`);
-- the remaining MVEL surface after that move is the orb tag
-  interpolation of directive `options` (see `DirectiveUtils`); once it
-  has a Lua counterpart, the `mvel` module can be deleted entirely.
+- the remaining MVEL surface after that move is empty: the orb tag
+  interpolation of directive `options` also has a Lua counterpart tied
+  to the engine (`LuaOrbTags`), including the safe mode passthrough.
+  Once the conditional and rule helpers have moved to a neutral home,
+  the `mvel` module can be deleted entirely.
