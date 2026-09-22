@@ -31,7 +31,10 @@ on.
   alongside their YAML counterparts (`rules/arara-rule-*.lua`); the
   converter lives in `scripts/yaml2lua.py`.
 * Under `--engine lua`, directive conditionals (`if`, `while`, `until`,
-  `unless`) are evaluated as Lua expressions. The condition has to yield a
+  `unless`) are evaluated as Lua expressions. Conditional helper binding
+  errors surface behind the same localized evaluation error as the MVEL
+  dialect produces for helper failures, with the binding message as the
+  diagnostic detail. The condition has to yield a
   proper boolean (like the MVEL dialect), the same conditional helpers
   (`exists`, `found`, `changed`, `toFile`, ...) are available, and the
   engine's decision carries the usual strictness. Single-call conditions

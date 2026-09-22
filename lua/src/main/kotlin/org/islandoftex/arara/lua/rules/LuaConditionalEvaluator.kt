@@ -36,27 +36,36 @@ class LuaConditionalEvaluator(
     @Throws(AraraException::class)
     @Suppress("TooGenericExceptionCaught")
     override fun evaluateCondition(conditional: DirectiveConditional): Boolean {
-        return try {
-            val result = LuaConditionalEnvironment.newGlobals()
+        val result = try {
+            LuaConditionalEnvironment.newGlobals()
                 .load("return (" + conditional.condition + ")")
                 .call()
-            if (result.isboolean()) {
-                val value = result.toboolean()
-                if (conditional.type == DirectiveConditionalType.UNLESS ||
-                    conditional.type == DirectiveConditionalType.UNTIL
-                )
-                    !value
-                else
-                    value
-            } else {
-                throw AraraException(
-                    LanguageController.messages.ERROR_EVALUATE_NOT_BOOLEAN_VALUE
-                )
-            }
+        } catch (exception: AraraException) {
+            // helper binding errors (e.g. a wrong argument type for
+            // exists or found) have to surface behind the same localized
+            // wrapper as the MVEL dialect produces for helper failures,
+            // with the binding message available as the cause
+            throw AraraException(
+                LanguageController.messages.ERROR_EVALUATE_COMPILATION_FAILED,
+                exception
+            )
         } catch (exception: RuntimeException) {
             throw AraraException(
                 LanguageController.messages.ERROR_EVALUATE_COMPILATION_FAILED,
                 exception
+            )
+        }
+        return if (result.isboolean()) {
+            val value = result.toboolean()
+            if (conditional.type == DirectiveConditionalType.UNLESS ||
+                conditional.type == DirectiveConditionalType.UNTIL
+            )
+                !value
+            else
+                value
+        } else {
+            throw AraraException(
+                LanguageController.messages.ERROR_EVALUATE_NOT_BOOLEAN_VALUE
             )
         }
     }
