@@ -86,10 +86,10 @@ class Interpreter(
                             path, directive.identifier,
                             format, workingDirectory
                         ),
-                        // this lookup adds support for the rules distributed
-                        // with arara (in TL names should be unique, hence we
-                        // avoided going for pdflatex.yaml in favor of
-                        // arara-rule-pdflatex.yaml from version 6 on)
+                        // this lookup adds support for the rules
+                        // distributed with arara: their file names carry
+                        // the arara-rule- prefix so the names stay
+                        // unique in TeX Live
                         InterpreterUtils.construct(
                             path, "arara-rule-" + directive.identifier,
                             format, workingDirectory

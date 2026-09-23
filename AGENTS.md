@@ -16,6 +16,9 @@ the plugins and the libraries are at their latest stable versions.
 self-contained, verified step — diff or bisect against the tags when in doubt
 about a change.
 
+Source code comments describe what the code does and why — they never
+reference the `oc` tags, file names, or line numbers.
+
 ## Known issues (verified 2026-09-19; resolved during oc1..oc5)
 
 - ~~The build configures but does not compile~~ — fixed in `oc3`: the

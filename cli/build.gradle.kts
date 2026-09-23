@@ -42,7 +42,7 @@ dependencies {
     // the command line framework loads the Kotlin reflection classes at
     // runtime but does not declare the dependency itself, so this line
     // is the sole provider of it; removing it fails the CLI startup
-    // (verified with -verbose:class during the oc45 investigation)
+    // (verified by observing the class loads at runtime)
     implementation(kotlin("reflect"))
     implementation(libs.kotlin.logging)
     implementation(libs.clikt)
