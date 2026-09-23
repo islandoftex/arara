@@ -64,9 +64,9 @@ object LinearExecutor : Executor {
      * following steps:
      *
      * 1. Resolve project dependencies and create an appropriate execution
-     *    order. Pay attention to blocking when doing parallel execution.
-     * 2. Run arara's main routines on each project. Within a project,
-     *    follow the file priorities.
+     *    order.
+     * 2. Run arara's main routines on each project sequentially. Within a
+     *    project, follow the file priorities.
      * 3. Wait for all tasks to finish.
      *
      * @param projects The projects to act on.

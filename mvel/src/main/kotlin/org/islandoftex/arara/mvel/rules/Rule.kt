@@ -8,6 +8,7 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.utils.formatString
 
 /**
  * Implements the rule model.
@@ -32,7 +33,7 @@ data class Rule(
          */
         private fun ruleErrorHeader(identifier: String, path: String): String =
             LanguageController.messages.ERROR_RULE_IDENTIFIER_AND_PATH
-                .format(identifier, path) + " "
+                .formatString(identifier, path) + " "
 
         /**
          * Parses the provided file, checks the identifier and returns a rule
@@ -89,7 +90,7 @@ data class Rule(
                 throw AraraException(
                     errorHeader +
                         LanguageController.messages.ERROR_VALIDATEHEADER_WRONG_IDENTIFIER
-                            .format(rule.identifier, identifier)
+                            .formatString(rule.identifier, identifier)
                 )
             }
             if (rule.displayName == null) {
@@ -126,7 +127,7 @@ data class Rule(
                 throw AraraException(
                     errorHeader + LanguageController
                         .messages.ERROR_VALIDATEBODY_ARGUMENT_ID_IS_RESERVED
-                        .format(it)
+                        .formatString(it)
                 )
             }
 

@@ -274,7 +274,7 @@ class LuaInterpreterTest {
         """.trimIndent()
         val projects = LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script)
         val projectFile = projects[0].files.first()
-        assertEquals("Untitled project", projects[0].name, "an absent project name defaults")
+        assertEquals("Untitled", projects[0].name, "an absent project name defaults")
         assertEquals(
             org.islandoftex.arara.core.files.ProjectFile.DEFAULT_PRIORITY,
             projectFile.priority,

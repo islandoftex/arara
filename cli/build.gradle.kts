@@ -19,14 +19,6 @@ val toolchain = providers.gradleProperty("arara.jvm.target")
 // ----------------------------------------------------------------------
 
 kotlin {
-    // ----------------------------------------------------------------------
-    // define the JVM toolchain (we can also set the vendor, if needed)
-    // ----------------------------------------------------------------------
-    // jvmToolchain {
-    //    languageVersion.set(JavaLanguageVersion.of(toolchain))
-    //    vendor.set(JvmVendorSpec.AMAZON)
-    // }
-    // ----------------------------------------------------------------------
     jvmToolchain(toolchain)
 }
 
@@ -62,10 +54,6 @@ tasks {
 
     build {
         dependsOn("shadowJar")
-    }
-
-    withType<Copy> {
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
     }
 
     named<Task>("assembleDist").configure {

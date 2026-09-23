@@ -35,26 +35,29 @@ abstract class DirectiveConditionalEvaluator(
     private var counter: Int = 0
 
     /**
-     * A flag that indicates the evaluation to halt regardless of the result.
+     * A flag that indicates an IF or UNLESS conditional has already been
+     * evaluated once, so the enclosing loop in the interpreter does not
+     * run such directives more than once (the flag is unrelated to the
+     * halt mechanism of the rule helpers).
      */
-    private var halt: Boolean = false
+    private var evaluatedOnce: Boolean = false
 
     /**
-     * Check if a condition is of type if or unless and whether halt
-     * is set.
+     * Check if a condition is of type if or unless and whether it has
+     * been evaluated once already.
      * @param type The type to check.
-     * @param haltCheck The value [halt] should have.
-     * @return `(type == if || type == unless) && haltCheck`
+     * @param check The value [evaluatedOnce] should have.
+     * @return `(type == if || type == unless) && evaluatedOnce == check`
      */
-    private fun isIfUnlessAndHalt(
+    private fun isIfUnlessAndEvaluatedOnce(
         type: DirectiveConditionalType,
-        haltCheck: Boolean = true
+        check: Boolean = true
     ): Boolean =
         (
             type == DirectiveConditionalType.IF ||
                 type == DirectiveConditionalType.UNLESS
             ) &&
-            halt == haltCheck
+            evaluatedOnce == check
 
     /**
      * Only run the evaluation of the conditional including a check whether
@@ -79,11 +82,11 @@ abstract class DirectiveConditionalEvaluator(
         // evaluations
         if (conditional.type == DirectiveConditionalType.NONE ||
             executionOptions.executionMode == ExecutionMode.DRY_RUN ||
-            isIfUnlessAndHalt(conditional.type, true)
+            isIfUnlessAndEvaluatedOnce(conditional.type, true)
         )
             return false
-        else if (isIfUnlessAndHalt(conditional.type, false)) {
-            halt = true
+        else if (isIfUnlessAndEvaluatedOnce(conditional.type, false)) {
+            evaluatedOnce = true
         }
 
         // check counters and see if the execution

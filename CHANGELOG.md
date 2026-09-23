@@ -117,6 +117,12 @@ on.
   `src/commonMain`/`src/jvmMain` to `src/main` (and tests accordingly).
 * animate+convert rules: change default program from `convert` to `magick` 
   (`convert` was deprecated in ImageMagick v7)
+* Message formatting no longer mangles values containing `$` or
+  backslashes: the sequential `%s` replacer now inserts replacements
+  verbatim, and it also accepts non string values like the underlying
+  formatter.
+* The Lua project parser's default name for nameless projects aligns
+  with the command line's fallback (`Untitled`).
 * The shared rule helpers (`RuleMethods`, `ConditionalMethods`,
   `MethodUtils`), the shared configuration model (`LocalConfiguration`,
   `SerialFileType`) and the interpreter exception moved from the MVEL

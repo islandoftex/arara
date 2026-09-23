@@ -2,16 +2,24 @@
 package org.islandoftex.arara.core.utils
 
 import org.islandoftex.arara.api.AraraException
+import java.util.regex.Matcher
 
 /**
  * Format a string using [stringReplacements] to replace occurrences of
  * `%s` in the string. As such mostly compatible with the usual
  * `kotlin.text.format` function for strings.
+ *
+ * The replacements are inserted verbatim — unlike the replacement
+ * handling of the underlying regular expression engine, a `$` or a
+ * backslash inside a value cannot corrupt the result.
  */
-fun String.formatString(vararg stringReplacements: String): String {
+fun String.formatString(vararg stringReplacements: Any?): String {
     var final = this
     for (replacement in stringReplacements) {
-        final = final.replaceFirst("%s", replacement)
+        final = final.replaceFirst(
+            "%s",
+            Matcher.quoteReplacement(replacement.toString())
+        )
     }
     return final
 }

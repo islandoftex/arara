@@ -54,6 +54,7 @@ import org.islandoftex.arara.core.rules.Directives
 import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
+import org.islandoftex.arara.core.utils.formatString
 import org.islandoftex.arara.lua.LuaInterpreter
 import org.islandoftex.arara.mvel.utils.MvelState
 import java.time.LocalDate
@@ -113,7 +114,7 @@ class CLI : CliktCommand("arara") {
     private val safeRun by option("-S", "--safe-run")
         .help(
             "Run in safe mode and disable potentially harmful features. " +
-                "Make sure your projects uses only allowed features."
+                "Make sure your project uses only allowed features."
         )
         .flag()
     private val wholeFile by option("-w", "--whole-file")
@@ -304,7 +305,7 @@ class CLI : CliktCommand("arara") {
         if (resolvedPreamble != null && resolvedPreamble !in MvelState.preambles) {
             throw AraraException(
                 LanguageController.messages
-                    .ERROR_PARSER_INVALID_PREAMBLE.format(resolvedPreamble)
+                    .ERROR_PARSER_INVALID_PREAMBLE.formatString(resolvedPreamble)
             )
         }
         val allDirectives = resolvedPreamble

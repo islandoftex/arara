@@ -34,7 +34,7 @@ object MethodUtils {
         } catch (exception: IOException) {
             throw AraraException(
                 LanguageController.messages.ERROR_CHECKREGEX_IO_EXCEPTION
-                    .format(file.fileName),
+                    .formatString(file.fileName),
                 exception
             )
         }

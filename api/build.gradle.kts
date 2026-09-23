@@ -7,9 +7,6 @@ kotlin {
     explicitApi()
 }
 
-dependencies {
-}
-
 tasks {
 
     compileKotlin {

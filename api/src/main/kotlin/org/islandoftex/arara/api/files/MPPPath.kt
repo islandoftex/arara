@@ -23,7 +23,9 @@ import kotlin.io.path.writeText
 import kotlin.jvm.Throws
 
 /**
- * Platform-independent object to deal with paths.
+ * A path model for arara, wrapping the underlying platform path API and
+ * retaining both the path exactly as provided and an absolutized,
+ * normalized reference of it.
  */
 // since this should provide a fluent API to deal with paths,
 // we are adding an annotation to suppress detekt's warning
@@ -44,7 +46,8 @@ public class MPPPath {
     }
 
     /**
-     * Get the last segment of a path which by definition is the file name.
+     * A constructor that creates a copy of the provided path, retaining
+     * both its provided and reference forms.
      */
     public constructor(initPath: MPPPath) {
         providedPath = initPath.providedPath

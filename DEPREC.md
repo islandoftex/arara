@@ -77,8 +77,9 @@ Do not start the removal before all of the following hold:
       phase 1) so users had a cycle to notice breakage while YAML was
       still available as an opt-in fallback.
 - [ ] The official rules in the Lua format have reached TeX Live/CTAN
-      (they ship automatically, `buildSrc/…/TDSTreeBuilderTask.kt` copies
-      the whole `rules/` directory).
+      (the former packaging tasks, including the TDS tree builder that
+      copied the whole `rules/` directory, were removed from the build;
+      the `oc1` tag retains them for the release workflow).
 - [ ] The migration path is documented for users: `scripts/yaml2lua.py`
       converts rule files; the manual's Configuration chapter documents the
       Lua configuration format.

@@ -9,10 +9,9 @@ internal open class Graph<T> {
     private val indegree = mutableMapOf<T, Int>()
 
     private fun updateInDegree(vertex: T) {
-        if (vertex in indegree)
-            indegree[vertex] = indegree[vertex]!!.inc()
-        else
-            throw NoSuchElementException("Vertex $vertex in graph expected")
+        val current = indegree[vertex]
+            ?: throw NoSuchElementException("Vertex $vertex in graph expected")
+        indegree[vertex] = current + 1
     }
 
     /**
@@ -28,8 +27,8 @@ internal open class Graph<T> {
     }
 
     /**
-     * Add an edge between to vertices. Implicitly creates these vertices if
-     * not yet done.
+     * Add an edge between two vertices. Implicitly creates these vertices
+     * if not yet done.
      *
      * @param source The vertex where the edge starts.
      * @param target The vertex where the edge ends.
@@ -38,7 +37,7 @@ internal open class Graph<T> {
         addVertex(source)
         addVertex(target)
 
-        vertices[source]!!.add(target)
+        checkNotNull(vertices[source]).add(target)
         updateInDegree(target)
     }
 
@@ -50,7 +49,7 @@ internal open class Graph<T> {
      */
     fun kahn(): List<T> {
         val order = mutableListOf<T>()
-        val queue = mutableListOf<T>()
+        val queue = ArrayDeque<T>()
 
         val work = indegree.toMutableMap()
 
@@ -59,14 +58,19 @@ internal open class Graph<T> {
             .forEach { queue.add(it.key) }
 
         while (queue.isNotEmpty()) {
-            val vertex: T = queue.removeAt(0)
+            val vertex: T = queue.removeFirst()
             order.add(vertex)
-            vertices[vertex]?.forEach {
-                work[it] = work[it]!!.dec()
+            val neighbors = vertices[vertex]
+                ?: throw NoSuchElementException("Expected $vertex in map")
+            neighbors.forEach {
+                val remaining = checkNotNull(work[it]) {
+                    "Vertex $it in graph expected"
+                }
+                work[it] = remaining - 1
                 if (work[it] == 0) {
                     queue.add(it)
                 }
-            } ?: throw NoSuchElementException("Expected $vertex in map")
+            }
         }
         return order
     }

@@ -55,9 +55,10 @@ spotless {
                 "cli/build.gradle.kts"
         )
         targetExclude("src/test/**/*.kts")
-        // ktlint updated its rule set so that a majority of our files newly
-        // triggers lints that are not as easy to fix, therefore we disabled
-        // it for now
+        // ktlint stays disabled deliberately: the newer rule set would
+        // reformat a majority of the tree in one giant mechanical
+        // commit; revisit it as a dedicated formatting step instead of
+        // mixing it with feature work
         // -----------------------------------------------------------------
         // ktlint()
         trimTrailingWhitespace()
@@ -74,9 +75,10 @@ spotless {
                 "buildSrc/src/**/*.kt"
         )
         targetExclude("src/test/**/*.kts")
-        // ktlint updated its rule set so that a majority of our files newly
-        // triggers lints that are not as easy to fix, therefore we disabled
-        // it for now
+        // ktlint stays disabled deliberately: the newer rule set would
+        // reformat a majority of the tree in one giant mechanical
+        // commit; revisit it as a dedicated formatting step instead of
+        // mixing it with feature work
         // -----------------------------------------------------------------
         // ktlint()
         licenseHeader("// SPDX-License-Identifier: BSD-3-Clause")

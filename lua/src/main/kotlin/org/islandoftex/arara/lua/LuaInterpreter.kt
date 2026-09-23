@@ -94,7 +94,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         val name = optionalString(
             table["name"],
             "The project 'name' key requires a string value."
-        ) ?: "Untitled project"
+        ) ?: "Untitled"
         val workingDirectory = optionalString(
             table["workingDirectory"],
             "The 'workingDirectory' key requires a string value."
