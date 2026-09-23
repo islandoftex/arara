@@ -39,10 +39,12 @@ dependencies {
     implementation(libs.kotaml)
     implementation(project(":lua"))
     implementation(project(":mvel"))
-    // the command line framework loads the Kotlin reflection classes at
-    // runtime but does not declare the dependency itself, so this line
-    // is the sole provider of it; removing it fails the CLI startup
-    // (verified by observing the class loads at runtime)
+    // the command line framework, the YAML parser, the serialization
+    // runtime and the logging facade reference the Kotlin reflection
+    // classes at runtime, but none of them declares the dependency, so
+    // this line is the sole provider of it; removing it fails the CLI
+    // startup and the YAML parsing (verified by observing the class
+    // loads at runtime)
     implementation(kotlin("reflect"))
     implementation(libs.kotlin.logging)
     implementation(libs.clikt)
