@@ -51,6 +51,19 @@ class Interpreter(
     private val haltKey = "arara:${currentFile.path.fileName}:halt"
 
     /**
+     * Read the halt status recorded in the session under the halt key,
+     * reporting a localized error when a rule stored a non numeric
+     * value there.
+     */
+    private fun haltStatus(): Int =
+        Session[haltKey].toString().toIntOrNull()
+            ?: throw AraraExceptionWithHeader(
+                LanguageController.messages
+                    .ERROR_INTERPRETER_HALT_STATUS_NOT_A_NUMBER
+                    .formatString(haltKey)
+            )
+
+    /**
      * Gets the rule according to the provided directive.
      *
      * @param directive The provided directive.
@@ -284,9 +297,7 @@ class Interpreter(
                     throw HaltExpectedException(
                         LanguageController.messages
                             .ERROR_INTERPRETER_USER_REQUESTED_HALT,
-                        ExecutionStatus.FinishedWithCode(
-                            Session[haltKey].toString().toInt()
-                        )
+                        ExecutionStatus.FinishedWithCode(haltStatus())
                     )
                 executionOptions.haltOnErrors && !success ->
                     throw HaltExpectedException(
@@ -349,7 +360,7 @@ class Interpreter(
                 ExecutionStatus.Processing()
             Session.contains(haltKey) ->
                 // a halt was requested by a rule
-                ExecutionStatus.FinishedWithCode(Session[haltKey].toString().toInt())
+                ExecutionStatus.FinishedWithCode(haltStatus())
             else -> {
                 try {
                     // if not execute the commands associated with the directive

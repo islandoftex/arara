@@ -30,6 +30,7 @@ class NorfolkLanguage : Messages(
     ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT = "That ole command \"%s\" dint go roight. Do you have a peek at the output do you want ter know wass doing.",
     ERROR_INTERPRETER_EXIT_RUNTIME_ERROR = "That ent gorn right wi' th' exit status of onnem commands you giv' me. Wuh, yew're gotta he'sum idear wot this is orl abowt ter git th' hang o'this bit else yew myte be in a rite ole puckaterry but I'll help yew git it done if I can, my bewty.",
     ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION = "That ent gorn right wi' th' flag for onnem arguments you giv' me. Wuh, yew're gotta he'sum idear wot this is orl abowt ter git th' hang o'this bit else yew myte be in a rite ole puckaterry but I'll help yew git it done if I can, my bewty.",
+    ERROR_INTERPRETER_HALT_STATUS_NOT_A_NUMBER = "It do luke like thet value yew put under the halt session key \"%s\" ent a proper number, so I can't tell yew wot halt status yew wanted. This should be a easy fix: make sure thet halt status is a number an' hev another go.",
     ERROR_INTERPRETER_RULE_NOT_FOUND = "Thass a rum ole dew but there ent no '%s' in any onnem rule paths. Praps you ent spelled that right. I coont find '%s.yaml' in any onner paths: %s",
     ERROR_INTERPRETER_UNKNOWN_KEYS = "Atwin me, yew an' the geartepost I ent got no idear abowt these keys in the directive: %s. Howsomever, dunt you git yarself inta a rite ole puckaterry. Do you jist hull them outta yar map.",
     ERROR_INTERPRETER_USER_REQUESTED_HALT = "arara will stop do you (or yar rule) ask it to.",

@@ -131,6 +131,9 @@ on.
   `NullPointerException`) now earn a details section in the terminal
   output showing the cause by its string representation, instead of
   the whole details section being silently omitted.
+* A rule storing a non numeric value under the halt session key now
+  reports a localized error instead of crashing with a raw number
+  parsing exception.
 * The shared rule helpers (`RuleMethods`, `ConditionalMethods`,
   `MethodUtils`), the shared configuration model (`LocalConfiguration`,
   `SerialFileType`) and the interpreter exception moved from the MVEL

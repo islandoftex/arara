@@ -89,9 +89,11 @@ abstract class DirectiveConditionalEvaluator(
             evaluatedOnce = true
         }
 
-        // check counters and see if the execution
-        // has reached our concept of infinity,
-        // thus breaking the cycles
+        // check counters and see if the execution has reached our
+        // concept of infinity, thus breaking the cycles; the boundary
+        // differs on purpose: a WHILE conditional checks its condition
+        // before the first run and an UNTIL conditional after each
+        // run, so both cap the body at exactly maxLoops executions
         counter++
         return when {
             conditional.type == DirectiveConditionalType.WHILE &&

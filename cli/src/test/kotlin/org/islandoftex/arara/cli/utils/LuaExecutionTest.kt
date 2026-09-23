@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -215,5 +216,23 @@ class LuaExecutionTest {
             "the scalar option is interpolated and preserved as a scalar"
         )
         assertTrue(output.contains("SUCCESS"), "the entry result")
+    }
+
+    @Test
+    fun `caps while and until loops at the configured maximum`() {
+        val output = outputForTest("lua-engine-conditionals", "loopcap.tex")
+        val defaultMaxLoops =
+            org.islandoftex.arara.core.configuration.ExecutionOptions()
+                .maxLoops
+        fun occurrences(marker: String) =
+            (output.length - output.replace(marker, "").length) / marker.length
+        assertEquals(
+            defaultMaxLoops, occurrences("WhileCap"),
+            "a while loop runs the body at most the configured maximum"
+        )
+        assertEquals(
+            defaultMaxLoops, occurrences("UntilCap"),
+            "an until loop runs the body at most the configured maximum"
+        )
     }
 }

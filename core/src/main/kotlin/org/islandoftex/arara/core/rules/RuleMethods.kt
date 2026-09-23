@@ -35,6 +35,12 @@ object RuleMethods {
     /**
      * Exit the application with status code.
      *
+     * The status is recorded under the original reference (the main
+     * file, i.e. the one with the lowest priority), so a halt raised
+     * in a dependency file takes effect once the main file is
+     * processed - this mirrors the historical semantics of the MVEL
+     * dialect.
+     *
      * @param status The exit value, defaults to status OK, i.e. 0
      */
     @JvmStatic
