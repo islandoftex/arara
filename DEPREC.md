@@ -318,12 +318,12 @@ arara-generated helper errors available as the diagnostic detail;
 author-authored `throwError` exceptions keep flowing raw in both
 dialects.
 
-Known quirk to decide before version 9: `toLua` renders file objects
-as plain path strings, so a file stored via `session.put` comes back
-as a string which conditional helpers then interpret as an *extension*
-(the MVEL dialect keeps the object and dispatches to the file
-overload). Either map files to userdata in `toLua` or document the
-string round-trip as the contract.
+Resolved: `toLua` wraps file objects as file userdata, so a file stored
+via `session.put` comes back as a file reference and the helpers
+dispatch to the file overloads, exactly like the MVEL dialect keeps
+the object. Round-trips preserve the file; string forms remain
+available through the usual helpers (`getBasename`, `toFile` paths and
+the `reference` table).
 
 Consequences for the plan above:
 

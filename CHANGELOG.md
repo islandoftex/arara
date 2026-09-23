@@ -76,6 +76,11 @@ on.
   produces, with the arara-generated helper errors (such as the bad
   argument errors) available as the diagnostic detail. Author-authored
   `throwError` messages keep flowing raw in both dialects.
+* Under `--engine lua`, files cross the helper boundary as file
+  references: a file stored via the session comes back as a file
+  reference instead of degrading into a path string, so conditional
+  helpers check the file itself rather than interpreting the path as
+  an extension (matching the object semantics of the YAML engine).
 * The rule errors of the Lua engine now share the localized header with
   the YAML engine, unsupported rule file formats report a new localized
   message, and the previously untranslated project file message is now

@@ -117,4 +117,30 @@ class LuaConditionalEnvironmentArgumentTest {
             globals.load("getSession().remove('k')").call()
         }
     }
+
+    @Test
+    fun `round-trips files through the session as file references`() {
+        val globals = LuaConditionalEnvironment.newGlobals()
+        val file = kotlin.io.path.createTempFile("arara", ".tex")
+        try {
+            val result = globals
+                .load(
+                    "local s = getSession(); " +
+                        "s.put('f', toFile('$file')); " +
+                        "local f = s.get('f'); " +
+                        "return type(f) .. ' ' .. tostring(exists(f))"
+                )
+                .call()
+                .tojstring()
+            assertEquals(
+                "userdata true",
+                result,
+                "a stored file comes back as a file reference and " +
+                    "exists checks the file, not an extension"
+            )
+        } finally {
+            file.toFile().delete()
+            globals.load("getSession().remove('f')").call()
+        }
+    }
 }

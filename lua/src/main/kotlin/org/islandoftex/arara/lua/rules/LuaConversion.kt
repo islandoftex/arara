@@ -23,10 +23,12 @@ internal object LuaConversion {
      * Convert a Kotlin value to the closest Lua representation.
      *
      * Lists are turned into (1-based) Lua sequences, maps into tables with
-     * string keys, paths into their string representation and everything
-     * else which is not a primitive is wrapped into a userdatum. Longs
-     * become exact integers while they fit; beyond the exact double
-     * range the Lua number loses precision.
+     * string keys, paths are wrapped into file userdata (so round-trips,
+     * e.g. through the session, preserve the object and the helpers
+     * dispatch to the file overloads) and everything else which is not
+     * a primitive is wrapped into a userdatum. Longs become exact
+     * integers while they fit; beyond the exact double range the Lua
+     * number loses precision.
      */
     // one branch per supported type: the complexity mirrors the type mapping
     @Suppress("CyclomaticComplexMethod")
@@ -39,7 +41,7 @@ internal object LuaConversion {
         is Long -> LuaInteger.valueOf(value)
         is Float -> LuaValue.valueOf(value.toDouble())
         is Double -> LuaValue.valueOf(value)
-        is MPPPath -> LuaValue.valueOf(value.toString())
+        is MPPPath -> LuaValue.userdataOf(value)
         is List<*> -> LuaValue.tableOf().also { table ->
             value.forEachIndexed { i, element ->
                 table.set(i + 1, toLua(element))
