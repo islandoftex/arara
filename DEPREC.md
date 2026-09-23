@@ -313,7 +313,17 @@ implicit coercions apply to operators, not to arara's library
 functions — this mirrors how Lua's own standard library type-checks
 its arguments, keeps `'true'` a string and `'1'` out of numeric slots,
 and matches the strict scalar contract the directive parameter parser
-already follows.
+already follows. Rule and project file parsing follows the same
+contract: absent optional entries keep their documented defaults,
+wrongly typed entries fail at parse time, and nothing is silently
+coerced, defaulted or dropped.
+
+Known quirk to decide before version 9: `toLua` renders file objects
+as plain path strings, so a file stored via `session.put` comes back
+as a string which conditional helpers then interpret as an *extension*
+(the MVEL dialect keeps the object and dispatches to the file
+overload). Either map files to userdata in `toLua` or document the
+string round-trip as the contract.
 
 Consequences for the plan above:
 

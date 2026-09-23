@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua.rules
 
+import io.github.taoguan.luaj.LuaBoolean
 import io.github.taoguan.luaj.LuaFunction
+import io.github.taoguan.luaj.LuaString
 import io.github.taoguan.luaj.LuaTable
 import io.github.taoguan.luaj.LuaValue
 import org.islandoftex.arara.api.AraraException
@@ -97,22 +99,24 @@ object LuaRuleParser {
         identifier: String,
         errorHeader: String
     ): LuaRule {
-        val ruleIdentifier = table.get("identifier")
-            .takeIf { it.isstring() }?.tojstring()
-            ?: throw AraraException(
-                errorHeader + "The rule does not provide an identifier."
-            )
+        val ruleIdentifier = optionalString(
+            table.get("identifier"),
+            errorHeader + "The rule identifier requires a string value."
+        ) ?: throw AraraException(
+            errorHeader + "The rule does not provide an identifier."
+        )
         if (ruleIdentifier != identifier) {
             throw AraraException(
                 errorHeader + "The rule identifier '$ruleIdentifier' does " +
                     "not match the directive identifier '$identifier'."
             )
         }
-        val name = table.get("name")
-            .takeIf { it.isstring() }?.tojstring()
-            ?: throw AraraException(
-                errorHeader + "The rule does not provide a name."
-            )
+        val name = optionalString(
+            table.get("name"),
+            errorHeader + "The rule name requires a string value."
+        ) ?: throw AraraException(
+            errorHeader + "The rule does not provide a name."
+        )
         val authors = stringList(
             table.get("authors"), "authors", errorHeader
         )
@@ -138,7 +142,10 @@ object LuaRuleParser {
         command: LuaTable,
         errorHeader: String
     ): LuaRuleCommand = LuaRuleCommand(
-        name = command.get("name").takeIf { it.isstring() }?.tojstring(),
+        name = optionalString(
+            command.get("name"),
+            errorHeader + "The command name requires a string value."
+        ),
         commandFunction = command.get("command") as? LuaFunction
             ?: throw AraraException(
                 errorHeader + "Every command requires a 'command' function."
@@ -151,8 +158,10 @@ object LuaRuleParser {
         argument: LuaTable,
         errorHeader: String
     ): LuaRuleArgument {
-        val identifier = argument.get("identifier")
-            .takeIf { it.isstring() }?.tojstring()?.takeIf { it.isNotBlank() }
+        val identifier = optionalString(
+            argument.get("identifier"),
+            errorHeader + "The argument identifier requires a string value."
+        )?.takeIf { it.isNotBlank() }
             ?: throw AraraException(
                 errorHeader + "Every argument requires a non-blank " +
                     "'identifier'."
@@ -169,7 +178,16 @@ object LuaRuleParser {
         }
         return LuaRuleArgument(
             identifier = identifier,
-            isRequired = argument.get("required").toboolean(),
+            isRequired = argument.get("required").let { value ->
+                when {
+                    value.isnil() -> false
+                    value is LuaBoolean -> value.toboolean()
+                    else -> throw AraraException(
+                        errorHeader + "The 'required' key of argument " +
+                            "'$identifier' requires a boolean value."
+                    )
+                }
+            },
             defaultValue = default,
             flagFunction = flag
         )
@@ -193,6 +211,19 @@ object LuaRuleParser {
         }
     }
 
+    /**
+     * Extract an optional string entry: a missing or nil value yields
+     * null, any other non-string value is a parse error (Lua numbers do
+     * not silently become strings at the data boundary, mirroring the
+     * typed helper contract of the Lua dialect).
+     */
+    private fun optionalString(value: LuaValue, typeError: String): String? =
+        when {
+            value.isnil() -> null
+            value is LuaString -> value.tojstring()
+            else -> throw AraraException(typeError)
+        }
+
     private fun stringList(
         value: LuaValue,
         key: String,
@@ -200,7 +231,7 @@ object LuaRuleParser {
     ): List<String> = when {
         value.isnil() -> emptyList()
         value is LuaTable -> value.keys().map { elementKey ->
-            value.get(elementKey).takeIf { it.isstring() }?.tojstring()
+            (value.get(elementKey) as? LuaString)?.tojstring()
                 ?: throw AraraException(
                     errorHeader + "Every '$key' entry has to be a string."
                 )

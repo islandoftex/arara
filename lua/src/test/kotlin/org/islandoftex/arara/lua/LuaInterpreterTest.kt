@@ -6,11 +6,12 @@ import org.islandoftex.arara.api.files.MPPPath
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 /**
  * Verifies the Lua project specification parser: single projects, file
- * entries with their explicit directives, project lists and the
- * dependency validation.
+ * entries with their explicit directives, project lists, the
+ * dependency validation and the rejection of wrongly typed entries.
  */
 class LuaInterpreterTest {
     @Test
@@ -128,5 +129,156 @@ class LuaInterpreterTest {
             }
         """.trimIndent()
         assertEquals(2, LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script).size, "both projects in the list are parsed")
+    }
+
+    @Test
+    fun `rejects string file specifications`() {
+        val script = """
+            return {
+              files = {
+                ["file.tex"] = "% arara: pdftex"
+              }
+            }
+        """.trimIndent()
+        val exception = assertFailsWith<AraraException>(
+            "a string file specification must not be silently dropped"
+        ) {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script)
+        }
+        assertTrue(
+            exception.message!!.contains("has to be a table"),
+            "the error names the expected shape: ${exception.message}"
+        )
+    }
+
+    @Test
+    fun `rejects non string directive entries`() {
+        val script = """
+            return {
+              files = {
+                ["file.tex"] = {
+                  directives = { 42 }
+                }
+              }
+            }
+        """.trimIndent()
+        val exception = assertFailsWith<AraraException>(
+            "a number directive entry must not be silently dropped"
+        ) {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script)
+        }
+        assertTrue(
+            exception.message!!.contains("has to be a string"),
+            "the error names the expected entry type: ${exception.message}"
+        )
+    }
+
+    @Test
+    fun `rejects string priorities`() {
+        val script = """
+            return {
+              files = {
+                ["file.tex"] = {
+                  priority = "5"
+                }
+              }
+            }
+        """.trimIndent()
+        val exception = assertFailsWith<AraraException>(
+            "a string priority must not be silently defaulted"
+        ) {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script)
+        }
+        assertTrue(
+            exception.message!!.contains("requires a number"),
+            "the error names the expected type: ${exception.message}"
+        )
+    }
+
+    @Test
+    fun `rejects number dependency entries`() {
+        val script = """
+            return {
+              {
+                name = "Main project",
+                files = {
+                  ["a.tex"] = { }
+                },
+                dependencies = { 42 }
+              },
+              {
+                name = "Other project",
+                files = {
+                  ["b.tex"] = { }
+                }
+              }
+            }
+        """.trimIndent()
+        val exception = assertFailsWith<AraraException>(
+            "a number dependency must not be silently dropped"
+        ) {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script)
+        }
+        assertTrue(
+            exception.message!!.contains("has to be a string"),
+            "the error names the expected entry type: ${exception.message}"
+        )
+    }
+
+    @Test
+    fun `rejects number file keys`() {
+        val script = """
+            return {
+              files = {
+                [42] = { }
+              }
+            }
+        """.trimIndent()
+        val exception = assertFailsWith<AraraException>(
+            "a number file key must not be silently stringified"
+        ) {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script)
+        }
+        assertTrue(
+            exception.message!!.contains("keyed by"),
+            "the error names the expected key shape: ${exception.message}"
+        )
+    }
+
+    @Test
+    fun `rejects non table project list entries`() {
+        val script = """
+            return {
+              "not a project"
+            }
+        """.trimIndent()
+        val exception = assertFailsWith<AraraException>(
+            "a string root entry must not be silently filtered"
+        ) {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script)
+        }
+        assertTrue(
+            exception.message!!.contains("has to be a table"),
+            "the error names the expected shape: ${exception.message}"
+        )
+    }
+
+    @Test
+    fun `defaults absent entries to their documented values`() {
+        val script = """
+            return {
+              files = {
+                ["file.tex"] = { }
+              }
+            }
+        """.trimIndent()
+        val projects = LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script)
+        val projectFile = projects[0].files.first()
+        assertEquals("Untitled project", projects[0].name, "an absent project name defaults")
+        assertEquals(
+            org.islandoftex.arara.core.files.ProjectFile.DEFAULT_PRIORITY,
+            projectFile.priority,
+            "an absent priority defaults"
+        )
     }
 }

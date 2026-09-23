@@ -57,6 +57,17 @@ on.
   (returning the raw exit code made every code pass). Interpolation and
   flag results still stringify by design, and the named conversion
   helpers (`isTrue` and friends) keep interpreting values.
+* Rule and project files of the Lua format are parsed strictly:
+  wrongly typed entries fail loudly at parse time instead of being
+  silently coerced, defaulted or dropped. Numbers no longer pass as
+  strings (rule names, authors, file keys), the `required` key has to
+  be a boolean, project file specifications and project list entries
+  have to be tables, and directive and dependency entries have to be
+  strings — while absent optional entries keep their documented
+  defaults. The project parser also discriminates a single project
+  from a project list by shape (a root `files` table) instead of
+  retrying the failed single parse as a list, so every parse error
+  now reports the actual violation.
 * The rule errors of the Lua engine now share the localized header with
   the YAML engine, unsupported rule file formats report a new localized
   message, and the previously untranslated project file message is now

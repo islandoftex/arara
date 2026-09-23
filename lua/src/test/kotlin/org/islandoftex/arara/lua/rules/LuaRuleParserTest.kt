@@ -14,7 +14,9 @@ import kotlin.test.assertTrue
  * Verifies the Lua rule parser: the shape of a valid rule, exit
  * closures, flag processing, surfaced rule errors and the rejection of
  * invalid rules (mismatched identifiers, missing commands, reserved
- * argument identifiers and arguments without flag or default).
+ * argument identifiers, arguments without flag or default, and
+ * wrongly typed entries such as numbers in string slots or non
+ * boolean required flags).
  */
 class LuaRuleParserTest {
     private fun ruleFile(content: String): MPPPath {
@@ -188,5 +190,98 @@ class LuaRuleParserTest {
         ) {
             LuaRuleParser.parse(ruleFile(rule), "demo")
         }
+    }
+
+    @Test
+    fun `rejects non string rule names`() {
+        val rule = """
+            return {
+              identifier = "demo",
+              name = 42,
+              commands = {
+                { command = function(ctx) return true end }
+              },
+              arguments = {}
+            }
+        """.trimIndent()
+        val exception = assertFailsWith<AraraException>(
+            "a number rule name must not silently become a string"
+        ) {
+            LuaRuleParser.parse(ruleFile(rule), "demo")
+        }
+        assertTrue(
+            exception.message!!.contains("requires a string value"),
+            "the error names the expected type: ${exception.message}"
+        )
+    }
+
+    @Test
+    fun `rejects non boolean required flags`() {
+        val rule = """
+            return {
+              identifier = "demo",
+              name = "Demo",
+              commands = {
+                { command = function(ctx) return true end }
+              },
+              arguments = {
+                { identifier = "shell", required = "yes", default = "x" }
+              }
+            }
+        """.trimIndent()
+        val exception = assertFailsWith<AraraException>(
+            "a string required flag must not be truth-tested"
+        ) {
+            LuaRuleParser.parse(ruleFile(rule), "demo")
+        }
+        assertTrue(
+            exception.message!!.contains("requires a boolean value"),
+            "the error names the expected type: ${exception.message}"
+        )
+    }
+
+    @Test
+    fun `rejects non string list entries`() {
+        val rule = """
+            return {
+              identifier = "demo",
+              name = "Demo",
+              authors = { "Island of TeX", 42 },
+              commands = {
+                { command = function(ctx) return true end }
+              },
+              arguments = {}
+            }
+        """.trimIndent()
+        val exception = assertFailsWith<AraraException>(
+            "a number authors entry must not silently become a string"
+        ) {
+            LuaRuleParser.parse(ruleFile(rule), "demo")
+        }
+        assertTrue(
+            exception.message!!.contains("has to be a string"),
+            "the error names the expected entry type: ${exception.message}"
+        )
+    }
+
+    @Test
+    fun `treats absent required flags as false`() {
+        val rule = """
+            return {
+              identifier = "demo",
+              name = "Demo",
+              commands = {
+                { command = function(ctx) return true end }
+              },
+              arguments = {
+                { identifier = "shell", default = "x" }
+              }
+            }
+        """.trimIndent()
+        val parsed = LuaRuleParser.parse(ruleFile(rule), "demo")
+        assertFalse(
+            parsed.arguments[0].isRequired,
+            "an argument without a required flag is optional"
+        )
     }
 }
