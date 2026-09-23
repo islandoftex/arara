@@ -169,8 +169,9 @@ Small, reversible release:
     `.araraconfig.yaml`-style file is still present: detect the YAML names
     and tell the user to migrate (the manual's Configuration chapter has
     the key-by-key mapping; the formats are close enough that no converter
-    script is needed, but writing a `yamlconfig2lua` sibling of
-    `scripts/yaml2lua.py` would be a nice touch);
+    script is needed, and `scripts/yamlconfig2lua.py` converts a YAML
+    configuration file to the Lua format, rejecting unknown keys and
+    omitting null values per the Lua parser's contract);
   - update the class KDoc describing the lookup order.
 
 ### 2.4 Rule helper methods

@@ -30,6 +30,10 @@ on.
 * All official rules have been converted to the Lua format and are shipped
   alongside their YAML counterparts (`rules/arara-rule-*.lua`); the
   converter lives in `scripts/yaml2lua.py`.
+* New `scripts/yamlconfig2lua.py` converter: translates a YAML
+  configuration file into the equivalent Lua configuration table, easing
+  the migration once the YAML format is removed (it rejects unknown keys
+  and omits null values, matching the Lua parser's contract).
 * Under `--engine lua`, directive conditionals (`if`, `while`, `until`,
   `unless`) are evaluated as Lua expressions. Conditional helper binding
   errors surface behind the same localized evaluation error as the MVEL
