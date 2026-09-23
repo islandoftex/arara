@@ -134,6 +134,10 @@ on.
 * A rule storing a non numeric value under the halt session key now
   reports a localized error instead of crashing with a raw number
   parsing exception.
+* Command execution failures now report the underlying exception
+  itself as the diagnostic detail, instead of a string encoding of it;
+  the terminal error output for failed commands is unchanged, and the
+  exception details are preserved more faithfully.
 * The shared rule helpers (`RuleMethods`, `ConditionalMethods`,
   `MethodUtils`), the shared configuration model (`LocalConfiguration`,
   `SerialFileType`) and the interpreter exception moved from the MVEL

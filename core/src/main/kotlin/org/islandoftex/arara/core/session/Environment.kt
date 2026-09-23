@@ -56,11 +56,17 @@ object Environment {
      * output whether we are running a Cygwin kernel.
      */
     private val inCygwinEnvironment by lazy {
-        executeSystemCommand(
-            // execute the Cygwin detection; we do not specify a working
-            // directory because for the test it is irrelevant
-            Command(listOf("uname", "-s"))
-        ).second.lowercase().startsWith("cygwin")
+        when (
+            val result = executeSystemCommand(
+                // execute the Cygwin detection; we do not specify a working
+                // directory because for the test it is irrelevant
+                Command(listOf("uname", "-s"))
+            )
+        ) {
+            is SystemCommandResult.Completed ->
+                result.output.lowercase().startsWith("cygwin")
+            is SystemCommandResult.Failed -> false
+        }
     }
 
     /**
@@ -172,14 +178,13 @@ object Environment {
     }
 
     /**
-     * When executing a system call goes wrong, this status code is returned.
+     * When executing a system call goes wrong, this status code is
+     * reported to rules through the unsafe system command helper.
      */
     const val ERROR_EXIT_STATUS = -99
 
     /**
-     * Executes a system command from the underlying operating system and
-     * returns a pair containing the exit status and the command output as a
-     * string.
+     * Executes a system command from the underlying operating system.
      *
      * @param command The system command to be executed.
      * @param silenceSystemOut If true, the system output will not be appended
@@ -187,16 +192,16 @@ object Environment {
      *   internal capture buffer.
      * @param timeout An optional timeout. Non-zero values will be applied to
      *   the executor.
-     * @return A pair containing the exit status and the system command output
-     *   as a string. In case of an error, return a pair of [ERROR_EXIT_STATUS]
-     *   and the string representation of the throwable.
+     * @return The result of the execution: the exit status and the output if
+     *   the command ran to completion, or the underlying exception if it
+     *   did not.
      */
     @JvmStatic
     fun executeSystemCommand(
         command: Command,
         silenceSystemOut: Boolean = true,
         timeout: Duration = Duration.ZERO
-    ): Pair<Int, String> = ByteArrayOutputStream().use { buffer ->
+    ): SystemCommandResult = ByteArrayOutputStream().use { buffer ->
         ProcessExecutor(command.elements).runCatching {
             addDestroyer(ShutdownHookProcessDestroyer())
 
@@ -222,13 +227,18 @@ object Environment {
                 timeout(timeout.inWholeNanoseconds, TimeUnit.NANOSECONDS)
             }
 
-            execute().exitValue to buffer.toString()
+            SystemCommandResult.Completed(
+                execute().exitValue,
+                buffer.toString()
+            )
         }.getOrElse {
             logger.debug {
                 "Caught an exception when executing " +
-                    "$command returning $ERROR_EXIT_STATUS"
+                    "$command: ${it.message}"
             }
-            ERROR_EXIT_STATUS to "${it::class.java.name}: ${it.message}"
+            SystemCommandResult.Failed(
+                it as? Exception ?: RuntimeException(it)
+            )
         }
     }
 }

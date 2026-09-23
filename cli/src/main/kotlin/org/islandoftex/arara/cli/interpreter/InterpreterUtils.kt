@@ -13,6 +13,10 @@ import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
+import org.islandoftex.arara.core.session.SystemCommandResult
+import org.zeroturnaround.exec.InvalidExitValueException
+import java.io.IOException
+import java.util.concurrent.TimeoutException
 
 /**
  * Implements interpreter auxiliary methods.
@@ -53,42 +57,47 @@ internal object InterpreterUtils {
      * higher levels.
      */
     @Throws(AraraException::class)
-    internal fun run(command: Command): Int = Environment.executeSystemCommand(
-        command,
-        !LinearExecutor.executionOptions.verbose,
-        LinearExecutor.executionOptions.timeoutValue
-    ).let {
-        val (exitCode, output) = it
-        if (exitCode == Environment.ERROR_EXIT_STATUS) {
-            throw AraraException(
-                LanguageController.messages.run {
-                    when (output.substringBefore(":")) {
-                        "java.io.IOException" ->
-                            ERROR_RUN_IO_EXCEPTION
-                        "java.util.concurrent.TimeoutException" ->
-                            ERROR_RUN_TIMEOUT_EXCEPTION
-                        "java.lang.InterruptedException" ->
-                            ERROR_RUN_INTERRUPTED_EXCEPTION
-                        "org.zeroturnaround.exec.InvalidExitValueException" ->
-                            ERROR_RUN_INVALID_EXIT_VALUE_EXCEPTION
-                        else -> ERROR_RUN_GENERIC_EXCEPTION
-                    }
-                },
-                AraraException(output)
-            )
+    internal fun run(command: Command): Int {
+        val result = Environment.executeSystemCommand(
+            command,
+            !LinearExecutor.executionOptions.verbose,
+            LinearExecutor.executionOptions.timeoutValue
+        )
+        return when (result) {
+            is SystemCommandResult.Failed ->
+                throw AraraException(
+                    when (result.exception) {
+                        is IOException ->
+                            LanguageController.messages.ERROR_RUN_IO_EXCEPTION
+                        is TimeoutException ->
+                            LanguageController.messages
+                                .ERROR_RUN_TIMEOUT_EXCEPTION
+                        is InterruptedException ->
+                            LanguageController.messages
+                                .ERROR_RUN_INTERRUPTED_EXCEPTION
+                        is InvalidExitValueException ->
+                            LanguageController.messages
+                                .ERROR_RUN_INVALID_EXIT_VALUE_EXCEPTION
+                        else -> LanguageController.messages
+                            .ERROR_RUN_GENERIC_EXCEPTION
+                    },
+                    result.exception
+                )
+            is SystemCommandResult.Completed -> {
+                logger.info {
+                    """
+                        ${DisplayUtils.displayOutputSeparator(
+                        LanguageController.messages.LOG_INFO_BEGIN_BUFFER
+                    )}
+                        ${result.output}
+                        ${DisplayUtils.displayOutputSeparator(
+                        LanguageController.messages.LOG_INFO_END_BUFFER
+                    )}
+                    """.trimIndent()
+                }
+                result.exitCode
+            }
         }
-        logger.info {
-            """
-                ${DisplayUtils.displayOutputSeparator(
-                LanguageController.messages.LOG_INFO_BEGIN_BUFFER
-            )}
-                $output
-                ${DisplayUtils.displayOutputSeparator(
-                LanguageController.messages.LOG_INFO_END_BUFFER
-            )}
-            """.trimIndent()
-        }
-        exitCode
     }
 
     /**

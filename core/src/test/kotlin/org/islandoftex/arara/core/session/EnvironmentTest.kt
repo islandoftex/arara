@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assumptions.assumeTrue
 import java.util.concurrent.TimeoutException
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -76,9 +77,12 @@ class EnvironmentTest {
             !Environment.checkOS(Environment.SupportedOS.WINDOWS),
             "the test requires a non-Windows operating system"
         )
-        val (exit, output) = Environment.executeSystemCommand(Command(listOf("true")))
-        assertEquals(0, exit, "exit code of the true command")
-        assertEquals("", output, "the true command produces no output")
+        val result = assertIs<SystemCommandResult.Completed>(
+            Environment.executeSystemCommand(Command(listOf("true"))),
+            "a successful command completes"
+        )
+        assertEquals(0, result.exitCode, "exit code of the true command")
+        assertEquals("", result.output, "the true command produces no output")
     }
 
     @Test
@@ -87,9 +91,12 @@ class EnvironmentTest {
             !Environment.checkOS(Environment.SupportedOS.WINDOWS),
             "the test requires a non-Windows operating system"
         )
-        val (exit, output) = Environment.executeSystemCommand(Command(listOf("false")))
-        assertEquals(1, exit, "exit code of the false command")
-        assertEquals("", output, "the false command produces no output")
+        val result = assertIs<SystemCommandResult.Completed>(
+            Environment.executeSystemCommand(Command(listOf("false"))),
+            "an unsuccessful command still completes"
+        )
+        assertEquals(1, result.exitCode, "exit code of the false command")
+        assertEquals("", result.output, "the false command produces no output")
     }
 
     @Test
@@ -98,7 +105,7 @@ class EnvironmentTest {
             !Environment.checkOS(Environment.SupportedOS.WINDOWS),
             "the test requires a non-Windows operating system"
         )
-        val (exit, output) = Environment.executeSystemCommand(
+        val result = Environment.executeSystemCommand(
             if (Environment.checkOS(Environment.SupportedOS.MACOS)) {
                 Command(listOf("sleep", "1"))
             } else {
@@ -107,13 +114,13 @@ class EnvironmentTest {
             true,
             500.milliseconds
         )
-        assertEquals(
-            Environment.ERROR_EXIT_STATUS, exit,
-            "exit code reporting a command execution failure"
+        val failure = assertIs<SystemCommandResult.Failed>(
+            result,
+            "a command exceeding the timeout fails"
         )
-        assertTrue(
-            output.contains(TimeoutException::class.java.name),
-            "the timeout failure names the underlying exception"
+        assertIs<TimeoutException>(
+            failure.exception,
+            "the failure carries the underlying timeout"
         )
     }
 }

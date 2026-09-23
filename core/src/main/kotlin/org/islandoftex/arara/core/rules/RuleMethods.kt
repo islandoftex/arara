@@ -14,6 +14,7 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
+import org.islandoftex.arara.core.session.SystemCommandResult
 import org.islandoftex.arara.core.ui.GUIDialogs
 import org.islandoftex.arara.core.ui.InputHandling
 import org.islandoftex.arara.core.utils.MethodUtils
@@ -334,7 +335,13 @@ object RuleMethods {
                     "arbitrary system commands within a step of execution."
             )
         else
-            Environment.executeSystemCommand(command)
+            when (val result = Environment.executeSystemCommand(command)) {
+                is SystemCommandResult.Completed ->
+                    result.exitCode to result.output
+                is SystemCommandResult.Failed ->
+                    Environment.ERROR_EXIT_STATUS to
+                        result.exception.toString()
+            }
 
     /**
      * List all files from the provided directory according to the list of

@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.slf4j.api)
     implementation(libs.log4j.core)
     implementation(libs.log4j.impl)
+    implementation(libs.ztexec)
 
 }
 
