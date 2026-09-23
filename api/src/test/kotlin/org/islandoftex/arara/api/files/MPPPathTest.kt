@@ -4,14 +4,13 @@ package org.islandoftex.arara.api.files
 // The following object import is specific to the JVM platform; while common
 // is meant for shared code, it can still reference certain platform-specific
 // features if the project is set up to allow it.
-import org.islandoftex.arara.api.utils.OS
-
 import kotlin.io.path.Path
 import kotlin.io.path.absolutePathString
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.utils.OS
 
 /**
  * Verifies the path attributes and normalization of [MPPPath] across

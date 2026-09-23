@@ -7,8 +7,8 @@ import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.api.files.toJVMFile
 import org.islandoftex.arara.api.files.ProjectFile
+import org.islandoftex.arara.api.files.toJVMFile
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.utils.formatString
 import org.islandoftex.arara.core.utils.globToRegex

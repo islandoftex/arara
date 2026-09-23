@@ -2,10 +2,10 @@
 package org.islandoftex.arara.lua.rules
 
 import io.github.taoguan.luaj.LuaValue
-import org.islandoftex.arara.api.AraraException
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.AraraException
 
 /**
  * Verifies the typed argument contract of the rule helpers: arguments

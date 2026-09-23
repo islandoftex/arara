@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.localization
 
-import org.islandoftex.arara.api.localization.MPPLocale
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import org.islandoftex.arara.api.localization.MPPLocale
 
 /**
  * Verifies the language controller: all known locales load their

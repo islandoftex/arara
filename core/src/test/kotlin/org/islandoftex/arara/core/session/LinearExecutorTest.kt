@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
-import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.core.files.Project
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.core.files.Project
 
 /**
  * Verifies the linear executor's project handling in isolation: cyclic

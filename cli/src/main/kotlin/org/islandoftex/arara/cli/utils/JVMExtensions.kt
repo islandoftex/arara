@@ -2,15 +2,15 @@
 package org.islandoftex.arara.cli.utils
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import java.nio.charset.Charset
+import java.nio.file.Path
+import java.util.Properties
+import kotlin.io.path.bufferedReader
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.utils.formatString
-import java.nio.charset.Charset
-import java.nio.file.Path
-import java.util.Properties
-import kotlin.io.path.bufferedReader
 
 private val logger = KotlinLogging.logger { }
 

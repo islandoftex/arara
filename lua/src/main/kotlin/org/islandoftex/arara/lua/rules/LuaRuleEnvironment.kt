@@ -9,7 +9,6 @@ import io.github.taoguan.luaj.lib.jse.JsePlatform
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.rules.RuleMethods
-
 import org.islandoftex.arara.lua.rules.LuaConversion.badArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.booleanArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.fromLua

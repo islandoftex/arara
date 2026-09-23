@@ -1,6 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
+import java.nio.file.Path
+import kotlin.io.path.createDirectories
+import kotlin.io.path.div
+import kotlin.io.path.writeText
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.ProjectFile
@@ -10,12 +16,6 @@ import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
-import java.nio.file.Path
-import kotlin.io.path.createDirectories
-import kotlin.io.path.div
-import kotlin.io.path.writeText
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
 
 /**
  * Verifies the file searching helpers: extension and pattern listings

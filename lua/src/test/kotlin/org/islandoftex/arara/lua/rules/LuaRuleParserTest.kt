@@ -2,13 +2,13 @@
 package org.islandoftex.arara.lua.rules
 
 import java.nio.file.Files
-import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.files.MPPPath
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.files.MPPPath
 
 /**
  * Verifies the Lua rule parser: the shape of a valid rule, exit

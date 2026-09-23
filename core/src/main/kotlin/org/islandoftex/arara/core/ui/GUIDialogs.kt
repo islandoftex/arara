@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.ui
 
-import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 import javax.swing.JOptionPane
 import javax.swing.UIManager
+import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 
 /**
  * Implements utilitary methods for displaying messages.

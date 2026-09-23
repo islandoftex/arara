@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
-import org.islandoftex.arara.api.session.ExecutionReport
 import kotlin.time.TimeMark
+import org.islandoftex.arara.api.session.ExecutionReport
 
 /**
  * Implements the execution report model, holding the start and end

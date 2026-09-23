@@ -1,10 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-import org.islandoftex.arara.api.files.toJVMPath
-import org.islandoftex.arara.api.files.toMPPPath
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.deleteExisting
@@ -12,6 +8,10 @@ import kotlin.io.path.deleteIfExists
 import kotlin.io.path.writeText
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.files.toJVMPath
+import org.islandoftex.arara.api.files.toMPPPath
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 
 /**
  * Verifies the change tracking on the JVM: a file counts as changed on

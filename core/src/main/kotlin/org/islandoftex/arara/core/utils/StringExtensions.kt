@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.utils
 
-import org.islandoftex.arara.api.AraraException
 import java.util.regex.Matcher
+import org.islandoftex.arara.api.AraraException
 
 /**
  * Format a string using [stringReplacements] to replace occurrences of

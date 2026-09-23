@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.dependencies
 
-import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.core.files.Project
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.core.files.Project
 
 /**
  * Verifies that project graphs order dependencies before their

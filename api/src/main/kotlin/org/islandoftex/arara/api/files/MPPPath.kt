@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.files
 
-import org.islandoftex.arara.api.AraraIOException
-import org.islandoftex.arara.api.time.DateTime
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -21,6 +19,8 @@ import kotlin.io.path.readLines
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
 import kotlin.jvm.Throws
+import org.islandoftex.arara.api.AraraIOException
+import org.islandoftex.arara.api.time.DateTime
 
 /**
  * A path model for arara, wrapping the underlying platform path API and

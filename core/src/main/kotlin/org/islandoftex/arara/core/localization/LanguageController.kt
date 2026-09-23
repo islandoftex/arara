@@ -2,9 +2,9 @@
 package org.islandoftex.arara.core.localization
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlin.jvm.JvmStatic
 import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.api.localization.Messages
-import kotlin.jvm.JvmStatic
 
 /**
  * The language controller arara's core relies on.

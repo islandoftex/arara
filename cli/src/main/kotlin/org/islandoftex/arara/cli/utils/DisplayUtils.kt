@@ -2,6 +2,9 @@
 package org.islandoftex.arara.cli.utils
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlin.math.ln
+import kotlin.math.pow
+import kotlin.time.Duration.Companion.seconds
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.rules.DirectiveConditional
@@ -11,9 +14,6 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.utils.formatString
-import kotlin.math.ln
-import kotlin.math.pow
-import kotlin.time.Duration.Companion.seconds
 
 /**
  * Implements display utilitary methods.

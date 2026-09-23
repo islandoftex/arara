@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.interpreter
 
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.cli.ruleset.DirectiveImpl
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
@@ -13,8 +15,6 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
 
 /**
  * Verifies the interpreter's halt contract: when a halt was requested for

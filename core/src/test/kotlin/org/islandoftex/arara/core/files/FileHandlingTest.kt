@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.files.MPPPath
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.files.MPPPath
 
 /**
  * Verifies the file handling helpers: extension swapping, directory

@@ -2,6 +2,8 @@
 package org.islandoftex.arara.cli.interpreter
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import java.io.IOException
+import java.util.concurrent.TimeoutException
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
@@ -15,8 +17,6 @@ import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.SystemCommandResult
 import org.zeroturnaround.exec.InvalidExitValueException
-import java.io.IOException
-import java.util.concurrent.TimeoutException
 
 /**
  * Implements interpreter auxiliary methods.

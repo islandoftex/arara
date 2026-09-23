@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.api.files.toMPPPath
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Path
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.files.toMPPPath
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 
 /**
  * Verifies the file change database: path normalization on insertion,

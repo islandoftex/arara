@@ -2,13 +2,13 @@
 package org.islandoftex.arara.lua.configuration
 
 import java.nio.file.Files
-import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.api.localization.MPPLocale
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.localization.MPPLocale
 
 /**
  * Verifies the Lua configuration parser: the full key set, the defaults

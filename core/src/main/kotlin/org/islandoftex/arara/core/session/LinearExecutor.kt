@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
+import kotlin.time.TimeSource
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.files.Project
@@ -10,7 +11,6 @@ import org.islandoftex.arara.api.session.Executor
 import org.islandoftex.arara.core.dependencies.ProjectGraph
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.utils.formatString
-import kotlin.time.TimeSource
 
 /**
  * Implements arara's linear executor, running the directives of every

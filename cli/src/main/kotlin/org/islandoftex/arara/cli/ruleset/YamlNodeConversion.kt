@@ -3,9 +3,9 @@ package org.islandoftex.arara.cli.ruleset
 
 import com.charleskorn.kaml.YamlList
 import com.charleskorn.kaml.YamlMap
+import com.charleskorn.kaml.YamlNode
 import com.charleskorn.kaml.YamlNull
 import com.charleskorn.kaml.YamlScalar
-import com.charleskorn.kaml.YamlNode
 
 /**
  * Converts a parsed YAML node tree of a directive parameter map into the

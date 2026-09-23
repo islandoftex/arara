@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.utils
 
+import java.io.IOException
+import java.util.MissingFormatArgumentException
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.localization.LanguageController
-import java.io.IOException
-import java.util.MissingFormatArgumentException
 
 /**
  * Implements the auxiliary methods shared by the rule helper objects,

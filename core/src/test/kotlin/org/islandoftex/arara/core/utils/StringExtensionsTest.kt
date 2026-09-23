@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.utils
 
-import org.islandoftex.arara.api.AraraException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.AraraException
 
 /**
  * Tests for glob to regex conversion.

@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
+import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.cli.configuration.ConfigurationUtils
@@ -12,10 +16,6 @@ import org.islandoftex.arara.core.session.LinearExecutor
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import java.io.ByteArrayOutputStream
-import java.io.PrintStream
-import kotlin.test.assertFailsWith
-import kotlin.test.assertTrue
 
 /**
  * Verifies the handling of foreign file extensions: a file type provided

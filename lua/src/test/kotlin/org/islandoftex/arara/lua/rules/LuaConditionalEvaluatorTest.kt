@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua.rules
 
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.rules.DirectiveConditional
-import kotlin.test.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 /**
  * Verifies the Lua directive conditional evaluator: truthiness,

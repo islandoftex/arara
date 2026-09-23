@@ -3,10 +3,10 @@ package org.islandoftex.arara.lua.rules
 
 import io.github.taoguan.luaj.LuaFunction
 import io.github.taoguan.luaj.lib.jse.JsePlatform
-import org.islandoftex.arara.api.AraraException
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.AraraException
 
 /**
  * Verifies the exit protocol of Lua rule commands: the `exit` closure

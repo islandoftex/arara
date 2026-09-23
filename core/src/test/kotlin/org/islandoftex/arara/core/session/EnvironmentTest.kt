@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
-import org.junit.jupiter.api.Assumptions.assumeTrue
 import java.util.concurrent.TimeoutException
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertIs
 import kotlin.test.assertFalse
+import kotlin.test.assertIs
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.milliseconds
+import org.junit.jupiter.api.Assumptions.assumeTrue
 
 /**
  * Verifies the operating system interaction: system property access,

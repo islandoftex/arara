@@ -1,6 +1,13 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.PrintStream
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
@@ -15,13 +22,6 @@ import org.islandoftex.arara.core.session.Session
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.PrintStream
-import kotlin.test.assertFailsWith
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 /**
  * Runs the end-to-end execution scenarios on the default YAML engine:

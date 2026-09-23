@@ -55,12 +55,13 @@ spotless {
                 "cli/build.gradle.kts"
         )
         targetExclude("src/test/**/*.kts")
-        // ktlint stays disabled deliberately: the newer rule set would
-        // reformat a majority of the tree in one giant mechanical
-        // commit; revisit it as a dedicated formatting step instead of
-        // mixing it with feature work
-        // -----------------------------------------------------------------
-        // ktlint()
+        ktlint().editorConfigOverride(
+            mapOf(
+                "ktlint_standard" to "disabled",
+                "ktlint_standard_import-ordering" to "enabled",
+                "ij_kotlin_imports_layout" to "ascii"
+            )
+        )
         trimTrailingWhitespace()
         leadingTabsToSpaces()
         endWithNewline()
@@ -75,12 +76,13 @@ spotless {
                 "buildSrc/src/**/*.kt"
         )
         targetExclude("src/test/**/*.kts")
-        // ktlint stays disabled deliberately: the newer rule set would
-        // reformat a majority of the tree in one giant mechanical
-        // commit; revisit it as a dedicated formatting step instead of
-        // mixing it with feature work
-        // -----------------------------------------------------------------
-        // ktlint()
+        ktlint().editorConfigOverride(
+            mapOf(
+                "ktlint_standard" to "disabled",
+                "ktlint_standard_import-ordering" to "enabled",
+                "ij_kotlin_imports_layout" to "ascii"
+            )
+        )
         licenseHeader("// SPDX-License-Identifier: BSD-3-Clause")
         trimTrailingWhitespace()
         leadingTabsToSpaces()

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
-import kotlinx.serialization.Serializable
 import com.charleskorn.kaml.Yaml
+import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.Database
 import org.islandoftex.arara.api.files.MPPPath

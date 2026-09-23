@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
-import org.junit.jupiter.api.Nested
 import java.util.Properties
 import kotlin.io.path.Path
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import org.junit.jupiter.api.Nested
 
 /**
  * Verifies the UTF-8 properties loading used by the command line
