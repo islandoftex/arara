@@ -11,7 +11,9 @@ import kotlin.test.assertTrue
 /**
  * Verifies the exit protocol of Lua rule commands: the `exit` closure
  * has to return a real boolean — numbers and strings are not silently
- * truth-tested, which would otherwise make every exit code pass.
+ * truth-tested, which would otherwise make every exit code pass. Non
+ * boolean results report the same localized error the YAML engine
+ * produces, with the type detail available as the cause.
  */
 class LuaRuleCommandExitTest {
     private fun function(source: String): LuaFunction =
@@ -32,10 +34,17 @@ class LuaRuleCommandExitTest {
         ) { command.exitCheck(1) }
         assertTrue(
             exception.message?.contains(
+                "must always return a boolean value"
+            ) == true,
+            "the primary message is the localized exit error: " +
+                "${exception.message}"
+        )
+        assertTrue(
+            exception.exception?.message?.contains(
                 "bad result from 'exit' (boolean expected, got number)"
             ) == true,
-            "the error names the closure and the expected type: " +
-                "${exception.message}"
+            "the type detail is available as the cause: " +
+                "${exception.exception?.message}"
         )
     }
 

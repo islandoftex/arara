@@ -12,6 +12,7 @@ import io.github.taoguan.luaj.Varargs
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.session.Command
+import org.islandoftex.arara.core.localization.LanguageController
 
 /**
  * Conversion helpers between Kotlin/JVM values and Lua values as used by
@@ -94,14 +95,16 @@ internal object LuaConversion {
      * Build the error for a helper argument of the wrong type, mirroring
      * the argument errors of Lua's own library functions: Lua's operators
      * coerce, its library functions type-check, and the arara helpers
-     * are library functions.
+     * are library functions. The error is a [LuaHelperException], so
+     * the rule evaluation can wrap it behind the localized runtime
+     * errors of the engine.
      */
     fun badArgument(
         helper: String,
         index: Int,
         expected: String,
         actual: LuaValue
-    ): AraraException = AraraException(
+    ): AraraException = LuaHelperException(
         "bad argument #$index to '$helper' ($expected expected, " +
             "got ${actual.typename()})"
     )
@@ -161,13 +164,19 @@ internal object LuaConversion {
      * Convert the result of a rule's `exit` closure: it has to be a real
      * boolean — numbers and strings are not silently truth-tested, which
      * (given that `toboolean()` accepts nearly everything in this fork)
-     * would make every exit code pass.
+     * would make every exit code pass. The non boolean case reports the
+     * same localized error the MVEL dialect produces, with the type
+     * detail available as the cause.
      */
     fun booleanResult(value: LuaValue, source: String): Boolean =
         (value as? LuaBoolean)?.toboolean()
             ?: throw AraraException(
-                "bad result from '$source' (boolean expected, " +
-                    "got ${value.typename()})"
+                LanguageController.messages
+                    .ERROR_INTERPRETER_WRONG_EXIT_CLOSURE_RETURN,
+                LuaHelperException(
+                    "bad result from '$source' (boolean expected, " +
+                        "got ${value.typename()})"
+                )
             )
 
     /**
@@ -213,20 +222,27 @@ internal object LuaConversion {
         }
 
     /**
-     * Run [block] converting Lua errors raised during the evaluation into
-     * arara exceptions; nested arara exceptions (e.g. raised by `throwError`)
-     * are unwrapped and rethrown as-is.
+     * Run [block] converting Lua errors raised during the evaluation
+     * into arara exceptions, mirroring the runtime error wrapping of
+     * the MVEL dialect: arara-generated helper errors (e.g. a badly
+     * typed helper argument) and plain Lua errors surface behind the
+     * provided localized [message], while author-authored `throwError`
+     * exceptions keep flowing raw.
      */
     @Throws(AraraException::class)
-    fun <T> withLuaErrorHandling(block: () -> T): T = try {
+    fun <T> withLuaErrorHandling(
+        message: String,
+        block: () -> T
+    ): T = try {
         block()
     } catch (exception: LuaError) {
         val araraCause = generateSequence<Throwable>(exception) { it.cause }
             .firstOrNull { it is AraraException } as? AraraException
-        throw araraCause ?: AraraException(
-            exception.message ?: "The Lua evaluation failed.",
-            exception
-        )
+        throw when (araraCause) {
+            is LuaHelperException -> AraraException(message, araraCause)
+            null -> AraraException(message, exception)
+            else -> araraCause
+        }
     }
 
     /**

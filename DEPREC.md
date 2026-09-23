@@ -318,6 +318,12 @@ contract: absent optional entries keep their documented defaults,
 wrongly typed entries fail at parse time, and nothing is silently
 coerced, defaulted or dropped.
 
+Rule evaluation failures surface through the same localized runtime
+errors the MVEL dialect uses (command, flag and `exit` closures), with
+arara-generated helper errors available as the diagnostic detail;
+author-authored `throwError` exceptions keep flowing raw in both
+dialects.
+
 Known quirk to decide before version 9: `toLua` renders file objects
 as plain path strings, so a file stored via `session.put` comes back
 as a string which conditional helpers then interpret as an *extension*

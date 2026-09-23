@@ -8,6 +8,7 @@ import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.api.rules.RuleArgument
 import org.islandoftex.arara.api.rules.RuleCommand
+import org.islandoftex.arara.core.localization.LanguageController
 
 /**
  * A rule backed by a Lua specification (see [LuaRuleParser] for the format).
@@ -47,7 +48,10 @@ class LuaRuleCommand(
      */
     val exitCheck: (Int) -> Boolean = { code ->
         exitFunction?.let { fn ->
-            LuaConversion.withLuaErrorHandling {
+            LuaConversion.withLuaErrorHandling(
+                LanguageController.messages
+                    .ERROR_INTERPRETER_EXIT_RUNTIME_ERROR
+            ) {
                 LuaConversion.booleanResult(
                     fn.call(LuaValue.valueOf(code)),
                     "exit"
@@ -66,7 +70,10 @@ class LuaRuleCommand(
      */
     @Throws(AraraException::class)
     fun evaluate(parameters: Map<String, Any>): List<Any> =
-        LuaConversion.withLuaErrorHandling {
+        LuaConversion.withLuaErrorHandling(
+            LanguageController.messages
+                .ERROR_INTERPRETER_COMMAND_RUNTIME_ERROR
+        ) {
             val context = LuaValue.tableOf()
             parameters.forEach { (key, value) ->
                 if (key == "reference" && value is MPPPath) {
@@ -94,7 +101,10 @@ class LuaRuleArgument(
 ) : RuleArgument<Any?> {
     override val processor: (Any?, Map<String, Any>) -> List<String> =
         { input, context ->
-            LuaConversion.withLuaErrorHandling {
+            LuaConversion.withLuaErrorHandling(
+                LanguageController.messages
+                    .ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION
+            ) {
                 flagFunction?.let { fn ->
                     val parameters = (context["parameters"] as? Map<*, *>)
                         .orEmpty()

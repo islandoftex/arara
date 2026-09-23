@@ -68,6 +68,14 @@ on.
   from a project list by shape (a root `files` table) instead of
   retrying the failed single parse as a list, so every parse error
   now reports the actual violation.
+* Under `--engine lua`, rule evaluation failures now surface through
+  the same localized runtime errors as the YAML engine: command, flag
+  and `exit` closures report their runtime failures behind the
+  localized command, flag and exit errors, and a non boolean `exit`
+  closure result reports the same localized error the YAML engine
+  produces, with the arara-generated helper errors (such as the bad
+  argument errors) available as the diagnostic detail. Author-authored
+  `throwError` messages keep flowing raw in both dialects.
 * The rule errors of the Lua engine now share the localized header with
   the YAML engine, unsupported rule file formats report a new localized
   message, and the previously untranslated project file message is now

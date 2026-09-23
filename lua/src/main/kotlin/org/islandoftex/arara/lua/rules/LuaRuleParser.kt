@@ -77,7 +77,10 @@ object LuaRuleParser {
                 .formatString(
                     identifier, file.normalize().parent.toString()
                 ) + " "
-        val table = LuaConversion.withLuaErrorHandling {
+        val table = LuaConversion.withLuaErrorHandling(
+            errorHeader + LanguageController
+                .messages.ERROR_PARSERULE_GENERIC_ERROR
+        ) {
             val globals = LuaRuleEnvironment.newGlobals()
             runCatching {
                 globals.load(file.readText(), file.fileName).call()

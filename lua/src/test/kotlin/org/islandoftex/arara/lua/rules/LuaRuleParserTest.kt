@@ -16,7 +16,9 @@ import kotlin.test.assertTrue
  * invalid rules (mismatched identifiers, missing commands, reserved
  * argument identifiers, arguments without flag or default, and
  * wrongly typed entries such as numbers in string slots or non
- * boolean required flags).
+ * boolean required flags). Runtime failures on the command path
+ * surface behind the localized runtime error with the detail as the
+ * cause, while author errors keep flowing raw.
  */
 class LuaRuleParserTest {
     private fun ruleFile(content: String): MPPPath {
@@ -282,6 +284,71 @@ class LuaRuleParserTest {
         assertFalse(
             parsed.arguments[0].isRequired,
             "an argument without a required flag is optional"
+        )
+    }
+
+    @Test
+    fun `wraps helper type errors behind the localized command error`() {
+        val rule = """
+            return {
+              identifier = "demo",
+              name = "Demo",
+              commands = {
+                {
+                  command = function(ctx)
+                    return getCommand(trimSpaces(123))
+                  end
+                }
+              },
+              arguments = {}
+            }
+        """.trimIndent()
+        val parsed = LuaRuleParser.parse(ruleFile(rule), "demo")
+        val exception = assertFailsWith<AraraException>(
+            "a helper type error must surface behind the localized wrapper"
+        ) {
+            parsed.commands[0].evaluate(emptyMap())
+        }
+        assertTrue(
+            exception.message?.contains("could not evaluate") == true,
+            "the primary message is the localized command error: " +
+                "${exception.message}"
+        )
+        assertTrue(
+            exception.exception?.message
+                ?.contains("bad argument #1 to 'trimSpaces'") == true,
+            "the bad argument detail is available as the cause: " +
+                "${exception.exception?.message}"
+        )
+    }
+
+    @Test
+    fun `keeps author errors raw on the command path`() {
+        val rule = """
+            return {
+              identifier = "demo",
+              name = "Demo",
+              commands = {
+                {
+                  command = function(ctx)
+                    throwError("I was expecting a list of options.")
+                    return true
+                  end
+                }
+              },
+              arguments = {}
+            }
+        """.trimIndent()
+        val parsed = LuaRuleParser.parse(ruleFile(rule), "demo")
+        val exception = assertFailsWith<AraraException>(
+            "an author error must keep its message primary"
+        ) {
+            parsed.commands[0].evaluate(emptyMap())
+        }
+        assertTrue(
+            exception.message
+                ?.contains("I was expecting a list of options.") == true,
+            "the author text stays the primary message: ${exception.message}"
         )
     }
 }
