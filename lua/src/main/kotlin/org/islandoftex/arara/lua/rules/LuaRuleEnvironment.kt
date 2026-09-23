@@ -5,7 +5,6 @@ import io.github.taoguan.luaj.Globals
 import io.github.taoguan.luaj.LuaError
 import io.github.taoguan.luaj.LuaValue
 import io.github.taoguan.luaj.Varargs
-import io.github.taoguan.luaj.lib.VarArgFunction
 import io.github.taoguan.luaj.lib.jse.JsePlatform
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
@@ -14,7 +13,9 @@ import org.islandoftex.arara.core.rules.RuleMethods
 import org.islandoftex.arara.lua.rules.LuaConversion.badArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.booleanArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.fromLua
+import org.islandoftex.arara.lua.rules.LuaConversion.luaFunction
 import org.islandoftex.arara.lua.rules.LuaConversion.numberArgument
+import org.islandoftex.arara.lua.rules.LuaConversion.sessionTable
 import org.islandoftex.arara.lua.rules.LuaConversion.stringArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.stringListArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.toLua
@@ -63,11 +64,6 @@ internal object LuaRuleEnvironment {
         globals.load(PRELUDE, "arara-prelude").call()
         return globals
     }
-
-    private fun luaFunction(body: (Varargs) -> LuaValue): LuaValue =
-        object : VarArgFunction() {
-            override fun invoke(args: Varargs): Varargs = body(args)
-        }
 
     private fun Varargs.kotlinArgs(from: Int = 1): List<Any?> =
         (from..narg()).map { fromLua(arg(it)) }
@@ -198,6 +194,13 @@ internal object LuaRuleEnvironment {
                 )
                 LuaValue.NIL
             }
+        )
+        // the session is exposed as a table of operations (the very same
+        // shape as the directive conditional environment), as Lua cannot
+        // call methods on the underlying object directly
+        globals.set(
+            "getSession",
+            luaFunction { _ -> sessionTable() }
         )
         globals.set(
             "buildString",

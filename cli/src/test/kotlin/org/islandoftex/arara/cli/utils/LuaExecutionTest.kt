@@ -12,6 +12,7 @@ import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LinearExecutor
+import org.islandoftex.arara.core.session.Session
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -166,5 +167,43 @@ class LuaExecutionTest {
         } finally {
             LinearExecutor.executionOptions = options
         }
+    }
+
+    @Test
+    fun `uses the session from Lua rules end to end`() {
+        try {
+            val output = outputForTest("lua-engine-sessions")
+            assertTrue(
+                output.contains("Quack"),
+                "the first command stores the session value"
+            )
+            assertTrue(
+                output.contains("MeowQuack"),
+                "the second command reads the stored value"
+            )
+            assertFalse(output.contains("FAILURE"), "no failure is reported")
+        } finally {
+            Session.remove("quack")
+        }
+    }
+
+    @Test
+    fun `reports wrongly typed conditional helper calls end to end`() {
+        val exception = assertFailsWith<AraraException>(
+            "a wrongly typed helper argument must fail the run"
+        ) {
+            outputForTest("lua-engine-conditionals", "badtype.tex")
+        }
+        assertTrue(
+            exception.message?.contains("could not compile the expression") == true,
+            "the primary message is the localized evaluation error"
+        )
+        val chain = generateSequence<Throwable>(exception) { it.cause }
+            .mapNotNull { it.message }
+            .joinToString(" ")
+        assertTrue(
+            chain.contains("bad argument #1 to 'exists'"),
+            "the bad argument detail is available in the cause chain"
+        )
     }
 }

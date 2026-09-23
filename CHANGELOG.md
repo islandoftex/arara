@@ -81,6 +81,13 @@ on.
   reference instead of degrading into a path string, so conditional
   helpers check the file itself rather than interpreting the path as
   an extension (matching the object semantics of the YAML engine).
+* Under `--engine lua`, rule commands and flags can use the session:
+  `getSession()` exposes the same table of operations (`get`, `put`,
+  `contains`, `remove`, `clear`) as directive conditionals, closing the
+  gap to MVEL rules which always had session access.
+* The notice printed when a provided Lua file fails to parse as a
+  project specification is now localized; the parse details remain
+  available in the log.
 * The rule errors of the Lua engine now share the localized header with
   the YAML engine, unsupported rule file formats report a new localized
   message, and the previously untranslated project file message is now

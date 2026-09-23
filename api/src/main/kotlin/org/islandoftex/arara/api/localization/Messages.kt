@@ -81,6 +81,7 @@ public open class Messages(
     public val INFO_DISPLAY_FILE_INFORMATION: String = "Processing \"%s\" (size: %s, last modified: %s), please wait.",
     public val INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE: String = "Although executing in dry-run mode, this entry might be already processed since it returned a boolean value: %s",
     public val INFO_INTERPRETER_DRYRUN_MODE_SYSTEM_COMMAND: String = "About to run: %s",
+    public val INFO_INTERPRETER_LUA_FILE_NOT_A_PROJECT: String = "It looks like the provided Lua file could not be parsed as a project specification, so I will treat it as a regular input file. If it is meant to be a project specification, please check the log for details on what went wrong.",
     public val INFO_LABEL_AUTHOR: String = "Author:",
     public val INFO_LABEL_AUTHORS: String = "Authors:",
     public val INFO_LABEL_CONDITIONAL: String = "Conditional:",

@@ -70,6 +70,7 @@ class GermanLanguage : Messages(
     INFO_DISPLAY_FILE_INFORMATION = "Verarbeitung \"%s\" (Größe: %s, letzte Modifikation: %s), bitte warten.",
     INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE = "Trotz dry-run Modus wurde dieser Eintrag wahrscheinlich bereits verarbeitet, da er den boolschen Wert %s zurückgegeben hat.",
     INFO_INTERPRETER_DRYRUN_MODE_SYSTEM_COMMAND = "Los geht\"s: %s",
+    INFO_INTERPRETER_LUA_FILE_NOT_A_PROJECT = "Es sieht so aus, als könnte die bereitgestellte Lua-Datei nicht als Projektspezifikation ausgewertet werden, also behandle ich sie als gewöhnliche Eingabedatei. Falls es sich um eine Projektspezifikation handeln soll, schau bitte im Protokoll nach Details dazu nach, was schiefgelaufen ist.",
     INFO_LABEL_AUTHOR = "Autor:",
     INFO_LABEL_AUTHORS = "Autoren:",
     INFO_LABEL_CONDITIONAL = "Bedingung:",

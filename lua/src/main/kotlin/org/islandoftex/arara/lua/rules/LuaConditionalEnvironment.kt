@@ -6,7 +6,6 @@ import io.github.taoguan.luaj.LuaNumber
 import io.github.taoguan.luaj.LuaString
 import io.github.taoguan.luaj.LuaValue
 import io.github.taoguan.luaj.Varargs
-import io.github.taoguan.luaj.lib.VarArgFunction
 import io.github.taoguan.luaj.lib.jse.JsePlatform
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.rules.ConditionalMethods
@@ -16,9 +15,10 @@ import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.GUIDialogs
 import org.islandoftex.arara.lua.rules.LuaConversion.badArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.fromLua
+import org.islandoftex.arara.lua.rules.LuaConversion.luaFunction
 import org.islandoftex.arara.lua.rules.LuaConversion.numberArgument
+import org.islandoftex.arara.lua.rules.LuaConversion.sessionTable
 import org.islandoftex.arara.lua.rules.LuaConversion.stringArgument
-import org.islandoftex.arara.lua.rules.LuaConversion.toLua
 
 /**
  * Set up the global environment Lua directive conditionals are evaluated
@@ -57,11 +57,6 @@ internal object LuaConditionalEnvironment {
     private val defaultDialogWidth: Int by lazy {
         GUIDialogs(Session.userInterfaceOptions).defaultWidth
     }
-
-    private fun luaFunction(body: (Varargs) -> LuaValue): LuaValue =
-        object : VarArgFunction() {
-            override fun invoke(args: Varargs): Varargs = body(args)
-        }
 
     private fun Varargs.values(from: Int): List<Any?> =
         (from..narg()).map { fromLua(arg(it)) }
@@ -177,56 +172,7 @@ internal object LuaConditionalEnvironment {
         // call methods on the underlying object directly
         globals.set(
             "getSession",
-            luaFunction { _ ->
-                val session = RuleMethods.getSession()
-                LuaValue.tableOf().also { table ->
-                    table.set(
-                        "get",
-                        luaFunction { args ->
-                            val key = args.arg(1)
-                                .stringArgument("session.get", 1)
-                            toLua(session.get(key))
-                        }
-                    )
-                    table.set(
-                        "put",
-                        luaFunction { args ->
-                            val key = args.arg(1)
-                                .stringArgument("session.put", 1)
-                            val value = fromLua(args.arg(2))
-                                ?: throw badArgument(
-                                    "session.put", 2, "value", args.arg(2)
-                                )
-                            session.put(key, value)
-                            LuaValue.NIL
-                        }
-                    )
-                    table.set(
-                        "contains",
-                        luaFunction { args ->
-                            val key = args.arg(1)
-                                .stringArgument("session.contains", 1)
-                            LuaValue.valueOf(session.contains(key))
-                        }
-                    )
-                    table.set(
-                        "remove",
-                        luaFunction { args ->
-                            val key = args.arg(1)
-                                .stringArgument("session.remove", 1)
-                            session.remove(key)
-                            LuaValue.NIL
-                        }
-                    )
-                    table.set(
-                        "clear",
-                        luaFunction { _ ->
-                            session.clear()
-                            LuaValue.NIL
-                        }
-                    )
-                }
-            }
+            luaFunction { _ -> sessionTable() }
         )
 
         // interactive dialogs; the width argument is optional, mirroring

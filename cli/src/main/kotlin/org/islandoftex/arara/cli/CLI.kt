@@ -186,9 +186,8 @@ class CLI : CliktCommand("arara") {
                 }.getOrElse {
                     if (it is AraraException) {
                         DisplayUtils.printWrapped(
-                            "Found Lua file, attempted to parse it as a project but failed. " +
-                                "Continuing by treating the Lua file as regular input. " +
-                                "See log for details.\n"
+                            LanguageController.messages
+                                .INFO_INTERPRETER_LUA_FILE_NOT_A_PROJECT + "\n"
                         )
                         logger.info {
                             "Failed to parse Lua file argument as project: ${it.message}\n" +

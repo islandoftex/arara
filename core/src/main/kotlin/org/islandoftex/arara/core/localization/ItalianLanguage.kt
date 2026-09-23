@@ -70,6 +70,7 @@ class ItalianLanguage : Messages(
     INFO_DISPLAY_FILE_INFORMATION = "Elaborazione '%s' (totale: %s, modificato il: %s), attendere.",
     INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE = "Sebbene stia eseguendo in modo 'dry-run', questo elemento potrebbe essere già stato elaborato, perché ha restituito un valore booleano: %s",
     INFO_INTERPRETER_DRYRUN_MODE_SYSTEM_COMMAND = "Sto per lanciare: %s",
+    INFO_INTERPRETER_LUA_FILE_NOT_A_PROJECT = "Sembra che il file Lua fornito non possa essere interpretato come specifica di progetto, quindi lo tratterò come un normale file di input. Se doveva essere una specifica di progetto, consulta il registro per i dettagli su cosa è andato storto.",
     INFO_LABEL_AUTHOR = "Autore:",
     INFO_LABEL_AUTHORS = "Autori:",
     INFO_LABEL_CONDITIONAL = "Condizionale:",

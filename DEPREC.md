@@ -318,6 +318,12 @@ arara-generated helper errors available as the diagnostic detail;
 author-authored `throwError` exceptions keep flowing raw in both
 dialects.
 
+Project specification parsing keeps its English detail messages on
+purpose: the command line demotes a failed project parse to the log
+(treating the file as regular input, with a localized notice), so the
+details stay at the log-grade English level while the user-facing
+surface speaks the user's language.
+
 Resolved: `toLua` wraps file objects as file userdata, so a file stored
 via `session.put` comes back as a file reference and the helpers
 dispatch to the file overloads, exactly like the MVEL dialect keeps

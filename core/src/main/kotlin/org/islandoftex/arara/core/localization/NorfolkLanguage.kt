@@ -70,6 +70,7 @@ class NorfolkLanguage : Messages(
     INFO_DISPLAY_FILE_INFORMATION = "Hold yew hard, ole partner, I'm gornta hev a look at '%s' (thass %s big, that is, and that was last chearnged on %s in case yew dunt remember).",
     INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE = "Although executing in dry-run mode, this entry might be already processed since it returned a boolean value: %s",
     INFO_INTERPRETER_DRYRUN_MODE_SYSTEM_COMMAND = "This is what I'm abowt to dew: %s",
+    INFO_INTERPRETER_LUA_FILE_NOT_A_PROJECT = "It do luke like thet there Lua file yew giv' me ent a proper project specifikashun, so I'll tread it as a ordinary input file. If it wuz meant ter be a project specifikashun, hev a gander in the log fer the details on wot went wrong.",
     INFO_LABEL_AUTHOR = "Thass the one wot wrote this masterous jarb:",
     INFO_LABEL_AUTHORS = "Here's the ones wot wrote this masterous jarb:",
     INFO_LABEL_CONDITIONAL = "Conditional (thass a yis or no thing):",

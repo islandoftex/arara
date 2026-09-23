@@ -70,6 +70,7 @@ class BrazilianLanguage : Messages(
     INFO_DISPLAY_FILE_INFORMATION = "Processando '%s' (tamanho: %s, última modificação: %s), por favor, aguarde.",
     INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE = "Apesar da execução em modo dry-run, é provável que esta entrada já foi processada, dado que o seguinte valor lógico foi retornado: %s",
     INFO_INTERPRETER_DRYRUN_MODE_SYSTEM_COMMAND = "A executar: %s",
+    INFO_INTERPRETER_LUA_FILE_NOT_A_PROJECT = "Parece que o arquivo Lua fornecido não pôde ser interpretado como uma especificação de projeto, então vou tratá-lo como um arquivo de entrada comum. Se ele deveria ser uma especificação de projeto, consulte o log para obter detalhes sobre o que deu errado.",
     INFO_LABEL_AUTHOR = "Autor:",
     INFO_LABEL_AUTHORS = "Autores:",
     INFO_LABEL_CONDITIONAL = "Expressão condicional:",

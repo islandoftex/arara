@@ -9,10 +9,12 @@ import io.github.taoguan.luaj.LuaString
 import io.github.taoguan.luaj.LuaTable
 import io.github.taoguan.luaj.LuaValue
 import io.github.taoguan.luaj.Varargs
+import io.github.taoguan.luaj.lib.VarArgFunction
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.rules.RuleMethods
 
 /**
  * Conversion helpers between Kotlin/JVM values and Lua values as used by
@@ -222,6 +224,71 @@ internal object LuaConversion {
             table.set("path", LuaValue.valueOf(path.toString()))
             table.set("parent", LuaValue.valueOf(path.parent.toString()))
         }
+
+    /**
+     * Wrap a Kotlin function as a Lua function value; both helper
+     * environments build their bindings with it.
+     */
+    fun luaFunction(body: (Varargs) -> LuaValue): LuaValue =
+        object : VarArgFunction() {
+            override fun invoke(args: Varargs): Varargs = body(args)
+        }
+
+    /**
+     * Build the session as a table of operations, as Lua cannot call
+     * methods on the underlying object directly; both helper
+     * environments expose the very same shape.
+     */
+    fun sessionTable(): LuaValue {
+        val session = RuleMethods.getSession()
+        return LuaValue.tableOf().also { table ->
+            table.set(
+                "get",
+                luaFunction { args ->
+                    val key = args.arg(1)
+                        .stringArgument("session.get", 1)
+                    toLua(session.get(key))
+                }
+            )
+            table.set(
+                "put",
+                luaFunction { args ->
+                    val key = args.arg(1)
+                        .stringArgument("session.put", 1)
+                    val value = fromLua(args.arg(2))
+                        ?: throw badArgument(
+                            "session.put", 2, "value", args.arg(2)
+                        )
+                    session.put(key, value)
+                    LuaValue.NIL
+                }
+            )
+            table.set(
+                "contains",
+                luaFunction { args ->
+                    val key = args.arg(1)
+                        .stringArgument("session.contains", 1)
+                    LuaValue.valueOf(session.contains(key))
+                }
+            )
+            table.set(
+                "remove",
+                luaFunction { args ->
+                    val key = args.arg(1)
+                        .stringArgument("session.remove", 1)
+                    session.remove(key)
+                    LuaValue.NIL
+                }
+            )
+            table.set(
+                "clear",
+                luaFunction { _ ->
+                    session.clear()
+                    LuaValue.NIL
+                }
+            )
+        }
+    }
 
     /**
      * Run [block] converting Lua errors raised during the evaluation

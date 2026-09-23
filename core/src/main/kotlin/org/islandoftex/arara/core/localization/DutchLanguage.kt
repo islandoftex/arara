@@ -70,6 +70,7 @@ class DutchLanguage : Messages(
     INFO_DISPLAY_FILE_INFORMATION = "Verwerken van '%s' (grootte: %s, laatst gewijzigd: %s), een ogenblik geduld.",
     INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE = "Ondanks het uitvoeren in dry-runmodus is dit item mogelijk al verwerkt omdat het de booleaanse waarde terug heeft gegeven:  %s",
     INFO_INTERPRETER_DRYRUN_MODE_SYSTEM_COMMAND = "Begin met uitvoeren: %s",
+    INFO_INTERPRETER_LUA_FILE_NOT_A_PROJECT = "Het lijkt erop dat het opgegeven Lua-bestand niet als projectspecificatie kon worden gelezen, dus ik behandel het als een gewoon invoerbestand. Als het bedoeld was als projectspecificatie, raadpleeg dan het logboek voor details over wat er misging.",
     INFO_LABEL_AUTHOR = "Auteur:",
     INFO_LABEL_AUTHORS = "Auteurs:",
     INFO_LABEL_CONDITIONAL = "Voorwaarde:",
