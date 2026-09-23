@@ -31,9 +31,15 @@ about a change.
   `providedPath`/`referencePath` duality in `MPPPath`).
 
 Remaining caveat: none — both engines and the Lua project pipeline are
-smoke-verified end-to-end on the provisioned JRE 11 (see oc7): build
-`:cli:shadowJar`, place the jar with a `rules/` sibling directory and run it
-with `~/.gradle/jdks/eclipse_adoptium-11-*/bin/java`.
+smoke-verified end-to-end on the provisioned JRE 11 (see oc7 and oc45):
+build `:cli:shadowJar`, place the jar with a `rules/` sibling directory and
+run it with `~/.gradle/jdks/eclipse_adoptium-11-*/bin/java`. The scratch
+matrix in `/tmp/opencode/arara-smoke` covers both engines (execution-test
+fixtures for MVEL conditionals, orb tags, sessions and halt; the Lua
+engine scenarios including a wrongly typed conditional probe) and the
+real TeX toolchain (an official `pdflatex` rule run through both
+dialects, plus a file-database double run asserting the record-and-skip
+semantics of `changed`).
 
 ## Commands
 
