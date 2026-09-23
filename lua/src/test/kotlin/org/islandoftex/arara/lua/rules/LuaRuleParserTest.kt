@@ -315,10 +315,10 @@ class LuaRuleParserTest {
                 "${exception.message}"
         )
         assertTrue(
-            exception.exception?.message
+            exception.cause?.message
                 ?.contains("bad argument #1 to 'trimSpaces'") == true,
             "the bad argument detail is available as the cause: " +
-                "${exception.exception?.message}"
+                "${exception.cause?.message}"
         )
     }
 

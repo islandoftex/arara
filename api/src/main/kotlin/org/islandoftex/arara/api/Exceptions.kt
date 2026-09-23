@@ -7,7 +7,8 @@ package org.islandoftex.arara.api
 public open class AraraException : Exception {
     /**
      * The underlying exception, used to hold more details
-     * on what really happened
+     * on what really happened. Note that this mirrors the inherited
+     * cause of the exception; prefer reading the cause in new code.
      */
     public val exception: Exception?
 
@@ -38,9 +39,11 @@ public open class AraraException : Exception {
             this(message, RuntimeException(throwable))
 
     /**
-     * Checks if there is an underlying exception defined in the current object.
+     * Checks if there is an underlying exception with a message defined in
+     * the current object. Note that the check includes the message: an
+     * underlying exception without a message of its own counts as absent.
      * @return A boolean value indicating if the current object has an
-     * underlying exception.
+     * underlying exception with a message.
      */
     public fun hasException(): Boolean = exception?.message != null
 }

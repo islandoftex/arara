@@ -380,7 +380,7 @@ class Interpreter(
                         LanguageController.messages.ERROR_RULE_IDENTIFIER_AND_PATH
                             .formatString(directive.identifier, file.parent.toString()) + " " +
                             e.message,
-                        e.exception ?: e
+                        e.cause ?: e
                     )
                 }
             }

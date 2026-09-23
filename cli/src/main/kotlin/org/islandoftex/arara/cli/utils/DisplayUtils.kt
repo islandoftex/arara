@@ -218,20 +218,22 @@ object DisplayUtils {
                 println()
             }
         }
+        val underlying = exception.exception
         val text = (
-            if (exception.hasException())
+            if (underlying != null)
                 exception.message + " " + LanguageController.messages
                     .INFO_DISPLAY_EXCEPTION_MORE_DETAILS
             else
                 exception.message
             ) ?: "EXCEPTION PROVIDES NO MESSAGE"
-        // note: null handling needs review here
         logger.error { text }
         printWrapped(text)
-        if (exception.hasException()) {
+        // a present cause earns a details section even when it carries no
+        // message of its own
+        if (underlying != null) {
             println()
             displayDetailsLine()
-            val details = exception.exception!!.message!!
+            val details = underlying.message ?: underlying.toString()
             logger.error { details }
             printWrapped(details)
         }

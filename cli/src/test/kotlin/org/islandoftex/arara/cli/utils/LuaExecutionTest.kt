@@ -206,4 +206,14 @@ class LuaExecutionTest {
             "the bad argument detail is available in the cause chain"
         )
     }
+
+    @Test
+    fun `interpolates scalar directive options on the Lua engine`() {
+        val output = outputForTest("scalar-options")
+        assertTrue(
+            output.contains("name: scalar-options"),
+            "the scalar option is interpolated and preserved as a scalar"
+        )
+        assertTrue(output.contains("SUCCESS"), "the entry result")
+    }
 }

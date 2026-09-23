@@ -40,11 +40,11 @@ class LuaRuleCommandExitTest {
                 "${exception.message}"
         )
         assertTrue(
-            exception.exception?.message?.contains(
+            exception.cause?.message?.contains(
                 "bad result from 'exit' (boolean expected, got number)"
             ) == true,
             "the type detail is available as the cause: " +
-                "${exception.exception?.message}"
+                "${exception.cause?.message}"
         )
     }
 

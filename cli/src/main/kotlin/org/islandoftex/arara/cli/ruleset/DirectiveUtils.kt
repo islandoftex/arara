@@ -101,33 +101,39 @@ object DirectiveUtils {
             .executionMode != ExecutionMode.SAFE_RUN
         ) {
             // perform directive interpolation by applying the methods of
-            // the selected engine to the directive arguments
+            // the selected engine to the directive arguments; the value
+            // keeps its shape, so a scalar option stays a scalar (the
+            // safe run preserves it verbatim as well)
             map.plus(
-                "options" to (
-                    map["options"]?.takeIf { it is List<*> }
-                        ?.let { list ->
-                            (list as List<*>).map { it.toString() }
-                        }
-                        ?.map { value ->
-                            when (RuleEngine.current) {
-                                RuleEngine.LUA ->
-                                    LuaOrbTags.interpolate(value)
-                                RuleEngine.YAML ->
-                                    kotlin.runCatching {
-                                        TemplateRuntime.eval(value, MvelState.directiveMethods)
-                                    }.getOrElse {
-                                        throw AraraException(
-                                            LanguageController.messages
-                                                .ERROR_EXTRACTOR_INTERPOLATION_FAILURE,
-                                            it
-                                        )
-                                    }
-                            }
-                        } ?: emptyList()
-                    )
+                "options" to when (val options = map["options"]) {
+                    is List<*> -> options.map { value ->
+                        interpolate(value.toString())
+                    }
+                    else -> interpolate(options.toString())
+                }
             )
         } else map
     }
+
+    /**
+     * Interpolate the provided value with the orb tag machinery of the
+     * selected rule engine.
+     */
+    @Throws(AraraException::class)
+    private fun interpolate(value: String): Any =
+        when (RuleEngine.current) {
+            RuleEngine.LUA -> LuaOrbTags.interpolate(value)
+            RuleEngine.YAML ->
+                kotlin.runCatching {
+                    TemplateRuntime.eval(value, MvelState.directiveMethods)
+                }.getOrElse {
+                    throw AraraException(
+                        LanguageController.messages
+                            .ERROR_EXTRACTOR_INTERPOLATION_FAILURE,
+                        it
+                    )
+                }
+        }
 
     /**
      * Validates the list of directives, returning a new list.

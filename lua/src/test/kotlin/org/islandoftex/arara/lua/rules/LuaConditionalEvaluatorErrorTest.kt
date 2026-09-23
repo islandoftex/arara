@@ -34,7 +34,7 @@ class LuaConditionalEvaluatorErrorTest {
             "the primary message is the localized evaluation error"
         )
         assertTrue(
-            exception.exception?.message
+            exception.cause?.message
                 ?.contains("bad argument #1 to 'exists'") == true,
             "the binding message is available as the cause"
         )
@@ -51,11 +51,11 @@ class LuaConditionalEvaluatorErrorTest {
             )
         }
         assertTrue(
-            exception.message != exception.exception?.message,
+            exception.message != exception.cause?.message,
             "the strict boolean error is not nested behind itself"
         )
         assertTrue(
-            exception.exception == null,
+            exception.cause == null,
             "the strict boolean error carries no spurious cause"
         )
     }

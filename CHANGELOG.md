@@ -123,6 +123,14 @@ on.
   formatter.
 * The Lua project parser's default name for nameless projects aligns
   with the command line's fallback (`Untitled`).
+* A scalar `options` value in a directive is no longer silently
+  replaced by an empty list when orb tag interpolation runs: values
+  keep their shape, so a scalar option stays a scalar in normal runs
+  exactly as it does in safe run mode.
+* Error causes without a message of their own (such as a bare
+  `NullPointerException`) now earn a details section in the terminal
+  output showing the cause by its string representation, instead of
+  the whole details section being silently omitted.
 * The shared rule helpers (`RuleMethods`, `ConditionalMethods`,
   `MethodUtils`), the shared configuration model (`LocalConfiguration`,
   `SerialFileType`) and the interpreter exception moved from the MVEL

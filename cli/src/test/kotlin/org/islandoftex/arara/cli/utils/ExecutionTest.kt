@@ -294,4 +294,14 @@ class ExecutionTest {
             "the directives inside the header comments are not executed"
         )
     }
+
+    @Test
+    fun `interpolates scalar directive options`() {
+        val output = outputForTest("scalar-options")
+        assertTrue(
+            output.contains("name: scalar-options"),
+            "the scalar option is interpolated and preserved as a scalar"
+        )
+        assertTrue(output.contains("SUCCESS"), "the entry result")
+    }
 }
