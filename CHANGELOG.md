@@ -151,7 +151,7 @@ on.
   `MethodUtils`), the shared configuration model (`LocalConfiguration`,
   `SerialFileType`) and the interpreter exception moved from the MVEL
   module to the core and API modules; the Lua engine no longer depends
-  on the MVEL module at all (version 9 groundwork, see `DEPREC.md`).
+  on the MVEL module at all (version 9 groundwork, see `ROADMAP.md`).
 
 ## Deprecated
 
@@ -159,7 +159,7 @@ on.
   and will be removed in a future version; arara logs a warning when YAML
   rules are used. Please migrate to the Lua rule and configuration
   formats. (Directive options and conditionals are unaffected.) The
-  removal playbook is documented in `DEPREC.md`.
+  removal playbook is documented in `ROADMAP.md`.
 
 ## Removed
 

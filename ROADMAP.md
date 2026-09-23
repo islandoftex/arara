@@ -3,6 +3,8 @@
 This document is the removal playbook for the deprecated YAML *rule* and
 *configuration* formats. It lists, file by file, what has to happen when we
 finally remove them in favor of the Lua formats introduced in version 8.0.
+The version 9 outlooks at the end record the decisions beyond the removal
+(the conditional dialect and the path model).
 
 > **Scope.** Only rules (`arara-rule-*.yaml`, user rules) and configuration
 > files (`.araraconfig.yaml`, `araraconfig.yaml`, `.arararc.yaml`,
@@ -135,19 +137,19 @@ Small, reversible release:
 
 - Delete `mvel/…/rules/Rule.kt`, `mvel/…/rules/RuleArgument.kt` and
   `mvel/…/rules/SerialRuleCommand.kt`.
-- Remove `libs.kotaml` from `mvel/build.gradle.kts` and drop the
-  `kotaml` version/library entries from `gradle/libs.versions.toml`
-  (kotaml's only two consumers are the YAML rule and configuration
-  parsers — verify with `grep -rn "com.charleskorn" --include="*.kt" .`
-  before deleting; the fork kept the original package, so the grep
-  below is unaffected by the coordinate change). Do **not** touch `libs.yamlkt`: it parses directives
-  and the database (see [What stays](#what-stays)). Remove the
+- Remove `libs.kotaml` from `mvel/build.gradle.kts` only. The version
+  catalog entry **stays**: since the tree unified on a single YAML
+  library, kotaml also parses the directive parameters (cli) and the
+  file database (core), so `grep -rn "com.charleskorn" --include="*.kt" .`
+  keeps matching those two surviving consumers (see
+  [What stays](#what-stays)). Remove the
   `kotlin("plugin.serialization")` plugin from the mvel module if no
   `@Serializable` class remains there.
 - The module keeps its name (MVEL conditionals still justify it) unless
   you want to fold the survivors into `core` — in that case move
-  `DirectiveConditionalEvaluator`, `ConditionalMethods`, `MethodUtils`,
-  `MvelState`, `AraraExceptionWithHeader` and the `mvel2` dependency, then
+  `DirectiveConditionalEvaluator`, `MvelState` and the `mvel2` dependency
+  (`ConditionalMethods`, `MethodUtils` and `AraraExceptionWithHeader`
+  already live in core and the api module), then
   delete the module from `settings.gradle.kts` (module list) and from the
   root `build.gradle.kts` (spotless targets for `mvel/build.gradle.kts`
   and `mvel/src/**/*.kt`, detekt source list), and adjust the publication.
@@ -168,10 +170,9 @@ Small, reversible release:
     rules, prefer a helpful error over silence when a
     `.araraconfig.yaml`-style file is still present: detect the YAML names
     and tell the user to migrate (the manual's Configuration chapter has
-    the key-by-key mapping; the formats are close enough that no converter
-    script is needed, and `scripts/yamlconfig2lua.py` converts a YAML
-    configuration file to the Lua format, rejecting unknown keys and
-    omitting null values per the Lua parser's contract);
+    the key-by-key mapping, and `scripts/yamlconfig2lua.py` converts a
+    YAML configuration file to the Lua format, rejecting unknown keys
+    and omitting null values per the Lua parser's contract);
   - update the class KDoc describing the lookup order.
 
 ### 2.4 Rule helper methods
@@ -195,9 +196,11 @@ the mvel module at all. At removal time:
 - `scripts/yaml2lua.py` and `scripts/check_lua_rules.lua`: keep for at
   least one more release as the user-facing migration tool, referenced
   from the removal error message and the CHANGELOG; delete later.
-- CTAN/TDS: nothing to do — `TDSTreeBuilderTask` copies `rules/`
-  wholesale; verify the generated tree once after deletion.
-- CI: `.gitlab-ci.yml` needs no change, but run the full pipeline —
+- CTAN/TDS: the packaging tasks, including the TDS tree builder that
+  copied `rules/` wholesale, were removed from this build; the release
+  workflow owns packaging, so verify the shipped tree there once after
+  the deletion.
+- CI: no pipeline file lives in this tree; run the full gates —
   `spotlessCheck` in particular — after removing the yaml block.
 
 ### 2.6 Tests
@@ -241,10 +244,15 @@ the mvel module at all. At removal time:
 ## Phase 3 — grep checklist
 
 Before tagging the release, all of these should come back empty (or only
-match this file and the CHANGELOG/news):
+match this file and the CHANGELOG/news). The kotaml greps are scoped to
+the mvel module on purpose: the library keeps the original
+`com.charleskorn.kaml` package, so the cli and core consumers of the
+directive and database surfaces match it forever (see the guard rails
+below):
 
 ```sh
-grep -rn "kaml"                    --include="*.kt" --include="*.kts" .
+grep -rn "com.charleskorn"         --include="*.kt" mvel/src
+grep -n "libs.kotaml"              mvel/build.gradle.kts
 grep -rn "SerialRuleCommand"       --include="*.kt" .
 grep -rn "RuleFormat.MVEL"         --include="*.kt" .
 grep -rn "RuleEngine.YAML"         --include="*.kt" .
@@ -258,8 +266,9 @@ And these must still match (guard rails — if any comes back empty, scope
 was exceeded):
 
 ```sh
-grep -rn "yamlkt" cli/src core/src               # directive YAML + database
-grep -rn "yamlkt" cli/build.gradle.kts core/build.gradle.kts
+grep -rn "com.charleskorn" cli/src               # directive parameters
+grep -rn "com.charleskorn" core/src              # file database
+grep -rn "libs.kotaml" cli/build.gradle.kts core/build.gradle.kts
 grep -rn "DirectiveConditionalEvaluator" cli/src # MVEL conditionals
 grep -rn "TemplateRuntime\|MVEL" mvel/src        # conditional evaluation
 ```

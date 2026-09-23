@@ -124,7 +124,7 @@ Dependency chain: `api` → `core` → (`mvel`, `lua`) → `cli`.
 
 ## The YAML deprecation — traps that are easy to miss
 
-`DEPREC.md` is the authoritative removal playbook (phases, keep/remove lists,
+`ROADMAP.md` is the authoritative removal playbook (phases, keep/remove lists,
 grep checklist). Read it before touching anything YAML/MVEL. Note:
 **one YAML library (kotaml) with surfaces of opposite fate** — rules/config
 die with the YAML format removal; directive parameters and the file
