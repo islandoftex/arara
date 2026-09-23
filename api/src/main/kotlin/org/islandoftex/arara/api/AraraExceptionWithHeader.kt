@@ -2,8 +2,10 @@
 package org.islandoftex.arara.api
 
 /**
- * A general interpreter exception to be thrown with the intention of
- * formatting it with appropriate debug context.
+ * An interpreter error marked to be presented with the rule header:
+ * when such an error escapes a rule evaluation, the interpreter
+ * rethrows it prefixed with the rule identifier and location, so the
+ * terminal shows the rule context alongside the message.
  */
 public class AraraExceptionWithHeader : AraraException {
     public constructor(message: String) : super(message)
