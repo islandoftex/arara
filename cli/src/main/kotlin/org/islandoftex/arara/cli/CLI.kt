@@ -178,7 +178,7 @@ class CLI : CliktCommand("arara") {
                 // is not a project we simply return null
                 val logger = KotlinLogging.logger {}
 
-                kotlin.runCatching {
+                runCatching {
                     logger.info {
                         "Guessing provided Lua file is a project specification, " +
                             "trying to extract information from that."
@@ -265,25 +265,19 @@ class CLI : CliktCommand("arara") {
                     ?: LinearExecutor.executionOptions.maxLoops,
                 timeoutValue = timeout?.let { it.milliseconds }
                     ?: LinearExecutor.executionOptions.timeoutValue,
-                verbose = if (verbose)
-                    true
-                else
+                verbose = verbose ||
                     LinearExecutor.executionOptions.verbose,
                 executionMode = when {
                     dryRun -> ExecutionMode.DRY_RUN
                     safeRun -> ExecutionMode.SAFE_RUN
                     else -> LinearExecutor.executionOptions.executionMode
                 },
-                parseOnlyHeader = if (wholeFile)
-                    false
-                else
+                parseOnlyHeader = !wholeFile &&
                     LinearExecutor.executionOptions.parseOnlyHeader
             )
 
         Session.loggingOptions = LoggingOptions(
-            enableLogging = if (log)
-                true
-            else
+            enableLogging = log ||
                 Session.loggingOptions.enableLogging,
             appendLog = Session.loggingOptions.appendLog,
             logFile = Session.loggingOptions.logFile

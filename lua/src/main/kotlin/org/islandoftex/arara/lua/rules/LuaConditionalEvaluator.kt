@@ -3,6 +3,7 @@ package org.islandoftex.arara.lua.rules
 
 import io.github.taoguan.luaj.LuaError
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.core.localization.LanguageController
@@ -23,7 +24,7 @@ import org.islandoftex.arara.core.rules.DirectiveConditionalEvaluator
  * @since 8.0
  */
 class LuaConditionalEvaluator(
-    executionOptions: org.islandoftex.arara.api.configuration.ExecutionOptions
+    executionOptions: ExecutionOptions
 ) : DirectiveConditionalEvaluator(executionOptions) {
 
     /**

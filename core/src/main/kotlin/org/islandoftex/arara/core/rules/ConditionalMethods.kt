@@ -17,7 +17,7 @@ import org.islandoftex.arara.core.utils.MethodUtils
  * class loading. The MVEL registry and the Lua conditional environment
  * bind the very same helpers.
  */
-@Suppress("unused", "TooManyFunctions")
+@Suppress("TooManyFunctions")
 object ConditionalMethods {
     // the GUI generator is built per call: the session's user interface
     // options may be replaced by a configuration file at any time, so a

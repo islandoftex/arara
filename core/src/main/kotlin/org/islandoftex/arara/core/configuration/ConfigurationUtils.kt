@@ -32,7 +32,7 @@ object ConfigurationUtils {
     @JvmStatic
     val applicationPath: MPPPath
         @Throws(AraraException::class)
-        get() = kotlin.runCatching {
+        get() = runCatching {
             val codeLocation = requireNotNull(this::class.java.protectionDomain.codeSource?.location?.toURI()?.path)
                 .let {
                     // Experiments have found that Windows might have paths like "/D:/…"

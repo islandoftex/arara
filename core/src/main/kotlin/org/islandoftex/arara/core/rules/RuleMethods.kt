@@ -19,7 +19,7 @@ import org.islandoftex.arara.core.ui.InputHandling
 import org.islandoftex.arara.core.utils.MethodUtils
 import org.islandoftex.arara.core.utils.formatString
 
-@Suppress("unused", "TooManyFunctions")
+@Suppress("TooManyFunctions")
 /**
  * Implements the helper methods available to rule commands and flags in
  * both dialects, such as command building, boolean checks and file

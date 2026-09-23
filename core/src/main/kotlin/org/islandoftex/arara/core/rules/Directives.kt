@@ -141,12 +141,12 @@ object Directives {
                     condition = match.groupValues[6]
                 ),
                 // line numbers
-                assembler.getLineNumbers()
+                assembler.lineNumbers
             )
         } ?: throw AraraException(
             LanguageController.messages.ERROR_VALIDATE_INVALID_DIRECTIVE_FORMAT
                 .formatString(
-                    assembler.getLineNumbers()
+                    assembler.lineNumbers
                         .joinToString(", ", "(", ")")
                 )
         )
@@ -229,5 +229,10 @@ private fun String?.toDirectiveConditional() = when (this) {
     "if" -> DirectiveConditionalType.IF
     "while" -> DirectiveConditionalType.WHILE
     "until" -> DirectiveConditionalType.UNTIL
-    else -> DirectiveConditionalType.UNLESS
+    "unless" -> DirectiveConditionalType.UNLESS
+    // the directive pattern constrains the captured token to the four
+    // conditional keywords, so anything else is a programming error
+    else -> throw IllegalStateException(
+        "Unknown conditional type '$this'."
+    )
 }

@@ -408,7 +408,7 @@ class Interpreter(
      */
     private fun getUnknownKeys(
         parameters: Map<String, Any>,
-        arguments: List<org.islandoftex.arara.api.rules.RuleArgument<*>>
+        arguments: List<RuleArgument<*>>
     ): Set<String> {
         val found = parameters.keys
         val expected = arguments.map { it.identifier }

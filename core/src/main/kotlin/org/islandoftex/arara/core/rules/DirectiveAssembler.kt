@@ -14,7 +14,7 @@ internal class DirectiveAssembler {
      * This variable holds a list of line numbers indicating which lines
      * composed the resulting potential directive.
      */
-    private val lineNumbers = mutableListOf<Int>()
+    private val numbers = mutableListOf<Int>()
 
     /**
      * This variable holds the textual representation of the directive
@@ -27,7 +27,7 @@ internal class DirectiveAssembler {
      * Checks if an append operation is allowed.
      */
     val isAppendAllowed: Boolean
-        get() = lineNumbers.isNotEmpty()
+        get() = numbers.isNotEmpty()
 
     /**
      * Adds a line number to the assembler.
@@ -35,7 +35,7 @@ internal class DirectiveAssembler {
      * @param line An integer representing the line number.
      */
     fun addLineNumber(line: Int) {
-        lineNumbers.add(line)
+        numbers.add(line)
     }
 
     /**
@@ -50,8 +50,7 @@ internal class DirectiveAssembler {
      * Gets the list of line numbers. The returned list is a copy, so
      * later assembler mutations cannot rewrite the state of directives
      * which already stored their line numbers.
-     *
-     * @return The list of line numbers.
      */
-    fun getLineNumbers(): List<Int> = lineNumbers.toList()
+    val lineNumbers: List<Int>
+        get() = numbers.toList()
 }

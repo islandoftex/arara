@@ -159,7 +159,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
      */
     @Suppress("ThrowsCount")
     fun parseProjectsFromLua(luaScript: String): List<Project> {
-        val luaTable = kotlin.runCatching {
+        val luaTable = runCatching {
             JsePlatform.standardGlobals()
                 .load(luaScript)
                 .call() as? LuaTable

@@ -79,7 +79,7 @@ object DirectiveUtils {
         if (text == null)
             return mapOf()
 
-        val map = kotlin.runCatching {
+        val map = runCatching {
             // the directive parameters are parsed into the YAML node
             // model and converted into the plain Kotlin values the
             // interpreter expects; null values are rejected, preserving
@@ -124,7 +124,7 @@ object DirectiveUtils {
         when (RuleEngine.current) {
             RuleEngine.LUA -> LuaOrbTags.interpolate(value)
             RuleEngine.YAML ->
-                kotlin.runCatching {
+                runCatching {
                     TemplateRuntime.eval(value, MvelState.directiveMethods)
                 }.getOrElse {
                     throw AraraException(

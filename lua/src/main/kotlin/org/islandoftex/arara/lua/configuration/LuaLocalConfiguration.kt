@@ -63,7 +63,7 @@ object LuaLocalConfiguration {
      */
     @Throws(AraraException::class)
     fun load(file: MPPPath): LocalConfiguration =
-        file.runCatching {
+        runCatching {
             val globals = JsePlatform.standardGlobals()
             val result = globals.load(file.readText(), file.fileName).call()
             val table = result as? LuaTable ?: throw AraraException(
