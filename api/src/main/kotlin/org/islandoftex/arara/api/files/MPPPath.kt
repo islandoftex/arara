@@ -5,7 +5,6 @@ import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.io.path.ExperimentalPathApi
-import kotlin.io.path.Path
 import kotlin.io.path.appendText
 import kotlin.io.path.createDirectories
 import kotlin.io.path.deleteRecursively
@@ -26,6 +25,10 @@ import org.islandoftex.arara.api.time.DateTime
  * A path model for arara, wrapping the underlying platform path API and
  * retaining both the path exactly as provided and an absolutized,
  * normalized reference of it.
+ *
+ * Members that inspect the raw spelling (`isAbsolute`, `startsWith`,
+ * the `resolve` inputs and the JVM bridges) read the provided path;
+ * identity, I/O and display operate on the reference.
  */
 // since this should provide a fluent API to deal with paths,
 // we are adding an annotation to suppress detekt's warning
@@ -55,9 +58,8 @@ public class MPPPath {
     }
 
     /**
-     * Internal constructor to ease handling JVM paths directly.
-     * It should apply the same logic in the constructor
-     * (absolute path + normalization).
+     * Internal constructor to handle platform paths directly. It
+     * applies the same canonicalization as the string constructor.
      */
     internal constructor(initPath: Path) {
         providedPath = initPath
@@ -117,7 +119,10 @@ public class MPPPath {
         get() = referencePath.isRegularFile()
 
     /**
-     * Checks whether the path starts with [p].
+     * Checks whether the path starts with [p], comparing the provided
+     * spellings: the check is lexical, so different spellings of the
+     * same location do not match. Normalize both paths first when the
+     * comparison should be location-based.
      */
     public fun startsWith(p: MPPPath): Boolean =
             providedPath.startsWith(p.providedPath)

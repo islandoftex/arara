@@ -349,3 +349,26 @@ Consequences for the plan above:
   to the engine (`LuaOrbTags`), including the safe mode passthrough.
   Once the conditional and rule helpers have moved to a neutral home,
   the `mvel` module can be deleted entirely.
+
+## Version 9 outlook — the path model
+
+The path class wrapping the JVM path API keeps two representations: the
+path exactly as provided (backing `isAbsolute`, `startsWith`, the
+`resolve` inputs and the JVM escape hatches) and an absolutized,
+normalized reference of it (backing identity, all I/O and display). The
+duality is load-bearing, not incidental — it is how relative spellings
+and location identity coexist.
+
+Two candidates are recorded for the next major version:
+
+- the class name is a fossil of the removed Kotlin Multiplatform setup;
+  a rename is public API breakage and belongs to a major version;
+- re-basing the class on a multiplatform path library such as okio was
+  investigated and is feasible: the backend would absorb the platform
+  variance, a fake file system would make Windows-shaped paths testable
+  on any host, and the required new code is small (a current-directory
+  acquisition, a segment-wise prefix check). The costs are concrete —
+  the file database keys and the displayed path forms on Windows would
+  change. The move is deferred pending the decision of the upstream
+  technical leads; the JVM path API remains the correct backend for a
+  JVM-only tree in the meantime.

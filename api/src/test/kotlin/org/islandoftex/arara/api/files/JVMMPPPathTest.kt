@@ -16,8 +16,9 @@ import org.junit.jupiter.api.io.TempDir
 
 /**
  * Verifies the JVM path model of [MPPPath]: reading and writing text,
- * and the value semantics of the two paths every model carries (the
- * user-provided spelling and the absolutized reference).
+ * the value semantics of the two paths every model carries (the
+ * user-provided spelling and the absolutized reference), the lexical
+ * prefix check, the resolution chain and the JVM escape hatches.
  */
 class JVMMPPPathTest {
     @Nested
@@ -74,6 +75,20 @@ class JVMMPPPathTest {
                 "the write error names the offending operation"
             )
         }
+
+        @Test
+        fun `fails appending to a missing file`(@TempDir tempDir: Path) {
+            val missing = tempDir.resolve("missing-append.txt")
+            val exception = assertFailsWith<AraraIOException>(
+                "appending to a missing file must be rejected"
+            ) {
+                MPPPath(missing.toString()).writeText("quack", append = true)
+            }
+            assertTrue(
+                exception.message?.contains("append text to existing") == true,
+                "the append error names the offending operation"
+            )
+        }
     }
 
     @Nested
@@ -128,6 +143,90 @@ class JVMMPPPathTest {
                     .toAbsolutePath().normalize().toString(),
                 path.toString(),
                 "toString reports the absolutized reference path"
+            )
+        }
+
+        @Test
+        fun `answers startsWith lexically and honors normalization`() {
+            val directory = MPPPath("lexical-probe-dir")
+            val inner = directory.resolve("inner.txt")
+
+            assertTrue(
+                inner.startsWith(directory),
+                "relative spellings match lexically"
+            )
+            assertTrue(
+                inner.normalize().startsWith(directory.normalize()),
+                "normalized spellings match location-based"
+            )
+            assertFalse(
+                inner.normalize().startsWith(directory),
+                "a normalized spelling does not match a raw one"
+            )
+        }
+    }
+
+    @Nested
+    inner class `resolution and siblings` {
+        @Test
+        fun `resolves children and canonicalizes the result`() {
+            val parent = MPPPath("resolution-probe-dir")
+
+            assertEquals(
+                File("resolution-probe-dir")
+                    .toPath().resolve("child.txt")
+                    .toAbsolutePath().normalize().toString(),
+                parent.resolve("child.txt").toString(),
+                "resolving a relative child recanonicalizes against " +
+                    "the working directory"
+            )
+        }
+
+        @Test
+        fun `treats the div operator as resolution`() {
+            val parent = MPPPath("resolution-probe-dir")
+
+            assertEquals(
+                parent.resolve("child.txt"),
+                parent / "child.txt",
+                "the div operator resolves like the resolve method"
+            )
+        }
+
+        @Test
+        fun `resolves siblings against the reference parent`(@TempDir tempDir: Path) {
+            val file = MPPPath(tempDir.resolve("target.txt").toString())
+
+            assertEquals(
+                MPPPath(tempDir.toString()),
+                file.resolveSibling("other.txt").parent,
+                "a sibling lives beside the original file"
+            )
+        }
+
+        @Test
+        fun `reports the parent of a relative path against the working directory`() {
+            assertEquals(
+                MPPPath("."),
+                MPPPath("parent-probe.txt").parent,
+                "the parent of a relative path is the working directory"
+            )
+        }
+    }
+
+    @Nested
+    inner class `escape hatches` {
+        @Test
+        fun `exposes the provided spelling to the JVM bridges`() {
+            assertEquals(
+                "bridge-probe.txt",
+                MPPPath("bridge-probe.txt").toJVMPath().toString(),
+                "the JVM path bridge reports the raw spelling"
+            )
+            assertEquals(
+                "bridge-probe.txt",
+                MPPPath("bridge-probe.txt").toJVMFile().toString(),
+                "the JVM file bridge reports the raw spelling"
             )
         }
     }

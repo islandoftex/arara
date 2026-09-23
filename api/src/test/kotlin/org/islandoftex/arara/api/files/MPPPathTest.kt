@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.api.files
 
-// The following object import is specific to the JVM platform; while common
-// is meant for shared code, it can still reference certain platform-specific
-// features if the project is set up to allow it.
 import kotlin.io.path.Path
 import kotlin.io.path.absolutePathString
 import kotlin.test.Test
@@ -41,7 +38,6 @@ class MPPPathTest {
     fun `considers the root absolute`() {
         val path = getValueByOS(windows = "C:/", unix = "/")
 
-        // korio does not handle this
         assertTrue(
             MPPPath(path).isAbsolute,
             "the root is reported as absolute"
