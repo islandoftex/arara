@@ -5,10 +5,10 @@ import io.github.taoguan.luaj.LuaTable
 import io.github.taoguan.luaj.lib.jse.JsePlatform
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.core.configuration.LocalConfiguration
+import org.islandoftex.arara.core.configuration.SerialFileType
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.lua.rules.LuaConversion
-import org.islandoftex.arara.mvel.configuration.LocalConfiguration
-import org.islandoftex.arara.mvel.configuration.SerialFileType
 
 /**
  * Parse configuration files written in arara's Lua configuration format.
@@ -40,8 +40,7 @@ import org.islandoftex.arara.mvel.configuration.SerialFileType
  *
  * The parsed result is converted into the very same [LocalConfiguration]
  * representation the YAML parser produces, so both formats behave
- * identically once loaded. (The class currently lives in the MVEL module
- * and will move to a neutral home once the YAML format is removed.)
+ * identically once loaded.
  *
  * @author Island of TeX
  * @version 8.0

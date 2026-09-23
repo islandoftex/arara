@@ -5,12 +5,12 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.cli.utils.LoggingUtils
+import org.islandoftex.arara.core.configuration.LocalConfiguration
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.lua.configuration.LuaLocalConfiguration
-import org.islandoftex.arara.mvel.configuration.LocalConfiguration
 import org.islandoftex.arara.mvel.utils.MvelState
 
 /**

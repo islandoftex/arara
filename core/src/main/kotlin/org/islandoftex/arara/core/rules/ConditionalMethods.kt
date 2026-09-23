@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.mvel.utils
+package org.islandoftex.arara.core.rules
 
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
@@ -9,12 +9,13 @@ import org.islandoftex.arara.core.session.ClassLoading.ClassLoadingStatus
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.GUIDialogs
+import org.islandoftex.arara.core.utils.MethodUtils
 
 /**
- * Implements the helper methods available to MVEL directive
- * conditionals, such as file existence and change checks, dialogs and
- * class loading. The Lua conditional environment binds the very same
- * helpers.
+ * Implements the helper methods available to directive conditionals in
+ * both dialects, such as file existence and change checks, dialogs and
+ * class loading. The MVEL registry and the Lua conditional environment
+ * bind the very same helpers.
  */
 @Suppress("unused", "TooManyFunctions")
 object ConditionalMethods {

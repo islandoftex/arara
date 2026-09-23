@@ -85,8 +85,9 @@ Dependency chain: `api` → `core` → (`mvel`, `lua`) → `cli`.
   plus MVEL **directive
   conditionals** which are *not* deprecated and must survive the YAML removal.
 - `lua` — new Lua rule + config parsers (LuaJ fork `io.github.taoguan:luaj`).
-  Depends on `mvel` temporarily for shared helper methods and the
-  `LocalConfiguration` model — that edge is flagged for removal in `DEPREC.md`.
+  The shared helpers live in `core` (`core/…/rules/RuleMethods`,
+  `core/…/rules/ConditionalMethods`) and the configuration model in
+  `core/…/configuration/`; the module no longer depends on `mvel` at all.
 - `cli` — the application: directive parsing, rule dispatch by file extension
   (`.yaml` → mvel parser with a one-time deprecation warning, `.lua` →
   `LuaRuleParser`), configuration file lookup (YAML names first, then Lua),

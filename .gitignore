@@ -1,6 +1,7 @@
 # Gradle build outputs and caches
 .gradle/
 build/
+.kotlin/
 # the buildSrc package directory is also named 'build' — keep it tracked
 !buildSrc/src/main/kotlin/org/islandoftex/arara/build/
 

@@ -3,6 +3,7 @@ package org.islandoftex.arara.cli.interpreter
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.AraraExceptionWithHeader
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.files.MPPPath
@@ -22,7 +23,6 @@ import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.InputHandling
 import org.islandoftex.arara.lua.rules.LuaConditionalEvaluator
 import org.islandoftex.arara.lua.rules.LuaRuleCommand
-import org.islandoftex.arara.mvel.interpreter.AraraExceptionWithHeader
 import org.islandoftex.arara.mvel.rules.DirectiveConditionalEvaluator
 import org.islandoftex.arara.mvel.rules.SerialRuleCommand
 import org.islandoftex.arara.mvel.utils.MvelState

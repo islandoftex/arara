@@ -26,7 +26,7 @@ remove them as part of this effort:
 >
 > | Library | Coordinates | Used by | Fate |
 > | --- | --- | --- | --- |
-> | **kotaml** | `io.heapy.kotaml` (a supported fork of the archived kaml; the fork keeps the original `com.charleskorn.kaml` package) | YAML rules (`mvel/…/rules/Rule.kt`), YAML config (`mvel/…/configuration/LocalConfiguration.kt`), directive parameters (`cli/…/DirectiveUtils.kt`), file database (`core/…/Database.kt`) | rules and config are removed with them; directive parameters and the database **stay** |
+> | **kotaml** | `io.heapy.kotaml` (a supported fork of the archived kaml; the fork keeps the original `com.charleskorn.kaml` package) | YAML rules (`mvel/…/rules/Rule.kt`), YAML config (`core/…/configuration/LocalConfiguration.kt`), directive parameters (`cli/…/DirectiveUtils.kt`), file database (`core/…/Database.kt`) | rules and config are removed with them; directive parameters and the database **stay** |
 >
 > Whenever this document says the YAML *library for rules and
 > configuration* is removed, it means the kotaml dependency **of the
@@ -52,17 +52,19 @@ remove them as part of this effort:
    end of this document.) Consequently the
    following must survive the removal:
    - `mvel/…/rules/DirectiveConditionalEvaluator.kt`
-   - `mvel/…/utils/ConditionalMethods.kt`, `mvel/…/utils/MethodUtils.kt`
+   - `core/…/rules/ConditionalMethods.kt`, `core/…/utils/MethodUtils.kt`
+     (already moved out of the mvel module)
    - `mvel/…/utils/MvelState.kt` (conditional methods, preambles)
-   - `mvel/…/interpreter/AraraExceptionWithHeader.kt`
+   - `api/…/AraraExceptionWithHeader.kt` (already moved out of the
+     mvel module)
    - the `org.mvel:mvel2` dependency
 4. **Preambles.** Preambles are plain strings of directives; they are
    stored on `MvelState` for historic reasons only. They keep working with
    both engines.
 5. **`RuleMethods`.** The helper methods are engine-agnostic (the Lua
-   bridges in `lua/…/rules/LuaRuleEnvironment.kt` call them); they only
-   *live* in the mvel module for historic reasons and must be **moved, not
-   deleted** (see step 2.4).
+   bridges in `lua/…/rules/LuaRuleEnvironment.kt` call them); they have
+   been **moved to `core/…/rules/` ahead of the removal** (see step 2.4),
+   so they survive the deletion untouched.
 
 ## Prerequisites for removal
 
@@ -151,16 +153,12 @@ Small, reversible release:
 
 ### 2.3 Configuration model
 
-- Move `LocalConfiguration` and `SerialFileType` out of
-  `mvel/…/configuration/` — `core/…/configuration/` is the natural home
-  (`toExecutionOptions`/`toLoggingOptions`/`toUserInterfaceOptions` only
-  use core and api types). While moving:
+- `LocalConfiguration` and `SerialFileType` already live in
+  `core/…/configuration/` (moved ahead of the removal; the Lua parser
+  constructs the class directly). At removal time:
   - delete the kotaml-based `companion object { fun load(…) }` and the
-    `@Serializable` annotations (the Lua parser constructs the class
-    directly);
+    `@Serializable` annotations;
   - drop the `!config` header check, which was YAML-specific.
-- `lua/…/configuration/LuaLocalConfiguration.kt`: update the two imports
-  to the new package; the class is otherwise untouched.
 - `cli/…/configuration/ConfigurationUtils.kt`:
   - shrink `configFileForProject` to a single Lua search:
     `configFileWithExtension(project, "lua")` — the YAML-first indirection
@@ -176,19 +174,15 @@ Small, reversible release:
 
 ### 2.4 Rule helper methods
 
-`RuleMethods` must outlive MVEL rules because the Lua bridges delegate to
-it. Move `mvel/…/utils/RuleMethods.kt` into the `lua` module (or `core`),
-then:
+`RuleMethods` must outlive MVEL rules because the Lua bridges delegate
+to it. It already lives in `core/…/rules/`, moved ahead of the removal
+together with `ConditionalMethods`, `MethodUtils` and
+`AraraExceptionWithHeader`, and the `lua` module no longer depends on
+the mvel module at all. At removal time:
 
-- update the import in `lua/…/rules/LuaRuleEnvironment.kt`;
-- remove the entries that `MvelState.ruleMethods` reflected into the MVEL
-  evaluation context, and — once no consumer is left — the
-  `ruleMethods` map in `MvelState` itself (`conditionalMethods` stays);
-- downgrade the `api(project(":mvel"))` dependency of the lua module: with
-  `LocalConfiguration` moved to core and `RuleMethods` moved in-module,
-  the lua module needs mvel at most for `AraraExceptionWithHeader` —
-  re-evaluate and ideally cut the edge entirely (the transitional nature
-  of this dependency is flagged in `lua/build.gradle.kts`).
+- remove the entries that `MvelState.ruleMethods` reflected into the
+  MVEL evaluation context, and — once no consumer is left — the
+  `ruleMethods` map in `MvelState` itself (`conditionalMethods` stays).
 
 ### 2.5 Rule files and build glue
 
@@ -336,12 +330,12 @@ Consequences for the plan above:
 - the phase 1 default flip turns conditionals Lua as well, so the
   release notes of that release must tell users to port compound
   conditionals (`&&`/`||`/`!` become `and`/`or`/`not`);
-- the MVEL conditional helpers (`ConditionalMethods`, and the
-  `RuleMethods` entries the registry reuses) have to move to a neutral
-  home together with the rule helpers, as the Lua conditional
-  environment binds the very same registry (a transitional `lua` -> `mvel`
-  edge, mirroring the one for `RuleMethods`, is documented in
-  `lua/build.gradle.kts`);
+- the helpers moved to a neutral home ahead of schedule:
+  `ConditionalMethods` and `RuleMethods` live in `core/…/rules/`,
+  `MethodUtils` in `core/…/utils/`, the shared configuration model in
+  `core/…/configuration/` and `AraraExceptionWithHeader` in the `api`
+  module — the Lua engine no longer depends on the mvel module at all
+  (the former transitional `lua` -> `mvel` edge is gone);
 - the remaining MVEL surface after that move is empty: the orb tag
   interpolation of directive `options` also has a Lua counterpart tied
   to the engine (`LuaOrbTags`), including the safe mode passthrough.

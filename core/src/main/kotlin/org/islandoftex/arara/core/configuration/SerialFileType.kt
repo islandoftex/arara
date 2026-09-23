@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.mvel.configuration
+package org.islandoftex.arara.core.configuration
 
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException

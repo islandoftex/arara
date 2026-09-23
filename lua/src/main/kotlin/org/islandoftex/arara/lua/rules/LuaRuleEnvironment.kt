@@ -9,6 +9,7 @@ import io.github.taoguan.luaj.lib.VarArgFunction
 import io.github.taoguan.luaj.lib.jse.JsePlatform
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.core.rules.RuleMethods
 
 import org.islandoftex.arara.lua.rules.LuaConversion.badArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.booleanArgument
@@ -17,15 +18,13 @@ import org.islandoftex.arara.lua.rules.LuaConversion.numberArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.stringArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.stringListArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.toLua
-import org.islandoftex.arara.mvel.utils.RuleMethods
 
 /**
  * Set up the global environment rule scripts are evaluated in.
  *
- * The environment exposes the same helper methods MVEL rules enjoy (they
- * currently live in the MVEL module and will move to a neutral home once
- * the YAML format is removed) plus a few Lua conveniences (`contains`,
- * `keys`, `join`).
+ * The environment exposes the same helper methods MVEL rules enjoy (both
+ * dialects bind the very helpers from the core module) plus a few Lua
+ * conveniences (`contains`, `keys`, `join`).
  */
 internal object LuaRuleEnvironment {
     /**

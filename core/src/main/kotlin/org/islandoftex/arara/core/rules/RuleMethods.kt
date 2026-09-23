@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.mvel.utils
+package org.islandoftex.arara.core.rules
 
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.AraraExceptionWithHeader
 import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.SafeRunViolationException
 import org.islandoftex.arara.api.configuration.ExecutionMode
@@ -15,13 +16,14 @@ import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.GUIDialogs
 import org.islandoftex.arara.core.ui.InputHandling
-import org.islandoftex.arara.mvel.interpreter.AraraExceptionWithHeader
+import org.islandoftex.arara.core.utils.MethodUtils
 
 @Suppress("unused", "TooManyFunctions")
 /**
- * Implements the helper methods available to MVEL rule commands and
- * flags, such as command building, boolean checks and file operations.
- * The Lua rule environment binds the very same helpers.
+ * Implements the helper methods available to rule commands and flags in
+ * both dialects, such as command building, boolean checks and file
+ * operations. The MVEL registry and the Lua rule environment bind the
+ * very same helpers.
  */
 object RuleMethods {
     // the GUI generator is built per call: the session's user interface

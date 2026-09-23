@@ -105,6 +105,11 @@ on.
   `src/commonMain`/`src/jvmMain` to `src/main` (and tests accordingly).
 * animate+convert rules: change default program from `convert` to `magick` 
   (`convert` was deprecated in ImageMagick v7)
+* The shared rule helpers (`RuleMethods`, `ConditionalMethods`,
+  `MethodUtils`), the shared configuration model (`LocalConfiguration`,
+  `SerialFileType`) and the interpreter exception moved from the MVEL
+  module to the core and API modules; the Lua engine no longer depends
+  on the MVEL module at all (version 9 groundwork, see `DEPREC.md`).
 
 ## Deprecated
 

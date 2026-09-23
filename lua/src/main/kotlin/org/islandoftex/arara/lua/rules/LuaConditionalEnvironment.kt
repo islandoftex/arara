@@ -9,6 +9,8 @@ import io.github.taoguan.luaj.Varargs
 import io.github.taoguan.luaj.lib.VarArgFunction
 import io.github.taoguan.luaj.lib.jse.JsePlatform
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.core.rules.ConditionalMethods
+import org.islandoftex.arara.core.rules.RuleMethods
 import org.islandoftex.arara.core.session.ClassLoading.ClassLoadingStatus
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.GUIDialogs
@@ -17,19 +19,16 @@ import org.islandoftex.arara.lua.rules.LuaConversion.fromLua
 import org.islandoftex.arara.lua.rules.LuaConversion.numberArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.stringArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.toLua
-import org.islandoftex.arara.mvel.utils.ConditionalMethods
-import org.islandoftex.arara.mvel.utils.RuleMethods
 
 /**
  * Set up the global environment Lua directive conditionals are evaluated
  * in (see [LuaConditionalEvaluator]).
  *
  * The environment exposes the very helpers the MVEL dialect offers for
- * conditionals (they live in the MVEL module and will move to a neutral
- * home once the MVEL format is removed), so both dialects behave
- * identically. Only helpers registered in the MVEL conditional registry
- * are bound: the directive conditional world deliberately offers fewer
- * tools than the rule world.
+ * conditionals (both dialects bind the very helpers from the core
+ * module), so both dialects behave identically. Only helpers registered
+ * in the MVEL conditional registry are bound: the directive conditional
+ * world deliberately offers fewer tools than the rule world.
  *
  * Where the MVEL helper set offers overloads for plain extensions and
  * file references, the Lua bindings accept either a string (interpreted
