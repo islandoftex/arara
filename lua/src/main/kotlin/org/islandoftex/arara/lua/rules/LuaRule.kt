@@ -48,7 +48,10 @@ class LuaRuleCommand(
     val exitCheck: (Int) -> Boolean = { code ->
         exitFunction?.let { fn ->
             LuaConversion.withLuaErrorHandling {
-                fn.call(LuaValue.valueOf(code)).toboolean()
+                LuaConversion.booleanResult(
+                    fn.call(LuaValue.valueOf(code)),
+                    "exit"
+                )
             }
         } ?: (code == 0)
     }

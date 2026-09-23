@@ -10,7 +10,12 @@ import io.github.taoguan.luaj.lib.jse.JsePlatform
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 
+import org.islandoftex.arara.lua.rules.LuaConversion.badArgument
+import org.islandoftex.arara.lua.rules.LuaConversion.booleanArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.fromLua
+import org.islandoftex.arara.lua.rules.LuaConversion.numberArgument
+import org.islandoftex.arara.lua.rules.LuaConversion.stringArgument
+import org.islandoftex.arara.lua.rules.LuaConversion.stringListArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.toLua
 import org.islandoftex.arara.mvel.utils.RuleMethods
 
@@ -91,7 +96,9 @@ internal object LuaRuleEnvironment {
         globals.set(
             "throwError",
             luaFunction { args ->
-                throw AraraException(args.arg(1).tojstring())
+                throw AraraException(
+                    args.arg(1).stringArgument("throwError", 1)
+                )
             }
         )
         globals.set(
@@ -154,13 +161,21 @@ internal object LuaRuleEnvironment {
         globals.set(
             "getBasename",
             luaFunction { args ->
-                LuaValue.valueOf(RuleMethods.getBasename(args.arg(1).tojstring()))
+                LuaValue.valueOf(
+                    RuleMethods.getBasename(
+                        args.arg(1).stringArgument("getBasename", 1)
+                    )
+                )
             }
         )
         globals.set(
             "getFiletype",
             luaFunction { args ->
-                LuaValue.valueOf(RuleMethods.getFiletype(args.arg(1).tojstring()))
+                LuaValue.valueOf(
+                    RuleMethods.getFiletype(
+                        args.arg(1).stringArgument("getFiletype", 1)
+                    )
+                )
             }
         )
         globals.set(
@@ -179,7 +194,8 @@ internal object LuaRuleEnvironment {
             "halt",
             luaFunction { args ->
                 RuleMethods.halt(
-                    args.arg(1).takeUnless { it.isnil() }?.toint() ?: 0
+                    args.arg(1).takeUnless { it.isnil() }
+                        ?.numberArgument("halt", 1) ?: 0
                 )
                 LuaValue.NIL
             }
@@ -195,16 +211,22 @@ internal object LuaRuleEnvironment {
         globals.set(
             "trimSpaces",
             luaFunction { args ->
-                LuaValue.valueOf(RuleMethods.trimSpaces(args.arg(1).tojstring()))
+                LuaValue.valueOf(
+                    RuleMethods.trimSpaces(
+                        args.arg(1).stringArgument("trimSpaces", 1)
+                    )
+                )
             }
         )
         globals.set(
             "replicatePattern",
             luaFunction { args ->
-                @Suppress("UNCHECKED_CAST")
-                val values = fromLua(args.arg(2)) as? List<Any>
-                    ?: throw AraraException("replicatePattern expects a list.")
-                toLua(RuleMethods.replicatePattern(args.arg(1).tojstring(), values))
+                toLua(
+                    RuleMethods.replicatePattern(
+                        args.arg(1).stringArgument("replicatePattern", 1),
+                        args.arg(2).stringListArgument("replicatePattern", 2)
+                    )
+                )
             }
         )
         globals.set(
@@ -216,7 +238,11 @@ internal object LuaRuleEnvironment {
         globals.set(
             "isOnPath",
             luaFunction { args ->
-                LuaValue.valueOf(RuleMethods.isOnPath(args.arg(1).tojstring()))
+                LuaValue.valueOf(
+                    RuleMethods.isOnPath(
+                        args.arg(1).stringArgument("isOnPath", 1)
+                    )
+                )
             }
         )
         listOf(
@@ -240,9 +266,9 @@ internal object LuaRuleEnvironment {
             "unsafelyExecuteSystemCommand",
             luaFunction { args ->
                 val command = LuaConversion.toCommand(args.arg(1))
-                    ?: throw AraraException(
-                        "unsafelyExecuteSystemCommand expects a command " +
-                            "obtained from getCommand."
+                    ?: throw badArgument(
+                        "unsafelyExecuteSystemCommand", 1,
+                        "command", args.arg(1)
                     )
                 val (code, output) = RuleMethods
                     .unsafelyExecuteSystemCommand(command)
@@ -255,14 +281,15 @@ internal object LuaRuleEnvironment {
         globals.set(
             "listFilesByExtensions",
             luaFunction { args ->
-                @Suppress("UNCHECKED_CAST")
-                val extensions = fromLua(args.arg(2)) as? List<String>
-                    ?: throw AraraException("Expected a list of extensions.")
                 toLua(
                     RuleMethods.listFilesByExtensions(
-                        args.arg(1).tojstring(),
-                        extensions,
-                        args.arg(3).toboolean()
+                        args.arg(1)
+                            .stringArgument("listFilesByExtensions", 1),
+                        args.arg(2).stringListArgument(
+                            "listFilesByExtensions", 2
+                        ),
+                        args.arg(3)
+                            .booleanArgument("listFilesByExtensions", 3)
                     ).map { it.toString() }
                 )
             }
@@ -270,14 +297,15 @@ internal object LuaRuleEnvironment {
         globals.set(
             "listFilesByPatterns",
             luaFunction { args ->
-                @Suppress("UNCHECKED_CAST")
-                val patterns = fromLua(args.arg(2)) as? List<String>
-                    ?: throw AraraException("Expected a list of patterns.")
                 toLua(
                     RuleMethods.listFilesByPatterns(
-                        args.arg(1).tojstring(),
-                        patterns,
-                        args.arg(3).toboolean()
+                        args.arg(1)
+                            .stringArgument("listFilesByPatterns", 1),
+                        args.arg(2).stringListArgument(
+                            "listFilesByPatterns", 2
+                        ),
+                        args.arg(3)
+                            .booleanArgument("listFilesByPatterns", 3)
                     ).map { it.toString() }
                 )
             }
@@ -285,17 +313,18 @@ internal object LuaRuleEnvironment {
         globals.set(
             "writeToFile",
             luaFunction { args ->
+                val path = args.arg(1).stringArgument("writeToFile", 1)
                 val content = fromLua(args.arg(2))
-                val append = args.arg(3).toboolean()
+                val append = args.arg(3).booleanArgument("writeToFile", 3)
                 val result = if (content is List<*>) {
                     RuleMethods.writeToFile(
-                        args.arg(1).tojstring(),
+                        path,
                         content.map { it.toString() },
                         append
                     )
                 } else {
                     RuleMethods.writeToFile(
-                        args.arg(1).tojstring(),
+                        path,
                         content.toString(),
                         append
                     )
@@ -306,14 +335,22 @@ internal object LuaRuleEnvironment {
         globals.set(
             "readFromFile",
             luaFunction { args ->
-                toLua(RuleMethods.readFromFile(args.arg(1).tojstring()))
+                toLua(
+                    RuleMethods.readFromFile(
+                        args.arg(1).stringArgument("readFromFile", 1)
+                    )
+                )
             }
         )
         globals.set(
             "isSubdirectory",
             luaFunction { args ->
                 LuaValue.valueOf(
-                    RuleMethods.isSubdirectory(MPPPath(args.arg(1).tojstring()))
+                    RuleMethods.isSubdirectory(
+                        MPPPath(
+                            args.arg(1).stringArgument("isSubdirectory", 1)
+                        )
+                    )
                 )
             }
         )
@@ -321,9 +358,9 @@ internal object LuaRuleEnvironment {
             "showMessage",
             luaFunction { args ->
                 RuleMethods.showMessage(
-                    type = args.arg(1).toint(),
-                    title = args.arg(2).tojstring(),
-                    text = args.arg(3).tojstring()
+                    type = args.arg(1).numberArgument("showMessage", 1),
+                    title = args.arg(2).stringArgument("showMessage", 2),
+                    text = args.arg(3).stringArgument("showMessage", 3)
                 )
                 LuaValue.NIL
             }
@@ -332,21 +369,25 @@ internal object LuaRuleEnvironment {
             "normalizePath",
             luaFunction { args ->
                 LuaValue.valueOf(
-                    MPPPath(args.arg(1).tojstring()).normalize().toString()
+                    MPPPath(args.arg(1).stringArgument("normalizePath", 1))
+                        .normalize()
+                        .toString()
                 )
             }
         )
         globals.set(
             "createDirectories",
             luaFunction { args ->
-                MPPPath(args.arg(1).tojstring()).createDirectories()
+                MPPPath(args.arg(1).stringArgument("createDirectories", 1))
+                    .createDirectories()
                 LuaValue.TRUE
             }
         )
         globals.set(
             "removeDirectory",
             luaFunction { args ->
-                MPPPath(args.arg(1).tojstring()).removeDirectory()
+                MPPPath(args.arg(1).stringArgument("removeDirectory", 1))
+                    .removeDirectory()
                 LuaValue.TRUE
             }
         )

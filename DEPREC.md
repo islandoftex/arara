@@ -305,6 +305,16 @@ such as `if exists('log')` work in both dialects unchanged; compound
 conditions use Lua's `and`, `or` and `not` instead of `&&`, `||` and
 `!`.
 
+The Lua helper boundary is typed and will stay so in version 9: helper
+arguments must match the declared type, mismatches raise Lua-style
+`bad argument #<n> to '<helper>'` errors, and results keep their types
+(conditions and `exit` closures require proper booleans). Lua's
+implicit coercions apply to operators, not to arara's library
+functions — this mirrors how Lua's own standard library type-checks
+its arguments, keeps `'true'` a string and `'1'` out of numeric slots,
+and matches the strict scalar contract the directive parameter parser
+already follows.
+
 Consequences for the plan above:
 
 - the phase 1 default flip turns conditionals Lua as well, so the

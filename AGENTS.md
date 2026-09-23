@@ -46,7 +46,7 @@ pins one minor behind). JVM toolchain is JDK 11
   `org.islandoftex.arara.cli.CLIKt`).
 - `./gradlew :cli:shadowJar` — runnable fat jar at
   `cli/build/libs/arara-cli-with-deps-<version>.jar`; `:cli:build` includes it.
-- `./gradlew test` — all tests (JUnit Platform; tests are written in Kotest).
+- `./gradlew test` — all tests (JUnit Platform; tests are written in kotlin.test).
   Single class:
   `./gradlew :cli:test --tests "org.islandoftex.arara.cli.utils.ExecutionTest"`.
 - `./gradlew detekt` — root task linting every module's main sources
@@ -96,7 +96,12 @@ Dependency chain: `api` → `core` → (`mvel`, `lua`) → `cli`.
   (`LuaConditionalEvaluator` / `LuaOrbTags`, strict boolean, same helper
   registry as the MVEL dialect); the default engine keeps MVEL.
   Single-call conditions are valid in both dialects; compound ones differ
-  (`&&`/`||`/`!` vs `and`/`or`/`not`).
+  (`&&`/`||`/`!` vs `and`/`or`/`not`). The Lua helper boundary is
+  typed: helper arguments must match the declared type and mismatches
+  raise Lua-style `bad argument #<n> to '<helper>'` errors — Lua's
+  implicit coercions apply to operators, not to arara's library
+  functions (convert with `tostring`/`tonumber`; interpolation and flag
+  results still stringify by design).
 - `MPPPath` (in `api`) is a sharp edge: it carries **two** paths —
   `providedPath` (exactly what the caller wrote; backs `isAbsolute`,
   `startsWith`, `resolve`) and `referencePath` (absolutized and normalized;
@@ -128,7 +133,7 @@ database stay.
 
 - The end-to-end suite is fixture-driven:
   `cli/src/test/resources/executiontests/<scenario>/` (YAML rules + config per
-  scenario), driven by the Kotest `ExecutionTest` (`@Isolate`). Fixture paths
+  scenario), driven by the `ExecutionTest` suite. Fixture paths
   in tests are relative to the `cli/` module directory. The `lua-engine`
   scenario plus `LuaExecutionTest` run the same pipeline with
   `RuleEngine.current` flipped to the Lua engine, so both engines have
@@ -137,8 +142,6 @@ database stay.
   target/toolchain) and `arara.kotlin.api` / `arara.kotlin.language`
   (Kotlin api/language versions); the version catalog is
   `gradle/libs.versions.toml`.
-- Kotest autoscan is disabled
-  (`kotest.framework.classpath.scanning.autoscan.disable=true`).
 - Git history starts at the `oc0` tag (the pristine baseline); every later
   `oc<n>` tag marks one verified repair/modernization step, so regressions can
   be bisected by tags.

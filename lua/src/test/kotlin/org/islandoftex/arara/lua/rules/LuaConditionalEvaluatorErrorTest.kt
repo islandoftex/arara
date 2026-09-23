@@ -34,7 +34,8 @@ class LuaConditionalEvaluatorErrorTest {
             "the primary message is the localized evaluation error"
         )
         assertTrue(
-            exception.exception?.message?.contains("neither a file nor a path") == true,
+            exception.exception?.message
+                ?.contains("bad argument #1 to 'exists'") == true,
             "the binding message is available as the cause"
         )
     }

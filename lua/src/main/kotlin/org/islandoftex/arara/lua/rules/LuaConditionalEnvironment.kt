@@ -2,16 +2,20 @@
 package org.islandoftex.arara.lua.rules
 
 import io.github.taoguan.luaj.Globals
+import io.github.taoguan.luaj.LuaNumber
+import io.github.taoguan.luaj.LuaString
 import io.github.taoguan.luaj.LuaValue
 import io.github.taoguan.luaj.Varargs
 import io.github.taoguan.luaj.lib.VarArgFunction
 import io.github.taoguan.luaj.lib.jse.JsePlatform
-import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.session.ClassLoading.ClassLoadingStatus
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.GUIDialogs
+import org.islandoftex.arara.lua.rules.LuaConversion.badArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.fromLua
+import org.islandoftex.arara.lua.rules.LuaConversion.numberArgument
+import org.islandoftex.arara.lua.rules.LuaConversion.stringArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.toLua
 import org.islandoftex.arara.mvel.utils.ConditionalMethods
 import org.islandoftex.arara.mvel.utils.RuleMethods
@@ -31,6 +35,11 @@ import org.islandoftex.arara.mvel.utils.RuleMethods
  * file references, the Lua bindings accept either a string (interpreted
  * as the extension, mirroring the MVEL string overload) or a file
  * reference value obtained from `toFile` or `currentFile`.
+ *
+ * The helper boundary is typed: arguments must match the declared type
+ * and mismatches raise Lua-style bad argument errors. Lua's implicit
+ * coercions apply to operators, not to arara's library functions —
+ * convert explicitly with `tostring` or `tonumber` when needed.
  */
 internal object LuaConditionalEnvironment {
     /**
@@ -59,15 +68,22 @@ internal object LuaConditionalEnvironment {
         (from..narg()).map { fromLua(arg(it)) }
 
     /**
-     * Extract the argument at [index] as a file reference; strings are
-     * treated as plain paths.
+     * Extract the argument at [index] as a file reference: a file object
+     * (from `toFile` or `currentFile`) or a real Lua string (the plain
+     * extension overload). Lua numbers do not silently become strings
+     * here — the helpers type-check their arguments as Lua's own
+     * library functions do; convert explicitly with `tostring` when
+     * needed.
      */
-    private fun Varargs.fileArgument(index: Int): Any =
-        arg(index).takeIf { it.isuserdata() }?.touserdata()
-            ?: arg(index).takeIf { it.isstring() }?.tojstring()
-            ?: throw AraraException(
-                "The provided value is neither a file nor a path."
-            )
+    private fun Varargs.fileArgument(index: Int, helper: String): Any {
+        val value = arg(index)
+        return when {
+            value.isuserdata() -> value.touserdata() as? MPPPath
+                ?: throw badArgument(helper, index, "file or string", value)
+            value is LuaString -> value.tojstring()
+            else -> throw badArgument(helper, index, "file or string", value)
+        }
+    }
 
     // the bindings forward to Java vararg helpers (hence the spread
     // operators), inspect argument positions (hence the offsets) and
@@ -83,7 +99,8 @@ internal object LuaConditionalEnvironment {
             globals.set(
                 name,
                 luaFunction { args ->
-                    val result = when (val reference = args.fileArgument(1)) {
+                    val reference = args.fileArgument(1, name)
+                    val result = when (reference) {
                         is String -> when (name) {
                             "exists" -> ConditionalMethods.exists(reference)
                             "missing" -> ConditionalMethods.missing(reference)
@@ -96,9 +113,8 @@ internal object LuaConditionalEnvironment {
                             "changed" -> ConditionalMethods.changed(reference)
                             else -> ConditionalMethods.unchanged(reference)
                         }
-                        else -> throw AraraException(
-                            "The '$name' helper requires a file or an " +
-                                "extension."
+                        else -> throw badArgument(
+                            name, 1, "file or string", args.arg(1)
                         )
                     }
                     LuaValue.valueOf(result)
@@ -109,16 +125,13 @@ internal object LuaConditionalEnvironment {
         globals.set(
             "found",
             luaFunction { args ->
-                val result = when (val reference = args.fileArgument(1)) {
-                    is String -> ConditionalMethods.found(
-                        reference, args.arg(2).tojstring()
-                    )
-                    is MPPPath -> ConditionalMethods.found(
-                        reference, args.arg(2).tojstring()
-                    )
-                    else -> throw AraraException(
-                        "The 'found' helper requires a file or an " +
-                            "extension."
+                val reference = args.fileArgument(1, "found")
+                val needle = args.arg(2).stringArgument("found", 2)
+                val result = when (reference) {
+                    is String -> ConditionalMethods.found(reference, needle)
+                    is MPPPath -> ConditionalMethods.found(reference, needle)
+                    else -> throw badArgument(
+                        "found", 1, "file or string", args.arg(1)
                     )
                 }
                 LuaValue.valueOf(result)
@@ -129,7 +142,9 @@ internal object LuaConditionalEnvironment {
             "toFile",
             luaFunction { args ->
                 LuaValue.userdataOf(
-                    ConditionalMethods.toFile(args.arg(1).tojstring())
+                    ConditionalMethods.toFile(
+                        args.arg(1).stringArgument("toFile", 1)
+                    )
                 )
             }
         )
@@ -148,11 +163,12 @@ internal object LuaConditionalEnvironment {
         globals.set(
             "getBasename",
             luaFunction { args ->
-                when (val reference = args.fileArgument(1)) {
+                val reference = args.fileArgument(1, "getBasename")
+                when (reference) {
                     is String -> RuleMethods.getBasename(reference)
                     is MPPPath -> RuleMethods.getBasename(reference)
-                    else -> throw AraraException(
-                        "The 'getBasename' helper requires a file."
+                    else -> throw badArgument(
+                        "getBasename", 1, "file or string", args.arg(1)
                     )
                 }.let { LuaValue.valueOf(it) }
             }
@@ -168,34 +184,38 @@ internal object LuaConditionalEnvironment {
                     table.set(
                         "get",
                         luaFunction { args ->
-                            toLua(session.get(args.arg(1).tojstring()))
+                            val key = args.arg(1)
+                                .stringArgument("session.get", 1)
+                            toLua(session.get(key))
                         }
                     )
                     table.set(
                         "put",
                         luaFunction { args ->
-                            session.put(
-                                args.arg(1).tojstring(),
-                                fromLua(args.arg(2))
-                                    ?: throw AraraException(
-                                        "The session value cannot be null."
-                                    )
-                            )
+                            val key = args.arg(1)
+                                .stringArgument("session.put", 1)
+                            val value = fromLua(args.arg(2))
+                                ?: throw badArgument(
+                                    "session.put", 2, "value", args.arg(2)
+                                )
+                            session.put(key, value)
                             LuaValue.NIL
                         }
                     )
                     table.set(
                         "contains",
                         luaFunction { args ->
-                            LuaValue.valueOf(
-                                session.contains(args.arg(1).tojstring())
-                            )
+                            val key = args.arg(1)
+                                .stringArgument("session.contains", 1)
+                            LuaValue.valueOf(session.contains(key))
                         }
                     )
                     table.set(
                         "remove",
                         luaFunction { args ->
-                            session.remove(args.arg(1).tojstring())
+                            val key = args.arg(1)
+                                .stringArgument("session.remove", 1)
+                            session.remove(key)
                             LuaValue.NIL
                         }
                     )
@@ -242,27 +262,23 @@ internal object LuaConditionalEnvironment {
         // classloading helpers return a table with the status name and
         // the loaded class or object
         bindClassLoading(
-            globals, "loadClass"
-        ) { reference, className ->
-            when (reference) {
-                is MPPPath -> ConditionalMethods.loadClass(reference, className)
-                is String -> ConditionalMethods.loadClass(reference, className)
-                else -> throw AraraException(
-                    "The 'loadClass' helper requires a file."
-                )
+            globals, "loadClass",
+            fileBody = { reference, className ->
+                ConditionalMethods.loadClass(reference, className)
+            },
+            stringBody = { reference, className ->
+                ConditionalMethods.loadClass(reference, className)
             }
-        }
+        )
         bindClassLoading(
-            globals, "loadObject"
-        ) { reference, className ->
-            when (reference) {
-                is MPPPath -> ConditionalMethods.loadObject(reference, className)
-                is String -> ConditionalMethods.loadObject(reference, className)
-                else -> throw AraraException(
-                    "The 'loadObject' helper requires a file."
-                )
+            globals, "loadObject",
+            fileBody = { reference, className ->
+                ConditionalMethods.loadObject(reference, className)
+            },
+            stringBody = { reference, className ->
+                ConditionalMethods.loadObject(reference, className)
             }
-        }
+        )
     }
 
     // the dialog arguments follow a positional protocol (an optional
@@ -279,16 +295,24 @@ internal object LuaConditionalEnvironment {
         globals.set(
             name,
             luaFunction { args ->
-                // an explicit width is present when the first argument is
-                // a number and the second one is a number as well (the
-                // mandatory message type); otherwise the first argument
-                // is the type and the default width applies
-                val hasWidth = args.arg(1).isnumber() && args.arg(2).isnumber()
+                // an explicit width is present when the first argument
+                // is a real number and the second one is a number as
+                // well (the mandatory message type); otherwise the first
+                // argument is the type and the default width applies.
+                // Instance checks, not isnumber() — in this LuaJ fork
+                // the latter also accepts numeric strings.
+                val hasWidth = args.arg(1) is LuaNumber &&
+                    args.arg(2) is LuaNumber
                 val offset = if (hasWidth) 2 else 1
-                val width = if (hasWidth) args.arg(1).toint() else defaultDialogWidth
-                val type = args.arg(offset).toint()
-                val title = args.arg(offset + 1).tojstring()
-                val text = args.arg(offset + 2).tojstring()
+                val width = if (hasWidth)
+                    args.arg(1).numberArgument(name, 1)
+                else
+                    defaultDialogWidth
+                val type = args.arg(offset).numberArgument(name, offset)
+                val title = args.arg(offset + 1)
+                    .stringArgument(name, offset + 1)
+                val text = args.arg(offset + 2)
+                    .stringArgument(name, offset + 2)
                 val values = args.values(offset + 3)
                     .filterNotNull()
                     .toTypedArray()
@@ -300,15 +324,23 @@ internal object LuaConditionalEnvironment {
     private fun bindClassLoading(
         globals: Globals,
         name: String,
-        body: (reference: Any, className: String) ->
+        fileBody: (reference: MPPPath, className: String) ->
+            Pair<ClassLoadingStatus, Any>,
+        stringBody: (reference: String, className: String) ->
             Pair<ClassLoadingStatus, Any>
     ) {
         globals.set(
             name,
             luaFunction { args ->
-                val (status, value) = body(
-                    args.fileArgument(1), args.arg(2).tojstring()
-                )
+                val className = args.arg(2).stringArgument(name, 2)
+                val reference = args.fileArgument(1, name)
+                val (status, value) = when (reference) {
+                    is MPPPath -> fileBody(reference, className)
+                    is String -> stringBody(reference, className)
+                    else -> throw badArgument(
+                        name, 1, "file or string", args.arg(1)
+                    )
+                }
                 LuaValue.tableOf().also { table ->
                     table.set("status", LuaValue.valueOf(status.name))
                     table.set("value", LuaValue.userdataOf(value))

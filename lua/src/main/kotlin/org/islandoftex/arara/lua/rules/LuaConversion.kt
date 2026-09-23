@@ -1,9 +1,14 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua.rules
 
+import io.github.taoguan.luaj.LuaBoolean
 import io.github.taoguan.luaj.LuaError
+import io.github.taoguan.luaj.LuaInteger
+import io.github.taoguan.luaj.LuaNumber
+import io.github.taoguan.luaj.LuaString
 import io.github.taoguan.luaj.LuaTable
 import io.github.taoguan.luaj.LuaValue
+import io.github.taoguan.luaj.Varargs
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.session.Command
@@ -18,7 +23,9 @@ internal object LuaConversion {
      *
      * Lists are turned into (1-based) Lua sequences, maps into tables with
      * string keys, paths into their string representation and everything
-     * else which is not a primitive is wrapped into a userdatum.
+     * else which is not a primitive is wrapped into a userdatum. Longs
+     * become exact integers while they fit; beyond the exact double
+     * range the Lua number loses precision.
      */
     // one branch per supported type: the complexity mirrors the type mapping
     @Suppress("CyclomaticComplexMethod")
@@ -28,7 +35,7 @@ internal object LuaConversion {
         is String -> LuaValue.valueOf(value)
         is Boolean -> LuaValue.valueOf(value)
         is Int -> LuaValue.valueOf(value)
-        is Long -> LuaValue.valueOf(value.toDouble())
+        is Long -> LuaInteger.valueOf(value)
         is Float -> LuaValue.valueOf(value.toDouble())
         is Double -> LuaValue.valueOf(value)
         is MPPPath -> LuaValue.valueOf(value.toString())
@@ -82,6 +89,86 @@ internal object LuaConversion {
             keys.associate { key -> key.tojstring() to fromLua(table.get(key)) }
         }
     }
+
+    /**
+     * Build the error for a helper argument of the wrong type, mirroring
+     * the argument errors of Lua's own library functions: Lua's operators
+     * coerce, its library functions type-check, and the arara helpers
+     * are library functions.
+     */
+    fun badArgument(
+        helper: String,
+        index: Int,
+        expected: String,
+        actual: LuaValue
+    ): AraraException = AraraException(
+        "bad argument #$index to '$helper' ($expected expected, " +
+            "got ${actual.typename()})"
+    )
+
+    /**
+     * Extract the value as a Lua string, rejecting other types: Lua's
+     * implicit coercions do not apply at the helper boundary, so numbers
+     * do not silently become strings (convert explicitly with `tostring`
+     * instead). The instance check is deliberate — in this LuaJ fork
+     * `isstring()` and `isnumber()` are true for both numbers and
+     * numeric strings.
+     */
+    fun LuaValue.stringArgument(helper: String, index: Int): String =
+        (this as? LuaString)?.tojstring()
+            ?: throw badArgument(helper, index, "string", this)
+
+    /**
+     * Extract the value as a Lua number, rejecting other types.
+     */
+    fun LuaValue.numberArgument(helper: String, index: Int): Int =
+        (this as? LuaNumber)?.toint()
+            ?: throw badArgument(helper, index, "number", this)
+
+    /**
+     * Extract the value as a Lua boolean, rejecting other types.
+     */
+    fun LuaValue.booleanArgument(helper: String, index: Int): Boolean =
+        (this as? LuaBoolean)?.toboolean()
+            ?: throw badArgument(helper, index, "boolean", this)
+
+    fun Varargs.stringArgument(helper: String, index: Int): String =
+        arg(index).stringArgument(helper, index)
+
+    fun Varargs.numberArgument(helper: String, index: Int): Int =
+        arg(index).numberArgument(helper, index)
+
+    fun Varargs.booleanArgument(helper: String, index: Int): Boolean =
+        arg(index).booleanArgument(helper, index)
+
+    /**
+     * Extract the value as a list of strings, rejecting other shapes
+     * and non-string elements alike.
+     */
+    fun LuaValue.stringListArgument(
+        helper: String,
+        index: Int
+    ): List<String> {
+        val list = fromLua(this) as? List<*>
+            ?: throw badArgument(helper, index, "list of strings", this)
+        return list.map { element ->
+            element as? String
+                ?: throw badArgument(helper, index, "list of strings", this)
+        }
+    }
+
+    /**
+     * Convert the result of a rule's `exit` closure: it has to be a real
+     * boolean — numbers and strings are not silently truth-tested, which
+     * (given that `toboolean()` accepts nearly everything in this fork)
+     * would make every exit code pass.
+     */
+    fun booleanResult(value: LuaValue, source: String): Boolean =
+        (value as? LuaBoolean)?.toboolean()
+            ?: throw AraraException(
+                "bad result from '$source' (boolean expected, " +
+                    "got ${value.typename()})"
+            )
 
     /**
      * Convert the result of a Lua flag evaluation into a list of strings

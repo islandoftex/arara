@@ -40,16 +40,12 @@ class LuaConditionalEvaluator(
             LuaConditionalEnvironment.newGlobals()
                 .load("return (" + conditional.condition + ")")
                 .call()
-        } catch (exception: AraraException) {
-            // helper binding errors (e.g. a wrong argument type for
-            // exists or found) have to surface behind the same localized
-            // wrapper as the MVEL dialect produces for helper failures,
-            // with the binding message available as the cause
-            throw AraraException(
-                LanguageController.messages.ERROR_EVALUATE_COMPILATION_FAILED,
-                exception
-            )
         } catch (exception: RuntimeException) {
+            // Lua errors and helper binding errors cross the Lua VM as
+            // LuaError (a runtime exception) with the original exception
+            // preserved in the cause chain, so a single runtime catch
+            // wraps both behind the localized evaluation error, with
+            // the binding message available as the cause
             throw AraraException(
                 LanguageController.messages.ERROR_EVALUATE_COMPILATION_FAILED,
                 exception

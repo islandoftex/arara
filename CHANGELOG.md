@@ -46,6 +46,17 @@ on.
   conditionals. Safe mode still skips interpolation entirely, and
   unterminated or malformed tags report the same interpolation error as
   the MVEL dialect.
+* Under `--engine lua`, the helper boundary is typed: helper arguments
+  have to match the declared type and mismatches raise Lua-style
+  `bad argument #<n> to '<helper>'` errors behind the usual localized
+  wrappers. Lua's implicit coercions apply to operators, not to
+  arara's library functions; convert explicitly with `tostring` or
+  `tonumber`. Numbers no longer silently become strings (`exists(123)`
+  used to look for extension `123`), the `halt` exit code has to be a
+  number, and a rule's `exit` closure has to return a proper boolean
+  (returning the raw exit code made every code pass). Interpolation and
+  flag results still stringify by design, and the named conversion
+  helpers (`isTrue` and friends) keep interpreting values.
 * The rule errors of the Lua engine now share the localized header with
   the YAML engine, unsupported rule file formats report a new localized
   message, and the previously untranslated project file message is now
