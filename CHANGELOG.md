@@ -138,6 +138,11 @@ on.
   itself as the diagnostic detail, instead of a string encoding of it;
   the terminal error output for failed commands is unchanged, and the
   exception details are preserved more faithfully.
+* The message catalog properties for database load and save failures
+  were renamed from their historical XML-era names
+  (`ERROR_LOAD_COULD_NOT_LOAD_XML` and `ERROR_SAVE_COULD_NOT_SAVE_XML`)
+  to format-neutral ones ending in `_DATABASE`, matching the messages
+  they have always carried.
 * The shared rule helpers (`RuleMethods`, `ConditionalMethods`,
   `MethodUtils`), the shared configuration model (`LocalConfiguration`,
   `SerialFileType`) and the interpreter exception moved from the MVEL

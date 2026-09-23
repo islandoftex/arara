@@ -90,7 +90,7 @@ data class Database(
             path.normalize().writeText(content)
         }.getOrElse {
             throw AraraException(
-                LanguageController.messages.ERROR_SAVE_COULD_NOT_SAVE_XML
+                LanguageController.messages.ERROR_SAVE_COULD_NOT_SAVE_DATABASE
                     .formatString(path.fileName),
                 it
             )
@@ -122,7 +122,7 @@ data class Database(
                 }.getOrElse {
                     throw AraraException(
                         LanguageController
-                            .messages.ERROR_LOAD_COULD_NOT_LOAD_XML
+                            .messages.ERROR_LOAD_COULD_NOT_LOAD_DATABASE
                             .formatString(path.fileName),
                         it
                     )
