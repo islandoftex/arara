@@ -4,7 +4,7 @@ This document is the removal playbook for the deprecated YAML *rule* and
 *configuration* formats. It lists, file by file, what has to happen when we
 finally remove them in favor of the Lua formats introduced in version 8.0.
 The version 9 outlooks at the end record the decisions beyond the removal
-(the conditional dialect and the path model).
+(the conditional dialect, the path model and the class loading lifecycle).
 
 > **Scope.** Only rules (`arara-rule-*.yaml`, user rules) and configuration
 > files (`.araraconfig.yaml`, `araraconfig.yaml`, `.arararc.yaml`,
@@ -381,3 +381,39 @@ Two candidates are recorded for the next major version:
   change. The move is deferred pending the decision of the upstream
   technical leads; the JVM path API remains the correct backend for a
   JVM-only tree in the meantime.
+
+## Version 9 outlook — the class loading lifecycle
+
+The class loading helper backing the conditional `loadClass` and
+`loadObject` helpers closes the archive loader once the requested class
+is loaded: the loader keeps the underlying archive open, and closing it
+releases the file. The loaded class, however, keeps referencing its
+defining loader forever, and the JVM resolves classes lazily — a class
+referenced only inside a method body is looked up through the defining
+loader at the moment the method first runs. A closed loader can no
+longer serve such lookups, so an archive with more than one class
+fails with a class-not-found error at the first call reaching a
+companion class. The failure is selective: static initializers run
+while the loader is still open, so simple classes pass every test.
+
+The trade-off only exists on Windows, where an open archive handle
+locks the file; on Linux and macOS an open file can be deleted at any
+time. Three resolutions work on all three platforms:
+
+- keeping the loader open for the duration of the run, the ecosystem
+  default for plugin-style loading: multi-class archives resolve
+  correctly, and the user's archive stays locked on Windows for one
+  arara run only;
+- copying the archive to a temporary file once and loading from the
+  copy: the user's archive is never locked on any platform, and the
+  disposable copy is cleaned up by the operating system's temporary
+  file policy;
+- an in-memory loader reading the archive bytes once: no file locks
+  anywhere, at the cost of a small custom class loader to maintain.
+
+The recommended resolution is the first — it matches the standard
+behavior of every JVM plugin system and reduces to a two-line change —
+with the temporary-copy variant as the fallback should a zero-lock
+guarantee on the user's archive be deemed a hard requirement. The move
+is deferred pending the decision of the upstream technical leads; the
+helper's documentation states the limitation in the meantime.
