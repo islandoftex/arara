@@ -315,13 +315,19 @@ class JVMMPPPathTest {
     inner class `degenerate spellings` {
         @Test
         fun `collapses redundant spellings at construction`() {
+            // spellings that are neither drive-prefixed nor UNC take
+            // the host's directory separator at construction, matching
+            // the canonicalization the previous platform backend
+            // performed; drive-prefixed and UNC spellings keep their
+            // backslashes on every host, as the Windows-shaped group
+            // pins
             assertEquals(
-                "a/b",
+                "a" + File.separator + "b",
                 MPPPath("a//b").toJVMPath().toString(),
                 "redundant separators collapse in the provided spelling"
             )
             assertEquals(
-                "a/b",
+                "a" + File.separator + "b",
                 MPPPath("a/./b").toJVMPath().toString(),
                 "interior dot segments collapse in the provided spelling"
             )
@@ -330,7 +336,7 @@ class JVMMPPPathTest {
         @Test
         fun `consumes leading dotdot on absolute spellings`() {
             assertEquals(
-                "/x",
+                File.separator + "x",
                 MPPPath("/../x").toJVMPath().toString(),
                 "leading dotdot on an absolute spelling is consumed eagerly"
             )

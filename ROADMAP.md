@@ -467,6 +467,16 @@ their formatting is validated only when requested — behind the
 renamed rule-validation flag and its new Lua sibling, matching the
 task-family naming.
 
+The Windows verification refined one contract: spellings that are
+neither drive-prefixed nor UNC take the host's directory separator
+at construction — the same canonicalization the previous platform
+backend performed — while the re-spelling gate keeps
+forward-slashed drive and UNC spellings correct on Windows, as the
+per-host pins express. The refinement came from the verification
+itself: the degenerate-spelling pins had been written against the
+library's development sources instead of the shipped artifact,
+and the artifact is what defines the contract.
+
 ## Version 9 outlook — the class loading lifecycle
 
 The class loading helper backing the conditional `loadClass` and
