@@ -7,10 +7,13 @@ Upstream development happens on GitLab (GitHub is only a mirror). This particula
 copy carries a large, externally generated change: the YAML/MVEL rule format was
 deprecated in favour of a new Lua rule and configuration format, selectable at
 runtime via `--engine yaml|lua` (default: YAML). The change arrived untested and
-was then repaired, modernized and simplified by the tagged sequence `oc0` through
-`oc12`: the full suite is green, detekt and spotless pass with zero findings, the
-tool is smoke-verified end-to-end on the provisioned JRE 11, and Kotlin, Gradle,
-the plugins and the libraries are at their latest stable versions.
+was then repaired, modernized and simplified by the tagged `oc` sequence, which
+continues past the repair: the full suite is green, the tool is smoke-verified
+end-to-end on the provisioned JRE 11, and Kotlin, Gradle, the plugins and the
+libraries are at their latest stable versions. The same sequence later re-based
+the path model on a multiplatform path algebra behind a frozen public surface,
+migrated the common-able file helpers to the same backend, and verified the
+full suite on a real Windows machine.
 
 `oc0` is the exact pre-repair baseline and every later `oc<n>` tag is one
 self-contained, verified step — diff or bisect against the tags when in doubt
@@ -43,6 +46,14 @@ engine scenarios including a wrongly typed conditional probe) and the
 real TeX toolchain (an official `pdflatex` rule run through both
 dialects, plus a file-database double run asserting the record-and-skip
 semantics of `changed`).
+
+The full suite is also verified on a real Windows machine. When
+replicating there, clone with the checkout line endings pinned (or set
+them in the clone before running — the formatter expects the host's
+native endings in a working copy without a git repository), then run
+the same gates. The runnable jar is
+`arara-cli-with-deps-<version>.jar`; the bare module jar next to it
+carries no dependencies.
 
 ## Commands
 
@@ -123,6 +134,11 @@ Dependency chain: `api` → `core` → (`mvel`, `lua`) → `cli`.
   `startsWith`, `resolve`) and `referencePath` (absolutized and normalized;
   backs `toString`, I/O, and **equality**). `MPPPath("a") ==
   MPPPath("/abs/cwd/a")` is true. Never assume identity semantics.
+  Internally the model runs on a multiplatform path algebra, with the JVM
+  bridges kept as the frozen escape hatch; metadata queries follow symlink
+  chains (the backend reads them without following), and on Windows,
+  drive-prefixed and UNC spellings written with forward slashes are
+  re-spelled before parsing so they keep their Windows shape.
 - `rules/` — every official rule ships in **both** formats
   (`arara-rule-*.yaml` + `.lua` twins). `scripts/yaml2lua.py` converts rules;
   `scripts/check_lua_rules.lua` smoke-tests all Lua rules with a plain `lua`
