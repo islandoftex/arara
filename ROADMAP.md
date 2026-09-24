@@ -417,3 +417,14 @@ with the temporary-copy variant as the fallback should a zero-lock
 guarantee on the user's archive be deemed a hard requirement. The move
 is deferred pending the decision of the upstream technical leads; the
 helper's documentation states the limitation in the meantime.
+
+One further observation for the same decision: the class loading path
+has no safe-run guard. The safe mode promise — disabling potentially
+harmful features — is honored by the system command helper (the single
+safe-run check in the core), yet loading arbitrary classes from
+user-provided archives works in safe mode, and a loaded class can do
+anything the JVM can do. Whether this asymmetry is intended upstream
+cannot be verified from this tree, and changing safe-mode semantics is
+user-visible, so the guard question belongs with the lifecycle
+decision: a safe-run rejection for the class loading helpers would
+also moot the archive-lock trade-off for the guarded path.
