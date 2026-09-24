@@ -505,6 +505,16 @@ the Lua engine happy paths all passed. No production code has
 changed across the three verification waves; every finding was
 test or fixture authoring.
 
+The verification campaign closes with two build-hygiene notes for
+upstream, both predating the migration and surfaced by running the
+build on Windows: the jar merger reports its Kotlin metadata
+entries as excluded from duplicate processing on every fresh
+build, with the remedy described in the merger's own diagnostics —
+the merged jar itself is validated by every smoke run — and the
+build reports deprecated Gradle features that will need attention
+before the next major Gradle release. Neither affects the shipped
+tool; both are recorded for whoever maintains the build next.
+
 ## Version 9 outlook — the class loading lifecycle
 
 The class loading helper backing the conditional `loadClass` and
