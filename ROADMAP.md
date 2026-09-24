@@ -458,8 +458,10 @@ upstream mechanism rather than inventing a repository-level one:
 the branch is cloned with the checkout configuration carried on
 the clone invocation itself, the two settings are pinned locally
 inside the clone, and the full gates then run unchanged. A
-repository-level line-ending policy remains a candidate improvement
-to refer upstream.
+repository-level line-ending policy was considered and closed as
+won't fix: the environment-level mechanism matches the upstream
+practice and stands as this tree's resolution, and no
+repository-level policy will be added.
 
 The rule formatting steps join the on-demand regime as part of the
 same step: both rule sets are converter-generated artifacts, so
