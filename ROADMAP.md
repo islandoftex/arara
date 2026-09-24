@@ -373,14 +373,63 @@ Two candidates are recorded for the next major version:
 - the class name is a fossil of the removed Kotlin Multiplatform setup;
   a rename is public API breakage and belongs to a major version;
 - re-basing the class on a multiplatform path library such as okio was
-  investigated and is feasible: the backend would absorb the platform
-  variance, a fake file system would make Windows-shaped paths testable
-  on any host, and the required new code is small (a current-directory
-  acquisition, a segment-wise prefix check). The costs are concrete —
-  the file database keys and the displayed path forms on Windows would
-  change. The move is deferred pending the decision of the upstream
-  technical leads; the JVM path API remains the correct backend for a
-  JVM-only tree in the meantime.
+  investigated, found feasible, and approved by the technical leads:
+  the swap lays the foundation for a possible return to a true
+  multiplatform architecture. The work proceeds on the dedicated
+  `okio-migration` branch, tagged in the same sequence as the main
+  line, and merges back only after the full suite passes on a real
+  Windows machine; the default line stays release-ready at its
+  current tip throughout.
+
+The decision packet, verified against the okio sources directly:
+
+- the path algebra is pure common code: the JVM actual of the path
+  class delegates every member (root, segments, name, parent,
+  resolution, normalization, equality, hashing, ordering) to common
+  internals, so path arithmetic executes no platform code; the JVM
+  extras are the `File` and `java.nio` conversions and the platform
+  directory separator.
+- the file system face keeps the platform seam in its abstract
+  members (canonicalization, metadata, listing, opening, sourcing,
+  sinking, directory creation, deletion, moving, symlinks); the
+  rest composes in common code. On a modern JVM the system
+  implementation extends the `java.io` adapter and overrides only
+  the metadata, atomic move and symlink operations with `java.nio`
+  — reads, writes, listings and deletions go through `java.io`
+  under the hood.
+- metadata is read without following symlinks, and the link target
+  is reported separately; the path model therefore resolves link
+  chains itself before answering existence, type, size and time
+  queries, so the current follow-links semantics survive the swap.
+- equality, hashing and ordering compare the stored spelling bytes
+  and are always case-sensitive. The reference duality normalizes
+  before comparing, which makes reference equality provably
+  identical between the two backends on case-sensitive platforms;
+  the remaining deltas are Windows-shaped: case-folded equality
+  today versus case-sensitive equality after the swap, and
+  drive-relative spellings no longer resolving against the
+  per-drive working directory. Mixed-separator spellings such as
+  `C:/x` would be the one delta that breaks correctness rather
+  than shape — the TeX toolchain reports forward slashes on
+  Windows, while the new algebra recognizes a Windows path by its
+  first backslash — so the model re-spells drive-prefixed and UNC
+  spellings with backslashes on Windows before parsing.
+  Degenerate provided spellings narrow everywhere: interior `.`
+  segments and redundant separators collapse at construction,
+  leading `..` on absolute paths is consumed eagerly, and the
+  empty string becomes `.`.
+- the public bridges stay: the surface is frozen, every consumer
+  keeps working through them, and the swap is contained in the
+  path model itself; removing the bridges belongs to the same
+  major-version decision as the class rename.
+
+The costs stay as recorded — the file database keys and the
+displayed path forms on Windows change, per the mechanisms above —
+and the merge criteria are explicit: all gates green on Linux for
+every step of the branch, the full suite green on a real Windows
+machine, and the report reviewed. Only then the branch merges into
+the default line; which release carries the swap remains a calendar
+call.
 
 ## Version 9 outlook — the class loading lifecycle
 
