@@ -505,15 +505,20 @@ the Lua engine happy paths all passed. No production code has
 changed across the three verification waves; every finding was
 test or fixture authoring.
 
-The verification campaign closes with two build-hygiene notes for
-upstream, both predating the migration and surfaced by running the
-build on Windows: the jar merger reports its Kotlin metadata
-entries as excluded from duplicate processing on every fresh
-build, with the remedy described in the merger's own diagnostics —
-the merged jar itself is validated by every smoke run — and the
-build reports deprecated Gradle features that will need attention
-before the next major Gradle release. Neither affects the shipped
-tool; both are recorded for whoever maintains the build next.
+The verification campaign closed with two build-hygiene notes, both
+predating the migration and surfaced by running the build on
+Windows. The jar merger note has since been remedied in this tree:
+the Kotlin metadata entries now warn and process instead of being
+silently dropped before the merger sees them, and the rebuilt jar
+was proven entry-identical to its predecessor and smoke-verified
+across the whole matrix. The remedy carried one operational
+finding with it: duplicate-strategy changes to the jar merger are
+invisible to both the up-to-date check and the build cache — the
+configuration is not part of the task fingerprint — so changing
+this configuration means deleting the output and bypassing the
+cache to get a genuine rebuild. The deprecated Gradle features note
+remains recorded for whoever maintains the build next, mandatory
+only when the project targets the next major Gradle release.
 
 ## Version 9 outlook — the class loading lifecycle
 

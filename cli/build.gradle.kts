@@ -77,5 +77,15 @@ tasks {
             exclude(dependency("org.mvel:mvel2:.*"))
             exclude(dependency("com.github.ajalt.mordant:.*"))
         }
+
+        // the Kotlin metadata entries are handled by the merger
+        // transformer; the default duplicate strategy would silently
+        // drop same-named entries before the transformer sees them,
+        // so they warn and process instead — the healthy dependency
+        // graph carries no such duplicates, and a warning marks any
+        // that ever appear
+        filesMatching("META-INF/*.kotlin_module") {
+            duplicatesStrategy = DuplicatesStrategy.WARN
+        }
     }
 }
