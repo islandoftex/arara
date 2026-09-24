@@ -3,9 +3,10 @@ package org.islandoftex.arara.core.files
 
 import java.io.IOException
 import java.util.zip.CRC32
+import okio.FileSystem
+import okio.Path.Companion.toPath
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.api.files.toJVMFile
 import org.islandoftex.arara.core.localization.LanguageController
 
 /**
@@ -55,7 +56,11 @@ object FileHandling {
     fun calculateHash(path: MPPPath): Long =
         try {
             CRC32().apply {
-                update(path.normalize().toJVMFile().readBytes())
+                update(
+                    FileSystem.SYSTEM.read(path.normalize().toString().toPath()) {
+                        readByteArray()
+                    }
+                )
             }.value
         } catch (exception: IOException) {
             throw AraraException(

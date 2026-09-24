@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
+import java.io.IOException
+import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.div
@@ -14,6 +16,7 @@ import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.configuration.ExecutionOptions
+import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -76,6 +79,56 @@ class FileSearchingTest {
                     listingDir, listOf("q*.txt"), true
                 ).toSet(),
                 "recursive pattern listing"
+            )
+        }
+
+        @Test
+        fun `returns the target itself when it is a regular file`(@TempDir tempDir: Path) {
+            (tempDir / "solo.tex").writeText("quack")
+            assertEquals(
+                listOf((tempDir / "solo.tex").toMPPPath().toString()),
+                FileSearching.listFilesByExtensions(
+                    (tempDir / "solo.tex").toMPPPath(), listOf("tex"), false
+                ).map { it.toString() },
+                "a regular file target lists as its own match"
+            )
+        }
+
+        @Test
+        fun `lists the results in a sorted order`(@TempDir tempDir: Path) {
+            listOf("zeta.tex", "alpha.tex", "mid.tex").forEach {
+                (tempDir / it).writeText("quack")
+            }
+            assertEquals(
+                listOf("alpha.tex", "mid.tex", "zeta.tex"),
+                FileSearching.listFilesByExtensions(
+                    tempDir.toMPPPath(), listOf("tex"), false
+                ).map { it.fileName },
+                "the search results come sorted by name"
+            )
+        }
+
+        @Test
+        fun `includes a link to a file in the results`(@TempDir tempDir: Path) {
+            val target = tempDir / "target.tex"
+            target.writeText("quack")
+            val link = tempDir / "link.tex"
+            assumeTrue(
+                try {
+                    Files.createSymbolicLink(link, target)
+                    true
+                } catch (_: IOException) {
+                    false
+                } catch (_: UnsupportedOperationException) {
+                    false
+                },
+                "the host cannot create symlinks"
+            )
+            assertTrue(
+                FileSearching.listFilesByExtensions(
+                    tempDir.toMPPPath(), listOf("tex"), false
+                ).map { it.fileName }.contains("link.tex"),
+                "a link to a file matches like the file it points to"
             )
         }
     }

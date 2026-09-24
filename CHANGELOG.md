@@ -168,6 +168,11 @@ on.
 * Symlinked files keep their follow-links semantics for existence,
   type, size and time queries: the new backend reads metadata
   without following links, and the model resolves the chains itself.
+* Directory search results now come in a deterministic, sorted
+  order — the platform listing order was arbitrary before. A search
+  target that is itself a regular file is still returned as its own
+  single match, and links to files keep matching like the files they
+  point to.
 * Command execution failures now report the underlying exception
   itself as the diagnostic detail, instead of a string encoding of it;
   the terminal error output for failed commands is unchanged, and the

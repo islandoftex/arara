@@ -2,13 +2,14 @@
 package org.islandoftex.arara.core.files
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import okio.FileSystem
+import okio.Path.Companion.toPath
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.ProjectFile
-import org.islandoftex.arara.api.files.toJVMFile
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.utils.formatString
 import org.islandoftex.arara.core.utils.globToRegex
@@ -39,25 +40,8 @@ object FileSearching {
         extensions: List<String>,
         recursive: Boolean
     ): List<MPPPath> =
-        runCatching {
-            val files = directory.normalize().toJVMFile().let {
-                if (recursive)
-                    it.walk().filter { entry -> entry.isFile }
-                else
-                    it.walk().maxDepth(1).filter { entry -> entry.isFile }
-            }
-            // the walk is lazy: materialize inside this block so that
-            // traversal failures hit the fallback below
-            files.toList()
-        }.getOrDefault(
-            // if something bad happens,
-            // gracefully fallback to
-            // an empty file list
-            emptyList()
-        ).filter {
-                extensions.contains(it.extension)
-        }.map {
-            MPPPath(it.absolutePath).normalize()
+        searchFiles(directory, recursive).filter {
+            extensions.contains(it.fileName.substringAfterLast('.', ""))
         }
 
     /**
@@ -78,29 +62,39 @@ object FileSearching {
         // search, with the wildcard filter
         // and a potential recursive search
         patterns.map { it.globToRegex() }.let { regexes ->
-            runCatching {
-                val files = directory.normalize().toJVMFile().let {
-                    // return the result of the
-                    // provided search
-                    if (recursive)
-                        it.walk().filter { entry -> entry.isFile }
-                    else
-                        it.walk().maxDepth(1).filter { entry -> entry.isFile }
-                }
-                // the walk is lazy: materialize inside this block so
-                // that traversal failures hit the fallback below
-                files.toList()
-            }.getOrDefault(
-                // if something bad happens,
-                // gracefully fallback to
-                // an empty file list
-                emptyList()
-            ).filter { file ->
-                    regexes.any { it.matches(file.name) }
-            }.map {
-                MPPPath(it.absolutePath).normalize()
+            searchFiles(directory, recursive).filter { file ->
+                regexes.any { it.matches(file.fileName) }
             }
         }
+
+    // the traversal returns the search target itself when it is a
+    // regular file — the platform walk included such a target in its
+    // own results — and otherwise lists the directory tree, following
+    // links as the platform walk did; the recursive listing is lazy,
+    // so it is materialized inside the block for traversal failures
+    // to hit the fallback
+    private fun searchFiles(
+        directory: MPPPath,
+        recursive: Boolean
+    ): List<MPPPath> {
+        val target = directory.normalize()
+        if (target.isRegularFile) return listOf(target)
+        return runCatching {
+            val path = target.toString().toPath()
+            val entries = if (recursive)
+                FileSystem.SYSTEM.listRecursively(path, followSymlinks = true)
+            else
+                FileSystem.SYSTEM.listOrNull(path).orEmpty().asSequence()
+            entries.map { MPPPath(it.toString()) }.toList()
+        }.getOrDefault(
+            // if something bad happens,
+            // gracefully fallback to
+            // an empty file list
+            emptyList()
+        ).filter {
+            it.isRegularFile
+        }
+    }
 
     /**
      * Discovers the file through string reference lookup and sets the

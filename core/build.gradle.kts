@@ -14,6 +14,7 @@ dependencies {
     api(project(":api"))
     implementation(libs.kotlin.logging)
     implementation(libs.kotaml)
+    implementation(libs.okio)
     implementation(libs.ztexec)
 
     testRuntimeOnly(libs.slf4j.simple)
