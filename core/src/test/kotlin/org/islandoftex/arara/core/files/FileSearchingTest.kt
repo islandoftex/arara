@@ -7,6 +7,7 @@ import kotlin.io.path.div
 import kotlin.io.path.writeText
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.ProjectFile
@@ -181,5 +182,22 @@ class FileSearchingTest {
                 "safe mode does not complete extensions when looking up files"
             )
         }
+    }
+
+    @Test
+    fun `falls back to an empty list on a missing directory`(@TempDir tempDir: Path) {
+        val missing = tempDir.resolve("does-not-exist")
+        assertTrue(
+            FileSearching.listFilesByExtensions(
+                missing.toMPPPath(), listOf("tex"), false
+            ).isEmpty(),
+            "a missing directory yields no files by extension"
+        )
+        assertTrue(
+            FileSearching.listFilesByPatterns(
+                missing.toMPPPath(), listOf("*.tex"), true
+            ).isEmpty(),
+            "a missing directory yields no pattern matches"
+        )
     }
 }

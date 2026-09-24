@@ -40,22 +40,25 @@ object FileSearching {
         recursive: Boolean
     ): List<MPPPath> =
         runCatching {
-            directory.normalize().toJVMFile().let {
+            val files = directory.normalize().toJVMFile().let {
                 if (recursive)
                     it.walk().filter { entry -> entry.isFile }
                 else
                     it.walk().maxDepth(1).filter { entry -> entry.isFile }
             }
+            // the walk is lazy: materialize inside this block so that
+            // traversal failures hit the fallback below
+            files.toList()
         }.getOrDefault(
             // if something bad happens,
             // gracefully fallback to
             // an empty file list
-            emptySequence()
+            emptyList()
         ).filter {
                 extensions.contains(it.extension)
         }.map {
             MPPPath(it.absolutePath).normalize()
-        }.toList()
+        }
 
     /**
      * List all files from the provided directory matching the list of file
@@ -75,10 +78,8 @@ object FileSearching {
         // search, with the wildcard filter
         // and a potential recursive search
         patterns.map { it.globToRegex() }.let { regexes ->
-
             runCatching {
-                directory.normalize().toJVMFile().let {
-
+                val files = directory.normalize().toJVMFile().let {
                     // return the result of the
                     // provided search
                     if (recursive)
@@ -86,16 +87,19 @@ object FileSearching {
                     else
                         it.walk().maxDepth(1).filter { entry -> entry.isFile }
                 }
+                // the walk is lazy: materialize inside this block so
+                // that traversal failures hit the fallback below
+                files.toList()
             }.getOrDefault(
                 // if something bad happens,
                 // gracefully fallback to
                 // an empty file list
-                emptySequence()
+                emptyList()
             ).filter { file ->
                     regexes.any { it.matches(file.name) }
             }.map {
                 MPPPath(it.absolutePath).normalize()
-            }.toList()
+            }
         }
 
     /**

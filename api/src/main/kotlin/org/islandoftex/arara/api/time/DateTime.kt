@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 
 /**
- * Platform-independent object to represent a date and time.
+ * A date and time representation.
  */
 public class DateTime {
     /**

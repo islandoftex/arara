@@ -9,7 +9,6 @@ import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.Directives
-import org.islandoftex.arara.core.session.LinearExecutor
 
 /**
  * Implements the project file model: a file reference paired with its
@@ -51,7 +50,7 @@ open class ProjectFile(
         try {
             Directives.extractDirectives(
                 path.readLines(),
-                LinearExecutor.executionOptions.parseOnlyHeader,
+                parseOnlyHeader,
                 fileType
             )
         } catch (ioexception: AraraIOException) {

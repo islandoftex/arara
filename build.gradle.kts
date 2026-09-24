@@ -59,7 +59,7 @@ spotless {
             mapOf(
                 "ktlint_standard" to "disabled",
                 "ktlint_standard_import-ordering" to "enabled",
-                "ij_kotlin_imports_layout" to "ascii"
+                "ij_kotlin_imports_layout" to "*"
             )
         )
         trimTrailingWhitespace()
@@ -80,7 +80,7 @@ spotless {
             mapOf(
                 "ktlint_standard" to "disabled",
                 "ktlint_standard_import-ordering" to "enabled",
-                "ij_kotlin_imports_layout" to "ascii"
+                "ij_kotlin_imports_layout" to "*"
             )
         )
         licenseHeader("// SPDX-License-Identifier: BSD-3-Clause")

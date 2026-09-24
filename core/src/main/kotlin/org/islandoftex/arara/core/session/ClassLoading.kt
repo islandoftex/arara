@@ -29,6 +29,13 @@ object ClassLoading {
 
     /**
      * Loads a class from the provided file, potentially a Java archive.
+     *
+     * Note that the class loader backing the archive is closed once
+     * this method returns; the loaded class keeps referencing it, so
+     * classes whose method bodies lazily resolve further classes from
+     * the same archive fail once the loader is closed. This is a known
+     * upstream design limitation with a trade-off: keeping the loader
+     * open would lock the archive file on some operating systems.
      * @param path File containing the Java bytecode (namely, a JAR).
      * @param name The canonical name of the class.
      * @return A pair representing the status and the class.
@@ -112,6 +119,9 @@ object ClassLoading {
                 // by invoking the default
                 // constructor (without arguments)
                 value = pair.second.getDeclaredConstructor().newInstance()
+            } catch (_: NoSuchMethodException) {
+                // the class does not provide a default constructor
+                status = ClassLoadingStatus.INSTANTIATION_EXCEPTION
             } catch (_: IllegalAccessException) {
                 status = ClassLoadingStatus.ILLEGAL_ACCESS
             } catch (_: InstantiationException) {

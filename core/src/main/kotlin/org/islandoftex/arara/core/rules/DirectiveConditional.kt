@@ -21,9 +21,9 @@ data class DirectiveConditional(
      * @return A string representation of this object.
      */
     override fun toString(): String {
-        return "{ $type" +
-            if (type != DirectiveConditionalType.NONE)
-                ", expression: ${condition.trim()}"
-            else "" + " }"
+        val expression = if (type != DirectiveConditionalType.NONE)
+            ", expression: ${condition.trim()}"
+        else ""
+        return "{ $type$expression }"
     }
 }

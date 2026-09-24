@@ -5,8 +5,8 @@ import java.text.DecimalFormatSymbols
 import java.util.Locale
 
 /**
- * Platform-independent representation of a locale, identified by an IETF
- * BCP 47 language tag such as `en` or `pt-BR`.
+ * A locale representation, identified by an IETF BCP 47 language tag such
+ * as `en` or `pt-BR`.
  *
  * @author Island of TeX
  * @version 5.0
