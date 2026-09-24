@@ -490,6 +490,21 @@ itself now stands validated on real Windows across the API, core
 and Lua modules; the MVEL and command line suites run on the next
 pass.
 
+The third verification wave reached the command line suite and
+flushed out the last six failures, all of them fixture authoring
+of the same shape: four test rules called the echo program
+directly, which is a shell built-in on Windows with no program of
+its own, instead of following the platform-aware pattern their
+sibling fixtures already carry. The interpreter launches programs
+directly — no shell in between, whatever the terminal hosting the
+build — so a command has to exist as a program. The four rules
+join their siblings in the pattern, and the end-to-end machinery
+itself is validated on real Windows: the halt and session
+scenarios, the orb tags, the file database change tracking and
+the Lua engine happy paths all passed. No production code has
+changed across the three verification waves; every finding was
+test or fixture authoring.
+
 ## Version 9 outlook — the class loading lifecycle
 
 The class loading helper backing the conditional `loadClass` and

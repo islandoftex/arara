@@ -6,7 +6,10 @@ return {
     {
       name = "The echoer",
       command = function(ctx)
-        return getCommand("echo", ctx.marker)
+        return isWindows(
+          getCommand("cmd", "/c", "echo", ctx.marker),
+          getCommand("echo", ctx.marker)
+        )
       end
     }
   },
