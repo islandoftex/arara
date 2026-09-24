@@ -516,9 +516,18 @@ finding with it: duplicate-strategy changes to the jar merger are
 invisible to both the up-to-date check and the build cache — the
 configuration is not part of the task fingerprint — so changing
 this configuration means deleting the output and bypassing the
-cache to get a genuine rebuild. The deprecated Gradle features note
-remains recorded for whoever maintains the build next, mandatory
-only when the project targets the next major Gradle release.
+cache to get a genuine rebuild. The deprecated Gradle features note has since been investigated
+and attributed: the build's single deprecation comes from the
+detekt plugin, which resolves its default reports directory
+through the deprecated reporting extension method at apply time —
+its bytecode says so, and the census and isolation runs exonerate
+every other root plugin, the version-checking plugin and this
+tree's own scripts. Nothing can be fixed in-tree while the
+plugin's current release is also its latest published one; the
+summary line stays as expected noise, the upgrade report watches
+for the next stable plugin release, and the note becomes
+mandatory only when the project targets the next major Gradle
+release.
 
 ## Version 9 outlook — the class loading lifecycle
 
