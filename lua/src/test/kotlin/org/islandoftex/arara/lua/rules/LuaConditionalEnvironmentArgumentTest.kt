@@ -2,6 +2,7 @@
 package org.islandoftex.arara.lua.rules
 
 import io.github.taoguan.luaj.LuaValue
+import java.nio.file.Path
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -39,6 +40,14 @@ class LuaConditionalEnvironmentArgumentTest {
                 "${exception.message}"
         )
     }
+
+    /**
+     * Render the path as the content of a Lua single-quoted string
+     * literal: the backslash is an escape character in Lua string
+     * literals, so drive spellings need their backslashes doubled.
+     */
+    private fun luaStringLiteral(path: Path): String =
+        path.toString().replace("\\", "\\\\")
 
     @Test
     fun `rejects numbers where a file or extension is expected`() {
@@ -96,7 +105,9 @@ class LuaConditionalEnvironmentArgumentTest {
         try {
             assertEquals(
                 file.fileName.toString().substringBeforeLast("."),
-                globals.load("return getBasename(toFile('$file'))")
+                globals.load(
+                    "return getBasename(toFile('${luaStringLiteral(file)}'))"
+                )
                     .call()
                     .tojstring(),
                 "a file reference from toFile flows through the helpers"
@@ -126,7 +137,7 @@ class LuaConditionalEnvironmentArgumentTest {
             val result = globals
                 .load(
                     "local s = getSession(); " +
-                        "s.put('f', toFile('$file')); " +
+                        "s.put('f', toFile('${luaStringLiteral(file)}')); " +
                         "local f = s.get('f'); " +
                         "return type(f) .. ' ' .. tostring(exists(f))"
                 )

@@ -477,6 +477,19 @@ itself: the degenerate-spelling pins had been written against the
 library's development sources instead of the shipped artifact,
 and the artifact is what defines the contract.
 
+The second verification wave reached the core and Lua suites and
+flushed out three platform-blind tests, none a defect of the
+migration: the path lookup test asked for the echo utility, which
+is a shell built-in on Windows with no executable of its own, and
+the two Lua argument tests interpolated drive spellings into
+single-quoted Lua string literals, where the backslash is an
+escape character — the same tests would have failed identically
+under the previous backend. The fixes teach the tests the
+platform instead of narrowing the contract, and the migration code
+itself now stands validated on real Windows across the API, core
+and Lua modules; the MVEL and command line suites run on the next
+pass.
+
 ## Version 9 outlook — the class loading lifecycle
 
 The class loading helper backing the conditional `loadClass` and

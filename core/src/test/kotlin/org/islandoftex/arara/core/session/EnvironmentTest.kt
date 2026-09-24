@@ -56,9 +56,15 @@ class EnvironmentTest {
 
     @Test
     fun `finds system utilities`() {
+        // echo is a shell built-in on Windows with no executable of
+        // its own on the system path, so the lookup uses the command
+        // interpreter there, which always sits on the path
+        val utility =
+            if (Environment.checkOS(Environment.SupportedOS.WINDOWS)) "cmd"
+            else "echo"
         assertTrue(
-            Environment.isOnPath("echo"),
-            "the echo utility is on the system path"
+            Environment.isOnPath(utility),
+            "the $utility utility is on the system path"
         )
     }
 
