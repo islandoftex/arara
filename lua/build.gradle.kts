@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 plugins {
-    kotlin("jvm")
+    alias(libs.plugins.kotlin.jvm)
 }
 
 dependencies {

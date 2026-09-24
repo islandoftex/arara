@@ -2,7 +2,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
-    kotlin("jvm")
+    alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.shadow)
     application
 }

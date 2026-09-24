@@ -9,14 +9,14 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
-    kotlin("jvm") version libs.versions.kotlin apply false // Apache 2.0
-    kotlin("plugin.serialization") version libs.versions.kotlin apply false // Apache 2.0
-    alias(libs.plugins.shadow) apply false // Apache 2.0
-    alias(libs.plugins.versions) // Apache 2.0
-    alias(libs.plugins.spotlessChangelog) // Apache 2.0
-    alias(libs.plugins.dokka) apply false // Apache 2.0
-    alias(libs.plugins.detekt) // Apache 2.0
-    alias(libs.plugins.spotless) // Apache 2.0
+    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.shadow) apply false
+    alias(libs.plugins.versions)
+    alias(libs.plugins.spotlessChangelog)
+    alias(libs.plugins.dokka) apply false
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.spotless)
 }
 
 if (!project.hasProperty("JobToken")) {

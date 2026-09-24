@@ -45,6 +45,8 @@ ztexec = { group = "org.zeroturnaround", name = "zt-exec", version.ref = "ztExec
 [plugins]
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detektPlugin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokkaPlugin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 shadow = { id = "com.gradleup.shadow", version.ref = "shadowPlugin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotlessPlugin" }
 spotlessChangelog = { id = "com.diffplug.spotless-changelog", version.ref = "spotlessChangelogPlugin" }
