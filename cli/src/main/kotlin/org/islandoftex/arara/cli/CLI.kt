@@ -27,6 +27,7 @@ import com.github.ajalt.clikt.parameters.types.restrictTo
 import com.github.ajalt.mordant.rendering.Theme
 import com.github.ajalt.mordant.terminal.Terminal
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLoggingConfiguration
 import java.time.LocalDate
 import java.util.Properties
 import kotlin.time.Duration.Companion.milliseconds
@@ -406,6 +407,10 @@ class CLI : CliktCommand("arara") {
  * @param args A string array containing all command line arguments.
  */
 fun main(args: Array<String>) {
+    // the logging facade announces its detected backend once per
+    // virtual machine by default; the command line owns its
+    // output surface, so the announcement is turned off up front
+    KotlinLoggingConfiguration.logStartupMessage = false
     CLI().context {
         suggestTypoCorrection = { enteredValue, possibleValues ->
             possibleValues.filter { it.startsWith(enteredValue) }

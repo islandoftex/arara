@@ -173,6 +173,11 @@ on.
   target that is itself a regular file is still returned as its own
   single match, and links to files keep matching like the files they
   point to.
+* The command line no longer prints the logging facade's one-time
+  startup announcement before its own output: the modernized facade
+  announces the backend it detects once per run by default, and the
+  entry point now turns the announcement off before any logger
+  exists, restoring the quiet output surface the tool always had.
 * Command execution failures now report the underlying exception
   itself as the diagnostic detail, instead of a string encoding of it;
   the terminal error output for failed commands is unchanged, and the
