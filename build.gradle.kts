@@ -13,7 +13,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.shadow) apply false
     alias(libs.plugins.versions)
-    alias(libs.plugins.spotlessChangelog)
+    alias(libs.plugins.spotless.changelog)
     alias(libs.plugins.dokka) apply false
     alias(libs.plugins.detekt)
     alias(libs.plugins.spotless)

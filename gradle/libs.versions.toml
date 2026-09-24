@@ -31,7 +31,7 @@ okio = { group = "com.squareup.okio", name = "okio", version.ref = "okio-version
 okio-fakefilesystem = { group = "com.squareup.okio", name = "okio-fakefilesystem", version.ref = "okio-version" }
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j-version" }
 slf4j-simple = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j-version" }
-ztexec = { group = "org.zeroturnaround", name = "zt-exec", version.ref = "zt-exec-version" }
+zt-exec = { group = "org.zeroturnaround", name = "zt-exec", version.ref = "zt-exec-version" }
 
 [plugins]
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt-version" }
@@ -40,5 +40,5 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-version" }
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow-version" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless-version" }
-spotlessChangelog = { id = "com.diffplug.spotless-changelog", version.ref = "spotless-changelog-version" }
+spotless-changelog = { id = "com.diffplug.spotless-changelog", version.ref = "spotless-changelog-version" }
 versions = { id = "io.github.ben-manes.versions", version.ref = "versions-version" }

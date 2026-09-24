@@ -15,7 +15,7 @@ dependencies {
     implementation(libs.kotlin.logging)
     implementation(libs.kotaml)
     implementation(libs.okio)
-    implementation(libs.ztexec)
+    implementation(libs.zt.exec)
 
     testRuntimeOnly(libs.slf4j.simple)
 }
