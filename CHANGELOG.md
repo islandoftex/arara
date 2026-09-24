@@ -138,6 +138,17 @@ on.
 * A rule storing a non numeric value under the halt session key now
   reports a localized error instead of crashing with a raw number
   parsing exception.
+* The safe-run mode now also rejects the class loading helpers
+  (`loadClass` and `loadObject`), closing an asymmetry with the
+  system command helper: loading arbitrary classes from user-provided
+  archives was the more powerful escape hatch, yet it worked in safe
+  mode while system commands did not.
+* Classes loaded from user-provided archives can now resolve
+  companion classes from the same archive: the class loader no longer
+  closes once the class is loaded. Each load operates on a private
+  temporary copy of the archive, so the user's file is never held
+  open — also when arara runs as a long-lived library, a daemon or a
+  server.
 * Command execution failures now report the underlying exception
   itself as the diagnostic detail, instead of a string encoding of it;
   the terminal error output for failed commands is unchanged, and the

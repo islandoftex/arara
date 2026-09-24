@@ -2,6 +2,8 @@
 package org.islandoftex.arara.core.rules
 
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.SafeRunViolationException
+import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.session.ClassLoading
@@ -243,7 +245,13 @@ object ConditionalMethods {
      */
     @JvmStatic
     fun loadClass(file: MPPPath, name: String): Pair<ClassLoadingStatus, Class<*>> =
-        ClassLoading.loadClass(file, name)
+        if (LinearExecutor.executionOptions.executionMode == ExecutionMode.SAFE_RUN)
+            throw SafeRunViolationException(
+                "In safe mode, rules are not allowed to load arbitrary " +
+                    "classes from user-provided archives."
+            )
+        else
+            ClassLoading.loadClass(file, name)
 
     /**
      * Loads a class from the provided string reference, representing a file.
@@ -265,7 +273,13 @@ object ConditionalMethods {
      */
     @JvmStatic
     fun loadObject(file: MPPPath, name: String): Pair<ClassLoadingStatus, Any> =
-        ClassLoading.loadObject(file, name)
+        if (LinearExecutor.executionOptions.executionMode == ExecutionMode.SAFE_RUN)
+            throw SafeRunViolationException(
+                "In safe mode, rules are not allowed to load arbitrary " +
+                    "classes from user-provided archives."
+            )
+        else
+            ClassLoading.loadObject(file, name)
 
     /**
      * Loads a class from the provided string reference, instantiating it.

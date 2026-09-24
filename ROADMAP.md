@@ -411,20 +411,20 @@ time. Three resolutions work on all three platforms:
 - an in-memory loader reading the archive bytes once: no file locks
   anywhere, at the cost of a small custom class loader to maintain.
 
-The recommended resolution is the first — it matches the standard
-behavior of every JVM plugin system and reduces to a two-line change —
-with the temporary-copy variant as the fallback should a zero-lock
-guarantee on the user's archive be deemed a hard requirement. The move
-is deferred pending the decision of the upstream technical leads; the
-helper's documentation states the limitation in the meantime.
+Resolved: the technical leads approved the resolution, and the
+long-lived embedding consideration — a daemon holding a user archive
+locked indefinitely is a nuisance no argument about short command line
+runs can excuse — settled the variant choice. The temporary-copy design
+became the primary: each load copies the archive to a private
+temporary file, the class loader operates on the copy and stays open
+for the lifetime of the JVM (lazy resolution of companion classes
+keeps working), the user's archive is never held open on any platform,
+and a shutdown hook closes the loaders and deletes the copies at exit.
+Repeated loads of the same archive deliberately create independent
+loaders, so a rebuilt archive is served fresh on the next call.
 
-One further observation for the same decision: the class loading path
-has no safe-run guard. The safe mode promise — disabling potentially
-harmful features — is honored by the system command helper (the single
-safe-run check in the core), yet loading arbitrary classes from
-user-provided archives works in safe mode, and a loaded class can do
-anything the JVM can do. Whether this asymmetry is intended upstream
-cannot be verified from this tree, and changing safe-mode semantics is
-user-visible, so the guard question belongs with the lifecycle
-decision: a safe-run rejection for the class loading helpers would
-also moot the archive-lock trade-off for the guarded path.
+The safe-run asymmetry is closed as part of the same resolution: both
+class loading helpers reject safe mode with the same contract the
+system command helper upholds, mirroring its guard placement and
+message style. The safe mode promise now covers the most powerful
+escape hatch as well.

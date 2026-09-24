@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
+import java.io.File
+import java.io.IOException
 import java.lang.reflect.InvocationTargetException
 import java.net.MalformedURLException
 import java.net.URLClassLoader
@@ -27,15 +29,40 @@ object ClassLoading {
         INSTANTIATION_EXCEPTION
     }
 
+    // loaders stay open for the lifetime of the JVM: the loaded classes
+    // keep referencing their defining loader, and the JVM resolves
+    // lazily referenced companion classes from the same archive through
+    // it. Each loader operates on a private copy of the archive, so
+    // the user's file is never held open — a long-lived embedding (a
+    // daemon, a server) must not lock user archives. The shutdown hook
+    // closes the loaders and deletes the copies at exit. Repeated
+    // loads of the same archive deliberately create independent
+    // loaders, so a rebuilt archive is served fresh on the next call.
+    private val lock = Any()
+    private val loaders = mutableListOf<URLClassLoader>()
+    private val copies = mutableListOf<File>()
+
+    init {
+        Runtime.getRuntime().addShutdownHook(
+            Thread {
+                // close first: an open file cannot be deleted on some
+                // operating systems
+                synchronized(lock) {
+                    loaders.forEach { it.close() }
+                    copies.forEach { it.delete() }
+                }
+            }
+        )
+    }
+
     /**
      * Loads a class from the provided file, potentially a Java archive.
      *
-     * Note that the class loader backing the archive is closed once
-     * this method returns; the loaded class keeps referencing it, so
-     * classes whose method bodies lazily resolve further classes from
-     * the same archive fail once the loader is closed. This is a known
-     * upstream design limitation with a trade-off: keeping the loader
-     * open would lock the archive file on some operating systems.
+     * The archive is copied to a private temporary file so the user's
+     * file is never held open, and the class loader backing the copy
+     * stays open for the lifetime of the JVM: the loaded class keeps
+     * referencing its defining loader, and lazily referenced companion
+     * classes from the same archive resolve through it.
      * @param path File containing the Java bytecode (namely, a JAR).
      * @param name The canonical name of the class.
      * @return A pair representing the status and the class.
@@ -54,28 +81,38 @@ object ClassLoading {
         val status = if (!file.exists()) {
             ClassLoadingStatus.FILE_NOT_FOUND
         } else {
-            // classloading involves defining
-            // a classloader and fetching the
-            // desired class from it, based on
-            // the provided file archive
+            // classloading involves copying the archive, defining a
+            // classloader over the private copy and fetching the
+            // desired class from it
             try {
-                // creates a new classloader with
-                // the provided file (potentially
-                // a JAR file); the loader keeps the
-                // underlying file open, so it has
-                // to be closed after use
-                URLClassLoader(
-                    arrayOf(file.toURI().toURL()),
-                    ClassLoading::class.java.classLoader
-                ).use { classloader ->
-                    // fetches the class from the
-                    // instantiated classloader
-                    value = Class.forName(name, true, classloader)
+                // the copy keeps the user's file out of the loader's
+                // hands; the copy itself stays open as long as the
+                // loaded classes may lazily resolve through it
+                val copy = File.createTempFile("arara-classpath-", ".jar")
+                try {
+                    file.copyTo(copy, overwrite = true)
+                } catch (ioexception: IOException) {
+                    copy.delete()
+                    throw ioexception
                 }
+                val classloader = URLClassLoader(
+                    arrayOf(copy.toURI().toURL()),
+                    ClassLoading::class.java.classLoader
+                )
+                synchronized(lock) {
+                    loaders.add(classloader)
+                    copies.add(copy)
+                }
+                // fetches the class from the instantiated classloader
+                value = Class.forName(name, true, classloader)
                 ClassLoadingStatus.SUCCESS
             } catch (_: MalformedURLException) {
                 ClassLoadingStatus.MALFORMED_URL
             } catch (_: ClassNotFoundException) {
+                ClassLoadingStatus.CLASS_NOT_FOUND
+            } catch (_: IOException) {
+                // the archive could not be read for the private copy,
+                // so it cannot serve its classes either
                 ClassLoadingStatus.CLASS_NOT_FOUND
             }
         }
