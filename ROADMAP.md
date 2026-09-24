@@ -440,6 +440,33 @@ with the in-memory file system serving the model operations for
 hosts that cannot represent them and the symlink probes skipping
 wherever the host denies link creation.
 
+The verification environment itself produced one more finding. The
+formatter derives its line-ending expectation from the host whenever
+no policy is declared: in a working copy without a git repository
+it ignores the git configuration entirely and expects the
+platform's native endings, so a byte-identical Windows copy fails
+the rule and the Kotlin formatting steps; with a repository present
+it honors the local git configuration instead. The upstream
+continuous integration — a three-operating-system matrix whose first
+step pins the checkout line endings before checking out, and which
+this copy does not carry — relies on exactly that mechanism, and
+its attributes file pins only binary media to the large-file
+storage, holding no line-ending policy of its own (the upstream
+build also keeps its Kotlin formatter step disabled, where this
+tree runs it selectively). The verification therefore follows the
+upstream mechanism rather than inventing a repository-level one:
+the branch is cloned with the checkout configuration carried on
+the clone invocation itself, the two settings are pinned locally
+inside the clone, and the full gates then run unchanged. A
+repository-level line-ending policy remains a candidate improvement
+to refer upstream.
+
+The rule formatting steps join the on-demand regime as part of the
+same step: both rule sets are converter-generated artifacts, so
+their formatting is validated only when requested — behind the
+renamed rule-validation flag and its new Lua sibling, matching the
+task-family naming.
+
 ## Version 9 outlook — the class loading lifecycle
 
 The class loading helper backing the conditional `loadClass` and

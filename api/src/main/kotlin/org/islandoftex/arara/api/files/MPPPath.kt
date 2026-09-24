@@ -179,26 +179,21 @@ public class MPPPath {
      * exception if the file is a directory or access is impossible.
      */
     @Throws(AraraIOException::class)
-    public fun writeText(text: String, append: Boolean = false): Unit =
-        if (!isDirectory) {
-            if (append) {
-                if (exists) {
-                    PathModelFileSystem.current.appendingSink(referencePath)
-                        .buffer().use { it.writeUtf8(text) }
-                }
-                else {
-                    throw AraraIOException("Can only append text to existing files.")
-                }
+    public fun writeText(text: String, append: Boolean = false): Unit {
+        if (isDirectory) throw AraraIOException("Can only write text to files.")
+        if (append) {
+            if (!exists) {
+                throw AraraIOException("Can only append text to existing files.")
             }
-            else {
-                PathModelFileSystem.current.write(referencePath) {
-                    writeUtf8(text)
-                }
-            }
+            PathModelFileSystem.current.appendingSink(referencePath)
+                .buffer().use { it.writeUtf8(text) }
         }
         else {
-            throw AraraIOException("Can only write text to files.")
+            PathModelFileSystem.current.write(referencePath) {
+                writeUtf8(text)
+            }
         }
+    }
 
     override fun toString(): String =
         referencePath.toString()
@@ -283,8 +278,10 @@ public class MPPPath {
         var path = referencePath
         repeat(SYMLINK_CHAIN_LIMIT) {
             val metadata = PathModelFileSystem.current.metadataOrNull(path)
-                ?: return null
-            val target = metadata.symlinkTarget ?: return metadata
+            // a missing file or a terminal link ends the walk: the
+            // metadata is null in the former case and final in the
+            // latter, and both return through the same branch
+            val target = metadata?.symlinkTarget ?: return metadata
             path = if (target.isAbsolute) target
             else path.parent?.let { parent -> parent / target } ?: target
         }
@@ -316,11 +313,10 @@ private fun Path.startsWith(other: Path): Boolean {
     if (root != other.root) return false
     val prefix = other.segments
     val segments = segments
-    if (prefix.size > segments.size) return false
-    for (index in prefix.indices) {
-        if (segments[index] != prefix[index]) return false
-    }
-    return true
+    // the roots match, so the other path is a prefix when its
+    // segments form the head of this path's segments
+    return prefix.size <= segments.size &&
+        segments.subList(0, prefix.size) == prefix
 }
 
 // Windows accepts both separators in spellings, but the path

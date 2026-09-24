@@ -129,8 +129,13 @@ detekt {
     config.from(files("detekt-config.yml"))
 }
 
-val validateYAML: Boolean = providers
-        .gradleProperty("validateYAML")
+val validateYamlRules: Boolean = providers
+        .gradleProperty("validateYamlRules")
+        .map { it.toBoolean() }
+        .getOrElse(false)
+
+val validateLuaRules: Boolean = providers
+        .gradleProperty("validateLuaRules")
         .map { it.toBoolean() }
         .getOrElse(false)
 
@@ -150,11 +155,19 @@ tasks {
     }
 
     named("spotlessYamlCheck") {
-        enabled = validateYAML
+        enabled = validateYamlRules
     }
 
     named("spotlessYamlApply") {
-        enabled = validateYAML
+        enabled = validateYamlRules
+    }
+
+    named("spotlessLuaRulesCheck") {
+        enabled = validateLuaRules
+    }
+
+    named("spotlessLuaRulesApply") {
+        enabled = validateLuaRules
     }
 }
 

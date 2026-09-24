@@ -59,11 +59,17 @@ pins one minor behind). JVM toolchain is JDK 11
   Single class:
   `./gradlew :cli:test --tests "org.islandoftex.arara.cli.utils.ExecutionTest"`.
 - `./gradlew detekt` — root task linting every module's main sources
-  (`detekt-config.yml`; test sources are excluded).
+  (`detekt-config.yml`; test sources are excluded). Three informational
+  findings are tolerated by configuration and print on every run: the
+  `LuaConversion` function count, the deliberate else-throw in
+  `Directives.kt` and the `LuaInterpreter` throw count — expected console
+  noise, not failures.
 - `./gradlew spotlessCheck` / `spotlessApply` — enforced formatting: every
   Kotlin file needs the `// SPDX-License-Identifier: BSD-3-Clause` header,
-  and files in `rules/` carry their own YAML/Lua headers. The YAML rule
-  steps (`spotlessYaml*`) are disabled unless `-PvalidateYAML=true`.
+  and files in `rules/` carry their own YAML/Lua headers. Both rule sets
+  are converter-generated artifacts, so their formatting steps
+  (`spotlessYaml*`, `spotlessLuaRules*`) are disabled unless
+  `-PvalidateYamlRules=true` / `-PvalidateLuaRules=true`.
 - `./gradlew dependencyUpdates` — dependency upgrade report (pre-release
   versions filtered out).
 - `./gradlew -PwarningsAsErrors=true test detekt spotlessCheck` — the strict
