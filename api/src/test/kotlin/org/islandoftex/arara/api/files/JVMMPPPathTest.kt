@@ -10,9 +10,12 @@ import kotlin.io.path.writeText
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
+import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
+import okio.fakefilesystem.FakeFileSystem
 import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.time.DateTime
+import org.islandoftex.arara.api.utils.OS
 import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -368,6 +371,101 @@ class JVMMPPPathTest {
                 MPPPath("/a/b").startsWith(MPPPath("a")),
                 "an absolute spelling does not start with a relative one"
             )
+        }
+    }
+
+    @Nested
+    inner class `Windows-shaped spellings` {
+        @Test
+        fun `parses backslashed drive spellings as absolute`() {
+            assertTrue(
+                MPPPath("C:\\probe.txt").isAbsolute,
+                "a backslashed drive spelling is absolute on every host"
+            )
+        }
+
+        @Test
+        fun `parses UNC spellings as absolute`() {
+            assertTrue(
+                MPPPath("\\\\probe-server\\probe.txt").isAbsolute,
+                "a UNC spelling is absolute on every host"
+            )
+        }
+
+        @Test
+        fun `treats case variants as distinct spellings`() {
+            assertNotEquals(
+                MPPPath("C:\\Probe.txt"),
+                MPPPath("c:\\probe.txt"),
+                "equality is case-sensitive under the new algebra"
+            )
+        }
+
+        @Test
+        fun `applies the first-separator rule to mixed spellings`() {
+            // the algebra recognizes a Windows path by its first
+            // backslash, so a forward-slashed drive spelling follows
+            // the host rules: re-spelled to backslashes on Windows,
+            // a relative path everywhere else
+            assertEquals(
+                OS.isWindows,
+                MPPPath("C:/probe.txt").isAbsolute,
+                "a forward-slashed drive spelling follows the host rules"
+            )
+        }
+    }
+
+    @Nested
+    inner class `in-memory file system` {
+        // the path model reads and writes through an injectable file
+        // system; swapping it for the in-memory implementation keeps
+        // the host platform untouched while exercising the model
+        // operations, and the previous instance is always restored
+        private fun <T> withFakeFileSystem(action: () -> T): T {
+            val original = PathModelFileSystem.current
+            PathModelFileSystem.current = FakeFileSystem()
+            try {
+                return action()
+            } finally {
+                PathModelFileSystem.current = original
+            }
+        }
+
+        @Test
+        fun `serves the path model operations from an injected fake`() {
+            withFakeFileSystem {
+                val file = MPPPath("probe-dir/probe.txt")
+                file.parent.createDirectories()
+                assertFalse(file.exists, "the file is not in the fake yet")
+                file.writeText("quack")
+                assertTrue(file.exists, "the write landed in the fake")
+                assertEquals(
+                    "quack",
+                    file.readText(),
+                    "the read comes from the fake"
+                )
+                file.parent.removeDirectory()
+                assertFalse(file.exists, "the removal hit the fake")
+            }
+        }
+
+        @Test
+        fun `serves Windows-shaped spellings from an injected fake`() {
+            withFakeFileSystem {
+                val file = MPPPath("C:\\probe\\probe.txt")
+                assertTrue(
+                    file.isAbsolute,
+                    "a backslashed drive spelling is absolute"
+                )
+                file.parent.createDirectories()
+                file.writeText("quack")
+                assertTrue(file.exists, "the write landed in the fake")
+                assertEquals(
+                    "quack",
+                    file.readText(),
+                    "the read comes from the fake"
+                )
+            }
         }
     }
 }

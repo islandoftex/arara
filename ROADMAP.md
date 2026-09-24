@@ -431,6 +431,15 @@ machine, and the report reviewed. Only then the branch merges into
 the default line; which release carries the swap remains a calendar
 call.
 
+The branch work is complete and awaits the Windows verification:
+the model and the common-able helpers run on the new backend, the
+remaining consumers stay on the frozen bridges by design, and the
+Windows-shaped spellings — drive letters, UNC paths, case
+sensitivity and the first-separator rule — are pinned as contracts,
+with the in-memory file system serving the model operations for
+hosts that cannot represent them and the symlink probes skipping
+wherever the host denies link creation.
+
 ## Version 9 outlook — the class loading lifecycle
 
 The class loading helper backing the conditional `loadClass` and

@@ -9,6 +9,8 @@ kotlin {
 
 dependencies {
     implementation(libs.okio)
+
+    testImplementation(libs.okio.fakefilesystem)
 }
 
 tasks {
