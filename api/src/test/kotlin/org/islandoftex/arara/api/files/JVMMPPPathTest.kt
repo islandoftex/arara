@@ -2,6 +2,8 @@
 package org.islandoftex.arara.api.files
 
 import java.io.File
+import java.io.IOException
+import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
@@ -10,6 +12,8 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraIOException
+import org.islandoftex.arara.api.time.DateTime
+import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -227,6 +231,142 @@ class JVMMPPPathTest {
                 "bridge-probe.txt",
                 MPPPath("bridge-probe.txt").toJVMFile().toString(),
                 "the JVM file bridge reports the raw spelling"
+            )
+        }
+    }
+
+    @Nested
+    inner class `symlink resolution` {
+        // creating symlinks requires elevated privileges on some
+        // platforms, so the capability is probed first and the tests
+        // are skipped wherever creation is denied
+        private fun createSymlink(link: Path, target: Path): Boolean =
+            try {
+                Files.createSymbolicLink(link, target)
+                true
+            } catch (_: IOException) {
+                false
+            } catch (_: UnsupportedOperationException) {
+                false
+            }
+
+        @Test
+        fun `follows symlinks for existence and type queries`(@TempDir tempDir: Path) {
+            val target = tempDir.resolve("target.txt")
+            target.writeText("quack")
+            val link = tempDir.resolve("link.txt")
+            assumeTrue(
+                createSymlink(link, target),
+                "the host cannot create symlinks"
+            )
+
+            val path = MPPPath(link.toString())
+            assertTrue(path.exists, "a link to an existing file exists")
+            assertTrue(path.isRegularFile, "a link to a file is a regular file")
+        }
+
+        @Test
+        fun `resolves symlink chains for size and time queries`(@TempDir tempDir: Path) {
+            val target = tempDir.resolve("target.txt")
+            target.writeText("quack")
+            val intermediate = tempDir.resolve("intermediate.txt")
+            val link = tempDir.resolve("link.txt")
+            assumeTrue(
+                createSymlink(intermediate, target),
+                "the host cannot create symlinks"
+            )
+            assumeTrue(
+                createSymlink(link, intermediate),
+                "the host cannot create symlinks"
+            )
+
+            val path = MPPPath(link.toString())
+            assertEquals(
+                5L,
+                path.fileSize,
+                "the size comes from the link target"
+            )
+            assertEquals(
+                DateTime(Files.getLastModifiedTime(target).toMillis()).toString(),
+                path.lastModified.toString(),
+                "the modification time comes from the link target"
+            )
+        }
+
+        @Test
+        fun `reports a broken symlink as missing`(@TempDir tempDir: Path) {
+            val link = tempDir.resolve("broken.txt")
+            assumeTrue(
+                createSymlink(link, tempDir.resolve("missing.txt")),
+                "the host cannot create symlinks"
+            )
+
+            assertFalse(
+                MPPPath(link.toString()).exists,
+                "a broken link does not exist"
+            )
+        }
+    }
+
+    @Nested
+    inner class `degenerate spellings` {
+        @Test
+        fun `collapses redundant spellings at construction`() {
+            assertEquals(
+                "a/b",
+                MPPPath("a//b").toJVMPath().toString(),
+                "redundant separators collapse in the provided spelling"
+            )
+            assertEquals(
+                "a/b",
+                MPPPath("a/./b").toJVMPath().toString(),
+                "interior dot segments collapse in the provided spelling"
+            )
+        }
+
+        @Test
+        fun `consumes leading dotdot on absolute spellings`() {
+            assertEquals(
+                "/x",
+                MPPPath("/../x").toJVMPath().toString(),
+                "leading dotdot on an absolute spelling is consumed eagerly"
+            )
+        }
+
+        @Test
+        fun `maps the empty spelling to the working directory`() {
+            assertEquals(
+                MPPPath(".").toString(),
+                MPPPath("").toString(),
+                "the empty spelling denotes the working directory"
+            )
+            assertEquals(
+                ".",
+                MPPPath("").toJVMPath().toString(),
+                "the empty spelling is re-spelled as the working directory"
+            )
+        }
+    }
+
+    @Nested
+    inner class `lexical prefix semantics` {
+        @Test
+        fun `compares segments instead of prefixes`() {
+            assertFalse(
+                MPPPath("/foobar").startsWith(MPPPath("/foo")),
+                "a segment is not a prefix of a longer segment"
+            )
+            assertTrue(
+                MPPPath("a/b").startsWith(MPPPath("a")),
+                "a matching segment prefix matches"
+            )
+        }
+
+        @Test
+        fun `requires matching roots in the prefix check`() {
+            assertFalse(
+                MPPPath("/a/b").startsWith(MPPPath("a")),
+                "an absolute spelling does not start with a relative one"
             )
         }
     }

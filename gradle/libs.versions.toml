@@ -22,6 +22,7 @@ kotlinxSerialization = "1.11.0"
 log4j = "2.25.2"
 luaj = "1.0.3"
 mvel = "2.5.4.Final"
+okio = "3.18.2"
 slf4j = "2.0.17"
 ztExec = "1.12"
 
@@ -35,6 +36,7 @@ kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-seria
 log4j-core = { group = "org.apache.logging.log4j", name = "log4j-core", version.ref = "log4j" }
 log4j-impl = { group = "org.apache.logging.log4j", name = "log4j-slf4j2-impl", version.ref = "log4j" }
 mvel = { group = "org.mvel", name = "mvel2", version.ref = "mvel" }
+okio = { group = "com.squareup.okio", name = "okio", version.ref = "okio" }
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
 slf4j-simple = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j" }
 ztexec = { group = "org.zeroturnaround", name = "zt-exec", version.ref = "ztExec" }

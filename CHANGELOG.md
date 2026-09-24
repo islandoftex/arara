@@ -149,6 +149,25 @@ on.
   temporary copy of the archive, so the user's file is never held
   open — also when arara runs as a long-lived library, a daemon or a
   server.
+* The path model now rests on a multiplatform path algebra
+  internally. On case-sensitive platforms the behavior is unchanged
+  for all ordinary spellings — the reference semantics (identity,
+  I/O and display) are identical, and the class keeps its public
+  surface. Degenerate spellings narrow visibly: redundant separators
+  and interior `.` segments collapse at construction, leading `..`
+  on absolute paths is consumed eagerly, and the empty spelling now
+  denotes the current directory — which also makes empty `PATH`
+  entries resolve to the working directory during system command
+  lookup, the POSIX-correct behavior.
+* On Windows, path equality, hashing and ordering become
+  case-sensitive: case-variant spellings of the same location were
+  equal before and are distinct now, which affects the file database
+  keys. Mixed-separator spellings such as `C:/x` are re-spelled with
+  backslashes before parsing on that platform, so they keep their
+  Windows shape under the new algebra.
+* Symlinked files keep their follow-links semantics for existence,
+  type, size and time queries: the new backend reads metadata
+  without following links, and the model resolves the chains itself.
 * Command execution failures now report the underlying exception
   itself as the diagnostic detail, instead of a string encoding of it;
   the terminal error output for failed commands is unchanged, and the

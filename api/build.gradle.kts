@@ -7,6 +7,10 @@ kotlin {
     explicitApi()
 }
 
+dependencies {
+    implementation(libs.okio)
+}
+
 tasks {
 
     compileKotlin {
