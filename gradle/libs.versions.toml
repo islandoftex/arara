@@ -1,53 +1,44 @@
 [versions]
-# --------------------------------
-# Kotlin itself
-# --------------------------------
-kotlin = "2.4.20"
-# --------------------------------
-# Plugins
-# --------------------------------
-detektPlugin = "1.23.8"
-dokkaPlugin = "2.2.0"
-shadowPlugin = "9.6.1"
-spotlessChangelogPlugin = "3.1.2"
-spotlessPlugin = "8.10.2"
-versionsPlugin = "0.64.0"
-# --------------------------------
-# Libraries
-# --------------------------------
-clikt = "5.0.3"
-kotaml = "0.111.0"
-kotlinLogging = "8.0.4"
-kotlinxSerialization = "1.11.0"
-log4j = "2.25.2"
-luaj = "1.0.3"
-mvel = "2.5.4.Final"
-okio = "3.18.2"
-slf4j = "2.0.17"
-ztExec = "1.12"
+clikt-version = "5.0.3"
+detekt-version = "1.23.8"
+dokka-version = "2.2.0"
+kotlin-version = "2.4.20"
+kotlin-logging-version = "8.0.4"
+kotaml-version = "0.111.0"
+kotlinx-serialization-version = "1.11.0"
+log4j-version = "2.25.2"
+luaj-version = "1.0.3"
+mvel-version = "2.5.4.Final"
+okio-version = "3.18.2"
+shadow-version = "9.6.1"
+slf4j-version = "2.0.17"
+spotless-changelog-version = "3.1.2"
+spotless-version = "8.10.2"
+versions-version = "0.64.0"
+zt-exec-version = "1.12"
 
 [libraries]
-clikt = { group = "com.github.ajalt.clikt", name = "clikt", version.ref = "clikt" }
-clikt-markdown = { group = "com.github.ajalt.clikt", name = "clikt-markdown", version.ref = "clikt" }
-kotaml = { group = "io.heapy.kotaml", name = "kotaml", version.ref = "kotaml" }
-kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version.ref = "kotlinLogging" }
-luaj = { group = "io.github.taoguan", name = "luaj", version.ref = "luaj" }
-kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
-log4j-core = { group = "org.apache.logging.log4j", name = "log4j-core", version.ref = "log4j" }
-log4j-impl = { group = "org.apache.logging.log4j", name = "log4j-slf4j2-impl", version.ref = "log4j" }
-mvel = { group = "org.mvel", name = "mvel2", version.ref = "mvel" }
-okio = { group = "com.squareup.okio", name = "okio", version.ref = "okio" }
-okio-fakefilesystem = { group = "com.squareup.okio", name = "okio-fakefilesystem", version.ref = "okio" }
-slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
-slf4j-simple = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j" }
-ztexec = { group = "org.zeroturnaround", name = "zt-exec", version.ref = "ztExec" }
+clikt = { group = "com.github.ajalt.clikt", name = "clikt", version.ref = "clikt-version" }
+clikt-markdown = { group = "com.github.ajalt.clikt", name = "clikt-markdown", version.ref = "clikt-version" }
+kotaml = { group = "io.heapy.kotaml", name = "kotaml", version.ref = "kotaml-version" }
+kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version.ref = "kotlin-logging-version" }
+luaj = { group = "io.github.taoguan", name = "luaj", version.ref = "luaj-version" }
+kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinx-serialization-version" }
+log4j-core = { group = "org.apache.logging.log4j", name = "log4j-core", version.ref = "log4j-version" }
+log4j-impl = { group = "org.apache.logging.log4j", name = "log4j-slf4j2-impl", version.ref = "log4j-version" }
+mvel = { group = "org.mvel", name = "mvel2", version.ref = "mvel-version" }
+okio = { group = "com.squareup.okio", name = "okio", version.ref = "okio-version" }
+okio-fakefilesystem = { group = "com.squareup.okio", name = "okio-fakefilesystem", version.ref = "okio-version" }
+slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j-version" }
+slf4j-simple = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j-version" }
+ztexec = { group = "org.zeroturnaround", name = "zt-exec", version.ref = "zt-exec-version" }
 
 [plugins]
-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detektPlugin" }
-dokka = { id = "org.jetbrains.dokka", version.ref = "dokkaPlugin" }
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-shadow = { id = "com.gradleup.shadow", version.ref = "shadowPlugin" }
-spotless = { id = "com.diffplug.spotless", version.ref = "spotlessPlugin" }
-spotlessChangelog = { id = "com.diffplug.spotless-changelog", version.ref = "spotlessChangelogPlugin" }
-versions = { id = "io.github.ben-manes.versions", version.ref = "versionsPlugin" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt-version" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka-version" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-version" }
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow-version" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless-version" }
+spotlessChangelog = { id = "com.diffplug.spotless-changelog", version.ref = "spotless-changelog-version" }
+versions = { id = "io.github.ben-manes.versions", version.ref = "versions-version" }
