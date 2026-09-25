@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
+import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.islandoftex.arara.build.AraraPublication
@@ -7,6 +8,17 @@ import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+
+// resolves plugin ids from the version catalog, so the ids live in one
+// place only; reacting to a plugin by its catalog-declared id can never
+// drift apart from the id the modules apply
+fun pluginId(alias: String): String =
+        the<VersionCatalogsExtension>()
+                .named("libs")
+                .findPlugin(alias)
+                .get()
+                .get()
+                .pluginId
 
 plugins {
     alias(libs.plugins.kotlin.jvm) apply false
@@ -203,35 +215,44 @@ subprojects {
 
     apply(plugin = "org.jetbrains.dokka")
 
-    apply(plugin = "org.jetbrains.kotlin.jvm")
+    // the modules apply the Kotlin plugin through their own plugins
+    // blocks; the root reacts to each application instead of applying
+    // the plugin itself, so the plugin has a single application point
+    plugins.withId(pluginId("kotlin-jvm")) {
 
-    configure<KotlinJvmProjectExtension> {
+        configure<KotlinJvmProjectExtension> {
 
-        compilerOptions {
-            jvmTarget.set(araraJVMTarget)
-            apiVersion.set(KotlinVersion.fromVersion(araraKotlinAPI))
-            languageVersion.set(KotlinVersion.fromVersion(araraKotlinLanguage))
-            allWarningsAsErrors.set(warningsAsErrors)
-            optIn.addAll(
-                    "org.islandoftex.arara.api.localization.AraraMessages",
-                    "kotlin.time.ExperimentalTime"
-            )
-        }
-    }
-
-    tasks {
-
-        named<Test>("test") {
-            useJUnitPlatform()
-
-            testLogging {
-                exceptionFormat = TestExceptionFormat.FULL
-                events(
-                        TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR,
-                        TestLogEvent.SKIPPED, TestLogEvent.PASSED, TestLogEvent.FAILED
+            compilerOptions {
+                jvmTarget.set(araraJVMTarget)
+                apiVersion.set(KotlinVersion.fromVersion(araraKotlinAPI))
+                languageVersion.set(KotlinVersion.fromVersion(araraKotlinLanguage))
+                allWarningsAsErrors.set(warningsAsErrors)
+                optIn.addAll(
+                        "org.islandoftex.arara.api.localization.AraraMessages",
+                        "kotlin.time.ExperimentalTime"
                 )
             }
         }
+
+        tasks {
+
+            named<Test>("test") {
+                useJUnitPlatform()
+
+                testLogging {
+                    exceptionFormat = TestExceptionFormat.FULL
+                    events(
+                            TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR,
+                            TestLogEvent.SKIPPED, TestLogEvent.PASSED, TestLogEvent.FAILED
+                    )
+                }
+            }
+        }
+
+        apply<AraraPublication>()
+    }
+
+    tasks {
 
         withType<Jar>().configureEach {
             archiveBaseName.set("arara-${project.name}")
@@ -273,6 +294,4 @@ subprojects {
             }
         }
     }
-
-    apply<AraraPublication>()
 }
