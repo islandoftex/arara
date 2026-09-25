@@ -605,12 +605,16 @@ small, verified build steps. The decisions so far:
   `kotlin(2.4.0)` calls replace the manual jvmTarget, apiVersion,
   languageVersion and release wirings; the Kotlin pins move to the
   compiler's own minor; the toolchain blocks vanish (the daemon JVM
-  compiles release-11 bytecode, and the tests run with it); the dependency
-  check joins the gates once its module-info fix ships in a stable
-  release — the upgrade report watches for it. Until then the smoke's
-  Java 11 leg carries the floor verification alone, and its retirement
-  condition is exactly the check's arrival plus the probe proving the
-  compiler enforces the JDK 11 API surface.
+  compiles release-11 bytecode, and the tests run with it). The
+  dependency check stays off until the module descriptor misreading
+  that produced false positives is fixed in a newer stable release —
+  the upgrade report will surface it, and re-enabling means adding
+  checkDependencies() to the same wiring block, where the build
+  script carries the note. Until then the smoke's Java 11 leg carries
+  the floor verification alone. The API surface probe ran with the
+  wiring: the compiler rejects JDK-16-and-later API calls at compile
+  time, so the check's stable arrival is the only outstanding
+  condition before the leg retires from load-bearing.
 - **Coverage is measured** with Kover (aggregated report first,
   thresholds once the baseline is known), and the build borrows the
   leopack patterns: catalog-resolved plugin ids with `plugins.withId`,
@@ -636,3 +640,29 @@ small, verified build steps. The decisions so far:
   enforced: the Kotlin plugin's own stdlib and reflect coordinates
   resolve through it, so the declaration is load-bearing even though
   the helper build declares no dependencies of its own.
+
+The queue past the current sequence, recorded for the next planning
+rounds:
+
+- **The smoke floor task**: a small task in the build helper source
+  that provisions the floor runtime on demand through the toolchain
+  service (the foojay resolver stays in settings for exactly this),
+  driven by two explicit properties, `smoke.jvm.version` and
+  `smoke.jvm.vendor`, deliberately separate from the build target so
+  divergence is a visible, deliberate act; the task announces any
+  divergence loudly without failing, and the smoke prelude consumes
+  its printed path.
+- **The Bats-shaped suite**: the scenario definitions move into the
+  Kobats generator library and render plain runner files; one Gradle
+  task becomes the single entry point — jar built, suite generated,
+  tree and floor runtime provisioned, the runner probed before any
+  work — with the report kept as a build artifact for the eventual
+  continuous integration. The generator vocabulary lacks raw test
+  lines, an upstream gap for per-scenario working directories.
+- **The tolerated findings retire**: the three informational findings
+  get real fixes where they exist — the idiomatic error call for the
+  deliberate throw, helper extraction or a computed failure for the
+  interpreter's throw count — and a justified suppression only as a
+  last resort. Once none remain, the tolerance entries leave the
+  lint configuration, the rules turn fatal for future occurrences,
+  and the gate expectation becomes an exact zero.

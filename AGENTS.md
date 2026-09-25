@@ -65,10 +65,12 @@ carries no dependencies.
 
 ## Commands
 
-Gradle 9.7.1 wrapper, Kotlin 2.4.20 (with `arara.kotlin.api`/`arara.kotlin.language`
-pins one minor behind). JVM toolchain is JDK 11
-(`arara.jvm.target` in root `gradle.properties`; the foojay resolver in
-`settings.gradle.kts` auto-provisions it, so any local JDK can drive the build).
+Gradle 9.7.1 wrapper, Kotlin 2.4.20. Compatibility targets live in root
+`gradle.properties` (`arara.jvm.target=11`, `arara.kotlin.target=2.4.0`) and
+are enforced by the tapmoc plugin — no toolchains are configured, so whatever
+JVM drives the build compiles release-11 bytecode, with the JDK 11 API
+surface compile-checked as well. The foojay resolver in `settings.gradle.kts`
+remains solely to provision the smoke suite's floor runtime.
 
 - `./gradlew :cli:run` — run arara from sources (entry point
   `org.islandoftex.arara.cli.CLIKt`).
@@ -183,10 +185,9 @@ database stay.
   `RuleEngine.current` flipped to the Lua engine (covering sessions and
   wrongly typed conditional helper calls as well), so both engines have
   automated end-to-end coverage.
-- Root `gradle.properties` also drives the build: `arara.jvm.target` (JVM
-  target/toolchain) and `arara.kotlin.api` / `arara.kotlin.language`
-  (Kotlin api/language versions); the version catalog is
-  `gradle/libs.versions.toml`.
+- Root `gradle.properties` also drives the build: `arara.jvm.target` and
+  `arara.kotlin.target` (the compatibility levels the tapmoc plugin
+  enforces); the version catalog is `gradle/libs.versions.toml`.
 - Git history starts at the `oc0` tag (the pristine baseline); every later
   `oc<n>` tag marks one verified repair/modernization step, so regressions can
   be bisected by tags.

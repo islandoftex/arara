@@ -3,24 +3,12 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.tapmoc)
     alias(libs.plugins.shadow)
     application
 }
 
 val entryPath = "org.islandoftex.arara.cli.CLIKt"
-
-// ----------------------------------------------------------------------
-// The JVM toolchain, with its corresponding default as fallback, defined
-// in gradle.properties (see key)
-// ----------------------------------------------------------------------
-val toolchain = providers.gradleProperty("arara.jvm.target")
-        .map { it.toInt() }
-        .getOrElse(11)
-// ----------------------------------------------------------------------
-
-kotlin {
-    jvmToolchain(toolchain)
-}
 
 application {
     mainClass.set(entryPath)

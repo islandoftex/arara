@@ -5,9 +5,8 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.islandoftex.arara.build.AraraPublication
 import org.jetbrains.dokka.gradle.DokkaExtension
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import tapmoc.TapmocExtension
 
 // resolves plugin ids from the version catalog, so the ids live in one
 // place only; reacting to a plugin by its catalog-declared id can never
@@ -23,6 +22,7 @@ fun pluginId(alias: String): String =
 plugins {
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.tapmoc) apply false
     alias(libs.plugins.shadow) apply false
     alias(libs.plugins.versions)
     alias(libs.plugins.spotless.changelog)
@@ -184,26 +184,18 @@ tasks {
 
 version = spotlessChangelog.versionNext
 
-// ----------------------------------------------------------------------
-// JVM target and Kotlin API and language versions; the keys (and their
-// fallback defaults) are defined in gradle.properties
-// ----------------------------------------------------------------------
-val araraJVMString = providers.gradleProperty("arara.jvm.target").getOrElse("11")
+// JVM and Kotlin compatibility targets, defined in gradle.properties;
+// the compatibility plugin derives every compiler flag from these two
+// values
+val targetJvm = providers.gradleProperty("arara.jvm.target").get().toInt()
 
-val araraJVMTarget = JvmTarget.fromTarget(araraJVMString)
-
-val araraJVMInt = araraJVMString.toIntOrNull() ?: 11
-
-val araraKotlinAPI = providers.gradleProperty("arara.kotlin.api").getOrElse("2.1")
-
-val araraKotlinLanguage = providers.gradleProperty("arara.kotlin.language").getOrElse("2.1")
+val targetKotlin = providers.gradleProperty("arara.kotlin.target").get()
 
 // opt-in gate: run the build with -PwarningsAsErrors=true to prove that
 // the tree compiles without a single warning
 val warningsAsErrors = providers.gradleProperty("warningsAsErrors")
         .map { it.toBoolean() }
         .getOrElse(false)
-// ----------------------------------------------------------------------
 
 allprojects {
     group = "org.islandoftex.arara"
@@ -223,9 +215,6 @@ subprojects {
         configure<KotlinJvmProjectExtension> {
 
             compilerOptions {
-                jvmTarget.set(araraJVMTarget)
-                apiVersion.set(KotlinVersion.fromVersion(araraKotlinAPI))
-                languageVersion.set(KotlinVersion.fromVersion(araraKotlinLanguage))
                 allWarningsAsErrors.set(warningsAsErrors)
                 optIn.addAll(
                         "org.islandoftex.arara.api.localization.AraraMessages",
@@ -252,6 +241,19 @@ subprojects {
         apply<AraraPublication>()
     }
 
+    // the compatibility plugin derives every compiler flag from the two
+    // target keys; the dependency check stays off because the current
+    // stable release misreads module descriptors as bytecode violations —
+    // once the fix ships in a newer stable release, add checkDependencies()
+    // here and the gates take the floor verification over from the smoke's
+    // Java 11 leg
+    plugins.withId(pluginId("tapmoc")) {
+        configure<TapmocExtension> {
+            java(targetJvm)
+            kotlin(targetKotlin)
+        }
+    }
+
     tasks {
 
         withType<Jar>().configureEach {
@@ -270,10 +272,6 @@ subprojects {
             }
         }
 
-        withType<JavaCompile>().configureEach {
-            options.release.set(araraJVMInt)
-        }
-
         // DGP v2 configuration (the v1 dokkaHtml task is gone as of Dokka
         // 2.2); non-public members stay undocumented by default, and the
         // platform is derived from the Kotlin JVM plugin
@@ -283,7 +281,7 @@ subprojects {
                 skipDeprecated.set(false)
                 reportUndocumented.set(true)
                 skipEmptyPackages.set(true)
-                jdkVersion.set(araraJVMInt)
+                jdkVersion.set(targetJvm)
                 sourceLink {
                     localDirectory.set(file("./"))
                     remoteUrl.set(uri("https://gitlab.com/islandoftex/arara"))
