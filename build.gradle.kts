@@ -29,6 +29,7 @@ plugins {
     alias(libs.plugins.dokka) apply false
     alias(libs.plugins.detekt)
     alias(libs.plugins.spotless)
+    alias(libs.plugins.kover)
 }
 
 if (!project.hasProperty("JobToken")) {
@@ -201,6 +202,16 @@ allprojects {
     group = "org.islandoftex.arara"
     description = "TeX automation tool based on rules and directives"
     version = rootProject.version
+}
+
+// the coverage plugin applied here aggregates the modules; each module
+// joins the aggregate as a plain project dependency
+dependencies {
+    kover(project(":api"))
+    kover(project(":core"))
+    kover(project(":lua"))
+    kover(project(":mvel"))
+    kover(project(":cli"))
 }
 
 subprojects {

@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.tapmoc)
+    alias(libs.plugins.kover)
 }
 
 kotlin {

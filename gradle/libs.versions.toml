@@ -6,6 +6,7 @@ kotlin-version = "2.4.20"
 kotlin-logging-version = "8.0.4"
 kotaml-version = "0.111.0"
 kotlinx-serialization-version = "1.11.0"
+kover-version = "0.9.9"
 log4j-version = "2.25.2"
 luaj-version = "1.0.3"
 mvel-version = "2.5.4.Final"
@@ -41,6 +42,7 @@ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt-version" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka-version" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-version" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover-version" }
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow-version" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless-version" }
 spotless-changelog = { id = "com.diffplug.spotless-changelog", version.ref = "spotless-changelog-version" }

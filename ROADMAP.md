@@ -615,9 +615,19 @@ small, verified build steps. The decisions so far:
   wiring: the compiler rejects JDK-16-and-later API calls at compile
   time, so the check's stable arrival is the only outstanding
   condition before the leg retires from load-bearing.
-- **Coverage is measured** with Kover (aggregated report first,
-  thresholds once the baseline is known), and the build borrows the
-  leopack patterns: catalog-resolved plugin ids with `plugins.withId`,
+- **Coverage is measured** with Kover: the plugin applies to every
+  module and the root aggregates them — the per-module application is
+  load-bearing, as the failed root-only attempt proved, because the
+  aggregate resolution cannot match external artifacts without the
+  plugin's variant attributes. The first baseline: 77.6% lines and
+  75.3% instructions overall, with branches at 55.5% as the weak spot
+  — the frozen public API module sits at 89.8% lines, and the legacy
+  rule module shows 68.2% lines despite having no test sources of its
+  own, because the fixture-driven command line suite exercises its
+  parser in-process; its 29.3% branch coverage is the lowest in the
+  tree. Thresholds become a verification gate once the baseline
+  settles. The build also borrows the leopack patterns:
+  catalog-resolved plugin ids with `plugins.withId`,
   pinned fork modules in the upgrade report, a task-name-gated publish
   warning, a shared license-header delimiter covering both Kotlin file
   kinds (nothing above the first real token — package, import, `@file:`,

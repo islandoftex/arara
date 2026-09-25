@@ -97,6 +97,10 @@ remains solely to provision the smoke suite's floor runtime.
   provisions the scratch matrix from the repository fixtures, and runs every
   scenario on the underlying JVM and on a Java 11 runtime (discovered, or
   provisioned on demand from the Adoptium API). POSIX hosts only.
+- `./gradlew koverHtmlReport` — aggregated coverage report across all five
+  modules (`build/reports/kover/html`; `koverXmlReport` for machine-readable
+  numbers, `koverLog` for a console summary). Thresholds become a gate once
+  the baseline settles.
 - `./gradlew -PwarningsAsErrors=true test detekt spotlessCheck` — the strict
   gate proving the tree compiles without a single Kotlin warning.
 - The project **version is derived from `CHANGELOG.md`** by the
