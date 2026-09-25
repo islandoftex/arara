@@ -37,15 +37,23 @@ reference the `oc` tags, file names, or line numbers.
   `providedPath`/`referencePath` duality in `MPPPath`).
 
 Remaining caveat: none — both engines and the Lua project pipeline are
-smoke-verified end-to-end on the provisioned JRE 11 (see oc7 and oc45):
-build `:cli:shadowJar`, place the jar with a `rules/` sibling directory and
-run it with `~/.gradle/jdks/eclipse_adoptium-11-*/bin/java`. The scratch
-matrix in `/tmp/opencode/arara-smoke` covers both engines (execution-test
-fixtures for MVEL conditionals, orb tags, sessions and halt; the Lua
-engine scenarios including a wrongly typed conditional probe) and the
-real TeX toolchain (an official `pdflatex` rule run through both
-dialects, plus a file-database double run asserting the record-and-skip
-semantics of `changed`).
+smoke-verified end-to-end by `scripts/smoke.sh` (the codified successor of
+the oc7/oc45 scratch matrix): one command that builds the runnable jar,
+provisions the scratch matrix in `/tmp/arara-smoke` from the
+repository fixtures and the authored scenarios in `scripts/smoke`, and runs
+the full scenario set twice — once on the underlying JVM, and once on a
+Java 11 runtime, the oldest supported floor, discovered among the
+foojay-provisioned caches, `JAVA11_HOME`, any `java` reporting version 11,
+or provisioned on demand from the Adoptium API into
+`~/.cache/arara/smoke-jdk-11`. The scenarios cover both engines (the
+simple directive pipeline, the Lua engine happy path, conditionals
+including a wrongly typed conditional probe, engine options with a rule
+staged in the application's rules directory) and the real TeX toolchain
+(the official `pdflatex` rule through both dialects, plus a file-database
+double run asserting the record-and-skip semantics of `changed`). The
+deeper historical scenarios (MVEL conditionals, orb tags, sessions and
+halt) live on in the automated `ExecutionTest` suite, driven from the
+same fixtures.
 
 The full suite is also verified on a real Windows machine. When
 replicating there, clone with the checkout line endings pinned (or set
@@ -83,6 +91,10 @@ pins one minor behind). JVM toolchain is JDK 11
   `-PvalidateYamlRules=true` / `-PvalidateLuaRules=true`.
 - `./gradlew dependencyUpdates` — dependency upgrade report (pre-release
   versions filtered out).
+- `scripts/smoke.sh` — the end-to-end smoke suite: builds the runnable jar,
+  provisions the scratch matrix from the repository fixtures, and runs every
+  scenario on the underlying JVM and on a Java 11 runtime (discovered, or
+  provisioned on demand from the Adoptium API). POSIX hosts only.
 - `./gradlew -PwarningsAsErrors=true test detekt spotlessCheck` — the strict
   gate proving the tree compiles without a single Kotlin warning.
 - The project **version is derived from `CHANGELOG.md`** by the

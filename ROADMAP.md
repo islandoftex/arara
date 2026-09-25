@@ -577,3 +577,48 @@ class loading helpers reject safe mode with the same contract the
 system command helper upholds, mirroring its guard placement and
 message style. The safe mode promise now covers the most powerful
 escape hatch as well.
+
+## Build modernization record
+
+The post-migration housekeeping continues with a planned sequence of
+small, verified build steps. The decisions so far:
+
+- **The smoke suite is codified.** `scripts/smoke.sh` builds the runnable
+  jar, provisions the scratch matrix from the repository fixtures (the
+  three authored scenarios — the file-database double run and the
+  official rule through both dialects — are versioned in `scripts/smoke`,
+  alongside the official rule pair staged under its installed naming),
+  discovers the jar by pattern instead of a version-pinned name, and runs
+  the full scenario set on the underlying JVM and again on a Java 11
+  runtime. The floor runtime is discovered among the toolchain caches,
+  the environment or the path, and provisioned on demand from the Adoptium
+  API into a user cache that survives temporary-directory wipes. A
+  dedicated provisioning plugin was considered and shelved in favour of
+  the API path.
+- **The Java floor stays at 11.** The dependency graph's real bytecode
+  ceiling is kotaml at exactly class file 55; kotlin-logging ships Java 8
+  classes with a root-level `module-info.class` at major 61 — an inert
+  descriptor on the class path that a compatibility checker misread as a
+  Java 17 requirement (reported upstream, fixed by GradleUp/tapmoc#109).
+  Nothing in the graph requires more than Java 11.
+- **Compatibility wiring goes through tapmoc.** Its `java(11)` and
+  `kotlin(2.4.0)` calls replace the manual jvmTarget, apiVersion,
+  languageVersion and release wirings; the Kotlin pins move to the
+  compiler's own minor; the toolchain blocks vanish (the daemon JVM
+  compiles release-11 bytecode, and the tests run with it); the dependency
+  check joins the gates once its module-info fix ships in a stable
+  release — the upgrade report watches for it. Until then the smoke's
+  Java 11 leg carries the floor verification alone, and its retirement
+  condition is exactly the check's arrival plus the probe proving the
+  compiler enforces the JDK 11 API surface.
+- **Coverage is measured** with Kover (aggregated report first,
+  thresholds once the baseline is known), and the build borrows the
+  leopack patterns: catalog-resolved plugin ids with `plugins.withId`,
+  pinned fork modules in the upgrade report, a task-name-gated publish
+  warning, a shared license-header delimiter covering both Kotlin file
+  kinds (nothing above the first real token — package, import, `@file:`,
+  plugins, buildscript, pluginManagement — survives as header material),
+  and detekt's jvm target.
+- **LeoPack is the release-phase packaging candidate** (CTAN/TDS archives
+  from the shadow jar, the launcher and the rules directory), alongside
+  sources and javadoc jars for the publication.
