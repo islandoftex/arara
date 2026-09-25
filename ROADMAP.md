@@ -622,3 +622,17 @@ small, verified build steps. The decisions so far:
 - **LeoPack is the release-phase packaging candidate** (CTAN/TDS archives
   from the shadow jar, the launcher and the rules directory), alongside
   sources and javadoc jars for the publication.
+- **Dependency declarations live with their consumers.** The four
+  modules with test sources declare the Kotlin test artifact next to
+  their own dependencies through catalog references, the command line
+  module's reflection dependency is a catalog entry pinned to the same
+  version key the Kotlin plugins use, and core declares the
+  serialization artifact its sources compile against instead of riding
+  a transitive path through the YAML parser. The root's cross-project
+  dependency block and its workaround comment are gone, the mvel module
+  carries no test dependency at all (it has no test sources), and the
+  build helper source lost the catalog import nothing consumed. Its
+  repositories declaration stays — a correction the build itself
+  enforced: the Kotlin plugin's own stdlib and reflect coordinates
+  resolve through it, so the declaration is load-bearing even though
+  the helper build declares no dependencies of its own.

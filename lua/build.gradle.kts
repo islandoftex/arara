@@ -8,4 +8,6 @@ dependencies {
     implementation(project(":core"))
     implementation(libs.luaj)
     implementation(libs.kotlin.logging)
+
+    testImplementation(libs.kotlin.test)
 }

@@ -14,8 +14,10 @@ dependencies {
     api(project(":api"))
     implementation(libs.kotlin.logging)
     implementation(libs.kotaml)
+    implementation(libs.kotlinx.serialization)
     implementation(libs.okio)
     implementation(libs.zt.exec)
 
+    testImplementation(libs.kotlin.test)
     testRuntimeOnly(libs.slf4j.simple)
 }

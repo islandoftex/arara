@@ -22,6 +22,8 @@ clikt = { group = "com.github.ajalt.clikt", name = "clikt", version.ref = "clikt
 clikt-markdown = { group = "com.github.ajalt.clikt", name = "clikt-markdown", version.ref = "clikt-version" }
 kotaml = { group = "io.heapy.kotaml", name = "kotaml", version.ref = "kotaml-version" }
 kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version.ref = "kotlin-logging-version" }
+kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin-version" }
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin-version" }
 luaj = { group = "io.github.taoguan", name = "luaj", version.ref = "luaj-version" }
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinx-serialization-version" }
 log4j-core = { group = "org.apache.logging.log4j", name = "log4j-core", version.ref = "log4j-version" }

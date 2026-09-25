@@ -45,7 +45,7 @@ dependencies {
     // this line is the sole provider of it; removing it fails the CLI
     // startup and the YAML parsing (verified by observing the class
     // loads at runtime)
-    implementation(kotlin("reflect"))
+    implementation(libs.kotlin.reflect)
     implementation(libs.kotlin.logging)
     implementation(libs.clikt)
     implementation(libs.clikt.markdown)
@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.log4j.impl)
     implementation(libs.zt.exec)
 
+    testImplementation(libs.kotlin.test)
 }
 
 tasks {

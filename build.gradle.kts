@@ -47,7 +47,6 @@ spotless {
                 "build.gradle.kts",
                 "settings.gradle.kts",
                 "buildSrc/build.gradle.kts",
-                "buildSrc/settings.gradle.kts",
                 "api/build.gradle.kts",
                 "core/build.gradle.kts",
                 "lua/build.gradle.kts",
@@ -200,9 +199,6 @@ allprojects {
     version = rootProject.version
 }
 
-// accessing `libs` inside `subprojects` blocks does not work (wont-fix
-// issue), so the test wiring relies on the Kotlin plugin helper alone
-
 subprojects {
 
     apply(plugin = "org.jetbrains.dokka")
@@ -221,10 +217,6 @@ subprojects {
                     "kotlin.time.ExperimentalTime"
             )
         }
-    }
-
-    dependencies {
-        "testImplementation"(kotlin("test"))
     }
 
     tasks {

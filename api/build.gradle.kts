@@ -10,6 +10,7 @@ kotlin {
 dependencies {
     implementation(libs.okio)
 
+    testImplementation(libs.kotlin.test)
     testImplementation(libs.okio.fakefilesystem)
 }
 
