@@ -41,11 +41,11 @@ smoke-verified end-to-end by `scripts/smoke.sh` (the codified successor of
 the oc7/oc45 scratch matrix): one command that builds the runnable jar,
 provisions the scratch matrix in `/tmp/arara-smoke` from the
 repository fixtures and the authored scenarios in `scripts/smoke`, and runs
-the full scenario set twice — once on the underlying JVM, and once on a
-Java 11 runtime, the oldest supported floor, discovered among the
-foojay-provisioned caches, `JAVA11_HOME`, any `java` reporting version 11,
-or provisioned on demand from the Adoptium API into
-`~/.cache/arara/smoke-jdk-11`. The scenarios cover both engines (the
+the full scenario set twice — once on the underlying JVM, and once on
+a floor runtime named by the smoke properties, discovered among the
+provisioned caches, `SMOKE_JAVA_HOME`, any `java` reporting the floor
+version, or provisioned on demand through the build's
+`printSmokeJavaRuntime` task. The scenarios cover both engines (the
 simple directive pipeline, the Lua engine happy path, conditionals
 including a wrongly typed conditional probe, engine options with a rule
 staged in the application's rules directory) and the real TeX toolchain
@@ -70,7 +70,10 @@ Gradle 9.7.1 wrapper, Kotlin 2.4.20. Compatibility targets live in root
 are enforced by the tapmoc plugin — no toolchains are configured, so whatever
 JVM drives the build compiles release-11 bytecode, with the JDK 11 API
 surface compile-checked as well. The foojay resolver in `settings.gradle.kts`
-remains solely to provision the smoke suite's floor runtime.
+remains solely to provision the smoke suite's floor runtime through the
+`printSmokeJavaRuntime` task (driven by `smoke.jvm.version` and
+`smoke.jvm.vendor`, with a loud notice whenever the smoke floor
+differs from the build floor).
 
 - `./gradlew :cli:run` — run arara from sources (entry point
   `org.islandoftex.arara.cli.CLIKt`).
@@ -95,8 +98,9 @@ remains solely to provision the smoke suite's floor runtime.
   versions filtered out).
 - `scripts/smoke.sh` — the end-to-end smoke suite: builds the runnable jar,
   provisions the scratch matrix from the repository fixtures, and runs every
-  scenario on the underlying JVM and on a Java 11 runtime (discovered, or
-  provisioned on demand from the Adoptium API). POSIX hosts only.
+  scenario on the underlying JVM and on the floor runtime named by the smoke
+  properties (discovered locally, or provisioned on demand through the
+  `printSmokeJavaRuntime` task). POSIX hosts only.
 - `./gradlew koverHtmlReport` — aggregated coverage report across all five
   modules (`build/reports/kover/html`; `koverXmlReport` for machine-readable
   numbers, `koverLog` for a console summary). Thresholds become a gate once

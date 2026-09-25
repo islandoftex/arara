@@ -4,25 +4,26 @@
 # arara's end-to-end smoke suite. One command that builds the runnable
 # jar, provisions a scratch matrix from the repository fixtures, and
 # runs the full scenario set on the underlying JVM. A second leg re-runs
-# the matrix on a Java 11 runtime — the oldest supported floor — which
-# is discovered among the usual caches or provisioned on demand from
-# the Adoptium API, so the shipped artifact is executed on the very
-# runtime it promises to support. Scenario outputs stay in the scratch
-# tree for inspection. POSIX hosts only; Windows keeps the manual
-# recipe.
+# the matrix on the floor runtime named by the smoke properties, which
+# is discovered among the usual caches or provisioned on demand through
+# the build's runtime task, so the shipped artifact is executed on the
+# very runtime it promises to support. Scenario outputs stay in the
+# scratch tree for inspection. POSIX hosts only; Windows keeps the
+# manual recipe.
 
 set -u
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SMOKE="${SMOKE_DIR:-/tmp/arara-smoke}"
-JRE11_CACHE="${HOME}/.cache/arara/smoke-jdk-11"
 FIXTURES="${ROOT}/cli/src/test/resources/executiontests"
 AUTHORED="${ROOT}/scripts/smoke"
+
+FLOOR="$(sed -n 's/^smoke\.jvm\.version=//p' "${ROOT}/gradle.properties")"
 
 JAR=""
 APP_JAR=""
 UNDERLYING_JAVA=""
-JRE11=""
+FLOOR_JAVA=""
 LEG=""
 FAILURES=0
 FAILURE_NAMES=()
@@ -201,21 +202,20 @@ run_matrix() {
     tex_lua "${java}"
 }
 
-find_jre11() {
+find_floor_java() {
     local candidate
     local -a candidates=()
-    [[ -x "${JRE11_CACHE}/bin/java" ]] && candidates+=("${JRE11_CACHE}/bin/java")
-    for candidate in "${HOME}"/.gradle/jdks/*-11-*/bin/java; do
+    for candidate in "${HOME}"/.gradle/jdks/*-${FLOOR}-*/bin/java; do
         [[ -x "${candidate}" ]] && candidates+=("${candidate}")
     done
-    if [[ -n "${JAVA11_HOME:-}" && -x "${JAVA11_HOME}/bin/java" ]]; then
-        candidates+=("${JAVA11_HOME}/bin/java")
+    if [[ -n "${SMOKE_JAVA_HOME:-}" && -x "${SMOKE_JAVA_HOME}/bin/java" ]]; then
+        candidates+=("${SMOKE_JAVA_HOME}/bin/java")
     fi
     if command -v java >/dev/null 2>&1; then
         candidates+=("$(command -v java)")
     fi
     for candidate in ${candidates[@]+"${candidates[@]}"}; do
-        if [[ "$(java_major "${candidate}")" == "11" ]]; then
+        if [[ "$(java_major "${candidate}")" == "${FLOOR}" ]]; then
             printf '%s' "${candidate}"
             return 0
         fi
@@ -223,42 +223,26 @@ find_jre11() {
     return 1
 }
 
-provision_jre11() {
-    local os arch url archive
-    case "$(uname -s)" in
-        Linux*)  os="linux" ;;
-        Darwin*) os="mac" ;;
-        *) say "   no Adoptium package for this operating system"; return 1 ;;
-    esac
-    case "$(uname -m)" in
-        x86_64)          arch="x64" ;;
-        aarch64 | arm64) arch="aarch64" ;;
-        *) say "   no Adoptium package for this architecture"; return 1 ;;
-    esac
-    url="https://api.adoptium.net/v3/binary/latest/11/ga/${os}/${arch}/jre/hotspot/normal/eclipse?project=jdk"
-    archive="${SMOKE}/jre11.tar.gz"
-    say "== no Java 11 runtime found; provisioning from the Adoptium API"
-    if ! curl -LfS --retry 3 --connect-timeout 15 -o "${archive}" "${url}"; then
-        say "   the download failed"
-        rm -f "${archive}"
+provision_floor_java() {
+    say "== no Java ${FLOOR} runtime found; provisioning through the build"
+    local resolved
+    resolved="$( cd "${ROOT}" && ./gradlew -q printSmokeJavaRuntime --console=plain | tail -1 )"
+    if [[ -z "${resolved}" || ! -x "${resolved}" ]]; then
+        say "   the runtime task returned no usable path"
         return 1
     fi
-    rm -rf "${JRE11_CACHE}"
-    mkdir -p "${JRE11_CACHE}"
-    if ! tar -xzf "${archive}" -C "${JRE11_CACHE}" --strip-components=1; then
-        say "   the unpack failed"
-        rm -rf "${JRE11_CACHE}"
+    if [[ "$(java_major "${resolved}")" != "${FLOOR}" ]]; then
+        say "   the provisioned runtime did not validate"
         return 1
     fi
-    rm -f "${archive}"
-    if [[ "$(java_major "${JRE11_CACHE}/bin/java")" != "11" ]]; then
-        say "   the downloaded runtime did not validate"
-        rm -rf "${JRE11_CACHE}"
-        return 1
-    fi
+    FLOOR_JAVA="${resolved}"
 }
 
 main() {
+    if [[ -z "${FLOOR}" ]]; then
+        say "FATAL: the smoke floor key is missing from the properties file"
+        exit 1
+    fi
     resolve_underlying
     build_jar
     provision_tree
@@ -268,21 +252,21 @@ main() {
     say "== scenario matrix on the underlying JVM"
     run_matrix "${UNDERLYING_JAVA}"
 
-    if JRE11="$(find_jre11)"; then
-        say "== Java 11 runtime found: ${JRE11}"
-    elif provision_jre11 && JRE11="$(find_jre11)"; then
-        say "== Java 11 runtime provisioned: ${JRE11}"
+    if FLOOR_JAVA="$(find_floor_java)"; then
+        say "== Java ${FLOOR} runtime found: ${FLOOR_JAVA}"
+    elif provision_floor_java; then
+        say "== Java ${FLOOR} runtime provisioned: ${FLOOR_JAVA}"
     else
-        JRE11=""
-        say "== SKIPPED: the Java 11 leg — no runtime found and provisioning failed;"
+        FLOOR_JAVA=""
+        say "== SKIPPED: the Java ${FLOOR} leg — no runtime found and provisioning failed;"
         say "   the artifact was not exercised on the oldest supported floor"
     fi
 
-    if [[ -n "${JRE11}" ]]; then
-        LEG="Java 11 floor"
+    if [[ -n "${FLOOR_JAVA}" ]]; then
+        LEG="Java ${FLOOR} floor"
         say ""
-        say "== scenario matrix on the Java 11 floor"
-        run_matrix "${JRE11}"
+        say "== scenario matrix on the Java ${FLOOR} floor"
+        run_matrix "${FLOOR_JAVA}"
     fi
 
     say ""

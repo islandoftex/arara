@@ -1,10 +1,16 @@
 // SPDX-License-Identifier: BSD-3-Clause
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import io.gitlab.arturbosch.detekt.Detekt
+import org.gradle.api.Action
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.gradle.jvm.toolchain.JavaLanguageVersion
+import org.gradle.jvm.toolchain.JavaToolchainService
+import org.gradle.jvm.toolchain.JavaToolchainSpec
+import org.gradle.jvm.toolchain.JvmVendorSpec
 import org.islandoftex.arara.build.AraraPublication
+import org.islandoftex.arara.build.PrintSmokeJavaRuntime
 import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import tapmoc.TapmocExtension
@@ -37,6 +43,7 @@ plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.spotless)
     alias(libs.plugins.kover)
+    `java-base`
 }
 
 if (
@@ -164,6 +171,11 @@ val validateLuaRules: Boolean = providers
         .map { it.toBoolean() }
         .getOrElse(false)
 
+// the smoke runtime is resolved through the toolchain service, which
+// provisions on demand; the task itself holds only the policy and the
+// resolved path
+val smokeToolchainService = the<JavaToolchainService>()
+
 tasks {
 
     withType<DependencyUpdatesTask> {
@@ -200,6 +212,20 @@ tasks {
 
     named("spotlessLuaRulesApply") {
         enabled = validateLuaRules
+    }
+
+    register<PrintSmokeJavaRuntime>("printSmokeJavaRuntime") {
+        smokeVersion.set(providers.gradleProperty("smoke.jvm.version").map { it.toInt() })
+        smokeVendor.set(providers.gradleProperty("smoke.jvm.vendor"))
+        buildFloor.set(providers.gradleProperty("arara.jvm.target").map { it.toInt() })
+        launcherPath.set(
+                smokeToolchainService.launcherFor(
+                        Action<JavaToolchainSpec> {
+                            languageVersion.set(JavaLanguageVersion.of(smokeVersion.get()))
+                            vendor.set(JvmVendorSpec.matching(smokeVendor.get()))
+                        }
+                ).map { it.executablePath.asFile.absolutePath }
+        )
     }
 }
 

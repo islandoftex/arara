@@ -665,14 +665,27 @@ small, verified build steps. The decisions so far:
 The queue past the current sequence, recorded for the next planning
 rounds:
 
-- **The smoke floor task**: a small task in the build helper source
-  that provisions the floor runtime on demand through the toolchain
-  service (the foojay resolver stays in settings for exactly this),
-  driven by two explicit properties, `smoke.jvm.version` and
-  `smoke.jvm.vendor`, deliberately separate from the build target so
-  divergence is a visible, deliberate act; the task announces any
-  divergence loudly without failing, and the smoke prelude consumes
-  its printed path.
+- **The smoke floor task** — landed: a task in the helper build holds
+  the policy (the two explicit properties, deliberately separate from
+  the build target, with a loud divergence notice that never fails
+  the run), while the build script resolves the runtime through the
+  toolchain service. The step taught three things, recorded with it:
+  the vendor matching is a substring test against the JVM's
+  self-reported vendor, and Temurin builds of every era report
+  "Eclipse Adoptium", so the property names the vendor the runtime
+  actually says, not the product branding; the toolchain resolution
+  demands a full installation carrying the compiler binaries, so a
+  runtime-only download never satisfies it; and the launcher service
+  sits behind a pair of overloads the receiver-style action resolves.
+  Detection is equally honest: the build sees its own provisioned
+  installs and the standard system locations, while hand-placed
+  runtimes in nonstandard homes do not exist to it — which is the
+  point, as the suite depends on what the build provisions, not on
+  what a machine happens to carry. The smoke prelude provisions
+  through the task when no local runtime matches, the separate
+  download path is gone, and the helper build keeps no catalog until
+  its first real dependency; when one lands, the catalog is its own,
+  never the application's.
 - **The Bats-shaped suite**: the scenario definitions move into the
   Kobats generator library and render plain runner files; one Gradle
   task becomes the single entry point — jar built, suite generated,
