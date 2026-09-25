@@ -626,13 +626,24 @@ small, verified build steps. The decisions so far:
   own, because the fixture-driven command line suite exercises its
   parser in-process; its 29.3% branch coverage is the lowest in the
   tree. Thresholds become a verification gate once the baseline
-  settles. The build also borrows the leopack patterns:
-  catalog-resolved plugin ids with `plugins.withId`,
-  pinned fork modules in the upgrade report, a task-name-gated publish
-  warning, a shared license-header delimiter covering both Kotlin file
-  kinds (nothing above the first real token — package, import, `@file:`,
-  plugins, buildscript, pluginManagement — survives as header material),
-  and detekt's jvm target.
+  settles. The leopack patterns landed with one deliberate reversal:
+  the publish warning is gated on the requested task names (and the
+  property spelling unified on the lowercase form the publication
+  actually reads — the root had been checking a differently-cased key
+  than the one feeding the credentials), the shared license-header
+  delimiter covers both Kotlin file kinds, and detekt parses against
+  the build's JVM target. The fork freeze was considered and rejected:
+  the compatibility guards own that question mechanically, so the
+  forks flow freely. The one pin the report does carry is the
+  standard library — its version is managed by the compatibility
+  plugin, and the report's suggestion to update its requested pin was
+  observed as noise and silenced by the recipe. The header machinery
+  enforced its own convention on landing: the comment recording why
+  the helper build's repositories declaration is load-bearing sat
+  above the plugins block, inside the replaceable header region, and
+  the first formatting run consumed it together with the declaration —
+  the audit diff caught it before the commit, and the block now lives
+  below the delimiter boundary where nothing can eat it.
 - **LeoPack is the release-phase packaging candidate** (CTAN/TDS archives
   from the shadow jar, the launcher and the rules directory), alongside
   sources and javadoc jars for the publication.

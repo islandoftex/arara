@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
+import io.gitlab.arturbosch.detekt.Detekt
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
@@ -19,6 +20,12 @@ fun pluginId(alias: String): String =
                 .get()
                 .pluginId
 
+// the license header both Kotlin formatting steps enforce, with the
+// delimiter bounding the replaceable header region; it covers every
+// token that can legally open either Kotlin file kind
+private val spdxHeader = "// SPDX-License-Identifier: BSD-3-Clause"
+private val spdxDelimiter = "(@file:|package |import |plugins |buildscript |pluginManagement )"
+
 plugins {
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.serialization) apply false
@@ -32,7 +39,14 @@ plugins {
     alias(libs.plugins.kover)
 }
 
-if (!project.hasProperty("JobToken")) {
+if (
+    !project.hasProperty("jobToken") &&
+    gradle.startParameter.taskNames.any { requested ->
+        val name = requested.substringAfterLast(':')
+        name.contains("publish", ignoreCase = true) ||
+                name.lowercase().startsWith("generatepomfile")
+    }
+) {
     logger.warn(
             """
             Island of TeX ----------------------------------------------
@@ -66,7 +80,7 @@ spotless {
                 "mvel/build.gradle.kts",
                 "cli/build.gradle.kts"
         )
-        targetExclude("src/test/**/*.kts")
+        licenseHeader(spdxHeader, spdxDelimiter)
         ktlint().editorConfigOverride(
             mapOf(
                 "ktlint_standard" to "disabled",
@@ -87,7 +101,6 @@ spotless {
                 "cli/src/**/*.kt",
                 "buildSrc/src/**/*.kt"
         )
-        targetExclude("src/test/**/*.kts")
         ktlint().editorConfigOverride(
             mapOf(
                 "ktlint_standard" to "disabled",
@@ -95,7 +108,7 @@ spotless {
                 "ij_kotlin_imports_layout" to "*"
             )
         )
-        licenseHeader("// SPDX-License-Identifier: BSD-3-Clause")
+        licenseHeader(spdxHeader, spdxDelimiter)
         trimTrailingWhitespace()
         leadingTabsToSpaces()
         endWithNewline()
@@ -160,7 +173,14 @@ tasks {
                         version.matches(Regex("(?i).*[.-]$qualifier[.\\d-+]*"))
                     }
 
-            isNonStable(candidate.version) && !isNonStable(currentVersion)
+            // the standard library is managed by the compatibility
+            // plugin, so upgrade suggestions for its requested pin are
+            // noise rather than opportunities
+            val pinnedElsewhere = setOf("org.jetbrains.kotlin:kotlin-stdlib")
+
+            (isNonStable(candidate.version) && !isNonStable(currentVersion)) ||
+                    ("${candidate.group}:${candidate.module}" in pinnedElsewhere &&
+                            candidate.version != currentVersion)
         }
 
         checkForGradleUpdate = false
@@ -197,6 +217,11 @@ val targetKotlin = providers.gradleProperty("arara.kotlin.target").get()
 val warningsAsErrors = providers.gradleProperty("warningsAsErrors")
         .map { it.toBoolean() }
         .getOrElse(false)
+
+// the linting task parses against the build's JVM target
+tasks.withType<Detekt>().configureEach {
+    jvmTarget = if (targetJvm <= 8) "1.$targetJvm" else "$targetJvm"
+}
 
 allprojects {
     group = "org.islandoftex.arara"
