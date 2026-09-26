@@ -7,7 +7,9 @@ import org.islandoftex.kobats.bats
 // scratch tree root, the Java binary of the leg under run, and the
 // runnable jar. Each scenario renders as one runner file and moves
 // to its own working directory in the generated setup, so the rule
-// and configuration lookups resolve as they do for a user.
+// and configuration lookups resolve as they do for a user. The
+// fixture and authored fields drive the tree provisioning, so a new
+// scenario is a row in the table and nothing else.
 
 /** Runner files that require the real TeX toolchain on the path. */
 internal val texScenarioFiles: Set<String> =
@@ -16,7 +18,7 @@ internal val texScenarioFiles: Set<String> =
 /** Renders every smoke scenario, keyed by the runner file name. */
 internal fun smokeScenarios(): Map<String, String> = scenarios.associate { it.name to render(it) }
 
-private data class Scenario(
+internal data class Scenario(
     val name: String,
     val dir: String,
     val description: String,
@@ -27,9 +29,13 @@ private data class Scenario(
     val exitCode: Int = 0,
     val extraSetup: String = "",
     val doubleRun: Boolean = false,
+    val secondRunForbidden: String = "",
+    val fixture: String = "",
+    val authoredFile: String = "",
+    val authoredTarget: String = "",
 )
 
-private val scenarios = listOf(
+internal val scenarios = listOf(
         Scenario(
                 name = "run1.bats", dir = "run1",
                 description = "the simple directive through the default engine",
@@ -37,6 +43,7 @@ private val scenarios = listOf(
                 arguments = listOf("simple-directive.tex"),
                 expected = listOf("SUCCESS"),
                 forbidden = listOf("kotlin-logging:"),
+                fixture = "simple-directive",
         ),
         Scenario(
                 name = "run2.bats", dir = "run2",
@@ -45,6 +52,7 @@ private val scenarios = listOf(
                 arguments = listOf("--engine", "lua", "lua-engine.tex"),
                 expected = listOf("LuaEngineWorks"),
                 forbidden = listOf("kotlin-logging:"),
+                fixture = "lua-engine",
         ),
         Scenario(
                 name = "run3.bats", dir = "run3",
@@ -53,6 +61,7 @@ private val scenarios = listOf(
                 arguments = listOf("--engine", "lua", "lua-engine-conditionals.tex"),
                 expected = listOf("One", "Three", "Four"),
                 forbidden = listOf("Two"),
+                fixture = "lua-engine-conditionals",
         ),
         Scenario(
                 name = "run4.bats", dir = "run4",
@@ -64,6 +73,7 @@ private val scenarios = listOf(
                         "#1 to 'exists' (file or string expected, got number)",
                 ),
                 exitCode = 2,
+                fixture = "lua-engine-conditionals",
         ),
         Scenario(
                 name = "run5.bats", dir = "run5",
@@ -71,6 +81,7 @@ private val scenarios = listOf(
                 check = "the rule echoes the basename of the file under run",
                 arguments = listOf("--engine", "lua", "lua-engine-options.tex"),
                 expected = listOf("name: lua-engine-options"),
+                fixture = "lua-engine-options",
         ),
         Scenario(
                 name = "tex-db.bats", dir = "tex-db",
@@ -80,6 +91,9 @@ private val scenarios = listOf(
                 expected = listOf("This is pdfTeX"),
                 extraSetup = "rm -f arara.yaml dbcheck.pdf",
                 doubleRun = true,
+                secondRunForbidden = "This is pdfTeX",
+                authoredFile = "dbcheck.tex",
+                authoredTarget = "dbcheck.tex",
         ),
         Scenario(
                 name = "tex-yaml.bats", dir = "tex-yaml",
@@ -87,6 +101,8 @@ private val scenarios = listOf(
                 check = "the official pdflatex rule typesets the document",
                 arguments = listOf("--verbose", "tex-yaml.tex"),
                 expected = listOf("This is pdfTeX"),
+                authoredFile = "pdflatex.tex",
+                authoredTarget = "tex-yaml.tex",
         ),
         Scenario(
                 name = "tex-lua.bats", dir = "tex-lua",
@@ -94,6 +110,71 @@ private val scenarios = listOf(
                 check = "the official pdflatex rule typesets the document",
                 arguments = listOf("--verbose", "--engine", "lua", "tex-lua.tex"),
                 expected = listOf("This is pdfTeX"),
+                authoredFile = "pdflatex.tex",
+                authoredTarget = "tex-lua.tex",
+        ),
+        Scenario(
+                name = "conditionals.bats", dir = "conditionals",
+                description = "the conditional dialect of the default engine",
+                check = "the conditionals take the expected branches",
+                arguments = listOf("conditionals.tex"),
+                expected = listOf("QuackOne", "QuackFour"),
+                forbidden = listOf("QuackTwo", "QuackThree"),
+                fixture = "conditionals",
+        ),
+        Scenario(
+                name = "sessions.bats", dir = "sessions",
+                description = "session state through the default engine",
+                check = "the session persists between the rule commands",
+                arguments = listOf("sessions.tex"),
+                expected = listOf("MeowQuack"),
+                fixture = "sessions",
+        ),
+        Scenario(
+                name = "lua-sessions.bats", dir = "lua-engine-sessions",
+                description = "session state through the Lua engine",
+                check = "the session persists between the rule commands",
+                arguments = listOf("--engine", "lua", "lua-engine-sessions.tex"),
+                expected = listOf("MeowQuack"),
+                fixture = "lua-engine-sessions",
+        ),
+        Scenario(
+                name = "halt.bats", dir = "halt-error",
+                description = "the halt directive's error path",
+                check = "the run stops after the halt with its exit code",
+                arguments = listOf("halt-error.tex"),
+                expected = listOf("QuackOne"),
+                forbidden = listOf("QuackTwo"),
+                exitCode = 1,
+                fixture = "halt-error",
+        ),
+        Scenario(
+                name = "file-db.bats", dir = "changes",
+                description = "the file database without the TeX toolchain",
+                check = "the first run runs the rule and the second run skips",
+                arguments = listOf("changes.tex"),
+                expected = listOf("QuackOne"),
+                extraSetup = "rm -f arara.yaml",
+                doubleRun = true,
+                secondRunForbidden = "QuackOne",
+                fixture = "changes",
+        ),
+        Scenario(
+                name = "foreign-extension.bats", dir = "foreign-extension",
+                description = "dispatch by a configured foreign extension",
+                check = "the configured extension is processed like a native one",
+                arguments = listOf("foreign-extension.my"),
+                expected = listOf("QuackOne"),
+                fixture = "foreign-extension",
+        ),
+        Scenario(
+                name = "foreign-extension-unknown.bats", dir = "foreign-extension",
+                description = "the rejection of an uncovered extension",
+                check = "the uncovered extension is rejected with the dispatch error",
+                arguments = listOf("foreign-extension.xy"),
+                expected = listOf("I could not find the provided file"),
+                exitCode = 2,
+                fixture = "foreign-extension",
         ),
 )
 
@@ -116,7 +197,7 @@ private fun render(scenario: Scenario): String = bats {
         if (scenario.doubleRun) {
             run { "\"${'$'}SMOKE_JAVA\" -jar \"${'$'}APP\" " + scenario.arguments.joinToString(" ") }
             status { it eq 0 }
-            output { !it contains "This is pdfTeX" }
+            output { !it contains scenario.secondRunForbidden }
         }
     }
 }

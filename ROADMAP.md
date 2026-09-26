@@ -710,7 +710,16 @@ rounds:
   relative to the test file, and hardened its clone guards, so the
   runner's working-directory choice became a preference rather than
   a fix — proven by invoking the runner from an unrelated directory,
-  the exact shape that failed before the patch.
+  the exact shape that failed before the patch. The matrix has since
+  grown back toward its historical breadth: the scenario table is
+  now data-driven end to end — fixture and authored sources ride
+  each row, so a scenario is a row and nothing else — and the rows
+  restored the default engine's conditional dialect, session state
+  in both engines, the halt directive's pinned error exit, dispatch
+  by file extension with its rejection path, and a TeX-free
+  file-database double run whose fixture carried a machine-specific
+  committed database defused by the per-run cleanup. Every row was
+  asserted from observed output first, exit codes included.
 - **The tolerated findings retire**: the three informational findings
   get real fixes where they exist — the idiomatic error call for the
   deliberate throw, helper extraction or a computed failure for the

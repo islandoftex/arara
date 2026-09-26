@@ -46,14 +46,16 @@ authored scenarios in `scripts/smoke`, and runs the full scenario set twice
 — once on the underlying JVM and once on the floor runtime named by the
 smoke properties, resolved through the toolchain service and skipped
 loudly when absent. The scenarios cover both engines (the
-simple directive pipeline, the Lua engine happy path, conditionals
-including a wrongly typed conditional probe, engine options with a rule
-staged in the application's rules directory) and the real TeX toolchain
-(the official `pdflatex` rule through both dialects, plus a file-database
-double run asserting the record-and-skip semantics of `changed`). The
-deeper historical scenarios (MVEL conditionals, orb tags, sessions and
-halt) live on in the automated `ExecutionTest` suite, driven from the
-same fixtures.
+simple directive pipeline, the engine happy paths, conditionals in both
+dialects — including a wrongly typed conditional probe — sessions in
+both engines, engine options with a staged application rule, the halt
+directive's error exit, dispatch by file extension including its
+rejection path, and a file-database double run in both a TeX and a
+TeX-free shape asserting the record-and-skip semantics of `changed`)
+and the real TeX toolchain (the official `pdflatex` rule through both
+dialects). The historical scenarios the compact matrix once dropped are
+restored to the end-to-end set; the remaining fixture shapes stay with
+the automated `ExecutionTest` suite, driven from the same fixtures.
 
 The full suite is also verified on a real Windows machine. When
 replicating there, clone with the checkout line endings pinned (or set

@@ -236,19 +236,20 @@ abstract class RunSmokeBats : DefaultTask() {
         val tree = File(smokeDir.get())
         val rules = File(tree, "app/rules")
         rules.mkdirs()
-        for (dir in listOf("run1", "run2", "run3", "run4", "run5", "tex-db", "tex-yaml", "tex-lua")) {
-            File(tree, dir).mkdirs()
-        }
+        scenarios.map { it.dir }.distinct().forEach { File(tree, it).mkdirs() }
         val fixtures = fixturesRoot.get().asFile
-        copyDir(File(fixtures, "simple-directive"), File(tree, "run1"))
-        copyDir(File(fixtures, "lua-engine"), File(tree, "run2"))
-        copyDir(File(fixtures, "lua-engine-conditionals"), File(tree, "run3"))
-        copyDir(File(fixtures, "lua-engine-conditionals"), File(tree, "run4"))
-        copyDir(File(fixtures, "lua-engine-options"), File(tree, "run5"))
         val authored = authoredRoot.get().asFile
-        copyFile(File(authored, "dbcheck.tex"), File(tree, "tex-db/dbcheck.tex"))
-        copyFile(File(authored, "pdflatex.tex"), File(tree, "tex-yaml/tex-yaml.tex"))
-        copyFile(File(authored, "pdflatex.tex"), File(tree, "tex-lua/tex-lua.tex"))
+        for (scenario in scenarios) {
+            if (scenario.fixture.isNotEmpty()) {
+                copyDir(File(fixtures, scenario.fixture), File(tree, scenario.dir))
+            }
+            if (scenario.authoredFile.isNotEmpty()) {
+                copyFile(
+                        File(authored, scenario.authoredFile),
+                        File(File(tree, scenario.dir), scenario.authoredTarget),
+                )
+            }
+        }
         val rulesSource = rulesRoot.get().asFile
         copyFile(File(rulesSource, "arara-rule-pdflatex.yaml"), File(rules, "pdflatex.yaml"))
         copyFile(File(rulesSource, "arara-rule-pdflatex.lua"), File(rules, "pdflatex.lua"))
