@@ -141,7 +141,23 @@ class DirectiveParsingTest {
         assertFailsWith<AraraException>(
             "an orb tag that cannot be evaluated must be rejected"
         ) {
-            extract("% arara: dummy: { options: \"@{ not_a_real_value_quack }\" }\n")
+            extract("% arara: dummy: { options: \"@{ 1 + }\" }\n")
+        }
+    }
+
+    @Test
+    fun `converts plain numeric scalars into numbers`() {
+        val directive = extract("% arara: dummy: { answer: 42, ratio: 1.5 }\n").single()
+        assertEquals(42, directive.parameters["answer"], "an integer scalar converts")
+        assertEquals(1.5, directive.parameters["ratio"], "a float scalar converts")
+    }
+
+    @Test
+    fun `rejects null values in directive parameters`() {
+        assertFailsWith<AraraException>(
+            "a null value in a directive parameter is rejected"
+        ) {
+            extract("% arara: dummy: { answer: ~ }\n")
         }
     }
 }

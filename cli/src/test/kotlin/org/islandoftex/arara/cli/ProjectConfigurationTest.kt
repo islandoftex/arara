@@ -13,6 +13,9 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
+import org.islandoftex.arara.core.session.LinearExecutor
+import org.islandoftex.arara.core.session.Session
+import org.islandoftex.arara.mvel.utils.MvelState
 
 /**
  * Runs the actual CLI entry point to verify behavior that only manifests
@@ -23,6 +26,30 @@ import kotlin.test.assertTrue
  * the configuration provides.
  */
 class ProjectConfigurationTest {
+    /**
+     * Runs the block restoring the global state a command line
+     * invocation mutates - the execution options, the user interface
+     * options and the preamble state. The entry point applies its
+     * options globally and never reverts them, so a test leaving them
+     * behind changes the behavior of every subsequent test in the
+     * same virtual machine.
+     */
+    private fun <T> withRestoredState(work: () -> T): T {
+        val executionOptions = LinearExecutor.executionOptions
+        val userInterfaceOptions = Session.userInterfaceOptions
+        val defaultPreamble = MvelState.defaultPreamble
+        val preambles = MvelState.preambles.toMap()
+        return try {
+            work()
+        } finally {
+            LinearExecutor.executionOptions = executionOptions
+            Session.userInterfaceOptions = userInterfaceOptions
+            MvelState.defaultPreamble = defaultPreamble
+            MvelState.preambles.clear()
+            MvelState.preambles.putAll(preambles)
+        }
+    }
+
     private fun runCLI(vararg args: String): Pair<Int, String> {
         val sysout = System.out
         val output = ByteArrayOutputStream()
@@ -120,5 +147,97 @@ class ProjectConfigurationTest {
             output.isNotBlank(),
             "the rejection is reported to the user"
         )
+    }
+
+    @Test
+    fun `maps the command line options onto the execution`() {
+        withRestoredState {
+            val (status, output) = runCLI(
+                "--working-directory",
+                "src/test/resources/executiontests/simple-directive",
+                "--verbose", "--max-loops", "5", "--timeout", "1000",
+                "--language", "en",
+                "simple-directive.tex"
+            )
+            assertEquals(
+                0, status,
+                "the option mapping does not disturb a successful run"
+            )
+            assertTrue(
+                output.contains("SUCCESS"),
+                "the run completes under the mapped options"
+            )
+        }
+    }
+
+    @Test
+    fun `maps the dry run and safe run modes`() {
+        withRestoredState {
+            val dryRun = runCLI(
+                "--working-directory",
+                "src/test/resources/executiontests/simple-directive",
+                "--dry-run",
+                "simple-directive.tex"
+            )
+            assertEquals(0, dryRun.first, "a dry run of a healthy file succeeds")
+            assertTrue(
+                "[DR]" in dryRun.second,
+                "the dry run marks its entries"
+            )
+            val safeRun = runCLI(
+                "--working-directory",
+                "src/test/resources/executiontests/simple-directive",
+                "--safe-run",
+                "simple-directive.tex"
+            )
+            assertEquals(
+                0, safeRun.first,
+                "ordinary commands run under safe mode as well"
+            )
+        }
+    }
+
+    @Test
+    fun `call parameters take precedence over properties files`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-precedence")
+            val properties = directory.resolve("call.properties")
+            Files.writeString(properties, "quack=from-file")
+            try {
+                runCLI(
+                    "--working-directory", directory.toString(),
+                    "--properties-file", properties.toString(),
+                    "--call-property", "quack=from-parameter",
+                    "missing.tex"
+                )
+                assertEquals(
+                    "from-parameter",
+                    Session.get("arg:quack"),
+                    "the command line parameter wins over the properties file"
+                )
+            } finally {
+                Session.remove("arg:quack")
+            }
+        }
+    }
+
+    @Test
+    fun `runs preamble directives from the configuration`() {
+        withRestoredState {
+            val (status, output) = runCLI(
+                "--working-directory",
+                "src/test/resources/executiontests/preamble",
+                "--preamble", "test",
+                "main.tex"
+            )
+            assertEquals(
+                0, status,
+                "the preamble directive runs on a file without its own"
+            )
+            assertTrue(
+                output.contains("PreambleWorks"),
+                "the preamble directive executed: $output"
+            )
+        }
     }
 }

@@ -49,7 +49,9 @@ smoke properties, resolved through the toolchain service and skipped
 loudly when absent. The scenarios cover both engines (the
 simple directive pipeline, the engine happy paths, conditionals in both
 dialects — including a wrongly typed conditional probe — sessions in
-both engines, engine options with a staged application rule, the halt
+both engines, engine options with a staged application rule, the
+project specification flow resolved through its Lua configuration,
+the safe mode rejection of unsafe helper calls, the halt
 directive's error exit, dispatch by file extension including its
 rejection path, and a file-database double run in both a TeX and a
 TeX-free shape asserting the record-and-skip semantics of `changed`)

@@ -132,6 +132,23 @@ internal val scenarios = listOf(
                 authoredTarget = "tex-lua.tex",
         ),
         Scenario(
+                name = "project-spec.bats", dir = "project-spec",
+                description = "the project specification and the Lua configuration",
+                check = "the specification runs its files through the Lua configuration",
+                arguments = listOf("project.lua"),
+                expected = listOf("ProjectConfigWorks"),
+                fixture = "project-config",
+        ),
+        Scenario(
+                name = "safe-run.bats", dir = "safe-run",
+                description = "the safe run rejection of unsafe helper calls",
+                check = "the unsafe helper call is rejected with the mode violation",
+                arguments = listOf("--engine", "lua", "--safe-run", "unsafe.tex"),
+                expected = listOf("not allowed to execute"),
+                exitCode = 2,
+                fixture = "safe-run",
+        ),
+        Scenario(
                 name = "conditionals.bats", dir = "conditionals",
                 description = "the conditional dialect of the default engine",
                 check = "the conditionals take the expected branches",

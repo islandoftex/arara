@@ -1,0 +1,11 @@
+!config
+identifier: preambler
+name: The preamble marker
+authors:
+- Island of TeX
+commands:
+- name: The marker
+  command: >
+    @{ return isWindows(getCommand("cmd", "/c", "echo", "PreambleWorks"),
+    getCommand("echo", "PreambleWorks")); }
+arguments: []
