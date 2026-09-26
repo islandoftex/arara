@@ -758,4 +758,13 @@ rounds:
   the task runs with the cache disabled until the plugin stores its
   resolved state at configuration time. A test pinning the license
   checksum as a stable file was caught by the license edit and
-  updated with the new value — the pin now guards the new text.
+  updated with the new value — the pin now guards the new text. The
+  configuration-cache finding has since been fixed upstream and the
+  tree tracks the patched release: the header task now runs from
+  the stored cache entry like every other task, and the documented
+  invocation dropped its cache-bypassing flag. The checksum test,
+  which had pinned the license as its stable file, moved to an
+  immutable fixture in the test resources — the license is now
+  a mutable-by-design file, refreshed by the clock task, and the
+  pin's job is proving the hash function against a file that never
+  changes.

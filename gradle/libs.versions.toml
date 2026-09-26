@@ -1,5 +1,5 @@
 [versions]
-chronoheader-version = "0.1.1"
+chronoheader-version = "0.1.2"
 clikt-version = "5.0.3"
 detekt-version = "1.23.8"
 dokka-version = "2.2.0"
