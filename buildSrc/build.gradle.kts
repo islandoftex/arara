@@ -15,5 +15,5 @@ repositories {
 }
 
 dependencies {
-    implementation("org.islandoftex:kobats:0.2.1")
+    implementation("org.islandoftex:kobats:0.2.2")
 }

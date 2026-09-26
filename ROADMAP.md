@@ -704,7 +704,13 @@ rounds:
   need which tools, announces every skip with its reason, and
   escalates them all in strict mode. The floor leg consumes the same
   resolution the runtime task prints, so a missing floor degrades to
-  a loud skip instead of failing the build.
+  a loud skip instead of failing the build. The upstream anchoring
+  patch has since shipped, and the helper build tracks it: the
+  generated setup verifies its precondition, resolves its helpers
+  relative to the test file, and hardened its clone guards, so the
+  runner's working-directory choice became a preference rather than
+  a fix — proven by invoking the runner from an unrelated directory,
+  the exact shape that failed before the patch.
 - **The tolerated findings retire**: the three informational findings
   get real fixes where they exist — the idiomatic error call for the
   deliberate throw, helper extraction or a computed failure for the
