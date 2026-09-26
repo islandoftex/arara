@@ -20,6 +20,12 @@ import org.islandoftex.arara.core.rules.RuleMethods
  * Conversion helpers between Kotlin/JVM values and Lua values as used by
  * the Lua rule engine.
  */
+// the object is the engine's single typed boundary with Lua: its members
+// are small overloads of one conversion concern, and the count mirrors
+// the Lua type surface rather than accumulated responsibilities —
+// splitting the members would scatter the boundary or leave a fragment
+// at the threshold again
+@Suppress("TooManyFunctions")
 internal object LuaConversion {
     /**
      * Convert a Kotlin value to the closest Lua representation.

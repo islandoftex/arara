@@ -178,24 +178,29 @@ internal val scenarios = listOf(
         ),
 )
 
+private fun workingDir(dir: String): String = "cd \"\$SMOKE_DIR/$dir\""
+
+private fun arara(arguments: List<String>): String =
+        $$""""$SMOKE_JAVA" -jar "$APP" """ + arguments.joinToString(" ")
+
 private fun render(scenario: Scenario): String = bats {
     header { scenario.description }
     setup {
         if (scenario.extraSetup.isEmpty()) {
-            "cd \"${'$'}SMOKE_DIR/${scenario.dir}\""
+            workingDir(scenario.dir)
         } else {
-            "cd \"${'$'}SMOKE_DIR/${scenario.dir}\"\n${scenario.extraSetup}"
+            workingDir(scenario.dir) + "\n" + scenario.extraSetup
         }
     }
     test(scenario.check) {
-        run { "\"${'$'}SMOKE_JAVA\" -jar \"${'$'}APP\" " + scenario.arguments.joinToString(" ") }
+        run { arara(scenario.arguments) }
         status { it eq scenario.exitCode }
         output {
             scenario.expected.forEach { needle -> it contains needle }
             scenario.forbidden.forEach { needle -> !it contains needle }
         }
         if (scenario.doubleRun) {
-            run { "\"${'$'}SMOKE_JAVA\" -jar \"${'$'}APP\" " + scenario.arguments.joinToString(" ") }
+            run { arara(scenario.arguments) }
             status { it eq 0 }
             output { !it contains scenario.secondRunForbidden }
         }

@@ -85,11 +85,10 @@ differs from the build floor).
   Single class:
   `./gradlew :cli:test --tests "org.islandoftex.arara.cli.utils.ExecutionTest"`.
 - `./gradlew detekt` — root task linting every module's main sources
-  (`detekt-config.yml`; test sources are excluded). Three informational
-  findings are tolerated by configuration and print on every run: the
-  `LuaConversion` function count, the deliberate else-throw in
-  `Directives.kt` and the `LuaInterpreter` throw count — expected console
-  noise, not failures.
+  (`detekt-config.yml`; test sources are excluded). The lint tolerates zero
+  findings: the three former informational ones were retired — two with real
+  fixes in shape, one with a justified suppression at its declaration — and
+  the configuration now fails the build on any new occurrence.
 - `./gradlew spotlessCheck` / `spotlessApply` — enforced formatting: every
   Kotlin file needs the `// SPDX-License-Identifier: BSD-3-Clause` header,
   and files in `rules/` carry their own YAML/Lua headers. Both rule sets

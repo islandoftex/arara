@@ -720,10 +720,17 @@ rounds:
   file-database double run whose fixture carried a machine-specific
   committed database defused by the per-run cleanup. Every row was
   asserted from observed output first, exit codes included.
-- **The tolerated findings retire**: the three informational findings
-  get real fixes where they exist — the idiomatic error call for the
-  deliberate throw, helper extraction or a computed failure for the
-  interpreter's throw count — and a justified suppression only as a
-  last resort. Once none remain, the tolerance entries leave the
-  lint configuration, the rules turn fatal for future occurrences,
-  and the gate expectation becomes an exact zero.
+- **The tolerated findings retire** — landed: the deliberate throw in
+  the directive conditional mapping became the idiomatic error call,
+  the interpreter's project file parsing split into single-throw
+  helpers so every function states its own failure, and the
+  conversion object carries a justified suppression at its
+  declaration — the count is the shape of a single typed boundary,
+  and the census that tried every split found either a boundary
+  scattered or a fragment left at the threshold. The tolerance entry
+  left the lint configuration with them, so any new finding now
+  fails the build, and the gate expectation became an exact zero.
+  The scenario renderer's escape noise left alongside, replaced by
+  two one-line command builders — one of them the multi-dollar raw
+  string the license heredocs already use — with the regenerated
+  runner files proven byte-identical.

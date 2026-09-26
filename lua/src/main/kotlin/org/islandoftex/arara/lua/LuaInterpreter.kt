@@ -56,6 +56,46 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         return org.islandoftex.arara.core.files.FileType(extension, pattern)
     }
 
+    /**
+     * Extracts the file name key of a project file entry, which has to
+     * be a Lua string.
+     */
+    private fun projectFileKey(key: LuaValue): LuaString =
+            key as? LuaString
+                ?: throw ProjectParseException(
+                    "Project file entries have to be keyed by " +
+                        "their file name."
+                )
+
+    /**
+     * Extracts the specification table of a project file entry.
+     */
+    private fun projectFileSpec(
+        fileTable: LuaTable,
+        key: LuaValue,
+    ): LuaTable =
+            fileTable[key] as? LuaTable
+                ?: throw ProjectParseException(
+                    "A project file specification has to be a table."
+                )
+
+    /**
+     * Extracts a single project file entry from its key and its
+     * specification table, rejecting directories on the way.
+     */
+    private fun projectFileEntry(
+        fileTable: LuaTable,
+        key: LuaValue,
+        workingDirectory: MPPPath,
+    ): ProjectFile {
+        val path = workingDirectory.resolve(projectFileKey(key).toString())
+        // note: verify that the path exists and warn otherwise
+        if (path.isDirectory) {
+            throw ProjectParseException("A project file must not be a directory.")
+        }
+        return extractProjectFile(path, projectFileSpec(fileTable, key))
+    }
+
     private fun extractProjectFile(path: MPPPath, table: LuaTable): ProjectFile {
         val fileType = optionalTable(
             table["fileType"],
@@ -105,21 +145,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
             "The 'files' key requires a table of file specifications."
         )?.let { fileTable ->
             fileTable.keys().map { key ->
-                val fileKey = key as? LuaString
-                    ?: throw ProjectParseException(
-                        "Project file entries have to be keyed by " +
-                            "their file name."
-                    )
-                val path = workingDirectory.resolve(fileKey.toString())
-                // note: verify that the path exists and warn otherwise
-                if (path.isDirectory) {
-                    throw ProjectParseException("A project file must not be a directory.")
-                }
-                val fileSpec = fileTable[key] as? LuaTable
-                    ?: throw ProjectParseException(
-                        "A project file specification has to be a table."
-                    )
-                extractProjectFile(path, fileSpec)
+                projectFileEntry(fileTable, key, workingDirectory)
             }.toSet()
         } ?: setOf()
 

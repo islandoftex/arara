@@ -232,7 +232,7 @@ private fun String?.toDirectiveConditional() = when (this) {
     "unless" -> DirectiveConditionalType.UNLESS
     // the directive pattern constrains the captured token to the four
     // conditional keywords, so anything else is a programming error
-    else -> throw IllegalStateException(
+    else -> error(
         "Unknown conditional type '$this'."
     )
 }
