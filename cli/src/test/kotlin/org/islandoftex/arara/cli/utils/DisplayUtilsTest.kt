@@ -1,36 +1,195 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
+import java.nio.file.Files
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
+import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.configuration.ExecutionMode
+import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.localization.MPPLocale
+import org.islandoftex.arara.api.rules.DirectiveConditional
+import org.islandoftex.arara.api.rules.DirectiveConditionalType
+import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.UserInterfaceOptions
+import org.islandoftex.arara.core.files.FileType
+import org.islandoftex.arara.core.files.ProjectFile
+import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 
 /**
- * Verifies the terminal output helpers of [DisplayUtils].
+ * Verifies the terminal presentation: the entry shapes across the
+ * execution modes, the exception display with its details section,
+ * the conditional and author listings, and the size and time
+ * renderings. Output is captured from the standard stream; the
+ * presentation state rides the session and the execution options,
+ * which are saved and restored around every test.
  */
 class DisplayUtilsTest {
+    private val originalOptions = LinearExecutor.executionOptions
+    private val originalUserInterface = Session.userInterfaceOptions
+
+    @BeforeTest
+    fun fixPresentationState() {
+        Session.userInterfaceOptions =
+            UserInterfaceOptions(locale = MPPLocale("en"), terminalOutputWidth = 20)
+    }
+
+    @AfterTest
+    fun restorePresentationState() {
+        LinearExecutor.executionOptions = originalOptions
+        Session.userInterfaceOptions = originalUserInterface
+    }
+
+    private fun <T> withOptions(mode: ExecutionMode, verbose: Boolean, work: () -> T): T {
+        LinearExecutor.executionOptions = ExecutionOptions.from(originalOptions)
+            .copy(executionMode = mode, verbose = verbose)
+        return work()
+    }
+
+    private fun capturingOutput(work: () -> Unit): String {
+        val sysout = System.out
+        val output = ByteArrayOutputStream()
+        return try {
+            System.setOut(PrintStream(output, true, Charsets.UTF_8))
+            work()
+            output.toString(Charsets.UTF_8)
+        } finally {
+            System.setOut(sysout)
+        }
+    }
+
+    private fun conditional(
+        type: DirectiveConditionalType,
+        condition: String
+    ): DirectiveConditional = object : DirectiveConditional {
+        override val type = type
+        override val condition = condition
+    }
+
     @Test
-    fun `formats byte sizes correctly`() {
-        val savedOptions = Session.userInterfaceOptions
-        try {
-            Session.userInterfaceOptions = UserInterfaceOptions(MPPLocale("en"))
-            mapOf(
-                800 to "800 B",
-                1000 to "1.0 kB",
-                1024 to "1.0 kB",
-                1000000 to "1.0 MB"
-            ).forEach { (key, value) ->
-                assertEquals(
-                    value, DisplayUtils.byteSizeToString(key.toLong()),
-                    "formatted size for $key bytes"
+    fun `prints entries in every mode shape`() {
+        val short = withOptions(ExecutionMode.NORMAL_RUN, false) {
+            capturingOutput {
+                DisplayUtils.printEntry("rule", "run")
+                DisplayUtils.printEntryResult(true)
+            }
+        }
+        assertTrue("rule" in short, "the short entry names the rule")
+        assertTrue("SUCCESS" in short, "the result label follows the entry")
+
+        val long = withOptions(ExecutionMode.NORMAL_RUN, true) {
+            capturingOutput {
+                DisplayUtils.printEntry("rule", "run")
+                DisplayUtils.printEntry("other", "run")
+            }
+        }
+        assertTrue(long.count { it == '\n' } >= 4, "long entries roll with separators")
+
+        val dry = withOptions(ExecutionMode.DRY_RUN, false) {
+            capturingOutput {
+                DisplayUtils.printEntry("rule", "run")
+            }
+        }
+        assertTrue("[DR]" in dry, "dry runs mark their entries")
+    }
+
+    @Test
+    fun `prints exceptions with their details`() {
+        val withCause = withOptions(ExecutionMode.NORMAL_RUN, false) {
+            capturingOutput {
+                DisplayUtils.printEntry("rule", "run")
+                DisplayUtils.printEntryResult(false)
+                DisplayUtils.printException(
+                    AraraException("the failure", RuntimeException("the cause"))
                 )
             }
-        } finally {
-            // restore the session state no matter whether the formatting
-            // assertions held
-            Session.userInterfaceOptions = savedOptions
         }
+        assertTrue("the failure" in withCause, "the message is displayed")
+        assertTrue("the cause" in withCause, "the underlying cause earns a details section")
+        assertTrue("FAILURE" in withCause, "the entry result precedes the exception")
+
+        val withoutCause = capturingOutput {
+            DisplayUtils.printEntryResult(true)
+            DisplayUtils.printException(AraraException("plain failure"))
+        }
+        assertTrue("plain failure" in withoutCause)
+        assertFalse("the cause" in withoutCause, "no cause, no details section")
+    }
+
+    @Test
+    fun `prints authors conditionally`() {
+        val single = capturingOutput { DisplayUtils.printAuthors(listOf("Island of TeX")) }
+        assertTrue("Island" in single)
+        val multiple = capturingOutput { DisplayUtils.printAuthors(listOf("One", "Two")) }
+        assertTrue("One" in multiple && "Two" in multiple)
+        val none = capturingOutput { DisplayUtils.printAuthors(emptyList()) }
+        assertTrue(none.isNotBlank(), "an empty author list has its own label")
+    }
+
+    @Test
+    fun `prints conditionals unless they are absent`() {
+        val present = capturingOutput {
+            DisplayUtils.printConditional(
+                conditional(DirectiveConditionalType.IF, "found('log', 'x')")
+            )
+        }
+        assertTrue("found('log', 'x')" in present, "the condition text is displayed")
+        val absent = capturingOutput {
+            DisplayUtils.printConditional(
+                conditional(DirectiveConditionalType.NONE, "")
+            )
+        }
+        assertTrue(absent.isEmpty(), "the absent conditional prints nothing")
+    }
+
+    @Test
+    fun `renders byte sizes at every magnitude`() {
+        assertEquals("999 B", DisplayUtils.byteSizeToString(999))
+        assertEquals("800 B", DisplayUtils.byteSizeToString(800))
+        assertEquals("1.0 kB", DisplayUtils.byteSizeToString(1000))
+        // the binary neighbour keeps the decimal prefix and truncates
+        assertEquals("1.0 kB", DisplayUtils.byteSizeToString(1024))
+        assertEquals("1.5 kB", DisplayUtils.byteSizeToString(1500))
+        assertEquals("1.0 MB", DisplayUtils.byteSizeToString(1000000))
+        assertEquals("1.5 MB", DisplayUtils.byteSizeToString(1500000))
+    }
+
+    @Test
+    fun `prints the elapsed time`() {
+        val timed = capturingOutput {
+            DisplayUtils.printEntry("rule", "run")
+            DisplayUtils.printTime(1.5)
+        }
+        assertTrue("1.500" in timed, "seconds and milliseconds join through the separator")
+    }
+
+    @Test
+    fun `centers the separators`() {
+        assertEquals(
+            20,
+            DisplayUtils.displayOutputSeparator("QUACK").length,
+            "the message centers within the terminal width"
+        )
+        assertTrue("QUACK" in DisplayUtils.displayOutputSeparator("QUACK"))
+        assertEquals("-".repeat(20), DisplayUtils.displaySeparator())
+    }
+
+    @Test
+    fun `prints the file information`() {
+        val file = Files.createTempFile("arara-display-", ".tex")
+        Files.writeString(file, "content")
+        val information = capturingOutput {
+            ProjectFile(MPPPath(file.toString()), FileType("tex", "^%.*"))
+                .printFileInformation()
+        }
+        assertTrue(file.fileName.toString() in information, "the file name is displayed")
+        assertTrue("7 B" in information, "the file size is displayed")
     }
 }
