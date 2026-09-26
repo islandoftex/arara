@@ -2,6 +2,7 @@
 package org.islandoftex.arara.api.files
 
 import java.io.File
+import java.io.IOException
 import java.nio.file.Path as JVMPath
 import java.nio.file.Paths
 import kotlin.jvm.Throws
@@ -157,8 +158,15 @@ public class MPPPath {
      */
     @Throws(AraraIOException::class)
     public fun readLines(): List<String> =
-            PathModelFileSystem.current.read(referencePath) {
-                readUtf8().lines()
+            try {
+                PathModelFileSystem.current.read(referencePath) {
+                    readUtf8().lines()
+                }
+            } catch (ioexception: IOException) {
+                // the read taxonomy lives here, at the path layer: every
+                // consumer downstream catches this type, so a raw system
+                // failure would bypass the handler written for it
+                throw AraraIOException(ioexception.toString(), ioexception)
             }
 
     /**
@@ -169,14 +177,20 @@ public class MPPPath {
     @Throws(AraraIOException::class)
     public fun readText(): String =
         if (isRegularFile)
-            PathModelFileSystem.current.read(referencePath) { readUtf8() }
+            try {
+                PathModelFileSystem.current.read(referencePath) { readUtf8() }
+            } catch (ioexception: IOException) {
+                throw AraraIOException(ioexception.toString(), ioexception)
+            }
         else
             throw AraraIOException("Can only read text from files.")
 
     /**
      * Write [text] to the file specified at the current path. Overwrite by
      * default if [append] is not set. Fails with an [AraraIOException]
-     * exception if the file is a directory or access is impossible.
+     * exception if the file is a directory or appending to a file that does
+     * not exist; other write failures surface as raw system exceptions, as
+     * the writing helpers catch those for their logical fallback.
      */
     @Throws(AraraIOException::class)
     public fun writeText(text: String, append: Boolean = false): Unit {

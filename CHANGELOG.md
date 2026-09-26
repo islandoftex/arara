@@ -213,6 +213,14 @@ on.
 
 ## Fixed
 
+* Text reads that fail at the system level - a missing file, a
+  directory, an unreadable file - now surface as arara's own I/O
+  exception, as the path layer always documented, instead of crashing
+  with a raw system exception. Three intended behaviors come alive
+  with it: the `readFromFile` helper falls back to an empty list (its
+  probe semantics), the `found` conditional reports the localized
+  rule error, and an unreadable input file reports the extraction
+  error.
 * The `buildString` rule helper joins its arguments as documented: a
   missing spread operator previously collapsed all arguments into a
   single array element, so rule code evaluated through the MVEL engine

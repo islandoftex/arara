@@ -47,6 +47,20 @@ class JVMMPPPathTest {
         }
 
         @Test
+        fun `failed reads surface as the path exception with the cause kept`(
+            @TempDir tempDir: Path
+        ) {
+            val missing = MPPPath(tempDir.resolve("not-there.txt").toString())
+            assertFailsWith<AraraIOException> { missing.readText() }
+            val wrapped = assertFailsWith<AraraIOException> { missing.readLines() }
+            assertTrue(
+                wrapped.hasException(),
+                "the wrapping keeps the underlying system failure as the cause"
+            )
+            assertFailsWith<AraraIOException> { MPPPath(tempDir.toString()).readLines() }
+        }
+
+        @Test
         fun `writes to a file`(@TempDir tempDir: Path) {
             val tmp = tempDir.resolve("quack.txt")
             MPPPath(tmp.toString()).writeText("quack")

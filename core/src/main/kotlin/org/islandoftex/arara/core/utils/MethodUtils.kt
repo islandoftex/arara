@@ -4,6 +4,7 @@ package org.islandoftex.arara.core.utils
 import java.io.IOException
 import java.util.MissingFormatArgumentException
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.localization.LanguageController
 
@@ -31,7 +32,7 @@ object MethodUtils {
             val text = file.readText()
             val pattern = regex.toRegex()
             return pattern.containsMatchIn(text)
-        } catch (exception: IOException) {
+        } catch (exception: AraraIOException) {
             throw AraraException(
                 LanguageController.messages.ERROR_CHECKREGEX_IO_EXCEPTION
                     .formatString(file.fileName),

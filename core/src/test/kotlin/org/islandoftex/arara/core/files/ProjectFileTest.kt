@@ -5,6 +5,8 @@ import java.nio.file.Files
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.core.rules.DirectiveFetchingHooks
@@ -69,5 +71,17 @@ class ProjectFileTest {
         } finally {
             Files.deleteIfExists(file)
         }
+    }
+
+    @Test
+    fun `directive extraction rejects unreadable paths with the extraction error`() {
+        val directory = Files.createTempDirectory("arara-unreadable")
+        val projectFile = ProjectFile(
+            org.islandoftex.arara.api.files.MPPPath(directory.toString()),
+            FileType("tex", "^%.*")
+        )
+        // an unreadable path reaches the extraction error instead of
+        // crashing with a raw system exception
+        assertFailsWith<AraraException> { projectFile.fetchDirectives(true) }
     }
 }

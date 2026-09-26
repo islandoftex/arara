@@ -76,9 +76,11 @@ class ConditionalMethodsTest {
         Files.writeString(file, "error in line 3")
         assertTrue(ConditionalMethods.found(MPPPath(file.toString()), "error"))
         assertFalse(ConditionalMethods.found(MPPPath(file.toString()), "warning"))
-        assertFailsWith<AraraException> {
+        val rejected = assertFailsWith<AraraException> {
             ConditionalMethods.found(MPPPath(file.toString() + ".missing"), "error")
         }
+        // the localized rule error names the file it could not read
+        assertTrue("arara-found" in (rejected.message ?: ""))
     }
 
     @Test

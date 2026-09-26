@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.rules
 
-import java.io.IOException
 import java.nio.file.Files
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -302,11 +301,15 @@ class RuleMethodsTest {
         Files.writeString(file, "first\nsecond")
         assertEquals(listOf("first", "second"), RuleMethods.readFromFile(MPPPath(file.toString())))
         assertEquals(listOf("first", "second"), RuleMethods.readFromFile(file.toString()))
-        // raw read errors currently surface as they are: the helper only
-        // swallows the path-contract exceptions
-        assertFailsWith<IOException> {
-            RuleMethods.readFromFile(file.toString() + ".missing")
-        }
+        // missing and unreadable files fall back to the empty list, the
+        // helper's intended probe semantics
+        assertEquals(emptyList(), RuleMethods.readFromFile(file.toString() + ".missing"))
+        assertEquals(
+            emptyList(),
+            RuleMethods.readFromFile(MPPPath(file.toString() + ".missing"))
+        )
+        val directory = Files.createTempDirectory("arara-reading-dir")
+        assertEquals(emptyList(), RuleMethods.readFromFile(directory.toString()))
     }
 
     @Test
