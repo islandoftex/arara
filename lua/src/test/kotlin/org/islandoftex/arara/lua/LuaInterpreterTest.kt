@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua
 
+import java.nio.file.Files
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -280,5 +281,124 @@ class LuaInterpreterTest {
             projectFile.priority,
             "an absent priority defaults"
         )
+    }
+
+    @Test
+    fun `rejects invalid Lua scripts`() {
+        assertFailsWith<ProjectParseException> {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua("return {")
+        }
+    }
+
+    @Test
+    fun `rejects non table results`() {
+        assertFailsWith<ProjectParseException> {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua("return 42")
+        }
+    }
+
+    @Test
+    fun `rejects project list entries that are not tables`() {
+        assertFailsWith<ProjectParseException> {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua("return { 1 }")
+        }
+    }
+
+    @Test
+    fun `rejects projects without files`() {
+        assertFailsWith<ProjectParseException> {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua("return { files = { } }")
+        }
+    }
+
+    @Test
+    fun `rejects single projects with dependencies`() {
+        assertFailsWith<ProjectValidationException> {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
+                """
+                return {
+                  files = { ["a.tex"] = { } },
+                  dependencies = { "other" }
+                }
+                """.trimIndent()
+            )
+        }
+    }
+
+    @Test
+    fun `rejects wrongly typed project keys`() {
+        assertFailsWith<ProjectParseException> {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
+                """return { name = 42, files = { ["a.tex"] = { } } }"""
+            )
+        }
+        assertFailsWith<ProjectParseException> {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
+                """return { workingDirectory = 42, files = { ["a.tex"] = { } } }"""
+            )
+        }
+        assertFailsWith<ProjectParseException> {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua("return { files = 42 }")
+        }
+    }
+
+    @Test
+    fun `rejects wrongly typed dependency entries`() {
+        assertFailsWith<ProjectParseException> {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
+                """
+                return {
+                  {
+                    files = { ["a.tex"] = { } },
+                    dependencies = { 42 }
+                  }
+                }
+                """.trimIndent()
+            )
+        }
+    }
+
+    @Test
+    fun `rejects non string file keys`() {
+        assertFailsWith<ProjectParseException> {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
+                "return { files = { [42] = { } } }"
+            )
+        }
+    }
+
+    @Test
+    fun `rejects directory project files`() {
+        val directory = Files.createTempDirectory("arara-lua-project")
+        Files.createDirectories(directory.resolve("sub"))
+        assertFailsWith<ProjectParseException> {
+            LuaInterpreter(MPPPath(directory.toString())).parseProjectsFromLua(
+                """return { files = { ["sub"] = { } } }"""
+            )
+        }
+    }
+
+    @Test
+    fun `rejects wrongly typed file specifications`() {
+        fun parse(content: String) =
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(content)
+        assertFailsWith<ProjectParseException> {
+            parse("""return { files = { ["a.tex"] = { fileType = "x" } } }""")
+        }
+        assertFailsWith<ProjectParseException> {
+            parse("""return { files = { ["a.tex"] = { fileType = { pattern = "x" } } } }""")
+        }
+        assertFailsWith<ProjectParseException> {
+            parse("""return { files = { ["a.tex"] = { fileType = { extension = "quack" } } } }""")
+        }
+        assertFailsWith<ProjectParseException> {
+            parse("""return { files = { ["a.tex"] = { priority = "high" } } }""")
+        }
+        assertFailsWith<ProjectParseException> {
+            parse("""return { files = { ["a.tex"] = { directives = "list" } } }""")
+        }
+        assertFailsWith<ProjectParseException> {
+            parse("""return { files = { ["a.tex"] = { directives = { 42 } } } }""")
+        }
     }
 }

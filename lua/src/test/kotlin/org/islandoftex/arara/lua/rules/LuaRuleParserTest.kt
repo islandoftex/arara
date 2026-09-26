@@ -351,4 +351,139 @@ class LuaRuleParserTest {
             "the author text stays the primary message: ${exception.message}"
         )
     }
+
+    @Test
+    fun `rejects broken Lua scripts`() {
+        assertFailsWith<AraraException> {
+            LuaRuleParser.parse(ruleFile("return {"), "demo")
+        }
+    }
+
+    @Test
+    fun `rejects non table results`() {
+        assertFailsWith<AraraException> {
+            LuaRuleParser.parse(ruleFile("return 42"), "demo")
+        }
+    }
+
+    @Test
+    fun `rejects rules without an identifier`() {
+        assertFailsWith<AraraException> {
+            LuaRuleParser.parse(ruleFile("""return { name = "Demo" }"""), "demo")
+        }
+    }
+
+    @Test
+    fun `rejects rules without a name`() {
+        assertFailsWith<AraraException> {
+            LuaRuleParser.parse(ruleFile("""return { identifier = "demo" }"""), "demo")
+        }
+    }
+
+    @Test
+    fun `rejects commands without their function`() {
+        assertFailsWith<AraraException> {
+            LuaRuleParser.parse(
+                ruleFile(
+                    """
+                    return {
+                      identifier = "demo",
+                      name = "Demo",
+                      commands = { { name = "No function" } }
+                    }
+                    """.trimIndent()
+                ),
+                "demo"
+            )
+        }
+    }
+
+    @Test
+    fun `rejects blank argument identifiers`() {
+        assertFailsWith<AraraException> {
+            LuaRuleParser.parse(
+                ruleFile(
+                    """
+                    return {
+                      identifier = "demo",
+                      name = "Demo",
+                      commands = { { command = function(ctx) return true end } },
+                      arguments = { { identifier = "" } }
+                    }
+                    """.trimIndent()
+                ),
+                "demo"
+            )
+        }
+    }
+
+    @Test
+    fun `rejects wrongly typed rule collections`() {
+        assertFailsWith<AraraException> {
+            LuaRuleParser.parse(
+                ruleFile(
+                    """
+                    return {
+                      identifier = "demo",
+                      name = "Demo",
+                      commands = { { command = function(ctx) return true end } },
+                      authors = { 42 }
+                    }
+                    """.trimIndent()
+                ),
+                "demo"
+            )
+        }
+        assertFailsWith<AraraException> {
+            LuaRuleParser.parse(
+                ruleFile(
+                    """
+                    return {
+                      identifier = "demo",
+                      name = "Demo",
+                      commands = { 42 }
+                    }
+                    """.trimIndent()
+                ),
+                "demo"
+            )
+        }
+        assertFailsWith<AraraException> {
+            LuaRuleParser.parse(
+                ruleFile(
+                    """
+                    return {
+                      identifier = "demo",
+                      name = "Demo",
+                      commands = { { command = function(ctx) return true end } },
+                      arguments = { 42 }
+                    }
+                    """.trimIndent()
+                ),
+                "demo"
+            )
+        }
+    }
+
+    @Test
+    fun `rejects duplicate argument identifiers`() {
+        assertFailsWith<AraraException> {
+            LuaRuleParser.parse(
+                ruleFile(
+                    """
+                    return {
+                      identifier = "demo",
+                      name = "Demo",
+                      commands = { { command = function(ctx) return true end } },
+                      arguments = {
+                        { identifier = "one", flag = function(ctx, v) return { } end },
+                        { identifier = "one", flag = function(ctx, v) return { } end }
+                      }
+                    }
+                    """.trimIndent()
+                ),
+                "demo"
+            )
+        }
+    }
 }

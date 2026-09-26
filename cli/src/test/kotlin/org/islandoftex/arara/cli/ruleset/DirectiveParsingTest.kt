@@ -126,4 +126,13 @@ class DirectiveParsingTest {
             extract("% arara: dummy: { broken: [ }\n")
         }
     }
+
+    @Test
+    fun `rejects unsupported rule formats`() {
+        assertFailsWith<AraraException>(
+            "rule files of unknown formats must be rejected"
+        ) {
+            RuleUtils.parseRule(MPPPath("not-a-rule.quack"), "dummy")
+        }
+    }
 }

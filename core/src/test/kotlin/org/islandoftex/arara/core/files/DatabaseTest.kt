@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
+import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toMPPPath
 import org.junit.jupiter.api.Test
@@ -83,5 +85,27 @@ class DatabaseTest {
             MPPPath("no") in dbCopy,
             "the loaded copy omits an unknown path"
         )
+    }
+
+    @Test
+    fun `rejects databases without the header`(@TempDir tempDir: Path) {
+        val file = tempDir.resolve("arara.yaml")
+        Files.writeString(file, "just: plain content")
+        assertFailsWith<AraraException>(
+            "a database without its header is not a database"
+        ) {
+            Database.load(file.toMPPPath())
+        }
+    }
+
+    @Test
+    fun `wraps unparseable databases`(@TempDir tempDir: Path) {
+        val file = tempDir.resolve("arara.yaml")
+        Files.writeString(file, "!database\n{ broken")
+        assertFailsWith<AraraException>(
+            "an unparseable database reports the load error"
+        ) {
+            Database.load(file.toMPPPath())
+        }
     }
 }

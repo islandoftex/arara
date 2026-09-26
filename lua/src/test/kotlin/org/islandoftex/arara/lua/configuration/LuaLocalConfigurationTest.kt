@@ -124,4 +124,56 @@ class LuaLocalConfigurationTest {
             )
         }
     }
+
+    @Test
+    fun `rejects wrong scalar value types`() {
+        assertFailsWith<AraraException>(
+            "wrongly typed configuration keys must be rejected"
+        ) {
+            LuaLocalConfiguration.load(configFile("""return { language = 42 }"""))
+        }
+        assertFailsWith<AraraException>(
+            "wrongly typed configuration keys must be rejected"
+        ) {
+            LuaLocalConfiguration.load(configFile("""return { verbose = "yes" }"""))
+        }
+        assertFailsWith<AraraException>(
+            "wrongly typed configuration keys must be rejected"
+        ) {
+            LuaLocalConfiguration.load(configFile("""return { paths = { 42 } }"""))
+        }
+    }
+
+    @Test
+    fun `rejects wrong preamble map shapes`() {
+        assertFailsWith<AraraException>(
+            "the preamble map requires string pairs"
+        ) {
+            LuaLocalConfiguration.load(configFile("""return { preambles = 42 }"""))
+        }
+        assertFailsWith<AraraException>(
+            "the preamble map requires string pairs"
+        ) {
+            LuaLocalConfiguration.load(configFile("""return { preambles = { key = 42 } }"""))
+        }
+        assertFailsWith<AraraException>(
+            "the preamble map requires string pairs"
+        ) {
+            LuaLocalConfiguration.load(configFile("""return { preambles = { "orphan" } }"""))
+        }
+    }
+
+    @Test
+    fun `rejects wrong file type list shapes`() {
+        assertFailsWith<AraraException>(
+            "the file type list requires tables"
+        ) {
+            LuaLocalConfiguration.load(configFile("""return { filetypes = 42 }"""))
+        }
+        assertFailsWith<AraraException>(
+            "the file type list requires tables"
+        ) {
+            LuaLocalConfiguration.load(configFile("""return { filetypes = { 42 } }"""))
+        }
+    }
 }

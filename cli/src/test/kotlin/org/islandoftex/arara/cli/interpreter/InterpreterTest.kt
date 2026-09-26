@@ -1,8 +1,15 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.interpreter
 
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
+import java.nio.file.Files
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
+import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.cli.ruleset.DirectiveImpl
 import org.islandoftex.arara.cli.ruleset.DirectiveUtils
@@ -95,5 +102,214 @@ class InterpreterTest {
             executeWithHaltStatus(rulePath, filePath, 1),
             "an error halt exits with a non-zero code"
         )
+    }
+
+    @Test
+    fun `rejects non numeric halt statuses`() {
+        Session.clear()
+        val rulePath = MPPPath("../rules").normalize()
+        val filePath = MPPPath("src/test/resources/executiontests/halt")
+            .normalize() / "halt.tex"
+        Session.put("arara:${filePath.fileName}:halt", "not-a-number")
+        assertFailsWith<AraraException>(
+            "a non numeric halt status must be rejected"
+        ) {
+            Interpreter(
+                ExecutionOptions(rulePaths = setOf(rulePath)),
+                ProjectFile(filePath, texFile), filePath.parent
+            ).execute(haltDirectiveFor(filePath))
+        }
+    }
+
+    @Test
+    fun `reports rules that cannot be found`() {
+        Session.clear()
+        val rulePath = MPPPath("../rules").normalize()
+        val filePath = MPPPath("src/test/resources/executiontests/halt")
+            .normalize() / "halt.tex"
+        val directive = Directives.extractDirectives(
+            listOf("% arara: notarealrulequack"), false, texFile
+        ).single().run {
+            DirectiveImpl(
+                identifier,
+                parameters.plus("reference" to filePath.toString()),
+                conditional,
+                lineNumbers
+            )
+        }
+        assertFailsWith<AraraException>(
+            "an unknown rule must be reported, not silently skipped"
+        ) {
+            Interpreter(
+                ExecutionOptions(rulePaths = setOf(rulePath)),
+                ProjectFile(filePath, texFile), filePath.parent
+            ).execute(directive)
+        }
+    }
+
+    @Test
+    fun `reports wrong rule return types`() {
+        Session.clear()
+        val directory = Files.createTempDirectory("arara-interpreter-rule")
+        Files.writeString(
+            directory.resolve("arara-rule-broken.yaml"),
+            """
+            !config
+            identifier: broken
+            name: Broken
+            authors:
+            - Island of TeX
+            commands:
+            - name: The broken tool
+              command: >
+                @{ return 42; }
+            arguments: []
+            """.trimIndent()
+        )
+        val filePath = Files.createTempFile("arara-interpreter-file", ".tex")
+        val directive = Directives.extractDirectives(
+            listOf("% arara: broken"), false, texFile
+        ).single().run {
+            DirectiveImpl(
+                identifier,
+                parameters.plus("reference" to filePath.toString()),
+                conditional,
+                lineNumbers
+            )
+        }
+        assertFailsWith<AraraException>(
+            "a rule returning neither a command nor a boolean is wrong"
+        ) {
+            Interpreter(
+                ExecutionOptions(rulePaths = setOf(MPPPath(directory.toString()))),
+                ProjectFile(MPPPath(filePath.toString()), texFile),
+                MPPPath(filePath.parent.toString())
+            ).execute(directive)
+        }
+    }
+
+    @Test
+    fun `skips command execution in dry run mode`() {
+        Session.clear()
+        val directory = Files.createTempDirectory("arara-interpreter-rule")
+        Files.writeString(
+            directory.resolve("arara-rule-dry.yaml"),
+            """
+            !config
+            identifier: dry
+            name: Dry
+            authors:
+            - Island of TeX
+            commands:
+            - name: The dry tool
+              command: >
+                @{ return true; }
+            arguments: []
+            """.trimIndent()
+        )
+        val filePath = Files.createTempFile("arara-interpreter-file", ".tex")
+        val directive = Directives.extractDirectives(
+            listOf("% arara: dry"), false, texFile
+        ).single().run {
+            DirectiveImpl(
+                identifier,
+                parameters.plus("reference" to filePath.toString()),
+                conditional,
+                lineNumbers
+            )
+        }
+        val options = ExecutionOptions(
+            rulePaths = setOf(MPPPath(directory.toString())),
+            executionMode = ExecutionMode.DRY_RUN
+        )
+        val output = ByteArrayOutputStream()
+        val sysout = System.out
+        try {
+            System.setOut(PrintStream(output, true, Charsets.UTF_8))
+            val status = Interpreter(
+                options, ProjectFile(MPPPath(filePath.toString()), texFile),
+                MPPPath(filePath.parent.toString())
+            ).execute(directive)
+            assertEquals(
+                0,
+                status.exitCode,
+                "a dry run does not execute commands"
+            )
+        } finally {
+            System.setOut(sysout)
+        }
+        assertTrue(
+            output.toString(Charsets.UTF_8).isNotBlank(),
+            "the dry run displays the skipped entry"
+        )
+    }
+
+    @Test
+    fun `halts on unsuccessful commands`() {
+        Session.clear()
+        val status = executeFailingRule(haltOnErrors = true)
+        assertNotEquals(
+            0,
+            status,
+            "an unsuccessful command halts the run when errors halt"
+        )
+    }
+
+    @Test
+    fun `continues past failures without halt on errors`() {
+        Session.clear()
+        val status = executeFailingRule(haltOnErrors = false)
+        assertNotEquals(
+            0,
+            status,
+            "the failure surfaces as the exit code without halting"
+        )
+    }
+
+    /**
+     * Runs a directive whose rule command exits non-zero through a
+     * stateless command expression, returning the exit code the
+     * interpreter reports; the halt expectation surfaces as an
+     * exception, the lenient mode as the exit code.
+     */
+    private fun executeFailingRule(haltOnErrors: Boolean): Int {
+        val directory = Files.createTempDirectory("arara-interpreter-rule")
+        val java = ProcessHandle.current().info().command().orElse("java")
+        Files.writeString(
+            directory.resolve("arara-rule-failing.yaml"),
+            """
+            !config
+            identifier: failing
+            name: Failing
+            authors:
+            - Island of TeX
+            commands:
+            - name: The failing tool
+              command: >
+                @{ return getCommandWithWorkingDirectory(
+                '$directory', '$java', '-wrongflag-quack'); }
+            arguments: []
+            """.trimIndent()
+        )
+        val filePath = Files.createTempFile("arara-interpreter-file", ".tex")
+        val directive = Directives.extractDirectives(
+            listOf("% arara: failing"), false, texFile
+        ).single().run {
+            DirectiveImpl(
+                identifier,
+                parameters.plus("reference" to filePath.toString()),
+                conditional,
+                lineNumbers
+            )
+        }
+        val options = ExecutionOptions(
+            rulePaths = setOf(MPPPath(directory.toString())),
+            haltOnErrors = haltOnErrors
+        )
+        val status = Interpreter(
+            options, ProjectFile(MPPPath(filePath.toString()), texFile),
+            MPPPath(filePath.parent.toString())
+        ).execute(directive)
+        return status.exitCode
     }
 }

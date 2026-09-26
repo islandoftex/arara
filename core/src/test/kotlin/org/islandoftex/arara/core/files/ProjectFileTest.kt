@@ -6,6 +6,9 @@ import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditional
@@ -83,5 +86,41 @@ class ProjectFileTest {
         // an unreadable path reaches the extraction error instead of
         // crashing with a raw system exception
         assertFailsWith<AraraException> { projectFile.fetchDirectives(true) }
+    }
+
+    @Test
+    fun `project files compare by their ingredients`() {
+        val first = ProjectFile(
+            org.islandoftex.arara.api.files.MPPPath("a.tex"),
+            FileType("tex", "^%.*")
+        )
+        val same = ProjectFile(
+            org.islandoftex.arara.api.files.MPPPath("a.tex"),
+            FileType("tex", "^%.*")
+        )
+        val otherPath = ProjectFile(
+            org.islandoftex.arara.api.files.MPPPath("b.tex"),
+            FileType("tex", "^%.*")
+        )
+        val otherType = ProjectFile(
+            org.islandoftex.arara.api.files.MPPPath("a.tex"),
+            FileType("log", "^%.*")
+        )
+        val otherPriority = ProjectFile(
+            org.islandoftex.arara.api.files.MPPPath("a.tex"),
+            FileType("tex", "^%.*"),
+            1
+        )
+        assertEquals(first, first, "a project file equals itself")
+        assertEquals(first, same, "identical ingredients compare equal")
+        assertEquals(first.hashCode(), same.hashCode())
+        assertNotEquals(first, otherPath)
+        assertNotEquals(first, otherType)
+        assertNotEquals(first, otherPriority)
+        assertFalse(first.equals("not a project file"))
+        assertTrue(
+            first.toString().contains("a.tex"),
+            "the string form names the file"
+        )
     }
 }
