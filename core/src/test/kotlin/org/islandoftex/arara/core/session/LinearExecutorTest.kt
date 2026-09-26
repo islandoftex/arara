@@ -15,6 +15,22 @@ import org.islandoftex.arara.core.files.Project
  */
 class LinearExecutorTest {
     @Test
+    fun `rejects execution option changes while a file is under run`() {
+        // the executor window holds the current file open for the hook,
+        // so an option change inside that window must be rejected; a
+        // stale file would otherwise freeze the options forever
+        org.islandoftex.arara.core.rules.executeWithinProject(
+            listOf("main.tex" to 0)
+        ) { _, _ ->
+            assertFailsWith<AraraException>(
+                "an open file rejects execution option changes"
+            ) {
+                LinearExecutor.executionOptions = LinearExecutor.executionOptions
+            }
+        }
+    }
+
+    @Test
     fun `rejects cyclic project dependencies`() {
         val exception = assertFailsWith<AraraException>(
             "a cyclic project specification must be rejected"

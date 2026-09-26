@@ -124,6 +124,37 @@ class DisplayUtilsTest {
     }
 
     @Test
+    fun `prints exceptions verbosely and names causeless details`() {
+        val verbose = withOptions(ExecutionMode.NORMAL_RUN, true) {
+            capturingOutput {
+                DisplayUtils.printEntry("rule", "run")
+                DisplayUtils.printException(AraraException("verbose failure"))
+            }
+        }
+        assertTrue("verbose failure" in verbose, "the verbose mode displays the exception too")
+
+        // a cause without a message of its own is still named in the
+        // details section, by its string representation
+        val silentCause = capturingOutput {
+            DisplayUtils.printException(
+                AraraException("failure", RuntimeException())
+            )
+        }
+        assertTrue("RuntimeException" in silentCause, "a silent cause prints its type")
+    }
+
+    @Test
+    fun `shortens the result alignment on narrow terminals`() {
+        Session.userInterfaceOptions =
+            UserInterfaceOptions(locale = MPPLocale("en"), terminalOutputWidth = 5)
+        val narrow = capturingOutput {
+            DisplayUtils.printEntry("rule", "run")
+            DisplayUtils.printEntryResult(true)
+        }
+        assertTrue("SUCCESS" in narrow, "the result prints even when narrowed")
+    }
+
+    @Test
     fun `prints authors conditionally`() {
         val single = capturingOutput { DisplayUtils.printAuthors(listOf("Island of TeX")) }
         assertTrue("Island" in single)

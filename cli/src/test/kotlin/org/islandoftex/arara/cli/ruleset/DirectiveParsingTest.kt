@@ -135,4 +135,13 @@ class DirectiveParsingTest {
             RuleUtils.parseRule(MPPPath("not-a-rule.quack"), "dummy")
         }
     }
+
+    @Test
+    fun `rejects uninterpolable orb tags in directive options`() {
+        assertFailsWith<AraraException>(
+            "an orb tag that cannot be evaluated must be rejected"
+        ) {
+            extract("% arara: dummy: { options: \"@{ not_a_real_value_quack }\" }\n")
+        }
+    }
 }

@@ -273,6 +273,7 @@ class InterpreterTest {
      * exception, the lenient mode as the exit code.
      */
     private fun executeFailingRule(haltOnErrors: Boolean): Int {
+        Session.clear()
         val directory = Files.createTempDirectory("arara-interpreter-rule")
         val java = ProcessHandle.current().info().command().orElse("java")
         Files.writeString(
@@ -311,5 +312,94 @@ class InterpreterTest {
             MPPPath(filePath.parent.toString())
         ).execute(directive)
         return status.exitCode
+    }
+
+    /**
+     * Runs a directive whose rule command appends one mark per
+     * execution to a trace file, under the provided conditional, and
+     * returns how many marks the loop machinery allowed.
+     */
+    private fun loopTrace(conditionalText: String, maxLoops: Int): Int {
+        Session.clear()
+        val directory = Files.createTempDirectory("arara-interpreter-rule")
+        val trace = Files.createTempFile("arara-loop-trace", ".txt")
+        Files.writeString(trace, "")
+        val escapedTrace = trace.toString().replace("\\", "\\\\")
+        Files.writeString(
+            directory.resolve("arara-rule-looper.yaml"),
+            """
+            !config
+            identifier: looper
+            name: Looper
+            authors:
+            - Island of TeX
+            commands:
+            - name: The looping tool
+              command: >
+                @{ writeToFile("$escapedTrace", "x", true); return true; }
+            arguments: []
+            """.trimIndent()
+        )
+        val filePath = Files.createTempFile("arara-interpreter-file", ".tex")
+        val directive = Directives.extractDirectives(
+            listOf("% arara: looper $conditionalText"), false, texFile
+        ).single().run {
+            DirectiveImpl(
+                identifier,
+                parameters.plus("reference" to filePath.toString()),
+                conditional,
+                lineNumbers
+            )
+        }
+        val status = Interpreter(
+            ExecutionOptions(
+                rulePaths = setOf(MPPPath(directory.toString())),
+                maxLoops = maxLoops
+            ),
+            ProjectFile(MPPPath(filePath.toString()), texFile),
+            MPPPath(filePath.parent.toString())
+        ).execute(directive)
+        assertEquals(
+            0,
+            status.exitCode,
+            "a loop that hits its cap reports success"
+        )
+        return Files.readString(trace).length
+    }
+
+    @Test
+    fun `caps while loops at the configured maximum`() {
+        assertEquals(
+            2,
+            loopTrace("while true", maxLoops = 2),
+            "the while body runs exactly the configured maximum of times"
+        )
+    }
+
+    @Test
+    fun `caps until loops at the configured maximum`() {
+        assertEquals(
+            3,
+            loopTrace("until false", maxLoops = 3),
+            "the until body runs exactly the configured maximum of times"
+        )
+    }
+
+    @Test
+    fun `runs if conditionals inside loops exactly once`() {
+        assertEquals(
+            1,
+            loopTrace("if true", maxLoops = 10),
+            "an if conditional runs its body exactly once inside the loop"
+        )
+    }
+
+    @Test
+    fun `runs unless conditionals inside loops exactly once`() {
+        assertEquals(
+            1,
+            loopTrace("unless false", maxLoops = 10),
+            "an unless conditional runs its body exactly once inside the loop"
+        )
     }
 }
