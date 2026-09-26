@@ -14,6 +14,7 @@ import org.islandoftex.arara.build.AraraPublication
 import org.islandoftex.arara.build.GenerateSmokeBats
 import org.islandoftex.arara.build.PrintSmokeJavaRuntime
 import org.islandoftex.arara.build.RunSmokeBats
+import org.islandoftex.chronoheader.ChronoField
 import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import tapmoc.TapmocExtension
@@ -46,6 +47,7 @@ plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.spotless)
     alias(libs.plugins.kover)
+    alias(libs.plugins.chronoheader)
     `java-base`
 }
 
@@ -128,7 +130,7 @@ spotless {
         val header = $$"""
             !config
             # arara, the cool TeX automation tool
-            # Copyright (c) $YEAR, Island of TeX
+            # Copyright (c) 2012-$YEAR, Island of TeX
             # All rights reserved.
             #
             # This rule is part of arara.
@@ -139,7 +141,7 @@ spotless {
         target("rules/*.lua")
         val header = $$"""
             -- arara, the cool TeX automation tool
-            -- Copyright (c) $YEAR, Island of TeX
+            -- Copyright (c) 2012-$YEAR, Island of TeX
             -- All rights reserved.
             --
             -- This rule is part of arara.
@@ -148,6 +150,12 @@ spotless {
         trimTrailingWhitespace()
         endWithNewline()
     }
+}
+
+chrono {
+    file("LICENSE") { update(ChronoField.YEAR_INTERVAL) }
+    pattern("rules/*.yaml") { update(ChronoField.YEAR_INTERVAL) }
+    pattern("rules/*.lua") { update(ChronoField.YEAR_INTERVAL) }
 }
 
 detekt {

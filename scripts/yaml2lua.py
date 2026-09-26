@@ -12,6 +12,7 @@ import glob
 import os
 import re
 import sys
+from datetime import date
 
 import yaml
 
@@ -564,7 +565,7 @@ def convert_rule(data, overrides):
     arg_ids = [arg["identifier"] for arg in (data.get("arguments") or [])]
     out = []
     out.append("-- arara, the cool TeX automation tool")
-    out.append("-- Copyright (c) 2026, Island of TeX")
+    out.append(f"-- Copyright (c) 2012-{date.today().year}, Island of TeX")
     out.append("-- All rights reserved.")
     out.append("--")
     out.append("-- This rule is part of arara.")

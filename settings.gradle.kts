@@ -1,4 +1,14 @@
 // SPDX-License-Identifier: BSD-3-Clause
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+        maven {
+            url = uri("https://gitlab.com/api/v4/projects/85815049/packages/maven")
+        }
+    }
+}
+
 plugins {
     // the settings plugin block has no access to the project catalog's
     // accessors, so the toolchain resolver declaration stays inline

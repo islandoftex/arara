@@ -1,5 +1,5 @@
 -- arara, the cool TeX automation tool
--- Copyright (c) 2026, Island of TeX
+-- Copyright (c) 2012-2026, Island of TeX
 -- All rights reserved.
 --
 -- This rule is part of arara.

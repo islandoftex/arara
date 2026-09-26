@@ -108,6 +108,10 @@ differs from the build floor).
   modules (`build/reports/kover/html`; `koverXmlReport` for machine-readable
   numbers, `koverLog` for a console summary). Thresholds become a gate once
   the baseline settles.
+- `./gradlew updateHeaders --no-configuration-cache` — refreshes the copyright
+  year intervals in the license, the YAML rules and the Lua rules to the
+  current year. Run it on demand when the year rolls over (the flag stays
+  until the plugin is configuration-cache compatible).
 - `./gradlew -PwarningsAsErrors=true test detekt spotlessCheck` — the strict
   gate proving the tree compiles without a single Kotlin warning.
 - The project **version is derived from `CHANGELOG.md`** by the

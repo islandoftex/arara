@@ -741,3 +741,21 @@ rounds:
   on-demand gating re-pointed to the symmetric names and proven
   under both the default and the validation-flag regimes against
   the actual rule artifacts.
+- **The copyright years are maintained by the build** — landed: the
+  license and every rule now carry the interval form, 2012 to the
+  current year, with the separator standardized on the hyphen and
+  the converter emitting the same interval dynamically so a
+  regenerated twin agrees with the convention by construction. The
+  division of labor is layered: the formatter owns the header shape
+  — its year placeholder is the interface between the tools — and
+  the header plugin owns the clock, refreshing the interval ends on
+  demand. Two findings are recorded with the step: the formatter
+  preserves each file's own year when rewriting headers into the
+  interval shape, so the normalization needed the clock task to
+  converge both families — and its second run, reporting zero
+  changes, is the fixed-point proof. And the header task calls the
+  project at execution time, which the configuration cache forbids;
+  the task runs with the cache disabled until the plugin stores its
+  resolved state at configuration time. A test pinning the license
+  checksum as a stable file was caught by the license edit and
+  updated with the new value — the pin now guards the new text.

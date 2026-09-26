@@ -68,7 +68,7 @@ class FileHandlingTest {
     @Test
     fun `generates the correct checksum`() {
         assertEquals(
-            1616727774,
+            2932086102,
             FileHandling.calculateHash(MPPPath("../LICENSE")),
             "CRC32 checksum of the LICENSE file"
         )

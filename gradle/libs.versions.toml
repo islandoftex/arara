@@ -1,4 +1,5 @@
 [versions]
+chronoheader-version = "0.1.1"
 clikt-version = "5.0.3"
 detekt-version = "1.23.8"
 dokka-version = "2.2.0"
@@ -38,6 +39,7 @@ slf4j-simple = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4
 zt-exec = { group = "org.zeroturnaround", name = "zt-exec", version.ref = "zt-exec-version" }
 
 [plugins]
+chronoheader = { id = "org.islandoftex.chronoheader", version.ref = "chronoheader-version" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt-version" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka-version" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
