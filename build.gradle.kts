@@ -123,7 +123,7 @@ spotless {
         leadingTabsToSpaces()
         endWithNewline()
     }
-    yaml {
+    format("yamlRules") {
         target("rules/*.yaml")
         val header = $$"""
             !config
@@ -211,11 +211,11 @@ tasks {
         checkForGradleUpdate = false
     }
 
-    named("spotlessYamlCheck") {
+    named("spotlessYamlRulesCheck") {
         enabled = validateYamlRules
     }
 
-    named("spotlessYamlApply") {
+    named("spotlessYamlRulesApply") {
         enabled = validateYamlRules
     }
 

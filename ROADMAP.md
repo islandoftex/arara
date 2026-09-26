@@ -734,3 +734,10 @@ rounds:
   two one-line command builders — one of them the multi-dollar raw
   string the license heredocs already use — with the regenerated
   runner files proven byte-identical.
+- **The rule-formatting task families are symmetric** — landed: the
+  YAML rule step left the built-in extension spelling for the
+  generic format block, so both families read the same —
+  `spotlessYamlRules*` beside `spotlessLuaRules*` — with the
+  on-demand gating re-pointed to the symmetric names and proven
+  under both the default and the validation-flag regimes against
+  the actual rule artifacts.

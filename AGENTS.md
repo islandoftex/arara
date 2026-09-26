@@ -93,7 +93,7 @@ differs from the build floor).
   Kotlin file needs the `// SPDX-License-Identifier: BSD-3-Clause` header,
   and files in `rules/` carry their own YAML/Lua headers. Both rule sets
   are converter-generated artifacts, so their formatting steps
-  (`spotlessYaml*`, `spotlessLuaRules*`) are disabled unless
+  (`spotlessYamlRules*`, `spotlessLuaRules*`) are disabled unless
   `-PvalidateYamlRules=true` / `-PvalidateLuaRules=true`.
 - `./gradlew dependencyUpdates` — dependency upgrade report (pre-release
   versions filtered out).
