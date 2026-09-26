@@ -31,9 +31,27 @@ internal data class Scenario(
     val doubleRun: Boolean = false,
     val secondRunForbidden: String = "",
     val fixture: String = "",
-    val authoredFile: String = "",
+    val authoredContent: String = "",
     val authoredTarget: String = "",
 )
+
+/** The minimal document the official-rule scenarios typeset. */
+private val officialRuleDocument = """
+    % arara: pdflatex
+    \documentclass{article}
+    \begin{document}
+    Hello, arara!
+    \end{document}
+    """.trimIndent() + "\n"
+
+/** The document whose conditional directive exercises the file database. */
+private val databaseCheckDocument = """
+    % arara: pdflatex if changed('tex')
+    \documentclass{article}
+    \begin{document}
+    Hello, arara!
+    \end{document}
+    """.trimIndent() + "\n"
 
 internal val scenarios = listOf(
         Scenario(
@@ -92,7 +110,7 @@ internal val scenarios = listOf(
                 extraSetup = "rm -f arara.yaml dbcheck.pdf",
                 doubleRun = true,
                 secondRunForbidden = "This is pdfTeX",
-                authoredFile = "dbcheck.tex",
+                authoredContent = databaseCheckDocument,
                 authoredTarget = "dbcheck.tex",
         ),
         Scenario(
@@ -101,7 +119,7 @@ internal val scenarios = listOf(
                 check = "the official pdflatex rule typesets the document",
                 arguments = listOf("--verbose", "tex-yaml.tex"),
                 expected = listOf("This is pdfTeX"),
-                authoredFile = "pdflatex.tex",
+                authoredContent = officialRuleDocument,
                 authoredTarget = "tex-yaml.tex",
         ),
         Scenario(
@@ -110,7 +128,7 @@ internal val scenarios = listOf(
                 check = "the official pdflatex rule typesets the document",
                 arguments = listOf("--verbose", "--engine", "lua", "tex-lua.tex"),
                 expected = listOf("This is pdfTeX"),
-                authoredFile = "pdflatex.tex",
+                authoredContent = officialRuleDocument,
                 authoredTarget = "tex-lua.tex",
         ),
         Scenario(

@@ -254,7 +254,6 @@ tasks {
         batsFiles.from(generateSmokeBats.flatMap { it.outputDirectory })
         appJar.set(project(":cli").tasks.named<Jar>("shadowJar").flatMap { it.archiveFile })
         fixturesRoot.set(layout.projectDirectory.dir("cli/src/test/resources/executiontests"))
-        authoredRoot.set(layout.projectDirectory.dir("scripts/smoke"))
         rulesRoot.set(layout.projectDirectory.dir("rules"))
         smokeDir.set(providers.environmentVariable("SMOKE_DIR").orElse("/tmp/arara-smoke"))
         strict.set(providers.gradleProperty("smoke.strict").map { it.toBoolean() }.orElse(false))

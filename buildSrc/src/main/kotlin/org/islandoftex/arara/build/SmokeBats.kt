@@ -86,11 +86,6 @@ abstract class RunSmokeBats : DefaultTask() {
     @get:PathSensitive(PathSensitivity.ABSOLUTE)
     abstract val fixturesRoot: DirectoryProperty
 
-    /** The authored scenario sources. */
-    @get:InputDirectory
-    @get:PathSensitive(PathSensitivity.ABSOLUTE)
-    abstract val authoredRoot: DirectoryProperty
-
     /** The official rule sources, staged under their installed names. */
     @get:InputDirectory
     @get:PathSensitive(PathSensitivity.ABSOLUTE)
@@ -238,16 +233,13 @@ abstract class RunSmokeBats : DefaultTask() {
         rules.mkdirs()
         scenarios.map { it.dir }.distinct().forEach { File(tree, it).mkdirs() }
         val fixtures = fixturesRoot.get().asFile
-        val authored = authoredRoot.get().asFile
         for (scenario in scenarios) {
             if (scenario.fixture.isNotEmpty()) {
                 copyDir(File(fixtures, scenario.fixture), File(tree, scenario.dir))
             }
-            if (scenario.authoredFile.isNotEmpty()) {
-                copyFile(
-                        File(authored, scenario.authoredFile),
-                        File(File(tree, scenario.dir), scenario.authoredTarget),
-                )
+            if (scenario.authoredTarget.isNotEmpty()) {
+                File(File(tree, scenario.dir), scenario.authoredTarget)
+                    .writeText(scenario.authoredContent)
             }
         }
         val rulesSource = rulesRoot.get().asFile

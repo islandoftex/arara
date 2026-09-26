@@ -42,7 +42,8 @@ smoke-verified end-to-end by the generated suite behind `./gradlew smoke`
 form): one command that builds the runnable jar, renders the scenario
 definitions of the helper build into runner files for bats, provisions the
 scratch matrix in `/tmp/arara-smoke` from the repository fixtures and the
-authored scenarios in `scripts/smoke`, and runs the full scenario set twice
+scenario content authored in the helper build's table, and runs the full
+scenario set twice
 — once on the underlying JVM and once on the floor runtime named by the
 smoke properties, resolved through the toolchain service and skipped
 loudly when absent. The scenarios cover both engines (the
@@ -168,9 +169,9 @@ Dependency chain: `api` → `core` → (`mvel`, `lua`) → `cli`.
   drive-prefixed and UNC spellings written with forward slashes are
   re-spelled before parsing so they keep their Windows shape.
 - `rules/` — every official rule ships in **both** formats
-  (`arara-rule-*.yaml` + `.lua` twins). `scripts/yaml2lua.py` converts rules;
-  `scripts/check_lua_rules.lua` smoke-tests all Lua rules with a plain `lua`
-  interpreter.
+  (`arara-rule-*.yaml` + `.lua` twins). A test in the `lua` module parses
+  every shipped Lua rule through the real parser, so the whole ruleset is
+  structure-validated in every gate.
 
 ## The YAML deprecation — traps that are easy to miss
 

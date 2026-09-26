@@ -82,9 +82,11 @@ Do not start the removal before all of the following hold:
       (the former packaging tasks, including the TDS tree builder that
       copied the whole `rules/` directory, were removed from the build;
       the `oc1` tag retains them for the release workflow).
-- [ ] The migration path is documented for users: `scripts/yaml2lua.py`
-      converts rule files; the manual's Configuration chapter documents the
-      Lua configuration format.
+- [ ] The migration path is documented for users: no conversion tool
+      ships (the converters were scaffolding for this fork's own rules
+      and were removed), so the manual carries a worked YAML-to-Lua
+      example and the key mapping table; its Configuration chapter
+      documents the Lua configuration format.
 
 ## Phase 1 — flip the default engine
 
@@ -116,9 +118,9 @@ Small, reversible release:
   branch, `warnAboutYamlDeprecation()` and the
   `org.islandoftex.arara.mvel.rules.Rule` import. Replace the branch with a
   friendly error for leftover `.yaml` rules, e.g. "YAML rules are no
-  longer supported since version X; convert the rule with
-  scripts/yaml2lua.py", so users with custom rules get guidance instead of
-  a rule-not-found error.
+  longer supported since version X; see the manual's migration section
+  for rewriting the rule in the Lua format", so users with custom rules
+  get guidance instead of a rule-not-found error.
 - `cli/…/interpreter/Interpreter.kt`:
   - delete `evaluateMvelCommand(…)`, `mvelExitCheck(…)` and the
     `is SerialRuleCommand ->` branch of `executeCommand` (keep the
@@ -170,9 +172,8 @@ Small, reversible release:
     rules, prefer a helpful error over silence when a
     `.araraconfig.yaml`-style file is still present: detect the YAML names
     and tell the user to migrate (the manual's Configuration chapter has
-    the key-by-key mapping, and `scripts/yamlconfig2lua.py` converts a
-    YAML configuration file to the Lua format, rejecting unknown keys
-    and omitting null values per the Lua parser's contract);
+    the key-by-key mapping; the configurations are one-liners to rewrite
+    by hand);
   - update the class KDoc describing the lookup order.
 
 ### 2.4 Rule helper methods
@@ -193,9 +194,12 @@ the mvel module at all. At removal time:
 - Root `build.gradle.kts`: delete the `yaml { target("rules/*.yaml") … }`
   spotless block (the `format("luaRules")` block stays). Keep the Kotlin
   spotless block untouched.
-- `scripts/yaml2lua.py` and `scripts/check_lua_rules.lua`: keep for at
-  least one more release as the user-facing migration tool, referenced
-  from the removal error message and the CHANGELOG; delete later.
+- The conversion scripts are already gone: they were scaffolding for
+  translating this fork's own rules and never shipped, so users write
+  Lua rules from scratch, guided by the manual. The whole-ruleset
+  structure validation the Lua checker once provided lives in the
+  `lua` module's test suite, which parses every shipped rule through
+  the real parser in every gate.
 - CTAN/TDS: the packaging tasks, including the TDS tree builder that
   copied `rules/` wholesale, were removed from this build; the release
   workflow owns packaging, so verify the shipped tree there once after
@@ -207,8 +211,8 @@ the mvel module at all. At removal time:
 
 - The end-to-end fixtures under `cli/src/test/resources/executiontests/`
   consist of YAML rules (`echoone.yaml`, …) and YAML configuration files
-  (`arararc.yaml`) per scenario — port them to the Lua formats
-  (`scripts/yaml2lua.py` handles the rules; the configs are one-liners).
+  (`arararc.yaml`) per scenario — port them to the Lua formats by hand
+  (they are small echo-style rules; the configs are one-liners).
   The `directive-with-mvel-options` and `conditionals` scenarios stay:
   directive options and conditionals are out of scope.
 - Note that the `arara.yaml` file handled by the "track changes" case in
@@ -287,7 +291,8 @@ exactly this and must keep passing.
   engine to select.) Removing a CLI
   option is a user-visible break: deprecate it for one release (accept
   and warn) before dropping it.
-- Delete `scripts/yaml2lua.py` and the migration error messages.
+- Delete the migration error messages (the conversion scripts were
+  already removed before the first release).
 - Revisit the module layout: with rules and configuration gone, the mvel
   module is a small "directive conditionals" library — folding it into
   core removes a publication artifact (coordinate `arara-mvel` consumers,
