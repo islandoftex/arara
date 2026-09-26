@@ -196,7 +196,7 @@ object RuleMethods {
      */
     @JvmStatic
     fun buildString(vararg objects: Any?): String =
-        MethodUtils.generateString(objects.filterNotNull().toTypedArray())
+        MethodUtils.generateString(objects.filterNotNull())
 
     /**
      * Gets the command based on a list of strings.

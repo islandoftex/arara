@@ -49,9 +49,20 @@ object MethodUtils {
      * them by one space. Empty values are not considered.
      */
     @JvmStatic
-    fun generateString(vararg objects: Any): String = objects
-        .map { it.toString() }.filter { it.isNotEmpty() }
-        .joinToString(" ")
+    fun generateString(objects: List<Any>): String =
+        objects.map { it.toString() }.filter { it.isNotEmpty() }.joinToString(" ")
+
+    /**
+     * Generates a string based on a list of objects, separating each one of
+     * them by one space.
+     *
+     * @param objects A list of objects.
+     * @return A string based on the list of objects, separating each one of
+     * them by one space. Empty values are not considered.
+     */
+    @JvmStatic
+    fun generateString(vararg objects: Any): String =
+        generateString(objects.toList())
 
     /**
      * Replicates a string pattern based on a list of objects, generating a list

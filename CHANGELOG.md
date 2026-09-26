@@ -213,6 +213,11 @@ on.
 
 ## Fixed
 
+* The `buildString` rule helper joins its arguments as documented: a
+  missing spread operator previously collapsed all arguments into a
+  single array element, so rule code evaluated through the MVEL engine
+  received an unreadable array dump instead of the joined string. The
+  Lua engine was unaffected, as its helper binding applies the spread.
 * Project specifications whose dependencies contain a cycle now report a
   proper error naming the projects involved, instead of silently
   skipping them (Kahn's algorithm omits cyclic vertices from the
