@@ -37,15 +37,15 @@ reference the `oc` tags, file names, or line numbers.
   `providedPath`/`referencePath` duality in `MPPPath`).
 
 Remaining caveat: none — both engines and the Lua project pipeline are
-smoke-verified end-to-end by `scripts/smoke.sh` (the codified successor of
-the oc7/oc45 scratch matrix): one command that builds the runnable jar,
-provisions the scratch matrix in `/tmp/arara-smoke` from the
-repository fixtures and the authored scenarios in `scripts/smoke`, and runs
-the full scenario set twice — once on the underlying JVM, and once on
-a floor runtime named by the smoke properties, discovered among the
-provisioned caches, `SMOKE_JAVA_HOME`, any `java` reporting the floor
-version, or provisioned on demand through the build's
-`printSmokeJavaRuntime` task. The scenarios cover both engines (the
+smoke-verified end-to-end by the generated suite behind `./gradlew smoke`
+(the codified successor of the oc7/oc45 scratch matrix and its script-era
+form): one command that builds the runnable jar, renders the scenario
+definitions of the helper build into runner files for bats, provisions the
+scratch matrix in `/tmp/arara-smoke` from the repository fixtures and the
+authored scenarios in `scripts/smoke`, and runs the full scenario set twice
+— once on the underlying JVM and once on the floor runtime named by the
+smoke properties, resolved through the toolchain service and skipped
+loudly when absent. The scenarios cover both engines (the
 simple directive pipeline, the Lua engine happy path, conditionals
 including a wrongly typed conditional probe, engine options with a rule
 staged in the application's rules directory) and the real TeX toolchain
@@ -96,11 +96,13 @@ differs from the build floor).
   `-PvalidateYamlRules=true` / `-PvalidateLuaRules=true`.
 - `./gradlew dependencyUpdates` — dependency upgrade report (pre-release
   versions filtered out).
-- `scripts/smoke.sh` — the end-to-end smoke suite: builds the runnable jar,
-  provisions the scratch matrix from the repository fixtures, and runs every
-  scenario on the underlying JVM and on the floor runtime named by the smoke
-  properties (discovered locally, or provisioned on demand through the
-  `printSmokeJavaRuntime` task). POSIX hosts only.
+- `./gradlew smoke` — the end-to-end smoke suite: builds the runnable jar
+  and the generated bats scenario files, provisions the scratch matrix from
+  the repository fixtures, and runs every scenario on the underlying JVM and
+  on the floor runtime named by the smoke properties. Requires bats-core and
+  git on the path (or `SMOKE_BATS`); scenarios whose tools are absent skip
+  loudly, and `-Psmoke.strict=true` escalates every skip into a failure.
+  Per-leg TAP reports land in `build/reports/smoke/`.
 - `./gradlew koverHtmlReport` — aggregated coverage report across all five
   modules (`build/reports/kover/html`; `koverXmlReport` for machine-readable
   numbers, `koverLog` for a console summary). Thresholds become a gate once

@@ -4,15 +4,17 @@ package org.islandoftex.arara.build
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 
 /**
  * Holds the smoke floor policy and prints the resolved Java runtime's
- * launcher path as the sole output line, so shell preambles can
- * consume it. A smoke floor that differs from the build floor is
- * announced loudly, but never fails the task. The runtime itself is
- * resolved by the build script that wires this task, which holds the
- * engine-internal toolchain service reference on this class's behalf.
+ * launcher path as the sole output line, so shell consumers can read
+ * it; a missing runtime is announced loudly instead of failing the
+ * task. A smoke floor that differs from the build floor is announced
+ * as well, but never fails the run. The resolution itself happens in
+ * the build script that wires this task, which owns the toolchain
+ * service on this class's behalf.
  */
 abstract class PrintSmokeJavaRuntime : DefaultTask() {
 
@@ -30,6 +32,7 @@ abstract class PrintSmokeJavaRuntime : DefaultTask() {
 
     /** The launcher path of the runtime, provisioned on demand. */
     @get:Input
+    @get:Optional
     abstract val launcherPath: Property<String>
 
     @TaskAction
@@ -43,6 +46,14 @@ abstract class PrintSmokeJavaRuntime : DefaultTask() {
                     buildFloor.get()
             )
         }
-        println(launcherPath.get())
+        val path = launcherPath.orNull
+        if (path == null) {
+            logger.warn(
+                    "no floor runtime was resolved; the smoke suite will skip " +
+                            "its floor leg"
+            )
+        } else {
+            println(path)
+        }
     }
 }

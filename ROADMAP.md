@@ -686,13 +686,25 @@ rounds:
   download path is gone, and the helper build keeps no catalog until
   its first real dependency; when one lands, the catalog is its own,
   never the application's.
-- **The Bats-shaped suite**: the scenario definitions move into the
-  Kobats generator library and render plain runner files; one Gradle
-  task becomes the single entry point — jar built, suite generated,
-  tree and floor runtime provisioned, the runner probed before any
-  work — with the report kept as a build artifact for the eventual
-  continuous integration. The generator vocabulary lacks raw test
-  lines, an upstream gap for per-scenario working directories.
+- **The Bats-shaped suite** — landed: the scenario definitions live in
+  the helper build as a data table rendered through the generator
+  library, and one Gradle task became the single entry point — jar
+  built, runner files generated, scratch tree and floor runtime
+  provisioned, the runner probed before any work, with per-leg
+  reports kept as build artifacts for the eventual continuous
+  integration. The prelude script retired with them. Two design
+  reversals are recorded with the step: the generator stayed in the
+  helper build after all, because the churn that justified a separate
+  logic build was hypothetical — the scenario table is data rather
+  than churning code, and one cold build per rare edit prices the
+  whole question — and the upstream vocabulary gap never
+  materialized: per-file setups carry the working directories, the
+  double-run sequences run and assertion pairs, and skip
+  orchestration lives with the runner, which knows which scenarios
+  need which tools, announces every skip with its reason, and
+  escalates them all in strict mode. The floor leg consumes the same
+  resolution the runtime task prints, so a missing floor degrades to
+  a loud skip instead of failing the build.
 - **The tolerated findings retire**: the three informational findings
   get real fixes where they exist — the idiomatic error call for the
   deliberate throw, helper extraction or a computed failure for the

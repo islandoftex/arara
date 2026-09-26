@@ -5,12 +5,15 @@ import org.gradle.api.Action
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.gradle.jvm.tasks.Jar
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.jvm.toolchain.JavaToolchainService
 import org.gradle.jvm.toolchain.JavaToolchainSpec
 import org.gradle.jvm.toolchain.JvmVendorSpec
 import org.islandoftex.arara.build.AraraPublication
+import org.islandoftex.arara.build.GenerateSmokeBats
 import org.islandoftex.arara.build.PrintSmokeJavaRuntime
+import org.islandoftex.arara.build.RunSmokeBats
 import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import tapmoc.TapmocExtension
@@ -172,9 +175,19 @@ val validateLuaRules: Boolean = providers
         .getOrElse(false)
 
 // the smoke runtime is resolved through the toolchain service, which
-// provisions on demand; the task itself holds only the policy and the
-// resolved path
+// provisions on demand; the resolution happens eagerly here so that a
+// missing floor degrades to a loud skip instead of failing every
+// build, and the smoke tasks consume the resolved value
 val smokeToolchainService = the<JavaToolchainService>()
+val smokeFloorJava: String? = runCatching {
+    smokeToolchainService.launcherFor(
+            Action<JavaToolchainSpec> {
+                languageVersion.set(JavaLanguageVersion.of(
+                        providers.gradleProperty("smoke.jvm.version").get().toInt()))
+                vendor.set(JvmVendorSpec.matching(providers.gradleProperty("smoke.jvm.vendor").get()))
+            }
+    ).get().executablePath.asFile.absolutePath
+}.getOrNull()
 
 tasks {
 
@@ -218,14 +231,31 @@ tasks {
         smokeVersion.set(providers.gradleProperty("smoke.jvm.version").map { it.toInt() })
         smokeVendor.set(providers.gradleProperty("smoke.jvm.vendor"))
         buildFloor.set(providers.gradleProperty("arara.jvm.target").map { it.toInt() })
-        launcherPath.set(
-                smokeToolchainService.launcherFor(
-                        Action<JavaToolchainSpec> {
-                            languageVersion.set(JavaLanguageVersion.of(smokeVersion.get()))
-                            vendor.set(JvmVendorSpec.matching(smokeVendor.get()))
-                        }
-                ).map { it.executablePath.asFile.absolutePath }
-        )
+        if (smokeFloorJava != null) {
+            launcherPath.set(smokeFloorJava)
+        }
+    }
+
+    val generateSmokeBats = register<GenerateSmokeBats>("generateSmokeBats") {
+        outputDirectory.set(layout.buildDirectory.dir("smoke-bats"))
+    }
+
+    register<RunSmokeBats>("smoke") {
+        dependsOn(":cli:shadowJar")
+        dependsOn(generateSmokeBats)
+        batsFiles.from(generateSmokeBats.flatMap { it.outputDirectory })
+        appJar.set(project(":cli").tasks.named<Jar>("shadowJar").flatMap { it.archiveFile })
+        fixturesRoot.set(layout.projectDirectory.dir("cli/src/test/resources/executiontests"))
+        authoredRoot.set(layout.projectDirectory.dir("scripts/smoke"))
+        rulesRoot.set(layout.projectDirectory.dir("rules"))
+        smokeDir.set(providers.environmentVariable("SMOKE_DIR").orElse("/tmp/arara-smoke"))
+        strict.set(providers.gradleProperty("smoke.strict").map { it.toBoolean() }.orElse(false))
+        floorVersion.set(providers.gradleProperty("smoke.jvm.version").map { it.toInt() })
+        if (smokeFloorJava != null) {
+            floorJavaPath.set(smokeFloorJava)
+        }
+        reportsDir.set(layout.buildDirectory.dir("reports/smoke"))
+        outputs.upToDateWhen { false }
     }
 }
 
