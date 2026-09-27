@@ -19,6 +19,7 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
+import org.gradle.internal.os.OperatingSystem
 
 /**
  * Renders the smoke scenarios as runner files. The output is a
@@ -134,7 +135,7 @@ abstract class RunSmokeBats : DefaultTask() {
 
     private fun probeRunner(): String {
         val override = System.getenv("SMOKE_BATS")
-        if (override != null && File(override).canExecute()) {
+        if (!override.isNullOrBlank()) {
             return override
         }
         val resolved = resolveCommand("bats")
@@ -166,7 +167,11 @@ abstract class RunSmokeBats : DefaultTask() {
             process.waitFor()
             output
         }.getOrNull() ?: return null
-        return if (path.isNotEmpty() && File(path).canExecute()) path else null
+        // command -v answers with a path only when the tool is found and
+        // executable in the shell's world; a Java-side file check would
+        // misread the POSIX-style paths the shell reports on Windows and
+        // reject valid resolutions
+        return path.ifEmpty { null }
     }
 
     private fun eligibleFiles(texAvailable: Boolean): List<File> =
@@ -197,6 +202,11 @@ abstract class RunSmokeBats : DefaultTask() {
         reportDir.mkdirs()
         val report = File(reportDir, "report.tap")
         logger.lifecycle("== scenario matrix on the $leg JVM ($java)")
+        // on Windows the virtual machine can neither execute shell
+        // scripts nor interpret the POSIX-style paths the probes
+        // resolve, so the runner script goes through bash - which the
+        // suite already requires for its tool probes; Linux keeps the
+        // direct invocation, where the kernel honors the shebang
         val arguments = mutableListOf(
                 runner,
                 "--print-output-on-failure",
@@ -205,6 +215,9 @@ abstract class RunSmokeBats : DefaultTask() {
                 "-o",
                 reportDir.absolutePath,
         )
+        if (OperatingSystem.current().isWindows) {
+            arguments.add(0, "bash")
+        }
         files.forEach { arguments.add(it.absolutePath) }
         val process = ProcessBuilder(arguments)
                 .directory(files.first().parentFile)

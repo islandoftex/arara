@@ -400,8 +400,12 @@ class InterpreterTest {
             commands:
             - name: The echoer
               command: >
-                @{ return getCommandWithWorkingDirectory(
-                '${forMvel(directory)}', 'echo', 'marker=', marker, 'items=', joined); }
+                @{ return isWindows(getCommandWithWorkingDirectory(
+                '${forMvel(directory)}', 'cmd', '/c', 'echo',
+                'marker=', marker, 'items=', joined),
+                getCommandWithWorkingDirectory(
+                '${forMvel(directory)}', 'echo', 'marker=', marker,
+                'items=', joined)); }
             arguments:
             - identifier: marker
               flag: '@{ return parameters.marker; }'
@@ -469,8 +473,10 @@ class InterpreterTest {
             commands:
             - name: The echoer
               command: >
-                @{ return getCommandWithWorkingDirectory(
-                '${forMvel(directory)}', 'echo', 'value=', value); }
+                @{ return isWindows(getCommandWithWorkingDirectory(
+                '${forMvel(directory)}', 'cmd', '/c', 'echo', 'value=', value),
+                getCommandWithWorkingDirectory(
+                '${forMvel(directory)}', 'echo', 'value=', value)); }
             arguments:
             - identifier: value
               flag: '@{ return 42; }'
@@ -571,8 +577,10 @@ class InterpreterTest {
             commands:
             - name: The echoer
               command: >
-                @{ return getCommandWithWorkingDirectory(
-                '${forMvel(directory)}', 'echo', 'ok'); }
+                @{ return isWindows(getCommandWithWorkingDirectory(
+                '${forMvel(directory)}', 'cmd', '/c', 'echo', 'ok'),
+                getCommandWithWorkingDirectory(
+                '${forMvel(directory)}', 'echo', 'ok')); }
               exit: 'value +'
             """.trimIndent()
         )
@@ -613,8 +621,10 @@ class InterpreterTest {
             commands:
             - name: The echoer
               command: >
-                @{ return getCommandWithWorkingDirectory(
-                '${forMvel(directory)}', 'echo', 'ok'); }
+                @{ return isWindows(getCommandWithWorkingDirectory(
+                '${forMvel(directory)}', 'cmd', '/c', 'echo', 'ok'),
+                getCommandWithWorkingDirectory(
+                '${forMvel(directory)}', 'echo', 'ok')); }
               exit: 'return "not boolean";'
             """.trimIndent()
         )

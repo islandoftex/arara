@@ -69,9 +69,11 @@ replicating there, clone with `git clone --config core.autocrlf=true`,
 then set `git config core.autocrlf false` and `git config core.eol lf`
 inside the clone before running anything — the formatter expects the
 working copy exactly as committed — then run the same gates. The
-functional suite needs bats-core and a bash on the path (or
-`SMOKE_BATS` pointing at the binary), plus a TeX distribution for the
-three typesetting scenarios; absent tools skip loudly. The runnable jar is
+functional suite runs through the bash of Git for Windows, which its
+tool probes already require; bats-core must be visible to `which
+bats` inside that shell (or `SMOKE_BATS` points at it), plus a TeX
+distribution for the three typesetting scenarios. Absent tools skip
+loudly. The runnable jar is
 `arara-cli-with-deps-<version>.jar`; the bare module jar next to it
 carries no dependencies.
 

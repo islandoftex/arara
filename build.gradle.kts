@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import io.gitlab.arturbosch.detekt.Detekt
+import java.io.File
 import org.gradle.api.Action
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.gradle.internal.os.OperatingSystem
 import org.gradle.jvm.tasks.Jar
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.jvm.toolchain.JavaToolchainService
@@ -255,7 +257,20 @@ tasks {
         appJar.set(project(":cli").tasks.named<Jar>("shadowJar").flatMap { it.archiveFile })
         fixturesRoot.set(layout.projectDirectory.dir("cli/src/test/resources/executiontests"))
         rulesRoot.set(layout.projectDirectory.dir("rules"))
-        smokeDir.set(providers.environmentVariable("SMOKE_DIR").orElse("/tmp/arara-smoke"))
+        // the scratch tree must resolve to one location for both the
+        // virtual machine and the shell: the POSIX-style default splits
+        // into two directories on Windows, where the shell maps /tmp to
+        // its own tree while the machine writes to the drive root, so
+        // Windows falls back to the machine's temp directory
+        smokeDir.set(
+            providers.environmentVariable("SMOKE_DIR").orElse(
+                if (OperatingSystem.current().isWindows)
+                    File(System.getProperty("java.io.tmpdir"), "arara-smoke")
+                        .absolutePath
+                else
+                    "/tmp/arara-smoke"
+            )
+        )
         strict.set(providers.gradleProperty("smoke.strict").map { it.toBoolean() }.orElse(false))
         floorVersion.set(providers.gradleProperty("smoke.jvm.version").map { it.toInt() })
         if (smokeFloorJava != null) {
