@@ -207,6 +207,7 @@ abstract class RunSmokeBats : DefaultTask() {
         // resolve, so the runner script goes through bash - which the
         // suite already requires for its tool probes; Linux keeps the
         // direct invocation, where the kernel honors the shebang
+        val windows = OperatingSystem.current().isWindows
         val arguments = mutableListOf(
                 runner,
                 "--print-output-on-failure",
@@ -215,10 +216,19 @@ abstract class RunSmokeBats : DefaultTask() {
                 "-o",
                 reportDir.absolutePath,
         )
-        if (OperatingSystem.current().isWindows) {
+        if (windows) {
             arguments.add(0, "bash")
         }
-        files.forEach { arguments.add(it.absolutePath) }
+        // the runner files all live in one directory, and the process
+        // working directory is that directory; the bare names sidestep
+        // the drive-prefixed spelling on Windows, which bash-side test
+        // gathering treats as a relative path and glues to the working
+        // directory. Linux keeps the absolute spellings
+        if (windows) {
+            files.forEach { arguments.add(it.name) }
+        } else {
+            files.forEach { arguments.add(it.absolutePath) }
+        }
         val process = ProcessBuilder(arguments)
                 .directory(files.first().parentFile)
                 .apply {
