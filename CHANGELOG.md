@@ -213,6 +213,11 @@ on.
 
 ## Fixed
 
+* YAML rules declaring a reserved argument identifier (`files` or
+  `reference`) or repeating an argument identifier are now rejected
+  as documented: the validation compared the argument objects
+  against identifier strings, so both checks could never fire and
+  such rules were silently accepted.
 * Text reads that fail at the system level - a missing file, a
   directory, an unreadable file - now surface as arara's own I/O
   exception, as the path layer always documented, instead of crashing

@@ -1,0 +1,14 @@
+!config
+identifier: paramrule
+name: The parameter echoer
+authors:
+- Island of TeX
+commands:
+  - name: The echoer
+    command: >
+      @{ return isWindows(getCommand('cmd', '/c', 'echo', marker),
+      getCommand('echo', marker)); }
+arguments:
+  - identifier: marker
+    flag: >
+      @{ return parameters.marker; }

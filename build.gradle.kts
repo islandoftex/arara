@@ -293,7 +293,19 @@ allprojects {
 }
 
 // the coverage plugin applied here aggregates the modules; each module
-// joins the aggregate as a plain project dependency
+// joins the aggregate as a plain project dependency. The main entry
+// point is excluded from the report: it only runs in the real process,
+// where the generated suite through the runnable jar exercises it
+kover {
+    reports {
+        filters {
+            excludes {
+                classes("org.islandoftex.arara.cli.CLIKt")
+            }
+        }
+    }
+}
+
 dependencies {
     kover(project(":api"))
     kover(project(":core"))

@@ -17,6 +17,7 @@ import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.files.FileType
 import org.islandoftex.arara.core.files.ProjectFile
 import org.islandoftex.arara.core.rules.Directives
+import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -374,6 +375,261 @@ class InterpreterTest {
             loopTrace("while true", maxLoops = 2),
             "the while body runs exactly the configured maximum of times"
         )
+    }
+
+    @Test
+    fun `evaluates rule flags into the command context`() {
+        Session.clear()
+        val directory = Files.createTempDirectory("arara-interpreter-rule")
+        Files.writeString(
+            directory.resolve("arara-rule-flagged.yaml"),
+            """
+            !config
+            identifier: flagged
+            name: Flagged
+            authors:
+            - Island of TeX
+            commands:
+            - name: The echoer
+              command: >
+                @{ return getCommandWithWorkingDirectory(
+                '$directory', 'echo', 'marker=', marker, 'items=', joined); }
+            arguments:
+            - identifier: marker
+              flag: '@{ return parameters.marker; }'
+            - identifier: joined
+              flag: '@{ return ["a", "b"]; }'
+            """.trimIndent()
+        )
+        val filePath = Files.createTempFile("arara-interpreter-file", ".tex")
+        val directive = Directives.extractDirectives(
+            listOf("% arara: flagged: { marker: 'x', joined: 'ignored' }"),
+            false, texFile
+        ).single().run {
+            DirectiveImpl(
+                identifier,
+                parameters.plus("reference" to filePath.toString()),
+                conditional,
+                lineNumbers
+            )
+        }
+        val output = ByteArrayOutputStream()
+        val sysout = System.out
+        val originalOptions = LinearExecutor.executionOptions
+        try {
+            System.setOut(PrintStream(output, true, Charsets.UTF_8))
+            // the command output tee follows the global verbose flag, so
+            // the global has to see it as well, not only the interpreter
+            LinearExecutor.executionOptions =
+                ExecutionOptions.from(originalOptions).copy(verbose = true)
+            val status = Interpreter(
+                ExecutionOptions(
+                    rulePaths = setOf(MPPPath(directory.toString())),
+                    verbose = true
+                ),
+                ProjectFile(MPPPath(filePath.toString()), texFile),
+                MPPPath(filePath.parent.toString())
+            ).execute(directive)
+            assertEquals(0, status.exitCode, "the flagged rule runs")
+        } finally {
+            LinearExecutor.executionOptions = originalOptions
+            System.setOut(sysout)
+        }
+        val echoed = output.toString(Charsets.UTF_8)
+        assertTrue(
+            "marker= x" in echoed,
+            "a string flag flows into the command: $echoed"
+        )
+        assertTrue(
+            "items= a b" in echoed,
+            "a list flag flows into the command: $echoed"
+        )
+    }
+
+    @Test
+    fun `warns on unsupported flag return types through the string fallback`() {
+        Session.clear()
+        val directory = Files.createTempDirectory("arara-interpreter-rule")
+        Files.writeString(
+            directory.resolve("arara-rule-numeric.yaml"),
+            """
+            !config
+            identifier: numeric
+            name: Numeric
+            authors:
+            - Island of TeX
+            commands:
+            - name: The echoer
+              command: >
+                @{ return getCommandWithWorkingDirectory(
+                '$directory', 'echo', 'value=', value); }
+            arguments:
+            - identifier: value
+              flag: '@{ return 42; }'
+            """.trimIndent()
+        )
+        val filePath = Files.createTempFile("arara-interpreter-file", ".tex")
+        val directive = Directives.extractDirectives(
+            listOf("% arara: numeric: { value: 'ignored' }"), false, texFile
+        ).single().run {
+            DirectiveImpl(
+                identifier,
+                parameters.plus("reference" to filePath.toString()),
+                conditional,
+                lineNumbers
+            )
+        }
+        val output = ByteArrayOutputStream()
+        val sysout = System.out
+        val originalOptions = LinearExecutor.executionOptions
+        try {
+            System.setOut(PrintStream(output, true, Charsets.UTF_8))
+            LinearExecutor.executionOptions =
+                ExecutionOptions.from(originalOptions).copy(verbose = true)
+            Interpreter(
+                ExecutionOptions(
+                    rulePaths = setOf(MPPPath(directory.toString())),
+                    verbose = true
+                ),
+                ProjectFile(MPPPath(filePath.toString()), texFile),
+                MPPPath(filePath.parent.toString())
+            ).execute(directive)
+        } finally {
+            LinearExecutor.executionOptions = originalOptions
+            System.setOut(sysout)
+        }
+        assertTrue(
+            "value= 42" in output.toString(Charsets.UTF_8),
+            "an unsupported flag return falls back to its string form"
+        )
+    }
+
+    @Test
+    fun `wraps failing flag expressions`() {
+        Session.clear()
+        val directory = Files.createTempDirectory("arara-interpreter-rule")
+        Files.writeString(
+            directory.resolve("arara-rule-brokenflag.yaml"),
+            """
+            !config
+            identifier: brokenflag
+            name: BrokenFlag
+            authors:
+            - Island of TeX
+            commands:
+            - name: The echoer
+              command: >
+                @{ return getCommandWithWorkingDirectory(
+                '$directory', 'echo', 'never'); }
+            arguments:
+            - identifier: value
+              flag: '@{ value + }'
+            """.trimIndent()
+        )
+        val filePath = Files.createTempFile("arara-interpreter-file", ".tex")
+        val directive = Directives.extractDirectives(
+            listOf("% arara: brokenflag: { value: 'x' }"), false, texFile
+        ).single().run {
+            DirectiveImpl(
+                identifier,
+                parameters.plus("reference" to filePath.toString()),
+                conditional,
+                lineNumbers
+            )
+        }
+        assertFailsWith<AraraException>(
+            "a failing flag expression reports the runtime error"
+        ) {
+            Interpreter(
+                ExecutionOptions(rulePaths = setOf(MPPPath(directory.toString()))),
+                ProjectFile(MPPPath(filePath.toString()), texFile),
+                MPPPath(filePath.parent.toString())
+            ).execute(directive)
+        }
+    }
+
+    @Test
+    fun `reports exit closure runtime errors`() {
+        Session.clear()
+        val directory = Files.createTempDirectory("arara-interpreter-rule")
+        Files.writeString(
+            directory.resolve("arara-rule-exitbroken.yaml"),
+            """
+            !config
+            identifier: exitbroken
+            name: ExitBroken
+            authors:
+            - Island of TeX
+            commands:
+            - name: The echoer
+              command: >
+                @{ return getCommandWithWorkingDirectory(
+                '$directory', 'echo', 'ok'); }
+              exit: 'value +'
+            """.trimIndent()
+        )
+        val filePath = Files.createTempFile("arara-interpreter-file", ".tex")
+        val directive = Directives.extractDirectives(
+            listOf("% arara: exitbroken"), false, texFile
+        ).single().run {
+            DirectiveImpl(
+                identifier,
+                parameters.plus("reference" to filePath.toString()),
+                conditional,
+                lineNumbers
+            )
+        }
+        assertFailsWith<AraraException>(
+            "a broken exit closure reports the runtime error"
+        ) {
+            Interpreter(
+                ExecutionOptions(rulePaths = setOf(MPPPath(directory.toString()))),
+                ProjectFile(MPPPath(filePath.toString()), texFile),
+                MPPPath(filePath.parent.toString())
+            ).execute(directive)
+        }
+    }
+
+    @Test
+    fun `rejects non boolean exit closures`() {
+        Session.clear()
+        val directory = Files.createTempDirectory("arara-interpreter-rule")
+        Files.writeString(
+            directory.resolve("arara-rule-exitwrong.yaml"),
+            """
+            !config
+            identifier: exitwrong
+            name: ExitWrong
+            authors:
+            - Island of TeX
+            commands:
+            - name: The echoer
+              command: >
+                @{ return getCommandWithWorkingDirectory(
+                '$directory', 'echo', 'ok'); }
+              exit: 'return "not boolean";'
+            """.trimIndent()
+        )
+        val filePath = Files.createTempFile("arara-interpreter-file", ".tex")
+        val directive = Directives.extractDirectives(
+            listOf("% arara: exitwrong"), false, texFile
+        ).single().run {
+            DirectiveImpl(
+                identifier,
+                parameters.plus("reference" to filePath.toString()),
+                conditional,
+                lineNumbers
+            )
+        }
+        assertFailsWith<AraraException>(
+            "an exit closure has to evaluate to a boolean"
+        ) {
+            Interpreter(
+                ExecutionOptions(rulePaths = setOf(MPPPath(directory.toString()))),
+                ProjectFile(MPPPath(filePath.toString()), texFile),
+                MPPPath(filePath.parent.toString())
+            ).execute(directive)
+        }
     }
 
     @Test

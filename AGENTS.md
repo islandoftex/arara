@@ -51,7 +51,11 @@ simple directive pipeline, the engine happy paths, conditionals in both
 dialects — including a wrongly typed conditional probe — sessions in
 both engines, engine options with a staged application rule, the
 project specification flow resolved through its Lua configuration,
-the safe mode rejection of unsafe helper calls, the halt
+the safe mode rejection of unsafe helper calls, the configured
+preamble flow, multiple files as arguments and through the directive
+file replication, whole-file extraction beyond the header, call
+parameters reaching the rules, the dry run mode, the localized
+labels, the loop cap through the command line, the halt
 directive's error exit, dispatch by file extension including its
 rejection path, and a file-database double run in both a TeX and a
 TeX-free shape asserting the record-and-skip semantics of `changed`)

@@ -121,7 +121,12 @@ data class Rule(
                         .messages.ERROR_VALIDATEBODY_NULL_COMMAND
                 )
 
-            val arguments = rule.arguments.filter { it.validate(errorHeader) }
+            // the validation compares the argument identifiers, not the
+            // argument objects - comparing objects against identifier
+            // strings would silently disable both checks
+            val arguments = rule.arguments
+                .filter { it.validate(errorHeader) }
+                .map { it.identifier }
 
             arguments.intersect(listOf("files", "reference")).forEach {
                 throw AraraException(

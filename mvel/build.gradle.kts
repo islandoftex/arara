@@ -13,4 +13,5 @@ dependencies {
     implementation(libs.mvel)
     implementation(libs.kotlinx.serialization)
     implementation(libs.kotaml)
+    testImplementation(libs.kotlin.test)
 }
