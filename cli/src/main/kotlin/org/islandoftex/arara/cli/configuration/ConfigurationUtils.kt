@@ -66,15 +66,23 @@ object ConfigurationUtils {
      * Validates the configuration file.
      *
      * @param file The configuration file.
+     * @param currentProject The project the configuration is loaded for;
+     *   its working directory is in scope to a Lua script as `cwd`.
      * @return The configuration file as a resource.
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
     @Throws(AraraException::class)
-    private fun loadLocalConfiguration(file: MPPPath): LocalConfiguration =
+    private fun loadLocalConfiguration(
+        file: MPPPath,
+        currentProject: Project
+    ): LocalConfiguration =
         when (file.toString().substringAfterLast('.')) {
             "yaml" -> LocalConfiguration.load(file)
-            "lua" -> LuaLocalConfiguration.load(file)
+            "lua" -> LuaLocalConfiguration.load(
+                file,
+                currentProject.workingDirectory
+            )
             else -> throw AraraException(
                 "The configuration file '$file' uses a format arara does " +
                     "not support."
@@ -94,7 +102,7 @@ object ConfigurationUtils {
     @Throws(AraraException::class)
     fun load(file: MPPPath, currentProject: Project) {
         // then validate it and update the configuration accordingly
-        val resource = loadLocalConfiguration(file)
+        val resource = loadLocalConfiguration(file, currentProject)
         LinearExecutor.executionOptions = resource.toExecutionOptions(
             currentProject,
             LinearExecutor.executionOptions

@@ -137,33 +137,35 @@ class LuaExecutionTest {
     }
 
     @Test
-    fun `interpolates Lua orb tags in directive options`() {
+    fun `interpolates Lua tags in directive options`() {
         val output = outputForTest("lua-engine-options")
-        // the orb tag is evaluated at parse time, so the rule receives
+        // the tag is evaluated at parse time, so the rule receives
         // the interpolated list containing the base name of the file
         assertTrue(
             output.contains("name: lua-engine-options"),
-            "the orb tag was interpolated with the file base name"
+            "the tag was interpolated with the file base name"
         )
         assertTrue(output.contains("SUCCESS"), "the entry result")
     }
 
     @Test
-    fun `does not interpolate orb tags in safe mode on the Lua engine`() {
+    fun `does not interpolate tags in safe mode on the Lua engine`() {
         val options = LinearExecutor.executionOptions
         LinearExecutor.executionOptions = ExecutionOptions.from(options)
             .copy(executionMode = ExecutionMode.SAFE_RUN)
         try {
             val output = outputForTest("lua-engine-options")
             // safe mode must never evaluate user expressions, so the
-            // orb tag passes through literally
+            // tag passes through literally
             assertTrue(
-                output.contains("@{getBasename(getOriginalReference())}"),
-                "the orb tag passes through literally in safe mode"
+                output.contains(
+                    "{{ getBasename(getOriginalReference()) }}"
+                ),
+                "the tag passes through literally in safe mode"
             )
             assertFalse(
                 output.contains("name: lua-engine-options"),
-                "the orb tag was not interpolated in safe mode"
+                "the tag was not interpolated in safe mode"
             )
         } finally {
             LinearExecutor.executionOptions = options
@@ -210,9 +212,9 @@ class LuaExecutionTest {
 
     @Test
     fun `interpolates scalar directive options on the Lua engine`() {
-        val output = outputForTest("scalar-options")
+        val output = outputForTest("lua-scalar-options")
         assertTrue(
-            output.contains("name: scalar-options"),
+            output.contains("name: lua-scalar-options"),
             "the scalar option is interpolated and preserved as a scalar"
         )
         assertTrue(output.contains("SUCCESS"), "the entry result")

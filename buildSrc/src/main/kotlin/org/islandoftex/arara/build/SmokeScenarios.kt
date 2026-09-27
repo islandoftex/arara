@@ -54,6 +54,15 @@ private val databaseCheckDocument = """
     \end{document}
     """.trimIndent() + "\n"
 
+/** The document whose options use the deprecated tag syntax of the other engine. */
+private val wrongTagDocument = """
+    % arara: optechoer: { options: [ 'name: @{getBasename(getOriginalReference())}' ] }
+    \documentclass{article}
+    \begin{document}
+    Lua wrong tag test
+    \end{document}
+    """.trimIndent() + "\n"
+
 internal val scenarios = listOf(
         Scenario(
                 name = "run1.bats", dir = "run1",
@@ -288,6 +297,24 @@ internal val scenarios = listOf(
                         "System command exited with value 0",
                 ),
                 fixture = "simple-directive",
+        ),
+        Scenario(
+                name = "wrong-tag.bats", dir = "wrong-tag",
+                description = "the rejection of the deprecated orb tag under Lua",
+                check = "the orb tag in the options reports the engine mismatch",
+                arguments = listOf("--engine", "lua", "wrongtag.tex"),
+                expected = listOf("cannot interpolate"),
+                exitCode = 2,
+                authoredContent = wrongTagDocument,
+                authoredTarget = "wrongtag.tex",
+        ),
+        Scenario(
+                name = "lua-config.bats", dir = "lua-config",
+                description = "the Lua configuration file and its in-scope values",
+                check = "the rule is found through the paths computed in the script",
+                arguments = listOf("--engine", "lua", "lua-config.tex"),
+                expected = listOf("from: the Lua configuration"),
+                fixture = "lua-config",
         ),
 )
 

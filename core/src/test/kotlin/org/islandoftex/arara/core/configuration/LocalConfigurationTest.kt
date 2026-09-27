@@ -13,8 +13,9 @@ import org.islandoftex.arara.core.session.Environment
  * Verifies the configuration application: the documented placeholders
  * in the rule paths - the user's home directory and name, and the
  * working directory of the project - expand during the application,
- * relative paths resolve against the project, and the database name
- * keeps only its base name.
+ * script-computed configurations skip that expansion, relative paths
+ * resolve against the project, and the database name keeps only its
+ * base name.
  */
 class LocalConfigurationTest {
     @Test
@@ -62,6 +63,32 @@ class LocalConfigurationTest {
             MPPPath("arara-db.yaml"),
             options.databaseName,
             "the database name keeps only its base name"
+        )
+    }
+
+    @Test
+    fun `keeps paths verbatim without token expansion`() {
+        val directory = Files.createTempDirectory("arara-config-verbatim")
+        val workingDirectory = MPPPath(directory.toString())
+        // a script-based configuration computes its own paths, so the
+        // model keeps whatever the script produced without treating it
+        // as engine token syntax
+        val configuration = LocalConfiguration(
+            paths = listOf("@{user.home}/marker-rules", "relative-rules"),
+            expandPathTokens = false
+        )
+        val paths = configuration.toExecutionOptions(
+            Project("test", workingDirectory, setOf()),
+            ExecutionOptions()
+        ).rulePaths
+        assertTrue(
+            (workingDirectory / "@{user.home}/marker-rules").normalize()
+                in paths,
+            "the script-computed path is kept verbatim: $paths"
+        )
+        assertTrue(
+            (workingDirectory / "relative-rules").normalize() in paths,
+            "relative paths still resolve against the project: $paths"
         )
     }
 }

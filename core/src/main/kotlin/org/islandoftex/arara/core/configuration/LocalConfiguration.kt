@@ -3,6 +3,7 @@ package org.islandoftex.arara.core.configuration
 
 import com.charleskorn.kaml.Yaml
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionOptions
 import org.islandoftex.arara.api.configuration.LoggingOptions
@@ -35,7 +36,12 @@ data class LocalConfiguration(
     private val laf: String? = null,
     val preambles: Map<String, String> = mapOf(),
     val defaultPreamble: String? = null,
-    val prependPreambleIfDirectivesGiven: Boolean = true
+    val prependPreambleIfDirectivesGiven: Boolean = true,
+    // a script-based configuration computes its paths with the values
+    // in scope to the script, so no engine tokens remain to expand;
+    // the flag stays out of the serialized format on purpose
+    @Transient
+    private val expandPathTokens: Boolean = true
 ) {
     /**
      * Convert the relevant properties of the configuration to execution
@@ -52,18 +58,24 @@ data class LocalConfiguration(
         val preprocessedPaths = paths.asSequence()
             .map { it.trim() }
             .map { input ->
-                input.replace(
-                    "@{user.home}",
-                    Environment.getSystemPropertyOrNull("user.home") ?: ""
-                )
-                    .replace(
-                        "@{user.name}",
-                        Environment.getSystemPropertyOrNull("user.name") ?: ""
+                if (expandPathTokens) {
+                    input.replace(
+                        "@{user.home}",
+                        Environment.getSystemPropertyOrNull("user.home") ?: ""
                     )
-                    .replace(
-                        "@{application.workingDirectory}",
-                        currentProject.workingDirectory.normalize().toString()
-                    )
+                        .replace(
+                            "@{user.name}",
+                            Environment.getSystemPropertyOrNull("user.name") ?: ""
+                        )
+                        .replace(
+                            "@{application.workingDirectory}",
+                            currentProject.workingDirectory.normalize().toString()
+                        )
+                } else {
+                    // the script configuration already computed its
+                    // paths; there are no tokens to expand
+                    input
+                }
             }
             .map { MPPPath(it) }
             .map { path ->

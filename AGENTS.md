@@ -60,7 +60,9 @@ directive's error exit, dispatch by file extension including its
 rejection path, and a file-database double run in both a TeX and a
 TeX-free shape asserting the record-and-skip semantics of `changed`,
 plus a run behind the log flag asserting the engine and the exit value
-recorded in the log file)
+recorded in the log file, the rejection of the deprecated orb tag
+syntax under the Lua engine, and a run configured through a Lua
+configuration file whose paths are computed from the values in scope)
 and the real TeX toolchain (the official `pdflatex` rule through both
 dialects). The historical scenarios the compact matrix once dropped are
 restored to the end-to-end set; the remaining fixture shapes stay with
@@ -173,12 +175,17 @@ Dependency chain: `api` → `core` → (`mvel`, `lua`) → `cli`.
   `core/…/configuration/`; the module no longer depends on `mvel` at all.
 - `cli` — the application: directive parsing, rule dispatch by file extension
   (`.yaml` → mvel parser with a one-time deprecation warning, `.lua` →
-  `LuaRuleParser`), configuration file lookup (YAML names first, then Lua),
+  `LuaRuleParser`), configuration file lookup (YAML names first, then Lua;
+  Lua configuration scripts run with `user` — `home`, `name` — and `cwd`
+  in scope, so they compute paths in plain Lua and no placeholder
+  expansion applies to them),
   the clikt command line, and the shadow jar. **Directive conditionals
-  (`if`/`while`/`until`/`unless`) and orb tags (`@{ … }`) in directive
-  `options` follow the engine too**: `--engine lua` evaluates them as Lua
-  (`LuaConditionalEvaluator` / `LuaOrbTags`, strict boolean, same helper
-  registry as the MVEL dialect); the default engine keeps MVEL.
+  (`if`/`while`/`until`/`unless`) and interpolation in directive
+  `options` follow the engine too**: `--engine lua` evaluates conditionals
+  and interpolates `{{ … }}` tags as Lua (`LuaConditionalEvaluator` /
+  `LuaInterpolation`, strict boolean, same helper registry as the MVEL
+  dialect; the `@{ … }` orb tags of the deprecated YAML engine are
+  rejected with a hint); the default engine keeps MVEL orb tags.
   Single-call conditions are valid in both dialects; compound ones differ
   (`&&`/`||`/`!` vs `and`/`or`/`not`). The Lua helper boundary is
   typed: helper arguments must match the declared type and mismatches

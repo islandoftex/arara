@@ -1,6 +1,6 @@
 return {
   identifier = "optechoer",
-  name = "Lua orb tag options rule",
+  name = "Lua interpolation options rule",
   authors = { "Island of TeX" },
   commands = {
     {

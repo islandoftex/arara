@@ -13,7 +13,7 @@ import org.islandoftex.arara.core.rules.DirectiveFetchingHooks
 import org.islandoftex.arara.core.rules.Directives
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.utils.formatString
-import org.islandoftex.arara.lua.rules.LuaOrbTags
+import org.islandoftex.arara.lua.rules.LuaInterpolation
 import org.islandoftex.arara.mvel.utils.MvelState
 import org.mvel2.templates.TemplateRuntime
 
@@ -116,13 +116,13 @@ object DirectiveUtils {
     }
 
     /**
-     * Interpolate the provided value with the orb tag machinery of the
+     * Interpolate the provided value with the tag machinery of the
      * selected rule engine.
      */
     @Throws(AraraException::class)
     private fun interpolate(value: String): Any =
         when (RuleEngine.current) {
-            RuleEngine.LUA -> LuaOrbTags.interpolate(value)
+            RuleEngine.LUA -> LuaInterpolation.interpolate(value)
             RuleEngine.YAML ->
                 runCatching {
                     TemplateRuntime.eval(value, MvelState.directiveMethods)

@@ -6,29 +6,42 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.core.localization.LanguageController
 
 /**
- * Interpolate Lua orb tags in directive options when the Lua rule
- * engine is selected, mirroring the MVEL template evaluation.
+ * Interpolate the tags of the Lua engine in directive options.
  *
- * An orb tag has the form `@{ expression }`; everything outside the tags
- * is kept as literal text, and every expression is evaluated as Lua in
+ * A tag has the form `{{ expression }}`; everything outside the tags is
+ * kept as literal text, and every expression is evaluated as Lua in
  * the directive conditional environment (see
- * [LuaConditionalEnvironment]). A `}` inside a quoted string does not
- * terminate the tag.
+ * [LuaConditionalEnvironment]). The delimiters belong to the Lua engine
+ * alone: the orb tags of the deprecated YAML engine are a different
+ * syntax for a different engine, so meeting one here is reported
+ * instead of being silently kept as literal text or misread. A closing
+ * delimiter only matches at zero brace depth, so expressions may
+ * contain braces of their own, such as table constructors; braces
+ * inside quoted strings never count either way.
  */
-object LuaOrbTags {
+object LuaInterpolation {
     /**
-     * Interpolate all orb tags in the provided template.
+     * Interpolate all tags in the provided template.
      *
      * @param template The template string.
      * @return The interpolated string.
-     * @throws AraraException An expression could not be evaluated.
+     * @throws AraraException An expression could not be evaluated, or
+     * the template uses the other engine's tag syntax.
      */
     @Throws(AraraException::class)
     fun interpolate(template: String): String {
+        // the orb tag is never literal text in arara, so under this
+        // engine it can only mean the wrong engine's syntax was used
+        if ("@{" in template) {
+            throw AraraException(
+                LanguageController.messages
+                    .ERROR_EXTRACTOR_ORB_TAG_IN_LUA_ENGINE
+            )
+        }
         val result = StringBuilder()
         var index = 0
         while (index < template.length) {
-            val start = template.indexOf("@{", index)
+            val start = template.indexOf("{{", index)
             if (start < 0) {
                 result.append(template.substring(index))
                 return result.toString()
@@ -39,23 +52,25 @@ object LuaOrbTags {
                     LanguageController.messages
                         .ERROR_EXTRACTOR_INTERPOLATION_FAILURE,
                     AraraException(
-                        "The orb tag starting at position $start is " +
-                            "not terminated."
+                        "The interpolation tag starting at position " +
+                            "$start is not terminated."
                     )
                 )
             val expression = template.substring(start + 2, end)
             result.append(evaluate(expression))
-            index = end + 1
+            index = end + 2
         }
         return result.toString()
     }
 
     /**
-     * Find the closing brace of the orb tag starting after [from],
-     * ignoring braces inside quoted strings.
+     * Find the closing delimiter of the tag starting after [from]:
+     * the first `}}` outside quoted strings and outside nested braces.
+     * Returns the index of its first brace.
      */
     private fun findTagEnd(template: String, from: Int): Int? {
         var quote: Char? = null
+        var depth = 0
         var index = from
         while (index < template.length) {
             val character = template[index]
@@ -65,8 +80,19 @@ object LuaOrbTags {
                         quote = null
                 character == '\'' || character == '"' ->
                     quote = character
+                character == '{' -> depth++
                 character == '}' ->
-                    return index
+                    // a lone closing brace at zero depth is not a
+                    // delimiter; it stays part of the expression, and
+                    // the Lua evaluation rejects the unbalanced script
+                    if (depth > 0) {
+                        depth--
+                    } else if (
+                        index + 1 < template.length &&
+                        template[index + 1] == '}'
+                    ) {
+                        return index
+                    }
             }
             index++
         }
@@ -74,7 +100,7 @@ object LuaOrbTags {
     }
 
     /**
-     * Evaluate a single orb tag expression as Lua and return its string
+     * Evaluate a single tag expression as Lua and return its string
      * representation; nil results interpolate as empty strings.
      */
     @Throws(AraraException::class)

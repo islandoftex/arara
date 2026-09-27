@@ -2,12 +2,14 @@
 package org.islandoftex.arara.lua.configuration
 
 import io.github.taoguan.luaj.LuaTable
+import io.github.taoguan.luaj.LuaValue
 import io.github.taoguan.luaj.lib.jse.JsePlatform
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.configuration.LocalConfiguration
 import org.islandoftex.arara.core.configuration.SerialFileType
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.lua.rules.LuaConversion
 
 /**
@@ -18,7 +20,10 @@ import org.islandoftex.arara.lua.rules.LuaConversion
  *
  * ```lua
  * return {
- *   paths = { "/opt/paulo/rules" },
+ *   paths = {
+ *     user.home .. "/opt/paulo/rules",
+ *     cwd .. "/local-rules"
+ *   },
  *   filetypes = {
  *     { extension = "tex" },
  *     { extension = "texw", pattern = "^\\s*%\\s+" }
@@ -37,6 +42,13 @@ import org.islandoftex.arara.lua.rules.LuaConversion
  *   prependPreambleIfDirectivesGiven = true
  * }
  * ```
+ *
+ * The script runs with arara's own values in scope, so paths and other
+ * strings are computed in plain Lua instead of relying on a placeholder
+ * syntax: the table `user` carries the `home` and `name` of the user
+ * running arara, and `cwd` is the working directory the configuration
+ * is loaded for. As a script evaluates once, at load, so do the values:
+ * `cwd` is the working directory of that very moment.
  *
  * The parsed result is converted into the very same [LocalConfiguration]
  * representation the YAML parser produces, so both formats behave
@@ -57,14 +69,46 @@ object LuaLocalConfiguration {
      * Validates the configuration file.
      *
      * @param file The configuration file.
+     * @param workingDirectory The working directory the configuration is
+     *   loaded for; it is in scope to the script as `cwd`.
      * @return The configuration file as a resource.
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun load(file: MPPPath): LocalConfiguration =
+    fun load(
+        file: MPPPath,
+        workingDirectory: MPPPath
+    ): LocalConfiguration =
         runCatching {
             val globals = JsePlatform.standardGlobals()
+            // arara's values are in scope to the script, mirroring what
+            // the placeholder expansion of the YAML format resolves;
+            // missing system properties fall back to empty strings so
+            // concatenation never sees nil
+            globals.set(
+                "user",
+                LuaValue.tableOf().also { user ->
+                    user.set(
+                        "home",
+                        LuaValue.valueOf(
+                            Environment.getSystemPropertyOrNull("user.home")
+                                ?: ""
+                        )
+                    )
+                    user.set(
+                        "name",
+                        LuaValue.valueOf(
+                            Environment.getSystemPropertyOrNull("user.name")
+                                ?: ""
+                        )
+                    )
+                }
+            )
+            globals.set(
+                "cwd",
+                LuaValue.valueOf(workingDirectory.normalize().toString())
+            )
             val result = globals.load(file.readText(), file.fileName).call()
             val table = result as? LuaTable ?: throw AraraException(
                 "A Lua configuration file has to return a table."
@@ -104,7 +148,10 @@ object LuaLocalConfiguration {
             preambles = stringMap(map, "preambles"),
             defaultPreamble = string(map, "defaultPreamble"),
             prependPreambleIfDirectivesGiven =
-                boolean(map, "prependPreambleIfDirectivesGiven") ?: true
+                boolean(map, "prependPreambleIfDirectivesGiven") ?: true,
+            // the script computed its paths with the values in scope,
+            // so no engine tokens remain to expand downstream
+            expandPathTokens = false
         )
     }
 

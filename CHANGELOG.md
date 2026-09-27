@@ -27,7 +27,12 @@ on.
   files (Lua scripts returning a table with the same keys as the YAML
   format; unknown configuration keys are rejected). YAML configuration
   files are looked up first; Lua configuration files are only considered
-  if no YAML configuration file is found.
+  if no YAML configuration file is found. A Lua configuration script runs
+  with arara's values in scope, so paths and other strings are computed
+  in plain Lua: the table `user` carries the `home` and `name` of the
+  user, and `cwd` is the working directory the configuration is loaded
+  for (bound when the script runs, at load). The `@{user.home}`-style
+  placeholders of the YAML format do not apply to Lua configurations.
 * All official rules have been converted to the Lua format and are shipped
   alongside their YAML counterparts (`rules/arara-rule-*.lua`).
 * Under `--engine lua`, directive conditionals (`if`, `while`, `until`,
@@ -41,11 +46,15 @@ on.
   such as `if exists('log')` work in both dialects unchanged; compound
   conditions use Lua's `and`, `or` and `not` instead of `&&`, `||` and
   `!`. The default YAML engine keeps evaluating conditionals in MVEL.
-* Under `--engine lua`, orb tags (`@{ … }`) in directive `options` are
+* Under `--engine lua`, interpolation tags in directive `options` are
   interpolated as Lua expressions using the same helper registry as the
-  conditionals. Safe mode still skips interpolation entirely, and
-  unterminated or malformed tags report the same interpolation error as
-  the MVEL dialect.
+  conditionals. The tags use their own `{{ … }}` delimiters on purpose:
+  the `@{ … }` orb tags belong to the deprecated YAML engine, and using
+  them under the Lua engine reports an error pointing at the Lua syntax
+  instead of producing literal text. Expressions may contain braces of
+  their own, such as table constructors. Safe mode still skips
+  interpolation entirely, and unterminated or malformed tags report the
+  same interpolation error as the MVEL dialect.
 * Under `--engine lua`, the helper boundary is typed: helper arguments
   have to match the declared type and mismatches raise Lua-style
   `bad argument #<n> to '<helper>'` errors behind the usual localized

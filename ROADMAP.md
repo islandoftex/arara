@@ -358,11 +358,11 @@ Consequences for the plan above:
   `core/…/configuration/` and `AraraExceptionWithHeader` in the `api`
   module — the Lua engine no longer depends on the mvel module at all
   (the former transitional `lua` -> `mvel` edge is gone);
-- the remaining MVEL surface after that move is empty: the orb tag
+- the remaining MVEL surface after that move is empty: the
   interpolation of directive `options` also has a Lua counterpart tied
-  to the engine (`LuaOrbTags`), including the safe mode passthrough.
-  Once the conditional and rule helpers have moved to a neutral home,
-  the `mvel` module can be deleted entirely.
+  to the engine (`LuaInterpolation`), including the safe mode
+  passthrough. Once the conditional and rule helpers have moved to a
+  neutral home, the `mvel` module can be deleted entirely.
 
 ## Version 9 outlook — the path model
 
