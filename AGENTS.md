@@ -141,7 +141,9 @@ differs from the build floor).
 - The project **version is derived from `CHANGELOG.md`** by the
   spotless-changelog plugin — do not hardcode it anywhere. `changelogPrint`
   shows the mapping; `changelogBump`/`changelogCheck`/`changelogPush` drive a
-  release; the phrase `breaking change` in an entry bumps the major.
+  release; a breaking entry bumps the major — recognized by the phrase
+  `breaking change` in any of its spellings or by the bold
+  `**Breaking:**` marker of the current changelog convention.
 - The former packaging tasks (`roast`, `assembleCTAN*`, `assembleTDS*`, the
   `docs` Gradle module) were removed from the build: the doc/CTAN toolchain
   (zola, weasyprint, htmlq) is unavailable here and out of scope. The `docs/`

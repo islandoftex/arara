@@ -75,7 +75,17 @@ if (
 spotlessChangelog {
     changelogFile("CHANGELOG.md")
     setAppendDashSnapshotUnless_dashPrelease(true)
-    ifFoundBumpBreaking("breaking change")
+    // the major bump recognizes the documented phrase and the bold
+    // marker of the current changelog convention; the match is a
+    // plain, case sensitive contains, so the spellings cover the
+    // phrase in prose, at sentence start, and as the marker in both
+    // casings
+    ifFoundBumpBreaking(
+        "breaking change",
+        "Breaking change",
+        "**Breaking:**",
+        "**BREAKING**",
+    )
     tagPrefix("v")
     commitMessage("Release v{{version}}")
     remote("origin")
