@@ -289,7 +289,7 @@ class InterpreterTest {
             - name: The failing tool
               command: >
                 @{ return getCommandWithWorkingDirectory(
-                '$directory', '$java', '-wrongflag-quack'); }
+                '${forMvel(directory)}', '${forMvel(java)}', '-wrongflag-quack'); }
             arguments: []
             """.trimIndent()
         )
@@ -314,6 +314,14 @@ class InterpreterTest {
         ).execute(directive)
         return status.exitCode
     }
+
+    /**
+     * Renders a path for embedding into a single-quoted MVEL string:
+     * the expression language processes backslash escapes inside its
+     * strings, so Windows separators have to be doubled.
+     */
+    private fun forMvel(path: Any): String =
+        path.toString().replace("\\", "\\\\")
 
     /**
      * Runs a directive whose rule command appends one mark per
@@ -393,7 +401,7 @@ class InterpreterTest {
             - name: The echoer
               command: >
                 @{ return getCommandWithWorkingDirectory(
-                '$directory', 'echo', 'marker=', marker, 'items=', joined); }
+                '${forMvel(directory)}', 'echo', 'marker=', marker, 'items=', joined); }
             arguments:
             - identifier: marker
               flag: '@{ return parameters.marker; }'
@@ -462,7 +470,7 @@ class InterpreterTest {
             - name: The echoer
               command: >
                 @{ return getCommandWithWorkingDirectory(
-                '$directory', 'echo', 'value=', value); }
+                '${forMvel(directory)}', 'echo', 'value=', value); }
             arguments:
             - identifier: value
               flag: '@{ return 42; }'
@@ -520,7 +528,7 @@ class InterpreterTest {
             - name: The echoer
               command: >
                 @{ return getCommandWithWorkingDirectory(
-                '$directory', 'echo', 'never'); }
+                '${forMvel(directory)}', 'echo', 'never'); }
             arguments:
             - identifier: value
               flag: '@{ value + }'
@@ -564,7 +572,7 @@ class InterpreterTest {
             - name: The echoer
               command: >
                 @{ return getCommandWithWorkingDirectory(
-                '$directory', 'echo', 'ok'); }
+                '${forMvel(directory)}', 'echo', 'ok'); }
               exit: 'value +'
             """.trimIndent()
         )
@@ -606,7 +614,7 @@ class InterpreterTest {
             - name: The echoer
               command: >
                 @{ return getCommandWithWorkingDirectory(
-                '$directory', 'echo', 'ok'); }
+                '${forMvel(directory)}', 'echo', 'ok'); }
               exit: 'return "not boolean";'
             """.trimIndent()
         )

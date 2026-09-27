@@ -65,10 +65,13 @@ restored to the end-to-end set; the remaining fixture shapes stay with
 the automated `ExecutionTest` suite, driven from the same fixtures.
 
 The full suite is also verified on a real Windows machine. When
-replicating there, clone with the checkout line endings pinned (or set
-them in the clone before running — the formatter expects the host's
-native endings in a working copy without a git repository), then run
-the same gates. The runnable jar is
+replicating there, clone with `git clone --config core.autocrlf=true`,
+then set `git config core.autocrlf false` and `git config core.eol lf`
+inside the clone before running anything — the formatter expects the
+working copy exactly as committed — then run the same gates. The
+functional suite needs bats-core and a bash on the path (or
+`SMOKE_BATS` pointing at the binary), plus a TeX distribution for the
+three typesetting scenarios; absent tools skip loudly. The runnable jar is
 `arara-cli-with-deps-<version>.jar`; the bare module jar next to it
 carries no dependencies.
 
