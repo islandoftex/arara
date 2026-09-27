@@ -79,3 +79,17 @@ tasks {
         }
     }
 }
+
+// the module's own test suite is what its report measures - the
+// cross-module coverage of these classes is guarded by the aggregate
+// floor at the root. This floor sits below the module's own measured
+// baseline, so a regression in the module suite fails the gate
+kover {
+    reports {
+        verify {
+            rule {
+                minBound(84)
+            }
+        }
+    }
+}

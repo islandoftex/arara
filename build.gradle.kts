@@ -295,12 +295,19 @@ allprojects {
 // the coverage plugin applied here aggregates the modules; each module
 // joins the aggregate as a plain project dependency. The main entry
 // point is excluded from the report: it only runs in the real process,
-// where the generated suite through the runnable jar exercises it
+// where the generated suite through the runnable jar exercises it.
+// The aggregate floor guards the merged truth across all tests; the
+// module builds carry floors for their own suites
 kover {
     reports {
         filters {
             excludes {
                 classes("org.islandoftex.arara.cli.CLIKt")
+            }
+        }
+        verify {
+            rule {
+                minBound(90)
             }
         }
     }

@@ -113,13 +113,26 @@ differs from the build floor).
   Per-leg TAP reports land in `build/reports/smoke/`.
 - `./gradlew koverHtmlReport` — aggregated coverage report across all five
   modules (`build/reports/kover/html`; `koverXmlReport` for machine-readable
-  numbers, `koverLog` for a console summary). Thresholds become a gate once
-  the baseline settles.
+  numbers, `koverLog` for a console summary). `koverVerify` enforces the
+  coverage floors in two tiers: the aggregate bound at the root guards
+  the merged truth of all tests across all modules, and each module's
+  own floor guards its own suite - the module reports see only their
+  own tests, so the classes of `api` and `core` show most of their
+  coverage through other modules' suites while their floors keep watch
+  over their own. Every floor sits below its measured baseline so
+  ordinary churn passes while a coverage regression fails the gate. The
+  baseline is honest, not padded: what it excludes cannot be covered
+  meaningfully — the interactive dialog family pending review, logging
+  supplier bodies (no backend is configured in tests, by design),
+  unreachable defensive arms, JVM bridge glue, and the `main` entry
+  point, which is filtered out of the reports and exercised for real
+  by the generated smoke suite through the runnable jar.
 - `./gradlew updateHeaders` — refreshes the copyright year intervals in the
   license, the YAML rules and the Lua rules to the current year. Run it on
   demand when the year rolls over.
-- `./gradlew -PwarningsAsErrors=true test detekt spotlessCheck` — the strict
-  gate proving the tree compiles without a single Kotlin warning.
+- `./gradlew -PwarningsAsErrors=true test detekt spotlessCheck koverVerify` —
+  the strict gate proving the tree compiles without a single Kotlin warning
+  and holds its coverage floors.
 - The project **version is derived from `CHANGELOG.md`** by the
   spotless-changelog plugin — do not hardcode it anywhere. `changelogPrint`
   shows the mapping; `changelogBump`/`changelogCheck`/`changelogPush` drive a
