@@ -3,7 +3,10 @@ package org.islandoftex.arara.cli.interpreter
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.io.IOException
+import java.util.Locale
 import java.util.concurrent.TimeoutException
+import kotlin.time.DurationUnit
+import kotlin.time.TimeSource
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
@@ -58,11 +61,15 @@ internal object InterpreterUtils {
      */
     @Throws(AraraException::class)
     internal fun run(command: Command): Int {
+        // the monotonic clock keeps the recorded duration immune to wall
+        // clock corrections that can strike while a command runs
+        val start = TimeSource.Monotonic.markNow()
         val result = Environment.executeSystemCommand(
             command,
             !LinearExecutor.executionOptions.verbose,
             LinearExecutor.executionOptions.timeoutValue
         )
+        val duration = start.elapsedNow()
         return when (result) {
             is SystemCommandResult.Failed ->
                 throw AraraException(
@@ -84,6 +91,16 @@ internal object InterpreterUtils {
                     result.exception
                 )
             is SystemCommandResult.Completed -> {
+                logger.info {
+                    // the exit value is recorded here because the caller
+                    // reduces it to a plain boolean right afterwards, and
+                    // the duration pairs the two facts in one place
+                    "System command exited with value ${result.exitCode} in " +
+                        String.format(
+                            Locale.ROOT, "%.3f",
+                            duration.toDouble(DurationUnit.SECONDS)
+                        ) + " seconds"
+                }
                 logger.info {
                     """
                         ${DisplayUtils.displayOutputSeparator(

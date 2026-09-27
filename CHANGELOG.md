@@ -92,6 +92,10 @@ on.
   the YAML engine, unsupported rule file formats report a new localized
   message, and the previously untranslated project file message is now
   available in all supported languages.
+* The log file (enabled via `-l`/`--log`) now records the selected rule
+  engine, the exit value and duration of every system command,
+  conditionally skipped directives and halt requests, and its line
+  timestamps follow a locale-independent numeric format.
 
 ## Changed
 

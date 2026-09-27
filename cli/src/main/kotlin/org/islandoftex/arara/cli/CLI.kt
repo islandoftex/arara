@@ -72,6 +72,7 @@ import org.islandoftex.arara.mvel.utils.MvelState
  * @since 5.0
  */
 class CLI : CliktCommand("arara") {
+    private val logger = KotlinLogging.logger {}
 
     init {
         context {
@@ -177,8 +178,6 @@ class CLI : CliktCommand("arara") {
                 // to ordinary arara execution rules (maybe someone has
                 // defined a lua filetype), so if there is an exception/it
                 // is not a project we simply return null
-                val logger = KotlinLogging.logger {}
-
                 runCatching {
                     logger.info {
                         "Guessing provided Lua file is a project specification, " +
@@ -251,6 +250,9 @@ class CLI : CliktCommand("arara") {
      */
     private fun updateConfigurationFromCommandLine() {
         RuleEngine.current = engine
+        // logged per file so a log file stays self-describing about the
+        // rule format the run used
+        logger.info { "Rule engine set to ${engine.name.lowercase()}" }
 
         Session.userInterfaceOptions = UserInterfaceOptions(
             locale = language?.let { MPPLocale(it) }

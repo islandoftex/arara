@@ -19,6 +19,7 @@ import org.islandoftex.arara.cli.ruleset.RuleEngine
 import org.islandoftex.arara.cli.ruleset.RuleUtils
 import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.rules.DirectiveConditionalEvaluator as ConditionalEvaluator
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.InputHandling
 import org.islandoftex.arara.core.utils.formatString
@@ -320,7 +321,6 @@ class Interpreter(
      * higher levels.
      */
     @Throws(AraraException::class)
-    @Suppress("NestedBlockDepth")
     fun execute(directive: Directive): ExecutionStatus {
         logger.info {
             LanguageController.messages.LOG_INFO_INTERPRET_RULE.formatString(
@@ -353,49 +353,73 @@ class Interpreter(
             else true
 
         return when {
-            !available ->
-                // if this directive is conditionally disabled, skip by returning
-                // a zero exit code meaning a conditionally disabled directive
-                // never fails
+            !available -> {
+                // a conditionally disabled directive is skipped with a zero
+                // exit code so it never fails; the log records the skip
+                // because it otherwise leaves no trace at all
+                logger.info {
+                    "Directive ${directive.identifier} skipped as its " +
+                        "conditional evaluated to false"
+                }
                 ExecutionStatus.Processing()
+            }
             Session.contains(haltKey) ->
                 // a halt was requested by a rule
                 ExecutionStatus.FinishedWithCode(haltStatus())
-            else -> {
-                try {
-                    // if not execute the commands associated with the directive
-                    var retValue: ExecutionStatus
-                    do {
-                        retValue = rule.commands.fold(
-                            ExecutionStatus.Processing()
-                                as ExecutionStatus
-                        ) { _, command ->
-                            executeCommand(
-                                command,
-                                directive.conditional,
-                                rule,
-                                parameters
-                            )
-                        }
-                    } while (evaluator.evaluate(directive.conditional))
-                    retValue
-                } catch (e: HaltExpectedException) {
-                    // If the user uses the halt rule to trigger a halt, this will be
-                    // raised. Any other exception will not be caught and propagate up.
-                    e.status
-                } catch (e: AraraExceptionWithHeader) {
-                    // rethrow arara exceptions that are bound to have a header by
-                    // prepending the header and removing the outer exception with
-                    // header where possible
-                    throw AraraException(
-                        LanguageController.messages.ERROR_RULE_IDENTIFIER_AND_PATH
-                            .formatString(directive.identifier, file.parent.toString()) + " " +
-                            e.message,
-                        e.cause ?: e
-                    )
-                }
-            }
+            else -> runCommands(directive, file, rule, parameters, evaluator)
         }
+    }
+
+    /**
+     * Run the command list of an available directive, honouring loop
+     * conditionals and translating raised errors to their headed forms.
+     *
+     * @param directive The directive being executed.
+     * @param file The rule file the directive resolved to.
+     * @param rule The parsed rule.
+     * @param parameters The resolved rule arguments.
+     * @param evaluator The conditional evaluator of the active engine.
+     * @return The final execution status of the command list.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    @Throws(AraraException::class)
+    private fun runCommands(
+        directive: Directive,
+        file: MPPPath,
+        rule: Rule,
+        parameters: Map<String, Any>,
+        evaluator: ConditionalEvaluator
+    ): ExecutionStatus = try {
+        var retValue: ExecutionStatus
+        do {
+            retValue = rule.commands.fold(
+                ExecutionStatus.Processing()
+                    as ExecutionStatus
+            ) { _, command ->
+                executeCommand(
+                    command,
+                    directive.conditional,
+                    rule,
+                    parameters
+                )
+            }
+        } while (evaluator.evaluate(directive.conditional))
+        retValue
+    } catch (e: HaltExpectedException) {
+        // If the user uses the halt rule to trigger a halt, this will be
+        // raised. Any other exception will not be caught and propagate up.
+        e.status
+    } catch (e: AraraExceptionWithHeader) {
+        // rethrow arara exceptions that are bound to have a header by
+        // prepending the header and removing the outer exception with
+        // header where possible
+        throw AraraException(
+            LanguageController.messages.ERROR_RULE_IDENTIFIER_AND_PATH
+                .formatString(directive.identifier, file.parent.toString()) + " " +
+                e.message,
+            e.cause ?: e
+        )
     }
 
     /**

@@ -26,6 +26,7 @@ internal data class Scenario(
     val arguments: List<String>,
     val expected: List<String>,
     val forbidden: List<String> = emptyList(),
+    val logChecks: List<String> = emptyList(),
     val exitCode: Int = 0,
     val extraSetup: String = "",
     val doubleRun: Boolean = false,
@@ -275,6 +276,19 @@ internal val scenarios = listOf(
                 exitCode = 2,
                 fixture = "foreign-extension",
         ),
+        Scenario(
+                name = "logging.bats", dir = "logging",
+                description = "the log file behind the log flag",
+                check = "the log file records the engine and the exit value",
+                arguments = listOf("--log", "simple-directive.tex"),
+                expected = listOf("SUCCESS"),
+                forbidden = listOf("kotlin-logging:"),
+                logChecks = listOf(
+                        "Rule engine set to yaml",
+                        "System command exited with value 0",
+                ),
+                fixture = "simple-directive",
+        ),
 )
 
 private fun workingDir(dir: String): String = "cd \"\$SMOKE_DIR/$dir\""
@@ -302,6 +316,14 @@ private fun render(scenario: Scenario): String = bats {
             run { arara(scenario.arguments) }
             status { it eq 0 }
             output { !it contains scenario.secondRunForbidden }
+        }
+        if (scenario.logChecks.isNotEmpty()) {
+            // the log file is read back through a second run, so its
+            // recorded facts assert like ordinary command output
+            run { "cat arara.log" }
+            output {
+                scenario.logChecks.forEach { needle -> it contains needle }
+            }
         }
     }
 }

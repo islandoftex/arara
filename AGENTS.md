@@ -58,7 +58,9 @@ parameters reaching the rules, the dry run mode, the localized
 labels, the loop cap through the command line, the halt
 directive's error exit, dispatch by file extension including its
 rejection path, and a file-database double run in both a TeX and a
-TeX-free shape asserting the record-and-skip semantics of `changed`)
+TeX-free shape asserting the record-and-skip semantics of `changed`,
+plus a run behind the log flag asserting the engine and the exit value
+recorded in the log file)
 and the real TeX toolchain (the official `pdflatex` rule through both
 dialects). The historical scenarios the compact matrix once dropped are
 restored to the end-to-end set; the remaining fixture shapes stay with
@@ -183,7 +185,10 @@ Dependency chain: `api` → `core` → (`mvel`, `lua`) → `cli`.
   raise Lua-style `bad argument #<n> to '<helper>'` errors — Lua's
   implicit coercions apply to operators, not to arara's library
   functions (convert with `tostring`/`tonumber`; interpolation and flag
-  results still stringify by design).
+  results still stringify by design). New log lines are plain English by
+  convention — the log file is a shared diagnostic artifact — while the
+  legacy log message keys remain localized pending the language
+  decision.
 - `MPPPath` (in `api`) is a sharp edge: it carries **two** paths —
   `providedPath` (exactly what the caller wrote; backs `isAbsolute`,
   `startsWith`, `resolve`) and `referencePath` (absolutized and normalized;

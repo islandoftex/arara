@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.rules
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.AraraExceptionWithHeader
 import org.islandoftex.arara.api.AraraIOException
@@ -28,6 +29,8 @@ import org.islandoftex.arara.core.utils.formatString
  * very same helpers.
  */
 object RuleMethods {
+    private val logger = KotlinLogging.logger {}
+
     // the GUI generator is built per call: the session's user interface
     // options may be replaced by a configuration file at any time, so a
     // captured instance would apply stale look-and-feel settings
@@ -47,6 +50,10 @@ object RuleMethods {
     @JvmStatic
     @JvmOverloads
     fun halt(status: Int = 0) {
+        // the request is recorded as soon as it is made: a halt raised in
+        // a dependency file only takes effect once the main file is
+        // processed, so the log is the only immediate witness
+        logger.debug { "Halt requested with status $status" }
         Session.put("arara:$originalFile:halt", status)
     }
 
