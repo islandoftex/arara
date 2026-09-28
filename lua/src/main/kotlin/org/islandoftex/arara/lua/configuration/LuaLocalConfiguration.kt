@@ -62,7 +62,7 @@ import org.islandoftex.arara.lua.rules.LuaConversion
 object LuaLocalConfiguration {
     private val knownKeys = setOf(
         "paths", "file_types", "language", "loops", "verbose", "logging",
-        "header", "db_name", "log_name", "laf", "preambles",
+        "header", "db_name", "log_name", "preambles",
         "default_preamble", "prepend_preamble_if_directives_given"
     )
 
@@ -145,7 +145,6 @@ object LuaLocalConfiguration {
             header = boolean(map, "header"),
             dbname = string(map, "db_name"),
             logname = string(map, "log_name"),
-            laf = string(map, "laf"),
             preambles = stringMap(map, "preambles"),
             defaultPreamble = string(map, "default_preamble"),
             prependPreambleIfDirectivesGiven =

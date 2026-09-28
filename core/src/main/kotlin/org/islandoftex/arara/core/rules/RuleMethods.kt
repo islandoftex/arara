@@ -313,19 +313,16 @@ object RuleMethods {
     /**
      * Shows the message.
      *
-     * @param width Integer value, in pixels.
      * @param type Type of message.
      * @param title Title of the message.
      * @param text Text of the message.
      */
     @JvmStatic
-    @JvmOverloads
     fun showMessage(
-        width: Int = TerminalDialogs.DEFAULT_WIDTH,
         type: Int,
         title: String,
         text: String
-    ) = TerminalDialogs.showMessage(width, type, title, text)
+    ) = TerminalDialogs.showMessage(type, title, text)
 
     /**
      * Unsafely executes a system command from the underlying operating system

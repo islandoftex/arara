@@ -33,7 +33,6 @@ data class LocalConfiguration(
     private val header: Boolean? = null,
     private val dbname: String? = null,
     private val logname: String? = null,
-    private val laf: String? = null,
     /**
      * The named directive lists the configuration provides, mapped from
      * preamble name to its directives.
@@ -154,7 +153,6 @@ data class LocalConfiguration(
         return org.islandoftex.arara.core.configuration.UserInterfaceOptions(
             locale = language?.let { MPPLocale(it) }
                 ?: baseOptions.locale,
-            swingLookAndFeel = laf ?: baseOptions.swingLookAndFeel
         )
     }
 

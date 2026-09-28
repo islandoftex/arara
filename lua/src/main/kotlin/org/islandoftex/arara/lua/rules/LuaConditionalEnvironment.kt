@@ -12,7 +12,6 @@ import org.islandoftex.arara.core.rules.ConditionalMethods
 import org.islandoftex.arara.core.rules.RuleMethods
 import org.islandoftex.arara.core.session.ClassLoading.ClassLoadingStatus
 import org.islandoftex.arara.core.session.Session
-import org.islandoftex.arara.core.ui.TerminalDialogs
 import org.islandoftex.arara.lua.rules.LuaConversion.badArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.fromLua
 import org.islandoftex.arara.lua.rules.LuaConversion.luaFunction
@@ -48,14 +47,6 @@ internal object LuaConditionalEnvironment {
         val globals = JsePlatform.standardGlobals()
         bindHelpers(globals)
         return globals
-    }
-
-    /**
-     * The default width the Lua dialog helpers fall back to, taken from
-     * the same source of truth.
-     */
-    private val defaultDialogWidth: Int by lazy {
-        TerminalDialogs.DEFAULT_WIDTH
     }
 
     private fun Varargs.values(from: Int): List<Any?> =
@@ -175,31 +166,29 @@ internal object LuaConditionalEnvironment {
             luaFunction { _ -> sessionTable() }
         )
 
-        // interactive dialogs; the width argument is optional, mirroring
-        // the MVEL defaults (a leading number followed by another number
-        // denotes an explicit width)
+        // interactive dialogs
         bindDialog(
             globals, "showOptions"
-        ) { width, type, title, text, values ->
+        ) { type, title, text, values ->
             LuaValue.valueOf(
                 ConditionalMethods.showOptions(
-                    width, type, title, text, *values
+                    type, title, text, *values
                 )
             )
         }
         bindDialog(
             globals, "showInput"
-        ) { width, type, title, text, _ ->
+        ) { type, title, text, _ ->
             LuaValue.valueOf(
-                ConditionalMethods.showInput(width, type, title, text)
+                ConditionalMethods.showInput(type, title, text)
             )
         }
         bindDialog(
             globals, "showDropdown"
-        ) { width, type, title, text, values ->
+        ) { type, title, text, values ->
             LuaValue.valueOf(
                 ConditionalMethods.showDropdown(
-                    width, type, title, text, *values
+                    type, title, text, *values
                 )
             )
         }
@@ -226,42 +215,28 @@ internal object LuaConditionalEnvironment {
         )
     }
 
-    // the dialog arguments follow a positional protocol (an optional
-    // width, the message type, title, text and the extra values)
+    // the dialog arguments follow a positional protocol (the message
+    // type, title, text and the extra values); the width parameter of
+    // the Swing era is gone, and arara owns the terminal geometry
     @Suppress("MagicNumber")
     private fun bindDialog(
         globals: Globals,
         name: String,
         body: (
-            width: Int, type: Int, title: String,
+            type: Int, title: String,
             text: String, values: Array<Any>
         ) -> LuaValue
     ) {
         globals.set(
             name,
             luaFunction { args ->
-                // an explicit width is present when the first argument
-                // is a real number and the second one is a number as
-                // well (the mandatory message type); otherwise the first
-                // argument is the type and the default width applies.
-                // Instance checks, not isnumber() — in this LuaJ fork
-                // the latter also accepts numeric strings.
-                val hasWidth = args.arg(1) is LuaNumber &&
-                    args.arg(2) is LuaNumber
-                val offset = if (hasWidth) 2 else 1
-                val width = if (hasWidth)
-                    args.arg(1).numberArgument(name, 1)
-                else
-                    defaultDialogWidth
-                val type = args.arg(offset).numberArgument(name, offset)
-                val title = args.arg(offset + 1)
-                    .stringArgument(name, offset + 1)
-                val text = args.arg(offset + 2)
-                    .stringArgument(name, offset + 2)
-                val values = args.values(offset + 3)
+                val type = args.arg(1).numberArgument(name, 1)
+                val title = args.arg(2).stringArgument(name, 2)
+                val text = args.arg(3).stringArgument(name, 3)
+                val values = args.values(4)
                     .filterNotNull()
                     .toTypedArray()
-                body(width, type, title, text, values)
+                body(type, title, text, values)
             }
         )
     }

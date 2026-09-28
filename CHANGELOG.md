@@ -128,10 +128,11 @@ on.
   and `showDropdown`, in both engines) render as terminal dialogs
   instead of Swing windows: wrapped blocks with a type tag, numbered
   entries, and range prompts, all honoring the configured terminal
-  width. The helpers keep their exact signatures, so rules work
-  unchanged. The choice interpretation asks again on input outside
-  the offered range; a closed input while a numbered dialog waits is
-  reported instead of guessed at.
+  width. The choice interpretation asks again on input outside the
+  offered range; a closed input while a numbered dialog waits is
+  reported instead of guessed at. arara owns the terminal geometry:
+  rules choose the type, the title, the text and the choices, and the
+  terminal decides how they are laid out.
 * The CLI module is no longer published to the Maven repository: it is
   the application and ships as the runnable jar, so the four library
   modules (`api`, `core`, `lua` and `mvel`) alone publish.
@@ -238,6 +239,24 @@ on.
 
 ## Removed
 
+* **Breaking:** The Swing dialogs are gone. The interactive helpers
+  render on the terminal only, so scripts that relied on dialog
+  windows, and headless runs that met them, see different behavior by
+  design: a dialog is a conversation with the person at the terminal,
+  and the safe mode rejects one headlessly.
+* **Breaking:** The `width` parameter is removed from the interactive
+  helpers (`showMessage`, `showOptions`, `showInput`, `showDropdown`),
+  together with their four-argument call variants: the parameter was
+  the pixel width of a Swing window, the terminal ignores it, and
+  arara owns the terminal geometry. The common three-argument calls,
+  such as `showMessage(1, 'Greetings', 'Hello')`, keep working; rules
+  passing an explicit width fail at evaluation, and the fix is
+  dropping the first argument.
+* **Breaking:** The `laf` configuration key and the look and feel
+  option are removed with the Swing dialogs. Both configuration
+  parsers reject unknown keys, so configurations still carrying
+  `laf:` (YAML) or `laf = ...` (Lua) fail with an unknown key error;
+  remove the entry from the configuration file.
 * **Breaking:** The message catalog is redesigned and leaves the public
   API module. Messages are now typed members of an internal interface -
   zero-argument messages as values, parameterized messages as functions

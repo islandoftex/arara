@@ -11,9 +11,9 @@ import org.islandoftex.arara.core.utils.wrap
  * both rule engines render through this surface; every block wraps at
  * the configured terminal width through the shared wrapping
  * primitive, so dialogs and ordinary output honor the same column
- * count. The pixel width parameter of the Swing era stays in the
- * helper signatures for rule compatibility and is ignored here: the
- * terminal has no pixels, and the wrapping follows the configuration.
+ * count. The geometry belongs to arara: rules choose the type, the
+ * title, the text and the choices, and the terminal decides how they
+ * are laid out.
  *
  * The numbered dialogs re-prompt on input outside the offered range,
  * so a stray keystroke never becomes an answer; the input dialog
@@ -22,7 +22,7 @@ import org.islandoftex.arara.core.utils.wrap
  * is an error rather than a silent guess, because a dialog read from
  * a pipe is a misuse the safe mode exists to prevent.
  */
-@Suppress("UnusedParameter", "MagicNumber")
+@Suppress("MagicNumber")
 object TerminalDialogs {
     /**
      * The message type codes of the dialog helpers, as rule authors
@@ -35,32 +35,18 @@ object TerminalDialogs {
     private const val TYPE_QUESTION = 4
 
     /**
-     * The dialog width parameter of the Swing era, kept so the helper
-     * signatures and their reflective bindings stay byte-identical;
-     * the terminal ignores it.
-     */
-    const val DEFAULT_WIDTH = 250
-
-    /**
      * Shows the message.
-     * @param width Integer value, kept for compatibility; ignored.
      * @param type Type of message.
      * @param title Title of the message.
      * @param text Text of the message.
      */
-    fun showMessage(
-        width: Int = DEFAULT_WIDTH,
-        type: Int,
-        title: String,
-        text: String
-    ) {
+    fun showMessage(type: Int, title: String, text: String) {
         printBlock(type, title, text)
         println()
     }
 
     /**
      * Shows a message with options presented as an array of buttons.
-     * @param width Integer value, kept for compatibility; ignored.
      * @param type Type of message.
      * @param title Title of the message.
      * @param text Text of the message.
@@ -68,7 +54,6 @@ object TerminalDialogs {
      * @return The index of the selected button, starting from 1.
      */
     fun showOptions(
-        width: Int = DEFAULT_WIDTH,
         type: Int,
         title: String,
         text: String,
@@ -83,18 +68,12 @@ object TerminalDialogs {
 
     /**
      * Shows a message with a text input.
-     * @param width Integer value, kept for compatibility; ignored.
      * @param type Type of message.
      * @param title Title of the message.
      * @param text Text of the message.
      * @return The string representing the input text.
      */
-    fun showInput(
-        width: Int = DEFAULT_WIDTH,
-        type: Int,
-        title: String,
-        text: String
-    ): String {
+    fun showInput(type: Int, title: String, text: String): String {
         printBlock(type, title, text)
         println()
         print("> ")
@@ -105,7 +84,6 @@ object TerminalDialogs {
      * Shows a message with options presented as a dropdown list of
      * elements; choosing nothing yields zero, as the Swing contract
      * did.
-     * @param width Integer value, kept for compatibility; ignored.
      * @param type Type of message.
      * @param title Title of the message.
      * @param text Text of the message.
@@ -113,7 +91,6 @@ object TerminalDialogs {
      * @return The index of the selected element, starting from 1.
      */
     fun showDropdown(
-        width: Int = DEFAULT_WIDTH,
         type: Int,
         title: String,
         text: String,

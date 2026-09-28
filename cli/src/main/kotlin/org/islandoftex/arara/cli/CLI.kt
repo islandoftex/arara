@@ -263,7 +263,6 @@ class CLI : CliktCommand("arara") {
         Session.userInterfaceOptions = UserInterfaceOptions(
             locale = language?.let { MPPLocale(it) }
                 ?: Session.userInterfaceOptions.locale,
-            swingLookAndFeel = Session.userInterfaceOptions.swingLookAndFeel
         )
         LanguageController.loadMessagesFor(Session.userInterfaceOptions.locale)
 
