@@ -371,6 +371,27 @@ interface AraraMessages {
      */
     val infoLabelOnSuccess: String
     /**
+     * The tag shown by a warning dialog.
+     */
+    val infoLabelOnWarning: String
+    /**
+     * The tag shown by a question dialog.
+     */
+    val infoLabelOnQuestion: String
+    /**
+     * The tag shown by an informational dialog.
+     */
+    val infoLabelOnInfo: String
+    /**
+     * The prompt of a dialog that asks for a numbered choice.
+     */
+    val infoLabelDialogPrompt: String
+    /**
+     * The error shown when a dialog awaits an answer and the terminal
+     * input has already ended.
+     */
+    val errorDialogInputClosed: String
+    /**
      * The label shown for a rule command without a name.
      */
     val infoLabelUnnamedTask: String

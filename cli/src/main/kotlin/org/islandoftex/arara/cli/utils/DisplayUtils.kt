@@ -13,6 +13,7 @@ import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
+import org.islandoftex.arara.core.utils.wrap
 
 /**
  * Implements display utilitary methods.

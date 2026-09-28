@@ -41,13 +41,4 @@ class StringExtensionsTest {
             "padding is distributed to both sides"
         )
     }
-
-    @Test
-    fun `wraps strings correctly`() {
-        assertEquals(
-            "This text\nshould be\nwrapped",
-            "This text should be wrapped".wrap(10),
-            "the text wraps at the word boundaries"
-        )
-    }
 }

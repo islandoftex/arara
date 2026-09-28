@@ -12,7 +12,7 @@ import org.islandoftex.arara.core.rules.ConditionalMethods
 import org.islandoftex.arara.core.rules.RuleMethods
 import org.islandoftex.arara.core.session.ClassLoading.ClassLoadingStatus
 import org.islandoftex.arara.core.session.Session
-import org.islandoftex.arara.core.ui.GUIDialogs
+import org.islandoftex.arara.core.ui.TerminalDialogs
 import org.islandoftex.arara.lua.rules.LuaConversion.badArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.fromLua
 import org.islandoftex.arara.lua.rules.LuaConversion.luaFunction
@@ -51,11 +51,11 @@ internal object LuaConditionalEnvironment {
     }
 
     /**
-     * The default width the MVEL dialog helpers fall back to, taken from
+     * The default width the Lua dialog helpers fall back to, taken from
      * the same source of truth.
      */
     private val defaultDialogWidth: Int by lazy {
-        GUIDialogs(Session.userInterfaceOptions).defaultWidth
+        TerminalDialogs.DEFAULT_WIDTH
     }
 
     private fun Varargs.values(from: Int): List<Any?> =

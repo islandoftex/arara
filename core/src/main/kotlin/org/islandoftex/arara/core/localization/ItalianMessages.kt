@@ -220,7 +220,13 @@ object ItalianMessages : AraraMessages {
 
     override val infoLabelOnSuccess =
         "SUCCESS"
+    override val infoLabelOnWarning = "AVVISO"
+    override val infoLabelOnQuestion = "DOMANDA"
+    override val infoLabelOnInfo = "INFO"
+    override val infoLabelDialogPrompt = "Scegli un\u2019opzione"
 
+    override val errorDialogInputClosed =
+        "Sembra che l\u2019input del terminale si sia chiuso mentre un dialogo attendeva una risposta, quindi non posso leggere la tua scelta. Esegui arara in un terminale interattivo oppure usa la modalit\u00e0 sicura."
     override val infoLabelUnnamedTask =
         "Compito senza nome"
 

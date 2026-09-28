@@ -220,7 +220,13 @@ object EnglishMessages : AraraMessages {
 
     override val infoLabelOnSuccess =
         "SUCCESS"
+    override val infoLabelOnWarning = "WARNING"
+    override val infoLabelOnQuestion = "QUESTION"
+    override val infoLabelOnInfo = "INFO"
+    override val infoLabelDialogPrompt = "Choose an option"
 
+    override val errorDialogInputClosed =
+        "It looks like the terminal input ended while a dialog was waiting for an answer, so I cannot read your choice. Please run arara in an interactive terminal, or use the safe mode to disable dialogs."
     override val infoLabelUnnamedTask =
         "Unnamed task"
 

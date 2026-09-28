@@ -10,7 +10,7 @@ import org.islandoftex.arara.core.session.ClassLoading
 import org.islandoftex.arara.core.session.ClassLoading.ClassLoadingStatus
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
-import org.islandoftex.arara.core.ui.GUIDialogs
+import org.islandoftex.arara.core.ui.TerminalDialogs
 import org.islandoftex.arara.core.utils.MethodUtils
 
 /**
@@ -24,10 +24,6 @@ import org.islandoftex.arara.core.utils.MethodUtils
  */
 @Suppress("TooManyFunctions")
 object ConditionalMethods {
-    // the GUI generator is built per call: the session's user interface
-    // options may be replaced by a configuration file at any time, so a
-    // captured instance would apply stale look-and-feel settings
-    private fun dialogs() = GUIDialogs(Session.userInterfaceOptions)
 
     /**
      * Checks if the file exists according to its extension.
@@ -183,12 +179,12 @@ object ConditionalMethods {
     @JvmStatic
     @JvmOverloads
     fun showOptions(
-        width: Int = dialogs().defaultWidth,
+        width: Int = TerminalDialogs.DEFAULT_WIDTH,
         type: Int,
         title: String,
         text: String,
         vararg buttons: Any
-    ): Int = dialogs().showOptions(width, type, title, text, buttons)
+    ): Int = TerminalDialogs.showOptions(width, type, title, text, buttons)
 
     /**
      * Shows a message with a text input.
@@ -202,11 +198,11 @@ object ConditionalMethods {
     @JvmStatic
     @JvmOverloads
     fun showInput(
-        width: Int = dialogs().defaultWidth,
+        width: Int = TerminalDialogs.DEFAULT_WIDTH,
         type: Int,
         title: String,
         text: String
-    ): String = dialogs().showInput(width, type, title, text)
+    ): String = TerminalDialogs.showInput(width, type, title, text)
 
     /**
      * Shows a message with options presented as a dropdown list of elements.
@@ -221,12 +217,12 @@ object ConditionalMethods {
     @JvmStatic
     @JvmOverloads
     fun showDropdown(
-        width: Int = dialogs().defaultWidth,
+        width: Int = TerminalDialogs.DEFAULT_WIDTH,
         type: Int,
         title: String,
         text: String,
         vararg elements: Any
-    ): Int = dialogs().showDropdown(width, type, title, text, elements)
+    ): Int = TerminalDialogs.showDropdown(width, type, title, text, elements)
 
     /**
      * Gets the file reference for the current directive. It is important to

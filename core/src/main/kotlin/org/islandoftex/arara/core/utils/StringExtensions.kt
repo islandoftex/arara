@@ -4,6 +4,35 @@ package org.islandoftex.arara.core.utils
 import org.islandoftex.arara.api.AraraException
 
 /**
+ * Wrap text at a specified width, breaking on spaces. This is the
+ * single wrapping primitive of the console output: every terminal
+ * surface, the display as well as the dialogs, wraps through it, so
+ * the configured column width is honored identically everywhere.
+ *
+ * Algorithm from Wikipedia:
+ * https://en.wikipedia.org/wiki/Line_wrap_and_word_wrap#Minimum_number_of_lines
+ *
+ * @param width The width to wrap at.
+ * @return Wrapped text.
+ */
+fun String.wrap(width: Int): String {
+    val words = this.split(" ")
+    var wrapped = words[0]
+    var spaceLeft = width - wrapped.length
+    words.drop(1).forEach {
+        val len = it.length
+        wrapped += if (len + 1 > spaceLeft) {
+            spaceLeft = width - len
+            "\n$it"
+        } else {
+            spaceLeft -= len + 1
+            " $it"
+        }
+    }
+    return wrapped
+}
+
+/**
  * Converts a standard POSIX Shell globbing pattern into a regular expression
  * pattern. The result can be used with the standard [Regex] API to recognize
  * strings which match the glob pattern.

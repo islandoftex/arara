@@ -124,6 +124,14 @@ on.
 ## Changed
 
 * Replaced `luak` by `luaj`.
+* The interactive helpers (`showMessage`, `showOptions`, `showInput`
+  and `showDropdown`, in both engines) render as terminal dialogs
+  instead of Swing windows: wrapped blocks with a type tag, numbered
+  entries, and range prompts, all honoring the configured terminal
+  width. The helpers keep their exact signatures, so rules work
+  unchanged. The choice interpretation asks again on input outside
+  the offered range; a closed input while a numbered dialog waits is
+  reported instead of guessed at.
 * The CLI module is no longer published to the Maven repository: it is
   the application and ships as the runnable jar, so the four library
   modules (`api`, `core`, `lua` and `mvel`) alone publish.

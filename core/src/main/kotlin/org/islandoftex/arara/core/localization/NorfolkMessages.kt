@@ -220,7 +220,13 @@ object NorfolkMessages : AraraMessages {
 
     override val infoLabelOnSuccess =
         "THASS A MASTERLY JOB, MY BEWTY"
+    override val infoLabelOnWarning = "MIND OUT, BOR"
+    override val infoLabelOnQuestion = "AX ME THIS"
+    override val infoLabelOnInfo = "JIST SO YEW KNOW"
+    override val infoLabelDialogPrompt = "Pick one onnem"
 
+    override val errorDialogInputClosed =
+        "It do luke like thet terminal input went hully away whilst a dialog was a-waitin\u2019 on yer answer, so I can\u2019t read wot yew picked. Dew yew run arara in a proper interactive terminal, or hev a go at the safe mode."
     override val infoLabelUnnamedTask =
         "That task ent got no name"
 

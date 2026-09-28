@@ -16,8 +16,8 @@ import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.session.SystemCommandResult
-import org.islandoftex.arara.core.ui.GUIDialogs
 import org.islandoftex.arara.core.ui.InputHandling
+import org.islandoftex.arara.core.ui.TerminalDialogs
 import org.islandoftex.arara.core.utils.MethodUtils
 
 @Suppress("TooManyFunctions")
@@ -37,10 +37,6 @@ import org.islandoftex.arara.core.utils.MethodUtils
 object RuleMethods {
     private val logger = KotlinLogging.logger {}
 
-    // the GUI generator is built per call: the session's user interface
-    // options may be replaced by a configuration file at any time, so a
-    // captured instance would apply stale look-and-feel settings
-    private fun dialogs() = GUIDialogs(Session.userInterfaceOptions)
 
     /**
      * Exit the application with status code.
@@ -325,11 +321,11 @@ object RuleMethods {
     @JvmStatic
     @JvmOverloads
     fun showMessage(
-        width: Int = dialogs().defaultWidth,
+        width: Int = TerminalDialogs.DEFAULT_WIDTH,
         type: Int,
         title: String,
         text: String
-    ) = dialogs().showMessage(width, type, title, text)
+    ) = TerminalDialogs.showMessage(width, type, title, text)
 
     /**
      * Unsafely executes a system command from the underlying operating system

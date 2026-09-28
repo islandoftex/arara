@@ -220,7 +220,13 @@ object BrazilianPortugueseMessages : AraraMessages {
 
     override val infoLabelOnSuccess =
         "SUCESSO"
+    override val infoLabelOnWarning = "AVISO"
+    override val infoLabelOnQuestion = "PERGUNTA"
+    override val infoLabelOnInfo = "INFO"
+    override val infoLabelDialogPrompt = "Escolha uma op\u00e7\u00e3o"
 
+    override val errorDialogInputClosed =
+        "Parece que a entrada do terminal foi encerrada enquanto um di\u00e1logo aguardava uma resposta; portanto, n\u00e3o consigo ler sua escolha. Execute o arara em um terminal interativo ou utilize o modo seguro."
     override val infoLabelUnnamedTask =
         "Tarefa sem nome"
 

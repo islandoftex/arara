@@ -40,29 +40,3 @@ internal fun String.center(width: Int, padChar: Char): String {
             padChar.toString().repeat(ceil(charsLeft.toDouble() / 2.0).toInt())
     }
 }
-
-/**
- * Wrap text at a specified width.
- *
- * Algorithm from Wikipedia:
- * https://en.wikipedia.org/wiki/Line_wrap_and_word_wrap#Minimum_number_of_lines
- *
- * @param width The width to wrap at.
- * @return Wrapped text.
- */
-internal fun String.wrap(width: Int): String {
-    val words = this.split(" ")
-    var wrapped = words[0]
-    var spaceLeft = width - wrapped.length
-    words.drop(1).forEach {
-        val len = it.length
-        wrapped += if (len + 1 > spaceLeft) {
-            spaceLeft = width - len
-            "\n$it"
-        } else {
-            spaceLeft -= len + 1
-            " $it"
-        }
-    }
-    return wrapped
-}

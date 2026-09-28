@@ -136,7 +136,9 @@ differs from the build floor).
   over their own. Every floor sits below its measured baseline so
   ordinary churn passes while a coverage regression fails the gate. The
   baseline is honest, not padded: what it excludes cannot be covered
-  meaningfully — the interactive dialog family pending review, logging
+  meaningfully — the interactive dialog surface (the terminal I/O
+  shell of the dialogs reads lines that only a user can type; its
+  choice interpretation is a tested pure function), logging
   supplier bodies (no backend is configured in tests, by design),
   unreachable defensive arms, JVM bridge glue, and the `main` entry
   point, which is filtered out of the reports and exercised for real
