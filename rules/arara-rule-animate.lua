@@ -11,8 +11,8 @@ return {
     {
       name = "The Convert program",
       command = function(ctx)
-        local input = getBasename(ctx.reference.fileName) .. ".pdf"
-        local output = getBasename(ctx.reference.fileName) .. ".gif"
+        local input = getBasename(ctx.reference.file_name) .. ".pdf"
+        local output = getBasename(ctx.reference.file_name) .. ".gif"
         return getCommand(ctx.program, "-delay", ctx.delay, "-loop", ctx.loop, "-density", ctx.density, ctx.options, input, output)
       end
     },

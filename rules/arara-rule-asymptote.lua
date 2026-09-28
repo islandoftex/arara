@@ -11,7 +11,7 @@ return {
     {
       name = "Asymptote",
       command = function(ctx)
-        return getCommand("asy", ctx.color, ctx.engine, ctx.twice, ctx.format, ctx.output, ctx.options, ctx.reference.fileName)
+        return getCommand("asy", ctx.color, ctx.engine, ctx.twice, ctx.format, ctx.output, ctx.options, ctx.reference.file_name)
       end
     },
   },

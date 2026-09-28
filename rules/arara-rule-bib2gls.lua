@@ -43,7 +43,7 @@ return {
             ctx.interpret, ctx.breakspace, ctx.trimfields, ctx.recordcount,
             ctx.recordcountunit, ctx.cite, ctx.verbose, ctx.merge,
             ctx.locale, ctx.uniscript, ctx.packages, ctx.ignore, ctx.custom,
-            ctx.mapformats, ctx.options, getBasename(ctx.reference.fileName))
+            ctx.mapformats, ctx.options, getBasename(ctx.reference.file_name))
         end
       end
     },
@@ -61,7 +61,7 @@ return {
         if contains({ "tex", "ltx", "cls", "sty", "bib", "dtx", "ins", "def", "ldf" }, value) then
           throwError("Forbidden transcript extension")
         end
-        return { "--log-file", (getBasename(ctx.reference.fileName) .. ".") .. value }
+        return { "--log-file", (getBasename(ctx.reference.file_name) .. ".") .. value }
       end
     },
     {

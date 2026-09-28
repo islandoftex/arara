@@ -38,7 +38,7 @@ class LuaLocalConfigurationTest {
                 """
                 return {
                   paths = { "rules" },
-                  filetypes = {
+                  file_types = {
                     { extension = "tex" },
                     { extension = "texw", pattern = "^\\s*%\\s+" }
                   },
@@ -47,13 +47,13 @@ class LuaLocalConfigurationTest {
                   verbose = true,
                   logging = true,
                   header = false,
-                  dbname = "database",
-                  logname = "mylog",
+                  db_name = "database",
+                  log_name = "mylog",
                   preambles = {
                     ["twopdftex"] = "% arara: pdftex\n% arara: pdftex"
                   },
-                  defaultPreamble = "twopdftex",
-                  prependPreambleIfDirectivesGiven = false
+                  default_preamble = "twopdftex",
+                  prepend_preamble_if_directives_given = false
                 }
                 """.trimIndent()
             ),

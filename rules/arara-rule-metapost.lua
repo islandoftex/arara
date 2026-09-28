@@ -11,7 +11,7 @@ return {
     {
       name = "Metapost",
       command = function(ctx)
-        return getCommand("mpost", ctx.interaction, ctx.numbersystem, ctx.options, ctx.reference.fileName)
+        return getCommand("mpost", ctx.interaction, ctx.numbersystem, ctx.options, ctx.reference.file_name)
       end
     },
   },

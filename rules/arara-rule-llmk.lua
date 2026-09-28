@@ -11,7 +11,7 @@ return {
     {
       name = "The automation tool",
       command = function(ctx)
-        return getCommand("llmk", ctx.clean, ctx.debug, ctx.dry, ctx.mode, ctx.reference.fileName)
+        return getCommand("llmk", ctx.clean, ctx.debug, ctx.dry, ctx.mode, ctx.reference.file_name)
       end
     },
   },

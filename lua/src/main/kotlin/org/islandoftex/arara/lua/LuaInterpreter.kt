@@ -98,8 +98,8 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
 
     private fun extractProjectFile(path: MPPPath, table: LuaTable): ProjectFile {
         val fileType = optionalTable(
-            table["fileType"],
-            "The 'fileType' key requires a table."
+            table["file_type"],
+            "The 'file_type' key requires a table."
         )?.let { extractFileType(it) } ?: FileType.UNKNOWN_TYPE
 
         val priority = table["priority"].let { value ->
@@ -136,8 +136,8 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
             "The project 'name' key requires a string value."
         ) ?: "Untitled"
         val workingDirectory = optionalString(
-            table["workingDirectory"],
-            "The 'workingDirectory' key requires a string value."
+            table["working_directory"],
+            "The 'working_directory' key requires a string value."
         )?.let { MPPPath(it) } ?: appWorkingDir
 
         val files = optionalTable(

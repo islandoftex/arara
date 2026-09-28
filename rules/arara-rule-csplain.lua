@@ -11,7 +11,7 @@ return {
     {
       name = "CSplain engine",
       command = function(ctx)
-        return getCommand("csplain", ctx.interaction, ctx.draft, ctx.shell, ctx.synctex, ctx.options, ctx.reference.fileName)
+        return getCommand("csplain", ctx.interaction, ctx.draft, ctx.shell, ctx.synctex, ctx.options, ctx.reference.file_name)
       end
     },
   },

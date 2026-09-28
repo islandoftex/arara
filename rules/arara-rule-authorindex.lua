@@ -11,7 +11,7 @@ return {
     {
       name = "The AuthorIndex script",
       command = function(ctx)
-        return getCommand("authorindex", ctx.draft, ctx.index, ctx.keep, ctx.print, ctx.recurse, ctx.options, getBasename(ctx.reference.fileName))
+        return getCommand("authorindex", ctx.draft, ctx.index, ctx.keep, ctx.print, ctx.recurse, ctx.options, getBasename(ctx.reference.file_name))
       end
     },
   },

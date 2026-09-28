@@ -11,7 +11,7 @@ return {
     {
       name = "pTeX engine",
       command = function(ctx)
-        return getCommand("ptex", ctx.interaction, ctx.shell, ctx.synctex, ctx.options, ctx.reference.fileName)
+        return getCommand("ptex", ctx.interaction, ctx.shell, ctx.synctex, ctx.options, ctx.reference.file_name)
       end
     },
   },

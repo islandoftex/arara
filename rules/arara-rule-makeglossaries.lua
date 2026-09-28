@@ -13,7 +13,7 @@ return {
       command = function(ctx)
         if isEmpty(ctx.clean) then
           return getCommand("makeglossaries", ctx.options,
-                            getBasename(ctx.reference.fileName))
+                            getBasename(ctx.reference.file_name))
         else
           local prefix
           if isUnix() then

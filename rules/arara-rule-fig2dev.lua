@@ -11,7 +11,7 @@ return {
     {
       name = "The fig2dev program",
       command = function(ctx)
-        local input = getBasename(ctx.reference.fileName) .. ".fig"
+        local input = getBasename(ctx.reference.file_name) .. ".fig"
         return getCommand("fig2dev", ctx.language, ctx.magnification, ctx.font, ctx.size, ctx.options, input, ctx.output)
       end
     },

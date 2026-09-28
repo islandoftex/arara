@@ -11,7 +11,7 @@ return {
     {
       name = "The DVIPDFMX program",
       command = function(ctx)
-        local base = getBasename(ctx.reference.fileName) .. ".dvi"
+        local base = getBasename(ctx.reference.file_name) .. ".dvi"
         local out = getBasename(ctx.output[1]) .. ".pdf"
         return getCommand("dvipdfmx", base, "-o", out, ctx.options)
       end
@@ -22,7 +22,7 @@ return {
       identifier = "output",
       default = "",
       flag = function(ctx, value)
-        return isEmpty(value, ctx.reference.fileName, value)
+        return isEmpty(value, ctx.reference.file_name, value)
       end
     },
     {

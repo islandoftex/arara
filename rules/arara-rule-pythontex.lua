@@ -11,7 +11,7 @@ return {
     {
       name = "PythonTeX wrapper",
       command = function(ctx)
-        return getCommand("pythontex", ctx.encoding, ctx.errorcode, ctx.runall, ctx.rerun, ctx.hashdependencies, ctx.jobs, ctx.verbose, ctx.options, ctx.reference.fileName)
+        return getCommand("pythontex", ctx.encoding, ctx.errorcode, ctx.runall, ctx.rerun, ctx.hashdependencies, ctx.jobs, ctx.verbose, ctx.options, ctx.reference.file_name)
       end
     },
   },

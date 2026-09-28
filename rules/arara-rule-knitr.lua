@@ -21,7 +21,7 @@ return {
         local out = isEmpty(ctx.output) and "NULL" or (("\"" .. ctx.output[1]) .. "\"")
         table.insert(elements, "envir = " .. ctx.envir[1])
         table.insert(elements, "encoding = " .. ctx.encoding[1])
-        return getCommand("Rscript", "-e", (((((("library(knitr); knit(\"" .. ctx.reference.fileName) .. "\", ") .. "output = ") .. out) .. ", ") .. join(elements, ", ")) .. ")")
+        return getCommand("Rscript", "-e", (((((("library(knitr); knit(\"" .. ctx.reference.file_name) .. "\", ") .. "output = ") .. out) .. ", ") .. join(elements, ", ")) .. ")")
       end
     },
   },

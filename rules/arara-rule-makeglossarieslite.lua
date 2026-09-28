@@ -11,7 +11,7 @@ return {
     {
       name = "The MakeGlossariesLite software",
       command = function(ctx)
-        return getCommand("makeglossaries-lite", ctx.options, getBasename(ctx.reference.fileName))
+        return getCommand("makeglossaries-lite", ctx.options, getBasename(ctx.reference.file_name))
       end
     },
   },

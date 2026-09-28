@@ -11,7 +11,7 @@ return {
     {
       name = "PDFtk",
       command = function(ctx)
-        local input = getBasename(ctx.reference.fileName) .. ".pdf"
+        local input = getBasename(ctx.reference.file_name) .. ".pdf"
         return getCommand("pdftk", input, ctx.options)
       end
     },

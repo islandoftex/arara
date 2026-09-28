@@ -11,7 +11,7 @@ return {
     {
       name = "The automation tool",
       command = function(ctx)
-        return getCommand("spix", ctx.dry, ctx.options, ctx.reference.fileName)
+        return getCommand("spix", ctx.dry, ctx.options, ctx.reference.file_name)
       end
     },
   },

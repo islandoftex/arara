@@ -25,7 +25,10 @@ on.
 * New Lua configuration file format: arara now also accepts
   `.araraconfig.lua`, `araraconfig.lua`, `.arararc.lua` and `arararc.lua`
   files (Lua scripts returning a table with the same keys as the YAML
-  format; unknown configuration keys are rejected). YAML configuration
+  format, with compound names spelled in snake_case: `file_types`,
+  `db_name`, `log_name`, `default_preamble` and
+  `prepend_preamble_if_directives_given`; unknown configuration keys are
+  rejected). YAML configuration
   files are looked up first; Lua configuration files are only considered
   if no YAML configuration file is found. A Lua configuration script runs
   with arara's values in scope, so paths and other strings are computed

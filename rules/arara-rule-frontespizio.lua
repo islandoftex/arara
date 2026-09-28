@@ -11,20 +11,20 @@ return {
     {
       name = "The engine",
       command = function(ctx)
-        return getCommand(ctx.engine, ctx.interaction, ctx.shell, ctx.options, ctx.reference.fileName)
+        return getCommand(ctx.engine, ctx.interaction, ctx.shell, ctx.options, ctx.reference.file_name)
       end
     },
     {
       name = "The frontispiece",
       command = function(ctx)
-        local base = getBasename(ctx.reference.fileName) .. "-frn"
+        local base = getBasename(ctx.reference.file_name) .. "-frn"
         return getCommand(ctx.engine, ctx.interaction, ctx.shell, base)
       end
     },
     {
       name = "The DVIPS program",
       command = function(ctx)
-        local base = getBasename(ctx.reference.fileName) .. "-frn"
+        local base = getBasename(ctx.reference.file_name) .. "-frn"
         local eps = base .. ".eps"
         return isTrue(ctx.engine == "latex", getCommand("dvips", "-o", eps, base), "")
       end
@@ -32,7 +32,7 @@ return {
     {
       name = "The engine",
       command = function(ctx)
-        return getCommand(ctx.engine, ctx.interaction, ctx.shell, ctx.options, ctx.reference.fileName)
+        return getCommand(ctx.engine, ctx.interaction, ctx.shell, ctx.options, ctx.reference.file_name)
       end
     },
   },

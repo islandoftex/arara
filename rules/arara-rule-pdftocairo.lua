@@ -11,7 +11,7 @@ return {
     {
       name = "The pdftocairo program",
       command = function(ctx)
-        return getCommand("pdftocairo", "-" .. ctx.format[1], getBasename(ctx.reference.fileName) .. ".pdf", ctx.options, ctx.output)
+        return getCommand("pdftocairo", "-" .. ctx.format[1], getBasename(ctx.reference.file_name) .. ".pdf", ctx.options, ctx.output)
       end
     },
   },

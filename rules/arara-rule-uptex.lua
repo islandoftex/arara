@@ -11,7 +11,7 @@ return {
     {
       name = "upTeX engine",
       command = function(ctx)
-        return getCommand("uptex", ctx.interaction, ctx.shell, ctx.synctex, ctx.options, ctx.reference.fileName)
+        return getCommand("uptex", ctx.interaction, ctx.shell, ctx.synctex, ctx.options, ctx.reference.file_name)
       end
     },
   },

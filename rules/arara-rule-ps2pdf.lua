@@ -11,7 +11,7 @@ return {
     {
       name = "The PS2PDF program",
       command = function(ctx)
-        local infile = getBasename(ctx.reference.fileName) .. ".ps"
+        local infile = getBasename(ctx.reference.file_name) .. ".ps"
         local outfile = getBasename(ctx.output[1]) .. ".pdf"
         return getCommand("ps2pdf", ctx.options, infile, outfile)
       end
@@ -22,7 +22,7 @@ return {
       identifier = "output",
       default = "",
       flag = function(ctx, value)
-        return isEmpty(value, ctx.reference.fileName, value)
+        return isEmpty(value, ctx.reference.file_name, value)
       end
     },
     {

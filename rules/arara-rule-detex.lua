@@ -11,7 +11,7 @@ return {
     {
       name = "The DeTeX program",
       command = function(ctx)
-        local c = getCommand("detex", ctx.references, ctx.mode, ctx.follow, ctx.math, ctx.spaces, ctx.words, ctx.environments, ctx.reference.fileName)
+        local c = getCommand("detex", ctx.references, ctx.mode, ctx.follow, ctx.math, ctx.spaces, ctx.words, ctx.environments, ctx.reference.file_name)
         if isEmpty(ctx.output) then
           return c
         else

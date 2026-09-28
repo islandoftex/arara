@@ -14,7 +14,7 @@ return {
         if isTrue(ctx.tool[1]) then
           return getCommand("biber", "--tool", ctx.options)
         else
-          return getCommand("biber", ctx.options, getBasename(ctx.reference.fileName))
+          return getCommand("biber", ctx.options, getBasename(ctx.reference.file_name))
         end
       end
     },

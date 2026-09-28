@@ -11,7 +11,7 @@ return {
     {
       name = "The XDVIPDFMX program",
       command = function(ctx)
-        local infile = (getBasename(ctx.reference.fileName) .. ".") .. ctx.entry[1]
+        local infile = (getBasename(ctx.reference.file_name) .. ".") .. ctx.entry[1]
         local outfile = getBasename(ctx.output[1]) .. ".pdf"
         return getCommand("xdvipdfmx", infile, "-o", outfile, ctx.options)
       end
@@ -33,7 +33,7 @@ return {
       identifier = "output",
       default = "",
       flag = function(ctx, value)
-        return isEmpty(value, ctx.reference.fileName, value)
+        return isEmpty(value, ctx.reference.file_name, value)
       end
     },
     {

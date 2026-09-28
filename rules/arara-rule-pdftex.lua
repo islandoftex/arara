@@ -11,7 +11,7 @@ return {
     {
       name = "PDFTeX engine",
       command = function(ctx)
-        return getCommand("pdftex", ctx.interaction, ctx.draft, ctx.shell, ctx.synctex, ctx.options, ctx.reference.fileName)
+        return getCommand("pdftex", ctx.interaction, ctx.draft, ctx.shell, ctx.synctex, ctx.options, ctx.reference.file_name)
       end
     },
   },

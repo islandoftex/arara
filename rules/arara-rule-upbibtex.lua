@@ -11,7 +11,7 @@ return {
     {
       name = "The upBibTeX reference management software",
       command = function(ctx)
-        return getCommand("upbibtex", ctx.options, getBasename(ctx.reference.fileName))
+        return getCommand("upbibtex", ctx.options, getBasename(ctx.reference.file_name))
       end
     },
   },

@@ -11,7 +11,7 @@ return {
     {
       name = "ConTeXt engine",
       command = function(ctx)
-        return getCommand("context", ctx.make, ctx.ctx, ctx.interface, ctx.autopdf, ctx.purge, ctx.modules, ctx.environments, ctx.mode, ctx.path, ctx.arguments, ctx.trackers, ctx.directives, ctx.silent, ctx.errors, ctx.interaction, ctx.synctex, ctx.options, ctx.reference.fileName)
+        return getCommand("context", ctx.make, ctx.ctx, ctx.interface, ctx.autopdf, ctx.purge, ctx.modules, ctx.environments, ctx.mode, ctx.path, ctx.arguments, ctx.trackers, ctx.directives, ctx.silent, ctx.errors, ctx.interaction, ctx.synctex, ctx.options, ctx.reference.file_name)
       end
     },
   },

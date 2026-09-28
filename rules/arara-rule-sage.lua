@@ -11,7 +11,7 @@ return {
     {
       name = "The command line tool",
       command = function(ctx)
-        local base = getBasename(ctx.reference.fileName)
+        local base = getBasename(ctx.reference.file_name)
         local e = isList(ctx.extension) and ctx.extension[1] or ctx.extension
         local input = (base .. ".") .. e
         return getCommand(ctx.program, ctx.command, ctx.dotsage, ctx.options, input)

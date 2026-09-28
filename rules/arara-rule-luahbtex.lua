@@ -11,7 +11,7 @@ return {
     {
       name = "LuaHBTeX engine",
       command = function(ctx)
-        return getCommand("luahbtex", ctx.interaction, ctx.draft, ctx.shell, ctx.synctex, ctx.options, ctx.reference.fileName)
+        return getCommand("luahbtex", ctx.interaction, ctx.draft, ctx.shell, ctx.synctex, ctx.options, ctx.reference.file_name)
       end
     },
   },

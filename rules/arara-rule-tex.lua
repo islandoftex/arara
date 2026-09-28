@@ -11,7 +11,7 @@ return {
     {
       name = "TeX engine",
       command = function(ctx)
-        return getCommand("tex", ctx.interaction, ctx.shell, ctx.options, ctx.reference.fileName)
+        return getCommand("tex", ctx.interaction, ctx.shell, ctx.options, ctx.reference.file_name)
       end
     },
   },

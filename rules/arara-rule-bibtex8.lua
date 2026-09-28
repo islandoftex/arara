@@ -11,7 +11,7 @@ return {
     {
       name = "An 8-bit implementation of BibTeX 0.99 with a very large capacity",
       command = function(ctx)
-        return getCommand("bibtex8", ctx.options, getBasename(ctx.reference.fileName))
+        return getCommand("bibtex8", ctx.options, getBasename(ctx.reference.file_name))
       end
     },
   },

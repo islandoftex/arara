@@ -11,7 +11,7 @@ return {
     {
       name = "PerlTeX wrapper",
       command = function(ctx)
-        return getCommand("perltex", ctx.engine, ctx.safe, ctx.permit, ctx.standalone, ctx.interaction, ctx.shell, ctx.synctex, ctx.options, ctx.reference.fileName)
+        return getCommand("perltex", ctx.engine, ctx.safe, ctx.permit, ctx.standalone, ctx.interaction, ctx.shell, ctx.synctex, ctx.options, ctx.reference.file_name)
       end
     },
   },

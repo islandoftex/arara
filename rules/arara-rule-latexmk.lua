@@ -14,7 +14,7 @@ return {
         if not isEmpty(ctx.clean) then
           return getCommand("latexmk", ctx.clean, ctx.options)
         else
-          return getCommand("latexmk", isTrue(isEmpty(ctx.program), ctx.engine, ctx.program), ctx.options, ctx.reference.fileName)
+          return getCommand("latexmk", isTrue(isEmpty(ctx.program), ctx.engine, ctx.program), ctx.options, ctx.reference.file_name)
         end
       end
     },

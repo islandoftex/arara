@@ -16,7 +16,8 @@ import org.islandoftex.arara.lua.rules.LuaConversion
  * Parse configuration files written in arara's Lua configuration format.
  *
  * A configuration file is a Lua script returning a table with the same
- * keys as the YAML configuration format:
+ * keys as the YAML configuration format, spelled in Lua's snake_case
+ * where the YAML names join words in camelCase or without a separator:
  *
  * ```lua
  * return {
@@ -24,7 +25,7 @@ import org.islandoftex.arara.lua.rules.LuaConversion
  *     user.home .. "/opt/paulo/rules",
  *     cwd .. "/local-rules"
  *   },
- *   filetypes = {
+ *   file_types = {
  *     { extension = "tex" },
  *     { extension = "texw", pattern = "^\\s*%\\s+" }
  *   },
@@ -33,13 +34,13 @@ import org.islandoftex.arara.lua.rules.LuaConversion
  *   verbose = true,
  *   logging = false,
  *   header = true,
- *   dbname = "arara",
- *   logname = "arara",
+ *   db_name = "arara",
+ *   log_name = "arara",
  *   preambles = {
  *     ["twopdftex"] = "% arara: pdftex\n% arara: pdftex"
  *   },
- *   defaultPreamble = "twopdftex",
- *   prependPreambleIfDirectivesGiven = true
+ *   default_preamble = "twopdftex",
+ *   prepend_preamble_if_directives_given = true
  * }
  * ```
  *
@@ -60,9 +61,9 @@ import org.islandoftex.arara.lua.rules.LuaConversion
  */
 object LuaLocalConfiguration {
     private val knownKeys = setOf(
-        "paths", "filetypes", "language", "loops", "verbose", "logging",
-        "header", "dbname", "logname", "laf", "preambles",
-        "defaultPreamble", "prependPreambleIfDirectivesGiven"
+        "paths", "file_types", "language", "loops", "verbose", "logging",
+        "header", "db_name", "log_name", "laf", "preambles",
+        "default_preamble", "prepend_preamble_if_directives_given"
     )
 
     /**
@@ -142,13 +143,13 @@ object LuaLocalConfiguration {
             verbose = boolean(map, "verbose"),
             logging = boolean(map, "logging"),
             header = boolean(map, "header"),
-            dbname = string(map, "dbname"),
-            logname = string(map, "logname"),
+            dbname = string(map, "db_name"),
+            logname = string(map, "log_name"),
             laf = string(map, "laf"),
             preambles = stringMap(map, "preambles"),
-            defaultPreamble = string(map, "defaultPreamble"),
+            defaultPreamble = string(map, "default_preamble"),
             prependPreambleIfDirectivesGiven =
-                boolean(map, "prependPreambleIfDirectivesGiven") ?: true,
+                boolean(map, "prepend_preamble_if_directives_given") ?: true,
             // the script computed its paths with the values in scope,
             // so no engine tokens remain to expand downstream
             expandPathTokens = false
@@ -212,21 +213,21 @@ object LuaLocalConfiguration {
 
     @Throws(AraraException::class)
     private fun fileTypes(map: Map<String, Any?>): List<SerialFileType> =
-        (map["filetypes"] ?: emptyList<Any?>()).let { value ->
+        (map["file_types"] ?: emptyList<Any?>()).let { value ->
             (value as? List<*>)?.map { entry ->
                 val fileType = entry as? Map<*, *> ?: throw AraraException(
-                    "Every 'filetypes' entry requires a table with an " +
+                    "Every 'file_types' entry requires a table with an " +
                         "'extension' and an optional 'pattern'."
                 )
                 val extension = fileType["extension"] as? String
                     ?: throw AraraException(
-                        "Every 'filetypes' entry requires an 'extension'."
+                        "Every 'file_types' entry requires an 'extension'."
                     )
                 (fileType["pattern"] as? String)?.let { pattern ->
                     SerialFileType(extension, pattern)
                 } ?: SerialFileType(extension)
             } ?: throw AraraException(
-                "The 'filetypes' key requires a list of tables."
+                "The 'file_types' key requires a list of tables."
             )
         }
 }

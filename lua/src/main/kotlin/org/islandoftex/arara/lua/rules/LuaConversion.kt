@@ -226,7 +226,7 @@ internal object LuaConversion {
      */
     fun referenceToLua(path: MPPPath): LuaTable =
         LuaValue.tableOf().also { table ->
-            table.set("fileName", LuaValue.valueOf(path.fileName))
+            table.set("file_name", LuaValue.valueOf(path.fileName))
             table.set("path", LuaValue.valueOf(path.toString()))
             table.set("parent", LuaValue.valueOf(path.parent.toString()))
         }

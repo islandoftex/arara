@@ -11,7 +11,7 @@ return {
     {
       name = "The Xindy software",
       command = function(ctx)
-        local base = getBasename(ctx.reference.fileName)
+        local base = getBasename(ctx.reference.file_name)
         local infile = (base .. ".") .. ctx.input[1]
         local outfile = { "-o", (base .. ".") .. ctx.output[1] }
         local logfile = { "-t", (base .. ".") .. ctx.log[1] }

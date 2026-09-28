@@ -11,7 +11,7 @@ return {
     {
       name = "The automation tool",
       command = function(ctx)
-        return getCommand("ltx2any", ctx.clean, ctx.engine, ctx.parameters, ctx.tikzimages, ctx.jobname, ctx.logname, ctx.logformat, ctx.loglevel, ctx.frequency, ctx.directory, ctx.synctex, ctx.options, ctx.reference.fileName)
+        return getCommand("ltx2any", ctx.clean, ctx.engine, ctx.parameters, ctx.tikzimages, ctx.jobname, ctx.logname, ctx.logformat, ctx.loglevel, ctx.frequency, ctx.directory, ctx.synctex, ctx.options, ctx.reference.file_name)
       end
     },
   },

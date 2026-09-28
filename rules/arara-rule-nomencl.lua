@@ -11,8 +11,8 @@ return {
     {
       name = "The Nomenclature software",
       command = function(ctx)
-        local nlo = getBasename(ctx.reference.fileName) .. ".nlo"
-        local nls = getBasename(ctx.reference.fileName) .. ".nls"
+        local nlo = getBasename(ctx.reference.file_name) .. ".nlo"
+        local nls = getBasename(ctx.reference.file_name) .. ".nls"
         return getCommand("makeindex", ctx.options, nlo, ctx.style, "-o", nls)
       end
     },

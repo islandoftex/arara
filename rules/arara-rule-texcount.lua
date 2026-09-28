@@ -11,7 +11,7 @@ return {
     {
       name = "The TeXcount program",
       command = function(ctx)
-        return getCommand("texcount", ctx.rules, ctx.verbosity, ctx.strict, ctx.html, ctx.total, ctx.unicode, ctx.options, ctx.output, ctx.reference.fileName)
+        return getCommand("texcount", ctx.rules, ctx.verbosity, ctx.strict, ctx.html, ctx.total, ctx.unicode, ctx.options, ctx.output, ctx.reference.file_name)
       end
     },
   },

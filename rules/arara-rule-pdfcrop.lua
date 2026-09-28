@@ -11,7 +11,7 @@ return {
     {
       name = "The cropping tool",
       command = function(ctx)
-        local base = getBasename(ctx.reference.fileName)
+        local base = getBasename(ctx.reference.file_name)
         local input = base .. ".pdf"
         return getCommand("pdfcrop", ctx.verbose, ctx.debug, ctx.engine, ctx.margins, ctx.clip, ctx.hires, ctx.ini, ctx.restricted, ctx.papersize, ctx.resolution, ctx.bbox, ctx.uncompress, ctx.options, input, ctx.output)
       end
@@ -22,7 +22,7 @@ return {
       identifier = "output",
       default = "",
       flag = function(ctx, value)
-        return isEmpty(value, getBasename(ctx.reference.fileName) .. "-crop.pdf", value)
+        return isEmpty(value, getBasename(ctx.reference.file_name) .. "-crop.pdf", value)
       end
     },
     {

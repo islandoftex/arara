@@ -20,7 +20,7 @@ class LuaInterpreterTest {
         val script = """
             return {
               name = "My awesome book",
-              workingDirectory = ".",
+              working_directory = ".",
               files = {
                 ["a.mp"] = { },
                 ["file.tex"] = { }
@@ -43,9 +43,9 @@ class LuaInterpreterTest {
             return {
               files = {
                 ["file.tex"] = {
-                  directives = { "% arara: pdftex" },
+                  directives = { "% arara: pdflatex" },
                   priority = 1,
-                  fileType = {
+                  file_type = {
                     extension = "tex",
                     pattern = ".*"
                   }
@@ -334,7 +334,7 @@ class LuaInterpreterTest {
         }
         assertFailsWith<ProjectParseException> {
             LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
-                """return { workingDirectory = 42, files = { ["a.tex"] = { } } }"""
+                """return { working_directory = 42, files = { ["a.tex"] = { } } }"""
             )
         }
         assertFailsWith<ProjectParseException> {
@@ -383,13 +383,13 @@ class LuaInterpreterTest {
         fun parse(content: String) =
             LuaInterpreter(MPPPath(".")).parseProjectsFromLua(content)
         assertFailsWith<ProjectParseException> {
-            parse("""return { files = { ["a.tex"] = { fileType = "x" } } }""")
+            parse("""return { files = { ["a.tex"] = { file_type = "x" } } }""")
         }
         assertFailsWith<ProjectParseException> {
-            parse("""return { files = { ["a.tex"] = { fileType = { pattern = "x" } } } }""")
+            parse("""return { files = { ["a.tex"] = { file_type = { pattern = "x" } } } }""")
         }
         assertFailsWith<ProjectParseException> {
-            parse("""return { files = { ["a.tex"] = { fileType = { extension = "quack" } } } }""")
+            parse("""return { files = { ["a.tex"] = { file_type = { extension = "quack" } } } }""")
         }
         assertFailsWith<ProjectParseException> {
             parse("""return { files = { ["a.tex"] = { priority = "high" } } }""")

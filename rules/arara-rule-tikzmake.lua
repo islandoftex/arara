@@ -11,7 +11,7 @@ return {
     {
       name = "TikZ list-and-make engine",
       command = function(ctx)
-        local makefile = getBasename(ctx.reference.fileName) .. ".makefile"
+        local makefile = getBasename(ctx.reference.file_name) .. ".makefile"
         return getCommand("make", ctx.force, ctx.jobs, ctx.options, "-f", makefile)
       end
     },

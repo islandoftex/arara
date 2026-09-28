@@ -11,8 +11,8 @@ return {
     {
       name = "The Sketch software",
       command = function(ctx)
-        local output = getBasename(ctx.reference.fileName) .. ".tex"
-        return getCommand("sketch", ctx.options, ctx.reference.fileName, "-o", output)
+        local output = getBasename(ctx.reference.file_name) .. ".tex"
+        return getCommand("sketch", ctx.options, ctx.reference.file_name, "-o", output)
       end
     },
   },

@@ -11,7 +11,7 @@ return {
     {
       name = "The dvisvgm program",
       command = function(ctx)
-        local base = (getBasename(ctx.reference.fileName) .. ".") .. ctx.entry[1]
+        local base = (getBasename(ctx.reference.file_name) .. ".") .. ctx.entry[1]
         return getCommand("dvisvgm", ctx.entry[2], ctx.pages, ctx.options, base)
       end
     },
