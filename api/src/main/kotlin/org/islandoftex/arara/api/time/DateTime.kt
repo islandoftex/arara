@@ -71,6 +71,11 @@ public class DateTime {
         }
     }
 
+    /**
+     * The point in time as a timestamp of the form
+     * `year-month-day hour:minute:second`, with the numbers zero
+     * padded.
+     */
     override fun toString(): String = "%d-%02d-%02d %02d:%02d:%02d"
             .format(year, month, day, hour, minute, second)
 

@@ -209,6 +209,12 @@ public class MPPPath {
         }
     }
 
+    /**
+     * The string representation is the reference path, that is, the
+     * absolutized and normalized spelling. The form the caller wrote
+     * the path in is not visible here; two paths created from different
+     * spellings of the same location print the same string.
+     */
     override fun toString(): String =
         referencePath.toString()
 
