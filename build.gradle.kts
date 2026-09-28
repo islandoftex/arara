@@ -383,7 +383,7 @@ dependencies {
 // the aggregated documentation as one distribution-ready artifact; it
 // stays out of the Maven publications on purpose, as an all-modules
 // artifact does not belong to a single library's coordinates
-val htmlDocsJar by tasks.registering(Jar::class) {
+val htmlDocsJar = tasks.register<Jar>("htmlDocsJar") {
     description = "Assembles the aggregated Dokka HTML documentation jar."
     from(
         tasks

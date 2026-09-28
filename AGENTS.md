@@ -87,7 +87,12 @@ Gradle 9.8.0 wrapper, Kotlin 2.4.20. Compatibility targets live in root
 `gradle.properties` (`arara.jvm.target=11`, `arara.kotlin.target=2.4.0`) and
 are enforced by the tapmoc plugin — no toolchains are configured, so whatever
 JVM drives the build compiles release-11 bytecode, with the JDK 11 API
-surface compile-checked as well. The foojay resolver in `settings.gradle.kts`
+surface compile-checked as well. Driving the build with a
+bleeding-edge JDK the Kotlin plugin does not support yet makes it
+fall back to the newest supported target in `buildSrc` — the only
+compilation surface tapmoc does not govern — with a harmless
+Java/Kotlin target mismatch warning; switch the shell back to a
+supported JVM and the noise disappears. The foojay resolver in `settings.gradle.kts`
 remains solely to provision the smoke suite's floor runtime through the
 `printSmokeJavaRuntime` task (driven by `smoke.jvm.version` and
 `smoke.jvm.vendor`, with a loud notice whenever the smoke floor
