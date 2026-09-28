@@ -773,3 +773,18 @@ rounds:
   a mutable-by-design file, refreshed by the clock task, and the
   pin's job is proving the hash function against a file that never
   changes.
+- **The publication set is the library modules alone.** The CLI module
+  is the application: it ships as the runnable jar under its
+  documented name, its thin jar is a build intermediate, and Maven
+  coordinates for it served neither embedders (the api module is the
+  embedding surface) nor runners — so the four library modules publish,
+  each with the conventional sources and javadoc jars (the javadoc
+  content comes from the Dokka javadoc format), every jar carrying its
+  own automatic module name so the Java module path sees no conflict,
+  and the CI publishing reading the runner's standard job token from
+  the environment. The documentation follows the Dokka family style —
+  suppression flags, the Island of TeX footer, one aggregate site —
+  with documentation warnings set to fail the generation once the
+  remaining KDoc gaps are filled. The eventual README refresh should
+  tell this artifact story: the runnable jar as the distribution
+  channel, and the four library coordinates.

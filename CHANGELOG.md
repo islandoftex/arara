@@ -108,10 +108,19 @@ on.
   engine, the exit value and duration of every system command,
   conditionally skipped directives and halt requests, and its line
   timestamps follow a locale-independent numeric format.
+* The published Maven modules now ship the conventional artifact set:
+  every library module publishes a sources jar and a javadoc jar, the
+  latter carrying the documentation generated in the javadoc format.
+* The generated documentation now aggregates all modules into one
+  unified arara site (next to the per-module sites), stamped with the
+  Island of TeX footer.
 
 ## Changed
 
 * Replaced `luak` by `luaj`.
+* The CLI module is no longer published to the Maven repository: it is
+  the application and ships as the runnable jar, so the four library
+  modules (`api`, `core`, `lua` and `mvel`) alone publish.
 * Replaced the archived kaml YAML parser with kotaml, its supported
   fork (`io.heapy.kotaml`); the fork keeps the original package, so the
   API is unchanged. The stricter reader of the new version accepts all of
@@ -229,6 +238,10 @@ on.
 
 ## Fixed
 
+* Every published jar now declares its own automatic module name
+  (`org.islandoftex.arara.<module>`); previously all modules shared the
+  same module name, which put two arara jars on the Java module path
+  in conflict.
 * YAML rules declaring a reserved argument identifier (`files` or
   `reference`) or repeating an argument identifier are now rejected
   as documented: the validation compared the argument objects

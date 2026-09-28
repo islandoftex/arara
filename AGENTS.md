@@ -157,7 +157,9 @@ differs from the build floor).
 ## Layout and architecture
 
 Dependency chain: `api` → `core` → (`mvel`, `lua`) → `cli`.
-`docs` holds the manual sources; `buildSrc` holds the publication logic.
+`docs` holds the manual sources; `buildSrc` holds the publication
+logic (the four library modules alone — the CLI application ships only
+as the runnable jar).
 
 - `api` — the public, stable interface. Builds with `explicitApi()`, so
   public members must be explicitly `public`. **`api/.../AraraAPI.kt` is

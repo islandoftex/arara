@@ -42,6 +42,7 @@ zt-exec = { group = "org.zeroturnaround", name = "zt-exec", version.ref = "zt-ex
 chronoheader = { id = "org.islandoftex.chronoheader", version.ref = "chronoheader-version" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt-version" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka-version" }
+dokka-javadoc = { id = "org.jetbrains.dokka-javadoc", version.ref = "dokka-version" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-version" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover-version" }

@@ -18,6 +18,8 @@ import org.islandoftex.arara.build.PrintSmokeJavaRuntime
 import org.islandoftex.arara.build.RunSmokeBats
 import org.islandoftex.chronoheader.ChronoField
 import org.jetbrains.dokka.gradle.DokkaExtension
+import org.jetbrains.dokka.gradle.engine.plugins.DokkaHtmlPluginParameters
+import org.jetbrains.dokka.gradle.tasks.DokkaGeneratePublicationTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import tapmoc.TapmocExtension
 
@@ -346,6 +348,37 @@ dependencies {
     kover(project(":cli"))
 }
 
+// the aggregate documentation: the plugin applied to the root collects
+// the module source sets into one unified site, next to the per-module
+// publications the modules configure themselves
+apply(plugin = pluginId("dokka"))
+
+configure<DokkaExtension> {
+    moduleName.set("arara")
+    dokkaPublications.named("html") {
+        suppressInheritedMembers.set(true)
+        suppressObviousFunctions.set(true)
+    }
+    pluginsConfiguration.named(
+        "html",
+        DokkaHtmlPluginParameters::class.java
+    ) {
+        footerMessage.set("Island of TeX")
+    }
+}
+
+// the plugin wires aggregation explicitly: the root declares the
+// subprojects on the dedicated configuration, so its publication
+// collects their module descriptors and the unified site covers all
+// of arara at once
+dependencies {
+    add("dokka", project(":api"))
+    add("dokka", project(":core"))
+    add("dokka", project(":lua"))
+    add("dokka", project(":mvel"))
+    add("dokka", project(":cli"))
+}
+
 subprojects {
 
     apply(plugin = "org.jetbrains.dokka")
@@ -381,7 +414,28 @@ subprojects {
             }
         }
 
-        apply<AraraPublication>()
+        // the CLI module is the application, not a library: it ships as
+        // the runnable jar under its documented name and its thin jar is
+        // a build intermediate. Maven coordinates for it would serve
+        // neither embedders (the api module is the embedding surface)
+        // nor runners (the fat jar is the distribution channel), and no
+        // module depends on it - so the library modules alone publish
+        if (name != "cli") {
+            apply<AraraPublication>()
+
+            // the javadoc format feeds the javadoc jar riding the
+            // publication; the plain javadoc task produces nothing over
+            // Kotlin sources, so the jar takes the Dokka output instead
+            apply(plugin = pluginId("dokka-javadoc"))
+            tasks.named<Jar>("javadocJar") {
+                from(
+                    tasks.named<DokkaGeneratePublicationTask>(
+                        "dokkaGeneratePublicationJavadoc"
+                    )
+                )
+                archiveClassifier.set("javadoc")
+            }
+        }
     }
 
     // the compatibility plugin derives every compiler flag from the two
@@ -411,7 +465,9 @@ subprojects {
 
                 // for Java 9+ compatibility of log4j
                 attributes["Multi-Release"] = "true"
-                attributes["Automatic-Module-Name"] = rootProject.group
+                // every jar carries its own module name: a shared one
+                // would put two arara jars on the module path in conflict
+                attributes["Automatic-Module-Name"] = "${rootProject.group}.${project.name}"
             }
         }
 
@@ -420,7 +476,18 @@ subprojects {
         // platform is derived from the Kotlin JVM plugin
         configure<DokkaExtension> {
             moduleName.set("arara (${project.name})")
+            dokkaPublications.named("html") {
+                suppressInheritedMembers.set(true)
+                suppressObviousFunctions.set(true)
+            }
+            pluginsConfiguration.named(
+                "html",
+                DokkaHtmlPluginParameters::class.java
+            ) {
+                footerMessage.set("Island of TeX")
+            }
             dokkaSourceSets.configureEach {
+                moduleName.set("arara (${project.name})")
                 skipDeprecated.set(false)
                 reportUndocumented.set(true)
                 skipEmptyPackages.set(true)

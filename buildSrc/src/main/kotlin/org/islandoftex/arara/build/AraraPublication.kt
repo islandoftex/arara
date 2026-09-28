@@ -5,6 +5,7 @@ import java.net.URI
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.credentials.HttpHeaderCredentials
+import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.authentication.http.HttpHeaderAuthentication
@@ -14,12 +15,22 @@ import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.credentials
 
 /**
- * A simple wrapper around arara's publication logic.
+ * A simple wrapper around arara's publication logic. The plugin covers
+ * the library modules alone: the application module ships as the
+ * runnable jar, and its thin jar is a build intermediate no consumer
+ * depends on, so it never reaches a Maven repository.
  */
 open class AraraPublication : Plugin<Project> {
     @Suppress("LongMethod")
     override fun apply(target: Project) {
         target.apply(plugin = "maven-publish")
+        // the sources and javadoc jars are part of the conventional
+        // library artifact set; the javadoc jar content is repointed at
+        // the Dokka javadoc generation in the main build script
+        target.extensions.configure<JavaPluginExtension> {
+            withSourcesJar()
+            withJavadocJar()
+        }
         target.configure<PublishingExtension> {
             // the project is JVM-only, hence a single publication derived
             // from the java component is sufficient
@@ -35,7 +46,7 @@ open class AraraPublication : Plugin<Project> {
                 version = target.version.toString()
 
                 pom {
-                    name.set(artifactId)
+                    name.set("arara (${target.name} module)")
                     description.set(
                             "arara is a TeX automation tool based on rules and directives. " +
                                     "It gives you a way to enhance your TeX experience."
@@ -48,8 +59,8 @@ open class AraraPublication : Plugin<Project> {
                     }
                     licenses {
                         license {
-                            name.set("New BSD License")
-                            url.set("http://www.opensource.org/licenses/bsd-license.php")
+                            name.set("""BSD 3-clause "New" or "Revised" License""")
+                            url.set("https://opensource.org/licenses/BSD-3-Clause")
                             distribution.set("repo")
                         }
                     }
@@ -97,19 +108,26 @@ open class AraraPublication : Plugin<Project> {
                 }
             }
 
-            System.getenv("CI_PROJECT_ID")?.let {
+            System.getenv("CI_PROJECT_ID")?.let { projectId ->
                 repositories {
                     maven {
                         name = "GitLab"
-                        url = URI("https://gitlab.com/api/v4/projects/$it/packages/maven")
-                        credentials(HttpHeaderCredentials::class) {
-                            if (target.hasProperty("jobToken")) {
+                        url = URI(
+                            "https://gitlab.com/api/v4/projects/" +
+                                    "$projectId/packages/maven"
+                        )
+                        // the standard job token of the GitLab runner is
+                        // the intended credential; it is only registered
+                        // when present so a missing token fails the
+                        // publication early instead of as a bare 401
+                        System.getenv("CI_JOB_TOKEN")?.let { token ->
+                            credentials(HttpHeaderCredentials::class) {
                                 name = "Job-Token"
-                                value = target.property("jobToken").toString()
+                                value = token
                             }
-                        }
-                        authentication {
-                            create<HttpHeaderAuthentication>("header")
+                            authentication {
+                                create<HttpHeaderAuthentication>("header")
+                            }
                         }
                     }
                 }
