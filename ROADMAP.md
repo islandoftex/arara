@@ -363,6 +363,14 @@ Consequences for the plan above:
   to the engine (`LuaInterpolation`), including the safe mode
   passthrough. Once the conditional and rule helpers have moved to a
   neutral home, the `mvel` module can be deleted entirely.
+- the helper names keep their camelCase spelling while both dialects
+  share one registry: forking the spellings per engine would mean years
+  of two vocabularies for the same helpers. Once the MVEL conditionals
+  die and the helper surface becomes Lua-only, renaming the Lua
+  bindings to snake_case becomes coherent — the Lua specifications
+  already spell their keys natively, and the rename is a
+  binding-layer sweep over the rules, recoverable from the tag that
+  introduced the native key spelling.
 
 ## Version 9 outlook — the path model
 
