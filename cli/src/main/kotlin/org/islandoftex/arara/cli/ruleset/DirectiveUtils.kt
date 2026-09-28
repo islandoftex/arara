@@ -36,9 +36,7 @@ object DirectiveUtils {
             processPotentialDirective = { line, directive ->
                 directive.trim().also {
                     logger.info {
-                        LanguageController.messages
-                            .LOG_INFO_POTENTIAL_PATTERN_FOUND
-                            .formatString(line, it)
+                        "I found a potential pattern in line $line: $it"
                     }
                 }
             },
@@ -177,9 +175,9 @@ object DirectiveUtils {
         }.also { result ->
             logger.info {
                 """
-                    ${LanguageController.messages.LOG_INFO_VALIDATED_DIRECTIVES}
+                    All directives were validated. We are good to go.
                     ${DisplayUtils.displayOutputSeparator(
-                    LanguageController.messages.LOG_INFO_DIRECTIVES_BLOCK
+                    "DIRECTIVES"
                 )}
                     ${result.joinToString("\n")}
                     ${DisplayUtils.displaySeparator()}

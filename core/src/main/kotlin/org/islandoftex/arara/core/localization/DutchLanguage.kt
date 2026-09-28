@@ -83,16 +83,4 @@ class DutchLanguage : Messages(
     INFO_LABEL_ON_SUCCESS = "SUCCESVOL",
     INFO_LABEL_UNNAMED_TASK = "Naamloze taak",
     INFO_PARSER_NOTES = "arara is uitgebracht onder de New BSD licentie.",
-    LOG_INFO_BEGIN_BUFFER = "OPEN UITVOER",
-    LOG_INFO_BOOLEAN_MODE = "Booleaanse waarde: %s",
-    LOG_INFO_DIRECTIVES_BLOCK = "DIRECTIVES",
-    LOG_INFO_END_BUFFER = "SLUIT UITVOER",
-    LOG_INFO_INTERPRET_RULE = "Ik ben klaar om regel '%s' te verwerken.",
-    LOG_INFO_INTERPRET_TASK = "Ik ben klaar om taak '%s' uit regel '%s' te verwerken.",
-    LOG_INFO_POTENTIAL_PATTERN_FOUND = "Ik heb een mogelijk patroon gevonden in regel %s: %s",
-    LOG_INFO_RULE_LOCATION = "Regellocatie: '%s'",
-    LOG_INFO_SYSTEM_COMMAND = "Systeemopdracht: %s",
-    LOG_INFO_TASK_RESULT = "Taakresultaat:",
-    LOG_INFO_VALIDATED_DIRECTIVES = "Alle directives zijn gevalideerd, we kunnen beginnen.",
-    LOG_INFO_WELCOME_MESSAGE = "Welkom bij arara %s!"
 )

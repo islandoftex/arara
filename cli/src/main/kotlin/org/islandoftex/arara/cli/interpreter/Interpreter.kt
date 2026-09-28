@@ -123,7 +123,7 @@ class Interpreter(
         authors: List<String>
     ): Boolean = value.also {
         logger.info {
-            LanguageController.messages.LOG_INFO_BOOLEAN_MODE.formatString(it)
+            "Boolean value: $value"
         }
 
         if (executionOptions.executionMode == ExecutionMode.DRY_RUN) {
@@ -155,7 +155,7 @@ class Interpreter(
         exitCheck: (Int) -> Boolean
     ): Boolean {
         logger.info {
-            LanguageController.messages.LOG_INFO_SYSTEM_COMMAND.formatString(command)
+            "System command: $command"
         }
         var success = true
 
@@ -323,16 +323,12 @@ class Interpreter(
     @Throws(AraraException::class)
     fun execute(directive: Directive): ExecutionStatus {
         logger.info {
-            LanguageController.messages.LOG_INFO_INTERPRET_RULE.formatString(
-                directive.identifier
-            )
+            "I am ready to interpret rule \"${directive.identifier}\"."
         }
 
         val file = getRule(directive, workingDirectory)
         logger.info {
-            LanguageController.messages.LOG_INFO_RULE_LOCATION.formatString(
-                file.parent
-            )
+            "Rule location: \"${file.parent}\""
         }
 
         // parse the rule identified by the directive (may throw an exception)

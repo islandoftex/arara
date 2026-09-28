@@ -83,16 +83,4 @@ class NorfolkLanguage : Messages(
     INFO_LABEL_ON_SUCCESS = "THASS A MASTERLY JOB, MY BEWTY",
     INFO_LABEL_UNNAMED_TASK = "That task ent got no name",
     INFO_PARSER_NOTES = "arara is released under the New BSD license.",
-    LOG_INFO_BEGIN_BUFFER = "BEGIN OUTPUT BUFFER",
-    LOG_INFO_BOOLEAN_MODE = "Boolean value: %s",
-    LOG_INFO_DIRECTIVES_BLOCK = "DIRECTIVES",
-    LOG_INFO_END_BUFFER = "END OUTPUT BUFFER",
-    LOG_INFO_INTERPRET_RULE = "I'm orl ready, ole parter, to dew the rule '%s'.",
-    LOG_INFO_INTERPRET_TASK = "I'm orl ready, my bewty, to dew '%s' from that ole rule '%s'.",
-    LOG_INFO_POTENTIAL_PATTERN_FOUND = "I're found what might be a pattern in line %s: %s",
-    LOG_INFO_RULE_LOCATION = "That ole rule come from: '%s'",
-    LOG_INFO_SYSTEM_COMMAND = "System command: %s",
-    LOG_INFO_TASK_RESULT = "Here's what that jarb say:",
-    LOG_INFO_VALIDATED_DIRECTIVES = "Thass a masterous jarb, orl the directives are in good kelter. We can git troshin'.",
-    LOG_INFO_WELCOME_MESSAGE = "Hello, my bewty. Welcome to arara %s! (Thass one onnem hully big birds they git in Brazil.)"
 )

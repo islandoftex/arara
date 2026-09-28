@@ -120,8 +120,7 @@ object DisplayUtils {
         displayResult = true
 
         logger.info {
-            LanguageController.messages.LOG_INFO_TASK_RESULT + " " +
-                getResult(value)
+            "Task result: " + getResult(value)
         }
         if (!isDryRunMode) {
             println(
@@ -143,8 +142,7 @@ object DisplayUtils {
      */
     fun printEntry(name: String, task: String) {
         logger.info {
-            LanguageController.messages.LOG_INFO_INTERPRET_TASK
-                .formatString(task, name)
+            "I am ready to interpret task \"$task\" from rule \"$name\"."
         }
         displayLine = true
         displayResult = false
@@ -337,7 +335,11 @@ object DisplayUtils {
                         .inWholeMilliseconds.toString()
                 )
             )
-        logger.info { text }
+        // the console line stays localized; the log carries an English
+        // twin so the file reads the same in every language
+        logger.info {
+            "Total execution time: $seconds seconds"
+        }
         printWrapped(text)
     }
 

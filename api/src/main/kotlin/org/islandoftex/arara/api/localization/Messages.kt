@@ -349,56 +349,5 @@ public open class Messages(
     /**
      * The license note printed in the terminal.
      */
-    public val INFO_PARSER_NOTES: String = "arara is released under the New BSD license.",
-    /**
-     * The log marker that starts the captured output buffer of a
-     * command.
-     */
-    public val LOG_INFO_BEGIN_BUFFER: String = "BEGIN OUTPUT BUFFER",
-    /**
-     * The log line recording the value of a boolean entry.
-     */
-    public val LOG_INFO_BOOLEAN_MODE: String = "Boolean value: %s",
-    /**
-     * The log heading of the block listing all directives.
-     */
-    public val LOG_INFO_DIRECTIVES_BLOCK: String = "DIRECTIVES",
-    /**
-     * The log marker that ends the captured output buffer of a command.
-     */
-    public val LOG_INFO_END_BUFFER: String = "END OUTPUT BUFFER",
-    /**
-     * The log line recording that a rule is about to be interpreted.
-     */
-    public val LOG_INFO_INTERPRET_RULE: String = "I am ready to interpret rule \"%s\".",
-    /**
-     * The log line recording that a task of a rule is about to be
-     * interpreted.
-     */
-    public val LOG_INFO_INTERPRET_TASK: String = "I am ready to interpret task \"%s\" from rule \"%s\".",
-    /**
-     * The log line recording a potential directive pattern found during
-     * extraction.
-     */
-    public val LOG_INFO_POTENTIAL_PATTERN_FOUND: String = "I found a potential pattern in line %s: %s",
-    /**
-     * The log line recording the directory a rule was resolved from.
-     */
-    public val LOG_INFO_RULE_LOCATION: String = "Rule location: \"%s\"",
-    /**
-     * The log line recording the system command about to run.
-     */
-    public val LOG_INFO_SYSTEM_COMMAND: String = "System command: %s",
-    /**
-     * The log heading of the result of a task.
-     */
-    public val LOG_INFO_TASK_RESULT: String = "Task result:",
-    /**
-     * The log line recording that all directives passed validation.
-     */
-    public val LOG_INFO_VALIDATED_DIRECTIVES: String = "All directives were validated. We are good to go.",
-    /**
-     * The log line greeting the user with the current version.
-     */
-    public val LOG_INFO_WELCOME_MESSAGE: String = "Welcome to arara %s!"
+    public val INFO_PARSER_NOTES: String = "arara is released under the New BSD license."
 )

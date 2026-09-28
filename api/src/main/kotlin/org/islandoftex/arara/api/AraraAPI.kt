@@ -9,5 +9,5 @@ public object AraraAPI {
      * arara's version.
      */
     @Suppress("MayBeConst")
-    public val version: String = "7.2.1-SNAPSHOT"
+    public val version: String = "8.0.0-SNAPSHOT"
 }

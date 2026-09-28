@@ -83,16 +83,4 @@ class GermanLanguage : Messages(
     INFO_LABEL_ON_SUCCESS = "ERFOLGREICH",
     INFO_LABEL_UNNAMED_TASK = "Namenlose Aufgabe",
     INFO_PARSER_NOTES = "arara ist unter der New BSD license veröffentlicht.",
-    LOG_INFO_BEGIN_BUFFER = "BEGIN OUTPUT BUFFER",
-    LOG_INFO_BOOLEAN_MODE = "Boolscher Wert: %s",
-    LOG_INFO_DIRECTIVES_BLOCK = "DIREKTIVEN",
-    LOG_INFO_END_BUFFER = "END OUTPUT BUFFER",
-    LOG_INFO_INTERPRET_RULE = "Ich bin bereit, die Regel \"%s\" zu interpretieren.",
-    LOG_INFO_INTERPRET_TASK = "Ich bin bereit, die Aufgabe \"%s\" von der Regel \"%s\" zu interpretieren.",
-    LOG_INFO_POTENTIAL_PATTERN_FOUND = "Ich habe ein potentielles Muster in der Linie %s gefunden: %s",
-    LOG_INFO_RULE_LOCATION = "Verzeichnis der Regel: \"%s\"",
-    LOG_INFO_SYSTEM_COMMAND = "Systemkommando: %s",
-    LOG_INFO_TASK_RESULT = "Resultat der Aufgabe:",
-    LOG_INFO_VALIDATED_DIRECTIVES = "Alle Direktiven sind gültig. Wir sind guter Dinge.",
-    LOG_INFO_WELCOME_MESSAGE = "Willkommen bei arara %s!"
 )

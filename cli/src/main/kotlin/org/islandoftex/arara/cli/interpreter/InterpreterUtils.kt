@@ -104,11 +104,11 @@ internal object InterpreterUtils {
                 logger.info {
                     """
                         ${DisplayUtils.displayOutputSeparator(
-                        LanguageController.messages.LOG_INFO_BEGIN_BUFFER
+                        "BEGIN OUTPUT BUFFER"
                     )}
                         ${result.output}
                         ${DisplayUtils.displayOutputSeparator(
-                        LanguageController.messages.LOG_INFO_END_BUFFER
+                        "END OUTPUT BUFFER"
                     )}
                     """.trimIndent()
                 }

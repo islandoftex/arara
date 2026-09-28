@@ -230,6 +230,12 @@ on.
 
 ## Removed
 
+* **Breaking:** The twelve log message constants are removed from the
+  public message class. Log lines are always English now, hardcoded
+  at their sites, regardless of the configured language: log files are
+  shared diagnostic artifacts, so they read the same on every machine
+  and can be pasted as-is. Console output and error texts remain
+  localized.
 * Removed the experimental Kotlin DSL module (`kotlin-dsl`): the CLI
   never wired it up and its `.kts` rule format was never implemented, so
   the default YAML engine could discover `.kts` rule files that then

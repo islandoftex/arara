@@ -19,10 +19,34 @@ private val logger = KotlinLogging.logger { }
  */
 fun ProjectFile.printFileInformation() {
     logger.info {
-        "\n" + LanguageController.messages.LOG_INFO_WELCOME_MESSAGE
-            .formatString(AraraAPI.version) + "\n" +
+        "\n" + "Welcome to arara ${AraraAPI.version}!" + "\n" +
             DisplayUtils.displaySeparator()
     }
+    logEnvironmentDetails()
+    LanguageController.messages.INFO_DISPLAY_FILE_INFORMATION
+        .formatString(
+            path.fileName,
+            DisplayUtils.byteSizeToString(path.fileSize),
+                path.lastModified.toString()
+        ).let {
+            // the console line stays localized; the log carries an
+            // English twin so the file reads the same in every language
+            logger.info {
+                "Processing \"${path.fileName}\" (size: " +
+                    "${DisplayUtils.byteSizeToString(path.fileSize)}, " +
+                    "last modified: ${path.lastModified}), please wait."
+            }
+            DisplayUtils.printWrapped(it)
+            println()
+        }
+}
+
+/**
+ * Writes the environment block of the run to the log at debug level:
+ * the Java runtime, the operating system, the user home and the
+ * configuration file name.
+ */
+private fun logEnvironmentDetails() {
     logger.debug {
         """
 
@@ -64,16 +88,6 @@ fun ProjectFile.printFileInformation() {
             )
         )
     }
-    LanguageController.messages.INFO_DISPLAY_FILE_INFORMATION
-        .formatString(
-            path.fileName,
-            DisplayUtils.byteSizeToString(path.fileSize),
-                path.lastModified.toString()
-        ).let {
-            logger.info { it }
-            DisplayUtils.printWrapped(it)
-            println()
-        }
 }
 
 /**

@@ -83,16 +83,4 @@ class BrazilianLanguage : Messages(
     INFO_LABEL_ON_SUCCESS = "SUCESSO",
     INFO_LABEL_UNNAMED_TASK = "Tarefa sem nome",
     INFO_PARSER_NOTES = "arara é distribuída sob a licença New BSD.",
-    LOG_INFO_BEGIN_BUFFER = "INÍCIO DO BUFFER DE SAÍDA",
-    LOG_INFO_BOOLEAN_MODE = "Valor lógico: %s",
-    LOG_INFO_DIRECTIVES_BLOCK = "DIRETIVAS",
-    LOG_INFO_END_BUFFER = "FINAL DO BUFFER DE SAÍDA",
-    LOG_INFO_INTERPRET_RULE = "Estou pronto para interpretar a regra '%s'.",
-    LOG_INFO_INTERPRET_TASK = "Estou pronto para interpretar a tarefa '%s' da regra '%s'.",
-    LOG_INFO_POTENTIAL_PATTERN_FOUND = "Encontrei um padrão em potencial na linha %s: %s",
-    LOG_INFO_RULE_LOCATION = "Localização da regra: '%s'",
-    LOG_INFO_SYSTEM_COMMAND = "Comando de sistema: %s",
-    LOG_INFO_TASK_RESULT = "Resultado da tarefa:",
-    LOG_INFO_VALIDATED_DIRECTIVES = "Todas as diretivas foram validadas. Estamos prontos para continuar.",
-    LOG_INFO_WELCOME_MESSAGE = "Olá, eu sou o arara %s!"
 )

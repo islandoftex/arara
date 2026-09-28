@@ -83,16 +83,4 @@ class ItalianLanguage : Messages(
     INFO_LABEL_ON_SUCCESS = "SUCCESS",
     INFO_LABEL_UNNAMED_TASK = "Compito senza nome",
     INFO_PARSER_NOTES = "arara stesso è rilasciato in accordo con la licenza New BSD.",
-    LOG_INFO_BEGIN_BUFFER = "BEGIN OUTPUT BUFFER",
-    LOG_INFO_BOOLEAN_MODE = "Valore booleano: %s",
-    LOG_INFO_DIRECTIVES_BLOCK = "DIRECTIVES",
-    LOG_INFO_END_BUFFER = "END OUTPUT BUFFER",
-    LOG_INFO_INTERPRET_RULE = "Sono pronto a interpretare la regola '%s'.",
-    LOG_INFO_INTERPRET_TASK = "Sono pronto a interpretare il compito '%s' della regola '%s'.",
-    LOG_INFO_POTENTIAL_PATTERN_FOUND = "Ho trovato un potenziale schema alla riga %s: %s",
-    LOG_INFO_RULE_LOCATION = "Posizione della regola: '%s'",
-    LOG_INFO_SYSTEM_COMMAND = "Comando di sistema: %s",
-    LOG_INFO_TASK_RESULT = "Risultato del compito:",
-    LOG_INFO_VALIDATED_DIRECTIVES = "Tutte le direttive erano valide. Pronti a partire.",
-    LOG_INFO_WELCOME_MESSAGE = "Benvenuto in arara %s!"
 )

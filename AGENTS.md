@@ -196,10 +196,10 @@ as the runnable jar).
   raise Lua-style `bad argument #<n> to '<helper>'` errors — Lua's
   implicit coercions apply to operators, not to arara's library
   functions (convert with `tostring`/`tonumber`; interpolation and flag
-  results still stringify by design). New log lines are plain English by
-  convention — the log file is a shared diagnostic artifact — while the
-  legacy log message keys remain localized pending the language
-  decision.
+  results still stringify by design). Log lines are always English,
+  hardcoded at their sites — the log file is a shared diagnostic
+  artifact, so it reads the same in every language; the console stays
+  localized.
 - `MPPPath` (in `api`) is a sharp edge: it carries **two** paths —
   `providedPath` (exactly what the caller wrote; backs `isAbsolute`,
   `startsWith`, `resolve`) and `referencePath` (absolutized and normalized;
