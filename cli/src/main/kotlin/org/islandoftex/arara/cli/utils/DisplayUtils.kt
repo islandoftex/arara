@@ -120,7 +120,9 @@ object DisplayUtils {
         displayResult = true
 
         logger.info {
-            "Task result: " + getResult(value)
+            // a fixed English token keeps the outcome greppable across
+            // every language and every future rewording of the labels
+            "Task result: " + if (value) "SUCCESS" else "FAILURE"
         }
         if (!isDryRunMode) {
             println(
