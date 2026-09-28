@@ -778,13 +778,17 @@ rounds:
   documented name, its thin jar is a build intermediate, and Maven
   coordinates for it served neither embedders (the api module is the
   embedding surface) nor runners — so the four library modules publish,
-  each with the conventional sources and javadoc jars (the javadoc
-  content comes from the Dokka javadoc format), every jar carrying its
-  own automatic module name so the Java module path sees no conflict,
-  and the CI publishing reading the runner's standard job token from
+  each with the conventional sources jar, every jar carrying its own
+  automatic module name so the Java module path sees no conflict, and
+  the CI publishing reading the runner's standard job token from
   the environment. The documentation follows the Dokka family style —
-  suppression flags, the Island of TeX footer, one aggregate site —
-  with documentation warnings set to fail the generation once the
-  remaining KDoc gaps are filled. The eventual README refresh should
-  tell this artifact story: the runnable jar as the distribution
-  channel, and the four library coordinates.
+  suppression flags, the Island of TeX footer, and one aggregate site
+  packaged as a build-only `html-docs` jar (an all-modules artifact
+  does not belong to a single library's coordinates). The javadoc
+  channel is deliberately absent: the format is bound to the JVM-only
+  publishing era, and should Maven Central ever demand a javadoc
+  classifier, the reintroduction path is shipping the aggregated HTML
+  inside it, recoverable from the tag. The documentation generation
+  fails on any warning and belongs to the strict gates; the eventual
+  README refresh should tell this artifact story: the runnable jar as
+  the distribution channel, and the four library coordinates.

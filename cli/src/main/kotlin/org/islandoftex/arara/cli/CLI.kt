@@ -88,7 +88,14 @@ class CLI : CliktCommand("arara") {
         installMordantMarkdown()
     }
 
+    /**
+     * Prints the usage help when arara is invoked without arguments.
+     */
     override val printHelpOnEmptyArgs = true
+    /**
+     * The usage help, headed by the logo and a plain description of
+     * the tool.
+     */
     override fun help(context: Context) = """
         @```
         ${DisplayUtils.logoString.lineSequence().joinToString("\n") { "@$it" }}

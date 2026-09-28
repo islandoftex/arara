@@ -14,6 +14,10 @@ import org.islandoftex.arara.core.utils.formatString
  * Implements directive auxiliary methods.
  */
 object Directives {
+    /**
+     * The hooks the directive extraction consults, so the execution
+     * flow can observe every potential directive line.
+     */
     @JvmStatic
     var hooks = DirectiveFetchingHooks()
 

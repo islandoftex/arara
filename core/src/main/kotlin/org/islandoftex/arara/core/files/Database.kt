@@ -97,6 +97,9 @@ data class Database(
         }
     }
 
+    /**
+     * Holds the YAML loader of the file database.
+     */
     companion object {
         /**
          * Loads the YAML file representing the database.

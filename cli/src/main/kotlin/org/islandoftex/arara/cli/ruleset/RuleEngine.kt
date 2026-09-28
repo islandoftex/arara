@@ -7,7 +7,12 @@ package org.islandoftex.arara.cli.ruleset
  * arara defaults to the (deprecated) YAML rules; the Lua engine will
  * become the default once the YAML format is removed.
  */
-enum class RuleEngine(val identifier: String) {
+enum class RuleEngine(
+    /**
+     * The identifier of the engine as selected on the command line.
+     */
+    val identifier: String
+) {
     /**
      * The YAML/MVEL rule engine (deprecated).
      */
@@ -28,6 +33,9 @@ enum class RuleEngine(val identifier: String) {
             LUA -> listOf(RuleFormat.LUA)
         }
 
+    /**
+     * Holds the engine selection of the current run.
+     */
     companion object {
         /**
          * The engine chosen for the current run (see the `--engine`

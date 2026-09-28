@@ -10,8 +10,20 @@ import org.islandoftex.arara.api.files.ProjectFile
  * directory, possibly depending on other projects by name.
  */
 data class Project(
+    /**
+     * The name of the project.
+     */
     override val name: String,
+    /**
+     * The directory all paths of the project resolve against.
+     */
     override val workingDirectory: MPPPath,
+    /**
+     * The files of the project, with their priorities.
+     */
     override val files: Set<ProjectFile>,
+    /**
+     * The names of the projects this project depends on.
+     */
     override val dependencies: Set<String> = setOf()
 ) : Project

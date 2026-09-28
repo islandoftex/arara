@@ -19,13 +19,31 @@ import org.islandoftex.arara.core.utils.formatString
  */
 @Serializable
 data class Rule(
+    /**
+     * The identifier directives use to ask for this rule.
+     */
     override val identifier: String,
+    /**
+     * The name the rule displays itself with.
+     */
     @SerialName("name")
     override val displayName: String? = null,
+    /**
+     * The authors credited for the rule.
+     */
     override val authors: List<String> = emptyList(),
+    /**
+     * The commands of the rule, in order.
+     */
     override val commands: List<SerialRuleCommand> = emptyList(),
+    /**
+     * The arguments the rule declares.
+     */
     override val arguments: List<RuleArgument> = emptyList()
 ) : Rule {
+    /**
+     * Holds the rule parser of the YAML format.
+     */
     companion object {
         /**
          * Builds the rule error header, containing the identifier and the

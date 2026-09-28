@@ -139,9 +139,11 @@ differs from the build floor).
 - `./gradlew updateHeaders` — refreshes the copyright year intervals in the
   license, the YAML rules and the Lua rules to the current year. Run it on
   demand when the year rolls over.
-- `./gradlew -PwarningsAsErrors=true test detekt spotlessCheck koverVerify` —
+- `./gradlew -PwarningsAsErrors=true test detekt spotlessCheck koverVerify
+  :dokkaGeneratePublicationHtml` —
   the strict gate proving the tree compiles without a single Kotlin warning
-  and holds its coverage floors.
+  and holds its coverage floors; the documentation generation joins the
+  gate and fails on any documentation warning.
 - The project **version is derived from `CHANGELOG.md`** by the
   spotless-changelog plugin — do not hardcode it anywhere. `changelogPrint`
   shows the mapping; `changelogBump`/`changelogCheck`/`changelogPush` drive a

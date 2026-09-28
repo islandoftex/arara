@@ -12,7 +12,14 @@ import org.islandoftex.arara.api.session.Command
  * @since 4.0
  */
 data class Command(
+    /**
+     * The command and its arguments, as separate elements.
+     */
     override val elements: List<String>,
+    /**
+     * The directory the command runs in, if different from the
+     * working directory of the project.
+     */
     override val workingDirectory: MPPPath? = null
 ) : Command {
     /**

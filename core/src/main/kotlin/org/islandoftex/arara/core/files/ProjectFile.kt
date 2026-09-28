@@ -15,10 +15,23 @@ import org.islandoftex.arara.core.rules.Directives
  * type and a priority deciding the execution order within a project.
  */
 open class ProjectFile(
+    /**
+     * The path of the file within the project.
+     */
     override val path: MPPPath,
+    /**
+     * The type the file was detected as.
+     */
     override val fileType: FileType,
+    /**
+     * The priority deciding the execution order within the project;
+     * files with lower priorities run first.
+     */
     override val priority: Int = DEFAULT_PRIORITY
 ) : ProjectFile {
+    /**
+     * Holds the default priority of a project file.
+     */
     companion object {
         /**
          * This value represents the default priority of a project file. It
@@ -28,6 +41,10 @@ open class ProjectFile(
         const val DEFAULT_PRIORITY = 0
     }
 
+    /**
+     * Two project files are equal if they agree on path, file type and
+     * priority.
+     */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is org.islandoftex.arara.core.files.ProjectFile) return false
@@ -39,6 +56,9 @@ open class ProjectFile(
         return true
     }
 
+    /**
+     * The hash code is consistent with [equals].
+     */
     override fun hashCode(): Int {
         var result = path.hashCode()
         result = 31 * result + fileType.hashCode()
@@ -46,6 +66,10 @@ open class ProjectFile(
         return result
     }
 
+    /**
+     * Extracts the directives of the file, honouring the header-only
+     * flag and the comment pattern of the file type.
+     */
     override fun fetchDirectives(parseOnlyHeader: Boolean): List<Directive> =
         try {
             Directives.extractDirectives(
@@ -60,6 +84,10 @@ open class ProjectFile(
             )
         }
 
+    /**
+     * A human-readable representation of the project file, for logs and
+     * error reports.
+     */
     override fun toString(): String {
         return "ProjectFile(path=$path, fileType=$fileType, priority=$priority)"
     }

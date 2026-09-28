@@ -9,7 +9,13 @@ import org.islandoftex.arara.api.files.FileType
  * pattern arara uses to recognize directives in files of that type.
  */
 data class FileType(
+    /**
+     * The extension files of this type carry.
+     */
     override val extension: String = FileType.INVALID_EXTENSION,
+    /**
+     * The pattern lines holding directives of this type start with.
+     */
     override val pattern: String = FileType.INVALID_PATTERN
 ) : FileType {
     init {

@@ -9,7 +9,16 @@ import org.islandoftex.arara.api.session.ExecutionReport
  * stamps of an execution and the resulting exit code.
  */
 data class ExecutionReport(
+    /**
+     * The monotonic mark the execution started at.
+     */
     override val executionStarted: TimeMark,
+    /**
+     * The monotonic mark the execution stopped at.
+     */
     override val executionStopped: TimeMark,
+    /**
+     * The exit code the execution reports.
+     */
     override val exitCode: Int
 ) : ExecutionReport

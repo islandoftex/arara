@@ -109,11 +109,17 @@ on.
   conditionally skipped directives and halt requests, and its line
   timestamps follow a locale-independent numeric format.
 * The published Maven modules now ship the conventional artifact set:
-  every library module publishes a sources jar and a javadoc jar, the
-  latter carrying the documentation generated in the javadoc format.
+  every library module publishes a sources jar alongside its main jar.
+  The documentation travels through the aggregated HTML site instead
+  of a javadoc jar: the javadoc format is bound to the JVM-only
+  publishing era, and the unified site covers every module at once.
 * The generated documentation now aggregates all modules into one
   unified arara site (next to the per-module sites), stamped with the
   Island of TeX footer.
+* The public documentation is complete: every public member of every
+  module is documented, and the documentation generation fails on any
+  warning - a documentation gap breaks the build the same way a
+  compiler warning or a lint finding does.
 
 ## Changed
 

@@ -13,7 +13,14 @@ import org.islandoftex.arara.api.rules.DirectiveConditionalType
  * @since 4.0
  */
 data class DirectiveConditional(
+    /**
+     * The kind of the conditional: none, `if`, `while`, `until` or
+     * `unless`.
+     */
     override val type: DirectiveConditionalType = DirectiveConditionalType.NONE,
+    /**
+     * The condition expression, evaluated by the engine's dialect.
+     */
     override val condition: String = ""
 ) : DirectiveConditional {
     /**

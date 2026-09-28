@@ -24,12 +24,12 @@ open class AraraPublication : Plugin<Project> {
     @Suppress("LongMethod")
     override fun apply(target: Project) {
         target.apply(plugin = "maven-publish")
-        // the sources and javadoc jars are part of the conventional
-        // library artifact set; the javadoc jar content is repointed at
-        // the Dokka javadoc generation in the main build script
+        // the sources jar completes the conventional library artifact
+        // set; the documentation travels through the aggregated HTML
+        // site instead of a javadoc jar, as the javadoc format is bound
+        // to the JVM-only publishing era
         target.extensions.configure<JavaPluginExtension> {
             withSourcesJar()
-            withJavadocJar()
         }
         target.configure<PublishingExtension> {
             // the project is JVM-only, hence a single publication derived

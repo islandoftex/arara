@@ -18,10 +18,25 @@ import org.islandoftex.arara.core.localization.LanguageController
  * @since 8.0
  */
 class LuaRule(
+    /**
+     * The identifier directives use to ask for this rule.
+     */
     override val identifier: String,
+    /**
+     * The name the rule displays itself with.
+     */
     override val displayName: String?,
+    /**
+     * The authors credited for the rule.
+     */
     override val authors: List<String>,
+    /**
+     * The commands of the rule, in order.
+     */
     override val commands: List<LuaRuleCommand>,
+    /**
+     * The arguments the rule declares.
+     */
     override val arguments: List<LuaRuleArgument>
 ) : Rule
 
@@ -33,10 +48,17 @@ class LuaRule(
  * or a list thereof.
  */
 class LuaRuleCommand(
+    /**
+     * The name the command entry displays itself with, if any.
+     */
     override val name: String?,
     private val commandFunction: LuaFunction,
     private val exitFunction: LuaFunction?
 ) : RuleCommand {
+    /**
+     * Always unsupported: the command entry evaluates through the Lua
+     * function instead of a closure.
+     */
     override val command: () -> Int
         get() = throw AraraException(
             "Operation not supported for LuaRuleCommand"
@@ -94,11 +116,24 @@ class LuaRuleCommand(
  * it returns a string or a list of strings.
  */
 class LuaRuleArgument(
+    /**
+     * The identifier directives use to pass this argument.
+     */
     override val identifier: String,
+    /**
+     * Whether the argument must be present in every directive.
+     */
     override val isRequired: Boolean,
+    /**
+     * The value the argument takes when the directive omits it.
+     */
     override val defaultValue: Any?,
     private val flagFunction: LuaFunction?
 ) : RuleArgument<Any?> {
+    /**
+     * Evaluates the flag function of the argument against the input
+     * value, returning the resulting list of flags.
+     */
     override val processor: (Any?, Map<String, Any>) -> List<String> =
         { input, context ->
             LuaConversion.withLuaErrorHandling(
@@ -129,6 +164,10 @@ class LuaRuleArgument(
             }
         }
 
+    /**
+     * A human-readable representation of the argument, for logs and
+     * error reports.
+     */
     override fun toString(): String =
         "LuaRuleArgument(identifier='$identifier', isRequired=$isRequired, " +
             "defaultValue=$defaultValue)"

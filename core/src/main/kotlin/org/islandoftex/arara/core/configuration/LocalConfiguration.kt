@@ -34,8 +34,19 @@ data class LocalConfiguration(
     private val dbname: String? = null,
     private val logname: String? = null,
     private val laf: String? = null,
+    /**
+     * The named directive lists the configuration provides, mapped from
+     * preamble name to its directives.
+     */
     val preambles: Map<String, String> = mapOf(),
+    /**
+     * The preamble applied when no other is requested.
+     */
     val defaultPreamble: String? = null,
+    /**
+     * Whether the default preamble is skipped for files that carry
+     * their own directives.
+     */
     val prependPreambleIfDirectivesGiven: Boolean = true,
     // a script-based configuration computes its paths with the values
     // in scope to the script, so no engine tokens remain to expand;
@@ -147,6 +158,9 @@ data class LocalConfiguration(
         )
     }
 
+    /**
+     * Holds the YAML loader of the configuration format.
+     */
     companion object {
         /**
          * Validates the configuration file.

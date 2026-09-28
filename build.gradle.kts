@@ -358,6 +358,7 @@ configure<DokkaExtension> {
     dokkaPublications.named("html") {
         suppressInheritedMembers.set(true)
         suppressObviousFunctions.set(true)
+        failOnWarning.set(true)
     }
     pluginsConfiguration.named(
         "html",
@@ -377,6 +378,19 @@ dependencies {
     add("dokka", project(":lua"))
     add("dokka", project(":mvel"))
     add("dokka", project(":cli"))
+}
+
+// the aggregated documentation as one distribution-ready artifact; it
+// stays out of the Maven publications on purpose, as an all-modules
+// artifact does not belong to a single library's coordinates
+val htmlDocsJar by tasks.registering(Jar::class) {
+    description = "Assembles the aggregated Dokka HTML documentation jar."
+    from(
+        tasks
+            .named<DokkaGeneratePublicationTask>("dokkaGeneratePublicationHtml")
+            .flatMap { it.outputDirectory }
+    )
+    archiveClassifier.set("html-docs")
 }
 
 subprojects {
@@ -422,19 +436,6 @@ subprojects {
         // module depends on it - so the library modules alone publish
         if (name != "cli") {
             apply<AraraPublication>()
-
-            // the javadoc format feeds the javadoc jar riding the
-            // publication; the plain javadoc task produces nothing over
-            // Kotlin sources, so the jar takes the Dokka output instead
-            apply(plugin = pluginId("dokka-javadoc"))
-            tasks.named<Jar>("javadocJar") {
-                from(
-                    tasks.named<DokkaGeneratePublicationTask>(
-                        "dokkaGeneratePublicationJavadoc"
-                    )
-                )
-                archiveClassifier.set("javadoc")
-            }
         }
     }
 
@@ -479,6 +480,7 @@ subprojects {
             dokkaPublications.named("html") {
                 suppressInheritedMembers.set(true)
                 suppressObviousFunctions.set(true)
+                failOnWarning.set(true)
             }
             pluginsConfiguration.named(
                 "html",

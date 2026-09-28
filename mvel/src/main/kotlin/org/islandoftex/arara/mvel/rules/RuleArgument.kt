@@ -24,19 +24,32 @@ class RuleArgument : RuleArgument<Any?> {
     @Transient
     private val logger = LoggerFactory.getLogger(RuleArgument::class.java)
 
+    /**
+     * The identifier directives use to pass this argument.
+     */
     override var identifier: String = ""
 
+    /**
+     * Whether the argument must be present in every directive.
+     */
     @SerialName("required")
     override var isRequired: Boolean = false
 
     private var flag: String? = null
         get() = field?.trim()
 
+    /**
+     * The value the argument takes when the directive omits it.
+     */
     override val defaultValue: Any?
         get() = default?.trim()
 
     private val default: String? = null
 
+    /**
+     * Evaluates the MVEL flag expression of the argument against the
+     * input value, returning the resulting list of flags.
+     */
     @Transient
     // user-provided MVEL flag expressions may throw anything, so the
     // catch has to stay generic to wrap the failure into an arara error
@@ -92,6 +105,10 @@ class RuleArgument : RuleArgument<Any?> {
         )
     }
 
+    /**
+     * A human-readable representation of the argument, for logs and
+     * error reports.
+     */
     override fun toString(): String {
         return "RuleArgument(identifier='$identifier', isRequired=$isRequired, " +
             "flag=$flag, defaultValue=$defaultValue)"

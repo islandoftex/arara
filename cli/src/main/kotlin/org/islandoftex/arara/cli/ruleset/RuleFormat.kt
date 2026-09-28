@@ -4,7 +4,12 @@ package org.islandoftex.arara.cli.ruleset
 /**
  * Describe the rule formats supported by this CLI implementation.
  */
-enum class RuleFormat(val extension: String) {
+enum class RuleFormat(
+    /**
+     * The file extension rules of this format are named with.
+     */
+    val extension: String
+) {
     /**
      * The traditional MVEL rules from version 1 on.
      */
