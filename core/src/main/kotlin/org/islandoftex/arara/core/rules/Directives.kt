@@ -17,7 +17,6 @@ object Directives {
      * The hooks the directive extraction consults, so the execution
      * flow can observe every potential directive line.
      */
-    @JvmStatic
     var hooks = DirectiveFetchingHooks()
 
     private const val DIRECTIVE_START = """^\s*(\w+)\s*(:\s*(\{.*\})\s*)?"""
@@ -74,7 +73,6 @@ object Directives {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
-    @JvmStatic
     @Throws(AraraException::class)
     @Suppress("MagicNumber")
     fun extractDirectives(
@@ -162,7 +160,6 @@ object Directives {
      * @throws AraraException If there is an error validating the [holder]
      *   object.
      */
-    @JvmStatic
     @Throws(AraraException::class)
     fun replicateDirective(
         holder: Any,

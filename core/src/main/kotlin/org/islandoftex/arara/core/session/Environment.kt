@@ -30,7 +30,6 @@ object Environment {
      * @param fallback The fallback value.
      * @return A string containing the system property value or the fallback.
      */
-    @JvmStatic
     fun getSystemProperty(key: String, fallback: String): String =
         System.getProperties().runCatching {
             getOrDefault(key, fallback).toString().takeIf { it != "" }
@@ -43,7 +42,6 @@ object Environment {
      * @return The value of the system property or null if there is an
      *   exception.
      */
-    @JvmStatic
     fun getSystemPropertyOrNull(key: String): String? =
         System.getProperties().runCatching { getValue(key).toString() }
             .getOrNull()
@@ -99,7 +97,6 @@ object Environment {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
-    @JvmStatic
     @Throws(AraraException::class)
     fun checkOS(value: SupportedOS): Boolean =
         when (value) {
@@ -150,7 +147,6 @@ object Environment {
      * @param command A string representing the command.
      * @return A logic value.
      */
-    @JvmStatic
     fun isOnPath(command: String): Boolean {
         // first and foremost, let's build the list
         // of filenames based on the underlying
@@ -196,7 +192,6 @@ object Environment {
      *   the command ran to completion, or the underlying exception if it
      *   did not.
      */
-    @JvmStatic
     fun executeSystemCommand(
         command: Command,
         silenceSystemOut: Boolean = true,

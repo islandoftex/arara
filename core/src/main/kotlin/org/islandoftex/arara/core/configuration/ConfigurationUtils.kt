@@ -16,7 +16,6 @@ object ConfigurationUtils {
      * The default file type patterns, mapped from extension to the
      * comment pattern a file of that type starts its directives with.
      */
-    @JvmStatic
     val defaultFileTypePatterns = mapOf(
         "tex" to "^\\s*%\\s*",
         "dtx" to "^\\s*%\\s*",
@@ -28,7 +27,6 @@ object ConfigurationUtils {
     /**
      * The default file types, derived from [defaultFileTypePatterns].
      */
-    @JvmStatic
     val defaultFileTypes: List<FileType> by lazy {
         defaultFileTypePatterns
             .map { (extension, pattern) ->
@@ -39,7 +37,6 @@ object ConfigurationUtils {
     /**
      * The directory the arara application itself was launched from.
      */
-    @JvmStatic
     val applicationPath: MPPPath
         @Throws(AraraException::class)
         get() = runCatching {

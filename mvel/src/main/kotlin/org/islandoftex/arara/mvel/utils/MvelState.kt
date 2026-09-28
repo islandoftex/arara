@@ -13,9 +13,12 @@ import org.islandoftex.arara.core.rules.RuleMethods
  */
 object MvelState {
     /**
-     * A map of rule method names to method pointers.
+     * A map of rule method names to method pointers. The pointers are
+     * reflective methods invoked without an instance, so the bound
+     * helpers have to be true statics - the wiring below checks that
+     * a method exists by name, but only the helper objects themselves
+     * carry the annotations that make the invocation work.
      */
-    @JvmStatic
     val ruleMethods: Map<String, Any> by lazy {
         val map = conditionalMethods.toMutableMap()
         // a method that cannot be wired has to fail loudly: swallowing
@@ -47,7 +50,6 @@ object MvelState {
     /**
      * A map of conditional method names to method pointers.
      */
-    @JvmStatic
     val conditionalMethods: Map<String, Any> by lazy {
         val map = mutableMapOf<String, Any>()
         val methodsKotlin = ConditionalMethods::class.java.methods
@@ -82,7 +84,6 @@ object MvelState {
      * Currently a wrapper around [conditionalMethods] but introduced for
      * easier extensibility.
      */
-    @JvmStatic
     val directiveMethods: Map<String, Any>
         get() = conditionalMethods
 

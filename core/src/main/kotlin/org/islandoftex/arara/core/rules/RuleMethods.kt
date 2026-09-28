@@ -26,6 +26,13 @@ import org.islandoftex.arara.core.utils.MethodUtils
  * both dialects, such as command building, boolean checks and file
  * operations. The MVEL registry and the Lua rule environment bind the
  * very same helpers.
+ *
+ * The MVEL registry binds these helpers as reflective method pointers
+ * and invokes them without an instance, so every public member needs to
+ * stay a true static with its JVM overloads: removing the annotations
+ * compiles, passes the registry wiring and then fails at the first
+ * helper call inside a rule. The Lua engine wraps the members as
+ * function values and has no such requirement.
  */
 object RuleMethods {
     private val logger = KotlinLogging.logger {}

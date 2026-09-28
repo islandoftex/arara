@@ -25,7 +25,6 @@ object MethodUtils {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
-    @JvmStatic
     @Throws(AraraException::class)
     fun checkRegex(file: MPPPath, regex: String): Boolean {
         try {
@@ -49,7 +48,6 @@ object MethodUtils {
      * @return A string based on the list of objects, separating each one of
      * them by one space. Empty values are not considered.
      */
-    @JvmStatic
     fun generateString(objects: List<Any>): String =
         objects.map { it.toString() }.filter { it.isNotEmpty() }.joinToString(" ")
 
@@ -61,7 +59,6 @@ object MethodUtils {
      * @return A string based on the list of objects, separating each one of
      * them by one space. Empty values are not considered.
      */
-    @JvmStatic
     fun generateString(vararg objects: Any): String =
         generateString(objects.toList())
 
@@ -76,7 +73,6 @@ object MethodUtils {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
-    @JvmStatic
     @Throws(AraraException::class)
     fun replicateList(
         pattern: String,
@@ -99,7 +95,6 @@ object MethodUtils {
      * @param append A flag whether to append the content.
      * @return A logical value indicating whether it was successful.
      */
-    @JvmStatic
     fun writeToFile(file: MPPPath, text: String, append: Boolean): Boolean {
         return try {
             // try to write the provided

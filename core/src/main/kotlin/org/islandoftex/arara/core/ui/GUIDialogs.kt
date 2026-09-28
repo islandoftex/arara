@@ -13,7 +13,7 @@ import org.islandoftex.arara.api.configuration.UserInterfaceOptions
  * @since 4.0
  */
 class GUIDialogs
-@JvmOverloads constructor(
+constructor(
     uiOptions: UserInterfaceOptions,
     /**
      * The default width for the message body, in pixels.
@@ -88,7 +88,6 @@ class GUIDialogs
      * @param title Title of the message.
      * @param text Text of the message.
      */
-    @JvmOverloads
     fun showMessage(
         width: Int = defaultWidth,
         type: Int,
@@ -116,7 +115,6 @@ class GUIDialogs
      * @param buttons An array of objects to be presented as buttons.
      * @return The index of the selected button, starting from 1.
      */
-    @JvmOverloads
     fun showOptions(
         width: Int = defaultWidth,
         type: Int,
@@ -147,7 +145,6 @@ class GUIDialogs
      * @param text Text of the message.
      * @return The string representing the input text.
      */
-    @JvmOverloads
     fun showInput(
         width: Int = defaultWidth,
         type: Int,
@@ -181,7 +178,6 @@ class GUIDialogs
      * @param elements An array of objects representing the elements.
      * @return The index of the selected element, starting from 1.
      */
-    @JvmOverloads
     fun showDropdown(
         width: Int = defaultWidth,
         type: Int,

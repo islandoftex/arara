@@ -17,14 +17,12 @@ object LanguageController {
      * members of the catalog, so fetching one is a call that the
      * compiler checks.
      */
-    @JvmStatic
     var messages: AraraMessages = EnglishMessages
 
     /**
      * Load messages for the specified [locale]. Alters the global state of
      * arara.
      */
-    @JvmStatic
     fun loadMessagesFor(locale: MPPLocale) {
         messages = when (locale) {
             MPPLocale("de") -> GermanMessages

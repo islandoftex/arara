@@ -17,7 +17,10 @@ import org.islandoftex.arara.core.utils.MethodUtils
  * Implements the helper methods available to directive conditionals in
  * both dialects, such as file existence and change checks, dialogs and
  * class loading. The MVEL registry and the Lua conditional environment
- * bind the very same helpers.
+ * bind the very same helpers. The registry binds them as reflective
+ * method pointers invoked without an instance, so the public members
+ * need to stay true statics - removing the annotations fails only at
+ * the first conditional evaluation inside a rule.
  */
 @Suppress("TooManyFunctions")
 object ConditionalMethods {

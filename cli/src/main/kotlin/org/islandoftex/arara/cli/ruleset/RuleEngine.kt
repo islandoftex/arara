@@ -41,7 +41,6 @@ enum class RuleEngine(
          * The engine chosen for the current run (see the `--engine`
          * command line option).
          */
-        @JvmStatic
         var current: RuleEngine = YAML
     }
 }
