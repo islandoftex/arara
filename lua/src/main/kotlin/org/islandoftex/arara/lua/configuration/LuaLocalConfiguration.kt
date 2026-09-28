@@ -117,7 +117,7 @@ object LuaLocalConfiguration {
             fromMap(tableToMap(table))
         }.getOrElse {
             throw AraraException(
-                LanguageController.messages.ERROR_CONFIGURATION_GENERIC_ERROR,
+                LanguageController.messages.errorConfigurationGenericError,
                 it as? Exception ?: AraraException(it.toString())
             )
         }

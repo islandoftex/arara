@@ -7,7 +7,6 @@ import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.LinearExecutor
-import org.islandoftex.arara.core.utils.formatString
 
 /**
  * Implements the file type model.
@@ -33,13 +32,11 @@ data class SerialFileType(
         pattern.takeUnless { pattern == FileType.INVALID_PATTERN }
             ?: ConfigurationUtils.defaultFileTypePatterns[extension]
             ?: throw AraraException(
-                LanguageController.messages
-                    .ERROR_FILETYPE_UNKNOWN_EXTENSION
-                    .formatString(
-                        extension,
-                        LinearExecutor.executionOptions.fileTypes
-                            .joinToString(" | ", "[ ", " ]")
-                    )
+                LanguageController.messages.errorFiletypeUnknownExtension(
+                    extension,
+                    LinearExecutor.executionOptions.fileTypes
+                        .joinToString(" | ", "[ ", " ]")
+                )
             )
     )
 }

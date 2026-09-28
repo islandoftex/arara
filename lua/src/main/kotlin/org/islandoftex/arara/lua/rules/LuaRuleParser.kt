@@ -9,7 +9,6 @@ import io.github.taoguan.luaj.LuaValue
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.utils.formatString
 
 /**
  * Parse rules written in arara's Lua rule format.
@@ -73,13 +72,13 @@ object LuaRuleParser {
         // the localized error header is shared with the YAML engine, so
         // both dialects report rule errors in the same voice
         val errorHeader =
-            LanguageController.messages.ERROR_RULE_IDENTIFIER_AND_PATH
-                .formatString(
-                    identifier, file.normalize().parent.toString()
-                ) + " "
+            LanguageController.messages.errorRuleIdentifierAndPath(
+                identifier,
+                file.normalize().parent.toString()
+            ) + " "
         val table = LuaConversion.withLuaErrorHandling(
             errorHeader + LanguageController
-                .messages.ERROR_PARSERULE_GENERIC_ERROR
+                .messages.errorParseRuleGenericError
         ) {
             val globals = LuaRuleEnvironment.newGlobals()
             runCatching {

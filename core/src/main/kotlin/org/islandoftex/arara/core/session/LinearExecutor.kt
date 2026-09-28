@@ -10,7 +10,6 @@ import org.islandoftex.arara.api.session.ExecutionReport
 import org.islandoftex.arara.api.session.Executor
 import org.islandoftex.arara.core.dependencies.ProjectGraph
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.utils.formatString
 
 /**
  * Implements arara's linear executor, running the directives of every
@@ -82,8 +81,7 @@ object LinearExecutor : Executor {
                 .map { it.name }
                 .joinToString(", ", "(", ")")
             throw AraraException(
-                LanguageController.messages.ERROR_PROJECT_CYCLE
-                    .formatString(cyclic)
+                LanguageController.messages.errorProjectCycle(cyclic)
             )
         }
         hooks.executeBeforeExecution()

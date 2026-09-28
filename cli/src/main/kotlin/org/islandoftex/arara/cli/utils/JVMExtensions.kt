@@ -10,7 +10,6 @@ import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
-import org.islandoftex.arara.core.utils.formatString
 
 private val logger = KotlinLogging.logger { }
 
@@ -23,11 +22,11 @@ fun ProjectFile.printFileInformation() {
             DisplayUtils.displaySeparator()
     }
     logEnvironmentDetails()
-    LanguageController.messages.INFO_DISPLAY_FILE_INFORMATION
-        .formatString(
+    LanguageController.messages
+        .infoDisplayFileInformation(
             path.fileName,
             DisplayUtils.byteSizeToString(path.fileSize),
-                path.lastModified.toString()
+            path.lastModified.toString()
         ).let {
             // the console line stays localized; the log carries an
             // English twin so the file reads the same in every language
@@ -47,46 +46,45 @@ fun ProjectFile.printFileInformation() {
  * configuration file name.
  */
 private fun logEnvironmentDetails() {
+    val javaVersion = Environment.getSystemProperty(
+        "java.version",
+        "[unknown version]"
+    )
+    val javaVendor = Environment.getSystemProperty(
+        "java.vendor",
+        "[unknown vendor]"
+    )
+    val javaHome = Environment.getSystemProperty(
+        "java.home",
+        "[unknown location]"
+    )
+    val osName = Environment.getSystemProperty(
+        "os.name",
+        "[unknown OS name]"
+    )
+    val osArch = Environment.getSystemProperty(
+        "os.arch",
+        "[unknown OS arch]"
+    )
+    val osVersion = Environment.getSystemProperty(
+        "os.version",
+        "[unknown OS version]"
+    )
+    val userHome = Environment.getSystemProperty(
+        "user.home",
+        "[unknown user's home directory]"
+    )
     logger.debug {
         """
 
             ::: arara @ ${DisplayUtils.applicationPath}
-            ::: Java %s, %s
-            ::: %s
-            ::: %s, %s, %s
-            ::: user.home @ %s
+            ::: Java $javaVersion, $javaVendor
+            ::: $javaHome
+            ::: $osName, $osArch, $osVersion
+            ::: user.home @ $userHome
             ::: CF @ ${DisplayUtils.configurationFileName}
             ${DisplayUtils.displaySeparator()}
-        """.trimIndent().formatString(
-            Environment.getSystemProperty(
-                "java.version",
-                "[unknown version]"
-            ),
-            Environment.getSystemProperty(
-                "java.vendor",
-                "[unknown vendor]"
-            ),
-            Environment.getSystemProperty(
-                "java.home",
-                "[unknown location]"
-            ),
-            Environment.getSystemProperty(
-                "os.name",
-                "[unknown OS name]"
-            ),
-            Environment.getSystemProperty(
-                "os.arch",
-                "[unknown OS arch]"
-            ),
-            Environment.getSystemProperty(
-                "os.version",
-                "[unknown OS version]"
-            ),
-            Environment.getSystemProperty(
-                "user.home",
-                "[unknown user's home directory]"
-            )
-        )
+        """.trimIndent()
     }
 }
 

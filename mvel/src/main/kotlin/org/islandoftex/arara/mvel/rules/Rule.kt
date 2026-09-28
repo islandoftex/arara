@@ -8,7 +8,6 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.utils.formatString
 
 /**
  * Implements the rule model.
@@ -50,8 +49,10 @@ data class Rule(
          * location of the rule.
          */
         private fun ruleErrorHeader(identifier: String, path: String): String =
-            LanguageController.messages.ERROR_RULE_IDENTIFIER_AND_PATH
-                .formatString(identifier, path) + " "
+            LanguageController.messages.errorRuleIdentifierAndPath(
+                identifier,
+                path
+            ) + " "
 
         /**
          * Parses the provided file, checks the identifier and returns a rule
@@ -78,7 +79,7 @@ data class Rule(
             }.getOrElse {
                 throw AraraException(
                     errorHeader + LanguageController
-                        .messages.ERROR_PARSERULE_GENERIC_ERROR,
+                        .messages.errorParseRuleGenericError,
                     it
                 )
             }
@@ -107,14 +108,17 @@ data class Rule(
             if (rule.identifier != identifier) {
                 throw AraraException(
                     errorHeader +
-                        LanguageController.messages.ERROR_VALIDATEHEADER_WRONG_IDENTIFIER
-                            .formatString(rule.identifier, identifier)
+                        LanguageController.messages
+                            .errorValidateHeaderWrongIdentifier(
+                                rule.identifier,
+                                identifier
+                            )
                 )
             }
             if (rule.displayName == null) {
                 throw AraraException(
                     errorHeader + LanguageController
-                        .messages.ERROR_VALIDATEHEADER_NULL_NAME
+                        .messages.errorValidateHeaderNullName
                 )
             }
         }
@@ -136,7 +140,7 @@ data class Rule(
             if (rule.commands.any { it.commandString == null })
                 throw AraraException(
                     errorHeader + LanguageController
-                        .messages.ERROR_VALIDATEBODY_NULL_COMMAND
+                        .messages.errorValidateBodyNullCommand
                 )
 
             // the validation compares the argument identifiers, not the
@@ -148,16 +152,15 @@ data class Rule(
 
             arguments.intersect(listOf("files", "reference")).forEach {
                 throw AraraException(
-                    errorHeader + LanguageController
-                        .messages.ERROR_VALIDATEBODY_ARGUMENT_ID_IS_RESERVED
-                        .formatString(it)
+                    errorHeader + LanguageController.messages
+                        .errorValidateBodyArgumentIdIsReserved(it)
                 )
             }
 
             if (arguments.size != arguments.toSet().size) {
                 throw AraraException(
                     errorHeader + LanguageController.messages
-                        .ERROR_VALIDATEBODY_DUPLICATE_ARGUMENT_IDENTIFIERS
+                        .errorValidateBodyDuplicateArgumentIdentifiers
                 )
             }
         }

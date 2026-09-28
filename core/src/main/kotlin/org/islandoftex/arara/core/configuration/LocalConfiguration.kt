@@ -104,7 +104,7 @@ data class LocalConfiguration(
                 loops
             } else {
                 throw AraraException(
-                    LanguageController.messages.ERROR_CONFIGURATION_LOOPS_INVALID_RANGE
+                    LanguageController.messages.errorConfigurationLoopsInvalidRange
                 )
             }
         } ?: baseOptions.maxLoops
@@ -179,7 +179,7 @@ data class LocalConfiguration(
                 Yaml.default.decodeFromString(serializer(), text)
             }.getOrElse {
                 throw AraraException(
-                    LanguageController.messages.ERROR_CONFIGURATION_GENERIC_ERROR,
+                    LanguageController.messages.errorConfigurationGenericError,
                     it
                 )
             }

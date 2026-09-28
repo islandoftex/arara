@@ -80,7 +80,7 @@ class RuleArgument : RuleArgument<Any?> {
         } catch (exception: RuntimeException) {
             throw AraraExceptionWithHeader(
                 LanguageController.messages
-                    .ERROR_INTERPRETER_FLAG_RUNTIME_EXCEPTION,
+                    .errorInterpreterFlagRuntimeException,
                 exception
             )
         }
@@ -95,13 +95,13 @@ class RuleArgument : RuleArgument<Any?> {
         } else {
             throw AraraException(
                 ruleErrorHeader + LanguageController
-                    .messages.ERROR_VALIDATEBODY_MISSING_KEYS
+                    .messages.errorValidateBodyMissingKeys
             )
         }
     } else {
         throw AraraException(
             ruleErrorHeader + LanguageController
-                .messages.ERROR_VALIDATEBODY_NULL_ARGUMENT_ID
+                .messages.errorValidateBodyNullArgumentId
         )
     }
 

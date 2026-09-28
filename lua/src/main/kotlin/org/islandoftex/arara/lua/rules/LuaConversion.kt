@@ -182,7 +182,7 @@ internal object LuaConversion {
         (value as? LuaBoolean)?.toboolean()
             ?: throw AraraException(
                 LanguageController.messages
-                    .ERROR_INTERPRETER_WRONG_EXIT_CLOSURE_RETURN,
+                    .errorInterpreterWrongExitClosureReturn,
                 LuaHelperException(
                     "bad result from '$source' (boolean expected, " +
                         "got ${value.typename()})"

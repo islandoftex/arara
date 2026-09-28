@@ -8,7 +8,6 @@ import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.utils.formatString
 
 /**
  * Implements directive auxiliary methods.
@@ -94,8 +93,7 @@ object Directives {
                 if (!assembler.isAppendAllowed) {
                     throw AraraException(
                         LanguageController
-                            .messages.ERROR_VALIDATE_ORPHAN_LINEBREAK
-                            .formatString(lineno.toString())
+                            .messages.errorValidateOrphanLinebreak(lineno)
                     )
                 } else {
                     assembler.addLineNumber(lineno)
@@ -148,11 +146,10 @@ object Directives {
                 assembler.lineNumbers
             )
         } ?: throw AraraException(
-            LanguageController.messages.ERROR_VALIDATE_INVALID_DIRECTIVE_FORMAT
-                .formatString(
-                    assembler.lineNumbers
-                        .joinToString(", ", "(", ")")
-                )
+            LanguageController.messages.errorValidateInvalidDirectiveFormat(
+                assembler.lineNumbers
+                    .joinToString(", ", "(", ")")
+            )
         )
 
     /**
@@ -192,19 +189,18 @@ object Directives {
                 // file, and we did not filter out any invalid argument
                 .takeIf { it.isNotEmpty() && holder.size == it.size }
                 ?: throw AraraException(
-                    LanguageController.messages.ERROR_VALIDATE_EMPTY_FILES_LIST
-                        .formatString(
+                    LanguageController.messages
+                        .errorValidateEmptyFilesList(
                             directive.lineNumbers
                                 .joinToString(", ", "(", ")")
                         )
                 )
         } else {
             throw AraraException(
-                LanguageController.messages.ERROR_VALIDATE_FILES_IS_NOT_A_LIST
-                    .formatString(
-                        directive.lineNumbers
-                            .joinToString(", ", "(", ")")
-                    )
+                LanguageController.messages.errorValidateFilesIsNotAList(
+                    directive.lineNumbers
+                        .joinToString(", ", "(", ")")
+                )
             )
         }
     }

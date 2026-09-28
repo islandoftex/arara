@@ -64,7 +64,7 @@ object FileHandling {
             }.value
         } catch (exception: IOException) {
             throw AraraException(
-                LanguageController.messages.ERROR_CALCULATEHASH_IO_EXCEPTION,
+                LanguageController.messages.errorCalculateHashIoException,
                 exception
             )
         }

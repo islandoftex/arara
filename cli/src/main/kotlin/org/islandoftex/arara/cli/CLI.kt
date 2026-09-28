@@ -60,7 +60,6 @@ import org.islandoftex.arara.core.rules.Directives
 import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
-import org.islandoftex.arara.core.utils.formatString
 import org.islandoftex.arara.lua.LuaInterpreter
 import org.islandoftex.arara.mvel.utils.MvelState
 
@@ -195,7 +194,7 @@ class CLI : CliktCommand("arara") {
                     if (it is AraraException) {
                         DisplayUtils.printWrapped(
                             LanguageController.messages
-                                .INFO_INTERPRETER_LUA_FILE_NOT_A_PROJECT + "\n"
+                                .infoInterpreterLuaFileNotAProject + "\n"
                         )
                         logger.info {
                             "Failed to parse Lua file argument as project: ${it.message}\n" +
@@ -309,7 +308,7 @@ class CLI : CliktCommand("arara") {
         if (resolvedPreamble != null && resolvedPreamble !in MvelState.preambles) {
             throw AraraException(
                 LanguageController.messages
-                    .ERROR_PARSER_INVALID_PREAMBLE.formatString(resolvedPreamble)
+                    .errorParserInvalidPreamble(resolvedPreamble)
             )
         }
         val allDirectives = resolvedPreamble
@@ -326,7 +325,7 @@ class CLI : CliktCommand("arara") {
         if (allDirectives.isEmpty())
             throw AraraException(
                 LanguageController
-                    .messages.ERROR_VALIDATE_NO_DIRECTIVES_FOUND
+                    .messages.errorValidateNoDirectivesFound
             )
         return allDirectives
     }
@@ -436,7 +435,7 @@ fun main(args: Array<String>) {
                 "${DisplayUtils.logoString}\n\n" +
                     "arara ${AraraAPI.version}\n" +
                     "Copyright (c) ${LocalDate.now().year}, Island of TeX\n" +
-                    LanguageController.messages.INFO_PARSER_NOTES + "\n\n" +
+                    LanguageController.messages.infoParserNotes + "\n\n" +
                     "New features in version ${AraraAPI.version}:\n" +
                     CLI::class.java
                         .getResource("/org/islandoftex/arara/cli/configuration/release-notes")

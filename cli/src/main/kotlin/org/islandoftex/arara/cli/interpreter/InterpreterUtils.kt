@@ -75,18 +75,18 @@ internal object InterpreterUtils {
                 throw AraraException(
                     when (result.exception) {
                         is IOException ->
-                            LanguageController.messages.ERROR_RUN_IO_EXCEPTION
+                            LanguageController.messages.errorRunIoException
                         is TimeoutException ->
                             LanguageController.messages
-                                .ERROR_RUN_TIMEOUT_EXCEPTION
+                                .errorRunTimeoutException
                         is InterruptedException ->
                             LanguageController.messages
-                                .ERROR_RUN_INTERRUPTED_EXCEPTION
+                                .errorRunInterruptedException
                         is InvalidExitValueException ->
                             LanguageController.messages
-                                .ERROR_RUN_INVALID_EXIT_VALUE_EXCEPTION
+                                .errorRunInvalidExitValueException
                         else -> LanguageController.messages
-                            .ERROR_RUN_GENERIC_EXCEPTION
+                            .errorRunGenericException
                     },
                     result.exception
                 )

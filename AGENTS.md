@@ -168,7 +168,11 @@ as the runnable jar).
   generated** by the `createAraraAPIObject` task at compile time (it embeds
   the project version); never edit it by hand.
 - `core` — implementations: linear executor/session, file handling, the
-  kotaml-serialized file database (`arara.yaml`), localization.
+  kotaml-serialized file database (`arara.yaml`), localization (the
+  `AraraMessages` interface: typed members per message, one
+  implementation object per locale, compile-enforced completeness —
+  a locale missing a message fails the build; `MPPLocale` is the only
+  localization type left in `api`).
 - `mvel` — legacy YAML rule + config parsing (kotaml, the supported fork of the
   archived kaml; the fork keeps the original `com.charleskorn.kaml` package),
   plus MVEL **directive

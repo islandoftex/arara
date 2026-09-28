@@ -22,7 +22,6 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.DirectiveConditionalEvaluator as ConditionalEvaluator
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.InputHandling
-import org.islandoftex.arara.core.utils.formatString
 import org.islandoftex.arara.lua.rules.LuaConditionalEvaluator
 import org.islandoftex.arara.lua.rules.LuaRuleCommand
 import org.islandoftex.arara.mvel.rules.DirectiveConditionalEvaluator
@@ -60,8 +59,7 @@ class Interpreter(
         Session[haltKey].toString().toIntOrNull()
             ?: throw AraraExceptionWithHeader(
                 LanguageController.messages
-                    .ERROR_INTERPRETER_HALT_STATUS_NOT_A_NUMBER
-                    .formatString(haltKey)
+                    .errorInterpreterHaltStatusNotANumber(haltKey)
             )
 
     /**
@@ -98,7 +96,7 @@ class Interpreter(
                     )
                 }
             }.firstOrNull { it.exists } ?: throw AraraException(
-                LanguageController.messages.ERROR_INTERPRETER_RULE_NOT_FOUND.formatString(
+                LanguageController.messages.errorInterpreterRuleNotFound(
                     directive.identifier,
                     directive.identifier,
                     paths.joinToString("; ", "(", ")") {
@@ -130,7 +128,7 @@ class Interpreter(
             DisplayUtils.printAuthors(authors)
             DisplayUtils.printWrapped(
                 LanguageController.messages
-                    .INFO_INTERPRETER_DRYRUN_MODE_BOOLEAN_MODE.formatString(it)
+                    .infoInterpreterDryRunModeBooleanMode(it)
             )
             DisplayUtils.printConditional(conditional)
         }
@@ -166,7 +164,9 @@ class Interpreter(
             DisplayUtils.printAuthors(authors)
             DisplayUtils.printWrapped(
                 LanguageController.messages
-                    .INFO_INTERPRETER_DRYRUN_MODE_SYSTEM_COMMAND.formatString(command)
+                    .infoInterpreterDryRunModeSystemCommand(
+                        command.toString()
+                    )
             )
             DisplayUtils.printConditional(conditional)
         }
@@ -208,7 +208,7 @@ class Interpreter(
     } catch (exception: RuntimeException) {
         throw AraraExceptionWithHeader(
             LanguageController
-                .messages.ERROR_INTERPRETER_COMMAND_RUNTIME_ERROR,
+                .messages.errorInterpreterCommandRuntimeError,
             exception
         )
     }
@@ -229,14 +229,14 @@ class Interpreter(
             } catch (exception: RuntimeException) {
                 throw AraraExceptionWithHeader(
                     LanguageController.messages
-                        .ERROR_INTERPRETER_EXIT_RUNTIME_ERROR,
+                        .errorInterpreterExitRuntimeError,
                     exception
                 )
             }
             check as? Boolean
                 ?: throw AraraExceptionWithHeader(
                     LanguageController.messages
-                        .ERROR_INTERPRETER_WRONG_EXIT_CLOSURE_RETURN
+                        .errorInterpreterWrongExitClosureReturn
                 )
         }
 
@@ -265,7 +265,7 @@ class Interpreter(
             else ->
                 throw AraraExceptionWithHeader(
                     LanguageController
-                        .messages.ERROR_INTERPRETER_WRONG_RETURN_TYPE
+                        .messages.errorInterpreterWrongReturnType
                 )
         }
         return results.filter { it.toString().isNotBlank() }
@@ -273,7 +273,7 @@ class Interpreter(
                 DisplayUtils.printEntry(
                     rule.displayName!!,
                     command.name
-                        ?: LanguageController.messages.INFO_LABEL_UNNAMED_TASK
+                        ?: LanguageController.messages.infoLabelUnnamedTask
                 )
 
                 val success = when (current) {
@@ -288,7 +288,7 @@ class Interpreter(
                     else ->
                         throw AraraExceptionWithHeader(
                             LanguageController
-                                .messages.ERROR_INTERPRETER_WRONG_RETURN_TYPE
+                                .messages.errorInterpreterWrongReturnType
                         )
                 }
 
@@ -297,14 +297,17 @@ class Interpreter(
                 Session.contains(haltKey) ->
                     throw HaltExpectedException(
                         LanguageController.messages
-                            .ERROR_INTERPRETER_USER_REQUESTED_HALT,
+                            .errorInterpreterUserRequestedHalt,
                         ExecutionStatus.FinishedWithCode(haltStatus())
                     )
                 executionOptions.haltOnErrors && !success ->
                     throw HaltExpectedException(
-                        LanguageController
-                            .messages.ERROR_INTERPRETER_COMMAND_UNSUCCESSFUL_EXIT
-                            .formatString(command.name),
+                        LanguageController.messages
+                            .errorInterpreterCommandUnsuccessfulExit(
+                                command.name
+                                    ?: LanguageController.messages
+                                        .infoLabelUnnamedTask
+                            ),
                         ExecutionStatus.ExternalCallFailed()
                     )
                 success -> ExecutionStatus.Processing()
@@ -411,8 +414,10 @@ class Interpreter(
         // prepending the header and removing the outer exception with
         // header where possible
         throw AraraException(
-            LanguageController.messages.ERROR_RULE_IDENTIFIER_AND_PATH
-                .formatString(directive.identifier, file.parent.toString()) + " " +
+            LanguageController.messages.errorRuleIdentifierAndPath(
+                directive.identifier,
+                file.parent.toString()
+            ) + " " +
                 e.message,
             e.cause ?: e
         )
@@ -454,7 +459,7 @@ class Interpreter(
         if (unknown.isNotEmpty())
             throw AraraExceptionWithHeader(
                 LanguageController.messages
-                    .ERROR_INTERPRETER_UNKNOWN_KEYS.formatString(
+                    .errorInterpreterUnknownKeys(
                         unknown.joinToString(", ", "(", ")")
                     )
             )
@@ -503,8 +508,8 @@ class Interpreter(
 
         if (argument.isRequired && !idInDirectiveParams)
             throw AraraExceptionWithHeader(
-                LanguageController.messages.ERROR_INTERPRETER_ARGUMENT_IS_REQUIRED
-                    .formatString(argument.identifier)
+                LanguageController.messages
+                    .errorInterpreterArgumentIsRequired(argument.identifier)
             )
 
         return if (idInDirectiveParams)

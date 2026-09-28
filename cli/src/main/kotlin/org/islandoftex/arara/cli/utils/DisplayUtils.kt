@@ -13,7 +13,6 @@ import org.islandoftex.arara.core.configuration.ConfigurationUtils
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
-import org.islandoftex.arara.core.utils.formatString
 
 /**
  * Implements display utilitary methods.
@@ -48,9 +47,9 @@ object DisplayUtils {
     private val longestMatch: Int by lazy {
         // lazy computation to wait for the language to be initialized
         listOf(
-            LanguageController.messages.INFO_LABEL_ON_SUCCESS,
-            LanguageController.messages.INFO_LABEL_ON_FAILURE,
-            LanguageController.messages.INFO_LABEL_ON_ERROR
+            LanguageController.messages.infoLabelOnSuccess,
+            LanguageController.messages.infoLabelOnFailure,
+            LanguageController.messages.infoLabelOnError
         ).map { it.length }.maxOrNull()!!
     }
 
@@ -209,9 +208,9 @@ object DisplayUtils {
             if (!isDryRunMode) {
                 println(
                     if (!isVerboseMode) {
-                        LanguageController.messages.INFO_LABEL_ON_ERROR.padStart(longestMatch)
+                        LanguageController.messages.infoLabelOnError.padStart(longestMatch)
                     } else {
-                        (" " + LanguageController.messages.INFO_LABEL_ON_ERROR)
+                        (" " + LanguageController.messages.infoLabelOnError)
                             .padStart(outputWidth, '-')
                     }
                 )
@@ -222,7 +221,7 @@ object DisplayUtils {
         val text = (
             if (underlying != null)
                 exception.message + " " + LanguageController.messages
-                    .INFO_DISPLAY_EXCEPTION_MORE_DETAILS
+                    .infoDisplayExceptionMoreDetails
             else
                 exception.message
             ) ?: "EXCEPTION PROVIDES NO MESSAGE"
@@ -247,9 +246,9 @@ object DisplayUtils {
      */
     private fun getResult(value: Boolean): String {
         return if (value)
-            LanguageController.messages.INFO_LABEL_ON_SUCCESS
+            LanguageController.messages.infoLabelOnSuccess
         else
-            LanguageController.messages.INFO_LABEL_ON_FAILURE
+            LanguageController.messages.infoLabelOnFailure
     }
 
     /**
@@ -267,11 +266,11 @@ object DisplayUtils {
      */
     fun printAuthors(authors: List<String>) {
         val line = if (authors.size == 1)
-            LanguageController.messages.INFO_LABEL_AUTHOR
+            LanguageController.messages.infoLabelAuthor
         else
-            LanguageController.messages.INFO_LABEL_AUTHORS
+            LanguageController.messages.infoLabelAuthors
         val text = if (authors.isEmpty())
-            LanguageController.messages.INFO_LABEL_NO_AUTHORS
+            LanguageController.messages.infoLabelNoAuthors
         else
             authors.joinToString(", ") { it.trim() }
         printWrapped("$line $text")
@@ -285,7 +284,7 @@ object DisplayUtils {
     fun printConditional(conditional: DirectiveConditional) {
         if (conditional.type !== DirectiveConditionalType.NONE) {
             printWrapped(
-                LanguageController.messages.INFO_LABEL_CONDITIONAL +
+                LanguageController.messages.infoLabelConditional +
                     " (" + conditional.type + ") " +
                     conditional.condition
             )
@@ -307,13 +306,10 @@ object DisplayUtils {
                 val baseSize = size / conversionFactor.pow(exp.toDouble())
                 val ones = baseSize.toInt()
                 val tenths = ((baseSize - ones) * 10).toInt()
-                "%s%s%s %sB".formatString(
-                    ones.toString(),
-                    Session.userInterfaceOptions.locale
-                        .decimalSeparator.toString(),
-                    tenths.toString(),
-                    "kMGTPE"[exp - 1].toString()
-                )
+                val separator = Session.userInterfaceOptions
+                    .locale.decimalSeparator.toString()
+                "$ones$separator$tenths " +
+                    "${"kMGTPE"[exp - 1]}B"
             }
     }
 
@@ -327,16 +323,12 @@ object DisplayUtils {
             println()
 
         val secondDuration = seconds.seconds
-        val text = LanguageController.messages.INFO_DISPLAY_EXECUTION_TIME
-            .formatString(
-                "%s%s%s".formatString(
-                    secondDuration.inWholeSeconds.toString(),
-                    Session.userInterfaceOptions.locale
-                        .decimalSeparator.toString(),
-                    (secondDuration - secondDuration.inWholeSeconds.seconds)
-                        .inWholeMilliseconds.toString()
-                )
-            )
+        val separator = Session.userInterfaceOptions.locale
+            .decimalSeparator.toString()
+        val time = secondDuration.inWholeSeconds.toString() + separator +
+            (secondDuration - secondDuration.inWholeSeconds.seconds)
+                .inWholeMilliseconds.toString()
+        val text = LanguageController.messages.infoDisplayExecutionTime(time)
         // the console line stays localized; the log carries an English
         // twin so the file reads the same in every language
         logger.info {
@@ -349,7 +341,7 @@ object DisplayUtils {
      * Displays a line containing details.
      */
     private fun displayDetailsLine() = println(
-        (LanguageController.messages.INFO_LABEL_ON_DETAILS + " ")
+        (LanguageController.messages.infoLabelOnDetails + " ")
             .abbreviate(outputWidth)
             .padEnd(outputWidth, '-')
     )

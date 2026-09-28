@@ -12,7 +12,6 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.DirectiveFetchingHooks
 import org.islandoftex.arara.core.rules.Directives
 import org.islandoftex.arara.core.session.LinearExecutor
-import org.islandoftex.arara.core.utils.formatString
 import org.islandoftex.arara.lua.rules.LuaInterpolation
 import org.islandoftex.arara.mvel.utils.MvelState
 import org.mvel2.templates.TemplateRuntime
@@ -87,10 +86,9 @@ object DirectiveUtils {
             )
         }.getOrElse {
             throw AraraException(
-                LanguageController.messages.ERROR_VALIDATE_YAML_EXCEPTION
-                    .formatString(
-                        numbers.joinToString(", ", "(", ")")
-                    ),
+                LanguageController.messages.errorValidateYamlException(
+                    numbers.joinToString(", ", "(", ")")
+                ),
                 it
             )
         }
@@ -127,7 +125,7 @@ object DirectiveUtils {
                 }.getOrElse {
                     throw AraraException(
                         LanguageController.messages
-                            .ERROR_EXTRACTOR_INTERPOLATION_FAILURE,
+                            .errorExtractorInterpolationFailure,
                         it
                     )
                 }
@@ -152,8 +150,11 @@ object DirectiveUtils {
 
             if (parameters.containsKey("reference"))
                 throw AraraException(
-                    LanguageController.messages.ERROR_VALIDATE_REFERENCE_IS_RESERVED
-                        .formatString(directive.lineNumbers.joinToString(", ", "(", ")"))
+                    LanguageController.messages
+                        .errorValidateReferenceIsReserved(
+                            directive.lineNumbers
+                                .joinToString(", ", "(", ")")
+                        )
                 )
 
             if (parameters.containsKey("files")) {

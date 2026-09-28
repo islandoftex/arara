@@ -6,7 +6,6 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.utils.formatString
 import org.islandoftex.arara.lua.rules.LuaRuleParser
 
 /**
@@ -43,8 +42,7 @@ object RuleUtils {
             else ->
                 throw AraraException(
                     LanguageController.messages
-                        .ERROR_PARSERULE_UNSUPPORTED_FORMAT
-                        .formatString(
+                        .errorParseRuleUnsupportedFormat(
                             identifier,
                             file.normalize().parent.toString(),
                             file.fileName

@@ -43,12 +43,12 @@ class DirectiveConditionalEvaluator(executionOptions: ExecutionOptions) :
                     result
             } else {
                 throw AraraException(
-                    LanguageController.messages.ERROR_EVALUATE_NOT_BOOLEAN_VALUE
+                    LanguageController.messages.errorEvaluateNotBooleanValue
                 )
             }
         } catch (exception: RuntimeException) {
             throw AraraException(
-                LanguageController.messages.ERROR_EVALUATE_COMPILATION_FAILED,
+                LanguageController.messages.errorEvaluateCompilationFailed,
                 exception
             )
         }

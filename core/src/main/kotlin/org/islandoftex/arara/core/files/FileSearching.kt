@@ -11,7 +11,6 @@ import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.utils.formatString
 import org.islandoftex.arara.core.utils.globToRegex
 
 /**
@@ -116,12 +115,11 @@ object FileSearching {
     ): ProjectFile =
         lookupFile(reference, workingDirectory, executionOptions)
             ?: throw AraraException(
-                LanguageController.messages.ERROR_DISCOVERFILE_FILE_NOT_FOUND
-                    .formatString(
-                        reference,
-                        executionOptions.fileTypes
-                            .joinToString(" | ", "[ ", " ]")
-                    )
+                LanguageController.messages.errorDiscoverFileFileNotFound(
+                    reference,
+                    executionOptions.fileTypes
+                        .joinToString(" | ", "[ ", " ]")
+                )
             )
 
     /**

@@ -371,6 +371,11 @@ Consequences for the plan above:
   already spell their keys natively, and the rename is a
   binding-layer sweep over the rules, recoverable from the tag that
   introduced the native key spelling.
+- the message catalog keeps its shape into the multiplatform future:
+  the typed interface is pure Kotlin and moves to `commonMain` as is.
+  Should the localization grow into a module of its own one day, that
+  module also adopts a multiplatform locale representation (such as
+  `multiplatform-locale`) to succeed the hand-rolled `MPPLocale`.
 
 ## Version 9 outlook — the path model
 

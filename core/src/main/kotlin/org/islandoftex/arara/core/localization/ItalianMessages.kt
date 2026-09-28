@@ -1,0 +1,229 @@
+// SPDX-License-Identifier: BSD-3-Clause
+package org.islandoftex.arara.core.localization
+
+import org.islandoftex.arara.api.localization.MPPLocale
+
+/**
+ * Italian localization of the arara messages.
+ * Translated by Enrico Gregorio, Carla Maggi and Paulinho van Duck.
+ */
+@Suppress("MaxLineLength", "TooManyFunctions")
+object ItalianMessages : AraraMessages {
+    override val providedLocale = MPPLocale("it")
+
+    override fun errorBasenameNotAFile(path: String) =
+        "Il metodo 'basename' richiede un file, non una directory. '${path}' non sembra proprio essere un file. Se devi eseguire un compito su una directory, puoi adoperare uno dei metodi delle API Java."
+
+    override val errorCalculateHashIoException =
+        "Per qualche motivo, non ho potuto calcolare un hash. Purtroppo non ho idea del perché sia andata male. Forse il file è stato spostato o cancellato durante l'operazione di hashing. O forse non ho i permessi necessari per leggere il file."
+
+    override fun errorCheckBooleanNotValidBoolean(value: String) =
+        "Sembra che '${value}' non sia un valore booleano valido. Penso che sia facile correggerlo. Assicurati di adoperare una stringa valida che rappresenti un valore booleano (yes e no, true e false, 1 e 0, oppure on e off)."
+
+    override fun errorCheckRegexIoException(file: String) =
+        "Non sono riuscito a leggere il contenuto del file '${file}' e ho ricevuto in errore di I/O. Purtroppo non ho idea del perché sia andata male. Forse il file è stato spostato o cancellato durante l'operazione di hashing. O forse non ho i permessi necessari per leggere il file."
+
+    override val errorConfigurationGenericError =
+        "Non sono riuscito a leggere il file di configurazione, è successo qualcosa che non va. Questa parte è un po' complicata, perché riguarda aspetti del formato interno di serializzazione dei dati. Farò del mio meglio per darti una mano, per quanto posso."
+
+    override val errorConfigurationLoopsInvalidRange =
+        "Il valore definito nella chiave 'loops' del file di configurazione per stabilire il massimo numero di cicli ha un intervallo non valido. Assicurati che sia un valore 'lungo' e positivo."
+
+    override fun errorDiscoverFileFileNotFound(file: String, details: String) =
+        "Non sono riuscito a trovare il file '${file}' ${details}. Assicurati che il file esista e abbia un'estensione valida."
+
+    override val errorEvaluateCompilationFailed =
+        "Per qualche ragione, non sono riuscito a compilare l'espressione del condizionale fornito. Questa parte è un po' complicata, perché riguarda aspetti del linguaggio interno per le espressioni. Farò del mio meglio per darti una mano, per quanto posso."
+
+    override val errorEvaluateNotBooleanValue =
+        "La valutazione del condizionale si aspettava un valore booleano come risultato. Dovrebbe essere facile correggerlo. Assicurati che la valutazione del condizionale fornisca alla fine un valore booleano."
+
+    override val errorExtractorIoError =
+        "C'è stato un errore di I/O mentre provavo a estrarre le direttive. Purtroppo non ho idea del perché sia andata male. Forse il file è stato spostato o cancellato prima o durante l'operazione di hashing. O forse non ho i permessi necessari per leggere il file."
+
+    override val errorExtractorInterpolationFailure =
+        "Il campo 'options' ha un contenuto che il parser MVEL non riesce a gestire. Correggi le opzioni in modo che non contengano parti di forma scorretta con '@{...}'."
+
+    override val errorExtractorOrbTagInLuaEngine =
+        "Il campo 'options' contiene un tag orb del motore YAML deprecato, che il motore Lua non può interpolare. Correggi la voce riscrivendola con i tag '{{ … }}'."
+
+    override fun errorFiletypeNotAFile(path: String) =
+        "Il metodo 'filetype' richiede un file, non una directory. '${path}' non sembra proprio essere un file. Se devi eseguire un compito su una directory, puoi adoperare uno dei metodi delle API Java."
+
+    override fun errorFiletypeUnknownExtension(extension: String, extensions: String) =
+        "Non riconosco '${extension}' come un'estensione standard. Se vuoi definire un nuovo tipo di file, assicurati di fornire l'estensione e lo schema. Queste sono le estensioni standard: ${extensions}"
+
+    override val errorGetApplicationPathEncodingException =
+        "C'è stato un problema di codifica mentre tentavo di ottenere il percorso dell'applicazione. Non c'è molto che possa fare al riguardo."
+
+    override fun errorInterpreterArgumentIsRequired(argument: String) =
+        "Sembra che '${argument}' sia contrassegnato come obbligatorio nella regola, ma non l'ho trovato nei parametri della direttiva. Assicurati di aggiungerlo come parametro nella direttiva e riprova."
+
+    override val errorInterpreterCommandRuntimeError =
+        "Non ho potuto valutare uno dei comandi forniti. Questa parte è un po' complicata perché coinvolge aspetti del linguaggio per le espressioni sottostante. Farò del mio meglio per darti una mano, per quanto posso."
+
+    override fun errorInterpreterCommandUnsuccessfulExit(command: String) =
+        "Il comando \"${command}\" ha dato un esito inaspettato, con codice di ritorno non a zero. Guarda l'output per valutare le eventuali azioni da intraprendere."
+
+    override val errorInterpreterUserRequestedHalt =
+        "A seguito di una tua richiesta (o di una regola), arara ora interromperà l'esecuzione."
+
+    override val errorInterpreterExitRuntimeError =
+        "Non sono riuscito a valutare lo stato di uscita di uno dei comandi forniti. Questa parte è un po' complicata perché coinvolge aspetti del linguaggio per le espressioni sottostante. Farò del mio meglio per darti una mano, per quanto posso."
+
+    override val errorInterpreterFlagRuntimeException =
+        "Non ho potuto valutare la flag di uno degli argomenti. Questa parte è un po' complicata perché coinvolge aspetti del linguaggio per le espressioni sottostante. Farò del mio meglio per darti una mano, per quanto posso."
+
+    override fun errorInterpreterHaltStatusNotANumber(key: String) =
+        "Sembra che il valore contenuto nella chiave di sessione di arresto \"${key}\" non sia un numero valido, quindi non posso riportare lo stato di arresto richiesto. Dovrebbe essere facile correggere: assicurati che lo stato di arresto sia un numero e riprova."
+
+    override fun errorInterpreterRuleNotFound(identifier: String, expected: String, paths: String) =
+        "Non sono riuscito a trovare una regola chiamata '${identifier}' nei percorsi per le regole impostati. Forse una parola scritta sbagliata? Stavo cercando un file con il nome '${expected}.yaml' nei seguenti percorsi in ordine di priorità: ${paths}"
+
+    override fun errorInterpreterUnknownKeys(keys: String) =
+        "Ho trovato queste chiavi sconosciute nella direttiva: ${keys}. Dovrebbbe essere facile correggere, toglile dalla mappa."
+
+    override val errorInterpreterWrongExitClosureReturn =
+        "L'espressione di 'uscita' deve essere sempre un valore booleano (anche se non c'è alcun calcolo nella parte di chiusura). Dovrebbe essere facile correggere: assicurati che l'asserzione del 'type return' sia giusta e riprova."
+
+    override val errorInterpreterWrongReturnType =
+        "Una regola dovrebbe restituire solo un booleano o un comando. Altri tipi di risposta non sono supportati."
+
+    override val errorInvalidProjectFile =
+        "Ho letto un file che avrebbe dovuto essere un progetto. Purtroppo si è rivelato né un progetto né una lista di progetti. Per favore, controlla che il tuo file di progetto segua il formato documentato."
+
+    override fun errorLoadCouldNotLoadDatabase(name: String) =
+        "Non ho potuto caricare il database YAML di nome '${name}'. Purtroppo non ho idea del perché sia andata male. Forse il file è stato spostato o cancellato prima o durante l'operazione di lettura. O forse non ho i permessi necessari per leggere il file. Già che ci siamo, assicurati che il file YAML sia ben formato."
+
+    override fun errorParserInvalidPreamble(name: String) =
+        "Mi dispiace, ma non è stato possibile trovare il preambolo '${name}'. Assicurati che questa chiave esista nel file di configurazione."
+
+    override val errorParseRuleGenericError =
+        "Non ho potuto analizzare la regola, qualcosa è andato storto. Questa parte è un po' complicata, perché riguarda aspetti del formato interno di serializzazione dei dati. Farò del mio meglio per darti una mano, per quanto posso."
+
+    override fun errorParseRuleUnsupportedFormat(rule: String, location: String, format: String) =
+        "Ho trovato un errore nella regola \"${rule}\" situata in \"${location}\". Il formato della regola \"${format}\" non è supportato da arara."
+
+    override fun errorProjectCycle(cycle: String) =
+        "Le dipendenze del progetto contengono un ciclo che coinvolge ${cycle}. I cicli non possono essere risolti. Per favore, rivedi la specifica del tuo progetto."
+
+    override val errorReplicateListMissingFormatArgumentsException =
+        "Non sono riuscito a replicare la lista perché manca un argomento per il formato. Penso che si tratti di un numero sbagliato di parametri. Assicurati che il numero di parametri sia corretto e riprova."
+
+    override fun errorRuleIdentifierAndPath(identifier: String, location: String) =
+        "Ho trovato un errore nella regola '${identifier}' alla posizione '${location}'."
+
+    override val errorRunGenericException =
+        "Non ho potuto lanciare il comando di sistema richiesto, qualcosa è andato storto. Questa parte è un po' complicata, perché riguarda aspetti del linguaggio interno per le espressioni. Farò del mio meglio per darti una mano, per quanto posso."
+
+    override val errorRunInterruptedException =
+        "L'esecuzione del comando di sistema richiesto si è interrotta inaspettatamente. Forse un'interruzione esterna ha forzato il comando a terminare."
+
+    override val errorRunInvalidExitValueException =
+        "Il comando di sistema richiesto ha restituito un valore di uscita non valido."
+
+    override val errorRunIoException =
+        "L'esecuzione del comando di sistema è fallita per via di un errore di I/O. Sei sicuro che il programma esista nei tuoi percorsi? Meglio controllare se il programma è davvero disponibile."
+
+    override val errorRunTimeoutException =
+        "L'esecuzione del comando di sistema ha raggiunto il valore di timeout impostato ed è stata interrotta. Se il tempo è troppo breve, assicurati di impostarne uno più lungo."
+
+    override fun errorSaveCouldNotSaveDatabase(name: String) =
+        "Non ho potuto salvare il database YAML con il nome '${name}'. Purtroppo non ho idea del perché sia successo. Forse non ho i permessi appropriati per scrivere il file YAML sul disco."
+
+    override fun errorSessionObtainUnknownKey(key: String) =
+        "Il metodo 'get' ha trovato una chiave sconosciuta '${key}' nell'ambito della sessione. Non posso ottenere qualcosa che non ho da nessuna parte. Specifica una chiave valida e riprova."
+
+    override fun errorSessionRemoveUnknownKey(key: String) =
+        "Il metodo 'remove' ha trovato una chiave sconosciuta '${key}' nell'ambito della sessione. Non posso ottenere qualcosa che non ho da nessuna parte. Specifica una chiave valida e riprova."
+
+    override fun errorValidateEmptyFilesList(directive: String) =
+        "Ho letto la direttiva ${directive}, ma la lista 'files' fornita è vuota. Puoi correggerlo facilmente assicurandoti che la lista abbia almeno un elemento, poi riprova."
+
+    override fun errorValidateFilesIsNotAList(directive: String) =
+        "Ho letto la direttiva ${directive} e ho scoperto che 'files' richiede una lista. Assicurati di correggere il tipo a una lista appropriata e riprova."
+
+    override fun errorValidateInvalidDirectiveFormat(directive: String) =
+        "Ho visto nel file fornito la direttiva ${directive} che non è valida. Assicurati di correggere la direttiva e riprova."
+
+    override val errorValidateNoDirectivesFound =
+        "Sembra che nel file fornito non ci siano direttive. Assicurati che ce ne sia almeno una e riprova."
+
+    override fun errorValidateOrphanLinebreak(line: Int) =
+        "Sembra che ci sia un fine riga che lascia orfana una direttiva alla riga ${line}. Non posso andare avanti. Correggi la direttiva e riprova."
+
+    override fun errorValidateReferenceIsReserved(directive: String) =
+        "Ho letto la direttiva ${directive} dove è stata usata la chiave 'reference'. Questa chiave è riservata e non puoi usarla. Non preoccuparti, lo metti facilmente a posto dando un altro nome."
+
+    override fun errorValidateYamlException(directive: String) =
+        "C'è stato un problema con la mappa YAML fornita con la direttiva ${directive}. Questa parte è un po' complicata, perché riguarda aspetti del formato interno di serializzazione dei dati. Farò del mio meglio per darti una mano, per quanto posso."
+
+    override fun errorValidateBodyArgumentIdIsReserved(identifier: String) =
+        "L'identificatore dell'argomento '${identifier}' è riservato, quindi non puoi adoperarlo. È facile correggerlo: chiamalo in modo diverso."
+
+    override val errorValidateBodyDuplicateArgumentIdentifiers =
+        "Sembra che tu abbia identificatori di argomenti duplicati nella tua regola. Correggi e riprova."
+
+    override val errorValidateBodyMissingKeys =
+        "Quando si definisce un ambito per l'argomento in una regola bisogna adoperare almeno 'flag' o 'default'. Assicurati che ci sia uno di questi."
+
+    override val errorValidateBodyNullArgumentId =
+        "Ho trovato che uno degli argomenti non ha identificatore. Assicurati di assegnare un identificatore all'argomento e riprova."
+
+    override val errorValidateBodyNullCommand =
+        "Ho trovato un comando 'nullo' nella regola fornita. Dovrebbe essere facile correggere: aggiungi un comando valido alla regola."
+
+    override val errorValidateHeaderNullName =
+        "La regola fornita non ha nome. È facile correggere: specifica un nome valido e riprova."
+
+    override fun errorValidateHeaderWrongIdentifier(expected: String, found: String) =
+        "La regola ha un identificatore sbagliato. Mi sarei aspettato '${expected}', ma ho trovato '${found}'. È facile correggere: correggi l'identificatore sbagliato con quello giusto."
+
+    override val infoDisplayExceptionMoreDetails =
+        "Ci sono altri dettagli riguardo a questa eccezione:"
+
+    override fun infoDisplayExecutionTime(time: String) =
+        "Totale: ${time} secondi"
+
+    override fun infoDisplayFileInformation(name: String, size: String, lastModified: String) =
+        "Elaborazione '${name}' (totale: ${size}, modificato il: ${lastModified}), attendere."
+
+    override fun infoInterpreterDryRunModeBooleanMode(value: Boolean) =
+        "Sebbene stia eseguendo in modo 'dry-run', questo elemento potrebbe essere già stato elaborato, perché ha restituito un valore booleano: ${value}"
+
+    override fun infoInterpreterDryRunModeSystemCommand(command: String) =
+        "Sto per lanciare: ${command}"
+
+    override val infoInterpreterLuaFileNotAProject =
+        "Sembra che il file Lua fornito non possa essere interpretato come specifica di progetto, quindi lo tratterò come un normale file di input. Se doveva essere una specifica di progetto, consulta il registro per i dettagli su cosa è andato storto."
+
+    override val infoLabelAuthor =
+        "Autore:"
+
+    override val infoLabelAuthors =
+        "Autori:"
+
+    override val infoLabelConditional =
+        "Condizionale:"
+
+    override val infoLabelNoAuthors =
+        "Nessun autore specificato"
+
+    override val infoLabelOnDetails =
+        "DETAILS"
+
+    override val infoLabelOnError =
+        "ERROR"
+
+    override val infoLabelOnFailure =
+        "FAILURE"
+
+    override val infoLabelOnSuccess =
+        "SUCCESS"
+
+    override val infoLabelUnnamedTask =
+        "Compito senza nome"
+
+    override val infoParserNotes =
+        "arara stesso è rilasciato in accordo con la licenza New BSD."
+}

@@ -3,7 +3,6 @@ package org.islandoftex.arara.core.ui
 
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.utils.formatString
 
 /**
  * Handle user and evaluation input in directives and rules.
@@ -23,8 +22,8 @@ object InputHandling {
         val no = listOf("no", "false", "0", "off")
         return if (!yes.union(no).contains(value.lowercase())) {
             throw AraraException(
-                LanguageController.messages.ERROR_CHECKBOOLEAN_NOT_VALID_BOOLEAN
-                    .formatString(value)
+                LanguageController.messages
+                    .errorCheckBooleanNotValidBoolean(value)
             )
         } else {
             yes.contains(value.lowercase())

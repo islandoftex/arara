@@ -35,7 +35,7 @@ object LuaInterpolation {
         if ("@{" in template) {
             throw AraraException(
                 LanguageController.messages
-                    .ERROR_EXTRACTOR_ORB_TAG_IN_LUA_ENGINE
+                    .errorExtractorOrbTagInLuaEngine
             )
         }
         val result = StringBuilder()
@@ -50,7 +50,7 @@ object LuaInterpolation {
             val end = findTagEnd(template, start + 2)
                 ?: throw AraraException(
                     LanguageController.messages
-                        .ERROR_EXTRACTOR_INTERPOLATION_FAILURE,
+                        .errorExtractorInterpolationFailure,
                     AraraException(
                         "The interpolation tag starting at position " +
                             "$start is not terminated."
@@ -115,7 +115,7 @@ object LuaInterpolation {
         } catch (error: LuaError) {
             throw AraraException(
                 LanguageController.messages
-                    .ERROR_EXTRACTOR_INTERPOLATION_FAILURE,
+                    .errorExtractorInterpolationFailure,
                 error
             )
         }

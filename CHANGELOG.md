@@ -230,6 +230,16 @@ on.
 
 ## Removed
 
+* **Breaking:** The message catalog is redesigned and leaves the public
+  API module. Messages are now typed members of an internal interface -
+  zero-argument messages as values, parameterized messages as functions
+  with typed, named parameters - with one implementation per locale.
+  The compiler enforces what the old catalog could not: a locale that
+  misses a message fails the build instead of silently falling back to
+  English, and a wrong argument is a compile error instead of runtime
+  garbage. Translations may order their arguments freely; the positional
+  placeholder machinery is gone. Console messages keep their exact
+  texts; the change is invisible to users.
 * **Breaking:** The twelve log message constants are removed from the
   public message class. Log lines are always English now, hardcoded
   at their sites, regardless of the configured language: log files are

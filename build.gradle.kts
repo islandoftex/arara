@@ -407,7 +407,6 @@ subprojects {
             compilerOptions {
                 allWarningsAsErrors.set(warningsAsErrors)
                 optIn.addAll(
-                        "org.islandoftex.arara.api.localization.AraraMessages",
                         "kotlin.time.ExperimentalTime"
                 )
             }

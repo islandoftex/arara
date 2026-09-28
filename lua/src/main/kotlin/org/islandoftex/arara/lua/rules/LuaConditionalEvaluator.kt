@@ -48,7 +48,7 @@ class LuaConditionalEvaluator(
             // wraps both behind the localized evaluation error, with
             // the binding message available as the cause
             throw AraraException(
-                LanguageController.messages.ERROR_EVALUATE_COMPILATION_FAILED,
+                LanguageController.messages.errorEvaluateCompilationFailed,
                 exception
             )
         }
@@ -62,7 +62,7 @@ class LuaConditionalEvaluator(
                 value
         } else {
             throw AraraException(
-                LanguageController.messages.ERROR_EVALUATE_NOT_BOOLEAN_VALUE
+                LanguageController.messages.errorEvaluateNotBooleanValue
             )
         }
     }

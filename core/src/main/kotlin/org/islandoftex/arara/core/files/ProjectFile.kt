@@ -79,7 +79,7 @@ open class ProjectFile(
             )
         } catch (ioexception: AraraIOException) {
             throw AraraException(
-                LanguageController.messages.ERROR_EXTRACTOR_IO_ERROR,
+                LanguageController.messages.errorExtractorIoError,
                 ioexception
             )
         }

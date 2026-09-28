@@ -19,7 +19,6 @@ import org.islandoftex.arara.core.session.SystemCommandResult
 import org.islandoftex.arara.core.ui.GUIDialogs
 import org.islandoftex.arara.core.ui.InputHandling
 import org.islandoftex.arara.core.utils.MethodUtils
-import org.islandoftex.arara.core.utils.formatString
 
 @Suppress("TooManyFunctions")
 /**
@@ -106,7 +105,7 @@ object RuleMethods {
         } else {
             throw AraraExceptionWithHeader(
                 LanguageController.messages
-                    .ERROR_BASENAME_NOT_A_FILE.formatString(file.fileName)
+                    .errorBasenameNotAFile(file.fileName)
             )
         }
 
@@ -135,7 +134,7 @@ object RuleMethods {
         } else {
             throw AraraExceptionWithHeader(
                 LanguageController.messages
-                    .ERROR_FILETYPE_NOT_A_FILE.formatString(file.fileName)
+                    .errorFiletypeNotAFile(file.fileName)
             )
         }
 
