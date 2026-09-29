@@ -43,6 +43,7 @@ object TerminalDialogs {
     fun showMessage(type: Int, title: String, text: String) {
         printBlock(type, title, text)
         println()
+        println(separator())
     }
 
     /**
@@ -51,7 +52,8 @@ object TerminalDialogs {
      * @param title Title of the message.
      * @param text Text of the message.
      * @param buttons An array of objects to be presented as buttons.
-     * @return The index of the selected button, starting from 1.
+     * @return The index of the selected button, starting from 1; an
+     * empty button list offers nothing, so it yields zero.
      */
     fun showOptions(
         type: Int,
@@ -59,6 +61,8 @@ object TerminalDialogs {
         text: String,
         buttons: Array<out Any>
     ): Int {
+        if (buttons.isEmpty())
+            return 0
         printBlock(type, title, text)
         println()
         printEntries(buttons.map { it.toString() })
@@ -77,7 +81,10 @@ object TerminalDialogs {
         printBlock(type, title, text)
         println()
         print("> ")
-        return (readlnOrNull() ?: "").trim()
+        return (readlnOrNull() ?: "").trim().also {
+            println()
+            println(separator())
+        }
     }
 
     /**
@@ -88,7 +95,8 @@ object TerminalDialogs {
      * @param title Title of the message.
      * @param text Text of the message.
      * @param elements An array of objects representing the elements.
-     * @return The index of the selected element, starting from 1.
+     * @return The index of the selected element, starting from 1; an
+     * empty element list offers nothing, so it yields zero.
      */
     fun showDropdown(
         type: Int,
@@ -96,6 +104,8 @@ object TerminalDialogs {
         text: String,
         elements: Array<out Any>
     ): Int {
+        if (elements.isEmpty())
+            return 0
         printBlock(type, title, text)
         println()
         printEntries(elements.map { it.toString() })
