@@ -17,7 +17,7 @@ import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.cli.ruleset.RuleEngine
 import org.islandoftex.arara.cli.ruleset.RuleUtils
-import org.islandoftex.arara.cli.utils.DisplayUtils
+import org.islandoftex.arara.cli.utils.Display
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.DirectiveConditionalEvaluator as ConditionalEvaluator
 import org.islandoftex.arara.core.session.Session
@@ -125,12 +125,12 @@ class Interpreter(
         }
 
         if (executionOptions.executionMode == ExecutionMode.DRY_RUN) {
-            DisplayUtils.printAuthors(authors)
-            DisplayUtils.printWrapped(
+            Display.printAuthors(authors)
+            Display.printWrapped(
                 LanguageController.messages
                     .infoInterpreterDryRunModeBooleanMode(it)
             )
-            DisplayUtils.printConditional(conditional)
+            Display.printConditional(conditional)
         }
     }
 
@@ -161,14 +161,14 @@ class Interpreter(
             val code = InterpreterUtils.run(command)
             success = exitCheck(code)
         } else {
-            DisplayUtils.printAuthors(authors)
-            DisplayUtils.printWrapped(
+            Display.printAuthors(authors)
+            Display.printWrapped(
                 LanguageController.messages
                     .infoInterpreterDryRunModeSystemCommand(
                         command.toString()
                     )
             )
-            DisplayUtils.printConditional(conditional)
+            Display.printConditional(conditional)
         }
 
         return success
@@ -270,7 +270,7 @@ class Interpreter(
         }
         return results.filter { it.toString().isNotBlank() }
             .fold(ExecutionStatus.Processing() as ExecutionStatus) { _, current ->
-                DisplayUtils.printEntry(
+                Display.printEntry(
                     rule.displayName!!,
                     command.name
                         ?: LanguageController.messages.infoLabelUnnamedTask
@@ -292,7 +292,7 @@ class Interpreter(
                         )
                 }
 
-            DisplayUtils.printEntryResult(success)
+            Display.printEntryResult(success)
             when {
                 Session.contains(haltKey) ->
                     throw HaltExpectedException(

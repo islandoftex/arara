@@ -9,7 +9,7 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
-import org.islandoftex.arara.core.configuration.ConfigurationUtils
+import org.islandoftex.arara.core.configuration.DefaultConfiguration
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
@@ -23,7 +23,7 @@ import org.islandoftex.arara.core.utils.wrap
  * @since 4.0
  */
 @Suppress("TooManyFunctions")
-object DisplayUtils {
+object Display {
     private val logger = KotlinLogging.logger { }
 
     /**
@@ -90,7 +90,7 @@ object DisplayUtils {
      */
     internal val applicationPath: String
         get() = try {
-            ConfigurationUtils.applicationPath.toString()
+            DefaultConfiguration.applicationPath.toString()
         } catch (_: AraraException) {
             "[unknown application path]"
         }

@@ -42,11 +42,11 @@ import org.islandoftex.arara.api.files.toMPPPath
 import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.session.ExecutionStatus
-import org.islandoftex.arara.cli.configuration.ConfigurationUtils
-import org.islandoftex.arara.cli.ruleset.DirectiveUtils
+import org.islandoftex.arara.cli.configuration.ConfigurationFiles
+import org.islandoftex.arara.cli.ruleset.DirectiveProcessing
 import org.islandoftex.arara.cli.ruleset.RuleEngine
-import org.islandoftex.arara.cli.utils.DisplayUtils
-import org.islandoftex.arara.cli.utils.LoggingUtils
+import org.islandoftex.arara.cli.utils.Display
+import org.islandoftex.arara.cli.utils.Logging
 import org.islandoftex.arara.cli.utils.load
 import org.islandoftex.arara.cli.utils.printFileInformation
 import org.islandoftex.arara.cli.utils.toMap
@@ -97,7 +97,7 @@ class CLI : CliktCommand("arara") {
      */
     override fun help(context: Context) = """
         @```
-        ${DisplayUtils.logoString.lineSequence().joinToString("\n") { "@$it" }}
+        ${Display.logoString.lineSequence().joinToString("\n") { "@$it" }}
         @```
         @
         @The cool TeX automation tool.
@@ -192,7 +192,7 @@ class CLI : CliktCommand("arara") {
                     LuaInterpreter(workingDir).parseProjectsFromLua(luaScript)
                 }.getOrElse {
                     if (it is AraraException) {
-                        DisplayUtils.printWrapped(
+                        Display.printWrapped(
                             LanguageController.messages
                                 .infoInterpreterLuaFileNotAProject + "\n"
                         )
@@ -244,9 +244,9 @@ class CLI : CliktCommand("arara") {
         projects: List<org.islandoftex.arara.api.files.Project>
     ) {
         projects.forEach { project ->
-            ConfigurationUtils.configFileForProject(project)?.let {
-                DisplayUtils.configurationFileName = it.toString()
-                ConfigurationUtils.load(it, project)
+            ConfigurationFiles.configFileForProject(project)?.let {
+                Display.configurationFileName = it.toString()
+                ConfigurationFiles.load(it, project)
             }
         }
     }
@@ -336,16 +336,16 @@ class CLI : CliktCommand("arara") {
         // initializing logging has to come first; init() actually disables
         // the logging, so early exceptions won't generate a lot of noise in
         // the terminal
-        LoggingUtils.init()
+        Logging.init()
 
-        println("${DisplayUtils.logoString}\n")
+        println("${Display.logoString}\n")
 
         val executionStart = TimeSource.Monotonic.markNow()
         updateConfigurationFromCommandLine()
 
         // logging has to be initialized only once and for all because
         // context resets lead to missing output
-        LoggingUtils.setupLogging(Session.loggingOptions)
+        Logging.setupLogging(Session.loggingOptions)
 
         // add all key/value pairs found in the properties file, if
         // provided in the command line
@@ -361,7 +361,7 @@ class CLI : CliktCommand("arara") {
                     Session.updateEnvironmentVariables()
                     // directive processing has to be initialized, so that the core
                     // component respects our MVEL processing
-                    DirectiveUtils.initializeDirectiveCore()
+                    DirectiveProcessing.initializeDirectiveCore()
                 },
                 executeBeforeProject = {
                     // the configuration file of each project is loaded in
@@ -379,7 +379,7 @@ class CLI : CliktCommand("arara") {
                     println()
                 },
                 processDirectives = { file, list ->
-                    DirectiveUtils.process(
+                    DirectiveProcessing.process(
                         file,
                         list
                             .takeIf { list.isNotEmpty() && !MvelState.prependPreambleIfDirectivesGiven }
@@ -396,13 +396,13 @@ class CLI : CliktCommand("arara") {
         } catch (ex: AraraException) {
             // catch a propagated exception to replace intentionally left
             // out local treatment
-            DisplayUtils.printException(ex)
+            Display.printException(ex)
             ExecutionStatus.CaughtException()
         }.let { executionStatus ->
             // print the execution time if the command line parsing does not
             // return false as result (it makes no sense to print the execution
             // time for a help message)
-            DisplayUtils.printTime(executionStart.elapsedNow().toDouble(DurationUnit.SECONDS))
+            Display.printTime(executionStart.elapsedNow().toDouble(DurationUnit.SECONDS))
 
             throw ProgramResult(executionStatus.exitCode)
         }
@@ -431,7 +431,7 @@ fun main(args: Array<String>) {
         .versionOption(
             AraraAPI.version, names = setOf("-V", "--version"),
             message = {
-                "${DisplayUtils.logoString}\n\n" +
+                "${Display.logoString}\n\n" +
                     "arara ${AraraAPI.version}\n" +
                     "Copyright (c) ${LocalDate.now().year}, Island of TeX\n" +
                     LanguageController.messages.infoParserNotes + "\n\n" +

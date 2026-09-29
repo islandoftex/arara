@@ -7,7 +7,7 @@ import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.cli.ruleset.DirectiveImpl
-import org.islandoftex.arara.cli.ruleset.DirectiveUtils
+import org.islandoftex.arara.cli.ruleset.DirectiveProcessing
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.Project
@@ -41,7 +41,7 @@ class NullOptionTest {
 
     @BeforeAll
     fun setUp() {
-        DirectiveUtils.initializeDirectiveCore()
+        DirectiveProcessing.initializeDirectiveCore()
     }
 
     @AfterAll
@@ -58,7 +58,7 @@ class NullOptionTest {
             ExecutionOptions(rulePaths = setOf(rulePath))
         LinearExecutor.hooks = ExecutorHooks(
             processDirectives = { file, list ->
-                DirectiveUtils.process(file, list).map { directive ->
+                DirectiveProcessing.process(file, list).map { directive ->
                     @Suppress("UNCHECKED_CAST")
                     DirectiveImpl(
                         directive.identifier,

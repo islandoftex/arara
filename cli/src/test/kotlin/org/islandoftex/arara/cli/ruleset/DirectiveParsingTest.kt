@@ -25,7 +25,7 @@ import org.junit.jupiter.api.TestInstance
 class DirectiveParsingTest {
     @BeforeAll
     fun setUp() {
-        DirectiveUtils.initializeDirectiveCore()
+        DirectiveProcessing.initializeDirectiveCore()
     }
 
     private fun extract(content: String): List<org.islandoftex.arara.api.rules.Directive> {
@@ -81,7 +81,7 @@ class DirectiveParsingTest {
         val directives = extract(
             "% arara: dummy: { files: [ 'a.tex', 'b.tex' ] }\n"
         )
-        val replicated = DirectiveUtils.process(projectFile, directives)
+        val replicated = DirectiveProcessing.process(projectFile, directives)
         assertEquals(2, replicated.size, "the directive replicates over each file")
         assertTrue(
             replicated.all { it.parameters.containsKey("reference") },
@@ -96,10 +96,10 @@ class DirectiveParsingTest {
             FileType("tex", "^%.*")
         )
         assertFailsWith<AraraException> {
-            DirectiveUtils.process(projectFile, extract("% arara: dummy: { files: [] }\n"))
+            DirectiveProcessing.process(projectFile, extract("% arara: dummy: { files: [] }\n"))
         }
         assertFailsWith<AraraException> {
-            DirectiveUtils.process(
+            DirectiveProcessing.process(
                 projectFile,
                 extract("% arara: dummy: { files: 'a.tex' }\n")
             )
@@ -113,7 +113,7 @@ class DirectiveParsingTest {
             FileType("tex", "^%.*")
         )
         assertFailsWith<AraraException> {
-            DirectiveUtils.process(
+            DirectiveProcessing.process(
                 projectFile,
                 extract("% arara: dummy: { reference: 'x' }\n")
             )

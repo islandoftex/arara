@@ -15,7 +15,7 @@ import org.islandoftex.arara.core.files.Project
  * fallback to the Lua format when no YAML file exists, and the
  * rejections of unsupported formats and invalid values.
  */
-class ConfigurationUtilsTest {
+class ConfigurationFilesTest {
     private fun projectIn(directory: java.nio.file.Path): Project =
         Project("test", MPPPath(directory.toString()), setOf())
 
@@ -24,7 +24,7 @@ class ConfigurationUtilsTest {
         val directory = Files.createTempDirectory("arara-config-order")
         Files.writeString(directory.resolve("arararc.yaml"), "!config\n")
         Files.writeString(directory.resolve("arararc.lua"), "return { }")
-        val resolved = ConfigurationUtils.configFileForProject(projectIn(directory))
+        val resolved = ConfigurationFiles.configFileForProject(projectIn(directory))
         assertEquals(
             "arararc.yaml",
             resolved?.fileName,
@@ -36,7 +36,7 @@ class ConfigurationUtilsTest {
     fun `falls back to the Lua configuration`() {
         val directory = Files.createTempDirectory("arara-config-lua")
         Files.writeString(directory.resolve(".araraconfig.lua"), "return { }")
-        val resolved = ConfigurationUtils.configFileForProject(projectIn(directory))
+        val resolved = ConfigurationFiles.configFileForProject(projectIn(directory))
         assertEquals(
             ".araraconfig.lua",
             resolved?.fileName,
@@ -52,7 +52,7 @@ class ConfigurationUtilsTest {
         assertFailsWith<AraraException>(
             "an unsupported configuration format is rejected"
         ) {
-            ConfigurationUtils.load(
+            ConfigurationFiles.load(
                 MPPPath(bogus.toString()), projectIn(directory)
             )
         }
@@ -66,7 +66,7 @@ class ConfigurationUtilsTest {
         assertFailsWith<AraraException>(
             "a non positive loop count is rejected"
         ) {
-            ConfigurationUtils.load(
+            ConfigurationFiles.load(
                 MPPPath(config.toString()), projectIn(directory)
             )
         }

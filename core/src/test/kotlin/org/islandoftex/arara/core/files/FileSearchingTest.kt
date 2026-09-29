@@ -14,7 +14,7 @@ import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.files.toMPPPath
-import org.islandoftex.arara.core.configuration.ConfigurationUtils
+import org.islandoftex.arara.core.configuration.DefaultConfiguration
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.Nested
@@ -170,7 +170,7 @@ class FileSearchingTest {
             )
             assertEquals("tex", projectFile.fileType.extension, "file type extension")
             assertEquals(
-                ConfigurationUtils.defaultFileTypePatterns["tex"],
+                DefaultConfiguration.defaultFileTypePatterns["tex"],
                 projectFile.fileType.pattern,
                 "file type pattern of the default tex type"
             )
@@ -192,7 +192,7 @@ class FileSearchingTest {
             )
             assertEquals("tex", projectFile.fileType.extension, "file type extension")
             assertEquals(
-                ConfigurationUtils.defaultFileTypePatterns["tex"],
+                DefaultConfiguration.defaultFileTypePatterns["tex"],
                 projectFile.fileType.pattern,
                 "file type pattern of the default tex type"
             )
@@ -217,7 +217,7 @@ class FileSearchingTest {
             )
             assertEquals("tex", projectFile.fileType.extension, "file type extension")
             assertEquals(
-                ConfigurationUtils.defaultFileTypePatterns["tex"],
+                DefaultConfiguration.defaultFileTypePatterns["tex"],
                 projectFile.fileType.pattern,
                 "file type pattern of the default tex type"
             )

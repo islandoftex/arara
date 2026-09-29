@@ -14,7 +14,7 @@ import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.cli.ruleset.RuleFormat
-import org.islandoftex.arara.cli.utils.DisplayUtils
+import org.islandoftex.arara.cli.utils.Display
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
@@ -103,11 +103,11 @@ internal object InterpreterUtils {
                 }
                 logger.info {
                     """
-                        ${DisplayUtils.displayOutputSeparator(
+                        ${Display.displayOutputSeparator(
                         "BEGIN OUTPUT BUFFER"
                     )}
                         ${result.output}
-                        ${DisplayUtils.displayOutputSeparator(
+                        ${Display.displayOutputSeparator(
                         "END OUTPUT BUFFER"
                     )}
                     """.trimIndent()

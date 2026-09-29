@@ -31,7 +31,7 @@ import org.islandoftex.arara.core.session.Session
  * presentation state rides the session and the execution options,
  * which are saved and restored around every test.
  */
-class DisplayUtilsTest {
+class DisplayTest {
     private val originalOptions = LinearExecutor.executionOptions
     private val originalUserInterface = Session.userInterfaceOptions
 
@@ -77,8 +77,8 @@ class DisplayUtilsTest {
     fun `prints entries in every mode shape`() {
         val short = withOptions(ExecutionMode.NORMAL_RUN, false) {
             capturingOutput {
-                DisplayUtils.printEntry("rule", "run")
-                DisplayUtils.printEntryResult(true)
+                Display.printEntry("rule", "run")
+                Display.printEntryResult(true)
             }
         }
         assertTrue("rule" in short, "the short entry names the rule")
@@ -86,15 +86,15 @@ class DisplayUtilsTest {
 
         val long = withOptions(ExecutionMode.NORMAL_RUN, true) {
             capturingOutput {
-                DisplayUtils.printEntry("rule", "run")
-                DisplayUtils.printEntry("other", "run")
+                Display.printEntry("rule", "run")
+                Display.printEntry("other", "run")
             }
         }
         assertTrue(long.count { it == '\n' } >= 4, "long entries roll with separators")
 
         val dry = withOptions(ExecutionMode.DRY_RUN, false) {
             capturingOutput {
-                DisplayUtils.printEntry("rule", "run")
+                Display.printEntry("rule", "run")
             }
         }
         assertTrue("[DR]" in dry, "dry runs mark their entries")
@@ -104,9 +104,9 @@ class DisplayUtilsTest {
     fun `prints exceptions with their details`() {
         val withCause = withOptions(ExecutionMode.NORMAL_RUN, false) {
             capturingOutput {
-                DisplayUtils.printEntry("rule", "run")
-                DisplayUtils.printEntryResult(false)
-                DisplayUtils.printException(
+                Display.printEntry("rule", "run")
+                Display.printEntryResult(false)
+                Display.printException(
                     AraraException("the failure", RuntimeException("the cause"))
                 )
             }
@@ -116,8 +116,8 @@ class DisplayUtilsTest {
         assertTrue("FAILURE" in withCause, "the entry result precedes the exception")
 
         val withoutCause = capturingOutput {
-            DisplayUtils.printEntryResult(true)
-            DisplayUtils.printException(AraraException("plain failure"))
+            Display.printEntryResult(true)
+            Display.printException(AraraException("plain failure"))
         }
         assertTrue("plain failure" in withoutCause)
         assertFalse("the cause" in withoutCause, "no cause, no details section")
@@ -127,8 +127,8 @@ class DisplayUtilsTest {
     fun `prints exceptions verbosely and names causeless details`() {
         val verbose = withOptions(ExecutionMode.NORMAL_RUN, true) {
             capturingOutput {
-                DisplayUtils.printEntry("rule", "run")
-                DisplayUtils.printException(AraraException("verbose failure"))
+                Display.printEntry("rule", "run")
+                Display.printException(AraraException("verbose failure"))
             }
         }
         assertTrue("verbose failure" in verbose, "the verbose mode displays the exception too")
@@ -136,7 +136,7 @@ class DisplayUtilsTest {
         // a cause without a message of its own is still named in the
         // details section, by its string representation
         val silentCause = capturingOutput {
-            DisplayUtils.printException(
+            Display.printException(
                 AraraException("failure", RuntimeException())
             )
         }
@@ -148,32 +148,32 @@ class DisplayUtilsTest {
         Session.userInterfaceOptions =
             UserInterfaceOptions(locale = MPPLocale("en"), terminalOutputWidth = 5)
         val narrow = capturingOutput {
-            DisplayUtils.printEntry("rule", "run")
-            DisplayUtils.printEntryResult(true)
+            Display.printEntry("rule", "run")
+            Display.printEntryResult(true)
         }
         assertTrue("SUCCESS" in narrow, "the result prints even when narrowed")
     }
 
     @Test
     fun `prints authors conditionally`() {
-        val single = capturingOutput { DisplayUtils.printAuthors(listOf("Island of TeX")) }
+        val single = capturingOutput { Display.printAuthors(listOf("Island of TeX")) }
         assertTrue("Island" in single)
-        val multiple = capturingOutput { DisplayUtils.printAuthors(listOf("One", "Two")) }
+        val multiple = capturingOutput { Display.printAuthors(listOf("One", "Two")) }
         assertTrue("One" in multiple && "Two" in multiple)
-        val none = capturingOutput { DisplayUtils.printAuthors(emptyList()) }
+        val none = capturingOutput { Display.printAuthors(emptyList()) }
         assertTrue(none.isNotBlank(), "an empty author list has its own label")
     }
 
     @Test
     fun `prints conditionals unless they are absent`() {
         val present = capturingOutput {
-            DisplayUtils.printConditional(
+            Display.printConditional(
                 conditional(DirectiveConditionalType.IF, "found('log', 'x')")
             )
         }
         assertTrue("found('log', 'x')" in present, "the condition text is displayed")
         val absent = capturingOutput {
-            DisplayUtils.printConditional(
+            Display.printConditional(
                 conditional(DirectiveConditionalType.NONE, "")
             )
         }
@@ -182,21 +182,21 @@ class DisplayUtilsTest {
 
     @Test
     fun `renders byte sizes at every magnitude`() {
-        assertEquals("999 B", DisplayUtils.byteSizeToString(999))
-        assertEquals("800 B", DisplayUtils.byteSizeToString(800))
-        assertEquals("1.0 kB", DisplayUtils.byteSizeToString(1000))
+        assertEquals("999 B", Display.byteSizeToString(999))
+        assertEquals("800 B", Display.byteSizeToString(800))
+        assertEquals("1.0 kB", Display.byteSizeToString(1000))
         // the binary neighbour keeps the decimal prefix and truncates
-        assertEquals("1.0 kB", DisplayUtils.byteSizeToString(1024))
-        assertEquals("1.5 kB", DisplayUtils.byteSizeToString(1500))
-        assertEquals("1.0 MB", DisplayUtils.byteSizeToString(1000000))
-        assertEquals("1.5 MB", DisplayUtils.byteSizeToString(1500000))
+        assertEquals("1.0 kB", Display.byteSizeToString(1024))
+        assertEquals("1.5 kB", Display.byteSizeToString(1500))
+        assertEquals("1.0 MB", Display.byteSizeToString(1000000))
+        assertEquals("1.5 MB", Display.byteSizeToString(1500000))
     }
 
     @Test
     fun `prints the elapsed time`() {
         val timed = capturingOutput {
-            DisplayUtils.printEntry("rule", "run")
-            DisplayUtils.printTime(1.5)
+            Display.printEntry("rule", "run")
+            Display.printTime(1.5)
         }
         assertTrue("1.500" in timed, "seconds and milliseconds join through the separator")
     }
@@ -205,11 +205,11 @@ class DisplayUtilsTest {
     fun `centers the separators`() {
         assertEquals(
             20,
-            DisplayUtils.displayOutputSeparator("QUACK").length,
+            Display.displayOutputSeparator("QUACK").length,
             "the message centers within the terminal width"
         )
-        assertTrue("QUACK" in DisplayUtils.displayOutputSeparator("QUACK"))
-        assertEquals("-".repeat(20), DisplayUtils.displaySeparator())
+        assertTrue("QUACK" in Display.displayOutputSeparator("QUACK"))
+        assertEquals("-".repeat(20), Display.displaySeparator())
     }
 
     @Test

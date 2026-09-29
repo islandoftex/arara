@@ -10,8 +10,8 @@ import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.cli.configuration.ConfigurationUtils
-import org.islandoftex.arara.cli.ruleset.DirectiveUtils
+import org.islandoftex.arara.cli.configuration.ConfigurationFiles
+import org.islandoftex.arara.cli.ruleset.DirectiveProcessing
 import org.islandoftex.arara.cli.ruleset.RuleEngine
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.files.FileSearching
@@ -34,20 +34,20 @@ import org.junit.jupiter.api.TestInstance
 class LuaExecutionTest {
     @BeforeAll
     fun setUp() {
-        DirectiveUtils.initializeDirectiveCore()
+        DirectiveProcessing.initializeDirectiveCore()
 
         LinearExecutor.hooks = ExecutorHooks(
             executeBeforeProject = { project ->
-                ConfigurationUtils.configFileForProject(project)?.let {
-                    DisplayUtils.configurationFileName = it.toString()
-                    ConfigurationUtils.load(it, project)
+                ConfigurationFiles.configFileForProject(project)?.let {
+                    Display.configurationFileName = it.toString()
+                    ConfigurationFiles.load(it, project)
                 }
             },
             executeBeforeFile = {
                 it.printFileInformation()
             },
             processDirectives = { file, list ->
-                DirectiveUtils.process(file, list)
+                DirectiveProcessing.process(file, list)
             }
         )
 

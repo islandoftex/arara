@@ -7,7 +7,7 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.Directive
-import org.islandoftex.arara.cli.utils.DisplayUtils
+import org.islandoftex.arara.cli.utils.Display
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.DirectiveFetchingHooks
 import org.islandoftex.arara.core.rules.Directives
@@ -23,7 +23,7 @@ import org.mvel2.templates.TemplateRuntime
  * @version 5.0
  * @since 4.0
  */
-object DirectiveUtils {
+object DirectiveProcessing {
     private val logger = KotlinLogging.logger { }
 
     /**
@@ -177,11 +177,11 @@ object DirectiveUtils {
             logger.info {
                 """
                     All directives were validated. We are good to go.
-                    ${DisplayUtils.displayOutputSeparator(
+                    ${Display.displayOutputSeparator(
                     "DIRECTIVES"
                 )}
                     ${result.joinToString("\n")}
-                    ${DisplayUtils.displaySeparator()}
+                    ${Display.displaySeparator()}
                 """.trimIndent()
             }
         }

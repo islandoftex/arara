@@ -4,7 +4,7 @@ package org.islandoftex.arara.cli.configuration
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
-import org.islandoftex.arara.cli.utils.LoggingUtils
+import org.islandoftex.arara.cli.utils.Logging
 import org.islandoftex.arara.core.configuration.LocalConfiguration
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
@@ -20,7 +20,7 @@ import org.islandoftex.arara.mvel.utils.MvelState
  * @version 5.0
  * @since 4.0
  */
-object ConfigurationUtils {
+object ConfigurationFiles {
     /**
      * The base names a configuration file may take, without extension, in
      * lookup order.
@@ -121,6 +121,6 @@ object ConfigurationUtils {
         // just to be sure, update the current locale in order to
         // display localized messages and reset logging status
         LanguageController.loadMessagesFor(Session.userInterfaceOptions.locale)
-        LoggingUtils.setupLogging(Session.loggingOptions)
+        Logging.setupLogging(Session.loggingOptions)
     }
 }

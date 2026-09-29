@@ -48,12 +48,12 @@ data class ExecutionOptions(
      * The directories rules are looked up in, in order of priority.
      */
     override val rulePaths: Set<MPPPath> = setOf(
-        ConfigurationUtils.applicationPath / "rules"
+        DefaultConfiguration.applicationPath / "rules"
     ),
     /**
      * The known file types, mapped by extension and pattern.
      */
-    override val fileTypes: List<FileType> = ConfigurationUtils.defaultFileTypes,
+    override val fileTypes: List<FileType> = DefaultConfiguration.defaultFileTypes,
     /**
      * Whether directives are extracted from the header only, instead
      * of the whole file.

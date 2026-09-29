@@ -124,6 +124,15 @@ on.
 ## Changed
 
 * Replaced `luak` by `luaj`.
+* The internal machinery is renamed for what it is: the terminal
+  rendering surface is `Display` (was `DisplayUtils`), the directive
+  pipeline is `DirectiveProcessing` (was `DirectiveUtils`), the
+  configuration file lookup is `ConfigurationFiles` and the built-in
+  defaults are `DefaultConfiguration` (both were `ConfigurationUtils`),
+  and the log backend setup is `Logging` (was `LoggingUtils`). The
+  names change nothing for rule authors; embedders importing the
+  internal classes should rely on the `api` module, which keeps its
+  stable surface.
 * The interactive helpers (`showMessage`, `showOptions`, `showInput`
   and `showDropdown`, in both engines) render as terminal dialogs
   instead of Swing windows: wrapped blocks with a type tag, numbered

@@ -12,7 +12,7 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.cli.ruleset.DirectiveImpl
-import org.islandoftex.arara.cli.ruleset.DirectiveUtils
+import org.islandoftex.arara.cli.ruleset.DirectiveProcessing
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.files.FileType
 import org.islandoftex.arara.core.files.ProjectFile
@@ -44,7 +44,7 @@ class InterpreterTest {
     fun setUp() {
         // the directive machinery has to be initialized, as the directive
         // construction relies on the installed hooks
-        DirectiveUtils.initializeDirectiveCore()
+        DirectiveProcessing.initializeDirectiveCore()
     }
 
     @AfterAll

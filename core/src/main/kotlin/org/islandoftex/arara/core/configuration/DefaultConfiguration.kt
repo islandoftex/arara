@@ -11,7 +11,7 @@ import org.islandoftex.arara.core.session.Environment
  * Implements configuration auxiliary methods, such as the default file
  * types and the application path resolution.
  */
-object ConfigurationUtils {
+object DefaultConfiguration {
     /**
      * The default file type patterns, mapped from extension to the
      * comment pattern a file of that type starts its directives with.

@@ -15,7 +15,7 @@ import org.islandoftex.arara.api.configuration.LoggingOptions
  * @version 5.0
  * @since 4.0
  */
-object LoggingUtils {
+object Logging {
     /**
      * Sets the logging configuration according to the provided boolean value.
      * If the value is set to true, the log entries will be appended to a file,
@@ -32,7 +32,7 @@ object LoggingUtils {
             )
             val loggerContext = LogManager.getContext(false)
                 as org.apache.logging.log4j.core.LoggerContext
-            loggerContext.configLocation = LoggingUtils::class.java
+            loggerContext.configLocation = Logging::class.java
                 .getResource("/org/islandoftex/arara/cli/configuration/log4j2.xml")
                 .toURI()
             loggerContext.reconfigure()

@@ -10,7 +10,7 @@ import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
-import org.islandoftex.arara.core.configuration.ConfigurationUtils
+import org.islandoftex.arara.core.configuration.DefaultConfiguration
 import org.islandoftex.arara.core.files.UNKNOWN_TYPE
 
 /**
@@ -50,7 +50,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         val pattern = optionalString(
             fileType["pattern"],
             "The file type 'pattern' key requires a string value."
-        ) ?: ConfigurationUtils.defaultFileTypePatterns[extension]
+        ) ?: DefaultConfiguration.defaultFileTypePatterns[extension]
             ?: throw ProjectParseException("A pattern is missing (unknown and not in the default file types).")
 
         return org.islandoftex.arara.core.files.FileType(extension, pattern)

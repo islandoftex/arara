@@ -7,8 +7,8 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.cli.configuration.ConfigurationUtils
-import org.islandoftex.arara.cli.ruleset.DirectiveUtils
+import org.islandoftex.arara.cli.configuration.ConfigurationFiles
+import org.islandoftex.arara.cli.ruleset.DirectiveProcessing
 import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.session.ExecutorHooks
@@ -33,14 +33,14 @@ import org.junit.jupiter.api.TestInstance
 class ForeignExtensionTest {
     @BeforeAll
     fun installHooks() {
-        DirectiveUtils.initializeDirectiveCore()
+        DirectiveProcessing.initializeDirectiveCore()
 
         LinearExecutor.hooks = ExecutorHooks(
             executeBeforeFile = {
                 it.printFileInformation()
             },
             processDirectives = { file, list ->
-                DirectiveUtils.process(file, list)
+                DirectiveProcessing.process(file, list)
             }
         )
     }
@@ -65,9 +65,9 @@ class ForeignExtensionTest {
             // command line application: the file types the configuration
             // provides must be known when the references are resolved
             val probe = Project("Test", workingDirectory, emptySet())
-            ConfigurationUtils.configFileForProject(probe)?.let {
-                DisplayUtils.configurationFileName = it.toString()
-                ConfigurationUtils.load(it, probe)
+            ConfigurationFiles.configFileForProject(probe)?.let {
+                Display.configurationFileName = it.toString()
+                ConfigurationFiles.load(it, probe)
             }
             LinearExecutor.execute(
                 listOf(

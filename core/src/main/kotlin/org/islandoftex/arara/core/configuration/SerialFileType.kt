@@ -4,7 +4,7 @@ package org.islandoftex.arara.core.configuration
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
-import org.islandoftex.arara.core.configuration.ConfigurationUtils
+import org.islandoftex.arara.core.configuration.DefaultConfiguration
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.LinearExecutor
 
@@ -30,7 +30,7 @@ data class SerialFileType(
     fun toFileType(): FileType = org.islandoftex.arara.core.files.FileType(
         extension,
         pattern.takeUnless { pattern == FileType.INVALID_PATTERN }
-            ?: ConfigurationUtils.defaultFileTypePatterns[extension]
+            ?: DefaultConfiguration.defaultFileTypePatterns[extension]
             ?: throw AraraException(
                 LanguageController.messages.errorFiletypeUnknownExtension(
                     extension,
