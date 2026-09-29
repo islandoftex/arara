@@ -5,9 +5,11 @@ import kotlin.io.path.Path
 import kotlin.io.path.absolutePathString
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import org.islandoftex.arara.api.utils.OS
+import org.junit.jupiter.api.io.TempDir
 
 /**
  * Verifies the path attributes and normalization of [MPPPath] across
@@ -109,6 +111,40 @@ class MPPPathTest {
             MPPPath(expected).normalize().parent.toString(),
             "the parent of a normalized path resolves equally"
         )
+    }
+
+    @Test
+    fun `reports the size and the last modification of a file`(
+        @TempDir tempDir: java.nio.file.Path
+    ) {
+        val file = tempDir.resolve("quack.log")
+        java.nio.file.Files.writeString(file, "Moo! Quack!")
+        val path = MPPPath(file.toString())
+        assertTrue(
+            path.fileSize > 0L,
+            "a written file reports a positive size"
+        )
+        assertTrue(
+            path.lastModified.toString().isNotEmpty(),
+            "a written file reports its modification stamp"
+        )
+    }
+
+    @Test
+    fun `raises for the metadata of a missing file`() {
+        // the getters read the live metadata, so a missing path raises
+        // the path exception rather than inventing a stamp
+        val path = MPPPath("arara-file-not-there-quack.log")
+        assertFailsWith<org.islandoftex.arara.api.AraraIOException>(
+            "the size of a missing file raises"
+        ) {
+            path.fileSize
+        }
+        assertFailsWith<org.islandoftex.arara.api.AraraIOException>(
+            "the stamp of a missing file raises"
+        ) {
+            path.lastModified
+        }
     }
 
     /**

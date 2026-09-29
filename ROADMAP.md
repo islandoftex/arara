@@ -54,7 +54,7 @@ remove them as part of this effort:
    end of this document.) Consequently the
    following must survive the removal:
    - `mvel/…/rules/DirectiveConditionalEvaluator.kt`
-   - `core/…/rules/ConditionalMethods.kt`, `core/…/utils/MethodUtils.kt`
+   - `core/…/rules/ConditionalMethods.kt`, `core/…/rules/RuleMethods.kt` and the conditional registry
      (already moved out of the mvel module)
    - `mvel/…/utils/MvelState.kt` (conditional methods, preambles)
    - `api/…/AraraExceptionWithHeader.kt` (already moved out of the
@@ -74,7 +74,7 @@ Do not start the removal before all of the following hold:
 
 - [ ] At least one stable release has shipped with the Lua engine
       available (`--engine lua`), the deprecation warning for YAML rules
-      (`cli/…/ruleset/RuleUtils.kt`) and the CHANGELOG/manual notices.
+      (`cli/…/ruleset/RuleFiles.kt`) and the CHANGELOG/manual notices.
 - [ ] A release has shipped with **Lua as the default engine** (see
       phase 1) so users had a cycle to notice breakage while YAML was
       still available as an opt-in fallback.
@@ -99,8 +99,8 @@ Small, reversible release:
    text ("'yaml' (deprecated) or 'lua' (default)").
 3. Update the usage block and the `--engine` bullet in
    `website/content/manual/CLI.md`, plus a CHANGELOG entry.
-4. Consider upgrading the one-time `logger.warn` in `RuleUtils` to a
-   visible `DisplayUtils` warning when the YAML engine is selected
+4. Consider upgrading the one-time `logger.warn` in `RuleFiles` to a
+   visible `Display` warning when the YAML engine is selected
    explicitly.
 
 ## Phase 2 — remove YAML rules
@@ -114,7 +114,7 @@ Small, reversible release:
   the enum only distinguishes `LUA` (and, one day, the Kotlin DSL). Either
   keep it as the extension point for the DSL or delete the enum together
   with the `--engine` option (phase 4).
-- `cli/…/ruleset/RuleUtils.kt`: remove the `RuleFormat.MVEL.extension`
+- `cli/…/ruleset/RuleFiles.kt`: remove the `RuleFormat.MVEL.extension`
   branch, `warnAboutYamlDeprecation()` and the
   `org.islandoftex.arara.mvel.rules.Rule` import. Replace the branch with a
   friendly error for leftover `.yaml` rules, e.g. "YAML rules are no
@@ -150,7 +150,8 @@ Small, reversible release:
 - The module keeps its name (MVEL conditionals still justify it) unless
   you want to fold the survivors into `core` — in that case move
   `DirectiveConditionalEvaluator`, `MvelState` and the `mvel2` dependency
-  (`ConditionalMethods`, `MethodUtils` and `AraraExceptionWithHeader`
+  (`ConditionalMethods`, the helpers merged into `RuleMethods` and
+   `AraraExceptionWithHeader`
   already live in core and the api module), then
   delete the module from `settings.gradle.kts` (module list) and from the
   root `build.gradle.kts` (spotless targets for `mvel/build.gradle.kts`
@@ -164,7 +165,7 @@ Small, reversible release:
   - delete the kotaml-based `companion object { fun load(…) }` and the
     `@Serializable` annotations;
   - drop the `!config` header check, which was YAML-specific.
-- `cli/…/configuration/ConfigurationUtils.kt`:
+- `cli/…/configuration/ConfigurationFiles.kt`:
   - shrink `configFileForProject` to a single Lua search:
     `configFileWithExtension(project, "lua")` — the YAML-first indirection
     (`listOf("yaml", "lua").firstNotNullOfOrNull { … }`) goes away;
@@ -180,7 +181,7 @@ Small, reversible release:
 
 `RuleMethods` must outlive MVEL rules because the Lua bridges delegate
 to it. It already lives in `core/…/rules/`, moved ahead of the removal
-together with `ConditionalMethods`, `MethodUtils` and
+together with `ConditionalMethods`, `RuleMethods` and
 `AraraExceptionWithHeader`, and the `lua` module no longer depends on
 the mvel module at all. At removal time:
 
@@ -354,7 +355,8 @@ Consequences for the plan above:
   conditionals (`&&`/`||`/`!` become `and`/`or`/`not`);
 - the helpers moved to a neutral home ahead of schedule:
   `ConditionalMethods` and `RuleMethods` live in `core/…/rules/`,
-  `MethodUtils` in `core/…/utils/`, the shared configuration model in
+  the merged helpers in `RuleMethods` in `core/…/rules/`, the shared
+   configuration model in
   `core/…/configuration/` and `AraraExceptionWithHeader` in the `api`
   module — the Lua engine no longer depends on the mvel module at all
   (the former transitional `lua` -> `mvel` edge is gone);
