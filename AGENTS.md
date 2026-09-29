@@ -154,10 +154,23 @@ differs from the build floor).
   gate and fails on any documentation warning.
 - The project **version is derived from `CHANGELOG.md`** by the
   spotless-changelog plugin — do not hardcode it anywhere. `changelogPrint`
-  shows the mapping; `changelogBump`/`changelogCheck`/`changelogPush` drive a
-  release; a breaking entry bumps the major — recognized by the phrase
+  shows the mapping and `changelogCheck` gates it against the changelog
+  conventions; a breaking entry bumps the major — recognized by the phrase
   `breaking change` in any of its spellings or by the bold
   `**Breaking:**` marker of the current changelog convention.
+- Two spotless-changelog properties carry the release flow: without
+  `-Prelease=true` every build appends `-SNAPSHOT` to the derived version,
+  and an empty `[Unreleased]` section collapses the derived version onto
+  the changelog's own latest release instead of computing a bump. A
+  release is therefore declared by the promoted changelog in the
+  repository: the promotion — a fresh `[Unreleased]` heading above the
+  new release section — and the tag on the promoted master are human
+  acts, while CI never touches the changelog and only builds, running
+  `publish -Prelease=true` at the tag to ship the stable version the
+  promoted section names; plain pushes produce the `-SNAPSHOT` artifact.
+  When the solstice plugin is consumed from the registry again, its
+  `promoteChangelog` is the intended tool for the promotion step, as it
+  also rewrites the diff-comparison links the promotion leaves behind.
 - The former packaging tasks (`roast`, `assembleCTAN*`, `assembleTDS*`, the
   `docs` Gradle module) were removed from the build: the doc/CTAN toolchain
   (zola, weasyprint, htmlq) is unavailable here and out of scope. The `docs/`
