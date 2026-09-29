@@ -20,8 +20,6 @@ import org.islandoftex.arara.core.rules.DirectiveConditionalEvaluator
  * `not` instead of `&&`, `||` and `!`.
  *
  * @author Island of TeX
- * @version 8.0
- * @since 8.0
  */
 class LuaConditionalEvaluator(
     executionOptions: ExecutionOptions

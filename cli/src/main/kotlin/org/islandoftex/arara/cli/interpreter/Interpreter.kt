@@ -59,8 +59,6 @@ internal fun runPriorEvaluation(conditional: DirectiveConditional): Boolean {
  * Interprets the list of directives.
  *
  * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
 @Suppress("TooManyFunctions")
 class Interpreter(

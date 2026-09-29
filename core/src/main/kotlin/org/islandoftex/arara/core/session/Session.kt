@@ -12,8 +12,6 @@ import org.islandoftex.arara.core.localization.LanguageController
  * It is a superset of the session exposed to the user.
  *
  * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
 object Session : Session {
     // the session map which holds the execution session;

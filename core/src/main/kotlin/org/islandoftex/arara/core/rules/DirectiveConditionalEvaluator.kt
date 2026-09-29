@@ -15,8 +15,6 @@ import org.islandoftex.arara.api.rules.DirectiveConditionalType
  * and the halt flag are tied to the lifetime of a single conditional.
  *
  * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
 abstract class DirectiveConditionalEvaluator(
     private val executionOptions: ExecutionOptions

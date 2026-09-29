@@ -10,7 +10,7 @@
         <!-- the timestamp spells the date numerically on purpose: a month
              name would follow the default locale of the machine and break
              the invariant that the log file reads the same everywhere -->
-        <File name="File" append="false" fileName="${ctx:araraLogFile}">
+        <File name="File" append="${ctx:araraAppend:-false}" fileName="${ctx:araraLogFile}">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level - %msg%n" />
         </File>
     </Appenders>

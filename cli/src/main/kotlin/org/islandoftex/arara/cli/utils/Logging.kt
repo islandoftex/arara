@@ -8,18 +8,21 @@ import org.apache.logging.log4j.core.config.Configurator
 import org.islandoftex.arara.api.configuration.LoggingOptions
 
 /**
- * Implements the logging controller. This class actually sets the logging
- * configuration in order to allow appending results to a file.
+ * Implements the logging controller, which mounts the file-backed
+ * configuration when logging is enabled and silences the backend
+ * otherwise. A run either appends to the log file or starts it
+ * fresh, exactly as the options ask: the append flag travels to the
+ * configuration as a context value, and the file appender reads
+ * it, so a persisted log survives across runs when requested.
  *
  * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
 object Logging {
     /**
-     * Sets the logging configuration according to the provided boolean value.
-     * If the value is set to true, the log entries will be appended to a file,
-     * otherwise the logging feature will keep silent.
+     * Sets the logging configuration according to the provided options.
+     * If logging is enabled, the log entries go to the configured
+     * file, appended to or truncating it per the append option;
+     * otherwise the logging feature keeps silent.
      *
      * @param loggingOptions The configuration of the logging behavior.
      */
@@ -30,6 +33,10 @@ object Logging {
                 "araraLogFile",
                 loggingOptions.logFile.normalize().toString()
             )
+            ThreadContext.put(
+                "araraAppend",
+                loggingOptions.appendLog.toString()
+            )
             val loggerContext = LogManager.getContext(false)
                 as org.apache.logging.log4j.core.LoggerContext
             loggerContext.configLocation = Logging::class.java
@@ -37,6 +44,8 @@ object Logging {
                 .toURI()
             loggerContext.reconfigure()
         } else {
+            ThreadContext.remove("araraLogFile")
+            ThreadContext.remove("araraAppend")
             Configurator.setRootLevel(Level.OFF)
         }
     }

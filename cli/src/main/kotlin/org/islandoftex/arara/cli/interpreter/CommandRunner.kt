@@ -22,8 +22,6 @@ import org.zeroturnaround.exec.InvalidExitValueException
  * and the output buffer, and mapping failures to their localized errors.
  *
  * @author Island of TeX
- * @version 8.0
- * @since 8.0
  */
 internal object CommandRunner {
     private val logger = KotlinLogging.logger { }

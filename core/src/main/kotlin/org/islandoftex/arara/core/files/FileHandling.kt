@@ -10,7 +10,7 @@ import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.localization.LanguageController
 
 /**
- * Implements file handling auxiliary methods, such as extension
+ * Implements the common file operations, such as extension
  * swapping, change tracking via the hash database and checksums.
  */
 object FileHandling {

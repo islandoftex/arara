@@ -9,8 +9,6 @@ import org.islandoftex.arara.api.rules.DirectiveConditionalType
  * for a directive and its corresponding expression to be evaluated.
  *
  * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
 data class DirectiveConditional(
     /**

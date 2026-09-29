@@ -10,11 +10,10 @@ import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMFile
 
 /**
- * Implements utilitary methods for classloading and object instantiation.
+ * Implements the class loading and object instantiation helpers the
+ * registry exposes to rules, backed by archive inspection.
  *
  * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
 object ClassLoading {
     /**

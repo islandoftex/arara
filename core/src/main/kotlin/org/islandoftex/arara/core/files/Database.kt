@@ -18,8 +18,6 @@ import org.islandoftex.arara.core.localization.LanguageController
  * it implements; the local declaration shadows the import on purpose.
  *
  * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
 @Serializable
 data class Database(

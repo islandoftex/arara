@@ -13,8 +13,6 @@ import org.islandoftex.arara.core.localization.LanguageController
  * Implements the rule model.
  *
  * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
 @Serializable
 data class Rule(

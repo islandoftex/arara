@@ -127,4 +127,56 @@ class ClassLoadingTest {
             LinearExecutor.executionOptions = options
         }
     }
+
+    @Test
+    fun `reports a missing archive with the file not found status`() {
+        // a rule pointing at a jar that is not there is the classic
+        // authoring slip; the status says so instead of raising
+        val missing = Files.createTempDirectory("arara-classloading")
+            .resolve("not-there.jar")
+        val (status, fallback) = ClassLoading.loadClass(
+            MPPPath(missing.toString()), "com.example.Quack"
+        )
+        assertEquals(
+            ClassLoading.ClassLoadingStatus.FILE_NOT_FOUND,
+            status,
+            "a missing archive reports the status"
+        )
+        assertEquals(
+            Any::class.java,
+            fallback,
+            "the fallback keeps the object class"
+        )
+        val (objectStatus, _) = ClassLoading.loadObject(
+            MPPPath(missing.toString()), "com.example.Quack"
+        )
+        assertEquals(
+            ClassLoading.ClassLoadingStatus.FILE_NOT_FOUND,
+            objectStatus,
+            "the instantiation helper reports the status too"
+        )
+    }
+
+    @Test
+    fun `reports a class missing from an archive with the class not found status`() {
+        // an archive that exists but does not hold the class is the
+        // other authoring slip: an empty jar answers with the class
+        // not found status
+        val empty = File.createTempFile("arara-empty-", ".jar")
+        JarOutputStream(empty.outputStream()).use { jar ->
+            jar.closeEntry()
+        }
+        try {
+            val (status, _) = ClassLoading.loadClass(
+                MPPPath(empty.toString()), "com.example.Quack"
+            )
+            assertEquals(
+                ClassLoading.ClassLoadingStatus.CLASS_NOT_FOUND,
+                status,
+                "an archive without the class reports the status"
+            )
+        } finally {
+            empty.delete()
+        }
+    }
 }

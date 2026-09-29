@@ -8,8 +8,6 @@ import org.islandoftex.arara.core.rules.RuleMethods
  * Implements some auxiliary methods for runtime evaluation.
  *
  * @author Island of TeX
- * @version 6.0
- * @since 6.0
  */
 object MvelState {
     /**

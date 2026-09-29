@@ -16,8 +16,6 @@ import org.slf4j.LoggerFactory
  * The rule argument model.
  *
  * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
 @Serializable
 class RuleArgument : RuleArgument<Any?> {

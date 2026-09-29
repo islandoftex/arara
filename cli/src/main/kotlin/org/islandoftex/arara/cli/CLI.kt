@@ -64,8 +64,6 @@ import org.islandoftex.arara.mvel.rules.MvelState
  * arara's command line interface
  *
  * @author Island of TeX
- * @version 5.0
- * @since 5.0
  */
 class CLI : CliktCommand("arara") {
     private val logger = KotlinLogging.logger {}

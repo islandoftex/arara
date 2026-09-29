@@ -14,11 +14,10 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.utils.globToRegex
 
 /**
- * Implements file searching auxiliary methods.
+ * Implements the file lookups, from reference resolution to the file
+ * type discovery the interpreter dispatches on.
  *
  * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
 object FileSearching {
     // get the logger context from a factory

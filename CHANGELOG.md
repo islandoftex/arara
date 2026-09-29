@@ -296,6 +296,12 @@ on.
 
 ## Fixed
 
+* The append option of the log now works: a run with logging enabled
+  keeps the existing log file and appends to it when the append
+  option asks for it, and starts the file fresh otherwise - the
+  previous behavior, now pinned by a test, remains the default.
+  Before, the option was accepted but silently ignored: the log
+  file was always started fresh.
 * Every published jar now declares its own automatic module name
   (`org.islandoftex.arara.<module>`); previously all modules shared the
   same module name, which put two arara jars on the Java module path

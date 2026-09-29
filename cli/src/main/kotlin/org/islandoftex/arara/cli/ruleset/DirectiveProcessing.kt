@@ -17,11 +17,10 @@ import org.islandoftex.arara.mvel.rules.MvelState
 import org.mvel2.templates.TemplateRuntime
 
 /**
- * Implements directive utilitary methods.
+ * Implements directive processing: the wiring of the extraction
+ * hooks, the parameter resolution and the validation pipeline.
  *
  * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
 object DirectiveProcessing {
     private val logger = KotlinLogging.logger { }

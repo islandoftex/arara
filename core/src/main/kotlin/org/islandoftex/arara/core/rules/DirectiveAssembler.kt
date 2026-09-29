@@ -6,8 +6,6 @@ package org.islandoftex.arara.core.rules
  * list of strings.
  *
  * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
 internal class DirectiveAssembler {
     /**

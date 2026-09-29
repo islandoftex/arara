@@ -14,8 +14,6 @@ import org.islandoftex.arara.core.localization.LanguageController
  * A rule backed by a Lua specification (see [LuaRuleParser] for the format).
  *
  * @author Island of TeX
- * @version 8.0
- * @since 8.0
  */
 class LuaRule(
     /**

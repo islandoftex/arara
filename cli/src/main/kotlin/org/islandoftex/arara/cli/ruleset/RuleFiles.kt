@@ -14,8 +14,6 @@ import org.islandoftex.arara.lua.rules.LuaRuleParser
  * deprecation warning of the YAML format.
  *
  * @author Island of TeX
- * @version 8.0
- * @since 8.0
  */
 @Suppress("DEPRECATION")
 object RuleFiles {

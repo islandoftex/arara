@@ -19,11 +19,10 @@ import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.utils.wrap
 
 /**
- * Implements display utilitary methods.
+ * Implements the terminal display: the entries, their results, the
+ * wrapping, and the file information blocks.
  *
  * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
 @Suppress("TooManyFunctions")
 object Display {

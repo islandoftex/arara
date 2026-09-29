@@ -9,8 +9,6 @@ import java.util.Locale
  * as `en` or `pt-BR`.
  *
  * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
 public class MPPLocale constructor(tag: String) {
     private val locale: Locale = Locale.forLanguageTag(tag)

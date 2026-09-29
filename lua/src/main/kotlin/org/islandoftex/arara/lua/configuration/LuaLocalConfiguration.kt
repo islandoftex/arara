@@ -56,8 +56,6 @@ import org.islandoftex.arara.lua.rules.LuaConversion
  * identically once loaded.
  *
  * @author Island of TeX
- * @version 8.0
- * @since 8.0
  */
 object LuaLocalConfiguration {
     private val knownKeys = setOf(

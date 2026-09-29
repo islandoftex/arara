@@ -53,8 +53,6 @@ import org.islandoftex.arara.core.localization.LanguageController
  * available as globals.
  *
  * @author Island of TeX
- * @version 8.0
- * @since 8.0
  */
 object LuaRuleParser {
     /**

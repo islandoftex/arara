@@ -8,8 +8,8 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 
 /**
- * Implements configuration auxiliary methods, such as the default file
- * types and the application path resolution.
+ * Implements the built-in defaults the configuration model falls back
+ * to: the known file type patterns and the application location.
  */
 object DefaultConfiguration {
     /**

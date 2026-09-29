@@ -19,11 +19,10 @@ import org.islandoftex.arara.lua.configuration.LuaLocalConfiguration
 import org.islandoftex.arara.mvel.rules.MvelState
 
 /**
- * Implements configuration utilitary methods.
+ * Implements configuration file resolution and loading: which names
+ * to look up, in which directories, and how each format is read.
  *
  * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
 object ConfigurationFiles {
     private val logger = KotlinLogging.logger { }

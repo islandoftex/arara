@@ -10,7 +10,8 @@ import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.core.localization.LanguageController
 
 /**
- * Implements directive auxiliary methods.
+ * Implements directive extraction: the line patterns, the parsing
+ * hooks and the replication the file list asks for.
  */
 object Directives {
     /**

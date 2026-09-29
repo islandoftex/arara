@@ -10,8 +10,6 @@ import org.islandoftex.arara.api.rules.RuleCommand
  * Implements the rule command model.
  *
  * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
 @Serializable
 class SerialRuleCommand : RuleCommand {
