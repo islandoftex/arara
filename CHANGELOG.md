@@ -296,6 +296,11 @@ on.
 
 ## Fixed
 
+* The missing-rule error names the file in the format of the
+  selected engine: the message previously announced a `.yaml` file
+  in every language, so a missing rule under `--engine lua` was
+  reported with the wrong extension - pointing at a file the tool
+  never looked for.
 * The append option of the log now works: a run with logging enabled
   keeps the existing log file and appends to it when the append
   option asks for it, and starts the file fresh otherwise - the

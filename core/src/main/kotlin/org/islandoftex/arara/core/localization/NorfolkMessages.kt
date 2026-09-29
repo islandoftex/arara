@@ -75,7 +75,7 @@ object NorfolkMessages : AraraMessages {
         "It do luke like thet value yew put under the halt session key \"${key}\" ent a proper number, so I can't tell yew wot halt status yew wanted. This should be a easy fix: make sure thet halt status is a number an' hev another go."
 
     override fun errorInterpreterRuleNotFound(identifier: String, expected: String, paths: String) =
-        "Thass a rum ole dew but there ent no '${identifier}' in any onnem rule paths. Praps you ent spelled that right. I coont find '${expected}.yaml' in any onner paths: ${paths}"
+        "Thass a rum ole dew but there ent no '${identifier}' in any onnem rule paths. Praps you ent spelled that right. I coont find '${expected}' in any onner paths: ${paths}"
 
     override fun errorInterpreterUnknownKeys(keys: String) =
         "Atwin me, yew an' the geartepost I ent got no idear abowt these keys in the directive: ${keys}. Howsomever, dunt you git yarself inta a rite ole puckaterry. Do you jist hull them outta yar map."

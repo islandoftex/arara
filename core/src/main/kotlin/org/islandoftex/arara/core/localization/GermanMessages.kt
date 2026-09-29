@@ -75,7 +75,7 @@ object GermanMessages : AraraMessages {
         "Es scheint, als sei der Wert, den der Sitzungsschlüssel \"${key}\" für das Anhalten enthält, keine gültige Zahl, daher kann ich den angeforderten Haltestatus nicht melden. Das sollte leicht zu beheben sein: Stelle sicher, dass der Haltestatus eine Zahl ist, und versuche es erneut."
 
     override fun errorInterpreterRuleNotFound(identifier: String, expected: String, paths: String) =
-        "Ich konnte keine Regel mit dem Namen \"${identifier}\" in den hinterlegten Regelverzeichnissen finden. Vielleicht ein falsch geschriebenes Wort? Ich habe nach dem Dateinamen \"${expected}.yaml\" in den nachstehenden Verzeichnissen mit entsprechender Priorität gesucht: ${paths}"
+        "Ich konnte keine Regel mit dem Namen \"${identifier}\" in den hinterlegten Regelverzeichnissen finden. Vielleicht ein falsch geschriebenes Wort? Ich habe nach dem Dateinamen \"${expected}\" in den nachstehenden Verzeichnissen mit entsprechender Priorität gesucht: ${paths}"
 
     override fun errorInterpreterUnknownKeys(keys: String) =
         "Ich habe folgende unbekannte Keys in der Direktive gefunden: ${keys}. Das sollte leicht zu beheben sein, entferne sie einfach."

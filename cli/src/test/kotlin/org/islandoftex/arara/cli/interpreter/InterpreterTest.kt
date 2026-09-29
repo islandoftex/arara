@@ -13,6 +13,7 @@ import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.cli.ruleset.DirectiveImpl
 import org.islandoftex.arara.cli.ruleset.DirectiveProcessing
+import org.islandoftex.arara.cli.ruleset.RuleEngine
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.files.FileType
 import org.islandoftex.arara.core.files.ProjectFile
@@ -146,6 +147,49 @@ class InterpreterTest {
                 ProjectFile(filePath, texFile), filePath.parent
             ).execute(directive)
         }
+    }
+
+    @Test
+    fun `names the sought rule file in the engine's own format`() {
+        Session.clear()
+        val filePath = MPPPath("src/test/resources/executiontests/halt")
+            .normalize() / "halt.tex"
+        val directive = Directives.extractDirectives(
+            listOf("% arara: notarealrulequack"), false, texFile
+        ).single().run {
+            DirectiveImpl(
+                identifier,
+                parameters.plus("reference" to filePath.toString()),
+                conditional,
+                lineNumbers
+            )
+        }
+        listOf(
+            Pair(RuleEngine.YAML, ".yaml"),
+            Pair(RuleEngine.LUA, ".lua")
+        ).forEach { (engine, extension) ->
+            RuleEngine.current = engine
+            val exception = assertFailsWith<AraraException>(
+                "an unknown rule must be reported under $engine"
+            ) {
+                Interpreter(
+                    ExecutionOptions(
+                        rulePaths = setOf(MPPPath("../rules").normalize())
+                    ),
+                    ProjectFile(filePath, texFile), filePath.parent
+                ).execute(directive)
+            }
+            assertTrue(
+                exception.message?.contains(extension) == true,
+                "the message names the $extension file: ${exception.message}"
+            )
+            val other = if (engine == RuleEngine.YAML) ".lua" else ".yaml"
+            assertTrue(
+                exception.message?.contains(other) == false,
+                "the message does not name the other format: ${exception.message}"
+            )
+        }
+        RuleEngine.current = RuleEngine.YAML
     }
 
     @Test

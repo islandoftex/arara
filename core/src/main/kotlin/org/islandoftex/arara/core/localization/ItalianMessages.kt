@@ -78,7 +78,7 @@ object ItalianMessages : AraraMessages {
         "Sembra che il valore contenuto nella chiave di sessione di arresto \"${key}\" non sia un numero valido, quindi non posso riportare lo stato di arresto richiesto. Dovrebbe essere facile correggere: assicurati che lo stato di arresto sia un numero e riprova."
 
     override fun errorInterpreterRuleNotFound(identifier: String, expected: String, paths: String) =
-        "Non sono riuscito a trovare una regola chiamata '${identifier}' nei percorsi per le regole impostati. Forse una parola scritta sbagliata? Stavo cercando un file con il nome '${expected}.yaml' nei seguenti percorsi in ordine di priorità: ${paths}"
+        "Non sono riuscito a trovare una regola chiamata '${identifier}' nei percorsi per le regole impostati. Forse una parola scritta sbagliata? Stavo cercando un file con il nome '${expected}' nei seguenti percorsi in ordine di priorità: ${paths}"
 
     override fun errorInterpreterUnknownKeys(keys: String) =
         "Ho trovato queste chiavi sconosciute nella direttiva: ${keys}. Dovrebbbe essere facile correggere, toglile dalla mappa."

@@ -78,7 +78,7 @@ object BrazilianPortugueseMessages : AraraMessages {
         "Parece que o valor armazenado na chave de sessão de interrupção \"${key}\" não é um número válido; portanto, não consigo informar o status de interrupção solicitado. A correção deve ser simples: certifique-se de que o status de interrupção seja numérico e tente novamente."
 
     override fun errorInterpreterRuleNotFound(identifier: String, expected: String, paths: String) =
-        "Não consegui encontrar uma regra chamada '${identifier}' nos caminhos de regras especificados. Talvez uma palavra digitada incorretamente? Eu estava procurando por um arquivo chamado '${expected}.yaml' nos seguintes caminhos, em ordem de prioridade: ${paths}"
+        "Não consegui encontrar uma regra chamada '${identifier}' nos caminhos de regras especificados. Talvez uma palavra digitada incorretamente? Eu estava procurando por um arquivo chamado '${expected}' nos seguintes caminhos, em ordem de prioridade: ${paths}"
 
     override fun errorInterpreterUnknownKeys(keys: String) =
         "Encontrei as seguintes chaves desconhecidas na diretiva: ${keys}. Isso é fácil de resolver, apenas remova essas chaves do seu mapa."

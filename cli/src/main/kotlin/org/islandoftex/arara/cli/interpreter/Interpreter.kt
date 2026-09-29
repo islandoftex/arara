@@ -122,7 +122,11 @@ class Interpreter(
             }.firstOrNull { it.exists } ?: throw AraraException(
                 LanguageController.messages.errorInterpreterRuleNotFound(
                     directive.identifier,
-                    directive.identifier,
+                    // the message names the file actually sought, so the
+                    // extension follows the engine's format rather than
+                    // any single format hardwired into the texts
+                    directive.identifier + "." +
+                        RuleEngine.current.formats.first().extension,
                     paths.joinToString("; ", "(", ")") {
                         it.normalize().toString()
                     }

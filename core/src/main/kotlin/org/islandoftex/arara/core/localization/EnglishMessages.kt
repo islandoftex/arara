@@ -78,7 +78,7 @@ object EnglishMessages : AraraMessages {
         "It looks like the value held under the halt session key \"${key}\" is not a valid number, so I cannot report the requested halt status. This should be an easy fix: make sure the halt status is a number and try again."
 
     override fun errorInterpreterRuleNotFound(identifier: String, expected: String, paths: String) =
-        "I could not find a rule named \"${identifier}\" in the provided rule paths. Perhaps a misspelled word? I was looking for a file named \"${expected}.yaml\" in the following paths in order of priority: ${paths}"
+        "I could not find a rule named \"${identifier}\" in the provided rule paths. Perhaps a misspelled word? I was looking for a file named \"${expected}\" in the following paths in order of priority: ${paths}"
 
     override fun errorInterpreterUnknownKeys(keys: String) =
         "I found these unknown keys in the directive: ${keys}. This should be an easy fix, just remove them from your map."

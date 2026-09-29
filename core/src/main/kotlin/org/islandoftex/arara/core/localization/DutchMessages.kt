@@ -75,7 +75,7 @@ object DutchMessages : AraraMessages {
         "Het lijkt erop dat de waarde onder de halteringssleutel \"${key}\" van de sessie geen geldig getal is, dus ik kan de gevraagde haltstatus niet melden. Dit zou makkelijk te verhelpen moeten zijn: zorg dat de haltstatus een getal is en probeer het opnieuw."
 
     override fun errorInterpreterRuleNotFound(identifier: String, expected: String, paths: String) =
-        "Ik kon de regel met de naam '${identifier}' niet vinden in de opgegeven regelpaden. Misschien een spelfout? Ik heb geprobeerd het bestand '${expected}.yaml' te vinden in de volgende paden in volgorde van prioriteit: ${paths}"
+        "Ik kon de regel met de naam '${identifier}' niet vinden in de opgegeven regelpaden. Misschien een spelfout? Ik heb geprobeerd het bestand '${expected}' te vinden in de volgende paden in volgorde van prioriteit: ${paths}"
 
     override fun errorInterpreterUnknownKeys(keys: String) =
         "Ik heb de volgende onbekende verwijzingen gevonden in de directive: ${keys}. Dit zou makkelijk op te lossen moeten zijn: verwijder deze uit de verwijzingstabel."
