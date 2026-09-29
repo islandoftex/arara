@@ -137,14 +137,14 @@ object DutchMessages : AraraMessages {
     override fun errorSessionRemoveUnknownKey(key: String) =
         "De 'remove'-methode heeft een onbekende verwijzing gevonden in de sessie: '${key}'. Als ik iets niet heb kan ik het ook niet verwijderen. Geef een bestaande verwijzing op en probeer het opnieuw."
 
-    override fun errorValidateEmptyFilesList(directive: String) =
-        "Ik heb een directive ${directive} gelezen en kwam erachter dat de opgegeven 'files'-lijst leeg is. Dit zou makkelijk op te lossen moeten zijn: zorg ervoor dat de lijst tenminste een element heeft en probeer het opnieuw."
+    override fun errorValidateEmptyFilesList(lines: String) =
+        "Ik heb een directive ${lines} gelezen en kwam erachter dat de opgegeven 'files'-lijst leeg is. Dit zou makkelijk op te lossen moeten zijn: zorg ervoor dat de lijst tenminste een element heeft en probeer het opnieuw."
 
-    override fun errorValidateFilesIsNotAList(directive: String) =
-        "Ik heb een directive ${directive} gelezen en kwam erachter dat 'files' een lijst nodig heeft. Zorg dat je het type aanpast naar een lijst en probeer het opnieuw."
+    override fun errorValidateFilesIsNotAList(lines: String) =
+        "Ik heb een directive ${lines} gelezen en kwam erachter dat 'files' een lijst nodig heeft. Zorg dat je het type aanpast naar een lijst en probeer het opnieuw."
 
-    override fun errorValidateInvalidDirectiveFormat(directive: String) =
-        "Ik heb een ongeldige directive ${directive} gevonden in het opgegeven bestand. Pas de directive aan en probeer het opnieuw."
+    override fun errorValidateInvalidDirectiveFormat(lines: String) =
+        "Ik heb een ongeldige directive ${lines} gevonden in het opgegeven bestand. Pas de directive aan en probeer het opnieuw."
 
     override val errorValidateNoDirectivesFound =
         "Er zijn geen directives gevonden in het opgegeven bestand. Zorg ervoor dat er tenminste een directive in het bestand staat en probeer het opnieuw."
@@ -152,11 +152,11 @@ object DutchMessages : AraraMessages {
     override fun errorValidateOrphanLinebreak(line: Int) =
         "Er is een ongeldig directive-regeleinde in regel ${line}. Ik kan niet verder. Pas de directive aan en probeer het opnieuw."
 
-    override fun errorValidateReferenceIsReserved(directive: String) =
-        "Ik heb een directive ${directive} gelezen en kwam erachter dat de verwijzing 'reference' gebruikt is. Deze verwijzing is gereserveerd, en kan dus niet gebruikt worden. Maar maak je geen zorgen, dit zou makkelijk op te lossen moeten zijn: gebruik een andere naam."
+    override fun errorValidateReferenceIsReserved(lines: String) =
+        "Ik heb een directive ${lines} gelezen en kwam erachter dat de verwijzing 'reference' gebruikt is. Deze verwijzing is gereserveerd, en kan dus niet gebruikt worden. Maar maak je geen zorgen, dit zou makkelijk op te lossen moeten zijn: gebruik een andere naam."
 
-    override fun errorValidateYamlException(directive: String) =
-        "Er is een probleem met de opgegeven YAML-omzetting in directive ${directive}. Dit probleem is ingewikkeld, omdat het te maken heeft met aspecten van de onderliggende serialisatiesyntax."
+    override fun errorValidateYamlException(lines: String) =
+        "Er is een probleem met de opgegeven YAML-omzetting in directive ${lines}. Dit probleem is ingewikkeld, omdat het te maken heeft met aspecten van de onderliggende serialisatiesyntax."
 
     override fun errorValidateBodyArgumentIdIsReserved(identifier: String) =
         "De argumentverwijzing '${identifier}' is gereserveerd, en kan dus niet gebruikt worden. Dit zou makkelijk op te lossen moeten zijn: gebruik een andere naam."

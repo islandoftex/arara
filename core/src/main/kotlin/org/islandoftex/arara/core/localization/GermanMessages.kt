@@ -137,14 +137,14 @@ object GermanMessages : AraraMessages {
     override fun errorSessionRemoveUnknownKey(key: String) =
         "Die \"remove\" Methode hat den unbekannten Eintrag (key) \"${key}\" in der Session gefunden. Ich konnte nichts erhalten, was ich nicht bereits habe. Bitte gebe einen gültigen Key ein und versuche es erneut."
 
-    override fun errorValidateEmptyFilesList(directive: String) =
-        "Ich habe die Direktive ${directive} gelesen und fand heraus, dass die bereitgestellte Dateienliste leer ist. Das sollte leicht zu beheben sein. Bitte stelle sicher, dass die Liste mindestens ein Element hat und versuche es erneut."
+    override fun errorValidateEmptyFilesList(lines: String) =
+        "Ich habe die Direktive ${lines} gelesen und fand heraus, dass die bereitgestellte Dateienliste leer ist. Das sollte leicht zu beheben sein. Bitte stelle sicher, dass die Liste mindestens ein Element hat und versuche es erneut."
 
-    override fun errorValidateFilesIsNotAList(directive: String) =
-        "Ich habe die Direktive ${directive} gelesen und fand heraus, dass der Eintrag \"files\" keine Liste übergeben bekommen hat. Bitte stelle sicher, dass du eine passende Liste verwendest und versuche es erneut."
+    override fun errorValidateFilesIsNotAList(lines: String) =
+        "Ich habe die Direktive ${lines} gelesen und fand heraus, dass der Eintrag \"files\" keine Liste übergeben bekommen hat. Bitte stelle sicher, dass du eine passende Liste verwendest und versuche es erneut."
 
-    override fun errorValidateInvalidDirectiveFormat(directive: String) =
-        "Ich entdecke eine ungültige Direktive namens ${directive} in der bereitgestellten Datei. Stellte sicher, dass die Direktive gültig ist und versuche es erneut."
+    override fun errorValidateInvalidDirectiveFormat(lines: String) =
+        "Ich entdecke eine ungültige Direktive namens ${lines} in der bereitgestellten Datei. Stellte sicher, dass die Direktive gültig ist und versuche es erneut."
 
     override val errorValidateNoDirectivesFound =
         "Es sieht so aus, als wurden keine Direktiven in der bereitgestellten Datei gefunden. Bitte stelle sicher, dass wenigstens eine Direktive enthalten ist und versuche es erneut."
@@ -152,11 +152,11 @@ object GermanMessages : AraraMessages {
     override fun errorValidateOrphanLinebreak(line: Int) =
         "Anscheinend gibt es einen verwaisten Zeilenumbruch in der Direktive in der Zeile ${line}. Ich kann nicht fortfahren. Bitte korrigiere die Direktive und versuche es erneut."
 
-    override fun errorValidateReferenceIsReserved(directive: String) =
-        "Ich las die Direktive ${directive} und fand heraus, dass der Key \"reference\" genutzt wurde. Dieser Key ist reserviert, deshalb kannst du ihn nicht nutzen. Aber keine Sorge, das sollte einfach zu beheben sein. Du musst nur einen anderen Namen verwenden."
+    override fun errorValidateReferenceIsReserved(lines: String) =
+        "Ich las die Direktive ${lines} und fand heraus, dass der Key \"reference\" genutzt wurde. Dieser Key ist reserviert, deshalb kannst du ihn nicht nutzen. Aber keine Sorge, das sollte einfach zu beheben sein. Du musst nur einen anderen Namen verwenden."
 
-    override fun errorValidateYamlException(directive: String) =
-        "Es gab ein Problem mit dem bereitgestellten YAML-Ausdruck in der Direktive ${directive}. Dieser Teil ist ziemlich knifflig, denn er bezieht Aspekte der zugrundeliegenden Serialisierung mit ein."
+    override fun errorValidateYamlException(lines: String) =
+        "Es gab ein Problem mit dem bereitgestellten YAML-Ausdruck in der Direktive ${lines}. Dieser Teil ist ziemlich knifflig, denn er bezieht Aspekte der zugrundeliegenden Serialisierung mit ein."
 
     override fun errorValidateBodyArgumentIdIsReserved(identifier: String) =
         "Die Argumentenbezeichnung \"${identifier}\" ist reserviert, somit kannst du sie nicht nutzen. Dies sollte einfach zu beheben sein. Du musst nur einen anderen Namen verwenden."

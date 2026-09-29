@@ -137,14 +137,14 @@ object NorfolkMessages : AraraMessages {
     override fun errorSessionRemoveUnknownKey(key: String) =
         "Cor blast me, ole partner, but I hent got no idear wass that '${key}' key is dewin in that 'remove' method. I can't remove suffin that ent there. Dew yew ax for suffin else."
 
-    override fun errorValidateEmptyFilesList(directive: String) =
-        "Cor blast me, my bewty. I read a directive ${directive} but there ent nuffin in the provided 'files' list. Do yew just make sure there's at least one element in the list and try agin."
+    override fun errorValidateEmptyFilesList(lines: String) =
+        "Cor blast me, my bewty. I read a directive ${lines} but there ent nuffin in the provided 'files' list. Do yew just make sure there's at least one element in the list and try agin."
 
-    override fun errorValidateFilesIsNotAList(directive: String) =
-        "That ent rite, ole partner. I read a directive ${directive} and found out that 'files' require a list. Do yew fix the type to a proper list and try agin."
+    override fun errorValidateFilesIsNotAList(lines: String) =
+        "That ent rite, ole partner. I read a directive ${lines} and found out that 'files' require a list. Do yew fix the type to a proper list and try agin."
 
-    override fun errorValidateInvalidDirectiveFormat(directive: String) =
-        "That directive ${directive} in the provided file ent rite. But dunt git yarself into a puckaterry. Do yew just fix the directive and try agin."
+    override fun errorValidateInvalidDirectiveFormat(lines: String) =
+        "That directive ${lines} in the provided file ent rite. But dunt git yarself into a puckaterry. Do yew just fix the directive and try agin."
 
     override val errorValidateNoDirectivesFound =
         "That look like no directives were found in the provided file. Do yew include at least one directive and try agin."
@@ -152,11 +152,11 @@ object NorfolkMessages : AraraMessages {
     override fun errorValidateOrphanLinebreak(line: Int) =
         "Thass a rum ole dew, ole partner. There's an orphan directive line break in line ${line}. I can't do nuffin abowt that. Dew yew giv' that directive a bit o' tricolatin' and try agin."
 
-    override fun errorValidateReferenceIsReserved(directive: String) =
-        "That ain't right, my bewty. You can't use the key 'reference' in ${directive}. Thass a reserved key, but there ain't no use you gittin' in a rite ole puckaterry abowt it. Dew yew giv' it another name."
+    override fun errorValidateReferenceIsReserved(lines: String) =
+        "That ain't right, my bewty. You can't use the key 'reference' in ${lines}. Thass a reserved key, but there ain't no use you gittin' in a rite ole puckaterry abowt it. Dew yew giv' it another name."
 
-    override fun errorValidateYamlException(directive: String) =
-        "Thass a rum ole dew, my bewty. Suffin's gone wrong in the YAML map in a directive ${directive}. Wuh, yew're gotta he'sum idear wot this is orl abowt ter git th' hang o'this bit else yew myte be in a rite ole puckaterry."
+    override fun errorValidateYamlException(lines: String) =
+        "Thass a rum ole dew, my bewty. Suffin's gone wrong in the YAML map in a directive ${lines}. Wuh, yew're gotta he'sum idear wot this is orl abowt ter git th' hang o'this bit else yew myte be in a rite ole puckaterry."
 
     override fun errorValidateBodyArgumentIdIsReserved(identifier: String) =
         "That ent rite, ole partner. Yew can't use '${identifier}'. Thass reserved, but dunt yew git yarself into a rite ole puckaterry, dew yew jist giv' it another name."

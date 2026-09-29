@@ -137,14 +137,14 @@ object ItalianMessages : AraraMessages {
     override fun errorSessionRemoveUnknownKey(key: String) =
         "Il metodo 'remove' ha trovato una chiave sconosciuta '${key}' nell'ambito della sessione. Non posso ottenere qualcosa che non ho da nessuna parte. Specifica una chiave valida e riprova."
 
-    override fun errorValidateEmptyFilesList(directive: String) =
-        "Ho letto la direttiva ${directive}, ma la lista 'files' fornita è vuota. Puoi correggerlo facilmente assicurandoti che la lista abbia almeno un elemento, poi riprova."
+    override fun errorValidateEmptyFilesList(lines: String) =
+        "Ho letto la direttiva ${lines}, ma la lista 'files' fornita è vuota. Puoi correggerlo facilmente assicurandoti che la lista abbia almeno un elemento, poi riprova."
 
-    override fun errorValidateFilesIsNotAList(directive: String) =
-        "Ho letto la direttiva ${directive} e ho scoperto che 'files' richiede una lista. Assicurati di correggere il tipo a una lista appropriata e riprova."
+    override fun errorValidateFilesIsNotAList(lines: String) =
+        "Ho letto la direttiva ${lines} e ho scoperto che 'files' richiede una lista. Assicurati di correggere il tipo a una lista appropriata e riprova."
 
-    override fun errorValidateInvalidDirectiveFormat(directive: String) =
-        "Ho visto nel file fornito la direttiva ${directive} che non è valida. Assicurati di correggere la direttiva e riprova."
+    override fun errorValidateInvalidDirectiveFormat(lines: String) =
+        "Ho visto nel file fornito la direttiva ${lines} che non è valida. Assicurati di correggere la direttiva e riprova."
 
     override val errorValidateNoDirectivesFound =
         "Sembra che nel file fornito non ci siano direttive. Assicurati che ce ne sia almeno una e riprova."
@@ -152,11 +152,11 @@ object ItalianMessages : AraraMessages {
     override fun errorValidateOrphanLinebreak(line: Int) =
         "Sembra che ci sia un fine riga che lascia orfana una direttiva alla riga ${line}. Non posso andare avanti. Correggi la direttiva e riprova."
 
-    override fun errorValidateReferenceIsReserved(directive: String) =
-        "Ho letto la direttiva ${directive} dove è stata usata la chiave 'reference'. Questa chiave è riservata e non puoi usarla. Non preoccuparti, lo metti facilmente a posto dando un altro nome."
+    override fun errorValidateReferenceIsReserved(lines: String) =
+        "Ho letto la direttiva ${lines} dove è stata usata la chiave 'reference'. Questa chiave è riservata e non puoi usarla. Non preoccuparti, lo metti facilmente a posto dando un altro nome."
 
-    override fun errorValidateYamlException(directive: String) =
-        "C'è stato un problema con la mappa YAML fornita con la direttiva ${directive}. Questa parte è un po' complicata, perché riguarda aspetti del formato interno di serializzazione dei dati. Farò del mio meglio per darti una mano, per quanto posso."
+    override fun errorValidateYamlException(lines: String) =
+        "C'è stato un problema con la mappa YAML fornita con la direttiva ${lines}. Questa parte è un po' complicata, perché riguarda aspetti del formato interno di serializzazione dei dati. Farò del mio meglio per darti una mano, per quanto posso."
 
     override fun errorValidateBodyArgumentIdIsReserved(identifier: String) =
         "L'identificatore dell'argomento '${identifier}' è riservato, quindi non puoi adoperarlo. È facile correggerlo: chiamalo in modo diverso."

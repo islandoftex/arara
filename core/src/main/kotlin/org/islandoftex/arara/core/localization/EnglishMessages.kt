@@ -137,14 +137,14 @@ object EnglishMessages : AraraMessages {
     override fun errorSessionRemoveUnknownKey(key: String) =
         "The \"remove\" method has found an unknown key \"${key}\" in the session scope. I could not remove something I do not have in the first place. Please enter a valid key and try again."
 
-    override fun errorValidateEmptyFilesList(directive: String) =
-        "I read a directive ${directive} and found out that the provided \"files\" list is empty. This is an easy fix: make sure the list has at least one element and try again."
+    override fun errorValidateEmptyFilesList(lines: String) =
+        "I read a directive ${lines} and found out that the provided \"files\" list is empty. This is an easy fix: make sure the list has at least one element and try again."
 
-    override fun errorValidateFilesIsNotAList(directive: String) =
-        "I read a directive ${directive} and found out that \"files\" requires a list. Please make sure to correct the type to a proper list and try again."
+    override fun errorValidateFilesIsNotAList(lines: String) =
+        "I read a directive ${lines} and found out that \"files\" requires a list. Please make sure to correct the type to a proper list and try again."
 
-    override fun errorValidateInvalidDirectiveFormat(directive: String) =
-        "I spotted an invalid directive ${directive} in the provided file. Make sure to fix the directive and try again."
+    override fun errorValidateInvalidDirectiveFormat(lines: String) =
+        "I spotted an invalid directive ${lines} in the provided file. Make sure to fix the directive and try again."
 
     override val errorValidateNoDirectivesFound =
         "It looks like no directives were found in the provided file. Make sure to include at least one directive and try again."
@@ -152,11 +152,11 @@ object EnglishMessages : AraraMessages {
     override fun errorValidateOrphanLinebreak(line: Int) =
         "Apparently there is an orphan directive line break in line ${line}. I cannot proceed. Please correct the directive and try again."
 
-    override fun errorValidateReferenceIsReserved(directive: String) =
-        "I read a directive ${directive} and found out that the key \"reference\" was used. This key is reserved, so you cannot use it. But do not worry, this should be an easy fix. Just replace it by another name."
+    override fun errorValidateReferenceIsReserved(lines: String) =
+        "I read a directive ${lines} and found out that the key \"reference\" was used. This key is reserved, so you cannot use it. But do not worry, this should be an easy fix. Just replace it by another name."
 
-    override fun errorValidateYamlException(directive: String) =
-        "There was a problem with the provided YAML map in a directive ${directive}. This part is quite tricky, since it involves aspects of the underlying data serialization format."
+    override fun errorValidateYamlException(lines: String) =
+        "There was a problem with the provided YAML map in a directive ${lines}. This part is quite tricky, since it involves aspects of the underlying data serialization format."
 
     override fun errorValidateBodyArgumentIdIsReserved(identifier: String) =
         "The argument identifier \"${identifier}\" is reserved, so you cannot use it. This should be an easy fix. Just replace it by another name."

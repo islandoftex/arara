@@ -243,16 +243,16 @@ interface AraraMessages {
     /**
      * The error shown when the file list of a directive is empty.
      */
-    fun errorValidateEmptyFilesList(directive: String): String
+    fun errorValidateEmptyFilesList(lines: String): String
     /**
      * The error shown when the file list of a directive is not a
      * list.
      */
-    fun errorValidateFilesIsNotAList(directive: String): String
+    fun errorValidateFilesIsNotAList(lines: String): String
     /**
      * The error shown when a directive is malformed.
      */
-    fun errorValidateInvalidDirectiveFormat(directive: String): String
+    fun errorValidateInvalidDirectiveFormat(lines: String): String
     /**
      * The error shown when a file contains no directives at all.
      */
@@ -266,12 +266,12 @@ interface AraraMessages {
      * The error shown when a directive uses the reserved reference
      * key.
      */
-    fun errorValidateReferenceIsReserved(directive: String): String
+    fun errorValidateReferenceIsReserved(lines: String): String
     /**
      * The error shown when the YAML map of a directive cannot be
      * processed.
      */
-    fun errorValidateYamlException(directive: String): String
+    fun errorValidateYamlException(lines: String): String
     /**
      * The error shown when a rule argument uses a reserved
      * identifier.

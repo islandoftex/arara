@@ -137,14 +137,14 @@ object BrazilianPortugueseMessages : AraraMessages {
     override fun errorSessionRemoveUnknownKey(key: String) =
         "O método 'remove' encontrou a chave desconhecida '${key}' no escopo de sessão. Não posso remover um valor que não existe na sessão. Por favor, especifique uma chave válida e tente novamente."
 
-    override fun errorValidateEmptyFilesList(directive: String) =
-        "Li uma diretiva ${directive} e descobri que a lista 'files' especificada está vazia. Isso é fácil de resolver: certifique-se de que a lista possua, pelo menos, um elemento e tente novamente."
+    override fun errorValidateEmptyFilesList(lines: String) =
+        "Li uma diretiva ${lines} e descobri que a lista 'files' especificada está vazia. Isso é fácil de resolver: certifique-se de que a lista possua, pelo menos, um elemento e tente novamente."
 
-    override fun errorValidateFilesIsNotAList(directive: String) =
-        "Li uma diretiva ${directive} e descobri que 'files' requer uma lista. Por favor, certifique-se de corrigir o tipo para uma lista adequada e tente novamente."
+    override fun errorValidateFilesIsNotAList(lines: String) =
+        "Li uma diretiva ${lines} e descobri que 'files' requer uma lista. Por favor, certifique-se de corrigir o tipo para uma lista adequada e tente novamente."
 
-    override fun errorValidateInvalidDirectiveFormat(directive: String) =
-        "Encontrei uma diretiva inválida ${directive} no arquivo especificado. Certifique-se de corrigir a diretiva e tente novamente."
+    override fun errorValidateInvalidDirectiveFormat(lines: String) =
+        "Encontrei uma diretiva inválida ${lines} no arquivo especificado. Certifique-se de corrigir a diretiva e tente novamente."
 
     override val errorValidateNoDirectivesFound =
         "Parece que o arquivo especificado não possui diretivas! Certifique-se de incluir, pelo menos, uma diretiva e tente novamente."
@@ -152,11 +152,11 @@ object BrazilianPortugueseMessages : AraraMessages {
     override fun errorValidateOrphanLinebreak(line: Int) =
         "Aparentemente, existe uma quebra de linha de uma diretiva órfã na linha ${line}. Não posso continuar. Por favor, corrija a diretiva e tente novamente."
 
-    override fun errorValidateReferenceIsReserved(directive: String) =
-        "Li uma diretiva ${directive} e descobri que a chave 'reference' foi utilizada. Esta chave é reservada, portanto você não pode utilizá-la! Mas não se preocupe, isso é fácil de resolver. Apenas substitua esse nome por outro."
+    override fun errorValidateReferenceIsReserved(lines: String) =
+        "Li uma diretiva ${lines} e descobri que a chave 'reference' foi utilizada. Esta chave é reservada, portanto você não pode utilizá-la! Mas não se preocupe, isso é fácil de resolver. Apenas substitua esse nome por outro."
 
-    override fun errorValidateYamlException(directive: String) =
-        "Ocorreu um problema com o mapa YAML especificado em uma diretiva ${directive}. Esta parte é complicada, pois envolve aspectos do formato de serialização de dados subjacente."
+    override fun errorValidateYamlException(lines: String) =
+        "Ocorreu um problema com o mapa YAML especificado em uma diretiva ${lines}. Esta parte é complicada, pois envolve aspectos do formato de serialização de dados subjacente."
 
     override fun errorValidateBodyArgumentIdIsReserved(identifier: String) =
         "O identificador de argumento '${identifier}' está reservado, portanto você não pode utilizá-lo. Isso é fácil de resolver. Apenas substitua esse nome por outro."
