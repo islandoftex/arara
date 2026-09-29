@@ -118,4 +118,33 @@ class InterpreterUtilsTest {
             "absolute rule paths resolve on their own"
         )
     }
+
+    @Test
+    fun `reports the missing command on the path with the IO error`() {
+        // a rule calling a tool that does not exist is the classic
+        // user-facing failure; the localized IO error carries the
+        // hint about the command not being on the path. The command
+        // is built directly because the getCommand helper is bound
+        // to a live project, which a bare test does not have
+        val original = LinearExecutor.executionOptions
+        LinearExecutor.executionOptions =
+            org.islandoftex.arara.core.configuration.ExecutionOptions()
+        try {
+            val exception = assertFailsWith<AraraException>(
+                "a nonexistent command fails with the IO error"
+            ) {
+                InterpreterUtils.run(
+                    org.islandoftex.arara.core.session.Command(
+                        listOf("arara-command-that-does-not-exist-anywhere")
+                    )
+                )
+            }
+            assertTrue(
+                exception.message?.contains("IO error") == true,
+                "the localized IO error carries: ${exception.message}"
+            )
+        } finally {
+            LinearExecutor.executionOptions = original
+        }
+    }
 }

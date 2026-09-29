@@ -60,6 +60,13 @@ object DisplayUtils {
      */
     private const val shortenedLongestMatch = 10
 
+    /**
+     * The minimum entry width a degenerate terminal width degrades
+     * to, so the abbreviation never runs out of space and the
+     * render degrades instead of crashing.
+     */
+    private const val minimumEntryWidth = 6
+
     private var displayLine = true
     private var displayResult = false
     private var displayRolling = false
@@ -105,7 +112,11 @@ object DisplayUtils {
             shortenedLongestMatch
         else
             longestMatch
-        val space = outputWidth - result - 1
+        // a degenerate width has to degrade to an ugly entry, never
+        // crash the render: the abbreviation keeps its minimum and
+        // the padding simply wraps
+        val space = (outputWidth - result - 1)
+            .coerceAtLeast(minimumEntryWidth)
         val line = "($name) $task ".abbreviate(space - "... ".length)
         print(line.padEnd(space, '.') + " ")
     }
@@ -172,9 +183,11 @@ object DisplayUtils {
             displayRolling = true
         }
         println(displaySeparator())
+        // the abbreviation keeps its minimum so a degenerate width
+        // wraps ugly instead of crashing the render
         println(
             "($name) $task"
-                .abbreviate(outputWidth)
+                .abbreviate(outputWidth.coerceAtLeast(minimumEntryWidth))
         )
         println(displaySeparator())
     }

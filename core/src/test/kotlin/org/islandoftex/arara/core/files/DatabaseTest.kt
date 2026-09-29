@@ -108,4 +108,19 @@ class DatabaseTest {
             Database.load(file.toMPPPath())
         }
     }
+
+    @Test
+    fun `wraps unwritable save targets`(@TempDir tempDir: Path) {
+        // a directory cannot hold the database text, so the save fails
+        // and reports the localized error naming the target
+        val exception = assertFailsWith<AraraException>(
+            "an unwritable target reports the save error"
+        ) {
+            Database().save(tempDir.toMPPPath())
+        }
+        assertTrue(
+            exception.message?.contains("I could not save") == true,
+            "the localized save error carries: ${exception.message}"
+        )
+    }
 }
