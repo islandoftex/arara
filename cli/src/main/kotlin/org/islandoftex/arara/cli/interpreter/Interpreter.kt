@@ -10,24 +10,50 @@ import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.rules.DirectiveConditional
+import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.api.rules.RuleArgument
 import org.islandoftex.arara.api.rules.RuleCommand
 import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.cli.ruleset.RuleEngine
-import org.islandoftex.arara.cli.ruleset.RuleUtils
+import org.islandoftex.arara.cli.ruleset.RuleFiles
 import org.islandoftex.arara.cli.utils.Display
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.DirectiveConditionalEvaluator as ConditionalEvaluator
+import org.islandoftex.arara.core.rules.InputHandling
+import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
-import org.islandoftex.arara.core.ui.InputHandling
 import org.islandoftex.arara.lua.rules.LuaConditionalEvaluator
 import org.islandoftex.arara.lua.rules.LuaRuleCommand
 import org.islandoftex.arara.mvel.rules.DirectiveConditionalEvaluator
+import org.islandoftex.arara.mvel.rules.MvelState
 import org.islandoftex.arara.mvel.rules.SerialRuleCommand
-import org.islandoftex.arara.mvel.utils.MvelState
 import org.mvel2.templates.TemplateRuntime
+
+/**
+ * Checks if the current conditional has a prior evaluation.
+ *
+ * @param conditional The current conditional object.
+ * @return A boolean value indicating if the current conditional has a prior
+ * evaluation.
+ */
+internal fun runPriorEvaluation(conditional: DirectiveConditional): Boolean {
+    return if (LinearExecutor.executionOptions.executionMode == ExecutionMode.DRY_RUN) {
+        false
+    } else {
+        when (conditional.type) {
+            DirectiveConditionalType.IF,
+            DirectiveConditionalType.WHILE,
+            DirectiveConditionalType.UNLESS -> true
+            else -> false
+        }
+    }
+}
+
+// the interpreter gained the conditional dispatch policy alongside its
+// evaluation flow; the function count mirrors the directive surface it
+// owns rather than accumulated responsibilities
 
 /**
  * Interprets the list of directives.
@@ -81,7 +107,7 @@ class Interpreter(
                 // user chose on the command line (see the --engine option)
                 RuleEngine.current.formats.flatMap { format ->
                     listOf(
-                        InterpreterUtils.construct(
+                        RuleFiles.construct(
                             path, directive.identifier,
                             format, workingDirectory
                         ),
@@ -89,7 +115,7 @@ class Interpreter(
                         // distributed with arara: their file names carry
                         // the arara-rule- prefix so the names stay
                         // unique in TeX Live
-                        InterpreterUtils.construct(
+                        RuleFiles.construct(
                             path, "arara-rule-" + directive.identifier,
                             format, workingDirectory
                         )
@@ -158,7 +184,7 @@ class Interpreter(
         var success = true
 
         if (executionOptions.executionMode != ExecutionMode.DRY_RUN) {
-            val code = InterpreterUtils.run(command)
+            val code = CommandRunner.run(command)
             success = exitCheck(code)
         } else {
             Display.printAuthors(authors)
@@ -335,7 +361,7 @@ class Interpreter(
         }
 
         // parse the rule identified by the directive (may throw an exception)
-        val rule = RuleUtils.parseRule(file, directive.identifier)
+        val rule = RuleFiles.parseRule(file, directive.identifier)
         // the resolved arguments; engine-specific extras (e.g. the MVEL rule
         // methods) are added by the respective command evaluators
         val parameters = parseArguments(rule, directive)
@@ -347,7 +373,7 @@ class Interpreter(
             RuleEngine.YAML -> DirectiveConditionalEvaluator(executionOptions)
         }
         val available =
-            if (InterpreterUtils.runPriorEvaluation(directive.conditional))
+            if (runPriorEvaluation(directive.conditional))
                 evaluator.evaluate(directive.conditional)
             else true
 

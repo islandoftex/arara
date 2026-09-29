@@ -132,7 +132,7 @@ class DirectiveParsingTest {
         assertFailsWith<AraraException>(
             "rule files of unknown formats must be rejected"
         ) {
-            RuleUtils.parseRule(MPPPath("not-a-rule.quack"), "dummy")
+            RuleFiles.parseRule(MPPPath("not-a-rule.quack"), "dummy")
         }
     }
 

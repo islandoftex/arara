@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.mvel.utils
+package org.islandoftex.arara.mvel.rules
 
 import org.islandoftex.arara.core.rules.ConditionalMethods
 import org.islandoftex.arara.core.rules.RuleMethods

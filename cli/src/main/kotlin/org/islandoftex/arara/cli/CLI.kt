@@ -47,9 +47,6 @@ import org.islandoftex.arara.cli.ruleset.DirectiveProcessing
 import org.islandoftex.arara.cli.ruleset.RuleEngine
 import org.islandoftex.arara.cli.utils.Display
 import org.islandoftex.arara.cli.utils.Logging
-import org.islandoftex.arara.cli.utils.load
-import org.islandoftex.arara.cli.utils.printFileInformation
-import org.islandoftex.arara.cli.utils.toMap
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.LoggingOptions
 import org.islandoftex.arara.core.configuration.UserInterfaceOptions
@@ -61,7 +58,7 @@ import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.lua.LuaInterpreter
-import org.islandoftex.arara.mvel.utils.MvelState
+import org.islandoftex.arara.mvel.rules.MvelState
 
 /**
  * arara's command line interface
@@ -154,7 +151,9 @@ class CLI : CliktCommand("arara") {
     private val properties: Properties? by option("-F", "--properties-file")
         .help("Pass a properties file to the application to be used within the session.")
         .path(mustExist = true, canBeDir = false, mustBeReadable = true)
-        .convert { Properties().apply { load(it) } }
+        .convert { Properties().also { props ->
+                ConfigurationFiles.loadProperties(props, it)
+            } }
 
     private val reference by argument("file")
         .help("The file(s) to evaluate and process")
@@ -349,7 +348,12 @@ class CLI : CliktCommand("arara") {
 
         // add all key/value pairs found in the properties file, if
         // provided in the command line
-        properties?.toMap()?.forEach { (key, value) -> Session.put("arg:$key", value) }
+        properties?.let { props ->
+                ConfigurationFiles.toMap(props)
+                    .forEach { (key, value) ->
+                        Session.put("arg:$key", value)
+                    }
+            }
 
         // add all command line call parameters to the session
         // (command line parameters take precedence over properties)
@@ -372,7 +376,7 @@ class CLI : CliktCommand("arara") {
                 executeBeforeFile = {
                     // should more file-specific configuration be reset here?
                     updateConfigurationFromCommandLine()
-                    it.printFileInformation()
+                    Display.printFileInformation(it)
                 },
                 executeAfterFile = {
                     // add an empty line between file executions

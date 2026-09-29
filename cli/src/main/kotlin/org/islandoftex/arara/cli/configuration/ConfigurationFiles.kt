@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.configuration
 
+import io.github.oshai.kotlinlogging.KotlinLogging
+import java.nio.charset.Charset
+import java.nio.file.Path
+import java.util.Properties
+import kotlin.io.path.bufferedReader
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
@@ -11,7 +16,7 @@ import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.lua.configuration.LuaLocalConfiguration
-import org.islandoftex.arara.mvel.utils.MvelState
+import org.islandoftex.arara.mvel.rules.MvelState
 
 /**
  * Implements configuration utilitary methods.
@@ -21,6 +26,8 @@ import org.islandoftex.arara.mvel.utils.MvelState
  * @since 4.0
  */
 object ConfigurationFiles {
+    private val logger = KotlinLogging.logger { }
+
     /**
      * The base names a configuration file may take, without extension, in
      * lookup order.
@@ -123,4 +130,28 @@ object ConfigurationFiles {
         LanguageController.loadMessagesFor(Session.userInterfaceOptions.locale)
         Logging.setupLogging(Session.loggingOptions)
     }
+
+    /**
+     * Loads the properties from the file, reporting an unreadable file
+     * as a warning instead of silently receiving an empty map.
+     */
+    fun loadProperties(
+        properties: Properties,
+        path: Path,
+        charset: Charset = Charsets.UTF_8
+    ) {
+        runCatching {
+            path.bufferedReader(charset).use { properties.load(it) }
+        }.onFailure {
+            logger.warn {
+                "Could not load the properties file $path: ${it.message}"
+            }
+        }
+    }
+
+    /**
+     * Converts the properties to a map of key/value string pairs.
+     */
+    fun toMap(properties: Properties): Map<String, String> =
+        properties.entries.associate { "${it.key}" to "${it.value}" }
 }

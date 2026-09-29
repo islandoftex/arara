@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.utils
+package org.islandoftex.arara.cli.configuration
 
 import java.util.Properties
 import kotlin.io.path.Path
@@ -12,12 +12,12 @@ import org.junit.jupiter.api.Nested
  * Verifies the UTF-8 properties loading used by the command line
  * application, using the duck fixture with its sixteen translations.
  */
-class PropertiesTest {
+class PropertiesLoadingTest {
     @Nested
     inner class `UTF8 support for properties files` {
         private val path = Path("src/test/resources/executiontests/properties/duck.properties")
         private val charset = Charsets.UTF_8
-        private val translations: Properties = Properties().apply { load(path, charset) }
+        private val translations: Properties = Properties().also { ConfigurationFiles.loadProperties(it, path, charset) }
 
         @Test
         fun `is not empty`() {

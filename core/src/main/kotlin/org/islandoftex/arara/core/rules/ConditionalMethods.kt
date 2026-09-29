@@ -2,16 +2,17 @@
 package org.islandoftex.arara.core.rules
 
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.SafeRunViolationException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.files.FileHandling
+import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.ClassLoading
 import org.islandoftex.arara.core.session.ClassLoading.ClassLoadingStatus
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.TerminalDialogs
-import org.islandoftex.arara.core.utils.MethodUtils
 
 /**
  * Implements the helper methods available to directive conditionals in
@@ -155,7 +156,7 @@ object ConditionalMethods {
     @JvmStatic
     @Throws(AraraException::class)
     fun found(file: MPPPath, regex: String): Boolean =
-        MethodUtils.checkRegex(file, regex)
+        checkRegex(file, regex)
 
     /**
      * Returns a file object based on the provided name.
@@ -281,4 +282,32 @@ object ConditionalMethods {
     @JvmStatic
     fun loadObject(ref: String, name: String): Pair<ClassLoadingStatus, Any> =
         loadObject(MPPPath(ref), name)
+
+    /**
+     * Checks if the file contains the provided regex.
+     *
+     * As this reads the whole file, it should not be called on files
+     * larger than two gigabytes.
+     *
+     * @param file The file.
+     * @param regex The regex.
+     * @return A boolean value indicating if the file contains the
+     * provided regex.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    @Throws(AraraException::class)
+    private fun checkRegex(file: MPPPath, regex: String): Boolean {
+        try {
+            val text = file.readText()
+            val pattern = regex.toRegex()
+            return pattern.containsMatchIn(text)
+        } catch (exception: AraraIOException) {
+            throw AraraException(
+                LanguageController.messages
+                    .errorCheckRegexIoException(file.fileName),
+                exception
+            )
+        }
+    }
 }

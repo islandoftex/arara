@@ -37,7 +37,7 @@ class ForeignExtensionTest {
 
         LinearExecutor.hooks = ExecutorHooks(
             executeBeforeFile = {
-                it.printFileInformation()
+                Display.printFileInformation(it)
             },
             processDirectives = { file, list ->
                 DirectiveProcessing.process(file, list)

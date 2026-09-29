@@ -18,7 +18,6 @@ import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
-import org.islandoftex.arara.core.utils.MethodUtils
 
 /**
  * Verifies the rule helper surface shared by both engine dialects:
@@ -49,7 +48,7 @@ class RuleMethodsTest {
         assertEquals("arara", RuleMethods.buildString("arara", null, ""))
         assertEquals("", RuleMethods.buildString(null, ""))
         // the vararg entry point stays available to plain JVM callers
-        assertEquals("arara 6", MethodUtils.generateString("arara", 6))
+        assertEquals("arara 6", RuleMethods.buildString("arara", 6))
     }
 
     @Test

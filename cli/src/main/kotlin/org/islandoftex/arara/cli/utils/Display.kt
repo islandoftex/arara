@@ -5,12 +5,15 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlin.math.ln
 import kotlin.math.pow
 import kotlin.time.Duration.Companion.seconds
+import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
+import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.core.configuration.DefaultConfiguration
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.utils.wrap
@@ -375,4 +378,80 @@ object Display {
      * @return A string containing the line separator.
      */
     fun displaySeparator(): String = "-".repeat(outputWidth)
+
+    /**
+     * Displays the file information in the terminal: the welcome banner
+     * and the file line, with the log carrying an English twin of the
+     * localized console line.
+     */
+    fun printFileInformation(file: ProjectFile) {
+        logger.info {
+            "\n" + "Welcome to arara ${AraraAPI.version}!" + "\n" +
+                displaySeparator()
+        }
+        logEnvironmentDetails()
+        LanguageController.messages
+            .infoDisplayFileInformation(
+                file.path.fileName,
+                byteSizeToString(file.path.fileSize),
+                file.path.lastModified.toString()
+            ).let {
+                logger.info {
+                    "Processing \"${file.path.fileName}\" (size: " +
+                        "${byteSizeToString(file.path.fileSize)}, " +
+                        "last modified: ${file.path.lastModified}), " +
+                        "please wait."
+                }
+                printWrapped(it)
+                println()
+            }
+    }
+
+    /**
+     * Writes the environment block of the run to the log at debug level:
+     * the Java runtime, the operating system, the user home and the
+     * configuration file name.
+     */
+    private fun logEnvironmentDetails() {
+        val javaVersion = Environment.getSystemProperty(
+            "java.version",
+            "[unknown version]"
+        )
+        val javaVendor = Environment.getSystemProperty(
+            "java.vendor",
+            "[unknown vendor]"
+        )
+        val javaHome = Environment.getSystemProperty(
+            "java.home",
+            "[unknown location]"
+        )
+        val osName = Environment.getSystemProperty(
+            "os.name",
+            "[unknown OS name]"
+        )
+        val osArch = Environment.getSystemProperty(
+            "os.arch",
+            "[unknown OS arch]"
+        )
+        val osVersion = Environment.getSystemProperty(
+            "os.version",
+            "[unknown OS version]"
+        )
+        val userHome = Environment.getSystemProperty(
+            "user.home",
+            "[unknown user's home directory]"
+        )
+        logger.debug {
+            """
+
+                ::: arara @ ${DefaultConfiguration.applicationPath}
+                ::: Java $javaVersion, $javaVendor
+                ::: $javaHome
+                ::: $osName, $osArch, $osVersion
+                ::: user.home @ $userHome
+                ::: CF @ ${configurationFileName}
+                ${displaySeparator()}
+            """.trimIndent()
+        }
+    }
 }

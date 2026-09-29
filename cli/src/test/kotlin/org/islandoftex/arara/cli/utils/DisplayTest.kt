@@ -218,7 +218,7 @@ class DisplayTest {
         Files.writeString(file, "content")
         val information = capturingOutput {
             ProjectFile(MPPPath(file.toString()), FileType("tex", "^%.*"))
-                .printFileInformation()
+                .let { Display.printFileInformation(it) }
         }
         assertTrue(file.fileName.toString() in information, "the file name is displayed")
         assertTrue("7 B" in information, "the file size is displayed")

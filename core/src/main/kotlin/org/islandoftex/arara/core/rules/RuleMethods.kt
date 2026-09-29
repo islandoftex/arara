@@ -2,6 +2,8 @@
 package org.islandoftex.arara.core.rules
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import java.io.IOException
+import java.util.MissingFormatArgumentException
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.AraraExceptionWithHeader
 import org.islandoftex.arara.api.AraraIOException
@@ -12,13 +14,12 @@ import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.rules.InputHandling
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.session.SystemCommandResult
-import org.islandoftex.arara.core.ui.InputHandling
 import org.islandoftex.arara.core.ui.TerminalDialogs
-import org.islandoftex.arara.core.utils.MethodUtils
 
 @Suppress("TooManyFunctions")
 /**
@@ -175,7 +176,7 @@ object RuleMethods {
     @JvmStatic
     @Throws(AraraException::class)
     fun replicatePattern(pattern: String, values: List<Any>): List<Any> =
-        MethodUtils.replicateList(pattern, values)
+        replicateStringList(pattern, values)
 
     /**
      * Throws an exception.
@@ -205,7 +206,7 @@ object RuleMethods {
      */
     @JvmStatic
     fun buildString(vararg objects: Any?): String =
-        MethodUtils.generateString(objects.filterNotNull())
+        buildStringFromList(objects.filterNotNull())
 
     /**
      * Gets the command based on a list of strings.
@@ -437,7 +438,7 @@ object RuleMethods {
      */
     @JvmStatic
     fun writeToFile(file: MPPPath, text: String, append: Boolean): Boolean =
-        MethodUtils.writeToFile(file, text, append)
+        writeTextToFile(file, text, append)
 
     /**
      * Writes the string to a file, using UTF-8 as default encoding.
@@ -449,7 +450,7 @@ object RuleMethods {
      */
     @JvmStatic
     fun writeToFile(path: String, text: String, append: Boolean): Boolean =
-        MethodUtils.writeToFile(MPPPath(path), text, append)
+        writeTextToFile(MPPPath(path), text, append)
 
     /**
      * Writes the string list to a file, using UTF-8 as default encoding.
@@ -461,7 +462,7 @@ object RuleMethods {
      */
     @JvmStatic
     fun writeToFile(file: MPPPath, lines: List<String>, append: Boolean): Boolean =
-        MethodUtils.writeToFile(file, lines.joinToString(System.lineSeparator()), append)
+        writeTextToFile(file, lines.joinToString(System.lineSeparator()), append)
 
     /**
      * Writes the string list to a file, using UTF-8 as default encoding.
@@ -473,7 +474,7 @@ object RuleMethods {
      */
     @JvmStatic
     fun writeToFile(path: String, lines: List<String>, append: Boolean): Boolean =
-        MethodUtils.writeToFile(MPPPath(path), lines.joinToString(System.lineSeparator()), append)
+        writeTextToFile(MPPPath(path), lines.joinToString(System.lineSeparator()), append)
 
     /**
      * Reads the provided file into a list of strings.
@@ -854,4 +855,57 @@ object RuleMethods {
     @Throws(AraraException::class)
     fun isUnix(yes: Any?, no: Any?): Any? =
         if (Environment.checkOS(Environment.SupportedOS.UNIX)) yes else no
+
+    /**
+     * Generates a string based on a list of objects, separating each one
+     * of them by one space; empty values are dropped.
+     */
+    private fun buildStringFromList(objects: List<Any>): String =
+        objects.map { it.toString() }
+            .filter { it.isNotEmpty() }
+            .joinToString(" ")
+
+    /**
+     * Replicates a string pattern based on a list of objects, generating
+     * a list as result.
+     *
+     * @param pattern The string pattern.
+     * @param values The list of objects to be merged with the pattern.
+     * @return A list containing the string pattern replicated to each
+     * object from the list.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    @Throws(AraraException::class)
+    private fun replicateStringList(
+        pattern: String,
+        values: List<Any>
+    ): List<Any> {
+        return try {
+            values.map { pattern.format(it) }
+        } catch (exception: MissingFormatArgumentException) {
+            throw AraraException(
+                LanguageController.messages
+                    .errorReplicateListMissingFormatArgumentsException,
+                exception
+            )
+        }
+    }
+
+    /**
+     * Writes the string to a file, using UTF-8 as default encoding,
+     * reporting failure as a plain false rather than raising.
+     */
+    private fun writeTextToFile(
+        file: MPPPath,
+        text: String,
+        append: Boolean
+    ): Boolean {
+        return try {
+            file.writeText(text, append)
+            true
+        } catch (_: IOException) {
+            false
+        }
+    }
 }

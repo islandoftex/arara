@@ -9,14 +9,16 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.lua.rules.LuaRuleParser
 
 /**
- * Implements rule utilitary methods.
+ * Implements rule file resolution: locating the rule file for a directive
+ * and parsing it into the rule representation, including the one-time
+ * deprecation warning of the YAML format.
  *
  * @author Island of TeX
- * @version 5.0
- * @since 4.0
+ * @version 8.0
+ * @since 8.0
  */
 @Suppress("DEPRECATION")
-object RuleUtils {
+object RuleFiles {
     private val logger = KotlinLogging.logger { }
     private var yamlDeprecationShown = false
 
@@ -49,6 +51,36 @@ object RuleUtils {
                         )
                 )
         }
+
+    /**
+     * Constructs the path given the current path and the rule name.
+     *
+     * @param path The current path.
+     * @param name The rule name.
+     * @param format The rule format determining the file extension.
+     * @param workingDirectory The working directory to resolve relative
+     *   rule paths against.
+     * @return The constructed path.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    @Throws(AraraException::class)
+    internal fun construct(
+        path: MPPPath,
+        name: String,
+        format: RuleFormat,
+        workingDirectory: MPPPath
+    ): MPPPath = "$name.${format.extension}".let { fileName ->
+        if (path.isAbsolute) {
+            path / fileName
+        } else {
+            // when retrieving rules the current project is never null
+            // because the executor always acts on a project file;
+            // first resolve the path (rule path) against the working
+            // directory, then the rule name we want to resolve
+            workingDirectory / path / fileName
+        }
+    }.normalize()
 
     private fun warnAboutYamlDeprecation() {
         if (!yamlDeprecationShown) {

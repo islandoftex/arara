@@ -8,12 +8,7 @@ import java.util.concurrent.TimeoutException
 import kotlin.time.DurationUnit
 import kotlin.time.TimeSource
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.configuration.ExecutionMode
-import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.api.rules.DirectiveConditional
-import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.api.session.Command
-import org.islandoftex.arara.cli.ruleset.RuleFormat
 import org.islandoftex.arara.cli.utils.Display
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
@@ -22,34 +17,16 @@ import org.islandoftex.arara.core.session.SystemCommandResult
 import org.zeroturnaround.exec.InvalidExitValueException
 
 /**
- * Implements interpreter auxiliary methods.
+ * Implements the system command runner: the single execution surface the
+ * interpreter dispatches through, pairing every run with its duration
+ * and the output buffer, and mapping failures to their localized errors.
  *
  * @author Island of TeX
- * @version 5.0
- * @since 4.0
+ * @version 8.0
+ * @since 8.0
  */
-internal object InterpreterUtils {
+internal object CommandRunner {
     private val logger = KotlinLogging.logger { }
-
-    /**
-     * Checks if the current conditional has a prior evaluation.
-     *
-     * @param conditional The current conditional object.
-     * @return A boolean value indicating if the current conditional has a prior
-     * evaluation.
-     */
-    internal fun runPriorEvaluation(conditional: DirectiveConditional): Boolean {
-        return if (LinearExecutor.executionOptions.executionMode == ExecutionMode.DRY_RUN) {
-            false
-        } else {
-            when (conditional.type) {
-                DirectiveConditionalType.IF,
-                DirectiveConditionalType.WHILE,
-                DirectiveConditionalType.UNLESS -> true
-                else -> false
-            }
-        }
-    }
 
     /**
      * Runs the command in the underlying operating system.
@@ -116,34 +93,4 @@ internal object InterpreterUtils {
             }
         }
     }
-
-    /**
-     * Constructs the path given the current path and the rule name.
-     *
-     * @param path The current path.
-     * @param name The rule name.
-     * @param format The rule format determining the file extension.
-     * @param workingDirectory The working directory to resolve relative
-     *   rule paths against.
-     * @return The constructed path.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
-    @Throws(AraraException::class)
-    internal fun construct(
-        path: MPPPath,
-        name: String,
-        format: RuleFormat,
-        workingDirectory: MPPPath
-    ): MPPPath = "$name.${format.extension}".let { fileName ->
-        if (path.isAbsolute) {
-            path / fileName
-        } else {
-            // when retrieving rules the current project is never null
-            // because the executor always acts on a project file;
-            // first resolve the path (rule path) against the working
-            // directory, then the rule name we want to resolve
-            workingDirectory / path / fileName
-        }
-    }.normalize()
 }

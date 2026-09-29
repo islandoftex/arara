@@ -15,7 +15,7 @@ import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
-import org.islandoftex.arara.mvel.utils.MvelState
+import org.islandoftex.arara.mvel.rules.MvelState
 
 /**
  * Runs the actual CLI entry point to verify behavior that only manifests
