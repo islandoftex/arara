@@ -5,8 +5,8 @@ import org.islandoftex.arara.api.configuration.UserInterfaceOptions
 import org.islandoftex.arara.api.localization.MPPLocale
 
 /**
- * Implements the user interface options model, covering the locale, the
- * Swing look and feel and the terminal output width.
+ * Implements the user interface options model, covering the locale
+ * and the terminal output width.
  */
 data class UserInterfaceOptions(
     /**

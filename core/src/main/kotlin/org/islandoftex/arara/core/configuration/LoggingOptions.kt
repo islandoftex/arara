@@ -6,7 +6,7 @@ import org.islandoftex.arara.api.files.MPPPath
 
 /**
  * Implements the logging options model, deciding whether arara logs to a
- * file at all and which file it appends to.
+ * file at all and which file it writes to.
  */
 data class LoggingOptions(
     /**
