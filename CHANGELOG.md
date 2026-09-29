@@ -164,7 +164,7 @@ on.
 * The build has been migrated from Kotlin Multiplatform (with JVM-only
   targets) to plain Kotlin/JVM; source sets moved from
   `src/commonMain`/`src/jvmMain` to `src/main` (and tests accordingly).
-* animate+convert rules: change default program from `convert` to `magick` 
+* animate+convert rules: change default program from `convert` to `magick`
   (`convert` was deprecated in ImageMagick v7)
 * Message formatting no longer mangles values containing `$` or
   backslashes: the sequential `%s` replacer now inserts replacements
@@ -232,11 +232,11 @@ on.
   (`ERROR_LOAD_COULD_NOT_LOAD_XML` and `ERROR_SAVE_COULD_NOT_SAVE_XML`)
   to format-neutral ones ending in `_DATABASE`, matching the messages
   they have always carried.
-* The shared rule helpers (`RuleMethods`, `ConditionalMethods`,
-  `MethodUtils`), the shared configuration model (`LocalConfiguration`,
-  `SerialFileType`) and the interpreter exception moved from the MVEL
-  module to the core and API modules; the Lua engine no longer depends
-  on the MVEL module at all (version 9 groundwork, see `ROADMAP.md`).
+* The shared rule helpers (`RuleMethods`, `ConditionalMethods`), the
+  shared configuration model (`LocalConfiguration`, `SerialFileType`)
+  and the interpreter exception moved from the MVEL module to the core
+  and API modules; the Lua engine no longer depends on the MVEL module
+  at all (version 9 groundwork, see `ROADMAP.md`).
 
 ## Deprecated
 
@@ -351,9 +351,6 @@ on.
   broken entry.
 * The `loadClass`/`loadObject` rule helpers no longer leak a class loader
   (and thereby a file handle) on every invocation.
-* Interactive rule dialogs now honor look-and-feel settings from the
-  configuration file even when the dialog helper had been used before the
-  configuration was loaded.
 * Null-valued directive parameters are now treated as if the parameter had
   not been provided at all: a required argument reports the proper
   missing-argument error and an optional argument falls back to its
@@ -368,7 +365,6 @@ on.
 * `AraraException` chains its underlying exception as the standard JVM
   cause, so stack traces and log reports now include the original failure
   instead of only the wrapping message.
-* Restored the documented default parameters of `MPPPath.writeText` and
 * The `removalFilter` of `Session.updateEnvironmentVariables` now receives
   the plain environment variable name (like the `additionFilter` already
   did) instead of the session-prefixed key, so custom filters can actually
@@ -388,8 +384,6 @@ on.
   migration had dropped and which broke compilation.
 * Unsupported rule and configuration file formats now raise a proper
   arara error instead of crashing with a `NotImplementedError`.
-* The end-to-end test fixtures referenced the pre-migration
-  `src/jvmTest` source set paths and are back on `src/test`.
 
 ## [7.2.0] - 2025-06-29
 
