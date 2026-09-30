@@ -104,7 +104,7 @@ differs from the build floor).
   `cli/build/libs/arara-cli-with-deps-<version>.jar`; `:cli:build` includes it.
 - `./gradlew test` — all tests (JUnit Platform; tests are written in kotlin.test).
   Single class:
-  `./gradlew :cli:test --tests "org.islandoftex.arara.cli.utils.ExecutionTest"`.
+  `./gradlew :cli:test --tests "org.islandoftex.arara.cli.execution.ExecutionTest"`.
 - `./gradlew detekt` — root task linting every module's main sources
   (`detekt-config.yml`; test sources are excluded). The lint tolerates zero
   findings: the three former informational ones were retired — two with real

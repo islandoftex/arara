@@ -34,7 +34,7 @@ import org.junit.jupiter.api.TestInstance
  * The halt request itself (the `halt()` helper storing the status under the
  * halt key of the original file) requires the executor's project state, so
  * it is exercised end-to-end by the pipeline scenarios in
- * [org.islandoftex.arara.cli.utils.ExecutionTest]; this spec seeds the
+ * [org.islandoftex.arara.cli.execution.ExecutionTest]; this spec seeds the
  * session explicitly to observe the interpreter's decision in isolation.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

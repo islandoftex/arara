@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.utils
+package org.islandoftex.arara.cli.execution
 
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
