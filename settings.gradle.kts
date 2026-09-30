@@ -3,8 +3,13 @@ pluginManagement {
     repositories {
         mavenCentral()
         gradlePluginPortal()
+        // the chronoheader plugin registry
         maven {
             url = uri("https://gitlab.com/api/v4/projects/85815049/packages/maven")
+        }
+        // the solstice plugin registry
+        maven {
+            url = uri("https://gitlab.com/api/v4/projects/87038355/packages/maven")
         }
     }
 }

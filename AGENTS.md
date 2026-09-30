@@ -176,9 +176,9 @@ differs from the build floor).
   acts, while CI never touches the changelog and only builds, running
   `publish -Prelease=true` at the tag to ship the stable version the
   promoted section names; plain pushes produce the `-SNAPSHOT` artifact.
-  When the solstice plugin is consumed from the registry again, its
-  `promoteChangelog` is the intended tool for the promotion step, as it
-  also rewrites the diff-comparison links the promotion leaves behind.
+  The solstice plugin provides the promotion step: run its
+  `promoteChangelog` by hand to promote the unreleased section and
+  rewrite the diff-comparison links the promotion leaves behind.
 - The former packaging tasks (`roast`, `assembleCTAN*`, `assembleTDS*`, the
   `docs` Gradle module) were removed from the build: the doc/CTAN toolchain
   (zola, weasyprint, htmlq) is unavailable here and out of scope. The `docs/`

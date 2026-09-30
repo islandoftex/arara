@@ -52,6 +52,7 @@ plugins {
     alias(libs.plugins.spotless)
     alias(libs.plugins.kover)
     alias(libs.plugins.chronoheader)
+    alias(libs.plugins.solstice)
     `java-base`
 }
 
@@ -92,6 +93,13 @@ spotlessChangelog {
     commitMessage("Release v{{version}}")
     remote("origin")
     branch("master")
+}
+
+// the promotion tool of the release flow: promoteChangelog is run by
+// hand to promote the unreleased section and rewrite the diff links;
+// CI never runs it - the promotion declares the release
+solstice {
+    branch = "master"
 }
 
 spotless {

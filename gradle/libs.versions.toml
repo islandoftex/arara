@@ -14,6 +14,7 @@ mvel-version = "2.5.4.Final"
 okio-version = "3.18.2"
 shadow-version = "9.6.1"
 slf4j-version = "2.0.20"
+solstice-version = "0.1.0"
 spotless-changelog-version = "3.1.2"
 spotless-version = "8.10.3"
 tapmoc-version = "0.4.2"
@@ -46,6 +47,7 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-version" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover-version" }
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow-version" }
+solstice = { id = "org.islandoftex.solstice", version.ref = "solstice-version" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless-version" }
 spotless-changelog = { id = "com.diffplug.spotless-changelog", version.ref = "spotless-changelog-version" }
 tapmoc = { id = "com.gradleup.tapmoc", version.ref = "tapmoc-version" }
