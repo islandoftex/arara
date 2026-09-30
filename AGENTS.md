@@ -67,7 +67,11 @@ computed from the values in scope, the missing-rule error naming the
 file in the engine's own format, the snake_case helper spellings
 through a local Lua rule, the configuration precedence when both
 formats are present with the YAML one winning, and the Lua
-configuration honored under the default engine)
+configuration honored under the default engine, the console mode
+surface - the flag's explicit plain run, the configuration key
+selecting the console with the log stating a silent tool, and the
+unoffered-mode errors of both the configuration and the command
+line)
 and the real TeX toolchain (the official `pdflatex` rule through both
 dialects). The historical scenarios the compact matrix once dropped are
 restored to the end-to-end set; the remaining fixture shapes stay with
@@ -240,6 +244,11 @@ as the runnable jar).
   application wires its implementation - the CLI wires the classic
   terminal dialogs, kept available in every execution mode, since a
   dialog is a conversation with the person who runs the tool),
+  the console mode surface (the `--console` flag and the `console`
+  configuration key, in both formats, resolved as command line over
+  configuration over the plain default; the plain presentation is
+  the first offered mode, and an unoffered name is an error rather
+  than a silent fallback),
   the clikt command line, and the shadow jar. **Directive conditionals
   (`if`/`while`/`until`/`unless`) and interpolation in directive
   `options` follow the engine too**: `--engine lua` evaluates conditionals

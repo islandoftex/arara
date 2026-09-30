@@ -1,0 +1,5 @@
+!config
+console: plain
+verbose: true
+paths:
+  - './'

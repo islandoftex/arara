@@ -80,6 +80,9 @@ object NorfolkMessages : AraraMessages {
     override fun errorInterpreterUnknownKeys(keys: String) =
         "Atwin me, yew an' the geartepost I ent got no idear abowt these keys in the directive: ${keys}. Howsomever, dunt you git yarself inta a rite ole puckaterry. Do you jist hull them outta yar map."
 
+    override fun errorConsoleModeUnknown(mode: String) =
+        "Atwin me, the console '${mode}' ent one of the presentations wot's on offer, that it ent. Dunt you git yarself inta a rite ole puckaterry: yew jist picks one of the modes wot's available."
+
     override val errorInterpreterUserRequestedHalt =
         "arara will stop do you (or yar rule) ask it to."
 

@@ -16,6 +16,13 @@ on.
 
 ## Added
 
+* New `--console` command line option and `console` configuration
+  key (in both configuration file formats) to select the console
+  presentation: `plain` (the default, the historic layout) is the
+  first offered mode. The command line wins over the configuration
+  file, which wins over the default, and a mode the application
+  does not offer is reported as an error instead of a silent
+  fallback.
 * The log records the verdict and the provenance of the run: a
   closing entry names the exit code the application returns, and
   every rule interpretation names the rule file it actually loaded,
@@ -317,13 +324,14 @@ on.
 
 ## Fixed
 
-* The output of a failed command reaches the log: the failure path
-  previously discarded the captured output, so the very tool output
-  that explains a failure never reached the log file. It is now
-  framed between the same output buffer markers as a successful
-  run, and the log's block framing no longer borrows the console's
-  layout - the log reads the same whichever console rendered the
-  run.
+* The output of every command reaches the log, whatever the
+  outcome: the failure path previously discarded the captured
+  output, so the very tool output that explains a failure never
+  reached the log file. A transcript is framed between the output
+  buffer markers on either path, a silent tool is stated as a
+  recorded fact instead of an empty frame, and the log's block
+  framing no longer borrows the console's layout - the log reads
+  the same whichever console rendered the run.
 * The closed-input dialog error no longer advises the safe mode as a
   way to disable dialogs: the safe mode keeps dialogs available by
   design, rejecting arbitrary execution and class loading, never the

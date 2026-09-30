@@ -83,6 +83,9 @@ object ItalianMessages : AraraMessages {
     override fun errorInterpreterUnknownKeys(keys: String) =
         "Ho trovato queste chiavi sconosciute nella direttiva: ${keys}. Dovrebbbe essere facile correggere, toglile dalla mappa."
 
+    override fun errorConsoleModeUnknown(mode: String) =
+        "Non posso impostare la console su '${mode}', perché non è una delle presentazioni disponibili. Dovrebbe essere facile correggere: scegli semplicemente una delle modalità disponibili."
+
     override val errorInterpreterWrongExitClosureReturn =
         "L'espressione di 'uscita' deve essere sempre un valore booleano (anche se non c'è alcun calcolo nella parte di chiusura). Dovrebbe essere facile correggere: assicurati che l'asserzione del 'type return' sia giusta e riprova."
 

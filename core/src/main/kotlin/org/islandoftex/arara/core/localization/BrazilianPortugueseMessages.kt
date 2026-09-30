@@ -83,6 +83,9 @@ object BrazilianPortugueseMessages : AraraMessages {
     override fun errorInterpreterUnknownKeys(keys: String) =
         "Encontrei as seguintes chaves desconhecidas na diretiva: ${keys}. Isso é fácil de resolver, apenas remova essas chaves do seu mapa."
 
+    override fun errorConsoleModeUnknown(mode: String) =
+        "Não consigo definir o console como '${mode}', pois não é uma das apresentações disponíveis. Isso é fácil de resolver, apenas escolha um dos modos disponíveis."
+
     override val errorInterpreterWrongExitClosureReturn =
         "A expressão 'exit' referente ao código de saída deve sempre retornar um valor lógico (mesmo se não há computação propriamente dita). Isso é fácil de resolver: apenas certifique-se de corrigir o tipo de retorno e tente novamente."
 

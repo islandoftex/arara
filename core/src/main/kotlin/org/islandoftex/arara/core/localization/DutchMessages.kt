@@ -80,6 +80,9 @@ object DutchMessages : AraraMessages {
     override fun errorInterpreterUnknownKeys(keys: String) =
         "Ik heb de volgende onbekende verwijzingen gevonden in de directive: ${keys}. Dit zou makkelijk op te lossen moeten zijn: verwijder deze uit de verwijzingstabel."
 
+    override fun errorConsoleModeUnknown(mode: String) =
+        "Ik kan de console niet op '${mode}' zetten, omdat dat geen van de beschikbare weergaven is. Dit zou makkelijk op te lossen moeten zijn: kies gewoon een van de beschikbare modi."
+
     override val errorInterpreterUserRequestedHalt =
         "arara word nu beëindigd op uw (of een regel) verzoek."
 

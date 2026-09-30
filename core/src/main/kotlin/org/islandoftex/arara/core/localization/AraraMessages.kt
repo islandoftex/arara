@@ -150,6 +150,11 @@ interface AraraMessages {
      */
     fun errorInterpreterUnknownKeys(keys: String): String
     /**
+     * The error shown when the selected console presentation is not
+     * one the application offers.
+     */
+    fun errorConsoleModeUnknown(mode: String): String
+    /**
      * The error shown when the exit expression of a rule command does
      * not return a boolean value.
      */

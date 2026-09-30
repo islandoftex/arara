@@ -80,6 +80,9 @@ object GermanMessages : AraraMessages {
     override fun errorInterpreterUnknownKeys(keys: String) =
         "Ich habe folgende unbekannte Keys in der Direktive gefunden: ${keys}. Das sollte leicht zu beheben sein, entferne sie einfach."
 
+    override fun errorConsoleModeUnknown(mode: String) =
+        "Ich kann die Konsole nicht auf '${mode}' setzen, da es keine der verfügbaren Darstellungen ist. Das sollte leicht zu beheben sein, wähle einfach einen der verfügbaren Modi."
+
     override val errorInterpreterUserRequestedHalt =
         "arara wird auf Ihren Wunsch gestoppt."
 

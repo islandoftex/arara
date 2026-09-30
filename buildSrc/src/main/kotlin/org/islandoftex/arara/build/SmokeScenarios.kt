@@ -354,6 +354,47 @@ internal val scenarios = listOf(
                 expected = listOf("LuaConfigUnderDefaultEngine"),
                 fixture = "lua-config-default",
         ),
+        Scenario(
+                name = "console-explicit.bats", dir = "console-explicit",
+                description = "the console flag selecting the plain presentation",
+                check = "the explicit plain mode renders the standard output",
+                arguments = listOf("--console", "plain", "console-explicit.tex"),
+                expected = listOf("SUCCESS"),
+                fixture = "console-explicit",
+        ),
+        Scenario(
+                name = "console-config.bats", dir = "console-config",
+                description = "the configuration key selecting the console presentation",
+                check = "the configured plain mode runs and the log states a silent tool",
+                arguments = listOf("--log", "console-config.tex"),
+                expected = listOf("SUCCESS"),
+                logChecks = listOf("The tool produced no output."),
+                fixture = "console-config",
+        ),
+        Scenario(
+                name = "console-config-invalid.bats", dir = "console-config-invalid",
+                description = "an unoffered console mode named by the configuration",
+                check = "the localized unoffered-mode error reports the name",
+                arguments = listOf("console-config-invalid.tex"),
+                expected = listOf(
+                        "I cannot set the console to",
+                        "nonsense",
+                ),
+                exitCode = 2,
+                fixture = "console-config-invalid",
+        ),
+        Scenario(
+                name = "console-flag-invalid.bats", dir = "console-flag-invalid",
+                description = "an unoffered console mode named by the command line",
+                check = "the usage error lists the offered mode",
+                arguments = listOf("--console", "fancy", "console-flag-invalid.tex"),
+                expected = listOf(
+                        "invalid choice",
+                        "choose from plain",
+                ),
+                exitCode = 1,
+                fixture = "console-flag-invalid",
+        ),
 )
 
 private fun workingDir(dir: String): String = "cd \"\$SMOKE_DIR/$dir\""

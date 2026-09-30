@@ -43,6 +43,7 @@ import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.cli.configuration.ConfigurationFiles
+import org.islandoftex.arara.cli.console.ConsoleMode
 import org.islandoftex.arara.cli.console.plain.PlainDialogRenderer
 import org.islandoftex.arara.cli.ruleset.DirectiveProcessing
 import org.islandoftex.arara.cli.ruleset.RuleEngine
@@ -143,6 +144,10 @@ class CLI : CliktCommand("arara") {
         )
         .choice("yaml" to RuleEngine.YAML, "lua" to RuleEngine.LUA)
         .default(RuleEngine.YAML)
+
+    private val console by option("--console")
+        .help("Set the console presentation to use: 'plain'")
+        .choice("plain" to ConsoleMode.PLAIN)
     private val workingDirectory by option("-d", "--working-directory")
         .help("Set the working directory for all tools")
         .path(mustExist = true, canBeFile = false, mustBeReadable = true)
@@ -246,7 +251,13 @@ class CLI : CliktCommand("arara") {
         projects.forEach { project ->
             ConfigurationFiles.configFileForProject(project)?.let {
                 Display.configurationFileName = it.toString()
-                ConfigurationFiles.load(it, project)
+                val resource = ConfigurationFiles.load(it, project)
+                // the command line wins over the configuration file,
+                // which wins over the plain default; a mode the
+                // configuration names but the application does not
+                // offer is an error
+                Display.renderer =
+                    ConsoleMode.resolve(console, resource.console).renderer
             }
         }
     }
@@ -259,6 +270,11 @@ class CLI : CliktCommand("arara") {
         // logged per file so a log file stays self-describing about the
         // rule format the run used
         logger.info { "Rule engine set to ${engine.name.lowercase()}" }
+
+        // the command line presentation always wins, whatever the
+        // configuration file says, so it re-applies per file like
+        // every other command line setting
+        console?.let { Display.renderer = it.renderer }
 
         Session.userInterfaceOptions = UserInterfaceOptions(
             locale = language?.let { MPPLocale(it) }

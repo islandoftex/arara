@@ -27,19 +27,24 @@ internal object CommandRunner {
     private val logger = KotlinLogging.logger { }
 
     /**
-     * Writes the captured output of a command to the log between the
-     * buffer markers, so the tool's own words frame the run - both
-     * when it succeeds and when it fails.
+     * Writes the captured output of a command to the log: a transcript
+     * is framed between the buffer markers - the tool's own words, on
+     * either outcome - and a silent tool is a recorded fact, not an
+     * absent one, so the emptiness is stated instead of framed.
      *
      * @param output The captured output of the command.
      */
     private fun logOutputBuffer(output: String) {
         logger.info {
-            """
-                ${RunLog.outputSeparator("BEGIN OUTPUT BUFFER")}
-                ${output}
-                ${RunLog.outputSeparator("END OUTPUT BUFFER")}
-            """.trimIndent()
+            if (output.isBlank()) {
+                "The tool produced no output."
+            } else {
+                """
+                    ${RunLog.outputSeparator("BEGIN OUTPUT BUFFER")}
+                    ${output}
+                    ${RunLog.outputSeparator("END OUTPUT BUFFER")}
+                """.trimIndent()
+            }
         }
     }
 
@@ -64,12 +69,7 @@ internal object CommandRunner {
         val duration = start.elapsedNow()
         return when (result) {
             is SystemCommandResult.Failed -> {
-                // the output a tool printed before failing is the fact
-                // that explains the failure; an empty capture adds no
-                // fact to the error context
-                if (result.output.isNotBlank()) {
-                    logOutputBuffer(result.output)
-                }
+                logOutputBuffer(result.output)
                 throw AraraException(
                     when (result.exception) {
                         is IOException ->

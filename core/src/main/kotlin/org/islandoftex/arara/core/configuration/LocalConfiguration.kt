@@ -32,6 +32,12 @@ data class LocalConfiguration(
     private val dbname: String? = null,
     private val logname: String? = null,
     /**
+     * The console presentation the configuration selects, by name; the
+     * command line wins over this value, which wins over the plain
+     * default.
+     */
+    val console: String? = null,
+    /**
      * The named directive lists the configuration provides, mapped from
      * preamble name to its directives.
      */

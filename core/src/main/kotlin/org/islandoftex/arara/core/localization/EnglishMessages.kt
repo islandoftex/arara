@@ -83,6 +83,9 @@ object EnglishMessages : AraraMessages {
     override fun errorInterpreterUnknownKeys(keys: String) =
         "I found these unknown keys in the directive: ${keys}. This should be an easy fix, just remove them from your map."
 
+    override fun errorConsoleModeUnknown(mode: String) =
+        "I cannot set the console to '${mode}', as it is not one of the available presentations. This should be an easy fix, just choose one of the available modes."
+
     override val errorInterpreterWrongExitClosureReturn =
         "The 'exit' expression must always return a boolean value (even if there is no computation in the closure body). This should be an easy fix: make sure to correct the type return statement and try again."
 

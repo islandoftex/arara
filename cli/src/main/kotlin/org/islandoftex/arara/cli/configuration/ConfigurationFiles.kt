@@ -102,11 +102,13 @@ object ConfigurationFiles {
      * configuration from.
      * @param currentProject The project the configuration is loaded for;
      *   its working directory anchors relative rule paths.
+     * @return The loaded configuration resource, so callers reach the
+     *   keys with no session home.
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun load(file: MPPPath, currentProject: Project) {
+    fun load(file: MPPPath, currentProject: Project): LocalConfiguration {
         // then validate it and update the configuration accordingly
         val resource = loadLocalConfiguration(file, currentProject)
         LinearExecutor.executionOptions = resource.toExecutionOptions(
@@ -128,6 +130,7 @@ object ConfigurationFiles {
         // display localized messages and reset logging status
         LanguageController.loadMessagesFor(Session.userInterfaceOptions.locale)
         Logging.setupLogging(Session.loggingOptions)
+        return resource
     }
 
     /**
