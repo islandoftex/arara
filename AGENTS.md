@@ -141,9 +141,10 @@ differs from the build floor).
   over their own. Every floor sits below its measured baseline so
   ordinary churn passes while a coverage regression fails the gate. The
   baseline is honest, not padded: what it excludes cannot be covered
-  meaningfully — the interactive dialog surface no longer needs an
-  exclusion: its blocks render and its choices re-prompt under
-  redirected streams, so the dialogs are tested whole, leaving only
+  meaningfully — the interactive dialog surface, which lives with
+  the CLI's dialog renderer, no longer needs an exclusion: its
+  blocks render and its choices re-prompt under redirected streams
+  in the CLI suite, so the dialogs are tested whole, leaving only
   the human typing itself uncovered; logging
   supplier bodies (no backend is configured in tests, by design),
   unreachable defensive arms, JVM bridge glue, and the `main` entry
@@ -234,6 +235,11 @@ as the runnable jar).
   the historic, byte-identical layout, and the run log holds no
   console knowledge, so the log records the same lines whichever
   console rendered the run),
+  the dialog contract (core defines the semantics and ships the
+  headless default that assumes no interactive surface; the
+  application wires its implementation - the CLI wires the classic
+  terminal dialogs, kept available in every execution mode, since a
+  dialog is a conversation with the person who runs the tool),
   the clikt command line, and the shadow jar. **Directive conditionals
   (`if`/`while`/`until`/`unless`) and interpolation in directive
   `options` follow the engine too**: `--engine lua` evaluates conditionals

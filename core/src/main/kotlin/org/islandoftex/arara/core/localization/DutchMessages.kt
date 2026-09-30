@@ -226,7 +226,9 @@ object DutchMessages : AraraMessages {
     override val infoLabelDialogPrompt = "Kies een optie"
 
     override val errorDialogInputClosed =
-        "Het lijkt erop dat de terminalinvoer is be\u00ebindigd terwijl een dialoog op een antwoord wachtte, dus ik kan je keuze niet lezen. Voer arara uit in een interactieve terminal, of gebruik de veilige modus."
+        "Het lijkt erop dat de terminalinvoer is be\u00ebindigd terwijl een dialoog op een antwoord wachtte, dus ik kan je keuze niet lezen. Voer arara uit in een interactieve terminal, zodat de dialoog beantwoord kan worden."
+    override val errorDialogsNotConfigured =
+        "Het lijkt erop dat er voor deze uitvoering geen dialoogondersteuning is geconfigureerd, dus ik kan de dialoog die een regel vroeg niet tonen. Geef een dialoogimplementatie op in de toepassing die arara uitvoert, of vermijd regels met interactieve dialogen."
     override val infoLabelUnnamedTask =
         "Naamloze taak"
 

@@ -43,6 +43,7 @@ import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.cli.configuration.ConfigurationFiles
+import org.islandoftex.arara.cli.console.plain.PlainDialogRenderer
 import org.islandoftex.arara.cli.ruleset.DirectiveProcessing
 import org.islandoftex.arara.cli.ruleset.RuleEngine
 import org.islandoftex.arara.cli.utils.Display
@@ -57,6 +58,7 @@ import org.islandoftex.arara.core.rules.Directives
 import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
+import org.islandoftex.arara.core.ui.TerminalDialogs
 import org.islandoftex.arara.lua.LuaInterpreter
 import org.islandoftex.arara.mvel.rules.MvelState
 
@@ -343,6 +345,13 @@ class CLI : CliktCommand("arara") {
         // logging has to be initialized only once and for all because
         // context resets lead to missing output
         Logging.setupLogging(Session.loggingOptions)
+
+        // the application provides the dialog support the library
+        // assumes nothing about: the classic terminal dialogs render
+        // here, and they stay available in every execution mode -
+        // a dialog is a conversation with the very person who runs
+        // the tool
+        TerminalDialogs.renderer = PlainDialogRenderer
 
         // add all key/value pairs found in the properties file, if
         // provided in the command line

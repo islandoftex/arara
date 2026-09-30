@@ -226,7 +226,9 @@ object NorfolkMessages : AraraMessages {
     override val infoLabelDialogPrompt = "Pick one onnem"
 
     override val errorDialogInputClosed =
-        "It do luke like thet terminal input went hully away whilst a dialog was a-waitin\u2019 on yer answer, so I can\u2019t read wot yew picked. Dew yew run arara in a proper interactive terminal, or hev a go at the safe mode."
+        "It do luke like thet terminal input went hully away whilst a dialog was a-waitin\u2019 on yer answer, so I can\u2019t read wot yew picked. Dew yew run arara in a proper interactive terminal, so the dialog can get its answer, that it can."
+    override val errorDialogsNotConfigured =
+        "It do luke like they ain\u2019t no dialog support rigged up fer this here run, so I can\u2019t show the dialog wot a rule were a-askin\u2019 fer. Yew best be providin\u2019 a dialog in the app wot runs arara, or keepin\u2019 away from they rules with interactive dialogs, that yew should."
     override val infoLabelUnnamedTask =
         "That task ent got no name"
 

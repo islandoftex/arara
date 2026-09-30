@@ -392,6 +392,11 @@ interface AraraMessages {
      */
     val errorDialogInputClosed: String
     /**
+     * The error shown when a rule reaches a dialog and the run has
+     * no dialog support configured.
+     */
+    val errorDialogsNotConfigured: String
+    /**
      * The label shown for a rule command without a name.
      */
     val infoLabelUnnamedTask: String

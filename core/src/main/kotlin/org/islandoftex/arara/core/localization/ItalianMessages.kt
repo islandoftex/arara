@@ -226,7 +226,9 @@ object ItalianMessages : AraraMessages {
     override val infoLabelDialogPrompt = "Scegli un\u2019opzione"
 
     override val errorDialogInputClosed =
-        "Sembra che l\u2019input del terminale si sia chiuso mentre un dialogo attendeva una risposta, quindi non posso leggere la tua scelta. Esegui arara in un terminale interattivo oppure usa la modalit\u00e0 sicura."
+        "Sembra che l\u2019input del terminale si sia chiuso mentre un dialogo attendeva una risposta, quindi non posso leggere la tua scelta. Esegui arara in un terminale interattivo, cos\u00ec il dialogo pu\u00f2 ricevere una risposta."
+    override val errorDialogsNotConfigured =
+        "Sembra che questa esecuzione non abbia alcun supporto per i dialoghi configurato, quindi non posso mostrare il dialogo richiesto da una regola. Fornisci un\u2019implementazione dei dialoghi nell\u2019applicazione che esegue arara, oppure evita regole con dialoghi interattivi."
     override val infoLabelUnnamedTask =
         "Compito senza nome"
 

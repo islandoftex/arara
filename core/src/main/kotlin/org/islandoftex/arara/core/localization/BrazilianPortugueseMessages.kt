@@ -226,7 +226,9 @@ object BrazilianPortugueseMessages : AraraMessages {
     override val infoLabelDialogPrompt = "Escolha uma op\u00e7\u00e3o"
 
     override val errorDialogInputClosed =
-        "Parece que a entrada do terminal foi encerrada enquanto um di\u00e1logo aguardava uma resposta; portanto, n\u00e3o consigo ler sua escolha. Execute o arara em um terminal interativo ou utilize o modo seguro."
+        "Parece que a entrada do terminal foi encerrada enquanto um di\u00e1logo aguardava uma resposta; portanto, n\u00e3o consigo ler sua escolha. Execute o arara em um terminal interativo para que o di\u00e1logo possa ser respondido."
+    override val errorDialogsNotConfigured =
+        "Parece que esta execu\u00e7\u00e3o n\u00e3o tem suporte a di\u00e1logos configurado; portanto, n\u00e3o posso exibir o di\u00e1logo que uma regra pediu. Forne\u00e7a uma implementa\u00e7\u00e3o de di\u00e1logos na aplica\u00e7\u00e3o que executa o arara, ou evite regras com di\u00e1logos interativos."
     override val infoLabelUnnamedTask =
         "Tarefa sem nome"
 

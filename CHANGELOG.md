@@ -131,6 +131,12 @@ on.
 
 ## Changed
 
+* **Breaking:** Interactive dialogs are now a host capability: the
+  library defines the dialog contract and ships a headless default
+  that raises a clear error when a rule reaches a dialog, instead of
+  assuming an interactive terminal; applications provide the
+  implementation (the command line ships the classic terminal
+  dialogs, and its behaviour is unchanged).
 * Replaced `luak` by `luaj`.
 * The internal machinery is renamed for what it is: the terminal
   rendering surface is `Display` (was `DisplayUtils`), the directive
@@ -307,6 +313,10 @@ on.
 
 ## Fixed
 
+* The closed-input dialog error no longer advises the safe mode as a
+  way to disable dialogs: the safe mode keeps dialogs available by
+  design, rejecting arbitrary execution and class loading, never the
+  conversation with the person who asked for the safe run.
 * The missing-rule error names the file in the format of the
   selected engine: the message previously announced a `.yaml` file
   in every language, so a missing rule under `--engine lua` was

@@ -226,7 +226,9 @@ object EnglishMessages : AraraMessages {
     override val infoLabelDialogPrompt = "Choose an option"
 
     override val errorDialogInputClosed =
-        "It looks like the terminal input ended while a dialog was waiting for an answer, so I cannot read your choice. Please run arara in an interactive terminal, or use the safe mode to disable dialogs."
+        "It looks like the terminal input ended while a dialog was waiting for an answer, so I cannot read your choice. Please run arara in an interactive terminal so the dialog can be answered."
+    override val errorDialogsNotConfigured =
+        "It looks like this run has no dialog support configured, so I cannot show the dialog a rule asked for. Please provide a dialog implementation in the application running arara, or avoid rules with interactive dialogs."
     override val infoLabelUnnamedTask =
         "Unnamed task"
 

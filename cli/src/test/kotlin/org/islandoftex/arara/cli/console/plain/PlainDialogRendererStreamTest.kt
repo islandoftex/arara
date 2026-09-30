@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.core.ui
+package org.islandoftex.arara.cli.console.plain
 
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -10,19 +10,29 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.core.configuration.UserInterfaceOptions
 import org.islandoftex.arara.core.session.Session
+import org.islandoftex.arara.core.ui.HeadlessDialogRenderer
+import org.islandoftex.arara.core.ui.TerminalDialogs
 
 /**
- * Verifies the terminal dialogs end to end through redirected streams:
- * the rendering of the blocks, the re-prompt on invalid choices, the
+ * Verifies the terminal dialogs end to end through the facade with
+ * the application's renderer wired, over redirected streams: the
+ * rendering of the blocks, the re-prompt on invalid choices, the
  * closed-input error of a numbered dialog, the input trimming, and
  * the empty-list yield of zero. Everything except the human typing
  * is exercised here; the only true residue left is the terminal
  * itself.
  */
-class TerminalDialogsStreamTest {
+class PlainDialogRendererStreamTest {
     private val originalIn = System.`in`
     private val originalOut = System.out
+
+    init {
+        // the application wires its renderer before any rule can
+        // reach a dialog, so the tests wire it the same way
+        TerminalDialogs.renderer = PlainDialogRenderer
+    }
 
     @AfterTest
     fun restoreStreams() {
@@ -30,8 +40,10 @@ class TerminalDialogsStreamTest {
         System.setOut(originalOut)
         // every dialog test leaves the session options alone, but the
         // guard keeps a redirected run from leaking into other tests
-        Session.userInterfaceOptions =
-            org.islandoftex.arara.core.configuration.UserInterfaceOptions()
+        Session.userInterfaceOptions = UserInterfaceOptions()
+        // the headless default is the state between applications, so
+        // the wiring never leaks past this suite
+        TerminalDialogs.renderer = HeadlessDialogRenderer
     }
 
     private fun withStreams(input: String, block: () -> String): Pair<String, String> {
@@ -118,16 +130,20 @@ class TerminalDialogsStreamTest {
 
     @Test
     fun `trims the input and yields empty for a closed input`() {
-        val (typed, _) = withStreams("  Paulo  \n") {
+        val (typed, output) = withStreams("  Paulo  \n") {
             TerminalDialogs.showInput(4, "Your name", "What should I call you?")
         }
         assertEquals("Paulo", typed, "the input is trimmed")
-        val (closed, output) = withStreams("") {
+        assertTrue(
+            "QUESTION — Your name" in output,
+            "the question tag renders on the input block"
+        )
+        val (closed, closingOutput) = withStreams("") {
             TerminalDialogs.showInput(4, "Your name", "What should I call you?")
         }
         assertEquals("", closed, "a closed input cancels, as Swing did")
         assertTrue(
-            "-".repeat(65) in output,
+            "-".repeat(65) in closingOutput,
             "the input block closes even on cancel"
         )
     }
