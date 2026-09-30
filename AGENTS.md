@@ -228,6 +228,9 @@ as the runnable jar).
   Lua configuration scripts run with `user` — `home`, `name` — and `cwd`
   in scope, so they compute paths in plain Lua and no placeholder
   expansion applies to them),
+  the console renderer seam (the display facade routes every call
+  site to the renderer resolved at startup; the plain renderer
+  carries the historic, byte-identical layout),
   the clikt command line, and the shadow jar. **Directive conditionals
   (`if`/`while`/`until`/`unless`) and interpolation in directive
   `options` follow the engine too**: `--engine lua` evaluates conditionals
