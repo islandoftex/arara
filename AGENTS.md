@@ -143,7 +143,12 @@ differs from the build floor).
   supplier bodies (no backend is configured in tests, by design),
   unreachable defensive arms, JVM bridge glue, and the `main` entry
   point, which is filtered out of the reports and exercised for real
-  by the generated smoke suite through the runnable jar.
+  by the generated smoke suite through the runnable jar. Kover rides
+  0.9.11: upstream closed its configuration-cache zeroing (the api
+  floor once reported zero lines) by reverting the change that caused
+  it, not by fixing it, so any future release that lands
+  task-outcome logic again must be re-verified on both a fresh and a
+  reused configuration cache entry before adoption.
 - `./gradlew updateHeaders` — refreshes the copyright year intervals in the
   license, the YAML rules and the Lua rules to the current year. Run it on
   demand when the year rolls over.
