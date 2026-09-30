@@ -14,6 +14,17 @@ dependencies {
     testImplementation(libs.kotlin.test)
 }
 
+// the suite parses the shipped Lua rules although they live outside
+// the module, so they are declared as test inputs: a corpus edit
+// alone must invalidate the up-to-date verdict
+tasks.test {
+    inputs.files(
+        fileTree(rootProject.rootDir.resolve("rules")) {
+            include("arara-rule-*.lua")
+        }
+    )
+}
+
 // the module's own test suite is what its report measures - the
 // cross-module coverage of these classes is guarded by the aggregate
 // floor at the root. This floor sits below the module's own measured
