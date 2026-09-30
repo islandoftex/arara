@@ -312,10 +312,13 @@ on.
   in every language, so a missing rule under `--engine lua` was
   reported with the wrong extension - pointing at a file the tool
   never looked for.
-* The append option of the log now works: a run with logging enabled
-  keeps the existing log file and appends to it when the append
-  option asks for it, and starts the file fresh otherwise - the
-  previous behavior, now pinned by a test, remains the default.
+* The append option of the log now works: the option travels from
+  the logging model to the backend, so a run with logging enabled
+  keeps the existing log file and appends to it when the model asks
+  for it, and starts the file fresh otherwise - the previous
+  behavior, now pinned by a test, remains the default. The option
+  is part of the embedder surface of the logging model; no
+  configuration key or command line flag exposes it.
   Before, the option was accepted but silently ignored: the log
   file was always started fresh.
 * Every published jar now declares its own automatic module name
