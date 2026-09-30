@@ -295,6 +295,7 @@ internal val scenarios = listOf(
                 logChecks = listOf(
                         "Rule engine set to yaml",
                         "System command exited with value 0",
+                        "YAML rules are deprecated",
                 ),
                 fixture = "simple-directive",
         ),
@@ -315,6 +316,43 @@ internal val scenarios = listOf(
                 arguments = listOf("--engine", "lua", "lua-config.tex"),
                 expected = listOf("from: the Lua configuration"),
                 fixture = "lua-config",
+        ),
+        Scenario(
+                name = "missing-rule.bats", dir = "missing-rule",
+                description = "the missing-rule error in the engine's own format",
+                check = "the error names the Lua file the engine was looking for",
+                arguments = listOf("--engine", "lua", "missing-rule.tex"),
+                expected = listOf(
+                        "I could not find a rule",
+                        "notarulequack.lua",
+                ),
+                exitCode = 2,
+                fixture = "missing-rule",
+        ),
+        Scenario(
+                name = "snake-helpers.bats", dir = "snake-helpers",
+                description = "the snake_case helper spellings through a local rule",
+                check = "the idiomatic spellings run the rule end to end",
+                arguments = listOf("--engine", "lua", "snake-helpers.tex"),
+                expected = listOf("snake works", "snake-helpers.tex"),
+                fixture = "snake-helpers",
+        ),
+        Scenario(
+                name = "both-configs.bats", dir = "both-configs",
+                description = "the configuration precedence with both formats present",
+                check = "the YAML configuration wins and its rule runs",
+                arguments = listOf("both-configs.tex"),
+                expected = listOf("FromTheYamlConfig"),
+                forbidden = listOf("FromTheLuaConfig"),
+                fixture = "both-configs",
+        ),
+        Scenario(
+                name = "lua-config-default.bats", dir = "lua-config-default",
+                description = "the Lua configuration honored under the default engine",
+                check = "the rule resolves through the Lua configuration's paths",
+                arguments = listOf("lua-config-default.tex"),
+                expected = listOf("LuaConfigUnderDefaultEngine"),
+                fixture = "lua-config-default",
         ),
 )
 

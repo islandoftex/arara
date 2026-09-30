@@ -1,0 +1,10 @@
+!config
+identifier: defaultechoer
+name: The Lua configuration's rule under the default engine
+commands:
+  - name: The echoer
+    command: >
+      @{
+          return isWindows(getCommand('cmd', '/c', 'echo', 'LuaConfigUnderDefaultEngine'), getCommand('echo', 'LuaConfigUnderDefaultEngine'));
+      }
+arguments: []

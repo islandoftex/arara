@@ -59,10 +59,15 @@ labels, the loop cap through the command line, the halt
 directive's error exit, dispatch by file extension including its
 rejection path, and a file-database double run in both a TeX and a
 TeX-free shape asserting the record-and-skip semantics of `changed`,
-plus a run behind the log flag asserting the engine and the exit value
-recorded in the log file, the rejection of the deprecated orb tag
-syntax under the Lua engine, and a run configured through a Lua
-configuration file whose paths are computed from the values in scope)
+plus a run behind the log flag asserting the engine, the exit value
+and the YAML deprecation warning recorded in the log file, the
+rejection of the deprecated orb tag syntax under the Lua engine, a
+run configured through a Lua configuration file whose paths are
+computed from the values in scope, the missing-rule error naming the
+file in the engine's own format, the snake_case helper spellings
+through a local Lua rule, the configuration precedence when both
+formats are present with the YAML one winning, and the Lua
+configuration honored under the default engine)
 and the real TeX toolchain (the official `pdflatex` rule through both
 dialects). The historical scenarios the compact matrix once dropped are
 restored to the end-to-end set; the remaining fixture shapes stay with

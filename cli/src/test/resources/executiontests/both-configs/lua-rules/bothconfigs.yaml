@@ -1,0 +1,10 @@
+!config
+identifier: bothconfigs
+name: The Lua configuration's rule
+commands:
+  - name: The echoer
+    command: >
+      @{
+          return isWindows(getCommand('cmd', '/c', 'echo', 'FromTheLuaConfig'), getCommand('echo', 'FromTheLuaConfig'));
+      }
+arguments: []
