@@ -210,6 +210,13 @@ as the runnable jar).
   The shared helpers live in `core` (`core/…/rules/RuleMethods`,
   `core/…/rules/ConditionalMethods`) and the configuration model in
   `core/…/configuration/`; the module no longer depends on `mvel` at all.
+  Every helper is bound under both spellings: the historic camelCase name
+  of the shared vocabulary and its mechanically derived snake_case alias,
+  the Lua-idiomatic form the official rules ship in — each spelling
+  reports its own name in argument errors, the camelCase forms retire
+  together with the deprecated engine (the removal playbook schedules
+  it), and a completeness test walks each environment's globals so a
+  helper registered without its alias fails the gate.
 - `cli` — the application: directive parsing, rule dispatch by file extension
   (`.yaml` → mvel parser with a one-time deprecation warning, `.lua` →
   `LuaRuleParser`), configuration file lookup (YAML names first, then Lua;
