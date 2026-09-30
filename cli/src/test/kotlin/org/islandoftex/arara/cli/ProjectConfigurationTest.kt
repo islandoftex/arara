@@ -5,6 +5,7 @@ import com.github.ajalt.clikt.core.PrintHelpMessage
 import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.core.parse
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.PrintStream
 import java.nio.file.Files
 import java.nio.file.Files.createTempDirectory
@@ -237,6 +238,31 @@ class ProjectConfigurationTest {
             assertTrue(
                 output.contains("PreambleWorks"),
                 "the preamble directive executed: $output"
+            )
+        }
+    }
+
+    @Test
+    fun `leaves no log file behind when logging is not enabled`() {
+        withRestoredState {
+            // the default log location is the working directory of the
+            // process; any stale file from an earlier run is cleared so
+            // the assertion observes only what this run produced
+            val defaultLog = File("arara.log")
+            defaultLog.delete()
+            val (status, _) = runCLI(
+                "--working-directory",
+                "src/test/resources/executiontests/simple-directive",
+                "simple-directive.tex"
+            )
+            assertEquals(
+                0, status,
+                "the run itself succeeds without the log flag"
+            )
+            assertTrue(
+                !defaultLog.exists(),
+                "no log file materializes without the flag: the logging " +
+                    "configuration activates only when the feature is enabled"
             )
         }
     }
