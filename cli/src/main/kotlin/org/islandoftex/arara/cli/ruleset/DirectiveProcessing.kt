@@ -7,7 +7,7 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.Directive
-import org.islandoftex.arara.cli.utils.Display
+import org.islandoftex.arara.cli.utils.RunLog
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.DirectiveFetchingHooks
 import org.islandoftex.arara.core.rules.Directives
@@ -176,11 +176,11 @@ object DirectiveProcessing {
             logger.info {
                 """
                     All directives were validated. We are good to go.
-                    ${Display.displayOutputSeparator(
+                    ${RunLog.outputSeparator(
                     "DIRECTIVES"
                 )}
                     ${result.joinToString("\n")}
-                    ${Display.displaySeparator()}
+                    ${RunLog.separator()}
                 """.trimIndent()
             }
         }

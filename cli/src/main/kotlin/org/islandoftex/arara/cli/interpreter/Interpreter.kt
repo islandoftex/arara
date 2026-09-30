@@ -361,6 +361,12 @@ class Interpreter(
         logger.info {
             "Rule location: \"${file.parent}\""
         }
+        // the resolved file itself matters more than its directory: a
+        // rule shadowed by another of the same name is the classic
+        // wrong-rule-run confusion, and only the file settles it
+        logger.info {
+            "Rule file: \"$file\""
+        }
 
         // parse the rule identified by the directive (may throw an exception)
         val rule = RuleFiles.parseRule(file, directive.identifier)

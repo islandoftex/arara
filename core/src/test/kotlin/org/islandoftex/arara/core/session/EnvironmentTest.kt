@@ -129,4 +129,29 @@ class EnvironmentTest {
             "the failure carries the underlying timeout"
         )
     }
+
+    @Test
+    fun `a failed command keeps the output it printed`() {
+        assumeTrue(
+            !Environment.checkOS(Environment.SupportedOS.WINDOWS),
+            "the test requires a non-Windows operating system"
+        )
+        val result = Environment.executeSystemCommand(
+            Command(listOf("sh", "-c", "echo quack-fail; sleep 1")),
+            true,
+            500.milliseconds
+        )
+        val failure = assertIs<SystemCommandResult.Failed>(
+            result,
+            "a command exceeding the timeout fails"
+        )
+        assertIs<TimeoutException>(
+            failure.exception,
+            "the failure carries the underlying timeout"
+        )
+        assertTrue(
+            "quack-fail" in failure.output,
+            "the output printed before the failure is kept"
+        )
+    }
 }

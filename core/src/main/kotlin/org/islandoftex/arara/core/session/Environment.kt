@@ -232,7 +232,11 @@ object Environment {
                     "$command: ${it.message}"
             }
             SystemCommandResult.Failed(
-                it as? Exception ?: RuntimeException(it)
+                it as? Exception ?: RuntimeException(it),
+                // the output a tool printed before the failure is the
+                // fact that explains it, so the capture survives the
+                // failed run
+                buffer.toString()
             )
         }
     }

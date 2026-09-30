@@ -48,6 +48,7 @@ import org.islandoftex.arara.cli.ruleset.DirectiveProcessing
 import org.islandoftex.arara.cli.ruleset.RuleEngine
 import org.islandoftex.arara.cli.utils.Display
 import org.islandoftex.arara.cli.utils.Logging
+import org.islandoftex.arara.cli.utils.RunLog
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.LoggingOptions
 import org.islandoftex.arara.core.configuration.UserInterfaceOptions
@@ -414,6 +415,10 @@ class CLI : CliktCommand("arara") {
             // return false as result (it makes no sense to print the execution
             // time for a help message)
             Display.printTime(executionStart.elapsedNow().toDouble(DurationUnit.SECONDS))
+
+            // the closing entry records the verdict in the log; the
+            // console has already said everything it needs to
+            RunLog.executionOutcome(executionStatus.exitCode)
 
             throw ProgramResult(executionStatus.exitCode)
         }

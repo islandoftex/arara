@@ -9,7 +9,7 @@ import kotlin.time.DurationUnit
 import kotlin.time.TimeSource
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.session.Command
-import org.islandoftex.arara.cli.utils.Display
+import org.islandoftex.arara.cli.utils.RunLog
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
@@ -25,6 +25,23 @@ import org.zeroturnaround.exec.InvalidExitValueException
  */
 internal object CommandRunner {
     private val logger = KotlinLogging.logger { }
+
+    /**
+     * Writes the captured output of a command to the log between the
+     * buffer markers, so the tool's own words frame the run - both
+     * when it succeeds and when it fails.
+     *
+     * @param output The captured output of the command.
+     */
+    private fun logOutputBuffer(output: String) {
+        logger.info {
+            """
+                ${RunLog.outputSeparator("BEGIN OUTPUT BUFFER")}
+                ${output}
+                ${RunLog.outputSeparator("END OUTPUT BUFFER")}
+            """.trimIndent()
+        }
+    }
 
     /**
      * Runs the command in the underlying operating system.
@@ -46,7 +63,13 @@ internal object CommandRunner {
         )
         val duration = start.elapsedNow()
         return when (result) {
-            is SystemCommandResult.Failed ->
+            is SystemCommandResult.Failed -> {
+                // the output a tool printed before failing is the fact
+                // that explains the failure; an empty capture adds no
+                // fact to the error context
+                if (result.output.isNotBlank()) {
+                    logOutputBuffer(result.output)
+                }
                 throw AraraException(
                     when (result.exception) {
                         is IOException ->
@@ -65,6 +88,7 @@ internal object CommandRunner {
                     },
                     result.exception
                 )
+            }
             is SystemCommandResult.Completed -> {
                 logger.info {
                     // the exit value is recorded here because the caller
@@ -76,17 +100,7 @@ internal object CommandRunner {
                             duration.toDouble(DurationUnit.SECONDS)
                         ) + " seconds"
                 }
-                logger.info {
-                    """
-                        ${Display.displayOutputSeparator(
-                        "BEGIN OUTPUT BUFFER"
-                    )}
-                        ${result.output}
-                        ${Display.displayOutputSeparator(
-                        "END OUTPUT BUFFER"
-                    )}
-                    """.trimIndent()
-                }
+                logOutputBuffer(result.output)
                 result.exitCode
             }
         }

@@ -22,6 +22,10 @@ sealed class SystemCommandResult {
      * The command could not be executed.
      *
      * @property exception The underlying exception of the failure.
+     * @property output The output captured up to the failure.
      */
-    data class Failed(val exception: Exception) : SystemCommandResult()
+    data class Failed(
+        val exception: Exception,
+        val output: String = ""
+    ) : SystemCommandResult()
 }

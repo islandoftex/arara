@@ -10,10 +10,12 @@ import org.islandoftex.arara.core.session.Session
 
 /**
  * Writes the run's log entries: the single home of every log line
- * the display side emits, kept deliberately free of console
- * knowledge. The block framing follows the session width, never a
- * presentation, so the file reads the same whichever console
- * rendered the run.
+ * the display side emits and of the block framing every log block
+ * uses, kept deliberately free of console knowledge. The framing
+ * follows the session width, never a presentation, so the file
+ * reads the same whichever console rendered the run - and the log
+ * blocks the interpreter, the command runner and the directive
+ * processing build all frame through the same helpers.
  *
  * @author Island of TeX
  */
@@ -24,8 +26,20 @@ object RunLog {
      * The line that frames a log block, following the session width
      * so no presentation can ever move it.
      */
-    private fun separator() =
+    internal fun separator() =
         "-".repeat(Session.userInterfaceOptions.terminalOutputWidth)
+
+    /**
+     * The line that opens or closes a named log block, framing the
+     * title in dashes at the session width.
+     *
+     * @param message The block title.
+     */
+    internal fun outputSeparator(message: String) =
+        " $message ".center(
+            Session.userInterfaceOptions.terminalOutputWidth,
+            '-'
+        )
 
     /**
      * Writes the welcome entry of the run.
@@ -122,6 +136,21 @@ object RunLog {
      */
     fun executionTime(seconds: Double) = logger.info {
         "Total execution time: $seconds seconds"
+    }
+
+    /**
+     * Writes the closing entry recording the verdict of the whole
+     * run: the exit code the application returns, with the level
+     * carrying the outcome.
+     *
+     * @param exitCode The exit code of the run.
+     */
+    fun executionOutcome(exitCode: Int) {
+        if (exitCode == 0) {
+            logger.info { "Run completed with exit code $exitCode" }
+        } else {
+            logger.error { "Run failed with exit code $exitCode" }
+        }
     }
 
     /**

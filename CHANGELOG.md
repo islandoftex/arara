@@ -16,6 +16,10 @@ on.
 
 ## Added
 
+* The log records the verdict and the provenance of the run: a
+  closing entry names the exit code the application returns, and
+  every rule interpretation names the rule file it actually loaded,
+  so the log alone tells what ran and how it ended.
 * New Lua rule format: rules may now be written as Lua scripts returning a
   rule table (see the `lua` module's `LuaRuleParser` documentation). The
   helper methods known from the YAML format (`getCommand`, `isTrue`,
@@ -313,6 +317,13 @@ on.
 
 ## Fixed
 
+* The output of a failed command reaches the log: the failure path
+  previously discarded the captured output, so the very tool output
+  that explains a failure never reached the log file. It is now
+  framed between the same output buffer markers as a successful
+  run, and the log's block framing no longer borrows the console's
+  layout - the log reads the same whichever console rendered the
+  run.
 * The closed-input dialog error no longer advises the safe mode as a
   way to disable dialogs: the safe mode keeps dialogs available by
   design, rejecting arbitrary execution and class loading, never the
