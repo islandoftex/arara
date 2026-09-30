@@ -148,7 +148,10 @@ differs from the build floor).
   floor once reported zero lines) by reverting the change that caused
   it, not by fixing it, so any future release that lands
   task-outcome logic again must be re-verified on both a fresh and a
-  reused configuration cache entry before adoption.
+  reused configuration cache entry before adoption. The floors are
+  deliberately hard-coded in the build files rather than read from
+  `gradle.properties`: a gate moves only through a commit, never
+  through a command line `-P` override of a property.
 - `./gradlew updateHeaders` — refreshes the copyright year intervals in the
   license, the YAML rules and the Lua rules to the current year. Run it on
   demand when the year rolls over.

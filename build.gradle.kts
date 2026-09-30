@@ -471,9 +471,11 @@ subprojects {
             }
         }
 
-        // DGP v2 configuration (the v1 dokkaHtml task is gone as of Dokka
-        // 2.2); non-public members stay undocumented by default, and the
-        // platform is derived from the Kotlin JVM plugin
+        // the per-module documentation contract: an undocumented public
+        // member is a warning and failOnWarning turns it into a build
+        // failure, so the documented surface cannot decay; inherited
+        // members and obvious functions are suppressed to keep the gate
+        // honest, and deprecated members stay documented
         configure<DokkaExtension> {
             moduleName.set("arara (${project.name})")
             dokkaPublications.named("html") {
