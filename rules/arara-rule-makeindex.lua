@@ -11,11 +11,11 @@ return {
     {
       name = "The MakeIndex software",
       command = function(ctx)
-        local base = getBasename(ctx.reference.file_name)
+        local base = get_basename(ctx.reference.file_name)
         local infile = (base .. ".") .. ctx.input[1]
         local outfile = { "-o", (base .. ".") .. ctx.output[1] }
         local logfile = { "-t", (base .. ".") .. ctx.log[1] }
-        return getCommand("makeindex", ctx.german, ctx.style, ctx.order, ctx.options, logfile, infile, outfile)
+        return get_command("makeindex", ctx.german, ctx.style, ctx.order, ctx.options, logfile, infile, outfile)
       end
     },
   },
@@ -44,16 +44,16 @@ return {
     {
       identifier = "german",
       flag = function(ctx, value)
-        return isTrue(value, "-g")
+        return is_true(value, "-g")
       end
     },
     {
       identifier = "order",
       flag = function(ctx, value)
         if contains({ "letter", "word" }, value) then
-          return isTrue(value == "letter", "-l", "")
+          return is_true(value == "letter", "-l", "")
         else
-          throwError("The provided order is invalid.")
+          throw_error("The provided order is invalid.")
         end
       end
     },
@@ -66,10 +66,10 @@ return {
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

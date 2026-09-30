@@ -11,7 +11,7 @@ return {
     {
       name = "The xindex software",
       command = function(ctx)
-        return getCommand("xindex", ctx.config, ctx.language, ctx.options, ctx.input)
+        return get_command("xindex", ctx.config, ctx.language, ctx.options, ctx.input)
       end
     },
   },
@@ -26,23 +26,23 @@ return {
       identifier = "config",
       default = "",
       flag = function(ctx, value)
-        return { "-c", isEmpty(value, "cfg", value) }
+        return { "-c", is_empty(value, "cfg", value) }
       end
     },
     {
       identifier = "language",
       default = "",
       flag = function(ctx, value)
-        return { "-l", isEmpty(value, "en", value) }
+        return { "-l", is_empty(value, "en", value) }
       end
     },
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

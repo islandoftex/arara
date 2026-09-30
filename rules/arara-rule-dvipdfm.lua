@@ -11,9 +11,9 @@ return {
     {
       name = "The DVIPDFM program",
       command = function(ctx)
-        local base = getBasename(ctx.reference.file_name) .. ".dvi"
-        local out = getBasename(ctx.output[1]) .. ".pdf"
-        return getCommand("dvipdfm", base, "-o", out, ctx.options)
+        local base = get_basename(ctx.reference.file_name) .. ".dvi"
+        local out = get_basename(ctx.output[1]) .. ".pdf"
+        return get_command("dvipdfm", base, "-o", out, ctx.options)
       end
     },
   },
@@ -22,16 +22,16 @@ return {
       identifier = "output",
       default = "",
       flag = function(ctx, value)
-        return isEmpty(value, ctx.reference.file_name, value)
+        return is_empty(value, ctx.reference.file_name, value)
       end
     },
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

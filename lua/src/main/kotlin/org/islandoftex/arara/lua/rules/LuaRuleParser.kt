@@ -24,8 +24,8 @@ import org.islandoftex.arara.core.localization.LanguageController
  *     {
  *       name = "PDFLaTeX engine",
  *       command = function(ctx)
- *         return getCommand("pdflatex", ctx.interaction, ctx.options,
- *                           ctx.reference.fileName)
+ *         return get_command("pdflatex", ctx.interaction, ctx.options,
+ *                           ctx.reference.file_name)
  *       end,
  *       -- optional, defaults to a zero exit code check
  *       exit = function(code) return code == 0 end

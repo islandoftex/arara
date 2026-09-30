@@ -11,7 +11,7 @@ return {
     {
       name = "An 8-bit implementation of BibTeX 0.99 with a very large capacity",
       command = function(ctx)
-        return getCommand("bibtex8", ctx.options, getBasename(ctx.reference.file_name))
+        return get_command("bibtex8", ctx.options, get_basename(ctx.reference.file_name))
       end
     },
   },
@@ -19,10 +19,10 @@ return {
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

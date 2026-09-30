@@ -11,7 +11,7 @@ return {
     {
       name = "The automation tool",
       command = function(ctx)
-        return getCommand("ltx2any", ctx.clean, ctx.engine, ctx.parameters, ctx.tikzimages, ctx.jobname, ctx.logname, ctx.logformat, ctx.loglevel, ctx.frequency, ctx.directory, ctx.synctex, ctx.options, ctx.reference.file_name)
+        return get_command("ltx2any", ctx.clean, ctx.engine, ctx.parameters, ctx.tikzimages, ctx.jobname, ctx.logname, ctx.logformat, ctx.loglevel, ctx.frequency, ctx.directory, ctx.synctex, ctx.options, ctx.reference.file_name)
       end
     },
   },
@@ -19,7 +19,7 @@ return {
     {
       identifier = "clean",
       flag = function(ctx, value)
-        return isTrue(value, "-c")
+        return is_true(value, "-c")
       end
     },
     {
@@ -31,20 +31,20 @@ return {
     {
       identifier = "parameters",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return { "-ep", join(value, " ") }
         else
-          throwError("I was execting a list of parameters.")
+          throw_error("I was execting a list of parameters.")
         end
       end
     },
     {
       identifier = "tikzimages",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return { "-ir", join(value, ":") }
         else
-          throwError("I was expecting a list of images.")
+          throw_error("I was expecting a list of images.")
         end
       end
     },
@@ -67,7 +67,7 @@ return {
         if fts[value] ~= nil then
           return { "-lf", fts[value] }
         else
-          throwError("Invalid log format.")
+          throw_error("Invalid log format.")
         end
       end
     },
@@ -78,7 +78,7 @@ return {
         if contains(ll, value) then
           return { "-ll", value }
         else
-          throwError("Invalid log level.")
+          throw_error("Invalid log level.")
         end
       end
     },
@@ -97,16 +97,16 @@ return {
     {
       identifier = "synctex",
       flag = function(ctx, value)
-        return isTrue(value, "-synctex")
+        return is_true(value, "-synctex")
       end
     },
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

@@ -11,10 +11,10 @@ return {
     {
       name = "The Biber reference management software",
       command = function(ctx)
-        if isTrue(ctx.tool[1]) then
-          return getCommand("biber", "--tool", ctx.options)
+        if is_true(ctx.tool[1]) then
+          return get_command("biber", "--tool", ctx.options)
         else
-          return getCommand("biber", ctx.options, getBasename(ctx.reference.file_name))
+          return get_command("biber", ctx.options, get_basename(ctx.reference.file_name))
         end
       end
     },
@@ -30,10 +30,10 @@ return {
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

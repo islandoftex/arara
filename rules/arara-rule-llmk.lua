@@ -11,7 +11,7 @@ return {
     {
       name = "The automation tool",
       command = function(ctx)
-        return getCommand("llmk", ctx.clean, ctx.debug, ctx.dry, ctx.mode, ctx.reference.file_name)
+        return get_command("llmk", ctx.clean, ctx.debug, ctx.dry, ctx.mode, ctx.reference.file_name)
       end
     },
   },
@@ -23,7 +23,7 @@ return {
         if goals[value] ~= nil then
           return goals[value]
         else
-          throwError("The provided value is invalid.")
+          throw_error("The provided value is invalid.")
         end
       end
     },
@@ -40,7 +40,7 @@ return {
     {
       identifier = "dry",
       flag = function(ctx, value)
-        return isTrue(value, "--dry-run")
+        return is_true(value, "--dry-run")
       end
     },
     {
@@ -50,7 +50,7 @@ return {
         if modes[value] ~= nil then
           return modes[value]
         else
-          throwError("Invalid mode name.")
+          throw_error("Invalid mode name.")
         end
       end
     },

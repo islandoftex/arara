@@ -11,10 +11,10 @@ return {
     {
       name = "The command line tool",
       command = function(ctx)
-        local base = getBasename(ctx.reference.file_name)
-        local e = isList(ctx.extension) and ctx.extension[1] or ctx.extension
+        local base = get_basename(ctx.reference.file_name)
+        local e = is_list(ctx.extension) and ctx.extension[1] or ctx.extension
         local input = (base .. ".") .. e
-        return getCommand(ctx.program, ctx.command, ctx.dotsage, ctx.options, input)
+        return get_command(ctx.program, ctx.command, ctx.dotsage, ctx.options, input)
       end
     },
   },
@@ -34,7 +34,7 @@ return {
         if contains(exts, value) then
           return value
         else
-          throwError("The provided extension is invalid.")
+          throw_error("The provided extension is invalid.")
         end
       end
     },
@@ -47,16 +47,16 @@ return {
     {
       identifier = "dotsage",
       flag = function(ctx, value)
-        return isFalse(value, "--nodotsage")
+        return is_false(value, "--nodotsage")
       end
     },
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

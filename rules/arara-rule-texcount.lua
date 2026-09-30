@@ -11,7 +11,7 @@ return {
     {
       name = "The TeXcount program",
       command = function(ctx)
-        return getCommand("texcount", ctx.rules, ctx.verbosity, ctx.strict, ctx.html, ctx.total, ctx.unicode, ctx.options, ctx.output, ctx.reference.file_name)
+        return get_command("texcount", ctx.rules, ctx.verbosity, ctx.strict, ctx.html, ctx.total, ctx.unicode, ctx.options, ctx.output, ctx.reference.file_name)
       end
     },
   },
@@ -22,7 +22,7 @@ return {
         if contains({ "relaxed", "restricted" }, value) then
           return "-" .. value
         else
-          throwError("Invalid value, use either relaxed or restricted.")
+          throw_error("Invalid value, use either relaxed or restricted.")
         end
       end
     },
@@ -32,32 +32,32 @@ return {
         if contains({ "0", "1", "2", "3", "4" }, value) then
           return "-v" .. value
         else
-          throwError("Invalid value, use an integer range from 0 to 4.")
+          throw_error("Invalid value, use an integer range from 0 to 4.")
         end
       end
     },
     {
       identifier = "strict",
       flag = function(ctx, value)
-        return isTrue(value, "-strict")
+        return is_true(value, "-strict")
       end
     },
     {
       identifier = "html",
       flag = function(ctx, value)
-        return isTrue(value, "-html")
+        return is_true(value, "-html")
       end
     },
     {
       identifier = "total",
       flag = function(ctx, value)
-        return isTrue(value, "-total")
+        return is_true(value, "-total")
       end
     },
     {
       identifier = "unicode",
       flag = function(ctx, value)
-        return isTrue(value, "-unicode")
+        return is_true(value, "-unicode")
       end
     },
     {
@@ -69,10 +69,10 @@ return {
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

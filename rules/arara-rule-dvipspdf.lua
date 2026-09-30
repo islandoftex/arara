@@ -11,17 +11,17 @@ return {
     {
       name = "The DVIPS program",
       command = function(ctx)
-        local base = getBasename(ctx.reference.file_name) .. ".dvi"
-        local out = getBasename(ctx.reference.file_name) .. ".ps"
-        return getCommand("dvips", base, "-o", out, ctx.options1)
+        local base = get_basename(ctx.reference.file_name) .. ".dvi"
+        local out = get_basename(ctx.reference.file_name) .. ".ps"
+        return get_command("dvips", base, "-o", out, ctx.options1)
       end
     },
     {
       name = "The PS2PDF program",
       command = function(ctx)
-        local base = getBasename(ctx.reference.file_name) .. ".ps"
-        local out = getBasename(ctx.output[1]) .. ".pdf"
-        return getCommand("ps2pdf", ctx.options2, base, "-o", out)
+        local base = get_basename(ctx.reference.file_name) .. ".ps"
+        local out = get_basename(ctx.output[1]) .. ".pdf"
+        return get_command("ps2pdf", ctx.options2, base, "-o", out)
       end
     },
   },
@@ -30,26 +30,26 @@ return {
       identifier = "output",
       default = "",
       flag = function(ctx, value)
-        return isEmpty(value, ctx.reference.file_name, value)
+        return is_empty(value, ctx.reference.file_name, value)
       end
     },
     {
       identifier = "options1",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },
     {
       identifier = "options2",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

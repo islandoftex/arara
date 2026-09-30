@@ -11,8 +11,8 @@ return {
     {
       name = "The SongIDX Lua script",
       command = function(ctx)
-        local infile = getBasename(ctx.input[1]) .. ".sxd"
-        return getCommand("texlua", ctx.script, ctx.options, infile)
+        local infile = get_basename(ctx.input[1]) .. ".sxd"
+        return get_command("texlua", ctx.script, ctx.options, infile)
       end
     },
   },
@@ -27,10 +27,10 @@ return {
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

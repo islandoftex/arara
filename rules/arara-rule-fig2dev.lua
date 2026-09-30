@@ -11,8 +11,8 @@ return {
     {
       name = "The fig2dev program",
       command = function(ctx)
-        local input = getBasename(ctx.reference.file_name) .. ".fig"
-        return getCommand("fig2dev", ctx.language, ctx.magnification, ctx.font, ctx.size, ctx.options, input, ctx.output)
+        local input = get_basename(ctx.reference.file_name) .. ".fig"
+        return get_command("fig2dev", ctx.language, ctx.magnification, ctx.font, ctx.size, ctx.options, input, ctx.output)
       end
     },
   },
@@ -24,7 +24,7 @@ return {
         if contains({ "box", "cgm", "epic", "eepic", "eepicemu", "emf", "eps", "gif", "ibmgl", "jpeg", "latex", "map", "mf", "mp", "mmp", "pcx", "pdf", "pdftex", "pdftex_t", "pic", "pictex", "png", "ppm", "ps", "pstex", "pstex_t", "ptk", "shape", "sld", "svg", "textyl", "tiff", "tk", "tpic", "xbm", "xpm" }, value) then
           return { "-L", value }
         else
-          throwError("Invalid language, please refer to the manual.")
+          throw_error("Invalid language, please refer to the manual.")
         end
       end
     },
@@ -56,10 +56,10 @@ return {
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

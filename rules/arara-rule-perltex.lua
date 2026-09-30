@@ -11,7 +11,7 @@ return {
     {
       name = "PerlTeX wrapper",
       command = function(ctx)
-        return getCommand("perltex", ctx.engine, ctx.safe, ctx.permit, ctx.standalone, ctx.interaction, ctx.shell, ctx.synctex, ctx.options, ctx.reference.file_name)
+        return get_command("perltex", ctx.engine, ctx.safe, ctx.permit, ctx.standalone, ctx.interaction, ctx.shell, ctx.synctex, ctx.options, ctx.reference.file_name)
       end
     },
   },
@@ -22,34 +22,34 @@ return {
         if contains({ "latex", "pdflatex", "xelatex", "lualatex", "tex", "pdftex", "luatex", "context" }, value) then
           return "--latex=" .. value
         else
-          throwError("The provided TeX engine is invalid.")
+          throw_error("The provided TeX engine is invalid.")
         end
       end
     },
     {
       identifier = "safe",
       flag = function(ctx, value)
-        return isTrue(value, "--safe", "--nosafe")
+        return is_true(value, "--safe", "--nosafe")
       end
     },
     {
       identifier = "permit",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           local p = {}
           for _, entry in ipairs(value) do
             table.insert(p, "--permit=" .. entry)
           end
           return p
         else
-          throwError("I was expecting a list.")
+          throw_error("I was expecting a list.")
         end
       end
     },
     {
       identifier = "standalone",
       flag = function(ctx, value)
-        return isTrue(value, "--makesty")
+        return is_true(value, "--makesty")
       end
     },
     {
@@ -58,29 +58,29 @@ return {
         if contains({ "batchmode", "nonstopmode", "scrollmode", "errorstopmode" }, value) then
           return "--interaction=" .. value
         else
-          throwError("The provided interaction value is not valid.")
+          throw_error("The provided interaction value is not valid.")
         end
       end
     },
     {
       identifier = "shell",
       flag = function(ctx, value)
-        return isTrue(value, "--shell-escape", "--no-shell-escape")
+        return is_true(value, "--shell-escape", "--no-shell-escape")
       end
     },
     {
       identifier = "synctex",
       flag = function(ctx, value)
-        return isTrue(value, "--synctex=1", "--synctex=0")
+        return is_true(value, "--synctex=1", "--synctex=0")
       end
     },
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

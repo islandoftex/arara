@@ -11,7 +11,7 @@ return {
     {
       name = "The DatatoolTk software",
       command = function(ctx)
-        return getCommand("datatooltk", ctx.options, ctx.output, ctx.csv, ctx.sql, ctx.input, ctx.sqldb, ctx.sqluser, ctx.name, ctx.probsoln, ctx.sort, ctx.sortlocale, ctx.sortcase, ctx.seed, ctx.shuffle, ctx.sep, ctx.delim, ctx.csvheader, ctx.noconsole, ctx.debug, ctx.owneronly, ctx.maptex, ctx.xls, ctx.ods, ctx.sheet, ctx.filterop, ctx.filters, ctx.truncate)
+        return get_command("datatooltk", ctx.options, ctx.output, ctx.csv, ctx.sql, ctx.input, ctx.sqldb, ctx.sqluser, ctx.name, ctx.probsoln, ctx.sort, ctx.sortlocale, ctx.sortcase, ctx.seed, ctx.shuffle, ctx.sep, ctx.delim, ctx.csvheader, ctx.noconsole, ctx.debug, ctx.owneronly, ctx.maptex, ctx.xls, ctx.ods, ctx.sheet, ctx.filterop, ctx.filters, ctx.truncate)
       end
     },
   },
@@ -19,10 +19,10 @@ return {
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },
@@ -79,7 +79,7 @@ return {
       identifier = "noconsole",
       default = "",
       flag = function(ctx, value)
-        return { "--noconsole-action", isEmpty(value, "gui", value) }
+        return { "--noconsole-action", is_empty(value, "gui", value) }
       end
     },
     {
@@ -109,7 +109,7 @@ return {
     {
       identifier = "sortcase",
       flag = function(ctx, value)
-        return isTrue(value, "--sort-case-sensitive", "--sort-case-insensitive")
+        return is_true(value, "--sort-case-sensitive", "--sort-case-insensitive")
       end
     },
     {
@@ -121,31 +121,31 @@ return {
     {
       identifier = "shuffle",
       flag = function(ctx, value)
-        return isTrue(value, "--shuffle", "--noshuffle")
+        return is_true(value, "--shuffle", "--noshuffle")
       end
     },
     {
       identifier = "csvheader",
       flag = function(ctx, value)
-        return isTrue(value, "--csvheader", "--nocsvheader")
+        return is_true(value, "--csvheader", "--nocsvheader")
       end
     },
     {
       identifier = "debug",
       flag = function(ctx, value)
-        return isTrue(value, "--debug", "--nodebug")
+        return is_true(value, "--debug", "--nodebug")
       end
     },
     {
       identifier = "owneronly",
       flag = function(ctx, value)
-        return isTrue(value, "--owner-only", "--noowner-only")
+        return is_true(value, "--owner-only", "--noowner-only")
       end
     },
     {
       identifier = "maptex",
       flag = function(ctx, value)
-        return isTrue(value, "--map-tex-specials", "--nomap-tex-specials")
+        return is_true(value, "--map-tex-specials", "--nomap-tex-specials")
       end
     },
     {
@@ -172,26 +172,26 @@ return {
         if contains({ "and", "or" }, value) then
           return "--filter-" .. value
         else
-          throwError("The provided filterop value is not valid.")
+          throw_error("The provided filterop value is not valid.")
         end
       end
     },
     {
       identifier = "filters",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           local elements = {}
           for _, element in ipairs(value) do
-            if isList(element) and (#element == 3) then
+            if is_list(element) and (#element == 3) then
               table.insert(elements, "--filter")
               table.insert(elements, element)
             else
-              throwError("I was expecting a filter " .. "list [<label>, <op>, <value>]")
+              throw_error("I was expecting a filter " .. "list [<label>, <op>, <value>]")
             end
           end
           return elements
         else
-          throwError("I was expecting filters: [ [<label>, <op>, <value>], " .. "..., [<label>, <op>, <value>] ].")
+          throw_error("I was expecting filters: [ [<label>, <op>, <value>], " .. "..., [<label>, <op>, <value>] ].")
         end
       end
     },

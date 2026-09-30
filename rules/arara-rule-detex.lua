@@ -11,13 +11,13 @@ return {
     {
       name = "The DeTeX program",
       command = function(ctx)
-        local c = getCommand("detex", ctx.references, ctx.mode, ctx.follow, ctx.math, ctx.spaces, ctx.words, ctx.environments, ctx.reference.file_name)
-        if isEmpty(ctx.output) then
+        local c = get_command("detex", ctx.references, ctx.mode, ctx.follow, ctx.math, ctx.spaces, ctx.words, ctx.environments, ctx.reference.file_name)
+        if is_empty(ctx.output) then
           return c
         else
-          local p = unsafelyExecuteSystemCommand(c)
+          local p = unsafely_execute_system_command(c)
           if p.first == 0 then
-            return writeToFile(ctx.output[1], p.second, false)
+            return write_to_file(ctx.output[1], p.second, false)
           else
             return false
           end
@@ -29,7 +29,7 @@ return {
     {
       identifier = "references",
       flag = function(ctx, value)
-        return isTrue(value, "-c")
+        return is_true(value, "-c")
       end
     },
     {
@@ -39,39 +39,39 @@ return {
         if modes[value] ~= nil then
           return modes[value]
         else
-          throwError("I was expecting either the TeX or LaTeX mode.")
+          throw_error("I was expecting either the TeX or LaTeX mode.")
         end
       end
     },
     {
       identifier = "follow",
       flag = function(ctx, value)
-        return isFalse(value, "-n")
+        return is_false(value, "-n")
       end
     },
     {
       identifier = "math",
       flag = function(ctx, value)
-        return isFalse(value, "-r")
+        return is_false(value, "-r")
       end
     },
     {
       identifier = "spaces",
       flag = function(ctx, value)
-        return isTrue(value, "-s")
+        return is_true(value, "-s")
       end
     },
     {
       identifier = "words",
       flag = function(ctx, value)
-        return isTrue(value, "-w")
+        return is_true(value, "-w")
       end
     },
     {
       identifier = "environments",
       flag = function(ctx, value)
-        if not isList(value) then
-          throwError("I was expecting a list of environments.")
+        if not is_list(value) then
+          throw_error("I was expecting a list of environments.")
         else
           return { "-e", join(value, ",") }
         end

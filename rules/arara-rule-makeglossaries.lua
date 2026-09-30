@@ -11,20 +11,20 @@ return {
     {
       name = "The MakeGlossaries software",
       command = function(ctx)
-        if isEmpty(ctx.clean) then
-          return getCommand("makeglossaries", ctx.options,
-                            getBasename(ctx.reference.file_name))
+        if is_empty(ctx.clean) then
+          return get_command("makeglossaries", ctx.options,
+                            get_basename(ctx.reference.file_name))
         else
           local prefix
-          if isUnix() then
+          if is_unix() then
             prefix = { "rm", "-f" }
           else
             prefix = { "cmd", "/c", "del" }
           end
-          local base = getBasename(ctx.reference.path)
+          local base = get_basename(ctx.reference.path)
           local removals = {}
-          table.insert(removals, getCommand(prefix, base .. ".glsdefs"))
-          local lines = readFromFile(base .. "." .. "aux")
+          table.insert(removals, get_command(prefix, base .. ".glsdefs"))
+          local lines = read_from_file(base .. "." .. "aux")
           local partial = ctx.clean[1] == "partial"
           local istDone = partial
           for _, line in ipairs(lines) do
@@ -33,12 +33,12 @@ return {
             if g1 then
               for _, extension in ipairs({ g1, g2, g3 }) do
                 table.insert(removals,
-                  getCommand(prefix, base .. "." .. extension))
+                  get_command(prefix, base .. "." .. extension))
               end
             elseif not istDone then
               local ist = line:match("\\@istfilename%{(.-)%}")
               if ist then
-                table.insert(removals, getCommand(prefix, ist))
+                table.insert(removals, get_command(prefix, ist))
                 istDone = true
               end
             end
@@ -52,10 +52,10 @@ return {
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },
@@ -65,7 +65,7 @@ return {
         if contains({ "all", "partial" }, value) then
           return value
         else
-          throwError("The provided clean value is not valid.")
+          throw_error("The provided clean value is not valid.")
         end
       end
     },

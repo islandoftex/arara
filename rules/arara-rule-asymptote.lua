@@ -11,7 +11,7 @@ return {
     {
       name = "Asymptote",
       command = function(ctx)
-        return getCommand("asy", ctx.color, ctx.engine, ctx.twice, ctx.format, ctx.output, ctx.options, ctx.reference.file_name)
+        return get_command("asy", ctx.color, ctx.engine, ctx.twice, ctx.format, ctx.output, ctx.options, ctx.reference.file_name)
       end
     },
   },
@@ -22,7 +22,7 @@ return {
         if contains({ "bw", "cmyk", "rgb", "gray" }, value) then
           return "-" .. value
         else
-          throwError("The provided color enforcement is not valid.")
+          throw_error("The provided color enforcement is not valid.")
         end
       end
     },
@@ -33,14 +33,14 @@ return {
         if contains({ "latex", "pdflatex", "xelatex", "lualatex", "tex", "pdftex", "luatex", "context", "none" }, value) then
           return { "-tex", value }
         else
-          throwError("The provided TeX engine is invalid.")
+          throw_error("The provided TeX engine is invalid.")
         end
       end
     },
     {
       identifier = "twice",
       flag = function(ctx, value)
-        return isTrue(value, "-twice")
+        return is_true(value, "-twice")
       end
     },
     {
@@ -58,10 +58,10 @@ return {
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

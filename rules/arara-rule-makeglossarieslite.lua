@@ -11,7 +11,7 @@ return {
     {
       name = "The MakeGlossariesLite software",
       command = function(ctx)
-        return getCommand("makeglossaries-lite", ctx.options, getBasename(ctx.reference.file_name))
+        return get_command("makeglossaries-lite", ctx.options, get_basename(ctx.reference.file_name))
       end
     },
   },
@@ -19,10 +19,10 @@ return {
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

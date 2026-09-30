@@ -11,7 +11,7 @@ return {
     {
       name = "The Convert program",
       command = function(ctx)
-        return getCommand(ctx.program, ctx.options)
+        return get_command(ctx.program, ctx.options)
       end
     },
   },
@@ -27,10 +27,10 @@ return {
       identifier = "options",
       required = true,
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

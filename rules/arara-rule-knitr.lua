@@ -12,16 +12,16 @@ return {
       name = "knitr",
       command = function(ctx)
         local elements = {}
-        if not isEmpty(ctx.tangle) then
+        if not is_empty(ctx.tangle) then
           table.insert(elements, "tangle = " .. ctx.tangle[1])
         end
-        if not isEmpty(ctx.quiet) then
+        if not is_empty(ctx.quiet) then
           table.insert(elements, "quiet = " .. ctx.quiet[1])
         end
-        local out = isEmpty(ctx.output) and "NULL" or (("\"" .. ctx.output[1]) .. "\"")
+        local out = is_empty(ctx.output) and "NULL" or (("\"" .. ctx.output[1]) .. "\"")
         table.insert(elements, "envir = " .. ctx.envir[1])
         table.insert(elements, "encoding = " .. ctx.encoding[1])
-        return getCommand("Rscript", "-e", (((((("library(knitr); knit(\"" .. ctx.reference.file_name) .. "\", ") .. "output = ") .. out) .. ", ") .. join(elements, ", ")) .. ")")
+        return get_command("Rscript", "-e", (((((("library(knitr); knit(\"" .. ctx.reference.file_name) .. "\", ") .. "output = ") .. out) .. ", ") .. join(elements, ", ")) .. ")")
       end
     },
   },
@@ -35,17 +35,17 @@ return {
     {
       identifier = "tangle",
       flag = function(ctx, value)
-        if isTrue(value) and (not (ctx.parameters["output"] ~= nil)) then
-          throwError("If you want to tangle the document, specify an output file.")
+        if is_true(value) and (not (ctx.parameters["output"] ~= nil)) then
+          throw_error("If you want to tangle the document, specify an output file.")
         else
-          return isTrue(value, "TRUE", "FALSE")
+          return is_true(value, "TRUE", "FALSE")
         end
       end
     },
     {
       identifier = "quiet",
       flag = function(ctx, value)
-        return isTrue(value, "TRUE", "FALSE")
+        return is_true(value, "TRUE", "FALSE")
       end
     },
     {

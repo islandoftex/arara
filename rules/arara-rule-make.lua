@@ -11,14 +11,14 @@ return {
     {
       name = "The Make program",
       command = function(ctx)
-        if not isEmpty(ctx.targets) then
+        if not is_empty(ctx.targets) then
           local tasks = {}
           for _, target in ipairs(ctx.targets) do
-            table.insert(tasks, getCommand("make", target, ctx.options))
+            table.insert(tasks, get_command("make", target, ctx.options))
           end
           return tasks
         else
-          return getCommand("make", ctx.options)
+          return get_command("make", ctx.options)
         end
       end
     },
@@ -27,20 +27,20 @@ return {
     {
       identifier = "targets",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of targets.")
+          throw_error("I was expecting a list of targets.")
         end
       end
     },
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

@@ -11,7 +11,7 @@ return {
     {
       name = "Create subdirectory",
       command = function(ctx)
-        createDirectories(ctx.target[1])
+        create_directories(ctx.target[1])
         return true
       end
     },

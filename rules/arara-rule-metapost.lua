@@ -11,7 +11,7 @@ return {
     {
       name = "Metapost",
       command = function(ctx)
-        return getCommand("mpost", ctx.interaction, ctx.numbersystem, ctx.options, ctx.reference.file_name)
+        return get_command("mpost", ctx.interaction, ctx.numbersystem, ctx.options, ctx.reference.file_name)
       end
     },
   },
@@ -22,7 +22,7 @@ return {
         if contains({ "batchmode", "nonstopmode", "scrollmode", "errorstopmode" }, value) then
           return "-interaction=" .. value
         else
-          throwError("The provided interaction value is not valid.")
+          throw_error("The provided interaction value is not valid.")
         end
       end
     },
@@ -32,17 +32,17 @@ return {
         if contains({ "scaled", "double", "binary", "decimal" }, value) then
           return "-numbersystem=" .. value
         else
-          throwError("The provided numbersystem value is not valid.")
+          throw_error("The provided numbersystem value is not valid.")
         end
       end
     },
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

@@ -11,7 +11,7 @@ return {
     {
       name = "ConTeXt engine",
       command = function(ctx)
-        return getCommand("context", ctx.make, ctx.ctx, ctx.interface, ctx.autopdf, ctx.purge, ctx.modules, ctx.environments, ctx.mode, ctx.path, ctx.arguments, ctx.trackers, ctx.directives, ctx.silent, ctx.errors, ctx.interaction, ctx.synctex, ctx.options, ctx.reference.file_name)
+        return get_command("context", ctx.make, ctx.ctx, ctx.interface, ctx.autopdf, ctx.purge, ctx.modules, ctx.environments, ctx.mode, ctx.path, ctx.arguments, ctx.trackers, ctx.directives, ctx.silent, ctx.errors, ctx.interaction, ctx.synctex, ctx.options, ctx.reference.file_name)
       end
     },
   },
@@ -19,7 +19,7 @@ return {
     {
       identifier = "make",
       flag = function(ctx, value)
-        return isTrue(value, "--make")
+        return is_true(value, "--make")
       end
     },
     {
@@ -37,7 +37,7 @@ return {
     {
       identifier = "autopdf",
       flag = function(ctx, value)
-        return isTrue(value, "--autopdf")
+        return is_true(value, "--autopdf")
       end
     },
     {
@@ -47,97 +47,97 @@ return {
         if p[value] ~= nil then
           return p[value]
         else
-          throwError("Invalid value, expected partial, result or all.")
+          throw_error("Invalid value, expected partial, result or all.")
         end
       end
     },
     {
       identifier = "modules",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return "--usemodule=" .. join(value, ",")
         else
-          throwError("I was expecting a list.")
+          throw_error("I was expecting a list.")
         end
       end
     },
     {
       identifier = "environments",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return "--environment=" .. join(value, ",")
         else
-          throwError("I was expecting a list.")
+          throw_error("I was expecting a list.")
         end
       end
     },
     {
       identifier = "mode",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return "--mode=" .. join(value, ",")
         else
-          throwError("I was expecting a list.")
+          throw_error("I was expecting a list.")
         end
       end
     },
     {
       identifier = "path",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return "--path=" .. join(value, ",")
         else
-          throwError("I was expecting a list.")
+          throw_error("I was expecting a list.")
         end
       end
     },
     {
       identifier = "arguments",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return "--arguments=" .. join(value, ",")
         else
-          throwError("I was expecting a list.")
+          throw_error("I was expecting a list.")
         end
       end
     },
     {
       identifier = "trackers",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return "--trackers=" .. join(value, ",")
         else
-          throwError("I was expecting a list.")
+          throw_error("I was expecting a list.")
         end
       end
     },
     {
       identifier = "directives",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return "--directives=" .. join(value, ",")
         else
-          throwError("I was expecting a list.")
+          throw_error("I was expecting a list.")
         end
       end
     },
     {
       identifier = "silent",
       flag = function(ctx, value)
-        if isList(ctx.parameters.modules) then
+        if is_list(ctx.parameters.modules) then
           return "--silent=" .. join(value, ",")
         else
-          throwError("I was expecting a list.")
+          throw_error("I was expecting a list.")
         end
       end
     },
     {
       identifier = "errors",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return "--errors=" .. join(value, ",")
         else
-          throwError("I was expecting a list.")
+          throw_error("I was expecting a list.")
         end
       end
     },
@@ -147,23 +147,23 @@ return {
         if contains({ "batchmode", "nonstopmode" }, value) then
           return "--" .. value
         else
-          throwError("The provided interaction value is not valid.")
+          throw_error("The provided interaction value is not valid.")
         end
       end
     },
     {
       identifier = "synctex",
       flag = function(ctx, value)
-        return isTrue(value, "--synctex", "--nosynctex")
+        return is_true(value, "--synctex", "--nosynctex")
       end
     },
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

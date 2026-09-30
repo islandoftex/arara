@@ -11,8 +11,8 @@ return {
     {
       name = "PDFtk",
       command = function(ctx)
-        local input = getBasename(ctx.reference.file_name) .. ".pdf"
-        return getCommand("pdftk", input, ctx.options)
+        local input = get_basename(ctx.reference.file_name) .. ".pdf"
+        return get_command("pdftk", input, ctx.options)
       end
     },
   },
@@ -20,10 +20,10 @@ return {
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

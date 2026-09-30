@@ -350,6 +350,12 @@ the `reference` table).
 
 Consequences for the plan above:
 
+- every Lua helper is additionally bound under a snake_case alias, the
+  idiomatic spelling the official rules already use; the historic
+  camelCase spellings of the shared vocabulary are a transition
+  bridge, and their removal is part of this playbook: delete the
+  camelCase bindings of both Lua environments together with the
+  deprecated engine, so the spellings die in one go;
 - the phase 1 default flip turns conditionals Lua as well, so the
   release notes of that release must tell users to port compound
   conditionals (`&&`/`||`/`!` become `and`/`or`/`not`);

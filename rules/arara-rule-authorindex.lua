@@ -11,7 +11,7 @@ return {
     {
       name = "The AuthorIndex script",
       command = function(ctx)
-        return getCommand("authorindex", ctx.draft, ctx.index, ctx.keep, ctx.print, ctx.recurse, ctx.options, getBasename(ctx.reference.file_name))
+        return get_command("authorindex", ctx.draft, ctx.index, ctx.keep, ctx.print, ctx.recurse, ctx.options, get_basename(ctx.reference.file_name))
       end
     },
   },
@@ -19,40 +19,40 @@ return {
     {
       identifier = "draft",
       flag = function(ctx, value)
-        return isTrue(value, "-d")
+        return is_true(value, "-d")
       end
     },
     {
       identifier = "index",
       flag = function(ctx, value)
-        return isTrue(value, "-i")
+        return is_true(value, "-i")
       end
     },
     {
       identifier = "keep",
       flag = function(ctx, value)
-        return isTrue(value, "-k")
+        return is_true(value, "-k")
       end
     },
     {
       identifier = "print",
       flag = function(ctx, value)
-        return isTrue(value, "-p")
+        return is_true(value, "-p")
       end
     },
     {
       identifier = "recurse",
       flag = function(ctx, value)
-        return isFalse(value, "-r")
+        return is_false(value, "-r")
       end
     },
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

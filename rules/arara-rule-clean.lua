@@ -12,24 +12,24 @@ return {
       name = "Cleaning feature",
       command = function(ctx)
         local prefix = {}
-        if isUnix() then
+        if is_unix() then
           prefix = { "rm", "-f" }
         else
           prefix = { "cmd", "/c", "del" }
         end
-        if isEmpty(ctx.extensions) then
-          if getOriginalReference() == ctx.reference.path then
-            throwError("I cannot remove the main file reference.")
+        if is_empty(ctx.extensions) then
+          if get_original_reference() == ctx.reference.path then
+            throw_error("I cannot remove the main file reference.")
           end
-          return getCommand(prefix, ctx.reference.path)
+          return get_command(prefix, ctx.reference.path)
         else
-          local base = getBasename(ctx.reference.path)
+          local base = get_basename(ctx.reference.path)
           local removals = {}
           for _, extension in ipairs(ctx.extensions) do
-            if ((base .. ".") .. extension) == getOriginalFile() then
-              throwError("I cannot remove the main file reference.")
+            if ((base .. ".") .. extension) == get_original_file() then
+              throw_error("I cannot remove the main file reference.")
             end
-            table.insert(removals, getCommand(prefix, (base .. ".") .. extension))
+            table.insert(removals, get_command(prefix, (base .. ".") .. extension))
           end
           return removals
         end
@@ -40,10 +40,10 @@ return {
     {
       identifier = "extensions",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of extensions.")
+          throw_error("I was expecting a list of extensions.")
         end
       end
     },

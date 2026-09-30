@@ -11,8 +11,8 @@ return {
     {
       name = "The Sketch software",
       command = function(ctx)
-        local output = getBasename(ctx.reference.file_name) .. ".tex"
-        return getCommand("sketch", ctx.options, ctx.reference.file_name, "-o", output)
+        local output = get_basename(ctx.reference.file_name) .. ".tex"
+        return get_command("sketch", ctx.options, ctx.reference.file_name, "-o", output)
       end
     },
   },
@@ -20,10 +20,10 @@ return {
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

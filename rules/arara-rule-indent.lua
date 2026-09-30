@@ -11,7 +11,7 @@ return {
     {
       name = "The latexindent.pl script",
       command = function(ctx)
-        return getCommand("latexindent", ctx.silent, ctx.trace, ctx.screenlog, ctx.lines, ctx.settings, ctx.cruft, ctx.overwrite, ctx.output, ctx.reference.path, ctx.modifylinebreaks, ctx.check, ctx.replacement, ctx.options, ctx.logfile)
+        return get_command("latexindent", ctx.silent, ctx.trace, ctx.screenlog, ctx.lines, ctx.settings, ctx.cruft, ctx.overwrite, ctx.output, ctx.reference.path, ctx.modifylinebreaks, ctx.check, ctx.replacement, ctx.options, ctx.logfile)
       end
     },
   },
@@ -19,35 +19,35 @@ return {
     {
       identifier = "silent",
       flag = function(ctx, value)
-        return isTrue(value, "-s")
+        return is_true(value, "-s")
       end
     },
     {
       identifier = "overwrite",
       flag = function(ctx, value)
-        return isTrue(value, "-w")
+        return is_true(value, "-w")
       end
     },
     {
       identifier = "trace",
       flag = function(ctx, value)
         if contains({ "default", "complete" }, value) then
-          return isTrue(value == "default", "-t", "-tt")
+          return is_true(value == "default", "-t", "-tt")
         else
-          throwError("You provided an invalid value for trace.")
+          throw_error("You provided an invalid value for trace.")
         end
       end
     },
     {
       identifier = "screenlog",
       flag = function(ctx, value)
-        return isTrue(value, "-sl")
+        return is_true(value, "-sl")
       end
     },
     {
       identifier = "modifylinebreaks",
       flag = function(ctx, value)
-        return isTrue(value, "-m")
+        return is_true(value, "-m")
       end
     },
     {
@@ -56,9 +56,9 @@ return {
         local check = ctx.parameters["where"] ~= nil
         local location = check and ctx.parameters.where or ""
         if contains({ "local", "onlydefault" }, value) then
-          return isTrue(value == "local", isTrue(check, "-l=" .. location, "-l"), "-d")
+          return is_true(value == "local", is_true(check, "-l=" .. location, "-l"), "-d")
         else
-          throwError("You provided an invalid value for settings.")
+          throw_error("You provided an invalid value for settings.")
         end
       end
     },
@@ -92,7 +92,7 @@ return {
         local check = ctx.parameters["settings"] ~= nil
         local setting = check and ctx.parameters.settings or ""
         if setting ~= "local" then
-          throwError("This key requires a local setting.")
+          throw_error("This key requires a local setting.")
         end
       end
     },
@@ -103,7 +103,7 @@ return {
         if opts[value] ~= nil then
           return opts[value]
         else
-          throwError("You provided an invalid value for replacement.")
+          throw_error("You provided an invalid value for replacement.")
         end
       end
     },
@@ -114,17 +114,17 @@ return {
         if opts[value] ~= nil then
           return opts[value]
         else
-          throwError("You provided an invalid value for check.")
+          throw_error("You provided an invalid value for check.")
         end
       end
     },
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

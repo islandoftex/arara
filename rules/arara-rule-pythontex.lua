@@ -11,7 +11,7 @@ return {
     {
       name = "PythonTeX wrapper",
       command = function(ctx)
-        return getCommand("pythontex", ctx.encoding, ctx.errorcode, ctx.runall, ctx.rerun, ctx.hashdependencies, ctx.jobs, ctx.verbose, ctx.options, ctx.reference.file_name)
+        return get_command("pythontex", ctx.encoding, ctx.errorcode, ctx.runall, ctx.rerun, ctx.hashdependencies, ctx.jobs, ctx.verbose, ctx.options, ctx.reference.file_name)
       end
     },
   },
@@ -25,13 +25,13 @@ return {
     {
       identifier = "errorcode",
       flag = function(ctx, value)
-        return "--error-exit-code=" .. isTrue(value, "true", "false")
+        return "--error-exit-code=" .. is_true(value, "true", "false")
       end
     },
     {
       identifier = "runall",
       flag = function(ctx, value)
-        return "--runall=" .. isTrue(value, "true", "false")
+        return "--runall=" .. is_true(value, "true", "false")
       end
     },
     {
@@ -40,14 +40,14 @@ return {
         if contains({ "never", "modified", "errors", "warnings", "always" }, value) then
           return "--rerun=" .. value
         else
-          throwError("The provided value is not valid.")
+          throw_error("The provided value is not valid.")
         end
       end
     },
     {
       identifier = "hashdependencies",
       flag = function(ctx, value)
-        return "--hashdependencies=" .. isTrue(value, "true", "false")
+        return "--hashdependencies=" .. is_true(value, "true", "false")
       end
     },
     {
@@ -59,16 +59,16 @@ return {
     {
       identifier = "verbose",
       flag = function(ctx, value)
-        return isTrue(value, "--verbose")
+        return is_true(value, "--verbose")
       end
     },
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

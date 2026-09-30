@@ -11,8 +11,8 @@ return {
     {
       name = "The dvisvgm program",
       command = function(ctx)
-        local base = (getBasename(ctx.reference.file_name) .. ".") .. ctx.entry[1]
-        return getCommand("dvisvgm", ctx.entry[2], ctx.pages, ctx.options, base)
+        local base = (get_basename(ctx.reference.file_name) .. ".") .. ctx.entry[1]
+        return get_command("dvisvgm", ctx.entry[2], ctx.pages, ctx.options, base)
       end
     },
   },
@@ -20,14 +20,14 @@ return {
     {
       identifier = "pages",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           local q = {}
           for _, p in ipairs(value) do
             table.insert(q, tostring(p))
           end
           return { "--page=" .. join(q, ",") }
         else
-          throwError("I was expecting a list of pages.")
+          throw_error("I was expecting a list of pages.")
         end
       end
     },
@@ -39,17 +39,17 @@ return {
         if formats[value] ~= nil then
           return formats[value]
         else
-          throwError("The valid formats are: " .. join(keys(formats), ", "))
+          throw_error("The valid formats are: " .. join(keys(formats), ", "))
         end
       end
     },
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

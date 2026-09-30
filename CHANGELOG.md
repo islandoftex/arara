@@ -20,6 +20,14 @@ on.
   rule table (see the `lua` module's `LuaRuleParser` documentation). The
   helper methods known from the YAML format (`getCommand`, `isTrue`,
   `throwError`, ...) are available as Lua globals.
+* Every helper of the Lua engine is additionally available under a
+  snake_case spelling (`get_command`, `is_true`, `throw_error`,
+  `show_options`, ...), the idiomatic form new rules should use: the
+  historic camelCase spellings of the shared helper vocabulary keep
+  working throughout the deprecation era, each spelling reports its own
+  name in argument errors, and the camelCase forms will be retired
+  together with the deprecated engine. The official rules ship in the
+  snake_case spelling.
 * New `-e`/`--engine` command line option to select the rule engine:
   `yaml` (default, deprecated) or `lua`.
 * New Lua configuration file format: arara now also accepts
@@ -170,6 +178,9 @@ on.
   backslashes: the sequential `%s` replacer now inserts replacements
   verbatim, and it also accepts non string values like the underlying
   formatter.
+* The documentation example of the Lua rule format used a reference
+  field spelling that does not exist; it now reads the actual
+  `file_name` field of the reference table.
 * The Lua project parser's default name for nameless projects aligns
   with the command line's fallback (`Untitled`).
 * A scalar `options` value in a directive is no longer silently

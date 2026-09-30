@@ -11,7 +11,7 @@ return {
     {
       name = "pLaTeX engine",
       command = function(ctx)
-        return getCommand(ctx.branch, ctx.interaction, ctx.shell, ctx.synctex, ctx.options, ctx.reference.file_name)
+        return get_command(ctx.branch, ctx.interaction, ctx.shell, ctx.synctex, ctx.options, ctx.reference.file_name)
       end
     },
   },
@@ -24,7 +24,7 @@ return {
         if engines[value] ~= nil then
           return engines[value]
         else
-          throwError("The valid branch values are: " .. join(keys(engines), ", "))
+          throw_error("The valid branch values are: " .. join(keys(engines), ", "))
         end
       end
     },
@@ -34,29 +34,29 @@ return {
         if contains({ "batchmode", "nonstopmode", "scrollmode", "errorstopmode" }, value) then
           return "--interaction=" .. value
         else
-          throwError("The provided interaction value is not valid.")
+          throw_error("The provided interaction value is not valid.")
         end
       end
     },
     {
       identifier = "shell",
       flag = function(ctx, value)
-        return isTrue(value, "--shell-escape", "--no-shell-escape")
+        return is_true(value, "--shell-escape", "--no-shell-escape")
       end
     },
     {
       identifier = "synctex",
       flag = function(ctx, value)
-        return isTrue(value, "--synctex=1", "--synctex=0")
+        return is_true(value, "--synctex=1", "--synctex=0")
       end
     },
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

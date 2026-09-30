@@ -11,9 +11,9 @@ return {
     {
       name = "The Convert program",
       command = function(ctx)
-        local input = getBasename(ctx.reference.file_name) .. ".pdf"
-        local output = getBasename(ctx.reference.file_name) .. ".gif"
-        return getCommand(ctx.program, "-delay", ctx.delay, "-loop", ctx.loop, "-density", ctx.density, ctx.options, input, output)
+        local input = get_basename(ctx.reference.file_name) .. ".pdf"
+        local output = get_basename(ctx.reference.file_name) .. ".gif"
+        return get_command(ctx.program, "-delay", ctx.delay, "-loop", ctx.loop, "-density", ctx.density, ctx.options, input, output)
       end
     },
   },
@@ -49,10 +49,10 @@ return {
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

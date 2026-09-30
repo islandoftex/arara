@@ -11,8 +11,8 @@ return {
     {
       name = "TikZ list-and-make engine",
       command = function(ctx)
-        local makefile = getBasename(ctx.reference.file_name) .. ".makefile"
-        return getCommand("make", ctx.force, ctx.jobs, ctx.options, "-f", makefile)
+        local makefile = get_basename(ctx.reference.file_name) .. ".makefile"
+        return get_command("make", ctx.force, ctx.jobs, ctx.options, "-f", makefile)
       end
     },
   },
@@ -20,7 +20,7 @@ return {
     {
       identifier = "force",
       flag = function(ctx, value)
-        return isTrue(value, "--always-make")
+        return is_true(value, "--always-make")
       end
     },
     {
@@ -32,10 +32,10 @@ return {
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

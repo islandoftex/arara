@@ -11,9 +11,9 @@ return {
     {
       name = "The Nomenclature software",
       command = function(ctx)
-        local nlo = getBasename(ctx.reference.file_name) .. ".nlo"
-        local nls = getBasename(ctx.reference.file_name) .. ".nls"
-        return getCommand("makeindex", ctx.options, nlo, ctx.style, "-o", nls)
+        local nlo = get_basename(ctx.reference.file_name) .. ".nlo"
+        local nls = get_basename(ctx.reference.file_name) .. ".nls"
+        return get_command("makeindex", ctx.options, nlo, ctx.style, "-o", nls)
       end
     },
   },
@@ -22,16 +22,16 @@ return {
       identifier = "style",
       default = "",
       flag = function(ctx, value)
-        return { "-s", isEmpty(value, "nomencl.ist", value) }
+        return { "-s", is_empty(value, "nomencl.ist", value) }
       end
     },
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

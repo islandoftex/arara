@@ -11,7 +11,7 @@ return {
     {
       name = "The pdftocairo program",
       command = function(ctx)
-        return getCommand("pdftocairo", "-" .. ctx.format[1], getBasename(ctx.reference.file_name) .. ".pdf", ctx.options, ctx.output)
+        return get_command("pdftocairo", "-" .. ctx.format[1], get_basename(ctx.reference.file_name) .. ".pdf", ctx.options, ctx.output)
       end
     },
   },
@@ -32,10 +32,10 @@ return {
     {
       identifier = "options",
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of options.")
+          throw_error("I was expecting a list of options.")
         end
       end
     },

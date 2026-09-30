@@ -13,7 +13,7 @@ return {
       command = function(ctx)
         local c = {}
         for _, entry in ipairs(ctx.input) do
-          table.insert(c, getCommand("gnuplot", ctx.persist, ctx.default, ctx.commands, entry))
+          table.insert(c, get_command("gnuplot", ctx.persist, ctx.default, ctx.commands, entry))
         end
         return c
       end
@@ -23,13 +23,13 @@ return {
     {
       identifier = "persist",
       flag = function(ctx, value)
-        return isTrue(value, "--persist")
+        return is_true(value, "--persist")
       end
     },
     {
       identifier = "default",
       flag = function(ctx, value)
-        return isTrue(value, "--default")
+        return is_true(value, "--default")
       end
     },
     {
@@ -42,10 +42,10 @@ return {
       identifier = "input",
       required = true,
       flag = function(ctx, value)
-        if isList(value) then
+        if is_list(value) then
           return value
         else
-          throwError("I was expecting a list of input files.")
+          throw_error("I was expecting a list of input files.")
         end
       end
     },

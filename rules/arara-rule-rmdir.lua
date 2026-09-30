@@ -11,7 +11,7 @@ return {
     {
       name = "Remove subdirectory",
       command = function(ctx)
-        removeDirectory(ctx.target[1])
+        remove_directory(ctx.target[1])
         return true
       end
     },
