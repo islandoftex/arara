@@ -10,9 +10,9 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.rules.RuleMethods
 import org.islandoftex.arara.lua.rules.LuaConversion.badArgument
+import org.islandoftex.arara.lua.rules.LuaConversion.bindSpelled
 import org.islandoftex.arara.lua.rules.LuaConversion.booleanArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.fromLua
-import org.islandoftex.arara.lua.rules.LuaConversion.luaFunction
 import org.islandoftex.arara.lua.rules.LuaConversion.numberArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.sessionTable
 import org.islandoftex.arara.lua.rules.LuaConversion.stringArgument
@@ -52,6 +52,10 @@ internal object LuaRuleEnvironment {
         function isMap(value) return type(value) == "table" end
         function isString(value) return type(value) == "string" end
         function isBoolean(value) return type(value) == "boolean" end
+        function is_list(value) return isList(value) end
+        function is_map(value) return isMap(value) end
+        function is_string(value) return isString(value) end
+        function is_boolean(value) return isBoolean(value) end
     """
 
     /**
@@ -87,165 +91,147 @@ internal object LuaRuleEnvironment {
         "SpreadOperator", "MagicNumber", "ThrowsCount"
     )
     private fun bindHelpers(globals: Globals) {
-        globals.set(
-            "throwError",
-            luaFunction { args ->
-                throw AraraException(
-                    args.arg(1).stringArgument("throwError", 1)
+        bindSpelled(
+            globals, "throwError"
+        ) { name, args ->
+            throw AraraException(
+                args.arg(1).stringArgument(name, 1)
+            )
+        }
+        bindSpelled(
+            globals, "getCommand"
+        ) { _, args ->
+            LuaValue.userdataOf(
+                RuleMethods.getCommand(*args.kotlinArgs().toTypedArray())
+            )
+        }
+        bindSpelled(
+            globals, "getCommandWithWorkingDirectory"
+        ) { name, args ->
+            LuaValue.userdataOf(
+                RuleMethods.getCommandWithWorkingDirectory(
+                    args.arg(1).tojstring(),
+                    *args.kotlinArgs(from = 2).toTypedArray()
                 )
+            )
+        }
+        bindSpelled(
+            globals, "isTrue"
+        ) { name, args ->
+            conditionalValue(args, positive = true, name = name)
+        }
+        bindSpelled(
+            globals, "isFalse"
+        ) { name, args ->
+            conditionalValue(args, positive = false, name = name)
+        }
+        bindSpelled(
+            globals, "isEmpty"
+        ) { _, args ->
+            when (args.narg()) {
+                1 -> LuaValue.valueOf(isEmptyValue(args.arg(1)))
+                else -> if (isEmptyValue(args.arg(1)))
+                    args.arg(2)
+                else
+                    args.arg(3).takeUnless { it.isnil() }
+                        ?: LuaValue.valueOf("")
             }
-        )
-        globals.set(
-            "getCommand",
-            luaFunction { args ->
-                LuaValue.userdataOf(
-                    RuleMethods.getCommand(*args.kotlinArgs().toTypedArray())
+        }
+        bindSpelled(
+            globals, "isNotEmpty"
+        ) { _, args ->
+            when (args.narg()) {
+                1 -> LuaValue.valueOf(!isEmptyValue(args.arg(1)))
+                else -> if (!isEmptyValue(args.arg(1)))
+                    args.arg(2)
+                else
+                    args.arg(3).takeUnless { it.isnil() }
+                        ?: LuaValue.valueOf("")
+            }
+        }
+        bindSpelled(
+            globals, "getBasename"
+        ) { name, args ->
+            LuaValue.valueOf(
+                RuleMethods.getBasename(
+                    args.arg(1).stringArgument(name, 1)
                 )
-            }
-        )
-        globals.set(
-            "getCommandWithWorkingDirectory",
-            luaFunction { args ->
-                LuaValue.userdataOf(
-                    RuleMethods.getCommandWithWorkingDirectory(
-                        args.arg(1).tojstring(),
-                        *args.kotlinArgs(from = 2).toTypedArray()
-                    )
+            )
+        }
+        bindSpelled(
+            globals, "getFiletype"
+        ) { name, args ->
+            LuaValue.valueOf(
+                RuleMethods.getFiletype(
+                    args.arg(1).stringArgument(name, 1)
                 )
-            }
-        )
-        globals.set(
-            "isTrue",
-            luaFunction { args ->
-                conditionalValue(args, positive = true)
-            }
-        )
-        globals.set(
-            "isFalse",
-            luaFunction { args ->
-                conditionalValue(args, positive = false)
-            }
-        )
-        globals.set(
-            "isEmpty",
-            luaFunction { args ->
-                when (args.narg()) {
-                    1 -> LuaValue.valueOf(isEmptyValue(args.arg(1)))
-                    else -> if (isEmptyValue(args.arg(1)))
-                        args.arg(2)
-                    else
-                        args.arg(3).takeUnless { it.isnil() }
-                            ?: LuaValue.valueOf("")
-                }
-            }
-        )
-        globals.set(
-            "isNotEmpty",
-            luaFunction { args ->
-                when (args.narg()) {
-                    1 -> LuaValue.valueOf(!isEmptyValue(args.arg(1)))
-                    else -> if (!isEmptyValue(args.arg(1)))
-                        args.arg(2)
-                    else
-                        args.arg(3).takeUnless { it.isnil() }
-                            ?: LuaValue.valueOf("")
-                }
-            }
-        )
-        globals.set(
-            "getBasename",
-            luaFunction { args ->
-                LuaValue.valueOf(
-                    RuleMethods.getBasename(
-                        args.arg(1).stringArgument("getBasename", 1)
-                    )
-                )
-            }
-        )
-        globals.set(
-            "getFiletype",
-            luaFunction { args ->
-                LuaValue.valueOf(
-                    RuleMethods.getFiletype(
-                        args.arg(1).stringArgument("getFiletype", 1)
-                    )
-                )
-            }
-        )
-        globals.set(
-            "getOriginalFile",
-            luaFunction {
-                LuaValue.valueOf(RuleMethods.originalFile)
-            }
-        )
-        globals.set(
-            "getOriginalReference",
-            luaFunction {
-                LuaValue.valueOf(RuleMethods.originalReference.toString())
-            }
-        )
-        globals.set(
-            "halt",
-            luaFunction { args ->
-                RuleMethods.halt(
-                    args.arg(1).takeUnless { it.isnil() }
-                        ?.numberArgument("halt", 1) ?: 0
-                )
-                LuaValue.NIL
-            }
-        )
+            )
+        }
+        bindSpelled(
+            globals, "getOriginalFile"
+        ) { _, _ ->
+            LuaValue.valueOf(RuleMethods.originalFile)
+        }
+        bindSpelled(
+            globals, "getOriginalReference"
+        ) { _, _ ->
+            LuaValue.valueOf(RuleMethods.originalReference.toString())
+        }
+        bindSpelled(
+            globals, "halt"
+        ) { name, args ->
+            RuleMethods.halt(
+                args.arg(1).takeUnless { it.isnil() }
+                    ?.numberArgument(name, 1) ?: 0
+            )
+            LuaValue.NIL
+        }
         // the session is exposed as a table of operations (the very same
         // shape as the directive conditional environment), as Lua cannot
         // call methods on the underlying object directly
-        globals.set(
-            "getSession",
-            luaFunction { _ -> sessionTable() }
-        )
-        globals.set(
-            "buildString",
-            luaFunction { args ->
-                LuaValue.valueOf(
-                    RuleMethods.buildString(*args.kotlinArgs().toTypedArray())
+        bindSpelled(
+            globals, "getSession"
+        ) { _, _ -> sessionTable() }
+        bindSpelled(
+            globals, "buildString"
+        ) { _, args ->
+            LuaValue.valueOf(
+                RuleMethods.buildString(*args.kotlinArgs().toTypedArray())
+            )
+        }
+        bindSpelled(
+            globals, "trimSpaces"
+        ) { name, args ->
+            LuaValue.valueOf(
+                RuleMethods.trimSpaces(
+                    args.arg(1).stringArgument(name, 1)
                 )
-            }
-        )
-        globals.set(
-            "trimSpaces",
-            luaFunction { args ->
-                LuaValue.valueOf(
-                    RuleMethods.trimSpaces(
-                        args.arg(1).stringArgument("trimSpaces", 1)
-                    )
+            )
+        }
+        bindSpelled(
+            globals, "replicatePattern"
+        ) { name, args ->
+            toLua(
+                RuleMethods.replicatePattern(
+                    args.arg(1).stringArgument(name, 1),
+                    args.arg(2).stringListArgument(name, 2)
                 )
-            }
-        )
-        globals.set(
-            "replicatePattern",
-            luaFunction { args ->
-                toLua(
-                    RuleMethods.replicatePattern(
-                        args.arg(1).stringArgument("replicatePattern", 1),
-                        args.arg(2).stringListArgument("replicatePattern", 2)
-                    )
+            )
+        }
+        bindSpelled(
+            globals, "isVerboseMode"
+        ) { _, _ ->
+            LuaValue.valueOf(RuleMethods.isVerboseMode())
+        }
+        bindSpelled(
+            globals, "isOnPath"
+        ) { name, args ->
+            LuaValue.valueOf(
+                RuleMethods.isOnPath(
+                    args.arg(1).stringArgument(name, 1)
                 )
-            }
-        )
-        globals.set(
-            "isVerboseMode",
-            luaFunction {
-                LuaValue.valueOf(RuleMethods.isVerboseMode())
-            }
-        )
-        globals.set(
-            "isOnPath",
-            luaFunction { args ->
-                LuaValue.valueOf(
-                    RuleMethods.isOnPath(
-                        args.arg(1).stringArgument("isOnPath", 1)
-                    )
-                )
-            }
-        )
+            )
+        }
         listOf(
             "isWindows" to { RuleMethods.isWindows() },
             "isLinux" to { RuleMethods.isLinux() },
@@ -253,145 +239,124 @@ internal object LuaRuleEnvironment {
             "isUnix" to { RuleMethods.isUnix() },
             "isCygwin" to { RuleMethods.isCygwin() }
         ).forEach { (name, check) ->
-            globals.set(
-                name,
-                luaFunction { args ->
-                    when (args.narg()) {
-                        0 -> LuaValue.valueOf(check())
-                        else -> if (check()) args.arg(1) else args.arg(2)
-                    }
+            bindSpelled(globals, name) { _, args ->
+                when (args.narg()) {
+                    0 -> LuaValue.valueOf(check())
+                    else -> if (check()) args.arg(1) else args.arg(2)
                 }
+            }
+        }
+        bindSpelled(
+            globals, "unsafelyExecuteSystemCommand"
+        ) { name, args ->
+            val command = LuaConversion.toCommand(args.arg(1))
+                ?: throw badArgument(
+                    name, 1,
+                    "command", args.arg(1)
+                )
+            val (code, output) = RuleMethods
+                .unsafelyExecuteSystemCommand(command)
+            LuaValue.tableOf().also {
+                it.set("first", LuaValue.valueOf(code))
+                it.set("second", LuaValue.valueOf(output))
+            }
+        }
+        bindSpelled(
+            globals, "listFilesByExtensions"
+        ) { name, args ->
+            toLua(
+                RuleMethods.listFilesByExtensions(
+                    args.arg(1).stringArgument(name, 1),
+                    args.arg(2).stringListArgument(name, 2),
+                    args.arg(3).booleanArgument(name, 3)
+                ).map { it.toString() }
             )
         }
-        globals.set(
-            "unsafelyExecuteSystemCommand",
-            luaFunction { args ->
-                val command = LuaConversion.toCommand(args.arg(1))
-                    ?: throw badArgument(
-                        "unsafelyExecuteSystemCommand", 1,
-                        "command", args.arg(1)
-                    )
-                val (code, output) = RuleMethods
-                    .unsafelyExecuteSystemCommand(command)
-                LuaValue.tableOf().also {
-                    it.set("first", LuaValue.valueOf(code))
-                    it.set("second", LuaValue.valueOf(output))
-                }
-            }
-        )
-        globals.set(
-            "listFilesByExtensions",
-            luaFunction { args ->
-                toLua(
-                    RuleMethods.listFilesByExtensions(
-                        args.arg(1)
-                            .stringArgument("listFilesByExtensions", 1),
-                        args.arg(2).stringListArgument(
-                            "listFilesByExtensions", 2
-                        ),
-                        args.arg(3)
-                            .booleanArgument("listFilesByExtensions", 3)
-                    ).map { it.toString() }
+        bindSpelled(
+            globals, "listFilesByPatterns"
+        ) { name, args ->
+            toLua(
+                RuleMethods.listFilesByPatterns(
+                    args.arg(1).stringArgument(name, 1),
+                    args.arg(2).stringListArgument(name, 2),
+                    args.arg(3).booleanArgument(name, 3)
+                ).map { it.toString() }
+            )
+        }
+        bindSpelled(
+            globals, "writeToFile"
+        ) { name, args ->
+            val path = args.arg(1).stringArgument(name, 1)
+            val content = fromLua(args.arg(2))
+            val append = args.arg(3).booleanArgument(name, 3)
+            val result = if (content is List<*>) {
+                RuleMethods.writeToFile(
+                    path,
+                    content.map { it.toString() },
+                    append
+                )
+            } else {
+                RuleMethods.writeToFile(
+                    path,
+                    content.toString(),
+                    append
                 )
             }
-        )
-        globals.set(
-            "listFilesByPatterns",
-            luaFunction { args ->
-                toLua(
-                    RuleMethods.listFilesByPatterns(
-                        args.arg(1)
-                            .stringArgument("listFilesByPatterns", 1),
-                        args.arg(2).stringListArgument(
-                            "listFilesByPatterns", 2
-                        ),
-                        args.arg(3)
-                            .booleanArgument("listFilesByPatterns", 3)
-                    ).map { it.toString() }
+            LuaValue.valueOf(result)
+        }
+        bindSpelled(
+            globals, "readFromFile"
+        ) { name, args ->
+            toLua(
+                RuleMethods.readFromFile(
+                    args.arg(1).stringArgument(name, 1)
                 )
-            }
-        )
-        globals.set(
-            "writeToFile",
-            luaFunction { args ->
-                val path = args.arg(1).stringArgument("writeToFile", 1)
-                val content = fromLua(args.arg(2))
-                val append = args.arg(3).booleanArgument("writeToFile", 3)
-                val result = if (content is List<*>) {
-                    RuleMethods.writeToFile(
-                        path,
-                        content.map { it.toString() },
-                        append
-                    )
-                } else {
-                    RuleMethods.writeToFile(
-                        path,
-                        content.toString(),
-                        append
-                    )
-                }
-                LuaValue.valueOf(result)
-            }
-        )
-        globals.set(
-            "readFromFile",
-            luaFunction { args ->
-                toLua(
-                    RuleMethods.readFromFile(
-                        args.arg(1).stringArgument("readFromFile", 1)
+            )
+        }
+        bindSpelled(
+            globals, "isSubdirectory"
+        ) { name, args ->
+            LuaValue.valueOf(
+                RuleMethods.isSubdirectory(
+                    MPPPath(
+                        args.arg(1).stringArgument(name, 1)
                     )
                 )
-            }
-        )
-        globals.set(
-            "isSubdirectory",
-            luaFunction { args ->
-                LuaValue.valueOf(
-                    RuleMethods.isSubdirectory(
-                        MPPPath(
-                            args.arg(1).stringArgument("isSubdirectory", 1)
-                        )
-                    )
-                )
-            }
-        )
-        globals.set(
-            "showMessage",
-            luaFunction { args ->
-                RuleMethods.showMessage(
-                    type = args.arg(1).numberArgument("showMessage", 1),
-                    title = args.arg(2).stringArgument("showMessage", 2),
-                    text = args.arg(3).stringArgument("showMessage", 3)
-                )
-                LuaValue.NIL
-            }
-        )
-        globals.set(
-            "normalizePath",
-            luaFunction { args ->
-                LuaValue.valueOf(
-                    MPPPath(args.arg(1).stringArgument("normalizePath", 1))
-                        .normalize()
-                        .toString()
-                )
-            }
-        )
-        globals.set(
-            "createDirectories",
-            luaFunction { args ->
-                MPPPath(args.arg(1).stringArgument("createDirectories", 1))
-                    .createDirectories()
-                LuaValue.TRUE
-            }
-        )
-        globals.set(
-            "removeDirectory",
-            luaFunction { args ->
-                MPPPath(args.arg(1).stringArgument("removeDirectory", 1))
-                    .removeDirectory()
-                LuaValue.TRUE
-            }
-        )
+            )
+        }
+        bindSpelled(
+            globals, "showMessage"
+        ) { name, args ->
+            RuleMethods.showMessage(
+                type = args.arg(1).numberArgument(name, 1),
+                title = args.arg(2).stringArgument(name, 2),
+                text = args.arg(3).stringArgument(name, 3)
+            )
+            LuaValue.NIL
+        }
+        bindSpelled(
+            globals, "normalizePath"
+        ) { name, args ->
+            LuaValue.valueOf(
+                MPPPath(args.arg(1).stringArgument(name, 1))
+                    .normalize()
+                    .toString()
+            )
+        }
+        bindSpelled(
+            globals, "createDirectories"
+        ) { name, args ->
+            MPPPath(args.arg(1).stringArgument(name, 1))
+                .createDirectories()
+            LuaValue.TRUE
+        }
+        bindSpelled(
+            globals, "removeDirectory"
+        ) { name, args ->
+            MPPPath(args.arg(1).stringArgument(name, 1))
+                .removeDirectory()
+            LuaValue.TRUE
+        }
     }
 
     /**
@@ -401,10 +366,14 @@ internal object LuaRuleEnvironment {
      */
     // the argument positions mirror the documented helper signatures
     @Suppress("MagicNumber")
-    private fun conditionalValue(args: Varargs, positive: Boolean): LuaValue {
+    private fun conditionalValue(
+        args: Varargs,
+        positive: Boolean,
+        name: String
+    ): LuaValue {
         val value = args.arg(1)
         return when (args.narg()) {
-            0 -> throw LuaError("isTrue/isFalse require at least one argument")
+            0 -> throw LuaError("$name requires at least one argument")
             1 -> LuaValue.valueOf(
                 !isEmptyValue(value) && truthiness(value) == positive
             )

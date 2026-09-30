@@ -13,8 +13,8 @@ import org.islandoftex.arara.core.rules.RuleMethods
 import org.islandoftex.arara.core.session.ClassLoading.ClassLoadingStatus
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.lua.rules.LuaConversion.badArgument
+import org.islandoftex.arara.lua.rules.LuaConversion.bindSpelled
 import org.islandoftex.arara.lua.rules.LuaConversion.fromLua
-import org.islandoftex.arara.lua.rules.LuaConversion.luaFunction
 import org.islandoftex.arara.lua.rules.LuaConversion.numberArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.sessionTable
 import org.islandoftex.arara.lua.rules.LuaConversion.stringArgument
@@ -38,6 +38,12 @@ import org.islandoftex.arara.lua.rules.LuaConversion.stringArgument
  * and mismatches raise Lua-style bad argument errors. Lua's implicit
  * coercions apply to operators, not to arara's library functions —
  * convert explicitly with `tostring` or `tonumber` when needed.
+ *
+ * Every camelCase helper is additionally bound under its snake_case
+ * alias, the Lua-idiomatic spelling; each spelling reports argument
+ * errors under the name the conditional actually called, and the
+ * historic spelling stays available throughout the lifetime of the
+ * deprecated engine.
  */
 internal object LuaConditionalEnvironment {
     /**
@@ -81,90 +87,81 @@ internal object LuaConditionalEnvironment {
         // file existence and content checks; both the extension-based
         // and the file-based MVEL overloads are available
         listOf("exists", "missing", "changed", "unchanged").forEach { name ->
-            globals.set(
-                name,
-                luaFunction { args ->
-                    val reference = args.fileArgument(1, name)
-                    val result = when (reference) {
-                        is String -> when (name) {
-                            "exists" -> ConditionalMethods.exists(reference)
-                            "missing" -> ConditionalMethods.missing(reference)
-                            "changed" -> ConditionalMethods.changed(reference)
-                            else -> ConditionalMethods.unchanged(reference)
-                        }
-                        is MPPPath -> when (name) {
-                            "exists" -> ConditionalMethods.exists(reference)
-                            "missing" -> ConditionalMethods.missing(reference)
-                            "changed" -> ConditionalMethods.changed(reference)
-                            else -> ConditionalMethods.unchanged(reference)
-                        }
-                        else -> throw badArgument(
-                            name, 1, "file or string", args.arg(1)
-                        )
-                    }
-                    LuaValue.valueOf(result)
-                }
-            )
-        }
-
-        globals.set(
-            "found",
-            luaFunction { args ->
-                val reference = args.fileArgument(1, "found")
-                val needle = args.arg(2).stringArgument("found", 2)
+            bindSpelled(globals, name) { bound, args ->
+                val reference = args.fileArgument(1, bound)
                 val result = when (reference) {
-                    is String -> ConditionalMethods.found(reference, needle)
-                    is MPPPath -> ConditionalMethods.found(reference, needle)
+                    is String -> when (bound) {
+                        "exists" -> ConditionalMethods.exists(reference)
+                        "missing" -> ConditionalMethods.missing(reference)
+                        "changed" -> ConditionalMethods.changed(reference)
+                        else -> ConditionalMethods.unchanged(reference)
+                    }
+                    is MPPPath -> when (bound) {
+                        "exists" -> ConditionalMethods.exists(reference)
+                        "missing" -> ConditionalMethods.missing(reference)
+                        "changed" -> ConditionalMethods.changed(reference)
+                        else -> ConditionalMethods.unchanged(reference)
+                    }
                     else -> throw badArgument(
-                        "found", 1, "file or string", args.arg(1)
+                        bound, 1, "file or string", args.arg(1)
                     )
                 }
                 LuaValue.valueOf(result)
             }
-        )
+        }
 
-        globals.set(
-            "toFile",
-            luaFunction { args ->
-                LuaValue.userdataOf(
-                    ConditionalMethods.toFile(
-                        args.arg(1).stringArgument("toFile", 1)
-                    )
+        bindSpelled(
+            globals, "found"
+        ) { name, args ->
+            val reference = args.fileArgument(1, name)
+            val needle = args.arg(2).stringArgument(name, 2)
+            val result = when (reference) {
+                is String -> ConditionalMethods.found(reference, needle)
+                is MPPPath -> ConditionalMethods.found(reference, needle)
+                else -> throw badArgument(
+                    name, 1, "file or string", args.arg(1)
                 )
             }
-        )
-        globals.set(
-            "currentFile",
-            luaFunction { _ ->
-                LuaValue.userdataOf(ConditionalMethods.currentFile())
-            }
-        )
-        globals.set(
-            "getOriginalReference",
-            luaFunction { _ ->
-                LuaValue.userdataOf(RuleMethods.originalReference)
-            }
-        )
-        globals.set(
-            "getBasename",
-            luaFunction { args ->
-                val reference = args.fileArgument(1, "getBasename")
-                when (reference) {
-                    is String -> RuleMethods.getBasename(reference)
-                    is MPPPath -> RuleMethods.getBasename(reference)
-                    else -> throw badArgument(
-                        "getBasename", 1, "file or string", args.arg(1)
-                    )
-                }.let { LuaValue.valueOf(it) }
-            }
-        )
+            LuaValue.valueOf(result)
+        }
+
+        bindSpelled(
+            globals, "toFile"
+        ) { name, args ->
+            LuaValue.userdataOf(
+                ConditionalMethods.toFile(
+                    args.arg(1).stringArgument(name, 1)
+                )
+            )
+        }
+        bindSpelled(
+            globals, "currentFile"
+        ) { _, _ ->
+            LuaValue.userdataOf(ConditionalMethods.currentFile())
+        }
+        bindSpelled(
+            globals, "getOriginalReference"
+        ) { _, _ ->
+            LuaValue.userdataOf(RuleMethods.originalReference)
+        }
+        bindSpelled(
+            globals, "getBasename"
+        ) { name, args ->
+            val reference = args.fileArgument(1, name)
+            when (reference) {
+                is String -> RuleMethods.getBasename(reference)
+                is MPPPath -> RuleMethods.getBasename(reference)
+                else -> throw badArgument(
+                    name, 1, "file or string", args.arg(1)
+                )
+            }.let { LuaValue.valueOf(it) }
+        }
 
         // the session is exposed as a table of operations, as Lua cannot
         // call methods on the underlying object directly
-        globals.set(
-            "getSession",
-            luaFunction { _ -> sessionTable() }
-        )
+        bindSpelled(
+            globals, "getSession"
+        ) { _, _ -> sessionTable() }
 
         // interactive dialogs
         bindDialog(
@@ -227,18 +224,15 @@ internal object LuaConditionalEnvironment {
             text: String, values: Array<Any>
         ) -> LuaValue
     ) {
-        globals.set(
-            name,
-            luaFunction { args ->
-                val type = args.arg(1).numberArgument(name, 1)
-                val title = args.arg(2).stringArgument(name, 2)
-                val text = args.arg(3).stringArgument(name, 3)
-                val values = args.values(4)
-                    .filterNotNull()
-                    .toTypedArray()
-                body(type, title, text, values)
-            }
-        )
+        bindSpelled(globals, name) { bound, args ->
+            val type = args.arg(1).numberArgument(bound, 1)
+            val title = args.arg(2).stringArgument(bound, 2)
+            val text = args.arg(3).stringArgument(bound, 3)
+            val values = args.values(4)
+                .filterNotNull()
+                .toTypedArray()
+            body(type, title, text, values)
+        }
     }
 
     private fun bindClassLoading(
@@ -249,23 +243,20 @@ internal object LuaConditionalEnvironment {
         stringBody: (reference: String, className: String) ->
             Pair<ClassLoadingStatus, Any>
     ) {
-        globals.set(
-            name,
-            luaFunction { args ->
-                val className = args.arg(2).stringArgument(name, 2)
-                val reference = args.fileArgument(1, name)
-                val (status, value) = when (reference) {
-                    is MPPPath -> fileBody(reference, className)
-                    is String -> stringBody(reference, className)
-                    else -> throw badArgument(
-                        name, 1, "file or string", args.arg(1)
-                    )
-                }
-                LuaValue.tableOf().also { table ->
-                    table.set("status", LuaValue.valueOf(status.name))
-                    table.set("value", LuaValue.userdataOf(value))
-                }
+        bindSpelled(globals, name) { bound, args ->
+            val className = args.arg(2).stringArgument(bound, 2)
+            val reference = args.fileArgument(1, bound)
+            val (status, value) = when (reference) {
+                is MPPPath -> fileBody(reference, className)
+                is String -> stringBody(reference, className)
+                else -> throw badArgument(
+                    bound, 1, "file or string", args.arg(1)
+                )
             }
-        )
+            LuaValue.tableOf().also { table ->
+                table.set("status", LuaValue.valueOf(status.name))
+                table.set("value", LuaValue.userdataOf(value))
+            }
+        }
     }
 }

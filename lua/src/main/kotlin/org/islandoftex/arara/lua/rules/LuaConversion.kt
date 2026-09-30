@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua.rules
 
+import io.github.taoguan.luaj.Globals
 import io.github.taoguan.luaj.LuaBoolean
 import io.github.taoguan.luaj.LuaError
 import io.github.taoguan.luaj.LuaInteger
@@ -239,6 +240,41 @@ internal object LuaConversion {
         object : VarArgFunction() {
             override fun invoke(args: Varargs): Varargs = body(args)
         }
+
+    /**
+     * Derive the snake_case spelling of a helper name: the Lua-idiomatic
+     * alias every registered helper is additionally bound under, so
+     * rules read like Lua while the historic camelCase spelling of the
+     * shared helper vocabulary stays available throughout the lifetime
+     * of the deprecated engine.
+     */
+    fun String.snakeCase(): String =
+        fold(StringBuilder()) { builder, char ->
+            if (char.isUpperCase()) {
+                builder.append('_').append(char.lowercaseChar())
+            } else {
+                builder.append(char)
+            }
+        }.toString()
+
+    /**
+     * Bind a helper under both spellings: the historic camelCase name
+     * and its derived snake_case alias. Each spelling receives its own
+     * wrapper, so argument errors name the spelling the rule actually
+     * called; a name that is already snake_case has no distinct alias
+     * and binds once.
+     */
+    fun bindSpelled(
+        globals: Globals,
+        name: String,
+        body: (name: String, args: Varargs) -> LuaValue,
+    ) {
+        globals.set(name, luaFunction { args -> body(name, args) })
+        val alias = name.snakeCase()
+        if (alias != name) {
+            globals.set(alias, luaFunction { args -> body(alias, args) })
+        }
+    }
 
     /**
      * Build the session as a table of operations, as Lua cannot call
