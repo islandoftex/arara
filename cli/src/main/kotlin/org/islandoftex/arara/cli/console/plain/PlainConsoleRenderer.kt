@@ -1,22 +1,16 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.console.plain
 
-import io.github.oshai.kotlinlogging.KotlinLogging
-import kotlin.math.ln
-import kotlin.math.pow
 import kotlin.time.Duration.Companion.seconds
-import org.islandoftex.arara.api.AraraAPI
-import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.cli.console.ConsoleRenderer
 import org.islandoftex.arara.cli.utils.abbreviate
+import org.islandoftex.arara.cli.utils.byteSizeToString
 import org.islandoftex.arara.cli.utils.center
-import org.islandoftex.arara.core.configuration.DefaultConfiguration
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.utils.wrap
@@ -27,14 +21,14 @@ import org.islandoftex.arara.core.utils.wrap
  * the renderer contract. The entries, the dotted leaders, the
  * labels, the separators and the wrapping are the exact output
  * every existing workflow and expectation was built on, so this
- * presentation is moved, not modernized.
+ * presentation is moved, not modernized. It holds no logging: the
+ * log entries of a run live in the run log, so no presentation can
+ * ever change what the log records.
  *
  * @author Island of TeX
  */
 @Suppress("TooManyFunctions")
 object PlainConsoleRenderer : ConsoleRenderer {
-    private val logger = KotlinLogging.logger { }
-
     /**
      * The length of the longest result match as integer.
      */
@@ -85,12 +79,6 @@ object PlainConsoleRenderer : ConsoleRenderer {
         get() = Session.userInterfaceOptions.terminalOutputWidth
 
     /**
-     * The file name of the configuration file in use. It is only
-     * needed for logging purposes.
-     */
-    override var configurationFileName: String = "[none]"
-
-    /**
      * Displays the short version of the current entry in the terminal.
      *
      * @param name Rule name.
@@ -119,11 +107,6 @@ object PlainConsoleRenderer : ConsoleRenderer {
         displayLine = false
         displayResult = true
 
-        logger.info {
-            // a fixed English token keeps the outcome greppable across
-            // every language and every future rewording of the labels
-            "Task result: " + if (value) "SUCCESS" else "FAILURE"
-        }
         if (!isDryRunMode) {
             println(
                 if (!isVerboseMode) {
@@ -143,9 +126,6 @@ object PlainConsoleRenderer : ConsoleRenderer {
      * @param task The task name.
      */
     override fun printEntry(name: String, task: String) {
-        logger.info {
-            "I am ready to interpret task \"$task\" from rule \"$name\"."
-        }
         displayLine = true
         displayResult = false
         if (!isDryRunMode) {
@@ -200,9 +180,10 @@ object PlainConsoleRenderer : ConsoleRenderer {
     /**
      * Displays the exception in the terminal.
      *
-     * @param exception The exception object.
+     * @param text The message to be displayed.
+     * @param details The underlying cause details, if any.
      */
-    override fun printException(exception: AraraException) {
+    override fun printException(text: String, details: String?) {
         displayException = true
 
         if (displayResult)
@@ -221,23 +202,12 @@ object PlainConsoleRenderer : ConsoleRenderer {
                 println()
             }
         }
-        val underlying = exception.exception
-        val text = (
-            if (underlying != null)
-                exception.message + " " + LanguageController.messages
-                    .infoDisplayExceptionMoreDetails
-            else
-                exception.message
-            ) ?: "EXCEPTION PROVIDES NO MESSAGE"
-        logger.error { text }
         printWrapped(text)
         // a present cause earns a details section even when it carries no
         // message of its own
-        if (underlying != null) {
+        if (details != null) {
             println()
             displayDetailsLine()
-            val details = underlying.message ?: underlying.toString()
-            logger.error { details }
             printWrapped(details)
         }
     }
@@ -296,28 +266,6 @@ object PlainConsoleRenderer : ConsoleRenderer {
     }
 
     /**
-     * Gets a human readable representation of a size.
-     *
-     * @param size The byte size to be converted.
-     * @return A string representation of the size.
-     */
-    @Suppress("MagicNumber")
-    override fun byteSizeToString(size: Long): String {
-        val conversionFactor = 1000.0
-        return if (size < conversionFactor) "$size B"
-        else
-            (ln(size.toDouble()) / ln(conversionFactor)).toInt().let { exp ->
-                val baseSize = size / conversionFactor.pow(exp.toDouble())
-                val ones = baseSize.toInt()
-                val tenths = ((baseSize - ones) * 10).toInt()
-                val separator = Session.userInterfaceOptions
-                    .locale.decimalSeparator.toString()
-                "$ones$separator$tenths " +
-                    "${"kMGTPE"[exp - 1]}B"
-            }
-    }
-
-    /**
      * Displays the elapsed time in the terminal.
      *
      * @param seconds The elapsed seconds.
@@ -333,11 +281,6 @@ object PlainConsoleRenderer : ConsoleRenderer {
             (secondDuration - secondDuration.inWholeSeconds.seconds)
                 .inWholeMilliseconds.toString()
         val text = LanguageController.messages.infoDisplayExecutionTime(time)
-        // the console line stays localized; the log carries an English
-        // twin so the file reads the same in every language
-        logger.info {
-            "Total execution time: $seconds seconds"
-        }
         printWrapped(text)
     }
 
@@ -368,78 +311,20 @@ object PlainConsoleRenderer : ConsoleRenderer {
     override fun displaySeparator(): String = "-".repeat(outputWidth)
 
     /**
-     * Displays the file information in the terminal: the welcome banner
-     * and the file line, with the log carrying an English twin of the
-     * localized console line.
+     * Displays the file information in the terminal: the localized
+     * file line of the run.
+     *
+     * @param file The project file.
      */
     override fun printFileInformation(file: ProjectFile) {
-        logger.info {
-            "\n" + "Welcome to arara ${AraraAPI.version}!" + "\n" +
-                displaySeparator()
-        }
-        logEnvironmentDetails()
         LanguageController.messages
             .infoDisplayFileInformation(
                 file.path.fileName,
                 byteSizeToString(file.path.fileSize),
                 file.path.lastModified.toString()
             ).let {
-                logger.info {
-                    "Processing \"${file.path.fileName}\" (size: " +
-                        "${byteSizeToString(file.path.fileSize)}, " +
-                        "last modified: ${file.path.lastModified}), " +
-                        "please wait."
-                }
                 printWrapped(it)
                 println()
             }
-    }
-
-    /**
-     * Writes the environment block of the run to the log at debug level:
-     * the Java runtime, the operating system, the user home and the
-     * configuration file name.
-     */
-    private fun logEnvironmentDetails() {
-        val javaVersion = Environment.getSystemProperty(
-            "java.version",
-            "[unknown version]"
-        )
-        val javaVendor = Environment.getSystemProperty(
-            "java.vendor",
-            "[unknown vendor]"
-        )
-        val javaHome = Environment.getSystemProperty(
-            "java.home",
-            "[unknown location]"
-        )
-        val osName = Environment.getSystemProperty(
-            "os.name",
-            "[unknown OS name]"
-        )
-        val osArch = Environment.getSystemProperty(
-            "os.arch",
-            "[unknown OS arch]"
-        )
-        val osVersion = Environment.getSystemProperty(
-            "os.version",
-            "[unknown OS version]"
-        )
-        val userHome = Environment.getSystemProperty(
-            "user.home",
-            "[unknown user's home directory]"
-        )
-        logger.debug {
-            """
-
-                ::: arara @ ${DefaultConfiguration.applicationPath}
-                ::: Java $javaVersion, $javaVendor
-                ::: $javaHome
-                ::: $osName, $osArch, $osVersion
-                ::: user.home @ $userHome
-                ::: CF @ $configurationFileName
-                ${displaySeparator()}
-            """.trimIndent()
-        }
     }
 }

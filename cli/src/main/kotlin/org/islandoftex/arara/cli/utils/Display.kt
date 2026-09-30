@@ -6,17 +6,20 @@ import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.cli.console.ConsoleRenderer
 import org.islandoftex.arara.cli.console.plain.PlainConsoleRenderer
+import org.islandoftex.arara.core.localization.LanguageController
 
 /**
  * Implements the terminal display facade: every call site renders
- * through this object, which delegates to the console renderer the
- * application resolved at startup. The historic plain renderer is
- * the default presentation, and the facade keeps the surface the
+ * through this object, which routes each event to two homes - the
+ * run log writes the shared diagnostic artifact, and the console
+ * renderer resolved at startup prints the presentation. The two are
+ * kept separate on purpose: whichever console a run used, the log
+ * records the same lines. The historic plain renderer is the
+ * default presentation, and the facade keeps the surface the
  * interpreter, the command runner and the tests were built on.
  *
  * @author Island of TeX
  */
-@Suppress("TooManyFunctions")
 object Display {
     /**
      * The application logo for the terminal.
@@ -39,18 +42,17 @@ object Display {
      * The file name of the configuration file in use. It is only
      * needed for logging purposes.
      */
-    var configurationFileName: String
-        get() = renderer.configurationFileName
-        set(value) {
-            renderer.configurationFileName = value
-        }
+    var configurationFileName: String = "[none]"
 
     /**
      * Displays the current entry result in the terminal.
      *
      * @param value The boolean value to be displayed.
      */
-    fun printEntryResult(value: Boolean) = renderer.printEntryResult(value)
+    fun printEntryResult(value: Boolean) {
+        RunLog.taskResult(value)
+        renderer.printEntryResult(value)
+    }
 
     /**
      * Displays the current entry in the terminal.
@@ -58,16 +60,32 @@ object Display {
      * @param name The rule name.
      * @param task The task name.
      */
-    fun printEntry(name: String, task: String) =
+    fun printEntry(name: String, task: String) {
+        RunLog.entry(name, task)
         renderer.printEntry(name, task)
+    }
 
     /**
      * Displays the exception in the terminal.
      *
      * @param exception The exception object.
      */
-    fun printException(exception: AraraException) =
-        renderer.printException(exception)
+    fun printException(exception: AraraException) {
+        val underlying = exception.exception
+        val details = underlying?.let { it.message ?: it.toString() }
+        // the log carries the bare message, as thrown; the suffix
+        // pointing at the details is console presentation, so only
+        // the display keeps it
+        RunLog.exception(exception.message, details)
+        val text = (
+            if (underlying != null)
+                exception.message + " " + LanguageController.messages
+                    .infoDisplayExceptionMoreDetails
+            else
+                exception.message
+            ) ?: "EXCEPTION PROVIDES NO MESSAGE"
+        renderer.printException(text, details)
+    }
 
     /**
      * Displays the provided text wrapped nicely according to the
@@ -93,20 +111,14 @@ object Display {
         renderer.printConditional(conditional)
 
     /**
-     * Gets a human readable representation of a size.
-     *
-     * @param size The byte size to be converted.
-     * @return A string representation of the size.
-     */
-    internal fun byteSizeToString(size: Long) =
-        renderer.byteSizeToString(size)
-
-    /**
      * Displays the elapsed time in the terminal.
      *
      * @param seconds The elapsed seconds.
      */
-    fun printTime(seconds: Double) = renderer.printTime(seconds)
+    fun printTime(seconds: Double) {
+        RunLog.executionTime(seconds)
+        renderer.printTime(seconds)
+    }
 
     /**
      * Gets the output separator with the provided text.
@@ -132,6 +144,10 @@ object Display {
      *
      * @param file The project file.
      */
-    fun printFileInformation(file: ProjectFile) =
+    fun printFileInformation(file: ProjectFile) {
+        RunLog.welcome()
+        RunLog.environment(configurationFileName)
+        RunLog.fileInformation(file)
         renderer.printFileInformation(file)
+    }
 }

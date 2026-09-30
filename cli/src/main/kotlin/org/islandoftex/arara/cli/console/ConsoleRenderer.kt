@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.console
 
-import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
 
@@ -9,21 +8,15 @@ import org.islandoftex.arara.api.rules.DirectiveConditional
  * Defines the contract of a console renderer: the whole run
  * lifecycle a presentation prints - the entries and their results,
  * the file information, the messages, the errors and the closing
- * blocks. The display facade keeps every call site stable, and the
- * renderer the application resolves at startup owns the actual
- * layout, so a presentation is chosen in one place without touching
- * the interpreter, the command runner or the command line.
+ * blocks. The display facade keeps every call site stable and owns
+ * the log entries, so a renderer is pure presentation: it prints
+ * and holds no logging, and the application resolves the renderer
+ * once at startup without touching the interpreter, the command
+ * runner or the command line.
  *
  * @author Island of TeX
  */
-@Suppress("TooManyFunctions")
 interface ConsoleRenderer {
-    /**
-     * The file name of the configuration file in use. It is only
-     * needed for logging purposes.
-     */
-    var configurationFileName: String
-
     /**
      * Displays the current entry result in the terminal.
      *
@@ -42,9 +35,10 @@ interface ConsoleRenderer {
     /**
      * Displays the exception in the terminal.
      *
-     * @param exception The exception object.
+     * @param text The message to be displayed.
+     * @param details The underlying cause details, if any.
      */
-    fun printException(exception: AraraException)
+    fun printException(text: String, details: String?)
 
     /**
      * Displays the provided text wrapped nicely according to the
@@ -67,14 +61,6 @@ interface ConsoleRenderer {
      * @param conditional The conditional object.
      */
     fun printConditional(conditional: DirectiveConditional)
-
-    /**
-     * Gets a human readable representation of a size.
-     *
-     * @param size The byte size to be converted.
-     * @return A string representation of the size.
-     */
-    fun byteSizeToString(size: Long): String
 
     /**
      * Displays the elapsed time in the terminal.
@@ -100,9 +86,8 @@ interface ConsoleRenderer {
     fun displaySeparator(): String
 
     /**
-     * Displays the file information in the terminal: the welcome
-     * banner and the file line, with the log carrying an English
-     * twin of the localized console line.
+     * Displays the file information in the terminal: the localized
+     * file line of the run.
      *
      * @param file The project file.
      */

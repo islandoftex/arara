@@ -182,14 +182,14 @@ class DisplayTest {
 
     @Test
     fun `renders byte sizes at every magnitude`() {
-        assertEquals("999 B", Display.byteSizeToString(999))
-        assertEquals("800 B", Display.byteSizeToString(800))
-        assertEquals("1.0 kB", Display.byteSizeToString(1000))
+        assertEquals("999 B", byteSizeToString(999))
+        assertEquals("800 B", byteSizeToString(800))
+        assertEquals("1.0 kB", byteSizeToString(1000))
         // the binary neighbour keeps the decimal prefix and truncates
-        assertEquals("1.0 kB", Display.byteSizeToString(1024))
-        assertEquals("1.5 kB", Display.byteSizeToString(1500))
-        assertEquals("1.0 MB", Display.byteSizeToString(1000000))
-        assertEquals("1.5 MB", Display.byteSizeToString(1500000))
+        assertEquals("1.0 kB", byteSizeToString(1024))
+        assertEquals("1.5 kB", byteSizeToString(1500))
+        assertEquals("1.0 MB", byteSizeToString(1000000))
+        assertEquals("1.5 MB", byteSizeToString(1500000))
     }
 
     @Test

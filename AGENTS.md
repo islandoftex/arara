@@ -229,8 +229,11 @@ as the runnable jar).
   in scope, so they compute paths in plain Lua and no placeholder
   expansion applies to them),
   the console renderer seam (the display facade routes every call
-  site to the renderer resolved at startup; the plain renderer
-  carries the historic, byte-identical layout),
+  site to the renderer resolved at startup and to the run log that
+  writes the display-side log entries; the plain renderer carries
+  the historic, byte-identical layout, and the run log holds no
+  console knowledge, so the log records the same lines whichever
+  console rendered the run),
   the clikt command line, and the shadow jar. **Directive conditionals
   (`if`/`while`/`until`/`unless`) and interpolation in directive
   `options` follow the engine too**: `--engine lua` evaluates conditionals
@@ -247,7 +250,9 @@ as the runnable jar).
   results still stringify by design). Log lines are always English,
   hardcoded at their sites — the log file is a shared diagnostic
   artifact, so it reads the same in every language; the console stays
-  localized.
+  localized. Exception messages are the one accepted deviation: they
+  log as thrown, in the session language, and giving them English
+  twins is future work.
 - `MPPPath` (in `api`) is a sharp edge: it carries **two** paths —
   `providedPath` (exactly what the caller wrote; backs `isAbsolute`,
   `startsWith`, `resolve`) and `referencePath` (absolutized and normalized;
