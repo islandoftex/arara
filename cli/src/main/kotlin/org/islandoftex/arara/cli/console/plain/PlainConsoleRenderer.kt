@@ -62,9 +62,28 @@ object PlainConsoleRenderer : ConsoleRenderer {
      */
     private const val minimumEntryWidth = 6
 
+    /**
+     * Whether the current entry line is still open for a result to
+     * land on.
+     */
     private var displayLine = true
+
+    /**
+     * Whether a result has landed on the current entry line, so
+     * the exception block knows whether to break the line first.
+     */
     private var displayResult = false
+
+    /**
+     * Whether an entry block has already printed in this file, so
+     * the first entry of a file opens without a blank line above
+     * it. The flag resets with every file.
+     */
     private var displayRolling = false
+    /**
+     * Whether an exception has printed in the current run, so the
+     * closing blocks know whether to separate from it.
+     */
     private var displayException = false
 
     /**
@@ -340,6 +359,10 @@ object PlainConsoleRenderer : ConsoleRenderer {
      * @param file The project file.
      */
     override fun printFileInformation(file: ProjectFile) {
+        // each file opens its own entry blocks, so the rolling
+        // separator resets with every file - the first entry of a
+        // file never carries a stale blank from the previous one
+        displayRolling = false
         LanguageController.messages
             .infoDisplayFileInformation(
                 file.path.fileName,

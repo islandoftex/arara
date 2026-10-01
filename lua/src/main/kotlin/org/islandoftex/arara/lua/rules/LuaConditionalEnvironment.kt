@@ -216,7 +216,13 @@ internal object LuaConditionalEnvironment {
     // type, title, text and the extra values); the width parameter of
     // the Swing era is gone, and arara owns the terminal geometry
     @Suppress("MagicNumber")
-    private fun bindDialog(
+        /**
+     * Binds a dialog helper into the Lua environment: the
+     * arguments are validated for their types, the extra
+     * values are collected, and the conversation routes
+     * through the dialog facade.
+     */
+private fun bindDialog(
         globals: Globals,
         name: String,
         body: (

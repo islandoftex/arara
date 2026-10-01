@@ -24,13 +24,19 @@ object Directives {
     private const val PATTERN = """(\s+(if|while|until|unless)\s+(\S.*))?$"""
 
     // pattern to match directives against
-    private val directivePattern = (DIRECTIVE_START + PATTERN).toRegex()
+        /**
+     * The pattern a directive line must match.
+     */
+private val directivePattern = (DIRECTIVE_START + PATTERN).toRegex()
 
     // match the arara part in `% arara: pdflatex`
     private const val NAME_PATTERN = "arara:\\s"
 
     // what to expect after a line break in a directive
-    private val linebreakPattern = "^\\s*-->\\s(.*)$".toRegex()
+        /**
+     * The pattern a linebreak continuation must match.
+     */
+private val linebreakPattern = "^\\s*-->\\s(.*)$".toRegex()
 
     /**
      * This function filters the lines of a file to identify the potential

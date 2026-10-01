@@ -33,7 +33,11 @@ class RuleArgument : RuleArgument<Any?> {
     @SerialName("required")
     override var isRequired: Boolean = false
 
-    private var flag: String? = null
+        /**
+     * The flag the argument renders when the value is
+     * present, or null when the default applies.
+     */
+private var flag: String? = null
         get() = field?.trim()
 
     /**
@@ -42,7 +46,12 @@ class RuleArgument : RuleArgument<Any?> {
     override val defaultValue: Any?
         get() = default?.trim()
 
-    private val default: String? = null
+        /**
+     * The default value the argument falls back to when
+     * the directive provides none, or null when the
+     * argument is required.
+     */
+private val default: String? = null
 
     /**
      * Evaluates the MVEL flag expression of the argument against the

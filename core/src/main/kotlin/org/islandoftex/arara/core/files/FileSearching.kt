@@ -21,7 +21,10 @@ import org.islandoftex.arara.core.utils.globToRegex
  */
 object FileSearching {
     // get the logger context from a factory
-    private val logger = KotlinLogging.logger { }
+        /**
+     * The logger of the file searching.
+     */
+private val logger = KotlinLogging.logger { }
 
     /**
      * List all files from the provided directory according to the list of

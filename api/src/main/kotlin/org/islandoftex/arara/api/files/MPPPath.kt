@@ -294,7 +294,14 @@ public class MPPPath {
     // semantics of this model follow links; chains are resolved
     // here, and a chain exceeding the limit counts as unresolvable,
     // matching how such loops surface as errors on the platform
-    private fun resolveMetadataOrNull(): FileMetadata? {
+        /**
+     * Resolves the file metadata through the JVM bridge,
+     * following symlink chains as the backend reads them,
+     * or null when the path names no file.
+     *
+     * @return The metadata of the file, or null.
+     */
+private fun resolveMetadataOrNull(): FileMetadata? {
         var path = referencePath
         repeat(SYMLINK_CHAIN_LIMIT) {
             val metadata = PathModelFileSystem.current.metadataOrNull(path)

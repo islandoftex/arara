@@ -96,7 +96,16 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         return extractProjectFile(path, projectFileSpec(fileTable, key))
     }
 
-    private fun extractProjectFile(path: MPPPath, table: LuaTable): ProjectFile {
+        /**
+     * Extracts a project file from the Lua table the project
+     * specification provides, resolving the file type and the
+     * priority from the table's fields.
+     *
+     * @param path The path the specification names.
+     * @param table The Lua table describing the project file.
+     * @return The extracted project file.
+     */
+private fun extractProjectFile(path: MPPPath, table: LuaTable): ProjectFile {
         val fileType = optionalTable(
             table["file_type"],
             "The 'file_type' key requires a table."

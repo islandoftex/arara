@@ -55,7 +55,12 @@ data class LocalConfiguration(
     // in scope to the script, so no engine tokens remain to expand;
     // the flag stays out of the serialized format on purpose
     @Transient
-    private val expandPathTokens: Boolean = true
+        /**
+     * Whether the paths are expanded for engine tokens;
+     * a script-based configuration computes its paths in
+     * scope, so no tokens remain to expand.
+     */
+private val expandPathTokens: Boolean = true
 ) {
     /**
      * Convert the relevant properties of the configuration to execution

@@ -37,9 +37,21 @@ object ClassLoading {
     // closes the loaders and deletes the copies at exit. Repeated
     // loads of the same archive deliberately create independent
     // loaders, so a rebuilt archive is served fresh on the next call.
-    private val lock = Any()
-    private val loaders = mutableListOf<URLClassLoader>()
-    private val copies = mutableListOf<File>()
+        /**
+     * The monitor guarding the loader list, so class loading
+     * stays thread-safe.
+     */
+private val lock = Any()
+        /**
+     * The class loaders the session has opened, so they can
+     * be closed when the session releases them.
+     */
+private val loaders = mutableListOf<URLClassLoader>()
+        /**
+     * The temporary copies of the loaded jar files, tracked
+     * so they can be cleaned up with their loaders.
+     */
+private val copies = mutableListOf<File>()
 
     init {
         Runtime.getRuntime().addShutdownHook(

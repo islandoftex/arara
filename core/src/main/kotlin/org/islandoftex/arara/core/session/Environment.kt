@@ -20,7 +20,10 @@ import org.zeroturnaround.exec.stream.TeeOutputStream
  */
 object Environment {
     // get the logger context from a factory
-    private val logger = KotlinLogging.logger { }
+        /**
+     * The logger of the environment interaction.
+     */
+private val logger = KotlinLogging.logger { }
 
     /**
      * Gets the system property according to the provided key, or resort to the

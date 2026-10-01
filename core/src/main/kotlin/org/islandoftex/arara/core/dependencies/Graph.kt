@@ -8,7 +8,13 @@ internal open class Graph<T> {
     private val vertices = mutableMapOf<T, MutableSet<T>>()
     private val indegree = mutableMapOf<T, Int>()
 
-    private fun updateInDegree(vertex: T) {
+        /**
+     * Updates the in-degree of a vertex after an edge
+     * pointing into it is added.
+     *
+     * @param vertex The vertex whose in-degree grows.
+     */
+private fun updateInDegree(vertex: T) {
         val current = indegree[vertex]
             ?: throw NoSuchElementException("Vertex $vertex in graph expected")
         indegree[vertex] = current + 1

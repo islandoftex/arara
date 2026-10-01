@@ -120,7 +120,14 @@ object LuaLocalConfiguration {
             )
         }
 
-    private fun tableToMap(table: LuaTable): Map<String, Any?> =
+        /**
+     * Converts a Lua table into a plain map, recursively
+     * flattening nested tables into maps of their own.
+     *
+     * @param table The Lua table to convert.
+     * @return The map representation of the table.
+     */
+private fun tableToMap(table: LuaTable): Map<String, Any?> =
         table.keys().associate { key ->
             key.tojstring() to LuaConversion.fromLua(table.get(key))
         }
