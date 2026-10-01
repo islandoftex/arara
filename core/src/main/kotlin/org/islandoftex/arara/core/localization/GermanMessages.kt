@@ -201,6 +201,9 @@ object GermanMessages : AraraMessages {
     override fun infoDisplaySkippedConditional(name: String) =
         "${name} übersprungen · die Bedingung ergab falsch"
 
+    override val infoDisplayFullOutputInLog =
+        "die vollständige Ausgabe steht in der Logdatei"
+
 
     override val infoDisplaySummaryTitle = "Zusammenfassung"
     override val infoDisplaySummaryFile = "Datei"

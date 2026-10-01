@@ -105,9 +105,16 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
 
     private companion object {
         /** The column indexes of the execution summary table. */
+        const val FILE_COLUMN = 0
         const val COUNT_COLUMN = 1
         const val TIME_COLUMN = 2
         const val STATUS_COLUMN = 3
+
+        /**
+         * The number of output lines the failure panel quotes; the
+         * full record lives in the log file.
+         */
+        const val PANEL_TAIL_LINES = 15
     }
 
     /**
@@ -637,6 +644,35 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     }
 
     /**
+     * Displays the tail of the output a failed command captured:
+     * the tool's own explanation of its failure, quoted in the dim
+     * bar panel beside the verdict, with the pointer to the full
+     * record in the log. A verbose run already streamed the output
+     * live, and a command that said nothing has nothing to quote.
+     *
+     * @param output The captured output of the failed command.
+     */
+    override fun printCommandFailure(output: String) {
+        if (isVerboseMode || output.isBlank()) {
+            return
+        }
+        val bar = if (isDecorated) "│ " else "| "
+        val lines = output.trimEnd().lineSequence().toList()
+        if (lines.size > PANEL_TAIL_LINES) {
+            // the cut is stated by the bare ellipsis: the tail that
+            // follows is quoted, the whole record lives in the log
+            terminal.println(muted(bar + "…"))
+        }
+        lines.takeLast(PANEL_TAIL_LINES).forEach { line ->
+            terminal.println(muted(bar + line))
+        }
+        terminal.println(
+            muted(bar + LanguageController.messages.infoDisplayFullOutputInLog)
+        )
+        terminal.println("")
+    }
+
+    /**
      * Displays the closing summary of the run: the verdict line and
      * the table of the processed files. A dry run validates nothing,
      * so its verdict makes no success claim and carries no table -
@@ -687,19 +723,32 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     private fun renderSummaryTable() {
         val messages = LanguageController.messages
         val table = table {
-            tableBorders = Borders.NONE
+            tableBorders = Borders.BOTTOM
             header {
-                cellBorders = Borders.BOTTOM
                 row(
                     messages.infoDisplaySummaryFile,
                     messages.infoDisplaySummaryTasks,
                     messages.infoDisplaySummaryTime,
                     ""
                 )
+                cellBorders = Borders.NONE
             }
-            column(COUNT_COLUMN) { align = TextAlign.RIGHT }
-            column(TIME_COLUMN) { align = TextAlign.RIGHT }
-            column(STATUS_COLUMN) { align = TextAlign.RIGHT }
+            column(FILE_COLUMN) {
+                align = TextAlign.LEFT
+                cellBorders = Borders.BOTTOM
+            }
+            column(COUNT_COLUMN) {
+                align = TextAlign.RIGHT
+                cellBorders = Borders.BOTTOM
+            }
+            column(TIME_COLUMN) {
+                align = TextAlign.RIGHT
+                cellBorders = Borders.BOTTOM
+            }
+            column(STATUS_COLUMN) {
+                align = TextAlign.RIGHT
+                cellBorders = Borders.TOP_BOTTOM
+            }
             body {
                 summary.forEach { entry ->
                     row(
@@ -715,10 +764,10 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
                 }
             }
         }
-        // the title rides the section rule, the table keeps the
-        // borderless layout of the presentation: rules, not boxes -
-        // the box belongs to the dialogs, where interruption is the
-        // point
+        // the title rides the section rule, the table carries the
+        // ruled layout of the presentation: the underline beneath
+        // the labels, the closing rule beneath the table - the box
+        // belongs to the dialogs, where interruption is the point
         val head = "$rule$rule ${messages.infoDisplaySummaryTitle} "
         terminal.println(
             muted(head + rule.repeat((structureWidth - head.length).coerceAtLeast(1)))

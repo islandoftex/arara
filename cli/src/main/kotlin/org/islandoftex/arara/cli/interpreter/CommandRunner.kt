@@ -52,12 +52,13 @@ internal object CommandRunner {
      * Runs the command in the underlying operating system.
      *
      * @param command An object representing the command.
-     * @return An integer value representing the exit code.
+     * @return The exit code of the command and the output it
+     * captured, so a failing task can quote its own words.
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
     @Throws(AraraException::class)
-    internal fun run(command: Command): Int {
+    internal fun run(command: Command): Pair<Int, String> {
         // the monotonic clock keeps the recorded duration immune to wall
         // clock corrections that can strike while a command runs
         val start = TimeSource.Monotonic.markNow()
@@ -101,7 +102,7 @@ internal object CommandRunner {
                         ) + " seconds"
                 }
                 logOutputBuffer(result.output)
-                result.exitCode
+                result.exitCode to result.output
             }
         }
     }

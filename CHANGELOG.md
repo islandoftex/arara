@@ -25,8 +25,9 @@ on.
   line and a summary table naming each file, its task count, its
   time and its status. A verbose rich run shows the command it
   executes, frames the tool's own output with dotted rules and
-  names the conditionally skipped directives. The command line wins
-  over the
+  names the conditionally skipped directives, and a failed task
+  quotes the tail of its own output beside the verdict, with the
+  full record in the log. The command line wins over the
   configuration file, which wins over the default, and a mode the
   application does not offer is reported as an error instead of a
   silent fallback.

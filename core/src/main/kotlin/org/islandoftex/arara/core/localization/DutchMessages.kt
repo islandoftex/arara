@@ -201,6 +201,9 @@ object DutchMessages : AraraMessages {
     override fun infoDisplaySkippedConditional(name: String) =
         "${name} overgeslagen · de voorwaarde evalueerde naar onwaar"
 
+    override val infoDisplayFullOutputInLog =
+        "de volledige uitvoer staat in het logbestand"
+
 
     override val infoDisplaySummaryTitle = "Overzicht"
     override val infoDisplaySummaryFile = "Bestand"

@@ -1,0 +1,10 @@
+!config
+identifier: failechoer
+name: Test rule for a failing command
+commands:
+  - name: The failing echoer
+    command: >
+      @{
+          return isWindows(getCommand('cmd', '/c', 'echo QuackFail & exit /b 1'), getCommand('sh', '-c', 'echo QuackFail; exit 1'));
+      }
+arguments: []

@@ -298,4 +298,42 @@ class RichConsoleRendererTest {
         }
         assertFalse("skipped" in output, "the compact run shows no skip card")
     }
+    @Test
+    fun `the failed task quotes the tail of its own output`() {
+        val output = render(AnsiLevel.TRUECOLOR) {
+            printEntry("failechoer", "The failing echoer")
+            printEntryResult(false)
+            printCommandFailure("QuackFail")
+        }
+        assertTrue("│ QuackFail" in output, "the panel quotes the tool words")
+        assertTrue(
+            "the full output is in the log file" in output,
+            "the panel points at the log"
+        )
+    }
+
+    @Test
+    fun `a silent failure quotes nothing`() {
+        val output = render(AnsiLevel.TRUECOLOR) {
+            printEntry("failechoer", "The failing echoer")
+            printEntryResult(false)
+            printCommandFailure("")
+        }
+        assertFalse(
+            "│" in output,
+            "a command that said nothing has nothing to quote"
+        )
+    }
+
+    @Test
+    fun `a verbose failure keeps the panel away`() {
+        LinearExecutor.executionOptions = ExecutionOptions(verbose = true)
+        val output = render(AnsiLevel.TRUECOLOR) {
+            printCommandFailure("QuackFail")
+        }
+        assertFalse(
+            "│ QuackFail" in output,
+            "a verbose run already streamed the output live"
+        )
+    }
 }

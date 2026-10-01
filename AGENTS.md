@@ -73,8 +73,9 @@ selecting the console with the log stating a silent tool, the
 unoffered-mode errors of both the configuration and the command
 line, the rich presentation under a captured stream asserting the
 degraded structure with its closing verdict and summary, the rich
-dry run verdict without a table, and the log parity between the
-plain and the rich presentations)
+dry run verdict without a table, the failed task quoting its own
+output with the log keeping the full record, and the log parity
+between the plain and the rich presentations)
 and the real TeX toolchain (the official `pdflatex` rule through both
 dialects). The historical scenarios the compact matrix once dropped are
 restored to the end-to-end set; the remaining fixture shapes stay with
@@ -257,7 +258,9 @@ as the runnable jar).
   summary table naming each file, its task count, its time and its
   status; a verbose rich run shows the command it executes, frames
   the tool's own output with dotted rules and names the
-  conditionally skipped directives) are the offered modes, and an
+  conditionally skipped directives; a failed task quotes the tail
+  of its own output in the dim bar panel, with the full record in
+  the log) are the offered modes, and an
   unoffered name is an error rather than a silent fallback),
   the clikt command line, and the shadow jar. **Directive conditionals
   (`if`/`while`/`until`/`unless`) and interpolation in directive

@@ -186,6 +186,17 @@ object Display {
         renderer.printSkippedDirective(identifier)
 
     /**
+     * Displays the tail of the output a failed command captured, so
+     * the tool's own explanation of its failure sits beside the
+     * verdict. A verbose run already streamed the output live, and
+     * the historic plain presentation keeps its silence.
+     *
+     * @param output The captured output of the failed command.
+     */
+    fun printCommandFailure(output: String) =
+        renderer.printCommandFailure(output)
+
+    /**
      * Displays the closing summary of the run: the verdict and, for
      * the presentations that keep one, the table of the processed
      * files. The historic plain ending stays as it always was.

@@ -337,6 +337,11 @@ interface AraraMessages {
      */
     fun infoDisplaySkippedConditional(name: String): String
     /**
+     * The message pointing at the log file from the tail panel of a
+     * failed task.
+     */
+    val infoDisplayFullOutputInLog: String
+    /**
      * The title of the execution summary table.
      */
     val infoDisplaySummaryTitle: String

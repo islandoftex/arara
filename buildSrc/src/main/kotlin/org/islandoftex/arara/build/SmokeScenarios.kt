@@ -424,6 +424,23 @@ internal val scenarios = listOf(
                 fixture = "console-explicit",
         ),
         Scenario(
+                name = "console-failure.bats", dir = "console-failure",
+                description = "the failed task quoting its own output",
+                check = "the tail panel shows the tool words and the log keeps them",
+                arguments = listOf("--console", "rich", "--log", "console-failure.tex"),
+                expected = listOf(
+                        "FAILURE",
+                        "QuackFail",
+                        "the full output is in the log file",
+                ),
+                exitCode = 1,
+                logChecks = listOf(
+                        "BEGIN OUTPUT BUFFER",
+                        "QuackFail",
+                ),
+                fixture = "console-failure",
+        ),
+        Scenario(
                 name = "console-log-parity.bats", dir = "console-log-parity",
                 description = "the log parity across the presentations",
                 check = "the plain and the rich runs record the same log",

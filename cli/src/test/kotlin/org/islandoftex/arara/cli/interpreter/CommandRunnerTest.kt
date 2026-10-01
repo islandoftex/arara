@@ -23,21 +23,27 @@ class CommandRunnerTest {
     fun `runs commands and reports their outcome`() {
         val directory = Files.createTempDirectory("arara-interpreter")
         val java = ProcessHandle.current().info().command().orElse("java")
+        val success = CommandRunner.run(
+            RuleMethods.getCommandWithWorkingDirectory(directory.toString(), java, "-version")
+        )
         assertEquals(
             0,
-            CommandRunner.run(
-                RuleMethods.getCommandWithWorkingDirectory(directory.toString(), java, "-version")
-            ),
+            success.first,
             "a successful command reports its exit code"
+        )
+        val failure = CommandRunner.run(
+            RuleMethods.getCommandWithWorkingDirectory(
+                directory.toString(), java, "-wrongflag-quack"
+            )
         )
         assertEquals(
             1,
-            CommandRunner.run(
-                RuleMethods.getCommandWithWorkingDirectory(
-                    directory.toString(), java, "-wrongflag-quack"
-                )
-            ),
+            failure.first,
             "a failing command reports its exit code"
+        )
+        assertTrue(
+            failure.second.isNotBlank(),
+            "the failing command's captured output travels with the code"
         )
         assertFailsWith<AraraException> {
             CommandRunner.run(

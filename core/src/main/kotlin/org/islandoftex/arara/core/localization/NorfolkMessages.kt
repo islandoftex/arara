@@ -201,6 +201,9 @@ object NorfolkMessages : AraraMessages {
     override fun infoDisplaySkippedConditional(name: String) =
         "${name} skipped, that were · the condition said no, it did"
 
+    override val infoDisplayFullOutputInLog =
+        "the hull output’s in the log file, that it be"
+
 
     override val infoDisplaySummaryTitle = "How it went"
     override val infoDisplaySummaryFile = "Yon file"

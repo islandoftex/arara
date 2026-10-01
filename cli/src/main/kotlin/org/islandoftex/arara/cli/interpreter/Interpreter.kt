@@ -169,7 +169,8 @@ class Interpreter(
      * @param conditional The conditional applied to the run (only for printing).
      * @param authors The rule authors (only for printing).
      * @param exitCheck Determines whether an exit code indicates success.
-     * @return Success of the execution.
+     * @return The success of the execution and the output the command
+     * captured, so a failing task can quote its own words.
      * @throws AraraException Execution failed.
      */
     @Throws(AraraException::class)
@@ -179,7 +180,7 @@ class Interpreter(
         conditional: DirectiveConditional,
         authors: List<String>,
         exitCheck: (Int) -> Boolean
-    ): Boolean {
+    ): Pair<Boolean, String> {
         logger.info {
             "System command: $command"
         }
@@ -189,8 +190,9 @@ class Interpreter(
         var success = true
 
         if (executionOptions.executionMode != ExecutionMode.DRY_RUN) {
-            val code = CommandRunner.run(command)
+            val (code, output) = CommandRunner.run(command)
             success = exitCheck(code)
+            return success to output
         } else {
             Display.printAuthors(authors)
             Display.printWrapped(
@@ -202,7 +204,7 @@ class Interpreter(
             Display.printConditional(conditional)
         }
 
-        return success
+        return success to ""
     }
 
     /**
@@ -272,15 +274,69 @@ class Interpreter(
         }
 
     /**
-     * Execute a command.
-     * @param command The command to evaluate.
-     * @param conditional Under which condition to execute.
-     * @param rule The rule (only passed for output purposes).
-     * @param parameters The parameters for evaluation
-     * @throws AraraException Running the command failed.
+     * Runs one evaluated task of a command: the boolean or the
+     * command the rule produced, with the captured output traveling
+     * beside the outcome so a failing task can quote its own words.
+     *
+     * @param current The evaluated task.
+     * @param conditional The conditional of the directive.
+     * @param rule The rule the command belongs to.
+     * @param exitCheck Determines whether an exit code indicates
+     * success.
+     * @return The success of the task and the output it captured.
      */
-    @Throws(AraraException::class)
-    @Suppress("TooGenericExceptionCaught", "ThrowsCount")
+    private fun runTask(
+        current: Any,
+        conditional: DirectiveConditional,
+        rule: Rule,
+        exitCheck: (Int) -> Boolean
+    ): Pair<Boolean, String> {
+        return when (current) {
+        is Boolean -> runBoolean(
+            current, conditional,
+            rule.authors
+        ) to ""
+        is Command -> runCommand(
+            current, conditional,
+            rule.authors, exitCheck
+        )
+        else ->
+            throw AraraExceptionWithHeader(
+                LanguageController
+                    .messages.errorInterpreterWrongReturnType
+            )
+        }
+    }
+
+    /**
+     * Enforces the halt policy after a task: the halt directive
+     * stops the run with its own exit code, and the error-halt
+     * option stops it where a failed task stands.
+     *
+     * @param success The outcome of the task.
+     * @param command The command the task ran under.
+     */
+    private fun enforceHaltPolicy(success: Boolean, command: RuleCommand) {
+        when {
+            Session.contains(haltKey) ->
+                throw HaltExpectedException(
+                    LanguageController.messages
+                        .errorInterpreterUserRequestedHalt,
+                    ExecutionStatus.FinishedWithCode(haltStatus())
+                )
+            executionOptions.haltOnErrors && !success ->
+                throw HaltExpectedException(
+                    LanguageController.messages
+                        .errorInterpreterCommandUnsuccessfulExit(
+                            command.name
+                                ?: LanguageController.messages
+                                    .infoLabelUnnamedTask
+                        ),
+                    ExecutionStatus.ExternalCallFailed()
+                )
+        }
+    }
+
     private fun executeCommand(
         command: RuleCommand,
         conditional: DirectiveConditional,
@@ -307,42 +363,20 @@ class Interpreter(
                         ?: LanguageController.messages.infoLabelUnnamedTask
                 )
 
-                val success = when (current) {
-                    is Boolean -> runBoolean(
-                        current, conditional,
-                        rule.authors
-                    )
-                    is Command -> runCommand(
-                        current, conditional,
-                        rule.authors, exitCheck
-                    )
-                    else ->
-                        throw AraraExceptionWithHeader(
-                            LanguageController
-                                .messages.errorInterpreterWrongReturnType
-                        )
-                }
-
+                val (success, output) = runTask(
+                    current, conditional, rule, exitCheck
+                )
             Display.printEntryResult(success)
-            when {
-                Session.contains(haltKey) ->
-                    throw HaltExpectedException(
-                        LanguageController.messages
-                            .errorInterpreterUserRequestedHalt,
-                        ExecutionStatus.FinishedWithCode(haltStatus())
-                    )
-                executionOptions.haltOnErrors && !success ->
-                    throw HaltExpectedException(
-                        LanguageController.messages
-                            .errorInterpreterCommandUnsuccessfulExit(
-                                command.name
-                                    ?: LanguageController.messages
-                                        .infoLabelUnnamedTask
-                            ),
-                        ExecutionStatus.ExternalCallFailed()
-                    )
-                success -> ExecutionStatus.Processing()
-                else -> ExecutionStatus.ExternalCallFailed()
+            // the failed task quotes the tail of its own output;
+            // the plain console stays as it always was
+            if (!success) {
+                Display.printCommandFailure(output)
+            }
+            enforceHaltPolicy(success, command)
+            if (success) {
+                ExecutionStatus.Processing()
+            } else {
+                ExecutionStatus.ExternalCallFailed()
             }
         }
     }
