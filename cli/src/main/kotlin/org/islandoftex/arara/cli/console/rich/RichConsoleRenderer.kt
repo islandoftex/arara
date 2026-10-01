@@ -706,7 +706,7 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      */
     private fun hyperlink(text: String, url: String): String =
         if (terminal.terminalInfo.ansiHyperLinks) {
-            "\u001B]8;;$url\u001B\\$text\u001B]8;;\u001B\\"
+            TextStyle(hyperlink = url)(text)
         } else {
             text
         }

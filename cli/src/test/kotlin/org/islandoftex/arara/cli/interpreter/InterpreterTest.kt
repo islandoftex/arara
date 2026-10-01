@@ -38,6 +38,11 @@ import org.junit.jupiter.api.TestInstance
  * session explicitly to observe the interpreter's decision in isolation.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+/**
+ * Verifies the interpreter: the rule resolution, the argument
+ * processing, and the error paths, driven from the execution-test
+ * fixtures through the real engine.
+ */
 class InterpreterTest {
     private val texFile = FileType("tex", "^\\s*%\\s+")
 

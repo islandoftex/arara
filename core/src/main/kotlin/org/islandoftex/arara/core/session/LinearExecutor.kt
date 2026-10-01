@@ -98,6 +98,17 @@ object LinearExecutor : Executor {
         return executionReport
     }
 
+    /**
+     * Executes the files of a project in priority order, running the
+     * per-project and per-file hooks around each file and halting
+     * on the first failure when the error-halt option is set. The
+     * project is unset even when an exception escapes, as a stale
+     * project would make the executor reject all future execution
+     * option changes.
+     *
+     * @param project The project to execute.
+     * @return The exit code of the last executed file.
+     */
     internal fun executeProject(project: Project): Int {
         var exitCode = 0
         currentProject = project

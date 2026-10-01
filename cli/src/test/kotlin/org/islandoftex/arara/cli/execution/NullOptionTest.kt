@@ -31,6 +31,11 @@ import org.junit.jupiter.api.TestInstance
  * linear executor pipeline because the rule helpers rely on its state.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+/**
+ * Verifies that null-valued directive options are handled
+ * gracefully: the null reaches the argument resolution without
+ * breaking the run.
+ */
 class NullOptionTest {
     private val rulePath = MPPPath("src/test/resources/executiontests/null-option")
         .normalize()

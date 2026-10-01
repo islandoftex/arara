@@ -22,6 +22,11 @@ import org.junit.jupiter.api.TestInstance
  * parameters and unparseable values.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+/**
+ * Verifies the directive parser: the extraction of the potential
+ * patterns from a document and their composition into the
+ * directive pipeline.
+ */
 class DirectiveParsingTest {
     @BeforeAll
     fun setUp() {
