@@ -761,15 +761,20 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         }
         val bar = if (isDecorated) "│ " else "| "
         val lines = output.trimEnd().lineSequence().toList()
+        val truncated = lines.size > PANEL_TAIL_LINES
+        val loggingEnabled = Session.loggingOptions.enableLogging
         // the hint titles the panel with the weight every title of
-        // the presentation carries - what follows is the tool's own
-        // output, and the rest lives in the log
-        terminal.println(
-            (muted + TextStyle(bold = true))(
-                bar + LanguageController.messages.infoDisplayFullOutputInLog
+        // the presentation carries, but only when it speaks the
+        // truth: the output was actually truncated, and the rest
+        // actually lives in the log file the user asked for
+        if (truncated && loggingEnabled) {
+            terminal.println(
+                (muted + TextStyle(bold = true))(
+                    bar + LanguageController.messages.infoDisplayFullOutputInLog
+                )
             )
-        )
-        if (lines.size > PANEL_TAIL_LINES) {
+        }
+        if (truncated) {
             // the cut is stated by the bare ellipsis: the middle is
             // elsewhere, the tail that follows is quoted
             terminal.println(muted(bar + "…"))

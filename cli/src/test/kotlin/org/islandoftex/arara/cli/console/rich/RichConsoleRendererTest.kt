@@ -16,6 +16,7 @@ import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.core.configuration.ExecutionOptions
+import org.islandoftex.arara.core.configuration.LoggingOptions
 import org.islandoftex.arara.core.configuration.UserInterfaceOptions
 import org.islandoftex.arara.core.files.FileType
 import org.islandoftex.arara.core.files.ProjectFile
@@ -310,10 +311,6 @@ class RichConsoleRendererTest {
             printCommandFailure("QuackFail")
         }
         assertTrue("│ QuackFail" in output, "the panel quotes the tool words")
-        assertTrue(
-            "the full output is in the log file" in output,
-            "the panel points at the log"
-        )
     }
 
     @Test
@@ -482,6 +479,46 @@ class RichConsoleRendererTest {
 
     @Test
     fun `the failure panel opens with the log hint`() {
+        // the hint only speaks when it points at the truth: the
+        // output was actually truncated and logging holds the rest
+        Session.loggingOptions = LoggingOptions(enableLogging = true)
+        val manyLines = (1..20).joinToString("\n") { "tool line $it" }
+        val output = render(AnsiLevel.TRUECOLOR) {
+            printEntry("failechoer", "The failing echoer")
+            printEntryResult(false)
+            printCommandFailure(manyLines)
+        }
+        val stripped = output.replace(Regex("\u001B\\[[0-9;]*m"), "")
+        assertTrue(
+            stripped.indexOf("the full output is in the log file") <
+                stripped.indexOf("tool line 11"),
+            "the hint titles the panel before the quoted tail"
+        )
+    }
+
+    @Test
+    fun `the failure panel stays silent when the log does not exist`() {
+        Session.loggingOptions = LoggingOptions(enableLogging = false)
+        val manyLines = (1..20).joinToString("\n") { "tool line $it" }
+        val output = render(AnsiLevel.TRUECOLOR) {
+            printEntry("failechoer", "The failing echoer")
+            printEntryResult(false)
+            printCommandFailure(manyLines)
+        }
+        val stripped = output.replace(Regex("\u001B\\[[0-9;]*m"), "")
+        assertTrue(
+            "the full output is in the log file" !in stripped,
+            "the hint stays silent when there is no log file"
+        )
+        assertTrue(
+            "…" in stripped,
+            "the ellipsis still marks the cut"
+        )
+    }
+
+    @Test
+    fun `the failure panel shows no hint when nothing was truncated`() {
+        Session.loggingOptions = LoggingOptions(enableLogging = true)
         val output = render(AnsiLevel.TRUECOLOR) {
             printEntry("failechoer", "The failing echoer")
             printEntryResult(false)
@@ -489,9 +526,12 @@ class RichConsoleRendererTest {
         }
         val stripped = output.replace(Regex("\u001B\\[[0-9;]*m"), "")
         assertTrue(
-            stripped.indexOf("the full output is in the log file") <
-                stripped.indexOf("QuackFail"),
-            "the hint titles the panel before the tool's own words"
+            "the full output is in the log file" !in stripped,
+            "the hint stays silent when everything is already shown"
+        )
+        assertTrue(
+            "…" !in stripped,
+            "no ellipsis when nothing was cut"
         )
     }
     @Test

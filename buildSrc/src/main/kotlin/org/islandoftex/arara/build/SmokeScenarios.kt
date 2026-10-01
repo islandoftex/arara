@@ -449,7 +449,6 @@ internal val scenarios = listOf(
                 expected = listOf(
                         "FAILURE",
                         "QuackFail",
-                        "the full output is in the log file",
                 ),
                 exitCode = 1,
                 logChecks = listOf(
