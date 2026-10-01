@@ -797,11 +797,13 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      * Displays the files that were requested but never reached, when
      * an exception stopped the run before their turn: the muted
      * label and the file names, the accounting footnote between
-     * the summary table and the closing time.
+     * the summary table and the closing time, with the breathing
+     * of the presentation around it.
      *
      * @param files The names of the files that were never started.
      */
     override fun printUnprocessedFiles(files: List<String>) {
+        terminal.println("")
         terminal.println(
             muted(
                 "  " +
@@ -809,7 +811,6 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
                     files.joinToString(", ")
             )
         )
-        terminal.println("")
     }
 
     /**
