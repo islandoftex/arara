@@ -157,4 +157,13 @@ object Display {
         RunLog.fileInformation(file)
         renderer.printFileInformation(file)
     }
+
+    /**
+     * Displays the closing summary of the run: the verdict and, for
+     * the presentations that keep one, the table of the processed
+     * files. The historic plain ending stays as it always was.
+     *
+     * @param success Whether the whole run succeeded.
+     */
+    fun printRunSummary(success: Boolean) = renderer.printRunSummary(success)
 }

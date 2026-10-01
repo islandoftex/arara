@@ -72,8 +72,9 @@ surface - the flag's explicit plain run, the configuration key
 selecting the console with the log stating a silent tool, the
 unoffered-mode errors of both the configuration and the command
 line, the rich presentation under a captured stream asserting the
-degraded structure, and the log parity between the plain and the
-rich presentations)
+degraded structure with its closing verdict and summary, the rich
+dry run verdict without a table, and the log parity between the
+plain and the rich presentations)
 and the real TeX toolchain (the official `pdflatex` rule through both
 dialects). The historical scenarios the compact matrix once dropped are
 restored to the end-to-end set; the remaining fixture shapes stay with
@@ -252,7 +253,9 @@ as the runnable jar).
   byte-identical) and `rich` (the modern presentation on the
   terminal library the help output already renders through,
   degrading to the ASCII structure when the stream cannot carry
-  colors or glyphs) are the offered modes, and an unoffered name is
+  colors or glyphs, and closing a run with a verdict line and a
+  summary table naming each file, its task count, its time and its
+  status) are the offered modes, and an unoffered name is
   an error rather than a silent fallback),
   the clikt command line, and the shadow jar. **Directive conditionals
   (`if`/`while`/`until`/`unless`) and interpolation in directive

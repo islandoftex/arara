@@ -188,6 +188,23 @@ object ItalianMessages : AraraMessages {
     override fun infoDisplayExecutionTime(time: String) =
         "Totale: ${time} secondi"
 
+    override fun infoDisplayTotalSuccess(files: Int, tasks: Int) =
+        "SUCCESSO TOTALE · ${if (files == 1) "1 file" else "$files file"}, " +
+            "${if (tasks == 1) "1 attività" else "$tasks attività"}"
+
+    override fun infoDisplayTotalFailure(files: Int, tasks: Int) =
+        "FALLIMENTO TOTALE · ${if (files == 1) "1 file" else "$files file"}, " +
+            "${if (tasks == 1) "1 attività" else "$tasks attività"}"
+
+    override fun infoDisplayDryRun(tasks: Int) =
+        "SIMULAZIONE · ${if (tasks == 1) "1 attività" else "$tasks attività"}"
+
+    override val infoDisplaySummaryTitle = "Riepilogo"
+    override val infoDisplaySummaryFile = "File"
+    override val infoDisplaySummaryTasks = "Attività"
+    override val infoDisplaySummaryTime = "Tempo"
+
+
     override fun infoDisplayFileInformation(name: String, size: String, lastModified: String) =
         "Elaborazione '${name}' (totale: ${size}, modificato il: ${lastModified}), attendere."
 

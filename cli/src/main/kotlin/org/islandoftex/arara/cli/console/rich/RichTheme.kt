@@ -53,6 +53,16 @@ object RichTheme {
     const val failureFallback = "x"
 
     /**
+     * The glyph that marks a simulated dry run.
+     */
+    const val dryGlyph = "○"
+
+    /**
+     * The ASCII fallback of the dry run glyph.
+     */
+    const val dryFallback = "o"
+
+    /**
      * The rule character of the section frames.
      */
     const val ruleGlyph = "─"

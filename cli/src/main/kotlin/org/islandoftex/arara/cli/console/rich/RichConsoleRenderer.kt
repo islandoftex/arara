@@ -2,8 +2,13 @@
 package org.islandoftex.arara.cli.console.rich
 
 import com.github.ajalt.mordant.rendering.AnsiLevel
+import com.github.ajalt.mordant.table.Borders
+import com.github.ajalt.mordant.table.table
 import com.github.ajalt.mordant.terminal.Terminal
+import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
+import kotlin.time.TimeSource
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.ProjectFile
@@ -51,6 +56,33 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     private var displayResult = false
     private var displayRolling = false
     private var displayException = false
+
+    /**
+     * The entry of a file in the run ledger the closing summary
+     * renders.
+     */
+    private class SummaryEntry(
+        val name: String,
+        val path: String,
+        var tasks: Int,
+        var seconds: Double,
+        var success: Boolean
+    )
+
+    /**
+     * The files the run processed, in order.
+     */
+    private val summary = mutableListOf<SummaryEntry>()
+
+    /**
+     * The file whose entries are currently printing.
+     */
+    private var currentFile: SummaryEntry? = null
+
+    /**
+     * The monotonic mark of the current file's start.
+     */
+    private var currentFileStart = TimeSource.Monotonic.markNow()
 
     /**
      * Checks if the execution is in dry-run mode.
@@ -125,6 +157,15 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      * @param file The project file.
      */
     override fun printFileInformation(file: ProjectFile) {
+        closeCurrentFile()
+        currentFile = SummaryEntry(
+            file.path.fileName,
+            file.path.toString(),
+            0,
+            0.0,
+            true
+        )
+        currentFileStart = TimeSource.Monotonic.markNow()
         val name = file.path.fileName
         val metadata = byteSizeToString(file.path.fileSize) +
             " · " + file.path.lastModified
@@ -153,6 +194,7 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     override fun printEntry(name: String, task: String) {
         displayLine = true
         displayResult = false
+        currentFile?.let { it.tasks++ }
         if (isDryRunMode) {
             buildDryRunEntry(name, task)
         } else if (isVerboseMode) {
@@ -225,6 +267,7 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     override fun printEntryResult(value: Boolean) {
         displayLine = false
         displayResult = true
+        currentFile?.let { it.success = it.success && value }
 
         if (!isDryRunMode) {
             if (!isVerboseMode) {
@@ -420,4 +463,117 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         } else {
             text
         }
+
+    /**
+     * Seals the ledger entry of the file whose printing just ended.
+     */
+    private fun closeCurrentFile() {
+        currentFile?.let {
+            it.seconds = currentFileStart.elapsedNow()
+                .toDouble(DurationUnit.SECONDS)
+            summary += it
+        }
+        currentFile = null
+    }
+
+    /**
+     * Displays the closing summary of the run: the verdict line and
+     * the table of the processed files. A dry run validates nothing,
+     * so its verdict makes no success claim and carries no table -
+     * the run already printed everything it simulated.
+     *
+     * @param success Whether the whole run succeeded.
+     */
+    override fun printRunSummary(success: Boolean) {
+        closeCurrentFile()
+        if (summary.isEmpty()) {
+            return
+        }
+        val tasks = summary.sumOf { it.tasks }
+        if (isDryRunMode) {
+            terminal.println(
+                muted(
+                    dryGlyph() + " " +
+                        LanguageController.messages.infoDisplayDryRun(tasks)
+                )
+            )
+            terminal.println("")
+        } else {
+            val verdict = if (success) {
+                terminal.theme.success(
+                    successGlyph() + " " +
+                        LanguageController.messages
+                            .infoDisplayTotalSuccess(summary.size, tasks)
+                )
+            } else {
+                terminal.theme.danger(
+                    failureGlyph() + " " +
+                        LanguageController.messages
+                            .infoDisplayTotalFailure(summary.size, tasks)
+                )
+            }
+            terminal.println(verdict)
+            terminal.println("")
+            renderSummaryTable()
+        }
+        summary.clear()
+    }
+
+    /**
+     * Renders the execution summary table: one row per file with
+     * its task count, its time and its status, the file names
+     * linked to the files themselves.
+     */
+    private fun renderSummaryTable() {
+        val messages = LanguageController.messages
+        val table = table {
+            tableBorders = Borders.ALL
+            captionTop(muted(messages.infoDisplaySummaryTitle))
+            header {
+                row(
+                    messages.infoDisplaySummaryFile,
+                    messages.infoDisplaySummaryTasks,
+                    messages.infoDisplaySummaryTime,
+                    ""
+                )
+            }
+            body {
+                summary.forEach { entry ->
+                    row(
+                        hyperlink(entry.name, entry.path),
+                        entry.tasks,
+                        formatSeconds(entry.seconds),
+                        if (entry.success) {
+                            successGlyph()
+                        } else {
+                            failureGlyph()
+                        }
+                    )
+                }
+            }
+        }
+        terminal.println(table)
+        terminal.println("")
+    }
+
+    /**
+     * Formats a duration as the summary renders it: one decimal
+     * digit with the separator of the session locale.
+     *
+     * @param seconds The elapsed seconds.
+     * @return The formatted duration with its unit.
+     */
+    private fun formatSeconds(seconds: Double): String =
+        String.format(Locale.ROOT, "%.1f", seconds)
+            .replace(
+                '.',
+                Session.userInterfaceOptions.locale.decimalSeparator
+            ) + " s"
+
+    /**
+     * The glyph that marks a simulated dry run, following the
+     * capability.
+     */
+    private fun dryGlyph(): String =
+        if (isDecorated) RichTheme.dryGlyph else RichTheme.dryFallback
 }

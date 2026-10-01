@@ -188,6 +188,23 @@ object GermanMessages : AraraMessages {
     override fun infoDisplayExecutionTime(time: String) =
         "Gesamt: ${time} Sekunden"
 
+    override fun infoDisplayTotalSuccess(files: Int, tasks: Int) =
+        "GESAMTERFOLG · ${if (files == 1) "1 Datei" else "$files Dateien"}, " +
+            "${if (tasks == 1) "1 Aufgabe" else "$tasks Aufgaben"}"
+
+    override fun infoDisplayTotalFailure(files: Int, tasks: Int) =
+        "GESAMTFEHLER · ${if (files == 1) "1 Datei" else "$files Dateien"}, " +
+            "${if (tasks == 1) "1 Aufgabe" else "$tasks Aufgaben"}"
+
+    override fun infoDisplayDryRun(tasks: Int) =
+        "PROBELAUF · ${if (tasks == 1) "1 Aufgabe" else "$tasks Aufgaben"}"
+
+    override val infoDisplaySummaryTitle = "Zusammenfassung"
+    override val infoDisplaySummaryFile = "Datei"
+    override val infoDisplaySummaryTasks = "Aufgaben"
+    override val infoDisplaySummaryTime = "Zeit"
+
+
     override fun infoDisplayFileInformation(name: String, size: String, lastModified: String) =
         "Verarbeitung \"${name}\" (Größe: ${size}, letzte Modifikation: ${lastModified}), bitte warten."
 

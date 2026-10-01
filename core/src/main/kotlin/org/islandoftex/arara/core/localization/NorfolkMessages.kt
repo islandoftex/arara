@@ -188,6 +188,23 @@ object NorfolkMessages : AraraMessages {
     override fun infoDisplayExecutionTime(time: String) =
         "Wuh that took ${time} seconds but if thass a slight longer than you expected, dunt yew go mobbing me abowt it cors that ent my fault. My grandf'ar dint have none of these pearks. He had to use a pen and a bit o' pearper, but thass bin nice mardling wi' yew. Dew yew keep a troshin'!"
 
+    override fun infoDisplayTotalSuccess(files: Int, tasks: Int) =
+        "PROPER SUCCESS, THAT IS · ${if (files == 1) "1 file" else "$files files"}, " +
+            "${if (tasks == 1) "1 job" else "$tasks jobs"}"
+
+    override fun infoDisplayTotalFailure(files: Int, tasks: Int) =
+        "THAT WENT WRONG, THAT DID · ${if (files == 1) "1 file" else "$files files"}, " +
+            "${if (tasks == 1) "1 job" else "$tasks jobs"}"
+
+    override fun infoDisplayDryRun(tasks: Int) =
+        "JIST A PRETEND RUN · ${if (tasks == 1) "1 job" else "$tasks jobs"}"
+
+    override val infoDisplaySummaryTitle = "How it went"
+    override val infoDisplaySummaryFile = "Yon file"
+    override val infoDisplaySummaryTasks = "Jobs"
+    override val infoDisplaySummaryTime = "While"
+
+
     override fun infoDisplayFileInformation(name: String, size: String, lastModified: String) =
         "Hold yew hard, ole partner, I'm gornta hev a look at '${name}' (thass ${size} big, that is, and that was last chearnged on ${lastModified} in case yew dunt remember)."
 

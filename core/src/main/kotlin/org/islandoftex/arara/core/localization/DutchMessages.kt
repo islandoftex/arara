@@ -188,6 +188,23 @@ object DutchMessages : AraraMessages {
     override fun infoDisplayExecutionTime(time: String) =
         "Totaal: ${time} seconden"
 
+    override fun infoDisplayTotalSuccess(files: Int, tasks: Int) =
+        "TOTAAL SUCCES · ${if (files == 1) "1 bestand" else "$files bestanden"}, " +
+            "${if (tasks == 1) "1 taak" else "$tasks taken"}"
+
+    override fun infoDisplayTotalFailure(files: Int, tasks: Int) =
+        "TOTAAL MISLUKT · ${if (files == 1) "1 bestand" else "$files bestanden"}, " +
+            "${if (tasks == 1) "1 taak" else "$tasks taken"}"
+
+    override fun infoDisplayDryRun(tasks: Int) =
+        "SIMULATIE · ${if (tasks == 1) "1 taak" else "$tasks taken"}"
+
+    override val infoDisplaySummaryTitle = "Overzicht"
+    override val infoDisplaySummaryFile = "Bestand"
+    override val infoDisplaySummaryTasks = "Taken"
+    override val infoDisplaySummaryTime = "Tijd"
+
+
     override fun infoDisplayFileInformation(name: String, size: String, lastModified: String) =
         "Verwerken van '${name}' (grootte: ${size}, laatst gewijzigd: ${lastModified}), een ogenblik geduld."
 

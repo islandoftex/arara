@@ -4,6 +4,7 @@ package org.islandoftex.arara.cli.console.rich
 import com.github.ajalt.mordant.rendering.AnsiLevel
 import com.github.ajalt.mordant.terminal.Terminal
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.PrintStream
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -11,9 +12,13 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.configuration.ExecutionMode
+import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.UserInterfaceOptions
+import org.islandoftex.arara.core.files.FileType
+import org.islandoftex.arara.core.files.ProjectFile
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.DirectiveConditional
 import org.islandoftex.arara.core.session.LinearExecutor
@@ -163,6 +168,81 @@ class RichConsoleRendererTest {
         assertTrue(
             "QUACK" in renderer.displayOutputSeparator("QUACK"),
             "the titled separator names its title"
+        )
+    }
+
+    @Test
+    fun `the closing summary carries the verdict and the table`() {
+        val document = File.createTempFile("rich", ".tex")
+            .apply { writeText("quack"); deleteOnExit() }
+        val file = ProjectFile(
+            MPPPath(document.absolutePath),
+            FileType("tex", "^%.*")
+        )
+        val output = render(AnsiLevel.TRUECOLOR) {
+            printFileInformation(file)
+            printEntry("pdflatex", "The engine run")
+            printEntryResult(true)
+            printEntry("biber", "References")
+            printEntryResult(true)
+            printRunSummary(true)
+        }
+        assertTrue(
+            "TOTAL SUCCESS" in output,
+            "the verdict line renders the success word and the counts"
+        )
+        assertTrue("Execution summary" in output, "the table title renders")
+        assertTrue(
+            document.name in output,
+            "the file row names the file"
+        )
+        assertTrue("2 tasks" in output, "the verdict counts the tasks")
+    }
+
+    @Test
+    fun `the closing verdict of a failed run carries the failure`() {
+        val document = File.createTempFile("rich", ".tex")
+            .apply { writeText("quack"); deleteOnExit() }
+        val file = ProjectFile(
+            MPPPath(document.absolutePath),
+            FileType("tex", "^%.*")
+        )
+        val output = render(AnsiLevel.TRUECOLOR) {
+            printFileInformation(file)
+            printEntry("pdflatex", "The engine run")
+            printEntryResult(false)
+            printRunSummary(false)
+        }
+        assertTrue(
+            "TOTAL FAILURE" in output,
+            "the failure verdict renders the failure word"
+        )
+        assertTrue(
+            "✗" in output,
+            "the failed file row carries the cross glyph"
+        )
+    }
+
+    @Test
+    fun `the dry run verdict makes no success claim`() {
+        LinearExecutor.executionOptions = ExecutionOptions(
+            executionMode = ExecutionMode.DRY_RUN
+        )
+        val document = File.createTempFile("rich", ".tex")
+            .apply { writeText("quack"); deleteOnExit() }
+        val file = ProjectFile(
+            MPPPath(document.absolutePath),
+            FileType("tex", "^%.*")
+        )
+        val output = render(AnsiLevel.TRUECOLOR) {
+            printFileInformation(file)
+            printEntry("pdflatex", "The engine run")
+            printRunSummary(true)
+        }
+        assertTrue("DRY RUN" in output, "the dry run verdict renders")
+        assertFalse(
+            "Execution summary" in output,
+            "the dry run carries no table"
         )
     }
 }

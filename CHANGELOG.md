@@ -21,7 +21,9 @@ on.
   presentation: `plain` (the default, the historic layout) or
   `rich` - a modern presentation with a tinted banner, section
   rules, glyphs and colors, degrading to the plain structure when
-  the terminal cannot carry them. The command line wins over the
+  the terminal cannot carry them. A rich run closes with a verdict
+  line and a summary table naming each file, its task count, its
+  time and its status. The command line wins over the
   configuration file, which wins over the default, and a mode the
   application does not offer is reported as an error instead of a
   silent fallback.

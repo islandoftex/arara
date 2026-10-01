@@ -321,6 +321,34 @@ interface AraraMessages {
      */
     fun infoDisplayExecutionTime(time: String): String
     /**
+     * The verdict line of a successful rich run.
+     */
+    fun infoDisplayTotalSuccess(files: Int, tasks: Int): String
+    /**
+     * The verdict line of a failed rich run.
+     */
+    fun infoDisplayTotalFailure(files: Int, tasks: Int): String
+    /**
+     * The verdict line of a rich dry run.
+     */
+    fun infoDisplayDryRun(tasks: Int): String
+    /**
+     * The title of the execution summary table.
+     */
+    val infoDisplaySummaryTitle: String
+    /**
+     * The file column header of the execution summary table.
+     */
+    val infoDisplaySummaryFile: String
+    /**
+     * The task column header of the execution summary table.
+     */
+    val infoDisplaySummaryTasks: String
+    /**
+     * The time column header of the execution summary table.
+     */
+    val infoDisplaySummaryTime: String
+    /**
      * The message shown while a file is being processed.
      */
     fun infoDisplayFileInformation(

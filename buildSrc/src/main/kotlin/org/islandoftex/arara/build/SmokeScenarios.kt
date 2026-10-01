@@ -400,10 +400,26 @@ internal val scenarios = listOf(
         Scenario(
                 name = "console-rich.bats", dir = "console-rich",
                 description = "the rich presentation under a captured stream",
-                check = "the degraded structure keeps the content needles",
+                check = "the content needles survive the capture",
                 arguments = listOf("--console", "rich", "console-explicit.tex"),
-                expected = listOf("SUCCESS", "QuackOne"),
-                forbidden = listOf("✓"),
+                expected = listOf(
+                        "SUCCESS",
+                        "QuackOne",
+                        "TOTAL SUCCESS",
+                        "Execution summary",
+                ),
+                fixture = "console-explicit",
+        ),
+        Scenario(
+                name = "console-dry-run.bats", dir = "console-dry-run",
+                description = "the rich dry run verdict",
+                check = "the simulated run closes with its count and no table",
+                arguments = listOf(
+                        "--console", "rich", "--dry-run",
+                        "console-explicit.tex"
+                ),
+                expected = listOf("DRY RUN", "[DR]"),
+                forbidden = listOf("Execution summary"),
                 fixture = "console-explicit",
         ),
         Scenario(

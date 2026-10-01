@@ -99,4 +99,15 @@ interface ConsoleRenderer {
      * @param file The project file.
      */
     fun printFileInformation(file: ProjectFile)
+
+    /**
+     * Displays the closing summary of the run: the verdict and, for
+     * the presentations that keep one, the table of the processed
+     * files. The historic plain ending stays as it always was, so
+     * the default says nothing.
+     *
+     * @param success Whether the whole run succeeded.
+     */
+    fun printRunSummary(success: Boolean) {
+    }
 }

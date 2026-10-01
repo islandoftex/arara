@@ -429,8 +429,13 @@ class CLI : CliktCommand("arara") {
             ExecutionStatus.CaughtException()
         }.let { executionStatus ->
             // print the execution time if the command line parsing does not
-            // return false as result (it makes no sense to print the execution
-            // time for a help message)
+            // return false as result (it makes no sense to print the
+            // execution time for a help message)
+
+            // the presentation closes the run with its own summary
+            // before the time line ends it
+            Display.printRunSummary(executionStatus.exitCode == 0)
+
             Display.printTime(executionStart.elapsedNow().toDouble(DurationUnit.SECONDS))
 
             // the closing entry records the verdict in the log; the
