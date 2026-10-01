@@ -449,4 +449,98 @@ class RichConsoleRendererTest {
             "the summary names every file of the run"
         )
     }
+    @Test
+    fun `the dry run trio renders as fields`() {
+        val output = render(AnsiLevel.TRUECOLOR) {
+            printAuthors(listOf("Island of TeX"))
+            printDryRunCommand(Command(listOf("echo", "QuackOne")))
+            printConditional(
+                DirectiveConditional(
+                    DirectiveConditionalType.IF,
+                    "changed('tex')"
+                )
+            )
+        }
+        val stripped = output.replace(Regex("\u001B\\[[0-9;]*m"), "")
+        assertTrue(
+            "About to run" in stripped,
+            "the command field carries its label"
+        )
+        assertTrue(
+            "[echo, QuackOne]" in stripped,
+            "the command field carries the command"
+        )
+        assertTrue(
+            "Island of TeX" in stripped,
+            "the authors field carries the names"
+        )
+        assertTrue(
+            "(IF)" in stripped,
+            "the conditional field carries the expression"
+        )
+    }
+
+    @Test
+    fun `the failure panel opens with the log hint`() {
+        val output = render(AnsiLevel.TRUECOLOR) {
+            printEntry("failechoer", "The failing echoer")
+            printEntryResult(false)
+            printCommandFailure("QuackFail")
+        }
+        val stripped = output.replace(Regex("\u001B\\[[0-9;]*m"), "")
+        assertTrue(
+            stripped.indexOf("the full output is in the log file") <
+                stripped.indexOf("QuackFail"),
+            "the hint titles the panel before the tool's own words"
+        )
+    }
+    @Test
+    fun `long entries abbreviate instead of breaking the layout`() {
+        val longName = "a".repeat(50)
+        val longTask = "b".repeat(50)
+        val output = render(AnsiLevel.NONE, width = 40) {
+            printEntry(longName, longTask)
+            printEntryResult(true)
+        }
+        output.lineSequence().forEach { line ->
+            assertTrue(
+                line.length <= 40,
+                "every entry line keeps the measure: " + line.length
+            )
+        }
+        assertTrue("…" in output, "the abbreviation marks the cut")
+    }
+
+    @Test
+    fun `long dry run entries abbreviate as well`() {
+        val output = render(AnsiLevel.NONE, width = 40) {
+            printEntry("c".repeat(60), "d".repeat(60))
+        }
+        output.lineSequence().forEach { line ->
+            assertTrue(
+                line.length <= 40,
+                "every dry run line keeps the measure"
+            )
+        }
+    }
+
+    @Test
+    fun `long panel lines wrap under the bar`() {
+        val longLine = List(30) { "word$it" }.joinToString(" ")
+        val output = render(AnsiLevel.NONE, width = 40) {
+            printEntry("failechoer", "The failing echoer")
+            printEntryResult(false)
+            printCommandFailure(longLine)
+        }
+        output.lineSequence().forEach { line ->
+            assertTrue(
+                line.length <= 40,
+                "every panel line keeps the measure: " + line.length
+            )
+        }
+        assertTrue(
+            "word29" in output,
+            "every byte of the tool's words survives the wrapping"
+        )
+    }
 }

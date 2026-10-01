@@ -160,6 +160,14 @@ object Display {
     }
 
     /**
+     * Displays the command a dry run is about to run.
+     *
+     * @param command The command the dry run simulates.
+     */
+    fun printDryRunCommand(command: Command) =
+        renderer.printDryRunCommand(command)
+
+    /**
      * Displays the details of the task a verbose rich run shows:
      * the command it executes, its conditional and the rule authors,
      * framed for the tool output that follows. The historic plain

@@ -195,12 +195,7 @@ class Interpreter(
             return success to output
         } else {
             Display.printAuthors(authors)
-            Display.printWrapped(
-                LanguageController.messages
-                    .infoInterpreterDryRunModeSystemCommand(
-                        command.toString()
-                    )
-            )
+            Display.printDryRunCommand(command)
             Display.printConditional(conditional)
         }
 

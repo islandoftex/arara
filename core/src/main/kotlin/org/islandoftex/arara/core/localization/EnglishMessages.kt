@@ -250,7 +250,9 @@ object EnglishMessages : AraraMessages {
     override val infoLabelOnQuestion = "QUESTION"
     override val infoLabelOnInfo = "INFO"
     override val infoLabelDialogPrompt = "Choose an option"
-    override val infoLabelSystemCommand = "System command"
+    override val infoLabelAboutToRun =
+        "About to run:"
+    override val infoLabelSystemCommand = "System command:"
 
     override val errorDialogInputClosed =
         "It looks like the terminal input ended while a dialog was waiting for an answer, so I cannot read your choice. Please run arara in an interactive terminal so the dialog can be answered."

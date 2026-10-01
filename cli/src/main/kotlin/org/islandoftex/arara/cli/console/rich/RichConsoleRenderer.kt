@@ -106,6 +106,12 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     private val fieldGutterWidth = RichTheme.fieldGutterWidth
 
     private companion object {
+        /**
+         * The least space the dotted leader and its separator keep
+         * for themselves, so an abbreviation never squeezes them
+         * out of the line.
+         */
+        const val leaderFloor = 2
         /** The column indexes of the execution summary table. */
         const val FILE_COLUMN = 0
         const val COUNT_COLUMN = 1
@@ -113,10 +119,12 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         const val STATUS_COLUMN = 3
 
         /**
-         * The number of output lines the failure panel quotes; the
+         * The number of output lines the failure panel quotes: the
+         * classic TeX error window fits within the last ten lines,
+         * the number the tail convention made familiar, and the
          * full record lives in the log file.
          */
-        const val PANEL_TAIL_LINES = 15
+        const val PANEL_TAIL_LINES = 10
     }
 
     /**
@@ -194,6 +202,7 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
                 "arara ${AraraAPI.version}, the cool TeX automation tool."
             )
         )
+        terminal.println("")
     }
 
     /**
@@ -205,6 +214,10 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      */
     override fun printFileInformation(file: ProjectFile) {
         closeCurrentFile()
+        // a new file clears the prior file's exception state, so
+        // the closing summary separates only after an error it
+        // actually follows
+        displayException = false
         currentFile = SummaryEntry(
             file.path.fileName,
             file.path.toString(),
@@ -261,14 +274,22 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      * @param task Task name.
      */
     private fun buildShortEntry(name: String, task: String) {
-        val head = "${runningGlyph()} $name · $task "
         // the leader reserves exactly the space the glyph, its
         // spacing and the longest result word need, so the aligned
-        // result lands at the terminal edge
+        // result lands at the terminal edge; a head longer than the
+        // space left abbreviates rather than breaking the layout,
+        // and the leader's floor and its separator are part of the
+        // reservation
         val reserved = successGlyph().length + 1 + longestMatch
-        val fill = (structureWidth - head.length - reserved)
+        val head = "${runningGlyph()} $name · $task "
+            .abbreviate(
+                (structureWidth - reserved - leaderFloor).coerceAtLeast(1)
+            )
+        val fill = (structureWidth - head.length - reserved - 1)
             .coerceAtLeast(1)
-        terminal.print(head + muted(leader.repeat(fill)) + " ")
+        terminal.print(
+            head + muted(leader.repeat(fill)) + muted(" ")
+        )
     }
 
     /**
@@ -285,7 +306,12 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
             displayRolling = true
         }
         terminal.println(muted(displaySeparator()))
-        terminal.println("${runningGlyph()} $name · $task")
+        // a degenerate width abbreviates ugly instead of breaking
+        // the layout
+        terminal.println(
+            "${runningGlyph()} $name · $task"
+                .abbreviate(structureWidth.coerceAtLeast(1))
+        )
         terminal.println(muted(displaySeparator()))
     }
 
@@ -302,7 +328,14 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         } else {
             displayRolling = true
         }
-        terminal.println(muted("[DR] ${runningGlyph()} $name · $task"))
+        // a degenerate width abbreviates ugly instead of breaking
+        // the layout
+        terminal.println(
+            muted(
+                "[DR] ${runningGlyph()} $name · $task"
+                    .abbreviate(structureWidth.coerceAtLeast(1))
+            )
+        )
         terminal.println(muted(displaySeparator()))
     }
 
@@ -321,8 +354,10 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         if (!isDryRunMode) {
             if (!isVerboseMode) {
                 // the reserved space keeps the word aligned even when
-                // the label of another language runs longer
-                terminal.print(
+                // the label of another language runs longer, and the
+                // line completes here: whatever follows starts on
+                // its own line
+                terminal.println(
                     resultWord(value)
                         .padStart(successGlyph().length + 1 + longestMatch)
                 )
@@ -543,7 +578,22 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     }
 
     /**
-     * Displays the rule authors in the terminal.
+     * Displays the command a dry run is about to run: the field
+     * grammar of the presentation, the muted label naming what is
+     * about to happen and the command beside it.
+     *
+     * @param command The command the dry run simulates.
+     */
+    override fun printDryRunCommand(command: Command) {
+        printField(
+            LanguageController.messages.infoLabelAboutToRun,
+            command.toString()
+        )
+    }
+
+    /**
+     * Displays the rule authors in the terminal: the field grammar
+     * of the presentation, the muted label and the names beside it.
      *
      * @param authors The list of authors.
      */
@@ -556,20 +606,21 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
             LanguageController.messages.infoLabelNoAuthors
         else
             authors.joinToString(", ") { it.trim() }
-        printWrapped("$line $text")
+        printField(line, text)
     }
 
     /**
-     * Displays the current conditional in the terminal.
+     * Displays the current conditional in the terminal: the field
+     * grammar of the presentation, the muted label and the
+     * expression beside it.
      *
      * @param conditional The conditional object.
      */
     override fun printConditional(conditional: DirectiveConditional) {
         if (conditional.type !== DirectiveConditionalType.NONE) {
-            printWrapped(
-                LanguageController.messages.infoLabelConditional +
-                    " (" + conditional.type + ") " +
-                    conditional.condition
+            printField(
+                LanguageController.messages.infoLabelConditional,
+                "(" + conditional.type + ") " + conditional.condition
             )
         }
     }
@@ -580,8 +631,9 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      * @param seconds The elapsed seconds.
      */
     override fun printTime(seconds: Double) {
-        if (displayLine || displayException)
-            terminal.println("")
+        // the closing line separates from the summary unconditionally
+        // - one blank, always, whatever came before it
+        terminal.println("")
 
         val secondDuration = seconds.seconds
         val separator = Session.userInterfaceOptions.locale
@@ -686,17 +738,35 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         }
         val bar = if (isDecorated) "│ " else "| "
         val lines = output.trimEnd().lineSequence().toList()
+        // the hint titles the panel with the weight every title of
+        // the presentation carries - what follows is the tool's own
+        // output, and the rest lives in the log
+        terminal.println(
+            (muted + TextStyle(bold = true))(
+                bar + LanguageController.messages.infoDisplayFullOutputInLog
+            )
+        )
         if (lines.size > PANEL_TAIL_LINES) {
-            // the cut is stated by the bare ellipsis: the tail that
-            // follows is quoted, the whole record lives in the log
+            // the cut is stated by the bare ellipsis: the middle is
+            // elsewhere, the tail that follows is quoted
             terminal.println(muted(bar + "…"))
         }
+        // the quoted lines wrap under the bar with a hanging
+        // indent, so every byte of the tool's own words survives
+        // while the frame keeps its alignment; the wrapping measure
+        // accounts for the bar and the indent of continuation lines
+        // alike
         lines.takeLast(PANEL_TAIL_LINES).forEach { line ->
-            terminal.println(muted(bar + line))
+            val wrapped = line.wrap(structureWidth - bar.length * 2)
+            wrapped.lineSequence().forEachIndexed { index, part ->
+                val indented = if (index == 0) {
+                    part
+                } else {
+                    " ".repeat(bar.length) + part
+                }
+                terminal.println(muted(bar + indented))
+            }
         }
-        terminal.println(
-            muted(bar + LanguageController.messages.infoDisplayFullOutputInLog)
-        )
         terminal.println("")
     }
 
@@ -713,9 +783,12 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         if (summary.isEmpty()) {
             return
         }
-        // the verdict separates from whatever came before it, error
-        // or entry alike
-        terminal.println("")
+        // the verdict separates from an error it follows; a file
+        // that completed normally already printed its closing
+        // blank through the per-file hook
+        if (displayException) {
+            terminal.println("")
+        }
         val tasks = summary.sumOf { it.tasks }
         if (isDryRunMode) {
             terminal.println(

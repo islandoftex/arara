@@ -25,7 +25,7 @@ import org.islandoftex.arara.core.utils.wrap
  *
  * @author Island of TeX
  */
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "TooManyFunctions")
 class RichDialogRenderer(private val terminal: Terminal) : DialogRenderer {
     /**
      * The message type codes of the dialog helpers, as rule authors
@@ -62,7 +62,7 @@ class RichDialogRenderer(private val terminal: Terminal) : DialogRenderer {
             PlainDialogRenderer.showMessage(type, title, text)
             return
         }
-        terminal.println(panel(type, title, text))
+        terminal.println(panel(type, title, text), width = dialogWidth())
         terminal.println("")
     }
 
@@ -85,7 +85,7 @@ class RichDialogRenderer(private val terminal: Terminal) : DialogRenderer {
         if (buttons.isEmpty())
             return 0
         return if (isDecorated) {
-            terminal.println(panel(type, title, text, buttons.map { it.toString() }))
+            terminal.println(panel(type, title, text, buttons.map { it.toString() }), width = dialogWidth())
             terminal.println("")
             readSelection(buttons.size, allowNone = false)
         } else {
@@ -105,10 +105,14 @@ class RichDialogRenderer(private val terminal: Terminal) : DialogRenderer {
         if (!isDecorated) {
             return PlainDialogRenderer.showInput(type, title, text)
         }
-        terminal.println(panel(type, title, text))
+        terminal.println(panel(type, title, text), width = dialogWidth())
         terminal.println("")
         terminal.print(terminal.theme.info("> "))
         return (terminal.readLineOrNull(false) ?: "").trim().also {
+            // the conversation ends with air: the prompt line
+            // completes, and a blank separates the answer from
+            // whatever the run continues with
+            terminal.println("")
             terminal.println("")
         }
     }
@@ -135,7 +139,7 @@ class RichDialogRenderer(private val terminal: Terminal) : DialogRenderer {
         if (elements.isEmpty())
             return 0
         return if (isDecorated) {
-            terminal.println(panel(type, title, text, elements.map { it.toString() }))
+            terminal.println(panel(type, title, text, elements.map { it.toString() }), width = dialogWidth())
             terminal.println("")
             readSelection(elements.size, allowNone = true)
         } else {
@@ -156,8 +160,15 @@ class RichDialogRenderer(private val terminal: Terminal) : DialogRenderer {
         entries: List<String> = emptyList()
     ): Panel {
         val interior = wrappingWidth()
+        // the heading carries the severity of the whole box - bold,
+        // in the same tint as the border - so the conversation
+        // speaks one severity language with the run itself
         val heading = tagFor(type)
-            ?.let { "${glyphFor(type)} $it — $title" }
+            ?.let {
+                (styleFor(type) + TextStyle(bold = true))(
+                    "${glyphFor(type)} $it — $title"
+                )
+            }
             ?: title
         val lines = mutableListOf(heading, "")
         lines += text.wrap(interior).lineSequence()
@@ -178,6 +189,7 @@ class RichDialogRenderer(private val terminal: Terminal) : DialogRenderer {
         }
         return Panel(
             lines.joinToString("\n"),
+            expand = true,
             borderStyle = styleFor(type)
         )
     }
@@ -201,6 +213,10 @@ class RichDialogRenderer(private val terminal: Terminal) : DialogRenderer {
                     LanguageController.messages.errorDialogInputClosed
                 )
             PlainDialogRenderer.parseSelection(raw, count, allowNone)?.let {
+                // the conversation ends with air: the prompt line
+                // completes, and a blank separates the choice from
+                // whatever the run continues with
+                terminal.println("")
                 terminal.println("")
                 return it
             }
@@ -214,6 +230,14 @@ class RichDialogRenderer(private val terminal: Terminal) : DialogRenderer {
     private fun wrappingWidth(): Int =
         terminal.size.width.coerceAtMost(RichTheme.proseMaximumWidth) -
             boxChromeWidth
+
+    /**
+     * The width the dialog box renders at: the presentation's
+     * measure, so a conversation occupies the same page the run
+     * does.
+     */
+    private fun dialogWidth(): Int =
+        wrappingWidth() + boxChromeWidth
 
     /**
      * The tag of the dialog type, rendered before the title; the

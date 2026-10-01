@@ -6,6 +6,7 @@ import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
+import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.cli.console.ConsoleRenderer
 import org.islandoftex.arara.cli.utils.Display
 import org.islandoftex.arara.cli.utils.abbreviate
@@ -125,6 +126,21 @@ object PlainConsoleRenderer : ConsoleRenderer {
             )
         }
     }
+
+    /**
+     * Displays the command a dry run is about to run: the
+     * localized sentence, exactly as the plain console has always
+     * rendered it.
+     *
+     * @param command The command the dry run simulates.
+     */
+    override fun printDryRunCommand(command: Command) =
+        printWrapped(
+            LanguageController.messages
+                .infoInterpreterDryRunModeSystemCommand(
+                    command.toString()
+                )
+        )
 
     /**
      * Displays the current entry in the terminal.

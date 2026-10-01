@@ -250,7 +250,9 @@ object BrazilianPortugueseMessages : AraraMessages {
     override val infoLabelOnQuestion = "PERGUNTA"
     override val infoLabelOnInfo = "INFO"
     override val infoLabelDialogPrompt = "Escolha uma op\u00e7\u00e3o"
-    override val infoLabelSystemCommand = "Comando do sistema"
+    override val infoLabelAboutToRun =
+        "A executar:"
+    override val infoLabelSystemCommand = "Comando do sistema:"
 
     override val errorDialogInputClosed =
         "Parece que a entrada do terminal foi encerrada enquanto um di\u00e1logo aguardava uma resposta; portanto, n\u00e3o consigo ler sua escolha. Execute o arara em um terminal interativo para que o di\u00e1logo possa ser respondido."

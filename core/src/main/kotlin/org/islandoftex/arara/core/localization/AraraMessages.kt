@@ -429,6 +429,10 @@ interface AraraMessages {
      */
     val infoLabelDialogPrompt: String
     /**
+     * The label naming the command a dry run is about to run.
+     */
+    val infoLabelAboutToRun: String
+    /**
      * The label of the verbose field naming the command a task
      * executes.
      */

@@ -102,6 +102,18 @@ interface ConsoleRenderer {
     fun printFileInformation(file: ProjectFile)
 
     /**
+     * Displays the command a dry run is about to run. The historic
+     * plain presentation renders the localized sentence, so its
+     * override carries the bytes and the default here is a
+     * uniformity guarantee for presentations that own no words of
+     * their own, rather than a load-bearing silence.
+     *
+     * @param command The command the dry run simulates.
+     */
+    fun printDryRunCommand(command: Command) {
+    }
+
+    /**
      * Displays the details of the task a verbose rich run shows:
      * the command it executes, its conditional and the rule authors,
      * framed for the tool output that follows. The historic plain

@@ -62,6 +62,10 @@ class RichDialogRendererTest {
             showMessage(1, "Greetings", "This is a dialog")
         }
         assertTrue("ERROR — Greetings" in output, "the tag and title head the box")
+        assertTrue(
+            "\u001B[" in output.substringBefore("ERROR"),
+            "the heading carries the tint of its box"
+        )
         assertTrue("This is a dialog" in output, "the body renders inside")
         assertTrue("│" in output, "the box frames the conversation")
     }
