@@ -18,8 +18,11 @@ application {
 
 configurations {
     implementation {
+        // the foreign-function mapping module needs a Java the
+        // eleven-floor runtime cannot provide, so the detection
+        // rides JNA alone - the kernel's isatty answer instead of
+        // the environment's guess
         exclude(group = "com.github.ajalt.mordant", module = "mordant-jvm-ffm")
-        exclude(group = "com.github.ajalt.mordant", module = "mordant-jvm-jna")
     }
 }
 

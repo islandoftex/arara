@@ -400,7 +400,7 @@ internal val scenarios = listOf(
         Scenario(
                 name = "console-rich.bats", dir = "console-rich",
                 description = "the rich presentation under a captured stream",
-                check = "the content needles survive the capture",
+                check = "the true degraded structure keeps the content needles",
                 arguments = listOf("--console", "rich", "console-explicit.tex"),
                 expected = listOf(
                         "SUCCESS",
@@ -410,8 +410,10 @@ internal val scenarios = listOf(
                         "System command",
                         "the cool TeX automation tool",
                 ),
+                forbidden = listOf("✓"),
                 fixture = "console-explicit",
         ),
+
         Scenario(
                 name = "console-multi-file.bats", dir = "console-multi-file",
                 description = "the rich ledger across the files of a run",
