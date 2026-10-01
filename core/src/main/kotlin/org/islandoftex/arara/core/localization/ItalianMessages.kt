@@ -210,8 +210,8 @@ object ItalianMessages : AraraMessages {
     override val infoDisplaySummaryTasks = "Attività"
     override val infoDisplaySummaryTime = "Tempo"
 
-    override val infoDisplayUnprocessedFiles =
-        "File non elaborati: "
+        override fun infoDisplayUnprocessedFiles(count: Int) =
+        if (count == 1) "File non elaborato: " else "File non elaborati: "
 
 
     override fun infoDisplayFileInformation(name: String, size: String, lastModified: String) =

@@ -210,8 +210,8 @@ object NorfolkMessages : AraraMessages {
     override val infoDisplaySummaryTasks = "Jobs"
     override val infoDisplaySummaryTime = "While"
 
-    override val infoDisplayUnprocessedFiles =
-        "Wot didn’t get a go: "
+        override fun infoDisplayUnprocessedFiles(count: Int) =
+        "Wot didn\u2019t get a go: "
 
 
     override fun infoDisplayFileInformation(name: String, size: String, lastModified: String) =

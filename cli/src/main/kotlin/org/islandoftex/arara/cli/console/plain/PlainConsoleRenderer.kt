@@ -310,17 +310,19 @@ object PlainConsoleRenderer : ConsoleRenderer {
     /**
      * Displays the files that were requested but never reached, when
      * an exception stopped the run before their turn: the localized
-     * label and the file names, the plain accounting note between
-     * the error block and the closing time.
+     * label and the file names, with a blank separating it from
+     * whatever came before - the time line's own blank provides the
+     * separator below.
      *
      * @param files The names of the files that were never started.
      */
     override fun printUnprocessedFiles(files: List<String>) {
+        println()
         println(
-            LanguageController.messages.infoDisplayUnprocessedFiles +
+            LanguageController.messages
+                .infoDisplayUnprocessedFiles(files.size) +
                 files.joinToString(", ")
         )
-        println()
     }
 
     /**

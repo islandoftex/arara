@@ -362,7 +362,7 @@ interface AraraMessages {
      * reached, when an exception stopped the run before their
      * turn.
      */
-    val infoDisplayUnprocessedFiles: String
+    fun infoDisplayUnprocessedFiles(count: Int): String
     /**
      * The message shown while a file is being processed.
      */
