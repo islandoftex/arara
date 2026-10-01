@@ -4,8 +4,11 @@ package org.islandoftex.arara.cli.console
 import com.github.ajalt.mordant.terminal.Terminal
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.cli.console.plain.PlainConsoleRenderer
+import org.islandoftex.arara.cli.console.plain.PlainDialogRenderer
 import org.islandoftex.arara.cli.console.rich.RichConsoleRenderer
+import org.islandoftex.arara.cli.console.rich.RichDialogRenderer
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.ui.DialogRenderer
 
 /**
  * Defines the console presentations the application offers and the
@@ -40,6 +43,17 @@ enum class ConsoleMode {
     fun renderer(terminal: Terminal): ConsoleRenderer = when (this) {
         PLAIN -> PlainConsoleRenderer
         RICH -> RichConsoleRenderer(terminal)
+    }
+
+    /**
+     * The dialog renderer this presentation converses through.
+     *
+     * @param terminal The terminal the presentation renders on.
+     * @return The dialog renderer of the presentation.
+     */
+    fun dialogRenderer(terminal: Terminal): DialogRenderer = when (this) {
+        PLAIN -> PlainDialogRenderer
+        RICH -> RichDialogRenderer(terminal)
     }
 
     /**

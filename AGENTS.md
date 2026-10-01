@@ -246,8 +246,11 @@ as the runnable jar).
   the dialog contract (core defines the semantics and ships the
   headless default that assumes no interactive surface; the
   application wires its implementation - the CLI wires the classic
-  terminal dialogs, kept available in every execution mode, since a
-  dialog is a conversation with the person who runs the tool),
+  terminal dialogs for the plain presentation and the type-tinted
+  dialog boxes for the rich one, both sharing the reading
+  semantics, and they stay available in every execution mode,
+  since a dialog is a conversation with the person who runs the
+  tool),
   the console mode surface (the `--console` flag and the `console`
   configuration key, in both formats, resolved as command line over
   configuration over the plain default; `plain` (the default,

@@ -256,11 +256,23 @@ class CLI : CliktCommand("arara") {
                 // which wins over the plain default; a mode the
                 // configuration names but the application does not
                 // offer is an error
-                Display.renderer =
+                applyConsoleMode(
                     ConsoleMode.resolve(console, resource.console)
-                        .renderer(terminal)
+                )
             }
         }
+    }
+
+    /**
+     * Applies the console presentation: the console renderer and the
+     * dialog renderer of the mode, so the run and its conversations
+     * share one presentation.
+     *
+     * @param mode The console mode to apply.
+     */
+    private fun applyConsoleMode(mode: ConsoleMode) {
+        Display.renderer = mode.renderer(terminal)
+        TerminalDialogs.renderer = mode.dialogRenderer(terminal)
     }
 
     /**
@@ -275,7 +287,7 @@ class CLI : CliktCommand("arara") {
         // the command line presentation always wins, whatever the
         // configuration file says, so it re-applies per file like
         // every other command line setting
-        console?.let { Display.renderer = it.renderer(terminal) }
+        console?.let { applyConsoleMode(it) }
 
         Session.userInterfaceOptions = UserInterfaceOptions(
             locale = language?.let { MPPLocale(it) }
@@ -355,6 +367,13 @@ class CLI : CliktCommand("arara") {
         // the terminal
         Logging.init()
 
+        // the presentation the command line names applies before the
+        // run greets, so the banner and every conversation already
+        // belong to it; a configuration-selected presentation
+        // applies when the projects resolve, from the first file
+        // onward
+        console?.let { applyConsoleMode(it) }
+
         Display.printBanner()
 
         val executionStart = TimeSource.Monotonic.markNow()
@@ -363,13 +382,6 @@ class CLI : CliktCommand("arara") {
         // logging has to be initialized only once and for all because
         // context resets lead to missing output
         Logging.setupLogging(Session.loggingOptions)
-
-        // the application provides the dialog support the library
-        // assumes nothing about: the classic terminal dialogs render
-        // here, and they stay available in every execution mode -
-        // a dialog is a conversation with the very person who runs
-        // the tool
-        TerminalDialogs.renderer = PlainDialogRenderer
 
         // add all key/value pairs found in the properties file, if
         // provided in the command line

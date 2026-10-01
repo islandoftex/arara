@@ -40,9 +40,14 @@ internal object CommandRunner {
                 "The tool produced no output."
             } else {
                 """
-                    ${RunLog.outputSeparator("BEGIN OUTPUT BUFFER")}
+                    Command output
+                    ${RunLog.outputSeparator(
+                    "BEGIN OUTPUT BUFFER"
+                )}
                     ${output}
-                    ${RunLog.outputSeparator("END OUTPUT BUFFER")}
+                    ${RunLog.outputSeparator(
+                    "END OUTPUT BUFFER"
+                )}
                 """.trimIndent()
             }
         }
