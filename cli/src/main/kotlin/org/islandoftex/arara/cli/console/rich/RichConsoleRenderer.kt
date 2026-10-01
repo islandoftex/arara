@@ -794,6 +794,25 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     }
 
     /**
+     * Displays the files that were requested but never reached, when
+     * an exception stopped the run before their turn: the muted
+     * label and the file names, the accounting footnote between
+     * the summary table and the closing time.
+     *
+     * @param files The names of the files that were never started.
+     */
+    override fun printUnprocessedFiles(files: List<String>) {
+        terminal.println(
+            muted(
+                "  " +
+                    LanguageController.messages.infoDisplayUnprocessedFiles +
+                    files.joinToString(", ")
+            )
+        )
+        terminal.println("")
+    }
+
+    /**
      * Displays the closing summary of the run: the verdict line and
      * the table of the processed files. A dry run validates nothing,
      * so its verdict makes no success claim and carries no table -

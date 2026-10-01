@@ -210,6 +210,9 @@ object NorfolkMessages : AraraMessages {
     override val infoDisplaySummaryTasks = "Jobs"
     override val infoDisplaySummaryTime = "While"
 
+    override val infoDisplayUnprocessedFiles =
+        "Wot didn’t get a go: "
+
 
     override fun infoDisplayFileInformation(name: String, size: String, lastModified: String) =
         "Hold yew hard, ole partner, I'm gornta hev a look at '${name}' (thass ${size} big, that is, and that was last chearnged on ${lastModified} in case yew dunt remember)."

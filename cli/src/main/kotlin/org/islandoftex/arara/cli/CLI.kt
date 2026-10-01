@@ -266,6 +266,20 @@ class CLI : CliktCommand("arara") {
     private var appliedConsoleMode: ConsoleMode? = null
 
     /**
+     * The names of every file the run was asked to process, set
+     * when the projects resolve, so the completion block can name
+     * the files an exception left unreached.
+     */
+    private var allFileNames: List<String> = emptyList()
+
+    /**
+     * The names of the files that actually started processing,
+     * collected by the per-file hook, so the completion block can
+     * compute the difference.
+     */
+    private val processedFiles = mutableListOf<String>()
+
+    /**
      * Applies the console presentation: the console renderer and the
      * dialog renderer of the mode, so the run and its conversations
      * share one presentation. The renderer holds the run's ledger,
@@ -420,6 +434,7 @@ class CLI : CliktCommand("arara") {
                     // types the configuration may provide
                 },
                 executeBeforeFile = {
+                    processedFiles.add(it.path.fileName)
                     // should more file-specific configuration be reset here?
                     updateConfigurationFromCommandLine()
                     Display.printFileInformation(it)
@@ -439,6 +454,7 @@ class CLI : CliktCommand("arara") {
             )
 
             val projects = resolveProjects()
+            allFileNames = projects.flatMap { it.files }.map { it.path.fileName }
             if (LinearExecutor.execute(projects).exitCode != 0)
                 ExecutionStatus.ExternalCallFailed()
             else
@@ -456,6 +472,13 @@ class CLI : CliktCommand("arara") {
             // the presentation closes the run with its own summary
             // before the time line ends it
             Display.printRunSummary(executionStatus.exitCode == 0)
+
+            // the files the exception left unreached are named
+            // between the summary and the closing time
+            val unprocessed = allFileNames.filter { it !in processedFiles }
+            if (unprocessed.isNotEmpty()) {
+                Display.printUnprocessedFiles(unprocessed)
+            }
 
             Display.printTime(executionStart.elapsedNow().toDouble(DurationUnit.SECONDS))
 

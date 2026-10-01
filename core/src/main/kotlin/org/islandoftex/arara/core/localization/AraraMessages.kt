@@ -358,6 +358,12 @@ interface AraraMessages {
      */
     val infoDisplaySummaryTime: String
     /**
+     * The label naming the files that were requested but never
+     * reached, when an exception stopped the run before their
+     * turn.
+     */
+    val infoDisplayUnprocessedFiles: String
+    /**
      * The message shown while a file is being processed.
      */
     fun infoDisplayFileInformation(

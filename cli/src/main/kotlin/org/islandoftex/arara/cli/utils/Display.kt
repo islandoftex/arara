@@ -205,6 +205,15 @@ object Display {
         renderer.printCommandFailure(output)
 
     /**
+     * Displays the files that were requested but never reached,
+     * when an exception stopped the run before their turn.
+     *
+     * @param files The names of the files that were never started.
+     */
+    fun printUnprocessedFiles(files: List<String>) =
+        renderer.printUnprocessedFiles(files)
+
+    /**
      * Displays the closing summary of the run: the verdict and, for
      * the presentations that keep one, the table of the processed
      * files. The historic plain ending stays as it always was.

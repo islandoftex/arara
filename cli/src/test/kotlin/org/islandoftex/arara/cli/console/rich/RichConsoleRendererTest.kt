@@ -543,4 +543,18 @@ class RichConsoleRendererTest {
             "every byte of the tool's words survives the wrapping"
         )
     }
+    @Test
+    fun `the unprocessed files line names what the run left undone`() {
+        val output = render(AnsiLevel.TRUECOLOR) {
+            printUnprocessedFiles(listOf("B.tex", "C.tex"))
+        }
+        assertTrue(
+            "Files not processed:" in output,
+            "the localized label renders"
+        )
+        assertTrue(
+            "B.tex, C.tex" in output,
+            "the file names render joined"
+        )
+    }
 }

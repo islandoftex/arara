@@ -210,6 +210,9 @@ object GermanMessages : AraraMessages {
     override val infoDisplaySummaryTasks = "Aufgaben"
     override val infoDisplaySummaryTime = "Zeit"
 
+    override val infoDisplayUnprocessedFiles =
+        "Nicht verarbeitete Dateien: "
+
 
     override fun infoDisplayFileInformation(name: String, size: String, lastModified: String) =
         "Verarbeitung \"${name}\" (Größe: ${size}, letzte Modifikation: ${lastModified}), bitte warten."

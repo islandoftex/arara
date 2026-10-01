@@ -223,4 +223,22 @@ class DisplayTest {
         assertTrue(file.fileName.toString() in information, "the file name is displayed")
         assertTrue("7 B" in information, "the file size is displayed")
     }
+
+    @Test
+    fun `the plain renderer names unprocessed files`() {
+        val original = System.out
+        val sink = java.io.ByteArrayOutputStream()
+        System.setOut(java.io.PrintStream(sink, true))
+        Display.printUnprocessedFiles(listOf("B.tex", "C.tex"))
+        System.setOut(original)
+        val output = sink.toString("UTF-8")
+        assertTrue(
+            "Files not processed:" in output,
+            "the localized label renders in the plain voice"
+        )
+        assertTrue(
+            "B.tex, C.tex" in output,
+            "the file names render joined"
+        )
+    }
 }

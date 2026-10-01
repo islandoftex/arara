@@ -155,6 +155,16 @@ interface ConsoleRenderer {
     }
 
     /**
+     * Displays the files that were requested but never reached,
+     * when an exception stopped the run before their turn. The
+     * line follows the closing summary, naming what the run left
+     * undone.
+     *
+     * @param files The names of the files that were never started.
+     */
+    fun printUnprocessedFiles(files: List<String>)
+
+    /**
      * Displays the closing summary of the run: the verdict and, for
      * the presentations that keep one, the table of the processed
      * files. The historic plain ending stays as it always was, so
