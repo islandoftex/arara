@@ -3,6 +3,7 @@ package org.islandoftex.arara.cli.console.rich
 
 import com.github.ajalt.mordant.rendering.AnsiLevel
 import com.github.ajalt.mordant.rendering.TextAlign
+import com.github.ajalt.mordant.rendering.TextStyle
 import com.github.ajalt.mordant.table.Borders
 import com.github.ajalt.mordant.table.table
 import com.github.ajalt.mordant.terminal.Terminal
@@ -29,9 +30,10 @@ import org.islandoftex.arara.core.utils.wrap
 /**
  * Implements the rich console renderer: the modern presentation of
  * the run, built on the terminal library the help output already
- * renders through. The structural elements - the rules, the leaders,
- * the alignment - extend to the live terminal width, while prose
- * wraps at a readable measure; the glyphs and the colors ride the
+ * renders through. The presentation keeps one readable measure -
+ * the rules, the leaders, the alignment and the prose all hold
+ * that width, so a wide terminal carries a page, not a line
+ * running to the horizon; the glyphs and the colors ride the
  * detected capability, so a piped stream keeps the structure with
  * plain characters and no escapes. The renderer holds no logging:
  * the run log writes the diagnostic artifact, so the presentation
@@ -153,11 +155,14 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         get() = if (isDecorated) RichTheme.leaderGlyph else RichTheme.leaderFallback
 
     /**
-     * The width every structural element extends to: the live
-     * terminal width.
+     * The width every structural element extends to: the readable
+     * measure - the whole presentation is one page of that width,
+     * so a wide terminal holds a page, not a line running to the
+     * horizon.
      */
     private val structureWidth: Int
         get() = terminal.size.width
+            .coerceAtMost(RichTheme.proseMaximumWidth)
 
     /**
      * The width prose wraps at: the readable measure, never past
@@ -343,25 +348,37 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      */
     override fun printException(text: String, details: String?) {
         displayException = true
+        // an exception failing the run fails the file it belongs
+        // to, whatever its tasks did before
+        currentFile?.success = false
 
         if (displayResult)
             terminal.println("")
         if (displayLine && !isDryRunMode) {
+            // the verdict of the block carries weight: the danger
+            // tint composed with the bold style
             terminal.println(
-                terminal.theme.danger(
+                (terminal.theme.danger + TextStyle(bold = true))(
                     failureGlyph() + " " +
                         LanguageController.messages.infoLabelOnError
                 )
             )
             terminal.println("")
         }
-        terminal.println(terminal.theme.danger(text), width = proseWidth)
+        // the message pre-wraps at the measure - the styled string
+        // carries its own lines, word-wrapped by the shared
+        // primitive
+        text.wrap(proseWidth).lineSequence().forEach { line ->
+            terminal.println(terminal.theme.danger(line))
+        }
         // a present cause earns a details section even when it
         // carries no message of its own
         if (details != null) {
             terminal.println("")
             displayDetailsLine()
-            terminal.println(muted(details), width = proseWidth)
+            details.wrap(proseWidth).lineSequence().forEach { line ->
+                terminal.println(muted(line))
+            }
         }
     }
 
@@ -685,6 +702,9 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         if (summary.isEmpty()) {
             return
         }
+        // the verdict separates from whatever came before it, error
+        // or entry alike
+        terminal.println("")
         val tasks = summary.sumOf { it.tasks }
         if (isDryRunMode) {
             terminal.println(
@@ -693,7 +713,6 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
                         LanguageController.messages.infoDisplayDryRun(tasks)
                 )
             )
-            terminal.println("")
         } else {
             val verdict = if (success) {
                 terminal.theme.success(
@@ -772,8 +791,9 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         terminal.println(
             muted(head + rule.repeat((structureWidth - head.length).coerceAtLeast(1)))
         )
-        terminal.println(table)
+        // the section and the table breathe apart
         terminal.println("")
+        terminal.println(table)
     }
 
     /**

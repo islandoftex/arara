@@ -336,4 +336,54 @@ class RichConsoleRendererTest {
             "a verbose run already streamed the output live"
         )
     }
+    @Test
+    fun `the presentation keeps the readable measure on wide terminals`() {
+        val renderer = RichConsoleRenderer(
+            Terminal(AnsiLevel.NONE, width = 200)
+        )
+        assertEquals(
+            "-".repeat(79),
+            renderer.displaySeparator(),
+            "the chrome holds the readable measure, not the live width"
+        )
+    }
+
+    @Test
+    fun `the error message word-wraps at the measure`() {
+        val message = List(30) { "word" + it }.joinToString(" ")
+        val output = render(AnsiLevel.TRUECOLOR, width = 80) {
+            printEntry("echoone", "The echoer")
+            printException(message, null)
+        }
+        val stripped = output.replace(Regex("\u001B\\[[0-9;]*m"), "")
+        stripped.lineSequence().forEach { line ->
+            assertTrue(
+                line.length <= 79,
+                "every error line keeps the readable measure"
+            )
+        }
+    }
+
+    @Test
+    fun `an exception fails the file the summary names`() {
+        val document = File.createTempFile("rich", ".tex")
+            .apply { writeText("quack"); deleteOnExit() }
+        val file = ProjectFile(
+            MPPPath(document.absolutePath),
+            FileType("tex", "^%.*")
+        )
+        val output = render(AnsiLevel.TRUECOLOR) {
+            printFileInformation(file)
+            printException("the message of the failure", null)
+            printRunSummary(false)
+        }
+        assertTrue(
+            "TOTAL FAILURE" in output,
+            "the verdict names the failure"
+        )
+        assertTrue(
+            "✗" in output,
+            "the failed file carries the cross in the summary"
+        )
+    }
 }
