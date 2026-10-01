@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.console
 
+import com.github.ajalt.mordant.terminal.Terminal
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.cli.console.plain.PlainConsoleRenderer
+import org.islandoftex.arara.cli.console.rich.RichConsoleRenderer
 import org.islandoftex.arara.core.localization.LanguageController
 
 /**
@@ -19,15 +21,26 @@ enum class ConsoleMode {
     /**
      * The historic console layout, kept byte-identical.
      */
-    PLAIN;
+    PLAIN,
+
+    /**
+     * The modern console presentation: the tinted banner, the
+     * section rules, the glyphs and the colors of the detected
+     * terminal, degrading to the plain structure when the stream
+     * cannot carry them.
+     */
+    RICH;
 
     /**
      * The renderer this presentation prints through.
+     *
+     * @param terminal The terminal the presentation renders on.
+     * @return The console renderer of the presentation.
      */
-    val renderer: ConsoleRenderer
-        get() = when (this) {
-            PLAIN -> PlainConsoleRenderer
-        }
+    fun renderer(terminal: Terminal): ConsoleRenderer = when (this) {
+        PLAIN -> PlainConsoleRenderer
+        RICH -> RichConsoleRenderer(terminal)
+    }
 
     /**
      * The resolution that picks the console presentation from the
@@ -50,6 +63,7 @@ enum class ConsoleMode {
         ): ConsoleMode = commandLine ?: configured?.let { name ->
             when (name) {
                 "plain" -> PLAIN
+                "rich" -> RICH
                 else -> throw AraraException(
                     LanguageController.messages.errorConsoleModeUnknown(name)
                 )

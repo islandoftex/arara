@@ -18,11 +18,13 @@ on.
 
 * New `--console` command line option and `console` configuration
   key (in both configuration file formats) to select the console
-  presentation: `plain` (the default, the historic layout) is the
-  first offered mode. The command line wins over the configuration
-  file, which wins over the default, and a mode the application
-  does not offer is reported as an error instead of a silent
-  fallback.
+  presentation: `plain` (the default, the historic layout) or
+  `rich` - a modern presentation with a tinted banner, section
+  rules, glyphs and colors, degrading to the plain structure when
+  the terminal cannot carry them. The command line wins over the
+  configuration file, which wins over the default, and a mode the
+  application does not offer is reported as an error instead of a
+  silent fallback.
 * The log records the verdict and the provenance of the run: a
   closing entry names the exit code the application returns, and
   every rule interpretation names the rule file it actually loaded,

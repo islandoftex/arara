@@ -20,7 +20,14 @@ import org.islandoftex.arara.core.localization.LanguageController
  *
  * @author Island of TeX
  */
+@Suppress("TooManyFunctions")
 object Display {
+    /**
+     * Displays the application banner in the terminal: the greeting
+     * that opens every run.
+     */
+    fun printBanner() = renderer.printBanner()
+
     /**
      * The application logo for the terminal.
      */

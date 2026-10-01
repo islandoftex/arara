@@ -10,6 +10,7 @@ kotlinx-serialization-version = "1.11.0"
 kover-version = "0.9.11"
 log4j-version = "2.26.1"
 luaj-version = "1.0.3"
+mordant-version = "3.1.0"
 mvel-version = "2.5.4.Final"
 okio-version = "3.18.2"
 shadow-version = "9.6.1"
@@ -23,6 +24,7 @@ zt-exec-version = "1.13.0"
 
 [libraries]
 clikt = { group = "com.github.ajalt.clikt", name = "clikt", version.ref = "clikt-version" }
+mordant = { group = "com.github.ajalt.mordant", name = "mordant-jvm", version.ref = "mordant-version" }
 clikt-markdown = { group = "com.github.ajalt.clikt", name = "clikt-markdown", version.ref = "clikt-version" }
 kotaml = { group = "io.heapy.kotaml", name = "kotaml", version.ref = "kotaml-version" }
 kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version.ref = "kotlin-logging-version" }

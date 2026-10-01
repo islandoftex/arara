@@ -16,7 +16,14 @@ import org.islandoftex.arara.api.rules.DirectiveConditional
  *
  * @author Island of TeX
  */
+@Suppress("TooManyFunctions")
 interface ConsoleRenderer {
+    /**
+     * Displays the application banner in the terminal: the greeting
+     * that opens every run.
+     */
+    fun printBanner()
+
     /**
      * Displays the current entry result in the terminal.
      *

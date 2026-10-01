@@ -7,6 +7,7 @@ import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.cli.console.ConsoleRenderer
+import org.islandoftex.arara.cli.utils.Display
 import org.islandoftex.arara.cli.utils.abbreviate
 import org.islandoftex.arara.cli.utils.byteSizeToString
 import org.islandoftex.arara.cli.utils.center
@@ -29,6 +30,12 @@ import org.islandoftex.arara.core.utils.wrap
  */
 @Suppress("TooManyFunctions")
 object PlainConsoleRenderer : ConsoleRenderer {
+    /**
+     * Displays the application banner in the terminal: the logo and
+     * the blank line that has opened every run.
+     */
+    override fun printBanner() = println(Display.logoString + "\n")
+
     /**
      * The length of the longest result match as integer.
      */

@@ -69,9 +69,11 @@ through a local Lua rule, the configuration precedence when both
 formats are present with the YAML one winning, and the Lua
 configuration honored under the default engine, the console mode
 surface - the flag's explicit plain run, the configuration key
-selecting the console with the log stating a silent tool, and the
+selecting the console with the log stating a silent tool, the
 unoffered-mode errors of both the configuration and the command
-line)
+line, the rich presentation under a captured stream asserting the
+degraded structure, and the log parity between the plain and the
+rich presentations)
 and the real TeX toolchain (the official `pdflatex` rule through both
 dialects). The historical scenarios the compact matrix once dropped are
 restored to the end-to-end set; the remaining fixture shapes stay with
@@ -246,9 +248,12 @@ as the runnable jar).
   dialog is a conversation with the person who runs the tool),
   the console mode surface (the `--console` flag and the `console`
   configuration key, in both formats, resolved as command line over
-  configuration over the plain default; the plain presentation is
-  the first offered mode, and an unoffered name is an error rather
-  than a silent fallback),
+  configuration over the plain default; `plain` (the default,
+  byte-identical) and `rich` (the modern presentation on the
+  terminal library the help output already renders through,
+  degrading to the ASCII structure when the stream cannot carry
+  colors or glyphs) are the offered modes, and an unoffered name is
+  an error rather than a silent fallback),
   the clikt command line, and the shadow jar. **Directive conditionals
   (`if`/`while`/`until`/`unless`) and interpolation in directive
   `options` follow the engine too**: `--engine lua` evaluates conditionals

@@ -146,8 +146,8 @@ class CLI : CliktCommand("arara") {
         .default(RuleEngine.YAML)
 
     private val console by option("--console")
-        .help("Set the console presentation to use: 'plain'")
-        .choice("plain" to ConsoleMode.PLAIN)
+        .help("Set the console presentation to use: 'plain' or 'rich'")
+        .choice("plain" to ConsoleMode.PLAIN, "rich" to ConsoleMode.RICH)
     private val workingDirectory by option("-d", "--working-directory")
         .help("Set the working directory for all tools")
         .path(mustExist = true, canBeFile = false, mustBeReadable = true)
@@ -257,7 +257,8 @@ class CLI : CliktCommand("arara") {
                 // configuration names but the application does not
                 // offer is an error
                 Display.renderer =
-                    ConsoleMode.resolve(console, resource.console).renderer
+                    ConsoleMode.resolve(console, resource.console)
+                        .renderer(terminal)
             }
         }
     }
@@ -274,7 +275,7 @@ class CLI : CliktCommand("arara") {
         // the command line presentation always wins, whatever the
         // configuration file says, so it re-applies per file like
         // every other command line setting
-        console?.let { Display.renderer = it.renderer }
+        console?.let { Display.renderer = it.renderer(terminal) }
 
         Session.userInterfaceOptions = UserInterfaceOptions(
             locale = language?.let { MPPLocale(it) }
@@ -354,7 +355,7 @@ class CLI : CliktCommand("arara") {
         // the terminal
         Logging.init()
 
-        println("${Display.logoString}\n")
+        Display.printBanner()
 
         val executionStart = TimeSource.Monotonic.markNow()
         updateConfigurationFromCommandLine()

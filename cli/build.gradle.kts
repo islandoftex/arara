@@ -38,6 +38,7 @@ dependencies {
     implementation(libs.kotlin.logging)
     implementation(libs.clikt)
     implementation(libs.clikt.markdown)
+    implementation(libs.mordant)
     implementation(libs.mvel)
     implementation(libs.slf4j.api)
     implementation(libs.log4j.core)

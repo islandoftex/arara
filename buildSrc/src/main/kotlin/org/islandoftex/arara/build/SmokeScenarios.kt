@@ -2,6 +2,7 @@
 package org.islandoftex.arara.build
 
 import org.islandoftex.kobats.bats
+import org.islandoftex.kobats.builder.TestCaseBuilder
 
 // the scenarios read three variables from the environment: the
 // scratch tree root, the Java binary of the leg under run, and the
@@ -31,6 +32,7 @@ internal data class Scenario(
     val extraSetup: String = "",
     val doubleRun: Boolean = false,
     val secondRunForbidden: String = "",
+    val logParity: Boolean = false,
     val fixture: String = "",
     val authoredContent: String = "",
     val authoredTarget: String = "",
@@ -386,14 +388,32 @@ internal val scenarios = listOf(
         Scenario(
                 name = "console-flag-invalid.bats", dir = "console-flag-invalid",
                 description = "an unoffered console mode named by the command line",
-                check = "the usage error lists the offered mode",
+                check = "the usage error lists the offered modes",
                 arguments = listOf("--console", "fancy", "console-flag-invalid.tex"),
                 expected = listOf(
                         "invalid choice",
-                        "choose from plain",
+                        "choose from plain, rich",
                 ),
                 exitCode = 1,
                 fixture = "console-flag-invalid",
+        ),
+        Scenario(
+                name = "console-rich.bats", dir = "console-rich",
+                description = "the rich presentation under a captured stream",
+                check = "the degraded structure keeps the content needles",
+                arguments = listOf("--console", "rich", "console-explicit.tex"),
+                expected = listOf("SUCCESS", "QuackOne"),
+                forbidden = listOf("✓"),
+                fixture = "console-explicit",
+        ),
+        Scenario(
+                name = "console-log-parity.bats", dir = "console-log-parity",
+                description = "the log parity across the presentations",
+                check = "the plain and the rich runs record the same log",
+                arguments = listOf("console-explicit.tex"),
+                expected = listOf("SUCCESS"),
+                logParity = true,
+                fixture = "console-explicit",
         ),
 )
 
@@ -431,5 +451,39 @@ private fun render(scenario: Scenario): String = bats {
                 scenario.logChecks.forEach { needle -> it contains needle }
             }
         }
+        if (scenario.logParity) {
+            renderLogParity(scenario)
+        }
     }
+}
+
+/**
+ * Renders the log parity gate of a scenario: the same run under the
+ * plain and the rich presentation must record the same log entries,
+ * so both logs are normalized - the timestamps, the wall-clock
+ * durations and the file modification times vary per run - and the
+ * diff has to be empty.
+ */
+private fun TestCaseBuilder.renderLogParity(scenario: Scenario) {
+    run { arara(scenario.arguments + listOf("--console", "plain", "--log")) }
+    status { it eq 0 }
+    run { "mv arara.log arara-plain.log" }
+    run { arara(scenario.arguments + listOf("--console", "rich", "--log")) }
+    status { it eq 0 }
+    run {
+        "sed -E -e 's/^[0-9-]+ [0-9:.]+ +[A-Z]+ +- //' " +
+            "-e 's/in [0-9.]+ seconds/in N seconds/' " +
+            "-e 's/execution time: [0-9.]+ seconds/execution time: N seconds/' " +
+            "-e 's/last modified: [0-9-]+ [0-9:]+/last modified: T/' " +
+            "arara-plain.log > plain.norm"
+    }
+    run {
+        "sed -E -e 's/^[0-9-]+ [0-9:.]+ +[A-Z]+ +- //' " +
+            "-e 's/in [0-9.]+ seconds/in N seconds/' " +
+            "-e 's/execution time: [0-9.]+ seconds/execution time: N seconds/' " +
+            "-e 's/last modified: [0-9-]+ [0-9:]+/last modified: T/' " +
+            "arara.log > rich.norm"
+    }
+    run { "diff plain.norm rich.norm" }
+    status { it eq 0 }
 }
