@@ -198,6 +198,9 @@ object BrazilianPortugueseMessages : AraraMessages {
 
     override fun infoDisplayDryRun(tasks: Int) =
         "EXECUÇÃO SIMULADA · ${if (tasks == 1) "1 tarefa" else "$tasks tarefas"}"
+    override fun infoDisplaySkippedConditional(name: String) =
+        "${name} ignorado · a condicional avaliou como falso"
+
 
     override val infoDisplaySummaryTitle = "Resumo da execução"
     override val infoDisplaySummaryFile = "Arquivo"
@@ -244,6 +247,7 @@ object BrazilianPortugueseMessages : AraraMessages {
     override val infoLabelOnQuestion = "PERGUNTA"
     override val infoLabelOnInfo = "INFO"
     override val infoLabelDialogPrompt = "Escolha uma op\u00e7\u00e3o"
+    override val infoLabelSystemCommand = "Comando do sistema"
 
     override val errorDialogInputClosed =
         "Parece que a entrada do terminal foi encerrada enquanto um di\u00e1logo aguardava uma resposta; portanto, n\u00e3o consigo ler sua escolha. Execute o arara em um terminal interativo para que o di\u00e1logo possa ser respondido."

@@ -198,6 +198,9 @@ object NorfolkMessages : AraraMessages {
 
     override fun infoDisplayDryRun(tasks: Int) =
         "JIST A PRETEND RUN · ${if (tasks == 1) "1 job" else "$tasks jobs"}"
+    override fun infoDisplaySkippedConditional(name: String) =
+        "${name} skipped, that were · the condition said no, it did"
+
 
     override val infoDisplaySummaryTitle = "How it went"
     override val infoDisplaySummaryFile = "Yon file"
@@ -244,6 +247,7 @@ object NorfolkMessages : AraraMessages {
     override val infoLabelOnQuestion = "AX ME THIS"
     override val infoLabelOnInfo = "JIST SO YEW KNOW"
     override val infoLabelDialogPrompt = "Pick one onnem"
+    override val infoLabelSystemCommand = "Yer command"
 
     override val errorDialogInputClosed =
         "It do luke like thet terminal input went hully away whilst a dialog was a-waitin\u2019 on yer answer, so I can\u2019t read wot yew picked. Dew yew run arara in a proper interactive terminal, so the dialog can get its answer, that it can."

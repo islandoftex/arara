@@ -198,6 +198,9 @@ object EnglishMessages : AraraMessages {
 
     override fun infoDisplayDryRun(tasks: Int) =
         "DRY RUN · ${if (tasks == 1) "1 task" else "$tasks tasks"}"
+    override fun infoDisplaySkippedConditional(name: String) =
+        "${name} skipped · the conditional evaluated to false"
+
 
     override val infoDisplaySummaryTitle = "Execution summary"
     override val infoDisplaySummaryFile = "File"
@@ -244,6 +247,7 @@ object EnglishMessages : AraraMessages {
     override val infoLabelOnQuestion = "QUESTION"
     override val infoLabelOnInfo = "INFO"
     override val infoLabelDialogPrompt = "Choose an option"
+    override val infoLabelSystemCommand = "System command"
 
     override val errorDialogInputClosed =
         "It looks like the terminal input ended while a dialog was waiting for an answer, so I cannot read your choice. Please run arara in an interactive terminal so the dialog can be answered."

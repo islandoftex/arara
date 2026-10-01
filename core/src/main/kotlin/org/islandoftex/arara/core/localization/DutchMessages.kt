@@ -198,6 +198,9 @@ object DutchMessages : AraraMessages {
 
     override fun infoDisplayDryRun(tasks: Int) =
         "SIMULATIE · ${if (tasks == 1) "1 taak" else "$tasks taken"}"
+    override fun infoDisplaySkippedConditional(name: String) =
+        "${name} overgeslagen · de voorwaarde evalueerde naar onwaar"
+
 
     override val infoDisplaySummaryTitle = "Overzicht"
     override val infoDisplaySummaryFile = "Bestand"
@@ -244,6 +247,7 @@ object DutchMessages : AraraMessages {
     override val infoLabelOnQuestion = "VRAAG"
     override val infoLabelOnInfo = "INFO"
     override val infoLabelDialogPrompt = "Kies een optie"
+    override val infoLabelSystemCommand = "Systeemopdracht"
 
     override val errorDialogInputClosed =
         "Het lijkt erop dat de terminalinvoer is be\u00ebindigd terwijl een dialoog op een antwoord wachtte, dus ik kan je keuze niet lezen. Voer arara uit in een interactieve terminal, zodat de dialoog beantwoord kan worden."

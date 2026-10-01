@@ -23,7 +23,10 @@ on.
   rules, glyphs and colors, degrading to the plain structure when
   the terminal cannot carry them. A rich run closes with a verdict
   line and a summary table naming each file, its task count, its
-  time and its status. The command line wins over the
+  time and its status. A verbose rich run shows the command it
+  executes, frames the tool's own output with dotted rules and
+  names the conditionally skipped directives. The command line wins
+  over the
   configuration file, which wins over the default, and a mode the
   application does not offer is reported as an error instead of a
   silent fallback.

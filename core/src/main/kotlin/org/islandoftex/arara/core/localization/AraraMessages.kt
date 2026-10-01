@@ -333,6 +333,10 @@ interface AraraMessages {
      */
     fun infoDisplayDryRun(tasks: Int): String
     /**
+     * The message naming a directive skipped by its conditional.
+     */
+    fun infoDisplaySkippedConditional(name: String): String
+    /**
      * The title of the execution summary table.
      */
     val infoDisplaySummaryTitle: String
@@ -419,6 +423,11 @@ interface AraraMessages {
      * The prompt of a dialog that asks for a numbered choice.
      */
     val infoLabelDialogPrompt: String
+    /**
+     * The label of the verbose field naming the command a task
+     * executes.
+     */
+    val infoLabelSystemCommand: String
     /**
      * The error shown when a dialog awaits an answer and the terminal
      * input has already ended.

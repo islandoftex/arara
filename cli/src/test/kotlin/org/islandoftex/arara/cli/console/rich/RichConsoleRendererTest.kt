@@ -21,6 +21,7 @@ import org.islandoftex.arara.core.files.FileType
 import org.islandoftex.arara.core.files.ProjectFile
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.DirectiveConditional
+import org.islandoftex.arara.core.session.Command
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 
@@ -191,6 +192,10 @@ class RichConsoleRendererTest {
             "TOTAL SUCCESS" in output,
             "the verdict line renders the success word and the counts"
         )
+        assertFalse(
+            "┌" in output,
+            "the summary keeps the borderless layout of the presentation"
+        )
         assertTrue("Execution summary" in output, "the table title renders")
         assertTrue(
             document.name in output,
@@ -244,5 +249,53 @@ class RichConsoleRendererTest {
             "Execution summary" in output,
             "the dry run carries no table"
         )
+    }
+    @Test
+    fun `the verbose details show the command and frame the stream`() {
+        LinearExecutor.executionOptions = ExecutionOptions(verbose = true)
+        val output = render(AnsiLevel.TRUECOLOR) {
+            printEntry("echoone", "The echoer")
+            printTaskDetails(
+                Command(listOf("echo", "QuackOne")),
+                DirectiveConditional(
+                    DirectiveConditionalType.IF,
+                    "found('log', 'Rerun')"
+                ),
+                listOf("Island of TeX")
+            )
+            printEntryResult(true)
+        }
+        assertTrue("System command" in output, "the field label renders")
+        assertTrue("echo" in output, "the command field carries the command")
+        assertTrue("Island of TeX" in output, "the authors field renders")
+        assertTrue("┈" in output, "the output frame renders")
+        // the color escapes surround the word, so the contiguous
+        // needle is asserted against the stripped stream
+        val stripped = output.replace(Regex("\u001B\\[[0-9;]*m"), "")
+        assertTrue(
+            "SUCCESS ·" in stripped,
+            "the result carries the duration"
+        )
+    }
+
+    @Test
+    fun `the skip card names the conditionally skipped directive`() {
+        LinearExecutor.executionOptions = ExecutionOptions(verbose = true)
+        val output = render(AnsiLevel.TRUECOLOR) {
+            printSkippedDirective("makeglossaries")
+        }
+        assertTrue("skipped" in output, "the skip card names the skip")
+        assertTrue(
+            "makeglossaries" in output,
+            "the skip card names the directive"
+        )
+    }
+
+    @Test
+    fun `the compact run stays silent about the skip`() {
+        val output = render(AnsiLevel.TRUECOLOR) {
+            printSkippedDirective("makeglossaries")
+        }
+        assertFalse("skipped" in output, "the compact run shows no skip card")
     }
 }

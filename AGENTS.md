@@ -255,8 +255,10 @@ as the runnable jar).
   degrading to the ASCII structure when the stream cannot carry
   colors or glyphs, and closing a run with a verdict line and a
   summary table naming each file, its task count, its time and its
-  status) are the offered modes, and an unoffered name is
-  an error rather than a silent fallback),
+  status; a verbose rich run shows the command it executes, frames
+  the tool's own output with dotted rules and names the
+  conditionally skipped directives) are the offered modes, and an
+  unoffered name is an error rather than a silent fallback),
   the clikt command line, and the shadow jar. **Directive conditionals
   (`if`/`while`/`until`/`unless`) and interpolation in directive
   `options` follow the engine too**: `--engine lua` evaluates conditionals

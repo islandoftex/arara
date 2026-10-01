@@ -407,6 +407,7 @@ internal val scenarios = listOf(
                         "QuackOne",
                         "TOTAL SUCCESS",
                         "Execution summary",
+                        "System command",
                 ),
                 fixture = "console-explicit",
         ),

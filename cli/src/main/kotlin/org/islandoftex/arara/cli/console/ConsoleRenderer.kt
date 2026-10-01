@@ -3,6 +3,7 @@ package org.islandoftex.arara.cli.console
 
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
+import org.islandoftex.arara.api.session.Command
 
 /**
  * Defines the contract of a console renderer: the whole run
@@ -99,6 +100,35 @@ interface ConsoleRenderer {
      * @param file The project file.
      */
     fun printFileInformation(file: ProjectFile)
+
+    /**
+     * Displays the details of the task a verbose rich run shows:
+     * the command it executes, its conditional and the rule authors,
+     * framed for the tool output that follows. The historic plain
+     * presentation prints none of these, so the default says
+     * nothing.
+     *
+     * @param command The command the task executes.
+     * @param conditional The conditional of the directive.
+     * @param authors The authors of the rule.
+     */
+    fun printTaskDetails(
+        command: Command,
+        conditional: DirectiveConditional,
+        authors: List<String>
+    ) {
+    }
+
+    /**
+     * Displays the naming of a directive its conditional skipped.
+     * The historic plain presentation leaves no console trace of a
+     * skip - the log carries the record - so the default says
+     * nothing.
+     *
+     * @param identifier The identifier of the skipped directive.
+     */
+    fun printSkippedDirective(identifier: String) {
+    }
 
     /**
      * Displays the closing summary of the run: the verdict and, for

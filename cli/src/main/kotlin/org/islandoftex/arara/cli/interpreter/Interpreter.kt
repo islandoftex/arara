@@ -183,6 +183,9 @@ class Interpreter(
         logger.info {
             "System command: $command"
         }
+        // the verbose presentations show the command they are about
+        // to run; the plain console stays as it always was
+        Display.printTaskDetails(command, conditional, authors)
         var success = true
 
         if (executionOptions.executionMode != ExecutionMode.DRY_RUN) {
@@ -394,6 +397,10 @@ class Interpreter(
                     "Directive ${directive.identifier} skipped as its " +
                         "conditional evaluated to false"
                 }
+                // the verbose presentations name the skip on the
+                // console; the plain console stays silent, as it
+                // always was
+                Display.printSkippedDirective(directive.identifier)
                 ExecutionStatus.Processing()
             }
             Session.contains(haltKey) ->

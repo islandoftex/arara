@@ -53,6 +53,27 @@ object RichTheme {
     const val failureFallback = "x"
 
     /**
+     * The dotted rule character that frames the raw tool output of a
+     * verbose run.
+     */
+    const val frameGlyph = "┈"
+
+    /**
+     * The ASCII fallback of the dotted rule character.
+     */
+    const val frameFallback = "."
+
+    /**
+     * The glyph that marks a conditionally skipped directive.
+     */
+    const val skipGlyph = "◌"
+
+    /**
+     * The ASCII fallback of the skip glyph.
+     */
+    const val skipFallback = "o"
+
+    /**
      * The glyph that marks a simulated dry run.
      */
     const val dryGlyph = "○"
@@ -81,6 +102,11 @@ object RichTheme {
      * The ASCII fallback of the dotted leader.
      */
     const val leaderFallback = "."
+
+    /**
+     * The width of the label column of the verbose task fields.
+     */
+    const val fieldGutterWidth = 16
 
     /**
      * The maximal width prose wraps at, even on wide terminals: the

@@ -2,6 +2,7 @@
 package org.islandoftex.arara.cli.console.rich
 
 import com.github.ajalt.mordant.rendering.AnsiLevel
+import com.github.ajalt.mordant.rendering.TextAlign
 import com.github.ajalt.mordant.table.Borders
 import com.github.ajalt.mordant.table.table
 import com.github.ajalt.mordant.terminal.Terminal
@@ -14,6 +15,7 @@ import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
+import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.cli.console.ConsoleRenderer
 import org.islandoftex.arara.cli.utils.Display
 import org.islandoftex.arara.cli.utils.abbreviate
@@ -83,6 +85,30 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      * The monotonic mark of the current file's start.
      */
     private var currentFileStart = TimeSource.Monotonic.markNow()
+
+    /**
+     * Whether the details of the current task printed, so the result
+     * knows to close the output frame and carry the duration.
+     */
+    private var detailsPrinted = false
+
+    /**
+     * The monotonic mark of the current task's start, taken when its
+     * details print and the command is about to run.
+     */
+    private var taskStart = TimeSource.Monotonic.markNow()
+
+    /**
+     * The width of the label column of the verbose task fields.
+     */
+    private val fieldGutterWidth = RichTheme.fieldGutterWidth
+
+    private companion object {
+        /** The column indexes of the execution summary table. */
+        const val COUNT_COLUMN = 1
+        const val TIME_COLUMN = 2
+        const val STATUS_COLUMN = 3
+    }
 
     /**
      * Checks if the execution is in dry-run mode.
@@ -271,24 +297,32 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
 
         if (!isDryRunMode) {
             if (!isVerboseMode) {
-                val styled = if (value) {
-                    terminal.theme.success(
-                        successGlyph() + " " + getResult(value)
-                    )
-                } else {
-                    terminal.theme.danger(
-                        failureGlyph() + " " + getResult(value)
-                    )
-                }
                 // the reserved space keeps the word aligned even when
                 // the label of another language runs longer
-                terminal.print(styled.padStart(successGlyph().length + 1 + longestMatch))
+                terminal.print(
+                    resultWord(value)
+                        .padStart(successGlyph().length + 1 + longestMatch)
+                )
             } else {
-                val aligned = (
-                    " " + getResult(value)
-                    ).padStart(structureWidth, rule.first())
                 terminal.println("")
-                terminal.println(muted(aligned))
+                if (detailsPrinted) {
+                    // the framed tool output ends where the result
+                    // lands, and the duration of the task rides the
+                    // word
+                    terminal.println(muted(frameRule()))
+                    val elapsed = taskStart.elapsedNow()
+                        .toDouble(DurationUnit.SECONDS)
+                    terminal.println(
+                        resultWord(value) +
+                            muted(" · " + formatSeconds(elapsed))
+                    )
+                } else {
+                    val aligned = (
+                        " " + getResult(value)
+                        ).padStart(structureWidth, rule.first())
+                    terminal.println(muted(aligned))
+                }
+                detailsPrinted = false
             }
         }
     }
@@ -336,6 +370,132 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         else
             LanguageController.messages.infoLabelOnFailure
     }
+
+    /**
+     * Gets the styled result word of an outcome: the glyph and the
+     * localized word, colored by the theme's semantics.
+     *
+     * @param value The outcome of the task.
+     * @return The styled result word.
+     */
+    private fun resultWord(value: Boolean): String =
+        if (value) {
+            terminal.theme.success(
+                successGlyph() + " " + getResult(value)
+            )
+        } else {
+            terminal.theme.danger(
+                failureGlyph() + " " + getResult(value)
+            )
+        }
+
+    /**
+     * Displays the details of the task a verbose run shows: the
+     * command it executes, its conditional and the rule authors,
+     * with the dotted frame opening for the raw tool output that
+     * follows. The stream itself flows untouched - the frame
+     * carries the structure, the tee carries the bytes.
+     *
+     * @param command The command the task executes.
+     * @param conditional The conditional of the directive.
+     * @param authors The authors of the rule.
+     */
+    override fun printTaskDetails(
+        command: Command,
+        conditional: DirectiveConditional,
+        authors: List<String>
+    ) {
+        // the details are the verbose microscope, and the dry run
+        // already prints its own trio through the historic calls
+        if (!isVerboseMode || isDryRunMode) {
+            return
+        }
+        detailsPrinted = true
+        taskStart = TimeSource.Monotonic.markNow()
+        printField(
+            LanguageController.messages.infoLabelSystemCommand,
+            command.toString()
+        )
+        if (conditional.type != DirectiveConditionalType.NONE) {
+            printField(
+                LanguageController.messages.infoLabelConditional,
+                "(" + conditional.type + ") " + conditional.condition
+            )
+        }
+        if (authors.isNotEmpty()) {
+            printField(
+                if (authors.size == 1) {
+                    LanguageController.messages.infoLabelAuthor
+                } else {
+                    LanguageController.messages.infoLabelAuthors
+                },
+                authors.joinToString(", ") { it.trim() }
+            )
+        }
+        terminal.println(muted(frameRule()))
+    }
+
+    /**
+     * Displays the naming of a directive its conditional skipped:
+     * the muted card of the verbose microscope, answering the
+     * question a silent skip never could.
+     *
+     * @param identifier The identifier of the skipped directive.
+     */
+    override fun printSkippedDirective(identifier: String) {
+        if (!isVerboseMode) {
+            return
+        }
+        terminal.println(
+            muted(
+                skipGlyph() + " " +
+                    LanguageController.messages
+                        .infoDisplaySkippedConditional(identifier)
+            )
+        )
+    }
+
+    /**
+     * Prints a verbose task field: the muted label aligned in the
+     * gutter, the value wrapped under itself.
+     *
+     * @param label The field label.
+     * @param value The field value.
+     */
+    private fun printField(label: String, value: String) {
+        val gutter = " ".repeat(fieldGutterWidth)
+        value.wrap(structureWidth - fieldGutterWidth).lineSequence()
+            .forEachIndexed { index, line ->
+                val prefix = if (index == 0) {
+                    muted(label.padEnd(fieldGutterWidth))
+                } else {
+                    gutter
+                }
+                terminal.println(prefix + line)
+            }
+    }
+
+    /**
+     * The dotted rule that frames the raw tool output of a verbose
+     * run.
+     */
+    private fun frameRule(): String {
+        val frame = if (isDecorated) {
+            RichTheme.frameGlyph
+        } else {
+            RichTheme.frameFallback
+        }
+        val spaced = "$frame "
+        return spaced.repeat(structureWidth / spaced.length + 1)
+            .take(structureWidth).trimEnd()
+    }
+
+    /**
+     * The glyph that marks a conditionally skipped directive,
+     * following the capability.
+     */
+    private fun skipGlyph(): String =
+        if (isDecorated) RichTheme.skipGlyph else RichTheme.skipFallback
 
     /**
      * Displays the provided text wrapped at the readable measure of
@@ -527,9 +687,9 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     private fun renderSummaryTable() {
         val messages = LanguageController.messages
         val table = table {
-            tableBorders = Borders.ALL
-            captionTop(muted(messages.infoDisplaySummaryTitle))
+            tableBorders = Borders.NONE
             header {
+                cellBorders = Borders.BOTTOM
                 row(
                     messages.infoDisplaySummaryFile,
                     messages.infoDisplaySummaryTasks,
@@ -537,6 +697,9 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
                     ""
                 )
             }
+            column(COUNT_COLUMN) { align = TextAlign.RIGHT }
+            column(TIME_COLUMN) { align = TextAlign.RIGHT }
+            column(STATUS_COLUMN) { align = TextAlign.RIGHT }
             body {
                 summary.forEach { entry ->
                     row(
@@ -552,6 +715,14 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
                 }
             }
         }
+        // the title rides the section rule, the table keeps the
+        // borderless layout of the presentation: rules, not boxes -
+        // the box belongs to the dialogs, where interruption is the
+        // point
+        val head = "$rule$rule ${messages.infoDisplaySummaryTitle} "
+        terminal.println(
+            muted(head + rule.repeat((structureWidth - head.length).coerceAtLeast(1)))
+        )
         terminal.println(table)
         terminal.println("")
     }
