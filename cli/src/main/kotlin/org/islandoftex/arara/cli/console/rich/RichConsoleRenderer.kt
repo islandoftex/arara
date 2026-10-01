@@ -870,7 +870,13 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     private fun renderSummaryTable() {
         val messages = LanguageController.messages
         val table = table {
+            // the table carries the ruled layout of the presentation:
+            // the underline beneath the labels, the closing rule beneath
+            // the table - the rows flow between them, separated by
+            // their alignment rather than by borders, matching the
+            // borderless design language of everything else
             tableBorders = Borders.BOTTOM
+            cellBorders = Borders.NONE
             header {
                 row(
                     messages.infoDisplaySummaryFile,
@@ -878,24 +884,12 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
                     messages.infoDisplaySummaryTime,
                     ""
                 )
-                cellBorders = Borders.NONE
-            }
-            column(FILE_COLUMN) {
-                align = TextAlign.LEFT
                 cellBorders = Borders.BOTTOM
             }
-            column(COUNT_COLUMN) {
-                align = TextAlign.RIGHT
-                cellBorders = Borders.BOTTOM
-            }
-            column(TIME_COLUMN) {
-                align = TextAlign.RIGHT
-                cellBorders = Borders.BOTTOM
-            }
-            column(STATUS_COLUMN) {
-                align = TextAlign.RIGHT
-                cellBorders = Borders.TOP_BOTTOM
-            }
+            column(FILE_COLUMN) { align = TextAlign.LEFT }
+            column(COUNT_COLUMN) { align = TextAlign.RIGHT }
+            column(TIME_COLUMN) { align = TextAlign.RIGHT }
+            column(STATUS_COLUMN) { align = TextAlign.RIGHT }
             body {
                 summary.forEach { entry ->
                     row(
@@ -903,9 +897,9 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
                         entry.tasks,
                         formatSeconds(entry.seconds),
                         if (entry.success) {
-                            successGlyph()
+                            terminal.theme.success(successGlyph())
                         } else {
-                            failureGlyph()
+                            terminal.theme.danger(failureGlyph())
                         }
                     )
                 }
