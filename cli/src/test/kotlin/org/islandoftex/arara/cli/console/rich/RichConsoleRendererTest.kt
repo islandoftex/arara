@@ -74,6 +74,10 @@ class RichConsoleRendererTest {
             "the version line renders under the logo"
         )
         assertTrue(
+            "the cool TeX automation tool" in output,
+            "the greeting carries the slogan"
+        )
+        assertTrue(
             "\u001B[" in output,
             "the decorated stream carries the color escapes"
         )
@@ -384,6 +388,65 @@ class RichConsoleRendererTest {
         assertTrue(
             "✗" in output,
             "the failed file carries the cross in the summary"
+        )
+    }
+    @Test
+    fun `the file header runs the rule flush to the metadata`() {
+        val document = File.createTempFile("rich", ".tex")
+            .apply { writeText("quack"); deleteOnExit() }
+        val file = ProjectFile(
+            MPPPath(document.absolutePath),
+            FileType("tex", "^%.*")
+        )
+        val output = render(AnsiLevel.NONE, width = 80) {
+            printFileInformation(file)
+        }
+        val header = output.lineSequence()
+            .first { it.contains(document.name) }
+        assertTrue(
+            header.startsWith(document.name),
+            "the name starts flush at the edge"
+        )
+        assertTrue(
+            header.trimEnd().endsWith(file.path.lastModified.toString()),
+            "the line ends where the metadata ends, with no stub"
+        )
+        assertTrue(
+            "-" in header && " B" in header,
+            "the dimmed rule runs to the metadata"
+        )
+    }
+
+    @Test
+    fun `the ledger survives the files of a run`() {
+        val first = File.createTempFile("rich", ".tex")
+            .apply { writeText("quack"); deleteOnExit() }
+        val second = File.createTempFile("rich", ".tex")
+            .apply { writeText("quack"); deleteOnExit() }
+        val output = render(AnsiLevel.TRUECOLOR) {
+            printFileInformation(
+                ProjectFile(MPPPath(first.absolutePath), FileType("tex", "^%.*"))
+            )
+            printEntry("echoone", "The echoer")
+            printEntryResult(true)
+            printFileInformation(
+                ProjectFile(MPPPath(second.absolutePath), FileType("tex", "^%.*"))
+            )
+            printEntry("echoone", "The echoer")
+            printEntryResult(true)
+            printRunSummary(true)
+        }
+        assertTrue(
+            "2 files" in output,
+            "the verdict counts every file of the run"
+        )
+        assertTrue(
+            "2 tasks" in output,
+            "the verdict counts every task of the run"
+        )
+        assertTrue(
+            first.name in output && second.name in output,
+            "the summary names every file of the run"
         )
     }
 }

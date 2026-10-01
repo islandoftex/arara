@@ -16,11 +16,13 @@ on.
 
 ## Added
 
-* New `--console` command line option and `console` configuration
-  key (in both configuration file formats) to select the console
-  presentation: `plain` (the default, the historic layout) or
-  `rich` - a modern presentation with a tinted banner, section
-  rules, glyphs and colors, degrading to the plain structure when
+* New `-c`/`--console` command line option and `console`
+  configuration key (in both configuration file formats) to select
+  the console presentation: `plain` (the default, the historic
+  layout) or `rich` - a modern presentation with a tinted banner
+  that names the version and the tool's own description, section
+  rules,
+  glyphs and colors, degrading to the plain structure when
   the terminal cannot carry them. A rich run closes with a verdict
   line and a summary table naming each file, its task count, its
   time and its status. A verbose rich run shows the command it

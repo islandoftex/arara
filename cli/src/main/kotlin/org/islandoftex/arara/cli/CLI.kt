@@ -145,7 +145,7 @@ class CLI : CliktCommand("arara") {
         .choice("yaml" to RuleEngine.YAML, "lua" to RuleEngine.LUA)
         .default(RuleEngine.YAML)
 
-    private val console by option("--console")
+    private val console by option("-c", "--console")
         .help("Set the console presentation to use: 'plain' or 'rich'")
         .choice("plain" to ConsoleMode.PLAIN, "rich" to ConsoleMode.RICH)
     private val workingDirectory by option("-d", "--working-directory")
@@ -263,14 +263,23 @@ class CLI : CliktCommand("arara") {
         }
     }
 
+    private var appliedConsoleMode: ConsoleMode? = null
+
     /**
      * Applies the console presentation: the console renderer and the
      * dialog renderer of the mode, so the run and its conversations
-     * share one presentation.
+     * share one presentation. The renderer holds the run's ledger,
+     * so re-applying the same mode must not reset it - the
+     * renderers are recreated only when the presentation genuinely
+     * changes.
      *
      * @param mode The console mode to apply.
      */
     private fun applyConsoleMode(mode: ConsoleMode) {
+        if (appliedConsoleMode == mode) {
+            return
+        }
+        appliedConsoleMode = mode
         Display.renderer = mode.renderer(terminal)
         TerminalDialogs.renderer = mode.dialogRenderer(terminal)
     }

@@ -181,16 +181,25 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      * Displays the application banner in the terminal: the tinted
      * logo and the version line that names the run.
      */
+    /**
+     * Displays the application banner in the terminal: the tinted
+     * logo, then - after the art breathes - the muted line naming
+     * the run: the version and the tool's own description.
+     */
     override fun printBanner() {
         terminal.println(RichTheme.logo(Display.logoString))
-        terminal.println(muted("arara ${AraraAPI.version}"))
         terminal.println("")
+        terminal.println(
+            muted(
+                "arara ${AraraAPI.version}, the cool TeX automation tool."
+            )
+        )
     }
 
     /**
-     * Displays the file information in the terminal: the section
-     * rule that names the file, with its name linked to the file
-     * itself and the size and modification date as the metadata.
+     * Displays the file information in the terminal: the linked
+     * name of the file with the dimmed rule running flush to the
+     * muted metadata at the edge of the measure.
      *
      * @param file The project file.
      */
@@ -208,15 +217,17 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         val metadata = byteSizeToString(file.path.fileSize) +
             " · " + file.path.lastModified
         val title = hyperlink(name, file.path.toString())
-        val head = "$rule$rule $name "
-        val tail = " $metadata $rule$rule"
+        // the rule runs flush from the name to the muted metadata,
+        // dimmed like the summary's section rule so the per-run
+        // rules rhyme - and the line ends where the metadata ends,
+        // with no stub to close it
+        val head = "$name "
+        val tail = " $metadata"
         val fill = (
             structureWidth - head.length - tail.length
             ).coerceAtLeast(1)
         terminal.println(
-            muted("$rule$rule ") + title + muted(
-                " " + rule.repeat(fill) + " "
-            ) + muted(metadata) + muted(" $rule$rule")
+            title + muted(" " + rule.repeat(fill) + " ") + muted(metadata)
         )
         terminal.println("")
     }

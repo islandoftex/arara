@@ -251,7 +251,8 @@ as the runnable jar).
   semantics, and they stay available in every execution mode,
   since a dialog is a conversation with the person who runs the
   tool),
-  the console mode surface (the `--console` flag and the `console`
+  the console mode surface (the `-c`/`--console` flag and the
+  `console`
   configuration key, in both formats, resolved as command line over
   configuration over the plain default; `plain` (the default,
   byte-identical) and `rich` (the modern presentation on the
