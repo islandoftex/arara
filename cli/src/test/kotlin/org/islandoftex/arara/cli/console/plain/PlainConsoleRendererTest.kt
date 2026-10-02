@@ -260,6 +260,29 @@ class PlainConsoleRendererTest {
     }
 
     @Test
+    fun `a landed success with a failed run separates its verdict`() {
+        val output = render {
+            printFileInformation(anyFile())
+            printEntry("halt", "The halt trigger")
+            printEntryResult(true)
+            printRunSummary(false)
+        }
+        val lines = output.lineSequence().toList()
+        val success = lines.indexOfFirst {
+            "SUCCESS" in it && "TOTAL" !in it
+        }
+        assertTrue(
+            success > 0 && lines[success + 1].isEmpty(),
+            "the landed outcome separates from the failed verdict - " +
+                "the halted run's shape"
+        )
+        assertTrue(
+            "TOTAL FAILURE" in lines[success + 2],
+            "the verdict follows on a fresh line"
+        )
+    }
+
+    @Test
     fun `the verdict separates the time line`() {
         val output = render {
             printFileInformation(anyFile())

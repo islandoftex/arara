@@ -82,6 +82,22 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     private var displayException = false
 
     /**
+     * Whether an outcome landed on an entry line and nothing has
+     * separated it since: the quoted panel clears it when it
+     * quotes, and the closing verdict consults it when the run
+     * failed - so a silent failure or a halted run never glues
+     * the verdict to the landed word.
+     */
+    private var landedOutcome = false
+
+    /**
+     * Whether the skip card printed for the current file: a file
+     * whose directives were all skipped ends without a task, so
+     * the closing verdict separates from the card itself.
+     */
+    private var skipCardPrinted = false
+
+    /**
      * The entry of a file in the run ledger the closing summary
      * renders.
      */
@@ -245,6 +261,8 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         displayException = false
         displayRolling = false
         displayResult = false
+        landedOutcome = false
+        skipCardPrinted = false
         currentFile = SummaryEntry(
             file.path.fileName,
             file.path.toString(),
@@ -411,6 +429,10 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
                 }
                 detailsPrinted = false
             }
+            // an outcome landed on the entry line: the quoted panel
+            // separates it when it quotes, and the closing verdict
+            // when the run failed without one
+            landedOutcome = true
         }
     }
 
@@ -576,6 +598,7 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         if (!isVerboseMode) {
             return
         }
+        skipCardPrinted = true
         terminal.println(
             muted(
                 skipGlyph() + " " +
@@ -835,6 +858,8 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
             }
         }
         terminal.println("")
+        // the panel quoted and separated the landing itself
+        landedOutcome = false
     }
 
     /**
@@ -871,12 +896,18 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         if (summary.isEmpty()) {
             return
         }
-        // the verdict separates from an error it follows; a file
-        // that completed normally already printed its closing
-        // blank through the per-file hook
-        if (displayException) {
+        // the verdict separates from an error it follows, from the
+        // skip card that ended a file without a task, and from a
+        // landed outcome the run then failed on - a silent failure,
+        // a halted run - unless the quoted panel already separated
+        // it; a file that completed normally already printed its
+        // closing blank through the per-file hook
+        val failedLanding = !success && landedOutcome
+        if (displayException || skipCardPrinted || failedLanding) {
             terminal.println("")
         }
+        skipCardPrinted = false
+        landedOutcome = false
         val tasks = summary.sumOf { it.tasks }
         if (isDryRunMode) {
             terminal.println(

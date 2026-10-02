@@ -21,6 +21,14 @@ class StringExtensionsTest {
             "strings shorter than the width are left unchanged"
         )
     }
+
+    @Test
+    fun `an exact fit never abbreviates`() {
+        assertEquals(
+            "Quack quack here", "Quack quack here".abbreviate(16),
+            "a string that exactly fills the width is returned unchanged"
+        )
+    }
     @Test
     fun `fails when abbreviating below the ellipsis length`() {
         assertFailsWith<IllegalArgumentException>(

@@ -126,6 +126,10 @@ class PlainDialogRendererStreamTest {
             "terminal input ended" in (exception.message ?: ""),
             "the localized closed-input error carries"
         )
+        assertTrue(
+            sink.toString("UTF-8").endsWith("\n"),
+            "the prompt line completes before the error arrives"
+        )
     }
 
     @Test

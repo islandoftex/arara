@@ -208,10 +208,15 @@ class RichDialogRenderer(private val terminal: Terminal) : DialogRenderer {
             val raw = terminal.readLineOrNull(false)
                 // a numbered dialog read from a closed input is a
                 // misuse; the safe mode exists precisely to prevent
-                // reaching a dialog headlessly
-                ?: throw AraraException(
-                    LanguageController.messages.errorDialogInputClosed
-                )
+                // reaching a dialog headlessly. The prompt line
+                // completes first, so the error that follows starts
+                // on its own line
+                ?: run {
+                    terminal.println("")
+                    throw AraraException(
+                        LanguageController.messages.errorDialogInputClosed
+                    )
+                }
             PlainDialogRenderer.parseSelection(raw, count, allowNone)?.let {
                 // the conversation ends with air: the prompt line
                 // completes, and a blank separates the choice from

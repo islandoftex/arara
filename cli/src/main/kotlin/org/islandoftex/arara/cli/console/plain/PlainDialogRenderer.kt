@@ -156,10 +156,15 @@ object PlainDialogRenderer : DialogRenderer {
             val raw = readlnOrNull()
                 // a numbered dialog read from a closed input is a
                 // misuse; the safe mode exists precisely to prevent
-                // reaching a dialog headlessly
-                ?: throw AraraException(
-                    LanguageController.messages.errorDialogInputClosed
-                )
+                // reaching a dialog headlessly. The prompt line
+                // completes first, so the error that follows starts
+                // on its own line
+                ?: run {
+                    println()
+                    throw AraraException(
+                        LanguageController.messages.errorDialogInputClosed
+                    )
+                }
             parseSelection(raw, count, allowNone)?.let { choice ->
                 println()
                 println(separator())

@@ -253,10 +253,11 @@ internal val scenarios = listOf(
                 name = "halt.bats", dir = "halt-error",
                 description = "the halt directive's error path",
                 check = "the run stops after the halt with its exit code",
-                arguments = listOf("halt-error.tex"),
+                arguments = listOf("--log", "halt-error.tex"),
                 expected = listOf("QuackOne"),
                 forbidden = listOf("QuackTwo"),
                 exitCode = 1,
+                logChecks = listOf("Halt requested with status 1"),
                 fixture = "halt-error",
         ),
         Scenario(

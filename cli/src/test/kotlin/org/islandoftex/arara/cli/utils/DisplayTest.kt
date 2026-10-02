@@ -225,6 +225,32 @@ class DisplayTest {
     }
 
     @Test
+    fun `the printed state of a file tracks its console output`() {
+        val file = Files.createTempFile("arara-display-", ".tex")
+        Files.writeString(file, "content")
+        val projectFile =
+            ProjectFile(MPPPath(file.toString()), FileType("tex", "^%.*"))
+        capturingOutput { Display.printFileInformation(projectFile) }
+        assertFalse(
+            Display.printedForFile,
+            "the file opens with nothing printed beyond its header"
+        )
+        capturingOutput { Display.printSkippedDirective("echoone") }
+        assertFalse(
+            Display.printedForFile,
+            "the skip naming does not mark the file: the plain silence " +
+                "leaves the facade unable to know"
+        )
+        capturingOutput { Display.printEntry("echoone", "The echoer") }
+        assertTrue(Display.printedForFile, "an entry marks the file as printed")
+        capturingOutput { Display.printFileInformation(projectFile) }
+        assertFalse(
+            Display.printedForFile,
+            "the next file resets the state"
+        )
+    }
+
+    @Test
     fun `the plain renderer names unprocessed files`() {
         val original = System.out
         val sink = java.io.ByteArrayOutputStream()

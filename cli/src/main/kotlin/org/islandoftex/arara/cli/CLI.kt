@@ -476,8 +476,14 @@ class CLI : CliktCommand("arara") {
                     Display.printFileInformation(it)
                 },
                 executeAfterFile = {
-                    // add an empty line between file executions
-                    println()
+                    // the closing blank between file executions
+                    // prints only when the console showed something
+                    // for the file: a file whose directives were all
+                    // skipped or absent already ends on its header's
+                    // own blank, and a second one would stack
+                    if (Display.printedForFile) {
+                        println()
+                    }
                 },
                 processDirectives = { file, list ->
                     DirectiveProcessing.process(

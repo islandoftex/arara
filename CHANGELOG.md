@@ -361,6 +361,22 @@ on.
 
 ## Fixed
 
+* A compact entry that exactly fills its space no longer trades its
+  last character for an ellipsis: the abbreviation boundary treated
+  a perfect fit as an overflow, a bygone off-by-one that the
+  narrower plain measure exposed.
+* A file whose directives were all skipped or absent no longer
+  stacks the closing blank on its header's own: the per-file
+  separator now prints only when the console showed something for
+  the file, and the skip card that ends a file without a task
+  separates the closing verdict itself.
+* A failed task separates its outcome from the closing verdict in
+  both presentations: the quoted panel always carried its own
+  separation, but a silent failure glued the verdict to the landed
+  word.
+* A dialog whose input stream ends completes its prompt line before
+  the error arrives, so the closed-input error starts on its own
+  line in both presentations.
 * Runs with neither a console request nor a configuration file kept
   the headless dialog default, so a rule reaching a dialog errored
   instead of conversing; the plain presentation - the default -

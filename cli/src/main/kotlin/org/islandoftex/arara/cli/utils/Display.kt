@@ -53,11 +53,22 @@ object Display {
     var configurationFileName: String = "[none]"
 
     /**
+     * Whether the console rendered anything for the current file
+     * beyond its opening header. The application's per-file
+     * closing blank consults it, so a file whose directives were
+     * all skipped or absent does not stack a second blank on the
+     * header's own.
+     */
+    internal var printedForFile: Boolean = false
+        private set
+
+    /**
      * Displays the current entry result in the terminal.
      *
      * @param value The boolean value to be displayed.
      */
     fun printEntryResult(value: Boolean) {
+        printedForFile = true
         RunLog.taskResult(value)
         renderer.printEntryResult(value)
     }
@@ -69,6 +80,7 @@ object Display {
      * @param task The task name.
      */
     fun printEntry(name: String, task: String) {
+        printedForFile = true
         RunLog.entry(name, task)
         renderer.printEntry(name, task)
     }
@@ -79,6 +91,7 @@ object Display {
      * @param exception The exception object.
      */
     fun printException(exception: AraraException) {
+        printedForFile = true
         val underlying = exception.exception
         val details = underlying?.let { it.message ?: it.toString() }
         // the log carries the bare message, as thrown; the suffix
@@ -101,22 +114,30 @@ object Display {
      *
      * @param text The text to be displayed.
      */
-    fun printWrapped(text: String) = renderer.printWrapped(text)
+    fun printWrapped(text: String) {
+        printedForFile = true
+        renderer.printWrapped(text)
+    }
 
     /**
      * Displays the rule authors in the terminal.
      *
      * @param authors The list of authors.
      */
-    fun printAuthors(authors: List<String>) = renderer.printAuthors(authors)
+    fun printAuthors(authors: List<String>) {
+        printedForFile = true
+        renderer.printAuthors(authors)
+    }
 
     /**
      * Displays the current conditional in the terminal.
      *
      * @param conditional The conditional object.
      */
-    fun printConditional(conditional: DirectiveConditional) =
+    fun printConditional(conditional: DirectiveConditional) {
+        printedForFile = true
         renderer.printConditional(conditional)
+    }
 
     /**
      * Displays the elapsed time in the terminal.
@@ -153,6 +174,8 @@ object Display {
      * @param file The project file.
      */
     fun printFileInformation(file: ProjectFile) {
+        // the file opens here, so its printed-so-far state resets
+        printedForFile = false
         RunLog.welcome()
         RunLog.environment(configurationFileName)
         RunLog.fileInformation(file)
@@ -164,8 +187,10 @@ object Display {
      *
      * @param command The command the dry run simulates.
      */
-    fun printDryRunCommand(command: Command) =
+    fun printDryRunCommand(command: Command) {
+        printedForFile = true
         renderer.printDryRunCommand(command)
+    }
 
     /**
      * Displays the details of the task a verbose rich run shows:
@@ -181,12 +206,17 @@ object Display {
         command: Command,
         conditional: DirectiveConditional,
         authors: List<String>
-    ) = renderer.printTaskDetails(command, conditional, authors)
+    ) {
+        printedForFile = true
+        renderer.printTaskDetails(command, conditional, authors)
+    }
 
     /**
      * Displays the naming of a directive its conditional skipped.
      * The historic plain presentation leaves no console trace of a
-     * skip - the log carries the record.
+     * skip - the log carries the record - so the call deliberately
+     * does not mark the file as printed: the facade cannot know
+     * whether the seated renderer spoke.
      *
      * @param identifier The identifier of the skipped directive.
      */
@@ -201,8 +231,10 @@ object Display {
      *
      * @param output The captured output of the failed command.
      */
-    fun printCommandFailure(output: String) =
+    fun printCommandFailure(output: String) {
+        printedForFile = true
         renderer.printCommandFailure(output)
+    }
 
     /**
      * Displays the files that were requested but never reached,

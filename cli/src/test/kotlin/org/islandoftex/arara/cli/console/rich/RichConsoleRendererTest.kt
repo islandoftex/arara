@@ -115,6 +115,111 @@ class RichConsoleRendererTest {
     }
 
     @Test
+    fun `a silent failure separates its verdict`() {
+        val document = File.createTempFile("rich", ".tex")
+            .apply { writeText("quack"); deleteOnExit() }
+        val file = ProjectFile(
+            MPPPath(document.absolutePath),
+            FileType("tex", "^%.*")
+        )
+        val output = render(AnsiLevel.NONE) {
+            printFileInformation(file)
+            printEntry("silentechoer", "The silent echoer")
+            printEntryResult(false)
+            printRunSummary(false)
+        }
+        val lines = output.lineSequence().toList()
+        val failure = lines.indexOfFirst { "FAILURE" in it && "TOTAL" !in it }
+        assertTrue(
+            failure > 0 && lines[failure + 1].isEmpty(),
+            "the silent landing carries its own separation"
+        )
+        assertTrue(
+            "TOTAL FAILURE" in lines[failure + 2],
+            "the verdict starts on a fresh line"
+        )
+    }
+
+    @Test
+    fun `a landed success with a failed run separates its verdict`() {
+        val document = File.createTempFile("rich", ".tex")
+            .apply { writeText("quack"); deleteOnExit() }
+        val file = ProjectFile(
+            MPPPath(document.absolutePath),
+            FileType("tex", "^%.*")
+        )
+        val output = render(AnsiLevel.NONE) {
+            printFileInformation(file)
+            printEntry("halt", "The halt trigger")
+            printEntryResult(true)
+            printRunSummary(false)
+        }
+        val lines = output.lineSequence().toList()
+        val success = lines.indexOfFirst {
+            "SUCCESS" in it && "TOTAL" !in it
+        }
+        assertTrue(
+            success > 0 && lines[success + 1].isEmpty(),
+            "the landed outcome separates from the failed verdict - " +
+                "the halted run's shape"
+        )
+        assertTrue(
+            "TOTAL FAILURE" in lines[success + 2],
+            "the verdict follows on a fresh line"
+        )
+    }
+
+    @Test
+    fun `the quoted panel separates the failure itself`() {
+        val document = File.createTempFile("rich", ".tex")
+            .apply { writeText("quack"); deleteOnExit() }
+        val file = ProjectFile(
+            MPPPath(document.absolutePath),
+            FileType("tex", "^%.*")
+        )
+        val output = render(AnsiLevel.NONE) {
+            printFileInformation(file)
+            printEntry("failechoer", "The failing echoer")
+            printEntryResult(false)
+            printCommandFailure("QuackFail")
+            printRunSummary(false)
+        }
+        val lines = output.lineSequence().toList()
+        val panel = lines.indexOfFirst { "QuackFail" in it }
+        assertTrue(
+            panel > 0 && lines[panel + 1].isEmpty(),
+            "the panel owns its separation"
+        )
+        assertTrue(
+            "TOTAL FAILURE" in lines[panel + 2],
+            "the verdict follows without a second blank"
+        )
+    }
+
+    @Test
+    fun `the skip card separates from the verdict`() {
+        LinearExecutor.executionOptions = ExecutionOptions(verbose = true)
+        val document = File.createTempFile("rich", ".tex")
+            .apply { writeText("quack"); deleteOnExit() }
+        val file = ProjectFile(
+            MPPPath(document.absolutePath),
+            FileType("tex", "^%.*")
+        )
+        val output = render(AnsiLevel.NONE) {
+            printFileInformation(file)
+            printSkippedDirective("echoone")
+            printRunSummary(true)
+        }
+        val lines = output.lineSequence().toList()
+        val card = lines.indexOfFirst { "skipped" in it }
+        assertTrue(
+            card > 0 && lines[card + 1].isEmpty(),
+            "the card that ends a file without a task separates the verdict"
+        )
+        assertTrue("TOTAL SUCCESS" in lines[card + 2], "the verdict follows")
+    }
+
+    @Test
     fun `the exception block names the error and the details`() {
         val output = render(AnsiLevel.TRUECOLOR) {
             printEntry("echoone", "The echoer")

@@ -47,6 +47,7 @@ object PlainConsoleRenderer : ConsoleRenderer {
         displayException = false
         displaySummary = false
         entryLineOpen = false
+        landedOutcome = false
         println(Display.logoString + "\n")
     }
 
@@ -111,6 +112,14 @@ object PlainConsoleRenderer : ConsoleRenderer {
      * to separate from it the way it separates from an error.
      */
     private var displaySummary = false
+
+    /**
+     * Whether an outcome landed on an entry line and nothing has
+     * separated it since: the closing verdict consults it when the
+     * run failed - a silent failure, a halted run - so the verdict
+     * never glues itself to the landed word.
+     */
+    private var landedOutcome = false
 
     /**
      * The number of files the run started, so the closing verdict
@@ -187,14 +196,11 @@ object PlainConsoleRenderer : ConsoleRenderer {
                         .padStart(outputWidth, '-')
                 }
             )
-            if (!value) {
-                // a failed task halts the file, so the closing blank
-                // the completed files receive never comes: the
-                // landing provides its own separation, and whatever
-                // follows - the next file or the closing verdict -
-                // starts on a fresh line
-                println()
-            }
+            // an outcome landed on the entry line: the per-file
+            // closing blank separates it when the file completes,
+            // and the closing verdict when the run failed without
+            // one - a silent failure, a halted run
+            landedOutcome = true
         }
     }
 
@@ -408,9 +414,10 @@ object PlainConsoleRenderer : ConsoleRenderer {
             return
         }
         displaySummary = true
-        if (displayException) {
+        if (displayException || (!success && landedOutcome)) {
             println()
         }
+        landedOutcome = false
         println(
             if (isDryRunMode) {
                 LanguageController.messages.infoDisplayDryRun(tasks)
@@ -485,6 +492,7 @@ object PlainConsoleRenderer : ConsoleRenderer {
         displayRolling = false
         displayResult = false
         displayException = false
+        landedOutcome = false
         files++
         LanguageController.messages
             .infoDisplayFileInformation(
