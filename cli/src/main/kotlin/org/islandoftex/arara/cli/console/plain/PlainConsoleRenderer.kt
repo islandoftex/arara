@@ -35,7 +35,20 @@ object PlainConsoleRenderer : ConsoleRenderer {
      * Displays the application banner in the terminal: the logo and
      * the blank line that has opened every run.
      */
-    override fun printBanner() = println(Display.logoString + "\n")
+    override fun printBanner() {
+        // the banner opens every run, so the per-run state of this
+        // shared object resets with it: the tallies the closing
+        // verdict reads and the flags the separations consult
+        files = 0
+        tasks = 0
+        displayLine = true
+        displayResult = false
+        displayRolling = false
+        displayException = false
+        displaySummary = false
+        entryLineOpen = false
+        println(Display.logoString + "\n")
+    }
 
     /**
      * The length of the longest result match as integer.
@@ -87,6 +100,33 @@ object PlainConsoleRenderer : ConsoleRenderer {
     private var displayException = false
 
     /**
+     * Whether a compact entry left its line open for the outcome to
+     * land on: the error block tells the word that lands like a
+     * result from the section title by it.
+     */
+    private var entryLineOpen = false
+
+    /**
+     * Whether the closing verdict printed, so the time line knows
+     * to separate from it the way it separates from an error.
+     */
+    private var displaySummary = false
+
+    /**
+     * The number of files the run started, so the closing verdict
+     * can name them. The banner resets the tally, because this
+     * presentation is a single object shared by every run of the
+     * same application instance.
+     */
+    private var files = 0
+
+    /**
+     * The number of entries the run printed, so the closing
+     * verdict can count the tasks. The banner resets the tally.
+     */
+    private var tasks = 0
+
+    /**
      * Checks if the execution is in dry-run mode.
      */
     private val isDryRunMode: Boolean
@@ -123,6 +163,9 @@ object PlainConsoleRenderer : ConsoleRenderer {
             .coerceAtLeast(minimumEntryWidth)
         val line = "($name) $task ".abbreviate(space - "... ".length)
         print(line.padEnd(space, '.') + " ")
+        // the compact line stays open: the outcome - a result or an
+        // error word - lands on it
+        entryLineOpen = true
     }
 
     /**
@@ -133,6 +176,7 @@ object PlainConsoleRenderer : ConsoleRenderer {
     override fun printEntryResult(value: Boolean) {
         displayLine = false
         displayResult = true
+        entryLineOpen = false
 
         if (!isDryRunMode) {
             println(
@@ -143,6 +187,14 @@ object PlainConsoleRenderer : ConsoleRenderer {
                         .padStart(outputWidth, '-')
                 }
             )
+            if (!value) {
+                // a failed task halts the file, so the closing blank
+                // the completed files receive never comes: the
+                // landing provides its own separation, and whatever
+                // follows - the next file or the closing verdict -
+                // starts on a fresh line
+                println()
+            }
         }
     }
 
@@ -168,6 +220,7 @@ object PlainConsoleRenderer : ConsoleRenderer {
      * @param task The task name.
      */
     override fun printEntry(name: String, task: String) {
+        tasks++
         displayLine = true
         displayResult = false
         if (!isDryRunMode) {
@@ -220,7 +273,10 @@ object PlainConsoleRenderer : ConsoleRenderer {
     }
 
     /**
-     * Displays the exception in the terminal.
+     * Displays the exception in the terminal: an error striking an
+     * open compact entry lands its word on the line like an
+     * outcome, any other error titles its own section on the
+     * dashed rule, and the message follows directly beneath it.
      *
      * @param text The message to be displayed.
      * @param details The underlying cause details, if any.
@@ -230,18 +286,30 @@ object PlainConsoleRenderer : ConsoleRenderer {
 
         if (displayResult)
             println()
-        if (displayLine) {
-            if (!isDryRunMode) {
+        if (!isDryRunMode) {
+            if (entryLineOpen) {
+                // the entry line is still waiting for its outcome:
+                // the word lands on it like a result, in the column
+                // the results align into, and the completed line
+                // separates from the message the way a landed
+                // result does
                 println(
-                    if (!isVerboseMode) {
-                        LanguageController.messages.infoLabelOnError
-                            .padStart(longestMatch)
-                    } else {
-                        (" " + LanguageController.messages.infoLabelOnError)
-                            .padStart(outputWidth, '-')
-                    }
+                    LanguageController.messages.infoLabelOnError
+                        .padStart(longestMatch)
                 )
+                entryLineOpen = false
                 println()
+            } else {
+                // the word titles its section on the dashed rule
+                // the other section titles of the presentation
+                // carry, and the rule separates: the message follows
+                // directly beneath, with no blank to detach the
+                // title from its words
+                println(
+                    (LanguageController.messages.infoLabelOnError + " ")
+                        .abbreviate(outputWidth)
+                        .padEnd(outputWidth, '-')
+                )
             }
         }
         printWrapped(text)
@@ -326,12 +394,43 @@ object PlainConsoleRenderer : ConsoleRenderer {
     }
 
     /**
+     * Displays the closing summary of the run: the plain
+     * presentation keeps no table, but the run closes with the
+     * verdict word naming what happened - the counts the verdict
+     * speaks come from the renderer's own tallies, reset at the
+     * banner - and an empty ledger stays silent, the way a run
+     * that never started a file has nothing to summarize.
+     *
+     * @param success Whether the whole run succeeded.
+     */
+    override fun printRunSummary(success: Boolean) {
+        if (files == 0) {
+            return
+        }
+        displaySummary = true
+        if (displayException) {
+            println()
+        }
+        println(
+            if (isDryRunMode) {
+                LanguageController.messages.infoDisplayDryRun(tasks)
+            } else if (success) {
+                LanguageController.messages
+                    .infoDisplayTotalSuccess(files, tasks)
+            } else {
+                LanguageController.messages
+                    .infoDisplayTotalFailure(files, tasks)
+            }
+        )
+    }
+
+    /**
      * Displays the elapsed time in the terminal.
      *
      * @param seconds The elapsed seconds.
      */
     override fun printTime(seconds: Double) {
-        if (displayLine || displayException)
+        if (displayLine || displayException || displaySummary)
             println()
 
         val secondDuration = seconds.seconds
@@ -379,8 +478,14 @@ object PlainConsoleRenderer : ConsoleRenderer {
     override fun printFileInformation(file: ProjectFile) {
         // each file opens its own entry blocks, so the rolling
         // separator resets with every file - the first entry of a
-        // file never carries a stale blank from the previous one
+        // file never carries a stale blank from the previous one -
+        // and the outcome flags reset with it, so an error in the
+        // new file separates from the header alone, not from a
+        // blank the previous file's landed result left behind
         displayRolling = false
+        displayResult = false
+        displayException = false
+        files++
         LanguageController.messages
             .infoDisplayFileInformation(
                 file.path.fileName,

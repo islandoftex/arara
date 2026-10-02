@@ -239,8 +239,10 @@ as the runnable jar).
   expansion applies to them),
   the console renderer seam (the display facade routes every call
   site to the renderer resolved at startup and to the run log that
-  writes the display-side log entries; the plain renderer carries
-  the historic, byte-identical layout, and the run log's
+  writes the display-side log entries; the plain renderer keeps
+  the historic silhouette, refreshed in place - the error block
+  titles its section on the dashed rule and the run closes with
+  the verdict word - and the run log's
   display-side entries hold no console knowledge, so they record
   the same lines whichever console rendered the run, while the
   provenance line at the mode application names the presentation
@@ -257,8 +259,9 @@ as the runnable jar).
   the console mode surface (the `-c`/`--console` flag and the
   `console`
   configuration key, in both formats, resolved as command line over
-  configuration over the plain default; `plain` (the default,
-  byte-identical) and `rich` (the modern presentation on the
+  configuration over the plain default; `plain` (the default, the
+  historic silhouette with its error sections titled and its
+  closing verdict) and `rich` (the modern presentation on the
   terminal library the help output already renders through,
   degrading to the ASCII structure when the stream cannot carry
   colors or glyphs, and closing a run with a verdict line and a

@@ -292,6 +292,16 @@ on.
 * The details label of an exception renders in sentence case
   (`Details`), matching the other section titles of the console, in
   every language.
+* The plain presentation now closes with the verdict word naming
+  the run - TOTAL SUCCESS, TOTAL FAILURE, or the dry run count -
+  before the total time, keeping its historic silhouette while
+  speaking its ending.
+* The error block of the plain presentation titles its section the
+  way its details line always did - the word on the dashed rule -
+  instead of floating right-aligned to a result column with no
+  entry in sight; errors now arrive announced even after a landed
+  result, and the separation from a file header no longer doubles
+  with the stale blank of the previous file's outcome.
 
 ## Deprecated
 
