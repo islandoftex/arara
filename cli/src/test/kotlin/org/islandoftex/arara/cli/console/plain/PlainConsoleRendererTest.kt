@@ -64,6 +64,19 @@ class PlainConsoleRendererTest {
     )
 
     @Test
+    fun `the banner names the run with the version line`() {
+        val output = render { }
+        assertTrue(
+            "arara 8.0.0-SNAPSHOT" in output,
+            "the version line renders under the logo"
+        )
+        assertTrue(
+            "the cool TeX automation tool." in output,
+            "the banner carries the trademark slogan"
+        )
+    }
+
+    @Test
     fun `the standalone error titles its section on the dashed rule`() {
         val output = render {
             printException("the run could not proceed", null)

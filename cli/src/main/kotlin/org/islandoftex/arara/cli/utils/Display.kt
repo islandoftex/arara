@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.utils
 
+import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
@@ -38,6 +39,15 @@ object Display {
             | (_| | | | (_| | | | (_| |
              \__,_|_|  \__,_|_|  \__,_|
     """.trimIndent()
+
+    /**
+     * The version line that names the run: the tool's name, its
+     * version, and its trademark slogan. The line stays in
+     * English in every language - the slogan is the tool's
+     * trademark, not a translatable message.
+     */
+    val versionLine: String =
+        "arara ${AraraAPI.version}, the cool TeX automation tool."
 
     /**
      * The console renderer the display delegates to: the plain

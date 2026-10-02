@@ -314,6 +314,11 @@ on.
   the leaders lengthen, and the section rules extend. The measure
   stays the tool's own - configurable only through the library
   surface, never through a configuration file, as it always was.
+* The plain presentation's banner names the run with the shared
+  version line - the tool's name, its version, and its trademark
+  slogan - matching the rich presentation's introduction. The
+  slogan stays in English in every language: it is the tool's
+  trademark, not a translatable message.
 
 ## Deprecated
 

@@ -10,7 +10,6 @@ import com.github.ajalt.mordant.terminal.Terminal
 import java.util.Locale
 import kotlin.time.DurationUnit
 import kotlin.time.TimeSource
-import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
@@ -232,11 +231,7 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     override fun printBanner() {
         terminal.println(RichTheme.logo(Display.logoString))
         terminal.println("")
-        terminal.println(
-            muted(
-                "arara ${AraraAPI.version}, the cool TeX automation tool."
-            )
-        )
+        terminal.println(muted(Display.versionLine))
         terminal.println("")
     }
 

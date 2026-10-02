@@ -47,6 +47,8 @@ object PlainConsoleRenderer : ConsoleRenderer {
         entryLineOpen = false
         landedOutcome = false
         println(Display.logoString + "\n")
+        println(Display.versionLine)
+        println()
     }
 
     /**
