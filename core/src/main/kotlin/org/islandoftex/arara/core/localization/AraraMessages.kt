@@ -317,9 +317,13 @@ interface AraraMessages {
      */
     val infoDisplayExceptionMoreDetails: String
     /**
-     * The message shown with the total execution time.
+     * The label of the closing time line.
      */
-    fun infoDisplayExecutionTime(time: String): String
+    val infoDisplayExecutionTime: String
+    /**
+     * The localized unit the closing time line measures in.
+     */
+    val infoDisplayTimeUnit: String
     /**
      * The verdict line of a successful rich run.
      */

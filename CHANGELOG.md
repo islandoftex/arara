@@ -302,6 +302,18 @@ on.
   entry in sight; errors now arrive announced even after a landed
   result, and the separation from a file header no longer doubles
   with the stale blank of the previous file's outcome.
+* The closing time line says what it measures: the console and
+  the log both name the elapsed time instead of the historic
+  "total", dissolving the collision with the verdict words, and
+  the label renders in the muted chrome voice with the value
+  speaking beside it, following the field grammar of the
+  presentation.
+* The plain presentation's default measure widens from the
+  historic 65 columns to 79, matching the rich presentation's
+  readable measure: every line re-flows at the shared geometry,
+  the leaders lengthen, and the section rules extend. The measure
+  stays the tool's own - configurable only through the library
+  surface, never through a configuration file, as it always was.
 
 ## Deprecated
 

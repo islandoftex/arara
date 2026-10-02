@@ -185,8 +185,8 @@ object ItalianMessages : AraraMessages {
     override val infoDisplayExceptionMoreDetails =
         "Ci sono altri dettagli riguardo a questa eccezione:"
 
-    override fun infoDisplayExecutionTime(time: String) =
-        "Totale: ${time} secondi"
+    override val infoDisplayExecutionTime = "Tempo trascorso:"
+    override val infoDisplayTimeUnit = "secondi"
 
     override fun infoDisplayTotalSuccess(files: Int, tasks: Int) =
         "SUCCESSO TOTALE · ${if (files == 1) "1 file" else "$files file"}, " +

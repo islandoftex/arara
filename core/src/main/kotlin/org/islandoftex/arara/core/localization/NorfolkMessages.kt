@@ -185,8 +185,8 @@ object NorfolkMessages : AraraMessages {
     override val infoDisplayExceptionMoreDetails =
         "Hear's orl my know on that aggraweartin' exception:"
 
-    override fun infoDisplayExecutionTime(time: String) =
-        "Wuh that took ${time} seconds but if thass a slight longer than you expected, dunt yew go mobbing me abowt it cors that ent my fault. My grandf'ar dint have none of these pearks. He had to use a pen and a bit o' pearper, but thass bin nice mardling wi' yew. Dew yew keep a troshin'!"
+    override val infoDisplayExecutionTime = "Wuh that took:"
+    override val infoDisplayTimeUnit = "seconds"
 
     override fun infoDisplayTotalSuccess(files: Int, tasks: Int) =
         "PROPER SUCCESS, THAT IS · ${if (files == 1) "1 file" else "$files files"}, " +

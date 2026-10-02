@@ -130,12 +130,17 @@ object RunLog {
     }
 
     /**
-     * Writes the entry recording the elapsed time of the run.
+     * Writes the entry recording the elapsed time of the run. The
+     * log speaks English regardless of the session locale, so the
+     * format pins the root locale: its dot notation never bends to
+     * the user's language.
      *
      * @param seconds The elapsed seconds.
      */
     fun executionTime(seconds: Double) = logger.info {
-        "Total execution time: $seconds seconds"
+        "Elapsed time: " +
+            String.format(java.util.Locale.ROOT, "%.4f", seconds) +
+            " seconds"
     }
 
     /**

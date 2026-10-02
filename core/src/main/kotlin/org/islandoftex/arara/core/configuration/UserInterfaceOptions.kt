@@ -16,5 +16,5 @@ data class UserInterfaceOptions(
     /**
      * The width terminal output wraps at, in columns.
      */
-    override val terminalOutputWidth: Int = 65
+    override val terminalOutputWidth: Int = 79
 ) : UserInterfaceOptions

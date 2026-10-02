@@ -136,7 +136,7 @@ class RichDialogRendererTest {
         // prove the identity: the dash separators and the tagged
         // block of the classic terminal dialogs
         assertTrue(
-            "-".repeat(65) in output,
+            "-".repeat(79) in output,
             "the classic block opens with the separator"
         )
         assertTrue("ERROR — Greetings" in output, "the classic tag and title render")

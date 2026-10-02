@@ -63,7 +63,7 @@ class PlainDialogRendererStreamTest {
             ""
         }
         val lines = output.lineSequence().filter { it.isNotEmpty() }.toList()
-        val separator = "-".repeat(65)
+        val separator = "-".repeat(79)
         assertEquals(separator, lines.first(), "the block opens with a separator")
         assertEquals(separator, lines.last(), "the block closes with a separator")
         assertTrue("ERROR — Greetings" in output, "the tag and title render")
@@ -147,7 +147,7 @@ class PlainDialogRendererStreamTest {
         }
         assertEquals("", closed, "a closed input cancels, as Swing did")
         assertTrue(
-            "-".repeat(65) in closingOutput,
+            "-".repeat(79) in closingOutput,
             "the input block closes even on cancel"
         )
     }

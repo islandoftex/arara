@@ -8,7 +8,6 @@ import com.github.ajalt.mordant.table.Borders
 import com.github.ajalt.mordant.table.table
 import com.github.ajalt.mordant.terminal.Terminal
 import java.util.Locale
-import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 import kotlin.time.TimeSource
 import org.islandoftex.arara.api.AraraAPI
@@ -720,14 +719,18 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         // - one blank, always, whatever came before it
         terminal.println("")
 
-        val secondDuration = seconds.seconds
-        val separator = Session.userInterfaceOptions.locale
-            .decimalSeparator.toString()
-        val time = secondDuration.inWholeSeconds.toString() + separator +
-            (secondDuration - secondDuration.inWholeSeconds.seconds)
-                .inWholeMilliseconds.toString()
-        val text = LanguageController.messages.infoDisplayExecutionTime(time)
-        printWrapped(text)
+        // the label is chrome and whispers; the value is the payload
+        // and speaks - the field grammar of the presentation; the
+        // format follows the user's locale, its separator included,
+        // and pads to the millisecond
+        terminal.println(
+            muted(LanguageController.messages.infoDisplayExecutionTime) +
+                " " + String.format(
+                    Session.userInterfaceOptions.locale.toJVMLocale(),
+                    "%.4f", seconds
+                ) + " " +
+                LanguageController.messages.infoDisplayTimeUnit
+        )
     }
 
     /**

@@ -102,7 +102,7 @@ internal object CommandRunner {
                     // the duration pairs the two facts in one place
                     "System command exited with value ${result.exitCode} in " +
                         String.format(
-                            Locale.ROOT, "%.3f",
+                            Locale.ROOT, "%.4f",
                             duration.toDouble(DurationUnit.SECONDS)
                         ) + " seconds"
                 }

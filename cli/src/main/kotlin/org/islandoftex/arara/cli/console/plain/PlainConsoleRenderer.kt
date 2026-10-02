@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.console.plain
-
-import kotlin.time.Duration.Companion.seconds
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
@@ -440,13 +438,14 @@ object PlainConsoleRenderer : ConsoleRenderer {
         if (displayLine || displayException || displaySummary)
             println()
 
-        val secondDuration = seconds.seconds
-        val separator = Session.userInterfaceOptions.locale
-            .decimalSeparator.toString()
-        val time = secondDuration.inWholeSeconds.toString() + separator +
-            (secondDuration - secondDuration.inWholeSeconds.seconds)
-                .inWholeMilliseconds.toString()
-        val text = LanguageController.messages.infoDisplayExecutionTime(time)
+        // the format follows the user's locale, its separator
+        // included, and pads to the millisecond
+        val text = LanguageController.messages.infoDisplayExecutionTime +
+            " " + String.format(
+                Session.userInterfaceOptions.locale.toJVMLocale(),
+                "%.4f", seconds
+            ) + " " +
+            LanguageController.messages.infoDisplayTimeUnit
         printWrapped(text)
     }
 

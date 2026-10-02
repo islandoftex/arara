@@ -185,8 +185,8 @@ object DutchMessages : AraraMessages {
     override val infoDisplayExceptionMoreDetails =
         "Er zijn meer details beschikbaar voor deze exception:"
 
-    override fun infoDisplayExecutionTime(time: String) =
-        "Totaal: ${time} seconden"
+    override val infoDisplayExecutionTime = "Verstreken tijd:"
+    override val infoDisplayTimeUnit = "seconden"
 
     override fun infoDisplayTotalSuccess(files: Int, tasks: Int) =
         "TOTAAL SUCCES · ${if (files == 1) "1 bestand" else "$files bestanden"}, " +

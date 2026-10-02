@@ -100,7 +100,8 @@ internal val scenarios = listOf(
                 arguments = listOf("--engine", "lua", "badtype.tex"),
                 expected = listOf(
                         "bad argument",
-                        "#1 to 'exists' (file or string expected, got number)",
+                        "#1 to 'exists'",
+                        "(file or string expected, got number)",
                 ),
                 exitCode = 2,
                 fixture = "lua-engine-conditionals",
@@ -553,7 +554,7 @@ private fun TestCaseBuilder.renderLogParity(scenario: Scenario) {
     val normalize =
         "-e 's/^[0-9-]+ [0-9:.]+ +[A-Z]+ +- //' " +
             "-e 's/in [0-9.]+ seconds/in N seconds/' " +
-            "-e 's/execution time: [0-9.]+ seconds/execution time: N seconds/' " +
+            "-e 's/Elapsed time: [0-9.]+ seconds/Elapsed time: N seconds/' " +
             "-e 's/last modified: [0-9-]+ [0-9:]+/last modified: T/'"
     val provenanceAside = "sed -E '/^Console set to/d'"
     run {

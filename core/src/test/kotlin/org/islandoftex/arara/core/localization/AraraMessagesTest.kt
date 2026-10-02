@@ -111,8 +111,9 @@ class AraraMessagesTest {
                 errorValidateYamlException("alpha"),
                 errorValidateBodyArgumentIdIsReserved("alpha"),
                 errorValidateHeaderWrongIdentifier("alpha", "beta"),
-                infoDisplayExecutionTime("alpha"),
+                infoDisplayExecutionTime,
                 infoDisplayFileInformation("alpha", "beta", "gamma"),
+                infoDisplayTimeUnit,
                 infoInterpreterDryRunModeBooleanMode(true),
                 infoInterpreterDryRunModeSystemCommand("alpha"),
             ).forEach { rendered ->
@@ -169,7 +170,6 @@ class AraraMessagesTest {
                 { it.errorValidateBodyArgumentIdIsReserved("quux1") },
             listOf("quux1", "quux2") to
                 { it.errorValidateHeaderWrongIdentifier("quux1", "quux2") },
-            listOf("quux1") to { it.infoDisplayExecutionTime("quux1") },
             listOf("quux1", "quux2", "quux3") to
                 { it.infoDisplayFileInformation("quux1", "quux2", "quux3") },
             listOf("true") to { it.infoInterpreterDryRunModeBooleanMode(true) },
