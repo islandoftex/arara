@@ -239,7 +239,7 @@ object NorfolkMessages : AraraMessages {
         "Wuh thass a rum ole dew. There ent no names here. Yew're gotta guess who wrote this masterous jarb"
 
     override val infoLabelOnDetails =
-        "DETAILS"
+        "Details"
 
     override val infoLabelOnError =
         "SUFFIN'S GORN WRONG"

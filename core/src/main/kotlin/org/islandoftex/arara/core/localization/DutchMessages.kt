@@ -239,7 +239,7 @@ object DutchMessages : AraraMessages {
         "Geen auteurs opgegeven"
 
     override val infoLabelOnDetails =
-        "DETAILS"
+        "Details"
 
     override val infoLabelOnError =
         "FOUT"

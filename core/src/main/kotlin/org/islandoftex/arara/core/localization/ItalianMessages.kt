@@ -239,7 +239,7 @@ object ItalianMessages : AraraMessages {
         "Nessun autore specificato"
 
     override val infoLabelOnDetails =
-        "DETAILS"
+        "Dettagli"
 
     override val infoLabelOnError =
         "ERROR"

@@ -327,6 +327,7 @@ internal val scenarios = listOf(
                 expected = listOf(
                         "I could not find a rule",
                         "notarulequack.lua",
+                        "  - ",
                 ),
                 exitCode = 2,
                 fixture = "missing-rule",

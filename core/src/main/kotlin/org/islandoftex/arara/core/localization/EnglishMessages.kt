@@ -239,7 +239,7 @@ object EnglishMessages : AraraMessages {
         "No authors provided"
 
     override val infoLabelOnDetails =
-        "DETAILS"
+        "Details"
 
     override val infoLabelOnError =
         "ERROR"

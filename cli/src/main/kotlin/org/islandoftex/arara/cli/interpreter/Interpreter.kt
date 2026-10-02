@@ -127,8 +127,13 @@ class Interpreter(
                     // any single format hardwired into the texts
                     directive.identifier + "." +
                         RuleEngine.current.formats.first().extension,
-                    paths.joinToString("; ", "(", ")") {
-                        it.normalize().toString()
+                    // the paths render as an actual list: the block
+                    // opens on its own line and every directory gets
+                    // a marked line of its own, so it speaks for
+                    // itself instead of hiding inside a punctuation
+                    // group
+                    paths.joinToString("\n", "\n") {
+                        "  - " + it.normalize().toString()
                     }
                 )
             )

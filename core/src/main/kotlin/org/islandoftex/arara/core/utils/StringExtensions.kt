@@ -8,6 +8,9 @@ import org.islandoftex.arara.api.AraraException
  * single wrapping primitive of the console output: every terminal
  * surface, the display as well as the dialogs, wraps through it, so
  * the configured column width is honored identically everywhere.
+ * Embedded line breaks are hard breaks: every line wraps on its
+ * own, so a message can carry its own structure - a list of paths,
+ * a titled block - without the primitive flowing it away.
  *
  * Algorithm from Wikipedia:
  * https://en.wikipedia.org/wiki/Line_wrap_and_word_wrap#Minimum_number_of_lines
@@ -15,22 +18,24 @@ import org.islandoftex.arara.api.AraraException
  * @param width The width to wrap at.
  * @return Wrapped text.
  */
-fun String.wrap(width: Int): String {
-    val words = this.split(" ")
-    var wrapped = words[0]
-    var spaceLeft = width - wrapped.length
-    words.drop(1).forEach {
-        val len = it.length
-        wrapped += if (len + 1 > spaceLeft) {
-            spaceLeft = width - len
-            "\n$it"
-        } else {
-            spaceLeft -= len + 1
-            " $it"
+fun String.wrap(width: Int): String = lineSequence()
+    .map { line ->
+        val words = line.split(" ")
+        var wrapped = words[0]
+        var spaceLeft = width - wrapped.length
+        words.drop(1).forEach {
+            val len = it.length
+            wrapped += if (len + 1 > spaceLeft) {
+                spaceLeft = width - len
+                "\n$it"
+            } else {
+                spaceLeft -= len + 1
+                " $it"
+            }
         }
+        wrapped
     }
-    return wrapped
-}
+    .joinToString("\n")
 
 /**
  * Converts a standard POSIX Shell globbing pattern into a regular expression

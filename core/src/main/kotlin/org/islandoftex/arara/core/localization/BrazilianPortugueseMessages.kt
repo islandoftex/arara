@@ -239,7 +239,7 @@ object BrazilianPortugueseMessages : AraraMessages {
         "Nenhum autor informado"
 
     override val infoLabelOnDetails =
-        "DETALHES"
+        "Detalhes"
 
     override val infoLabelOnError =
         "ERRO"

@@ -239,7 +239,7 @@ object GermanMessages : AraraMessages {
         "Kein Autor berücksichtigt"
 
     override val infoLabelOnDetails =
-        "DETAILS"
+        "Details"
 
     override val infoLabelOnError =
         "FEHLER"

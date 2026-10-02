@@ -281,6 +281,14 @@ on.
   and the interpreter exception moved from the MVEL module to the core
   and API modules; the Lua engine no longer depends on the MVEL module
   at all (version 9 groundwork, see `ROADMAP.md`).
+* The rule lookup error lists the searched paths one per line with a
+  dash marker, so each directory reads for itself instead of hiding
+  inside a punctuation group; a message may now carry its own line
+  structure, as the console wrapping treats embedded line breaks as
+  hard breaks.
+* The details label of an exception renders in sentence case
+  (`Details`), matching the other section titles of the console, in
+  every language.
 
 ## Deprecated
 
