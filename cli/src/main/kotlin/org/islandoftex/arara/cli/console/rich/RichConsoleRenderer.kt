@@ -57,10 +57,11 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     }
 
     /**
-     * Whether the current entry line is still open for a result to
-     * land on.
+     * Whether a compact entry left its line open for the outcome to
+     * land on: the error path tells the label that lands like a
+     * result from the section title by it.
      */
-    private var displayLine = true
+    private var entryLineOpen = false
 
     /**
      * Whether a result has landed on the current entry line, so
@@ -235,12 +236,15 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         closeCurrentFile()
         // a new file clears the prior file's exception state, so
         // the closing summary separates only after an error it
-        // actually follows; and each file opens its own entry
-        // blocks, so the rolling separator resets too - the first
-        // entry of a file never carries a stale blank from the
-        // previous one
+        // actually follows; each file opens its own entry blocks,
+        // so the rolling separator resets too - the first entry of
+        // a file never carries a stale blank from the previous one;
+        // and the result flag resets as well, so an error in the
+        // new file separates from the header alone, not from a
+        // blank the previous file's landed result left behind
         displayException = false
         displayRolling = false
+        displayResult = false
         currentFile = SummaryEntry(
             file.path.fileName,
             file.path.toString(),
@@ -277,7 +281,6 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      * @param task The task name.
      */
     override fun printEntry(name: String, task: String) {
-        displayLine = true
         displayResult = false
         currentFile?.let { it.tasks++ }
         if (isDryRunMode) {
@@ -313,6 +316,9 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         terminal.print(
             head + muted(leader.repeat(fill)) + muted(" ")
         )
+        // the compact line stays open: the outcome - a result or an
+        // error label - lands on it
+        entryLineOpen = true
     }
 
     /**
@@ -370,7 +376,7 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      * @param value The boolean value to be displayed.
      */
     override fun printEntryResult(value: Boolean) {
-        displayLine = false
+        entryLineOpen = false
         displayResult = true
         currentFile?.let { it.success = it.success && value }
 
@@ -409,8 +415,12 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     }
 
     /**
-     * Displays the exception in the terminal: the failure glyph with
-     * the error label, the message and the details of the cause.
+     * Displays the exception in the terminal: an error striking an
+     * open compact entry lands its label on the line like an
+     * outcome, any other error titles its own section with the rule
+     * every section title of the presentation carries, the message
+     * speaks in the default voice beneath it, and a present cause
+     * earns the muted details section.
      *
      * @param text The message to be displayed.
      * @param details The underlying cause details, if any.
@@ -420,25 +430,52 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         // an exception failing the run fails the file it belongs
         // to, whatever its tasks did before
         currentFile?.success = false
+        // the section title ends the open output frame of a verbose
+        // task itself, so no dotted close ever dangles above it
+        detailsPrinted = false
 
         if (displayResult)
             terminal.println("")
-        if (displayLine && !isDryRunMode) {
-            // the verdict of the block carries weight: the danger
-            // tint composed with the bold style
-            terminal.println(
-                (terminal.theme.danger + TextStyle(bold = true))(
-                    failureGlyph() + " " +
-                        LanguageController.messages.infoLabelOnError
+        if (!isDryRunMode) {
+            if (entryLineOpen) {
+                // the entry line is still waiting for its outcome:
+                // the label lands on it like a result, padded into
+                // the reserved space so the word ends flush at the
+                // edge like every other outcome
+                terminal.println(
+                    (terminal.theme.danger + TextStyle(bold = true))(
+                        (failureGlyph() + " " +
+                            LanguageController.messages.infoLabelOnError)
+                            .padStart(
+                                successGlyph().length + 1 + longestMatch
+                            )
+                    )
                 )
-            )
-            terminal.println("")
+                entryLineOpen = false
+                // the completed entry line separates from the
+                // message the way a landed result does
+                terminal.println("")
+            } else {
+                // the label titles its section with the rule the
+                // other section titles carry, and the rule itself
+                // separates: the message follows directly beneath,
+                // with no blank to detach the title from its words
+                val head = failureGlyph() + " " +
+                    LanguageController.messages.infoLabelOnError
+                val fill = (
+                    structureWidth - head.length - 1
+                    ).coerceAtLeast(1)
+                terminal.println(
+                    (terminal.theme.danger + TextStyle(bold = true))(head) +
+                        muted(" " + rule.repeat(fill))
+                )
+            }
         }
-        // the message pre-wraps at the measure - the styled string
-        // carries its own lines, word-wrapped by the shared
-        // primitive
+        // the message pre-wraps at the measure and speaks in the
+        // default voice - the title word carries the severity, so
+        // the prose never smears the tint a shout would
         text.wrap(proseWidth).lineSequence().forEach { line ->
-            terminal.println(terminal.theme.danger(line))
+            terminal.println(line)
         }
         // a present cause earns a details section even when it
         // carries no message of its own
@@ -578,7 +615,9 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         } else {
             RichTheme.frameFallback
         }
-        val spaced = "$frame "
+        // the wide spacing lets the frame whisper: the boundary
+        // holds the stream, the ink never competes with it
+        val spaced = "$frame  "
         return spaced.repeat(structureWidth / spaced.length + 1)
             .take(structureWidth).trimEnd()
     }

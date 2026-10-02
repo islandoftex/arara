@@ -458,6 +458,19 @@ internal val scenarios = listOf(
                 fixture = "console-failure",
         ),
         Scenario(
+                name = "console-error.bats", dir = "console-error",
+                description = "the failed spawn raising its error mid-task",
+                check = "the error label lands on the open entry line",
+                arguments = listOf("--console", "rich", "console-error.tex"),
+                expected = listOf(
+                        "ERROR",
+                        "IO error",
+                        "TOTAL FAILURE",
+                ),
+                exitCode = 2,
+                fixture = "console-error",
+        ),
+        Scenario(
                 name = "console-log-parity.bats", dir = "console-log-parity",
                 description = "the log parity across the presentations",
                 check = "the plain and the rich runs record the same log",

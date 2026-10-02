@@ -29,7 +29,9 @@ on.
   executes, frames the tool's own output with dotted rules and
   names the conditionally skipped directives, a failed task
   quotes the tail of its own output beside the verdict, with the
-  full record in the log, and the interactive dialogs render as
+  full record in the log, an error titles its own section - the
+  severity glyph on the rule, the message in the plain voice
+  beneath it - and the interactive dialogs render as
   type-tinted boxes with the severity glyph, the accent-numbered
   choices and the bold range prompt, degrading to the classic
   dialog blocks when the stream cannot carry them. The command

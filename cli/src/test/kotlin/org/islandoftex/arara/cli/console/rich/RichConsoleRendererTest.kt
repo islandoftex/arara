@@ -126,6 +126,138 @@ class RichConsoleRendererTest {
     }
 
     @Test
+    fun `the mid-task error lands flush on the open entry line`() {
+        val error = render(AnsiLevel.NONE) {
+            printEntry("missingbinary", "The missing binary")
+            printException("the tool never started", null)
+        }
+        val success = render(AnsiLevel.NONE) {
+            printEntry("missingbinary", "The missing binary")
+            printEntryResult(true)
+        }
+        assertEquals(
+            success.lineSequence().first { "SUCCESS" in it }.length,
+            error.lineSequence().first { "ERROR" in it }.length,
+            "the error label ends flush at the edge like a landed result"
+        )
+    }
+
+    @Test
+    fun `the standalone error titles its section with the rule`() {
+        val output = render(AnsiLevel.NONE) {
+            printException("the run could not proceed", null)
+        }
+        val lines = output.lineSequence().toList()
+        assertEquals(
+            "x ERROR",
+            lines[0].take(7),
+            "the section title opens with the glyph and the word"
+        )
+        assertEquals(
+            79,
+            lines[0].length,
+            "the rule fills the title line to the measure"
+        )
+        assertTrue(
+            lines[0].endsWith("-"),
+            "the rule runs from the word to the edge"
+        )
+        assertEquals(
+            "the run could not proceed",
+            lines[1],
+            "the message follows the rule directly, with no blank between"
+        )
+    }
+
+    @Test
+    fun `the error prose speaks in the default voice`() {
+        val output = render(AnsiLevel.TRUECOLOR) {
+            printException("the severity stays on the title word", null)
+        }
+        val prose = output.lineSequence()
+            .first { it.contains("the severity stays") }
+        assertFalse(
+            "\u001B[" in prose,
+            "the message carries no styling: the title word holds the severity"
+        )
+    }
+
+    @Test
+    fun `the error between tasks still titles its section`() {
+        val output = render(AnsiLevel.NONE) {
+            printEntry("echoone", "The echoer")
+            printEntryResult(true)
+            printException("the second task never ran", null)
+        }
+        val title = output.lineSequence().first { "ERROR" in it }
+        assertTrue(
+            title.endsWith("-"),
+            "the section title prints after a landed result too"
+        )
+    }
+
+    @Test
+    fun `a new file opens its error block without a stale separation`() {
+        val first = File.createTempFile("rich", ".tex")
+            .apply { writeText("quack"); deleteOnExit() }
+        val second = File.createTempFile("rich", ".tex")
+            .apply { writeText("quack"); deleteOnExit() }
+        val output = render(AnsiLevel.NONE) {
+            printFileInformation(
+                ProjectFile(MPPPath(first.absolutePath), FileType("tex", "^%.*"))
+            )
+            printEntry("echoone", "The echoer")
+            printEntryResult(true)
+            printFileInformation(
+                ProjectFile(MPPPath(second.absolutePath), FileType("tex", "^%.*"))
+            )
+            printException("the second file failed", null)
+        }
+        val lines = output.lineSequence().toList()
+        val title = lines.indexOfFirst { "ERROR" in it }
+        assertTrue(
+            lines[title - 1].isBlank(),
+            "the header's own blank separates the title"
+        )
+        assertTrue(
+            second.name in lines[title - 2],
+            "no stale separation blank from the prior file's landed result"
+        )
+    }
+
+    @Test
+    fun `the verbose error titles its section over the open frame`() {
+        LinearExecutor.executionOptions = ExecutionOptions(verbose = true)
+        val output = render(AnsiLevel.NONE) {
+            printEntry("missingbinary", "The missing binary")
+            printTaskDetails(
+                Command(listOf("this-binary-does-not-exist")),
+                DirectiveConditional(DirectiveConditionalType.NONE, ""),
+                listOf("Island of TeX")
+            )
+            printException("the tool never started", null)
+        }
+        LinearExecutor.executionOptions = ExecutionOptions()
+        val frame = Regex("^\\.(  \\.)*$")
+        val lines = output.lineSequence().toList()
+        assertEquals(
+            1,
+            lines.count { frame.matches(it) },
+            "exactly one frame rule opens the stream that never came"
+        )
+        assertEquals(
+            "x ERROR",
+            lines[lines.indexOfFirst { frame.matches(it) } + 1].take(7),
+            "the section title terminates the open frame"
+        )
+        assertEquals(
+            "the tool never started",
+            lines[lines.indexOfFirst { frame.matches(it) } + 2],
+            "the message follows the title directly, with no dotted close"
+        )
+    }
+
+    @Test
     fun `the plain stream keeps the structure with ASCII`() {
         val output = render(AnsiLevel.NONE) {
             printBanner()
