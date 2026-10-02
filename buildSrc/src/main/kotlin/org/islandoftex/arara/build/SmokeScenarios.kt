@@ -524,10 +524,14 @@ private fun render(scenario: Scenario): String = bats {
 
 /**
  * Renders the log parity gate of a scenario: the same run under the
- * plain and the rich presentation must record the same log entries,
- * so both logs are normalized - the timestamps, the wall-clock
- * durations and the file modification times vary per run - and the
- * diff has to be empty.
+ * plain and the rich presentation must record the same log
+ * entries. Each log names the presentation it rendered through, so
+ * the two provenance lines are asserted and then left aside. The
+ * normalized display-side records compare inside the diff itself -
+ * a redirection outside the runner would swallow the stream into
+ * the captured output and leave the compared files empty, so the
+ * whole pipeline runs as one shell command whose failure shows the
+ * lines that differ.
  */
 private fun TestCaseBuilder.renderLogParity(scenario: Scenario) {
     run { arara(scenario.arguments + listOf("--console", "plain", "--log")) }
@@ -535,20 +539,26 @@ private fun TestCaseBuilder.renderLogParity(scenario: Scenario) {
     run { "mv arara.log arara-plain.log" }
     run { arara(scenario.arguments + listOf("--console", "rich", "--log")) }
     status { it eq 0 }
-    run {
-        "sed -E -e 's/^[0-9-]+ [0-9:.]+ +[A-Z]+ +- //' " +
+    // the provenance names the presentation each leg rendered
+    // through - the captured stream of the runner keeps the rich
+    // one degraded, so the annotation rides the pinned needle
+    run { "grep 'Console set to plain' arara-plain.log" }
+    status { it eq 0 }
+    run { "grep 'Console set to rich (degraded)' arara.log" }
+    status { it eq 0 }
+    // the normalization folds away what varies per run: the
+    // timestamps, the wall-clock durations, the file modification
+    // times - and the provenance line stays out of the comparison
+    val normalize =
+        "-e 's/^[0-9-]+ [0-9:.]+ +[A-Z]+ +- //' " +
             "-e 's/in [0-9.]+ seconds/in N seconds/' " +
             "-e 's/execution time: [0-9.]+ seconds/execution time: N seconds/' " +
-            "-e 's/last modified: [0-9-]+ [0-9:]+/last modified: T/' " +
-            "arara-plain.log > plain.norm"
-    }
+            "-e 's/last modified: [0-9-]+ [0-9:]+/last modified: T/'"
+    val provenanceAside = "sed -E '/^Console set to/d'"
     run {
-        "sed -E -e 's/^[0-9-]+ [0-9:.]+ +[A-Z]+ +- //' " +
-            "-e 's/in [0-9.]+ seconds/in N seconds/' " +
-            "-e 's/execution time: [0-9.]+ seconds/execution time: N seconds/' " +
-            "-e 's/last modified: [0-9-]+ [0-9:]+/last modified: T/' " +
-            "arara.log > rich.norm"
+        "bash -c \"diff " +
+            "<(sed -E $normalize arara-plain.log | $provenanceAside) " +
+            "<(sed -E $normalize arara.log | $provenanceAside)\""
     }
-    run { "diff plain.norm rich.norm" }
     status { it eq 0 }
 }

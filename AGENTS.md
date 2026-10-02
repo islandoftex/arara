@@ -240,9 +240,12 @@ as the runnable jar).
   the console renderer seam (the display facade routes every call
   site to the renderer resolved at startup and to the run log that
   writes the display-side log entries; the plain renderer carries
-  the historic, byte-identical layout, and the run log holds no
-  console knowledge, so the log records the same lines whichever
-  console rendered the run),
+  the historic, byte-identical layout, and the run log's
+  display-side entries hold no console knowledge, so they record
+  the same lines whichever console rendered the run, while the
+  provenance line at the mode application names the presentation
+  - plain, rich, or rich degraded by an undecorated stream - the
+  way the engine line names the engine),
   the dialog contract (core defines the semantics and ships the
   headless default that assumes no interactive surface; the
   application wires its implementation - the CLI wires the classic

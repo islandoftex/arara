@@ -40,9 +40,12 @@ on.
   application does not offer is reported as an error instead of a
   silent fallback.
 * The log records the verdict and the provenance of the run: a
-  closing entry names the exit code the application returns, and
-  every rule interpretation names the rule file it actually loaded,
-  so the log alone tells what ran and how it ended.
+  closing entry names the exit code the application returns, every
+  rule interpretation names the rule file it actually loaded, and
+  the console presentation names itself when it applies - plain,
+  rich, or rich degraded by an undecorated stream - so the log
+  alone tells what ran, how it ended, and which presentation
+  rendered it.
 * New Lua rule format: rules may now be written as Lua scripts returning a
   rule table (see the `lua` module's `LuaRuleParser` documentation). The
   helper methods known from the YAML format (`getCommand`, `isTrue`,
@@ -348,6 +351,11 @@ on.
 
 ## Fixed
 
+* Runs with neither a console request nor a configuration file kept
+  the headless dialog default, so a rule reaching a dialog errored
+  instead of conversing; the plain presentation - the default -
+  applies from the start of every run, and its dialogs are always
+  in place.
 * The output of every command reaches the log, whatever the
   outcome: the failure path previously discarded the captured
   output, so the very tool output that explains a failure never

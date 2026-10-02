@@ -24,6 +24,7 @@ import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import com.github.ajalt.clikt.parameters.types.restrictTo
+import com.github.ajalt.mordant.rendering.AnsiLevel
 import com.github.ajalt.mordant.rendering.Theme
 import com.github.ajalt.mordant.terminal.Terminal
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -282,7 +283,8 @@ class CLI : CliktCommand("arara") {
     /**
      * Applies the console presentation: the console renderer and the
      * dialog renderer of the mode, so the run and its conversations
-     * share one presentation. The renderer holds the run's ledger,
+     * share one presentation, and the provenance line naming the
+     * presentation in the log. The renderer holds the run's ledger,
      * so re-applying the same mode must not reset it - the
      * renderers are recreated only when the presentation genuinely
      * changes.
@@ -294,8 +296,46 @@ class CLI : CliktCommand("arara") {
             return
         }
         appliedConsoleMode = mode
+        logConsoleMode(mode)
         Display.renderer = mode.renderer(terminal)
         TerminalDialogs.renderer = mode.dialogRenderer(terminal)
+    }
+
+    /**
+     * Logs the console presentation the run renders through: the
+     * provenance names plain and rich alike, and the degradation an
+     * undecorated stream forces on the rich one - a fact no other
+     * record carries. The startup application happens before the
+     * log backend exists, so the run names its effective
+     * presentation again once the backend is in place; every later
+     * genuine change names itself at its application.
+     *
+     * @param mode The console mode to name.
+     */
+    private fun logConsoleMode(mode: ConsoleMode) {
+        logger.info {
+            val degraded = mode == ConsoleMode.RICH &&
+                terminal.terminalInfo.ansiLevel == AnsiLevel.NONE
+            "Console set to ${mode.name.lowercase()}" +
+                if (degraded) " (degraded)" else ""
+        }
+    }
+
+    /**
+     * Update the session with the command line's own contributions:
+     * the key/value pairs of the properties file, if provided, and
+     * the call parameters, which take precedence over the
+     * properties.
+     */
+    private fun updateSessionFromCommandLine() {
+        properties?.let { props ->
+            ConfigurationFiles.toMap(props)
+                .forEach { (key, value) ->
+                    Session.put("arg:$key", value)
+                }
+        }
+
+        parameters.forEach { (key, value) -> Session.put("arg:$key", value) }
     }
 
     /**
@@ -390,12 +430,13 @@ class CLI : CliktCommand("arara") {
         // the terminal
         Logging.init()
 
-        // the presentation the command line names applies before the
-        // run greets, so the banner and every conversation already
-        // belong to it; a configuration-selected presentation
-        // applies when the projects resolve, from the first file
-        // onward
-        console?.let { applyConsoleMode(it) }
+        // the effective presentation applies before the run greets
+        // - the one the command line names, or the plain default -
+        // so the banner and every conversation already belong to it
+        // and the provenance names it from the start; a
+        // configuration-selected presentation applies when the
+        // projects resolve, from the first file onward
+        applyConsoleMode(console ?: ConsoleMode.PLAIN)
 
         Display.printBanner()
 
@@ -406,18 +447,13 @@ class CLI : CliktCommand("arara") {
         // context resets lead to missing output
         Logging.setupLogging(Session.loggingOptions)
 
-        // add all key/value pairs found in the properties file, if
-        // provided in the command line
-        properties?.let { props ->
-                ConfigurationFiles.toMap(props)
-                    .forEach { (key, value) ->
-                        Session.put("arg:$key", value)
-                    }
-            }
+        // the startup application of the presentation happens before
+        // the log backend exists; the provenance names the effective
+        // presentation once the backend is in place, and every later
+        // genuine change names itself at its application
+        logConsoleMode(appliedConsoleMode!!)
 
-        // add all command line call parameters to the session
-        // (command line parameters take precedence over properties)
-        parameters.forEach { (key, value) -> Session.put("arg:$key", value) }
+        updateSessionFromCommandLine()
 
         try {
             LinearExecutor.hooks = ExecutorHooks(
