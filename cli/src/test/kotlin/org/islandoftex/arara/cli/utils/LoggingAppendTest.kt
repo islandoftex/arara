@@ -8,7 +8,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import org.apache.logging.log4j.Level
+import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.ThreadContext
+import org.apache.logging.log4j.core.LoggerContext
 import org.apache.logging.log4j.core.config.Configurator
 import org.islandoftex.arara.api.configuration.LoggingOptions
 import org.islandoftex.arara.core.configuration.LoggingOptions as CoreLoggingOptions
@@ -33,8 +35,14 @@ class LoggingAppendTest {
     fun restoreBackend() {
         ThreadContext.remove("araraLogFile")
         ThreadContext.remove("araraAppend")
-        Configurator.setRootLevel(Level.OFF)
+        // the file appender holds the log open until the context
+        // stops: Windows refuses to delete a file a live handle
+        // claims, so the context releases it before the delete -
+        // Linux tolerates the opposite order, which is why this
+        // teardown was born green there
+        (LogManager.getContext(false) as LoggerContext).stop()
         Files.deleteIfExists(logFile)
+        Configurator.setRootLevel(Level.OFF)
     }
 
     private fun options(append: Boolean): LoggingOptions =
