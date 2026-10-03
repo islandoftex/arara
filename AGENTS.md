@@ -290,9 +290,13 @@ as the runnable jar).
   JVM compounds the platform's quirks with one of its own: the
   standard streams encode with the legacy codepage on Windows,
   so the glyph vocabulary reached a mintty as question marks
-  whatever the font - the streams now speak UTF-8 behind a
-  Windows pty claim, the signature the Cygwin and MSYS families
-  share, and keep the codepage a console reads. The
+  whatever the font - and the modern mintty bridges native
+  programs onto a console, so the claim arrives console-
+  attached, not piped. The streams now speak UTF-8 behind a
+  Windows terminal claim: a pty keeps the pure rewrap, a
+  console additionally borrows the console's output codepage
+  and returns it at exit, and a refused borrow changes
+  nothing at all. The
   glyph vocabulary wants a modern font - Consolas lacks the
   check, the cross and the braille frames, Cascadia Mono and
   DejaVu Sans Mono carry them all - and the

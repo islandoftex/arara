@@ -413,9 +413,11 @@ on.
   codepage there, and every glyph beyond it - the check, the
   cross, the braille frames - reached the terminal as the
   encoder's substitution, whatever the font. The streams now
-  speak UTF-8 behind a Windows pty claim, the signature the
-  Cygwin and MSYS families share, and stay untouched everywhere
-  else.
+  speak UTF-8 behind a Windows terminal claim, the signature
+  the Cygwin and MSYS families share - a pty keeping the pure
+  rewrap, a ConPTY-backed console additionally borrowing the
+  console's output codepage and returning it at exit - and
+  stay untouched everywhere else.
 * Runs with neither a console request nor a configuration file kept
   the headless dialog default, so a rule reaching a dialog errored
   instead of conversing; the plain presentation - the default -

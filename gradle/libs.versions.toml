@@ -34,6 +34,7 @@ luaj = { group = "io.github.taoguan", name = "luaj", version.ref = "luaj-version
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinx-serialization-version" }
 log4j-core = { group = "org.apache.logging.log4j", name = "log4j-core", version.ref = "log4j-version" }
 log4j-impl = { group = "org.apache.logging.log4j", name = "log4j-slf4j2-impl", version.ref = "log4j-version" }
+jna = { group = "net.java.dev.jna", name = "jna", version = "5.14.0" }
 mvel = { group = "org.mvel", name = "mvel2", version.ref = "mvel-version" }
 okio = { group = "com.squareup.okio", name = "okio", version.ref = "okio-version" }
 okio-fakefilesystem = { group = "com.squareup.okio", name = "okio-fakefilesystem", version.ref = "okio-version" }

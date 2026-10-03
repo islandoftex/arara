@@ -42,6 +42,11 @@ dependencies {
     implementation(libs.clikt)
     implementation(libs.clikt.markdown)
     implementation(libs.mordant)
+    // the terminal library's detection rides JNA internally; the
+    // stream adaptation borrows the console codepage through the
+    // same library, and the exclusion tree above keeps the two
+    // in step
+    implementation(libs.jna)
     implementation(libs.mvel)
     implementation(libs.slf4j.api)
     implementation(libs.log4j.core)
