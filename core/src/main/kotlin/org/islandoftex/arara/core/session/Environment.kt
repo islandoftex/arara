@@ -34,8 +34,9 @@ private val logger = KotlinLogging.logger { }
      * @return A string containing the system property value or the fallback.
      */
     fun getSystemProperty(key: String, fallback: String): String =
-        System.getProperties().runCatching {
-            getOrDefault(key, fallback).toString().takeIf { it != "" }
+        runCatching {
+            System.getProperties().getOrDefault(key, fallback).toString()
+                .takeIf { it != "" }
         }.getOrNull() ?: fallback
 
     /**
@@ -46,7 +47,7 @@ private val logger = KotlinLogging.logger { }
      *   exception.
      */
     fun getSystemPropertyOrNull(key: String): String? =
-        System.getProperties().runCatching { getValue(key).toString() }
+        runCatching { System.getProperties().getValue(key).toString() }
             .getOrNull()
 
     /**

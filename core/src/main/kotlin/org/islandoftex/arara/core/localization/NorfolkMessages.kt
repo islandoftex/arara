@@ -223,6 +223,9 @@ object NorfolkMessages : AraraMessages {
     override fun infoInterpreterDryRunModeSystemCommand(command: String) =
         "This is what I'm abowt to dew: ${command}"
 
+    override val infoInterpreterLuaFileEvaluationFailed =
+        "It do luke like ev'luatin' thet there Lua file yew giv' me as a project specifikashun come a-cropper wif a error nobody wuz expektin', so I'll tread it as a ordinary input file. If it wuz meant ter be a project specifikashun, hev a gander in the log fer the details on wot went wrong."
+
     override val infoInterpreterLuaFileNotAProject =
         "It do luke like thet there Lua file yew giv' me ent a proper project specifikashun, so I'll tread it as a ordinary input file. If it wuz meant ter be a project specifikashun, hev a gander in the log fer the details on wot went wrong."
 

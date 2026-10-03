@@ -10,7 +10,6 @@ import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.SafeRunViolationException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
@@ -277,13 +276,18 @@ class RuleMethodsTest {
     @Test
     fun `reports write failures`() {
         val directory = Files.createTempDirectory("arara-write-failure")
-        // directories are rejected by the path contract itself
-        assertFailsWith<AraraIOException> {
+        // a directory is a structurally impossible target, but the
+        // helper reports it like any other failure: a plain false,
+        // the same probe semantics the reading helper keeps
+        assertFalse(
             RuleMethods.writeToFile(MPPPath(directory.toString()), "nope", false)
-        }
-        assertFailsWith<AraraIOException> {
-            RuleMethods.writeToFile(directory.toString(), "nope", false)
-        }
+        )
+        assertFalse(RuleMethods.writeToFile(directory.toString(), "nope", false))
+        // appending is reserved for existing files: a missing target
+        // fails the same way instead of raising past the caller
+        assertFalse(
+            RuleMethods.writeToFile(directory.resolve("absent.txt").toString(), "x", true)
+        )
         // a path nested under a regular file fails at the system level,
         // which the helper reports as a logical false
         val blocker = directory.resolve("blocker.txt")

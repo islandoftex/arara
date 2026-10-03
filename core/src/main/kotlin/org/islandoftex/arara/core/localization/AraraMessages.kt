@@ -385,6 +385,11 @@ interface AraraMessages {
      */
     fun infoInterpreterDryRunModeSystemCommand(command: String): String
     /**
+     * The message shown when evaluating a provided Lua file as a
+     * project specification raised an unexpected error.
+     */
+    val infoInterpreterLuaFileEvaluationFailed: String
+    /**
      * The message shown when a provided Lua file is not a project
      * specification.
      */

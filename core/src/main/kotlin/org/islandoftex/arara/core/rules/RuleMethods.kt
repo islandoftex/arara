@@ -894,7 +894,10 @@ object RuleMethods {
 
     /**
      * Writes the string to a file, using UTF-8 as default encoding,
-     * reporting failure as a plain false rather than raising.
+     * reporting failure as a plain false rather than raising. Both
+     * failure shapes count: the path contract's own verdict on a
+     * structurally impossible write, and the raw system errors of
+     * the underlying operation.
      */
     private fun writeTextToFile(
         file: MPPPath,
@@ -904,6 +907,8 @@ object RuleMethods {
         return try {
             file.writeText(text, append)
             true
+        } catch (_: AraraIOException) {
+            false
         } catch (_: IOException) {
             false
         }

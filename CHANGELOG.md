@@ -391,6 +391,23 @@ on.
 
 ## Fixed
 
+* The `writeToFile` helper reports a plain `false` when the write is
+  structurally impossible - the target is a directory, or the append
+  mode meets a file that does not exist - instead of raising past
+  the rule that called it: the reading helper always kept its probe
+  semantics, and the path layer's own verdicts on impossible writes
+  now count as the ordinary failure the helper's contract promises.
+* A Lua file argument that crashes while being evaluated as a
+  project specification no longer falls back to ordinary input
+  treatment in total silence: the console says so and the log
+  records the unexpected error, the same courtesy a file that is
+  simply not a project already received.
+* The last task of a run can no longer leave the live feedback
+  fighting the closing output: a breath the landing outran - the
+  animator dispatch arriving just as the outcome lands - used to
+  resurrect the frames over the landed result and arm a ticker
+  nothing would ever stop; every stop now retires the dispatches
+  of the animation it ends.
 * A compact entry that exactly fills its space no longer trades its
   last character for an ellipsis: the abbreviation boundary treated
   a perfect fit as an overflow, a bygone off-by-one that the

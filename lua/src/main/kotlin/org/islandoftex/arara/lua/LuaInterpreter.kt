@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.taoguan.luaj.LuaNumber
 import io.github.taoguan.luaj.LuaString
 import io.github.taoguan.luaj.LuaTable
@@ -21,6 +22,8 @@ import org.islandoftex.arara.core.files.UNKNOWN_TYPE
  * references against.
  */
 class LuaInterpreter(private val appWorkingDir: MPPPath) {
+    private val logger = KotlinLogging.logger { }
+
     /**
      * Extract an optional string entry: a missing or nil value yields
      * null, any other non-string value is a parse error (Lua numbers do
@@ -89,9 +92,18 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         workingDirectory: MPPPath,
     ): ProjectFile {
         val path = workingDirectory.resolve(projectFileKey(key).toString())
-        // note: verify that the path exists and warn otherwise
         if (path.isDirectory) {
             throw ProjectParseException("A project file must not be a directory.")
+        }
+        // a missing entry keeps its place in the specification: a
+        // run may generate the file before its turn comes, so the
+        // entry is only named in the log for the author to check,
+        // and a file still missing when its turn arrives fails
+        // with the ordinary extraction error
+        if (!path.exists) {
+            logger.warn {
+                "The project file entry $path does not exist yet."
+            }
         }
         return extractProjectFile(path, projectFileSpec(fileTable, key))
     }

@@ -139,8 +139,6 @@ class Interpreter(
             )
         }
 
-    // note: the printing in the following could be extracted into the
-    // higher level function
     /**
      * "Run" a boolean return value
      * @param value The boolean.

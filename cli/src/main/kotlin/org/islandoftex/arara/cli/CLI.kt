@@ -183,39 +183,7 @@ class CLI : CliktCommand("arara") {
             ?.let { workingDir.resolve(it) }
             ?.takeIf { it.exists }?.readText()
             ?.let { luaScript ->
-                // try project resolution in the following order:
-                // - treat project file as list of projects
-                // - treat project file as a single project
-                // - do not consider it a project
-                // if it is not a project this Lua file should be subject
-                // to ordinary arara execution rules (maybe someone has
-                // defined a lua filetype), so if there is an exception/it
-                // is not a project we simply return null
-                runCatching {
-                    logger.info {
-                        "Guessing provided Lua file is a project specification, " +
-                            "trying to extract information from that."
-                    }
-                    LuaInterpreter(workingDir).parseProjectsFromLua(luaScript)
-                }.getOrElse {
-                    if (it is AraraException) {
-                        Display.printWrapped(
-                            LanguageController.messages
-                                .infoInterpreterLuaFileNotAProject + "\n"
-                        )
-                        logger.info {
-                            "Failed to parse Lua file argument as project: ${it.message}\n" +
-                                "This file is now treated as regular input file. " +
-                                "If it is a project specification, please fix the errors above."
-                        }
-                    }
-                    null
-                }?.also { projects ->
-                    // project specifications do not go through the fallback
-                    // branch below, so the configuration file of every
-                    // project has to be loaded right here
-                    loadProjectConfigurations(projects)
-                }
+                resolveLuaProjectSpecification(workingDir, luaScript)
             }
             ?: Project(
                 "Untitled",
@@ -238,6 +206,67 @@ class CLI : CliktCommand("arara") {
                     )
                 )
             }
+    }
+
+    /**
+     * Resolves the projects a Lua file argument names, when the
+     * single reference points at an existing script: the file is
+     * offered to the project interpreter, and a script that turns
+     * out not to be a project - or one that fails outright -
+     * yields null so the caller falls back to ordinary input
+     * treatment, with both verdicts spoken on the console and
+     * recorded in the log.
+     *
+     * @param workingDir The working directory the script resolves
+     *   its file references against.
+     * @param luaScript The contents of the Lua file argument.
+     * @return The projects the specification resolved to, or null
+     *   when the file is not one.
+     */
+    private fun resolveLuaProjectSpecification(
+        workingDir: MPPPath,
+        luaScript: String
+    ): List<org.islandoftex.arara.api.files.Project>? {
+        return runCatching {
+            logger.info {
+                "Guessing provided Lua file is a project specification, " +
+                    "trying to extract information from that."
+            }
+            LuaInterpreter(workingDir).parseProjectsFromLua(luaScript)
+        }.getOrElse {
+            if (it is AraraException) {
+                Display.printWrapped(
+                    LanguageController.messages
+                        .infoInterpreterLuaFileNotAProject + "\n"
+                )
+                logger.info {
+                    "Failed to parse Lua file argument as project: ${it.message}\n" +
+                        "This file is now treated as regular input file. " +
+                        "If it is a project specification, please fix the errors above."
+                }
+            } else {
+                // an evaluation that crashed outright has to leave
+                // a trace: the fallback keeps the run alive, but
+                // the person waiting on the console must not watch
+                // the file pass by in total silence
+                Display.printWrapped(
+                    LanguageController.messages
+                        .infoInterpreterLuaFileEvaluationFailed + "\n"
+                )
+                logger.error {
+                    "The provided Lua file raised " +
+                        "${it::class.simpleName} during project " +
+                        "resolution: ${it.message}. The file is " +
+                        "now treated as regular input file."
+                }
+            }
+            null
+        }?.also { projects ->
+            // project specifications do not go through the caller's
+            // fallback branch, so the configuration file of every
+            // project has to be loaded right here
+            loadProjectConfigurations(projects)
+        }
     }
 
     /**
@@ -478,7 +507,6 @@ class CLI : CliktCommand("arara") {
                 },
                 executeBeforeFile = {
                     processedFiles.add(it.path.fileName)
-                    // should more file-specific configuration be reset here?
                     updateConfigurationFromCommandLine()
                     Display.printFileInformation(it)
                 },

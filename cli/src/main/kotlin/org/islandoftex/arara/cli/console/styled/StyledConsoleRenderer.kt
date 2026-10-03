@@ -193,6 +193,16 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     private var spinArmed = false
 
     /**
+     * The generation of the live feedback: every stop retires the
+     * dispatches of the animation it ends, so a breath or a tick
+     * the executor already picked up but the landing outran finds
+     * its generation retired under the lock and touches nothing -
+     * no hidden cursor, no frame, no orphaned ticker fighting the
+     * outcome that claimed the zone.
+     */
+    private var spinGeneration = 0
+
+    /**
      * The width of the label column of the verbose task fields.
      */
     private val fieldGutterWidth = StyledTheme.fieldGutterWidth
@@ -449,9 +459,9 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      * fast task stays exactly as static as it always was.
      */
     private fun startLiveFeedback() {
-        stopLiveFeedback()
+        val generation = stopLiveFeedback()
         pendingSpin = animator.schedule(
-            { breathe() },
+            { breathe(generation) },
             ANIMATION_THRESHOLD_MS.toLong(),
             TimeUnit.MILLISECONDS
         )
@@ -466,9 +476,16 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      * is ever rewritten. Each frame carries the elapsed time the
      * task has been running, in the logo's tint: motion, color
      * and information in the space the outcome will claim.
+     *
+     * A breath whose generation the landing retired returns
+     * before touching the terminal, so a dispatch the landing
+     * outran cannot resurrect the animation over the outcome.
      */
-    private fun breathe() {
+    internal fun breathe(generation: Int) {
         synchronized(spinLock) {
+            if (generation != spinGeneration) {
+                return
+            }
             terminal.cursor.hide()
             cursorHidden = true
             var frame = 0
@@ -495,8 +512,13 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
             spinTicker = animator.scheduleAtFixedRate(
                 {
                     synchronized(spinLock) {
-                        frame = (frame + 1) % SPIN_FRAMES.size
-                        breatheOnce()
+                        // the same retirement holds for the ticks: a
+                        // tick the stop outran paints nothing over
+                        // the landed outcome
+                        if (generation == spinGeneration) {
+                            frame = (frame + 1) % SPIN_FRAMES.size
+                            breatheOnce()
+                        }
                     }
                 },
                 ANIMATION_FRAME_MS.toLong(),
@@ -561,10 +583,16 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      * start that never fired, or the breathing frames - which
      * need no erasing, as the outcome overwrites the cell they
      * breathe in - and the terminal cursor returns for the
-     * landing.
+     * landing. The stop retires the generation of the animation
+     * it ends, so the dispatches the executor already holds find
+     * their era closed when they run.
+     *
+     * @return The generation this stop created, for the animation
+     *   that follows to claim as its own.
      */
-    private fun stopLiveFeedback() {
+    private fun stopLiveFeedback(): Int {
         synchronized(spinLock) {
+            spinGeneration++
             pendingSpin?.cancel(false)
             pendingSpin = null
             spinTicker?.cancel(false)
@@ -573,6 +601,7 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
                 terminal.cursor.show()
                 cursorHidden = false
             }
+            return spinGeneration
         }
     }
 

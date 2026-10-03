@@ -223,6 +223,9 @@ object EnglishMessages : AraraMessages {
     override fun infoInterpreterDryRunModeSystemCommand(command: String) =
         "About to run: ${command}"
 
+    override val infoInterpreterLuaFileEvaluationFailed =
+        "It looks like evaluating the provided Lua file as a project specification raised an unexpected error, so I will treat it as a regular input file. If it is meant to be a project specification, please check the log for details on what went wrong."
+
     override val infoInterpreterLuaFileNotAProject =
         "It looks like the provided Lua file could not be parsed as a project specification, so I will treat it as a regular input file. If it is meant to be a project specification, please check the log for details on what went wrong."
 

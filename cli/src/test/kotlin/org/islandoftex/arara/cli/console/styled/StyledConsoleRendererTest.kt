@@ -224,6 +224,31 @@ class StyledConsoleRendererTest {
     }
 
     @Test
+    fun `a breath the landing outran touches nothing`() {
+        Session.userInterfaceOptions = UserInterfaceOptions(
+            enableAnimations = true
+        )
+        val output = render(AnsiLevel.TRUECOLOR, interactive = true) {
+            printEntry("sleeper", "The sleeper")
+            printEntryResult(true)
+            // the landing retired the generation: a breath the
+            // executor ran late - as a dispatch blocked on the lock
+            // would - returns without touching the terminal
+            breathe(Int.MIN_VALUE)
+        }
+        assertTrue("SUCCESS" in output, "the outcome lands as always")
+        val afterLanding = output.substringAfter("SUCCESS")
+        assertFalse(
+            "\u001B[?25l" in afterLanding,
+            "the retired breath never hides the cursor again"
+        )
+        assertFalse(
+            "⠋" in afterLanding,
+            "the retired breath never paints a frame over the outcome"
+        )
+    }
+
+    @Test
     fun `a stream that is not a terminal never sees a frame`() {
         Session.userInterfaceOptions = UserInterfaceOptions(
             enableAnimations = true

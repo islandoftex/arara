@@ -59,8 +59,15 @@ private val copies = mutableListOf<File>()
                 // close first: an open file cannot be deleted on some
                 // operating systems
                 synchronized(lock) {
-                    loaders.forEach { it.close() }
-                    copies.forEach { it.delete() }
+                    // the exit cleanup is best effort: one loader
+                    // refusing to close must not strand the loaders
+                    // after it nor the copies they own
+                    loaders.forEach { loader ->
+                        runCatching { loader.close() }
+                    }
+                    copies.forEach { copy ->
+                        runCatching { copy.delete() }
+                    }
                 }
             }
         )
@@ -105,10 +112,18 @@ private val copies = mutableListOf<File>()
                     copy.delete()
                     throw ioexception
                 }
-                val classloader = URLClassLoader(
-                    arrayOf(copy.toURI().toURL()),
-                    ClassLoading::class.java.classLoader
-                )
+                val classloader = try {
+                    URLClassLoader(
+                        arrayOf(copy.toURI().toURL()),
+                        ClassLoading::class.java.classLoader
+                    )
+                } catch (exception: MalformedURLException) {
+                    // the copy has no consumer when its archive
+                    // cannot become a loader source, so it must
+                    // not linger behind the failed attempt
+                    copy.delete()
+                    throw exception
+                }
                 synchronized(lock) {
                     loaders.add(classloader)
                     copies.add(copy)

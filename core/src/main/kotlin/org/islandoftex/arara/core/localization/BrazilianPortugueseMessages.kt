@@ -223,6 +223,9 @@ object BrazilianPortugueseMessages : AraraMessages {
     override fun infoInterpreterDryRunModeSystemCommand(command: String) =
         "A executar: ${command}"
 
+    override val infoInterpreterLuaFileEvaluationFailed =
+        "Parece que a avaliação do arquivo Lua fornecido como uma especificação de projeto apresentou um erro inesperado, então vou tratá-lo como um arquivo de entrada comum. Se ele deveria ser uma especificação de projeto, consulte o log para obter detalhes sobre o que deu errado."
+
     override val infoInterpreterLuaFileNotAProject =
         "Parece que o arquivo Lua fornecido não pôde ser interpretado como uma especificação de projeto, então vou tratá-lo como um arquivo de entrada comum. Se ele deveria ser uma especificação de projeto, consulte o log para obter detalhes sobre o que deu errado."
 
