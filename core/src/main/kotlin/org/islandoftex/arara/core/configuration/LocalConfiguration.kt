@@ -39,9 +39,8 @@ data class LocalConfiguration(
     val console: String? = null,
 
     /**
-     * Whether the terminal presentations may animate their live
-     * feedback while a task runs. The key is absent by default:
-     * the animation is an opt-in behavior.
+     * The key that silences the live feedback for those who
+     * prefer stillness. The breath is on by default.
      */
     val animations: Boolean? = null,
     /**

@@ -170,6 +170,21 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     private val spinLock = Any()
 
     /**
+     * The column where the outcome zone of the open compact entry
+     * line begins, recorded when the line prints so the frames
+     * and the outcome can re-anchor to it against whatever
+     * displaced the cursor while the task ran.
+     */
+    private var spinZone = 0
+
+    /**
+     * Whether the open entry line armed the live feedback, so its
+     * landings know to re-anchor to the zone the frames breathed
+     * in.
+     */
+    private var spinArmed = false
+
+    /**
      * The width of the label column of the verbose task fields.
      */
     private val fieldGutterWidth = RichTheme.fieldGutterWidth
@@ -400,15 +415,16 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         // the compact line stays open: the outcome - a result or an
         // error label - lands on it
         entryLineOpen = true
-        // the live feedback is an opt-in behavior of this
-        // presentation, gated on the stream truly being a
+        // the live feedback breathes in the outcome zone this
+        // arithmetic just built, gated on the stream truly being a
         // terminal: it waits for the task to outlive the
-        // threshold, then breathes in the outcome zone until the
-        // outcome replaces it. The counter the frames carry
-        // measures from the task's true beginning
-        if (Session.userInterfaceOptions.enableAnimations &&
+        // threshold, then claims the zone until the outcome
+        // replaces it. The counter the frames carry measures from
+        // the task's true beginning
+        spinZone = head.length + fill + 1
+        spinArmed = Session.userInterfaceOptions.enableAnimations &&
             terminal.terminalInfo.outputInteractive
-        ) {
+        if (spinArmed) {
             taskStart = TimeSource.Monotonic.markNow()
             startLiveFeedback()
         }
@@ -447,14 +463,13 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
                 val counter = formatElapsed(
                     taskStart.elapsedNow().toDouble(DurationUnit.SECONDS)
                 )
+                // every frame re-anchors to the outcome zone: the
+                // cursor heals whatever displacement stray typing
+                // left behind, and the frame paints over the
+                // noise itself
+                anchorOutcomeZone()
                 terminal.rawPrint(
                     RichTheme.logo(SPIN_FRAMES[frame]) + " " + counter
-                )
-                // the frames step back over their own visible
-                // width, and the counter only ever grows, so no
-                // residue stays behind them
-                terminal.rawPrint(
-                    "\b".repeat(SPIN_FRAMES[frame].length + 1 + counter.length)
                 )
             }
             breatheOnce()
@@ -469,6 +484,19 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
                 ANIMATION_FRAME_MS.toLong(),
                 TimeUnit.MILLISECONDS
             )
+        }
+    }
+
+    /**
+     * Anchors the cursor to the outcome zone of the open entry
+     * line: every frame and every landing starts from the zone
+     * the outcome owns, healing whatever displacement stray
+     * typing left behind them.
+     */
+    private fun anchorOutcomeZone() {
+        terminal.cursor.move {
+            startOfLine()
+            right(spinZone)
         }
     }
 
@@ -590,6 +618,13 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
 
         if (!isDryRunMode) {
             if (!isVerboseMode) {
+                if (spinArmed) {
+                    // the landing re-anchors like the frames do,
+                    // so the outcome owns the zone no matter what
+                    // displaced the cursor while the task ran
+                    anchorOutcomeZone()
+                    spinArmed = false
+                }
                 // the reserved space keeps the word aligned even when
                 // the label of another language runs longer, and the
                 // line completes here: whatever follows starts on
@@ -651,6 +686,12 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
             terminal.println("")
         if (!isDryRunMode) {
             if (entryLineOpen) {
+                if (spinArmed) {
+                    // the error's landing re-anchors like the
+                    // frames do, claiming the zone it overwrites
+                    anchorOutcomeZone()
+                    spinArmed = false
+                }
                 // the entry line is still waiting for its outcome:
                 // the label lands on it like a result, padded into
                 // the reserved space so the word ends flush at the

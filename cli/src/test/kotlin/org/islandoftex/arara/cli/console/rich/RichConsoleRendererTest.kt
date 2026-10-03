@@ -104,7 +104,7 @@ class RichConsoleRendererTest {
     }
 
     @Test
-    fun `the live feedback stays off unless asked for`() {
+    fun `the animations key silences the breath`() {
         Session.userInterfaceOptions = UserInterfaceOptions(
             enableAnimations = false
         )
@@ -115,7 +115,21 @@ class RichConsoleRendererTest {
         }
         assertFalse(
             "⠋" in output,
-            "no frame ever appears without the opt-in"
+            "no frame ever appears when the key asks for stillness"
+        )
+        assertTrue("SUCCESS" in output, "the result lands as always")
+    }
+
+    @Test
+    fun `the breath is on by default`() {
+        val output = render(AnsiLevel.TRUECOLOR, interactive = true) {
+            printEntry("sleeper", "The sleeper")
+            Thread.sleep(1300)
+            printEntryResult(true)
+        }
+        assertTrue(
+            "⠋" in output,
+            "the bare options breathe with no key set anywhere"
         )
         assertTrue("SUCCESS" in output, "the result lands as always")
     }
@@ -137,6 +151,10 @@ class RichConsoleRendererTest {
         assertTrue(
             Regex("[0-9][.,][0-9]s").containsMatchIn(output),
             "the frames carry the elapsed time of the running task"
+        )
+        assertTrue(
+            Regex("\r\u001B\\[[0-9]+C").containsMatchIn(output),
+            "every frame re-anchors to the outcome zone, healing stray displacement"
         )
         assertTrue(
             "\u001B[?25l" in output,
@@ -172,7 +190,10 @@ class RichConsoleRendererTest {
             "the stop on the error returns the cursor"
         )
         assertTrue(
-            output.lineSequence().any {
+            // the carriage returns of the re-anchors are column
+            // moves, not line breaks: the terminal's eye sees one
+            // physical line, and the stripped view sees it too
+            output.replace("\r", "").lineSequence().any {
                 "The sleeper" in it && "ERROR" in it
             },
             "the error word lands on the open line, overwriting the frame"

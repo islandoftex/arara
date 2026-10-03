@@ -20,8 +20,9 @@ data class UserInterfaceOptions(
     override val terminalOutputWidth: Int = 79,
     /**
      * Whether the terminal presentations may animate their live
-     * feedback while a task runs. The behavior is opt-in: it never
-     * runs unless the user asks for it.
+     * feedback while a task runs. The breath is on by default;
+     * the animations key silences it for those who prefer
+     * stillness.
      */
-    override val enableAnimations: Boolean = false
+    override val enableAnimations: Boolean = true
 ) : UserInterfaceOptions

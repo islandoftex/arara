@@ -23,8 +23,8 @@ public interface UserInterfaceOptions {
 
     /**
      * Whether the terminal presentations may animate their live
-     * feedback while a task runs. The behavior is opt-in: it never
-     * runs unless the user asks for it, and a stream that cannot
+     * feedback while a task runs. The breath is on by default:
+     * the animations key silences it, and a stream that cannot
      * carry it never sees a frame.
      */
     public val enableAnimations: Boolean
