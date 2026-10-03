@@ -178,6 +178,14 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     private var spinZone = 0
 
     /**
+     * The width of the outcome zone of the open compact entry
+     * line, recorded when the line prints so every frame paints
+     * the whole zone at a constant width - the anti-flicker
+     * discipline of a cell-local animation.
+     */
+    private var spinZoneWidth = 0
+
+    /**
      * Whether the open entry line armed the live feedback, so its
      * landings know to re-anchor to the zone the frames breathed
      * in.
@@ -422,6 +430,7 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         // replaces it. The counter the frames carry measures from
         // the task's true beginning
         spinZone = head.length + fill + 1
+        spinZoneWidth = reserved
         spinArmed = Session.userInterfaceOptions.enableAnimations &&
             terminal.terminalInfo.outputInteractive
         if (spinArmed) {
@@ -463,13 +472,19 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
                 val counter = formatElapsed(
                     taskStart.elapsedNow().toDouble(DurationUnit.SECONDS)
                 )
-                // every frame re-anchors to the outcome zone: the
-                // cursor heals whatever displacement stray typing
-                // left behind, and the frame paints over the
-                // noise itself
+                // every frame re-anchors to the outcome zone and
+                // paints it whole: the frame padded with trailing
+                // spaces to the zone's exact, constant width, so
+                // each write overwrites every column the outcome
+                // claims in place - a shrinking counter, stray
+                // typing, nothing lingers, and no clear escape
+                // ever leaves an empty state for the terminal to
+                // render between the frames
                 anchorOutcomeZone()
+                val width = SPIN_FRAMES[frame].length + 1 + counter.length
                 terminal.rawPrint(
-                    StyledTheme.logo(SPIN_FRAMES[frame]) + " " + counter
+                    StyledTheme.logo(SPIN_FRAMES[frame]) + " " + counter +
+                        " ".repeat((spinZoneWidth - width).coerceAtLeast(0))
                 )
             }
             breatheOnce()
@@ -491,7 +506,8 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      * Anchors the cursor to the outcome zone of the open entry
      * line: every frame and every landing starts from the zone
      * the outcome owns, healing whatever displacement stray
-     * typing left behind them.
+     * typing left behind them. The anchor only positions - the
+     * frames and the outcomes paint the zone whole themselves.
      */
     private fun anchorOutcomeZone() {
         terminal.cursor.move {

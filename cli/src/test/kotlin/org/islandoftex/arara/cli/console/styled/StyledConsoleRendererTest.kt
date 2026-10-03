@@ -156,6 +156,10 @@ class StyledConsoleRendererTest {
             Regex("\r\u001B\\[[0-9]+C").containsMatchIn(output),
             "every frame re-anchors to the outcome zone, healing stray displacement"
         )
+        assertFalse(
+            "\u001B[0K" in output,
+            "the zone is painted whole in place, never cleared - no empty state to flicker"
+        )
         assertTrue(
             "\u001B[?25l" in output,
             "the terminal cursor yields the breathing cell to the frames"
