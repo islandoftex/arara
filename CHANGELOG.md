@@ -407,6 +407,15 @@ on.
 * A dialog whose input stream ends completes its prompt line before
   the error arrives, so the closed-input error starts on its own
   line in both presentations.
+* The styled presentation's glyphs no longer render as question
+  marks in the Unix terminal emulators on Windows: the JVM
+  encodes the standard streams with the platform's legacy
+  codepage there, and every glyph beyond it - the check, the
+  cross, the braille frames - reached the terminal as the
+  encoder's substitution, whatever the font. The streams now
+  speak UTF-8 behind a Windows pty claim, the signature the
+  Cygwin and MSYS families share, and stay untouched everywhere
+  else.
 * Runs with neither a console request nor a configuration file kept
   the headless dialog default, so a rule reaching a dialog errored
   instead of conversing; the plain presentation - the default -

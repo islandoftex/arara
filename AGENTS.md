@@ -287,6 +287,12 @@ as the runnable jar).
   own help included. The live feedback is gated the same way: it
   requires the user's blessing, the escape vocabulary and a
   live terminal, so a legacy console never sees a frame. The
+  JVM compounds the platform's quirks with one of its own: the
+  standard streams encode with the legacy codepage on Windows,
+  so the glyph vocabulary reached a mintty as question marks
+  whatever the font - the streams now speak UTF-8 behind a
+  Windows pty claim, the signature the Cygwin and MSYS families
+  share, and keep the codepage a console reads. The
   glyph vocabulary wants a modern font - Consolas lacks the
   check, the cross and the braille frames, Cascadia Mono and
   DejaVu Sans Mono carry them all - and the

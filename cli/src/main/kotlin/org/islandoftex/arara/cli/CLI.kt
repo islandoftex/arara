@@ -51,6 +51,7 @@ import org.islandoftex.arara.cli.ruleset.RuleEngine
 import org.islandoftex.arara.cli.utils.Display
 import org.islandoftex.arara.cli.utils.Logging
 import org.islandoftex.arara.cli.utils.RunLog
+import org.islandoftex.arara.cli.utils.StandardStreams
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.LoggingOptions
 import org.islandoftex.arara.core.configuration.UserInterfaceOptions
@@ -544,6 +545,9 @@ class CLI : CliktCommand("arara") {
  * @param args A string array containing all command line arguments.
  */
 fun main(args: Array<String>) {
+    // the standard streams speak UTF-8 to a terminal that
+    // expects it, before anything downstream ever prints
+    StandardStreams.adaptForTerminal()
     // the logging facade announces its detected backend once per
     // virtual machine by default; the command line owns its
     // output surface, so the announcement is turned off up front
