@@ -273,8 +273,26 @@ as the runnable jar).
   conditionally skipped directives; a failed task quotes the tail
   of its own output in the dim bar panel, with the full record in
   the log) are the offered modes, and an
-  unoffered name is an error rather than a silent fallback),
-  the clikt command line, and the shadow jar. **Directive conditionals
+  unoffered name is an error rather than a silent fallback.
+  On Windows, the console landscape has two color systems: the
+  legacy console API every host accepts, and VT sequences, which
+  a program must opt into per process (`SetConsoleMode` with
+  `ENABLE_VIRTUAL_TERMINAL_PROCESSING`) before the console agrees
+  to interpret them. arara does not flip that bit: mordant probes
+  the console honestly, so a legacy conhost gets the degraded
+  form by design, ConPTY hosts (Windows Terminal, mintty) render
+  the full presentation, and a terminal that claims colors it
+  cannot process - bash inside a legacy console inherits a
+  lying `TERM` - garbles every ANSI byte it receives, arara's
+  own help included. The live feedback is gated the same way: it
+  requires the user's blessing, the escape vocabulary and a
+  live terminal, so a legacy console never sees a frame. The
+  glyph vocabulary wants a modern font - Consolas lacks the
+  check, the cross and the braille frames, Cascadia Mono and
+  DejaVu Sans Mono carry them all - and the
+  `VirtualTerminalLevel` registry key is the user-side escape
+  hatch for making conhost process VT for every program.
+  The clikt command line, and the shadow jar. **Directive conditionals
   (`if`/`while`/`until`/`unless`) and interpolation in directive
   `options` follow the engine too**: `--engine lua` evaluates conditionals
   and interpolates `{{ … }}` tags as Lua (`LuaConditionalEvaluator` /

@@ -241,6 +241,31 @@ class StyledConsoleRendererTest {
     }
 
     @Test
+    fun `a terminal without the escape vocabulary never sees a frame`() {
+        // the state a Windows legacy console produces and no POSIX
+        // stream can: interactive, yet carrying no escape
+        // processing - the frames and their anchor codes would
+        // render as bytes there, overwriting the line's head
+        Session.userInterfaceOptions = UserInterfaceOptions(
+            enableAnimations = true
+        )
+        val output = render(AnsiLevel.NONE, interactive = true) {
+            printEntry("sleeper", "The sleeper")
+            Thread.sleep(1300)
+            printEntryResult(true)
+        }
+        assertFalse(
+            "⠋" in output,
+            "the frames never fire on a stream that cannot carry them"
+        )
+        assertFalse(
+            Regex("\r\u001B\\[[0-9]+C").containsMatchIn(output),
+            "the landing anchor never fires either - the word lands plainly"
+        )
+        assertTrue("SUCCESS" in output, "the result lands as always")
+    }
+
+    @Test
     fun `the counter escalates its notation as the task runs longer`() {
         val renderer = StyledConsoleRenderer(
             Terminal(AnsiLevel.NONE, width = 80)

@@ -424,14 +424,18 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         // error label - lands on it
         entryLineOpen = true
         // the live feedback breathes in the outcome zone this
-        // arithmetic just built, gated on the stream truly being a
-        // terminal: it waits for the task to outlive the
-        // threshold, then claims the zone until the outcome
-        // replaces it. The counter the frames carry measures from
-        // the task's true beginning
+        // arithmetic just built, gated on the user's blessing,
+        // the escape vocabulary and a live terminal alike: a
+        // Windows legacy console is interactive yet carries no
+        // escapes, and frames written there would render as
+        // bytes. It waits for the task to outlive the threshold,
+        // then claims the zone until the outcome replaces it.
+        // The counter the frames carry measures from the task's
+        // true beginning
         spinZone = head.length + fill + 1
         spinZoneWidth = reserved
         spinArmed = Session.userInterfaceOptions.enableAnimations &&
+            isDecorated &&
             terminal.terminalInfo.outputInteractive
         if (spinArmed) {
             taskStart = TimeSource.Monotonic.markNow()

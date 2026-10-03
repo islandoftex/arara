@@ -28,7 +28,7 @@ on.
   to the outcome zone at every frame so stray typing never
   displaces the landing, yields the terminal cursor while it
   breathes and restores it for the outcome, and never runs
-  outside a real terminal.
+  outside a real terminal that can carry its escapes.
 * New `-c`/`--console` command line option and `console`
   configuration key (in both configuration file formats) to select
   the console presentation: `plain` (the default, the historic
