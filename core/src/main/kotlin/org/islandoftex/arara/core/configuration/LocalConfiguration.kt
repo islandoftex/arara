@@ -37,6 +37,13 @@ data class LocalConfiguration(
      * default.
      */
     val console: String? = null,
+
+    /**
+     * Whether the terminal presentations may animate their live
+     * feedback while a task runs. The key is absent by default:
+     * the animation is an opt-in behavior.
+     */
+    val animations: Boolean? = null,
     /**
      * The named directive lists the configuration provides, mapped from
      * preamble name to its directives.
@@ -162,6 +169,8 @@ private val expandPathTokens: Boolean = true
         return org.islandoftex.arara.core.configuration.UserInterfaceOptions(
             locale = language?.let { MPPLocale(it) }
                 ?: baseOptions.locale,
+            enableAnimations = animations
+                ?: baseOptions.enableAnimations
         )
     }
 

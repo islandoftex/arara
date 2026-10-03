@@ -55,12 +55,13 @@ class RichConsoleRendererTest {
     private fun render(
         ansiLevel: AnsiLevel,
         width: Int = 80,
+        interactive: Boolean = false,
         block: RichConsoleRenderer.() -> Unit
     ): String {
         val sink = ByteArrayOutputStream()
         System.setOut(PrintStream(sink, true))
         val renderer = RichConsoleRenderer(
-            Terminal(ansiLevel, width = width)
+            Terminal(ansiLevel, width = width, interactive = interactive)
         )
         renderer.block()
         System.setOut(originalOut)
@@ -100,6 +101,149 @@ class RichConsoleRendererTest {
             "the success result carries the check glyph"
         )
         assertFalse("\n" in output.trimEnd(), "the compact entry stays on one line")
+    }
+
+    @Test
+    fun `the live feedback stays off unless asked for`() {
+        Session.userInterfaceOptions = UserInterfaceOptions(
+            enableAnimations = false
+        )
+        val output = render(AnsiLevel.TRUECOLOR, interactive = true) {
+            printEntry("sleeper", "The sleeper")
+            Thread.sleep(1200)
+            printEntryResult(true)
+        }
+        assertFalse(
+            "⠋" in output,
+            "no frame ever appears without the opt-in"
+        )
+        assertTrue("SUCCESS" in output, "the result lands as always")
+    }
+
+    @Test
+    fun `the live feedback breathes after the threshold`() {
+        Session.userInterfaceOptions = UserInterfaceOptions(
+            enableAnimations = true
+        )
+        val output = render(AnsiLevel.TRUECOLOR, interactive = true) {
+            printEntry("sleeper", "The sleeper")
+            Thread.sleep(1300)
+            printEntryResult(true)
+        }
+        assertTrue(
+            "⠋" in output,
+            "the frames cycle in the outcome zone once the task outlives the threshold"
+        )
+        assertTrue(
+            Regex("[0-9][.,][0-9]s").containsMatchIn(output),
+            "the frames carry the elapsed time of the running task"
+        )
+        assertTrue(
+            "\u001B[?25l" in output,
+            "the terminal cursor yields the breathing cell to the frames"
+        )
+        assertTrue(
+            "\u001B[?25h" in output,
+            "the outcome restores the cursor for the landing"
+        )
+        assertTrue("SUCCESS" in output, "the result still lands cleanly")
+    }
+
+    @Test
+    fun `the breath stops for the error that claims its line`() {
+        Session.userInterfaceOptions = UserInterfaceOptions(
+            enableAnimations = true
+        )
+        val output = render(AnsiLevel.TRUECOLOR, interactive = true) {
+            printEntry("sleeper", "The sleeper")
+            Thread.sleep(1300)
+            printException("the tool failed mid-breath", null)
+        }
+        assertTrue(
+            "⠋" in output,
+            "the zone breathed before the error struck"
+        )
+        assertTrue(
+            "\u001B[?25l" in output,
+            "the cursor yielded the breathing zone"
+        )
+        assertTrue(
+            "\u001B[?25h" in output,
+            "the stop on the error returns the cursor"
+        )
+        assertTrue(
+            output.lineSequence().any {
+                "The sleeper" in it && "ERROR" in it
+            },
+            "the error word lands on the open line, overwriting the frame"
+        )
+        assertTrue(
+            "the tool failed mid-breath" in output,
+            "the message follows the landing"
+        )
+    }
+
+    @Test
+    fun `a fast task never breathes`() {
+        Session.userInterfaceOptions = UserInterfaceOptions(
+            enableAnimations = true
+        )
+        val output = render(AnsiLevel.TRUECOLOR, interactive = true) {
+            printEntry("echoone", "The echoer")
+            printEntryResult(true)
+        }
+        assertFalse(
+            "⠋" in output,
+            "the threshold keeps fast runs exactly as static as they always were"
+        )
+    }
+
+    @Test
+    fun `a stream that is not a terminal never sees a frame`() {
+        Session.userInterfaceOptions = UserInterfaceOptions(
+            enableAnimations = true
+        )
+        val output = render(AnsiLevel.TRUECOLOR) {
+            printEntry("sleeper", "The sleeper")
+            Thread.sleep(1300)
+            printEntryResult(true)
+        }
+        assertFalse(
+            "⠋" in output,
+            "the interactivity gates the frames away"
+        )
+        assertTrue("SUCCESS" in output, "the result lands as always")
+    }
+
+    @Test
+    fun `the counter escalates its notation as the task runs longer`() {
+        val renderer = RichConsoleRenderer(
+            Terminal(AnsiLevel.NONE, width = 80)
+        )
+        assertEquals(
+            "2.4s", renderer.formatElapsed(2.4),
+            "under a minute: the live tenths"
+        )
+        assertEquals(
+            "59.9s", renderer.formatElapsed(59.9),
+            "the last tenth before the escalation"
+        )
+        assertEquals(
+            "1:04", renderer.formatElapsed(64.0),
+            "past the minute: the clock"
+        )
+        assertEquals(
+            "12:30", renderer.formatElapsed(750.0),
+            "the clock holds under the hour"
+        )
+        assertEquals(
+            "1:00:04", renderer.formatElapsed(3604.0),
+            "past the hour: the full clock"
+        )
+        assertEquals(
+            "10:00:04", renderer.formatElapsed(36004.0),
+            "the pathological run still tells its time"
+        )
     }
 
     @Test

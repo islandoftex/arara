@@ -20,4 +20,12 @@ public interface UserInterfaceOptions {
      * messages not the messages of external tools that are called.
      */
     public val terminalOutputWidth: Int
+
+    /**
+     * Whether the terminal presentations may animate their live
+     * feedback while a task runs. The behavior is opt-in: it never
+     * runs unless the user asks for it, and a stream that cannot
+     * carry it never sees a frame.
+     */
+    public val enableAnimations: Boolean
 }

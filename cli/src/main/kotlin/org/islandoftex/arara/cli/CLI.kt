@@ -352,9 +352,15 @@ class CLI : CliktCommand("arara") {
         // every other command line setting
         console?.let { applyConsoleMode(it) }
 
+        // the command line owns the language alone; every other
+        // member carries from the configuration, so a fresh
+        // construction must state them explicitly - a silent reset
+        // here would quietly bury what the user configured
         Session.userInterfaceOptions = UserInterfaceOptions(
             locale = language?.let { MPPLocale(it) }
                 ?: Session.userInterfaceOptions.locale,
+            terminalOutputWidth = Session.userInterfaceOptions.terminalOutputWidth,
+            enableAnimations = Session.userInterfaceOptions.enableAnimations,
         )
         LanguageController.loadMessagesFor(Session.userInterfaceOptions.locale)
 

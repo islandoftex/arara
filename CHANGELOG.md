@@ -16,6 +16,18 @@ on.
 
 ## Added
 
+* New optional live feedback for the rich presentation: while a
+  task runs, the outcome zone breathes - braille frames cycling
+  in the application's cyan accent beside a live counter of the
+  elapsed time, the counter escalating from tenths of a second
+  to the full clock as the task runs longer. The behavior is
+  opt-in through the `animations` configuration key (in both
+  configuration file formats), waits a second before it starts
+  so fast tasks stay exactly as static as they always were,
+  yields the terminal cursor while it breathes and restores it
+  for the outcome, and never runs outside a real terminal. The
+  default is off; a later release may promote it once users
+  have lived with it.
 * New `-c`/`--console` command line option and `console`
   configuration key (in both configuration file formats) to select
   the console presentation: `plain` (the default, the historic

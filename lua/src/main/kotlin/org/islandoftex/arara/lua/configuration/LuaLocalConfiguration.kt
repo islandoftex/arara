@@ -61,7 +61,8 @@ object LuaLocalConfiguration {
     private val knownKeys = setOf(
         "paths", "file_types", "language", "loops", "verbose", "logging",
         "header", "db_name", "log_name", "preambles", "console",
-        "default_preamble", "prepend_preamble_if_directives_given"
+        "default_preamble", "prepend_preamble_if_directives_given",
+        "animations"
     )
 
     /**
@@ -151,6 +152,7 @@ private fun tableToMap(table: LuaTable): Map<String, Any?> =
             dbname = string(map, "db_name"),
             logname = string(map, "log_name"),
             console = string(map, "console"),
+            animations = boolean(map, "animations"),
             preambles = stringMap(map, "preambles"),
             defaultPreamble = string(map, "default_preamble"),
             prependPreambleIfDirectivesGiven =

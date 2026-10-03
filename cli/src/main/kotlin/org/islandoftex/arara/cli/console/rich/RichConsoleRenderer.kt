@@ -8,6 +8,10 @@ import com.github.ajalt.mordant.table.Borders
 import com.github.ajalt.mordant.table.table
 import com.github.ajalt.mordant.terminal.Terminal
 import java.util.Locale
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.TimeUnit
 import kotlin.time.DurationUnit
 import kotlin.time.TimeSource
 import org.islandoftex.arara.api.configuration.ExecutionMode
@@ -129,10 +133,41 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     private var detailsPrinted = false
 
     /**
-     * The monotonic mark of the current task's start, taken when its
-     * details print and the command is about to run.
+     * The monotonic mark of the current task's start, taken when
+     * its details print or when its compact line opens the live
+     * feedback, so the frames can count what the task has been
+     * running for.
      */
     private var taskStart = TimeSource.Monotonic.markNow()
+
+    /**
+     * The executor that breathes life into the pending outcome
+     * zone, created only when the live feedback is first asked
+     * for. Its single thread is a daemon: it dies with the run,
+     * and a run that never animates never pays for it.
+     */
+    private val animator: ScheduledExecutorService by lazy {
+        Executors.newSingleThreadScheduledExecutor { runnable ->
+            Thread(runnable, "arara-live-feedback").apply { isDaemon = true }
+        }
+    }
+
+    /**
+     * The live feedback of the running task: the scheduled start
+     * that waits for the task to outlive the threshold, the
+     * ticker cycling its frames once it did, and whether the
+     * breathing cell currently hides the terminal cursor.
+     */
+    private var pendingSpin: ScheduledFuture<*>? = null
+    private var spinTicker: ScheduledFuture<*>? = null
+    private var cursorHidden = false
+
+    /**
+     * The lock serializing the live feedback against the outcomes
+     * that replace it: the result landing on the open line and the
+     * exception claiming it never race the frame writer.
+     */
+    private val spinLock = Any()
 
     /**
      * The width of the label column of the verbose task fields.
@@ -159,6 +194,40 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
          * full record lives in the log file.
          */
         const val PANEL_TAIL_LINES = 10
+
+        /**
+         * How long a task must run before the live feedback earns
+         * its seat: fast tasks stay exactly as static as they
+         * always were, and only real work starts breathing.
+         */
+        const val ANIMATION_THRESHOLD_MS = 1000
+
+        /**
+         * The period at which the live feedback cycles its frames.
+         */
+        const val ANIMATION_FRAME_MS = 90
+
+        /**
+         * The frames the live feedback breathes through, in the
+         * outcome zone of the open entry line: the braille dots
+         * cycling their patterns, the classic working vocabulary.
+         */
+        val SPIN_FRAMES = listOf(
+            "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"
+        )
+
+        /**
+         * The seconds in a minute, the boundary where the counter
+         * retires its tenths and starts telling time the clock
+         * way.
+         */
+        const val SECONDS_PER_MINUTE = 60
+
+        /**
+         * The seconds in an hour, the boundary where the counter
+         * grows to the full clock.
+         */
+        const val SECONDS_PER_HOUR = 3600
     }
 
     /**
@@ -331,6 +400,132 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         // the compact line stays open: the outcome - a result or an
         // error label - lands on it
         entryLineOpen = true
+        // the live feedback is an opt-in behavior of this
+        // presentation, gated on the stream truly being a
+        // terminal: it waits for the task to outlive the
+        // threshold, then breathes in the outcome zone until the
+        // outcome replaces it. The counter the frames carry
+        // measures from the task's true beginning
+        if (Session.userInterfaceOptions.enableAnimations &&
+            terminal.terminalInfo.outputInteractive
+        ) {
+            taskStart = TimeSource.Monotonic.markNow()
+            startLiveFeedback()
+        }
+    }
+
+    /**
+     * Starts the live feedback for the task whose entry line just
+     * opened: the first frame waits for the threshold, so every
+     * fast task stays exactly as static as it always was.
+     */
+    private fun startLiveFeedback() {
+        stopLiveFeedback()
+        pendingSpin = animator.schedule(
+            { breathe() },
+            ANIMATION_THRESHOLD_MS.toLong(),
+            TimeUnit.MILLISECONDS
+        )
+    }
+
+    /**
+     * The first breath of the live feedback: the terminal cursor
+     * yields the breathing zone to the frames - the library
+     * restores it if the program dies while the zone breathes -
+     * and the ticker writes each frame and steps back, so the
+     * cursor never leaves the outcome zone and nothing outside it
+     * is ever rewritten. Each frame carries the elapsed time the
+     * task has been running, in the logo's tint: motion, color
+     * and information in the space the outcome will claim.
+     */
+    private fun breathe() {
+        synchronized(spinLock) {
+            terminal.cursor.hide()
+            cursorHidden = true
+            var frame = 0
+            fun breatheOnce() {
+                val counter = formatElapsed(
+                    taskStart.elapsedNow().toDouble(DurationUnit.SECONDS)
+                )
+                terminal.rawPrint(
+                    RichTheme.logo(SPIN_FRAMES[frame]) + " " + counter
+                )
+                // the frames step back over their own visible
+                // width, and the counter only ever grows, so no
+                // residue stays behind them
+                terminal.rawPrint(
+                    "\b".repeat(SPIN_FRAMES[frame].length + 1 + counter.length)
+                )
+            }
+            breatheOnce()
+            spinTicker = animator.scheduleAtFixedRate(
+                {
+                    synchronized(spinLock) {
+                        frame = (frame + 1) % SPIN_FRAMES.size
+                        breatheOnce()
+                    }
+                },
+                ANIMATION_FRAME_MS.toLong(),
+                ANIMATION_FRAME_MS.toLong(),
+                TimeUnit.MILLISECONDS
+            )
+        }
+    }
+
+    /**
+     * Formats the elapsed time the live feedback carries: the
+     * counter tells time the way clocks do - live tenths under a
+     * minute, minutes and seconds under an hour, the full clock
+     * beyond - so its width stays stable as the scale grows and
+     * every rung fits the zone the outcome claims. The escalated
+     * rungs are digits and colons alone, so no locale ever
+     * reshapes them.
+     *
+     * @param seconds The elapsed seconds of the running task.
+     * @return The counter the frames carry beside them.
+     */
+    internal fun formatElapsed(seconds: Double): String {
+        val whole = seconds.toInt()
+        return when {
+            seconds < SECONDS_PER_MINUTE ->
+                String.format(
+                    Session.userInterfaceOptions.locale.toJVMLocale(),
+                    "%.1f", seconds
+                ) + "s"
+            seconds < SECONDS_PER_HOUR ->
+                String.format(
+                    Locale.ROOT, "%d:%02d",
+                    whole / SECONDS_PER_MINUTE,
+                    whole % SECONDS_PER_MINUTE
+                )
+            else ->
+                String.format(
+                    Locale.ROOT, "%d:%02d:%02d",
+                    whole / SECONDS_PER_HOUR,
+                    (whole % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE,
+                    whole % SECONDS_PER_MINUTE
+                )
+        }
+    }
+
+    /**
+     * Stops the live feedback wherever it stands: the scheduled
+     * start that never fired, or the breathing frames - which
+     * need no erasing, as the outcome overwrites the cell they
+     * breathe in - and the terminal cursor returns for the
+     * landing.
+     */
+    private fun stopLiveFeedback() {
+        synchronized(spinLock) {
+            pendingSpin?.cancel(false)
+            pendingSpin = null
+            spinTicker?.cancel(false)
+            spinTicker = null
+            if (cursorHidden) {
+                terminal.cursor.show()
+                cursorHidden = false
+            }
+        }
     }
 
     /**
@@ -388,6 +583,7 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      * @param value The boolean value to be displayed.
      */
     override fun printEntryResult(value: Boolean) {
+        stopLiveFeedback()
         entryLineOpen = false
         displayResult = true
         currentFile?.let { it.success = it.success && value }
@@ -442,6 +638,7 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      * @param details The underlying cause details, if any.
      */
     override fun printException(text: String, details: String?) {
+        stopLiveFeedback()
         displayException = true
         // an exception failing the run fails the file it belongs
         // to, whatever its tasks did before
