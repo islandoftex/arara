@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.console.rich
+package org.islandoftex.arara.cli.console.styled
 
 import com.github.ajalt.mordant.rendering.AnsiLevel
 import com.github.ajalt.mordant.rendering.TextStyle
@@ -12,7 +12,7 @@ import org.islandoftex.arara.core.ui.DialogRenderer
 import org.islandoftex.arara.core.utils.wrap
 
 /**
- * Implements the rich dialog renderer: the conversation a rule
+ * Implements the styled dialog renderer: the conversation a rule
  * starts, framed in the box the interruption deserves - the border
  * tinted by the message kind, the severity glyph beside the tagged
  * title, the choices numbered in the accent with their hanging
@@ -26,7 +26,7 @@ import org.islandoftex.arara.core.utils.wrap
  * @author Island of TeX
  */
 @Suppress("MagicNumber", "TooManyFunctions")
-class RichDialogRenderer(private val terminal: Terminal) : DialogRenderer {
+class StyledDialogRenderer(private val terminal: Terminal) : DialogRenderer {
     /**
      * The message type codes of the dialog helpers, as rule authors
      * write them: an error, an information, a warning and a
@@ -233,7 +233,7 @@ class RichDialogRenderer(private val terminal: Terminal) : DialogRenderer {
      * measure minus the borders and the padding of the frame.
      */
     private fun wrappingWidth(): Int =
-        terminal.size.width.coerceAtMost(RichTheme.proseMaximumWidth) -
+        terminal.size.width.coerceAtMost(StyledTheme.proseMaximumWidth) -
             boxChromeWidth
 
     /**
@@ -262,19 +262,19 @@ class RichDialogRenderer(private val terminal: Terminal) : DialogRenderer {
      */
     private fun glyphFor(type: Int): String = when (type) {
         typeError -> if (isDecorated) {
-            RichTheme.failureGlyph
+            StyledTheme.failureGlyph
         } else {
-            RichTheme.failureFallback
+            StyledTheme.failureFallback
         }
         typeWarning -> if (isDecorated) {
-            RichTheme.warningGlyph
+            StyledTheme.warningGlyph
         } else {
-            RichTheme.warningFallback
+            StyledTheme.warningFallback
         }
         typeInfo -> if (isDecorated) {
-            RichTheme.infoGlyph
+            StyledTheme.infoGlyph
         } else {
-            RichTheme.infoFallback
+            StyledTheme.infoFallback
         }
         else -> "?"
     }
@@ -287,7 +287,7 @@ class RichDialogRenderer(private val terminal: Terminal) : DialogRenderer {
         typeError -> terminal.theme.danger
         typeWarning -> terminal.theme.warning
         typeInfo -> terminal.theme.info
-        typeQuestion -> RichTheme.logo
+        typeQuestion -> StyledTheme.logo
         else -> terminal.theme.muted
     }
 }

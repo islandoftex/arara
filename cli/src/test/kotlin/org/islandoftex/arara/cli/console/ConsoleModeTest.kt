@@ -33,19 +33,19 @@ class ConsoleModeTest {
     }
 
     @Test
-    fun `the configuration names the rich mode`() {
+    fun `the configuration names the styled mode`() {
         assertEquals(
-            ConsoleMode.RICH,
-            ConsoleMode.resolve(null, "rich"),
-            "the configured rich mode resolves"
+            ConsoleMode.STYLED,
+            ConsoleMode.resolve(null, "styled"),
+            "the configured styled mode resolves"
         )
     }
 
     @Test
-    fun `the command line rich choice is final`() {
+    fun `the command line styled choice is final`() {
         assertEquals(
-            ConsoleMode.RICH,
-            ConsoleMode.resolve(ConsoleMode.RICH, "nonsense"),
+            ConsoleMode.STYLED,
+            ConsoleMode.resolve(ConsoleMode.STYLED, "nonsense"),
             "the command line choice is final"
         )
     }

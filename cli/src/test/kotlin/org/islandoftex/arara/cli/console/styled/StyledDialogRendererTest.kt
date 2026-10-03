@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.console.rich
+package org.islandoftex.arara.cli.console.styled
 
 import com.github.ajalt.mordant.rendering.AnsiLevel
 import com.github.ajalt.mordant.terminal.Terminal
@@ -17,14 +17,14 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Session
 
 /**
- * Verifies the rich dialog renderer over redirected streams: the
+ * Verifies the styled dialog renderer over redirected streams: the
  * decorated terminal carries the tinted box with the severity
  * glyph, the numbered choices and the bold range prompt, and the
  * plain stream falls back to the classic terminal dialogs
  * themselves - the sibling renders the degraded form, so its
  * needles prove the identity by construction.
  */
-class RichDialogRendererTest {
+class StyledDialogRendererTest {
     private val originalIn = System.`in`
     private val originalOut = System.out
 
@@ -45,12 +45,12 @@ class RichDialogRendererTest {
     private fun withStreams(
         ansiLevel: AnsiLevel,
         input: String,
-        block: RichDialogRenderer.() -> Unit
+        block: StyledDialogRenderer.() -> Unit
     ): String {
         val sink = ByteArrayOutputStream()
         System.setIn(ByteArrayInputStream(input.toByteArray()))
         System.setOut(PrintStream(sink, true))
-        RichDialogRenderer(Terminal(ansiLevel, width = 80)).block()
+        StyledDialogRenderer(Terminal(ansiLevel, width = 80)).block()
         System.setOut(originalOut)
         System.setIn(originalIn)
         return sink.toString("UTF-8")

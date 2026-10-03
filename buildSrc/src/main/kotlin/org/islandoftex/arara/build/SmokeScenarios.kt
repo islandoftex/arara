@@ -395,16 +395,16 @@ internal val scenarios = listOf(
                 arguments = listOf("--console", "fancy", "console-flag-invalid.tex"),
                 expected = listOf(
                         "invalid choice",
-                        "choose from plain, rich",
+                        "choose from plain, styled",
                 ),
                 exitCode = 1,
                 fixture = "console-flag-invalid",
         ),
         Scenario(
-                name = "console-rich.bats", dir = "console-rich",
-                description = "the rich presentation under a captured stream",
+                name = "console-styled.bats", dir = "console-styled",
+                description = "the styled presentation under a captured stream",
                 check = "the true degraded structure keeps the content needles",
-                arguments = listOf("--console", "rich", "console-explicit.tex"),
+                arguments = listOf("--console", "styled", "console-explicit.tex"),
                 expected = listOf(
                         "SUCCESS",
                         "QuackOne",
@@ -419,9 +419,9 @@ internal val scenarios = listOf(
 
         Scenario(
                 name = "console-multi-file.bats", dir = "console-multi-file",
-                description = "the rich ledger across the files of a run",
+                description = "the styled ledger across the files of a run",
                 check = "the verdict and the summary count every file",
-                arguments = listOf("-c", "rich", "console-explicit.tex", "second.tex"),
+                arguments = listOf("-c", "styled", "console-explicit.tex", "second.tex"),
                 expected = listOf(
                         "TOTAL SUCCESS",
                         "2 files",
@@ -434,10 +434,10 @@ internal val scenarios = listOf(
         ),
         Scenario(
                 name = "console-dry-run.bats", dir = "console-dry-run",
-                description = "the rich dry run verdict",
+                description = "the styled dry run verdict",
                 check = "the simulated run closes with its count and no table",
                 arguments = listOf(
-                        "--console", "rich", "--dry-run",
+                        "--console", "styled", "--dry-run",
                         "console-explicit.tex"
                 ),
                 expected = listOf("DRY RUN", "[DR]"),
@@ -448,7 +448,7 @@ internal val scenarios = listOf(
                 name = "console-failure.bats", dir = "console-failure",
                 description = "the failed task quoting its own output",
                 check = "the tail panel shows the tool words and the log keeps them",
-                arguments = listOf("--console", "rich", "--log", "console-failure.tex"),
+                arguments = listOf("--console", "styled", "--log", "console-failure.tex"),
                 expected = listOf(
                         "FAILURE",
                         "QuackFail",
@@ -464,7 +464,7 @@ internal val scenarios = listOf(
                 name = "console-error.bats", dir = "console-error",
                 description = "the failed spawn raising its error mid-task",
                 check = "the error label lands on the open entry line",
-                arguments = listOf("--console", "rich", "console-error.tex"),
+                arguments = listOf("--console", "styled", "console-error.tex"),
                 expected = listOf(
                         "ERROR",
                         "IO error",
@@ -476,7 +476,7 @@ internal val scenarios = listOf(
         Scenario(
                 name = "console-log-parity.bats", dir = "console-log-parity",
                 description = "the log parity across the presentations",
-                check = "the plain and the rich runs record the same log",
+                check = "the plain and the styled runs record the same log",
                 arguments = listOf("console-explicit.tex"),
                 expected = listOf("SUCCESS"),
                 logParity = true,
@@ -526,7 +526,7 @@ private fun render(scenario: Scenario): String = bats {
 
 /**
  * Renders the log parity gate of a scenario: the same run under the
- * plain and the rich presentation must record the same log
+ * plain and the styled presentation must record the same log
  * entries. Each log names the presentation it rendered through, so
  * the two provenance lines are asserted and then left aside. The
  * normalized display-side records compare inside the diff itself -
@@ -539,14 +539,14 @@ private fun TestCaseBuilder.renderLogParity(scenario: Scenario) {
     run { arara(scenario.arguments + listOf("--console", "plain", "--log")) }
     status { it eq 0 }
     run { "mv arara.log arara-plain.log" }
-    run { arara(scenario.arguments + listOf("--console", "rich", "--log")) }
+    run { arara(scenario.arguments + listOf("--console", "styled", "--log")) }
     status { it eq 0 }
     // the provenance names the presentation each leg rendered
-    // through - the captured stream of the runner keeps the rich
+    // through - the captured stream of the runner keeps the styled
     // one degraded, so the annotation rides the pinned needle
     run { "grep 'Console set to plain' arara-plain.log" }
     status { it eq 0 }
-    run { "grep 'Console set to rich (degraded)' arara.log" }
+    run { "grep 'Console set to styled (degraded)' arara.log" }
     status { it eq 0 }
     // the normalization folds away what varies per run: the
     // timestamps, the wall-clock durations, the file modification

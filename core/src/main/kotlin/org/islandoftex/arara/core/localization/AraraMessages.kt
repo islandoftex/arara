@@ -325,15 +325,15 @@ interface AraraMessages {
      */
     val infoDisplayTimeUnit: String
     /**
-     * The verdict line of a successful rich run.
+     * The verdict line of a successful styled run.
      */
     fun infoDisplayTotalSuccess(files: Int, tasks: Int): String
     /**
-     * The verdict line of a failed rich run.
+     * The verdict line of a failed styled run.
      */
     fun infoDisplayTotalFailure(files: Int, tasks: Int): String
     /**
-     * The verdict line of a rich dry run.
+     * The verdict line of a styled dry run.
      */
     fun infoDisplayDryRun(tasks: Int): String
     /**

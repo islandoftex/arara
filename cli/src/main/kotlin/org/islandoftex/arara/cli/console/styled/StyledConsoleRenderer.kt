@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.console.rich
+package org.islandoftex.arara.cli.console.styled
 
 import com.github.ajalt.mordant.rendering.AnsiLevel
 import com.github.ajalt.mordant.rendering.TextAlign
@@ -30,7 +30,7 @@ import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.utils.wrap
 
 /**
- * Implements the rich console renderer: the modern presentation of
+ * Implements the styled console renderer: the modern presentation of
  * the run, built on the terminal library the help output already
  * renders through. The presentation keeps one readable measure -
  * the rules, the leaders, the alignment and the prose all hold
@@ -44,7 +44,7 @@ import org.islandoftex.arara.core.utils.wrap
  * @author Island of TeX
  */
 @Suppress("TooManyFunctions")
-class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
+class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     /**
      * The length of the longest result match as integer, reserving
      * the space the aligned results need.
@@ -187,7 +187,7 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     /**
      * The width of the label column of the verbose task fields.
      */
-    private val fieldGutterWidth = RichTheme.fieldGutterWidth
+    private val fieldGutterWidth = StyledTheme.fieldGutterWidth
 
     private companion object {
         /**
@@ -271,14 +271,14 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      * capability.
      */
     private val rule: String
-        get() = if (isDecorated) RichTheme.ruleGlyph else RichTheme.ruleFallback
+        get() = if (isDecorated) StyledTheme.ruleGlyph else StyledTheme.ruleFallback
 
     /**
      * The dotted leader between an entry and its result, following
      * the capability.
      */
     private val leader: String
-        get() = if (isDecorated) RichTheme.leaderGlyph else RichTheme.leaderFallback
+        get() = if (isDecorated) StyledTheme.leaderGlyph else StyledTheme.leaderFallback
 
     /**
      * The width every structural element extends to: the readable
@@ -288,14 +288,14 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      */
     private val structureWidth: Int
         get() = terminal.size.width
-            .coerceAtMost(RichTheme.proseMaximumWidth)
+            .coerceAtMost(StyledTheme.proseMaximumWidth)
 
     /**
      * The width prose wraps at: the readable measure, never past
      * the terminal.
      */
     private val proseWidth: Int
-        get() = structureWidth.coerceAtMost(RichTheme.proseMaximumWidth)
+        get() = structureWidth.coerceAtMost(StyledTheme.proseMaximumWidth)
 
     /**
      * The muted style of the chrome: the rules, the leaders and the
@@ -313,7 +313,7 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      * the run: the version and the tool's own description.
      */
     override fun printBanner() {
-        terminal.println(RichTheme.logo(Display.logoString))
+        terminal.println(StyledTheme.logo(Display.logoString))
         terminal.println("")
         terminal.println(muted(Display.versionLine))
         terminal.println("")
@@ -469,7 +469,7 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
                 // noise itself
                 anchorOutcomeZone()
                 terminal.rawPrint(
-                    RichTheme.logo(SPIN_FRAMES[frame]) + " " + counter
+                    StyledTheme.logo(SPIN_FRAMES[frame]) + " " + counter
                 )
             }
             breatheOnce()
@@ -866,9 +866,9 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      */
     private fun frameRule(): String {
         val frame = if (isDecorated) {
-            RichTheme.frameGlyph
+            StyledTheme.frameGlyph
         } else {
-            RichTheme.frameFallback
+            StyledTheme.frameFallback
         }
         // the wide spacing lets the frame whisper: the boundary
         // holds the stream, the ink never competes with it
@@ -882,7 +882,7 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      * following the capability.
      */
     private fun skipGlyph(): String =
-        if (isDecorated) RichTheme.skipGlyph else RichTheme.skipFallback
+        if (isDecorated) StyledTheme.skipGlyph else StyledTheme.skipFallback
 
     /**
      * Displays the provided text wrapped at the readable measure of
@@ -1002,19 +1002,19 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      * capability.
      */
     private fun runningGlyph(): String =
-        if (isDecorated) RichTheme.runningGlyph else RichTheme.runningFallback
+        if (isDecorated) StyledTheme.runningGlyph else StyledTheme.runningFallback
 
     /**
      * The glyph that marks a success, following the capability.
      */
     private fun successGlyph(): String =
-        if (isDecorated) RichTheme.successGlyph else RichTheme.successFallback
+        if (isDecorated) StyledTheme.successGlyph else StyledTheme.successFallback
 
     /**
      * The glyph that marks a failure, following the capability.
      */
     private fun failureGlyph(): String =
-        if (isDecorated) RichTheme.failureGlyph else RichTheme.failureFallback
+        if (isDecorated) StyledTheme.failureGlyph else StyledTheme.failureFallback
 
     /**
      * Wraps the text in the terminal hyperlink escape, gated by the
@@ -1248,5 +1248,5 @@ class RichConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      * capability.
      */
     private fun dryGlyph(): String =
-        if (isDecorated) RichTheme.dryGlyph else RichTheme.dryFallback
+        if (isDecorated) StyledTheme.dryGlyph else StyledTheme.dryFallback
 }

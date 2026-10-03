@@ -5,8 +5,8 @@ import com.github.ajalt.mordant.terminal.Terminal
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.cli.console.plain.PlainConsoleRenderer
 import org.islandoftex.arara.cli.console.plain.PlainDialogRenderer
-import org.islandoftex.arara.cli.console.rich.RichConsoleRenderer
-import org.islandoftex.arara.cli.console.rich.RichDialogRenderer
+import org.islandoftex.arara.cli.console.styled.StyledConsoleRenderer
+import org.islandoftex.arara.cli.console.styled.StyledDialogRenderer
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.ui.DialogRenderer
 
@@ -32,7 +32,7 @@ enum class ConsoleMode {
      * terminal, degrading to the plain structure when the stream
      * cannot carry them.
      */
-    RICH;
+    STYLED;
 
     /**
      * The renderer this presentation prints through.
@@ -42,7 +42,7 @@ enum class ConsoleMode {
      */
     fun renderer(terminal: Terminal): ConsoleRenderer = when (this) {
         PLAIN -> PlainConsoleRenderer
-        RICH -> RichConsoleRenderer(terminal)
+        STYLED -> StyledConsoleRenderer(terminal)
     }
 
     /**
@@ -53,7 +53,7 @@ enum class ConsoleMode {
      */
     fun dialogRenderer(terminal: Terminal): DialogRenderer = when (this) {
         PLAIN -> PlainDialogRenderer
-        RICH -> RichDialogRenderer(terminal)
+        STYLED -> StyledDialogRenderer(terminal)
     }
 
     /**
@@ -77,7 +77,7 @@ enum class ConsoleMode {
         ): ConsoleMode = commandLine ?: configured?.let { name ->
             when (name) {
                 "plain" -> PLAIN
-                "rich" -> RICH
+                "styled" -> STYLED
                 else -> throw AraraException(
                     LanguageController.messages.errorConsoleModeUnknown(name)
                 )

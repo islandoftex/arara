@@ -203,7 +203,7 @@ object Display {
     }
 
     /**
-     * Displays the details of the task a verbose rich run shows:
+     * Displays the details of the task a verbose styled run shows:
      * the command it executes, its conditional and the rule authors,
      * framed for the tool output that follows. The historic plain
      * presentation prints none of these.

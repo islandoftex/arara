@@ -147,8 +147,8 @@ class CLI : CliktCommand("arara") {
         .default(RuleEngine.YAML)
 
     private val console by option("-c", "--console")
-        .help("Set the console presentation to use: 'plain' or 'rich'")
-        .choice("plain" to ConsoleMode.PLAIN, "rich" to ConsoleMode.RICH)
+        .help("Set the console presentation to use: 'plain' or 'styled'")
+        .choice("plain" to ConsoleMode.PLAIN, "styled" to ConsoleMode.STYLED)
     private val workingDirectory by option("-d", "--working-directory")
         .help("Set the working directory for all tools")
         .path(mustExist = true, canBeFile = false, mustBeReadable = true)
@@ -303,8 +303,8 @@ class CLI : CliktCommand("arara") {
 
     /**
      * Logs the console presentation the run renders through: the
-     * provenance names plain and rich alike, and the degradation an
-     * undecorated stream forces on the rich one - a fact no other
+     * provenance names plain and styled alike, and the degradation an
+     * undecorated stream forces on the styled one - a fact no other
      * record carries. The startup application happens before the
      * log backend exists, so the run names its effective
      * presentation again once the backend is in place; every later
@@ -314,7 +314,7 @@ class CLI : CliktCommand("arara") {
      */
     private fun logConsoleMode(mode: ConsoleMode) {
         logger.info {
-            val degraded = mode == ConsoleMode.RICH &&
+            val degraded = mode == ConsoleMode.STYLED &&
                 terminal.terminalInfo.ansiLevel == AnsiLevel.NONE
             "Console set to ${mode.name.lowercase()}" +
                 if (degraded) " (degraded)" else ""

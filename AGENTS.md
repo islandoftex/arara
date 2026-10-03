@@ -71,11 +71,11 @@ configuration honored under the default engine, the console mode
 surface - the flag's explicit plain run, the configuration key
 selecting the console with the log stating a silent tool, the
 unoffered-mode errors of both the configuration and the command
-line, the rich presentation under a captured stream asserting the
-degraded structure with its closing verdict and summary, the rich
+line, the styled presentation under a captured stream asserting the
+degraded structure with its closing verdict and summary, the styled
 dry run verdict without a table, the failed task quoting its own
 output with the log keeping the full record, and the log parity
-between the plain and the rich presentations)
+between the plain and the styled presentations)
 and the real TeX toolchain (the official `pdflatex` rule through both
 dialects). The historical scenarios the compact matrix once dropped are
 restored to the end-to-end set; the remaining fixture shapes stay with
@@ -247,13 +247,13 @@ as the runnable jar).
   display-side entries hold no console knowledge, so they record
   the same lines whichever console rendered the run, while the
   provenance line at the mode application names the presentation
-  - plain, rich, or rich degraded by an undecorated stream - the
+  - plain, styled, or styled degraded by an undecorated stream - the
   way the engine line names the engine),
   the dialog contract (core defines the semantics and ships the
   headless default that assumes no interactive surface; the
   application wires its implementation - the CLI wires the classic
   terminal dialogs for the plain presentation and the type-tinted
-  dialog boxes for the rich one, both sharing the reading
+  dialog boxes for the styled one, both sharing the reading
   semantics, and they stay available in every execution mode,
   since a dialog is a conversation with the person who runs the
   tool),
@@ -262,13 +262,13 @@ as the runnable jar).
   configuration key, in both formats, resolved as command line over
   configuration over the plain default; `plain` (the default, the
   historic silhouette with its banner naming the run, its error
-  sections titled and its closing verdict) and `rich` (the modern
+  sections titled and its closing verdict) and `styled` (the modern
   presentation on the
   terminal library the help output already renders through,
   degrading to the ASCII structure when the stream cannot carry
   colors or glyphs, and closing a run with a verdict line and a
   summary table naming each file, its task count, its time and its
-  status; a verbose rich run shows the command it executes, frames
+  status; a verbose styled run shows the command it executes, frames
   the tool's own output with dotted rules and names the
   conditionally skipped directives; a failed task quotes the tail
   of its own output in the dim bar panel, with the full record in

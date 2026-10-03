@@ -16,7 +16,7 @@ on.
 
 ## Added
 
-* New live feedback for the rich presentation: while a task
+* New live feedback for the styled presentation: while a task
   runs, the outcome zone breathes - braille frames cycling in
   the application's cyan accent beside a live counter of the
   elapsed time, the counter escalating from tenths of a second
@@ -32,13 +32,13 @@ on.
 * New `-c`/`--console` command line option and `console`
   configuration key (in both configuration file formats) to select
   the console presentation: `plain` (the default, the historic
-  layout) or `rich` - a modern presentation with a tinted banner
+  layout) or `styled` - a modern presentation with a tinted banner
   that names the version and the tool's own description, section
   rules,
   glyphs and colors, degrading to the plain structure when
-  the terminal cannot carry them. A rich run closes with a verdict
+  the terminal cannot carry them. A styled run closes with a verdict
   line and a summary table naming each file, its task count, its
-  time and its status. A verbose rich run shows the command it
+  time and its status. A verbose styled run shows the command it
   executes, frames the tool's own output with dotted rules and
   names the conditionally skipped directives, a failed task
   quotes the tail of its own output beside the verdict, with the
@@ -56,7 +56,7 @@ on.
   closing entry names the exit code the application returns, every
   rule interpretation names the rule file it actually loaded, and
   the console presentation names itself when it applies - plain,
-  rich, or rich degraded by an undecorated stream - so the log
+  styled, or styled degraded by an undecorated stream - so the log
   alone tells what ran, how it ended, and which presentation
   rendered it.
 * New Lua rule format: rules may now be written as Lua scripts returning a
@@ -322,14 +322,14 @@ on.
   speaking beside it, following the field grammar of the
   presentation.
 * The plain presentation's default measure widens from the
-  historic 65 columns to 79, matching the rich presentation's
+  historic 65 columns to 79, matching the styled presentation's
   readable measure: every line re-flows at the shared geometry,
   the leaders lengthen, and the section rules extend. The measure
   stays the tool's own - configurable only through the library
   surface, never through a configuration file, as it always was.
 * The plain presentation's banner names the run with the shared
   version line - the tool's name, its version, and its trademark
-  slogan - matching the rich presentation's introduction. The
+  slogan - matching the styled presentation's introduction. The
   slogan stays in English in every language: it is the tool's
   trademark, not a translatable message.
 

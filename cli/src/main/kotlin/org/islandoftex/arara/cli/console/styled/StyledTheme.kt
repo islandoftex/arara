@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.console.rich
+package org.islandoftex.arara.cli.console.styled
 
 import com.github.ajalt.mordant.rendering.TextColors
 
 /**
- * The visual vocabulary of the rich console: the glyphs with their
+ * The visual vocabulary of the styled console: the glyphs with their
  * ASCII fallbacks, the tint of the application logo and the
  * readable measure of the prose, defined in one place so the
  * presentation tunes without touching the renderer. The semantic
@@ -16,7 +16,7 @@ import com.github.ajalt.mordant.rendering.TextColors
  *
  * @author Island of TeX
  */
-object RichTheme {
+object StyledTheme {
     /**
      * The tint of the application logo, the mark of the island.
      */

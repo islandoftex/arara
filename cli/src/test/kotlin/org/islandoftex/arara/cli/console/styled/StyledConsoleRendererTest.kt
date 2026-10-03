@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-3-Clause
-package org.islandoftex.arara.cli.console.rich
+package org.islandoftex.arara.cli.console.styled
 
 import com.github.ajalt.mordant.rendering.AnsiLevel
 import com.github.ajalt.mordant.terminal.Terminal
@@ -27,14 +27,14 @@ import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 
 /**
- * Verifies the rich console renderer against a terminal with forced
+ * Verifies the styled console renderer against a terminal with forced
  * capabilities: the decorated stream carries the tint, the glyphs
  * and the aligned results, and the plain stream keeps every
  * structure with the ASCII fallbacks and no escape sequences. The
  * renderer prints through the terminal interface, so the standard
  * output is redirected to capture the rendered run.
  */
-class RichConsoleRendererTest {
+class StyledConsoleRendererTest {
     private val originalOut = System.out
 
     @BeforeTest
@@ -56,11 +56,11 @@ class RichConsoleRendererTest {
         ansiLevel: AnsiLevel,
         width: Int = 80,
         interactive: Boolean = false,
-        block: RichConsoleRenderer.() -> Unit
+        block: StyledConsoleRenderer.() -> Unit
     ): String {
         val sink = ByteArrayOutputStream()
         System.setOut(PrintStream(sink, true))
-        val renderer = RichConsoleRenderer(
+        val renderer = StyledConsoleRenderer(
             Terminal(ansiLevel, width = width, interactive = interactive)
         )
         renderer.block()
@@ -238,7 +238,7 @@ class RichConsoleRendererTest {
 
     @Test
     fun `the counter escalates its notation as the task runs longer`() {
-        val renderer = RichConsoleRenderer(
+        val renderer = StyledConsoleRenderer(
             Terminal(AnsiLevel.NONE, width = 80)
         )
         assertEquals(
@@ -281,7 +281,7 @@ class RichConsoleRendererTest {
 
     @Test
     fun `a silent failure separates its verdict`() {
-        val document = File.createTempFile("rich", ".tex")
+        val document = File.createTempFile("styled", ".tex")
             .apply { writeText("quack"); deleteOnExit() }
         val file = ProjectFile(
             MPPPath(document.absolutePath),
@@ -307,7 +307,7 @@ class RichConsoleRendererTest {
 
     @Test
     fun `a landed success with a failed run separates its verdict`() {
-        val document = File.createTempFile("rich", ".tex")
+        val document = File.createTempFile("styled", ".tex")
             .apply { writeText("quack"); deleteOnExit() }
         val file = ProjectFile(
             MPPPath(document.absolutePath),
@@ -336,7 +336,7 @@ class RichConsoleRendererTest {
 
     @Test
     fun `the quoted panel separates the failure itself`() {
-        val document = File.createTempFile("rich", ".tex")
+        val document = File.createTempFile("styled", ".tex")
             .apply { writeText("quack"); deleteOnExit() }
         val file = ProjectFile(
             MPPPath(document.absolutePath),
@@ -364,7 +364,7 @@ class RichConsoleRendererTest {
     @Test
     fun `the skip card separates from the verdict`() {
         LinearExecutor.executionOptions = ExecutionOptions(verbose = true)
-        val document = File.createTempFile("rich", ".tex")
+        val document = File.createTempFile("styled", ".tex")
             .apply { writeText("quack"); deleteOnExit() }
         val file = ProjectFile(
             MPPPath(document.absolutePath),
@@ -468,9 +468,9 @@ class RichConsoleRendererTest {
 
     @Test
     fun `a new file opens its error block without a stale separation`() {
-        val first = File.createTempFile("rich", ".tex")
+        val first = File.createTempFile("styled", ".tex")
             .apply { writeText("quack"); deleteOnExit() }
-        val second = File.createTempFile("rich", ".tex")
+        val second = File.createTempFile("styled", ".tex")
             .apply { writeText("quack"); deleteOnExit() }
         val output = render(AnsiLevel.NONE) {
             printFileInformation(
@@ -565,7 +565,7 @@ class RichConsoleRendererTest {
 
     @Test
     fun `the separators follow the live width`() {
-        val renderer = RichConsoleRenderer(
+        val renderer = StyledConsoleRenderer(
             Terminal(AnsiLevel.NONE, width = 40)
         )
         assertEquals(
@@ -581,7 +581,7 @@ class RichConsoleRendererTest {
 
     @Test
     fun `the closing summary carries the verdict and the table`() {
-        val document = File.createTempFile("rich", ".tex")
+        val document = File.createTempFile("styled", ".tex")
             .apply { writeText("quack"); deleteOnExit() }
         val file = ProjectFile(
             MPPPath(document.absolutePath),
@@ -613,7 +613,7 @@ class RichConsoleRendererTest {
 
     @Test
     fun `the closing verdict of a failed run carries the failure`() {
-        val document = File.createTempFile("rich", ".tex")
+        val document = File.createTempFile("styled", ".tex")
             .apply { writeText("quack"); deleteOnExit() }
         val file = ProjectFile(
             MPPPath(document.absolutePath),
@@ -640,7 +640,7 @@ class RichConsoleRendererTest {
         LinearExecutor.executionOptions = ExecutionOptions(
             executionMode = ExecutionMode.DRY_RUN
         )
-        val document = File.createTempFile("rich", ".tex")
+        val document = File.createTempFile("styled", ".tex")
             .apply { writeText("quack"); deleteOnExit() }
         val file = ProjectFile(
             MPPPath(document.absolutePath),
@@ -741,7 +741,7 @@ class RichConsoleRendererTest {
     }
     @Test
     fun `the presentation keeps the readable measure on wide terminals`() {
-        val renderer = RichConsoleRenderer(
+        val renderer = StyledConsoleRenderer(
             Terminal(AnsiLevel.NONE, width = 200)
         )
         assertEquals(
@@ -769,7 +769,7 @@ class RichConsoleRendererTest {
 
     @Test
     fun `an exception fails the file the summary names`() {
-        val document = File.createTempFile("rich", ".tex")
+        val document = File.createTempFile("styled", ".tex")
             .apply { writeText("quack"); deleteOnExit() }
         val file = ProjectFile(
             MPPPath(document.absolutePath),
@@ -791,7 +791,7 @@ class RichConsoleRendererTest {
     }
     @Test
     fun `the file header runs the rule flush to the metadata`() {
-        val document = File.createTempFile("rich", ".tex")
+        val document = File.createTempFile("styled", ".tex")
             .apply { writeText("quack"); deleteOnExit() }
         val file = ProjectFile(
             MPPPath(document.absolutePath),
@@ -818,9 +818,9 @@ class RichConsoleRendererTest {
 
     @Test
     fun `the ledger survives the files of a run`() {
-        val first = File.createTempFile("rich", ".tex")
+        val first = File.createTempFile("styled", ".tex")
             .apply { writeText("quack"); deleteOnExit() }
-        val second = File.createTempFile("rich", ".tex")
+        val second = File.createTempFile("styled", ".tex")
             .apply { writeText("quack"); deleteOnExit() }
         val output = render(AnsiLevel.TRUECOLOR) {
             printFileInformation(
