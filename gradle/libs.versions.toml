@@ -3,6 +3,7 @@ chronoheader-version = "0.1.2"
 clikt-version = "5.1.0"
 detekt-version = "1.23.8"
 dokka-version = "2.2.0"
+jna-version = "5.19.1"
 kotlin-version = "2.4.20"
 kotlin-logging-version = "8.0.4"
 kotaml-version = "0.111.0"
@@ -34,7 +35,7 @@ luaj = { group = "io.github.taoguan", name = "luaj", version.ref = "luaj-version
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinx-serialization-version" }
 log4j-core = { group = "org.apache.logging.log4j", name = "log4j-core", version.ref = "log4j-version" }
 log4j-impl = { group = "org.apache.logging.log4j", name = "log4j-slf4j2-impl", version.ref = "log4j-version" }
-jna = { group = "net.java.dev.jna", name = "jna", version = "5.14.0" }
+jna = { group = "net.java.dev.jna", name = "jna", version.ref = "jna-version" }
 mvel = { group = "org.mvel", name = "mvel2", version.ref = "mvel-version" }
 okio = { group = "com.squareup.okio", name = "okio", version.ref = "okio-version" }
 okio-fakefilesystem = { group = "com.squareup.okio", name = "okio-fakefilesystem", version.ref = "okio-version" }
