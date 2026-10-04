@@ -39,8 +39,9 @@ object LinearExecutor : Executor {
         private set
 
     /**
-     * The setup for all executions run by this executor. The execution options
-     * should not change while executing one project.
+     * The setup for all executions run by this executor. The
+     * execution options should not change while a file is under
+     * execution - the setter rejects exactly that window.
      */
     override var executionOptions: ExecutionOptions =
         org.islandoftex.arara.core.configuration.ExecutionOptions()

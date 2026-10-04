@@ -375,8 +375,10 @@ class Interpreter(
      * Runs the command list of a directive entry: the command of
      * the active dialect evaluates against the resolved arguments,
      * every resulting task runs and lands its outcome on the
-     * console, the failed ones quote the tail of their own
-     * output, and the halt policy is enforced after each task.
+     * console, the failed ones can quote the tail of their own
+     * output - the styled presentation does; the plain console
+     * keeps its historic silence - and the halt policy is
+     * enforced after each task.
      *
      * @param command The command entry of the rule.
      * @param conditional The conditional attached to the directive.

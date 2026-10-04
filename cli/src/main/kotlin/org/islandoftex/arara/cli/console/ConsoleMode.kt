@@ -22,7 +22,11 @@ import org.islandoftex.arara.core.ui.DialogRenderer
  */
 enum class ConsoleMode {
     /**
-     * The historic console layout, kept byte-identical.
+     * The historic console layout, refreshed in place: the banner
+     * names the run with the shared version line, the error blocks
+     * title their sections on the dashed rule, and the run closes
+     * with a verdict word - the silhouette itself stays the one
+     * the previous major versions printed.
      */
     PLAIN,
 

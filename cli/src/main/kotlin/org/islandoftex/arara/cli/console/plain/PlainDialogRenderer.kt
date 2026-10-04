@@ -19,7 +19,6 @@ import org.islandoftex.arara.core.utils.wrap
  *
  * @author Island of TeX
  */
-@Suppress("MagicNumber")
 object PlainDialogRenderer : DialogRenderer {
     /**
      * The message type codes of the dialog helpers, as rule authors

@@ -307,16 +307,16 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      * so a wide terminal holds a page, not a line running to the
      * horizon.
      */
+    /**
+     * The width every text of the presentation wraps at: the
+     * readable measure, never past the terminal, one width for
+     * the structures and the prose alike - the whole presentation
+     * is one page of that width, so a wide terminal holds a page,
+     * not a line running to the horizon.
+     */
     private val structureWidth: Int
         get() = terminal.size.width
             .coerceAtMost(StyledTheme.proseMaximumWidth)
-
-    /**
-     * The width prose wraps at: the readable measure, never past
-     * the terminal.
-     */
-    private val proseWidth: Int
-        get() = structureWidth.coerceAtMost(StyledTheme.proseMaximumWidth)
 
     /**
      * The muted style of the chrome: the rules, the leaders and the
@@ -386,9 +386,10 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
     }
 
     /**
-     * Displays the current entry in the terminal: the running glyph,
-     * the rule and the task, with the leader reserving the space the
-     * result aligns into.
+     * Displays the current entry in the terminal: the running glyph
+     * with the rule and the task, as a compact line the outcome
+     * lands on, or a framed block in the verbose and dry-run
+     * shapes.
      *
      * @param name The rule name.
      * @param task The task name.
@@ -781,7 +782,7 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         // the message pre-wraps at the measure and speaks in the
         // default voice - the title word carries the severity, so
         // the prose never smears the tint a shout would
-        text.wrap(proseWidth).lineSequence().forEach { line ->
+        text.wrap(structureWidth).lineSequence().forEach { line ->
             terminal.println(line)
         }
         // a present cause earns a details section even when it
@@ -789,7 +790,7 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         if (details != null) {
             terminal.println("")
             displayDetailsLine()
-            details.wrap(proseWidth).lineSequence().forEach { line ->
+            details.wrap(structureWidth).lineSequence().forEach { line ->
                 terminal.println(muted(line))
             }
         }
@@ -944,7 +945,7 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      * @param text The text to be displayed.
      */
     override fun printWrapped(text: String) {
-        terminal.println(text.wrap(proseWidth))
+        terminal.println(text.wrap(structureWidth))
     }
 
     /**
@@ -1025,7 +1026,7 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      */
     private fun displayDetailsLine() {
         val label = LanguageController.messages.infoLabelOnDetails + " "
-        val line = label.abbreviate(structureWidth)
+        val line = label.abbreviate(structureWidth.coerceAtLeast(2))
         terminal.println(muted(line.padEnd(structureWidth, rule.first())))
     }
 

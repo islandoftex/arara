@@ -58,19 +58,9 @@ object StyledTheme {
     const val warningGlyph = "⚠"
 
     /**
-     * The ASCII fallback of the warning glyph.
-     */
-    const val warningFallback = "!"
-
-    /**
      * The glyph that marks an informational dialog.
      */
     const val infoGlyph = "ℹ"
-
-    /**
-     * The ASCII fallback of the informational glyph.
-     */
-    const val infoFallback = "i"
 
     /**
      * The dotted rule character that frames the raw tool output of a

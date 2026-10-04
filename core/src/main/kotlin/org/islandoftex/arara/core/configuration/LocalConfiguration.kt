@@ -188,7 +188,11 @@ data class LocalConfiguration(
             ?: baseOptions.logFile
         return org.islandoftex.arara.core.configuration.LoggingOptions(
             enableLogging = logging ?: baseOptions.enableLogging,
-            logFile = logName
+            logFile = logName,
+            // the append mode belongs to the caller's standing
+            // choice: the configuration never speaks for it, so
+            // the base carries it instead of silently resetting
+            appendLog = baseOptions.appendLog
         )
     }
 
@@ -206,7 +210,11 @@ data class LocalConfiguration(
             locale = language?.let { MPPLocale(it) }
                 ?: baseOptions.locale,
             enableAnimations = animations
-                ?: baseOptions.enableAnimations
+                ?: baseOptions.enableAnimations,
+            // the width belongs to the caller's standing choice: the
+            // configuration never speaks for it, so the base
+            // carries it instead of silently resetting
+            terminalOutputWidth = baseOptions.terminalOutputWidth
         )
     }
 

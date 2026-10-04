@@ -359,16 +359,18 @@ class CLI : CliktCommand("arara") {
     private var appliedConsoleMode: ConsoleMode? = null
 
     /**
-     * The names of every file the run was asked to process, set
-     * when the projects resolve, so the completion block can name
-     * the files an exception left unreached.
+     * The full paths of every file the run was asked to process,
+     * set when the projects resolve, so the completion block can
+     * name the files an exception left unreached - exactly, down
+     * to two same-named files in different directories.
      */
     private var allFileNames: List<String> = emptyList()
 
     /**
-     * The names of the files that actually started processing,
+     * The full paths of the files that actually started processing,
      * collected by the per-file hook, so the completion block can
-     * compute the difference.
+     * compute the difference exactly - a bare name cannot tell two
+     * same-named files of different directories apart.
      */
     private val processedFiles = mutableListOf<String>()
 
@@ -544,7 +546,7 @@ class CLI : CliktCommand("arara") {
             // types the configuration may provide
         },
         executeBeforeFile = {
-            processedFiles.add(it.path.fileName)
+            processedFiles.add(it.path.toString())
             updateConfigurationFromCommandLine()
             Display.printFileInformation(it)
         },
@@ -612,7 +614,7 @@ class CLI : CliktCommand("arara") {
             LinearExecutor.hooks = executorHooks()
 
             val projects = resolveProjects()
-            allFileNames = projects.flatMap { it.files }.map { it.path.fileName }
+            allFileNames = projects.flatMap { it.files }.map { it.path.toString() }
             // the run's exit code reaches the process unchanged - a
             // halt reports its own status, never a flattened failure
             val executionReport = LinearExecutor.execute(projects)
@@ -636,7 +638,12 @@ class CLI : CliktCommand("arara") {
             // between the summary and the closing time
             val unprocessed = allFileNames.filter { it !in processedFiles }
             if (unprocessed.isNotEmpty()) {
-                Display.printUnprocessedFiles(unprocessed)
+                // the console keeps the historic bare names: the
+                // paths above make the difference exact, and the
+                // display speaks the name a user typed
+                Display.printUnprocessedFiles(
+                    unprocessed.map { MPPPath(it).fileName }
+                )
             }
 
             Display.printTime(executionStart.elapsedNow().toDouble(DurationUnit.SECONDS))

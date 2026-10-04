@@ -65,8 +65,9 @@ object PlainConsoleRenderer : ConsoleRenderer {
     }
 
     /**
-     * If the longest match is longer than the width, then it will be
-     * truncated to this length.
+     * The longest result word that still fits a compact entry line:
+     * a wider one pads the landing past the edge and simply wraps,
+     * which is why the reserved space caps at this length.
      */
     private const val shortenedLongestMatch = 10
 
@@ -78,8 +79,10 @@ object PlainConsoleRenderer : ConsoleRenderer {
     private const val minimumEntryWidth = 6
 
     /**
-     * Whether the current entry line is still open for a result to
-     * land on.
+     * The separation state of the closing time line: set while the
+     * console printed anything since the banner, left standing
+     * when an exception lands on an open entry line, and consulted
+     * by the closing time line to decide its separating blank.
      */
     private var displayLine = true
 
@@ -96,8 +99,9 @@ object PlainConsoleRenderer : ConsoleRenderer {
      */
     private var displayRolling = false
     /**
-     * Whether an exception has printed in the current run, so the
-     * closing blocks know whether to separate from it.
+     * Whether an exception has printed since the current file
+     * began, so the closing blocks know whether to separate from
+     * it. The flag resets with every file.
      */
     private var displayException = false
 
@@ -275,7 +279,13 @@ object PlainConsoleRenderer : ConsoleRenderer {
         } else {
             displayRolling = true
         }
-        println("[DR] ($name) $task".abbreviate(outputWidth))
+        // the budget keeps the abbreviation's own minimum of two
+        // columns, so a degenerate width degrades instead of
+        // crashing the render
+        println(
+            "[DR] ($name) $task"
+                .abbreviate(outputWidth.coerceAtLeast(2))
+        )
         println(displaySeparator())
     }
 
@@ -314,7 +324,7 @@ object PlainConsoleRenderer : ConsoleRenderer {
                 // title from its words
                 println(
                     (LanguageController.messages.infoLabelOnError + " ")
-                        .abbreviate(outputWidth)
+                        .abbreviate(outputWidth.coerceAtLeast(2))
                         .padEnd(outputWidth, '-')
                 )
             }
@@ -457,7 +467,7 @@ object PlainConsoleRenderer : ConsoleRenderer {
      */
     private fun displayDetailsLine() = println(
         (LanguageController.messages.infoLabelOnDetails + " ")
-            .abbreviate(outputWidth)
+            .abbreviate(outputWidth.coerceAtLeast(2))
             .padEnd(outputWidth, '-')
     )
 

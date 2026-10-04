@@ -42,8 +42,8 @@ object Environment {
      * Access a system property.
      *
      * @param key The key of the property.
-     * @return The value of the system property or null if there is an
-     *   exception.
+     * @return The value of the system property, or null when the
+     *   lookup throws or names no property.
      */
     fun getSystemPropertyOrNull(key: String): String? =
         runCatching { System.getProperties().getValue(key).toString() }

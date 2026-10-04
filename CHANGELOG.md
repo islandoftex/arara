@@ -391,6 +391,16 @@ on.
 
 ## Fixed
 
+* The degenerate-width hardening reaches every remaining
+  abbreviation site: the dry-run line and the section titles of
+  the plain presentation, and the verbose details line of the
+  styled one, all keep the abbreviation's own minimum now, so a
+  library-set width too small to fit anything degrades to an
+  ugly line instead of throwing.
+* The files an exception leaves unreached are detected by their
+  full paths, so two same-named files in different directories no
+  longer mask each other in the closing report; the report itself
+  keeps speaking the bare names a user typed.
 * The rule commands of the Lua dialect reach the conditional
   helper family: the file existence and change checks, the file
   reference and the class loading helpers resolve inside command

@@ -25,7 +25,8 @@ open class ProjectFile(
     override val fileType: FileType,
     /**
      * The priority deciding the execution order within the project;
-     * files with lower priorities run first.
+     * files with the highest priority run first, and equals keep
+     * the order their specification declared them in.
      */
     override val priority: Int = DEFAULT_PRIORITY
 ) : ProjectFile {
