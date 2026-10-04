@@ -133,6 +133,11 @@ abstract class RunSmokeBats : DefaultTask() {
         }
     }
 
+    /**
+     * Resolves the bats runner, honouring the environment override
+     * and failing loudly when neither it nor a path-resolved
+     * bats-core is available.
+     */
     private fun probeRunner(): String {
         val override = System.getenv("SMOKE_BATS")
         if (!override.isNullOrBlank()) {
@@ -149,6 +154,10 @@ abstract class RunSmokeBats : DefaultTask() {
         return resolved
     }
 
+    /**
+     * Fails loudly when git is unavailable: the runner setup
+     * clones the assertion helpers on first use.
+     */
     private fun probeGit() {
         if (resolveCommand("git") == null) {
             throw GradleException(
@@ -158,6 +167,10 @@ abstract class RunSmokeBats : DefaultTask() {
         }
     }
 
+    /**
+     * Resolves a tool through the shell's own command lookup, so
+     * the answer reflects the world the runner will run in.
+     */
     private fun resolveCommand(tool: String): String? {
         val path = runCatching {
             val process = ProcessBuilder("bash", "-c", "command -v $tool")
@@ -174,6 +187,11 @@ abstract class RunSmokeBats : DefaultTask() {
         return path.ifEmpty { null }
     }
 
+    /**
+     * Collects the runner files this environment can execute:
+     * every rendered file, minus the TeX-dependent ones when no
+     * toolchain is on the path.
+     */
     private fun eligibleFiles(texAvailable: Boolean): List<File> =
             batsFiles.files
                     .flatMap { element ->
@@ -187,6 +205,10 @@ abstract class RunSmokeBats : DefaultTask() {
                     .filter { texAvailable || it.name !in texScenarioFiles }
                     .sortedBy { it.name }
 
+    /**
+     * The Java binary of the JVM driving the build, the binary the
+     * underlying leg runs the scenarios with.
+     */
     private fun underlyingJava(): String {
         val home = File(System.getProperty("java.home"))
         val binary = File(home, "bin/java")
@@ -197,10 +219,14 @@ abstract class RunSmokeBats : DefaultTask() {
         return windowsBinary.absolutePath
     }
 
+    /**
+     * Runs the rendered scenario files on one leg: the runner
+     * writes its TAP report into the leg's directory, and a
+     * nonzero exit names the report to read.
+     */
     private fun runLeg(files: List<File>, java: String, leg: String) {
         val reportDir = File(reportsDir.get().asFile, leg)
         reportDir.mkdirs()
-        val report = File(reportDir, "report.tap")
         logger.lifecycle("== scenario matrix on the $leg JVM ($java)")
         // on Windows the virtual machine can neither execute shell
         // scripts nor interpret the POSIX-style paths the probes
@@ -250,6 +276,12 @@ abstract class RunSmokeBats : DefaultTask() {
         }
     }
 
+    /**
+     * Provisions the scratch tree from the table and the fixtures:
+     * one directory per scenario, the fixture contents and the
+     * authored files copied in, and the runnable jar and the rules
+     * the scenarios resolve beside them.
+     */
     private fun provisionTree() {
         val tree = File(smokeDir.get())
         val rules = File(tree, "app/rules")
@@ -275,6 +307,9 @@ abstract class RunSmokeBats : DefaultTask() {
         )
     }
 
+    /**
+     * Copies a directory tree recursively into the target.
+     */
     private fun copyDir(source: File, target: File) {
         source.listFiles()?.forEach { entry ->
             if (entry.isDirectory) {
@@ -287,6 +322,10 @@ abstract class RunSmokeBats : DefaultTask() {
         }
     }
 
+    /**
+     * Copies one file, replacing any target that a previous run
+     * left behind.
+     */
     private fun copyFile(source: File, target: File) {
         target.parentFile.mkdirs()
         Files.copy(source.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING)

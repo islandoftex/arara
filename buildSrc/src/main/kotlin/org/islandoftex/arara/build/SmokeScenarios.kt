@@ -19,22 +19,42 @@ internal val texScenarioFiles: Set<String> =
 /** Renders every smoke scenario, keyed by the runner file name. */
 internal fun smokeScenarios(): Map<String, String> = scenarios.associate { it.name to render(it) }
 
+/**
+ * One end-to-end scenario of the codified suite: the invocation,
+ * the expectations and the provisioning of one scratch directory.
+ */
 internal data class Scenario(
+    /** The runner file the scenario renders as, keyed by this name. */
     val name: String,
+    /** The scratch directory the scenario runs in. */
     val dir: String,
+    /** The one-line description the runner file documents itself with. */
     val description: String,
+    /** The one-line statement of what the scenario proves. */
     val check: String,
+    /** The command line arguments of the arara invocation. */
     val arguments: List<String>,
+    /** The strings the run output has to contain. */
     val expected: List<String>,
+    /** The strings the run output must not contain; defaults to none. */
     val forbidden: List<String> = emptyList(),
+    /** The strings the log file has to contain; defaults to none. */
     val logChecks: List<String> = emptyList(),
+    /** The process exit code the scenario expects; defaults to success. */
     val exitCode: Int = 0,
+    /** An extra shell step the setup runs before the invocation. */
     val extraSetup: String = "",
+    /** Whether the scenario runs the invocation twice; defaults to once. */
     val doubleRun: Boolean = false,
+    /** The string the second run must not contain; checked on the double runs alone. */
     val secondRunForbidden: String = "",
+    /** Whether the scenario renders as the log parity pipeline comparing two runs. */
     val logParity: Boolean = false,
+    /** The execution-tests fixture directory the tree provisioning copies from. */
     val fixture: String = "",
+    /** Authored file content the provisioning writes; pairs with [authoredTarget]. */
     val authoredContent: String = "",
+    /** The target path the authored content writes to. */
     val authoredTarget: String = "",
 )
 
@@ -65,6 +85,11 @@ private val wrongTagDocument = """
     \end{document}
     """.trimIndent() + "\n"
 
+/**
+ * The codified suite itself: every row is one scenario the
+ * generated runners execute on both legs, and a new scenario is a
+ * row in this table and nothing else.
+ */
 internal val scenarios = listOf(
         Scenario(
                 name = "run1.bats", dir = "run1",
@@ -494,11 +519,29 @@ internal val scenarios = listOf(
         ),
 )
 
+/**
+ * Renders the working directory step of a scenario: each runner
+ * moves into its own directory, so the rule and configuration
+ * lookups resolve as they do for a user.
+ */
 private fun workingDir(dir: String): String = "cd \"\$SMOKE_DIR/$dir\""
 
+/**
+ * Renders the arara invocation of a scenario: the leg's Java
+ * binary runs the runnable jar with the scenario's arguments, and
+ * the double dollar keeps the shell variables for the runner to
+ * expand.
+ */
 private fun arara(arguments: List<String>): String =
         $$""""$SMOKE_JAVA" -jar "$APP" """ + arguments.joinToString(" ")
 
+/**
+ * Renders one scenario as its runner file: the header documents
+ * the scenario, the setup provisions the working directory, and
+ * the test asserts the status, the expected and forbidden output
+ * strings, the optional second run and the optional log reads -
+ * the parity pipeline last.
+ */
 private fun render(scenario: Scenario): String = bats {
     header { scenario.description }
     setup {
