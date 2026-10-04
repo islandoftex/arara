@@ -28,7 +28,8 @@ public interface FileType {
 
         /**
          * This constant identifies an invalid pattern: an empty
-         * one, which no line can start with.
+         * one, which matches every line and thus distinguishes
+         * nothing on its own.
          */
         public const val INVALID_PATTERN: String = ""
     }

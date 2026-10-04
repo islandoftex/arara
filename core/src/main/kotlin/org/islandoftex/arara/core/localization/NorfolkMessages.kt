@@ -50,6 +50,9 @@ object NorfolkMessages : AraraMessages {
     override val errorExtractorOrbTagInLuaEngine =
         "That ole 'options' field of yorn hev got an orb tag from the ole YAML engine in it, an' the Lua engine ent able to interperlate thet. Best you rewrite thet entry with '{{ … }}' tags instead."
 
+    override fun errorFiletypeInvalidPattern(pattern: String) =
+        "It do luke like thet pattern \"${pattern}\" yew wanted fer this here file type ent a proper regular expression. This should be a easy fix: make sure yew use a proper expression an' hev another go."
+
     override fun errorFiletypeNotAFile(path: String) =
         "Yew gotta hev a file for the 'filetype', not a directory. That '${path}' yew giv me dunt look like a file to me. Do yew need to do jarbs on a directory, yew myte try the Java API"
 
@@ -112,6 +115,12 @@ object NorfolkMessages : AraraMessages {
 
     override fun errorProjectCycle(cycle: String) =
         "Them project dependencies hev got a cycle in 'em, a-involvun' ${cycle}. Cycle dependencies can't be sorted aht, no how. Do please hev another look at your project specification."
+
+    override fun errorProjectStrayDependency(dependency: String) =
+        "The project specifikashun names the project \"${dependency}\" as a dependency, but no project in this here run carries that there name. Dew yew go an' revise yer specifikashun and hev another go."
+
+    override fun errorGlobPatternInvalid(pattern: String, details: String) =
+        "That duzzy ole glob pattern \"${pattern}\" wouldn't turn inter a proper regular expression: ${details}. Make sure the pattern's put tergether right and hev another go."
 
     override val errorReplicateListMissingFormatArgumentsException =
         "Blast, bor, but I coont replicate that duzzy ole list cors you ent giv' me a format argument. I rackon there's a slight more or less parameters than yew giv' me. Dew yew go an' check it and try agin."

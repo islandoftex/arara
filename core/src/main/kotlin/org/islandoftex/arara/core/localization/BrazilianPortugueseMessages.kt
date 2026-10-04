@@ -50,6 +50,9 @@ object BrazilianPortugueseMessages : AraraMessages {
     override val errorExtractorOrbTagInLuaEngine =
         "O parâmetro 'options' contém uma orb tag do motor YAML obsoleto, que o motor Lua não consegue interpolar. Por favor, reescreva a entrada com tags '{{ … }}'."
 
+    override fun errorFiletypeInvalidPattern(pattern: String) =
+        "Parece que o padrão \"${pattern}\" que você quis usar para este tipo de arquivo não é uma expressão regular válida. Isto deve ser fácil de resolver: certifique-se de usar uma expressão válida e tente novamente."
+
     override fun errorFiletypeNotAFile(path: String) =
         "O método 'filetype' requer um arquivo, não um diretório. Observe que '${path}' não parece ser um arquivo. Se você precisa realizar alguma tarefa em um diretório, experimente os métodos disponíveis na API Java."
 
@@ -112,6 +115,12 @@ object BrazilianPortugueseMessages : AraraMessages {
 
     override fun errorProjectCycle(cycle: String) =
         "As dependências do projeto contêm um ciclo envolvendo ${cycle}. Dependências cíclicas não podem ser resolvidas. Por favor, revise a especificação do seu projeto."
+
+    override fun errorProjectStrayDependency(dependency: String) =
+        "A especificação de projeto menciona o projeto \"${dependency}\" como uma dependência, mas nenhum projeto da execução carrega esse nome. Por favor, revise a especificação de projeto e tente novamente."
+
+    override fun errorGlobPatternInvalid(pattern: String, details: String) =
+        "O padrão glob \"${pattern}\" não pôde ser convertido em uma expressão regular: ${details}. Certifique-se de que o padrão esteja bem formado e tente novamente."
 
     override val errorReplicateListMissingFormatArgumentsException =
         "Não consegui replicar a lista por causa de um formato de argumento faltante. Meu palpite é que existem menos (ou mais) parâmetros do que o esperado. Certifique-se de corrigir o número de parâmetros e tente novamente."

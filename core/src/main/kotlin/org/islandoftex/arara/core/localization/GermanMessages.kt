@@ -50,6 +50,9 @@ object GermanMessages : AraraMessages {
     override val errorExtractorOrbTagInLuaEngine =
         "Das 'Options'-Feld enthält einen Orb-Tag der veralteten YAML-Engine, den die Lua-Engine nicht interpolieren kann. Bitte schreiben Sie den Eintrag stattdessen mit '{{ … }}'-Tags um."
 
+    override fun errorFiletypeInvalidPattern(pattern: String) =
+        "Es sieht so aus, als sei das Muster \"${pattern}\", das du für diesen Dateitypen festlegen wolltest, kein gültiger regulärer Ausdruck. Das sollte leicht zu beheben sein: Stelle sicher, dass du einen gültigen Ausdruck verwendest, und versuche es erneut."
+
     override fun errorFiletypeNotAFile(path: String) =
         "Die Methode der Dateitypen \"filetype\" fordert als Eingabe eine Datei und kein Verzeichnis. Es scheint, als sei \"${path}\" keine Datei. Falls du Aufgaben auf ein Verzeichnis bzw. Ordner anwenden willst, kannst du eine Vielzahl von JAVA API-Methoden verwenden."
 
@@ -112,6 +115,12 @@ object GermanMessages : AraraMessages {
 
     override fun errorProjectCycle(cycle: String) =
         "Die Projektabhängigkeiten enthalten einen Zyklus, an dem ${cycle} beteiligt ist. Zyklen lassen sich nicht auflösen. Bitte überarbeite deine Projektspezifikation."
+
+    override fun errorProjectStrayDependency(dependency: String) =
+        "Die Projektspezifikation nennt das Projekt \"${dependency}\" als Abhängigkeit, aber kein Projekt des Durchlaufs trägt diesen Namen. Bitte überarbeite deine Projektspezifikation und versuche es erneut."
+
+    override fun errorGlobPatternInvalid(pattern: String, details: String) =
+        "Das Glob-Muster \"${pattern}\" ließ sich nicht in einen regulären Ausdruck umwandeln: ${details}. Bitte stelle sicher, dass das Muster wohlgeformt ist, und versuche es erneut."
 
     override val errorReplicateListMissingFormatArgumentsException =
         "Ich konnte die Liste auf Grund eines fehlendes Formatargumentes nicht replizieren. Meine Vermutung ist, dass es weniger (oder mehr) Parameter als erwartet gibt. Stelle sicher, dass die korrekte Anzahl an Parametern übergeben wird und versuche es erneut."

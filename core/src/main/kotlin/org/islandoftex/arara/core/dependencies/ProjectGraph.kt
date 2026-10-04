@@ -3,9 +3,12 @@ package org.islandoftex.arara.core.dependencies
 
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.Project
+import org.islandoftex.arara.core.localization.LanguageController
 
 /**
- * A graph of projects. Implemented for convenience.
+ * A graph of the projects of one run: the projects are the
+ * vertices and their dependencies the edges, and the topological
+ * walk resolves the execution order.
  */
 internal class ProjectGraph : Graph<Project>() {
     /**
@@ -21,7 +24,10 @@ internal class ProjectGraph : Graph<Project>() {
             project.dependencies.forEach { dependency ->
                 addEdge(
                     projects.find { it.name == dependency }
-                        ?: throw AraraException("Stray project dependencies"),
+                        ?: throw AraraException(
+                            LanguageController.messages
+                                .errorProjectStrayDependency(dependency)
+                        ),
                     project
                 )
             }

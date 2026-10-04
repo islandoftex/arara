@@ -50,6 +50,9 @@ object ItalianMessages : AraraMessages {
     override val errorExtractorOrbTagInLuaEngine =
         "Il campo 'options' contiene un tag orb del motore YAML deprecato, che il motore Lua non può interpolare. Correggi la voce riscrivendola con i tag '{{ … }}'."
 
+    override fun errorFiletypeInvalidPattern(pattern: String) =
+        "Sembra che il pattern \"${pattern}\" che volevi usare per questo tipo di file non sia un'espressione regolare valida. Dovrebbe essere facile da sistemare: assicurati di usare un'espressione valida e riprova."
+
     override fun errorFiletypeNotAFile(path: String) =
         "Il metodo 'filetype' richiede un file, non una directory. '${path}' non sembra proprio essere un file. Se devi eseguire un compito su una directory, puoi adoperare uno dei metodi delle API Java."
 
@@ -112,6 +115,12 @@ object ItalianMessages : AraraMessages {
 
     override fun errorProjectCycle(cycle: String) =
         "Le dipendenze del progetto contengono un ciclo che coinvolge ${cycle}. I cicli non possono essere risolti. Per favore, rivedi la specifica del tuo progetto."
+
+    override fun errorProjectStrayDependency(dependency: String) =
+        "La specifica di progetto indica il progetto \"${dependency}\" come dipendenza, ma nessun progetto dell'esecuzione porta quel nome. Rivedi la specifica di progetto e riprova."
+
+    override fun errorGlobPatternInvalid(pattern: String, details: String) =
+        "Il pattern glob \"${pattern}\" non ha potuto essere convertito in un'espressione regolare: ${details}. Assicurati che il pattern sia ben formato e riprova."
 
     override val errorReplicateListMissingFormatArgumentsException =
         "Non sono riuscito a replicare la lista perché manca un argomento per il formato. Penso che si tratti di un numero sbagliato di parametri. Assicurati che il numero di parametri sia corretto e riprova."

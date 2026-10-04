@@ -391,6 +391,14 @@ on.
 
 ## Fixed
 
+* Three errors a user can trigger now speak the session's
+  language: an invalid file type pattern in a configuration, a
+  project specification naming a dependency no project carries,
+  and a malformed glob pattern inside a rule all join the
+  localized catalog in all six languages, where they were
+  hardcoded English under their localized headers; the two
+  remaining English exceptions are developer contract
+  violations and now say so.
 * The degenerate-width hardening reaches every remaining
   abbreviation site: the dry-run line and the section titles of
   the plain presentation, and the verbose details line of the

@@ -93,6 +93,10 @@ object ConfigurationFiles {
                 currentProject.workingDirectory
             )
             else -> throw AraraException(
+                // this is a developer contract violation (the lookup
+                // only offers the formats the loaders above cover),
+                // not a user error, so it deliberately stays an
+                // English exception outside the localized catalog
                 "The configuration file '$file' uses a format arara does " +
                     "not support."
             )

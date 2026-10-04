@@ -84,6 +84,11 @@ interface AraraMessages {
      */
     val errorExtractorOrbTagInLuaEngine: String
     /**
+     * The error shown when the pattern a configuration declares
+     * for a file type is not a valid regular expression.
+     */
+    fun errorFiletypeInvalidPattern(pattern: String): String
+    /**
      * The error shown when the filetype helper is handed a directory
      * instead of a file.
      */
@@ -198,6 +203,16 @@ interface AraraMessages {
      * The error shown when the project dependencies contain a cycle.
      */
     fun errorProjectCycle(cycle: String): String
+    /**
+     * The error shown when a project names a dependency no project
+     * of the run carries.
+     */
+    fun errorProjectStrayDependency(dependency: String): String
+    /**
+     * The error shown when a glob pattern cannot be converted into
+     * a regular expression.
+     */
+    fun errorGlobPatternInvalid(pattern: String, details: String): String
     /**
      * The error shown when list replication has more or fewer
      * parameters than expected.

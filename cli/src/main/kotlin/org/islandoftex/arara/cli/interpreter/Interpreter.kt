@@ -683,8 +683,6 @@ class Interpreter(
         parameterValue: Any?,
         context: Map<String, Any>
     ): List<*> {
-        // a directive parameter that is present but set to null counts
-        // as if it had not been provided at all
         val idInDirectiveParams = parameterValue != null
 
         if (argument.isRequired && !idInDirectiveParams)

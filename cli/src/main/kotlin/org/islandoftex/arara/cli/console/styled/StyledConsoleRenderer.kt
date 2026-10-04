@@ -44,7 +44,12 @@ import org.islandoftex.arara.core.utils.wrap
  * @author Island of TeX
  */
 @Suppress("TooManyFunctions")
-class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
+class StyledConsoleRenderer(
+    /**
+     * The terminal every line of the presentation prints through.
+     */
+    private val terminal: Terminal
+) : ConsoleRenderer {
     /**
      * The length of the longest result match as integer, reserving
      * the space the aligned results need.
@@ -1270,15 +1275,12 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
                 }
             }
         }
-        // the title rides the section rule, the table carries the
-        // ruled layout of the presentation: the underline beneath
-        // the labels, the closing rule beneath the table - the box
-        // belongs to the dialogs, where interruption is the point
         val head = "$rule$rule ${messages.infoDisplaySummaryTitle} "
         terminal.println(
             muted(head + rule.repeat((structureWidth - head.length).coerceAtLeast(1)))
         )
-        // the section and the table breathe apart
+        // the section and the table breathe apart; the box belongs
+        // to the dialogs, where interruption is the point
         terminal.println("")
         terminal.println(table)
     }

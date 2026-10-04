@@ -94,15 +94,14 @@ data class LocalConfiguration(
      * directives of their own.
      */
     val prependPreambleIfDirectivesGiven: Boolean = true,
-    // a script-based configuration computes its paths with the values
-    // in scope to the script, so no engine tokens remain to expand;
-    // the flag stays out of the serialized format on purpose
-    @Transient
     /**
-     * Whether the paths are expanded for engine tokens;
-     * a script-based configuration computes its paths in
-     * scope, so no tokens remain to expand.
+     * Whether the paths are expanded for engine tokens; a
+     * script-based configuration computes its paths with the
+     * values in scope to the script, so no tokens remain to
+     * expand. The flag stays out of the serialized format on
+     * purpose.
      */
+    @Transient
     private val expandPathTokens: Boolean = true
 ) {
     /**

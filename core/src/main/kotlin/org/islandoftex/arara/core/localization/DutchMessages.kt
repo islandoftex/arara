@@ -50,6 +50,9 @@ object DutchMessages : AraraMessages {
     override val errorExtractorOrbTagInLuaEngine =
         "Uw 'opties'-veld bevat een orb-tag van de verouderde YAML-engine, die de Lua-engine niet kan interpoleren. Herschrijf alstublieft de invoer met '{{ … }}'-tags."
 
+    override fun errorFiletypeInvalidPattern(pattern: String) =
+        "Het lijkt erop dat het patroon \"${pattern}\" dat je voor dit bestandstype wilde gebruiken geen geldige reguliere expressie is. Dit zou makkelijk op te lossen moeten zijn: zorg dat je een geldige expressie gebruikt en probeer het opnieuw."
+
     override fun errorFiletypeNotAFile(path: String) =
         "De 'filetype'-methode vereist een bestand, geen directory. Het lijkt erop dat '${path}' geen bestand is. Als je taken wil uitvoeren met een directory kan je een aantal methodes uit de Java API gebruiken."
 
@@ -112,6 +115,12 @@ object DutchMessages : AraraMessages {
 
     override fun errorProjectCycle(cycle: String) =
         "De projectafhankelijkheden bevatten een cyclus waarin ${cycle} voorkomt. Cycles kunnen niet worden opgelost. Controleer je projectspecificatie."
+
+    override fun errorProjectStrayDependency(dependency: String) =
+        "De projectspecificatie noemt het project \"${dependency}\" als afhankelijkheid, maar geen enkel project van de run draagt die naam. Herstel je projectspecificatie en probeer het opnieuw."
+
+    override fun errorGlobPatternInvalid(pattern: String, details: String) =
+        "Het globpatroon \"${pattern}\" kon niet worden omgezet in een reguliere expressie: ${details}. Zorg dat het patroon goed gevormd is en probeer het opnieuw."
 
     override val errorReplicateListMissingFormatArgumentsException =
         "Ik kon de lijst niet genereren vanwege een ontbrekend format-argument. Ik denk dat er minder (of meer) parameters zijn dan verwacht. Geef het juiste aantal argumenten op en probeer het opnieuw."

@@ -48,6 +48,11 @@ object LinearExecutor : Executor {
         set(value) {
                 if (currentFile != null)
                     throw AraraException(
+                        // this is a developer contract violation (an
+                        // embedding changing the options mid-file), not
+                        // a user error, so it deliberately stays an
+                        // English exception outside the localized
+                        // catalog
                         "Cannot change execution options while " +
                             "executing the file ${currentFile?.path}."
                     )

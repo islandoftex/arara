@@ -3,6 +3,7 @@ package org.islandoftex.arara.core.files
 
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
+import org.islandoftex.arara.core.localization.LanguageController
 
 /**
  * Implements the file type model, pairing a file extension with the
@@ -23,7 +24,8 @@ data class FileType(
             pattern.toRegex()
         } catch (e: IllegalArgumentException) {
             throw AraraException(
-                "The pattern you wanted to choose for this file type is invalid.",
+                LanguageController.messages
+                    .errorFiletypeInvalidPattern(pattern),
                 e
             )
         }

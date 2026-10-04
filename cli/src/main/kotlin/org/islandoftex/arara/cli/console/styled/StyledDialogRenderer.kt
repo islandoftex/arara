@@ -26,7 +26,12 @@ import org.islandoftex.arara.core.utils.wrap
  * @author Island of TeX
  */
 @Suppress("MagicNumber", "TooManyFunctions")
-class StyledDialogRenderer(private val terminal: Terminal) : DialogRenderer {
+class StyledDialogRenderer(
+    /**
+     * The terminal the dialog boxes render through.
+     */
+    private val terminal: Terminal
+) : DialogRenderer {
     /**
      * The message type codes of the dialog helpers, as rule authors
      * write them: an error, an information, a warning and a

@@ -2,6 +2,7 @@
 package org.islandoftex.arara.core.utils
 
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.core.localization.LanguageController
 
 /**
  * Wrap text at a specified width, breaking on spaces. This is the
@@ -61,8 +62,10 @@ internal fun String.globToRegex(): Regex =
         // evaluation
         runCatching { pattern.toRegex() }.getOrElse {
             throw AraraException(
-                "The glob pattern '$this' could not be converted into a " +
-                    "regular expression: ${it.message}"
+                LanguageController.messages.errorGlobPatternInvalid(
+                    this,
+                    it.message ?: ""
+                )
             )
         }
     }
