@@ -112,21 +112,28 @@ object LuaRuleParser {
     ): LuaRule {
         val ruleIdentifier = optionalString(
             table.get("identifier"),
-            errorHeader + "The rule identifier requires a string value."
+            errorHeader + LanguageController.messages
+                .errorParseRuleIdentifierNotAString
         ) ?: throw AraraException(
-            errorHeader + "The rule does not provide an identifier."
+            errorHeader + LanguageController.messages
+                .errorParseRuleIdentifierMissing
         )
         if (ruleIdentifier != identifier) {
             throw AraraException(
-                errorHeader + "The rule identifier '$ruleIdentifier' does " +
-                    "not match the directive identifier '$identifier'."
+                errorHeader + LanguageController.messages
+                    .errorValidateHeaderWrongIdentifier(
+                        identifier,
+                        ruleIdentifier
+                    )
             )
         }
         val name = optionalString(
             table.get("name"),
-            errorHeader + "The rule name requires a string value."
+            errorHeader + LanguageController.messages
+                .errorParseRuleNameNotAString
         ) ?: throw AraraException(
-            errorHeader + "The rule does not provide a name."
+            errorHeader + LanguageController.messages
+                .errorValidateHeaderNullName
         )
         val authors = stringList(
             table.get("authors"), "authors", errorHeader
@@ -137,7 +144,8 @@ object LuaRuleParser {
             extractCommand(command, errorHeader)
         }.ifEmpty {
             throw AraraException(
-                errorHeader + "The rule does not provide any command."
+                errorHeader + LanguageController.messages
+                    .errorValidateBodyNullCommand
             )
         }
         val arguments = tableList(
@@ -160,11 +168,13 @@ object LuaRuleParser {
     ): LuaRuleCommand = LuaRuleCommand(
         name = optionalString(
             command.get("name"),
-            errorHeader + "The command name requires a string value."
+            errorHeader + LanguageController.messages
+                .errorParseRuleCommandNameNotAString
         ),
         commandFunction = command.get("command") as? LuaFunction
             ?: throw AraraException(
-                errorHeader + "Every command requires a 'command' function."
+                errorHeader + LanguageController.messages
+                    .errorParseRuleCommandFunctionMissing
             ),
         exitFunction = command.get("exit") as? LuaFunction
     )
@@ -182,11 +192,12 @@ object LuaRuleParser {
     ): LuaRuleArgument {
         val identifier = optionalString(
             argument.get("identifier"),
-            errorHeader + "The argument identifier requires a string value."
+            errorHeader + LanguageController.messages
+                .errorParseRuleArgumentIdNotAString()
         )?.takeIf { it.isNotBlank() }
             ?: throw AraraException(
-                errorHeader + "Every argument requires a non-blank " +
-                    "'identifier'."
+                errorHeader + LanguageController.messages
+                    .errorValidateBodyNullArgumentId
             )
         val flag = argument.get("flag") as? LuaFunction
         val default = argument.get("default")
@@ -194,8 +205,8 @@ object LuaRuleParser {
             ?.let { LuaConversion.fromLua(it) }
         if (flag == null && default == null) {
             throw AraraException(
-                errorHeader + "The argument '$identifier' requires at " +
-                    "least one of 'flag' or 'default'."
+                errorHeader + LanguageController.messages
+                    .errorParseRuleArgumentNeedsFlagOrDefault(identifier)
             )
         }
         return LuaRuleArgument(
@@ -205,8 +216,10 @@ object LuaRuleParser {
                     value.isnil() -> false
                     value is LuaBoolean -> value.toboolean()
                     else -> throw AraraException(
-                        errorHeader + "The 'required' key of argument " +
-                            "'$identifier' requires a boolean value."
+                        errorHeader + LanguageController.messages
+                            .errorParseRuleArgumentRequiredNotABoolean(
+                                identifier
+                            )
                     )
                 }
             },
@@ -227,12 +240,14 @@ object LuaRuleParser {
         val identifiers = arguments.map { it.identifier }
         identifiers.intersect(setOf("files", "reference")).forEach {
             throw AraraException(
-                errorHeader + "The argument identifier '$it' is reserved."
+                errorHeader + LanguageController.messages
+                    .errorValidateBodyArgumentIdIsReserved(it)
             )
         }
         if (identifiers.size != identifiers.toSet().size) {
             throw AraraException(
-                errorHeader + "Duplicate argument identifiers are not allowed."
+                errorHeader + LanguageController.messages
+                    .errorValidateBodyDuplicateArgumentIdentifiers
             )
         }
     }
@@ -264,11 +279,13 @@ object LuaRuleParser {
         value is LuaTable -> value.keys().map { elementKey ->
             (value.get(elementKey) as? LuaString)?.tojstring()
                 ?: throw AraraException(
-                    errorHeader + "Every '$key' entry has to be a string."
+                    errorHeader + LanguageController.messages
+                        .errorParseRuleEntryNotAString(key)
                 )
         }
         else -> throw AraraException(
-            errorHeader + "The '$key' key requires a list of strings."
+            errorHeader + LanguageController.messages
+                .errorParseRuleKeyRequiresStringList(key)
         )
     }
 
@@ -286,11 +303,13 @@ object LuaRuleParser {
         value is LuaTable -> value.keys().map { elementKey ->
             value.get(elementKey) as? LuaTable
                 ?: throw AraraException(
-                    errorHeader + "Every '$key' entry has to be a table."
+                    errorHeader + LanguageController.messages
+                        .errorParseRuleEntryNotATable(key)
                 )
         }
         else -> throw AraraException(
-            errorHeader + "The '$key' key requires a list of tables."
+            errorHeader + LanguageController.messages
+                .errorParseRuleKeyRequiresTableList(key)
         )
     }
 }

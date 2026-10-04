@@ -115,7 +115,8 @@ object LuaLocalConfiguration {
             )
             val result = globals.load(file.readText(), file.fileName).call()
             val table = result as? LuaTable ?: throw AraraException(
-                "A Lua configuration file has to return a table."
+                LanguageController.messages
+                    .errorConfigurationLuaReturnNotATable
             )
             fromMap(tableToMap(table))
         }.getOrElse {
@@ -148,8 +149,10 @@ object LuaLocalConfiguration {
     private fun fromMap(map: Map<String, Any?>): LocalConfiguration {
         map.keys.minus(knownKeys).takeIf { it.isNotEmpty() }?.let {
             throw AraraException(
-                "Unknown configuration keys: " +
-                    it.joinToString(", ", "(", ")")
+                LanguageController.messages
+                    .errorConfigurationUnknownKeys(
+                        it.joinToString(", ", "(", ")")
+                    )
             )
         }
         return LocalConfiguration(
@@ -180,7 +183,8 @@ object LuaLocalConfiguration {
     private fun string(map: Map<String, Any?>, key: String): String? =
         map[key]?.let {
             it as? String ?: throw AraraException(
-                "The '$key' key requires a string value."
+                LanguageController.messages
+                    .errorConfigurationKeyRequiresString(key)
             )
         }
 
@@ -190,7 +194,8 @@ object LuaLocalConfiguration {
     private fun int(map: Map<String, Any?>, key: String): Int? =
         map[key]?.let {
             it as? Int ?: throw AraraException(
-                "The '$key' key requires an integer value."
+                LanguageController.messages
+                    .errorConfigurationKeyRequiresInteger(key)
             )
         }
 
@@ -200,7 +205,8 @@ object LuaLocalConfiguration {
     private fun boolean(map: Map<String, Any?>, key: String): Boolean? =
         map[key]?.let {
             it as? Boolean ?: throw AraraException(
-                "The '$key' key requires a boolean value."
+                LanguageController.messages
+                    .errorConfigurationKeyRequiresBoolean(key)
             )
         }
 
@@ -212,10 +218,12 @@ object LuaLocalConfiguration {
         (map[key] ?: emptyList<Any?>()).let { value ->
             (value as? List<*>)?.map { element ->
                 element as? String ?: throw AraraException(
-                    "The '$key' key requires a list of strings."
+                    LanguageController.messages
+                        .errorConfigurationEntryNotAString(key)
                 )
             } ?: throw AraraException(
-                "The '$key' key requires a list of strings."
+                LanguageController.messages
+                    .errorConfigurationKeyRequiresStringList(key)
             )
         }
 
@@ -233,17 +241,21 @@ object LuaLocalConfiguration {
             // an empty Lua table converts to an empty list
             is List<*> -> value.takeIf { it.isEmpty() }?.let { emptyMap() }
                 ?: throw AraraException(
-                    "The '$key' key requires a table of string pairs."
+                    LanguageController.messages
+                        .errorConfigurationKeyRequiresTable(key)
                 )
             is Map<*, *> -> value.entries.associate { (k, v) ->
                 (k as? String ?: throw AraraException(
-                    "The '$key' key requires string keys."
+                    LanguageController.messages
+                        .errorConfigurationKeyRequiresStringKeys(key)
                 )) to (v as? String ?: throw AraraException(
-                    "The '$key' key requires string values."
+                    LanguageController.messages
+                        .errorConfigurationKeyRequiresStringValues(key)
                 ))
             }
             else -> throw AraraException(
-                "The '$key' key requires a table of string pairs."
+                LanguageController.messages
+                    .errorConfigurationKeyRequiresTable(key)
             )
         }
 
@@ -256,18 +268,20 @@ object LuaLocalConfiguration {
         (map["file_types"] ?: emptyList<Any?>()).let { value ->
             (value as? List<*>)?.map { entry ->
                 val fileType = entry as? Map<*, *> ?: throw AraraException(
-                    "Every 'file_types' entry requires a table with an " +
-                        "'extension' and an optional 'pattern'."
+                    LanguageController.messages
+                        .errorConfigurationFileTypeEntryNotATable
                 )
                 val extension = fileType["extension"] as? String
                     ?: throw AraraException(
-                        "Every 'file_types' entry requires an 'extension'."
+                        LanguageController.messages
+                            .errorConfigurationFileTypeExtensionMissing
                     )
                 (fileType["pattern"] as? String)?.let { pattern ->
                     SerialFileType(extension, pattern)
                 } ?: SerialFileType(extension)
             } ?: throw AraraException(
-                "The 'file_types' key requires a list of tables."
+                LanguageController.messages
+                    .errorConfigurationFileTypeKeyRequiresTableList
             )
         }
 }

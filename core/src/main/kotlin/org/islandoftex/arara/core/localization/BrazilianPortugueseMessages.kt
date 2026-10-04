@@ -32,6 +32,45 @@ object BrazilianPortugueseMessages : AraraMessages {
     override val errorConfigurationLoopsInvalidRange =
         "O valor definido na chave 'loops' no arquivo de configuração, que define o número máximo de iterações, possui um intervalo inválido. Por favor, certifique-se de especificar um valor inteiro positivo."
 
+    override val errorConfigurationLuaReturnNotATable =
+        "Um arquivo de configuração Lua precisa retornar uma tabela."
+
+    override fun errorConfigurationUnknownKeys(keys: String) =
+        "A configuração contém chaves que o formato não aceita: ${keys}."
+
+    override fun errorConfigurationKeyRequiresString(key: String) =
+        "A chave '${key}' requer um valor de texto."
+
+    override fun errorConfigurationKeyRequiresInteger(key: String) =
+        "A chave '${key}' requer um valor inteiro."
+
+    override fun errorConfigurationKeyRequiresBoolean(key: String) =
+        "A chave '${key}' requer um valor booleano."
+
+    override fun errorConfigurationEntryNotAString(key: String) =
+        "Cada entrada de '${key}' precisa ser um texto."
+
+    override fun errorConfigurationKeyRequiresStringList(key: String) =
+        "A chave '${key}' requer uma lista de textos."
+
+    override fun errorConfigurationKeyRequiresTable(key: String) =
+        "A chave '${key}' requer uma tabela de pares de textos."
+
+    override fun errorConfigurationKeyRequiresStringKeys(key: String) =
+        "A chave '${key}' requer textos como chaves."
+
+    override fun errorConfigurationKeyRequiresStringValues(key: String) =
+        "A chave '${key}' requer textos como valores."
+
+    override val errorConfigurationFileTypeEntryNotATable =
+        "Cada entrada de 'file_types' requer uma tabela com uma 'extension' e um 'pattern' opcional."
+
+    override val errorConfigurationFileTypeExtensionMissing =
+        "Cada entrada de 'file_types' requer uma 'extension'."
+
+    override val errorConfigurationFileTypeKeyRequiresTableList =
+        "A chave 'file_types' requer uma lista de tabelas."
+
     override fun errorDiscoverFileFileNotFound(file: String, details: String) =
         "Não consegui encontrar o arquivo especificado '${file}' ${details}. Por favor, certifique-se de que o arquivo existe e que possui uma extensão válida."
 
@@ -110,6 +149,42 @@ object BrazilianPortugueseMessages : AraraMessages {
     override val errorParseRuleGenericError =
         "Não consegui analisar a regra, alguma coisa de errado aconteceu. Esta parte é complicada, pois envolve aspectos do formato de serialização de dados subjacente. Eu farei o possível para te ajudar da melhor forma que puder."
 
+    override fun errorParseRuleArgumentIdNotAString() =
+        "O identificador do argumento requer um valor de texto."
+
+    override fun errorParseRuleArgumentNeedsFlagOrDefault(identifier: String) =
+        "O argumento '${identifier}' requer pelo menos um entre 'flag' e 'default'."
+
+    override fun errorParseRuleArgumentRequiredNotABoolean(identifier: String) =
+        "A chave 'required' do argumento '${identifier}' requer um valor booleano."
+
+    override val errorParseRuleCommandFunctionMissing =
+        "Cada comando requer uma função 'command'."
+
+    override val errorParseRuleCommandNameNotAString =
+        "O nome do comando requer um valor de texto."
+
+    override fun errorParseRuleEntryNotAString(key: String) =
+        "Cada entrada de '${key}' precisa ser um texto."
+
+    override fun errorParseRuleEntryNotATable(key: String) =
+        "Cada entrada de '${key}' precisa ser uma tabela."
+
+    override val errorParseRuleIdentifierMissing =
+        "A regra não fornece um identificador."
+
+    override val errorParseRuleIdentifierNotAString =
+        "O identificador da regra requer um valor de texto."
+
+    override fun errorParseRuleKeyRequiresStringList(key: String) =
+        "A chave '${key}' requer uma lista de textos."
+
+    override fun errorParseRuleKeyRequiresTableList(key: String) =
+        "A chave '${key}' requer uma lista de tabelas."
+
+    override val errorParseRuleNameNotAString =
+        "O nome da regra requer um valor de texto."
+
     override fun errorParseRuleUnsupportedFormat(rule: String, location: String, format: String) =
         "Encontrei um erro na regra \"${rule}\" localizada em \"${location}\". O formato da regra \"${format}\" não é suportado pelo arara."
 
@@ -118,6 +193,66 @@ object BrazilianPortugueseMessages : AraraMessages {
 
     override fun errorProjectStrayDependency(dependency: String) =
         "A especificação de projeto menciona o projeto \"${dependency}\" como uma dependência, mas nenhum projeto da execução carrega esse nome. Por favor, revise a especificação de projeto e tente novamente."
+
+    override val errorProjectDependenciesKeyRequiresStringList =
+        "A chave 'dependencies' requer uma lista de textos."
+
+    override val errorProjectDependencyEntryNotAString =
+        "Cada entrada de dependência precisa ser um texto."
+
+    override val errorProjectDirectiveEntryNotAString =
+        "Cada entrada de diretriz precisa ser um texto."
+
+    override val errorProjectDirectivesKeyRequiresTable =
+        "A chave 'directives' requer uma tabela."
+
+    override val errorProjectFileEntryKeyNotAString =
+        "As entradas de arquivos de projeto precisam ser endereçadas pelo seu nome de arquivo."
+
+    override val errorProjectFileIsADirectory =
+        "Um arquivo de projeto não pode ser um diretório."
+
+    override val errorProjectFileSpecNotATable =
+        "Uma especificação de arquivo de projeto precisa ser uma tabela."
+
+    override val errorProjectFilesKeyRequiresTable =
+        "A chave 'files' requer uma tabela de especificações de arquivos."
+
+    override val errorProjectFileTypeExtensionRequired =
+        "Uma extensão é necessária para identificar o tipo de arquivo."
+
+    override val errorProjectFileTypeKeyRequiresTable =
+        "A chave 'file_type' requer uma tabela."
+
+    override val errorProjectFileTypePatternMissing =
+        "Falta um padrão, e a extensão não está entre os tipos de arquivo padrão."
+
+    override val errorProjectFileTypePatternNotAString =
+        "A chave 'pattern' do tipo de arquivo requer um valor de texto."
+
+    override fun errorProjectInvalidLua(details: String) =
+        "A especificação de projeto não é um Lua válido: ${details}."
+
+    override val errorProjectListEntryNotATable =
+        "Cada entrada de uma lista de projetos precisa ser uma tabela."
+
+    override val errorProjectNameKeyRequiresString =
+        "A chave 'name' do projeto requer um valor de texto."
+
+    override val errorProjectNeedsAFile =
+        "Um projeto precisa conter pelo menos um arquivo."
+
+    override val errorProjectPriorityKeyRequiresNumber =
+        "A chave 'priority' requer um número."
+
+    override val errorProjectReturnNotATable =
+        "O tipo de retorno da especificação de projeto Lua precisa ser uma tabela, contendo um projeto ou uma lista de projetos."
+
+    override val errorProjectSingleProjectHasDependencies =
+        "Uma especificação de projeto único não pode declarar dependências."
+
+    override val errorProjectWorkingDirectoryKeyRequiresString =
+        "A chave 'working_directory' requer um valor de texto."
 
     override fun errorGlobPatternInvalid(pattern: String, details: String) =
         "O padrão glob \"${pattern}\" não pôde ser convertido em uma expressão regular: ${details}. Certifique-se de que o padrão esteja bem formado e tente novamente."

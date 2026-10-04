@@ -32,6 +32,45 @@ object DutchMessages : AraraMessages {
     override val errorConfigurationLoopsInvalidRange =
         "De waarde gedefinieerd in de 'loops'-optie in het configuratiebestand om het maximumaantal herhalingen te specificeren heeft een ongeldig bereik. Geef alsjeblieft een positieve long integer-waarde op."
 
+    override val errorConfigurationLuaReturnNotATable =
+        "Een Lua-configuratiebestand moet een tabel retourneren."
+
+    override fun errorConfigurationUnknownKeys(keys: String) =
+        "De configuratie bevat sleutels die het formaat niet toestaat: ${keys}."
+
+    override fun errorConfigurationKeyRequiresString(key: String) =
+        "De sleutel '${key}' vereist een tekenreekswaarde."
+
+    override fun errorConfigurationKeyRequiresInteger(key: String) =
+        "De sleutel '${key}' vereist een geheel getal."
+
+    override fun errorConfigurationKeyRequiresBoolean(key: String) =
+        "De sleutel '${key}' vereist een booleaanse waarde."
+
+    override fun errorConfigurationEntryNotAString(key: String) =
+        "Elke '${key}'-waarde moet een tekenreeks zijn."
+
+    override fun errorConfigurationKeyRequiresStringList(key: String) =
+        "De sleutel '${key}' vereist een lijst met tekenreeksen."
+
+    override fun errorConfigurationKeyRequiresTable(key: String) =
+        "De sleutel '${key}' vereist een tabel met tekenreekparen."
+
+    override fun errorConfigurationKeyRequiresStringKeys(key: String) =
+        "De sleutel '${key}' vereist tekenreeksen als sleutels."
+
+    override fun errorConfigurationKeyRequiresStringValues(key: String) =
+        "De sleutel '${key}' vereist tekenreeksen als waarden."
+
+    override val errorConfigurationFileTypeEntryNotATable =
+        "Elke 'file_types'-waarde vereist een tabel met een 'extension' en een optioneel 'pattern'."
+
+    override val errorConfigurationFileTypeExtensionMissing =
+        "Elke 'file_types'-waarde vereist een 'extension'."
+
+    override val errorConfigurationFileTypeKeyRequiresTableList =
+        "De sleutel 'file_types' vereist een lijst met tabellen."
+
     override fun errorDiscoverFileFileNotFound(file: String, details: String) =
         "Ik kon het opgegeven bestand '${file}' ${details} niet vinden. Zorg ervoor dat het bestand bestaat en dat het een geldige extensie heeft."
 
@@ -110,6 +149,42 @@ object DutchMessages : AraraMessages {
     override val errorParseRuleGenericError =
         "Ik kon de regel niet verwerken, er is iets verkeerd gegaan. Dit probleem is ingewikkeld, omdat het te maken heeft met aspecten van de onderliggende dataserialisatiesyntax. Ik zal mijn best doen om je zoveel mogelijk hiermee te helpen."
 
+    override fun errorParseRuleArgumentIdNotAString() =
+        "De argumentidentificatie vereist een tekenreekswaarde."
+
+    override fun errorParseRuleArgumentNeedsFlagOrDefault(identifier: String) =
+        "Het argument '${identifier}' vereist minstens een 'flag' of een 'default'."
+
+    override fun errorParseRuleArgumentRequiredNotABoolean(identifier: String) =
+        "De sleutel 'required' van argument '${identifier}' vereist een booleaanse waarde."
+
+    override val errorParseRuleCommandFunctionMissing =
+        "Elk commando vereist een 'command'-functie."
+
+    override val errorParseRuleCommandNameNotAString =
+        "De commandonaam vereist een tekenreekswaarde."
+
+    override fun errorParseRuleEntryNotAString(key: String) =
+        "Elke '${key}'-waarde moet een tekenreeks zijn."
+
+    override fun errorParseRuleEntryNotATable(key: String) =
+        "Elke '${key}'-waarde moet een tabel zijn."
+
+    override val errorParseRuleIdentifierMissing =
+        "De regel bevat geen identificatie."
+
+    override val errorParseRuleIdentifierNotAString =
+        "De regelidentificatie vereist een tekenreekswaarde."
+
+    override fun errorParseRuleKeyRequiresStringList(key: String) =
+        "De sleutel '${key}' vereist een lijst met tekenreeksen."
+
+    override fun errorParseRuleKeyRequiresTableList(key: String) =
+        "De sleutel '${key}' vereist een lijst met tabellen."
+
+    override val errorParseRuleNameNotAString =
+        "De regelnaam vereist een tekenreekswaarde."
+
     override fun errorParseRuleUnsupportedFormat(rule: String, location: String, format: String) =
         "Ik heb een fout gevonden in regel \"${rule}\", gelegen in \"${location}\". Het regelformaat van \"${format}\" wordt niet ondersteund door arara."
 
@@ -118,6 +193,66 @@ object DutchMessages : AraraMessages {
 
     override fun errorProjectStrayDependency(dependency: String) =
         "De projectspecificatie noemt het project \"${dependency}\" als afhankelijkheid, maar geen enkel project van de run draagt die naam. Herstel je projectspecificatie en probeer het opnieuw."
+
+    override val errorProjectDependenciesKeyRequiresStringList =
+        "De sleutel 'dependencies' vereist een lijst met tekenreeksen."
+
+    override val errorProjectDependencyEntryNotAString =
+        "Elke afhankelijkheidswaarde moet een tekenreeks zijn."
+
+    override val errorProjectDirectiveEntryNotAString =
+        "Elke richtlijnwaarde moet een tekenreeks zijn."
+
+    override val errorProjectDirectivesKeyRequiresTable =
+        "De sleutel 'directives' vereist een tabel."
+
+    override val errorProjectFileEntryKeyNotAString =
+        "Projectbestandwaarden moeten via hun bestandsnaam aangeduid zijn."
+
+    override val errorProjectFileIsADirectory =
+        "Een projectbestand mag geen map zijn."
+
+    override val errorProjectFileSpecNotATable =
+        "Een projectbestandspecificatie moet een tabel zijn."
+
+    override val errorProjectFilesKeyRequiresTable =
+        "De sleutel 'files' vereist een tabel met bestandsspecificaties."
+
+    override val errorProjectFileTypeExtensionRequired =
+        "Een extensie is vereist om het bestandstype te bepalen."
+
+    override val errorProjectFileTypeKeyRequiresTable =
+        "De sleutel 'file_type' vereist een tabel."
+
+    override val errorProjectFileTypePatternMissing =
+        "Er ontbreekt een patroon en de extensie hoort niet bij de standaardbestandstypen."
+
+    override val errorProjectFileTypePatternNotAString =
+        "De sleutel 'pattern' van het bestandstype vereist een tekenreekswaarde."
+
+    override fun errorProjectInvalidLua(details: String) =
+        "De projectspecificatie is geen geldige Lua: ${details}."
+
+    override val errorProjectListEntryNotATable =
+        "Elke waarde in een projectenlijst moet een tabel zijn."
+
+    override val errorProjectNameKeyRequiresString =
+        "De sleutel 'name' van het project vereist een tekenreekswaarde."
+
+    override val errorProjectNeedsAFile =
+        "Een project moet minstens één bestand bevatten."
+
+    override val errorProjectPriorityKeyRequiresNumber =
+        "De sleutel 'priority' vereist een getal."
+
+    override val errorProjectReturnNotATable =
+        "Het retourtype van de Lua-projectspecificatie moet een tabel zijn met daarin een project of een lijst met projecten."
+
+    override val errorProjectSingleProjectHasDependencies =
+        "Een enkele projectspecificatie kan geen afhankelijkheden bevatten."
+
+    override val errorProjectWorkingDirectoryKeyRequiresString =
+        "De sleutel 'working_directory' vereist een tekenreekswaarde."
 
     override fun errorGlobPatternInvalid(pattern: String, details: String) =
         "Het globpatroon \"${pattern}\" kon niet worden omgezet in een reguliere expressie: ${details}. Zorg dat het patroon goed gevormd is en probeer het opnieuw."

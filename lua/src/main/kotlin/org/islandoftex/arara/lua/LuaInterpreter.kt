@@ -13,6 +13,7 @@ import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.configuration.DefaultConfiguration
 import org.islandoftex.arara.core.files.UNKNOWN_TYPE
+import org.islandoftex.arara.core.localization.LanguageController
 
 /**
  * Interprets Lua project specification files, i.e. Lua scripts
@@ -57,12 +58,19 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
      */
     private fun extractFileType(fileType: LuaTable): FileType {
         val extension = fileType["extension"].takeIf { it is LuaString }?.toString()
-            ?: throw ProjectParseException("An extension is required to identify the file type.")
+            ?: throw ProjectParseException(
+                LanguageController.messages
+                    .errorProjectFileTypeExtensionRequired
+            )
         val pattern = optionalString(
             fileType["pattern"],
-            "The file type 'pattern' key requires a string value."
+            LanguageController.messages
+                .errorProjectFileTypePatternNotAString
         ) ?: DefaultConfiguration.defaultFileTypePatterns[extension]
-            ?: throw ProjectParseException("A pattern is missing (unknown and not in the default file types).")
+            ?: throw ProjectParseException(
+                LanguageController.messages
+                    .errorProjectFileTypePatternMissing
+            )
 
         return org.islandoftex.arara.core.files.FileType(extension, pattern)
     }
@@ -74,8 +82,8 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
     private fun projectFileKey(key: LuaValue): LuaString =
             key as? LuaString
                 ?: throw ProjectParseException(
-                    "Project file entries have to be keyed by " +
-                        "their file name."
+                    LanguageController.messages
+                        .errorProjectFileEntryKeyNotAString
                 )
 
     /**
@@ -87,7 +95,8 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
     ): LuaTable =
             fileTable[key] as? LuaTable
                 ?: throw ProjectParseException(
-                    "A project file specification has to be a table."
+                    LanguageController.messages
+                        .errorProjectFileSpecNotATable
                 )
 
     /**
@@ -101,7 +110,10 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
     ): ProjectFile {
         val path = workingDirectory.resolve(projectFileKey(key).toString())
         if (path.isDirectory) {
-            throw ProjectParseException("A project file must not be a directory.")
+            throw ProjectParseException(
+                LanguageController.messages
+                    .errorProjectFileIsADirectory
+            )
         }
         // a missing entry keeps its place in the specification: a
         // run may generate the file before its turn comes, so the
@@ -128,7 +140,8 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
     private fun extractProjectFile(path: MPPPath, table: LuaTable): ProjectFile {
         val fileType = optionalTable(
             table["file_type"],
-            "The 'file_type' key requires a table."
+            LanguageController.messages
+                .errorProjectFileTypeKeyRequiresTable
         )?.let { extractFileType(it) } ?: FileType.UNKNOWN_TYPE
 
         val priority = table["priority"].let { value ->
@@ -136,7 +149,8 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
                 value.isnil() -> null
                 value is LuaNumber -> value.toint()
                 else -> throw ProjectParseException(
-                    "The 'priority' key requires a number."
+                    LanguageController.messages
+                        .errorProjectPriorityKeyRequiresNumber
                 )
             }
         } ?: org.islandoftex.arara.core.files.ProjectFile.DEFAULT_PRIORITY
@@ -144,14 +158,16 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         val projectFile = LuaProjectFile(path, fileType, priority)
         optionalTable(
             table["directives"],
-            "The 'directives' key requires a table."
+            LanguageController.messages
+                .errorProjectDirectivesKeyRequiresTable
         )?.let { luaDirectives ->
             projectFile.directives = luaDirectives.keys()
                 .map { key -> luaDirectives[key] }
                 .map { value ->
                     (value as? LuaString)?.toString()
                         ?: throw ProjectParseException(
-                            "Every directive entry has to be a string."
+                            LanguageController.messages
+                                .errorProjectDirectiveEntryNotAString
                         )
                 }
                 .toList()
@@ -168,16 +184,19 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
     private fun extractProject(table: LuaTable): Project {
         val name = optionalString(
             table["name"],
-            "The project 'name' key requires a string value."
+            LanguageController.messages
+                .errorProjectNameKeyRequiresString
         ) ?: "Untitled"
         val workingDirectory = optionalString(
             table["working_directory"],
-            "The 'working_directory' key requires a string value."
+            LanguageController.messages
+                .errorProjectWorkingDirectoryKeyRequiresString
         )?.let { MPPPath(it) } ?: appWorkingDir
 
         val files = optionalTable(
             table["files"],
-            "The 'files' key requires a table of file specifications."
+            LanguageController.messages
+                .errorProjectFilesKeyRequiresTable
         )?.let { fileTable ->
             fileTable.keys().map { key ->
                 projectFileEntry(fileTable, key, workingDirectory)
@@ -185,17 +204,21 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         } ?: setOf()
 
         if (files.isEmpty()) {
-            throw ProjectParseException("A project must contain at least one file")
+            throw ProjectParseException(
+                LanguageController.messages.errorProjectNeedsAFile
+            )
         }
 
         val dependencies = optionalTable(
             table["dependencies"],
-            "The 'dependencies' key requires a list of strings."
+            LanguageController.messages
+                .errorProjectDependenciesKeyRequiresStringList
         )?.let { dependencyTable ->
             dependencyTable.keys().map { key ->
                 (dependencyTable[key] as? LuaString)?.toString()
                     ?: throw ProjectParseException(
-                        "Every dependency entry has to be a string."
+                        LanguageController.messages
+                            .errorProjectDependencyEntryNotAString
                     )
             }.toSet()
         } ?: setOf()
@@ -226,19 +249,23 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
                 .call() as? LuaTable
         }.getOrElse {
             throw ProjectParseException(
-                "Detected invalid Lua: ${it.message}",
+                LanguageController.messages
+                    .errorProjectInvalidLua(it.message ?: ""),
                 it as? Exception ?: RuntimeException(it.toString())
             )
         }
             ?: throw ProjectParseException(
-                "The return type of the Lua project specification has to be a table " +
-                    "(project or list of projects)."
+                LanguageController.messages
+                    .errorProjectReturnNotATable
             )
 
         if (luaTable["files"] is LuaTable) {
             val project = extractProject(luaTable)
             if (project.dependencies.isNotEmpty()) {
-                throw ProjectValidationException("Single project has dependencies which are not declared.")
+                throw ProjectValidationException(
+                    LanguageController.messages
+                        .errorProjectSingleProjectHasDependencies
+                )
             }
             return listOf(project)
         }
@@ -247,7 +274,8 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
             .map { key ->
                 luaTable[key] as? LuaTable
                     ?: throw ProjectParseException(
-                        "A project list entry has to be a table."
+                        LanguageController.messages
+                            .errorProjectListEntryNotATable
                     )
             }
             .map { extractProject(it) }
@@ -258,6 +286,17 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
                     projectList.find { it.name == dep } != null
                 }
             }
-        } ?: throw ProjectValidationException("Project dependencies have not been resolved successfully.")
+        } ?: throw ProjectValidationException(
+            LanguageController.messages
+                .errorProjectStrayDependency(
+                    // the unresolved dependency names join the
+                    // verdict: every failure names its projects
+                    projects.flatMap { project ->
+                        project.dependencies.filter { dep ->
+                            projects.find { it.name == dep } == null
+                        }
+                    }.joinToString(", ")
+                )
+        )
     }
 }

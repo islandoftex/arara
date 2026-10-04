@@ -32,6 +32,45 @@ object NorfolkMessages : AraraMessages {
     override val errorConfigurationLoopsInvalidRange =
         "Atwin me, yew an' the geartepust that 'loops' key value ent rite. Yew're gotta giv' a number thass bigger than nuffin."
 
+    override val errorConfigurationLuaReturnNotATable =
+        "A Lua configyrashun file hes gotter return a table."
+
+    override fun errorConfigurationUnknownKeys(keys: String) =
+        "That there configyrashun is carryin' keys the format won't hev: ${keys}."
+
+    override fun errorConfigurationKeyRequiresString(key: String) =
+        "The '${key}' key wants a string value."
+
+    override fun errorConfigurationKeyRequiresInteger(key: String) =
+        "The '${key}' key wants a whole number."
+
+    override fun errorConfigurationKeyRequiresBoolean(key: String) =
+        "The '${key}' key wants a true-or-false value."
+
+    override fun errorConfigurationEntryNotAString(key: String) =
+        "Every '${key}' entry's gotta be a string."
+
+    override fun errorConfigurationKeyRequiresStringList(key: String) =
+        "The '${key}' key wants a list of strings."
+
+    override fun errorConfigurationKeyRequiresTable(key: String) =
+        "The '${key}' key wants a table of string pairs."
+
+    override fun errorConfigurationKeyRequiresStringKeys(key: String) =
+        "The '${key}' key wants strings for its keys."
+
+    override fun errorConfigurationKeyRequiresStringValues(key: String) =
+        "The '${key}' key wants strings for its values."
+
+    override val errorConfigurationFileTypeEntryNotATable =
+        "Every 'file_types' entry wants a table with an 'extension' and a 'pattern' if yew're so minded."
+
+    override val errorConfigurationFileTypeExtensionMissing =
+        "Every 'file_types' entry wants an 'extension'."
+
+    override val errorConfigurationFileTypeKeyRequiresTableList =
+        "The 'file_types' key wants a list of tables."
+
     override fun errorDiscoverFileFileNotFound(file: String, details: String) =
         "Dunt yew git yarself inta a rite ole puckaterry, but I can't find yar file '${file}' ${details}. Yew're gotta find the file and do yew see that has a proper extension on the end onnit, tergether."
 
@@ -110,6 +149,42 @@ object NorfolkMessages : AraraMessages {
     override val errorParseRuleGenericError =
         "Thass a rum ole dew, that rule is hully puttin' on its parts. Wuh, yew're gotta he'sum idear wot this is orl abowt ter git th' hang o'this bit else yew myte be in a rite ole puckaterry but I'll help yew git it done if I can, tergether."
 
+    override fun errorParseRuleArgumentIdNotAString() =
+        "That argument identifier wants a string value."
+
+    override fun errorParseRuleArgumentNeedsFlagOrDefault(identifier: String) =
+        "That argument '${identifier}' wants at least a 'flag' or a 'default' - one or t'other."
+
+    override fun errorParseRuleArgumentRequiredNotABoolean(identifier: String) =
+        "The 'required' key of argument '${identifier}' wants a true-or-false value."
+
+    override val errorParseRuleCommandFunctionMissing =
+        "Every command wants a 'command' function."
+
+    override val errorParseRuleCommandNameNotAString =
+        "That command name wants a string value."
+
+    override fun errorParseRuleEntryNotAString(key: String) =
+        "Every '${key}' entry's gotta be a string."
+
+    override fun errorParseRuleEntryNotATable(key: String) =
+        "Every '${key}' entry's gotta be a table."
+
+    override val errorParseRuleIdentifierMissing =
+        "That there rule duden't give no identifier."
+
+    override val errorParseRuleIdentifierNotAString =
+        "That rule identifier wants a string value."
+
+    override fun errorParseRuleKeyRequiresStringList(key: String) =
+        "The '${key}' key wants a list of strings."
+
+    override fun errorParseRuleKeyRequiresTableList(key: String) =
+        "The '${key}' key wants a list of tables."
+
+    override val errorParseRuleNameNotAString =
+        "That rule name wants a string value."
+
     override fun errorParseRuleUnsupportedFormat(rule: String, location: String, format: String) =
         "I've found a error in the rule \"${rule}\" located at \"${location}\". The rule format of \"${format}\" ent supported by arara, I'm afraid."
 
@@ -118,6 +193,66 @@ object NorfolkMessages : AraraMessages {
 
     override fun errorProjectStrayDependency(dependency: String) =
         "The project specifikashun names the project \"${dependency}\" as a dependency, but no project in this here run carries that there name. Dew yew go an' revise yer specifikashun and hev another go."
+
+    override val errorProjectDependenciesKeyRequiresStringList =
+        "The 'dependencies' key wants a list of strings."
+
+    override val errorProjectDependencyEntryNotAString =
+        "Every dependency entry's gotta be a string."
+
+    override val errorProjectDirectiveEntryNotAString =
+        "Every directive entry's gotta be a string."
+
+    override val errorProjectDirectivesKeyRequiresTable =
+        "The 'directives' key wants a table."
+
+    override val errorProjectFileEntryKeyNotAString =
+        "Project file entries hev gotter be keyed by their file name."
+
+    override val errorProjectFileIsADirectory =
+        "A project file can't be a directory, that's for sure."
+
+    override val errorProjectFileSpecNotATable =
+        "A project file specifikashun's gotta be a table."
+
+    override val errorProjectFilesKeyRequiresTable =
+        "The 'files' key wants a table of file specifikashuns."
+
+    override val errorProjectFileTypeExtensionRequired =
+        "Yew're gotta hev an extension ter know the file type."
+
+    override val errorProjectFileTypeKeyRequiresTable =
+        "The 'file_type' key wants a table."
+
+    override val errorProjectFileTypePatternMissing =
+        "There ent no pattern, and that extension ent one of the default file types neither."
+
+    override val errorProjectFileTypePatternNotAString =
+        "The file type 'pattern' key wants a string value."
+
+    override fun errorProjectInvalidLua(details: String) =
+        "That there project specifikashun ent proper Lua: ${details}."
+
+    override val errorProjectListEntryNotATable =
+        "Every project list entry's gotta be a table."
+
+    override val errorProjectNameKeyRequiresString =
+        "The project 'name' key wants a string value."
+
+    override val errorProjectNeedsAFile =
+        "A project's gotta hev at least one file in it."
+
+    override val errorProjectPriorityKeyRequiresNumber =
+        "The 'priority' key wants a number."
+
+    override val errorProjectReturnNotATable =
+        "That Lua project specifikashun's gotter return a table - a project or a list of 'em."
+
+    override val errorProjectSingleProjectHasDependencies =
+        "A single project specifikashun can't go declarin' dependencies."
+
+    override val errorProjectWorkingDirectoryKeyRequiresString =
+        "The 'working_directory' key wants a string value."
 
     override fun errorGlobPatternInvalid(pattern: String, details: String) =
         "That duzzy ole glob pattern \"${pattern}\" wouldn't turn inter a proper regular expression: ${details}. Make sure the pattern's put tergether right and hev another go."

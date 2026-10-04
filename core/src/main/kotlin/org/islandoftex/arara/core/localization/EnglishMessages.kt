@@ -31,6 +31,45 @@ object EnglishMessages : AraraMessages {
     override val errorConfigurationLoopsInvalidRange =
         "The value defined in the 'loops' key in the configuration file in order to denote the maximum number of loops has an invalid range. Please make sure to use a positive long value."
 
+    override val errorConfigurationLuaReturnNotATable =
+        "A Lua configuration file has to return a table."
+
+    override fun errorConfigurationUnknownKeys(keys: String) =
+        "The configuration carries keys the format does not accept: ${keys}."
+
+    override fun errorConfigurationKeyRequiresString(key: String) =
+        "The '${key}' key requires a string value."
+
+    override fun errorConfigurationKeyRequiresInteger(key: String) =
+        "The '${key}' key requires an integer value."
+
+    override fun errorConfigurationKeyRequiresBoolean(key: String) =
+        "The '${key}' key requires a boolean value."
+
+    override fun errorConfigurationEntryNotAString(key: String) =
+        "Every '${key}' entry has to be a string."
+
+    override fun errorConfigurationKeyRequiresStringList(key: String) =
+        "The '${key}' key requires a list of strings."
+
+    override fun errorConfigurationKeyRequiresTable(key: String) =
+        "The '${key}' key requires a table of string pairs."
+
+    override fun errorConfigurationKeyRequiresStringKeys(key: String) =
+        "The '${key}' key requires string keys."
+
+    override fun errorConfigurationKeyRequiresStringValues(key: String) =
+        "The '${key}' key requires string values."
+
+    override val errorConfigurationFileTypeEntryNotATable =
+        "Every 'file_types' entry requires a table with an 'extension' and an optional 'pattern'."
+
+    override val errorConfigurationFileTypeExtensionMissing =
+        "Every 'file_types' entry requires an 'extension'."
+
+    override val errorConfigurationFileTypeKeyRequiresTableList =
+        "The 'file_types' key requires a list of tables."
+
     override fun errorDiscoverFileFileNotFound(file: String, details: String) =
         "I could not find the provided file \"${file}\" ${details}. Please make sure the file exists and it has a valid extension."
 
@@ -109,6 +148,42 @@ object EnglishMessages : AraraMessages {
     override val errorParseRuleGenericError =
         "I could not parse the rule, something bad happened. This part is quite tricky, since it involves aspects of the underlying data serialization format. I will do my best to help you in any way I can."
 
+    override fun errorParseRuleArgumentIdNotAString() =
+        "The argument identifier requires a string value."
+
+    override fun errorParseRuleArgumentNeedsFlagOrDefault(identifier: String) =
+        "The argument '${identifier}' requires at least one of 'flag' or 'default'."
+
+    override fun errorParseRuleArgumentRequiredNotABoolean(identifier: String) =
+        "The 'required' key of argument '${identifier}' requires a boolean value."
+
+    override val errorParseRuleCommandFunctionMissing =
+        "Every command requires a 'command' function."
+
+    override val errorParseRuleCommandNameNotAString =
+        "The command name requires a string value."
+
+    override fun errorParseRuleEntryNotAString(key: String) =
+        "Every '${key}' entry has to be a string."
+
+    override fun errorParseRuleEntryNotATable(key: String) =
+        "Every '${key}' entry has to be a table."
+
+    override val errorParseRuleIdentifierMissing =
+        "The rule does not provide an identifier."
+
+    override val errorParseRuleIdentifierNotAString =
+        "The rule identifier requires a string value."
+
+    override fun errorParseRuleKeyRequiresStringList(key: String) =
+        "The '${key}' key requires a list of strings."
+
+    override fun errorParseRuleKeyRequiresTableList(key: String) =
+        "The '${key}' key requires a list of tables."
+
+    override val errorParseRuleNameNotAString =
+        "The rule name requires a string value."
+
     override fun errorParseRuleUnsupportedFormat(rule: String, location: String, format: String) =
         "I found an error in rule \"${rule}\" located at \"${location}\". The rule format of \"${format}\" is not supported by arara."
 
@@ -117,6 +192,66 @@ object EnglishMessages : AraraMessages {
 
     override fun errorProjectStrayDependency(dependency: String) =
         "The project specification names the project \"${dependency}\" as a dependency, but no project of the run carries that name. Please revise your project specification and try again."
+
+    override val errorProjectDependenciesKeyRequiresStringList =
+        "The 'dependencies' key requires a list of strings."
+
+    override val errorProjectDependencyEntryNotAString =
+        "Every dependency entry has to be a string."
+
+    override val errorProjectDirectiveEntryNotAString =
+        "Every directive entry has to be a string."
+
+    override val errorProjectDirectivesKeyRequiresTable =
+        "The 'directives' key requires a table."
+
+    override val errorProjectFileEntryKeyNotAString =
+        "Project file entries have to be keyed by their file name."
+
+    override val errorProjectFileIsADirectory =
+        "A project file must not be a directory."
+
+    override val errorProjectFileSpecNotATable =
+        "A project file specification has to be a table."
+
+    override val errorProjectFilesKeyRequiresTable =
+        "The 'files' key requires a table of file specifications."
+
+    override val errorProjectFileTypeExtensionRequired =
+        "An extension is required to identify the file type."
+
+    override val errorProjectFileTypeKeyRequiresTable =
+        "The 'file_type' key requires a table."
+
+    override val errorProjectFileTypePatternMissing =
+        "A pattern is missing, and the extension is not among the default file types."
+
+    override val errorProjectFileTypePatternNotAString =
+        "The file type 'pattern' key requires a string value."
+
+    override fun errorProjectInvalidLua(details: String) =
+        "The project specification is not valid Lua: ${details}."
+
+    override val errorProjectListEntryNotATable =
+        "A project list entry has to be a table."
+
+    override val errorProjectNameKeyRequiresString =
+        "The project 'name' key requires a string value."
+
+    override val errorProjectNeedsAFile =
+        "A project must contain at least one file."
+
+    override val errorProjectPriorityKeyRequiresNumber =
+        "The 'priority' key requires a number."
+
+    override val errorProjectReturnNotATable =
+        "The return type of the Lua project specification has to be a table, holding a project or a list of projects."
+
+    override val errorProjectSingleProjectHasDependencies =
+        "A single project specification cannot declare dependencies."
+
+    override val errorProjectWorkingDirectoryKeyRequiresString =
+        "The 'working_directory' key requires a string value."
 
     override fun errorGlobPatternInvalid(pattern: String, details: String) =
         "The glob pattern \"${pattern}\" could not be converted into a regular expression: ${details}. Please make sure the pattern is well formed and try again."

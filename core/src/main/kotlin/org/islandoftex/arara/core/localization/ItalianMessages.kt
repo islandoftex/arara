@@ -32,6 +32,45 @@ object ItalianMessages : AraraMessages {
     override val errorConfigurationLoopsInvalidRange =
         "Il valore definito nella chiave 'loops' del file di configurazione per stabilire il massimo numero di cicli ha un intervallo non valido. Assicurati che sia un valore 'lungo' e positivo."
 
+    override val errorConfigurationLuaReturnNotATable =
+        "Un file di configurazione Lua deve restituire una tabella."
+
+    override fun errorConfigurationUnknownKeys(keys: String) =
+        "La configurazione contiene chiavi che il formato non accetta: ${keys}."
+
+    override fun errorConfigurationKeyRequiresString(key: String) =
+        "La chiave '${key}' richiede un valore stringa."
+
+    override fun errorConfigurationKeyRequiresInteger(key: String) =
+        "La chiave '${key}' richiede un valore intero."
+
+    override fun errorConfigurationKeyRequiresBoolean(key: String) =
+        "La chiave '${key}' richiede un valore booleano."
+
+    override fun errorConfigurationEntryNotAString(key: String) =
+        "Ogni voce di '${key}' deve essere una stringa."
+
+    override fun errorConfigurationKeyRequiresStringList(key: String) =
+        "La chiave '${key}' richiede una lista di stringhe."
+
+    override fun errorConfigurationKeyRequiresTable(key: String) =
+        "La chiave '${key}' richiede una tabella di coppie di stringhe."
+
+    override fun errorConfigurationKeyRequiresStringKeys(key: String) =
+        "La chiave '${key}' richiede chiavi di tipo stringa."
+
+    override fun errorConfigurationKeyRequiresStringValues(key: String) =
+        "La chiave '${key}' richiede valori di tipo stringa."
+
+    override val errorConfigurationFileTypeEntryNotATable =
+        "Ogni voce di 'file_types' richiede una tabella con una 'extension' e un 'pattern' facoltativo."
+
+    override val errorConfigurationFileTypeExtensionMissing =
+        "Ogni voce di 'file_types' richiede un'estensione ('extension')."
+
+    override val errorConfigurationFileTypeKeyRequiresTableList =
+        "La chiave 'file_types' richiede una lista di tabelle."
+
     override fun errorDiscoverFileFileNotFound(file: String, details: String) =
         "Non sono riuscito a trovare il file '${file}' ${details}. Assicurati che il file esista e abbia un'estensione valida."
 
@@ -110,6 +149,42 @@ object ItalianMessages : AraraMessages {
     override val errorParseRuleGenericError =
         "Non ho potuto analizzare la regola, qualcosa è andato storto. Questa parte è un po' complicata, perché riguarda aspetti del formato interno di serializzazione dei dati. Farò del mio meglio per darti una mano, per quanto posso."
 
+    override fun errorParseRuleArgumentIdNotAString() =
+        "L'identificatore dell'argomento richiede un valore stringa."
+
+    override fun errorParseRuleArgumentNeedsFlagOrDefault(identifier: String) =
+        "L'argomento '${identifier}' richiede almeno uno tra 'flag' e 'default'."
+
+    override fun errorParseRuleArgumentRequiredNotABoolean(identifier: String) =
+        "La chiave 'required' dell'argomento '${identifier}' richiede un valore booleano."
+
+    override val errorParseRuleCommandFunctionMissing =
+        "Ogni comando richiede una funzione 'command'."
+
+    override val errorParseRuleCommandNameNotAString =
+        "Il nome del comando richiede un valore stringa."
+
+    override fun errorParseRuleEntryNotAString(key: String) =
+        "Ogni voce di '${key}' deve essere una stringa."
+
+    override fun errorParseRuleEntryNotATable(key: String) =
+        "Ogni voce di '${key}' deve essere una tabella."
+
+    override val errorParseRuleIdentifierMissing =
+        "La regola non fornisce un identificatore."
+
+    override val errorParseRuleIdentifierNotAString =
+        "L'identificatore della regola richiede un valore stringa."
+
+    override fun errorParseRuleKeyRequiresStringList(key: String) =
+        "La chiave '${key}' richiede una lista di stringhe."
+
+    override fun errorParseRuleKeyRequiresTableList(key: String) =
+        "La chiave '${key}' richiede una lista di tabelle."
+
+    override val errorParseRuleNameNotAString =
+        "Il nome della regola richiede un valore stringa."
+
     override fun errorParseRuleUnsupportedFormat(rule: String, location: String, format: String) =
         "Ho trovato un errore nella regola \"${rule}\" situata in \"${location}\". Il formato della regola \"${format}\" non è supportato da arara."
 
@@ -118,6 +193,66 @@ object ItalianMessages : AraraMessages {
 
     override fun errorProjectStrayDependency(dependency: String) =
         "La specifica di progetto indica il progetto \"${dependency}\" come dipendenza, ma nessun progetto dell'esecuzione porta quel nome. Rivedi la specifica di progetto e riprova."
+
+    override val errorProjectDependenciesKeyRequiresStringList =
+        "La chiave 'dependencies' richiede una lista di stringhe."
+
+    override val errorProjectDependencyEntryNotAString =
+        "Ogni voce di dipendenza deve essere una stringa."
+
+    override val errorProjectDirectiveEntryNotAString =
+        "Ogni voce di direttiva deve essere una stringa."
+
+    override val errorProjectDirectivesKeyRequiresTable =
+        "La chiave 'directives' richiede una tabella."
+
+    override val errorProjectFileEntryKeyNotAString =
+        "Le voci dei file di progetto devono essere indirizzate dal loro nome di file."
+
+    override val errorProjectFileIsADirectory =
+        "Un file di progetto non può essere una cartella."
+
+    override val errorProjectFileSpecNotATable =
+        "Una specifica di file di progetto deve essere una tabella."
+
+    override val errorProjectFilesKeyRequiresTable =
+        "La chiave 'files' richiede una tabella di specifiche di file."
+
+    override val errorProjectFileTypeExtensionRequired =
+        "È richiesta un'estensione per identificare il tipo di file."
+
+    override val errorProjectFileTypeKeyRequiresTable =
+        "La chiave 'file_type' richiede una tabella."
+
+    override val errorProjectFileTypePatternMissing =
+        "Manca un pattern e l'estensione non è tra i tipi di file predefiniti."
+
+    override val errorProjectFileTypePatternNotAString =
+        "La chiave 'pattern' del tipo di file richiede un valore stringa."
+
+    override fun errorProjectInvalidLua(details: String) =
+        "La specifica di progetto non è Lua valido: ${details}."
+
+    override val errorProjectListEntryNotATable =
+        "Una voce di una lista di progetti deve essere una tabella."
+
+    override val errorProjectNameKeyRequiresString =
+        "La chiave 'name' del progetto richiede un valore stringa."
+
+    override val errorProjectNeedsAFile =
+        "Un progetto deve contenere almeno un file."
+
+    override val errorProjectPriorityKeyRequiresNumber =
+        "La chiave 'priority' richiede un numero."
+
+    override val errorProjectReturnNotATable =
+        "Il tipo di ritorno della specifica di progetto Lua deve essere una tabella, contenente un progetto o una lista di progetti."
+
+    override val errorProjectSingleProjectHasDependencies =
+        "Una specifica di progetto singolo non può dichiarare dipendenze."
+
+    override val errorProjectWorkingDirectoryKeyRequiresString =
+        "La chiave 'working_directory' richiede un valore stringa."
 
     override fun errorGlobPatternInvalid(pattern: String, details: String) =
         "Il pattern glob \"${pattern}\" non ha potuto essere convertito in un'espressione regolare: ${details}. Assicurati che il pattern sia ben formato e riprova."

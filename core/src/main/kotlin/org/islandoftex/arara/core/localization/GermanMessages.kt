@@ -32,6 +32,45 @@ object GermanMessages : AraraMessages {
     override val errorConfigurationLoopsInvalidRange =
         "In der Konfigurationsdatei hat der eingegebenen Wert 'loops' zur Festlegung der maximalen Anzahl an Schleifendurchgängen einen ungültigen Bereich. Bitte stelle sicher, dass eine positive Zahl eingetragen wird."
 
+    override val errorConfigurationLuaReturnNotATable =
+        "Eine Lua-Konfigurationsdatei muss eine Tabelle zurückgeben."
+
+    override fun errorConfigurationUnknownKeys(keys: String) =
+        "Die Konfiguration enthält Schlüssel, die das Format nicht erlaubt: ${keys}."
+
+    override fun errorConfigurationKeyRequiresString(key: String) =
+        "Der Schlüssel '${key}' erfordert einen Zeichenkettenwert."
+
+    override fun errorConfigurationKeyRequiresInteger(key: String) =
+        "Der Schlüssel '${key}' erfordert einen ganzzahligen Wert."
+
+    override fun errorConfigurationKeyRequiresBoolean(key: String) =
+        "Der Schlüssel '${key}' erfordert einen Wahrheitswert."
+
+    override fun errorConfigurationEntryNotAString(key: String) =
+        "Jeder Eintrag von '${key}' muss eine Zeichenkette sein."
+
+    override fun errorConfigurationKeyRequiresStringList(key: String) =
+        "Der Schlüssel '${key}' erfordert eine Liste von Zeichenketten."
+
+    override fun errorConfigurationKeyRequiresTable(key: String) =
+        "Der Schlüssel '${key}' erfordert eine Tabelle aus Zeichenkettenpaaren."
+
+    override fun errorConfigurationKeyRequiresStringKeys(key: String) =
+        "Der Schlüssel '${key}' erfordert Zeichenketten als Schlüssel."
+
+    override fun errorConfigurationKeyRequiresStringValues(key: String) =
+        "Der Schlüssel '${key}' erfordert Zeichenketten als Werte."
+
+    override val errorConfigurationFileTypeEntryNotATable =
+        "Jeder 'file_types'-Eintrag erfordert eine Tabelle mit einer 'extension' und einem optionalen 'pattern'."
+
+    override val errorConfigurationFileTypeExtensionMissing =
+        "Jeder 'file_types'-Eintrag erfordert eine 'extension'."
+
+    override val errorConfigurationFileTypeKeyRequiresTableList =
+        "Der Schlüssel 'file_types' erfordert eine Liste von Tabellen."
+
     override fun errorDiscoverFileFileNotFound(file: String, details: String) =
         "Ich konnte die vorausgesetzte Datei \"${file}\" ${details} nicht finden. Bitte stelle sicher, dass die Datei existiert und eine gültige Dateiendung hat."
 
@@ -110,6 +149,42 @@ object GermanMessages : AraraMessages {
     override val errorParseRuleGenericError =
         "Ich konnte die Regel nicht auswerten, etwas schlechtes passierte. Dieser Teil ist ziemlich knifflig, denn er bezieht Aspekte der zugrundeliegenden Serialisierung mit ein. Ich werde mein Bestes tun, um dir in jeglicher Art und Weise zu helfen."
 
+    override fun errorParseRuleArgumentIdNotAString() =
+        "Der Argumentbezeichner erfordert einen Zeichenkettenwert."
+
+    override fun errorParseRuleArgumentNeedsFlagOrDefault(identifier: String) =
+        "Das Argument '${identifier}' erfordert mindestens eines von 'flag' oder 'default'."
+
+    override fun errorParseRuleArgumentRequiredNotABoolean(identifier: String) =
+        "Der Schlüssel 'required' des Arguments '${identifier}' erfordert einen Wahrheitswert."
+
+    override val errorParseRuleCommandFunctionMissing =
+        "Jedes Kommando erfordert eine 'command'-Funktion."
+
+    override val errorParseRuleCommandNameNotAString =
+        "Der Kommandoname erfordert einen Zeichenkettenwert."
+
+    override fun errorParseRuleEntryNotAString(key: String) =
+        "Jeder Eintrag von '${key}' muss eine Zeichenkette sein."
+
+    override fun errorParseRuleEntryNotATable(key: String) =
+        "Jeder Eintrag von '${key}' muss eine Tabelle sein."
+
+    override val errorParseRuleIdentifierMissing =
+        "Die Regel enthält keinen Bezeichner."
+
+    override val errorParseRuleIdentifierNotAString =
+        "Der Regelbezeichner erfordert einen Zeichenkettenwert."
+
+    override fun errorParseRuleKeyRequiresStringList(key: String) =
+        "Der Schlüssel '${key}' erfordert eine Liste von Zeichenketten."
+
+    override fun errorParseRuleKeyRequiresTableList(key: String) =
+        "Der Schlüssel '${key}' erfordert eine Liste von Tabellen."
+
+    override val errorParseRuleNameNotAString =
+        "Der Regelname erfordert einen Zeichenkettenwert."
+
     override fun errorParseRuleUnsupportedFormat(rule: String, location: String, format: String) =
         "Ich habe einen Fehler in der Regel \"${rule}\" gefunden, die sich in \"${location}\" befindet. Das Regelformat von \"${format}\" wird von arara nicht unterstützt."
 
@@ -118,6 +193,66 @@ object GermanMessages : AraraMessages {
 
     override fun errorProjectStrayDependency(dependency: String) =
         "Die Projektspezifikation nennt das Projekt \"${dependency}\" als Abhängigkeit, aber kein Projekt des Durchlaufs trägt diesen Namen. Bitte überarbeite deine Projektspezifikation und versuche es erneut."
+
+    override val errorProjectDependenciesKeyRequiresStringList =
+        "Der Schlüssel 'dependencies' erfordert eine Liste von Zeichenketten."
+
+    override val errorProjectDependencyEntryNotAString =
+        "Jeder Abhängigkeitseintrag muss eine Zeichenkette sein."
+
+    override val errorProjectDirectiveEntryNotAString =
+        "Jeder Direktiveneintrag muss eine Zeichenkette sein."
+
+    override val errorProjectDirectivesKeyRequiresTable =
+        "Der Schlüssel 'directives' erfordert eine Tabelle."
+
+    override val errorProjectFileEntryKeyNotAString =
+        "Projektdateieinträge müssen über ihren Dateinamen adressiert sein."
+
+    override val errorProjectFileIsADirectory =
+        "Eine Projektdatei darf kein Verzeichnis sein."
+
+    override val errorProjectFileSpecNotATable =
+        "Eine Projektdateispezifikation muss eine Tabelle sein."
+
+    override val errorProjectFilesKeyRequiresTable =
+        "Der Schlüssel 'files' erfordert eine Tabelle von Dateispezifikationen."
+
+    override val errorProjectFileTypeExtensionRequired =
+        "Eine Erweiterung ist erforderlich, um den Dateitypen zu bestimmen."
+
+    override val errorProjectFileTypeKeyRequiresTable =
+        "Der Schlüssel 'file_type' erfordert eine Tabelle."
+
+    override val errorProjectFileTypePatternMissing =
+        "Es fehlt ein Muster, und die Erweiterung gehört nicht zu den Standarddateitypen."
+
+    override val errorProjectFileTypePatternNotAString =
+        "Der Schlüssel 'pattern' des Dateitypen erfordert einen Zeichenkettenwert."
+
+    override fun errorProjectInvalidLua(details: String) =
+        "Die Projektspezifikation ist kein gültiges Lua: ${details}."
+
+    override val errorProjectListEntryNotATable =
+        "Ein Eintrag einer Projektliste muss eine Tabelle sein."
+
+    override val errorProjectNameKeyRequiresString =
+        "Der Schlüssel 'name' des Projekts erfordert einen Zeichenkettenwert."
+
+    override val errorProjectNeedsAFile =
+        "Ein Projekt muss mindestens eine Datei enthalten."
+
+    override val errorProjectPriorityKeyRequiresNumber =
+        "Der Schlüssel 'priority' erfordert eine Zahl."
+
+    override val errorProjectReturnNotATable =
+        "Der Rückgabetyp der Lua-Projektspezifikation muss eine Tabelle sein, die ein Projekt oder eine Liste von Projekten enthält."
+
+    override val errorProjectSingleProjectHasDependencies =
+        "Eine einzelne Projektspezifikation kann keine Abhängigkeiten deklarieren."
+
+    override val errorProjectWorkingDirectoryKeyRequiresString =
+        "Der Schlüssel 'working_directory' erfordert einen Zeichenkettenwert."
 
     override fun errorGlobPatternInvalid(pattern: String, details: String) =
         "Das Glob-Muster \"${pattern}\" ließ sich nicht in einen regulären Ausdruck umwandeln: ${details}. Bitte stelle sicher, dass das Muster wohlgeformt ist, und versuche es erneut."

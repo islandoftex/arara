@@ -391,6 +391,17 @@ on.
 
 ## Fixed
 
+* Every error the Lua formats can raise now speaks the session's
+  language: the rule parser reuses the validation messages the
+  deprecated dialect's rules always had and gains its own
+  identifier, name, command, argument and list-shape members; the
+  configuration parser names its unknown keys and every per-key
+  type expectation; and the project interpreter covers its whole
+  surface - the file type pair, the entry shapes, the priority
+  and directory rules, the invalid Lua and the dependency
+  verdicts, which now name the unresolved projects. Thirty-eight
+  new catalog members across all six languages, with the
+  completeness render walking every one of them.
 * The path helpers of the Lua dialect accept the handle: every
   helper that takes a path - the file writers and readers, the
   name and type extractors, the command builders, the directory

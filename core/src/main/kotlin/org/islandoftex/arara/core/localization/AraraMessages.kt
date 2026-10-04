@@ -55,6 +55,69 @@ interface AraraMessages {
      */
     val errorConfigurationLoopsInvalidRange: String
     /**
+     * The error shown when a Lua configuration file returns
+     * something other than a table.
+     */
+    val errorConfigurationLuaReturnNotATable: String
+    /**
+     * The error shown when a Lua configuration carries keys the
+     * format does not accept.
+     */
+    fun errorConfigurationUnknownKeys(keys: String): String
+    /**
+     * The error shown when a configuration key holds a value of
+     * the wrong shape.
+     */
+    fun errorConfigurationKeyRequiresString(key: String): String
+    /**
+     * The error shown when a configuration key expects an integer.
+     */
+    fun errorConfigurationKeyRequiresInteger(key: String): String
+    /**
+     * The error shown when a configuration key expects a boolean.
+     */
+    fun errorConfigurationKeyRequiresBoolean(key: String): String
+    /**
+     * The error shown when an entry of a configuration list is not
+     * a string.
+     */
+    fun errorConfigurationEntryNotAString(key: String): String
+    /**
+     * The error shown when a configuration key expects a list of
+     * strings.
+     */
+    fun errorConfigurationKeyRequiresStringList(key: String): String
+    /**
+     * The error shown when a configuration key expects a table of
+     * string pairs.
+     */
+    fun errorConfigurationKeyRequiresTable(key: String): String
+    /**
+     * The error shown when the keys of a configuration table are
+     * not strings.
+     */
+    fun errorConfigurationKeyRequiresStringKeys(key: String): String
+    /**
+     * The error shown when the values of a configuration table are
+     * not strings.
+     */
+    fun errorConfigurationKeyRequiresStringValues(key: String): String
+    /**
+     * The error shown when a file type declaration of the
+     * configuration is not a table.
+     */
+    val errorConfigurationFileTypeEntryNotATable: String
+    /**
+     * The error shown when a file type declaration of the
+     * configuration carries no extension.
+     */
+    val errorConfigurationFileTypeExtensionMissing: String
+    /**
+     * The error shown when the file type declarations of the
+     * configuration are not a list of tables.
+     */
+    val errorConfigurationFileTypeKeyRequiresTableList: String
+    /**
      * The error shown when a referenced file cannot be found.
      */
     fun errorDiscoverFileFileNotFound(file: String, details: String): String
@@ -188,9 +251,68 @@ interface AraraMessages {
      */
     fun errorParserInvalidPreamble(name: String): String
     /**
+     * The error shown when the argument identifier of a Lua rule is
+     * not a string.
+     */
+    fun errorParseRuleArgumentIdNotAString(): String
+    /**
+     * The error shown when a Lua rule argument declares neither a
+     * flag nor a default.
+     */
+    fun errorParseRuleArgumentNeedsFlagOrDefault(identifier: String): String
+    /**
+     * The error shown when the required flag of a Lua rule argument
+     * is not a boolean.
+     */
+    fun errorParseRuleArgumentRequiredNotABoolean(identifier: String): String
+    /**
+     * The error shown when a Lua rule command declares no command
+     * function.
+     */
+    val errorParseRuleCommandFunctionMissing: String
+    /**
+     * The error shown when the command name of a Lua rule is not a
+     * string.
+     */
+    val errorParseRuleCommandNameNotAString: String
+    /**
+     * The error shown when an entry of a Lua rule list is not a
+     * string.
+     */
+    fun errorParseRuleEntryNotAString(key: String): String
+    /**
+     * The error shown when an entry of a Lua rule list is not a
+     * table.
+     */
+    fun errorParseRuleEntryNotATable(key: String): String
+    /**
      * The error shown when a rule cannot be parsed.
      */
     val errorParseRuleGenericError: String
+    /**
+     * The error shown when a Lua rule declares no identifier.
+     */
+    val errorParseRuleIdentifierMissing: String
+    /**
+     * The error shown when the identifier of a Lua rule is not a
+     * string.
+     */
+    val errorParseRuleIdentifierNotAString: String
+    /**
+     * The error shown when a Lua rule key expects a list of
+     * strings.
+     */
+    fun errorParseRuleKeyRequiresStringList(key: String): String
+    /**
+     * The error shown when a Lua rule key expects a list of
+     * tables.
+     */
+    fun errorParseRuleKeyRequiresTableList(key: String): String
+    /**
+     * The error shown when the rule name of a Lua rule is not a
+     * string.
+     */
+    val errorParseRuleNameNotAString: String
     /**
      * The error shown when a rule file uses an unsupported format.
      */
@@ -208,6 +330,103 @@ interface AraraMessages {
      * of the run carries.
      */
     fun errorProjectStrayDependency(dependency: String): String
+    /**
+     * The error shown when the dependencies of a project
+     * specification are not a list of strings.
+     */
+    val errorProjectDependenciesKeyRequiresStringList: String
+    /**
+     * The error shown when a dependency entry of a project
+     * specification is not a string.
+     */
+    val errorProjectDependencyEntryNotAString: String
+    /**
+     * The error shown when a directive entry of a project file
+     * specification is not a string.
+     */
+    val errorProjectDirectiveEntryNotAString: String
+    /**
+     * The error shown when the directives of a project file
+     * specification are not a table.
+     */
+    val errorProjectDirectivesKeyRequiresTable: String
+    /**
+     * The error shown when a project file entry is not keyed by
+     * its file name.
+     */
+    val errorProjectFileEntryKeyNotAString: String
+    /**
+     * The error shown when a project file entry names a directory.
+     */
+    val errorProjectFileIsADirectory: String
+    /**
+     * The error shown when a project file specification is not a
+     * table.
+     */
+    val errorProjectFileSpecNotATable: String
+    /**
+     * The error shown when the files of a project specification
+     * are not a table of file specifications.
+     */
+    val errorProjectFilesKeyRequiresTable: String
+    /**
+     * The error shown when a project file type declares no
+     * extension.
+     */
+    val errorProjectFileTypeExtensionRequired: String
+    /**
+     * The error shown when the file type of a project file is not
+     * a table.
+     */
+    val errorProjectFileTypeKeyRequiresTable: String
+    /**
+     * The error shown when a project file type declares a pattern
+     * that neither it nor the defaults provide.
+     */
+    val errorProjectFileTypePatternMissing: String
+    /**
+     * The error shown when the pattern of a project file type is
+     * not a string.
+     */
+    val errorProjectFileTypePatternNotAString: String
+    /**
+     * The error shown when a Lua project specification is not
+     * valid Lua.
+     */
+    fun errorProjectInvalidLua(details: String): String
+    /**
+     * The error shown when an entry of a project list is not a
+     * table.
+     */
+    val errorProjectListEntryNotATable: String
+    /**
+     * The error shown when the project name is not a string.
+     */
+    val errorProjectNameKeyRequiresString: String
+    /**
+     * The error shown when a project declares no file at all.
+     */
+    val errorProjectNeedsAFile: String
+    /**
+     * The error shown when the priority of a project file is not
+     * a number.
+     */
+    val errorProjectPriorityKeyRequiresNumber: String
+    /**
+     * The error shown when a Lua project specification returns
+     * something other than a table.
+     */
+    val errorProjectReturnNotATable: String
+    /**
+     * The error shown when a single project specification declares
+     * dependencies.
+     */
+    val errorProjectSingleProjectHasDependencies: String
+    /**
+     * The error shown when the working directory of a project is
+     * not a string.
+     */
+    val errorProjectWorkingDirectoryKeyRequiresString: String
     /**
      * The error shown when a glob pattern cannot be converted into
      * a regular expression.
