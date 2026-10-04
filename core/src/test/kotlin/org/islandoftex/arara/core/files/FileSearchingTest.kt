@@ -27,6 +27,9 @@ import org.junit.jupiter.api.io.TempDir
  * safe mode restriction on implicit extension completion.
  */
 class FileSearchingTest {
+    /**
+     * The recursive and flat listing helpers.
+     */
     @Nested
     inner class `file listings` {
         /**
@@ -133,6 +136,9 @@ class FileSearchingTest {
         }
     }
 
+    /**
+     * The reference lookup and its safe mode restriction.
+     */
     @Nested
     inner class `file lookup` {
         @Test
@@ -144,10 +150,15 @@ class FileSearchingTest {
         }
 
         @Test
-        fun `fails on an existing directory`() {
+        fun `fails on an existing directory`(@TempDir tempDir: Path) {
+            // the directory exists and is reached by name, so the
+            // miss belongs to the directory rejection alone
+            (tempDir / "subdir").createDirectories()
             assertNull(
                 FileSearching.lookupFile(
-                    "../buildSrc", MPPPath("."), ExecutionOptions()
+                    (tempDir / "subdir").toString(),
+                    tempDir.toMPPPath(),
+                    ExecutionOptions()
                 ),
                 "a directory reference does not resolve to a file"
             )

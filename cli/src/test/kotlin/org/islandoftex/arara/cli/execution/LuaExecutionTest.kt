@@ -198,7 +198,11 @@ class LuaExecutionTest {
             )
             assertFalse(output.contains("FAILURE"), "no failure is reported")
         } finally {
-            Session.remove("quack")
+            // the removal is guarded so a failure before the store
+            // cannot turn the cleanup into the primary error
+            if (Session.contains("quack")) {
+                Session.remove("quack")
+            }
         }
     }
 

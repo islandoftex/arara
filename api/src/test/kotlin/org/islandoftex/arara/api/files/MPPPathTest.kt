@@ -124,8 +124,11 @@ class MPPPathTest {
             path.fileSize > 0L,
             "a written file reports a positive size"
         )
-        assertTrue(
-            path.lastModified.toString().isNotEmpty(),
+        // the stamp the platform reports is the stamp the path
+        // carries, at the whole-second precision the model keeps
+        assertEquals(
+            java.nio.file.Files.getLastModifiedTime(file).toMillis() / 1000,
+            path.lastModified.toLong() / 1000,
             "a written file reports its modification stamp"
         )
     }

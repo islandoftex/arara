@@ -27,17 +27,24 @@ import org.islandoftex.arara.core.session.Session
 class StyledDialogRendererTest {
     private val originalIn = System.`in`
     private val originalOut = System.out
+    private var originalUIOptions = Session.userInterfaceOptions
 
     @BeforeTest
     fun pinTheGlobals() {
         // the localized labels drive the tags and the prompt, so the
         // suite pins the default language before any capture
+        originalUIOptions = Session.userInterfaceOptions
         Session.userInterfaceOptions = UserInterfaceOptions()
         LanguageController.loadMessagesFor(Session.userInterfaceOptions.locale)
     }
 
     @AfterTest
-    fun restoreStreams() {
+    fun restoreTheGlobals() {
+        // the dialog suites and the renderer suites around them
+        // share the session-wide state, so the pin leaves nothing
+        // behind
+        Session.userInterfaceOptions = originalUIOptions
+        LanguageController.loadMessagesFor(Session.userInterfaceOptions.locale)
         System.setIn(originalIn)
         System.setOut(originalOut)
     }

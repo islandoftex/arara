@@ -74,7 +74,7 @@ class LinearExecutorTest {
     }
 
     @Test
-    fun `executes acyclic project dependencies in order`() {
+    fun `executes acyclic project chains`() {
         // the happy path is covered end-to-end by the cli scenarios; this
         // pins the core executor alone, running a project chain without
         // any hooks installed
@@ -169,6 +169,26 @@ class LinearExecutorTest {
             1,
             report.exitCode,
             "the run keeps the error of the file that failed"
+        )
+    }
+
+    @Test
+    fun `a failure in an early project survives a later project's success`() {
+        LinearExecutor.executionOptions = ExecutionOptions(haltOnErrors = false)
+        val first = projectFile("-first.tex")
+        val second = projectFile("-second.tex")
+        LinearExecutor.hooks = ExecutorHooks(
+            processDirectives = { file, _ ->
+                if (file == first) listOf(directive(1)) else listOf(directive(0))
+            }
+        )
+        val report = LinearExecutor.execute(
+            listOf(projectOf(first), projectOf(second))
+        )
+        assertEquals(
+            1,
+            report.exitCode,
+            "the run keeps the error of the project that failed"
         )
     }
 

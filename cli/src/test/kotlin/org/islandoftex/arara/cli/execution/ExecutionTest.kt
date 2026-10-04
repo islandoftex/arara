@@ -159,16 +159,22 @@ class ExecutionTest {
     @Test
     fun `honors the truthy contains test`() {
         val file = File(getPathForTest("conditionals") + "/conditionals.quack")
-        file.writeText("Duck")
-        val output = outputForTest("conditionals")
-        file.delete()
-        assertTrue(output.contains("QuackOne"), "the unconditional directive ran")
-        assertTrue(output.contains("QuackFour"), "the always true directive ran")
-        assertTrue(output.contains("QuackTwo"), "the existence directive ran")
-        assertTrue(
-            output.contains("QuackThree"),
-            "the directive with a truthy contains condition ran"
-        )
+        try {
+            file.writeText("Duck")
+            val output = outputForTest("conditionals")
+            assertTrue(output.contains("QuackOne"), "the unconditional directive ran")
+            assertTrue(output.contains("QuackFour"), "the always true directive ran")
+            assertTrue(output.contains("QuackTwo"), "the existence directive ran")
+            assertTrue(
+                output.contains("QuackThree"),
+                "the directive with a truthy contains condition ran"
+            )
+        } finally {
+            // the fixture file is a runtime artifact: it must not
+            // linger into the scenarios that expect its absence,
+            // whatever way this one ends
+            file.delete()
+        }
     }
 
     @Test

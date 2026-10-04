@@ -28,6 +28,9 @@ import org.junit.jupiter.api.io.TempDir
  * prefix check, the resolution chain and the JVM escape hatches.
  */
 class JVMMPPPathTest {
+    /**
+     * The text-level I/O of the path model.
+     */
     @Nested
     inner class `read and write operations` {
         @Test
@@ -112,6 +115,9 @@ class JVMMPPPathTest {
         }
     }
 
+    /**
+     * The equality, hashing and ordering semantics of the model.
+     */
     @Nested
     inner class `value semantics` {
         @Test
@@ -187,6 +193,9 @@ class JVMMPPPathTest {
         }
     }
 
+    /**
+     * The resolution of children and the prefix relations.
+     */
     @Nested
     inner class `resolution and siblings` {
         @Test
@@ -235,6 +244,9 @@ class JVMMPPPathTest {
         }
     }
 
+    /**
+     * The JVM bridges that expose the underlying spellings.
+     */
     @Nested
     inner class `escape hatches` {
         @Test
@@ -252,6 +264,10 @@ class JVMMPPPathTest {
         }
     }
 
+    /**
+     * The traversal of symbolic links the model performs on its
+     * metadata queries.
+     */
     @Nested
     inner class `symlink resolution` {
         // creating symlinks requires elevated privileges on some
@@ -325,6 +341,10 @@ class JVMMPPPathTest {
         }
     }
 
+    /**
+     * The spellings that collapse at construction, and the ones
+     * that stay as written.
+     */
     @Nested
     inner class `degenerate spellings` {
         @Test
@@ -371,6 +391,9 @@ class JVMMPPPathTest {
         }
     }
 
+    /**
+     * The starts-with relation, compared segment by segment.
+     */
     @Nested
     inner class `lexical prefix semantics` {
         @Test
@@ -394,6 +417,10 @@ class JVMMPPPathTest {
         }
     }
 
+    /**
+     * The drive-prefixed and UNC spellings and their re-spelling
+     * on Windows.
+     */
     @Nested
     inner class `Windows-shaped spellings` {
         @Test
@@ -435,6 +462,10 @@ class JVMMPPPathTest {
         }
     }
 
+    /**
+     * The model's I/O through the injectable in-memory file system,
+     * keeping the host platform untouched.
+     */
     @Nested
     inner class `in-memory file system` {
         // the path model reads and writes through an injectable file

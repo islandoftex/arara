@@ -36,19 +36,33 @@ import org.islandoftex.arara.core.session.Session
  */
 class StyledConsoleRendererTest {
     private val originalOut = System.out
+    private var originalOptions = LinearExecutor.executionOptions
+    private var originalUIOptions = Session.userInterfaceOptions
+    private var originalLoggingOptions = Session.loggingOptions
 
     @BeforeTest
     fun pinTheGlobals() {
         // the localized labels drive both the needles and the layout,
         // and the execution options decide which entry shape renders,
         // so the suite pins the defaults before any capture
+        originalOptions = LinearExecutor.executionOptions
+        originalUIOptions = Session.userInterfaceOptions
+        originalLoggingOptions = Session.loggingOptions
         Session.userInterfaceOptions = UserInterfaceOptions()
         LanguageController.loadMessagesFor(Session.userInterfaceOptions.locale)
         LinearExecutor.executionOptions = ExecutionOptions()
     }
 
     @AfterTest
-    fun restoreStreams() {
+    fun restoreTheGlobals() {
+        // the renderers and the suites around them share the
+        // session-wide state - the suite that flips the execution
+        // mode mid-test among them - so the pins leave nothing
+        // behind
+        Session.userInterfaceOptions = originalUIOptions
+        Session.loggingOptions = originalLoggingOptions
+        LanguageController.loadMessagesFor(Session.userInterfaceOptions.locale)
+        LinearExecutor.executionOptions = originalOptions
         System.setOut(originalOut)
     }
 

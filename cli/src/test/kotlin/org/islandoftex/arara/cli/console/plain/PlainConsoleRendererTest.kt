@@ -28,19 +28,28 @@ import org.islandoftex.arara.core.session.Session
  */
 class PlainConsoleRendererTest {
     private val originalOut = System.out
+    private var originalOptions = LinearExecutor.executionOptions
+    private var originalUIOptions = Session.userInterfaceOptions
 
     @BeforeTest
     fun pinTheGlobals() {
         // the localized labels drive the layout and the execution
         // options decide which entry shape renders, so the suite
         // pins the defaults before any capture
+        originalOptions = LinearExecutor.executionOptions
+        originalUIOptions = Session.userInterfaceOptions
         Session.userInterfaceOptions = UserInterfaceOptions()
         LanguageController.loadMessagesFor(Session.userInterfaceOptions.locale)
         LinearExecutor.executionOptions = ExecutionOptions()
     }
 
     @AfterTest
-    fun restoreStreams() {
+    fun restoreTheGlobals() {
+        // the renderers and the suites around them share the
+        // session-wide state, so the pins leave nothing behind
+        Session.userInterfaceOptions = originalUIOptions
+        LanguageController.loadMessagesFor(Session.userInterfaceOptions.locale)
+        LinearExecutor.executionOptions = originalOptions
         System.setOut(originalOut)
     }
 

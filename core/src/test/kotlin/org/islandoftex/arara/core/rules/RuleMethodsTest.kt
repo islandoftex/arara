@@ -47,8 +47,6 @@ class RuleMethodsTest {
         assertEquals("arara 6", RuleMethods.buildString("arara", 6))
         assertEquals("arara", RuleMethods.buildString("arara", null, ""))
         assertEquals("", RuleMethods.buildString(null, ""))
-        // the vararg entry point stays available to plain JVM callers
-        assertEquals("arara 6", RuleMethods.buildString("arara", 6))
     }
 
     @Test

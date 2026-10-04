@@ -639,7 +639,7 @@ class InterpreterTest {
     }
 
     @Test
-    fun `warns on unsupported flag return types through the string fallback`() {
+    fun `falls back to the string on unsupported flag return types`() {
         Session.clear()
         val directory = Files.createTempDirectory("arara-interpreter-rule")
         Files.writeString(

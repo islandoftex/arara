@@ -71,42 +71,46 @@ class ProjectConfigurationTest {
 
     @Test
     fun `loads the configuration file for project specification runs`() {
-        val (status, output) = runCLI(
-            "--working-directory",
-            "src/test/resources/executiontests/project-config",
-            "project.lua"
-        )
-        assertEquals(
-            0, status,
-            "the project run exits successfully"
-        )
-        // the rule is only reachable through the rule paths provided by
-        // the configuration file, and the echoed marker only shows up
-        // because the configuration enables verbose output
-        assertTrue(
-            output.contains("ProjectConfigWorks"),
-            "the rule was found through the configured rule paths and " +
-                "executed with the configured verbose output"
-        )
+        withRestoredState {
+            val (status, output) = runCLI(
+                "--working-directory",
+                "src/test/resources/executiontests/project-config",
+                "project.lua"
+            )
+            assertEquals(
+                0, status,
+                "the project run exits successfully"
+            )
+            // the rule is only reachable through the rule paths provided by
+            // the configuration file, and the echoed marker only shows up
+            // because the configuration enables verbose output
+            assertTrue(
+                output.contains("ProjectConfigWorks"),
+                "the rule was found through the configured rule paths and " +
+                    "executed with the configured verbose output"
+            )
+        }
     }
 
     @Test
     fun `falls back to input files when the Lua argument is not a project`() {
-        val directory = createTempDirectory("arara-cli-not-a-spec")
-        val bogus = directory.resolve("not-a-spec.lua")
-        Files.writeString(bogus, "return 42")
-        val (status, output) = runCLI(
-            "--working-directory", directory.toString(),
-            "not-a-spec.lua"
-        )
-        // the guessing fallback announces the demotion before the file is
-        // treated as a regular input; the run then fails on the unknown
-        // file type, which the entry point reports as its status
-        assertTrue(
-            output.contains("regular input"),
-            "the fallback announces the failed project guess: $output"
-        )
-        assertNotEquals(0, status, "an unrunnable input reports failure")
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-not-a-spec")
+            val bogus = directory.resolve("not-a-spec.lua")
+            Files.writeString(bogus, "return 42")
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "not-a-spec.lua"
+            )
+            // the guessing fallback announces the demotion before the file is
+            // treated as a regular input; the run then fails on the unknown
+            // file type, which the entry point reports as its status
+            assertTrue(
+                output.contains("regular input"),
+                "the fallback announces the failed project guess: $output"
+            )
+            assertNotEquals(0, status, "an unrunnable input reports failure")
+        }
     }
 
     @Test
@@ -121,33 +125,37 @@ class ProjectConfigurationTest {
 
     @Test
     fun `rejects preambles the configuration does not define`() {
-        val directory = createTempDirectory("arara-cli-preamble")
-        val (status, output) = runCLI(
-            "--working-directory", directory.toString(),
-            "--preamble", "nonexistent",
-            "missing.tex"
-        )
-        assertNotEquals(0, status, "an undefined preamble is an error")
-        assertTrue(
-            output.isNotBlank(),
-            "the rejection is reported to the user"
-        )
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-preamble")
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "--preamble", "nonexistent",
+                "missing.tex"
+            )
+            assertNotEquals(0, status, "an undefined preamble is an error")
+            assertTrue(
+                output.isNotBlank(),
+                "the rejection is reported to the user"
+            )
+        }
     }
 
     @Test
     fun `rejects files without directives`() {
-        val directory = createTempDirectory("arara-cli-nodirectives")
-        val plain = directory.resolve("plain.tex")
-        Files.writeString(plain, "just some text, no directives\\n")
-        val (status, output) = runCLI(
-            "--working-directory", directory.toString(),
-            "plain.tex"
-        )
-        assertNotEquals(0, status, "a directive-free file is an error")
-        assertTrue(
-            output.isNotBlank(),
-            "the rejection is reported to the user"
-        )
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-nodirectives")
+            val plain = directory.resolve("plain.tex")
+            Files.writeString(plain, "just some text, no directives\\n")
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "plain.tex"
+            )
+            assertNotEquals(0, status, "a directive-free file is an error")
+            assertTrue(
+                output.isNotBlank(),
+                "the rejection is reported to the user"
+            )
+        }
     }
 
     @Test
@@ -217,7 +225,12 @@ class ProjectConfigurationTest {
                     "the command line parameter wins over the properties file"
                 )
             } finally {
-                Session.remove("arg:quack")
+                // the removal is guarded so a failure before the
+                // store cannot turn the cleanup into the primary
+                // error
+                if (Session.contains("arg:quack")) {
+                    Session.remove("arg:quack")
+                }
             }
         }
     }

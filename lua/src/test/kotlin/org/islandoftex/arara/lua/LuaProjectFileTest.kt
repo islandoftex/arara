@@ -10,15 +10,20 @@ import org.islandoftex.arara.api.files.MPPPath
 
 /**
  * Verifies the directive extraction of project file entries: the
- * project-carried directives go through the extractor with their own
- * error wrap, so an unparseable line reports the file it came from.
+ * project-carried directives go through the extractor with their
+ * own error wrap - an unparseable line reports the file it came
+ * from - and the carried list overrides whatever the file itself
+ * holds, honouring the extraction scope the caller asks for.
  */
 class LuaProjectFileTest {
+    private var originalHooks = org.islandoftex.arara.core.rules.Directives.hooks
+
     @org.junit.jupiter.api.BeforeEach
     fun installHooks() {
         // the extraction requires directive-building hooks the command
         // line installs; a minimal builder stands in, as the test cares
         // about the extraction plumbing, not the built directive
+        originalHooks = org.islandoftex.arara.core.rules.Directives.hooks
         org.islandoftex.arara.core.rules.Directives.hooks =
             org.islandoftex.arara.core.rules.DirectiveFetchingHooks(
                 buildDirectiveRaw = { identifier, parameters, conditional, lines ->
@@ -33,23 +38,33 @@ class LuaProjectFileTest {
             )
     }
 
+    @org.junit.jupiter.api.AfterEach
+    fun restoreHooks() {
+        // the directive hooks are a global the command line
+        // application installs; the suite leaves the ones it found
+        org.islandoftex.arara.core.rules.Directives.hooks = originalHooks
+    }
+
     @Test
     fun `extracts the directives carried by the project file`(
         @org.junit.jupiter.api.io.TempDir tempDir: java.nio.file.Path
     ) {
         val document = tempDir.resolve("main.tex")
+        // the file's own directives stay irrelevant while the
+        // carried list holds: the override is the contract, and
+        // the pin names it
         Files.writeString(
             document,
-            "% arara: pdflatex\n\\documentclass{article}\n"
+            "% arara: ignored\n\\documentclass{article}\n"
         )
         val file = LuaProjectFile(
             MPPPath(document.toString()),
             org.islandoftex.arara.core.files.FileType("tex", "^\\s*%\\s*")
         )
-        file.directives = listOf("% arara: pdflatex")
+        file.directives = listOf("% arara: carried")
         val directives = file.fetchDirectives(parseOnlyHeader = true)
         assertTrue(
-            directives.isNotEmpty(),
+            directives.map { it.identifier } == listOf("carried"),
             "the carried directives extract through the project file"
         )
     }
