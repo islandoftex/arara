@@ -262,6 +262,16 @@ internal val scenarios = listOf(
                 fixture = "halt-error",
         ),
         Scenario(
+                name = "halt-escape.bats", dir = "halt-escape",
+                description = "the halt directive's succeeding escape",
+                check = "the halted file ends and the run proceeds past it",
+                arguments = listOf("--log", "escape-a.tex", "escape-b.tex"),
+                expected = listOf("QuackOne", "QuackThree"),
+                forbidden = listOf("QuackTwo"),
+                logChecks = listOf("Halt requested with status 0"),
+                fixture = "halt-escape",
+        ),
+        Scenario(
                 name = "file-db.bats", dir = "changes",
                 description = "the file database without the TeX toolchain",
                 check = "the first run runs the rule and the second run skips",

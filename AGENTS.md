@@ -56,7 +56,9 @@ preamble flow, multiple files as arguments and through the directive
 file replication, whole-file extraction beyond the header, call
 parameters reaching the rules, the dry run mode, the localized
 labels, the loop cap through the command line, the halt
-directive's error exit, dispatch by file extension including its
+directive's error exit and its succeeding escape - the halted file
+ends, the run proceeds past it, and the request dies with the
+file's own end - dispatch by file extension including its
 rejection path, and a file-database double run in both a TeX and a
 TeX-free shape asserting the record-and-skip semantics of `changed`,
 plus a run behind the log flag asserting the engine, the exit value

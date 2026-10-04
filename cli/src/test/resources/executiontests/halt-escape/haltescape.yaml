@@ -1,0 +1,16 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2018, Paulo Roberto Massa Cereda
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: haltescape
+name: The escape hatch
+commands:
+  - name: The halt trigger
+    command: >
+      @{
+          halt(0);
+          return true;
+      }
+arguments: []

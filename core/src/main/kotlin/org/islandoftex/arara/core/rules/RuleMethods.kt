@@ -40,24 +40,30 @@ object RuleMethods {
 
 
     /**
-     * Exit the application with status code.
+     * Exit the current file's run with the provided status code.
      *
-     * The status is recorded under the original reference (the main
-     * file, i.e. the one with the lowest priority), so a halt raised
-     * in a dependency file takes effect once the main file is
-     * processed - this mirrors the historical semantics of the MVEL
-     * dialect.
+     * The request takes effect where it stands: the remaining
+     * directives of the file being processed are skipped, and the
+     * status becomes the file's own exit code - a failing status
+     * stops the run under the error-halt option like any failed
+     * task, while a succeeding one lets the run proceed to
+     * whatever comes after the file. The halting task itself
+     * completes with success; the request dies with the file's
+     * processing.
      *
      * @param status The exit value, defaults to status OK, i.e. 0
      */
     @JvmStatic
     @JvmOverloads
     fun halt(status: Int = 0) {
-        // the request is recorded as soon as it is made: a halt raised in
-        // a dependency file only takes effect once the main file is
-        // processed, so the log is the only immediate witness
+        // the request is recorded as soon as it is made, so the log
+        // is the only immediate witness of what the file will
+        // report
         logger.debug { "Halt requested with status $status" }
-        Session.put("arara:$originalFile:halt", status)
+        Session.put(
+            LinearExecutor.haltKeyFor(LinearExecutor.currentFile!!),
+            status
+        )
     }
 
     /**

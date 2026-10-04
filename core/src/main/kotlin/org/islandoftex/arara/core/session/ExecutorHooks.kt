@@ -25,6 +25,11 @@ data class ExecutorHooks(
     val executeBeforeProject: (Project) -> Unit = { _ -> },
     /**
      * Runs after every project, with the project.
+     *
+     * A project the run abandons mid-file - a failing file under
+     * the error-halt option, or a halt request with a failing
+     * status - never reaches this hook: the stop leaves the file
+     * loop directly.
      */
     val executeAfterProject: (Project) -> Unit = { _ -> },
     /**
@@ -33,6 +38,11 @@ data class ExecutorHooks(
     val executeBeforeFile: (ProjectFile) -> Unit = { _ -> },
     /**
      * Runs after every file, with the report of the run so far.
+     *
+     * A file the run stops at - a failing task under the error-halt
+     * option, or a halt request with a failing status - never
+     * reaches this hook: the stop returns before the closing hook
+     * runs.
      */
     val executeAfterFile: (ExecutionReport) -> Unit = { _ -> },
     /**

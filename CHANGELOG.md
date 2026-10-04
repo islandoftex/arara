@@ -391,6 +391,24 @@ on.
 
 ## Fixed
 
+* The `halt` helper of the rule vocabulary ends the file it is
+  called in: the remaining directives of the file being processed
+  are skipped and the requested status becomes the file's own
+  exit code, so a failing status stops the run under the
+  error-halt option like any failed task, while a succeeding one
+  lets the run proceed to whatever comes after the file. The
+  request is keyed by the file's full path and consumed at its own
+  end - previously it waited under the main file's bare name,
+  keeping a halted dependency running, later emptying the main
+  file's directives, and answering for same-named files elsewhere
+  in the run.
+* The run reports the exit code its documentation always promised:
+  with the error-halt option disabled, the last failing task's
+  code survives the successes that follow it - inside a file,
+  across the files of a project, and across the projects of a
+  run. Previously the last task's code overwrote whatever failed
+  before it, so a failure healed by a later success vanished
+  from the report and the process exit.
 * The `writeToFile` helper reports a plain `false` when the write is
   structurally impossible - the target is a directory, or the append
   mode meets a file that does not exist - instead of raising past

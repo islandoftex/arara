@@ -88,8 +88,12 @@ object LinearExecutor : Executor {
         val executionStarted = TimeSource.Monotonic.markNow()
         var exitCode = 0
         for (project in projectsInOrder) {
-            exitCode = executeProject(project)
-            if (executionOptions.haltOnErrors && exitCode != 0)
+            val projectCode = executeProject(project)
+            // the run remembers the last error it saw: without the
+            // error-halt option a failure anywhere is still what
+            // the run reports, whatever succeeded after it
+            if (projectCode != 0) exitCode = projectCode
+            if (executionOptions.haltOnErrors && projectCode != 0)
                 break
         }
         val executionEnded = TimeSource.Monotonic.markNow()
@@ -104,10 +108,13 @@ object LinearExecutor : Executor {
      * on the first failure when the error-halt option is set. The
      * project is unset even when an exception escapes, as a stale
      * project would make the executor reject all future execution
-     * option changes.
+     * option changes. A file the run stops at skips the closing
+     * hooks of the file and the project: the stop returns before
+     * they run.
      *
      * @param project The project to execute.
-     * @return The exit code of the last executed file.
+     * @return The exit code the project reports: the last error
+     *   seen among its files, or zero when they all succeeded.
      */
     internal fun executeProject(project: Project): Int {
         var exitCode = 0
@@ -117,9 +124,15 @@ object LinearExecutor : Executor {
             for (file in project.files.sortedByDescending { it.priority }) {
                 hooks.executeBeforeFile(file)
                 val executionReport = execute(file)
-                exitCode = executionReport.exitCode
-                if (executionOptions.haltOnErrors && exitCode != 0)
-                    return exitCode
+                // the last error of the project survives a later
+                // success when the error-halt option is off
+                if (executionReport.exitCode != 0)
+                    exitCode = executionReport.exitCode
+                if (executionOptions.haltOnErrors &&
+                    executionReport.exitCode != 0
+                ) {
+                    return executionReport.exitCode
+                }
                 hooks.executeAfterFile(executionReport)
             }
             hooks.executeAfterProject(project)
@@ -133,7 +146,24 @@ object LinearExecutor : Executor {
     }
 
     /**
+     * Builds the session key under which the halt request of a file
+     * is recorded: the full reference path tells the requests of
+     * same-named files apart, and the request lives exactly as
+     * long as the file's own processing.
+     *
+     * @param file The file the request belongs to.
+     * @return The session key of the file's halt request.
+     */
+    fun haltKeyFor(file: ProjectFile): String =
+        "arara:${file.path}:halt"
+
+    /**
      * Performs arara's main routine to run a file.
+     *
+     * A halt request raised by the file's rules dies with the
+     * file's own processing: its verdict has been spoken, and a
+     * later file - even a same-named one - starts with a clean
+     * sheet.
      *
      * @param file The file to run.
      */
@@ -147,8 +177,12 @@ object LinearExecutor : Executor {
             )
             var exitCode = 0
             for (directive in directives) {
-                exitCode = directive.execute()
-                if (executionOptions.haltOnErrors && exitCode != 0) {
+                val directiveCode = directive.execute()
+                // the file remembers the last error its directives
+                // produced, so a success after a failure cannot
+                // mask it
+                if (directiveCode != 0) exitCode = directiveCode
+                if (executionOptions.haltOnErrors && directiveCode != 0) {
                     break
                 }
             }
@@ -159,6 +193,9 @@ object LinearExecutor : Executor {
             // the file has to be unset even when directive processing or
             // execution throws, as a stale file would make the executor
             // reject all future execution option changes
+            if (Session.contains(haltKeyFor(file))) {
+                Session.remove(haltKeyFor(file))
+            }
             currentFile = null
         }
     }

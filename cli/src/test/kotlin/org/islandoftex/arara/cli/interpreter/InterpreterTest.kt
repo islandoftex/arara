@@ -80,7 +80,10 @@ class InterpreterTest {
         // a fresh session guarantees the observed halt status is the one
         // this scenario seeds, not a leftover of a previous scenario
         Session.clear()
-        Session.put("arara:${filePath.fileName}:halt", haltStatus)
+        Session.put(
+            LinearExecutor.haltKeyFor(ProjectFile(filePath, texFile)),
+            haltStatus
+        )
         return Interpreter(
             ExecutionOptions(rulePaths = setOf(rulePath)),
             ProjectFile(filePath, texFile), filePath.parent
@@ -117,7 +120,10 @@ class InterpreterTest {
         val rulePath = MPPPath("../rules").normalize()
         val filePath = MPPPath("src/test/resources/executiontests/halt")
             .normalize() / "halt.tex"
-        Session.put("arara:${filePath.fileName}:halt", "not-a-number")
+        Session.put(
+            LinearExecutor.haltKeyFor(ProjectFile(filePath, texFile)),
+            "not-a-number"
+        )
         assertFailsWith<AraraException>(
             "a non numeric halt status must be rejected"
         ) {

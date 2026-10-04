@@ -69,10 +69,11 @@ class Interpreter(
     private val logger = KotlinLogging.logger { }
 
     /**
-     * This string represents the key necessary for halting the current
-     * executor. It will be checked against session values.
+     * This string represents the key under which the halt request
+     * of the file being interpreted is recorded, checked against
+     * the session values.
      */
-    private val haltKey = "arara:${currentFile.path.fileName}:halt"
+    private val haltKey = LinearExecutor.haltKeyFor(currentFile)
 
     /**
      * Read the halt status recorded in the session under the halt key,

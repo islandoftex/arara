@@ -1,0 +1,15 @@
+!config
+# Arara, the cool TeX automation tool
+# Copyright (c) 2018, Paulo Roberto Massa Cereda
+# All rights reserved.
+#
+# This rule is part of arara.
+identifier: echothree
+name: Test rule for the escape hatch
+commands:
+  - name: The echoer
+    command: >
+      @{
+          return isWindows(getCommand('cmd', '/c', 'echo', 'QuackThree'), getCommand('echo', 'QuackThree'));
+      }
+arguments: []

@@ -210,35 +210,30 @@ class LuaRuleEnvironmentTest {
 
     @Test
     fun `the executor state feeds the stateful bindings`() {
-        val key = "arara:main.tex:halt"
         val outside = Files.createTempDirectory("arara-lua-outside")
-        try {
-            executeWithinProject(listOf("main.tex" to 0)) { directory, _ ->
-                val nested = Files.createDirectories(directory.resolve("nested"))
-                assertEquals("main.tex", evaluate("getOriginalFile()").tojstring())
-                assertTrue(
-                    evaluate("getOriginalReference()").tojstring().endsWith("main.tex")
-                )
-                call("halt", LuaValue.valueOf(7))
-                assertEquals(7, Session.get(key))
-                call("halt")
-                assertEquals(0, Session.get(key))
-                assertTrue(
-                    call("isSubdirectory", LuaValue.valueOf(nested.toString())).toboolean()
-                )
-                assertFalse(
-                    call("isSubdirectory", LuaValue.valueOf(outside.toString())).toboolean()
-                )
-                val command = call(
-                    "getCommand", LuaValue.valueOf("pdflatex"),
-                    LuaValue.valueOf("-opt")
-                )
-                val unwrapped = LuaConversion.toCommand(command)
-                assertEquals(listOf("pdflatex", "-opt"), unwrapped?.elements)
-                assertEquals(MPPPath(directory.toString()), unwrapped?.workingDirectory)
-            }
-        } finally {
-            Session.remove(key)
+        executeWithinProject(listOf("main.tex" to 0)) { directory, file ->
+            val nested = Files.createDirectories(directory.resolve("nested"))
+            assertEquals("main.tex", evaluate("getOriginalFile()").tojstring())
+            assertTrue(
+                evaluate("getOriginalReference()").tojstring().endsWith("main.tex")
+            )
+            call("halt", LuaValue.valueOf(7))
+            assertEquals(7, Session.get(LinearExecutor.haltKeyFor(file)))
+            call("halt")
+            assertEquals(0, Session.get(LinearExecutor.haltKeyFor(file)))
+            assertTrue(
+                call("isSubdirectory", LuaValue.valueOf(nested.toString())).toboolean()
+            )
+            assertFalse(
+                call("isSubdirectory", LuaValue.valueOf(outside.toString())).toboolean()
+            )
+            val command = call(
+                "getCommand", LuaValue.valueOf("pdflatex"),
+                LuaValue.valueOf("-opt")
+            )
+            val unwrapped = LuaConversion.toCommand(command)
+            assertEquals(listOf("pdflatex", "-opt"), unwrapped?.elements)
+            assertEquals(MPPPath(directory.toString()), unwrapped?.workingDirectory)
         }
     }
 

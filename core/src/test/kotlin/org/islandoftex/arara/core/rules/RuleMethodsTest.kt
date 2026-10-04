@@ -141,21 +141,16 @@ class RuleMethodsTest {
     }
 
     @Test
-    fun `the original reference stays the main file while dependencies run`() {
-        val key = "arara:main.tex:halt"
-        try {
-            executeWithinProject(listOf("main.tex" to 0, "dep.tex" to 1)) { _, file ->
-                if (file.path.fileName == "dep.tex") {
-                    assertEquals("main.tex", RuleMethods.originalFile)
-                    RuleMethods.halt(7)
-                    assertEquals(7, Session.get(key))
-                } else {
-                    RuleMethods.halt()
-                    assertEquals(0, Session.get(key))
-                }
+    fun `the original reference stays the main file while the halt answers the running file`() {
+        executeWithinProject(listOf("main.tex" to 0, "dep.tex" to 1)) { _, file ->
+            if (file.path.fileName == "dep.tex") {
+                assertEquals("main.tex", RuleMethods.originalFile)
+                RuleMethods.halt(7)
+                assertEquals(7, Session.get(LinearExecutor.haltKeyFor(file)))
+            } else {
+                RuleMethods.halt()
+                assertEquals(0, Session.get(LinearExecutor.haltKeyFor(file)))
             }
-        } finally {
-            Session.remove(key)
         }
     }
 
