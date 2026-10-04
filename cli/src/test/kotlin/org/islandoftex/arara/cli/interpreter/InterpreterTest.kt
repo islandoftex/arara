@@ -4,6 +4,7 @@ package org.islandoftex.arara.cli.interpreter
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import java.nio.file.Files
+import java.nio.file.Path
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
@@ -107,6 +108,38 @@ class InterpreterTest {
             0,
             executeWithHaltStatus(rulePath, filePath, 1),
             "an error halt exits with a non-zero code"
+        )
+    }
+
+    @Test
+    fun `a halt skips the remaining directives whole`() {
+        Session.clear()
+        val filePath = MPPPath("src/test/resources/executiontests/halt")
+            .normalize() / "halt.tex"
+        val directive = Directives.extractDirectives(
+            listOf("% arara: notarulequack"), false, texFile
+        ).single().run {
+            DirectiveImpl(
+                identifier,
+                parameters.plus("reference" to filePath.toString()),
+                conditional,
+                lineNumbers
+            )
+        }
+        Session.put(
+            LinearExecutor.haltKeyFor(ProjectFile(filePath, texFile)),
+            3
+        )
+        val status = Interpreter(
+            ExecutionOptions(
+                rulePaths = setOf(MPPPath("../rules").normalize())
+            ),
+            ProjectFile(filePath, texFile), filePath.parent
+        ).execute(directive)
+        assertEquals(
+            3,
+            status.exitCode,
+            "the halted file skips the directive whole, without resolving its rule"
         )
     }
 
@@ -322,6 +355,96 @@ class InterpreterTest {
             status,
             "the failure surfaces as the exit code without halting"
         )
+    }
+
+    @Test
+    fun `a failing command survives a later command's success`() {
+        Session.clear()
+        val directory = Files.createTempDirectory("arara-interpreter-rule")
+        val java = ProcessHandle.current().info().command().orElse("java")
+        Files.writeString(
+            directory.resolve("arara-rule-masking.yaml"),
+            """
+            !config
+            identifier: masking
+            name: Masking
+            authors:
+            - Island of TeX
+            commands:
+            - name: The failing tool
+              command: >
+                @{ return getCommandWithWorkingDirectory(
+                '${forMvel(directory)}', '${forMvel(java)}', '-wrongflag-quack'); }
+            - name: The succeeding tool
+              command: >
+                @{ return getCommandWithWorkingDirectory(
+                '${forMvel(directory)}', '${forMvel(java)}', '-version'); }
+            arguments: []
+            """.trimIndent()
+        )
+        assertNotEquals(
+            0,
+            executeLeniently(directory, "masking"),
+            "the failing command keeps the run's verdict without error-halting"
+        )
+    }
+
+    @Test
+    fun `a failing task survives a later task's success`() {
+        Session.clear()
+        val directory = Files.createTempDirectory("arara-interpreter-rule")
+        val java = ProcessHandle.current().info().command().orElse("java")
+        Files.writeString(
+            directory.resolve("arara-rule-masking.yaml"),
+            """
+            !config
+            identifier: masking
+            name: Masking
+            authors:
+            - Island of TeX
+            commands:
+            - name: The tool pair
+              command: >
+                @{ return [getCommandWithWorkingDirectory(
+                '${forMvel(directory)}', '${forMvel(java)}', '-wrongflag-quack'),
+                getCommandWithWorkingDirectory(
+                '${forMvel(directory)}', '${forMvel(java)}', '-version')]; }
+            arguments: []
+            """.trimIndent()
+        )
+        assertNotEquals(
+            0,
+            executeLeniently(directory, "masking"),
+            "the failing task keeps the command's verdict without error-halting"
+        )
+    }
+
+    /**
+     * Builds the directive for the identifier and runs it through a
+     * fresh interpreter over the provided rule directory, without
+     * the error-halt option, returning the reported exit code -
+     * the vantage point from which a masked failure disappears.
+     */
+    private fun executeLeniently(directory: Path, identifier: String): Int {
+        val filePath = Files.createTempFile("arara-interpreter-file", ".tex")
+        val directive = Directives.extractDirectives(
+            listOf("% arara: $identifier"), false, texFile
+        ).single().run {
+            DirectiveImpl(
+                identifier,
+                parameters.plus("reference" to filePath.toString()),
+                conditional,
+                lineNumbers
+            )
+        }
+        val options = ExecutionOptions(
+            rulePaths = setOf(MPPPath(directory.toString())),
+            haltOnErrors = false
+        )
+        return Interpreter(
+            options, ProjectFile(MPPPath(filePath.toString()), texFile),
+            MPPPath(filePath.parent.toString())
+        ).execute(directive).exitCode
     }
 
     /**

@@ -111,14 +111,17 @@ interface AraraMessages {
      */
     val errorInterpreterCommandRuntimeError: String
     /**
-     * The error shown when a command exits with a code its exit check
-     * rejects.
+     * The message describing a command that exited with a code its
+     * exit check rejected - the semantic record of the error-halt
+     * landing, whose spoken witness lives in the log.
      */
     fun errorInterpreterCommandUnsuccessfulExit(command: String): String
     /**
      * The message carried by the halt of a file that a rule
      * requested: its remaining directives are skipped, and the
-     * requested status becomes the file's own.
+     * requested status becomes the file's own - the semantic
+     * record of the halt landing, whose spoken witness lives in
+     * the log.
      */
     val errorInterpreterUserRequestedHalt: String
     /**

@@ -321,20 +321,37 @@ class Interpreter(
     /**
      * Enforces the halt policy after a task: the halt directive
      * stops the run with its own exit code, and the error-halt
-     * option stops it where a failed task stands.
+     * option stops it where a failed task stands. Both landings
+     * speak their English witness into the log, so the record
+     * names the reason a run ended where it did.
      *
      * @param success The outcome of the task.
      * @param command The command the task ran under.
      */
     private fun enforceHaltPolicy(success: Boolean, command: RuleCommand) {
         when {
-            Session.contains(haltKey) ->
+            Session.contains(haltKey) -> {
+                logger.info {
+                    "The file halts on a rule request, reporting " +
+                        "status ${haltStatus()}."
+                }
                 throw HaltExpectedException(
                     LanguageController.messages
                         .errorInterpreterUserRequestedHalt,
                     ExecutionStatus.FinishedWithCode(haltStatus())
                 )
-            executionOptions.haltOnErrors && !success ->
+            }
+            executionOptions.haltOnErrors && !success -> {
+                logger.info {
+                    "The command " +
+                        (
+                            command.name
+                                ?: LanguageController.messages
+                                    .infoLabelUnnamedTask
+                            ) +
+                        " failed its exit check; the run stops under " +
+                        "the error-halt option."
+                }
                 throw HaltExpectedException(
                     LanguageController.messages
                         .errorInterpreterCommandUnsuccessfulExit(
@@ -344,6 +361,7 @@ class Interpreter(
                         ),
                     ExecutionStatus.ExternalCallFailed()
                 )
+            }
         }
     }
 
@@ -358,7 +376,8 @@ class Interpreter(
      * @param conditional The conditional attached to the directive.
      * @param rule The parsed rule.
      * @param parameters The resolved rule arguments.
-     * @return The final execution status of the command list.
+     * @return The status of the command list: the last failure
+     *   among its tasks, or success when they all ran clean.
      */
     private fun executeCommand(
         command: RuleCommand,
@@ -378,34 +397,36 @@ class Interpreter(
                         .messages.errorInterpreterWrongReturnType
                 )
         }
-        return results.filter { it.toString().isNotBlank() }
-            .fold(ExecutionStatus.Processing() as ExecutionStatus) { _, current ->
+        // the command list keeps its own failure sticky: with the
+        // error-halt option off, a task that failed cannot be
+        // masked by one that succeeds after it
+        var failure: ExecutionStatus? = null
+        results.filter { it.toString().isNotBlank() }
+            .forEach { current ->
                 Display.printEntry(
                     rule.displayName!!,
                     command.name
                         ?: LanguageController.messages.infoLabelUnnamedTask
                 )
-
                 val (success, output) = runTask(
                     current, conditional, rule, exitCheck
                 )
-            Display.printEntryResult(success)
-            // the failed task quotes the tail of its own output;
-            // the plain console stays as it always was
-            if (!success) {
-                Display.printCommandFailure(output)
+                Display.printEntryResult(success)
+                // the failed task quotes the tail of its own output;
+                // the plain console stays as it always was
+                if (!success) {
+                    Display.printCommandFailure(output)
+                }
+                enforceHaltPolicy(success, command)
+                if (!success) {
+                    failure = ExecutionStatus.ExternalCallFailed()
+                }
             }
-            enforceHaltPolicy(success, command)
-            if (success) {
-                ExecutionStatus.Processing()
-            } else {
-                ExecutionStatus.ExternalCallFailed()
-            }
-        }
+        return failure ?: ExecutionStatus.Processing()
     }
 
     /**
-     * Executes each directive, throwing an exception if something bad has
+     * Executes the directive, throwing an exception if something bad has
      * happened.
      *
      * @throws AraraException Something wrong happened, to be caught in the
@@ -413,6 +434,16 @@ class Interpreter(
      */
     @Throws(AraraException::class)
     fun execute(directive: Directive): ExecutionStatus {
+        // a halt request already stands for the file: the remaining
+        // directives are skipped whole - no rule lookup, no parse,
+        // no conditional evaluation - exactly as the halt promises
+        if (Session.contains(haltKey)) {
+            logger.debug {
+                "Directive ${directive.identifier} skipped: the file " +
+                    "halted on a rule request."
+            }
+            return ExecutionStatus.FinishedWithCode(haltStatus())
+        }
         logger.info {
             "I am ready to interpret rule \"${directive.identifier}\"."
         }
@@ -460,9 +491,6 @@ class Interpreter(
                 Display.printSkippedDirective(directive.identifier)
                 ExecutionStatus.Processing()
             }
-            Session.contains(haltKey) ->
-                // a halt was requested by a rule
-                ExecutionStatus.FinishedWithCode(haltStatus())
             else -> runCommands(directive, file, rule, parameters, evaluator)
         }
     }
@@ -476,7 +504,9 @@ class Interpreter(
      * @param rule The parsed rule.
      * @param parameters The resolved rule arguments.
      * @param evaluator The conditional evaluator of the active engine.
-     * @return The final execution status of the command list.
+     * @return The status the command list reports: its last failure,
+     *   sticky across the loop iterations, or success when everything
+     *   ran clean.
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
@@ -488,24 +518,19 @@ class Interpreter(
         parameters: Map<String, Any>,
         evaluator: ConditionalEvaluator
     ): ExecutionStatus = try {
-        var retValue: ExecutionStatus
+        // the failure of the command list stays sticky across the
+        // loop iterations: with the error-halt option off, nothing
+        // that runs later can mask it
+        var failure: ExecutionStatus? = null
         do {
-            retValue = rule.commands.fold(
-                ExecutionStatus.Processing()
-                    as ExecutionStatus
-            ) { _, command ->
-                executeCommand(
-                    command,
-                    directive.conditional,
-                    rule,
-                    parameters
-                )
+            runCommandList(directive, rule, parameters)?.let { status ->
+                failure = status
             }
         } while (evaluator.evaluate(directive.conditional))
-        retValue
+        failure ?: ExecutionStatus.Processing()
     } catch (e: HaltExpectedException) {
-        // If the user uses the halt rule to trigger a halt, this will be
-        // raised. Any other exception will not be caught and propagate up.
+        // the halt of the file raises this and its status stands;
+        // every other exception propagates up
         e.status
     } catch (e: AraraExceptionWithHeader) {
         // rethrow arara exceptions that are bound to have a header by
@@ -519,6 +544,37 @@ class Interpreter(
                 e.message,
             e.cause ?: e
         )
+    }
+
+    /**
+     * Runs one iteration of the command list, keeping the failure
+     * sticky: whatever succeeds after a failing entry cannot mask
+     * its verdict.
+     *
+     * @param directive The directive being executed.
+     * @param rule The parsed rule.
+     * @param parameters The resolved rule arguments.
+     * @return The failing status the iteration ends with, or null
+     *   when every entry ran clean.
+     */
+    private fun runCommandList(
+        directive: Directive,
+        rule: Rule,
+        parameters: Map<String, Any>
+    ): ExecutionStatus? {
+        var failure: ExecutionStatus? = null
+        rule.commands.forEach { command ->
+            val status = executeCommand(
+                command,
+                directive.conditional,
+                rule,
+                parameters
+            )
+            if (status !is ExecutionStatus.Processing) {
+                failure = status
+            }
+        }
+        return failure
     }
 
     /**

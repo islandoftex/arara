@@ -391,6 +391,23 @@ on.
 
 ## Fixed
 
+* A halt request skips the remaining directives of the file
+  whole: previously the interpreter still resolved, parsed and
+  conditionally evaluated them on its way to the skip, so a
+  directive after the halt that named a rule arara could not
+  find failed the run with a lookup error instead of vanishing
+  as the halt promises.
+* A rule's own failures survive its later successes: within one
+  command's task list and across a multi-command rule, a failing
+  task kept its verdict sticky when the error-halting option is
+  off, where previously the last task's outcome decided the
+  whole rule's report - a failure healed by a later success
+  vanished, one level below the run's own exit tracking.
+* Both landings of the halt policy speak their witness into the
+  log: a rule-requested halt records the status it reports, and
+  a command failing its exit check under the error-halt option
+  records the command that stopped the run - previously the log
+  carried only the halt's own debug request.
 * The typed argument boundary of the Lua rule helpers closes two
   gaps: the working directory of `getCommandWithWorkingDirectory`
   now demands a string instead of silently coercing any value -
