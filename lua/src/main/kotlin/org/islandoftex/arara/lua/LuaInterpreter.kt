@@ -22,6 +22,9 @@ import org.islandoftex.arara.core.files.UNKNOWN_TYPE
  * references against.
  */
 class LuaInterpreter(private val appWorkingDir: MPPPath) {
+    /**
+     * The logger of the Lua project interpreter.
+     */
     private val logger = KotlinLogging.logger { }
 
     /**
@@ -47,6 +50,11 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
             else -> throw ProjectParseException(typeError)
         }
 
+    /**
+     * Extracts a file type from its Lua table: the extension is
+     * required, and the pattern may come from the table or from
+     * the default patterns of a known extension.
+     */
     private fun extractFileType(fileType: LuaTable): FileType {
         val extension = fileType["extension"].takeIf { it is LuaString }?.toString()
             ?: throw ProjectParseException("An extension is required to identify the file type.")
@@ -108,7 +116,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         return extractProjectFile(path, projectFileSpec(fileTable, key))
     }
 
-        /**
+    /**
      * Extracts a project file from the Lua table the project
      * specification provides, resolving the file type and the
      * priority from the table's fields.
@@ -117,7 +125,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
      * @param table The Lua table describing the project file.
      * @return The extracted project file.
      */
-private fun extractProjectFile(path: MPPPath, table: LuaTable): ProjectFile {
+    private fun extractProjectFile(path: MPPPath, table: LuaTable): ProjectFile {
         val fileType = optionalTable(
             table["file_type"],
             "The 'file_type' key requires a table."
@@ -151,6 +159,12 @@ private fun extractProjectFile(path: MPPPath, table: LuaTable): ProjectFile {
         return projectFile
     }
 
+    /**
+     * Extracts a project from its Lua table: the name defaults,
+     * the working directory resolves against the application's,
+     * and the file entries and dependencies convert to their
+     * own shapes.
+     */
     private fun extractProject(table: LuaTable): Project {
         val name = optionalString(
             table["name"],

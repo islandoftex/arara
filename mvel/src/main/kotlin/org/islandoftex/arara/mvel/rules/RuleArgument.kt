@@ -19,6 +19,9 @@ import org.slf4j.LoggerFactory
  */
 @Serializable
 class RuleArgument : RuleArgument<Any?> {
+    /**
+     * The logger of the rule argument evaluation.
+     */
     @Transient
     private val logger = LoggerFactory.getLogger(RuleArgument::class.java)
 
@@ -33,11 +36,11 @@ class RuleArgument : RuleArgument<Any?> {
     @SerialName("required")
     override var isRequired: Boolean = false
 
-        /**
+    /**
      * The flag the argument renders when the value is
      * present, or null when the default applies.
      */
-private var flag: String? = null
+    private var flag: String? = null
         get() = field?.trim()
 
     /**
@@ -46,12 +49,12 @@ private var flag: String? = null
     override val defaultValue: Any?
         get() = default?.trim()
 
-        /**
+    /**
      * The default value the argument falls back to when
      * the directive provides none, or null when the
      * argument is required.
      */
-private val default: String? = null
+    private val default: String? = null
 
     /**
      * Evaluates the MVEL flag expression of the argument against the

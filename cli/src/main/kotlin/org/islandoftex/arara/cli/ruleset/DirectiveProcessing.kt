@@ -23,6 +23,9 @@ import org.mvel2.templates.TemplateRuntime
  * @author Island of TeX
  */
 object DirectiveProcessing {
+    /**
+     * The logger of the directive processing.
+     */
     private val logger = KotlinLogging.logger { }
 
     /**

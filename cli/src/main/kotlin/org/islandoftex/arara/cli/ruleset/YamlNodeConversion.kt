@@ -79,16 +79,20 @@ internal object YamlNodeConversion {
         }
     }
 
+    /**
+     * The pattern a scalar must match to be read as a
+     * boolean value.
+     */
     private val booleanRegex = Regex("true|True|TRUE|false|False|FALSE")
-        /**
+    /**
      * The pattern a scalar must match to be read as an
      * integer.
      */
-private val integerRegex = Regex("[-+]?[0-9]+")
-        /**
+    private val integerRegex = Regex("[-+]?[0-9]+")
+    /**
      * The patterns a scalar must match to be read as a
      * floating-point number.
      */
-private val floatRegex =
+    private val floatRegex =
         Regex("[-+]?(\\.[0-9]+|[0-9]+(\\.[0-9]*)?)([eE][-+]?[0-9]+)?")
 }

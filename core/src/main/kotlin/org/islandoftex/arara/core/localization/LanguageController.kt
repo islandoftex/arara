@@ -10,6 +10,9 @@ import org.islandoftex.arara.api.localization.MPPLocale
  * catalog of the current run and swaps it when a locale is requested.
  */
 object LanguageController {
+    /**
+     * The logger of the language controller.
+     */
     private val logger = KotlinLogging.logger {}
 
     /**

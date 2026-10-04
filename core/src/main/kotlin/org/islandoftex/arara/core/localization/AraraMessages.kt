@@ -116,8 +116,9 @@ interface AraraMessages {
      */
     fun errorInterpreterCommandUnsuccessfulExit(command: String): String
     /**
-     * The message shown when a rule or a directive asks arara to
-     * halt.
+     * The message carried by the halt of a file that a rule
+     * requested: its remaining directives are skipped, and the
+     * requested status becomes the file's own.
      */
     val errorInterpreterUserRequestedHalt: String
     /**

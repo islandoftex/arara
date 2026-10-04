@@ -6,6 +6,9 @@ import org.islandoftex.arara.api.localization.MPPLocale
 /**
  * Dutch localization of the arara messages.
  * Translated by Marijn Schraagen and Taco de Marie.
+ * The documentation of each member is inherited from the
+ * [AraraMessages] interface, the single source of truth for
+ * what every message says.
  */
 @Suppress("MaxLineLength", "TooManyFunctions")
 object DutchMessages : AraraMessages {
@@ -84,7 +87,7 @@ object DutchMessages : AraraMessages {
         "Ik kan de console niet op '${mode}' zetten, omdat dat geen van de beschikbare weergaven is. Dit zou makkelijk op te lossen moeten zijn: kies gewoon een van de beschikbare modi."
 
     override val errorInterpreterUserRequestedHalt =
-        "arara word nu beëindigd op uw (of een regel) verzoek."
+        "Het bestand stopt nu op verzoek van een regel, en de resterende richtlijnen worden overgeslagen."
 
     override val errorInterpreterWrongExitClosureReturn =
         "De 'exit'-expressie moet altijd een boolean waarde teruggeven (zelfs als er geen berekening heeft plaatsgevonden). Dit zou makkelijk op te lossen moeten zijn: pas het type van de return-regel aan en probeer het opnieuw."

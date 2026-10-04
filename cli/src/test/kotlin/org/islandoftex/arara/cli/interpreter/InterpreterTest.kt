@@ -31,18 +31,14 @@ import org.junit.jupiter.api.TestInstance
  * returns the requested status as the exit code without running any further
  * commands of the rule.
  *
- * The halt request itself (the `halt()` helper storing the status under the
- * halt key of the original file) requires the executor's project state, so
- * it is exercised end-to-end by the pipeline scenarios in
+ * The halt request itself (the `halt()` helper storing the status
+ * under the halt key of the file being processed) requires the
+ * executor's project state, so it is exercised end-to-end by the
+ * pipeline scenarios in
  * [org.islandoftex.arara.cli.execution.ExecutionTest]; this spec seeds the
  * session explicitly to observe the interpreter's decision in isolation.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-/**
- * Verifies the interpreter: the rule resolution, the argument
- * processing, and the error paths, driven from the execution-test
- * fixtures through the real engine.
- */
 class InterpreterTest {
     private val texFile = FileType("tex", "^\\s*%\\s+")
 

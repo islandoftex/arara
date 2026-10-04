@@ -90,6 +90,10 @@ internal object LuaConversion {
         else -> value.tojstring()
     }
 
+    /**
+     * Converts a Lua table to its Kotlin shape: a consecutive
+     * one-based sequence becomes a list, anything else a map.
+     */
     private fun tableToKotlin(table: LuaTable): Any {
         val keys = table.keys()
         val isSequence = keys.withIndex().all { (i, key) ->
@@ -223,6 +227,10 @@ internal object LuaConversion {
         else -> listOfNotNull(fromLua(value))
     }
 
+    /**
+     * Flattens a Lua table into a list, descending into nested
+     * tables and dropping nil entries.
+     */
     private fun flatten(table: LuaTable): List<Any> =
         table.keys().flatMap { key ->
             val element = table.get(key)

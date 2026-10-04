@@ -5,7 +5,9 @@ import org.islandoftex.arara.api.localization.MPPLocale
 
 /**
  * English localization of the arara messages.
- * Written by Paulo Cereda.
+ * Written by Paulo Cereda. The documentation of each member is
+ * inherited from the [AraraMessages] interface, the single
+ * source of truth for what every message says.
  */
 @Suppress("MaxLineLength", "TooManyFunctions")
 object EnglishMessages : AraraMessages {
@@ -66,7 +68,7 @@ object EnglishMessages : AraraMessages {
         "The command \"${command}\" exited unexpectedly with a non-zero exit code. Please see the command's output to evaluate your next steps."
 
     override val errorInterpreterUserRequestedHalt =
-        "arara will now halt on your (or a rule's) request to halt arara."
+        "The file will now halt on a rule's request, and its remaining directives are skipped."
 
     override val errorInterpreterExitRuntimeError =
         "I could not evaluate the exit status expression of one of the provided commands. This part is quite tricky, since it involves aspects of the underlying expression language. I will do my best to help you in any way I can."

@@ -53,6 +53,10 @@ internal object LuaConditionalEnvironment {
         return globals
     }
 
+    /**
+     * Collects the Lua arguments from the provided position on,
+     * converting each to its JVM shape.
+     */
     private fun Varargs.values(from: Int): List<Any?> =
         (from..narg()).map { fromLua(arg(it)) }
 
@@ -81,6 +85,11 @@ internal object LuaConditionalEnvironment {
         "LongMethod", "ComplexMethod", "ThrowsCount",
         "SpreadOperator", "MagicNumber"
     )
+    /**
+     * Binds every conditional helper into the Lua environment,
+     * under its historic camelCase spelling and its snake_case
+     * alias.
+     */
     private fun bindHelpers(globals: Globals) {
         // file existence and content checks; both the extension-based
         // and the file-based MVEL overloads are available
@@ -214,13 +223,13 @@ internal object LuaConditionalEnvironment {
     // type, title, text and the extra values); the width parameter of
     // the Swing era is gone, and arara owns the terminal geometry
     @Suppress("MagicNumber")
-        /**
+    /**
      * Binds a dialog helper into the Lua environment: the
      * arguments are validated for their types, the extra
      * values are collected, and the conversation routes
      * through the dialog facade.
      */
-private fun bindDialog(
+    private fun bindDialog(
         globals: Globals,
         name: String,
         body: (
@@ -239,6 +248,11 @@ private fun bindDialog(
         }
     }
 
+    /**
+     * Binds a class loading helper into the environment, routing
+     * the file-based and the string-based overloads through one
+     * binding.
+     */
     private fun bindClassLoading(
         globals: Globals,
         name: String,

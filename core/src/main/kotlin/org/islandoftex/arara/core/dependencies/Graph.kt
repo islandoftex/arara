@@ -5,16 +5,24 @@ package org.islandoftex.arara.core.dependencies
  * A graph model for dependency resolution.
  */
 internal open class Graph<T> {
+    /**
+     * The vertices of the graph, each mapped to the set of its
+     * outgoing neighbours.
+     */
     private val vertices = mutableMapOf<T, MutableSet<T>>()
+    /**
+     * The in-degree of each vertex: the number of edges pointing
+     * into it.
+     */
     private val indegree = mutableMapOf<T, Int>()
 
-        /**
+    /**
      * Updates the in-degree of a vertex after an edge
      * pointing into it is added.
      *
      * @param vertex The vertex whose in-degree grows.
      */
-private fun updateInDegree(vertex: T) {
+    private fun updateInDegree(vertex: T) {
         val current = indegree[vertex]
             ?: throw NoSuchElementException("Vertex $vertex in graph expected")
         indegree[vertex] = current + 1

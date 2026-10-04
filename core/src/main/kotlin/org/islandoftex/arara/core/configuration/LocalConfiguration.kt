@@ -22,14 +22,49 @@ import org.islandoftex.arara.core.session.Environment
  */
 @Serializable
 data class LocalConfiguration(
+    /**
+     * The directories rules are looked up in, as the
+     * configuration names them.
+     */
     private val paths: List<String> = emptyList(),
+    /**
+     * The file types the configuration declares, mapped from
+     * extension to pattern.
+     */
     private val filetypes: List<SerialFileType> = emptyList(),
+    /**
+     * The language tag the configuration asks the console to
+     * speak, if any.
+     */
     private val language: String? = null,
+    /**
+     * The maximum number of loops a looping directive may take,
+     * if the configuration caps them.
+     */
     private val loops: Int? = null,
+    /**
+     * Whether the tool output echoes live, if the configuration
+     * says so.
+     */
     private val verbose: Boolean? = null,
+    /**
+     * Whether the run writes its log file, if the configuration
+     * says so.
+     */
     private val logging: Boolean? = null,
+    /**
+     * Whether the directive extraction reads the whole file
+     * instead of the header alone, if the configuration says so.
+     */
     private val header: Boolean? = null,
+    /**
+     * The name of the file database, if the configuration
+     * renames it.
+     */
     private val dbname: String? = null,
+    /**
+     * The name of the log file, if the configuration renames it.
+     */
     private val logname: String? = null,
     /**
      * The console presentation the configuration selects, by name; the
@@ -62,12 +97,12 @@ data class LocalConfiguration(
     // in scope to the script, so no engine tokens remain to expand;
     // the flag stays out of the serialized format on purpose
     @Transient
-        /**
+    /**
      * Whether the paths are expanded for engine tokens;
      * a script-based configuration computes its paths in
      * scope, so no tokens remain to expand.
      */
-private val expandPathTokens: Boolean = true
+    private val expandPathTokens: Boolean = true
 ) {
     /**
      * Convert the relevant properties of the configuration to execution

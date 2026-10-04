@@ -50,7 +50,15 @@ class LuaRuleCommand(
      * The name the command entry displays itself with, if any.
      */
     override val name: String?,
+    /**
+     * The closure the command evaluates against the resolved
+     * arguments.
+     */
     private val commandFunction: LuaFunction,
+    /**
+     * The optional closure checking the exit code of the
+     * command's tasks.
+     */
     private val exitFunction: LuaFunction?
 ) : RuleCommand {
     /**
@@ -126,6 +134,10 @@ class LuaRuleArgument(
      * The value the argument takes when the directive omits it.
      */
     override val defaultValue: Any?,
+    /**
+     * The optional closure rendering the argument's flags from
+     * the user-provided value.
+     */
     private val flagFunction: LuaFunction?
 ) : RuleArgument<Any?> {
     /**

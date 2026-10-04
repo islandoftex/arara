@@ -6,6 +6,9 @@ import org.islandoftex.arara.api.localization.MPPLocale
 /**
  * German localization of the arara messages.
  * Translated by Marco Daniel, Ben Frank and Gert Fischer.
+ * The documentation of each member is inherited from the
+ * [AraraMessages] interface, the single source of truth for
+ * what every message says.
  */
 @Suppress("MaxLineLength", "TooManyFunctions")
 object GermanMessages : AraraMessages {
@@ -84,7 +87,7 @@ object GermanMessages : AraraMessages {
         "Ich kann die Konsole nicht auf '${mode}' setzen, da es keine der verfügbaren Darstellungen ist. Das sollte leicht zu beheben sein, wähle einfach einen der verfügbaren Modi."
 
     override val errorInterpreterUserRequestedHalt =
-        "arara wird auf Ihren Wunsch gestoppt."
+        "Die Datei wird auf Anforderung einer Regel nun angehalten, und ihre restlichen Anweisungen werden übersprungen."
 
     override val errorInterpreterWrongExitClosureReturn =
         "Der Ausdruck 'exit' muss immer einen logischen Wert (boolean value) zurückgeben (sogar wenn es keine Berechnung in der Prozedur gibt). Das sollte leicht zu beheben sein: Stelle einen korrekten Rückgabewert sicher und versuche es erneut."

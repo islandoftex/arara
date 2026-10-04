@@ -14,7 +14,13 @@ import org.islandoftex.arara.core.session.LinearExecutor
  */
 @Serializable
 data class SerialFileType(
+    /**
+     * The extension files of this type carry.
+     */
     private var extension: String = FileType.INVALID_EXTENSION,
+    /**
+     * The pattern lines holding directives of this type start with.
+     */
     private var pattern: String = FileType.INVALID_PATTERN
 ) {
 

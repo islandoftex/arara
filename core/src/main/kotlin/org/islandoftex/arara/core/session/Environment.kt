@@ -6,7 +6,6 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
-import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMFile
 import org.islandoftex.arara.api.session.Command
@@ -19,11 +18,10 @@ import org.zeroturnaround.exec.stream.TeeOutputStream
  * An object to handle interaction with the operating system.
  */
 object Environment {
-    // get the logger context from a factory
-        /**
+    /**
      * The logger of the environment interaction.
      */
-private val logger = KotlinLogging.logger { }
+    private val logger = KotlinLogging.logger { }
 
     /**
      * Gets the system property according to the provided key, or resort to the
@@ -98,10 +96,7 @@ private val logger = KotlinLogging.logger { }
      * @param value A string representing an operating system.
      * @return A boolean value indicating if the provided string refers to the
      * underlying operating system.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
      */
-    @Throws(AraraException::class)
     fun checkOS(value: SupportedOS): Boolean =
         when (value) {
             SupportedOS.WINDOWS -> OS.isWindows

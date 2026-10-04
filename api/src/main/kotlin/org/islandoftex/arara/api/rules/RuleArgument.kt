@@ -13,7 +13,7 @@ package org.islandoftex.arara.api.rules
  */
 public interface RuleArgument<T> {
     /**
-     * The rule's identifier is its key to arara. This will be used in
+     * The argument's identifier is its key to arara. This will be used in
      * directives. The identifier must not be blank.
      */
     public val identifier: String

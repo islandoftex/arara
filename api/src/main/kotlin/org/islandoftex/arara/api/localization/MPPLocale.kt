@@ -11,6 +11,10 @@ import java.util.Locale
  * @author Island of TeX
  */
 public class MPPLocale constructor(tag: String) {
+    /**
+     * The JVM locale the tag resolved to, backing the display
+     * names and the format calls.
+     */
     private val locale: Locale = Locale.forLanguageTag(tag)
 
     /**

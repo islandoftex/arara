@@ -72,6 +72,9 @@ import org.islandoftex.arara.lua.LuaInterpreter
  * @author Island of TeX
  */
 class CLI : CliktCommand("arara") {
+    /**
+     * The logger of the command line interface.
+     */
     private val logger = KotlinLogging.logger {}
 
     init {
@@ -108,37 +111,73 @@ class CLI : CliktCommand("arara") {
         feature conditional execution and parameter expansion.
     """.trimMargin("@")
 
+    /**
+     * Whether the run writes its log file.
+     */
     private val log by option("-l", "--log")
         .help("Generate a log output")
         .flag()
+    /**
+     * Whether the tool output echoes live; the silent alias
+     * negates the request.
+     */
     private val verbose by option("-v", "--verbose")
         .help("Print the command output")
         .flag("-s", "--silent")
+    /**
+     * Whether the run goes through every motion of its commands
+     * without ever calling them.
+     */
     private val dryRun by option("-n", "--dry-run")
         .help(
             "Go through all the motions of running a command, but " +
                 "with no actual calls"
         )
         .flag()
+    /**
+     * Whether the run forbids the potentially harmful helpers.
+     */
     private val safeRun by option("-S", "--safe-run")
         .help(
             "Run in safe mode and disable potentially harmful features. " +
                 "Make sure your project uses only allowed features."
         )
         .flag()
+    /**
+     * Whether the directive extraction reads the whole file
+     * instead of the header alone.
+     */
     private val wholeFile by option("-w", "--whole-file")
         .help("Extract directives in the file, not only in the header")
         .flag()
+    /**
+     * The name of the configuration preamble this run asks for,
+     * if any.
+     */
     private val preamble by option("-p", "--preamble")
         .help("Set the file preamble based on the configuration file")
+    /**
+     * The wall clock span in milliseconds after which a running
+     * system command is aborted.
+     */
     private val timeout by option("-t", "--timeout")
         .help("Set the execution timeout (in milliseconds)")
         .int().restrictTo(min = 1)
+    /**
+     * The name of the language the console speaks.
+     */
     private val language by option("-L", "--language")
         .help("Set the application language")
+    /**
+     * The maximum number of loops a looping directive may take.
+     */
     private val maxLoops by option("-m", "--max-loops")
         .help("Set the maximum number of loops (> 0)")
         .int().restrictTo(min = 1)
+    /**
+     * The rule engine, and with it the dialect of the rule files
+     * and the directive expressions.
+     */
     private val engine by option("-e", "--engine")
         .help(
             "Set the rule engine and thus the rule format to use: " +
@@ -147,15 +186,27 @@ class CLI : CliktCommand("arara") {
         .choice("yaml" to RuleEngine.YAML, "lua" to RuleEngine.LUA)
         .default(RuleEngine.YAML)
 
+    /**
+     * The console presentation this run asks for, if any.
+     */
     private val console by option("-c", "--console")
         .help("Set the console presentation to use: 'plain' or 'styled'")
         .choice("plain" to ConsoleMode.PLAIN, "styled" to ConsoleMode.STYLED)
+    /**
+     * The working directory the run and its tools operate from.
+     */
     private val workingDirectory by option("-d", "--working-directory")
         .help("Set the working directory for all tools")
         .path(mustExist = true, canBeFile = false, mustBeReadable = true)
+    /**
+     * The call parameters to hold in the session, keyed by name.
+     */
     private val parameters: Map<String, String> by option("-P", "--call-property")
         .help("Pass parameters to the application to be used within the session.")
         .associate()
+    /**
+     * The properties file whose entries join the session.
+     */
     private val properties: Properties? by option("-F", "--properties-file")
         .help("Pass a properties file to the application to be used within the session.")
         .path(mustExist = true, canBeDir = false, mustBeReadable = true)
@@ -163,14 +214,17 @@ class CLI : CliktCommand("arara") {
                 ConfigurationFiles.loadProperties(props, it)
             } }
 
+    /**
+     * The file references the run evaluates.
+     */
     private val reference by argument("file")
         .help("The file(s) to evaluate and process")
         .multiple(required = true)
 
     /**
-     * Resolve the projects to be run from either a configuration file that
-     * configures the run or by creating a single project from the called
-     * files.
+     * Resolve the projects to run: a single Lua file argument may
+     * name a project specification, and otherwise the called files
+     * become one project of their own.
      */
     private fun resolveProjects(): List<org.islandoftex.arara.api.files.Project> {
         // resolve the working directory from the one that may be given
@@ -294,6 +348,11 @@ class CLI : CliktCommand("arara") {
         }
     }
 
+    /**
+     * The console presentation the run applied so far, so a
+     * re-application of the same mode keeps the renderers - and
+     * with them the run's ledger - untouched.
+     */
     private var appliedConsoleMode: ConsoleMode? = null
 
     /**
@@ -551,12 +610,10 @@ class CLI : CliktCommand("arara") {
             Display.printException(ex)
             ExecutionStatus.CaughtException()
         }.let { executionStatus ->
-            // print the execution time if the command line parsing does not
-            // return false as result (it makes no sense to print the
-            // execution time for a help message)
-
-            // the presentation closes the run with its own summary
-            // before the time line ends it
+            // the run's status carries its completion: the summary
+            // speaks the verdict, the unreached files are named,
+            // the time line closes the run and its code leaves the
+            // process - whichever way the run ended
             Display.printRunSummary(executionStatus.exitCode == 0)
 
             // the files the exception left unreached are named

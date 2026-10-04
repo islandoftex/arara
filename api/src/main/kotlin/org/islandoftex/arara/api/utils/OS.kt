@@ -8,12 +8,12 @@ public object OS {
 
     // it's unlikely that getting the OS name property would throw an
     // exception (but it's possible), so let's make sure it doesn't fail
-        /**
+    /**
      * The full name of the operating system, resolved once
      * from the os.name property.
      */
-private val fullName: String by lazy {
-        System.getProperties().runCatching { getProperty("os.name", "Linux") }
+    private val fullName: String by lazy {
+        runCatching { System.getProperties().getProperty("os.name", "Linux") }
                 .getOrDefault("Linux").lowercase()
     }
 

@@ -61,8 +61,15 @@ public class SafeRunViolationException(msg: String) : AraraException(msg)
  * error occurs.
  */
 public class AraraIOException : AraraException {
+    /**
+     * Constructor that takes the message of the failure.
+     */
     public constructor(msg: String) : super(msg)
 
+    /**
+     * Constructor that takes the message of the failure and the
+     * underlying cause.
+     */
     public constructor(msg: String, exception: Exception) :
             super(msg, exception)
 }

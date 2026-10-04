@@ -207,6 +207,9 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      */
     private val fieldGutterWidth = StyledTheme.fieldGutterWidth
 
+    /**
+     * The layout constants of the presentation.
+     */
     private companion object {
         /**
          * The least space the dotted leader and its separator keep
@@ -321,10 +324,6 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
      */
     private val muted get() = terminal.theme.muted
 
-    /**
-     * Displays the application banner in the terminal: the tinted
-     * logo and the version line that names the run.
-     */
     /**
      * Displays the application banner in the terminal: the tinted
      * logo, then - after the art breathes - the muted line naming

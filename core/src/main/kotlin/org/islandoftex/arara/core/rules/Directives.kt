@@ -19,23 +19,31 @@ object Directives {
      */
     var hooks = DirectiveFetchingHooks()
 
+    /**
+     * The head of a directive line: the identifier and its
+     * optional parameter block.
+     */
     private const val DIRECTIVE_START = """^\s*(\w+)\s*(:\s*(\{.*\})\s*)?"""
+    /**
+     * The optional conditional tail of a directive line.
+     */
     private const val PATTERN = """(\s+(if|while|until|unless)\s+(\S.*))?$"""
 
-    // pattern to match directives against
-        /**
+    /**
      * The pattern a directive line must match.
      */
-private val directivePattern = (DIRECTIVE_START + PATTERN).toRegex()
+    private val directivePattern = (DIRECTIVE_START + PATTERN).toRegex()
 
-    // match the arara part in `% arara: pdflatex`
+    /**
+     * The marker of the arara directive part, looked for within
+     * a line of the file type's pattern.
+     */
     private const val NAME_PATTERN = "arara:\\s"
 
-    // what to expect after a line break in a directive
-        /**
+    /**
      * The pattern a linebreak continuation must match.
      */
-private val linebreakPattern = "^\\s*-->\\s(.*)$".toRegex()
+    private val linebreakPattern = "^\\s*-->\\s(.*)$".toRegex()
 
     /**
      * This function filters the lines of a file to identify the potential

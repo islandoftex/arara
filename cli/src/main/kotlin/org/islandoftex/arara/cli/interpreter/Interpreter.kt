@@ -62,10 +62,21 @@ internal fun runPriorEvaluation(conditional: DirectiveConditional): Boolean {
  */
 @Suppress("TooManyFunctions")
 class Interpreter(
+    /**
+     * The execution options the interpreter consults, among them
+     * the loop cap and the safe mode gate.
+     */
     private val executionOptions: ExecutionOptions,
     currentFile: ProjectFile,
+    /**
+     * The working directory the interpreter resolves rule paths
+     * against.
+     */
     private val workingDirectory: MPPPath
 ) {
+    /**
+     * The logger of the directive interpreter.
+     */
     private val logger = KotlinLogging.logger { }
 
     /**
@@ -336,6 +347,19 @@ class Interpreter(
         }
     }
 
+    /**
+     * Runs the command list of a directive entry: the command of
+     * the active dialect evaluates against the resolved arguments,
+     * every resulting task runs and lands its outcome on the
+     * console, the failed ones quote the tail of their own
+     * output, and the halt policy is enforced after each task.
+     *
+     * @param command The command entry of the rule.
+     * @param conditional The conditional attached to the directive.
+     * @param rule The parsed rule.
+     * @param parameters The resolved rule arguments.
+     * @return The final execution status of the command list.
+     */
     private fun executeCommand(
         command: RuleCommand,
         conditional: DirectiveConditional,

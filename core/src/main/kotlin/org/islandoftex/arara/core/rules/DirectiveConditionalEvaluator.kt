@@ -17,6 +17,10 @@ import org.islandoftex.arara.api.rules.DirectiveConditionalType
  * @author Island of TeX
  */
 abstract class DirectiveConditionalEvaluator(
+    /**
+     * The execution options the conditional evaluation consults,
+     * among them the loop cap and the safe mode gate.
+     */
     private val executionOptions: ExecutionOptions
 ) {
     /**

@@ -31,11 +31,6 @@ import org.junit.jupiter.api.TestInstance
  * are required for the resolution itself.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-/**
- * Verifies the dispatch by file extension: a file with an
- * extension the configuration maps to a rule runs through that
- * rule, and an extension no configuration claims is rejected.
- */
 class ForeignExtensionTest {
     @BeforeAll
     fun installHooks() {

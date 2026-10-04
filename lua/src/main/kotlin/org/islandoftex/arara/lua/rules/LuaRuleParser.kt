@@ -94,6 +94,12 @@ object LuaRuleParser {
     }
 
     @Suppress("ThrowsCount")
+    /**
+     * Extracts the rule from its Lua table: the identifier has to
+     * match the directive that resolved the file, and the name,
+     * the authors, the commands and the arguments convert to
+     * their JVM shapes.
+     */
     private fun extractRule(
         table: LuaTable,
         identifier: String,
@@ -138,12 +144,12 @@ object LuaRuleParser {
         return LuaRule(ruleIdentifier, name, authors, commands, arguments)
     }
 
-        /**
+    /**
      * Extracts a rule command from the Lua table the rule
      * provides, converting the name, the closure and the
      * working directory to their JVM shapes.
      */
-private fun extractCommand(
+    private fun extractCommand(
         command: LuaTable,
         errorHeader: String
     ): LuaRuleCommand = LuaRuleCommand(
@@ -159,6 +165,12 @@ private fun extractCommand(
     )
 
     @Suppress("ThrowsCount")
+    /**
+     * Extracts a rule argument from its Lua table: the identifier
+     * must be present and unique, the flag and the default are
+     * optional closures and values, and the reserved identifiers
+     * are rejected.
+     */
     private fun extractArgument(
         argument: LuaTable,
         errorHeader: String
@@ -199,12 +211,12 @@ private fun extractCommand(
     }
 
     @Suppress("ThrowsCount")
-        /**
+    /**
      * Validates the declared arguments of a rule: the
      * identifiers must be unique, the flags must be non-empty,
      * and the types must be among the supported ones.
      */
-private fun validateArguments(
+    private fun validateArguments(
         arguments: List<LuaRuleArgument>,
         errorHeader: String
     ) {
@@ -234,6 +246,11 @@ private fun validateArguments(
             else -> throw AraraException(typeError)
         }
 
+    /**
+     * Extracts a list of strings from a Lua value: nil yields the
+     * empty list, a table yields its string entries, and any other
+     * shape is an error.
+     */
     private fun stringList(
         value: LuaValue,
         key: String,
@@ -251,6 +268,11 @@ private fun validateArguments(
         )
     }
 
+    /**
+     * Extracts a list of tables from a Lua value: nil yields the
+     * empty list, a table yields its table entries, and any other
+     * shape is an error.
+     */
     private fun tableList(
         value: LuaValue,
         key: String,

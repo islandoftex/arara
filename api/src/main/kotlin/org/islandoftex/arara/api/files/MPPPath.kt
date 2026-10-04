@@ -28,7 +28,18 @@ import org.islandoftex.arara.api.utils.OS
 // on too many functions
 @Suppress("TooManyFunctions")
 public class MPPPath {
+    /**
+     * The path exactly as the caller wrote it: it alone carries the
+     * original spelling, and backs the queries that depend on it -
+     * the absoluteness check and the prefix and resolution
+     * relations.
+     */
     internal val providedPath: Path
+    /**
+     * The absolutized and normalized form of the provided path: it
+     * backs the string representation, the I/O and the equality of
+     * this model.
+     */
     internal val referencePath: Path
 
     /**
@@ -255,8 +266,9 @@ public class MPPPath {
      * this location including all missing parents.
      * Does nothing if a directory exists at the current location.
      *
-     * Fails with an [AraraIOException] if the directory could not be created
-     * or a regular file exists at the location.
+     * Fails with an [AraraIOException] when a regular file exists at
+     * the location; a creation the backend refuses surfaces as the
+     * raw system error of the underlying operation.
      */
     @Throws(AraraIOException::class)
     public fun createDirectories() {
@@ -274,8 +286,9 @@ public class MPPPath {
      * this location including its contents.
      * Does nothing if this directory does not exist at the current location.
      *
-     * Fails with an [AraraIOException] if the directory could not be removed
-     * or a regular file exists at the location.
+     * Fails with an [AraraIOException] when a regular file exists at
+     * the location; a removal the backend refuses surfaces as the
+     * raw system error of the underlying operation.
      */
     @Throws(AraraIOException::class)
     public fun removeDirectory() {
@@ -294,14 +307,14 @@ public class MPPPath {
     // semantics of this model follow links; chains are resolved
     // here, and a chain exceeding the limit counts as unresolvable,
     // matching how such loops surface as errors on the platform
-        /**
+    /**
      * Resolves the file metadata through the JVM bridge,
      * following symlink chains as the backend reads them,
      * or null when the path names no file.
      *
      * @return The metadata of the file, or null.
      */
-private fun resolveMetadataOrNull(): FileMetadata? {
+    private fun resolveMetadataOrNull(): FileMetadata? {
         var path = referencePath
         repeat(SYMLINK_CHAIN_LIMIT) {
             val metadata = PathModelFileSystem.current.metadataOrNull(path)
@@ -315,6 +328,12 @@ private fun resolveMetadataOrNull(): FileMetadata? {
         return null
     }
 
+    /**
+     * Resolves the file metadata through the JVM bridge, failing
+     * with an I/O error when the path names no file.
+     *
+     * @return The metadata of the file.
+     */
     private fun metadata(): FileMetadata =
         resolveMetadataOrNull()
             ?: throw AraraIOException("The file could not be found.")

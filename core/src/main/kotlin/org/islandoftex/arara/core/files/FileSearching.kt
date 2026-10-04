@@ -20,11 +20,10 @@ import org.islandoftex.arara.core.utils.globToRegex
  * @author Island of TeX
  */
 object FileSearching {
-    // get the logger context from a factory
-        /**
+    /**
      * The logger of the file searching.
      */
-private val logger = KotlinLogging.logger { }
+    private val logger = KotlinLogging.logger { }
 
     /**
      * List all files from the provided directory according to the list of
@@ -74,6 +73,15 @@ private val logger = KotlinLogging.logger { }
     // links as the platform walk did; the recursive listing is lazy,
     // so it is materialized inside the block for traversal failures
     // to hit the fallback
+    /**
+     * Lists the regular files of the provided directory, its whole
+     * tree when the recursive flag is set, falling back to an
+     * empty list when the traversal fails.
+     *
+     * @param directory The directory to search.
+     * @param recursive Whether the search follows the whole tree.
+     * @return The regular files the traversal found.
+     */
     private fun searchFiles(
         directory: MPPPath,
         recursive: Boolean

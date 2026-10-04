@@ -6,6 +6,9 @@ import org.islandoftex.arara.api.localization.MPPLocale
 /**
  * Italian localization of the arara messages.
  * Translated by Enrico Gregorio, Carla Maggi and Paulinho van Duck.
+ * The documentation of each member is inherited from the
+ * [AraraMessages] interface, the single source of truth for
+ * what every message says.
  */
 @Suppress("MaxLineLength", "TooManyFunctions")
 object ItalianMessages : AraraMessages {
@@ -66,7 +69,7 @@ object ItalianMessages : AraraMessages {
         "Il comando \"${command}\" ha dato un esito inaspettato, con codice di ritorno non a zero. Guarda l'output per valutare le eventuali azioni da intraprendere."
 
     override val errorInterpreterUserRequestedHalt =
-        "A seguito di una tua richiesta (o di una regola), arara ora interromperà l'esecuzione."
+        "Su richiesta di una regola, il file verrà ora interrotto e le sue direttive rimanenti verranno saltate."
 
     override val errorInterpreterExitRuntimeError =
         "Non sono riuscito a valutare lo stato di uscita di uno dei comandi forniti. Questa parte è un po' complicata perché coinvolge aspetti del linguaggio per le espressioni sottostante. Farò del mio meglio per darti una mano, per quanto posso."

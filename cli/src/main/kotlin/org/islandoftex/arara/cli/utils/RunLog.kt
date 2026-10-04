@@ -20,6 +20,9 @@ import org.islandoftex.arara.core.session.Session
  * @author Island of TeX
  */
 object RunLog {
+    /**
+     * The logger of the run log.
+     */
     private val logger = KotlinLogging.logger { }
 
     /**

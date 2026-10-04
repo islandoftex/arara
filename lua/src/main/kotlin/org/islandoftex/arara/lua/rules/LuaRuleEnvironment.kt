@@ -68,15 +68,28 @@ internal object LuaRuleEnvironment {
         return globals
     }
 
+    /**
+     * Collects the Lua arguments from the provided position on,
+     * converting each to its JVM shape.
+     */
     private fun Varargs.kotlinArgs(from: Int = 1): List<Any?> =
         (from..narg()).map { fromLua(arg(it)) }
 
+    /**
+     * Resolves the truthiness of a Lua value the way the helper
+     * family expects: nil is false, a boolean speaks for itself,
+     * anything else goes through the string verdicts.
+     */
     private fun truthiness(value: LuaValue): Boolean = when {
         value.isnil() -> false
         value.type() == LuaValue.TBOOLEAN -> value.toboolean()
         else -> RuleMethods.isTrue(value.tojstring())
     }
 
+    /**
+     * Reports whether a Lua value counts as empty: nil, an empty
+     * table and an empty string do.
+     */
     private fun isEmptyValue(value: LuaValue): Boolean = when {
         value.isnil() -> true
         value.istable() -> value.length() == 0
@@ -90,6 +103,10 @@ internal object LuaRuleEnvironment {
         "LongMethod", "ComplexMethod",
         "SpreadOperator", "MagicNumber", "ThrowsCount"
     )
+    /**
+     * Binds every rule helper into the Lua environment, under its
+     * historic camelCase spelling and its snake_case alias.
+     */
     private fun bindHelpers(globals: Globals) {
         bindSpelled(
             globals, "throwError"
@@ -359,13 +376,14 @@ internal object LuaRuleEnvironment {
         }
     }
 
-    /**
-     * Implement the `isTrue`/`isFalse` family:
-     * one argument yields a boolean, two to four arguments select between
-     * the yes/no/fallback values (fallback applies to empty input).
-     */
     // the argument positions mirror the documented helper signatures
     @Suppress("MagicNumber")
+    /**
+     * Implements the `isTrue`/`isFalse` family: one argument
+     * yields a boolean, two to four arguments select between the
+     * yes/no/fallback values, with the fallback applying to
+     * empty input.
+     */
     private fun conditionalValue(
         args: Varargs,
         positive: Boolean,

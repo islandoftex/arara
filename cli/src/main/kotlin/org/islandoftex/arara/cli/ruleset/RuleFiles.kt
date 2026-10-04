@@ -17,7 +17,14 @@ import org.islandoftex.arara.lua.rules.LuaRuleParser
  */
 @Suppress("DEPRECATION")
 object RuleFiles {
+    /**
+     * The logger of the rule file resolution.
+     */
     private val logger = KotlinLogging.logger { }
+    /**
+     * Whether the one-time YAML deprecation warning was already
+     * spoken, so a run of mixed rule formats does not repeat it.
+     */
     private var yamlDeprecationShown = false
 
     /**
@@ -80,6 +87,10 @@ object RuleFiles {
         }
     }.normalize()
 
+    /**
+     * Speaks the one-time YAML deprecation warning into the log:
+     * a run of mixed rule formats hears it once, never per rule.
+     */
     private fun warnAboutYamlDeprecation() {
         if (!yamlDeprecationShown) {
             yamlDeprecationShown = true

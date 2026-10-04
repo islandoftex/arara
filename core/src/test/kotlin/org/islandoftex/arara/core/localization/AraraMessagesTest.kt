@@ -11,7 +11,7 @@ import org.islandoftex.arara.api.localization.MPPLocale
  * locale it declares, every message renders a non-blank text, every
  * argument of a parameterized message reaches the rendering of every
  * locale, the success labels are the language's own, and the halt
- * message names the tool in every language. The completeness of the
+ * message names the file in every language. The completeness of the
  * catalogs is not asserted here - the abstract members of the
  * interface make the compiler enforce that a locale without every
  * message cannot build.
@@ -222,12 +222,21 @@ class AraraMessagesTest {
     }
 
     @Test
-    fun `the halt message names the tool in every language`() {
+    fun `the halt message names the file in every language`() {
+        val fileWord = mapOf(
+            MPPLocale("en") to "file",
+            MPPLocale("de") to "Datei",
+            MPPLocale("it") to "file",
+            MPPLocale("pt-BR") to "arquivo",
+            MPPLocale("nl") to "bestand",
+            MPPLocale("en-QN") to "file"
+        )
         catalogs.forEach { catalog ->
             assertTrue(
-                "arara" in catalog.errorInterpreterUserRequestedHalt,
+                fileWord.getValue(catalog.providedLocale) in
+                    catalog.errorInterpreterUserRequestedHalt,
                 "the halt message of ${catalog.providedLocale} " +
-                    "does not name the tool"
+                    "does not name the file"
             )
         }
     }

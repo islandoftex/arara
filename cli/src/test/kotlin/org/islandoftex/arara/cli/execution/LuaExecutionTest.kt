@@ -32,12 +32,6 @@ import org.junit.jupiter.api.TestInstance
  * the Lua implementations.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-/**
- * Verifies the Lua engine end to end through the execution-test
- * fixtures: the Lua rule format, its conditionals, and the
- * session semantics, with the engine selection flipped at the
- * session level.
- */
 class LuaExecutionTest {
     @BeforeAll
     fun setUp() {

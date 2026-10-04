@@ -6,6 +6,9 @@ import org.islandoftex.arara.api.localization.MPPLocale
 /**
  * Brazilian Portuguese localization of the arara messages.
  * Translated by Paulo Cereda.
+ * The documentation of each member is inherited from the
+ * [AraraMessages] interface, the single source of truth for
+ * what every message says.
  */
 @Suppress("MaxLineLength", "TooManyFunctions")
 object BrazilianPortugueseMessages : AraraMessages {
@@ -69,7 +72,7 @@ object BrazilianPortugueseMessages : AraraMessages {
         "O comando \"${command}\" inesperadamente encerrou com um código de saída diferente de zero. Por favor, verifique a saída do comando para avaliar os próximos passos."
 
     override val errorInterpreterUserRequestedHalt =
-        "arara será interrompida neste momento conforme sua requisição (ou de uma regra)."
+        "O arquivo será interrompido agora por requisição de uma regra, e suas diretrizes restantes serão ignoradas."
 
     override val errorInterpreterFlagRuntimeException =
         "Não consegui avaliar a expressão associada à presença de um dos argumentos. Esta parte é complicada, pois envolve aspectos da linguagem de expressão subjacente. Eu farei o possível para te ajudar da melhor forma que puder."

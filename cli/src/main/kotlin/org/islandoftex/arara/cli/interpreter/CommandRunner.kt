@@ -24,6 +24,9 @@ import org.zeroturnaround.exec.InvalidExitValueException
  * @author Island of TeX
  */
 internal object CommandRunner {
+    /**
+     * The logger of the command runner.
+     */
     private val logger = KotlinLogging.logger { }
 
     /**

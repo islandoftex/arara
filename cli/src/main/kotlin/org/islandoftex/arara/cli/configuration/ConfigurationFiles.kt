@@ -25,6 +25,9 @@ import org.islandoftex.arara.lua.configuration.LuaLocalConfiguration
  * @author Island of TeX
  */
 object ConfigurationFiles {
+    /**
+     * The logger of the configuration file handling.
+     */
     private val logger = KotlinLogging.logger { }
 
     /**

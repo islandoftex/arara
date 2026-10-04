@@ -17,11 +17,11 @@ object Session : Session {
     // the session map which holds the execution session;
     // the idea here is to provide wrappers to the map
     // methods, so it could be easily manipulated
-        /**
+    /**
      * The backing store of the session: the key-value pairs
      * the run accumulates.
      */
-private val map = mutableMapOf<String, Any>()
+    private val map = mutableMapOf<String, Any>()
 
     /**
      * arara's user interface configuration.

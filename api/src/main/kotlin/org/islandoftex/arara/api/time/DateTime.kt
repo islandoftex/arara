@@ -34,11 +34,11 @@ public class DateTime {
      */
     public val second: Int
 
-        /**
+    /**
      * The zone the date-time renders in, defaulting to the
      * system zone of the running JVM.
      */
-private val timezone: ZoneId = ZoneId.systemDefault()
+    private val timezone: ZoneId = ZoneId.systemDefault()
 
     /**
      * Constructor that builds the object from each part of a date (year,

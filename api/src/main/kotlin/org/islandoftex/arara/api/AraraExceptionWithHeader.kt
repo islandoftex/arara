@@ -8,6 +8,13 @@ package org.islandoftex.arara.api
  * terminal shows the rule context alongside the message.
  */
 public class AraraExceptionWithHeader : AraraException {
+    /**
+     * Constructor that takes the message of the error.
+     */
     public constructor(message: String) : super(message)
+    /**
+     * Constructor that takes the message of the error and the
+     * underlying cause.
+     */
     public constructor(message: String, exception: Exception) : super(message, exception)
 }

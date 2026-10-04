@@ -58,6 +58,10 @@ import org.islandoftex.arara.lua.rules.LuaConversion
  * @author Island of TeX
  */
 object LuaLocalConfiguration {
+    /**
+     * The configuration keys the Lua format accepts, in their
+     * snake_case spellings; a key outside the set is an error.
+     */
     private val knownKeys = setOf(
         "paths", "file_types", "language", "loops", "verbose", "logging",
         "header", "db_name", "log_name", "preambles", "console",
@@ -121,18 +125,25 @@ object LuaLocalConfiguration {
             )
         }
 
-        /**
+    /**
      * Converts a Lua table into a plain map, recursively
      * flattening nested tables into maps of their own.
      *
      * @param table The Lua table to convert.
      * @return The map representation of the table.
      */
-private fun tableToMap(table: LuaTable): Map<String, Any?> =
+    private fun tableToMap(table: LuaTable): Map<String, Any?> =
         table.keys().associate { key ->
             key.tojstring() to LuaConversion.fromLua(table.get(key))
         }
 
+    /**
+     * Converts the plain map of the Lua configuration into the
+     * model, rejecting every key the format does not accept.
+     *
+     * @param map The map the Lua table converted to.
+     * @return The configuration model.
+     */
     @Throws(AraraException::class)
     private fun fromMap(map: Map<String, Any?>): LocalConfiguration {
         map.keys.minus(knownKeys).takeIf { it.isNotEmpty() }?.let {
@@ -163,6 +174,9 @@ private fun tableToMap(table: LuaTable): Map<String, Any?> =
         )
     }
 
+    /**
+     * Extracts an optional string value, rejecting any other type.
+     */
     private fun string(map: Map<String, Any?>, key: String): String? =
         map[key]?.let {
             it as? String ?: throw AraraException(
@@ -170,6 +184,9 @@ private fun tableToMap(table: LuaTable): Map<String, Any?> =
             )
         }
 
+    /**
+     * Extracts an optional integer value, rejecting any other type.
+     */
     private fun int(map: Map<String, Any?>, key: String): Int? =
         map[key]?.let {
             it as? Int ?: throw AraraException(
@@ -177,6 +194,9 @@ private fun tableToMap(table: LuaTable): Map<String, Any?> =
             )
         }
 
+    /**
+     * Extracts an optional boolean value, rejecting any other type.
+     */
     private fun boolean(map: Map<String, Any?>, key: String): Boolean? =
         map[key]?.let {
             it as? Boolean ?: throw AraraException(
@@ -184,6 +204,10 @@ private fun tableToMap(table: LuaTable): Map<String, Any?> =
             )
         }
 
+    /**
+     * Extracts a list of strings, rejecting any non-string entry
+     * and any other shape.
+     */
     private fun stringList(map: Map<String, Any?>, key: String): List<String> =
         (map[key] ?: emptyList<Any?>()).let { value ->
             (value as? List<*>)?.map { element ->
@@ -195,6 +219,11 @@ private fun tableToMap(table: LuaTable): Map<String, Any?> =
             )
         }
 
+    /**
+     * Extracts a map of string pairs, accepting the empty table -
+     * which the Lua conversion yields as an empty list - and
+     * rejecting every other shape.
+     */
     private fun stringMap(
         map: Map<String, Any?>,
         key: String
@@ -218,6 +247,10 @@ private fun tableToMap(table: LuaTable): Map<String, Any?> =
             )
         }
 
+    /**
+     * Extracts the file type declarations, each a table with an
+     * extension and an optional pattern.
+     */
     @Throws(AraraException::class)
     private fun fileTypes(map: Map<String, Any?>): List<SerialFileType> =
         (map["file_types"] ?: emptyList<Any?>()).let { value ->

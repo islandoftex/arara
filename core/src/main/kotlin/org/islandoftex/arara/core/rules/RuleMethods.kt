@@ -35,6 +35,9 @@ import org.islandoftex.arara.core.ui.TerminalDialogs
  * function values and has no such requirement.
  */
 object RuleMethods {
+    /**
+     * The logger of the helper methods.
+     */
     private val logger = KotlinLogging.logger {}
 
 

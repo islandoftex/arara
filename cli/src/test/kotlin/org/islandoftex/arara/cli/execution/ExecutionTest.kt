@@ -32,12 +32,6 @@ import org.junit.jupiter.api.TestInstance
  * the command line application's wiring once per class.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-/**
- * Verifies the execution pipeline end to end through the
- * execution-test fixtures: the YAML engine scenarios, conditionals,
- * sessions, and the preamble flow, all driven from the same
- * fixtures the smoke suite exercises.
- */
 class ExecutionTest {
     @BeforeAll
     fun setUp() {

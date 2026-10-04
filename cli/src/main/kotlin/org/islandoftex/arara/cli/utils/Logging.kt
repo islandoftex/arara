@@ -28,7 +28,9 @@ object Logging {
      */
     fun setupLogging(loggingOptions: LoggingOptions) {
         if (loggingOptions.enableLogging) {
-            // note: multi-threading has not been checked here
+            // the executor is linear by design, so the thread-local
+            // context values reach every log call of the run; a
+            // parallel executor would have to carry them itself
             ThreadContext.put(
                 "araraLogFile",
                 loggingOptions.logFile.normalize().toString()
@@ -51,8 +53,9 @@ object Logging {
     }
 
     /**
-     * Initializes the logging controller by disabling it. I don't want an odd
-     * behaviour out of the box.
+     * Initializes the logging controller in its silent state, so a
+     * run that never enables logging - and the failures before the
+     * options resolve - produce no log noise at all.
      */
     fun init() {
         setupLogging(org.islandoftex.arara.core.configuration.LoggingOptions())

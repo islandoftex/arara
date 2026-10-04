@@ -6,6 +6,9 @@ import org.islandoftex.arara.api.localization.MPPLocale
 /**
  * Norfolk (en-QN) localization of the arara messages.
  * Translated by Nicola Talbot and Keith Skipper.
+ * The documentation of each member is inherited from the
+ * [AraraMessages] interface, the single source of truth for
+ * what every message says.
  */
 @Suppress("MaxLineLength", "TooManyFunctions")
 object NorfolkMessages : AraraMessages {
@@ -84,7 +87,7 @@ object NorfolkMessages : AraraMessages {
         "Atwin me, the console '${mode}' ent one of the presentations wot's on offer, that it ent. Dunt you git yarself inta a rite ole puckaterry: yew jist picks one of the modes wot's available."
 
     override val errorInterpreterUserRequestedHalt =
-        "arara will stop do you (or yar rule) ask it to."
+        "The file will stop do a rule ask it to, an' the res' of its directives wun't run."
 
     override val errorInterpreterWrongExitClosureReturn =
         "Wuh, ole partner, that 'exit' expression ent givin' me a yis or no answer. Thass allus got to dew that even if there ent nuffin else to dew. Howsomever, dunt you git yarself inta a rite ole puckaterry, dew you jist tricolate the return statement and try agin."
