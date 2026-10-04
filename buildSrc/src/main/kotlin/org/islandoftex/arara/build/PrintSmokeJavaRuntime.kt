@@ -36,6 +36,11 @@ abstract class PrintSmokeJavaRuntime : DefaultTask() {
     abstract val launcherPath: Property<String>
 
     @TaskAction
+    /**
+     * Prints the runtime the smoke properties name for the floor
+     * leg, warning - never failing - when it differs from the
+     * build floor.
+     */
     fun print() {
         val floor = smokeVersion.get()
         if (floor != buildFloor.get()) {

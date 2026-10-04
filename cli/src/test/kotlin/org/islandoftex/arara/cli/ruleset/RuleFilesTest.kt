@@ -3,7 +3,7 @@ package org.islandoftex.arara.cli.ruleset
 
 import java.nio.file.Files
 import kotlin.test.Test
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 import org.islandoftex.arara.api.files.MPPPath
 
 /**
@@ -18,16 +18,23 @@ class RuleFilesTest {
             MPPPath("rules"), "pdflatex", RuleFormat.LUA,
             MPPPath(workingDirectory.toString())
         )
-        assertTrue(
-            relative.toString().endsWith("pdflatex.lua"),
+        // the relative base resolves under the working directory -
+        // the end alone would not tell a resolved path from a
+        // dangling one
+        assertEquals(
+            MPPPath(workingDirectory.toString()).resolve("rules")
+                .resolve("pdflatex.lua").toString(),
+            relative.toString(),
             "relative rule paths resolve under the working directory"
         )
         val absolute = RuleFiles.construct(
             MPPPath(workingDirectory.toString()), "pdflatex", RuleFormat.LUA,
             MPPPath(workingDirectory.toString())
         )
-        assertTrue(
-            absolute.toString().endsWith("pdflatex.lua"),
+        assertEquals(
+            MPPPath(workingDirectory.toString()).resolve("pdflatex.lua")
+                .toString(),
+            absolute.toString(),
             "absolute rule paths resolve on their own"
         )
     }

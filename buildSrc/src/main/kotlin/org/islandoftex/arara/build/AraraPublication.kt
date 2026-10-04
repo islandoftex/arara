@@ -22,6 +22,11 @@ import org.gradle.kotlin.dsl.credentials
  */
 open class AraraPublication : Plugin<Project> {
     @Suppress("LongMethod")
+    /**
+     * Installs the Maven publication for the module: the library
+     * artifact, the sources jar and the license metadata, with
+     * the aggregated HTML documentation as its own distribution.
+     */
     override fun apply(target: Project) {
         target.apply(plugin = "maven-publish")
         // the sources jar completes the conventional library artifact

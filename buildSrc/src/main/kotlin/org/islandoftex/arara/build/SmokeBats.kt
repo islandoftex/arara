@@ -34,6 +34,10 @@ abstract class GenerateSmokeBats : DefaultTask() {
     abstract val outputDirectory: DirectoryProperty
 
     @TaskAction
+    /**
+     * Renders every scenario to its runner file in the output
+     * directory, replacing any previous generation.
+     */
     fun generate() {
         val output = outputDirectory.get().asFile
         output.mkdirs()
@@ -96,10 +100,23 @@ abstract class RunSmokeBats : DefaultTask() {
     @get:OutputDirectory
     abstract val reportsDir: DirectoryProperty
 
+    /**
+     * The bats runner this environment resolved, probed when the
+     * task starts.
+     */
     private lateinit var runner: String
+    /**
+     * The scenarios the leg skipped, so the strict mode can
+     * escalate them by name.
+     */
     private val skips = mutableListOf<String>()
 
     @TaskAction
+    /**
+     * Runs both legs of the scenario matrix on the provisioned
+     * tree: the underlying JVM first, then the floor runtime, and
+     * fails loudly when a leg's runner reports failure.
+     */
     fun run() {
         runner = probeRunner()
         probeGit()

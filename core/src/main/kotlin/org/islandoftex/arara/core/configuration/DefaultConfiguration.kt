@@ -25,13 +25,15 @@ object DefaultConfiguration {
     )
 
     /**
-     * The default file types, derived from [defaultFileTypePatterns].
+     * The default file types, derived from [defaultFileTypePatterns]
+     * - the map's unique keys and the extension-only equality make
+     * every entry distinct by construction.
      */
     val defaultFileTypes: List<FileType> by lazy {
         defaultFileTypePatterns
             .map { (extension, pattern) ->
                 org.islandoftex.arara.core.files.FileType(extension, pattern)
-            }.distinct()
+            }
     }
 
     /**

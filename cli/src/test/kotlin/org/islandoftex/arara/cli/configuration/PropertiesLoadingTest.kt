@@ -13,6 +13,10 @@ import org.junit.jupiter.api.Nested
  * application, using the duck fixture with its sixteen translations.
  */
 class PropertiesLoadingTest {
+    /**
+     * The UTF-8 properties loading across the sixteen
+     * translations of the duck fixture.
+     */
     @Nested
     inner class `UTF8 support for properties files` {
         private val path = Path("src/test/resources/executiontests/properties/duck.properties")

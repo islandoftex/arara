@@ -7,6 +7,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraException
@@ -29,17 +30,17 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
 /**
- * Verifies the interpreter's halt contract: when a halt was requested for
- * the file being processed, [org.islandoftex.arara.cli.interpreter.Interpreter]
- * returns the requested status as the exit code without running any further
- * commands of the rule.
+ * Verifies the interpreter's contract: the halt requests the
+ * file's remaining directives answer - seeded explicitly, and
+ * raised by real rules through the pipeline - the failure
+ * bookkeeping no later success can mask, the commands a failing
+ * task leaves behind, the loop caps, the flag evaluation and its
+ * fallbacks, the exit closures, the dry run behaviour, and the
+ * rule resolution errors with their engine-specific messages.
  *
- * The halt request itself (the `halt()` helper storing the status
- * under the halt key of the file being processed) requires the
- * executor's project state, so it is exercised end-to-end by the
- * pipeline scenarios in
- * [org.islandoftex.arara.cli.execution.ExecutionTest]; this spec seeds the
- * session explicitly to observe the interpreter's decision in isolation.
+ * The tests of engine-independent logic run their scenario
+ * through both engines, so a divergence in what either dialect
+ * feeds the shared machinery fails the gate.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class InterpreterTest {
@@ -349,6 +350,59 @@ class InterpreterTest {
     }
 
     @Test
+    fun `the error halt skips the commands that follow the failure`() {
+        Session.clear()
+        val directory = Files.createTempDirectory("arara-interpreter-rule")
+        val java = ProcessHandle.current().info().command().orElse("java")
+        Files.writeString(
+            directory.resolve("arara-rule-errorhalt.yaml"),
+            """
+            !config
+            identifier: errorhalt
+            name: Error Halt
+            authors:
+            - Island of TeX
+            commands:
+            - name: The failing tool
+              command: >
+                @{ return getCommandWithWorkingDirectory(
+                '${forMvel(directory)}', '${forMvel(java)}', '-wrongflag-quack'); }
+            - name: The tool that never runs
+              command: >
+                @{ return getCommandWithWorkingDirectory(
+                '${forMvel(directory)}', '${forMvel(java)}', '-wrongflag-quack'); }
+            arguments: []
+            """.trimIndent()
+        )
+        // under the error-halt option, the failure of the first
+        // command stops the run before the second one evaluates:
+        // the branch's distinct behavior is that later commands
+        // never run - the log carries exactly one failure
+        val originalOut = System.out
+        return try {
+            val output = ByteArrayOutputStream()
+            System.setOut(PrintStream(output, true))
+            val status = executeRule(directory, "errorhalt", haltOnErrors = true)
+            val rendered = output.toByteArray().toString(Charsets.UTF_8)
+            assertNotEquals(
+                0,
+                status,
+                "the failing command halts the run"
+            )
+            assertTrue(
+                "The failing tool" in rendered,
+                "the failing command landed on the console"
+            )
+            assertFalse(
+                "The tool that never runs" in rendered,
+                "the command after the failure never ran"
+            )
+        } finally {
+            System.setOut(originalOut)
+        }
+    }
+
+    @Test
     fun `continues past failures without halt on errors`() {
         Session.clear()
         val status = executeFailingRule(haltOnErrors = false)
@@ -520,13 +574,104 @@ class InterpreterTest {
         }
     }
 
+    @Test
+    fun `a failing command survives a later command's success in the Lua dialect`() {
+        Session.clear()
+        val original = RuleEngine.current
+        try {
+            RuleEngine.current = RuleEngine.LUA
+            val directory = Files.createTempDirectory("arara-interpreter-rule")
+            // the forward slashes keep the paths sound inside Lua
+            // string literals on every platform the JVM accepts both
+            val java = ProcessHandle.current().info().command()
+                .orElse("java").replace('\\', '/')
+            Files.writeString(
+                directory.resolve("arara-rule-masking.lua"),
+                """
+                return {
+                  identifier = "masking",
+                  name = "Masking",
+                  authors = { "Island of TeX" },
+                  commands = {
+                    {
+                      name = "The failing tool",
+                      command = function(ctx)
+                        return getCommand('$java', '-wrongflag-quack')
+                      end
+                    },
+                    {
+                      name = "The succeeding tool",
+                      command = function(ctx)
+                        return getCommand('$java', '-version')
+                      end
+                    }
+                  },
+                  arguments = {}
+                }
+                """.trimIndent()
+            )
+            assertNotEquals(
+                0,
+                executeThroughPipeline(directory, "masking", haltOnErrors = false),
+                "the failing command keeps the run's verdict without error-halting"
+            )
+        } finally {
+            RuleEngine.current = original
+        }
+    }
+
+    @Test
+    fun `a failing task survives a later task's success in the Lua dialect`() {
+        Session.clear()
+        val original = RuleEngine.current
+        try {
+            RuleEngine.current = RuleEngine.LUA
+            val directory = Files.createTempDirectory("arara-interpreter-rule")
+            val java = ProcessHandle.current().info().command()
+                .orElse("java").replace('\\', '/')
+            Files.writeString(
+                directory.resolve("arara-rule-masking.lua"),
+                """
+                return {
+                  identifier = "masking",
+                  name = "Masking",
+                  authors = { "Island of TeX" },
+                  commands = {
+                    {
+                      name = "The tool pair",
+                      command = function(ctx)
+                        return {
+                          getCommand('$java', '-wrongflag-quack'),
+                          getCommand('$java', '-version')
+                        }
+                      end
+                    }
+                  },
+                  arguments = {}
+                }
+                """.trimIndent()
+            )
+            assertNotEquals(
+                0,
+                executeThroughPipeline(directory, "masking", haltOnErrors = false),
+                "the failing task keeps the command's verdict without error-halting"
+            )
+        } finally {
+            RuleEngine.current = original
+        }
+    }
+
     /**
      * Runs the directive through the whole pipeline - the executor
      * frame the halt helper needs around a fresh interpreter -
      * with the rule directory on the lookup path, returning the
      * exit code the run reports.
      */
-    private fun executeThroughPipeline(directory: Path, identifier: String): Int {
+    private fun executeThroughPipeline(
+        directory: Path,
+        identifier: String,
+        haltOnErrors: Boolean = true
+    ): Int {
         DirectiveProcessing.initializeDirectiveCore()
         val originalHooks = LinearExecutor.hooks
         val originalOptions = LinearExecutor.executionOptions
@@ -534,7 +679,8 @@ class InterpreterTest {
             val filePath = Files.createTempFile("arara-interpreter-file", ".tex")
             Files.writeString(filePath, "% arara: $identifier\n")
             LinearExecutor.executionOptions = ExecutionOptions(
-                rulePaths = setOf(MPPPath(directory.toString()))
+                rulePaths = setOf(MPPPath(directory.toString())),
+                haltOnErrors = haltOnErrors
             )
             LinearExecutor.hooks = ExecutorHooks(
                 processDirectives = { file, list ->

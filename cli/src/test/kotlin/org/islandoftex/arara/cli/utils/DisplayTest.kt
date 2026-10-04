@@ -181,7 +181,7 @@ class DisplayTest {
     }
 
     @Test
-    fun `renders byte sizes at every magnitude`() {
+    fun `renders byte sizes at every decimal magnitude`() {
         assertEquals("999 B", byteSizeToString(999))
         assertEquals("800 B", byteSizeToString(800))
         assertEquals("1.0 kB", byteSizeToString(1000))
@@ -190,6 +190,7 @@ class DisplayTest {
         assertEquals("1.5 kB", byteSizeToString(1500))
         assertEquals("1.0 MB", byteSizeToString(1000000))
         assertEquals("1.5 MB", byteSizeToString(1500000))
+        assertEquals("1.0 GB", byteSizeToString(1000000000))
     }
 
     @Test

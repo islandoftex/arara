@@ -3,7 +3,6 @@ package org.islandoftex.arara.core.utils
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 /**
  * Verifies the shared wrapping primitive: word-boundary wrapping, the
@@ -32,9 +31,9 @@ class WrapTest {
 
     @Test
     fun `never breaks a word`() {
-        assertTrue(
-            "supercalifragilistic".wrap(10).lines()
-                .all { it.length <= 20 },
+        assertEquals(
+            listOf("supercalifragilistic"),
+            "supercalifragilistic".wrap(10).lines(),
             "an over-long word stays whole"
         )
     }

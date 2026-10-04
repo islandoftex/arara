@@ -116,7 +116,7 @@ class JVMMPPPathTest {
     }
 
     /**
-     * The equality, hashing and ordering semantics of the model.
+     * The equality and hashing semantics of the model.
      */
     @Nested
     inner class `value semantics` {

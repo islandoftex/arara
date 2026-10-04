@@ -53,7 +53,9 @@ class LuaLocalConfigurationTest {
                     ["twopdftex"] = "% arara: pdftex\n% arara: pdftex"
                   },
                   default_preamble = "twopdftex",
-                  prepend_preamble_if_directives_given = false
+                  prepend_preamble_if_directives_given = false,
+                  console = "styled",
+                  animations = false
                 }
                 """.trimIndent()
             ),
@@ -77,6 +79,8 @@ class LuaLocalConfigurationTest {
 
         val uiOptions = configuration.toUserInterfaceOptions()
         assertEquals(MPPLocale("de"), uiOptions.locale, "the locale is loaded from the configuration")
+        assertEquals("styled", configuration.console, "the console mode is loaded from the configuration")
+        assertEquals(false, uiOptions.enableAnimations, "the animations key silences the breath")
     }
 
     @Test
