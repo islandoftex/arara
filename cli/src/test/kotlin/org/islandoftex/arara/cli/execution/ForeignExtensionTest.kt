@@ -14,6 +14,7 @@ import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LinearExecutor
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -32,8 +33,13 @@ import org.junit.jupiter.api.TestInstance
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ForeignExtensionTest {
+    private var originalOptions:
+        org.islandoftex.arara.api.configuration.ExecutionOptions =
+        org.islandoftex.arara.core.configuration.ExecutionOptions()
+
     @BeforeAll
     fun installHooks() {
+        originalOptions = LinearExecutor.executionOptions
         DirectiveProcessing.initializeDirectiveCore()
 
         LinearExecutor.hooks = ExecutorHooks(
@@ -44,6 +50,15 @@ class ForeignExtensionTest {
                 DirectiveProcessing.process(file, list)
             }
         )
+    }
+
+    @AfterAll
+    fun removeHooks() {
+        // the scenario wiring belongs to this suite alone: the
+        // hooks and the options the fixture configuration applied
+        // return to the state the rest of the machine inherited
+        LinearExecutor.hooks = ExecutorHooks()
+        LinearExecutor.executionOptions = originalOptions
     }
 
     /**

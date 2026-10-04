@@ -23,7 +23,7 @@ import org.islandoftex.arara.core.session.LinearExecutor
  * loading tables. The extension-based helpers are exercised inside
  * the lifecycle window in which real conditionals evaluate; the
  * interactive dialog surface is deliberately out of scope here, as
- * its fate is under review.
+ * the dialog suites verify it whole.
  */
 class LuaConditionalEnvironmentTest {
     private val globals = LuaConditionalEnvironment.newGlobals()

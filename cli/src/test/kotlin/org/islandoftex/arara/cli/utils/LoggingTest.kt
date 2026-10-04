@@ -18,11 +18,17 @@ class LoggingTest {
             ThreadContext.get("araraLogFile"),
             "no log file path is registered before logging is set up"
         )
-        Logging.setupLogging(defaultEnable)
-        assertEquals(
-            defaultEnable.logFile.normalize().toString(),
-            ThreadContext.get("araraLogFile"),
-            "log file path registered for the logging context"
-        )
+        try {
+            Logging.setupLogging(defaultEnable)
+            assertEquals(
+                defaultEnable.logFile.normalize().toString(),
+                ThreadContext.get("araraLogFile"),
+                "log file path registered for the logging context"
+            )
+        } finally {
+            // the context values would leak into every later test of
+            // the same virtual machine, so the setup is undone
+            Logging.setupLogging(LoggingOptions())
+        }
     }
 }

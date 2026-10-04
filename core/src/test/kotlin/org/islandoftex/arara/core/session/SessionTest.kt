@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
+import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -13,6 +14,13 @@ import org.islandoftex.arara.api.AraraException
  * clearing and the environment variable import.
  */
 class SessionTest {
+    @AfterTest
+    fun leaveTheSessionEmpty() {
+        // the session is a singleton the whole virtual machine
+        // shares, so the suite leaves it as empty as it found it
+        Session.clear()
+    }
+
     @Test
     fun `includes all environment variables`() {
         Session.clear()

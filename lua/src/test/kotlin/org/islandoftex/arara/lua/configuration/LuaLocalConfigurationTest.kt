@@ -173,7 +173,7 @@ class LuaLocalConfigurationTest {
         assertFailsWith<AraraException>(
             "wrongly typed configuration keys must be rejected"
         ) {
-            load("""return { filetypes = { { pattern = "x" } } }""")
+            load("""return { file_types = { { pattern = "x" } } }""")
         }
     }
 
@@ -220,12 +220,12 @@ class LuaLocalConfigurationTest {
         assertFailsWith<AraraException>(
             "the file type list requires tables"
         ) {
-            load("""return { filetypes = 42 }""")
+            load("""return { file_types = 42 }""")
         }
         assertFailsWith<AraraException>(
             "the file type list requires tables"
         ) {
-            load("""return { filetypes = { 42 } }""")
+            load("""return { file_types = { 42 } }""")
         }
     }
 }

@@ -57,5 +57,9 @@ class LuaConversionTest {
         assertTrue(Session.contains("arara-lua-conversion-test"))
         table.get("clear").call()
         assertFalse(Session.contains("arara-lua-conversion-test"))
+        // the clear wiped the shared session of the whole machine;
+        // the environment import brings its bulk back for the
+        // suites that follow
+        Session.updateEnvironmentVariables()
     }
 }

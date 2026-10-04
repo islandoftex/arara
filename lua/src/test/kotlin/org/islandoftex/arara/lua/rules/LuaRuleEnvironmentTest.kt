@@ -24,7 +24,8 @@ import org.islandoftex.arara.core.session.Session
  * branches of the interpreting helpers. The bindings that read the
  * executor state are exercised inside the lifecycle window in which
  * real directives run; the interactive dialog surface is
- * deliberately out of scope here, as its fate is under review.
+ * deliberately out of scope here, as the dialog suites verify it
+ * whole.
  */
 class LuaRuleEnvironmentTest {
     private val globals = LuaRuleEnvironment.newGlobals()

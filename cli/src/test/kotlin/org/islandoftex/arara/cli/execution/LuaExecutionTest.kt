@@ -33,8 +33,13 @@ import org.junit.jupiter.api.TestInstance
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class LuaExecutionTest {
+    private var originalOptions:
+        org.islandoftex.arara.api.configuration.ExecutionOptions =
+        org.islandoftex.arara.core.configuration.ExecutionOptions()
+
     @BeforeAll
     fun setUp() {
+        originalOptions = LinearExecutor.executionOptions
         DirectiveProcessing.initializeDirectiveCore()
 
         LinearExecutor.hooks = ExecutorHooks(
@@ -59,7 +64,13 @@ class LuaExecutionTest {
 
     @AfterAll
     fun tearDown() {
+        // the scenario wiring belongs to this suite alone: the
+        // engine, the hooks and the options the fixture
+        // configurations applied return to the state the rest of
+        // the machine inherited
         RuleEngine.current = RuleEngine.YAML
+        LinearExecutor.hooks = ExecutorHooks()
+        LinearExecutor.executionOptions = originalOptions
     }
 
     /**

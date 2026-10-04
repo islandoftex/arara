@@ -23,7 +23,8 @@ import org.islandoftex.arara.core.session.LinearExecutor
  * searches, the current file reference and class loading. The
  * extension-based helpers are exercised inside the lifecycle window in
  * which real conditionals evaluate; the interactive dialog surface is
- * deliberately out of scope here, as its fate is under review.
+ * deliberately out of scope here, as the dialog suites verify it
+ * whole.
  */
 class ConditionalMethodsTest {
     @Test

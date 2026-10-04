@@ -171,32 +171,38 @@ class InterpreterTest {
                 lineNumbers
             )
         }
-        listOf(
-            Pair(RuleEngine.YAML, ".yaml"),
-            Pair(RuleEngine.LUA, ".lua")
-        ).forEach { (engine, extension) ->
-            RuleEngine.current = engine
-            val exception = assertFailsWith<AraraException>(
-                "an unknown rule must be reported under $engine"
-            ) {
-                Interpreter(
-                    ExecutionOptions(
-                        rulePaths = setOf(MPPPath("../rules").normalize())
-                    ),
-                    ProjectFile(filePath, texFile), filePath.parent
-                ).execute(directive)
+        try {
+            listOf(
+                Pair(RuleEngine.YAML, ".yaml"),
+                Pair(RuleEngine.LUA, ".lua")
+            ).forEach { (engine, extension) ->
+                RuleEngine.current = engine
+                val exception = assertFailsWith<AraraException>(
+                    "an unknown rule must be reported under $engine"
+                ) {
+                    Interpreter(
+                        ExecutionOptions(
+                            rulePaths = setOf(MPPPath("../rules").normalize())
+                        ),
+                        ProjectFile(filePath, texFile), filePath.parent
+                    ).execute(directive)
+                }
+                assertTrue(
+                    exception.message?.contains(extension) == true,
+                    "the message names the $extension file: ${exception.message}"
+                )
+                val other = if (engine == RuleEngine.YAML) ".lua" else ".yaml"
+                assertTrue(
+                    exception.message?.contains(other) == false,
+                    "the message does not name the other format: ${exception.message}"
+                )
             }
-            assertTrue(
-                exception.message?.contains(extension) == true,
-                "the message names the $extension file: ${exception.message}"
-            )
-            val other = if (engine == RuleEngine.YAML) ".lua" else ".yaml"
-            assertTrue(
-                exception.message?.contains(other) == false,
-                "the message does not name the other format: ${exception.message}"
-            )
+        } finally {
+            // a failure mid-loop would otherwise leave the flipped
+            // engine installed for every later suite of the same
+            // virtual machine
+            RuleEngine.current = RuleEngine.YAML
         }
-        RuleEngine.current = RuleEngine.YAML
     }
 
     @Test

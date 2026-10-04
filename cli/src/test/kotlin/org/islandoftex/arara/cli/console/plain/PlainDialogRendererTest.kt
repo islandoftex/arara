@@ -14,7 +14,11 @@ class PlainDialogRendererTest {
     @Test
     fun `valid choices resolve to their number`() {
         listOf("1", "2", " 3 ", "1 ").forEach { raw ->
-            assertEquals(1, PlainDialogRenderer.parseSelection("1", 3, false))
+            assertEquals(
+                raw.trim().toInt(),
+                PlainDialogRenderer.parseSelection(raw, 3, false),
+                "'$raw' resolves to its own number"
+            )
         }
         assertEquals(3, PlainDialogRenderer.parseSelection("3", 3, false))
         assertEquals(2, PlainDialogRenderer.parseSelection(" 2 ", 3, true))

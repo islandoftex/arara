@@ -224,12 +224,16 @@ class FileSearchingTest {
         }
 
         @Test
-        fun `does not find a tex file without its extension in safe mode`() {
+        fun `does not find a tex file without its extension in safe mode`(
+            @TempDir tempDir: Path
+        ) {
+            // the file exists: only the extension completion is
+            // refused, so the miss belongs to the safe mode gate
+            (tempDir / "changes.tex").writeText("quack")
             assertNull(
                 FileSearching.lookupFile(
-                    MPPPath("src/test/resources/executiontests/changes/changes")
-                        .toString(),
-                    MPPPath("."),
+                    (tempDir / "changes").toString(),
+                    tempDir.toMPPPath(),
                     ExecutionOptions().copy(executionMode = ExecutionMode.SAFE_RUN)
                 ),
                 "safe mode does not complete extensions when looking up files"

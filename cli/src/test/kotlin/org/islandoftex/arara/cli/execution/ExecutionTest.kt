@@ -20,6 +20,7 @@ import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -33,8 +34,13 @@ import org.junit.jupiter.api.TestInstance
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ExecutionTest {
+    private var originalOptions:
+        org.islandoftex.arara.api.configuration.ExecutionOptions =
+        org.islandoftex.arara.core.configuration.ExecutionOptions()
+
     @BeforeAll
     fun setUp() {
+        originalOptions = LinearExecutor.executionOptions
         DirectiveProcessing.initializeDirectiveCore()
 
         LinearExecutor.hooks = ExecutorHooks(
@@ -51,6 +57,15 @@ class ExecutionTest {
                 DirectiveProcessing.process(file, list)
             }
         )
+    }
+
+    @AfterAll
+    fun tearDown() {
+        // the scenario wiring belongs to this suite alone: the
+        // hooks and the options the fixture configurations applied
+        // return to the state the rest of the machine inherited
+        LinearExecutor.hooks = ExecutorHooks()
+        LinearExecutor.executionOptions = originalOptions
     }
 
     private fun getPathForTest(name: String): String =
@@ -120,19 +135,25 @@ class ExecutionTest {
     @Test
     fun `honors the truthy existence and falsy contains test`() {
         val file = File(getPathForTest("conditionals") + "/conditionals.quack")
-        file.writeText("Meow")
-        val output = outputForTest("conditionals")
-        file.delete()
-        assertTrue(output.contains("QuackOne"), "the unconditional directive ran")
-        assertTrue(output.contains("QuackFour"), "the always true directive ran")
-        assertTrue(
-            output.contains("QuackTwo"),
-            "the directive with a truthy existence condition ran"
-        )
-        assertFalse(
-            output.contains("QuackThree"),
-            "the directive with a falsy contains condition is skipped"
-        )
+        try {
+            file.writeText("Meow")
+            val output = outputForTest("conditionals")
+            assertTrue(output.contains("QuackOne"), "the unconditional directive ran")
+            assertTrue(output.contains("QuackFour"), "the always true directive ran")
+            assertTrue(
+                output.contains("QuackTwo"),
+                "the directive with a truthy existence condition ran"
+            )
+            assertFalse(
+                output.contains("QuackThree"),
+                "the directive with a falsy contains condition is skipped"
+            )
+        } finally {
+            // the fixture file is a runtime artifact: it must not
+            // linger into the falsy scenario that expects its
+            // absence, whatever way this one ends
+            file.delete()
+        }
     }
 
     @Test

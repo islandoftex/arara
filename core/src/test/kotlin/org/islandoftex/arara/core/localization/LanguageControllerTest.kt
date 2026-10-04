@@ -14,18 +14,23 @@ class LanguageControllerTest {
     fun `instantiates all known locales`() {
         assertEquals(MPPLocale("en"), LanguageController.messages.providedLocale, "the default messages are English")
 
-        listOf(
-            MPPLocale("de"),
-            MPPLocale("it"),
-            MPPLocale("nl"),
-            MPPLocale("en-QN"),
-            MPPLocale("pt-BR")
-        ).forEach {
-            LanguageController.loadMessagesFor(it)
-            assertEquals(it, LanguageController.messages.providedLocale, "the requested locale is installed")
+        try {
+            listOf(
+                MPPLocale("de"),
+                MPPLocale("it"),
+                MPPLocale("nl"),
+                MPPLocale("en-QN"),
+                MPPLocale("pt-BR")
+            ).forEach {
+                LanguageController.loadMessagesFor(it)
+                assertEquals(it, LanguageController.messages.providedLocale, "the requested locale is installed")
+            }
+        } finally {
+            // a failure mid-loop would otherwise leave the last
+            // locale installed for every later suite of the same
+            // virtual machine
+            LanguageController.loadMessagesFor(MPPLocale("en"))
         }
-
-        LanguageController.loadMessagesFor(MPPLocale("en"))
     }
 
     @Test

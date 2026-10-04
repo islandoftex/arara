@@ -16,12 +16,18 @@ class SerialFileTypeTest {
     fun `converts to file types with explicit patterns`() {
         val fileType = SerialFileType("tex", "^\\s*%").toFileType()
         assertEquals("tex", fileType.extension, "the extension passes through")
+        assertEquals("^\\s*%", fileType.pattern, "the explicit pattern passes through")
     }
 
     @Test
     fun `falls back to the default patterns for known extensions`() {
         val fileType = SerialFileType("tex").toFileType()
         assertEquals("tex", fileType.extension, "the extension passes through")
+        assertEquals(
+            DefaultConfiguration.defaultFileTypePatterns["tex"],
+            fileType.pattern,
+            "the known extension falls back to its default pattern"
+        )
     }
 
     @Test
