@@ -54,6 +54,7 @@ import org.islandoftex.arara.cli.utils.RunLog
 import org.islandoftex.arara.cli.utils.StandardStreams
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.LoggingOptions
+import org.islandoftex.arara.core.configuration.PreambleState
 import org.islandoftex.arara.core.configuration.UserInterfaceOptions
 import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.Project
@@ -64,7 +65,6 @@ import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.TerminalDialogs
 import org.islandoftex.arara.lua.LuaInterpreter
-import org.islandoftex.arara.mvel.rules.MvelState
 
 /**
  * arara's command line interface
@@ -423,26 +423,29 @@ class CLI : CliktCommand("arara") {
     /**
      * Prepend potential preamble lines to the given directives.
      *
-     * If there is no preamble given on command-line, returns the [directives],
-     * otherwise checks existence of the preamble and returns the processed
-     * preamble for a file of [fileType] prepended to [directives].
+     * The preamble the command line names wins; without one, the
+     * default preamble of the configuration applies; with
+     * neither, the directives pass through unchanged. A named
+     * preamble the configuration does not define is an error,
+     * and an empty result means the file asked for nothing at
+     * all.
      */
     private fun prependPreambleDirectives(
         fileType: FileType,
         directives: List<Directive>
     ): List<Directive> {
-        val resolvedPreamble = preamble ?: MvelState.defaultPreamble
-        if (resolvedPreamble != null && resolvedPreamble !in MvelState.preambles) {
+        val resolvedPreamble = preamble ?: PreambleState.defaultPreamble
+        if (resolvedPreamble != null && resolvedPreamble !in PreambleState.preambles) {
             throw AraraException(
                 LanguageController.messages
                     .errorParserInvalidPreamble(resolvedPreamble)
             )
         }
         val allDirectives = resolvedPreamble
-            ?.takeIf { MvelState.preambles.containsKey(it) }
+            ?.takeIf { PreambleState.preambles.containsKey(it) }
             ?.let { preambleName ->
                 Directives.extractDirectives(
-                    MvelState.preambles.getValue(preambleName)
+                    PreambleState.preambles.getValue(preambleName)
                         .lines()
                         .filterNot { it.isEmpty() },
                     true,
@@ -524,7 +527,13 @@ class CLI : CliktCommand("arara") {
                     DirectiveProcessing.process(
                         file,
                         list
-                            .takeIf { list.isNotEmpty() && !MvelState.prependPreambleIfDirectivesGiven }
+                            // an explicit command line preamble always
+                            // applies - the policy below governs the
+                            // configuration's standing default only
+                            .takeIf {
+                                list.isNotEmpty() && preamble == null &&
+                                    !PreambleState.prependPreambleIfDirectivesGiven
+                            }
                             ?: prependPreambleDirectives(file.fileType, list)
                     )
                 }

@@ -56,13 +56,15 @@ remove them as part of this effort:
    - `mvel/…/rules/DirectiveConditionalEvaluator.kt`
    - `core/…/rules/ConditionalMethods.kt`, `core/…/rules/RuleMethods.kt` and the conditional registry
      (already moved out of the mvel module)
-   - `mvel/…/utils/MvelState.kt` (conditional methods, preambles)
+   - `mvel/…/rules/MvelState.kt` (the conditional registry; the
+     preamble configuration moved to core ahead of the removal)
    - `api/…/AraraExceptionWithHeader.kt` (already moved out of the
      mvel module)
    - the `org.mvel:mvel2` dependency
-4. **Preambles.** Preambles are plain strings of directives; they are
-   stored on `MvelState` for historic reasons only. They keep working with
-   both engines.
+4. **Preambles.** Preambles are plain strings of directives; their
+   state moved out of the mvel module into the configuration state
+   of core ahead of the removal. They keep working with both
+   engines.
 5. **`RuleMethods`.** The helper methods are engine-agnostic (the Lua
    bridges in `lua/…/rules/LuaRuleEnvironment.kt` call them); they have
    been **moved to `core/…/rules/` ahead of the removal** (see step 2.4),
@@ -126,9 +128,10 @@ Small, reversible release:
     `is SerialRuleCommand ->` branch of `executeCommand` (keep the
     `LuaRuleCommand` branch and the `else` error);
   - delete `resultToList(…)` if nothing else uses it;
-  - remove `parameters.plus(MvelState.ruleMethods)` from the flag
-    evaluation `context` in `parseArguments` — Lua argument processors
-    ignore the method map, it was only consumed by MVEL flags;
+  - the flag evaluation `context` in `parseArguments` already
+    carries only what every engine needs - the MVEL argument
+    processor brings its own registry - so no removal step
+    remains here;
   - drop the imports of `SerialRuleCommand`, `TemplateRuntime` and — if
     the preamble handling is the only remaining consumer — narrow the
     `MvelState` usage accordingly.

@@ -14,9 +14,9 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
+import org.islandoftex.arara.core.configuration.PreambleState
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
-import org.islandoftex.arara.mvel.rules.MvelState
 
 /**
  * Runs the actual CLI entry point to verify behavior that only manifests
@@ -38,16 +38,16 @@ class ProjectConfigurationTest {
     private fun <T> withRestoredState(work: () -> T): T {
         val executionOptions = LinearExecutor.executionOptions
         val userInterfaceOptions = Session.userInterfaceOptions
-        val defaultPreamble = MvelState.defaultPreamble
-        val preambles = MvelState.preambles.toMap()
+        val defaultPreamble = PreambleState.defaultPreamble
+        val preambles = PreambleState.preambles.toMap()
         return try {
             work()
         } finally {
             LinearExecutor.executionOptions = executionOptions
             Session.userInterfaceOptions = userInterfaceOptions
-            MvelState.defaultPreamble = defaultPreamble
-            MvelState.preambles.clear()
-            MvelState.preambles.putAll(preambles)
+            PreambleState.defaultPreamble = defaultPreamble
+            PreambleState.preambles.clear()
+            PreambleState.preambles.putAll(preambles)
         }
     }
 

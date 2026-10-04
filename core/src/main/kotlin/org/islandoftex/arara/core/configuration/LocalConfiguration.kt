@@ -53,8 +53,9 @@ data class LocalConfiguration(
      */
     val defaultPreamble: String? = null,
     /**
-     * Whether the default preamble is skipped for files that carry
-     * their own directives.
+     * Whether the default preamble is applied to all files, the
+     * historical behaviour, or only to the files that carry no
+     * directives of their own.
      */
     val prependPreambleIfDirectivesGiven: Boolean = true,
     // a script-based configuration computes its paths with the values

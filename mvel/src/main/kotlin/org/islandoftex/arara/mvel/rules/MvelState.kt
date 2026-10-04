@@ -5,7 +5,11 @@ import org.islandoftex.arara.core.rules.ConditionalMethods
 import org.islandoftex.arara.core.rules.RuleMethods
 
 /**
- * Implements some auxiliary methods for runtime evaluation.
+ * The helper registries of the MVEL dialect: the reflective
+ * method pointers the template evaluation interpolates against.
+ * MVEL evaluates strings, so its helpers arrive as a pre-wired
+ * map; the Lua dialect binds the very same helpers directly as
+ * functions and keeps no registry of its own.
  *
  * @author Island of TeX
  */
@@ -84,24 +88,4 @@ object MvelState {
      */
     val directiveMethods: Map<String, Any>
         get() = conditionalMethods
-
-    /**
-     * Save the available preambles from the configuration file.
-     */
-    val preambles: MutableMap<String, String> = mutableMapOf()
-
-    /**
-     * Specify the default preamble to pick if there is neither a preamble
-     * nor directives specified.
-     */
-    var defaultPreamble: String? = null
-
-    /**
-     * Whether to prepend preamble directives even if there are directives
-     * in the document. Useful for enabling preambles only for documents
-     * without preambles.
-     *
-     * Set to `true` for reasons of backward compatibility.
-     */
-    var prependPreambleIfDirectivesGiven: Boolean = true
 }

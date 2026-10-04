@@ -391,6 +391,14 @@ on.
 
 ## Fixed
 
+* An explicit preamble request on the command line always applies:
+  the `-p`/`--preamble` option was silently ignored for files that
+  carry directives of their own when the configuration restricted
+  the default preamble to directive-less files - and a mistyped
+  preamble name was swallowed with it. The configuration key
+  governs the standing default only; the command line names the
+  preamble this run asks for, and an unknown name is an error
+  again.
 * The `halt` helper of the rule vocabulary ends the file it is
   called in: the remaining directives of the file being processed
   are skipped and the requested status becomes the file's own

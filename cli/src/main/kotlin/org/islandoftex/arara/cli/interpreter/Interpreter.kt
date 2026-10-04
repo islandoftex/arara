@@ -544,7 +544,7 @@ class Interpreter(
         val context = mapOf(
             "parameters" to directive.parameters,
             "reference" to directive.parameters.getValue("reference")
-        ).plus(MvelState.ruleMethods)
+        )
 
         rule.arguments.forEach { argument ->
             resolvedArguments[argument.identifier] = processArgument(

@@ -63,13 +63,19 @@ private val default: String? = null
     @Suppress("TooGenericExceptionCaught")
     override val processor: (Any?, Map<String, Any>) -> List<String> = { input, context ->
         try {
-            val resolvedContext = context.plus(
-                "parameters" to (
-                    context
-                        .getValue("parameters") as Map<*, *>
-                    )
-                    .plus(identifier to input!!)
-            )
+            val resolvedContext = context
+                .plus(
+                    "parameters" to (
+                        context
+                            .getValue("parameters") as Map<*, *>
+                        )
+                        .plus(identifier to input!!)
+                )
+                // the MVEL flag expressions call the rule helpers, so
+                // the registry joins the context here: the shared call
+                // site passes only what every engine needs, and each
+                // engine brings its own machinery
+                .plus(MvelState.ruleMethods)
             flag?.let { fn ->
                 when (val output = TemplateRuntime.eval(fn, resolvedContext)) {
                     is String -> listOf(output)
