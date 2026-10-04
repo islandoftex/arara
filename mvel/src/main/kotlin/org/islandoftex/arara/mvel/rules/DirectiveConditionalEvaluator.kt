@@ -11,7 +11,8 @@ import org.islandoftex.arara.mvel.rules.MvelState
 import org.mvel2.templates.TemplateRuntime
 
 /**
- * Implements an evaluator for MVEL rule conditionals.
+ * Implements the evaluator for the MVEL dialect of directive
+ * conditionals.
  *
  * @author Island of TeX
  */
@@ -19,8 +20,9 @@ class DirectiveConditionalEvaluator(executionOptions: ExecutionOptions) :
     DirectiveConditionalEvaluator(executionOptions) {
 
     /**
-     * Only run the evaluation of the conditional including a check whether
-     * the result needs to be inverted.
+     * Run the evaluation of the conditional, inverting the result
+     * for the negated types.
+     *
      * @param conditional The conditional.
      * @return The result of the evaluation.
      */

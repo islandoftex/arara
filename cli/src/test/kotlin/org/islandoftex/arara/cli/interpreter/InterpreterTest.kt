@@ -483,6 +483,43 @@ class InterpreterTest {
         }
     }
 
+    @Test
+    fun `the Lua rule commands reach the conditional family`() {
+        Session.clear()
+        val original = RuleEngine.current
+        try {
+            RuleEngine.current = RuleEngine.LUA
+            val directory = Files.createTempDirectory("arara-interpreter-rule")
+            Files.writeString(
+                directory.resolve("arara-rule-conditionalreach.lua"),
+                """
+                return {
+                  identifier = "conditionalreach",
+                  name = "Conditional Reach",
+                  authors = { "Island of TeX" },
+                  commands = {
+                    {
+                      name = "The conditional helper",
+                      command = function(ctx)
+                        local file = toFile('quack.txt')
+                        return file ~= nil
+                      end
+                    }
+                  },
+                  arguments = {}
+                }
+                """.trimIndent()
+            )
+            assertEquals(
+                0,
+                executeThroughPipeline(directory, "conditionalreach"),
+                "the rule commands resolve the conditional helper family"
+            )
+        } finally {
+            RuleEngine.current = original
+        }
+    }
+
     /**
      * Runs the directive through the whole pipeline - the executor
      * frame the halt helper needs around a fresh interpreter -

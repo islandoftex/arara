@@ -20,7 +20,7 @@ import org.islandoftex.arara.api.rules.DirectiveConditionalType
 abstract class DirectiveConditionalEvaluator(
     /**
      * The execution options the conditional evaluation consults,
-     * among them the loop cap and the safe mode gate.
+     * among them the loop cap and the dry run mode.
      */
     private val executionOptions: ExecutionOptions
 ) {

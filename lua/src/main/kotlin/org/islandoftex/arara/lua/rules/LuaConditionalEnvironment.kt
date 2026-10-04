@@ -54,6 +54,18 @@ internal object LuaConditionalEnvironment {
     }
 
     /**
+     * Binds the conditional helper family into the provided
+     * globals, under both spellings. The rule environment of the
+     * Lua dialect reaches through the same binder, so one engine
+     * speaks one vocabulary in both positions - the reach the
+     * deprecated dialect's merged registry always gave its
+     * command expressions.
+     */
+    internal fun bindConditionalHelpers(globals: Globals) {
+        bindHelpers(globals)
+    }
+
+    /**
      * Collects the Lua arguments from the provided position on,
      * converting each to its JVM shape.
      */

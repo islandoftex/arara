@@ -65,6 +65,15 @@ class LuaRuleEnvironmentArgumentTest {
                 LuaValue.valueOf(false)
             )
         }
+        assertBadArgument("writeToFile", 2, "string or list") {
+            val table = LuaValue.tableOf()
+            table.set("key", LuaValue.valueOf("value"))
+            binding("writeToFile").call(
+                LuaValue.valueOf("arara-map-content-test.txt"),
+                table,
+                LuaValue.valueOf(false)
+            )
+        }
     }
 
     @Test

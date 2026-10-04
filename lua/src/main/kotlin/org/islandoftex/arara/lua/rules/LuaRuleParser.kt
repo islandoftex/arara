@@ -82,12 +82,17 @@ object LuaRuleParser {
             runCatching {
                 globals.load(file.readText(), file.fileName).call()
             }.getOrElse {
+                // the localized generic parse error names the class of
+                // the failure, the way the deprecated dialect's parser
+                // does; the details ride the cause chain
                 throw AraraException(
-                    errorHeader + "The Lua rule could not be evaluated.",
+                    errorHeader + LanguageController
+                        .messages.errorParseRuleGenericError,
                     it as? Exception ?: AraraException(it.toString())
                 )
             } as? LuaTable ?: throw AraraException(
-                errorHeader + "A Lua rule has to return a table."
+                errorHeader + LanguageController
+                    .messages.errorParseRuleGenericError
             )
         }
         return extractRule(table, identifier, errorHeader)

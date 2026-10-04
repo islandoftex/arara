@@ -6,7 +6,6 @@ import io.github.taoguan.luaj.LuaError
 import io.github.taoguan.luaj.LuaValue
 import io.github.taoguan.luaj.Varargs
 import io.github.taoguan.luaj.lib.jse.JsePlatform
-import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.AraraExceptionWithHeader
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.rules.RuleMethods
@@ -26,15 +25,24 @@ import org.islandoftex.arara.lua.rules.LuaConversion.toLua
  * The environment exposes the core helper methods the MVEL registry
  * also binds, plus additions of its own: the path operations as
  * direct calls, every binding under its snake_case alias, and a
- * few Lua conveniences (`contains`, `keys`, `join`). The
- * vocabularies differ at the edges - the deprecated dialect alone
- * carries `checkClass` and `getOrNull` - and the completeness test
- * walks only within each environment, so the drift is deliberate
- * and documented here.
+ * few Lua conveniences (`contains`, `keys`, `join`). The rule
+ * commands additionally reach the conditional family through the
+ * shared binder, matching the merged registry of the deprecated
+ * dialect - so a rule migrated between the dialects keeps its
+ * reach. The vocabularies still differ at the edges - the
+ * deprecated dialect alone carries `checkClass` and `getOrNull` -
+ * and the completeness test walks only within each environment,
+ * so the drift is deliberate and documented here.
  */
 internal object LuaRuleEnvironment {
     /**
      * The Lua prelude with pure-Lua helpers available to all rules.
+     *
+     * The type checks answer by Lua's own `type` alone: a table is
+     * a table, and Lua carries no sequence-or-map distinction, so
+     * `isList` and `isMap` agree on every input - the deprecated
+     * dialect's checks read the JVM classes and can tell them
+     * apart.
      */
     private const val PRELUDE = """
         function contains(list, value)
@@ -66,9 +74,15 @@ internal object LuaRuleEnvironment {
 
     /**
      * Create a fresh global environment for one rule file.
+     *
+     * The rule commands see the conditional family as well: the
+     * deprecated dialect's registry merges both maps into one, so
+     * a rule migrated between the dialects expects the same
+     * reach in its command expressions.
      */
     fun newGlobals(): Globals {
         val globals = JsePlatform.standardGlobals()
+        LuaConditionalEnvironment.bindConditionalHelpers(globals)
         bindHelpers(globals)
         globals.load(PRELUDE, "arara-prelude").call()
         return globals
@@ -313,11 +327,15 @@ internal object LuaRuleEnvironment {
             globals, "writeToFile"
         ) { name, args ->
             val path = args.arg(1).stringArgument(name, 1)
-            // nil content is not a value a rule can write: the typed
-            // boundary rejects it instead of inventing the literal
-            // text a plain coercion would produce
+            // nil content is not a value a rule can write, and neither
+            // is a map-shaped table: the typed boundary rejects both
+            // instead of inventing the text a plain coercion would
+            // produce
             val content = fromLua(args.arg(2))
                 ?: throw badArgument(name, 2, "string or list", args.arg(2))
+            if (content is Map<*, *>) {
+                throw badArgument(name, 2, "string or list", args.arg(2))
+            }
             val append = args.arg(3).booleanArgument(name, 3)
             val result = if (content is List<*>) {
                 RuleMethods.writeToFile(

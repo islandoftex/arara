@@ -32,11 +32,14 @@ import org.islandoftex.arara.mvel.rules.SerialRuleCommand
 import org.mvel2.templates.TemplateRuntime
 
 /**
- * Checks if the current conditional has a prior evaluation.
+ * Decides whether the conditional evaluates once before the
+ * command list runs: the looping and branching types do in a
+ * normal run, so the outcome gates the commands without a task
+ * landing first. A dry run never evaluates ahead - the
+ * simulation walks every directive unconditionally.
  *
  * @param conditional The current conditional object.
- * @return A boolean value indicating if the current conditional has a prior
- * evaluation.
+ * @return Whether the conditional deserves a prior evaluation.
  */
 internal fun runPriorEvaluation(conditional: DirectiveConditional): Boolean {
     return if (LinearExecutor.executionOptions.executionMode == ExecutionMode.DRY_RUN) {
@@ -51,12 +54,11 @@ internal fun runPriorEvaluation(conditional: DirectiveConditional): Boolean {
     }
 }
 
-// the interpreter gained the conditional dispatch policy alongside its
-// evaluation flow; the function count mirrors the directive surface it
-// owns rather than accumulated responsibilities
-
 /**
- * Interprets the list of directives.
+ * Interprets one directive: resolves the rule it names, parses
+ * the rule file, validates the arguments and runs the command
+ * list under the halt policy, driven once per directive by the
+ * directive model that constructs it.
  *
  * @author Island of TeX
  */
@@ -64,13 +66,12 @@ internal fun runPriorEvaluation(conditional: DirectiveConditional): Boolean {
 class Interpreter(
     /**
      * The execution options the interpreter consults, among them
-     * the loop cap and the safe mode gate.
+     * the loop cap, the dry run mode and the rule paths.
      */
     private val executionOptions: ExecutionOptions,
     /**
      * The file whose directive the interpreter executes: the halt
-     * key of the file's own requests and the reference the rule
-     * resolution names hang on it.
+     * key of the file's own requests hangs on it.
      */
     currentFile: ProjectFile,
     /**

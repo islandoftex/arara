@@ -391,6 +391,20 @@ on.
 
 ## Fixed
 
+* The rule commands of the Lua dialect reach the conditional
+  helper family: the file existence and change checks, the file
+  reference and the class loading helpers resolve inside command
+  expressions, under both spellings, the way they always did in
+  the deprecated dialect's merged registry - so a rule migrated
+  between the formats keeps its reach, and the pin runs the
+  resolution through the real pipeline.
+* A map-shaped table is not file content: the file writing helper
+  of the Lua dialect rejects it as a bad argument alongside nil,
+  instead of writing Java's rendering of the pairs to the file.
+* A Lua rule file that fails to load or returns no table reports
+  the localized parse error the deprecated dialect's parser has
+  always spoken, instead of an English sentence under its
+  localized header.
 * A rule-requested halt reports the status it asked for as the
   process exit code: the run's own code reaches the terminal
   unchanged, where every nonzero ending was flattened to the
