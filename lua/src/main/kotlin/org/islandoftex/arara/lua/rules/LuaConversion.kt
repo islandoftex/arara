@@ -151,6 +151,23 @@ internal object LuaConversion {
             ?: throw badArgument(helper, index, "boolean", this)
 
     /**
+     * Extract the value as a path: a handle from the path helpers
+     * (`to_file`, `current_file`) or a real Lua string, read as a
+     * path. The runtime dispatch is the doctrine's overloading —
+     * the same name answers both argument shapes, the way Lua's own
+     * library functions do. The conditional family's
+     * file-and-extension dispatch stays its own: there a string
+     * means an extension, here a string means a path.
+     */
+    fun LuaValue.pathArgument(helper: String, index: Int): MPPPath =
+        when {
+            isuserdata() -> touserdata() as? MPPPath
+                ?: throw badArgument(helper, index, "path", this)
+            this is LuaString -> MPPPath(tojstring())
+            else -> throw badArgument(helper, index, "path", this)
+        }
+
+    /**
      * Extract the value at the given position as a Lua string,
      * rejecting other types.
      */

@@ -53,7 +53,7 @@ class LuaRuleEnvironmentArgumentTest {
 
     @Test
     fun `rejects nil where values are expected`() {
-        assertBadArgument("getCommandWithWorkingDirectory", 1, "string") {
+        assertBadArgument("getCommandWithWorkingDirectory", 1, "path") {
             binding("getCommandWithWorkingDirectory").call(
                 LuaValue.NIL, LuaValue.valueOf("pdflatex")
             )
@@ -71,6 +71,17 @@ class LuaRuleEnvironmentArgumentTest {
             binding("writeToFile").call(
                 LuaValue.valueOf("arara-map-content-test.txt"),
                 table,
+                LuaValue.valueOf(false)
+            )
+        }
+    }
+
+    @Test
+    fun `rejects numbers where paths are expected`() {
+        assertBadArgument("writeToFile", 1, "path") {
+            binding("writeToFile").call(
+                LuaValue.valueOf(123),
+                LuaValue.valueOf("content"),
                 LuaValue.valueOf(false)
             )
         }

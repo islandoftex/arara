@@ -318,7 +318,22 @@ as the runnable jar).
   raise Lua-style `bad argument #<n> to '<helper>'` errors — Lua's
   implicit coercions apply to operators, not to arara's library
   functions (convert with `tostring`/`tonumber`; interpolation and flag
-  results still stringify by design). Log lines are always English,
+  results still stringify by design). The Lua helpers follow a
+  doctrine: they act, or return Lua values — booleans, strings,
+  tables — and imperative work is a free function
+  (`create_directories`), never a method on an object; JVM objects
+  cross the boundary only as opaque handles that other helpers
+  accept (`to_file` and `current_file` yield a path handle,
+  `get_command` a command handle that
+  `unsafely_execute_system_command` consumes), and every
+  path-taking helper answers both a string and a handle;
+  overloading is runtime argument-type dispatch —
+  `exists('log')` reads the string as an extension of the current
+  file, `exists(to_file('log.txt'))` as the literal file — the
+  same device Lua's own library functions use. The original
+  reference yields the path string in rule expressions (the shape
+  the shipped clean, copy and move rules compare) and the path
+  handle in conditionals; both faces are design. Log lines are always English,
   hardcoded at their sites — the log file is a shared diagnostic
   artifact, so it reads the same in every language; the console stays
   localized. Exception messages are the one accepted deviation: they

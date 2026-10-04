@@ -30,7 +30,15 @@ import org.islandoftex.arara.lua.rules.LuaConversion.stringArgument
  * Where the MVEL helper set offers overloads for plain extensions and
  * file references, the Lua bindings accept either a string (interpreted
  * as the extension, mirroring the MVEL string overload) or a file
- * reference value obtained from `toFile` or `currentFile`.
+ * reference value obtained from `toFile` or `currentFile` - the
+ * doctrine's runtime argument-type dispatch, the same device Lua's own
+ * library functions use. The string means an extension here; the
+ * path-taking helpers of the rule world read their strings as paths.
+ *
+ * The original reference yields the path handle in this context - the
+ * token the file-check family reads as a literal file - where the rule
+ * expressions yield the path string for composition; both faces are
+ * design, and the rule environment's documentation names its witness.
  *
  * The helper boundary is typed: arguments must match the declared type
  * and mismatches raise Lua-style bad argument errors. Lua's implicit

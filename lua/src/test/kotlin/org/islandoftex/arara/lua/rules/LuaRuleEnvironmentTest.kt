@@ -153,6 +153,34 @@ class LuaRuleEnvironmentTest {
     }
 
     @Test
+    fun `the path helpers accept the handle`() {
+        val directory = Files.createTempDirectory("arara-lua-handles")
+        val file = directory.resolve("handled.txt")
+        // the handle from the path helper feeds the whole family: the
+        // doctrine's token round-trips through the writers, the
+        // readers and the name extractors alike
+        val handle = call("toFile", LuaValue.valueOf(file.toString()))
+        assertTrue(
+            call(
+                "writeToFile", handle,
+                LuaValue.valueOf("handled"), LuaValue.FALSE
+            ).toboolean()
+        )
+        val readBack = call("readFromFile", handle)
+        assertEquals(1, readBack.length())
+        assertEquals("handled", readBack.get(1).tojstring())
+        assertEquals(
+            "handled",
+            call("getBasename", handle).tojstring()
+        )
+        assertEquals(
+            "txt",
+            call("getFiletype", handle).tojstring(),
+            "the file type extracts from the handle"
+        )
+    }
+
+    @Test
     fun `binds the file listings`() {
         val tree = Files.createTempDirectory("arara-lua-listing")
         Files.writeString(tree.resolve("a.tex"), "a")

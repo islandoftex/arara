@@ -391,6 +391,16 @@ on.
 
 ## Fixed
 
+* The path helpers of the Lua dialect accept the handle: every
+  helper that takes a path - the file writers and readers, the
+  name and type extractors, the command builders, the directory
+  listings and the directory checks - answers both a string and
+  a path handle, mirroring the overloads of the deprecated
+  dialect, so a handle from `to_file` or `current_file`
+  round-trips through the whole vocabulary instead of ending at
+  the file-check family. The typed boundary keeps its shape:
+  numbers and nil report the same bad argument errors as before,
+  now naming the path type.
 * Three errors a user can trigger now speak the session's
   language: an invalid file type pattern in a configuration, a
   project specification naming a dependency no project carries,

@@ -7,13 +7,13 @@ import io.github.taoguan.luaj.LuaValue
 import io.github.taoguan.luaj.Varargs
 import io.github.taoguan.luaj.lib.jse.JsePlatform
 import org.islandoftex.arara.api.AraraExceptionWithHeader
-import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.rules.RuleMethods
 import org.islandoftex.arara.lua.rules.LuaConversion.badArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.bindSpelled
 import org.islandoftex.arara.lua.rules.LuaConversion.booleanArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.fromLua
 import org.islandoftex.arara.lua.rules.LuaConversion.numberArgument
+import org.islandoftex.arara.lua.rules.LuaConversion.pathArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.sessionTable
 import org.islandoftex.arara.lua.rules.LuaConversion.stringArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.stringListArgument
@@ -22,17 +22,30 @@ import org.islandoftex.arara.lua.rules.LuaConversion.toLua
 /**
  * Set up the global environment rule scripts are evaluated in.
  *
- * The environment exposes the core helper methods the MVEL registry
- * also binds, plus additions of its own: the path operations as
- * direct calls, every binding under its snake_case alias, and a
- * few Lua conveniences (`contains`, `keys`, `join`). The rule
- * commands additionally reach the conditional family through the
+ * The helper vocabulary follows the Lua doctrine: helpers act, or
+ * return Lua values - booleans, strings, tables - and imperative
+ * work is a free function, never a method on an object; JVM
+ * objects cross the boundary only as opaque handles that other
+ * helpers accept, and every path-taking helper answers both a
+ * string and a handle; overloading is runtime argument-type
+ * dispatch, the same device Lua's own library functions use.
+ *
+ * The conditional family reaches the rule commands through the
  * shared binder, matching the merged registry of the deprecated
- * dialect - so a rule migrated between the dialects keeps its
+ * dialect, so a rule migrated between the dialects keeps its
  * reach. The vocabularies still differ at the edges - the
  * deprecated dialect alone carries `checkClass` and `getOrNull` -
  * and the completeness test walks only within each environment,
  * so the drift is deliberate and documented here.
+ *
+ * The two contexts speak their own native types for the original
+ * reference: rule expressions yield the path string - a Lua value
+ * for composition and comparison, the shape the shipped clean,
+ * copy and move rules compare against the reference table's
+ * string field - while conditionals yield the path handle, the
+ * token the file-check family reads as a literal file rather
+ * than an extension. Both faces are design; the reference table
+ * itself (`file_name`, `path`, `parent`) is Lua-shaped data.
  */
 internal object LuaRuleEnvironment {
     /**
@@ -150,7 +163,7 @@ internal object LuaRuleEnvironment {
         ) { name, args ->
             LuaValue.userdataOf(
                 RuleMethods.getCommandWithWorkingDirectory(
-                    args.arg(1).stringArgument(name, 1),
+                    args.arg(1).pathArgument(name, 1),
                     *args.kotlinArgs(from = 2).toTypedArray()
                 )
             )
@@ -194,7 +207,7 @@ internal object LuaRuleEnvironment {
         ) { name, args ->
             LuaValue.valueOf(
                 RuleMethods.getBasename(
-                    args.arg(1).stringArgument(name, 1)
+                    args.arg(1).pathArgument(name, 1)
                 )
             )
         }
@@ -203,7 +216,7 @@ internal object LuaRuleEnvironment {
         ) { name, args ->
             LuaValue.valueOf(
                 RuleMethods.getFiletype(
-                    args.arg(1).stringArgument(name, 1)
+                    args.arg(1).pathArgument(name, 1)
                 )
             )
         }
@@ -306,7 +319,7 @@ internal object LuaRuleEnvironment {
         ) { name, args ->
             toLua(
                 RuleMethods.listFilesByExtensions(
-                    args.arg(1).stringArgument(name, 1),
+                    args.arg(1).pathArgument(name, 1),
                     args.arg(2).stringListArgument(name, 2),
                     args.arg(3).booleanArgument(name, 3)
                 ).map { it.toString() }
@@ -317,7 +330,7 @@ internal object LuaRuleEnvironment {
         ) { name, args ->
             toLua(
                 RuleMethods.listFilesByPatterns(
-                    args.arg(1).stringArgument(name, 1),
+                    args.arg(1).pathArgument(name, 1),
                     args.arg(2).stringListArgument(name, 2),
                     args.arg(3).booleanArgument(name, 3)
                 ).map { it.toString() }
@@ -326,7 +339,7 @@ internal object LuaRuleEnvironment {
         bindSpelled(
             globals, "writeToFile"
         ) { name, args ->
-            val path = args.arg(1).stringArgument(name, 1)
+            val path = args.arg(1).pathArgument(name, 1)
             // nil content is not a value a rule can write, and neither
             // is a map-shaped table: the typed boundary rejects both
             // instead of inventing the text a plain coercion would
@@ -357,7 +370,7 @@ internal object LuaRuleEnvironment {
         ) { name, args ->
             toLua(
                 RuleMethods.readFromFile(
-                    args.arg(1).stringArgument(name, 1)
+                    args.arg(1).pathArgument(name, 1)
                 )
             )
         }
@@ -366,9 +379,7 @@ internal object LuaRuleEnvironment {
         ) { name, args ->
             LuaValue.valueOf(
                 RuleMethods.isSubdirectory(
-                    MPPPath(
-                        args.arg(1).stringArgument(name, 1)
-                    )
+                    args.arg(1).pathArgument(name, 1)
                 )
             )
         }
@@ -386,7 +397,7 @@ internal object LuaRuleEnvironment {
             globals, "normalizePath"
         ) { name, args ->
             LuaValue.valueOf(
-                MPPPath(args.arg(1).stringArgument(name, 1))
+                args.arg(1).pathArgument(name, 1)
                     .normalize()
                     .toString()
             )
@@ -394,14 +405,14 @@ internal object LuaRuleEnvironment {
         bindSpelled(
             globals, "createDirectories"
         ) { name, args ->
-            MPPPath(args.arg(1).stringArgument(name, 1))
+            args.arg(1).pathArgument(name, 1)
                 .createDirectories()
             LuaValue.TRUE
         }
         bindSpelled(
             globals, "removeDirectory"
         ) { name, args ->
-            MPPPath(args.arg(1).stringArgument(name, 1))
+            args.arg(1).pathArgument(name, 1)
                 .removeDirectory()
             LuaValue.TRUE
         }
