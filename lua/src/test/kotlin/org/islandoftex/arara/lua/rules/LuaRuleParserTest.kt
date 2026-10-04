@@ -8,6 +8,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.AraraExceptionWithHeader
 import org.islandoftex.arara.api.files.MPPPath
 
 /**
@@ -349,6 +350,10 @@ class LuaRuleParserTest {
             exception.message
                 ?.contains("I was expecting a list of options.") == true,
             "the author text stays the primary message: ${exception.message}"
+        )
+        assertTrue(
+            exception is AraraExceptionWithHeader,
+            "the author error carries the rule header the interpreter prefixes"
         )
     }
 

@@ -25,7 +25,8 @@ import org.islandoftex.arara.core.ui.TerminalDialogs
  * Implements the helper methods available to rule commands and flags in
  * both dialects, such as command building, boolean checks and file
  * operations. The MVEL registry and the Lua rule environment bind the
- * very same helpers.
+ * very same core helpers; the vocabularies differ only at the edges,
+ * where each dialect keeps additions of its own.
  *
  * The MVEL registry binds these helpers as reflective method pointers
  * and invokes them without an instance, so every public member needs to

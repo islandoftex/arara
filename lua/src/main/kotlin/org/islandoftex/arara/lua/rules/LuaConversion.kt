@@ -354,11 +354,11 @@ internal object LuaConversion {
 
     /**
      * Run [block] converting Lua errors raised during the evaluation
-     * into arara exceptions, mirroring the runtime error wrapping of
-     * the MVEL dialect: arara-generated helper errors (e.g. a badly
-     * typed helper argument) and plain Lua errors surface behind the
-     * provided localized [message], while author-authored `throwError`
-     * exceptions keep flowing raw.
+     * into arara exceptions: plain Lua errors and typed helper
+     * failures surface behind the provided localized [message],
+     * while other arara exceptions keep flowing as themselves -
+     * authored `throwError` errors among them, which stay primary
+     * and carry the rule header the interpreter prefixes.
      */
     @Throws(AraraException::class)
     fun <T> withLuaErrorHandling(

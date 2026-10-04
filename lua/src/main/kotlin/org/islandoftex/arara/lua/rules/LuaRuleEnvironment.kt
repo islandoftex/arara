@@ -7,6 +7,7 @@ import io.github.taoguan.luaj.LuaValue
 import io.github.taoguan.luaj.Varargs
 import io.github.taoguan.luaj.lib.jse.JsePlatform
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.AraraExceptionWithHeader
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.rules.RuleMethods
 import org.islandoftex.arara.lua.rules.LuaConversion.badArgument
@@ -22,9 +23,14 @@ import org.islandoftex.arara.lua.rules.LuaConversion.toLua
 /**
  * Set up the global environment rule scripts are evaluated in.
  *
- * The environment exposes the same helper methods MVEL rules enjoy (both
- * dialects bind the very helpers from the core module) plus a few Lua
- * conveniences (`contains`, `keys`, `join`).
+ * The environment exposes the core helper methods the MVEL registry
+ * also binds, plus additions of its own: the path operations as
+ * direct calls, every binding under its snake_case alias, and a
+ * few Lua conveniences (`contains`, `keys`, `join`). The
+ * vocabularies differ at the edges - the deprecated dialect alone
+ * carries `checkClass` and `getOrNull` - and the completeness test
+ * walks only within each environment, so the drift is deliberate
+ * and documented here.
  */
 internal object LuaRuleEnvironment {
     /**
@@ -88,7 +94,7 @@ internal object LuaRuleEnvironment {
 
     /**
      * Reports whether a Lua value counts as empty: nil, an empty
-     * table and an empty string do.
+     * string, and a table with no positional part do.
      */
     private fun isEmptyValue(value: LuaValue): Boolean = when {
         value.isnil() -> true
@@ -111,7 +117,10 @@ internal object LuaRuleEnvironment {
         bindSpelled(
             globals, "throwError"
         ) { name, args ->
-            throw AraraException(
+            // the headered twin of the core helper: the rule header
+            // the interpreter prefixes author errors with rides on
+            // the type, exactly as in the MVEL dialect
+            throw AraraExceptionWithHeader(
                 args.arg(1).stringArgument(name, 1)
             )
         }
@@ -127,7 +136,7 @@ internal object LuaRuleEnvironment {
         ) { name, args ->
             LuaValue.userdataOf(
                 RuleMethods.getCommandWithWorkingDirectory(
-                    args.arg(1).tojstring(),
+                    args.arg(1).stringArgument(name, 1),
                     *args.kotlinArgs(from = 2).toTypedArray()
                 )
             )
@@ -304,7 +313,11 @@ internal object LuaRuleEnvironment {
             globals, "writeToFile"
         ) { name, args ->
             val path = args.arg(1).stringArgument(name, 1)
+            // nil content is not a value a rule can write: the typed
+            // boundary rejects it instead of inventing the literal
+            // text a plain coercion would produce
             val content = fromLua(args.arg(2))
+                ?: throw badArgument(name, 2, "string or list", args.arg(2))
             val append = args.arg(3).booleanArgument(name, 3)
             val result = if (content is List<*>) {
                 RuleMethods.writeToFile(

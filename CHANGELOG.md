@@ -391,6 +391,17 @@ on.
 
 ## Fixed
 
+* The typed argument boundary of the Lua rule helpers closes two
+  gaps: the working directory of `getCommandWithWorkingDirectory`
+  now demands a string instead of silently coercing any value -
+  a nil request previously became a directory literally named
+  `nil` - and `writeToFile` rejects nil content as a bad argument
+  instead of writing the four characters `null` to the file.
+* Errors raised by `throwError` inside Lua rules carry the rule
+  header the interpreter prefixes - the rule identifier and its
+  location - exactly as the errors of the deprecated YAML
+  dialect do; previously they reached the terminal without their
+  context.
 * Project file entries that carry their directives explicitly
   honour the extraction scope the run asks for: under the
   whole-file mode the list collects every directive, where it

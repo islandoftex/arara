@@ -146,8 +146,8 @@ object LuaRuleParser {
 
     /**
      * Extracts a rule command from the Lua table the rule
-     * provides, converting the name, the closure and the
-     * working directory to their JVM shapes.
+     * provides, converting the name and the command and exit
+     * closures to their JVM shapes.
      */
     private fun extractCommand(
         command: LuaTable,
@@ -212,9 +212,8 @@ object LuaRuleParser {
 
     @Suppress("ThrowsCount")
     /**
-     * Validates the declared arguments of a rule: the
-     * identifiers must be unique, the flags must be non-empty,
-     * and the types must be among the supported ones.
+     * Validates the declared arguments of a rule: none of the
+     * identifiers is reserved, and each is unique.
      */
     private fun validateArguments(
         arguments: List<LuaRuleArgument>,

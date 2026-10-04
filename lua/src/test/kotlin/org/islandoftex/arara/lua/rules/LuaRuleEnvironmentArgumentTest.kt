@@ -52,6 +52,22 @@ class LuaRuleEnvironmentArgumentTest {
     }
 
     @Test
+    fun `rejects nil where values are expected`() {
+        assertBadArgument("getCommandWithWorkingDirectory", 1, "string") {
+            binding("getCommandWithWorkingDirectory").call(
+                LuaValue.NIL, LuaValue.valueOf("pdflatex")
+            )
+        }
+        assertBadArgument("writeToFile", 2, "string or list") {
+            binding("writeToFile").call(
+                LuaValue.valueOf("arara-nil-content-test.txt"),
+                LuaValue.NIL,
+                LuaValue.valueOf(false)
+            )
+        }
+    }
+
+    @Test
     fun `rejects strings where numbers are expected`() {
         assertBadArgument("halt", 1, "number") {
             binding("halt").call(LuaValue.valueOf("1"))
