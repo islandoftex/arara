@@ -24,7 +24,7 @@ object GermanMessages : AraraMessages {
         "Es scheint, als sei \"${value}\" kein logischer Ausdruck (boolean value). Das sollte leicht zu beheben sein. Stelle sicher, dass der Eingabestring ein zugelassener logischer Ausdruck ist (\"yes\" oder \"no\", \"true\" oder \"false\", \"1\" oder \"0\" sowie \"on\" oder \"off\")."
 
     override fun errorCheckRegexIoException(file: String) =
-        "Ich konnte den Inhalt der Datei \"${file}\" nicht lesen. Ich erhielt einen IO-Fehler. Ich habe keine Idee für die Fehlerursache, obwohl?. Vielleicht wurde die Datei bevor oder während des Leseprozesses bewegt oder gelöscht. Möglicherweise habe ich nicht die geeigneten Rechte, um die Datei zu lesen."
+        "Ich konnte den Inhalt der Datei \"${file}\" nicht lesen. Ich erhielt einen IO-Fehler. Ich habe keine Idee für die Fehlerursache.. Vielleicht wurde die Datei bevor oder während des Leseprozesses bewegt oder gelöscht. Möglicherweise habe ich nicht die geeigneten Rechte, um die Datei zu lesen."
 
     override val errorConfigurationGenericError =
         "Ich konnte die Konfigurationsdatei nicht analysieren, etwas schlechtes passierte. Dieser Teil ist ziemlich knifflig, denn er bezieht das zugrundeliegende Datenserialisierungsformat mit ein. Ich werde mein Bestes tun, um dir in jeglicher Art und Weise zu helfen."
@@ -71,6 +71,9 @@ object GermanMessages : AraraMessages {
     override val errorConfigurationFileTypeKeyRequiresTableList =
         "Der Schlüssel 'file_types' erfordert eine Liste von Tabellen."
 
+    override val errorConfigurationFileTypePatternNotAString =
+        "Der Schlüssel 'pattern' eines 'file_types'-Eintrags erfordert einen Zeichenkettenwert."
+
     override fun errorDiscoverFileFileNotFound(file: String, details: String) =
         "Ich konnte die vorausgesetzte Datei \"${file}\" ${details} nicht finden. Bitte stelle sicher, dass die Datei existiert und eine gültige Dateiendung hat."
 
@@ -90,13 +93,13 @@ object GermanMessages : AraraMessages {
         "Das 'Options'-Feld enthält einen Orb-Tag der veralteten YAML-Engine, den die Lua-Engine nicht interpolieren kann. Bitte schreiben Sie den Eintrag stattdessen mit '{{ … }}'-Tags um."
 
     override fun errorFiletypeInvalidPattern(pattern: String) =
-        "Es sieht so aus, als sei das Muster \"${pattern}\", das du für diesen Dateitypen festlegen wolltest, kein gültiger regulärer Ausdruck. Das sollte leicht zu beheben sein: Stelle sicher, dass du einen gültigen Ausdruck verwendest, und versuche es erneut."
+        "Es sieht so aus, als sei das Muster \"${pattern}\", das du für diesen Dateityp festlegen wolltest, kein gültiger regulärer Ausdruck. Das sollte leicht zu beheben sein: Stelle sicher, dass du einen gültigen Ausdruck verwendest, und versuche es erneut."
 
     override fun errorFiletypeNotAFile(path: String) =
-        "Die Methode der Dateitypen \"filetype\" fordert als Eingabe eine Datei und kein Verzeichnis. Es scheint, als sei \"${path}\" keine Datei. Falls du Aufgaben auf ein Verzeichnis bzw. Ordner anwenden willst, kannst du eine Vielzahl von JAVA API-Methoden verwenden."
+        "Die Methode der Dateityp \"filetype\" fordert als Eingabe eine Datei und kein Verzeichnis. Es scheint, als sei \"${path}\" keine Datei. Falls du Aufgaben auf ein Verzeichnis bzw. Ordner anwenden willst, kannst du eine Vielzahl von JAVA API-Methoden verwenden."
 
     override fun errorFiletypeUnknownExtension(extension: String, extensions: String) =
-        "Ich kann \"${extension}\" als keine vorgegebene Dateiendung erkennen. Falls du einen neuen Dateitypen definieren möchtest, stelle sich, dass die Dateiendung sowie die entsprechende Struktur bereitgestellt wird. Das sind die vordefinierten Dateiendungen: ${extensions}"
+        "Ich kann \"${extension}\" als keine vorgegebene Dateiendung erkennen. Falls du einen neuen Dateityp definieren möchtest, stelle sich, dass die Dateiendung sowie die entsprechende Struktur bereitgestellt wird. Das sind die vordefinierten Dateiendungen: ${extensions}"
 
     override val errorGetApplicationPathEncodingException =
         "Es gab ein Kodierungsproblem während ich versuchte den Anwendungspfad zu erhalten. Es gibt leider nicht viel, was ich tun kann."
@@ -141,7 +144,7 @@ object GermanMessages : AraraMessages {
         "Ich habe eine Datei gelesen, die ein Projekt sein sollte. Leider stellte sich heraus, dass sie weder ein Projekt noch eine Liste von Projekten ist. Bitte überprüfe, dass deine Projektdatei dem dokumentierten Format entspricht."
 
     override fun errorLoadCouldNotLoadDatabase(name: String) =
-        "Ich konnte die YAML-Datenbank mit dem Namen \"${name}\" nicht laden. Ich habe keine Idee für die Fehlerursache, obwohl? Vielleicht wurde die Datei bevor oder während der Leseoperation bewegt oder gelöscht. Möglicherweise habe ich nicht die geeigneten Rechte, um die Datei zu lesen."
+        "Ich konnte die YAML-Datenbank mit dem Namen \"${name}\" nicht laden. Ich habe keine Idee für die Fehlerursache. Vielleicht wurde die Datei bevor oder während der Leseoperation bewegt oder gelöscht. Möglicherweise habe ich nicht die geeigneten Rechte, um die Datei zu lesen."
 
     override fun errorParserInvalidPreamble(name: String) =
         "Leider konnte die Präambel \"${name}\" nicht gefunden werden. Bitte stelle sicher, dass dieser Schlüssel in der Konfigurationsdatei existiert."
@@ -206,6 +209,12 @@ object GermanMessages : AraraMessages {
     override val errorProjectDirectivesKeyRequiresTable =
         "Der Schlüssel 'directives' erfordert eine Tabelle."
 
+    override fun errorProjectFileDirectivesExtraction(
+        file: String,
+        details: String
+    ) =
+        "Beim Extrahieren der für '${file}' angegebenen Direktiven in der Projektdatei ist ein Fehler aufgetreten: ${details}."
+
     override val errorProjectFileEntryKeyNotAString =
         "Projektdateieinträge müssen über ihren Dateinamen adressiert sein."
 
@@ -219,7 +228,7 @@ object GermanMessages : AraraMessages {
         "Der Schlüssel 'files' erfordert eine Tabelle von Dateispezifikationen."
 
     override val errorProjectFileTypeExtensionRequired =
-        "Eine Erweiterung ist erforderlich, um den Dateitypen zu bestimmen."
+        "Eine Erweiterung ist erforderlich, um den Dateityp zu bestimmen."
 
     override val errorProjectFileTypeKeyRequiresTable =
         "Der Schlüssel 'file_type' erfordert eine Tabelle."
@@ -228,7 +237,7 @@ object GermanMessages : AraraMessages {
         "Es fehlt ein Muster, und die Erweiterung gehört nicht zu den Standarddateitypen."
 
     override val errorProjectFileTypePatternNotAString =
-        "Der Schlüssel 'pattern' des Dateitypen erfordert einen Zeichenkettenwert."
+        "Der Schlüssel 'pattern' des Dateityp erfordert einen Zeichenkettenwert."
 
     override fun errorProjectInvalidLua(details: String) =
         "Die Projektspezifikation ist kein gültiges Lua: ${details}."
@@ -261,7 +270,7 @@ object GermanMessages : AraraMessages {
         "Ich konnte die Liste auf Grund eines fehlendes Formatargumentes nicht replizieren. Meine Vermutung ist, dass es weniger (oder mehr) Parameter als erwartet gibt. Stelle sicher, dass die korrekte Anzahl an Parametern übergeben wird und versuche es erneut."
 
     override fun errorRuleIdentifierAndPath(identifier: String, location: String) =
-        "Ich habe einen Fehler in der Regel \"${identifier}\" an der Stellte \"${location}\" entdeckt."
+        "Ich habe einen Fehler in der Regel \"${identifier}\" an der Stelle \"${location}\" entdeckt."
 
     override val errorRunGenericException =
         "Ich konnte das geforderte Systemkommando nicht ausführen, etwas schlechtes passierte. Dieser Teil ist ziemlich knifflig, denn er bezieht Aspekte der zugrundeliegenden Sprache mit ein. Ich werde mein Bestes tun, um dir in jeglicher Art und Weise zu helfen."
@@ -278,8 +287,14 @@ object GermanMessages : AraraMessages {
     override val errorRunTimeoutException =
         "Die Ausführung des Systemkommandos hat die Zeitbegrenzung erreicht und wurde abgebrochen. Falls die Zeit etwas zu kurz war, kannst du diese erhöhen."
 
+    override val errorSafeModeClassLoading =
+        "Im sicheren Modus dürfen Regeln keine beliebigen Klassen aus benutzerseitigen Archiven laden."
+
+    override val errorSafeModeSystemCommand =
+        "Im sicheren Modus dürfen Regeln keine beliebigen Systembefehle innerhalb eines Ausführungsschritts ausführen."
+
     override fun errorSaveCouldNotSaveDatabase(name: String) =
-        "Ich konnte die YAML-Datenbank mit dem Namen \"${name}\" nicht speichern. Ich habe keine Idee für die Fehlerursache, obwohl? Möglicherweise habe ich nicht die geeigneten Rechte, um die Datei YAML-Datei auf der Festplatte zu speichern."
+        "Ich konnte die YAML-Datenbank mit dem Namen \"${name}\" nicht speichern. Ich habe keine Idee für die Fehlerursache. Möglicherweise habe ich nicht die geeigneten Rechte, um die Datei YAML-Datei auf der Festplatte zu speichern."
 
     override fun errorSessionObtainUnknownKey(key: String) =
         "Die \"get\" Methode hat den unbekannten Eintrag (key) \"${key}\" in der Session gefunden. Ich konnte nichts erhalten, was ich nicht bereits habe. Bitte gebe einen gültigen Key ein und versuche es erneut."
@@ -294,7 +309,7 @@ object GermanMessages : AraraMessages {
         "Ich habe die Direktive ${lines} gelesen und fand heraus, dass der Eintrag \"files\" keine Liste übergeben bekommen hat. Bitte stelle sicher, dass du eine passende Liste verwendest und versuche es erneut."
 
     override fun errorValidateInvalidDirectiveFormat(lines: String) =
-        "Ich entdecke eine ungültige Direktive namens ${lines} in der bereitgestellten Datei. Stellte sicher, dass die Direktive gültig ist und versuche es erneut."
+        "Ich entdecke eine ungültige Direktive namens ${lines} in der bereitgestellten Datei. Stelle sicher, dass die Direktive gültig ist und versuche es erneut."
 
     override val errorValidateNoDirectivesFound =
         "Es sieht so aus, als wurden keine Direktiven in der bereitgestellten Datei gefunden. Bitte stelle sicher, dass wenigstens eine Direktive enthalten ist und versuche es erneut."
@@ -357,8 +372,8 @@ object GermanMessages : AraraMessages {
     override val infoDisplaySummaryTasks = "Aufgaben"
     override val infoDisplaySummaryTime = "Zeit"
 
-        override fun infoDisplayUnprocessedFiles(count: Int) =
-        if (count == 1) "Nicht verarbeitete Datei: " else "Nicht verarbeitete Dateien: "
+    override fun infoDisplayUnprocessedFiles(count: Int) =
+    if (count == 1) "Nicht verarbeitete Datei: " else "Nicht verarbeitete Dateien: "
 
 
     override fun infoDisplayFileInformation(name: String, size: String, lastModified: String) =

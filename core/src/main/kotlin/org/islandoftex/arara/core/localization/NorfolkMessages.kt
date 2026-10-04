@@ -71,6 +71,9 @@ object NorfolkMessages : AraraMessages {
     override val errorConfigurationFileTypeKeyRequiresTableList =
         "The 'file_types' key wants a list of tables."
 
+    override val errorConfigurationFileTypePatternNotAString =
+        "The 'pattern' key of a 'file_types' entry wants a string value."
+
     override fun errorDiscoverFileFileNotFound(file: String, details: String) =
         "Dunt yew git yarself inta a rite ole puckaterry, but I can't find yar file '${file}' ${details}. Yew're gotta find the file and do yew see that has a proper extension on the end onnit, tergether."
 
@@ -206,6 +209,12 @@ object NorfolkMessages : AraraMessages {
     override val errorProjectDirectivesKeyRequiresTable =
         "The 'directives' key wants a table."
 
+    override fun errorProjectFileDirectivesExtraction(
+        file: String,
+        details: String
+    ) =
+        "I come a-cropper extractin' the directives as was specified fer '${file}' in the project file: ${details}."
+
     override val errorProjectFileEntryKeyNotAString =
         "Project file entries hev gotter be keyed by their file name."
 
@@ -277,6 +286,12 @@ object NorfolkMessages : AraraMessages {
 
     override val errorRunTimeoutException =
         "That slummockun gret system command have run on for too long so I gev it a clout round the lug. If thass hully short for yew, dew yew giv' me a longer timeout value."
+
+    override val errorSafeModeClassLoading =
+        "In the safe mode, rules ent allowed ter go loadin' no classes of their own choosin' from folks' archives."
+
+    override val errorSafeModeSystemCommand =
+        "In the safe mode, rules ent allowed ter go runnin' no system commands of their own choosin' inside a step o' the run."
 
     override fun errorSaveCouldNotSaveDatabase(name: String) =
         "Thass a rum ole dew, ole partner. I coont save that ole YAML database that oughta be called '${name}'. Howsomever I hent got no idea why thass gone wrong. Praps I're gotta he'sum proper permissions to write the YAML file to disk."
@@ -357,8 +372,8 @@ object NorfolkMessages : AraraMessages {
     override val infoDisplaySummaryTasks = "Jobs"
     override val infoDisplaySummaryTime = "While"
 
-        override fun infoDisplayUnprocessedFiles(count: Int) =
-        "Wot didn\u2019t get a go: "
+    override fun infoDisplayUnprocessedFiles(count: Int) =
+    "Wot didn\u2019t get a go: "
 
 
     override fun infoDisplayFileInformation(name: String, size: String, lastModified: String) =

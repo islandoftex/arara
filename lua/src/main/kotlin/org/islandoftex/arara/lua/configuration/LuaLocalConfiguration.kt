@@ -276,9 +276,18 @@ object LuaLocalConfiguration {
                         LanguageController.messages
                             .errorConfigurationFileTypeExtensionMissing
                     )
-                (fileType["pattern"] as? String)?.let { pattern ->
-                    SerialFileType(extension, pattern)
-                } ?: SerialFileType(extension)
+                val pattern = fileType["pattern"]
+                when {
+                    pattern == null -> SerialFileType(extension)
+                    pattern is String -> SerialFileType(extension, pattern)
+                    // a wrongly typed pattern is never silently
+                    // dropped: the entry degrades to no pattern at
+                    // all, and the type expectation is spoken
+                    else -> throw AraraException(
+                        LanguageController.messages
+                            .errorConfigurationFileTypePatternNotAString
+                    )
+                }
             } ?: throw AraraException(
                 LanguageController.messages
                     .errorConfigurationFileTypeKeyRequiresTableList

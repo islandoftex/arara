@@ -307,12 +307,6 @@ class StyledConsoleRenderer(
         get() = if (isDecorated) StyledTheme.leaderGlyph else StyledTheme.leaderFallback
 
     /**
-     * The width every structural element extends to: the readable
-     * measure - the whole presentation is one page of that width,
-     * so a wide terminal holds a page, not a line running to the
-     * horizon.
-     */
-    /**
      * The width every text of the presentation wraps at: the
      * readable measure, never past the terminal, one width for
      * the structures and the prose alike - the whole presentation

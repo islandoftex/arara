@@ -54,7 +54,7 @@ object DutchMessages : AraraMessages {
         "De sleutel '${key}' vereist een lijst met tekenreeksen."
 
     override fun errorConfigurationKeyRequiresTable(key: String) =
-        "De sleutel '${key}' vereist een tabel met tekenreekparen."
+        "De sleutel '${key}' vereist een tabel met tekenreeksparen."
 
     override fun errorConfigurationKeyRequiresStringKeys(key: String) =
         "De sleutel '${key}' vereist tekenreeksen als sleutels."
@@ -70,6 +70,9 @@ object DutchMessages : AraraMessages {
 
     override val errorConfigurationFileTypeKeyRequiresTableList =
         "De sleutel 'file_types' vereist een lijst met tabellen."
+
+    override val errorConfigurationFileTypePatternNotAString =
+        "De sleutel 'pattern' van een 'file_types'-waarde vereist een tekenreekswaarde."
 
     override fun errorDiscoverFileFileNotFound(file: String, details: String) =
         "Ik kon het opgegeven bestand '${file}' ${details} niet vinden. Zorg ervoor dat het bestand bestaat en dat het een geldige extensie heeft."
@@ -108,7 +111,7 @@ object DutchMessages : AraraMessages {
         "Ik kon een van de opgegeven opdrachten niet evalueren. Dit is een ingewikkeld probleem, omdat het te maken heeft met aspecten van de onderliggende expressietaal. Ik zal mijn best doen om je zoveel mogelijk hiermee te helpen."
 
     override fun errorInterpreterCommandUnsuccessfulExit(command: String) =
-        "Het commando \"${command}\" is onverwacht beëindigd met een afsluitwaarde die niet gelijk is aan nul. Bekijk het resultaat van het commando en anaylseer het om uw volgende stappen te bepalen."
+        "Het commando \"${command}\" is onverwacht beëindigd met een afsluitwaarde die niet gelijk is aan nul. Bekijk het resultaat van het commando en analyseer het om uw volgende stappen te bepalen."
 
     override val errorInterpreterExitRuntimeError =
         "Ik kon de exitwaardemelding van een van de opgegeven opdrachten niet evalueren. Dit is een ingewikkeld probleem, omdat het te maken heeft met aspecten van de onderliggende expressietaal. Ik zal mijn best doen om je zoveel mogelijk hiermee te helpen."
@@ -206,6 +209,12 @@ object DutchMessages : AraraMessages {
     override val errorProjectDirectivesKeyRequiresTable =
         "De sleutel 'directives' vereist een tabel."
 
+    override fun errorProjectFileDirectivesExtraction(
+        file: String,
+        details: String
+    ) =
+        "Er is een fout opgetreden bij het extraheren van de richtlijnen die voor '${file}' in het projectbestand zijn opgegeven: ${details}."
+
     override val errorProjectFileEntryKeyNotAString =
         "Projectbestandwaarden moeten via hun bestandsnaam aangeduid zijn."
 
@@ -277,6 +286,12 @@ object DutchMessages : AraraMessages {
 
     override val errorRunTimeoutException =
         "Het uitvoeren van het systeemcommando is onderbroken omdat de maximale uitvoeringsduur overschreden is. Als de tijd te kort was, pas dan de maximale uitvoeringsduur aan."
+
+    override val errorSafeModeClassLoading =
+        "In de veilige modus mogen regels geen willekeurige klassen uit door de gebruiker geleverde archieven laden."
+
+    override val errorSafeModeSystemCommand =
+        "In de veilige modus mogen regels geen willekeurige systeemcommando's uitvoeren binnen een uitvoeringsstap."
 
     override fun errorSaveCouldNotSaveDatabase(name: String) =
         "Ik kon de YAML-database met de naam '${name}' niet opslaan. Ik weet niet precies waarom het fout ging. Misschien heb ik niet de juiste schrijfrechten om het YAML-bestand op te slaan."
@@ -357,8 +372,8 @@ object DutchMessages : AraraMessages {
     override val infoDisplaySummaryTasks = "Taken"
     override val infoDisplaySummaryTime = "Tijd"
 
-        override fun infoDisplayUnprocessedFiles(count: Int) =
-        if (count == 1) "Niet verwerkt bestand: " else "Niet verwerkte bestanden: "
+    override fun infoDisplayUnprocessedFiles(count: Int) =
+    if (count == 1) "Niet verwerkt bestand: " else "Niet verwerkte bestanden: "
 
 
     override fun infoDisplayFileInformation(name: String, size: String, lastModified: String) =

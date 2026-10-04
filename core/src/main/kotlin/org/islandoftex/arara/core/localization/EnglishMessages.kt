@@ -70,6 +70,9 @@ object EnglishMessages : AraraMessages {
     override val errorConfigurationFileTypeKeyRequiresTableList =
         "The 'file_types' key requires a list of tables."
 
+    override val errorConfigurationFileTypePatternNotAString =
+        "The 'pattern' key of a 'file_types' entry requires a string value."
+
     override fun errorDiscoverFileFileNotFound(file: String, details: String) =
         "I could not find the provided file \"${file}\" ${details}. Please make sure the file exists and it has a valid extension."
 
@@ -205,6 +208,12 @@ object EnglishMessages : AraraMessages {
     override val errorProjectDirectivesKeyRequiresTable =
         "The 'directives' key requires a table."
 
+    override fun errorProjectFileDirectivesExtraction(
+        file: String,
+        details: String
+    ) =
+        "I found an error while extracting the directives specified for '${file}' in the project file: ${details}."
+
     override val errorProjectFileEntryKeyNotAString =
         "Project file entries have to be keyed by their file name."
 
@@ -276,6 +285,12 @@ object EnglishMessages : AraraMessages {
 
     override val errorRunTimeoutException =
         "The system command execution reached the provided timeout value and was aborted. If the time was way too short, make sure to provide a longer value."
+
+    override val errorSafeModeClassLoading =
+        "In safe mode, rules are not allowed to load arbitrary classes from user-provided archives."
+
+    override val errorSafeModeSystemCommand =
+        "In safe mode, rules are not allowed to execute arbitrary system commands within a step of execution."
 
     override fun errorSaveCouldNotSaveDatabase(name: String) =
         "I could not save the YAML database named \"${name}\". I have no idea why it failed, though. Perhaps I do not have the proper permissions to write the YAML file to disk."
@@ -356,8 +371,8 @@ object EnglishMessages : AraraMessages {
     override val infoDisplaySummaryTasks = "Tasks"
     override val infoDisplaySummaryTime = "Time"
 
-        override fun infoDisplayUnprocessedFiles(count: Int) =
-        if (count == 1) "File not processed: " else "Files not processed: "
+    override fun infoDisplayUnprocessedFiles(count: Int) =
+    if (count == 1) "File not processed: " else "Files not processed: "
 
 
     override fun infoDisplayFileInformation(name: String, size: String, lastModified: String) =

@@ -98,6 +98,18 @@ class AraraMessagesTest {
                 infoDisplayExceptionMoreDetails,
                 infoInterpreterLuaFileNotAProject,
                 infoInterpreterLuaFileEvaluationFailed,
+                infoDisplayFullOutputInLog,
+                infoDisplaySummaryTitle,
+                infoDisplaySummaryFile,
+                infoDisplaySummaryTasks,
+                infoDisplaySummaryTime,
+                infoDisplayUnprocessedFiles(4242),
+                infoLabelAboutToRun,
+                infoLabelSystemCommand,
+                errorDialogsNotConfigured,
+                errorSafeModeClassLoading,
+                errorSafeModeSystemCommand,
+                errorConfigurationFileTypePatternNotAString,
                 infoLabelAuthor,
                 infoLabelAuthors,
                 infoLabelConditional,
@@ -203,7 +215,47 @@ class AraraMessagesTest {
             listOf("quux1") to { it.errorParserInvalidPreamble("quux1") },
             listOf("quux1", "quux2", "quux3") to
                 { it.errorParseRuleUnsupportedFormat("quux1", "quux2", "quux3") },
+            listOf("quux1") to
+                { it.errorConfigurationKeyRequiresString("quux1") },
+            listOf("quux1") to
+                { it.errorConfigurationKeyRequiresInteger("quux1") },
+            listOf("quux1") to
+                { it.errorConfigurationKeyRequiresBoolean("quux1") },
+            listOf("quux1") to
+                { it.errorConfigurationEntryNotAString("quux1") },
+            listOf("quux1") to
+                { it.errorConfigurationKeyRequiresStringList("quux1") },
+            listOf("quux1") to
+                { it.errorConfigurationKeyRequiresTable("quux1") },
+            listOf("quux1") to
+                { it.errorConfigurationKeyRequiresStringKeys("quux1") },
+            listOf("quux1") to
+                { it.errorConfigurationKeyRequiresStringValues("quux1") },
+            listOf("quux1") to { it.errorConfigurationUnknownKeys("quux1") },
+            listOf("quux1") to
+                { it.errorParseRuleArgumentNeedsFlagOrDefault("quux1") },
+            listOf("quux1") to
+                { it.errorParseRuleArgumentRequiredNotABoolean("quux1") },
+            listOf("quux1") to { it.errorParseRuleEntryNotAString("quux1") },
+            listOf("quux1") to { it.errorParseRuleEntryNotATable("quux1") },
+            listOf("quux1") to
+                { it.errorParseRuleKeyRequiresStringList("quux1") },
+            listOf("quux1") to
+                { it.errorParseRuleKeyRequiresTableList("quux1") },
+            listOf("quux1") to { it.errorProjectInvalidLua("quux1") },
+            listOf("quux1") to { it.errorProjectStrayDependency("quux1") },
+            listOf("quux1", "quux2") to
+                { it.errorProjectFileDirectivesExtraction("quux1", "quux2") },
+            listOf("quux1") to
+                { it.errorFiletypeInvalidPattern("quux1") },
+            listOf("quux1", "quux2") to
+                { it.errorGlobPatternInvalid("quux1", "quux2") },
             listOf("quux1") to { it.errorProjectCycle("quux1") },
+            listOf("quux1") to { it.errorConsoleModeUnknown("quux1") },
+            listOf("4242", "1717") to { it.infoDisplayTotalSuccess(4242, 1717) },
+            listOf("4242", "1717") to { it.infoDisplayTotalFailure(4242, 1717) },
+            listOf("4242") to { it.infoDisplayDryRun(4242) },
+            listOf("quux1") to { it.infoDisplaySkippedConditional("quux1") },
             listOf("quux1", "quux2") to
                 { it.errorRuleIdentifierAndPath("quux1", "quux2") },
             listOf("quux1") to { it.errorSaveCouldNotSaveDatabase("quux1") },

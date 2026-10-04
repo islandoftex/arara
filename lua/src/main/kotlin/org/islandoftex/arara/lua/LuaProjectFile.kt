@@ -6,6 +6,7 @@ import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.core.files.ProjectFile
+import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.Directives
 
 /**
@@ -39,9 +40,11 @@ internal class LuaProjectFile(
                 Directives.extractDirectives(list, parseOnlyHeader, fileType)
             }.getOrElse {
                 throw AraraException(
-                    "I found an error while extracting the directives " +
-                        "specified for '${path.fileName}' in the project " +
-                        "file: ${it.message}",
+                    LanguageController.messages
+                        .errorProjectFileDirectivesExtraction(
+                            path.fileName,
+                            it.message ?: ""
+                        ),
                     it as? Exception ?: RuntimeException(it.toString())
                 )
             }

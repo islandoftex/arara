@@ -231,5 +231,12 @@ class LuaLocalConfigurationTest {
         ) {
             load("""return { file_types = { 42 } }""")
         }
+        // a wrongly typed pattern never degrades the entry to the
+        // extension-only type: the rejection names the expectation
+        assertFailsWith<AraraException>(
+            "a non string pattern is rejected"
+        ) {
+            load("""return { file_types = { { extension = "tex", pattern = 42 } } }""")
+        }
     }
 }

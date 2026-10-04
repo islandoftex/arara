@@ -237,8 +237,7 @@ object ConditionalMethods {
     fun loadClass(file: MPPPath, name: String): Pair<ClassLoadingStatus, Class<*>> =
         if (LinearExecutor.executionOptions.executionMode == ExecutionMode.SAFE_RUN)
             throw SafeRunViolationException(
-                "In safe mode, rules are not allowed to load arbitrary " +
-                    "classes from user-provided archives."
+                LanguageController.messages.errorSafeModeClassLoading
             )
         else
             ClassLoading.loadClass(file, name)
@@ -265,8 +264,7 @@ object ConditionalMethods {
     fun loadObject(file: MPPPath, name: String): Pair<ClassLoadingStatus, Any> =
         if (LinearExecutor.executionOptions.executionMode == ExecutionMode.SAFE_RUN)
             throw SafeRunViolationException(
-                "In safe mode, rules are not allowed to load arbitrary " +
-                    "classes from user-provided archives."
+                LanguageController.messages.errorSafeModeClassLoading
             )
         else
             ClassLoading.loadObject(file, name)

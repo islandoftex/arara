@@ -24,7 +24,7 @@ object ItalianMessages : AraraMessages {
         "Sembra che '${value}' non sia un valore booleano valido. Penso che sia facile correggerlo. Assicurati di adoperare una stringa valida che rappresenti un valore booleano (yes e no, true e false, 1 e 0, oppure on e off)."
 
     override fun errorCheckRegexIoException(file: String) =
-        "Non sono riuscito a leggere il contenuto del file '${file}' e ho ricevuto in errore di I/O. Purtroppo non ho idea del perché sia andata male. Forse il file è stato spostato o cancellato durante l'operazione di hashing. O forse non ho i permessi necessari per leggere il file."
+        "Non sono riuscito a leggere il contenuto del file '${file}' e ho ricevuto un errore di I/O. Purtroppo non ho idea del perché sia andata male. Forse il file è stato spostato o cancellato durante l'operazione di hashing. O forse non ho i permessi necessari per leggere il file."
 
     override val errorConfigurationGenericError =
         "Non sono riuscito a leggere il file di configurazione, è successo qualcosa che non va. Questa parte è un po' complicata, perché riguarda aspetti del formato interno di serializzazione dei dati. Farò del mio meglio per darti una mano, per quanto posso."
@@ -70,6 +70,9 @@ object ItalianMessages : AraraMessages {
 
     override val errorConfigurationFileTypeKeyRequiresTableList =
         "La chiave 'file_types' richiede una lista di tabelle."
+
+    override val errorConfigurationFileTypePatternNotAString =
+        "La chiave 'pattern' di una voce 'file_types' richiede un valore stringa."
 
     override fun errorDiscoverFileFileNotFound(file: String, details: String) =
         "Non sono riuscito a trovare il file '${file}' ${details}. Assicurati che il file esista e abbia un'estensione valida."
@@ -126,7 +129,7 @@ object ItalianMessages : AraraMessages {
         "Non sono riuscito a trovare una regola chiamata '${identifier}' nei percorsi per le regole impostati. Forse una parola scritta sbagliata? Stavo cercando un file con il nome '${expected}' nei seguenti percorsi in ordine di priorità: ${paths}"
 
     override fun errorInterpreterUnknownKeys(keys: String) =
-        "Ho trovato queste chiavi sconosciute nella direttiva: ${keys}. Dovrebbbe essere facile correggere, toglile dalla mappa."
+        "Ho trovato queste chiavi sconosciute nella direttiva: ${keys}. Dovrebbe essere facile correggere, toglile dalla mappa."
 
     override fun errorConsoleModeUnknown(mode: String) =
         "Non posso impostare la console su '${mode}', perché non è una delle presentazioni disponibili. Dovrebbe essere facile correggere: scegli semplicemente una delle modalità disponibili."
@@ -206,6 +209,12 @@ object ItalianMessages : AraraMessages {
     override val errorProjectDirectivesKeyRequiresTable =
         "La chiave 'directives' richiede una tabella."
 
+    override fun errorProjectFileDirectivesExtraction(
+        file: String,
+        details: String
+    ) =
+        "Si è verificato un errore durante l'estrazione delle direttive specificate per '${file}' nel file di progetto: ${details}."
+
     override val errorProjectFileEntryKeyNotAString =
         "Le voci dei file di progetto devono essere indirizzate dal loro nome di file."
 
@@ -277,6 +286,12 @@ object ItalianMessages : AraraMessages {
 
     override val errorRunTimeoutException =
         "L'esecuzione del comando di sistema ha raggiunto il valore di timeout impostato ed è stata interrotta. Se il tempo è troppo breve, assicurati di impostarne uno più lungo."
+
+    override val errorSafeModeClassLoading =
+        "In modalità sicura, alle regole non è consentito caricare classi arbitrarie da archivi forniti dall'utente."
+
+    override val errorSafeModeSystemCommand =
+        "In modalità sicura, alle regole non è consentito eseguire comandi di sistema arbitrari all'interno di un passo di esecuzione."
 
     override fun errorSaveCouldNotSaveDatabase(name: String) =
         "Non ho potuto salvare il database YAML con il nome '${name}'. Purtroppo non ho idea del perché sia successo. Forse non ho i permessi appropriati per scrivere il file YAML sul disco."
@@ -357,8 +372,8 @@ object ItalianMessages : AraraMessages {
     override val infoDisplaySummaryTasks = "Attività"
     override val infoDisplaySummaryTime = "Tempo"
 
-        override fun infoDisplayUnprocessedFiles(count: Int) =
-        if (count == 1) "File non elaborato: " else "File non elaborati: "
+    override fun infoDisplayUnprocessedFiles(count: Int) =
+    if (count == 1) "File non elaborato: " else "File non elaborati: "
 
 
     override fun infoDisplayFileInformation(name: String, size: String, lastModified: String) =

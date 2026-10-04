@@ -71,6 +71,9 @@ object BrazilianPortugueseMessages : AraraMessages {
     override val errorConfigurationFileTypeKeyRequiresTableList =
         "A chave 'file_types' requer uma lista de tabelas."
 
+    override val errorConfigurationFileTypePatternNotAString =
+        "A chave 'pattern' de uma entrada de 'file_types' requer um valor de texto."
+
     override fun errorDiscoverFileFileNotFound(file: String, details: String) =
         "Não consegui encontrar o arquivo especificado '${file}' ${details}. Por favor, certifique-se de que o arquivo existe e que possui uma extensão válida."
 
@@ -114,7 +117,7 @@ object BrazilianPortugueseMessages : AraraMessages {
         "O comando \"${command}\" inesperadamente encerrou com um código de saída diferente de zero. Por favor, verifique a saída do comando para avaliar os próximos passos."
 
     override val errorInterpreterUserRequestedHalt =
-        "O arquivo será interrompido agora por requisição de uma regra, e suas diretrizes restantes serão ignoradas."
+        "O arquivo será interrompido agora por requisição de uma regra, e suas diretivas restantes serão ignoradas."
 
     override val errorInterpreterFlagRuntimeException =
         "Não consegui avaliar a expressão associada à presença de um dos argumentos. Esta parte é complicada, pois envolve aspectos da linguagem de expressão subjacente. Eu farei o possível para te ajudar da melhor forma que puder."
@@ -201,10 +204,16 @@ object BrazilianPortugueseMessages : AraraMessages {
         "Cada entrada de dependência precisa ser um texto."
 
     override val errorProjectDirectiveEntryNotAString =
-        "Cada entrada de diretriz precisa ser um texto."
+        "Cada entrada de diretiva precisa ser um texto."
 
     override val errorProjectDirectivesKeyRequiresTable =
         "A chave 'directives' requer uma tabela."
+
+    override fun errorProjectFileDirectivesExtraction(
+        file: String,
+        details: String
+    ) =
+        "Encontrei um erro ao extrair as diretivas especificadas para '${file}' no arquivo de projeto: ${details}."
 
     override val errorProjectFileEntryKeyNotAString =
         "As entradas de arquivos de projeto precisam ser endereçadas pelo seu nome de arquivo."
@@ -277,6 +286,12 @@ object BrazilianPortugueseMessages : AraraMessages {
 
     override val errorRunTimeoutException =
         "A execução do comando de sistema atingiu o timeout especificado e foi abortada. Se o tempo foi muito curto, certifique-se de especificar um valor maior."
+
+    override val errorSafeModeClassLoading =
+        "No modo seguro, as regras não têm permissão para carregar classes arbitrárias de arquivos fornecidos pelo usuário."
+
+    override val errorSafeModeSystemCommand =
+        "No modo seguro, as regras não têm permissão para executar comandos de sistema arbitrários dentro de uma etapa de execução."
 
     override fun errorSaveCouldNotSaveDatabase(name: String) =
         "Não consegui salvar o banco de dados YAML chamado '${name}'.  Não tenho ideia porque não deu certo. Talvez eu não tenha as permissões corretas para escrever o arquivo YAML no disco."
@@ -357,8 +372,8 @@ object BrazilianPortugueseMessages : AraraMessages {
     override val infoDisplaySummaryTasks = "Tarefas"
     override val infoDisplaySummaryTime = "Tempo"
 
-        override fun infoDisplayUnprocessedFiles(count: Int) =
-        if (count == 1) "Arquivo n\u00e3o processado: " else "Arquivos n\u00e3o processados: "
+    override fun infoDisplayUnprocessedFiles(count: Int) =
+    if (count == 1) "Arquivo n\u00e3o processado: " else "Arquivos n\u00e3o processados: "
 
 
     override fun infoDisplayFileInformation(name: String, size: String, lastModified: String) =

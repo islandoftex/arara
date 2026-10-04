@@ -352,8 +352,7 @@ object RuleMethods {
     fun unsafelyExecuteSystemCommand(command: Command): Pair<Int, String> =
         if (LinearExecutor.executionOptions.executionMode == ExecutionMode.SAFE_RUN)
             throw SafeRunViolationException(
-                "In safe mode, rules are not allowed to execute " +
-                    "arbitrary system commands within a step of execution."
+                LanguageController.messages.errorSafeModeSystemCommand
             )
         else
             when (val result = Environment.executeSystemCommand(command)) {

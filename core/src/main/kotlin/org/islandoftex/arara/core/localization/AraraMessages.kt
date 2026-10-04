@@ -118,6 +118,11 @@ interface AraraMessages {
      */
     val errorConfigurationFileTypeKeyRequiresTableList: String
     /**
+     * The error shown when the pattern of a file type declaration
+     * of the configuration is not a string.
+     */
+    val errorConfigurationFileTypePatternNotAString: String
+    /**
      * The error shown when a referenced file cannot be found.
      */
     fun errorDiscoverFileFileNotFound(file: String, details: String): String
@@ -351,6 +356,14 @@ interface AraraMessages {
      */
     val errorProjectDirectivesKeyRequiresTable: String
     /**
+     * The error shown when the directives a project file
+     * specification carries cannot be extracted.
+     */
+    fun errorProjectFileDirectivesExtraction(
+        file: String,
+        details: String
+    ): String
+    /**
      * The error shown when a project file entry is not keyed by
      * its file name.
      */
@@ -469,6 +482,16 @@ interface AraraMessages {
      * timeout.
      */
     val errorRunTimeoutException: String
+    /**
+     * The error shown when a rule tries to load classes from an
+     * archive in safe mode.
+     */
+    val errorSafeModeClassLoading: String
+    /**
+     * The error shown when a rule tries to run a system command
+     * in safe mode.
+     */
+    val errorSafeModeSystemCommand: String
     /**
      * The error shown when the file database cannot be saved.
      */

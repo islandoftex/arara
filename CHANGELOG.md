@@ -391,6 +391,21 @@ on.
 
 ## Fixed
 
+* The last two user-facing English exceptions join the catalog:
+  the safe mode rejections — a rule trying to run a system
+  command or load classes from an archive under `--safe-run` —
+  and the wrap around the directives a project file
+  specification carries all speak the session's language now,
+  in all six of them.
+* A wrongly typed pattern in a configuration file type never
+  degrades the entry to the extension-only type silently: the
+  rejection names the expectation, matching the project
+  specification's own strictness.
+* The argument-containment pins reach every parameterized
+  message the catalogs gained, and the display messages the
+  earlier rounds left unpinned join the non-blank walk - a
+  locale that drops an argument from any rendering now fails
+  the gate.
 * Every error the Lua formats can raise now speaks the session's
   language: the rule parser reuses the validation messages the
   deprecated dialect's rules always had and gains its own
