@@ -391,6 +391,19 @@ on.
 
 ## Fixed
 
+* A rule-requested halt reports the status it asked for as the
+  process exit code: the run's own code reaches the terminal
+  unchanged, where every nonzero ending was flattened to the
+  generic failure value. The manual's promise - that the halt
+  value is the exit status arara will have - finally holds, and
+  the codified suite carries the pin with a status no generic
+  failure could imitate.
+* A bare halt call lands without a task to ride: a command that
+  evaluates to nothing runnable - a lone halt request in either
+  dialect - still ends the file with the status it asked for,
+  where it previously waited for a task that never came. The pin
+  runs the bare shape through both engines, so the landing holds
+  whichever dialect raised the request.
 * The styled presentation no longer crashes on a degenerate
   terminal width: the abbreviation budgets of its entry heads and
   dry-run blocks now keep the abbreviation's own minimum of two

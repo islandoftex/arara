@@ -297,6 +297,16 @@ internal val scenarios = listOf(
                 fixture = "halt-escape",
         ),
         Scenario(
+                name = "halt-code.bats", dir = "halt-code",
+                description = "the halt's own exit code",
+                check = "the requested status reaches the process unchanged",
+                arguments = listOf("--log", "halt-code.tex"),
+                expected = listOf("TOTAL FAILURE"),
+                exitCode = 42,
+                logChecks = listOf("Halt requested with status 42"),
+                fixture = "halt-code",
+        ),
+        Scenario(
                 name = "file-db.bats", dir = "changes",
                 description = "the file database without the TeX toolchain",
                 check = "the first run runs the rule and the second run skips",

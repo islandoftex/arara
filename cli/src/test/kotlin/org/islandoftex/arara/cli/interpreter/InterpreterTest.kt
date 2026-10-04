@@ -17,8 +17,10 @@ import org.islandoftex.arara.cli.ruleset.DirectiveProcessing
 import org.islandoftex.arara.cli.ruleset.RuleEngine
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.files.FileType
+import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.files.ProjectFile
 import org.islandoftex.arara.core.rules.Directives
+import org.islandoftex.arara.core.session.ExecutorHooks
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.junit.jupiter.api.AfterAll
@@ -384,7 +386,7 @@ class InterpreterTest {
         )
         assertNotEquals(
             0,
-            executeLeniently(directory, "masking"),
+            executeRule(directory, "masking", haltOnErrors = false),
             "the failing command keeps the run's verdict without error-halting"
         )
     }
@@ -414,18 +416,122 @@ class InterpreterTest {
         )
         assertNotEquals(
             0,
-            executeLeniently(directory, "masking"),
+            executeRule(directory, "masking", haltOnErrors = false),
             "the failing task keeps the command's verdict without error-halting"
         )
     }
 
+    @Test
+    fun `a bare halt lands without a task in the deprecated dialect`() {
+        Session.clear()
+        val directory = Files.createTempDirectory("arara-interpreter-rule")
+        Files.writeString(
+            directory.resolve("arara-rule-barehalt.yaml"),
+            """
+            !config
+            identifier: barehalt
+            name: Bare Halt
+            authors:
+            - Island of TeX
+            commands:
+            - name: The bare halt
+              command: >
+                @{ halt(4); }
+            arguments: []
+            """.trimIndent()
+        )
+        assertEquals(
+            4,
+            executeThroughPipeline(directory, "barehalt"),
+            "a bare halt call lands its status with no task to ride"
+        )
+    }
+
+    @Test
+    fun `a bare halt lands without a task in the Lua dialect`() {
+        Session.clear()
+        val original = RuleEngine.current
+        try {
+            RuleEngine.current = RuleEngine.LUA
+            val directory = Files.createTempDirectory("arara-interpreter-rule")
+            Files.writeString(
+                directory.resolve("arara-rule-barehalt.lua"),
+                """
+                return {
+                  identifier = "barehalt",
+                  name = "Bare Halt",
+                  authors = { "Island of TeX" },
+                  commands = {
+                    {
+                      name = "The bare halt",
+                      command = function(ctx)
+                        halt(4)
+                      end
+                    }
+                  },
+                  arguments = {}
+                }
+                """.trimIndent()
+            )
+            assertEquals(
+                4,
+                executeThroughPipeline(directory, "barehalt"),
+                "a bare halt call lands its status with no task to ride"
+            )
+        } finally {
+            RuleEngine.current = original
+        }
+    }
+
+    /**
+     * Runs the directive through the whole pipeline - the executor
+     * frame the halt helper needs around a fresh interpreter -
+     * with the rule directory on the lookup path, returning the
+     * exit code the run reports.
+     */
+    private fun executeThroughPipeline(directory: Path, identifier: String): Int {
+        DirectiveProcessing.initializeDirectiveCore()
+        val originalHooks = LinearExecutor.hooks
+        val originalOptions = LinearExecutor.executionOptions
+        return try {
+            val filePath = Files.createTempFile("arara-interpreter-file", ".tex")
+            Files.writeString(filePath, "% arara: $identifier\n")
+            LinearExecutor.executionOptions = ExecutionOptions(
+                rulePaths = setOf(MPPPath(directory.toString()))
+            )
+            LinearExecutor.hooks = ExecutorHooks(
+                processDirectives = { file, list ->
+                    DirectiveProcessing.process(file, list)
+                }
+            )
+            LinearExecutor.execute(
+                listOf(
+                    Project(
+                        "Test", MPPPath(filePath.parent.toString()),
+                        setOf(
+                            ProjectFile(MPPPath(filePath.toString()), texFile)
+                        )
+                    )
+                )
+            ).exitCode
+        } finally {
+            LinearExecutor.hooks = originalHooks
+            LinearExecutor.executionOptions = originalOptions
+        }
+    }
+
     /**
      * Builds the directive for the identifier and runs it through a
-     * fresh interpreter over the provided rule directory, without
-     * the error-halt option, returning the reported exit code -
-     * the vantage point from which a masked failure disappears.
+     * fresh interpreter over the provided rule directory, returning
+     * the reported exit code; the error-halt option follows the
+     * test's need - the vantage point from which a masked failure
+     * or a missing halt disappears.
      */
-    private fun executeLeniently(directory: Path, identifier: String): Int {
+    private fun executeRule(
+        directory: Path,
+        identifier: String,
+        haltOnErrors: Boolean = true
+    ): Int {
         val filePath = Files.createTempFile("arara-interpreter-file", ".tex")
         val directive = Directives.extractDirectives(
             listOf("% arara: $identifier"), false, texFile
@@ -439,7 +545,7 @@ class InterpreterTest {
         }
         val options = ExecutionOptions(
             rulePaths = setOf(MPPPath(directory.toString())),
-            haltOnErrors = false
+            haltOnErrors = haltOnErrors
         )
         return Interpreter(
             options, ProjectFile(MPPPath(filePath.toString()), texFile),

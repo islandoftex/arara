@@ -58,7 +58,8 @@ parameters reaching the rules, the dry run mode, the localized
 labels, the loop cap through the command line, the halt
 directive's error exit and its succeeding escape - the halted file
 ends, the run proceeds past it, and the request dies with the
-file's own end - dispatch by file extension including its
+file's own end - the halt's requested status reaching the process
+unchanged, dispatch by file extension including its
 rejection path, and a file-database double run in both a TeX and a
 TeX-free shape asserting the record-and-skip semantics of `changed`,
 plus a run behind the log flag asserting the engine, the exit value
@@ -364,7 +365,12 @@ database stay.
   scenarios plus `LuaExecutionTest` run the same pipeline with
   `RuleEngine.current` flipped to the Lua engine (covering sessions and
   wrongly typed conditional helper calls as well), so both engines have
-  automated end-to-end coverage.
+  automated end-to-end coverage. Tests of engine-independent logic -
+  the halt machinery, the exit codes, the failure bookkeeping, the
+  session plumbing - run their scenario through both engines, so a
+  divergence in what either dialect feeds the shared machinery fails
+  the gate; engine-specific machinery keeps its single-engine suites,
+  and the mirrored end-to-end suites own the scenario level.
 - Root `gradle.properties` also drives the build: `arara.jvm.target` and
   `arara.kotlin.target` (the compatibility levels the tapmoc plugin
   enforces); the version catalog is `gradle/libs.versions.toml`.

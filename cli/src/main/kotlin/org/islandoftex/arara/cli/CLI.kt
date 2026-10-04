@@ -70,6 +70,10 @@ import org.islandoftex.arara.lua.LuaInterpreter
  *
  * @author Island of TeX
  */
+// the command line class carries its option surface and the run
+// orchestration side by side: the count is intrinsic to the entry
+// point, not accumulated responsibilities
+@Suppress("TooManyFunctions")
 class CLI : CliktCommand("arara") {
     /**
      * The logger of the command line interface.
@@ -519,6 +523,58 @@ class CLI : CliktCommand("arara") {
     }
 
     /**
+     * The executor wiring of the command line run: the environment
+     * and the directive core come alive before the execution,
+     * every file announces itself and re-derives the configuration
+     * the command line asks for, the closing blank follows only
+     * what the console showed, and the directive list gains the
+     * preamble the run asks for.
+     */
+    private fun executorHooks() = ExecutorHooks(
+        executeBeforeExecution = {
+            Session.updateEnvironmentVariables()
+            // directive processing has to be initialized, so that the core
+            // component respects our MVEL processing
+            DirectiveProcessing.initializeDirectiveCore()
+        },
+        executeBeforeProject = {
+            // the configuration file of each project is loaded in
+            // resolveProjects, where it has to be available before
+            // the file references are resolved against the file
+            // types the configuration may provide
+        },
+        executeBeforeFile = {
+            processedFiles.add(it.path.fileName)
+            updateConfigurationFromCommandLine()
+            Display.printFileInformation(it)
+        },
+        executeAfterFile = {
+            // the closing blank between file executions
+            // prints only when the console showed something
+            // for the file: a file whose directives were all
+            // skipped or absent already ends on its header's
+            // own blank, and a second one would stack
+            if (Display.printedForFile) {
+                println()
+            }
+        },
+        processDirectives = { file, list ->
+            DirectiveProcessing.process(
+                file,
+                list
+                    // an explicit command line preamble always
+                    // applies - the policy below governs the
+                    // configuration's standing default only
+                    .takeIf {
+                        list.isNotEmpty() && preamble == null &&
+                            !PreambleState.prependPreambleIfDirectivesGiven
+                    }
+                    ?: prependPreambleDirectives(file.fileType, list)
+            )
+        }
+    )
+
+    /**
      * The actual main method of arara (when run in command-line mode)
      */
     override fun run() {
@@ -553,54 +609,15 @@ class CLI : CliktCommand("arara") {
         updateSessionFromCommandLine()
 
         try {
-            LinearExecutor.hooks = ExecutorHooks(
-                executeBeforeExecution = {
-                    Session.updateEnvironmentVariables()
-                    // directive processing has to be initialized, so that the core
-                    // component respects our MVEL processing
-                    DirectiveProcessing.initializeDirectiveCore()
-                },
-                executeBeforeProject = {
-                    // the configuration file of each project is loaded in
-                    // resolveProjects, where it has to be available before
-                    // the file references are resolved against the file
-                    // types the configuration may provide
-                },
-                executeBeforeFile = {
-                    processedFiles.add(it.path.fileName)
-                    updateConfigurationFromCommandLine()
-                    Display.printFileInformation(it)
-                },
-                executeAfterFile = {
-                    // the closing blank between file executions
-                    // prints only when the console showed something
-                    // for the file: a file whose directives were all
-                    // skipped or absent already ends on its header's
-                    // own blank, and a second one would stack
-                    if (Display.printedForFile) {
-                        println()
-                    }
-                },
-                processDirectives = { file, list ->
-                    DirectiveProcessing.process(
-                        file,
-                        list
-                            // an explicit command line preamble always
-                            // applies - the policy below governs the
-                            // configuration's standing default only
-                            .takeIf {
-                                list.isNotEmpty() && preamble == null &&
-                                    !PreambleState.prependPreambleIfDirectivesGiven
-                            }
-                            ?: prependPreambleDirectives(file.fileType, list)
-                    )
-                }
-            )
+            LinearExecutor.hooks = executorHooks()
 
             val projects = resolveProjects()
             allFileNames = projects.flatMap { it.files }.map { it.path.fileName }
-            if (LinearExecutor.execute(projects).exitCode != 0)
-                ExecutionStatus.ExternalCallFailed()
+            // the run's exit code reaches the process unchanged - a
+            // halt reports its own status, never a flattened failure
+            val executionReport = LinearExecutor.execute(projects)
+            if (executionReport.exitCode != 0)
+                ExecutionStatus.FinishedWithCode(executionReport.exitCode)
             else
                 ExecutionStatus.Processing()
         } catch (ex: AraraException) {

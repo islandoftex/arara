@@ -390,44 +390,63 @@ class Interpreter(
         rule: Rule,
         parameters: Map<String, Any>
     ): ExecutionStatus {
-        val (results, exitCheck) = when (command) {
-            is SerialRuleCommand ->
-                evaluateMvelCommand(command, parameters) to
-                    mvelExitCheck(command)
-            is LuaRuleCommand ->
-                command.evaluate(parameters) to command.exitCheck
-            else ->
-                throw AraraExceptionWithHeader(
-                    LanguageController
-                        .messages.errorInterpreterWrongReturnType
-                )
+        val (results, exitCheck) = try {
+            when (command) {
+                is SerialRuleCommand ->
+                    evaluateMvelCommand(command, parameters) to
+                        mvelExitCheck(command)
+                is LuaRuleCommand ->
+                    command.evaluate(parameters) to command.exitCheck
+                else ->
+                    throw AraraExceptionWithHeader(
+                        LanguageController
+                            .messages.errorInterpreterWrongReturnType
+                    )
+            }
+        } catch (exception: AraraException) {
+            // a bare halt renders as nothing the expression language
+            // can print: the evaluation fails once the request
+            // already stands, and the request wins over its own
+            // rendering
+            if (Session.contains(haltKey)) {
+                return ExecutionStatus.FinishedWithCode(haltStatus())
+            }
+            throw exception
         }
         // the command list keeps its own failure sticky: with the
         // error-halt option off, a task that failed cannot be
         // masked by one that succeeds after it
         var failure: ExecutionStatus? = null
-        results.filter { it.toString().isNotBlank() }
-            .forEach { current ->
-                Display.printEntry(
-                    rule.displayName!!,
-                    command.name
-                        ?: LanguageController.messages.infoLabelUnnamedTask
-                )
-                val (success, output) = runTask(
-                    current, conditional, rule, exitCheck
-                )
-                Display.printEntryResult(success)
-                // the failed task quotes the tail of its own output;
-                // the plain console stays as it always was
-                if (!success) {
-                    Display.printCommandFailure(output)
-                }
-                enforceHaltPolicy(success, command)
-                if (!success) {
-                    failure = ExecutionStatus.ExternalCallFailed()
-                }
+        val tasks = results.filter { it.toString().isNotBlank() }
+        tasks.forEach { current ->
+            Display.printEntry(
+                rule.displayName!!,
+                command.name
+                    ?: LanguageController.messages.infoLabelUnnamedTask
+            )
+            val (success, output) = runTask(
+                current, conditional, rule, exitCheck
+            )
+            Display.printEntryResult(success)
+            // the failed task quotes the tail of its own output;
+            // the plain console stays as it always was
+            if (!success) {
+                Display.printCommandFailure(output)
             }
-        return failure ?: ExecutionStatus.Processing()
+            enforceHaltPolicy(success, command)
+            if (!success) {
+                failure = ExecutionStatus.ExternalCallFailed()
+            }
+        }
+        return if (tasks.isEmpty() && Session.contains(haltKey)) {
+            // a command that evaluated without leaving a task - a
+            // bare halt call renders as nothing to run - still
+            // lands the halt it raised: the request takes effect
+            // where it stands
+            ExecutionStatus.FinishedWithCode(haltStatus())
+        } else {
+            failure ?: ExecutionStatus.Processing()
+        }
     }
 
     /**
