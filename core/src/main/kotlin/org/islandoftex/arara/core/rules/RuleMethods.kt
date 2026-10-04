@@ -493,7 +493,9 @@ object RuleMethods {
         writeTextToFile(MPPPath(path), lines.joinToString(System.lineSeparator()), append)
 
     /**
-     * Reads the provided file into a list of strings.
+     * Reads the provided file into a list of strings, reporting an
+     * unreadable file the same way as a missing one: the empty
+     * list, the probe semantics a rule relies on when it asks.
      *
      * @param file The file.
      * @return A list of strings.

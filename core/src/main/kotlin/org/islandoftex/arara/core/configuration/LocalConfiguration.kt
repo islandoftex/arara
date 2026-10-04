@@ -53,8 +53,9 @@ data class LocalConfiguration(
      */
     private val logging: Boolean? = null,
     /**
-     * Whether the directive extraction reads the whole file
-     * instead of the header alone, if the configuration says so.
+     * Whether the directive extraction reads the header alone
+     * (the default) or, when false, the whole file, if the
+     * configuration says so.
      */
     private val header: Boolean? = null,
     /**

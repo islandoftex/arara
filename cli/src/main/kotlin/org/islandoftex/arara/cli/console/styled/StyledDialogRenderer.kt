@@ -257,25 +257,15 @@ class StyledDialogRenderer(private val terminal: Terminal) : DialogRenderer {
     }
 
     /**
-     * The severity glyph of the dialog type, following the
-     * capability.
+     * The severity glyph of the dialog type. The box renders on
+     * the decorated path alone - an undecorated stream receives
+     * the classic plain dialog instead - so the glyphs need no
+     * fallback of their own here.
      */
     private fun glyphFor(type: Int): String = when (type) {
-        typeError -> if (isDecorated) {
-            StyledTheme.failureGlyph
-        } else {
-            StyledTheme.failureFallback
-        }
-        typeWarning -> if (isDecorated) {
-            StyledTheme.warningGlyph
-        } else {
-            StyledTheme.warningFallback
-        }
-        typeInfo -> if (isDecorated) {
-            StyledTheme.infoGlyph
-        } else {
-            StyledTheme.infoFallback
-        }
+        typeError -> StyledTheme.failureGlyph
+        typeWarning -> StyledTheme.warningGlyph
+        typeInfo -> StyledTheme.infoGlyph
         else -> "?"
     }
 

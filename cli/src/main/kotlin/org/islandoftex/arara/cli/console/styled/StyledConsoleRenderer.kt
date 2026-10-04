@@ -422,7 +422,10 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         val reserved = successGlyph().length + 1 + longestMatch
         val head = "${runningGlyph()} $name · $task "
             .abbreviate(
-                (structureWidth - reserved - leaderFloor).coerceAtLeast(1)
+                // the abbreviation's own minimum is two columns, so
+                // the budget keeps it: a degenerate width degrades
+                // to an ugly head, never a raw crash
+                (structureWidth - reserved - leaderFloor).coerceAtLeast(2)
             )
         val fill = (structureWidth - head.length - reserved - 1)
             .coerceAtLeast(1)
@@ -619,10 +622,11 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
         }
         terminal.println(muted(displaySeparator()))
         // a degenerate width abbreviates ugly instead of breaking
-        // the layout
+        // the layout: the budget keeps the abbreviation's own
+        // minimum of two columns
         terminal.println(
             "${runningGlyph()} $name · $task"
-                .abbreviate(structureWidth.coerceAtLeast(1))
+                .abbreviate(structureWidth.coerceAtLeast(2))
         )
         terminal.println(muted(displaySeparator()))
     }
@@ -641,11 +645,12 @@ class StyledConsoleRenderer(private val terminal: Terminal) : ConsoleRenderer {
             displayRolling = true
         }
         // a degenerate width abbreviates ugly instead of breaking
-        // the layout
+        // the layout: the budget keeps the abbreviation's own
+        // minimum of two columns
         terminal.println(
             muted(
                 "[DR] ${runningGlyph()} $name · $task"
-                    .abbreviate(structureWidth.coerceAtLeast(1))
+                    .abbreviate(structureWidth.coerceAtLeast(2))
             )
         )
         terminal.println(muted(displaySeparator()))

@@ -51,8 +51,8 @@ class RuleArgument : RuleArgument<Any?> {
 
     /**
      * The default value the argument falls back to when
-     * the directive provides none, or null when the
-     * argument is required.
+     * the directive provides none, or null when the rule
+     * declares no default.
      */
     private val default: String? = null
 

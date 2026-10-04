@@ -79,7 +79,7 @@ public interface ExecutionOptions {
 
     /**
      * The paths arara will search for rules. Should default to the rules arara
-     * ships with. For safe runs, a restrictions seems useful.
+     * ships with. For safe runs, a restriction seems useful.
      */
     public val rulePaths: Set<MPPPath>
 

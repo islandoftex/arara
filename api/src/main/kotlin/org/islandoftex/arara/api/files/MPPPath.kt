@@ -339,22 +339,32 @@ public class MPPPath {
             ?: throw AraraIOException("The file could not be found.")
 }
 
-// the number of symlink hops the model follows before treating a
-// chain as a loop; the platform reports such loops as errors
+/**
+ * The number of symlink hops the model follows before treating a
+ * chain as a loop; the platform reports such loops as errors.
+ */
 private const val SYMLINK_CHAIN_LIMIT: Int = 8
 
-// the working directory is queried at construction time, matching
-// the platform semantics: absolutization resolves against the
-// process working directory at the moment of the call
+/**
+ * The working directory is queried at construction time, matching
+ * the platform semantics: absolutization resolves against the
+ * process working directory at the moment of the call.
+ */
 private val workingDirectory: Path
     get() = System.getProperty("user.dir").toPath()
 
+/**
+ * Absolutizes the path against the working directory and
+ * normalizes the result.
+ */
 private fun Path.absolutized(): Path =
     (workingDirectory / this).normalized()
 
-// a segment-wise prefix check: the roots must match and the other
-// path's segments must form a prefix of this path's segments,
-// matching the platform comparison semantics
+/**
+ * A segment-wise prefix check: the roots must match and the other
+ * path's segments must form a prefix of this path's segments,
+ * matching the platform comparison semantics.
+ */
 private fun Path.startsWith(other: Path): Boolean {
     if (root != other.root) return false
     val prefix = other.segments
@@ -365,11 +375,14 @@ private fun Path.startsWith(other: Path): Boolean {
         segments.subList(0, prefix.size) == prefix
 }
 
-// Windows accepts both separators in spellings, but the path
-// algebra recognizes a Windows path by its first backslash, and the
-// TeX toolchain itself reports forward slashes there;
-// drive-prefixed and UNC spellings are re-spelled with backslashes
-// before parsing on that platform so they keep their intended shape
+/**
+ * Windows accepts both separators in spellings, but the path
+ * algebra recognizes a Windows path by its first backslash, and
+ * the TeX toolchain itself reports forward slashes there;
+ * drive-prefixed and UNC spellings are re-spelled with backslashes
+ * before parsing on that platform so they keep their intended
+ * shape.
+ */
 private fun platformSpelling(path: String): String {
     if (!OS.isWindows) return path
     val drivePrefixed = path.length >= 2 && path[1] == ':' &&

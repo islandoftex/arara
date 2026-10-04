@@ -27,8 +27,8 @@ public interface FileType {
         public const val INVALID_EXTENSION: String = "/\\"
 
         /**
-         * This constant identifies an invalid pattern. This is an opening
-         * character class which is invalid.
+         * This constant identifies an invalid pattern: an empty
+         * one, which no line can start with.
          */
         public const val INVALID_PATTERN: String = ""
     }

@@ -45,7 +45,6 @@ import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.session.ExecutionStatus
 import org.islandoftex.arara.cli.configuration.ConfigurationFiles
 import org.islandoftex.arara.cli.console.ConsoleMode
-import org.islandoftex.arara.cli.console.plain.PlainDialogRenderer
 import org.islandoftex.arara.cli.ruleset.DirectiveProcessing
 import org.islandoftex.arara.cli.ruleset.RuleEngine
 import org.islandoftex.arara.cli.utils.Display

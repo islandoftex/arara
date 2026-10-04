@@ -391,6 +391,12 @@ on.
 
 ## Fixed
 
+* The styled presentation no longer crashes on a degenerate
+  terminal width: the abbreviation budgets of its entry heads and
+  dry-run blocks now keep the abbreviation's own minimum of two
+  columns, so a width too small to fit anything degrades to an
+  ugly line the way the plain presentation always did, instead of
+  throwing a raw error into the middle of a run.
 * A halt request skips the remaining directives of the file
   whole: previously the interpreter still resolved, parsed and
   conditionally evaluated them on its way to the skip, so a

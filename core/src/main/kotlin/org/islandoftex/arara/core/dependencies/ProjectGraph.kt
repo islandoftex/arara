@@ -11,7 +11,7 @@ internal class ProjectGraph : Graph<Project>() {
     /**
      * Add all projects and their dependencies into the graph.
      *
-     * @param projects The iterable of projects to
+     * @param projects The iterable of projects to add to the graph.
      */
     fun addAll(projects: Iterable<Project>) {
         projects.forEach { project ->

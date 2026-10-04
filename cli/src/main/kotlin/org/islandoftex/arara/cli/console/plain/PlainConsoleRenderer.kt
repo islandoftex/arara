@@ -30,8 +30,9 @@ import org.islandoftex.arara.core.utils.wrap
 @Suppress("TooManyFunctions")
 object PlainConsoleRenderer : ConsoleRenderer {
     /**
-     * Displays the application banner in the terminal: the logo and
-     * the blank line that has opened every run.
+     * Displays the application banner in the terminal: the logo
+     * and, after its blank, the shared version line that names
+     * the run.
      */
     override fun printBanner() {
         // the banner opens every run, so the per-run state of this

@@ -18,8 +18,8 @@ object PreambleState {
     val preambles: MutableMap<String, String> = mutableMapOf()
 
     /**
-     * The preamble applied when neither the command line nor a
-     * file asks for one by name.
+     * The preamble applied when nothing else asks for one by
+     * name.
      */
     var defaultPreamble: String? = null
 

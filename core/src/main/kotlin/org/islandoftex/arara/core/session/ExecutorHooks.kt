@@ -37,7 +37,9 @@ data class ExecutorHooks(
      */
     val executeBeforeFile: (ProjectFile) -> Unit = { _ -> },
     /**
-     * Runs after every file, with the report of the run so far.
+     * Runs after every file that completed, with the report of
+     * that file's own run: its start and stop stamps and the
+     * exit code it reports.
      *
      * A file the run stops at - a failing task under the error-halt
      * option, or a halt request with a failing status - never

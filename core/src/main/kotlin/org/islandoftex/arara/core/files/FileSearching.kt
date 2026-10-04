@@ -106,8 +106,8 @@ object FileSearching {
     }
 
     /**
-     * Discovers the file through string reference lookup and sets the
-     * configuration accordingly.
+     * Discovers the file through string reference lookup, failing
+     * with a localized error when no file matches.
      *
      * @param reference The string reference.
      * @param workingDirectory The working directory to resolve the

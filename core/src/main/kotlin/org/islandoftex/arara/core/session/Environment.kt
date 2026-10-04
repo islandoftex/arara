@@ -24,8 +24,9 @@ object Environment {
     private val logger = KotlinLogging.logger { }
 
     /**
-     * Gets the system property according to the provided key, or resort to the
-     * fallback value if an exception is thrown or if the key is invalid.
+     * Gets the system property according to the provided key,
+     * falling back to the provided value when the lookup throws
+     * or the property holds an empty string.
      *
      * @param key The system property key.
      * @param fallback The fallback value.

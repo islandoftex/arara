@@ -67,6 +67,11 @@ class Interpreter(
      * the loop cap and the safe mode gate.
      */
     private val executionOptions: ExecutionOptions,
+    /**
+     * The file whose directive the interpreter executes: the halt
+     * key of the file's own requests and the reference the rule
+     * resolution names hang on it.
+     */
     currentFile: ProjectFile,
     /**
      * The working directory the interpreter resolves rule paths

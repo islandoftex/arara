@@ -137,9 +137,11 @@ object LinearExecutor : Executor {
             }
             hooks.executeAfterProject(project)
         } finally {
-            // the project has to be unset even when an exception escapes a
-            // hook or a file execution, as a stale project would make the
-            // executor reject all future execution option changes
+            // the project is observable state the run exposes to the
+            // helpers - the original reference and the working
+            // directory of the interpreter's directives read it -
+            // so it is unset even when an exception escapes a hook
+            // or a file execution
             currentProject = null
         }
         return exitCode
