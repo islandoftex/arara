@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.mvel.rules
 
+import java.lang.reflect.Modifier
 import org.islandoftex.arara.core.rules.ConditionalMethods
 import org.islandoftex.arara.core.rules.RuleMethods
 
@@ -39,7 +40,12 @@ object MvelState {
             "checkClass", "isString", "isList", "isMap", "isBoolean",
             "getOrNull"
         ).forEach { name: String ->
-            map[name] = methodsKotlin.firstOrNull { it.name == name }
+            // the reflective lookup demands the static mirror: a
+            // companion carries the same name as an instance method
+            // too, and the array's order is the JVM's choice
+            map[name] = methodsKotlin.firstOrNull {
+                it.name == name && Modifier.isStatic(it.modifiers)
+            }
                 ?: throw IllegalStateException(
                     "The rule method '$name' cannot be found; the " +
                         "registry in MvelState is out of sync with " +
@@ -60,7 +66,11 @@ object MvelState {
             "found", "toFile", "showDropdown", "showInput",
             "showOptions", "currentFile", "loadClass", "loadObject"
         ).forEach { name: String ->
-            map[name] = methodsKotlin.firstOrNull { it.name == name }
+            // the static mirror again: the lookup must not land on
+            // the instance twin of the same name
+            map[name] = methodsKotlin.firstOrNull {
+                it.name == name && Modifier.isStatic(it.modifiers)
+            }
                 ?: throw IllegalStateException(
                     "The conditional method '$name' cannot be found; the " +
                         "registry in MvelState is out of sync with " +
@@ -70,7 +80,9 @@ object MvelState {
         val ruleMethodsKotlin = RuleMethods::class.java.methods
         listOf("getOriginalReference", "getBasename", "getSession")
             .forEach { name: String ->
-                map[name] = ruleMethodsKotlin.firstOrNull { it.name == name }
+                map[name] = ruleMethodsKotlin.firstOrNull {
+                    it.name == name && Modifier.isStatic(it.modifiers)
+                }
                     ?: throw IllegalStateException(
                         "The conditional method '$name' cannot be found; " +
                             "the registry in MvelState is out of sync " +

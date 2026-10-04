@@ -391,6 +391,14 @@ on.
 
 ## Fixed
 
+* Project file entries that carry their directives explicitly
+  honour the extraction scope the run asks for: under the
+  whole-file mode the list collects every directive, where it
+  silently stopped at the first gap as if the header ended there.
+* The system command helper of the rule vocabulary reports what a
+  tool printed before it failed, not the rendering of the
+  exception that stopped it: the output is the fact that explains
+  the failure, and it now reaches the rule that asked.
 * An explicit preamble request on the command line always applies:
   the `-p`/`--preamble` option was silently ignored for files that
   carry directives of their own when the configuration restricted

@@ -24,7 +24,9 @@ class SerialRuleCommand : RuleCommand {
     override val command: () -> Int
         get() = throw AraraException("Operation not supported for SerialRuleCommand")
 
-    // note: it is unclear why trimming is needed
+    // the template arrives with the surrounding whitespace of its
+    // block in the rule file; the trimmed form is what the
+    // evaluator sees and the log shows
     /**
      * The MVEL expression the command entry evaluates against the
      * resolved arguments.

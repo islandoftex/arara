@@ -2,7 +2,6 @@
 package org.islandoftex.arara.lua.rules
 
 import io.github.taoguan.luaj.Globals
-import io.github.taoguan.luaj.LuaNumber
 import io.github.taoguan.luaj.LuaString
 import io.github.taoguan.luaj.LuaValue
 import io.github.taoguan.luaj.Varargs
@@ -11,7 +10,6 @@ import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.rules.ConditionalMethods
 import org.islandoftex.arara.core.rules.RuleMethods
 import org.islandoftex.arara.core.session.ClassLoading.ClassLoadingStatus
-import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.lua.rules.LuaConversion.badArgument
 import org.islandoftex.arara.lua.rules.LuaConversion.bindSpelled
 import org.islandoftex.arara.lua.rules.LuaConversion.fromLua

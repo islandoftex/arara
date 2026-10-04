@@ -11,7 +11,6 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.ClassLoading
 import org.islandoftex.arara.core.session.ClassLoading.ClassLoadingStatus
 import org.islandoftex.arara.core.session.LinearExecutor
-import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.core.ui.TerminalDialogs
 
 /**

@@ -77,4 +77,30 @@ class LuaProjectFileTest {
             "the wrap names the project file: ${exception.message}"
         )
     }
+
+    @Test
+    fun `honours the extraction scope the caller asked for`(
+        @org.junit.jupiter.api.io.TempDir tempDir: java.nio.file.Path
+    ) {
+        // a line of ordinary text ends the header, so the header
+        // scope collects the directive before it and the whole
+        // scope collects both
+        val document = tempDir.resolve("scoping.tex")
+        Files.writeString(document, "% arara: pdflatex\n\\documentclass{article}\n")
+        val file = LuaProjectFile(
+            MPPPath(document.toString()),
+            org.islandoftex.arara.core.files.FileType("tex", "^\\s*%\\s*")
+        )
+        file.directives = listOf("% arara: one", "\\section{gap}", "% arara: two")
+        assertTrue(
+            file.fetchDirectives(parseOnlyHeader = true)
+                .map { it.identifier } == listOf("one"),
+            "the header scope stops at the ordinary line the explicit list carries"
+        )
+        assertTrue(
+            file.fetchDirectives(parseOnlyHeader = false)
+                .map { it.identifier } == listOf("one", "two"),
+            "the whole scope collects every directive of the list"
+        )
+    }
 }

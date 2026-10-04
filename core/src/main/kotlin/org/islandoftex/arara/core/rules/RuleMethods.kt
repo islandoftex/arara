@@ -14,7 +14,6 @@ import org.islandoftex.arara.api.session.Command
 import org.islandoftex.arara.core.files.FileHandling
 import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.rules.InputHandling
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
@@ -334,7 +333,10 @@ object RuleMethods {
     /**
      * Unsafely executes a system command from the underlying operating system
      * and returns a pair containing the exit status and the command output as a
-     * string.
+     * string. A command that fails reports the sentinel status with whatever
+     * the tool printed before the failure - the fact that explains it - and
+     * a command that never printed anything, one that could not start among
+     * them, leaves the rendering of the underlying exception as the output.
      *
      * @param command The system command to be executed.
      * @return A pair containing the exit status and the system command output
@@ -353,7 +355,11 @@ object RuleMethods {
                     result.exitCode to result.output
                 is SystemCommandResult.Failed ->
                     Environment.ERROR_EXIT_STATUS to
-                        result.exception.toString()
+                        result.output.ifEmpty {
+                            // a command that never started printed nothing:
+                            // the exception rendering is the only fact left
+                            result.exception.toString()
+                        }
             }
 
     /**

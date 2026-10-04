@@ -4,7 +4,6 @@ package org.islandoftex.arara.core.configuration
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
-import org.islandoftex.arara.core.configuration.DefaultConfiguration
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.LinearExecutor
 

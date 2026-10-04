@@ -45,7 +45,7 @@ import org.islandoftex.arara.core.localization.LanguageController
  * ```
  *
  * Command closures receive a context table holding the processed argument
- * values (lists of strings) and the `reference` (a table with `fileName`,
+ * values (lists of strings) and the `reference` (a table with `file_name`,
  * `path` and `parent` fields). Flag closures receive a context table with
  * the raw directive `parameters` and the `reference`, plus the user-provided
  * value of the argument as second parameter. The helper functions known

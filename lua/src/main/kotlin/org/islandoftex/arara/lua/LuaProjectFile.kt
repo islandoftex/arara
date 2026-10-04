@@ -25,14 +25,18 @@ internal class LuaProjectFile(
 
     /**
      * Get the file's directives. This does not put them into any context,
-     * just resolves the literal directives.
+     * just resolves the literal directives. The extraction scope of the
+     * carried list follows the request: the header stops at the first
+     * line outside it, the whole list collects every directive.
      *
+     * @param parseOnlyHeader Whether the extraction looks at the
+     *   header alone.
      * @return The list of directives in the file, in order.
      */
     override fun fetchDirectives(parseOnlyHeader: Boolean): List<Directive> =
         directives?.let { list ->
             runCatching {
-                Directives.extractDirectives(list, true, fileType)
+                Directives.extractDirectives(list, parseOnlyHeader, fileType)
             }.getOrElse {
                 throw AraraException(
                     "I found an error while extracting the directives " +
