@@ -77,8 +77,8 @@ object GermanMessages : AraraMessages {
     override fun errorConfigurationPreamblePrependInvalid(value: String) =
         "Der Schlüssel 'prepend' der Gruppe 'preamble' akzeptiert 'always' oder 'without-directives', nicht '${value}'."
 
-    override fun errorDiscoverFileFileNotFound(file: String, details: String) =
-        "Ich konnte die vorausgesetzte Datei \"${file}\" ${details} nicht finden. Bitte stelle sicher, dass die Datei existiert und eine gültige Dateiendung hat."
+    override fun errorDiscoverFileFileNotFound(file: String, extensions: String) =
+        "Ich konnte die vorausgesetzte Datei \"${file}\" mit keiner der Erweiterungen ${extensions} finden. Bitte stelle sicher, dass die Datei existiert und eine gültige Dateiendung hat."
 
     override val errorEvaluateCompilationFailed =
         "Aus was für einen Grund auch immer kann ich den Ausdruck in der bereitgestellten Bedingung nicht kompilieren. Dieser Teil ist ziemlich knifflig, denn er bezieht die zugrundeliegende Sprache mit ein. Ich werde mein Bestes tun, um dir in jeglicher Art und Weise zu helfen."

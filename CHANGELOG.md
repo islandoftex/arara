@@ -328,6 +328,11 @@ on.
   inside a punctuation group; a message may now carry its own line
   structure, as the console wrapping treats embedded line breaks as
   hard breaks.
+* The file lookup error names the extensions it tried as a plain
+  enumeration instead of a bracketed pipe group - and a file type the
+  configuration redeclares shows once, in its place at the head of
+  the priority order. The unknown-extension error of the
+  configuration model lists its known extensions the same way.
 * The details label of an exception renders in sentence case
   (`Details`), matching the other section titles of the console, in
   every language.

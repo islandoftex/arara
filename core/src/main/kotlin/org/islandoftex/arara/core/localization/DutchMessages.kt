@@ -77,8 +77,8 @@ object DutchMessages : AraraMessages {
     override fun errorConfigurationPreamblePrependInvalid(value: String) =
         "De sleutel 'prepend' van de groep 'preamble' accepteert 'always' of 'without-directives', niet '${value}'."
 
-    override fun errorDiscoverFileFileNotFound(file: String, details: String) =
-        "Ik kon het opgegeven bestand '${file}' ${details} niet vinden. Zorg ervoor dat het bestand bestaat en dat het een geldige extensie heeft."
+    override fun errorDiscoverFileFileNotFound(file: String, extensions: String) =
+        "Ik kon het opgegeven bestand '${file}' niet vinden met een van de extensies ${extensions}. Zorg ervoor dat het bestand bestaat en dat het een geldige extensie heeft."
 
     override val errorEvaluateCompilationFailed =
         "Om een of andere reden kon ik de expressie in de opgegeven voorwaarde niet compileren. Dit is een ingewikkeld probleem, omdat het te maken heeft met aspecten van de onderliggende expressietaal. Ik zal mijn best doen om je zoveel mogelijk hiermee te helpen."

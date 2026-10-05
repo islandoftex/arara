@@ -127,8 +127,12 @@ object FileSearching {
             ?: throw AraraException(
                 LanguageController.messages.errorDiscoverFileFileNotFound(
                     reference,
+                    // the extensions speak as a plain enumeration in
+                    // the priority order of the effective list; a
+                    // type the configuration redeclares shows once
                     executionOptions.fileTypes
-                        .joinToString(" | ", "[ ", " ]")
+                        .distinctBy { it.extension }
+                        .joinToString(", ")
                 )
             )
 

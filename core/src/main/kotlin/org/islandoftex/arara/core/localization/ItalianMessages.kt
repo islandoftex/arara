@@ -77,8 +77,8 @@ object ItalianMessages : AraraMessages {
     override fun errorConfigurationPreamblePrependInvalid(value: String) =
         "La chiave 'prepend' del gruppo 'preamble' accetta 'always' o 'without-directives', non '${value}'."
 
-    override fun errorDiscoverFileFileNotFound(file: String, details: String) =
-        "Non sono riuscito a trovare il file '${file}' ${details}. Assicurati che il file esista e abbia un'estensione valida."
+    override fun errorDiscoverFileFileNotFound(file: String, extensions: String) =
+        "Non sono riuscito a trovare il file '${file}' con nessuna delle estensioni ${extensions}. Assicurati che il file esista e abbia un'estensione valida."
 
     override val errorEvaluateCompilationFailed =
         "Per qualche ragione, non sono riuscito a compilare l'espressione del condizionale fornito. Questa parte è un po' complicata, perché riguarda aspetti del linguaggio interno per le espressioni. Farò del mio meglio per darti una mano, per quanto posso."

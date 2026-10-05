@@ -8,8 +8,10 @@ import kotlin.io.path.createDirectories
 import kotlin.io.path.div
 import kotlin.io.path.writeText
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.ProjectFile
@@ -248,6 +250,51 @@ class FileSearchingTest {
                     ExecutionOptions().copy(executionMode = ExecutionMode.SAFE_RUN)
                 ),
                 "safe mode does not complete extensions when looking up files"
+            )
+        }
+
+        @Test
+        fun `reports the tried extensions as a plain enumeration`(
+            @TempDir tempDir: Path
+        ) {
+            val exception = assertFailsWith<AraraException>(
+                "an unresolvable reference names the extensions it tried"
+            ) {
+                FileSearching.resolveFile(
+                    "QUACK",
+                    tempDir.toMPPPath(),
+                    ExecutionOptions()
+                )
+            }
+            assertTrue(
+                exception.message!!.contains(".tex, .dtx, .ltx, .drv, .ins"),
+                "the extensions speak as a plain enumeration: ${exception.message}"
+            )
+            assertTrue(
+                "[" !in exception.message!! && " | " !in exception.message!!,
+                "no bracket or pipe groups the enumeration: ${exception.message}"
+            )
+        }
+
+        @Test
+        fun `lists a redeclared extension once`(@TempDir tempDir: Path) {
+            // the configuration's redeclaration keeps its place at
+            // the head of the order, and the enumeration shows it once
+            val options = ExecutionOptions().copy(
+                fileTypes = listOf(FileType("tex", "^\\s*%\\s*")) +
+                    DefaultConfiguration.defaultFileTypes
+            )
+            val exception = assertFailsWith<AraraException> {
+                FileSearching.resolveFile("QUACK", tempDir.toMPPPath(), options)
+            }
+            val message = exception.message!!
+            assertTrue(
+                message.contains(".tex, .dtx"),
+                "the redeclared extension leads the enumeration: $message"
+            )
+            assertTrue(
+                message.indexOf(".tex") == message.lastIndexOf(".tex"),
+                "the redeclared extension appears once: $message"
             )
         }
     }

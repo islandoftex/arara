@@ -77,8 +77,8 @@ object NorfolkMessages : AraraMessages {
     override fun errorConfigurationPreamblePrependInvalid(value: String) =
         "The 'prepend' key o' the 'preamble' group'll hev 'always' or 'without-directives', not '${value}'."
 
-    override fun errorDiscoverFileFileNotFound(file: String, details: String) =
-        "Dunt yew git yarself inta a rite ole puckaterry, but I can't find yar file '${file}' ${details}. Yew're gotta find the file and do yew see that has a proper extension on the end onnit, tergether."
+    override fun errorDiscoverFileFileNotFound(file: String, extensions: String) =
+        "Dunt yew git yarself inta a rite ole puckaterry, but I can't find yar file '${file}' not with none o' them extensions ${extensions}. Yew're gotta find the file and do yew see that has a proper extension on the end onnit, tergether."
 
     override val errorEvaluateCompilationFailed =
         "Wuh, I ent got no idear wass gorn on but I coont git the hang o'that conditional. Yew're gotta he'sum idear wot this is orl abowt else yew mite be in a rite ole puckaterry but I'll help yew git it done if I can, ole partner."

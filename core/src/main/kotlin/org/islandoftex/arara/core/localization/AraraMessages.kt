@@ -128,9 +128,11 @@ interface AraraMessages {
      */
     fun errorConfigurationPreamblePrependInvalid(value: String): String
     /**
-     * The error shown when a referenced file cannot be found.
+     * The error shown when a referenced file cannot be found. The
+     * extensions parameter carries the tried extensions as a plain
+     * enumeration.
      */
-    fun errorDiscoverFileFileNotFound(file: String, details: String): String
+    fun errorDiscoverFileFileNotFound(file: String, extensions: String): String
     /**
      * The error shown when a conditional expression cannot be
      * compiled.

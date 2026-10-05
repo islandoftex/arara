@@ -37,8 +37,11 @@ data class SerialFileType(
             ?: throw AraraException(
                 LanguageController.messages.errorFiletypeUnknownExtension(
                     extension,
+                    // a plain enumeration in the priority order; a
+                    // type the configuration redeclares shows once
                     LinearExecutor.executionOptions.fileTypes
-                        .joinToString(" | ", "[ ", " ]")
+                        .distinctBy { it.extension }
+                        .joinToString(", ")
                 )
             )
     )
