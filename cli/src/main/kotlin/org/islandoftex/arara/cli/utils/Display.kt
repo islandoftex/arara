@@ -3,6 +3,7 @@ package org.islandoftex.arara.cli.utils
 
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.session.Command
@@ -71,6 +72,29 @@ object Display {
      */
     internal var printedForFile: Boolean = false
         private set
+
+    /**
+     * The number of projects the run carries. The project line
+     * appears only when the run has more than one project, so
+     * single-project runs keep their historic silhouette; the
+     * application sets the count before the execution starts.
+     */
+    internal var projectCount: Int = 0
+
+    /**
+     * Displays the project information in the terminal: the
+     * structural line that opens a project's territory. The
+     * facade decides whether the run is multi-project, so the
+     * renderers print whatever they are asked to.
+     *
+     * @param project The project.
+     */
+    fun printProjectInformation(project: Project) {
+        if (projectCount > 1) {
+            renderer.printProjectInformation(project)
+            RunLog.projectInformation(project)
+        }
+    }
 
     /**
      * Displays the current entry result in the terminal.

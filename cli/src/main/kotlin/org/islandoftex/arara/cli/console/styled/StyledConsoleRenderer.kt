@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.time.DurationUnit
 import kotlin.time.TimeSource
 import org.islandoftex.arara.api.configuration.ExecutionMode
+import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
@@ -43,7 +44,7 @@ import org.islandoftex.arara.core.utils.wrap
  *
  * @author Island of TeX
  */
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "LargeClass")
 class StyledConsoleRenderer(
     /**
      * The terminal every line of the presentation prints through.
@@ -333,6 +334,23 @@ class StyledConsoleRenderer(
         terminal.println("")
         terminal.println(muted(Display.versionLine))
         terminal.println("")
+    }
+
+    /**
+     * Displays the project information in the terminal: the
+     * structural line that opens a project's territory. The
+     * oc211 plumbing renders the same line the plain
+     * presentation does; the styled section vocabulary arrives
+     * with the presence pair's second cut.
+     *
+     * @param project The project.
+     */
+    override fun printProjectInformation(project: Project) {
+        LanguageController.messages
+            .infoDisplayProject(
+                project.name,
+                project.workingDirectory.fileName
+            ).let { terminal.println(it) }
     }
 
     /**

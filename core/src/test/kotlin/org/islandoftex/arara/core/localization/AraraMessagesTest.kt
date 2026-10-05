@@ -181,6 +181,7 @@ class AraraMessagesTest {
                 errorValidateHeaderWrongIdentifier("alpha", "beta"),
                 infoDisplayExecutionTime,
                 infoDisplayFileInformation("alpha", "beta", "gamma"),
+                infoDisplayProject("alpha", "beta"),
                 infoDisplayTimeUnit,
                 infoInterpreterDryRunModeBooleanMode(true),
                 infoInterpreterDryRunModeSystemCommand("alpha"),
@@ -261,6 +262,8 @@ class AraraMessagesTest {
             listOf("quux1") to { it.errorProjectDuplicatePath("quux1") },
             listOf("quux1", "quux2") to
                 { it.errorProjectFileInMultipleProjects("quux1", "quux2") },
+            listOf("quux1", "quux2") to
+                { it.infoDisplayProject("quux1", "quux2") },
             listOf("quux1") to
                 { it.errorProjectFileTypeUnknownExtension("quux1") },
             listOf("quux1") to { it.errorProjectUnknownKey("quux1") },

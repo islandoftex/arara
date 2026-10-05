@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.console
 
+import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.session.Command
@@ -100,6 +101,16 @@ interface ConsoleRenderer {
      * @param file The project file.
      */
     fun printFileInformation(file: ProjectFile)
+
+    /**
+     * Displays the project information in the terminal: the
+     * structural line that opens a project's territory in a
+     * multi-project run. Single-project runs never call it, so
+     * the historic silhouette keeps its shape.
+     *
+     * @param project The project.
+     */
+    fun printProjectInformation(project: Project)
 
     /**
      * Displays the command a dry run is about to run. The historic

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.console.plain
 import org.islandoftex.arara.api.configuration.ExecutionMode
+import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
@@ -515,5 +516,21 @@ object PlainConsoleRenderer : ConsoleRenderer {
                 printWrapped(it)
                 println()
             }
+    }
+
+    /**
+     * Displays the project information in the terminal: the
+     * structural line that opens a project's territory. The file
+     * information that follows provides its own separation, so
+     * the project line needs no trailing blank of its own.
+     *
+     * @param project The project.
+     */
+    override fun printProjectInformation(project: Project) {
+        LanguageController.messages
+            .infoDisplayProject(
+                project.name,
+                project.workingDirectory.fileName
+            ).let { printWrapped(it) }
     }
 }

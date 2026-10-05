@@ -164,6 +164,13 @@ on.
   deterministic. The old promise of declaration order was
   unkeepable - the Lua map form has no declaration order - and
   the actual order was whatever the set iteration produced.
+* Multi-project runs name their projects on the console and in
+  the log: the log records the resolved execution order once
+  before any project starts, and each project's territory opens
+  with its name and working directory, in the session's
+  language on the console and in English in the log. The chrome
+  appears only when the run carries more than one project, so
+  single-project runs keep their historic silhouette.
 * Project file entries that declare no `file_type` are detected by
   their extension against the file types of the run - the defaults,
   whatever the command line asks, and the types the project's own

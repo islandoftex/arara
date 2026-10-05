@@ -233,6 +233,9 @@ object ItalianMessages : AraraMessages {
     override fun errorProjectDuplicatePath(name: String) =
         "Il progetto elenca il file '${name}' più di una volta, forse con due grafie dello stesso percorso. In un progetto, un file è elencato una sola volta."
 
+    override fun infoDisplayProject(name: String, directory: String) =
+        "Progetto ${name} (${directory})"
+
     override fun errorProjectFileDirectivesExtraction(
         file: String,
         details: String

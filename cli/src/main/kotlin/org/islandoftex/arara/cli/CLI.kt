@@ -605,11 +605,14 @@ class CLI : CliktCommand("arara") {
             // component respects our MVEL processing
             DirectiveProcessing.initializeDirectiveCore()
         },
-        executeBeforeProject = {
+        executeBeforeProject = { project ->
             // the configuration file of each project is loaded in
             // resolveProjects, where it has to be available before
             // the file references are resolved against the file
-            // types the configuration may provide
+            // types the configuration may provide; the project
+            // line opens the territory when the run is
+            // multi-project
+            Display.printProjectInformation(project)
         },
         executeBeforeFile = {
             processedFiles.add(it.path.toString())
@@ -680,6 +683,7 @@ class CLI : CliktCommand("arara") {
             LinearExecutor.hooks = executorHooks()
 
             val projects = resolveProjects()
+            Display.projectCount = projects.size
             allFileNames = projects.flatMap { it.files }.map { it.path.toString() }
             // the run's exit code reaches the process unchanged - a
             // halt reports its own status, never a flattened failure

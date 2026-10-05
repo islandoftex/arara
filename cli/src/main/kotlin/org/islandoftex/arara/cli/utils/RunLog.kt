@@ -3,6 +3,7 @@ package org.islandoftex.arara.cli.utils
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.islandoftex.arara.api.AraraAPI
+import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.configuration.DefaultConfiguration
 import org.islandoftex.arara.core.session.Environment
@@ -19,6 +20,11 @@ import org.islandoftex.arara.core.session.Session
  *
  * @author Island of TeX
  */
+// the log entries are one function per line the run writes - the
+// count is the shape of the log surface, not accumulated
+// responsibilities, and the project line is one more entry of
+// the same kind
+@Suppress("TooManyFunctions")
 object RunLog {
     /**
      * The logger of the run log.
@@ -96,6 +102,17 @@ object RunLog {
                 "::: user.home @ $userHome\n" +
                 "::: CF @ $configurationFileName"
         }
+    }
+
+    /**
+     * Writes the entry announcing the project the run enters, the
+     * English twin of the localized console line.
+     *
+     * @param project The project.
+     */
+    fun projectInformation(project: Project) = logger.info {
+        "Project \"${project.name}\" " +
+            "(working directory: ${project.workingDirectory.normalize()})"
     }
 
     /**

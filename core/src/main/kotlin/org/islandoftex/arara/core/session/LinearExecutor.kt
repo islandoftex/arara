@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.session
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlin.time.TimeSource
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.configuration.ExecutionOptions
@@ -17,6 +18,11 @@ import org.islandoftex.arara.core.localization.LanguageController
  * line application installs.
  */
 object LinearExecutor : Executor {
+    /**
+     * The logger of the linear executor.
+     */
+    private val logger = KotlinLogging.logger { }
+
     /**
      * Specify custom user hooks to run.
      */
@@ -91,6 +97,13 @@ object LinearExecutor : Executor {
             )
         }
         hooks.executeBeforeExecution()
+        // the resolved order is the run's own narrative: the log
+        // records it once, before any project starts, so the
+        // reader knows the sequence before the details follow
+        logger.info {
+            "Project execution order resolved as: " +
+                projectsInOrder.joinToString(", ") { it.name }
+        }
         val executionStarted = TimeSource.Monotonic.markNow()
         var exitCode = 0
         for (project in projectsInOrder) {

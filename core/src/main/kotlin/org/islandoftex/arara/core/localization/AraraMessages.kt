@@ -396,6 +396,11 @@ interface AraraMessages {
      */
     fun errorProjectDuplicatePath(name: String): String
     /**
+     * The project line shown when a multi-project run opens a
+     * project's territory.
+     */
+    fun infoDisplayProject(name: String, directory: String): String
+    /**
      * The error shown when the directives a project file
      * specification carries cannot be extracted.
      */

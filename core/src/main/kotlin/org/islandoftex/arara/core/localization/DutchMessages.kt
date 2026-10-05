@@ -233,6 +233,9 @@ object DutchMessages : AraraMessages {
     override fun errorProjectDuplicatePath(name: String) =
         "Het project noemt het bestand '${name}' meer dan eens, misschien onder twee schrijfwijzen van dezelfde locatie. Binnen een project wordt een bestand precies één keer genoemd."
 
+    override fun infoDisplayProject(name: String, directory: String) =
+        "Project ${name} (${directory})"
+
     override fun errorProjectFileDirectivesExtraction(
         file: String,
         details: String
