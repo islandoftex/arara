@@ -147,7 +147,12 @@ data class LocalConfiguration(
             }
             .map { it.normalize() }
             .toSet()
-        val databaseName = dbname?.let { MPPPath(MPPPath(it.trim()).fileName) }
+        // the database name honors the configured path the same way
+        // the log file always has: the value names the file, and a
+        // relative path resolves against the working directory when
+        // the database is opened - never silently discarding the
+        // user's intent
+        val databaseName = dbname?.let { MPPPath(it.trim()) }
             ?: baseOptions.databaseName
         val maxLoops = loops?.let {
             if (loops > 0) {

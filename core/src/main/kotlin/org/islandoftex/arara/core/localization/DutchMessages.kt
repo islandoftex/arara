@@ -54,7 +54,7 @@ object DutchMessages : AraraMessages {
         "De sleutel '${key}' vereist een lijst met tekenreeksen."
 
     override fun errorConfigurationKeyRequiresTable(key: String) =
-        "De sleutel '${key}' vereist een tabel met tekenreeksparen."
+        "De sleutel '${key}' vereist een tabel."
 
     override fun errorConfigurationKeyRequiresStringKeys(key: String) =
         "De sleutel '${key}' vereist tekenreeksen als sleutels."
@@ -73,6 +73,9 @@ object DutchMessages : AraraMessages {
 
     override val errorConfigurationFileTypePatternNotAString =
         "De sleutel 'pattern' van een 'file_types'-waarde vereist een tekenreekswaarde."
+
+    override fun errorConfigurationPreamblePrependInvalid(value: String) =
+        "De sleutel 'prepend' van de groep 'preamble' accepteert 'always' of 'without-directives', niet '${value}'."
 
     override fun errorDiscoverFileFileNotFound(file: String, details: String) =
         "Ik kon het opgegeven bestand '${file}' ${details} niet vinden. Zorg ervoor dat het bestand bestaat en dat het een geldige extensie heeft."

@@ -15,10 +15,11 @@ import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.session.Environment
 
 /**
- * Verifies the Lua configuration parser: the full key set, the
- * defaults for omitted keys, the rejection of unknown keys and wrong
- * types, and the values arara puts in scope for the script to compute
- * its paths from.
+ * Verifies the Lua configuration parser: the full key surface with
+ * its grouped families, the defaults for omitted keys, the
+ * rejection of unknown keys - at the root and inside every group -
+ * of wrong types and of unknown preamble policies, and the values
+ * arara puts in scope for the script to compute its paths from.
  */
 class LuaLocalConfigurationTest {
     private fun configFile(content: String): MPPPath {
@@ -45,29 +46,38 @@ class LuaLocalConfigurationTest {
                   language = "de",
                   loops = 5,
                   verbose = true,
-                  logging = true,
                   header = false,
-                  db_name = "database",
-                  log_name = "mylog",
-                  preambles = {
-                    ["twopdftex"] = "% arara: pdftex\n% arara: pdftex"
+                  database = "logs/myrun/arara.yaml",
+                  log = {
+                    enabled = true,
+                    file = "mylog"
                   },
-                  default_preamble = "twopdftex",
-                  prepend_preamble_if_directives_given = false,
-                  console = "styled",
-                  animations = false
+                  console = {
+                    mode = "styled",
+                    animations = false
+                  },
+                  preamble = {
+                    default = "twopdftex",
+                    prepend = "without-directives",
+                    definitions = {
+                      twopdftex = {
+                        "% arara: pdflatex",
+                        "% arara: pdflatex"
+                      }
+                    }
+                  }
                 }
                 """.trimIndent()
             ),
             MPPPath(".")
         )
         assertEquals(
-            mapOf("twopdftex" to "% arara: pdftex\n% arara: pdftex"),
+            mapOf("twopdftex" to "% arara: pdflatex\n% arara: pdflatex"),
             configuration.preambles,
-            "the preambles are loaded from the configuration"
+            "the preamble definitions join into the directives they name"
         )
         assertEquals("twopdftex", configuration.defaultPreamble, "the default preamble")
-        assertEquals(false, configuration.prependPreambleIfDirectivesGiven, "preamble prepending follows the configuration")
+        assertEquals(false, configuration.prependPreambleIfDirectivesGiven, "the without-directives policy applies only to files without directives")
 
         val loggingOptions = configuration.toLoggingOptions()
         assertTrue(loggingOptions.enableLogging, "logging is enabled as configured")
@@ -76,6 +86,16 @@ class LuaLocalConfigurationTest {
         // friends operate on the absolutized `referencePath`; the configured
         // name therefore survives as the file name
         assertEquals("mylog", loggingOptions.logFile.fileName, "the log file name keeps the configured value")
+
+        val executionOptions = configuration.toExecutionOptions(
+            Project("test", MPPPath("."), setOf()),
+            ExecutionOptions()
+        )
+        assertEquals(
+            MPPPath("logs/myrun/arara.yaml"),
+            executionOptions.databaseName,
+            "the database name honors the configured path"
+        )
 
         val uiOptions = configuration.toUserInterfaceOptions()
         assertEquals(MPPLocale("de"), uiOptions.locale, "the locale is loaded from the configuration")
@@ -86,9 +106,17 @@ class LuaLocalConfigurationTest {
     @Test
     fun `falls back to defaults for omitted keys`() {
         val configuration = load("""return { language = "en" }""")
-        assertEquals(emptyMap(), configuration.preambles, "an omitted preambles key yields an empty map")
+        assertEquals(emptyMap(), configuration.preambles, "an omitted definitions key yields an empty map")
         assertEquals(null, configuration.defaultPreamble, "an omitted default preamble yields null")
-        assertEquals(true, configuration.prependPreambleIfDirectivesGiven, "preamble prepending defaults to true")
+        assertEquals(true, configuration.prependPreambleIfDirectivesGiven, "an omitted policy applies everywhere")
+    }
+
+    @Test
+    fun `the always policy applies everywhere`() {
+        val configuration = load(
+            """return { preamble = { prepend = "always" } }"""
+        )
+        assertEquals(true, configuration.prependPreambleIfDirectivesGiven, "the always policy applies to every file")
     }
 
     @Test
@@ -163,6 +191,34 @@ class LuaLocalConfigurationTest {
     }
 
     @Test
+    fun `rejects unknown keys inside the groups`() {
+        assertFailsWith<AraraException>(
+            "a typo inside a group names itself the same way"
+        ) {
+            load("""return { log = { enbabled = true } }""")
+        }
+        assertFailsWith<AraraException>(
+            "a typo inside a group names itself the same way"
+        ) {
+            load("""return { preamble = { defalt = "x" } }""")
+        }
+    }
+
+    @Test
+    fun `rejects a group that is not a table`() {
+        assertFailsWith<AraraException>(
+            "a group that is not a table is an error"
+        ) {
+            load("""return { console = "styled" }""")
+        }
+        assertFailsWith<AraraException>(
+            "a group that is not a table is an error"
+        ) {
+            load("""return { log = true }""")
+        }
+    }
+
+    @Test
     fun `rejects wrongly typed values`() {
         assertFailsWith<AraraException>(
             "wrongly typed configuration keys must be rejected"
@@ -198,24 +254,64 @@ class LuaLocalConfigurationTest {
         ) {
             load("""return { paths = { 42 } }""")
         }
+        assertFailsWith<AraraException>(
+            "wrongly typed configuration keys must be rejected"
+        ) {
+            load("""return { log = { enabled = "yes" } }""")
+        }
+        assertFailsWith<AraraException>(
+            "wrongly typed configuration keys must be rejected"
+        ) {
+            load("""return { console = { animations = "no" } }""")
+        }
     }
 
     @Test
-    fun `rejects wrong preamble map shapes`() {
+    fun `rejects wrong preamble definition shapes`() {
         assertFailsWith<AraraException>(
-            "the preamble map requires string pairs"
+            "the definitions require a table"
         ) {
-            load("""return { preambles = 42 }""")
+            load("""return { preamble = { definitions = 42 } }""")
         }
         assertFailsWith<AraraException>(
-            "the preamble map requires string pairs"
+            "a definition requires a list of directive lines"
         ) {
-            load("""return { preambles = { key = 42 } }""")
+            load(
+                """
+                return {
+                  preamble = {
+                    definitions = { broken = "% arara: pdflatex" }
+                  }
+                }
+                """.trimIndent()
+            )
         }
         assertFailsWith<AraraException>(
-            "the preamble map requires string pairs"
+            "every directive line requires a string"
         ) {
-            load("""return { preambles = { "orphan" } }""")
+            load(
+                """
+                return {
+                  preamble = {
+                    definitions = { broken = { "% arara: pdflatex", 42 } }
+                  }
+                }
+                """.trimIndent()
+            )
+        }
+    }
+
+    @Test
+    fun `rejects unknown preamble policies`() {
+        assertFailsWith<AraraException>(
+            "the policy vocabulary is two words"
+        ) {
+            load("""return { preamble = { prepend = "sometimes" } }""")
+        }
+        assertFailsWith<AraraException>(
+            "a wrongly typed policy is not a word at all"
+        ) {
+            load("""return { preamble = { prepend = 42 } }""")
         }
     }
 

@@ -391,6 +391,15 @@ on.
 
 ## Fixed
 
+* The database honors the configured path the same way the log
+  file always has: a relative path in the database name resolves
+  against the working directory when the database is opened,
+  where the directory part was silently discarded and the file
+  always landed beside the project regardless of what was
+  written. Both name keys of the configuration now share one
+  rule: the value names the file, exactly, extension included -
+  the manual's promise of extension appending was never true of
+  this code, and the documentation round corrects it.
 * The last two user-facing English exceptions join the catalog:
   the safe mode rejections — a rule trying to run a system
   command or load classes from an archive under `--safe-run` —

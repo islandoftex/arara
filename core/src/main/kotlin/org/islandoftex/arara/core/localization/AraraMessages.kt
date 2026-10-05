@@ -123,6 +123,11 @@ interface AraraMessages {
      */
     val errorConfigurationFileTypePatternNotAString: String
     /**
+     * The error shown when the preamble application policy is
+     * not one of the two words it accepts.
+     */
+    fun errorConfigurationPreamblePrependInvalid(value: String): String
+    /**
      * The error shown when a referenced file cannot be found.
      */
     fun errorDiscoverFileFileNotFound(file: String, details: String): String

@@ -54,7 +54,7 @@ object BrazilianPortugueseMessages : AraraMessages {
         "A chave '${key}' requer uma lista de textos."
 
     override fun errorConfigurationKeyRequiresTable(key: String) =
-        "A chave '${key}' requer uma tabela de pares de textos."
+        "A chave '${key}' requer uma tabela."
 
     override fun errorConfigurationKeyRequiresStringKeys(key: String) =
         "A chave '${key}' requer textos como chaves."
@@ -73,6 +73,9 @@ object BrazilianPortugueseMessages : AraraMessages {
 
     override val errorConfigurationFileTypePatternNotAString =
         "A chave 'pattern' de uma entrada de 'file_types' requer um valor de texto."
+
+    override fun errorConfigurationPreamblePrependInvalid(value: String) =
+        "A chave 'prepend' do grupo 'preamble' aceita 'always' ou 'without-directives', não '${value}'."
 
     override fun errorDiscoverFileFileNotFound(file: String, details: String) =
         "Não consegui encontrar o arquivo especificado '${file}' ${details}. Por favor, certifique-se de que o arquivo existe e que possui uma extensão válida."

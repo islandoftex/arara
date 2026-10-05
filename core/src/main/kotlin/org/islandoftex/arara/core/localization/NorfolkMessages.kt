@@ -54,7 +54,7 @@ object NorfolkMessages : AraraMessages {
         "The '${key}' key wants a list of strings."
 
     override fun errorConfigurationKeyRequiresTable(key: String) =
-        "The '${key}' key wants a table of string pairs."
+        "The '${key}' key wants a table."
 
     override fun errorConfigurationKeyRequiresStringKeys(key: String) =
         "The '${key}' key wants strings for its keys."
@@ -73,6 +73,9 @@ object NorfolkMessages : AraraMessages {
 
     override val errorConfigurationFileTypePatternNotAString =
         "The 'pattern' key of a 'file_types' entry wants a string value."
+
+    override fun errorConfigurationPreamblePrependInvalid(value: String) =
+        "The 'prepend' key o' the 'preamble' group'll hev 'always' or 'without-directives', not '${value}'."
 
     override fun errorDiscoverFileFileNotFound(file: String, details: String) =
         "Dunt yew git yarself inta a rite ole puckaterry, but I can't find yar file '${file}' ${details}. Yew're gotta find the file and do yew see that has a proper extension on the end onnit, tergether."

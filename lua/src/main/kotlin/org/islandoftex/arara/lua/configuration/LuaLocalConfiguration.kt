@@ -13,11 +13,12 @@ import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.lua.rules.LuaConversion
 
 /**
- * Parse configuration files written in arara's Lua configuration format.
+ * Parse configuration files written in arara's Lua configuration
+ * format.
  *
- * A configuration file is a Lua script returning a table with the same
- * keys as the YAML configuration format, spelled in Lua's snake_case
- * where the YAML names join words in camelCase or without a separator:
+ * A configuration file is a Lua script returning a table. The keys
+ * that name single values or plain lists sit at the root, and the
+ * keys that form true families nest in their own tables:
  *
  * ```lua
  * return {
@@ -32,41 +33,62 @@ import org.islandoftex.arara.lua.rules.LuaConversion
  *   language = "en",
  *   loops = 10,
  *   verbose = true,
- *   logging = false,
  *   header = true,
- *   db_name = "arara",
- *   log_name = "arara",
- *   preambles = {
- *     ["twopdftex"] = "% arara: pdftex\n% arara: pdftex"
+ *   database = "arara",
+ *   log = {
+ *     enabled = true,
+ *     file = "arara"
  *   },
- *   default_preamble = "twopdftex",
- *   prepend_preamble_if_directives_given = true
+ *   console = {
+ *     mode = "plain",
+ *     animations = true
+ *   },
+ *   preamble = {
+ *     default = "twopdftex",
+ *     prepend = "always",
+ *     definitions = {
+ *       twopdftex = {
+ *         "% arara: pdflatex",
+ *         "% arara: pdflatex"
+ *       }
+ *     }
+ *   }
  * }
  * ```
  *
- * The script runs with arara's own values in scope, so paths and other
- * strings are computed in plain Lua instead of relying on a placeholder
- * syntax: the table `user` carries the `home` and `name` of the user
- * running arara, and `cwd` is the working directory the configuration
- * is loaded for. As a script evaluates once, at load, so do the values:
- * `cwd` is the working directory of that very moment.
+ * The `preamble.prepend` key names where the default preamble
+ * applies: `"always"` prepends it to every file, and
+ * `"without-directives"` keeps it for the files that carry no
+ * directives of their own - any other word is an error. A
+ * definition is a list of directive lines, one per entry, in the
+ * same shape the `paths` list keeps.
  *
- * The parsed result is converted into the very same [LocalConfiguration]
- * representation the YAML parser produces, so both formats behave
- * identically once loaded.
+ * The script runs with arara's own values in scope, so paths and
+ * other strings are computed in plain Lua instead of relying on a
+ * placeholder syntax: the table `user` carries the `home` and
+ * `name` of the user running arara, and `cwd` is the working
+ * directory the configuration is loaded for. As a script
+ * evaluates once, at load, so do the values: `cwd` is the
+ * working directory of that very moment.
+ *
+ * The parsed result is converted into the very same
+ * [LocalConfiguration] representation the YAML parser produces,
+ * so both formats behave identically once loaded.
  *
  * @author Island of TeX
  */
+// the parser walks a key surface of two depths - roots and
+// groups - and every extraction is its own function; the count
+// is the shape of the format, not accumulated responsibilities
+@Suppress("TooManyFunctions")
 object LuaLocalConfiguration {
     /**
-     * The configuration keys the Lua format accepts, in their
-     * snake_case spellings; a key outside the set is an error.
+     * The configuration keys the Lua format accepts at the root of
+     * the table; a key outside the set is an error.
      */
     private val knownKeys = setOf(
-        "paths", "file_types", "language", "loops", "verbose", "logging",
-        "header", "db_name", "log_name", "preambles", "console",
-        "default_preamble", "prepend_preamble_if_directives_given",
-        "animations"
+        "paths", "file_types", "language", "loops", "verbose", "header",
+        "database", "log", "console", "preamble"
     )
 
     /**
@@ -140,7 +162,8 @@ object LuaLocalConfiguration {
 
     /**
      * Converts the plain map of the Lua configuration into the
-     * model, rejecting every key the format does not accept.
+     * model, rejecting every key the format does not accept, at
+     * the root and inside every group.
      *
      * @param map The map the Lua table converted to.
      * @return The configuration model.
@@ -155,27 +178,138 @@ object LuaLocalConfiguration {
                     )
             )
         }
+        val log = group(map, "log", setOf("enabled", "file"))
+        val console = group(map, "console", setOf("mode", "animations"))
+        val preamble = group(
+            map, "preamble",
+            setOf("default", "prepend", "definitions")
+        )
         return LocalConfiguration(
             paths = stringList(map, "paths"),
             filetypes = fileTypes(map),
             language = string(map, "language"),
             loops = int(map, "loops"),
             verbose = boolean(map, "verbose"),
-            logging = boolean(map, "logging"),
+            logging = boolean(log, "enabled"),
             header = boolean(map, "header"),
-            dbname = string(map, "db_name"),
-            logname = string(map, "log_name"),
-            console = string(map, "console"),
-            animations = boolean(map, "animations"),
-            preambles = stringMap(map, "preambles"),
-            defaultPreamble = string(map, "default_preamble"),
-            prependPreambleIfDirectivesGiven =
-                boolean(map, "prepend_preamble_if_directives_given") ?: true,
+            dbname = string(map, "database"),
+            logname = string(log, "file"),
+            console = string(console, "mode"),
+            animations = boolean(console, "animations"),
+            preambles = preambleDefinitions(preamble),
+            defaultPreamble = string(preamble, "default"),
+            prependPreambleIfDirectivesGiven = prependMode(preamble),
             // the script computed its paths with the values in scope,
             // so no engine tokens remain to expand downstream
             expandPathTokens = false
         )
     }
+
+    /**
+     * Extracts a group table from the map, validating the shape
+     * and rejecting every subkey the group does not accept - a
+     * typo inside a group names itself the same way a root key
+     * does, qualified by its group.
+     */
+    @Throws(AraraException::class)
+    private fun group(
+        map: Map<String, Any?>,
+        name: String,
+        keys: Set<String>
+    ): Map<String, Any?> =
+        when (val value = map[name]) {
+            null -> emptyMap()
+            // an empty Lua table converts to an empty list
+            is List<*> -> value.takeIf { it.isEmpty() }?.let { emptyMap() }
+                ?: throw AraraException(
+                    LanguageController.messages
+                        .errorConfigurationKeyRequiresTable(name)
+                )
+            is Map<*, *> -> {
+                value.keys.map { it.toString() }
+                    .minus(keys).takeIf { it.isNotEmpty() }?.let {
+                        throw AraraException(
+                            LanguageController.messages
+                                .errorConfigurationUnknownKeys(
+                                    it.joinToString(", ", "(", ")") { key ->
+                                        "$name.$key"
+                                    }
+                                )
+                        )
+                    }
+                @Suppress("UNCHECKED_CAST")
+                value as Map<String, Any?>
+            }
+            else -> throw AraraException(
+                LanguageController.messages
+                    .errorConfigurationKeyRequiresTable(name)
+            )
+        }
+
+    /**
+     * Extracts the preamble definitions: a table mapping each
+     * preamble name to its list of directive lines, joined into
+     * the single string the model keeps.
+     */
+    @Throws(AraraException::class)
+    private fun preambleDefinitions(
+        preamble: Map<String, Any?>
+    ): Map<String, String> =
+        when (val value = preamble["definitions"]) {
+            null -> emptyMap()
+            is List<*> -> value.takeIf { it.isEmpty() }?.let { emptyMap() }
+                ?: throw AraraException(
+                    LanguageController.messages
+                        .errorConfigurationKeyRequiresTable("definitions")
+                )
+            is Map<*, *> -> value.entries.associate { (name, lines) ->
+                val preambleName = name as? String
+                    ?: throw AraraException(
+                        LanguageController.messages
+                            .errorConfigurationKeyRequiresStringKeys(
+                                "definitions"
+                            )
+                    )
+                val directives = lines as? List<*>
+                    ?: throw AraraException(
+                        LanguageController.messages
+                            .errorConfigurationKeyRequiresStringList(
+                                "definitions"
+                            )
+                    )
+                preambleName to directives.joinToString("\n") { line ->
+                    line as? String ?: throw AraraException(
+                        LanguageController.messages
+                            .errorConfigurationEntryNotAString(
+                                "definitions"
+                            )
+                    )
+                }
+            }
+            else -> throw AraraException(
+                LanguageController.messages
+                    .errorConfigurationKeyRequiresTable("definitions")
+            )
+        }
+
+    /**
+     * Extracts the preamble application policy: `"always"` names
+     * the historical behavior and `"without-directives"` keeps the
+     * default preamble for files with no directives of their own;
+     * any other word is an error, and an absent key applies
+     * everywhere.
+     */
+    @Throws(AraraException::class)
+    private fun prependMode(preamble: Map<String, Any?>): Boolean =
+        when (val value = string(preamble, "prepend")) {
+            null -> true
+            "always" -> true
+            "without-directives" -> false
+            else -> throw AraraException(
+                LanguageController.messages
+                    .errorConfigurationPreamblePrependInvalid(value)
+            )
+        }
 
     /**
      * Extracts an optional string value, rejecting any other type.
@@ -224,38 +358,6 @@ object LuaLocalConfiguration {
             } ?: throw AraraException(
                 LanguageController.messages
                     .errorConfigurationKeyRequiresStringList(key)
-            )
-        }
-
-    /**
-     * Extracts a map of string pairs, accepting the empty table -
-     * which the Lua conversion yields as an empty list - and
-     * rejecting every other shape.
-     */
-    private fun stringMap(
-        map: Map<String, Any?>,
-        key: String
-    ): Map<String, String> =
-        when (val value = map[key]) {
-            null -> emptyMap()
-            // an empty Lua table converts to an empty list
-            is List<*> -> value.takeIf { it.isEmpty() }?.let { emptyMap() }
-                ?: throw AraraException(
-                    LanguageController.messages
-                        .errorConfigurationKeyRequiresTable(key)
-                )
-            is Map<*, *> -> value.entries.associate { (k, v) ->
-                (k as? String ?: throw AraraException(
-                    LanguageController.messages
-                        .errorConfigurationKeyRequiresStringKeys(key)
-                )) to (v as? String ?: throw AraraException(
-                    LanguageController.messages
-                        .errorConfigurationKeyRequiresStringValues(key)
-                ))
-            }
-            else -> throw AraraException(
-                LanguageController.messages
-                    .errorConfigurationKeyRequiresTable(key)
             )
         }
 

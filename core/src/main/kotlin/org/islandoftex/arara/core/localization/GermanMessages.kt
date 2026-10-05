@@ -54,7 +54,7 @@ object GermanMessages : AraraMessages {
         "Der Schlüssel '${key}' erfordert eine Liste von Zeichenketten."
 
     override fun errorConfigurationKeyRequiresTable(key: String) =
-        "Der Schlüssel '${key}' erfordert eine Tabelle aus Zeichenkettenpaaren."
+        "Der Schlüssel '${key}' erfordert eine Tabelle."
 
     override fun errorConfigurationKeyRequiresStringKeys(key: String) =
         "Der Schlüssel '${key}' erfordert Zeichenketten als Schlüssel."
@@ -73,6 +73,9 @@ object GermanMessages : AraraMessages {
 
     override val errorConfigurationFileTypePatternNotAString =
         "Der Schlüssel 'pattern' eines 'file_types'-Eintrags erfordert einen Zeichenkettenwert."
+
+    override fun errorConfigurationPreamblePrependInvalid(value: String) =
+        "Der Schlüssel 'prepend' der Gruppe 'preamble' akzeptiert 'always' oder 'without-directives', nicht '${value}'."
 
     override fun errorDiscoverFileFileNotFound(file: String, details: String) =
         "Ich konnte die vorausgesetzte Datei \"${file}\" ${details} nicht finden. Bitte stelle sicher, dass die Datei existiert und eine gültige Dateiendung hat."

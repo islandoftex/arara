@@ -60,9 +60,9 @@ class LocalConfigurationTest {
             "relative paths resolve against the project: $paths"
         )
         assertEquals(
-            MPPPath("arara-db.yaml"),
+            MPPPath("deep/arara-db.yaml"),
             options.databaseName,
-            "the database name keeps only its base name"
+            "the database name honors the configured path"
         )
     }
 
