@@ -24,13 +24,13 @@ object GermanMessages : AraraMessages {
         "Es scheint, als sei \"${value}\" kein logischer Ausdruck (boolean value). Das sollte leicht zu beheben sein. Stelle sicher, dass der Eingabestring ein zugelassener logischer Ausdruck ist (\"yes\" oder \"no\", \"true\" oder \"false\", \"1\" oder \"0\" sowie \"on\" oder \"off\")."
 
     override fun errorCheckRegexIoException(file: String) =
-        "Ich konnte den Inhalt der Datei \"${file}\" nicht lesen. Ich erhielt einen IO-Fehler. Ich habe keine Idee für die Fehlerursache.. Vielleicht wurde die Datei bevor oder während des Leseprozesses bewegt oder gelöscht. Möglicherweise habe ich nicht die geeigneten Rechte, um die Datei zu lesen."
+        "Ich konnte den Inhalt der Datei \"${file}\" nicht lesen. Ich erhielt einen IO-Fehler. Ich habe keine Idee für die Fehlerursache. Vielleicht wurde die Datei bevor oder während des Leseprozesses bewegt oder gelöscht. Möglicherweise habe ich nicht die geeigneten Rechte, um die Datei zu lesen."
 
     override val errorConfigurationGenericError =
         "Ich konnte die Konfigurationsdatei nicht analysieren, etwas schlechtes passierte. Dieser Teil ist ziemlich knifflig, denn er bezieht das zugrundeliegende Datenserialisierungsformat mit ein. Ich werde mein Bestes tun, um dir in jeglicher Art und Weise zu helfen."
 
     override val errorConfigurationLoopsInvalidRange =
-        "In der Konfigurationsdatei hat der eingegebenen Wert 'loops' zur Festlegung der maximalen Anzahl an Schleifendurchgängen einen ungültigen Bereich. Bitte stelle sicher, dass eine positive Zahl eingetragen wird."
+        "In der Konfigurationsdatei hat der eingegebene Wert 'loops' zur Festlegung der maximalen Anzahl an Schleifendurchgängen einen ungültigen Bereich. Bitte stelle sicher, dass eine positive Zahl eingetragen wird."
 
     override val errorConfigurationLuaReturnNotATable =
         "Eine Lua-Konfigurationsdatei muss eine Tabelle zurückgeben."
@@ -84,7 +84,7 @@ object GermanMessages : AraraMessages {
         "Die Auswertung der Bedingung (conditional) hat einen boolschen Ausdruck als Ergebnis erwartet. Das sollte leicht zu beheben sein. Stelle einfach sicher, dass die Bedingung einen booleschen Ausdruck ('yes' oder 'no', 'true' oder 'false', '1' oder '0' sowie 'on' oder 'off') als Ergebnis erhält."
 
     override val errorExtractorIoError =
-        "Es gab einen IO-Fehler während ich versuchte, die Direktive zu extrahieren. Ich habe keine Idee, warum es fehlschlug. Vielleicht wurde die Datei bevor oder während der Prüfziffer-Operation bewegt oder gelöscht. Möglicherweise habe ich nicht die geeigneten Rechte, um die Datei zu lesen."
+        "Es gab einen IO-Fehler während ich versuchte, die Direktive zu extrahieren. Ich habe keine Idee, warum es fehlschlug. Vielleicht wurde die Datei bevor oder während der Extraktions-Operation bewegt oder gelöscht. Möglicherweise habe ich nicht die geeigneten Rechte, um die Datei zu lesen."
 
     override val errorExtractorInterpolationFailure =
         "Das 'Options'-Feld enthält einen Eintrag, mit dem der MVEL-Parser nicht umgehen kann. Bitte überprüfen Sie alle '@{…}'-Teile im 'Options'-Feld."
@@ -96,10 +96,10 @@ object GermanMessages : AraraMessages {
         "Es sieht so aus, als sei das Muster \"${pattern}\", das du für diesen Dateityp festlegen wolltest, kein gültiger regulärer Ausdruck. Das sollte leicht zu beheben sein: Stelle sicher, dass du einen gültigen Ausdruck verwendest, und versuche es erneut."
 
     override fun errorFiletypeNotAFile(path: String) =
-        "Die Methode der Dateityp \"filetype\" fordert als Eingabe eine Datei und kein Verzeichnis. Es scheint, als sei \"${path}\" keine Datei. Falls du Aufgaben auf ein Verzeichnis bzw. Ordner anwenden willst, kannst du eine Vielzahl von JAVA API-Methoden verwenden."
+        "Die Methode des Dateityps \"filetype\" fordert als Eingabe eine Datei und kein Verzeichnis. Es scheint, als sei \"${path}\" keine Datei. Falls du Aufgaben auf ein Verzeichnis bzw. Ordner anwenden willst, kannst du eine Vielzahl von JAVA API-Methoden verwenden."
 
     override fun errorFiletypeUnknownExtension(extension: String, extensions: String) =
-        "Ich kann \"${extension}\" als keine vorgegebene Dateiendung erkennen. Falls du einen neuen Dateityp definieren möchtest, stelle sich, dass die Dateiendung sowie die entsprechende Struktur bereitgestellt wird. Das sind die vordefinierten Dateiendungen: ${extensions}"
+        "Ich kann \"${extension}\" als keine vorgegebene Dateiendung erkennen. Falls du einen neuen Dateityp definieren möchtest, stelle sicher, dass die Dateiendung sowie die entsprechende Struktur bereitgestellt wird. Das sind die vordefinierten Dateiendungen: ${extensions}"
 
     override val errorGetApplicationPathEncodingException =
         "Es gab ein Kodierungsproblem während ich versuchte den Anwendungspfad zu erhalten. Es gibt leider nicht viel, was ich tun kann."
@@ -237,7 +237,7 @@ object GermanMessages : AraraMessages {
         "Es fehlt ein Muster, und die Erweiterung gehört nicht zu den Standarddateitypen."
 
     override val errorProjectFileTypePatternNotAString =
-        "Der Schlüssel 'pattern' des Dateityp erfordert einen Zeichenkettenwert."
+        "Der Schlüssel 'pattern' des Dateityps erfordert einen Zeichenkettenwert."
 
     override fun errorProjectInvalidLua(details: String) =
         "Die Projektspezifikation ist kein gültiges Lua: ${details}."

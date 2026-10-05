@@ -281,8 +281,9 @@ object LuaLocalConfiguration {
                     pattern == null -> SerialFileType(extension)
                     pattern is String -> SerialFileType(extension, pattern)
                     // a wrongly typed pattern is never silently
-                    // dropped: the entry degrades to no pattern at
-                    // all, and the type expectation is spoken
+                    // dropped: the rejection names the expectation,
+                    // matching the project specification's own
+                    // strictness
                     else -> throw AraraException(
                         LanguageController.messages
                             .errorConfigurationFileTypePatternNotAString
