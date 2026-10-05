@@ -34,10 +34,10 @@ import org.islandoftex.arara.lua.rules.LuaConversion
  *   loops = 10,
  *   verbose = true,
  *   header = true,
- *   database = "arara",
+ *   database = "arara.db",
  *   log = {
  *     enabled = true,
- *     file = "arara"
+ *     file = "arara.log"
  *   },
  *   console = {
  *     mode = "plain",
@@ -62,6 +62,10 @@ import org.islandoftex.arara.lua.rules.LuaConversion
  * directives of their own - any other word is an error. A
  * definition is a list of directive lines, one per entry, in the
  * same shape the `paths` list keeps.
+ *
+ * The `database` and `log.file` values name their files exactly
+ * as written, extension included - a relative path resolves
+ * against the working directory when the file is opened.
  *
  * The script runs with arara's own values in scope, so paths and
  * other strings are computed in plain Lua instead of relying on a

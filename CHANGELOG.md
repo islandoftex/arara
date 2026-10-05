@@ -75,11 +75,17 @@ on.
   `yaml` (default, deprecated) or `lua`.
 * New Lua configuration file format: arara now also accepts
   `.araraconfig.lua`, `araraconfig.lua`, `.arararc.lua` and `arararc.lua`
-  files (Lua scripts returning a table with the same keys as the YAML
-  format, with compound names spelled in snake_case: `file_types`,
-  `db_name`, `log_name`, `default_preamble` and
-  `prepend_preamble_if_directives_given`; unknown configuration keys are
-  rejected). YAML configuration
+  files (Lua scripts returning a table; unknown configuration keys are
+  rejected, qualified by their group). The keys naming single values
+  and plain lists sit at the root: `paths`, `file_types`, `language`,
+  `loops`, `verbose`, `header` and `database` (the counterpart of the
+  YAML `dbname`). The keys forming true families nest in their own
+  tables: `log` (`enabled`, `file` - the YAML `logging` and
+  `logname`), `console` (`mode`, `animations`) and `preamble`
+  (`default`, `prepend`, `definitions`), where `prepend` names where
+  the default preamble applies - `always` (the historical behaviour)
+  or `without-directives` - and a definition is a list of directive
+  lines. YAML configuration
   files are looked up first; Lua configuration files are only considered
   if no YAML configuration file is found. A Lua configuration script runs
   with arara's values in scope, so paths and other strings are computed
@@ -207,12 +213,20 @@ on.
   API is unchanged. The stricter reader of the new version accepts all of
   arara's rules and configuration files without modification.
 * Replaced the dormant yamlkt parser with kotaml as well, unifying all
-  YAML handling (rules, configuration, directive parameters and the file
-  database) on a single, actively maintained library. Directive
+  YAML handling (rules, configuration and directive parameters) on a
+  single, actively maintained library. Directive
   parameters are now parsed through kotaml's YAML node model and
   converted to the plain values the interpreter expects; quoting always
   yields strings, `yes`/`no` remain strings (they are not YAML 1.2
   booleans), and null parameter values keep being rejected.
+* The file database is an internal, machine-owned cache now: it
+  keeps a compact record format of its own instead of YAML, and its
+  default name is `arara.db` - the name was never a format claim. A
+  database file from an older version is not read anymore: the load
+  error names the file and spells out the remedy, to remove or
+  rename the old file so the next run builds a fresh one. Nothing of
+  value is lost - the database is a cache - and a configured name
+  keeps naming the file exactly, as before.
 * Kotlin platform updated to 2.4.20, Gradle updated to 9.8.0, build
   plugins updated (shadow 9.6.1, spotless 8.10.3, versions 0.64.0 and
   Dokka 2.2.0, including the migration to the Dokka Gradle plugin v2

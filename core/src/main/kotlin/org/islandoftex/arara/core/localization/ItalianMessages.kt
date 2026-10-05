@@ -147,7 +147,7 @@ object ItalianMessages : AraraMessages {
         "Ho letto un file che avrebbe dovuto essere un progetto. Purtroppo si è rivelato né un progetto né una lista di progetti. Per favore, controlla che il tuo file di progetto segua il formato documentato."
 
     override fun errorLoadCouldNotLoadDatabase(name: String) =
-        "Non ho potuto caricare il database YAML di nome '${name}'. Purtroppo non ho idea del perché sia andata male. Forse il file è stato spostato o cancellato prima o durante l'operazione di lettura. O forse non ho i permessi necessari per leggere il file. Già che ci siamo, assicurati che il file YAML sia ben formato."
+        "Non ho potuto caricare il database dei file di nome '${name}'. Purtroppo non ho idea del perché sia andata male. Forse il file è stato spostato o cancellato prima o durante l'operazione di lettura, o forse non ho i permessi necessari per leggerlo. Già che ci siamo: se il file contiene i dati di una versione precedente, basta rimuoverlo o rinominarlo, e alla prossima esecuzione costruisco un database nuovo."
 
     override fun errorParserInvalidPreamble(name: String) =
         "Mi dispiace, ma non è stato possibile trovare il preambolo '${name}'. Assicurati che questa chiave esista nel file di configurazione."
@@ -297,7 +297,7 @@ object ItalianMessages : AraraMessages {
         "In modalità sicura, alle regole non è consentito eseguire comandi di sistema arbitrari all'interno di un passo di esecuzione."
 
     override fun errorSaveCouldNotSaveDatabase(name: String) =
-        "Non ho potuto salvare il database YAML con il nome '${name}'. Purtroppo non ho idea del perché sia successo. Forse non ho i permessi appropriati per scrivere il file YAML sul disco."
+        "Non ho potuto salvare il database dei file con il nome '${name}'. Purtroppo non ho idea del perché sia successo. Forse non ho i permessi appropriati per scrivere il file sul disco."
 
     override fun errorSessionObtainUnknownKey(key: String) =
         "Il metodo 'get' ha trovato una chiave sconosciuta '${key}' nell'ambito della sessione. Non posso ottenere qualcosa che non ho da nessuna parte. Specifica una chiave valida e riprova."

@@ -147,7 +147,7 @@ object BrazilianPortugueseMessages : AraraMessages {
         "Eu li um arquivo que deveria ser um projeto. Infelizmente, descobri que ele não é nem um projeto nem uma lista de projetos. Por favor, verifique se o seu arquivo de projeto segue o formato documentado."
 
     override fun errorLoadCouldNotLoadDatabase(name: String) =
-        "Não consegui carregar o banco de dados YAML chamado '${name}'. Não tenho ideia porque não deu certo. Talvez o arquivo tenha sido movido ou removido antes ou durante a operação de leitura. Ou talvez eu não tenha as permissões corretas para leitura do arquivo. A propósito, certifique-se de que o arquivo YAML esteja correto."
+        "Não consegui carregar o banco de dados de arquivos chamado '${name}'. Não tenho ideia porque não deu certo. Talvez o arquivo tenha sido movido ou removido antes ou durante a operação de leitura, ou talvez eu não tenha as permissões corretas para lê-lo. A propósito, se o arquivo tiver conteúdo de uma versão anterior minha, simplesmente remova ou renomeie o arquivo, e eu construirei um banco de dados novo na próxima execução."
 
     override fun errorParserInvalidPreamble(name: String) =
         "Sinto muito, mas o preâmbulo '${name}' não foi encontrado. Por favor, certifique-se de que esta chave existe no arquivo de configuração."
@@ -297,7 +297,7 @@ object BrazilianPortugueseMessages : AraraMessages {
         "No modo seguro, as regras não têm permissão para executar comandos de sistema arbitrários dentro de uma etapa de execução."
 
     override fun errorSaveCouldNotSaveDatabase(name: String) =
-        "Não consegui salvar o banco de dados YAML chamado '${name}'.  Não tenho ideia porque não deu certo. Talvez eu não tenha as permissões corretas para escrever o arquivo YAML no disco."
+        "Não consegui salvar o banco de dados de arquivos chamado '${name}'. Não tenho ideia porque não deu certo. Talvez eu não tenha as permissões corretas para escrever o arquivo no disco."
 
     override fun errorSessionObtainUnknownKey(key: String) =
         "O método 'get' encontrou a chave desconhecida '${key}' no escopo de sessão. Não posso obter um valor que não existe na sessão. Por favor, especifique uma chave válida e tente novamente."

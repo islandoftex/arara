@@ -28,13 +28,15 @@ remove them as part of this effort:
 >
 > | Library | Coordinates | Used by | Fate |
 > | --- | --- | --- | --- |
-> | **kotaml** | `io.heapy.kotaml` (a supported fork of the archived kaml; the fork keeps the original `com.charleskorn.kaml` package) | YAML rules (`mvel/…/rules/Rule.kt`), YAML config (`core/…/configuration/LocalConfiguration.kt`), directive parameters (`cli/…/DirectiveUtils.kt`), file database (`core/…/Database.kt`) | rules and config are removed with them; directive parameters and the database **stay** |
+> | **kotaml** | `io.heapy.kotaml` (a supported fork of the archived kaml; the fork keeps the original `com.charleskorn.kaml` package) | YAML rules (`mvel/…/rules/Rule.kt`), YAML config (`core/…/configuration/LocalConfiguration.kt`), directive parameters (`cli/…/DirectiveUtils.kt`) | rules and config are removed with them; directive parameters **stay** |
 >
 > Whenever this document says the YAML *library for rules and
 > configuration* is removed, it means the kotaml dependency **of the
-> mvel module only**. Directives keep being parsed as YAML, and the file
-> database keeps being serialized as YAML, both via kotaml in the cli
-> and core modules.
+> mvel module only**. Directives keep being parsed as YAML via kotaml
+> in the cli module. In core, the dependency covers the deprecated
+> YAML configuration model alone - the file database left YAML for a
+> private record format and the default name `arara.db`, so core
+> holds no kotaml consumer that survives this removal.
 
 1. **Directive parameter parsing.** `cli/…/ruleset/DirectiveUtils.kt` parses
    the `{ key: value }` part of a directive with **kotaml**
@@ -42,10 +44,11 @@ remove them as part of this effort:
    Directives are YAML by specification, independently of the rule format
    the directive eventually resolves to. Keep `libs.kotaml` in
    `cli/build.gradle.kts`.
-2. **The file database.** `core/…/files/Database.kt` serializes arara's
-   hash database with kotaml. Unrelated to rules/config; keep `libs.kotaml`
-   in `core/build.gradle.kts`. (If the database format should ever change,
-   that is a separate decision.)
+2. **The file database.** `core/…/files/Database.kt` once serialized
+   arara's hash database with kotaml; it now keeps a private record
+   format and the default name `arara.db`, so it is no longer a YAML
+   surface. The core module's kotaml dependency covers the deprecated
+   YAML configuration model alone.
 3. **MVEL directive conditionals.** The `if`/`while`/`until`/`unless`
    conditionals of a directive (`% arara: pdflatex if found('log', '!')`)
    are MVEL expressions and are *not* deprecated. (A Lua-based
@@ -145,8 +148,9 @@ Small, reversible release:
 - Remove `libs.kotaml` from `mvel/build.gradle.kts` only. The version
   catalog entry **stays**: since the tree unified on a single YAML
   library, kotaml also parses the directive parameters (cli) and the
-  file database (core), so `grep -rn "com.charleskorn" --include="*.kt" .`
-  keeps matching those two surviving consumers (see
+  deprecated YAML configuration model (core), so
+  `grep -rn "com.charleskorn" --include="*.kt" .`
+  keeps matching those two remaining consumers (see
   [What stays](#what-stays)). Remove the
   `kotlin("plugin.serialization")` plugin from the mvel module if no
   `@Serializable` class remains there.
@@ -167,7 +171,11 @@ Small, reversible release:
   constructs the class directly). At removal time:
   - delete the kotaml-based `companion object { fun load(…) }` and the
     `@Serializable` annotations;
-  - drop the `!config` header check, which was YAML-specific.
+  - drop the `!config` header check, which was YAML-specific;
+  - remove `libs.kotaml` from `core/build.gradle.kts`: with the
+    loader gone, the deprecated configuration model was the module's
+    last kotaml consumer (the file database left YAML for a private
+    record format and the name `arara.db` beforehand).
 - `cli/…/configuration/ConfigurationFiles.kt`:
   - shrink `configFileForProject` to a single Lua search:
     `configFileWithExtension(project, "lua")` — the YAML-first indirection
@@ -219,7 +227,7 @@ the mvel module at all. At removal time:
   (they are small echo-style rules; the configs are one-liners).
   The `directive-with-mvel-options` and `conditionals` scenarios stay:
   directive options and conditionals are out of scope.
-- Note that the `arara.yaml` file handled by the "track changes" case in
+- Note that the `arara.db` file handled by the "track changes" case in
   `cli/src/test/…/ExecutionTest.kt` is the *database* (see
   [What stays](#what-stays)), not a rule or configuration file — leave it
   alone.
@@ -254,8 +262,8 @@ the mvel module at all. At removal time:
 Before tagging the release, all of these should come back empty (or only
 match this file and the CHANGELOG/news). The kotaml greps are scoped to
 the mvel module on purpose: the library keeps the original
-`com.charleskorn.kaml` package, so the cli and core consumers of the
-directive and database surfaces match it forever (see the guard rails
+`com.charleskorn.kaml` package, so the cli consumer of the
+directive surface matches it forever (see the guard rails
 below):
 
 ```sh
@@ -275,8 +283,7 @@ was exceeded):
 
 ```sh
 grep -rn "com.charleskorn" cli/src               # directive parameters
-grep -rn "com.charleskorn" core/src              # file database
-grep -rn "libs.kotaml" cli/build.gradle.kts core/build.gradle.kts
+grep -rn "libs.kotaml" cli/build.gradle.kts
 grep -rn "DirectiveConditionalEvaluator" cli/src # MVEL conditionals
 grep -rn "TemplateRuntime\|MVEL" mvel/src        # conditional evaluation
 ```

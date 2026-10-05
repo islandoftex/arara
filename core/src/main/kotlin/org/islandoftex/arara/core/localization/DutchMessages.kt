@@ -147,7 +147,7 @@ object DutchMessages : AraraMessages {
         "Ik heb een bestand gelezen dat een project zou moeten zijn. Helaas bleek het geen project en ook geen lijst van projecten te zijn. Controleer of je projectbestand het gedocumenteerde formaat volgt."
 
     override fun errorLoadCouldNotLoadDatabase(name: String) =
-        "Ik kon de YAML-database met de naam '${name}' niet laden. Ik weet niet waarom het precies fout ging. Misschien was het bestand verplaatst of verwijderd tijdens de leesoperatie. Of misschien heb ik niet de juiste rechten om het bestand te lezen. Overigens: zorg ervoor dat het YAML-bestand welgevormd is."
+        "Ik kon de bestandsdatabase met de naam '${name}' niet laden. Ik weet niet waarom het precies fout ging. Misschien was het bestand verplaatst of verwijderd voor of tijdens de leesoperatie, of misschien heb ik niet de juiste rechten om het te lezen. Overigens: als het bestand inhoud van een oudere versie van mij bevat, verwijder of hernoem het dan gerust, dan bouw ik bij de volgende run een nieuwe database."
 
     override fun errorParserInvalidPreamble(name: String) =
         "Het spijt me, maar de preamble '${name}' is niet gevonden. Zorg ervoor dat deze verwijzing bestaat in het configuratiebestand."
@@ -297,7 +297,7 @@ object DutchMessages : AraraMessages {
         "In de veilige modus mogen regels geen willekeurige systeemcommando's uitvoeren binnen een uitvoeringsstap."
 
     override fun errorSaveCouldNotSaveDatabase(name: String) =
-        "Ik kon de YAML-database met de naam '${name}' niet opslaan. Ik weet niet precies waarom het fout ging. Misschien heb ik niet de juiste schrijfrechten om het YAML-bestand op te slaan."
+        "Ik kon de bestandsdatabase met de naam '${name}' niet opslaan. Ik weet niet precies waarom het fout ging. Misschien heb ik niet de juiste schrijfrechten om het bestand op te slaan."
 
     override fun errorSessionObtainUnknownKey(key: String) =
         "De 'get'-methode heeft een onbekende verwijzing gevonden in de sessie: '${key}'. Als ik iets niet heb kan ik het ook niet gebruiken. Geef een bestaande verwijzing op en probeer het opnieuw."

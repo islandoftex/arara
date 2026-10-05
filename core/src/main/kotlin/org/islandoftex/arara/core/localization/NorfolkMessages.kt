@@ -147,7 +147,7 @@ object NorfolkMessages : AraraMessages {
         "I've read a file that were supposed ter be a project. Unluckily, it turned aht it weren't no project, nor a list of projects neither. Do please double-check that your project file folla the documented format."
 
     override fun errorLoadCouldNotLoadDatabase(name: String) =
-        "Cor blast me, ole partner, but that YAML database '${name}' ent half puttin' on its parts but I ent got no idear wass gone wrong. Praps the file was hulled abowt afore or time the reading operation was doing else maybe I're gotta he'sum proper permissions to snout abowt the file. Atwin yew, me an' the geartepost, do yew make sure the YAML is in good kelter."
+        "Cor blast me, ole partner, but that file database '${name}' ent half puttin' on its parts but I ent got no idear wass gone wrong. Praps the file was hulled abowt afore or time the reading operation was doing else maybe I're gotta he'sum proper permissions to snout abowt the file. Atwin yew, me an' the geartepost, if'n thet file du hold the stuff o' some ole version o' mine, yew hull it out or gi' it a new name, an' I'll set up a fresh un come the nex' run."
 
     override fun errorParserInvalidPreamble(name: String) =
         "Thass a rum ole dew, ole partner, but I can't find the preamble '${name}'. Do yew make sure that key exist in the configuration file."
@@ -297,7 +297,7 @@ object NorfolkMessages : AraraMessages {
         "In the safe mode, rules ent allowed ter go runnin' no system commands of their own choosin' inside a step o' the run."
 
     override fun errorSaveCouldNotSaveDatabase(name: String) =
-        "Thass a rum ole dew, ole partner. I coont save that ole YAML database that oughta be called '${name}'. Howsomever I hent got no idea why thass gone wrong. Praps I're gotta he'sum proper permissions to write the YAML file to disk."
+        "Thass a rum ole dew, ole partner. I coont save that ole file database that oughta be called '${name}'. Howsomever I hent got no idea why thass gone wrong. Praps I're gotta he'sum proper permissions to write the file to disk."
 
     override fun errorSessionObtainUnknownKey(key: String) =
         "Cor blast me, my bewty, but I hent got no idear wass that '${key}' key is dewun in that 'get' method. I can't giv' you suffin I ent got. Dew yew ax for suffin I can git yew."

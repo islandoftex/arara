@@ -146,7 +146,7 @@ object EnglishMessages : AraraMessages {
         "I have read a file that was supposed to be a project. Unfortunately, it turned out it was neither a project nor a list of projects. Please double-check that your project file follows the documented format."
 
     override fun errorLoadCouldNotLoadDatabase(name: String) =
-        "I could not load the YAML database named \"${name}\". I have no idea why it failed, though. Perhaps the file was moved or deleted before or during the reading operation. Or maybe I do not have the proper permissions to read the file. By the way, make sure the YAML file is well-formed."
+        "I could not load the file database named \"${name}\". I have no idea why it failed, though. Perhaps the file was moved or deleted before or during the reading operation, or maybe I do not have the proper permissions to read it. By the way, if the file holds content from an older version of mine, simply remove or rename it, and I will build a fresh database on the next run."
 
     override fun errorParserInvalidPreamble(name: String) =
         "I am sorry, but the preamble \"${name}\" could not be found. Please make sure this key exists in the configuration file."
@@ -296,7 +296,7 @@ object EnglishMessages : AraraMessages {
         "In safe mode, rules are not allowed to execute arbitrary system commands within a step of execution."
 
     override fun errorSaveCouldNotSaveDatabase(name: String) =
-        "I could not save the YAML database named \"${name}\". I have no idea why it failed, though. Perhaps I do not have the proper permissions to write the YAML file to disk."
+        "I could not save the file database named \"${name}\". I have no idea why it failed, though. Perhaps I do not have the proper permissions to write the file to disk."
 
     override fun errorSessionObtainUnknownKey(key: String) =
         "The \"get\" method has found an unknown key \"${key}\" in the session scope. I could not get something I do not have in the first place. Please enter a valid key and try again."

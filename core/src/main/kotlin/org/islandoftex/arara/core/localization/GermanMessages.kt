@@ -147,7 +147,7 @@ object GermanMessages : AraraMessages {
         "Ich habe eine Datei gelesen, die ein Projekt sein sollte. Leider stellte sich heraus, dass sie weder ein Projekt noch eine Liste von Projekten ist. Bitte überprüfe, dass deine Projektdatei dem dokumentierten Format entspricht."
 
     override fun errorLoadCouldNotLoadDatabase(name: String) =
-        "Ich konnte die YAML-Datenbank mit dem Namen \"${name}\" nicht laden. Ich habe keine Idee für die Fehlerursache. Vielleicht wurde die Datei bevor oder während der Leseoperation bewegt oder gelöscht. Möglicherweise habe ich nicht die geeigneten Rechte, um die Datei zu lesen."
+        "Ich konnte die Datei-Datenbank mit dem Namen \"${name}\" nicht laden. Ich habe keine Idee für die Fehlerursache. Vielleicht wurde die Datei vor oder während der Leseoperation verschoben oder gelöscht, oder möglicherweise habe ich nicht die geeigneten Rechte, um die Datei zu lesen. Übrigens: Falls die Datei Inhalte einer älteren Version von mir enthält, löschen Sie sie einfach oder benennen Sie sie um, und ich baue beim nächsten Lauf eine frische Datenbank auf."
 
     override fun errorParserInvalidPreamble(name: String) =
         "Leider konnte die Präambel \"${name}\" nicht gefunden werden. Bitte stelle sicher, dass dieser Schlüssel in der Konfigurationsdatei existiert."
@@ -297,7 +297,7 @@ object GermanMessages : AraraMessages {
         "Im sicheren Modus dürfen Regeln keine beliebigen Systembefehle innerhalb eines Ausführungsschritts ausführen."
 
     override fun errorSaveCouldNotSaveDatabase(name: String) =
-        "Ich konnte die YAML-Datenbank mit dem Namen \"${name}\" nicht speichern. Ich habe keine Idee für die Fehlerursache. Möglicherweise habe ich nicht die geeigneten Rechte, um die Datei YAML-Datei auf der Festplatte zu speichern."
+        "Ich konnte die Datei-Datenbank mit dem Namen \"${name}\" nicht speichern. Ich habe keine Idee für die Fehlerursache. Möglicherweise habe ich nicht die geeigneten Rechte, um die Datenbankdatei auf der Festplatte zu speichern."
 
     override fun errorSessionObtainUnknownKey(key: String) =
         "Die \"get\" Methode hat den unbekannten Eintrag (key) \"${key}\" in der Session gefunden. Ich konnte nichts erhalten, was ich nicht bereits habe. Bitte gebe einen gültigen Key ein und versuche es erneut."

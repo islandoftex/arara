@@ -179,16 +179,22 @@ class ExecutionTest {
 
     @Test
     fun `tracks changes`() {
-        val file = File(getPathForTest("changes") + "/arara.yaml")
+        val file = File(getPathForTest("changes") + "/arara.db")
         if (file.exists()) file.delete()
-        assertTrue(
-            outputForTest("changes").contains("QuackOne"),
-            "the first run executes the directive"
-        )
-        assertFalse(
-            outputForTest("changes").contains("QuackOne"),
-            "the second run skips the unchanged file"
-        )
+        try {
+            assertTrue(
+                outputForTest("changes").contains("QuackOne"),
+                "the first run executes the directive"
+            )
+            assertFalse(
+                outputForTest("changes").contains("QuackOne"),
+                "the second run skips the unchanged file"
+            )
+        } finally {
+            // the database is a runtime artifact: it must not linger
+            // into the fixture, whatever way this one ends
+            file.delete()
+        }
     }
 
     @Test

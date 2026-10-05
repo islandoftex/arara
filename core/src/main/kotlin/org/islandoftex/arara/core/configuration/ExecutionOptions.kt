@@ -32,9 +32,11 @@ data class ExecutionOptions(
      */
     override val haltOnErrors: Boolean = true,
     /**
-     * The name of the file database, relative to the working directory.
+     * The file the database is kept in - the value names the file
+     * exactly, and a relative name resolves against the working
+     * directory.
      */
-    override val databaseName: MPPPath = MPPPath("arara.yaml"),
+    override val databaseName: MPPPath = MPPPath("arara.db"),
     /**
      * Whether the terminal echoes the output of system commands live.
      */
