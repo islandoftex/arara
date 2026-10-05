@@ -135,9 +135,23 @@ interface AraraMessages {
     fun errorDiscoverFileFileNotFound(file: String, extensions: String): String
     /**
      * The error shown when a referenced file exists but no file
-     * type of the run carries its extension.
+     * type of the run carries its extension. The extensions
+     * parameter carries the extensions of the run as a plain
+     * enumeration.
      */
-    fun errorDiscoverFileUnknownExtension(file: String): String
+    fun errorDiscoverFileUnknownExtension(
+        file: String,
+        extensions: String
+    ): String
+    /**
+     * The error shown when a referenced Lua file exists but no
+     * file type of the run carries its extension, with the
+     * project specification suffix as the alternate remedy.
+     */
+    fun errorDiscoverFileUnknownLuaExtension(
+        file: String,
+        extensions: String
+    ): String
     /**
      * The error shown when a reference carries the reserved
      * project specification suffix.

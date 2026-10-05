@@ -1,0 +1,10 @@
+!config
+identifier: echob
+name: Test rule for the second project
+commands:
+  - name: The echoer
+    command: >
+      @{
+          return isWindows(getCommand('cmd', '/c', 'echo', 'BetaRan'), getCommand('echo', 'BetaRan'));
+      }
+arguments: []

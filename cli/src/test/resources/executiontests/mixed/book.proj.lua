@@ -1,0 +1,1 @@
+return { files = { ["main.tex"] = { } } }

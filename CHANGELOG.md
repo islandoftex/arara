@@ -209,12 +209,20 @@ on.
   first-class inputs with no detour and no apology. A `.proj.lua`
   specification that fails to parse is an error naming its actual
   violation, where the old behavior guessed a project, printed a
-  notice and fell back to input treatment; the reserved suffix is
-  refused on the input path with a remedy instead of running as a
-  silent empty success; and a file that exists but whose extension
-  no file type carries is told so, where the lookup used to claim
-  it could not be found. Rename arara 7 project files from
-  `project.lua` to `project.proj.lua`.
+  notice and fell back to input treatment. Several specifications
+  may ride one invocation: their projects merge into a single
+  dependency graph, a dependency may name a project of any
+  specification on the command line, a project that declared no
+  name takes the base name of its specification file, and the
+  loose input files join the run as an anonymous project - every
+  invocation is a set of projects. The reserved suffix is refused
+  on the input path, where the old behavior ran a mistaken
+  specification as a silent empty success; and a file that
+  exists but whose extension no file type carries is told so,
+  with the extensions of the run and - for a Lua file - the
+  project specification suffix as the alternate remedy, where
+  the lookup used to claim it could not be found. Rename arara 7
+  project files from `project.lua` to `project.proj.lua`.
 * **Breaking:** Interactive dialogs are now a host capability: the
   library defines the dialog contract and ships a headless default
   that raises a clear error when a rule reaches a dialog, instead of

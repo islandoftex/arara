@@ -80,8 +80,17 @@ object GermanMessages : AraraMessages {
     override fun errorDiscoverFileFileNotFound(file: String, extensions: String) =
         "Ich konnte die vorausgesetzte Datei \"${file}\" mit keiner der Erweiterungen ${extensions} finden. Bitte stelle sicher, dass die Datei existiert und eine gültige Dateiendung hat."
 
-    override fun errorDiscoverFileUnknownExtension(file: String) =
-        "Ich konnte den Dateityp von '${file}' nicht bestimmen: Kein Dateityp dieses Durchlaufs passt zu seiner Erweiterung. Ergänze die Erweiterung in den 'file_types' der Konfiguration."
+    override fun errorDiscoverFileUnknownExtension(
+        file: String,
+        extensions: String
+    ) =
+        "Ich konnte den Dateityp von '${file}' nicht bestimmen: Kein Dateityp dieses Durchlaufs trägt seine Erweiterung. Die Erweiterungen dieses Durchlaufs sind ${extensions}. Ergänze die fehlende Erweiterung in den 'file_types' der Konfiguration."
+
+    override fun errorDiscoverFileUnknownLuaExtension(
+        file: String,
+        extensions: String
+    ) =
+        "Ich konnte den Dateityp von '${file}' nicht bestimmen: Kein Dateityp dieses Durchlaufs trägt seine Erweiterung. Die Erweiterungen dieses Durchlaufs sind ${extensions}. Ergänze die Erweiterung in den 'file_types' der Konfiguration - oder, falls die Datei eine Projektspezifikation ist, trägt sie das Suffix '.proj.lua'."
 
     override fun errorDiscoverFileIsAProjectSpecification(file: String) =
         "Das Suffix '.proj.lua' benennt eine Projektspezifikation, daher kann '${file}' keine gewöhnliche Eingabedatei sein. Übergebe die Spezifikation als einziges Argument des Durchlaufs."

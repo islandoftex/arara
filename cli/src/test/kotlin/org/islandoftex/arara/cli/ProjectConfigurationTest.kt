@@ -143,24 +143,180 @@ class ProjectConfigurationTest {
     }
 
     @Test
-    fun `refuses a specification passed among other files`() {
+    fun `runs a specification mixed with loose input files`() {
         withRestoredState {
-            val directory = createTempDirectory("arara-cli-reserved")
-            val specification = directory.resolve("book.proj.lua")
-            Files.writeString(specification, "return { }")
-            val other = directory.resolve("other.tex")
-            Files.writeString(other, "% arara: nothing\nQuack\n")
+            val directory = createTempDirectory("arara-cli-mixed")
+            Files.writeString(
+                directory.resolve("echoone.yaml"),
+                """
+                !config
+                identifier: echoone
+                name: Test rule for conditionals 1
+                commands:
+                  - name: The echoer
+                    command: >
+                      @{
+                          return isWindows(getCommand('cmd', '/c', 'echo', 'QuackOne'), getCommand('echo', 'QuackOne'));
+                      }
+                arguments: []
+                """.trimIndent()
+            )
+            Files.writeString(
+                directory.resolve("arararc.yaml"),
+                "!config\nverbose: true\npaths:\n  - './'\n"
+            )
+            Files.writeString(
+                directory.resolve("main.tex"), "% arara: echoone\nQuack\n"
+            )
+            Files.writeString(
+                directory.resolve("notes.tex"), "% arara: echoone\nQuack\n"
+            )
+            Files.writeString(
+                directory.resolve("book.proj.lua"),
+                "return { files = { [\"main.tex\"] = { } } }\n"
+            )
             val (status, output) = runCLI(
                 "--working-directory", directory.toString(),
-                "book.proj.lua", "other.tex"
+                "book.proj.lua", "notes.tex"
             )
-            // the reserved suffix on the input path is a refusal with
-            // a remedy, not a silent run of the specification as an
-            // empty input
-            assertNotEquals(0, status, "the reserved suffix refuses the run")
+            // the specification's project and the anonymous project
+            // ride one invocation, and both run their files
+            assertEquals(
+                0, status,
+                "the mixed invocation runs the specification and the loose file"
+            )
+            assertEquals(
+                2, output.split("QuackOne").size - 1,
+                "the specification's file and the loose file both ran: $output"
+            )
+        }
+    }
+
+    @Test
+    fun `merges specifications and orders their cross dependencies`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-multispec")
+            Files.writeString(
+                directory.resolve("echoone.yaml"),
+                """
+                !config
+                identifier: echoone
+                name: Test rule for conditionals 1
+                commands:
+                  - name: The echoer
+                    command: >
+                      @{
+                          return isWindows(getCommand('cmd', '/c', 'echo', 'QuackOne'), getCommand('echo', 'QuackOne'));
+                      }
+                arguments: []
+                """.trimIndent()
+            )
+            Files.writeString(
+                directory.resolve("arararc.yaml"),
+                "!config\nverbose: true\npaths:\n  - './'\n"
+            )
+            Files.writeString(
+                directory.resolve("a.tex"), "% arara: echoone\nQuack\n"
+            )
+            Files.writeString(
+                directory.resolve("b.tex"), "% arara: echoone\nQuack\n"
+            )
+            Files.writeString(
+                directory.resolve("first.proj.lua"),
+                "return { name = \"alpha\", files = { [\"a.tex\"] = { } } }\n"
+            )
+            Files.writeString(
+                directory.resolve("second.proj.lua"),
+                "return { { name = \"beta\", dependencies = { \"alpha\" }, files = { [\"b.tex\"] = { } } } }\n"
+            )
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "second.proj.lua", "first.proj.lua"
+            )
+            // the dependency crosses files: beta names alpha, and the
+            // merged run orders alpha first even though the
+            // dependent specification came first on the command line
+            assertEquals(0, status, "the merged specifications run")
             assertTrue(
-                "sole argument" in output,
-                "the refusal says what the suffix wants: $output"
+                output.indexOf("a.tex") < output.indexOf("b.tex"),
+                "the cross-file dependency orders the run: $output"
+            )
+        }
+    }
+
+    @Test
+    fun `derives the names of nameless specifications from their files`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-nameless")
+            Files.writeString(
+                directory.resolve("echoone.yaml"),
+                """
+                !config
+                identifier: echoone
+                name: Test rule for conditionals 1
+                commands:
+                  - name: The echoer
+                    command: >
+                      @{
+                          return isWindows(getCommand('cmd', '/c', 'echo', 'QuackOne'), getCommand('echo', 'QuackOne'));
+                      }
+                arguments: []
+                """.trimIndent()
+            )
+            Files.writeString(
+                directory.resolve("arararc.yaml"),
+                "!config\nverbose: true\npaths:\n  - './'\n"
+            )
+            Files.writeString(
+                directory.resolve("a.tex"), "% arara: echoone\nQuack\n"
+            )
+            Files.writeString(
+                directory.resolve("b.tex"), "% arara: echoone\nQuack\n"
+            )
+            Files.writeString(
+                directory.resolve("one.proj.lua"),
+                "return { files = { [\"a.tex\"] = { } } }\n"
+            )
+            Files.writeString(
+                directory.resolve("two.proj.lua"),
+                "return { files = { [\"b.tex\"] = { } } }\n"
+            )
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "one.proj.lua", "two.proj.lua"
+            )
+            // two nameless specifications would collide on the
+            // placeholder; the derived names keep the run possible
+            assertEquals(0, status, "the nameless specifications merge cleanly")
+            assertEquals(
+                2, output.split("QuackOne").size - 1,
+                "both specifications ran their files: $output"
+            )
+        }
+    }
+
+    @Test
+    fun `rejects a name two specifications share`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-duplicate")
+            Files.writeString(
+                directory.resolve("one.proj.lua"),
+                "return { name = \"same\", files = { [\"a.tex\"] = { } } }\n"
+            )
+            Files.writeString(
+                directory.resolve("two.proj.lua"),
+                "return { name = \"same\", files = { [\"b.tex\"] = { } } }\n"
+            )
+            Files.writeString(directory.resolve("a.tex"), "Quack\n")
+            Files.writeString(directory.resolve("b.tex"), "Quack\n")
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "one.proj.lua", "two.proj.lua"
+            )
+            assertNotEquals(0, status, "two same-named projects cannot merge")
+            assertTrue(
+                "share the name" in output,
+                "the verdict names the collision: $output"
             )
         }
     }

@@ -80,8 +80,17 @@ object DutchMessages : AraraMessages {
     override fun errorDiscoverFileFileNotFound(file: String, extensions: String) =
         "Ik kon het opgegeven bestand '${file}' niet vinden met een van de extensies ${extensions}. Zorg ervoor dat het bestand bestaat en dat het een geldige extensie heeft."
 
-    override fun errorDiscoverFileUnknownExtension(file: String) =
-        "Ik kon het bestandstype van '${file}' niet bepalen: geen enkel bestandstype van deze run past bij zijn extensie. Voeg de extensie toe aan de 'file_types' van de configuratie."
+    override fun errorDiscoverFileUnknownExtension(
+        file: String,
+        extensions: String
+    ) =
+        "Ik kon het bestandstype van '${file}' niet bepalen: geen enkel bestandstype van deze run draagt zijn extensie. De extensies van deze run zijn ${extensions}. Voeg de ontbrekende extensie toe aan de 'file_types' van de configuratie."
+
+    override fun errorDiscoverFileUnknownLuaExtension(
+        file: String,
+        extensions: String
+    ) =
+        "Ik kon het bestandstype van '${file}' niet bepalen: geen enkel bestandstype van deze run draagt zijn extensie. De extensies van deze run zijn ${extensions}. Voeg de extensie toe aan de 'file_types' van de configuratie - of, als het bestand een projectspecificatie is, draagt het het achtervoegsel '.proj.lua'."
 
     override fun errorDiscoverFileIsAProjectSpecification(file: String) =
         "Het achtervoegsel '.proj.lua' benoemt een projectspecificatie, dus '${file}' kan geen gewoon invoerbestand zijn. Geef de specificatie als enige argument van de run mee."

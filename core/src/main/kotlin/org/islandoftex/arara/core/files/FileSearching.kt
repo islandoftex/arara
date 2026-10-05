@@ -142,6 +142,12 @@ object FileSearching {
         executionOptions: ExecutionOptions
     ): AraraException {
         val target = (workingDirectory / reference).normalize()
+        // the extensions speak as a plain enumeration in the
+        // priority order of the effective list; a type the
+        // configuration redeclares shows once
+        val extensions = executionOptions.fileTypes
+            .distinctBy { it.extension }
+            .joinToString(", ")
         return when {
             // the project suffix belongs to the project world
             // alone; a missing specification keeps the ordinary
@@ -155,21 +161,25 @@ object FileSearching {
                 )
             target.exists && target.isRegularFile ->
                 AraraException(
-                    LanguageController.messages
-                        .errorDiscoverFileUnknownExtension(reference)
+                    // a plain Lua file could also be a project
+                    // specification waiting for its suffix
+                    if (target.fileName.substringAfterLast('.', "") == "lua") {
+                        LanguageController.messages
+                            .errorDiscoverFileUnknownLuaExtension(
+                                reference, extensions
+                            )
+                    } else {
+                        LanguageController.messages
+                            .errorDiscoverFileUnknownExtension(
+                                reference, extensions
+                            )
+                    }
                 )
             else ->
                 AraraException(
                     LanguageController.messages
                         .errorDiscoverFileFileNotFound(
-                            reference,
-                            // the extensions speak as a plain
-                            // enumeration in the priority order of
-                            // the effective list; a type the
-                            // configuration redeclares shows once
-                            executionOptions.fileTypes
-                                .distinctBy { it.extension }
-                                .joinToString(", ")
+                            reference, extensions
                         )
                 )
         }

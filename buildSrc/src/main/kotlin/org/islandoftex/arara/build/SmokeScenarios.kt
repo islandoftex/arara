@@ -187,6 +187,22 @@ internal val scenarios = listOf(
                 fixture = "lua-input",
         ),
         Scenario(
+                name = "multi-spec.bats", dir = "multi-spec",
+                description = "project specifications merged from several files",
+                check = "the cross-file dependency orders the merged projects and both run",
+                arguments = listOf("second.proj.lua", "first.proj.lua"),
+                expected = listOf("AlphaRan", "BetaRan"),
+                fixture = "multi-spec",
+        ),
+        Scenario(
+                name = "mixed.bats", dir = "mixed",
+                description = "a specification mixed with loose input files",
+                check = "the specification's project and the anonymous project both run",
+                arguments = listOf("book.proj.lua", "notes.tex"),
+                expected = listOf("SpecRan", "LooseRan"),
+                fixture = "mixed",
+        ),
+        Scenario(
                 name = "safe-run.bats", dir = "safe-run",
                 description = "the safe run rejection of unsafe helper calls",
                 check = "the unsafe helper call is rejected with the mode violation",

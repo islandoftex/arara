@@ -52,7 +52,9 @@ dialects — including a wrongly typed conditional probe — sessions in
 both engines, engine options with a staged application rule, the
 project specification flow resolved through its Lua configuration,
 a plain Lua file run as an ordinary input through its configured
-file type,
+file type, project specifications merged from several files with a
+cross-file dependency ordering the run, and a specification mixed
+with loose input files riding as the anonymous project,
 the safe mode rejection of unsafe helper calls, the configured
 preamble flow, multiple files as arguments and through the directive
 file replication, whole-file extraction beyond the header, call

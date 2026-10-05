@@ -1,0 +1,10 @@
+!config
+identifier: echoa
+name: Test rule for the first project
+commands:
+  - name: The echoer
+    command: >
+      @{
+          return isWindows(getCommand('cmd', '/c', 'echo', 'AlphaRan'), getCommand('echo', 'AlphaRan'));
+      }
+arguments: []

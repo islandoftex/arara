@@ -331,18 +331,44 @@ class FileSearchingTest {
         fun `reports an existing file whose extension no type carries`(
             @TempDir tempDir: Path
         ) {
-            (tempDir / "book.lua").writeText("return { }")
+            (tempDir / "book.xyz").writeText("data")
             val exception = assertFailsWith<AraraException>(
                 "an existing file is never reported as missing"
             ) {
                 FileSearching.resolveFile(
-                    "book.lua", tempDir.toMPPPath(), ExecutionOptions()
+                    "book.xyz", tempDir.toMPPPath(), ExecutionOptions()
                 )
             }
             assertTrue(
-                exception.message!!.contains("book.lua") &&
+                exception.message!!.contains("book.xyz") &&
                     "could not find" !in exception.message!!,
                 "the error tells the type truth, not a missing file: ${exception.message}"
+            )
+            assertTrue(
+                exception.message!!.contains(".tex, .dtx, .ltx, .drv, .ins"),
+                "the error names the extensions of the run: ${exception.message}"
+            )
+        }
+
+        @Test
+        fun `offers the specification suffix for a plain Lua file`(
+            @TempDir tempDir: Path
+        ) {
+            (tempDir / "notes.lua").writeText("return { }")
+            val exception = assertFailsWith<AraraException>(
+                "an existing Lua file hears the specification remedy"
+            ) {
+                FileSearching.resolveFile(
+                    "notes.lua", tempDir.toMPPPath(), ExecutionOptions()
+                )
+            }
+            assertTrue(
+                exception.message!!.contains(".proj.lua"),
+                "the error names the specification suffix: ${exception.message}"
+            )
+            assertTrue(
+                exception.message!!.contains(".tex, .dtx, .ltx, .drv, .ins"),
+                "the error names the extensions of the run: ${exception.message}"
             )
         }
 

@@ -80,8 +80,17 @@ object ItalianMessages : AraraMessages {
     override fun errorDiscoverFileFileNotFound(file: String, extensions: String) =
         "Non sono riuscito a trovare il file '${file}' con nessuna delle estensioni ${extensions}. Assicurati che il file esista e abbia un'estensione valida."
 
-    override fun errorDiscoverFileUnknownExtension(file: String) =
-        "Non sono riuscito a determinare il tipo di file di '${file}': nessun tipo di file di questa esecuzione corrisponde alla sua estensione. Aggiungi l'estensione ai 'file_types' della configurazione."
+    override fun errorDiscoverFileUnknownExtension(
+        file: String,
+        extensions: String
+    ) =
+        "Non sono riuscito a determinare il tipo di file di '${file}': nessun tipo di file di questa esecuzione porta la sua estensione. Le estensioni di questa esecuzione sono ${extensions}. Aggiungi l'estensione mancante ai 'file_types' della configurazione."
+
+    override fun errorDiscoverFileUnknownLuaExtension(
+        file: String,
+        extensions: String
+    ) =
+        "Non sono riuscito a determinare il tipo di file di '${file}': nessun tipo di file di questa esecuzione porta la sua estensione. Le estensioni di questa esecuzione sono ${extensions}. Aggiungi l'estensione ai 'file_types' della configurazione - oppure, se il file è una specifica di progetto, il suo suffisso è '.proj.lua'."
 
     override fun errorDiscoverFileIsAProjectSpecification(file: String) =
         "Il suffisso '.proj.lua' denota una specifica di progetto, quindi '${file}' non può essere un normale file di input. Passa la specifica come unico argomento dell'esecuzione."

@@ -80,8 +80,17 @@ object NorfolkMessages : AraraMessages {
     override fun errorDiscoverFileFileNotFound(file: String, extensions: String) =
         "Dunt yew git yarself inta a rite ole puckaterry, but I can't find yar file '${file}' not with none o' them extensions ${extensions}. Yew're gotta find the file and do yew see that has a proper extension on the end onnit, tergether."
 
-    override fun errorDiscoverFileUnknownExtension(file: String) =
-        "I coont make aht the file type of '${file}': none o' the file types in this here run fits its extension. Put the extension in the 'file_types' o' the configyrashun."
+    override fun errorDiscoverFileUnknownExtension(
+        file: String,
+        extensions: String
+    ) =
+        "I coont make aht the file type of '${file}': none o' the file types in this here run carries its extension. The extensions o' this here run is ${extensions}. Yew put the missing extension in the 'file_types' o' the configyrashun."
+
+    override fun errorDiscoverFileUnknownLuaExtension(
+        file: String,
+        extensions: String
+    ) =
+        "I coont make aht the file type of '${file}': none o' the file types in this here run carries its extension. The extensions o' this here run is ${extensions}. Put the extension in the 'file_types' o' the configyrashun - or, if'n thet file's a project specifikashun, it wears the '.proj.lua' on the end."
 
     override fun errorDiscoverFileIsAProjectSpecification(file: String) =
         "That there '.proj.lua' on the end names a project specifikashun, so '${file}' can't be a ordinary input file. Yew pass the specifikashun as the one an' only argymunt of the run."

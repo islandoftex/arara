@@ -387,8 +387,10 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
      *
      * A root table holding a 'files' table denotes a single project;
      * any other root is read as a list of project tables. The parse
-     * enforces the documented project invariants and reports every
-     * violation where it is detected.
+     * enforces the documented invariants of one specification and
+     * reports every violation where it is detected; the
+     * dependencies resolve against the whole invocation, one
+     * level up.
      *
      * @param luaScript The Lua string to be interpreted.
      * @throws ProjectParseException The Lua script is invalid or does not
@@ -426,25 +428,11 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
             return listOf(project)
         }
 
-        val projects = extractProjectList(luaTable)
-        return projects.takeIf { projectList ->
-            projectList.all { project ->
-                project.dependencies.all { dep ->
-                    projectList.find { it.name == dep } != null
-                }
-            }
-        } ?: throw ProjectValidationException(
-            LanguageController.messages
-                .errorProjectStrayDependency(
-                    // the unresolved dependency names join the
-                    // verdict: every failure names its projects
-                    projects.flatMap { project ->
-                        project.dependencies.filter { dep ->
-                            projects.find { it.name == dep } == null
-                        }
-                    }.joinToString(", ")
-                )
-        )
+        // dependencies resolve against the whole invocation, so the
+        // parse validates the shapes of one specification alone -
+        // the merged verdicts live one level up, where every
+        // project of the run is known
+        return extractProjectList(luaTable)
     }
 
     /**

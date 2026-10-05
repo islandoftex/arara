@@ -1,0 +1,4 @@
+!config
+verbose: true
+paths:
+  - './'

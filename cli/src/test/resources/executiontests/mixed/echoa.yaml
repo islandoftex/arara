@@ -1,0 +1,10 @@
+!config
+identifier: echoa
+name: Test rule for the specification file
+commands:
+  - name: The echoer
+    command: >
+      @{
+          return isWindows(getCommand('cmd', '/c', 'echo', 'SpecRan'), getCommand('echo', 'SpecRan'));
+      }
+arguments: []

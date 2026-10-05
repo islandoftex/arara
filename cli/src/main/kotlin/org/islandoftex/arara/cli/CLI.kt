@@ -225,9 +225,13 @@ class CLI : CliktCommand("arara") {
         .multiple(required = true)
 
     /**
-     * Resolve the projects to run: a single Lua file argument may
-     * name a project specification, and otherwise the called files
-     * become one project of their own.
+     * Resolve the projects to run: the `.proj.lua` arguments name
+     * project specifications, and the remaining arguments form the
+     * anonymous project of the loose input files. The
+     * specifications merge into one dependency graph with names
+     * unique across the files - every invocation is a set of
+     * projects, named ones from the specifications and at most
+     * one anonymous one from the command line.
      */
     private fun resolveProjects(): List<org.islandoftex.arara.api.files.Project> {
         // resolve the working directory from the one that may be given
@@ -235,28 +239,27 @@ class CLI : CliktCommand("arara") {
         val workingDir = (workingDirectory?.toMPPPath() ?: MPPPath("."))
             .normalize()
 
-        return reference.singleOrNull()
-            ?.takeIf { it.trim().endsWith(".proj.lua") }
-            ?.let { specification -> workingDir.resolve(specification) }
-            ?.takeIf { it.exists }
-            ?.let { path ->
-                logger.info {
-                    "Reading ${path.fileName} as a project specification."
-                }
-                resolveLuaProjectSpecification(workingDir, path.readText())
-            }
-            ?: Project(
-                "Untitled",
-                workingDir,
-                emptySet()
-            ).also { project ->
-                loadProjectConfigurations(listOf(project))
-            }.let { project ->
-                listOf(
-                    Project(
+        // a .proj.lua reference names a project specification;
+        // everything else is an input file
+        val (specifications, inputs) = reference.partition {
+            it.trim().endsWith(".proj.lua")
+        }
+        val projects =
+            resolveProjectSpecifications(workingDir, specifications)
+                .toMutableList()
+
+        if (inputs.isNotEmpty() || projects.isEmpty()) {
+            // the anonymous project wraps the loose input files; the
+            // configuration of the invocation directory loads first,
+            // so the file references resolve against the types the
+            // configuration may provide
+            Project("Untitled", workingDir, emptySet())
+                .also { project -> loadProjectConfigurations(listOf(project)) }
+                .let { project ->
+                    projects += Project(
                         project.name,
                         project.workingDirectory,
-                        reference.map { fileName ->
+                        inputs.map { fileName ->
                             FileSearching.resolveFile(
                                 fileName,
                                 workingDir,
@@ -264,32 +267,100 @@ class CLI : CliktCommand("arara") {
                             )
                         }.toSet()
                     )
-                )
-            }
+                }
+        }
+        return projects
     }
 
     /**
-     * Resolves the projects a project specification names. The
-     * suffix declared the intent, so a specification that fails
-     * to parse - or one that fails outright - is an error naming
-     * its actual violation, never a guess with a fallback.
+     * Resolves the projects the project specifications name. Every
+     * specification parses on its own - a failure is an error
+     * naming its actual violation, never a guess with a fallback
+     * - a project that declared no name takes the base name of
+     * its specification file, and the merged projects validate
+     * together before their configuration files load, as
+     * specifications do not go through the caller's fallback
+     * branch.
      *
-     * @param workingDir The working directory the script resolves
-     *   its file references against.
-     * @param luaScript The contents of the Lua file argument.
-     * @return The projects the specification resolved to.
+     * @param workingDir The working directory the specifications
+     *   resolve their file references against.
+     * @param specifications The specification arguments.
+     * @return The projects of all specifications, with their
+     *   configuration files loaded.
      */
-    private fun resolveLuaProjectSpecification(
+    private fun resolveProjectSpecifications(
         workingDir: MPPPath,
-        luaScript: String
+        specifications: List<String>
     ): List<org.islandoftex.arara.api.files.Project> {
-        val projects = LuaInterpreter(workingDir).parseProjectsFromLua(luaScript)
-        // project specifications do not go through the caller's
-        // fallback branch, so the configuration file of every
-        // project has to be loaded right here - and the entries
-        // the parse left pending resolve against the types it
-        // provides
+        val projects = specifications.flatMap { argument ->
+            val path = workingDir.resolve(argument)
+            if (!path.exists) {
+                throw AraraException(
+                    LanguageController.messages
+                        .errorDiscoverFileFileNotFound(
+                            argument,
+                            LinearExecutor.executionOptions.fileTypes
+                                .distinctBy { it.extension }
+                                .joinToString(", ")
+                        )
+                )
+            }
+            logger.info {
+                "Reading ${path.fileName} as a project specification."
+            }
+            LuaInterpreter(workingDir).parseProjectsFromLua(path.readText())
+                .map { project ->
+                    if (project.name == "Untitled") {
+                        // a nameless project takes the base name of
+                        // its specification file, so several of them
+                        // never collide on the placeholder
+                        Project(
+                            path.fileName.removeSuffix(".proj.lua"),
+                            project.workingDirectory,
+                            project.files,
+                            project.dependencies
+                        )
+                    } else {
+                        project
+                    }
+                }
+        }
+        validateMergedProjects(projects)
+        // the entries the parse left pending resolve against the
+        // types the configuration provides
         return loadProjectConfigurations(projects)
+    }
+
+    /**
+     * Validates the merged specification projects: a dependency
+     * names a project of the union - it may live in any of the
+     * files - and a name identifies a project uniquely across
+     * the files.
+     */
+    private fun validateMergedProjects(
+        projects: List<org.islandoftex.arara.api.files.Project>
+    ) {
+        projects.flatMap { project ->
+            project.dependencies.filter { dependency ->
+                projects.none { it.name == dependency }
+            }
+        }.takeIf { it.isNotEmpty() }?.let { unresolved ->
+            throw AraraException(
+                LanguageController.messages.errorProjectStrayDependency(
+                    unresolved.joinToString(", ", "(", ")")
+                )
+            )
+        }
+        val duplicated = projects.map { it.name }
+            .groupBy { it }
+            .filterValues { it.size > 1 }.keys
+        if (duplicated.isNotEmpty()) {
+            throw AraraException(
+                LanguageController.messages.errorProjectDuplicateName(
+                    duplicated.joinToString(", ", "(", ")")
+                )
+            )
+        }
     }
 
     /**
