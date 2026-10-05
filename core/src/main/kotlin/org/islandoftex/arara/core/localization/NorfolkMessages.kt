@@ -80,6 +80,12 @@ object NorfolkMessages : AraraMessages {
     override fun errorDiscoverFileFileNotFound(file: String, extensions: String) =
         "Dunt yew git yarself inta a rite ole puckaterry, but I can't find yar file '${file}' not with none o' them extensions ${extensions}. Yew're gotta find the file and do yew see that has a proper extension on the end onnit, tergether."
 
+    override fun errorDiscoverFileUnknownExtension(file: String) =
+        "I coont make aht the file type of '${file}': none o' the file types in this here run fits its extension. Put the extension in the 'file_types' o' the configyrashun."
+
+    override fun errorDiscoverFileIsAProjectSpecification(file: String) =
+        "That there '.proj.lua' on the end names a project specifikashun, so '${file}' can't be a ordinary input file. Yew pass the specifikashun as the one an' only argymunt of the run."
+
     override val errorEvaluateCompilationFailed =
         "Wuh, I ent got no idear wass gorn on but I coont git the hang o'that conditional. Yew're gotta he'sum idear wot this is orl abowt else yew mite be in a rite ole puckaterry but I'll help yew git it done if I can, ole partner."
 
@@ -402,12 +408,6 @@ object NorfolkMessages : AraraMessages {
 
     override fun infoInterpreterDryRunModeSystemCommand(command: String) =
         "This is what I'm abowt to dew: ${command}"
-
-    override val infoInterpreterLuaFileEvaluationFailed =
-        "It do luke like ev'luatin' thet there Lua file yew giv' me as a project specifikashun come a-cropper wif a error nobody wuz expektin', so I'll tread it as a ordinary input file. If it wuz meant ter be a project specifikashun, hev a gander in the log fer the details on wot went wrong."
-
-    override val infoInterpreterLuaFileNotAProject =
-        "It do luke like thet there Lua file yew giv' me ent a proper project specifikashun, so I'll tread it as a ordinary input file. If it wuz meant ter be a project specifikashun, hev a gander in the log fer the details on wot went wrong."
 
     override val infoLabelAuthor =
         "Thass the one wot wrote this masterous jarb:"

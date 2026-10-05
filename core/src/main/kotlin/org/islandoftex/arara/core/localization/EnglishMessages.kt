@@ -79,6 +79,12 @@ object EnglishMessages : AraraMessages {
     override fun errorDiscoverFileFileNotFound(file: String, extensions: String) =
         "I could not find the provided file \"${file}\" with any of the extensions ${extensions}. Please make sure the file exists and it has a valid extension."
 
+    override fun errorDiscoverFileUnknownExtension(file: String) =
+        "I could not determine the file type of '${file}': no file type of this run matches its extension. Add the extension to the 'file_types' of the configuration."
+
+    override fun errorDiscoverFileIsAProjectSpecification(file: String) =
+        "The suffix '.proj.lua' names a project specification, so '${file}' cannot be an ordinary input file. Pass the specification as the sole argument of the run."
+
     override val errorEvaluateCompilationFailed =
         "For whatever reason, I could not compile the expression in the provided conditional. This part is quite tricky, since it involves aspects of the underlying expression language. I will do my best to help you in any way I can."
 
@@ -401,12 +407,6 @@ object EnglishMessages : AraraMessages {
 
     override fun infoInterpreterDryRunModeSystemCommand(command: String) =
         "About to run: ${command}"
-
-    override val infoInterpreterLuaFileEvaluationFailed =
-        "It looks like evaluating the provided Lua file as a project specification raised an unexpected error, so I will treat it as a regular input file. If it is meant to be a project specification, please check the log for details on what went wrong."
-
-    override val infoInterpreterLuaFileNotAProject =
-        "It looks like the provided Lua file could not be parsed as a project specification, so I will treat it as a regular input file. If it is meant to be a project specification, please check the log for details on what went wrong."
 
     override val infoLabelAuthor =
         "Author:"

@@ -236,11 +236,14 @@ class CLI : CliktCommand("arara") {
             .normalize()
 
         return reference.singleOrNull()
-            ?.takeIf { it.trim().endsWith(".lua") }
-            ?.let { workingDir.resolve(it) }
-            ?.takeIf { it.exists }?.readText()
-            ?.let { luaScript ->
-                resolveLuaProjectSpecification(workingDir, luaScript)
+            ?.takeIf { it.trim().endsWith(".proj.lua") }
+            ?.let { specification -> workingDir.resolve(specification) }
+            ?.takeIf { it.exists }
+            ?.let { path ->
+                logger.info {
+                    "Reading ${path.fileName} as a project specification."
+                }
+                resolveLuaProjectSpecification(workingDir, path.readText())
             }
             ?: Project(
                 "Untitled",
@@ -266,66 +269,27 @@ class CLI : CliktCommand("arara") {
     }
 
     /**
-     * Resolves the projects a Lua file argument names, when the
-     * single reference points at an existing script: the file is
-     * offered to the project interpreter, and a script that turns
-     * out not to be a project - or one that fails outright -
-     * yields null so the caller falls back to ordinary input
-     * treatment, with both verdicts spoken on the console and
-     * recorded in the log.
+     * Resolves the projects a project specification names. The
+     * suffix declared the intent, so a specification that fails
+     * to parse - or one that fails outright - is an error naming
+     * its actual violation, never a guess with a fallback.
      *
      * @param workingDir The working directory the script resolves
      *   its file references against.
      * @param luaScript The contents of the Lua file argument.
-     * @return The projects the specification resolved to, or null
-     *   when the file is not one.
+     * @return The projects the specification resolved to.
      */
     private fun resolveLuaProjectSpecification(
         workingDir: MPPPath,
         luaScript: String
-    ): List<org.islandoftex.arara.api.files.Project>? {
-        return runCatching {
-            logger.info {
-                "Guessing provided Lua file is a project specification, " +
-                    "trying to extract information from that."
-            }
-            LuaInterpreter(workingDir).parseProjectsFromLua(luaScript)
-        }.getOrElse {
-            if (it is AraraException) {
-                Display.printWrapped(
-                    LanguageController.messages
-                        .infoInterpreterLuaFileNotAProject + "\n"
-                )
-                logger.info {
-                    "Failed to parse Lua file argument as project: ${it.message}\n" +
-                        "This file is now treated as regular input file. " +
-                        "If it is a project specification, please fix the errors above."
-                }
-            } else {
-                // an evaluation that crashed outright has to leave
-                // a trace: the fallback keeps the run alive, but
-                // the person waiting on the console must not watch
-                // the file pass by in total silence
-                Display.printWrapped(
-                    LanguageController.messages
-                        .infoInterpreterLuaFileEvaluationFailed + "\n"
-                )
-                logger.error {
-                    "The provided Lua file raised " +
-                        "${it::class.simpleName} during project " +
-                        "resolution: ${it.message}. The file is " +
-                        "now treated as regular input file."
-                }
-            }
-            null
-        }?.let { projects ->
-            // project specifications do not go through the caller's
-            // fallback branch, so the configuration file of every
-            // project has to be loaded right here - and the entries
-            // the parse left pending resolve against the types it
-            // provides
-            loadProjectConfigurations(projects)
-        }
+    ): List<org.islandoftex.arara.api.files.Project> {
+        val projects = LuaInterpreter(workingDir).parseProjectsFromLua(luaScript)
+        // project specifications do not go through the caller's
+        // fallback branch, so the configuration file of every
+        // project has to be loaded right here - and the entries
+        // the parse left pending resolve against the types it
+        // provides
+        return loadProjectConfigurations(projects)
     }
 
     /**

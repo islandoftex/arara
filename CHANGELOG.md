@@ -202,6 +202,19 @@ on.
 
 ## Changed
 
+* **Breaking:** Project specifications are recognized by their
+  suffix alone: a `.proj.lua` argument is a project, declared and
+  unambiguous, and a plain `.lua` argument is an ordinary input
+  file - with a configured `lua` file type, such files run as
+  first-class inputs with no detour and no apology. A `.proj.lua`
+  specification that fails to parse is an error naming its actual
+  violation, where the old behavior guessed a project, printed a
+  notice and fell back to input treatment; the reserved suffix is
+  refused on the input path with a remedy instead of running as a
+  silent empty success; and a file that exists but whose extension
+  no file type carries is told so, where the lookup used to claim
+  it could not be found. Rename arara 7 project files from
+  `project.lua` to `project.proj.lua`.
 * **Breaking:** Interactive dialogs are now a host capability: the
   library defines the dialog contract and ships a headless default
   that raises a clear error when a rule reaches a dialog, instead of

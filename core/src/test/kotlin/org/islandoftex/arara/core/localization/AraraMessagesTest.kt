@@ -97,8 +97,6 @@ class AraraMessagesTest {
                 errorProjectSingleProjectHasDependencies,
                 errorProjectWorkingDirectoryKeyRequiresString,
                 infoDisplayExceptionMoreDetails,
-                infoInterpreterLuaFileNotAProject,
-                infoInterpreterLuaFileEvaluationFailed,
                 infoDisplayFullOutputInLog,
                 infoDisplaySummaryTitle,
                 infoDisplaySummaryFile,
@@ -138,6 +136,8 @@ class AraraMessagesTest {
                 errorConfigurationKeyRequiresStringKeys("alpha"),
                 errorConfigurationKeyRequiresStringValues("alpha"),
                 errorDiscoverFileFileNotFound("alpha", "beta"),
+                errorDiscoverFileUnknownExtension("alpha"),
+                errorDiscoverFileIsAProjectSpecification("alpha"),
                 errorFiletypeInvalidPattern("alpha"),
                 errorFiletypeNotAFile("alpha"),
                 errorFiletypeUnknownExtension("alpha", "beta"),
@@ -205,6 +205,9 @@ class AraraMessagesTest {
             listOf("quux1") to { it.errorCheckRegexIoException("quux1") },
             listOf("quux1", "quux2") to
                 { it.errorDiscoverFileFileNotFound("quux1", "quux2") },
+            listOf("quux1") to { it.errorDiscoverFileUnknownExtension("quux1") },
+            listOf("quux1") to
+                { it.errorDiscoverFileIsAProjectSpecification("quux1") },
             listOf("quux1") to { it.errorFiletypeNotAFile("quux1") },
             listOf("quux1", "quux2") to
                 { it.errorFiletypeUnknownExtension("quux1", "quux2") },

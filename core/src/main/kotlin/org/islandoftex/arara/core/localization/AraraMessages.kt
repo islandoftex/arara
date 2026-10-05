@@ -134,6 +134,16 @@ interface AraraMessages {
      */
     fun errorDiscoverFileFileNotFound(file: String, extensions: String): String
     /**
+     * The error shown when a referenced file exists but no file
+     * type of the run carries its extension.
+     */
+    fun errorDiscoverFileUnknownExtension(file: String): String
+    /**
+     * The error shown when a reference carries the reserved
+     * project specification suffix.
+     */
+    fun errorDiscoverFileIsAProjectSpecification(file: String): String
+    /**
      * The error shown when a conditional expression cannot be
      * compiled.
      */
@@ -675,16 +685,6 @@ interface AraraMessages {
      * mode.
      */
     fun infoInterpreterDryRunModeSystemCommand(command: String): String
-    /**
-     * The message shown when evaluating a provided Lua file as a
-     * project specification raised an unexpected error.
-     */
-    val infoInterpreterLuaFileEvaluationFailed: String
-    /**
-     * The message shown when a provided Lua file is not a project
-     * specification.
-     */
-    val infoInterpreterLuaFileNotAProject: String
     /**
      * The label shown for a single rule author.
      */

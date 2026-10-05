@@ -75,7 +75,7 @@ class ProjectConfigurationTest {
             val (status, output) = runCLI(
                 "--working-directory",
                 "src/test/resources/executiontests/project-config",
-                "project.lua"
+                "project.proj.lua"
             )
             assertEquals(
                 0, status,
@@ -93,23 +93,75 @@ class ProjectConfigurationTest {
     }
 
     @Test
-    fun `falls back to input files when the Lua argument is not a project`() {
+    fun `reports a plain Lua file as untyped input`() {
         withRestoredState {
-            val directory = createTempDirectory("arara-cli-not-a-spec")
-            val bogus = directory.resolve("not-a-spec.lua")
+            val directory = createTempDirectory("arara-cli-plain-lua")
+            val plain = directory.resolve("notes.lua")
+            Files.writeString(plain, "return { }")
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "notes.lua"
+            )
+            // the plain Lua file is an ordinary input reference now:
+            // no project guess, no apology - just the honest verdict
+            // that no file type of the run carries its extension
+            assertNotEquals(0, status, "an untyped input reports failure")
+            assertTrue(
+                "could not determine the file type" in output,
+                "the run reports the type truth: $output"
+            )
+            assertTrue(
+                "regular input" !in output,
+                "the guessing fallback is gone: $output"
+            )
+        }
+    }
+
+    @Test
+    fun `fails a broken project specification without a fallback`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-broken-spec")
+            val bogus = directory.resolve("broken.proj.lua")
             Files.writeString(bogus, "return 42")
             val (status, output) = runCLI(
                 "--working-directory", directory.toString(),
-                "not-a-spec.lua"
+                "broken.proj.lua"
             )
-            // the guessing fallback announces the demotion before the file is
-            // treated as a regular input; the run then fails on the unknown
-            // file type, which the entry point reports as its status
+            // the suffix declared the intent, so the parse failure is
+            // an error naming its actual violation - never a demotion
+            // to input treatment
+            assertNotEquals(0, status, "a broken specification fails the run")
             assertTrue(
-                output.contains("regular input"),
-                "the fallback announces the failed project guess: $output"
+                "has to be a table" in output,
+                "the run reports the parse violation: $output"
             )
-            assertNotEquals(0, status, "an unrunnable input reports failure")
+            assertTrue(
+                "regular input" !in output,
+                "no fallback notice exists anymore: $output"
+            )
+        }
+    }
+
+    @Test
+    fun `refuses a specification passed among other files`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-reserved")
+            val specification = directory.resolve("book.proj.lua")
+            Files.writeString(specification, "return { }")
+            val other = directory.resolve("other.tex")
+            Files.writeString(other, "% arara: nothing\nQuack\n")
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "book.proj.lua", "other.tex"
+            )
+            // the reserved suffix on the input path is a refusal with
+            // a remedy, not a silent run of the specification as an
+            // empty input
+            assertNotEquals(0, status, "the reserved suffix refuses the run")
+            assertTrue(
+                "sole argument" in output,
+                "the refusal says what the suffix wants: $output"
+            )
         }
     }
 

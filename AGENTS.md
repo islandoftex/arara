@@ -51,6 +51,8 @@ simple directive pipeline, the engine happy paths, conditionals in both
 dialects — including a wrongly typed conditional probe — sessions in
 both engines, engine options with a staged application rule, the
 project specification flow resolved through its Lua configuration,
+a plain Lua file run as an ordinary input through its configured
+file type,
 the safe mode rejection of unsafe helper calls, the configured
 preamble flow, multiple files as arguments and through the directive
 file replication, whole-file extraction beyond the header, call

@@ -80,6 +80,12 @@ object BrazilianPortugueseMessages : AraraMessages {
     override fun errorDiscoverFileFileNotFound(file: String, extensions: String) =
         "Não consegui encontrar o arquivo especificado '${file}' com qualquer uma das extensões ${extensions}. Por favor, certifique-se de que o arquivo existe e que possui uma extensão válida."
 
+    override fun errorDiscoverFileUnknownExtension(file: String) =
+        "Não consegui determinar o tipo de arquivo de '${file}': nenhum tipo de arquivo desta execução corresponde à extensão dele. Adicione a extensão aos 'file_types' da configuração."
+
+    override fun errorDiscoverFileIsAProjectSpecification(file: String) =
+        "O sufixo '.proj.lua' denota uma especificação de projeto, então '${file}' não pode ser um arquivo de entrada comum. Passe a especificação como o único argumento da execução."
+
     override val errorEvaluateCompilationFailed =
         "Por alguma razão, eu não consegui compilar a expressão condicional especificada. Esta parte é complicada, pois envolve aspectos da linguagem de expressão subjacente. Eu farei o possível para te ajudar da melhor forma que puder."
 
@@ -402,12 +408,6 @@ object BrazilianPortugueseMessages : AraraMessages {
 
     override fun infoInterpreterDryRunModeSystemCommand(command: String) =
         "A executar: ${command}"
-
-    override val infoInterpreterLuaFileEvaluationFailed =
-        "Parece que a avaliação do arquivo Lua fornecido como uma especificação de projeto apresentou um erro inesperado, então vou tratá-lo como um arquivo de entrada comum. Se ele deveria ser uma especificação de projeto, consulte o log para obter detalhes sobre o que deu errado."
-
-    override val infoInterpreterLuaFileNotAProject =
-        "Parece que o arquivo Lua fornecido não pôde ser interpretado como uma especificação de projeto, então vou tratá-lo como um arquivo de entrada comum. Se ele deveria ser uma especificação de projeto, consulte o log para obter detalhes sobre o que deu errado."
 
     override val infoLabelAuthor =
         "Autor:"

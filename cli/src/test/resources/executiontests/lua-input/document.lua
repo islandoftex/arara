@@ -1,0 +1,2 @@
+-- arara: echoone
+return { }

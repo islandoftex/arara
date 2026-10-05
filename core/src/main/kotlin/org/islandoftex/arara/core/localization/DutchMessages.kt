@@ -80,6 +80,12 @@ object DutchMessages : AraraMessages {
     override fun errorDiscoverFileFileNotFound(file: String, extensions: String) =
         "Ik kon het opgegeven bestand '${file}' niet vinden met een van de extensies ${extensions}. Zorg ervoor dat het bestand bestaat en dat het een geldige extensie heeft."
 
+    override fun errorDiscoverFileUnknownExtension(file: String) =
+        "Ik kon het bestandstype van '${file}' niet bepalen: geen enkel bestandstype van deze run past bij zijn extensie. Voeg de extensie toe aan de 'file_types' van de configuratie."
+
+    override fun errorDiscoverFileIsAProjectSpecification(file: String) =
+        "Het achtervoegsel '.proj.lua' benoemt een projectspecificatie, dus '${file}' kan geen gewoon invoerbestand zijn. Geef de specificatie als enige argument van de run mee."
+
     override val errorEvaluateCompilationFailed =
         "Om een of andere reden kon ik de expressie in de opgegeven voorwaarde niet compileren. Dit is een ingewikkeld probleem, omdat het te maken heeft met aspecten van de onderliggende expressietaal. Ik zal mijn best doen om je zoveel mogelijk hiermee te helpen."
 
@@ -402,12 +408,6 @@ object DutchMessages : AraraMessages {
 
     override fun infoInterpreterDryRunModeSystemCommand(command: String) =
         "Begin met uitvoeren: ${command}"
-
-    override val infoInterpreterLuaFileEvaluationFailed =
-        "Het lijkt erop dat het evalueren van het opgegeven Lua-bestand als projectspecificatie een onverwachte fout heeft opgeleverd, dus ik behandel het als een gewoon invoerbestand. Als het bedoeld was als projectspecificatie, raadpleeg dan het logboek voor details over wat er misging."
-
-    override val infoInterpreterLuaFileNotAProject =
-        "Het lijkt erop dat het opgegeven Lua-bestand niet als projectspecificatie kon worden gelezen, dus ik behandel het als een gewoon invoerbestand. Als het bedoeld was als projectspecificatie, raadpleeg dan het logboek voor details over wat er misging."
 
     override val infoLabelAuthor =
         "Auteur:"

@@ -1,0 +1,7 @@
+!config
+verbose: true
+paths:
+  - './'
+filetypes:
+  - extension: lua
+    pattern: ^\s*--\s*

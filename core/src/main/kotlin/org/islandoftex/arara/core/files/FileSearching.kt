@@ -124,17 +124,56 @@ object FileSearching {
         executionOptions: ExecutionOptions
     ): ProjectFile =
         lookupFile(reference, workingDirectory, executionOptions)
-            ?: throw AraraException(
-                LanguageController.messages.errorDiscoverFileFileNotFound(
-                    reference,
-                    // the extensions speak as a plain enumeration in
-                    // the priority order of the effective list; a
-                    // type the configuration redeclares shows once
-                    executionOptions.fileTypes
-                        .distinctBy { it.extension }
-                        .joinToString(", ")
-                )
+            ?: throw fileResolutionError(
+                reference, workingDirectory, executionOptions
             )
+
+    /**
+     * Builds the error for a reference no file of the run
+     * resolves: the reserved project suffix is refused when its
+     * file exists, an existing file whose extension no type
+     * carries is told so instead of being reported missing, and
+     * everything else keeps the not-found verdict with the
+     * extensions the run would have completed the name with.
+     */
+    private fun fileResolutionError(
+        reference: String,
+        workingDirectory: MPPPath,
+        executionOptions: ExecutionOptions
+    ): AraraException {
+        val target = (workingDirectory / reference).normalize()
+        return when {
+            // the project suffix belongs to the project world
+            // alone; a missing specification keeps the ordinary
+            // verdict below, as the file is simply not there
+            reference.trim().endsWith(".proj.lua") && target.exists ->
+                AraraException(
+                    LanguageController.messages
+                        .errorDiscoverFileIsAProjectSpecification(
+                            reference
+                        )
+                )
+            target.exists && target.isRegularFile ->
+                AraraException(
+                    LanguageController.messages
+                        .errorDiscoverFileUnknownExtension(reference)
+                )
+            else ->
+                AraraException(
+                    LanguageController.messages
+                        .errorDiscoverFileFileNotFound(
+                            reference,
+                            // the extensions speak as a plain
+                            // enumeration in the priority order of
+                            // the effective list; a type the
+                            // configuration redeclares shows once
+                            executionOptions.fileTypes
+                                .distinctBy { it.extension }
+                                .joinToString(", ")
+                        )
+                )
+        }
+    }
 
     /**
      * Looks up the file type an extension maps to, in the priority
