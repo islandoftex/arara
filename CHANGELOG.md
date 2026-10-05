@@ -170,7 +170,14 @@ on.
   with its name and working directory, in the session's
   language on the console and in English in the log. The chrome
   appears only when the run carries more than one project, so
-  single-project runs keep their historic silhouette.
+  single-project runs keep their historic silhouette. The
+  anonymous project - the command line's own loose input files -
+  carries a localized display label instead of its model name,
+  so no screen ever reads "Untitled". The styled presentation
+  renders each project's name as a bold header and groups the
+  summary table by project: each grid is the same table the
+  single-project runs always had, with only the project's
+  name above it.
 * Project file entries that declare no `file_type` are detected by
   their extension against the file types of the run - the defaults,
   whatever the command line asks, and the types the project's own

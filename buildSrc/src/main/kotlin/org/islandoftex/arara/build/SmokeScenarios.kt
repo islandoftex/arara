@@ -191,7 +191,7 @@ internal val scenarios = listOf(
                 description = "project specifications merged from several files",
                 check = "the cross-file dependency orders the merged projects and both run",
                 arguments = listOf("second.proj.lua", "first.proj.lua"),
-                expected = listOf("AlphaRan", "BetaRan"),
+                expected = listOf("AlphaRan", "BetaRan", "Project alpha", "Project beta"),
                 fixture = "multi-spec",
         ),
         Scenario(
@@ -199,7 +199,7 @@ internal val scenarios = listOf(
                 description = "a specification mixed with loose input files",
                 check = "the specification's project and the anonymous project both run",
                 arguments = listOf("book.proj.lua", "notes.tex"),
-                expected = listOf("SpecRan", "LooseRan"),
+                expected = listOf("SpecRan", "LooseRan", "Project book", "Project Single files"),
                 fixture = "mixed",
         ),
         Scenario(

@@ -3,7 +3,7 @@ package org.islandoftex.arara.cli.utils
 
 import org.islandoftex.arara.api.AraraAPI
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.files.Project
+import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.session.Command
@@ -87,12 +87,24 @@ object Display {
      * facade decides whether the run is multi-project, so the
      * renderers print whatever they are asked to.
      *
-     * @param project The project.
+     * @param displayName The project's display name - the model's
+     *   name for specification projects, or the anonymous
+     *   project's label, in the session's language.
+     * @param logName The project's name for the log - the English
+     *   phrase for the anonymous project, or the model's name.
+     * @param directory The working directory of the project.
      */
-    fun printProjectInformation(project: Project) {
+    fun printProjectInformation(
+        displayName: String,
+        logName: String,
+        directory: MPPPath
+    ) {
         if (projectCount > 1) {
-            renderer.printProjectInformation(project)
-            RunLog.projectInformation(project)
+            renderer.printProjectInformation(displayName, directory.fileName)
+            RunLog.projectInformation(
+                logName,
+                directory.normalize().toString()
+            )
         }
     }
 

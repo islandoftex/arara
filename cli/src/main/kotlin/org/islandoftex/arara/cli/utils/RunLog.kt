@@ -3,7 +3,6 @@ package org.islandoftex.arara.cli.utils
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.islandoftex.arara.api.AraraAPI
-import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.configuration.DefaultConfiguration
 import org.islandoftex.arara.core.session.Environment
@@ -108,11 +107,11 @@ object RunLog {
      * Writes the entry announcing the project the run enters, the
      * English twin of the localized console line.
      *
-     * @param project The project.
+     * @param name The project's name for the log.
+     * @param directory The full working directory path.
      */
-    fun projectInformation(project: Project) = logger.info {
-        "Project \"${project.name}\" " +
-            "(working directory: ${project.workingDirectory.normalize()})"
+    fun projectInformation(name: String, directory: String) = logger.info {
+        "Project \"$name\" (working directory: $directory)"
     }
 
     /**

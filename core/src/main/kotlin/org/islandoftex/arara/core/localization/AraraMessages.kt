@@ -401,6 +401,11 @@ interface AraraMessages {
      */
     fun infoDisplayProject(name: String, directory: String): String
     /**
+     * The label shown as the display name of the anonymous
+     * project - the command line's own loose input files.
+     */
+    val infoLabelSingleFiles: String
+    /**
      * The error shown when the directives a project file
      * specification carries cannot be extracted.
      */

@@ -235,6 +235,8 @@ object EnglishMessages : AraraMessages {
     override fun infoDisplayProject(name: String, directory: String) =
         "Project ${name} (${directory})"
 
+    override val infoLabelSingleFiles = "Single files"
+
     override fun errorProjectFileDirectivesExtraction(
         file: String,
         details: String

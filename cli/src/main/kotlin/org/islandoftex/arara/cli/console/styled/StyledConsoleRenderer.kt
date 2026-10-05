@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit
 import kotlin.time.DurationUnit
 import kotlin.time.TimeSource
 import org.islandoftex.arara.api.configuration.ExecutionMode
-import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
@@ -114,7 +113,8 @@ class StyledConsoleRenderer(
         val path: String,
         var tasks: Int,
         var seconds: Double,
-        var success: Boolean
+        var success: Boolean,
+        val projectName: String? = null
     )
 
     /**
@@ -126,6 +126,13 @@ class StyledConsoleRenderer(
      * The file whose entries are currently printing.
      */
     private var currentFile: SummaryEntry? = null
+
+    /**
+     * The display name of the project whose territory the run is
+     * in, or null when the run is single-project and no project
+     * line appeared. The summary table groups by this name.
+     */
+    private var currentProjectName: String? = null
 
     /**
      * The monotonic mark of the current file's start.
@@ -338,19 +345,21 @@ class StyledConsoleRenderer(
 
     /**
      * Displays the project information in the terminal: the
-     * structural line that opens a project's territory. The
-     * oc211 plumbing renders the same line the plain
-     * presentation does; the styled section vocabulary arrives
-     * with the presence pair's second cut.
+     * structural line that opens a project's territory, with the
+     * project name bold and the working directory dimmed beside
+     * it. The display name arrives resolved - the anonymous
+     * project's label or the specification's own name - and the
+     * summary table groups by the same name.
      *
-     * @param project The project.
+     * @param name The display name of the project.
+     * @param directory The working directory's short name.
      */
-    override fun printProjectInformation(project: Project) {
-        LanguageController.messages
-            .infoDisplayProject(
-                project.name,
-                project.workingDirectory.fileName
-            ).let { terminal.println(it) }
+    override fun printProjectInformation(name: String, directory: String) {
+        currentProjectName = name
+        terminal.println(
+            TextStyle(bold = true)(name) +
+                " " + muted("($directory)")
+        )
     }
 
     /**
@@ -380,7 +389,8 @@ class StyledConsoleRenderer(
             file.path.toString(),
             0,
             0.0,
-            true
+            true,
+            currentProjectName
         )
         currentFileStart = TimeSource.Monotonic.markNow()
         val name = file.path.fileName
@@ -1247,46 +1257,12 @@ class StyledConsoleRenderer(
     /**
      * Renders the execution summary table: one row per file with
      * its task count, its time and its status, the file names
-     * linked to the files themselves.
+     * linked to the files themselves. Multi-project runs render
+     * one grid per project with the project's name above it;
+     * single-project runs keep the historic flat table.
      */
     private fun renderSummaryTable() {
         val messages = LanguageController.messages
-        val table = table {
-            // the table carries the ruled layout of the presentation:
-            // the underline beneath the labels, the closing rule beneath
-            // the table - the rows flow between them, separated by
-            // their alignment rather than by borders, matching the
-            // borderless design language of everything else
-            tableBorders = Borders.BOTTOM
-            cellBorders = Borders.NONE
-            header {
-                row(
-                    messages.infoDisplaySummaryFile,
-                    messages.infoDisplaySummaryTasks,
-                    messages.infoDisplaySummaryTime,
-                    ""
-                )
-                cellBorders = Borders.BOTTOM
-            }
-            column(FILE_COLUMN) { align = TextAlign.LEFT }
-            column(COUNT_COLUMN) { align = TextAlign.RIGHT }
-            column(TIME_COLUMN) { align = TextAlign.RIGHT }
-            column(STATUS_COLUMN) { align = TextAlign.RIGHT }
-            body {
-                summary.forEach { entry ->
-                    row(
-                        hyperlink(entry.name, entry.path),
-                        entry.tasks,
-                        formatSeconds(entry.seconds),
-                        if (entry.success) {
-                            terminal.theme.success(successGlyph())
-                        } else {
-                            terminal.theme.danger(failureGlyph())
-                        }
-                    )
-                }
-            }
-        }
         val head = "$rule$rule ${messages.infoDisplaySummaryTitle} "
         terminal.println(
             muted(head + rule.repeat((structureWidth - head.length).coerceAtLeast(1)))
@@ -1294,7 +1270,66 @@ class StyledConsoleRenderer(
         // the section and the table breathe apart; the box belongs
         // to the dialogs, where interruption is the point
         terminal.println("")
-        terminal.println(table)
+        val projectNames = summary.mapNotNull { it.projectName }.distinct()
+        if (projectNames.isEmpty()) {
+            // single-project: the historic flat table
+            terminal.println(buildSummaryTable(summary, messages))
+        } else {
+            projectNames.forEachIndexed { index, projectName ->
+                if (index > 0) {
+                    terminal.println("")
+                }
+                terminal.println(TextStyle(bold = true)(projectName))
+                terminal.println("")
+                val entries = summary.filter { it.projectName == projectName }
+                terminal.println(buildSummaryTable(entries, messages))
+            }
+        }
+    }
+
+    /**
+     * Builds one grid of the summary table for the provided
+     * entries: the ruled layout with the header labels and one
+     * row per file.
+     */
+    private fun buildSummaryTable(
+        entries: List<SummaryEntry>,
+        messages: org.islandoftex.arara.core.localization.AraraMessages
+    ) = table {
+        // the table carries the ruled layout of the presentation:
+        // the underline beneath the labels, the closing rule beneath
+        // the table - the rows flow between them, separated by
+        // their alignment rather than by borders, matching the
+        // borderless design language of everything else
+        tableBorders = Borders.BOTTOM
+        cellBorders = Borders.NONE
+        header {
+            row(
+                messages.infoDisplaySummaryFile,
+                messages.infoDisplaySummaryTasks,
+                messages.infoDisplaySummaryTime,
+                ""
+            )
+            cellBorders = Borders.BOTTOM
+        }
+        column(FILE_COLUMN) { align = TextAlign.LEFT }
+        column(COUNT_COLUMN) { align = TextAlign.RIGHT }
+        column(TIME_COLUMN) { align = TextAlign.RIGHT }
+        column(STATUS_COLUMN) { align = TextAlign.RIGHT }
+        body {
+            entries.forEach { entry ->
+                row(
+                    hyperlink(entry.name, entry.path),
+                    entry.tasks,
+                    formatSeconds(entry.seconds),
+                    if (entry.success) {
+                        terminal.theme.success(successGlyph())
+                    } else {
+                        terminal.theme.danger(failureGlyph())
+                    }
+                )
+            }
+        }
     }
 
     /**

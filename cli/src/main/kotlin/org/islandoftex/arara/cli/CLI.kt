@@ -256,7 +256,7 @@ class CLI : CliktCommand("arara") {
             Project("Untitled", workingDir, emptySet())
                 .also { project -> loadProjectConfigurations(listOf(project)) }
                 .let { project ->
-                    projects += Project(
+                    val anonymous = Project(
                         project.name,
                         project.workingDirectory,
                         inputs.map { fileName ->
@@ -267,6 +267,8 @@ class CLI : CliktCommand("arara") {
                             )
                         }.toSet()
                     )
+                    anonymousProject = anonymous
+                    projects += anonymous
                 }
         }
         // a file belongs to exactly one project of the run: two
@@ -423,6 +425,14 @@ class CLI : CliktCommand("arara") {
      * with them the run's ledger - untouched.
      */
     private var appliedConsoleMode: ConsoleMode? = null
+
+    /**
+     * The anonymous project the invocation builds from its loose
+     * input files, if any. The project display names it by its
+     * label instead of its model name - the hook knows, by
+     * identity, which project the invocation built.
+     */
+    private var anonymousProject: org.islandoftex.arara.api.files.Project? = null
 
     /**
      * The full paths of every file the run was asked to process,
@@ -611,8 +621,20 @@ class CLI : CliktCommand("arara") {
             // the file references are resolved against the file
             // types the configuration may provide; the project
             // line opens the territory when the run is
-            // multi-project
-            Display.printProjectInformation(project)
+            // multi-project, and the anonymous project carries its
+            // display label instead of its model name
+            val isAnonymous = project === anonymousProject
+            val displayName = if (isAnonymous) {
+                LanguageController.messages.infoLabelSingleFiles
+            } else {
+                project.name
+            }
+            val logName = if (isAnonymous) "Single files" else project.name
+            Display.printProjectInformation(
+                displayName,
+                logName,
+                project.workingDirectory
+            )
         },
         executeBeforeFile = {
             processedFiles.add(it.path.toString())
