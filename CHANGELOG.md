@@ -21,8 +21,9 @@ on.
   the application's cyan accent beside a live counter of the
   elapsed time, the counter escalating from tenths of a second
   to the full clock as the task runs longer. The feedback is on
-  by default, and the `animations` configuration key (in both
-  configuration file formats) silences it for those who prefer
+  by default, and the `animations` configuration key (flat in the
+  YAML format, nested in the `console` group in the Lua format)
+  silences it for those who prefer
   stillness; it waits a second before it starts so fast tasks
   stay exactly as static as they always were, re-anchors itself
   to the outcome zone at every frame so stray typing never
@@ -30,7 +31,8 @@ on.
   breathes and restores it for the outcome, and never runs
   outside a real terminal that can carry its escapes.
 * New `-c`/`--console` command line option and `console`
-  configuration key (in both configuration file formats) to select
+  configuration key (flat in the YAML format; the `mode` entry of
+  the `console` group in the Lua format) to select
   the console presentation: `plain` (the default, the historic
   layout) or `styled` - a modern presentation with a tinted banner
   that names the version and the tool's own description, section
@@ -221,10 +223,11 @@ on.
   booleans), and null parameter values keep being rejected.
 * The file database is an internal, machine-owned cache now: it
   keeps a compact record format of its own instead of YAML, and its
-  default name is `arara.db` - the name was never a format claim. A
+  default name is `arara.db`, a name that claims no format. A
   database file from an older version is not read anymore: the load
-  error names the file and spells out the remedy, to remove or
-  rename the old file so the next run builds a fresh one. Nothing of
+  and save errors dropped their YAML claims in every language, and
+  the load error spells out the remedy - remove or rename the old
+  file so the next run builds a fresh one. Nothing of
   value is lost - the database is a cache - and a configured name
   keeps naming the file exactly, as before.
 * Kotlin platform updated to 2.4.20, Gradle updated to 9.8.0, build
