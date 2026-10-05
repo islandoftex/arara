@@ -211,6 +211,12 @@ object EnglishMessages : AraraMessages {
     override val errorProjectDirectivesKeyRequiresTable =
         "The 'directives' key requires a table."
 
+    override fun errorProjectDuplicateName(name: String) =
+        "Two projects in the specification share the name '${name}'. Within one run, a project is identified by its name, so every project of a list needs a name of its own."
+
+    override fun errorProjectDuplicatePath(name: String) =
+        "The project lists the file '${name}' more than once, possibly under two spellings of the same location. Within a project, a file is listed exactly once."
+
     override fun errorProjectFileDirectivesExtraction(
         file: String,
         details: String
@@ -247,6 +253,9 @@ object EnglishMessages : AraraMessages {
     override val errorProjectListEntryNotATable =
         "A project list entry has to be a table."
 
+    override val errorProjectListEntryNeedsName =
+        "Every project in a list of projects needs an explicit name, as dependencies identify projects by name."
+
     override val errorProjectNameKeyRequiresString =
         "The project 'name' key requires a string value."
 
@@ -261,6 +270,9 @@ object EnglishMessages : AraraMessages {
 
     override val errorProjectSingleProjectHasDependencies =
         "A single project specification cannot declare dependencies."
+
+    override fun errorProjectUnknownKey(name: String) =
+        "The project specification carries keys the format does not accept: ${name}."
 
     override val errorProjectWorkingDirectoryKeyRequiresString =
         "The 'working_directory' key requires a string value."

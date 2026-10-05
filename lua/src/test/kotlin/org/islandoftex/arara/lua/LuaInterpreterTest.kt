@@ -401,4 +401,140 @@ class LuaInterpreterTest {
             parse("""return { files = { ["a.tex"] = { directives = { 42 } } } }""")
         }
     }
+
+    @Test
+    fun `rejects unknown project keys`() {
+        val exception = assertFailsWith<ProjectParseException>(
+            "an unknown project key must not be silently ignored"
+        ) {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
+                """return { name = "p", files = { ["a.tex"] = { } }, preamble = "x" }"""
+            )
+        }
+        assertTrue(
+            exception.message!!.contains("preamble"),
+            "the error names the unknown key: ${exception.message}"
+        )
+    }
+
+    @Test
+    fun `rejects the outdated spellings of the project format`() {
+        // the arara 7 spellings were silently ignored before; the
+        // strictness turns them into a named error
+        val workingDirectory = assertFailsWith<ProjectParseException> {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
+                """return { workingDirectory = "book", files = { ["a.tex"] = { } } }"""
+            )
+        }
+        assertTrue(
+            workingDirectory.message!!.contains("workingDirectory"),
+            "the error names the outdated key: ${workingDirectory.message}"
+        )
+        val fileType = assertFailsWith<ProjectParseException> {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
+                """return { files = { ["a.tex"] = { fileType = { extension = "tex" } } } }"""
+            )
+        }
+        assertTrue(
+            fileType.message!!.contains("a.tex.fileType"),
+            "the error qualifies the key by its file: ${fileType.message}"
+        )
+    }
+
+    @Test
+    fun `rejects unknown file entry and file type keys`() {
+        val entry = assertFailsWith<ProjectParseException> {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
+                """return { files = { ["a.tex"] = { priorityy = 1 } } }"""
+            )
+        }
+        assertTrue(
+            entry.message!!.contains("a.tex.priorityy"),
+            "the file entry key names itself, qualified: ${entry.message}"
+        )
+        val type = assertFailsWith<ProjectParseException> {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
+                """return { files = { ["a.tex"] = { file_type = { extension = "tex", patern = "x" } } } }"""
+            )
+        }
+        assertTrue(
+            type.message!!.contains("file_type.patern"),
+            "the file type key names itself, qualified: ${type.message}"
+        )
+    }
+
+    @Test
+    fun `rejects named roots posing as project lists`() {
+        val exception = assertFailsWith<ProjectParseException>(
+            "a root with named keys reports them instead of being misread as a list"
+        ) {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
+                """return { filess = { ["a.tex"] = { } } }"""
+            )
+        }
+        assertTrue(
+            exception.message!!.contains("filess"),
+            "the error names the root's key: ${exception.message}"
+        )
+    }
+
+    @Test
+    fun `rejects files listed twice under two spellings`() {
+        val exception = assertFailsWith<ProjectParseException>(
+            "the same file may not be listed twice, whatever its spelling"
+        ) {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
+                """return { files = { ["a.tex"] = { }, ["./a.tex"] = { } } }"""
+            )
+        }
+        assertTrue(
+            exception.message!!.contains("./a.tex"),
+            "the error names the spelling that collided: ${exception.message}"
+        )
+    }
+
+    @Test
+    fun `rejects nameless projects in a list`() {
+        assertFailsWith<ProjectParseException>(
+            "a list project without a name cannot be identified"
+        ) {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
+                """
+                return {
+                  { files = { ["a.tex"] = { } } },
+                  { name = "other", files = { ["b.tex"] = { } } }
+                }
+                """.trimIndent()
+            )
+        }
+    }
+
+    @Test
+    fun `rejects duplicate project names in a list`() {
+        val exception = assertFailsWith<ProjectValidationException>(
+            "two projects of one run may not share a name"
+        ) {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
+                """
+                return {
+                  { name = "same", files = { ["a.tex"] = { } } },
+                  { name = "same", files = { ["b.tex"] = { } } }
+                }
+                """.trimIndent()
+            )
+        }
+        assertTrue(
+            exception.message!!.contains("same"),
+            "the error names the repeated name: ${exception.message}"
+        )
+    }
+
+    @Test
+    fun `rejects empty project lists`() {
+        assertFailsWith<ProjectParseException>(
+            "an empty specification is not a specification"
+        ) {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua("return { }")
+        }
+    }
 }

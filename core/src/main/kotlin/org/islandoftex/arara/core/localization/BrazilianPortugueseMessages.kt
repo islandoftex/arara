@@ -212,6 +212,12 @@ object BrazilianPortugueseMessages : AraraMessages {
     override val errorProjectDirectivesKeyRequiresTable =
         "A chave 'directives' requer uma tabela."
 
+    override fun errorProjectDuplicateName(name: String) =
+        "Dois projetos da especificação compartilham o nome '${name}'. Dentro de uma mesma execução, um projeto é identificado pelo seu nome, então cada projeto de uma lista precisa de um nome próprio."
+
+    override fun errorProjectDuplicatePath(name: String) =
+        "O projeto lista o arquivo '${name}' mais de uma vez, possivelmente sob duas grafias do mesmo local. Dentro de um projeto, um arquivo é listado uma única vez."
+
     override fun errorProjectFileDirectivesExtraction(
         file: String,
         details: String
@@ -248,6 +254,9 @@ object BrazilianPortugueseMessages : AraraMessages {
     override val errorProjectListEntryNotATable =
         "Cada entrada de uma lista de projetos precisa ser uma tabela."
 
+    override val errorProjectListEntryNeedsName =
+        "Cada projeto em uma lista de projetos precisa de um nome explícito, pois as dependências identificam projetos pelo nome."
+
     override val errorProjectNameKeyRequiresString =
         "A chave 'name' do projeto requer um valor de texto."
 
@@ -262,6 +271,9 @@ object BrazilianPortugueseMessages : AraraMessages {
 
     override val errorProjectSingleProjectHasDependencies =
         "Uma especificação de projeto único não pode declarar dependências."
+
+    override fun errorProjectUnknownKey(name: String) =
+        "A especificação de projeto contém chaves que o formato não aceita: ${name}."
 
     override val errorProjectWorkingDirectoryKeyRequiresString =
         "A chave 'working_directory' requer um valor de texto."

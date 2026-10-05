@@ -212,6 +212,12 @@ object DutchMessages : AraraMessages {
     override val errorProjectDirectivesKeyRequiresTable =
         "De sleutel 'directives' vereist een tabel."
 
+    override fun errorProjectDuplicateName(name: String) =
+        "Twee projecten in de specificatie delen de naam '${name}'. Binnen één run wordt een project geïdentificeerd aan de hand van zijn naam, dus elk project in een lijst heeft een eigen naam nodig."
+
+    override fun errorProjectDuplicatePath(name: String) =
+        "Het project noemt het bestand '${name}' meer dan eens, misschien onder twee schrijfwijzen van dezelfde locatie. Binnen een project wordt een bestand precies één keer genoemd."
+
     override fun errorProjectFileDirectivesExtraction(
         file: String,
         details: String
@@ -248,6 +254,9 @@ object DutchMessages : AraraMessages {
     override val errorProjectListEntryNotATable =
         "Elke waarde in een projectenlijst moet een tabel zijn."
 
+    override val errorProjectListEntryNeedsName =
+        "Elk project in een lijst met projecten vereist een expliciete naam, omdat afhankelijkheden projecten bij naam identificeren."
+
     override val errorProjectNameKeyRequiresString =
         "De sleutel 'name' van het project vereist een tekenreekswaarde."
 
@@ -262,6 +271,9 @@ object DutchMessages : AraraMessages {
 
     override val errorProjectSingleProjectHasDependencies =
         "Een enkele projectspecificatie kan geen afhankelijkheden bevatten."
+
+    override fun errorProjectUnknownKey(name: String) =
+        "De projectspecificatie bevat sleutels die het formaat niet toestaat: ${name}."
 
     override val errorProjectWorkingDirectoryKeyRequiresString =
         "De sleutel 'working_directory' vereist een tekenreekswaarde."

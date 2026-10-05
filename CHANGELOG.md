@@ -138,7 +138,16 @@ on.
   defaults. The project parser also discriminates a single project
   from a project list by shape (a root `files` table) instead of
   retrying the failed single parse as a list, so every parse error
-  now reports the actual violation.
+  now reports the actual violation. The project specification
+  rejects unknown keys across its tables - a project, a file entry
+  and a file type name their trespassers, and a root table that is
+  neither a single project nor a positional list reports its named
+  keys, so the arara 7 spellings (`workingDirectory`, `fileType`)
+  are told they are unknown instead of being silently ignored. A
+  file listed twice under two spellings of the same location is
+  refused, the projects of a list need explicit, unique names -
+  dependencies identify projects by name - and an empty list of
+  projects is not a specification at all.
 * Under `--engine lua`, rule evaluation failures now surface through
   the same localized runtime errors as the YAML engine: command, flag
   and `exit` closures report their runtime failures behind the

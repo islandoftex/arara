@@ -212,6 +212,12 @@ object NorfolkMessages : AraraMessages {
     override val errorProjectDirectivesKeyRequiresTable =
         "The 'directives' key wants a table."
 
+    override fun errorProjectDuplicateName(name: String) =
+        "Two projects in the specifikashun's sharin' the name '${name}'. In one run a project's known by its name, so every project in a list wants a name of its own."
+
+    override fun errorProjectDuplicatePath(name: String) =
+        "That project lists the file '${name}' more'n once, praps under two spellin's of the very same spot. In a project, a file's listed just the once."
+
     override fun errorProjectFileDirectivesExtraction(
         file: String,
         details: String
@@ -248,6 +254,9 @@ object NorfolkMessages : AraraMessages {
     override val errorProjectListEntryNotATable =
         "Every project list entry's gotta be a table."
 
+    override val errorProjectListEntryNeedsName =
+        "Every project in a list o' projects's gotta hev a proper name, bein' as dependencies know a project by its name."
+
     override val errorProjectNameKeyRequiresString =
         "The project 'name' key wants a string value."
 
@@ -262,6 +271,9 @@ object NorfolkMessages : AraraMessages {
 
     override val errorProjectSingleProjectHasDependencies =
         "A single project specifikashun can't go declarin' dependencies."
+
+    override fun errorProjectUnknownKey(name: String) =
+        "That there project specifikashun is carryin' keys the format won't hev: ${name}."
 
     override val errorProjectWorkingDirectoryKeyRequiresString =
         "The 'working_directory' key wants a string value."

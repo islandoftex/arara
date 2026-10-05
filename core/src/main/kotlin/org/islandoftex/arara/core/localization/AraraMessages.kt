@@ -361,6 +361,15 @@ interface AraraMessages {
      */
     val errorProjectDirectivesKeyRequiresTable: String
     /**
+     * The error shown when two projects of a list share a name.
+     */
+    fun errorProjectDuplicateName(name: String): String
+    /**
+     * The error shown when a project lists a file twice, possibly
+     * under two spellings of the same location.
+     */
+    fun errorProjectDuplicatePath(name: String): String
+    /**
      * The error shown when the directives a project file
      * specification carries cannot be extracted.
      */
@@ -418,6 +427,10 @@ interface AraraMessages {
      */
     val errorProjectListEntryNotATable: String
     /**
+     * The error shown when a project of a list declares no name.
+     */
+    val errorProjectListEntryNeedsName: String
+    /**
      * The error shown when the project name is not a string.
      */
     val errorProjectNameKeyRequiresString: String
@@ -440,6 +453,11 @@ interface AraraMessages {
      * dependencies.
      */
     val errorProjectSingleProjectHasDependencies: String
+    /**
+     * The error shown when the project specification carries keys
+     * the format does not accept.
+     */
+    fun errorProjectUnknownKey(name: String): String
     /**
      * The error shown when the working directory of a project is
      * not a string.
