@@ -23,8 +23,9 @@ public interface ProjectFile {
     /**
      * Within a project, a file may have a priority. Files with highest
      * priority are compiled before files with lower priority. Files
-     * with equal priority keep the order their specification
-     * declared them in.
+     * with equal priority run in the sorted order of their resolved
+     * paths, so the order is deterministic even when the
+     * specification cannot express one.
      */
     public val priority: Int
 

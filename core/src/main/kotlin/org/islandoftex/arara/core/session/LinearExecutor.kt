@@ -127,7 +127,14 @@ object LinearExecutor : Executor {
         currentProject = project
         try {
             hooks.executeBeforeProject(project)
-            for (file in project.files.sortedByDescending { it.priority }) {
+            // the priority decides the order, and the path breaks the
+            // ties: the map form of the specification has no
+            // declaration order to keep, so the resolved path gives
+            // every run the same deterministic sequence
+            for (file in project.files.sortedWith(
+                compareByDescending<ProjectFile> { it.priority }
+                    .thenBy { it.path.toString() }
+            )) {
                 hooks.executeBeforeFile(file)
                 val executionReport = execute(file)
                 // the last error of the project survives a later

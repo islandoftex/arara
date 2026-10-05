@@ -371,6 +371,59 @@ class ProjectConfigurationTest {
     }
 
     @Test
+    fun `orders same-priority files by their paths`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-tie-order")
+            Files.writeString(
+                directory.resolve("echoone.yaml"),
+                """
+                !config
+                identifier: echoone
+                name: Test rule for conditionals 1
+                commands:
+                  - name: The echoer
+                    command: >
+                      @{
+                          return isWindows(getCommand('cmd', '/c', 'echo', 'QuackOne'), getCommand('echo', 'QuackOne'));
+                      }
+                arguments: []
+                """.trimIndent()
+            )
+            Files.writeString(
+                directory.resolve("arararc.yaml"),
+                "!config\npaths:\n  - './'\n"
+            )
+            Files.writeString(
+                directory.resolve("a.tex"), "% arara: echoone\nQuack\n"
+            )
+            Files.writeString(
+                directory.resolve("b.tex"), "% arara: echoone\nQuack\n"
+            )
+            // the specification lists the files in reverse path order;
+            // the execution runs them in the sorted order of their
+            // paths, so the run is deterministic whatever the Lua
+            // table iteration produced
+            Files.writeString(
+                directory.resolve("order.proj.lua"),
+                "return { files = { [\"b.tex\"] = { }, [\"a.tex\"] = { } } }\n"
+            )
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "order.proj.lua"
+            )
+            assertEquals(0, status, "the specification runs")
+            assertTrue(
+                "a.tex" in output && "b.tex" in output,
+                "both files appear in the output: $output"
+            )
+            assertTrue(
+                output.indexOf("a.tex") < output.indexOf("b.tex"),
+                "the same-priority files run in the sorted order of their paths: $output"
+            )
+        }
+    }
+
+    @Test
     fun `prints the help with the arara flair`() {
         // the help text is rendered by the command line framework's own
         // terminal, so the test pins the help request itself; the flair

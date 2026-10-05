@@ -159,6 +159,11 @@ on.
   specifications, or from a specification and the command line
   together - naming the file and the projects, with the remedy of
   removing it from all but one.
+* Within a project, files of equal priority run in the sorted
+  order of their resolved paths, making the execution order
+  deterministic. The old promise of declaration order was
+  unkeepable - the Lua map form has no declaration order - and
+  the actual order was whatever the set iteration produced.
 * Project file entries that declare no `file_type` are detected by
   their extension against the file types of the run - the defaults,
   whatever the command line asks, and the types the project's own
