@@ -162,6 +162,7 @@ class AraraMessagesTest {
                 errorProjectDuplicatePath("alpha"),
                 errorProjectInvalidLua("alpha"),
                 errorProjectStrayDependency("alpha"),
+                errorProjectFileTypeUnknownExtension("alpha"),
                 errorProjectUnknownKey("alpha"),
                 errorConfigurationUnknownKeys("alpha"),
                 errorRuleIdentifierAndPath("alpha", "beta"),
@@ -250,6 +251,8 @@ class AraraMessagesTest {
             listOf("quux1") to { it.errorProjectStrayDependency("quux1") },
             listOf("quux1") to { it.errorProjectDuplicateName("quux1") },
             listOf("quux1") to { it.errorProjectDuplicatePath("quux1") },
+            listOf("quux1") to
+                { it.errorProjectFileTypeUnknownExtension("quux1") },
             listOf("quux1") to { it.errorProjectUnknownKey("quux1") },
             listOf("quux1", "quux2") to
                 { it.errorProjectFileDirectivesExtraction("quux1", "quux2") },

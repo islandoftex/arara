@@ -137,6 +137,25 @@ object FileSearching {
             )
 
     /**
+     * Looks up the file type an extension maps to, in the priority
+     * order of the effective file types: the first type carrying
+     * the extension wins, so a type the configuration redeclares
+     * is the one its files resolve to.
+     *
+     * @param extension The extension to look up, without the
+     *   leading dot.
+     * @param executionOptions The execution options holding the
+     *   known file types.
+     * @return The file type of the extension, or null when no
+     *   effective type carries it.
+     */
+    fun lookupFileType(
+        extension: String,
+        executionOptions: ExecutionOptions
+    ): FileType? =
+        executionOptions.fileTypes.firstOrNull { it.extension == extension }
+
+    /**
      * Performs a file lookup based on a string reference.
      *
      * @param reference The file reference as a string.

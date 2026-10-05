@@ -248,6 +248,9 @@ object DutchMessages : AraraMessages {
     override val errorProjectFileTypePatternNotAString =
         "De sleutel 'pattern' van het bestandstype vereist een tekenreekswaarde."
 
+    override fun errorProjectFileTypeUnknownExtension(file: String) =
+        "Ik kon het bestandstype van '${file}' niet bepalen: geen enkel bestandstype van deze run past bij zijn extensie. Declareer een 'file_type' voor de waarde, of voeg de extensie toe aan de 'file_types' van de configuratie."
+
     override fun errorProjectInvalidLua(details: String) =
         "De projectspecificatie is geen geldige Lua: ${details}."
 

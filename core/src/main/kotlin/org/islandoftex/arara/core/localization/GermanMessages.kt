@@ -248,6 +248,9 @@ object GermanMessages : AraraMessages {
     override val errorProjectFileTypePatternNotAString =
         "Der Schlüssel 'pattern' des Dateityps erfordert einen Zeichenkettenwert."
 
+    override fun errorProjectFileTypeUnknownExtension(file: String) =
+        "Ich konnte den Dateityp von '${file}' nicht bestimmen: Kein Dateityp dieses Durchlaufs passt zu seiner Erweiterung. Deklariere einen 'file_type' für den Eintrag, oder ergänze die Erweiterung in den 'file_types' der Konfiguration."
+
     override fun errorProjectInvalidLua(details: String) =
         "Die Projektspezifikation ist kein gültiges Lua: ${details}."
 

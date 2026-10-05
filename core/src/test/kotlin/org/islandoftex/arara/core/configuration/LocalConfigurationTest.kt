@@ -14,8 +14,9 @@ import org.islandoftex.arara.core.session.Environment
  * in the rule paths - the user's home directory and name, and the
  * working directory of the project - expand during the application,
  * script-computed configurations skip that expansion, relative paths
- * resolve against the project, and the database name keeps only its
- * base name.
+ * resolve against the project, the configured file types lead the
+ * priority order, and the database name honors the configured
+ * path.
  */
 class LocalConfigurationTest {
     @Test
@@ -89,6 +90,31 @@ class LocalConfigurationTest {
         assertTrue(
             (workingDirectory / "relative-rules").normalize() in paths,
             "relative paths still resolve against the project: $paths"
+        )
+    }
+
+    @Test
+    fun `puts the configured file types at the head of the priority order`() {
+        val directory = Files.createTempDirectory("arara-config-types")
+        val config = directory.resolve("arararc.yaml")
+        Files.writeString(
+            config,
+            """
+            !config
+            filetypes:
+              - extension: 'ltx'
+              - extension: 'dtx'
+            """.trimIndent()
+        )
+        val options = LocalConfiguration.load(MPPPath(config.toString()))
+            .toExecutionOptions(
+                Project("test", MPPPath(directory.toString()), setOf()),
+                ExecutionOptions()
+            )
+        assertEquals(
+            listOf("ltx", "dtx", "tex", "dtx", "ltx", "drv", "ins"),
+            options.fileTypes.map { it.extension },
+            "the configured types lead in their order, then the defaults follow"
         )
     }
 }

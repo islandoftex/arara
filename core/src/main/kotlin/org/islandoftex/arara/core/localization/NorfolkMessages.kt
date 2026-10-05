@@ -248,6 +248,9 @@ object NorfolkMessages : AraraMessages {
     override val errorProjectFileTypePatternNotAString =
         "The file type 'pattern' key wants a string value."
 
+    override fun errorProjectFileTypeUnknownExtension(file: String) =
+        "I coont make aht the file type of '${file}': none o' the file types in this here run fits its extension. Yew're gotta say a 'file_type' for that there entry, or put the extension in the 'file_types' o' the configyrashun."
+
     override fun errorProjectInvalidLua(details: String) =
         "That there project specifikashun ent proper Lua: ${details}."
 

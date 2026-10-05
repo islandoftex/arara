@@ -419,6 +419,11 @@ interface AraraMessages {
      */
     val errorProjectFileTypePatternNotAString: String
     /**
+     * The error shown when the extension of a project file
+     * resolves to no file type of the run.
+     */
+    fun errorProjectFileTypeUnknownExtension(file: String): String
+    /**
      * The error shown when a Lua project specification is not
      * valid Lua.
      */

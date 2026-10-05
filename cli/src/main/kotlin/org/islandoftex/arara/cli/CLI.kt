@@ -318,25 +318,31 @@ class CLI : CliktCommand("arara") {
                 }
             }
             null
-        }?.also { projects ->
+        }?.let { projects ->
             // project specifications do not go through the caller's
             // fallback branch, so the configuration file of every
-            // project has to be loaded right here
+            // project has to be loaded right here - and the entries
+            // the parse left pending resolve against the types it
+            // provides
             loadProjectConfigurations(projects)
         }
     }
 
     /**
-     * Load the configuration file of each project, if any. The working
-     * directory of a project decides where to look, so multi-directory
-     * project specifications work as well.
+     * Load the configuration file of each project, if any, and
+     * resolve the file types the parse left pending against the
+     * types in effect - the project's own configuration is in
+     * when its entries resolve. The working directory of a project
+     * decides where to look, so multi-directory project
+     * specifications work as well.
      *
      * @param projects The projects to load the configuration for.
+     * @return The projects with every pending file type resolved.
      */
     private fun loadProjectConfigurations(
         projects: List<org.islandoftex.arara.api.files.Project>
-    ) {
-        projects.forEach { project ->
+    ): List<org.islandoftex.arara.api.files.Project> =
+        projects.map { project ->
             ConfigurationFiles.configFileForProject(project)?.let {
                 Display.configurationFileName = it.toString()
                 val resource = ConfigurationFiles.load(it, project)
@@ -348,8 +354,12 @@ class CLI : CliktCommand("arara") {
                     ConsoleMode.resolve(console, resource.console)
                 )
             }
+            // the project's configuration is in effect now, so the
+            // entries the parse left pending resolve against its
+            // file types, and an extension nothing carries is an
+            // error before anything runs
+            LuaInterpreter.resolvePendingFileTypes(project)
         }
-    }
 
     /**
      * The console presentation the run applied so far, so a

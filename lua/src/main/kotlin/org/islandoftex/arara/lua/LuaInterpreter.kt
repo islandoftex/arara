@@ -12,8 +12,10 @@ import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.configuration.DefaultConfiguration
+import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.UNKNOWN_TYPE
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.session.LinearExecutor
 
 /**
  * Interprets Lua project specification files, i.e. Lua scripts
@@ -125,6 +127,18 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
     }
 
     /**
+     * Detects the file type of an entry by its extension, against
+     * the file types in effect when the specification is read; an
+     * extension nothing carries stays pending for the project's
+     * own configuration to resolve.
+     */
+    private fun detectFileType(path: MPPPath): FileType =
+        FileSearching.lookupFileType(
+            path.fileName.substringAfterLast('.', ""),
+            LinearExecutor.executionOptions
+        ) ?: FileType.UNKNOWN_TYPE
+
+    /**
      * Extracts the file name key of a project file entry, which has to
      * be a Lua string.
      */
@@ -198,7 +212,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
             table["file_type"],
             LanguageController.messages
                 .errorProjectFileTypeKeyRequiresTable
-        )?.let { extractFileType(it) } ?: FileType.UNKNOWN_TYPE
+        )?.let { extractFileType(it) } ?: detectFileType(path)
 
         val priority = table["priority"].let { value ->
             when {
@@ -431,5 +445,55 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
                     }.joinToString(", ")
                 )
         )
+    }
+
+    /**
+     * Holds the post-configuration resolution of the file types
+     * the parse left pending.
+     */
+    companion object {
+        /**
+         * Resolves the file types the parse left pending: an entry
+         * that declared no file type is detected by its extension
+         * against the file types in effect for the project - its
+         * own configuration is in by now - and an extension no
+         * file type carries is an error naming the file and the
+         * remedy, before anything runs.
+         *
+         * @param project The project whose pending entries resolve.
+         * @return The project with every pending file type
+         *   resolved, itself when nothing was pending.
+         */
+        fun resolvePendingFileTypes(project: Project): Project {
+            val resolved = project.files.map { file ->
+                if (file is LuaProjectFile &&
+                    file.fileType == FileType.UNKNOWN_TYPE
+                ) {
+                    val fileType = FileSearching.lookupFileType(
+                        file.path.fileName.substringAfterLast('.', ""),
+                        LinearExecutor.executionOptions
+                    ) ?: throw ProjectParseException(
+                        LanguageController.messages
+                            .errorProjectFileTypeUnknownExtension(
+                                file.path.toString()
+                            )
+                    )
+                    LuaProjectFile(file.path, fileType, file.priority)
+                        .also { it.directives = file.directives }
+                } else {
+                    file
+                }
+            }.toSet()
+            return if (resolved == project.files) {
+                project
+            } else {
+                org.islandoftex.arara.core.files.Project(
+                    project.name,
+                    project.workingDirectory,
+                    resolved,
+                    project.dependencies
+                )
+            }
+        }
     }
 }

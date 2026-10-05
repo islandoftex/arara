@@ -148,6 +148,17 @@ on.
   refused, the projects of a list need explicit, unique names -
   dependencies identify projects by name - and an empty list of
   projects is not a specification at all.
+* Project file entries that declare no `file_type` are detected by
+  their extension against the file types of the run - the defaults,
+  whatever the command line asks, and the types the project's own
+  configuration provides, applied before the resolution. An
+  extension no file type carries is an error naming the file and
+  the remedy, where such entries were formerly scanned with a
+  patternless file type that read the directive marker from any
+  line of the file and quietly ignored the header boundary. The
+  detection follows the priority order of the file type list: a
+  type the configuration redeclares is the one its extension
+  resolves to.
 * Under `--engine lua`, rule evaluation failures now surface through
   the same localized runtime errors as the YAML engine: command, flag
   and `exit` closures report their runtime failures behind the

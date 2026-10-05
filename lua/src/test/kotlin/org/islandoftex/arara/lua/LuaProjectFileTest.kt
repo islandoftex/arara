@@ -6,7 +6,9 @@ import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.core.files.UNKNOWN_TYPE
 
 /**
  * Verifies the directive extraction of project file entries: the
@@ -116,6 +118,29 @@ class LuaProjectFileTest {
             file.fetchDirectives(parseOnlyHeader = false)
                 .map { it.identifier } == listOf("one", "two"),
             "the whole scope collects every directive of the list"
+        )
+    }
+
+    @Test
+    fun `refuses extraction with a pending file type`(
+        @org.junit.jupiter.api.io.TempDir tempDir: java.nio.file.Path
+    ) {
+        // an entry whose extension resolved to nothing reports
+        // itself instead of scraping every line for the marker
+        val document = tempDir.resolve("pending.tex")
+        Files.writeString(document, "% arara: quack\n")
+        val file = LuaProjectFile(
+            MPPPath(document.toString()),
+            FileType.UNKNOWN_TYPE
+        )
+        val exception = assertFailsWith<AraraException>(
+            "a pending type never reaches the accidental scan"
+        ) {
+            file.fetchDirectives(parseOnlyHeader = true)
+        }
+        assertTrue(
+            exception.message?.contains("pending.tex") == true,
+            "the error names the file: ${exception.message}"
         )
     }
 }

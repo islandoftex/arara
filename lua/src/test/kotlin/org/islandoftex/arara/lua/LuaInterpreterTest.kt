@@ -7,7 +7,12 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraException
+import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.core.configuration.DefaultConfiguration
+import org.islandoftex.arara.core.configuration.ExecutionOptions
+import org.islandoftex.arara.core.files.UNKNOWN_TYPE
+import org.islandoftex.arara.core.session.LinearExecutor
 
 /**
  * Verifies the Lua project specification parser: single projects, file
@@ -535,6 +540,121 @@ class LuaInterpreterTest {
             "an empty specification is not a specification"
         ) {
             LuaInterpreter(MPPPath(".")).parseProjectsFromLua("return { }")
+        }
+    }
+
+    @Test
+    fun `detects the file type of an entry by its extension`() {
+        // the detection reads the file types in effect, so the test
+        // pins them to the defaults and leaves what it found
+        val standing = LinearExecutor.executionOptions
+        LinearExecutor.executionOptions = ExecutionOptions()
+        try {
+            val projects = LuaInterpreter(MPPPath("."))
+                .parseProjectsFromLua(
+                    """return { files = { ["file.tex"] = { } } }"""
+                )
+            val fileType = projects[0].files.first().fileType
+            assertEquals(
+                "tex", fileType.extension,
+                "the extension of the entry detects its file type"
+            )
+            assertEquals(
+                DefaultConfiguration.defaultFileTypePatterns["tex"],
+                fileType.pattern,
+                "the detected type carries the default pattern"
+            )
+        } finally {
+            LinearExecutor.executionOptions = standing
+        }
+    }
+
+    @Test
+    fun `resolves a pending entry through the file types of the run`() {
+        val standing = LinearExecutor.executionOptions
+        LinearExecutor.executionOptions = ExecutionOptions()
+        try {
+            // the defaults do not know the extension, so the parse
+            // leaves the entry pending
+            val projects = LuaInterpreter(MPPPath("."))
+                .parseProjectsFromLua(
+                    """return { files = { ["file.my"] = { } } }"""
+                )
+            assertEquals(
+                FileType.UNKNOWN_TYPE,
+                projects[0].files.first().fileType,
+                "an extension the defaults do not know stays pending"
+            )
+            // the project's own configuration may know it, and the
+            // pending entry resolves through the types in effect
+            LinearExecutor.executionOptions = ExecutionOptions().copy(
+                fileTypes = listOf(
+                    org.islandoftex.arara.core.files.FileType(
+                        "my", "^\\s*//\\s*"
+                    )
+                ) + DefaultConfiguration.defaultFileTypes
+            )
+            val fileType = LuaInterpreter
+                .resolvePendingFileTypes(projects[0])
+                .files.first().fileType
+            assertEquals(
+                "my", fileType.extension,
+                "the pending entry resolves"
+            )
+            assertEquals(
+                "^\\s*//\\s*", fileType.pattern,
+                "the resolved type carries the configured pattern"
+            )
+        } finally {
+            LinearExecutor.executionOptions = standing
+        }
+    }
+
+    @Test
+    fun `rejects extensions no file type of the run carries`() {
+        val standing = LinearExecutor.executionOptions
+        LinearExecutor.executionOptions = ExecutionOptions()
+        try {
+            val projects = LuaInterpreter(MPPPath("."))
+                .parseProjectsFromLua(
+                    """return { files = { ["file.my"] = { } } }"""
+                )
+            val exception = assertFailsWith<AraraException>(
+                "a file type nobody carries is an error before anything runs"
+            ) {
+                LuaInterpreter.resolvePendingFileTypes(projects[0])
+            }
+            assertTrue(
+                exception.message!!.contains("file.my"),
+                "the error names the file: ${exception.message}"
+            )
+        } finally {
+            LinearExecutor.executionOptions = standing
+        }
+    }
+
+    @Test
+    fun `honours the redeclared type over the default for detection`() {
+        val standing = LinearExecutor.executionOptions
+        LinearExecutor.executionOptions = ExecutionOptions().copy(
+            fileTypes = listOf(
+                org.islandoftex.arara.core.files.FileType(
+                    "dtx", "^\\s*custom\\s*"
+                )
+            ) + DefaultConfiguration.defaultFileTypes
+        )
+        try {
+            val projects = LuaInterpreter(MPPPath("."))
+                .parseProjectsFromLua(
+                    """return { files = { ["file.dtx"] = { } } }"""
+                )
+            assertEquals(
+                "^\\s*custom\\s*",
+                projects[0].files.first().fileType.pattern,
+                "the first spelling of the extension is the one detection finds"
+            )
+        } finally {
+            LinearExecutor.executionOptions = standing
         }
     }
 }

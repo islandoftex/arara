@@ -297,6 +297,35 @@ class FileSearchingTest {
                 "the redeclared extension appears once: $message"
             )
         }
+
+        @Test
+        fun `resolves the completion in the priority order of the types`(
+            @TempDir tempDir: Path
+        ) {
+            (tempDir / "foo.ltx").writeText("quack")
+            (tempDir / "foo.dtx").writeText("quack")
+            fun options(first: String, second: String) =
+                ExecutionOptions().copy(
+                    fileTypes = listOf(
+                        FileType(first, "^\\s*%\\s*"),
+                        FileType(second, "^\\s*%\\s*")
+                    ) + DefaultConfiguration.defaultFileTypes
+                )
+            val ltxFirst = FileSearching.lookupFile(
+                "foo", tempDir.toMPPPath(), options("ltx", "dtx")
+            ) as ProjectFile
+            assertEquals(
+                "ltx", ltxFirst.fileType.extension,
+                "the first declared type wins the completion"
+            )
+            val dtxFirst = FileSearching.lookupFile(
+                "foo", tempDir.toMPPPath(), options("dtx", "ltx")
+            ) as ProjectFile
+            assertEquals(
+                "dtx", dtxFirst.fileType.extension,
+                "the reversed order reverses the resolution"
+            )
+        }
     }
 
     @Test

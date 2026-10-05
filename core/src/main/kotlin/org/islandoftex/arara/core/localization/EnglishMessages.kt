@@ -247,6 +247,9 @@ object EnglishMessages : AraraMessages {
     override val errorProjectFileTypePatternNotAString =
         "The file type 'pattern' key requires a string value."
 
+    override fun errorProjectFileTypeUnknownExtension(file: String) =
+        "I could not determine the file type of '${file}': no file type of this run matches its extension. Declare a 'file_type' for the entry, or add the extension to the 'file_types' of the configuration."
+
     override fun errorProjectInvalidLua(details: String) =
         "The project specification is not valid Lua: ${details}."
 

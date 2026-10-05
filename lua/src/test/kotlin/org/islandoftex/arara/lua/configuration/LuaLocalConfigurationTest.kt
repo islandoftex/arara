@@ -335,4 +335,26 @@ class LuaLocalConfigurationTest {
             load("""return { file_types = { { extension = "tex", pattern = 42 } } }""")
         }
     }
+
+    @Test
+    fun `puts the configured file types at the head of the priority order`() {
+        val options = load(
+            """
+            return {
+              file_types = {
+                { extension = "ltx" },
+                { extension = "dtx" }
+              }
+            }
+            """.trimIndent()
+        ).toExecutionOptions(
+            Project("test", MPPPath("."), setOf()),
+            ExecutionOptions()
+        )
+        assertEquals(
+            listOf("ltx", "dtx", "tex", "dtx", "ltx", "drv", "ins"),
+            options.fileTypes.map { it.extension },
+            "the configured types lead in their order, then the defaults follow"
+        )
+    }
 }
