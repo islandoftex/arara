@@ -269,6 +269,27 @@ class CLI : CliktCommand("arara") {
                     )
                 }
         }
+        // a file belongs to exactly one project of the run: two
+        // projects claiming the same file - from two
+        // specifications, or from a specification and the
+        // command line together - is an error naming the file
+        // and the projects, with the remedy of removing it from
+        // all but one
+        val claimed = mutableMapOf<String, String>()
+        projects.forEach { project ->
+            project.files.forEach { file ->
+                val path = file.path.normalize().toString()
+                claimed[path]?.let { first ->
+                    throw AraraException(
+                        LanguageController.messages
+                            .errorProjectFileInMultipleProjects(
+                                path,
+                                "(${first}, ${project.name})"
+                            )
+                    )
+                } ?: run { claimed[path] = project.name }
+            }
+        }
         return projects
     }
 

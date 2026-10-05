@@ -148,6 +148,17 @@ on.
   refused, the projects of a list need explicit, unique names -
   dependencies identify projects by name - and an empty list of
   projects is not a specification at all.
+* Project specification scripts run with arara's values in scope,
+  the same platform the configuration format provides: the table
+  `user` carries the `home` and `name` of the user running arara,
+  and `cwd` is the working directory the specification is loaded
+  for. Paths and other strings compute in plain Lua, exactly as
+  they do in a configuration script.
+* Within one run, a file belongs to exactly one project: the
+  invocation rejects a file that two projects claim - from two
+  specifications, or from a specification and the command line
+  together - naming the file and the projects, with the remedy of
+  removing it from all but one.
 * Project file entries that declare no `file_type` are detected by
   their extension against the file types of the run - the defaults,
   whatever the command line asks, and the types the project's own

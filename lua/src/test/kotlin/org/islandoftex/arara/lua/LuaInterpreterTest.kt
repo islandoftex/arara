@@ -657,4 +657,36 @@ class LuaInterpreterTest {
             LinearExecutor.executionOptions = standing
         }
     }
+
+    @Test
+    fun `puts arara's values in scope to the script`() {
+        val directory = Files.createTempDirectory("arara-lua-scope")
+        val workingDirectory = MPPPath(directory.toString()).normalize()
+        Files.writeString(
+            directory.resolve("scoped.tex"), "Quack\n"
+        )
+        val projects = LuaInterpreter(MPPPath(directory.toString()))
+            .parseProjectsFromLua(
+                """
+                assert(type(user) == "table")
+                assert(type(user.home) == "string")
+                assert(type(user.name) == "string")
+                assert(type(cwd) == "string")
+                return {
+                  working_directory = cwd,
+                  files = {
+                    ["scoped.tex"] = { }
+                  }
+                }
+                """.trimIndent()
+            )
+        assertEquals(
+            workingDirectory, projects[0].workingDirectory,
+            "the cwd value names the working directory"
+        )
+        assertEquals(
+            1, projects[0].files.size,
+            "the file entry resolves against the scoped working directory"
+        )
+    }
 }

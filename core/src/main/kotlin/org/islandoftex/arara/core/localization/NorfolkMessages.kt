@@ -242,6 +242,12 @@ object NorfolkMessages : AraraMessages {
     override val errorProjectFileEntryKeyNotAString =
         "Project file entries hev gotter be keyed by their file name."
 
+    override fun errorProjectFileInMultipleProjects(
+        file: String,
+        projects: String
+    ) =
+        "That there file '${file}' shows up in the projects ${projects}. In one run a file belongs ter just the one project, no more. Yew take it aht of all but one o' them."
+
     override val errorProjectFileIsADirectory =
         "A project file can't be a directory, that's for sure."
 

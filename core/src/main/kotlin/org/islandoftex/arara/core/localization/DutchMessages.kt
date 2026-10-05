@@ -242,6 +242,12 @@ object DutchMessages : AraraMessages {
     override val errorProjectFileEntryKeyNotAString =
         "Projectbestandwaarden moeten via hun bestandsnaam aangeduid zijn."
 
+    override fun errorProjectFileInMultipleProjects(
+        file: String,
+        projects: String
+    ) =
+        "Het bestand '${file}' komt voor in de projecten ${projects}. Binnen één run hoort een bestand bij exact één project. Verwijder het uit alle op één na."
+
     override val errorProjectFileIsADirectory =
         "Een projectbestand mag geen map zijn."
 

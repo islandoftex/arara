@@ -15,6 +15,7 @@ import org.islandoftex.arara.core.configuration.DefaultConfiguration
 import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.UNKNOWN_TYPE
 import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 
 /**
@@ -402,9 +403,36 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
     @Suppress("ThrowsCount")
     fun parseProjectsFromLua(luaScript: String): List<Project> {
         val luaTable = runCatching {
-            JsePlatform.standardGlobals()
-                .load(luaScript)
-                .call() as? LuaTable
+            // arara's values are in scope to the script, the same
+            // platform the configuration format provides: the
+            // table `user` carries the `home` and `name` of the
+            // user running arara, and `cwd` is the working
+            // directory the specification is loaded for
+            val globals = JsePlatform.standardGlobals()
+            globals.set(
+                "user",
+                LuaValue.tableOf().also { user ->
+                    user.set(
+                        "home",
+                        LuaValue.valueOf(
+                            Environment.getSystemPropertyOrNull("user.home")
+                                ?: ""
+                        )
+                    )
+                    user.set(
+                        "name",
+                        LuaValue.valueOf(
+                            Environment.getSystemPropertyOrNull("user.name")
+                                ?: ""
+                        )
+                    )
+                }
+            )
+            globals.set(
+                "cwd",
+                LuaValue.valueOf(appWorkingDir.normalize().toString())
+            )
+            globals.load(luaScript).call() as? LuaTable
         }.getOrElse {
             throw ProjectParseException(
                 LanguageController.messages

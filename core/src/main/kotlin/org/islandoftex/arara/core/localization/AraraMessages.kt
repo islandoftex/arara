@@ -409,6 +409,14 @@ interface AraraMessages {
      */
     val errorProjectFileEntryKeyNotAString: String
     /**
+     * The error shown when a file belongs to more than one
+     * project of the run.
+     */
+    fun errorProjectFileInMultipleProjects(
+        file: String,
+        projects: String
+    ): String
+    /**
      * The error shown when a project file entry names a directory.
      */
     val errorProjectFileIsADirectory: String

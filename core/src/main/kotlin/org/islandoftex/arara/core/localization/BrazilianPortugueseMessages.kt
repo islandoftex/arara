@@ -242,6 +242,12 @@ object BrazilianPortugueseMessages : AraraMessages {
     override val errorProjectFileEntryKeyNotAString =
         "As entradas de arquivos de projeto precisam ser endereçadas pelo seu nome de arquivo."
 
+    override fun errorProjectFileInMultipleProjects(
+        file: String,
+        projects: String
+    ) =
+        "O arquivo '${file}' aparece nos projetos ${projects}. Dentro de uma mesma execução, um arquivo pertence a exatamente um projeto. Por favor, remova-o de todos exceto um."
+
     override val errorProjectFileIsADirectory =
         "Um arquivo de projeto não pode ser um diretório."
 

@@ -241,6 +241,12 @@ object EnglishMessages : AraraMessages {
     override val errorProjectFileEntryKeyNotAString =
         "Project file entries have to be keyed by their file name."
 
+    override fun errorProjectFileInMultipleProjects(
+        file: String,
+        projects: String
+    ) =
+        "The file '${file}' appears in the projects ${projects}. Within one run, a file belongs to exactly one project. Please remove it from all but one."
+
     override val errorProjectFileIsADirectory =
         "A project file must not be a directory."
 

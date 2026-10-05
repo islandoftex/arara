@@ -322,6 +322,55 @@ class ProjectConfigurationTest {
     }
 
     @Test
+    fun `rejects a file claimed by two projects`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-cross-file")
+            Files.writeString(
+                directory.resolve("one.proj.lua"),
+                "return { name = \"first\", files = { [\"shared.tex\"] = { } } }\n"
+            )
+            Files.writeString(
+                directory.resolve("two.proj.lua"),
+                "return { name = \"second\", files = { [\"shared.tex\"] = { } } }\n"
+            )
+            Files.writeString(directory.resolve("shared.tex"), "Quack\n")
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "one.proj.lua", "two.proj.lua"
+            )
+            assertNotEquals(0, status, "a file in two projects cannot run")
+            assertTrue(
+                "shared.tex" in output && "exactly one" in output,
+                "the verdict names the file and the rule: $output"
+            )
+        }
+    }
+
+    @Test
+    fun `rejects a file claimed by a specification and the command line`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-cross-loose")
+            Files.writeString(
+                directory.resolve("book.proj.lua"),
+                "return { name = \"book\", files = { [\"main.tex\"] = { } } }\n"
+            )
+            Files.writeString(directory.resolve("main.tex"), "Quack\n")
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "book.proj.lua", "main.tex"
+            )
+            assertNotEquals(
+                0, status,
+                "a file in a project and on the command line cannot run"
+            )
+            assertTrue(
+                "main.tex" in output && "exactly one" in output,
+                "the verdict names the file and the rule: $output"
+            )
+        }
+    }
+
+    @Test
     fun `prints the help with the arara flair`() {
         // the help text is rendered by the command line framework's own
         // terminal, so the test pins the help request itself; the flair
