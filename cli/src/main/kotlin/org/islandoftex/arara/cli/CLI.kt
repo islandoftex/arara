@@ -279,6 +279,14 @@ class CLI : CliktCommand("arara") {
         // all but one
         val claimed = mutableMapOf<String, String>()
         projects.forEach { project ->
+            // the anonymous project carries its display label, so
+            // the verdict names what the reader knows - not the
+            // model's placeholder
+            val displayName = if (project === anonymousProject) {
+                LanguageController.messages.infoLabelSingleFiles
+            } else {
+                project.name
+            }
             project.files.forEach { file ->
                 val path = file.path.normalize().toString()
                 claimed[path]?.let { first ->
@@ -286,10 +294,10 @@ class CLI : CliktCommand("arara") {
                         LanguageController.messages
                             .errorProjectFileInMultipleProjects(
                                 path,
-                                "(${first}, ${project.name})"
+                                "(${first}, ${displayName})"
                             )
                     )
-                } ?: run { claimed[path] = project.name }
+                } ?: run { claimed[path] = displayName }
             }
         }
         return projects
@@ -331,22 +339,10 @@ class CLI : CliktCommand("arara") {
             logger.info {
                 "Reading ${path.fileName} as a project specification."
             }
-            LuaInterpreter(workingDir).parseProjectsFromLua(path.readText())
-                .map { project ->
-                    if (project.name == "Untitled") {
-                        // a nameless project takes the base name of
-                        // its specification file, so several of them
-                        // never collide on the placeholder
-                        Project(
-                            path.fileName.removeSuffix(".proj.lua"),
-                            project.workingDirectory,
-                            project.files,
-                            project.dependencies
-                        )
-                    } else {
-                        project
-                    }
-                }
+            LuaInterpreter(workingDir).parseProjectsFromLua(
+                path.readText(),
+                path.fileName.removeSuffix(".proj.lua")
+            )
         }
         validateMergedProjects(projects)
         // the entries the parse left pending resolve against the

@@ -340,7 +340,7 @@ class ProjectConfigurationTest {
             )
             assertNotEquals(0, status, "a file in two projects cannot run")
             assertTrue(
-                "shared.tex" in output && "exactly one" in output,
+                "shared.tex" in output && "appears in" in output,
                 "the verdict names the file and the rule: $output"
             )
         }
@@ -364,7 +364,7 @@ class ProjectConfigurationTest {
                 "a file in a project and on the command line cannot run"
             )
             assertTrue(
-                "main.tex" in output && "exactly one" in output,
+                "main.tex" in output && "appears in" in output,
                 "the verdict names the file and the rule: $output"
             )
         }

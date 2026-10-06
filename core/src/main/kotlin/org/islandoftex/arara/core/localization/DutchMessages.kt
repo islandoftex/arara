@@ -234,7 +234,7 @@ object DutchMessages : AraraMessages {
         "Het project noemt het bestand '${name}' meer dan eens, misschien onder twee schrijfwijzen van dezelfde locatie. Binnen een project wordt een bestand precies één keer genoemd."
 
     override fun infoDisplayProject(name: String, directory: String) =
-        "Project ${name} (${directory})"
+        "Project: ${name} (${directory})"
 
     override val infoLabelSingleFiles = "Losse bestanden"
 

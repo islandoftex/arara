@@ -114,7 +114,7 @@ class StyledConsoleRenderer(
         var tasks: Int,
         var seconds: Double,
         var success: Boolean,
-        val projectName: String? = null
+        val projectId: Int = -1
     )
 
     /**
@@ -128,11 +128,25 @@ class StyledConsoleRenderer(
     private var currentFile: SummaryEntry? = null
 
     /**
-     * The display name of the project whose territory the run is
-     * in, or null when the run is single-project and no project
-     * line appeared. The summary table groups by this name.
+     * The counter that gives each project of the run a unique
+     * identifier, so the summary groups by identity and never
+     * merges two projects that share a display name.
      */
-    private var currentProjectName: String? = null
+    private var projectCounter = 0
+
+    /**
+     * The identifier of the project whose territory the run is
+     * in, or -1 when the run is single-project and no project
+     * line appeared. The summary table groups by this identifier.
+     */
+    private var currentProjectId = -1
+
+    /**
+     * The display names of the run's projects, keyed by their
+     * identifiers, so the summary titles name what the grouping
+     * gathers.
+     */
+    private val projectDisplayNames = mutableMapOf<Int, String>()
 
     /**
      * The monotonic mark of the current file's start.
@@ -355,10 +369,13 @@ class StyledConsoleRenderer(
      * @param directory The working directory's short name.
      */
     override fun printProjectInformation(name: String, directory: String) {
-        currentProjectName = name
+        currentProjectId = ++projectCounter
+        projectDisplayNames[currentProjectId] = name
         terminal.println(
-            TextStyle(bold = true)(name) +
-                " " + muted("($directory)")
+            TextStyle(bold = true)(
+                LanguageController.messages
+                    .infoDisplayProject(name, directory)
+            )
         )
     }
 
@@ -390,7 +407,7 @@ class StyledConsoleRenderer(
             0,
             0.0,
             true,
-            currentProjectName
+            currentProjectId
         )
         currentFileStart = TimeSource.Monotonic.markNow()
         val name = file.path.fileName
@@ -1270,18 +1287,21 @@ class StyledConsoleRenderer(
         // the section and the table breathe apart; the box belongs
         // to the dialogs, where interruption is the point
         terminal.println("")
-        val projectNames = summary.mapNotNull { it.projectName }.distinct()
-        if (projectNames.isEmpty()) {
+        val projectIds = summary
+            .mapNotNull { if (it.projectId >= 0) it.projectId else null }
+            .distinct()
+        if (projectIds.isEmpty()) {
             // single-project: the historic flat table
             terminal.println(buildSummaryTable(summary, messages))
         } else {
-            projectNames.forEachIndexed { index, projectName ->
+            projectIds.forEachIndexed { index, projectId ->
                 if (index > 0) {
                     terminal.println("")
                 }
-                terminal.println(TextStyle(bold = true)(projectName))
+                val displayName = projectDisplayNames[projectId] ?: ""
+                terminal.println(TextStyle(bold = true)(displayName))
                 terminal.println("")
-                val entries = summary.filter { it.projectName == projectName }
+                val entries = summary.filter { it.projectId == projectId }
                 terminal.println(buildSummaryTable(entries, messages))
             }
         }

@@ -234,7 +234,7 @@ object NorfolkMessages : AraraMessages {
         "That project lists the file '${name}' more'n once, praps under two spellin's of the very same spot. In a project, a file's listed just the once."
 
     override fun infoDisplayProject(name: String, directory: String) =
-        "Project ${name} (${directory})"
+        "Project: ${name} (${directory})"
 
     override val infoLabelSingleFiles = "Single files"
 

@@ -234,7 +234,7 @@ object GermanMessages : AraraMessages {
         "Das Projekt führt die Datei '${name}' mehr als einmal auf, möglicherweise unter zwei Schreibweisen desselben Ortes. Innerhalb eines Projekts wird eine Datei genau einmal aufgeführt."
 
     override fun infoDisplayProject(name: String, directory: String) =
-        "Projekt ${name} (${directory})"
+        "Projekt: ${name} (${directory})"
 
     override val infoLabelSingleFiles = "Einzelne Dateien"
 

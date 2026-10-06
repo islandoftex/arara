@@ -272,18 +272,21 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
     }
 
     /**
-     * Extracts a project from its Lua table: the name defaults,
-     * the working directory resolves against the application's,
-     * and the file entries and dependencies convert to their
-     * own shapes.
+     * Extracts a project from its Lua table: the name falls back to
+     * the caller's default when the key is absent, the working
+     * directory resolves against the application's, and the file
+     * entries and dependencies convert to their own shapes.
      */
-    private fun extractProject(table: LuaTable): Project {
+    private fun extractProject(
+        table: LuaTable,
+        defaultName: String
+    ): Project {
         rejectUnknownKeys(table, projectKeys)
         val name = optionalString(
             table["name"],
             LanguageController.messages
                 .errorProjectNameKeyRequiresString
-        ) ?: "Untitled"
+        ) ?: defaultName
         val workingDirectory = optionalString(
             table["working_directory"],
             LanguageController.messages
@@ -325,7 +328,10 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
      * unique within the list, and the list is not empty.
      */
     @Suppress("ThrowsCount")
-    private fun extractProjectList(luaTable: LuaTable): List<Project> {
+    private fun extractProjectList(
+        luaTable: LuaTable,
+        defaultName: String
+    ): List<Project> {
         // a list of projects is positional; a root table with named
         // keys is not a list, and reading it as one would misreport
         // a malformed single project, so its named keys name
@@ -358,7 +364,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
                             .errorProjectListEntryNeedsName
                     )
                 }
-                extractProject(table)
+                extractProject(table, defaultName)
             }
             .toList()
 
@@ -394,6 +400,8 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
      * level up.
      *
      * @param luaScript The Lua string to be interpreted.
+     * @param defaultName The name a project that declared no name
+     *   takes; the caller names it from its specification file.
      * @throws ProjectParseException The Lua script is invalid or does not
      * return a project table.
      * @throws ProjectValidationException The returned project specification
@@ -401,7 +409,10 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
      * @return List of projects extracted from the Lua run.
      */
     @Suppress("ThrowsCount")
-    fun parseProjectsFromLua(luaScript: String): List<Project> {
+    fun parseProjectsFromLua(
+        luaScript: String,
+        defaultName: String = "Untitled"
+    ): List<Project> {
         val luaTable = runCatching {
             // arara's values are in scope to the script, the same
             // platform the configuration format provides: the
@@ -446,7 +457,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
             )
 
         if (luaTable["files"] is LuaTable) {
-            val project = extractProject(luaTable)
+            val project = extractProject(luaTable, defaultName)
             if (project.dependencies.isNotEmpty()) {
                 throw ProjectValidationException(
                     LanguageController.messages
@@ -460,7 +471,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         // parse validates the shapes of one specification alone -
         // the merged verdicts live one level up, where every
         // project of the run is known
-        return extractProjectList(luaTable)
+        return extractProjectList(luaTable, defaultName)
     }
 
     /**
