@@ -17,14 +17,13 @@ import org.islandoftex.arara.core.rules.Directives
 internal class LuaProjectFile(
     path: MPPPath,
     fileType: FileType,
-    priority: Int = DEFAULT_PRIORITY
-) : ProjectFile(path, fileType, priority) {
+    priority: Int = DEFAULT_PRIORITY,
     /**
-     * The directives to be used instead of fetching them from file. Used
-     * whenever non-null.
+     * The directives to be used instead of fetching them from the
+     * file, whenever the list is not null.
      */
-    var directives: List<String>? = null
-
+    val directives: List<String>? = null
+) : ProjectFile(path, fileType, priority) {
     /**
      * Get the file's directives. This does not put them into any context,
      * just resolves the literal directives. The extraction scope of the

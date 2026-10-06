@@ -1137,6 +1137,13 @@ class StyledConsoleRenderer(
         if (isDecorated) StyledTheme.failureGlyph else StyledTheme.failureFallback
 
     /**
+     * The bar of the failed task's output panel, following the
+     * capability.
+     */
+    private fun panelBar(): String =
+        if (isDecorated) StyledTheme.panelBar else StyledTheme.panelBarFallback
+
+    /**
      * Wraps the text in the terminal hyperlink escape, gated by the
      * terminal's own detection: a stream that cannot carry the link
      * keeps the plain text.
@@ -1177,7 +1184,7 @@ class StyledConsoleRenderer(
         if (isVerboseMode || output.isBlank()) {
             return
         }
-        val bar = if (isDecorated) "│ " else "| "
+        val bar = panelBar()
         val lines = output.trimEnd().lineSequence().toList()
         val truncated = lines.size > PANEL_TAIL_LINES
         val loggingEnabled = Session.loggingOptions.enableLogging
@@ -1331,11 +1338,23 @@ class StyledConsoleRenderer(
                 if (index > 0) {
                     terminal.println("")
                 }
-                val displayName = projectDisplayNames[projectId] ?: ""
-                // the container glyph marks the project's territory
-                // through the themed vocabulary, degrading with the
-                // stream like every other glyph does
-                terminal.println("${runningGlyph()} $displayName")
+                val displayName = projectDisplayNames.getValue(projectId)
+                // the running glyph opens the group's title, the
+                // same glyph the entry lines carry, degrading with
+                // the stream like every other glyph does - and the
+                // name fits the measure the way every structural
+                // line does, degrading to the ugly line below the
+                // abbreviation's own minimum
+                val prefix = "${runningGlyph()} "
+                val available = structureWidth - prefix.length
+                val fittedName = if (
+                    displayName.length > available && available >= 2
+                ) {
+                    displayName.abbreviate(available)
+                } else {
+                    displayName
+                }
+                terminal.println(prefix + fittedName)
                 terminal.println("")
                 val entries = summary.filter { it.projectId == projectId }
                 terminal.println(buildSummaryTable(entries, messages))

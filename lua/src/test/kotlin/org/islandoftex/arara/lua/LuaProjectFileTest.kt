@@ -61,9 +61,9 @@ class LuaProjectFileTest {
         )
         val file = LuaProjectFile(
             MPPPath(document.toString()),
-            org.islandoftex.arara.core.files.FileType("tex", "^\\s*%\\s*")
+            org.islandoftex.arara.core.files.FileType("tex", "^\\s*%\\s*"),
+            directives = listOf("% arara: carried")
         )
-        file.directives = listOf("% arara: carried")
         val directives = file.fetchDirectives(parseOnlyHeader = true)
         assertTrue(
             directives.map { it.identifier } == listOf("carried"),
@@ -81,9 +81,9 @@ class LuaProjectFileTest {
         Files.writeString(document, "% arara: quack\n")
         val file = LuaProjectFile(
             MPPPath(document.toString()),
-            org.islandoftex.arara.core.files.FileType("tex", "^\\s*%\\s*")
+            org.islandoftex.arara.core.files.FileType("tex", "^\\s*%\\s*"),
+            directives = listOf("% arara: :")
         )
-        file.directives = listOf("% arara: :")
         val exception = assertFailsWith<AraraException>(
             "an unextractable directive wraps with the file context"
         ) {
@@ -106,9 +106,9 @@ class LuaProjectFileTest {
         Files.writeString(document, "% arara: pdflatex\n\\documentclass{article}\n")
         val file = LuaProjectFile(
             MPPPath(document.toString()),
-            org.islandoftex.arara.core.files.FileType("tex", "^\\s*%\\s*")
+            org.islandoftex.arara.core.files.FileType("tex", "^\\s*%\\s*"),
+            directives = listOf("% arara: one", "\\section{gap}", "% arara: two")
         )
-        file.directives = listOf("% arara: one", "\\section{gap}", "% arara: two")
         assertTrue(
             file.fetchDirectives(parseOnlyHeader = true)
                 .map { it.identifier } == listOf("one"),

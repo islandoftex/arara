@@ -650,6 +650,65 @@ class LuaInterpreterTest {
     }
 
     @Test
+    fun `carried directives survive the pending file type resolution`() {
+        val standing = LinearExecutor.executionOptions
+        LinearExecutor.executionOptions = ExecutionOptions()
+        try {
+            val projects = LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
+                """
+                return {
+                  files = {
+                    ["file.my"] = {
+                      directives = { "% arara: pdflatex" }
+                    }
+                  }
+                }
+                """.trimIndent()
+            )
+            LinearExecutor.executionOptions = ExecutionOptions().copy(
+                fileTypes = listOf(
+                    org.islandoftex.arara.core.files.FileType(
+                        "my", "^\\s*//\\s*"
+                    )
+                ) + DefaultConfiguration.defaultFileTypes
+            )
+            val resolved = LuaInterpreter.resolvePendingFileTypes(projects[0])
+            assertEquals(
+                "my",
+                resolved.files.first().fileType.extension,
+                "the pending entry resolves"
+            )
+            assertEquals(
+                listOf("% arara: pdflatex"),
+                (resolved.files.first() as LuaProjectFile).directives,
+                "the carried directives reach the resolved copy"
+            )
+        } finally {
+            LinearExecutor.executionOptions = standing
+        }
+    }
+
+    @Test
+    fun `the file's own directive failures report through the wrap`() {
+        val file = Files.createTempFile("arara-own-directives", ".tex")
+        Files.writeString(file, "% arara: --> stray continuation\n")
+        val exception = assertFailsWith<AraraException>(
+            "a failure of the file's own directives names the file"
+        ) {
+            LuaProjectFile(
+                MPPPath(file.toString()),
+                org.islandoftex.arara.core.files.FileType(
+                    "tex", "^\\s*%\\s*"
+                )
+            ).fetchDirectives(true)
+        }
+        assertTrue(
+            exception.message!!.contains(file.fileName.toString()),
+            "the error names the file: ${exception.message}"
+        )
+    }
+
+    @Test
     fun `honours the redeclared type over the default for detection`() {
         val standing = LinearExecutor.executionOptions
         LinearExecutor.executionOptions = ExecutionOptions().copy(
@@ -751,6 +810,26 @@ class LuaInterpreterTest {
     }
 
     @Test
+    fun `resolves an absolute working directory as itself`() {
+        val base = Files.createTempDirectory("arara-wd-base")
+        val outside = Files.createTempDirectory("arara-wd-outside")
+        val projects = LuaInterpreter(MPPPath(base.toString()))
+            .parseProjectsFromLua(
+                """
+                return {
+                  working_directory = "${outside.toString().replace("\\", "\\\\")}",
+                  files = { ["main.tex"] = { } }
+                }
+                """.trimIndent()
+            )
+        assertEquals(
+            MPPPath(outside.toString()).normalize().toString(),
+            projects[0].workingDirectory.normalize().toString(),
+            "an absolute working directory is itself, never anchored at the application's"
+        )
+    }
+
+    @Test
     fun `rejects a fractional priority`() {
         assertFailsWith<ProjectParseException>(
             "a fractional priority is a type error, not a silent truncation"
@@ -759,5 +838,17 @@ class LuaInterpreterTest {
                 """return { files = { ["a.tex"] = { priority = 2.5 } } }"""
             )
         }
+    }
+
+    @Test
+    fun `an integral number priority keeps its integer value`() {
+        val projects = LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
+            """return { files = { ["a.tex"] = { priority = 2.0 } } }"""
+        )
+        assertEquals(
+            2,
+            projects[0].files.first().priority,
+            "an integral double names the integer it equals"
+        )
     }
 }

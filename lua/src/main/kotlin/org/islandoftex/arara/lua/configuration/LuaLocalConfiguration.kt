@@ -2,14 +2,12 @@
 package org.islandoftex.arara.lua.configuration
 
 import io.github.taoguan.luaj.LuaTable
-import io.github.taoguan.luaj.LuaValue
-import io.github.taoguan.luaj.lib.jse.JsePlatform
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.configuration.LocalConfiguration
 import org.islandoftex.arara.core.configuration.SerialFileType
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.session.Environment
+import org.islandoftex.arara.lua.LuaPlatform
 import org.islandoftex.arara.lua.rules.LuaConversion
 
 /**
@@ -111,35 +109,11 @@ object LuaLocalConfiguration {
         workingDirectory: MPPPath
     ): LocalConfiguration =
         runCatching {
-            val globals = JsePlatform.standardGlobals()
-            // arara's values are in scope to the script, mirroring what
-            // the placeholder expansion of the YAML format resolves;
-            // missing system properties fall back to empty strings so
-            // concatenation never sees nil
-            globals.set(
-                "user",
-                LuaValue.tableOf().also { user ->
-                    user.set(
-                        "home",
-                        LuaValue.valueOf(
-                            Environment.getSystemPropertyOrNull("user.home")
-                                ?: ""
-                        )
-                    )
-                    user.set(
-                        "name",
-                        LuaValue.valueOf(
-                            Environment.getSystemPropertyOrNull("user.name")
-                                ?: ""
-                        )
-                    )
-                }
-            )
-            globals.set(
-                "cwd",
-                LuaValue.valueOf(workingDirectory.normalize().toString())
-            )
-            val result = globals.load(file.readText(), file.fileName).call()
+            // arara's values are in scope to the script, mirroring
+            // what the placeholder expansion of the YAML format
+            // resolves
+            val result = LuaPlatform.globalsFor(workingDirectory)
+                .load(file.readText(), file.fileName).call()
             val table = result as? LuaTable ?: throw AraraException(
                 LanguageController.messages
                     .errorConfigurationLuaReturnNotATable

@@ -90,8 +90,9 @@ object Display {
      * @param displayName The project's display name - the model's
      *   name for specification projects, or the anonymous
      *   project's label, in the session's language.
-     * @param logName The project's name for the log - the English
-     *   phrase for the anonymous project, or the model's name.
+     * @param logName The project's name for the log - the model's
+     *   name, which the log records verbatim for specification
+     *   and anonymous projects alike.
      * @param directory The working directory of the project.
      */
     fun printProjectInformation(

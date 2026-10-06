@@ -26,9 +26,10 @@ object FileSearching {
     private val logger = KotlinLogging.logger { }
 
     /**
-     * List all files from the provided directory according to the list of
-     * extensions. The leading dot must be omitted, unless it is part of the
-     * extension.
+     * List all files from the provided directory according to the
+     * list of extensions. Each file matches by the text that
+     * follows the last dot of its name, so the extensions carry
+     * no leading dot.
      *
      * @param directory The provided directory.
      * @param extensions The list of extensions.
@@ -130,10 +131,12 @@ object FileSearching {
 
     /**
      * Builds the error for a reference no file of the run
-     * resolves: an existing file whose extension no type
-     * carries is told so instead of being reported missing, and
-     * everything else keeps the not-found verdict with the
-     * extensions the run would have completed the name with.
+     * resolves: an existing file whose extension no type carries
+     * is told so instead of being reported missing - a plain Lua
+     * file getting the verdict that also names its project
+     * specification suffix - and everything else keeps the
+     * not-found verdict with the extensions the run would have
+     * completed the name with.
      */
     private fun fileResolutionError(
         reference: String,
@@ -176,6 +179,10 @@ object FileSearching {
      * a plain enumeration, in the priority order of the list:
      * the first spelling of a redeclared type is the one the
      * search tries, and the listing shows once.
+     *
+     * @param executionOptions The options whose effective file
+     *   types the enumeration names.
+     * @return The plain enumeration of the extensions.
      */
     fun knownExtensions(executionOptions: ExecutionOptions): String =
         executionOptions.fileTypes

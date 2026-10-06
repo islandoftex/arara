@@ -114,6 +114,17 @@ object StyledTheme {
     const val leaderFallback = "."
 
     /**
+     * The vertical bar of the failed task's output panel, the
+     * glyph and its inner spacing together.
+     */
+    const val panelBar = "│ "
+
+    /**
+     * The ASCII fallback of the panel bar.
+     */
+    const val panelBarFallback = "| "
+
+    /**
      * The width of the label column of the verbose task fields.
      */
     const val fieldGutterWidth = 16

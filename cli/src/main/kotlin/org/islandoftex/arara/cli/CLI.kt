@@ -232,6 +232,8 @@ class CLI : CliktCommand("arara") {
      * unique among the specification projects - every invocation
      * is a set of projects, named ones from the specifications
      * and at most one anonymous one from the command line.
+     *
+     * @return The projects of the run.
      */
     private fun resolveProjects(): List<org.islandoftex.arara.api.files.Project> {
         // the invocation's state resets with every resolution: a
@@ -269,29 +271,37 @@ class CLI : CliktCommand("arara") {
      * files, loading the invocation directory's configuration
      * first so the file references resolve against the types
      * the configuration provides.
+     *
+     * @param projects The project list the anonymous project joins.
+     * @param inputs The loose input file arguments.
+     * @param workingDir The working directory of the invocation.
      */
     private fun appendAnonymousProject(
         projects: MutableList<org.islandoftex.arara.api.files.Project>,
         inputs: List<String>,
         workingDir: MPPPath
     ) {
-        Project("Single files", workingDir, emptySet())
-            .also { project -> loadProjectConfigurations(listOf(project)) }
-            .let { project ->
-                val anonymous = Project(
-                    project.name,
-                    project.workingDirectory,
-                    inputs.map { fileName ->
-                        FileSearching.resolveFile(
-                            fileName,
-                            workingDir,
-                            LinearExecutor.executionOptions
-                        )
-                    }.toSet()
+        // the empty stand-in project the configuration loads for
+        // carries no files and keeps the very constants the
+        // anonymous project builds from, so the load matters for
+        // its side effects alone - the console modes and the file
+        // types the configuration puts in effect
+        loadProjectConfigurations(
+            listOf(Project("Single files", workingDir, emptySet()))
+        )
+        val anonymous = Project(
+            "Single files",
+            workingDir,
+            inputs.map { fileName ->
+                FileSearching.resolveFile(
+                    fileName,
+                    workingDir,
+                    LinearExecutor.executionOptions
                 )
-                anonymousProject = anonymous
-                projects += anonymous
-            }
+            }.toSet()
+        )
+        anonymousProject = anonymous
+        projects += anonymous
     }
 
     /**
@@ -299,6 +309,9 @@ class CLI : CliktCommand("arara") {
      * project's name: the two would collide on every surface -
      * the console territory, the summary grouping, the log's
      * boundary lines.
+     *
+     * @param projects The projects of the run, the anonymous one
+     *   included.
      */
     private fun validateNoNameCollision(
         projects: List<org.islandoftex.arara.api.files.Project>
@@ -317,6 +330,8 @@ class CLI : CliktCommand("arara") {
      * Rejects a file claimed by two projects of the run, naming
      * the file and the projects with the remedy of removing it
      * from all but one.
+     *
+     * @param projects The projects of the run.
      */
     private fun validateNoSharedFile(
         projects: List<org.islandoftex.arara.api.files.Project>
@@ -402,6 +417,9 @@ class CLI : CliktCommand("arara") {
      * names a project of the union - it may live in any of the
      * files - and a name identifies a project uniquely across
      * the files.
+     *
+     * @param projects The specification projects, merged across
+     *   their files.
      */
     private fun validateMergedProjects(
         projects: List<org.islandoftex.arara.api.files.Project>

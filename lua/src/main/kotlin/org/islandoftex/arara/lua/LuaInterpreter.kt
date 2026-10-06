@@ -7,7 +7,6 @@ import io.github.taoguan.luaj.LuaNumber
 import io.github.taoguan.luaj.LuaString
 import io.github.taoguan.luaj.LuaTable
 import io.github.taoguan.luaj.LuaValue
-import io.github.taoguan.luaj.lib.jse.JsePlatform
 import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
@@ -16,7 +15,6 @@ import org.islandoftex.arara.core.configuration.DefaultConfiguration
 import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.files.UNKNOWN_TYPE
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 
 /**
@@ -226,13 +224,12 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
             }
         } ?: org.islandoftex.arara.core.files.ProjectFile.DEFAULT_PRIORITY
 
-        val projectFile = LuaProjectFile(path, fileType, priority)
-        optionalTable(
+        val directives = optionalTable(
             table["directives"],
             LanguageController.messages
                 .errorProjectDirectivesKeyRequiresTable
         )?.let { luaDirectives ->
-            projectFile.directives = luaDirectives.keys()
+            luaDirectives.keys()
                 .map { key -> luaDirectives[key] }
                 .map { value ->
                     (value as? LuaString)?.toString()
@@ -243,7 +240,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
                 }
                 .toList()
         }
-        return projectFile
+        return LuaProjectFile(path, fileType, priority, directives)
     }
 
     /**
@@ -435,39 +432,11 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         chunkName: String = "specification"
     ): List<Project> {
         val luaTable = try {
-            // arara's values are in scope to the script, the same
-            // platform the configuration format provides: the
-            // table `user` carries the `home` and `name` of the
-            // user running arara, and `cwd` is the working
-            // directory the specification is loaded for
-            val globals = JsePlatform.standardGlobals()
-            globals.set(
-                "user",
-                LuaValue.tableOf().also { user ->
-                    user.set(
-                        "home",
-                        LuaValue.valueOf(
-                            Environment.getSystemPropertyOrNull("user.home")
-                                ?: ""
-                        )
-                    )
-                    user.set(
-                        "name",
-                        LuaValue.valueOf(
-                            Environment.getSystemPropertyOrNull("user.name")
-                                ?: ""
-                        )
-                    )
-                }
-            )
-            globals.set(
-                "cwd",
-                LuaValue.valueOf(appWorkingDir.normalize().toString())
-            )
             // the chunk name makes every Lua failure cite the
             // specification file as its source, the same convention
             // the rule and configuration loaders follow
-            globals.load(luaScript, chunkName).call() as? LuaTable
+            LuaPlatform.globalsFor(appWorkingDir)
+                .load(luaScript, chunkName).call() as? LuaTable
         } catch (e: LuaError) {
             throw ProjectParseException(
                 LanguageController.messages
@@ -537,8 +506,12 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
                                 file.path.toString()
                             )
                     )
-                    LuaProjectFile(file.path, fileType, file.priority)
-                        .also { it.directives = file.directives }
+                    LuaProjectFile(
+                        file.path,
+                        fileType,
+                        file.priority,
+                        file.directives
+                    )
                 } else {
                     file
                 }

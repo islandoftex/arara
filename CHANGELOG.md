@@ -484,6 +484,12 @@ on.
 
 ## Fixed
 
+* The summary group titles of the styled presentation fit the
+  measure every other structural line holds: a project name
+  longer than the width abbreviates instead of overflowing the
+  terminal. A directory that happens to carry a configuration
+  file's name is no longer picked up as the configuration file
+  itself.
 * The error verdicts of the project flow now say what actually
   happened: a file `priority` that is not an integer names the
   integer it requires, the shared-name verdict no longer claims

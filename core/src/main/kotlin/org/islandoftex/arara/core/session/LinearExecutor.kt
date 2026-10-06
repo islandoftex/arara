@@ -71,16 +71,18 @@ object LinearExecutor : Executor {
             }
 
     /**
-     * Execute rules based on the projects. Should roughly implement the
-     * following steps:
+     * Execute rules based on the projects:
      *
-     * 1. Resolve project dependencies and create an appropriate execution
+     * 1. Resolve project dependencies and build the execution
      *    order.
-     * 2. Run arara's main routines on each project sequentially. Within a
-     *    project, follow the file priorities.
-     * 3. Wait for all tasks to finish.
+     * 2. Run arara's main routines on each project sequentially.
+     *    Within a project, follow the file priorities.
+     *
+     * The executor runs one task at a time, so every task has
+     * already finished when the next one begins.
      *
      * @param projects The projects to act on.
+     * @return The report of the whole run.
      */
     override fun execute(projects: List<Project>): ExecutionReport {
         val projectsInOrder = ProjectGraph().apply { addAll(projects) }.kahn()

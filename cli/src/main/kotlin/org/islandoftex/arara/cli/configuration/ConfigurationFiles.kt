@@ -53,9 +53,10 @@ object ConfigurationFiles {
         }
 
     /**
-     * Find the first existing configuration file with the provided
-     * [extension], preferring the project's working directory over the
-     * user home directory.
+     * Find the first configuration file with the provided
+     * [extension], preferring the project's working directory over
+     * the user home directory. A directory that happens to carry
+     * a configuration file's name is not a configuration file.
      */
     private fun configFileWithExtension(
         project: Project,
@@ -63,11 +64,12 @@ object ConfigurationFiles {
     ): MPPPath? {
         val names = baseNames.map { "$it.$extension" }
         return project.workingDirectory.let { workingDir ->
-            names.map { workingDir / it }.firstOrNull { it.exists }
+            names.map { workingDir / it }
+                .firstOrNull { it.exists && it.isRegularFile }
         } ?: Environment.getSystemPropertyOrNull("user.home")
             ?.let { userHome ->
                 names.map { MPPPath(userHome) / it }
-                    .firstOrNull { it.exists }
+                    .firstOrNull { it.exists && it.isRegularFile }
             }
     }
 
