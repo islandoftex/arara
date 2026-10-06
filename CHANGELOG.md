@@ -179,7 +179,7 @@ on.
   its name in the foreground, and groups the
   summary table by project: each grid is the same table the
   single-project runs always had, with only the project's
-  name above it.
+  name above it, marked by the container glyph.
 * Project file entries that declare no `file_type` are detected by
   their extension against the file types of the run - the defaults,
   whatever the command line asks, and the types the project's own

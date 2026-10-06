@@ -1301,7 +1301,9 @@ class StyledConsoleRenderer(
                     terminal.println("")
                 }
                 val displayName = projectDisplayNames[projectId] ?: ""
-                terminal.println(displayName)
+                // the container glyph marks the project's territory:
+                // the name reads as a group title, not a bare line
+                terminal.println("▸ $displayName")
                 terminal.println("")
                 val entries = summary.filter { it.projectId == projectId }
                 terminal.println(buildSummaryTable(entries, messages))
