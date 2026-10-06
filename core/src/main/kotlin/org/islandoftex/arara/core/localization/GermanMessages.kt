@@ -210,7 +210,7 @@ object GermanMessages : AraraMessages {
         "Die Projektabhängigkeiten enthalten einen Zyklus, an dem ${cycle} beteiligt ist. Zyklen lassen sich nicht auflösen. Bitte überarbeite deine Projektspezifikation."
 
     override fun errorProjectStrayDependency(dependency: String) =
-        "Die Projektspezifikation nennt das Projekt \"${dependency}\" als Abhängigkeit, aber kein Projekt des Durchlaufs trägt diesen Namen. Bitte überarbeite deine Projektspezifikation und versuche es erneut."
+        "Die Projektspezifikationen listen ${dependency} als Abhängigkeiten, aber kein Projekt des Durchlaufs trägt diese Namen. Bitte überarbeite deine Projektspezifikationen und versuche es erneut."
 
     override val errorProjectDependenciesKeyRequiresStringList =
         "Der Schlüssel 'dependencies' erfordert eine Liste von Zeichenketten."
@@ -225,7 +225,7 @@ object GermanMessages : AraraMessages {
         "Der Schlüssel 'directives' erfordert eine Tabelle."
 
     override fun errorProjectDuplicateName(name: String) =
-        "Zwei Projekte der Spezifikation teilen sich den Namen '${name}'. Innerhalb eines Durchlaufs wird ein Projekt über seinen Namen identifiziert, daher braucht jedes Projekt einer Liste einen eigenen Namen."
+        "Zwei Projekte teilen sich den Namen '${name}'. Innerhalb eines Durchlaufs wird ein Projekt über seinen Namen identifiziert, daher braucht jedes Projekt einen eigenen Namen."
 
     override fun errorProjectDuplicatePath(name: String) =
         "Das Projekt führt die Datei '${name}' mehr als einmal auf, möglicherweise unter zwei Schreibweisen desselben Ortes. Innerhalb eines Projekts wird eine Datei genau einmal aufgeführt."
@@ -241,7 +241,7 @@ object GermanMessages : AraraMessages {
         file: String,
         details: String
     ) =
-        "Beim Extrahieren der für '${file}' angegebenen Direktiven in der Projektdatei ist ein Fehler aufgetreten: ${details}."
+        "Beim Extrahieren der Direktiven von '${file}' ist ein Fehler aufgetreten: ${details}."
 
     override val errorProjectFileEntryKeyNotAString =
         "Projektdateieinträge müssen über ihren Dateinamen adressiert sein."
@@ -276,8 +276,11 @@ object GermanMessages : AraraMessages {
     override fun errorProjectFileTypeUnknownExtension(file: String) =
         "Ich konnte den Dateityp von '${file}' nicht bestimmen: Kein Dateityp dieses Durchlaufs passt zu seiner Erweiterung. Deklariere einen 'file_type' für den Eintrag, oder ergänze die Erweiterung in den 'file_types' der Konfiguration."
 
+    override fun errorProjectSpecificationNotFound(file: String) =
+        "Ich konnte die Spezifikationsdatei \"${file}\" nicht finden. Bitte stell sicher, dass die Datei existiert."
+
     override fun errorProjectInvalidLua(details: String) =
-        "Die Projektspezifikation ist kein gültiges Lua: ${details}."
+        "Ich konnte die Projektspezifikation nicht auswerten: ${details}."
 
     override val errorProjectListEntryNotATable =
         "Ein Eintrag einer Projektliste muss eine Tabelle sein."
@@ -294,8 +297,8 @@ object GermanMessages : AraraMessages {
     override val errorProjectNeedsAFile =
         "Ein Projekt muss mindestens eine Datei enthalten."
 
-    override val errorProjectPriorityKeyRequiresNumber =
-        "Der Schlüssel 'priority' erfordert eine Zahl."
+    override val errorProjectPriorityKeyRequiresInteger =
+        "Der Schlüssel 'priority' erfordert eine Ganzzahl."
 
     override val errorProjectReturnNotATable =
         "Der Rückgabetyp der Lua-Projektspezifikation muss eine Tabelle sein, die ein Projekt oder eine Liste von Projekten enthält."

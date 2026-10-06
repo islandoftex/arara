@@ -221,7 +221,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
                 value is LuaNumber && value.isint() -> value.toint()
                 else -> throw ProjectParseException(
                     LanguageController.messages
-                        .errorProjectPriorityKeyRequiresNumber
+                        .errorProjectPriorityKeyRequiresInteger
                 )
             }
         } ?: org.islandoftex.arara.core.files.ProjectFile.DEFAULT_PRIORITY
@@ -390,15 +390,15 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         }
 
         // a name identifies a project within one run, so the
-        // list may not repeat it
+        // list may not repeat it; the verdict names one shared
+        // name at a time, and the next run reports the next
         projects.map { it.name }
             .groupBy { it }
             .filterValues { it.size > 1 }.keys
-            .takeIf { it.isNotEmpty() }?.let { duplicated ->
+            .firstOrNull()?.let { duplicated ->
                 throw ProjectValidationException(
-                    LanguageController.messages.errorProjectDuplicateName(
-                        duplicated.joinToString(", ", "(", ")")
-                    )
+                    LanguageController.messages
+                        .errorProjectDuplicateName(duplicated)
                 )
             }
         return projects
@@ -417,6 +417,9 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
      * @param luaScript The Lua string to be interpreted.
      * @param defaultName The name a project that declared no name
      *   takes; the caller names it from its specification file.
+     * @param chunkName The name Lua errors cite as the source of a
+     *   failure, so a broken specification points at its own file
+     *   instead of a synthetic chunk.
      * @throws ProjectParseException The Lua script is invalid, the
      *   root is malformed, or an entry violates a shape or type
      *   expectation.
@@ -428,7 +431,8 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
     @Suppress("ThrowsCount")
     fun parseProjectsFromLua(
         luaScript: String,
-        defaultName: String = "Untitled"
+        defaultName: String = "Untitled",
+        chunkName: String = "specification"
     ): List<Project> {
         val luaTable = try {
             // arara's values are in scope to the script, the same
@@ -460,7 +464,10 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
                 "cwd",
                 LuaValue.valueOf(appWorkingDir.normalize().toString())
             )
-            globals.load(luaScript).call() as? LuaTable
+            // the chunk name makes every Lua failure cite the
+            // specification file as its source, the same convention
+            // the rule and configuration loaders follow
+            globals.load(luaScript, chunkName).call() as? LuaTable
         } catch (e: LuaError) {
             throw ProjectParseException(
                 LanguageController.messages

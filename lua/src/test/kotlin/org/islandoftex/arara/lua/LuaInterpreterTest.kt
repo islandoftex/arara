@@ -196,7 +196,7 @@ class LuaInterpreterTest {
             LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script)
         }
         assertTrue(
-            exception.message!!.contains("requires a number"),
+            exception.message!!.contains("requires an integer"),
             "the error names the expected type: ${exception.message}"
         )
     }
@@ -293,6 +293,22 @@ class LuaInterpreterTest {
         assertFailsWith<ProjectParseException> {
             LuaInterpreter(MPPPath(".")).parseProjectsFromLua("return {")
         }
+    }
+
+    @Test
+    fun `lua failures cite the specification file`() {
+        val exception = assertFailsWith<ProjectParseException>(
+            "a failing script reports its source"
+        ) {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
+                "error('boom')",
+                chunkName = "figures.proj.lua"
+            )
+        }
+        assertTrue(
+            exception.message!!.contains("figures.proj.lua"),
+            "the error cites the specification file: ${exception.message}"
+        )
     }
 
     @Test

@@ -467,8 +467,14 @@ interface AraraMessages {
      */
     fun errorProjectFileTypeUnknownExtension(file: String): String
     /**
-     * The error shown when a Lua project specification is not
-     * valid Lua.
+     * The error shown when a referenced project specification file
+     * does not exist or is not a file.
+     */
+    fun errorProjectSpecificationNotFound(file: String): String
+    /**
+     * The error shown when a Lua project specification cannot be
+     * evaluated, e.g. because of a syntax error or a runtime
+     * failure.
      */
     fun errorProjectInvalidLua(details: String): String
     /**
@@ -494,9 +500,9 @@ interface AraraMessages {
     val errorProjectNeedsAFile: String
     /**
      * The error shown when the priority of a project file is not
-     * a number.
+     * an integer.
      */
-    val errorProjectPriorityKeyRequiresNumber: String
+    val errorProjectPriorityKeyRequiresInteger: String
     /**
      * The error shown when a Lua project specification returns
      * something other than a table.

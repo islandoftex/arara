@@ -209,7 +209,7 @@ object EnglishMessages : AraraMessages {
         "The project dependencies contain a cycle involving ${cycle}. Cyclic dependencies cannot be resolved, so please revise your project specification."
 
     override fun errorProjectStrayDependency(dependency: String) =
-        "The project specification names the project \"${dependency}\" as a dependency, but no project of the run carries that name. Please revise your project specification and try again."
+        "The project specifications list ${dependency} as dependencies, but no project of the run carries those names. Please revise your project specifications and try again."
 
     override val errorProjectDependenciesKeyRequiresStringList =
         "The 'dependencies' key requires a list of strings."
@@ -224,7 +224,7 @@ object EnglishMessages : AraraMessages {
         "The 'directives' key requires a table."
 
     override fun errorProjectDuplicateName(name: String) =
-        "Two projects in the specification share the name '${name}'. Within one run, a project is identified by its name, so every project of a list needs a name of its own."
+        "Two projects share the name '${name}'. Within one run, a project is identified by its name, so every project needs a name of its own."
 
     override fun errorProjectDuplicatePath(name: String) =
         "The project lists the file '${name}' more than once, possibly under two spellings of the same location. Within a project, a file is listed exactly once."
@@ -240,7 +240,7 @@ object EnglishMessages : AraraMessages {
         file: String,
         details: String
     ) =
-        "I found an error while extracting the directives specified for '${file}' in the project file: ${details}."
+        "I found an error while extracting the directives of '${file}': ${details}."
 
     override val errorProjectFileEntryKeyNotAString =
         "Project file entries have to be keyed by their file name."
@@ -275,8 +275,11 @@ object EnglishMessages : AraraMessages {
     override fun errorProjectFileTypeUnknownExtension(file: String) =
         "I could not determine the file type of '${file}': no file type of this run matches its extension. Declare a 'file_type' for the entry, or add the extension to the 'file_types' of the configuration."
 
+    override fun errorProjectSpecificationNotFound(file: String) =
+        "I could not find the specification file \"${file}\". Please make sure the file exists."
+
     override fun errorProjectInvalidLua(details: String) =
-        "The project specification is not valid Lua: ${details}."
+        "I could not evaluate the project specification: ${details}."
 
     override val errorProjectListEntryNotATable =
         "A project list entry has to be a table."
@@ -293,8 +296,8 @@ object EnglishMessages : AraraMessages {
     override val errorProjectNeedsAFile =
         "A project must contain at least one file."
 
-    override val errorProjectPriorityKeyRequiresNumber =
-        "The 'priority' key requires a number."
+    override val errorProjectPriorityKeyRequiresInteger =
+        "The 'priority' key requires an integer."
 
     override val errorProjectReturnNotATable =
         "The return type of the Lua project specification has to be a table, holding a project or a list of projects."

@@ -210,7 +210,7 @@ object DutchMessages : AraraMessages {
         "De projectafhankelijkheden bevatten een cyclus waarin ${cycle} voorkomt. Cycles kunnen niet worden opgelost. Controleer je projectspecificatie."
 
     override fun errorProjectStrayDependency(dependency: String) =
-        "De projectspecificatie noemt het project \"${dependency}\" als afhankelijkheid, maar geen enkel project van de run draagt die naam. Herstel je projectspecificatie en probeer het opnieuw."
+        "De projectspecificaties noemen ${dependency} als afhankelijkheden, maar geen enkel project van de run draagt die namen. Herstel je projectspecificaties en probeer het opnieuw."
 
     override val errorProjectDependenciesKeyRequiresStringList =
         "De sleutel 'dependencies' vereist een lijst met tekenreeksen."
@@ -225,7 +225,7 @@ object DutchMessages : AraraMessages {
         "De sleutel 'directives' vereist een tabel."
 
     override fun errorProjectDuplicateName(name: String) =
-        "Twee projecten in de specificatie delen de naam '${name}'. Binnen één run wordt een project geïdentificeerd aan de hand van zijn naam, dus elk project in een lijst heeft een eigen naam nodig."
+        "Twee projecten delen de naam '${name}'. Binnen één run wordt een project geïdentificeerd aan de hand van zijn naam, dus elk project heeft een eigen naam nodig."
 
     override fun errorProjectDuplicatePath(name: String) =
         "Het project noemt het bestand '${name}' meer dan eens, misschien onder twee schrijfwijzen van dezelfde locatie. Binnen een project wordt een bestand precies één keer genoemd."
@@ -241,7 +241,7 @@ object DutchMessages : AraraMessages {
         file: String,
         details: String
     ) =
-        "Er is een fout opgetreden bij het extraheren van de richtlijnen die voor '${file}' in het projectbestand zijn opgegeven: ${details}."
+        "Er is een fout opgetreden bij het extraheren van de richtlijnen van '${file}': ${details}."
 
     override val errorProjectFileEntryKeyNotAString =
         "Projectbestandwaarden moeten via hun bestandsnaam aangeduid zijn."
@@ -276,8 +276,11 @@ object DutchMessages : AraraMessages {
     override fun errorProjectFileTypeUnknownExtension(file: String) =
         "Ik kon het bestandstype van '${file}' niet bepalen: geen enkel bestandstype van deze run past bij zijn extensie. Declareer een 'file_type' voor de waarde, of voeg de extensie toe aan de 'file_types' van de configuratie."
 
+    override fun errorProjectSpecificationNotFound(file: String) =
+        "Ik kon het specificatiebestand \"${file}\" niet vinden. Zorg ervoor dat het bestand bestaat."
+
     override fun errorProjectInvalidLua(details: String) =
-        "De projectspecificatie is geen geldige Lua: ${details}."
+        "Ik kon de projectspecificatie niet evalueren: ${details}."
 
     override val errorProjectListEntryNotATable =
         "Elke waarde in een projectenlijst moet een tabel zijn."
@@ -294,8 +297,8 @@ object DutchMessages : AraraMessages {
     override val errorProjectNeedsAFile =
         "Een project moet minstens één bestand bevatten."
 
-    override val errorProjectPriorityKeyRequiresNumber =
-        "De sleutel 'priority' vereist een getal."
+    override val errorProjectPriorityKeyRequiresInteger =
+        "De sleutel 'priority' vereist een geheel getal."
 
     override val errorProjectReturnNotATable =
         "Het retourtype van de Lua-projectspecificatie moet een tabel zijn met daarin een project of een lijst met projecten."

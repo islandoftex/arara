@@ -210,7 +210,7 @@ object NorfolkMessages : AraraMessages {
         "Them project dependencies hev got a cycle in 'em, a-involvun' ${cycle}. Cycle dependencies can't be sorted aht, no how. Do please hev another look at your project specification."
 
     override fun errorProjectStrayDependency(dependency: String) =
-        "The project specifikashun names the project \"${dependency}\" as a dependency, but no project in this here run carries that there name. Dew yew go an' revise yer specifikashun and hev another go."
+        "Them project specifikashuns lists ${dependency} as dependencies, but no project in this here run carries them there names. Dew yew go an' revise yer specifikashuns and hev another go."
 
     override val errorProjectDependenciesKeyRequiresStringList =
         "The 'dependencies' key wants a list of strings."
@@ -225,7 +225,7 @@ object NorfolkMessages : AraraMessages {
         "The 'directives' key wants a table."
 
     override fun errorProjectDuplicateName(name: String) =
-        "Two projects in the specifikashun's sharin' the name '${name}'. In one run a project's known by its name, so every project in a list wants a name of its own."
+        "Two projects is sharin' the name '${name}'. In one run a project's known by its name, so every project wants a name of its own."
 
     override fun errorProjectDuplicatePath(name: String) =
         "That project lists the file '${name}' more'n once, praps under two spellin's of the very same spot. In a project, a file's listed just the once."
@@ -241,7 +241,7 @@ object NorfolkMessages : AraraMessages {
         file: String,
         details: String
     ) =
-        "I come a-cropper extractin' the directives as was specified fer '${file}' in the project file: ${details}."
+        "I come a-cropper extractin' the directives of '${file}': ${details}."
 
     override val errorProjectFileEntryKeyNotAString =
         "Project file entries hev gotter be keyed by their file name."
@@ -276,8 +276,11 @@ object NorfolkMessages : AraraMessages {
     override fun errorProjectFileTypeUnknownExtension(file: String) =
         "I coont make aht the file type of '${file}': none o' the file types in this here run fits its extension. Yew're gotta say a 'file_type' for that there entry, or put the extension in the 'file_types' o' the configyrashun."
 
+    override fun errorProjectSpecificationNotFound(file: String) =
+        "I coont find that there specifikashun file \"${file}\". Dew make sure the file's there, won't yew."
+
     override fun errorProjectInvalidLua(details: String) =
-        "That there project specifikashun ent proper Lua: ${details}."
+        "I coont run that there project specifikashun: ${details}."
 
     override val errorProjectListEntryNotATable =
         "Every project list entry's gotta be a table."
@@ -294,8 +297,8 @@ object NorfolkMessages : AraraMessages {
     override val errorProjectNeedsAFile =
         "A project's gotta hev at least one file in it."
 
-    override val errorProjectPriorityKeyRequiresNumber =
-        "The 'priority' key wants a number."
+    override val errorProjectPriorityKeyRequiresInteger =
+        "The 'priority' key wants a whole number."
 
     override val errorProjectReturnNotATable =
         "That Lua project specifikashun's gotter return a table - a project or a list of 'em."

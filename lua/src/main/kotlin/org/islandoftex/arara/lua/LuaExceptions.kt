@@ -5,7 +5,7 @@ import org.islandoftex.arara.api.AraraException
 
 /**
  * Indicates that a Lua project specification could not be parsed, e.g.
- * because it is not valid Lua or does not return a table.
+ * because it failed to evaluate or does not return a table.
  */
 class ProjectParseException(
     s: String,

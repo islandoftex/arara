@@ -210,7 +210,7 @@ object ItalianMessages : AraraMessages {
         "Le dipendenze del progetto contengono un ciclo che coinvolge ${cycle}. I cicli non possono essere risolti. Per favore, rivedi la specifica del tuo progetto."
 
     override fun errorProjectStrayDependency(dependency: String) =
-        "La specifica di progetto indica il progetto \"${dependency}\" come dipendenza, ma nessun progetto dell'esecuzione porta quel nome. Rivedi la specifica di progetto e riprova."
+        "Le specifiche di progetto indicano ${dependency} come dipendenze, ma nessun progetto dell'esecuzione porta quei nomi. Rivedi le specifiche di progetto e riprova."
 
     override val errorProjectDependenciesKeyRequiresStringList =
         "La chiave 'dependencies' richiede una lista di stringhe."
@@ -225,7 +225,7 @@ object ItalianMessages : AraraMessages {
         "La chiave 'directives' richiede una tabella."
 
     override fun errorProjectDuplicateName(name: String) =
-        "Due progetti della specifica condividono il nome '${name}'. In un'unica esecuzione, un progetto è identificato dal suo nome, quindi ogni progetto di una lista ha bisogno di un nome tutto suo."
+        "Due progetti condividono il nome '${name}'. In un'unica esecuzione, un progetto è identificato dal suo nome, quindi ogni progetto ha bisogno di un nome tutto suo."
 
     override fun errorProjectDuplicatePath(name: String) =
         "Il progetto elenca il file '${name}' più di una volta, forse con due grafie dello stesso percorso. In un progetto, un file è elencato una sola volta."
@@ -241,7 +241,7 @@ object ItalianMessages : AraraMessages {
         file: String,
         details: String
     ) =
-        "Si è verificato un errore durante l'estrazione delle direttive specificate per '${file}' nel file di progetto: ${details}."
+        "Si è verificato un errore durante l'estrazione delle direttive di '${file}': ${details}."
 
     override val errorProjectFileEntryKeyNotAString =
         "Le voci dei file di progetto devono essere indirizzate dal loro nome di file."
@@ -276,8 +276,11 @@ object ItalianMessages : AraraMessages {
     override fun errorProjectFileTypeUnknownExtension(file: String) =
         "Non sono riuscito a determinare il tipo di file di '${file}': nessun tipo di file di questa esecuzione corrisponde alla sua estensione. Dichiara un 'file_type' per la voce, oppure aggiungi l'estensione ai 'file_types' della configurazione."
 
+    override fun errorProjectSpecificationNotFound(file: String) =
+        "Non sono riuscito a trovare il file di specifica \"${file}\". Assicurati che il file esista."
+
     override fun errorProjectInvalidLua(details: String) =
-        "La specifica di progetto non è Lua valido: ${details}."
+        "Non sono riuscito a valutare la specifica di progetto: ${details}."
 
     override val errorProjectListEntryNotATable =
         "Una voce di una lista di progetti deve essere una tabella."
@@ -294,8 +297,8 @@ object ItalianMessages : AraraMessages {
     override val errorProjectNeedsAFile =
         "Un progetto deve contenere almeno un file."
 
-    override val errorProjectPriorityKeyRequiresNumber =
-        "La chiave 'priority' richiede un numero."
+    override val errorProjectPriorityKeyRequiresInteger =
+        "La chiave 'priority' richiede un numero intero."
 
     override val errorProjectReturnNotATable =
         "Il tipo di ritorno della specifica di progetto Lua deve essere una tabella, contenente un progetto o una lista di progetti."

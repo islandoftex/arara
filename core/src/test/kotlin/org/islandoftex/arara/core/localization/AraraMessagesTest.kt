@@ -93,7 +93,7 @@ class AraraMessagesTest {
                 errorProjectNameCannotBeBlank,
                 errorProjectNameKeyRequiresString,
                 errorProjectNeedsAFile,
-                errorProjectPriorityKeyRequiresNumber,
+                errorProjectPriorityKeyRequiresInteger,
                 errorProjectReturnNotATable,
                 errorProjectSingleProjectHasDependencies,
                 errorProjectWorkingDirectoryKeyRequiresString,
@@ -162,6 +162,7 @@ class AraraMessagesTest {
                 errorProjectDuplicateName("alpha"),
                 errorProjectDuplicatePath("alpha"),
                 errorProjectFileInMultipleProjects("alpha", "beta"),
+                errorProjectSpecificationNotFound("alpha"),
                 errorProjectInvalidLua("alpha"),
                 errorProjectStrayDependency("alpha"),
                 errorProjectFileTypeUnknownExtension("alpha"),
@@ -256,6 +257,8 @@ class AraraMessagesTest {
                 { it.errorParseRuleKeyRequiresStringList("quux1") },
             listOf("quux1") to
                 { it.errorParseRuleKeyRequiresTableList("quux1") },
+            listOf("quux1") to
+                { it.errorProjectSpecificationNotFound("quux1") },
             listOf("quux1") to { it.errorProjectInvalidLua("quux1") },
             listOf("quux1") to { it.errorProjectStrayDependency("quux1") },
             listOf("quux1") to { it.errorProjectDuplicateName("quux1") },

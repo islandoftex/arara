@@ -484,6 +484,28 @@ on.
 
 ## Fixed
 
+* The error verdicts of the project flow now say what actually
+  happened: a file `priority` that is not an integer names the
+  integer it requires, the shared-name verdict no longer claims
+  the collision lives inside one specification (it can span
+  specification files, or a specification and the command line's
+  own project), the stray-dependency verdict reads grammatically
+  when several dependencies are missing and lists each missing
+  name once, the directives-extraction verdict no longer claims
+  the directives were declared in the specification when the
+  file carries them itself, and a Lua specification that fails -
+  a syntax error or a runtime failure - reports the failed
+  evaluation instead of claiming invalid Lua, citing the
+  specification file itself as the error's source. A missing
+  specification file gets its own verdict naming the file,
+  instead of the input-file verdict and its enumeration of file
+  extensions.
+* The project line of the styled presentation no longer crashes
+  on a terminal too narrow to abbreviate the project name: the
+  line degrades to the unabbreviated name, as every other
+  fitted line does. A specification project named `Single files`
+  - the name under which the command line's own loose files
+  run - is now rejected instead of silently colliding with it.
 * The database honors the configured path the same way the log
   file always has: a relative path in the database name resolves
   against the working directory when the database is opened,

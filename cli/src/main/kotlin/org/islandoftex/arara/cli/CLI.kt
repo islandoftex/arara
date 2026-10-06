@@ -253,7 +253,10 @@ class CLI : CliktCommand("arara") {
             resolveProjectSpecifications(workingDir, specifications)
                 .toMutableList()
 
-        if (inputs.isNotEmpty() || projects.isEmpty()) {
+        // a specification always yields at least one project, so
+        // the loose input files alone decide whether the run
+        // carries an anonymous project
+        if (inputs.isNotEmpty()) {
             appendAnonymousProject(projects, inputs, workingDir)
         }
         validateNoNameCollision(projects)
@@ -370,17 +373,13 @@ class CLI : CliktCommand("arara") {
     ): List<org.islandoftex.arara.api.files.Project> {
         val projects = specifications.flatMap { argument ->
             val path = workingDir.resolve(argument)
-            // a specification that does not exist, or names something
-            // that is not a file, keeps the ordinary not-found verdict
+            // a specification is opened directly, never completed
+            // from an extension, so the verdict names the file
+            // itself instead of enumerating the input extensions
             if (!path.exists || !path.isRegularFile) {
                 throw AraraException(
                     LanguageController.messages
-                        .errorDiscoverFileFileNotFound(
-                            argument,
-                            FileSearching.knownExtensions(
-                                LinearExecutor.executionOptions
-                            )
-                        )
+                        .errorProjectSpecificationNotFound(argument)
                 )
             }
             logger.info {
@@ -388,7 +387,8 @@ class CLI : CliktCommand("arara") {
             }
             LuaInterpreter(workingDir).parseProjectsFromLua(
                 path.readText(),
-                path.fileName.removeSuffix(".proj.lua")
+                path.fileName.removeSuffix(".proj.lua"),
+                path.fileName
             )
         }
         validateMergedProjects(projects)
@@ -406,27 +406,31 @@ class CLI : CliktCommand("arara") {
     private fun validateMergedProjects(
         projects: List<org.islandoftex.arara.api.files.Project>
     ) {
+        // the same missing name may repeat across projects; the
+        // verdict lists each missing name once
         projects.flatMap { project ->
             project.dependencies.filter { dependency ->
                 projects.none { it.name == dependency }
             }
-        }.takeIf { it.isNotEmpty() }?.let { unresolved ->
+        }.distinct().takeIf { it.isNotEmpty() }?.let { unresolved ->
             throw AraraException(
                 LanguageController.messages.errorProjectStrayDependency(
                     unresolved.joinToString(", ", "(", ")")
                 )
             )
         }
-        val duplicated = projects.map { it.name }
+        // the verdict names one shared name at a time, and the
+        // next run reports the next
+        projects.map { it.name }
             .groupBy { it }
             .filterValues { it.size > 1 }.keys
-        if (duplicated.isNotEmpty()) {
-            throw AraraException(
-                LanguageController.messages.errorProjectDuplicateName(
-                    duplicated.joinToString(", ", "(", ")")
+            .firstOrNull()?.let { duplicated ->
+                throw AraraException(
+                    LanguageController.messages.errorProjectDuplicateName(
+                        duplicated
+                    )
                 )
-            )
-        }
+            }
     }
 
     /**
