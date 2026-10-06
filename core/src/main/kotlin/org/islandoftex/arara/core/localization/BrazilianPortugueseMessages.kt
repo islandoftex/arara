@@ -210,7 +210,7 @@ object BrazilianPortugueseMessages : AraraMessages {
         "As dependências do projeto contêm um ciclo envolvendo ${cycle}. Dependências cíclicas não podem ser resolvidas. Por favor, revise a especificação do seu projeto."
 
     override fun errorProjectStrayDependency(dependency: String) =
-        "As especificações de projeto listam ${dependency} como dependências, mas nenhum projeto da execução carrega esses nomes. Por favor, revise as especificações de projeto e tente novamente."
+        "As especificações de projeto listam ${dependency} como dependências, mas nenhum projeto da execuição possui esses nomes. Por favor, revise as especificações de projeto e tente novamente."
 
     override val errorProjectDependenciesKeyRequiresStringList =
         "A chave 'dependencies' requer uma lista de textos."
