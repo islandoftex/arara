@@ -4,7 +4,7 @@ package org.islandoftex.arara.api.files
 import org.islandoftex.arara.api.rules.Directive
 
 /**
- * A file in a [Project]. This layer is a [MPPPath] providing a [FileType]
+ * A file in a [Project]. This layer wraps a [MPPPath] with a [FileType]
  * object to ensure arara is able to choose the right behavior dependent on the
  * file's type.
  */
@@ -33,6 +33,8 @@ public interface ProjectFile {
      * Get the file's directives. This does not put them into any context,
      * just resolves the literal directives.
      *
+     * @param parseOnlyHeader Whether the extraction looks at the
+     *   header alone.
      * @return The list of directives in the file, in order.
      */
     public fun fetchDirectives(parseOnlyHeader: Boolean): List<Directive>

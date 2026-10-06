@@ -125,9 +125,9 @@ object LinearExecutor : Executor {
      * Executes the files of a project in priority order, running the
      * per-project and per-file hooks around each file and halting
      * on the first failure when the error-halt option is set. The
-     * project is unset even when an exception escapes, as a stale
-     * project would make the executor reject all future execution
-     * option changes. A file the run stops at skips the closing
+     * project is unset even when an exception escapes, so the
+     * helpers that read the current project never see a stale
+     * one. A file the run stops at skips the closing
      * hooks of the file and the project: the stop returns before
      * they run.
      *

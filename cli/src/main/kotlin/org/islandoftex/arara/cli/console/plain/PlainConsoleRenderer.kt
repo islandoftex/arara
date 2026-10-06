@@ -520,8 +520,9 @@ object PlainConsoleRenderer : ConsoleRenderer {
     /**
      * Displays the project information in the terminal: the
      * structural line that opens a project's territory. The file
-     * information that follows provides its own separation, so
-     * the project line needs no trailing blank of its own.
+     * information that follows provides its own separation when
+     * the project carries files, so the project line needs no
+     * trailing blank of its own.
      *
      * @param name The display name of the project.
      * @param directory The working directory's short name.

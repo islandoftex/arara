@@ -294,7 +294,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         )
         // a present name cannot be blank - the specification names
         // the project, or it does not; the derived name the caller
-        // provides is a file's base name and is never blank
+        // provides is whatever the caller's context yields
         if (explicitName != null && explicitName.isBlank()) {
             throw ProjectParseException(
                 LanguageController.messages
@@ -417,10 +417,12 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
      * @param luaScript The Lua string to be interpreted.
      * @param defaultName The name a project that declared no name
      *   takes; the caller names it from its specification file.
-     * @throws ProjectParseException The Lua script is invalid or does not
-     * return a project table.
-     * @throws ProjectValidationException The returned project specification
-     * violates the documented invariants.
+     * @throws ProjectParseException The Lua script is invalid, the
+     *   root is malformed, or an entry violates a shape or type
+     *   expectation.
+     * @throws ProjectValidationException A project of a list
+     *   shares a name with another, or a single project declares
+     *   dependencies.
      * @return List of projects extracted from the Lua run.
      */
     @Suppress("ThrowsCount")

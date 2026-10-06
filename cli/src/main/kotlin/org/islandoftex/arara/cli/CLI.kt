@@ -229,9 +229,9 @@ class CLI : CliktCommand("arara") {
      * project specifications, and the remaining arguments form the
      * anonymous project of the loose input files. The
      * specifications merge into one dependency graph with names
-     * unique across the files - every invocation is a set of
-     * projects, named ones from the specifications and at most
-     * one anonymous one from the command line.
+     * unique among the specification projects - every invocation
+     * is a set of projects, named ones from the specifications
+     * and at most one anonymous one from the command line.
      */
     private fun resolveProjects(): List<org.islandoftex.arara.api.files.Project> {
         // the invocation's state resets with every resolution: a
@@ -614,8 +614,9 @@ class CLI : CliktCommand("arara") {
     private fun executorHooks() = ExecutorHooks(
         executeBeforeExecution = {
             Session.updateEnvironmentVariables()
-            // directive processing has to be initialized, so that the core
-            // component respects our MVEL processing
+            // directive processing has to be initialized, so that
+            // the core component builds the directives the engine
+            // produces
             DirectiveProcessing.initializeDirectiveCore()
         },
         executeBeforeProject = { project ->

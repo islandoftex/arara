@@ -109,11 +109,19 @@ class StyledConsoleRenderer(
      * renders.
      */
     private class SummaryEntry(
+        /** The file name as the summary renders it. */
         val name: String,
+        /** The full path for the hyperlink. */
         val path: String,
+        /** The number of tasks the file ran. */
         var tasks: Int,
+        /** The wall-clock time the file took, in seconds. */
         var seconds: Double,
+        /** Whether every task of the file succeeded. */
         var success: Boolean,
+        /** The identifier of the project the file belongs to, or
+         *  -1 when the run is single-project and no project line
+         *  appeared. */
         val projectId: Int = -1
     )
 
@@ -360,10 +368,11 @@ class StyledConsoleRenderer(
     /**
      * Displays the project information in the terminal: the
      * structural line that opens a project's territory, with the
-     * project name bold and the working directory dimmed beside
-     * it. The display name arrives resolved - the anonymous
-     * project's label or the specification's own name - and the
-     * summary table groups by the same name.
+     * label word and the working directory muted and the name
+     * in the foreground. The display name arrives resolved -
+     * the anonymous project's label or the specification's own
+     * name - and the summary table groups by the project's
+     * identifier, with this name as the title above the grid.
      *
      * @param name The display name of the project.
      * @param directory The working directory's short name.
