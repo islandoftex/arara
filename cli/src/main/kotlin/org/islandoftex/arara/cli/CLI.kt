@@ -234,6 +234,11 @@ class CLI : CliktCommand("arara") {
      * one anonymous one from the command line.
      */
     private fun resolveProjects(): List<org.islandoftex.arara.api.files.Project> {
+        // the invocation's state resets with every resolution: a
+        // reused instance must not carry the previous run's
+        // anonymous project or its processed files into this one
+        anonymousProject = null
+        processedFiles.clear()
         // resolve the working directory from the one that may be given
         // as command line parameter; otherwise resolve current directory
         val workingDir = (workingDirectory?.toMPPPath() ?: MPPPath("."))
@@ -325,7 +330,9 @@ class CLI : CliktCommand("arara") {
     ): List<org.islandoftex.arara.api.files.Project> {
         val projects = specifications.flatMap { argument ->
             val path = workingDir.resolve(argument)
-            if (!path.exists) {
+            // a specification that does not exist, or names something
+            // that is not a file, keeps the ordinary not-found verdict
+            if (!path.exists || !path.isRegularFile) {
                 throw AraraException(
                     LanguageController.messages
                         .errorDiscoverFileFileNotFound(

@@ -2,6 +2,7 @@
 package org.islandoftex.arara.lua
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.github.taoguan.luaj.LuaError
 import io.github.taoguan.luaj.LuaNumber
 import io.github.taoguan.luaj.LuaString
 import io.github.taoguan.luaj.LuaTable
@@ -218,7 +219,9 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         val priority = table["priority"].let { value ->
             when {
                 value.isnil() -> null
-                value is LuaNumber -> value.toint()
+                // an integral number names the priority; a fractional
+                // one is a type error, not a silent truncation
+                value is LuaNumber && value.isint() -> value.toint()
                 else -> throw ProjectParseException(
                     LanguageController.messages
                         .errorProjectPriorityKeyRequiresNumber
@@ -306,7 +309,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
             table["working_directory"],
             LanguageController.messages
                 .errorProjectWorkingDirectoryKeyRequiresString
-        )?.let { MPPPath(it) } ?: appWorkingDir
+        )?.let { appWorkingDir.resolve(it) } ?: appWorkingDir
 
         val files = optionalTable(
             table["files"],
@@ -428,7 +431,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         luaScript: String,
         defaultName: String = "Untitled"
     ): List<Project> {
-        val luaTable = runCatching {
+        val luaTable = try {
             // arara's values are in scope to the script, the same
             // platform the configuration format provides: the
             // table `user` carries the `home` and `name` of the
@@ -459,11 +462,11 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
                 LuaValue.valueOf(appWorkingDir.normalize().toString())
             )
             globals.load(luaScript).call() as? LuaTable
-        }.getOrElse {
+        } catch (e: LuaError) {
             throw ProjectParseException(
                 LanguageController.messages
-                    .errorProjectInvalidLua(it.message ?: ""),
-                it as? Exception ?: RuntimeException(it.toString())
+                    .errorProjectInvalidLua(e.message ?: ""),
+                e
             )
         }
             ?: throw ProjectParseException(

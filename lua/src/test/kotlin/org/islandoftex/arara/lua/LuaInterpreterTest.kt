@@ -715,4 +715,33 @@ class LuaInterpreterTest {
             )
         }
     }
+
+    @Test
+    fun `resolves a relative working directory against the application's`() {
+        val directory = Files.createTempDirectory("arara-wd-resolve")
+        Files.createDirectory(directory.resolve("book"))
+        val projects = LuaInterpreter(MPPPath(directory.toString()))
+            .parseProjectsFromLua(
+                """return {
+                  working_directory = "book",
+                  files = { ["main.tex"] = { } }
+                }"""
+            )
+        assertEquals(
+            MPPPath(directory.resolve("book").toString()).normalize().toString(),
+            projects[0].workingDirectory.normalize().toString(),
+            "a relative working directory anchors at the application's, not the process CWD"
+        )
+    }
+
+    @Test
+    fun `rejects a fractional priority`() {
+        assertFailsWith<ProjectParseException>(
+            "a fractional priority is a type error, not a silent truncation"
+        ) {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
+                """return { files = { ["a.tex"] = { priority = 2.5 } } }"""
+            )
+        }
+    }
 }

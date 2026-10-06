@@ -47,18 +47,31 @@ internal class LuaProjectFile(
             )
         }
         return directives?.let { list ->
-            runCatching {
+            try {
                 Directives.extractDirectives(list, parseOnlyHeader, fileType)
-            }.getOrElse {
+            } catch (e: AraraException) {
                 throw AraraException(
                     LanguageController.messages
                         .errorProjectFileDirectivesExtraction(
                             path.fileName,
-                            it.message ?: ""
+                            e.message ?: ""
                         ),
-                    it as? Exception ?: RuntimeException(it.toString())
+                    e
                 )
             }
-        } ?: super.fetchDirectives(parseOnlyHeader)
+        } ?: try {
+            super.fetchDirectives(parseOnlyHeader)
+        } catch (e: AraraException) {
+            // the file's own directives get the same wrap the carried
+            // list does, so both sources report through one context
+            throw AraraException(
+                LanguageController.messages
+                    .errorProjectFileDirectivesExtraction(
+                        path.fileName,
+                        e.message ?: ""
+                    ),
+                e
+            )
+        }
     }
 }

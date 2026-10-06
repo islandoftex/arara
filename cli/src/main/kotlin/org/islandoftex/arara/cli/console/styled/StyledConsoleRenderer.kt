@@ -1271,6 +1271,11 @@ class StyledConsoleRenderer(
             renderSummaryTable()
         }
         summary.clear()
+        // the project territory state clears with the ledger, so a
+        // reused renderer starts every run with a clean slate
+        projectCounter = 0
+        currentProjectId = -1
+        projectDisplayNames.clear()
     }
 
     /**
@@ -1301,9 +1306,10 @@ class StyledConsoleRenderer(
                     terminal.println("")
                 }
                 val displayName = projectDisplayNames[projectId] ?: ""
-                // the container glyph marks the project's territory:
-                // the name reads as a group title, not a bare line
-                terminal.println("▸ $displayName")
+                // the container glyph marks the project's territory
+                // through the themed vocabulary, degrading with the
+                // stream like every other glyph does
+                terminal.println("${runningGlyph()} $displayName")
                 terminal.println("")
                 val entries = summary.filter { it.projectId == projectId }
                 terminal.println(buildSummaryTable(entries, messages))
