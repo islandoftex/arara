@@ -90,6 +90,7 @@ class AraraMessagesTest {
                 errorProjectFileTypePatternNotAString,
                 errorProjectListEntryNotATable,
                 errorProjectListEntryNeedsName,
+                errorProjectNameCannotBeBlank,
                 errorProjectNameKeyRequiresString,
                 errorProjectNeedsAFile,
                 errorProjectPriorityKeyRequiresNumber,

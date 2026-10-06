@@ -689,4 +689,30 @@ class LuaInterpreterTest {
             "the file entry resolves against the scoped working directory"
         )
     }
+
+    @Test
+    fun `rejects a blank project name`() {
+        val exception = assertFailsWith<ProjectParseException>(
+            "a present name cannot be blank"
+        ) {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
+                """return { name = "", files = { ["a.tex"] = { } } }"""
+            )
+        }
+        assertTrue(
+            exception.message!!.contains("cannot be blank"),
+            "the error states the constraint: ${exception.message}"
+        )
+    }
+
+    @Test
+    fun `rejects a whitespace-only project name`() {
+        assertFailsWith<ProjectParseException>(
+            "a whitespace name is blank"
+        ) {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
+                """return { name = "  ", files = { ["a.tex"] = { } } }"""
+            )
+        }
+    }
 }

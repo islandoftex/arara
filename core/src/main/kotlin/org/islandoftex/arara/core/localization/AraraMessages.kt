@@ -484,6 +484,10 @@ interface AraraMessages {
      */
     val errorProjectNameKeyRequiresString: String
     /**
+     * The error shown when a present project name is blank.
+     */
+    val errorProjectNameCannotBeBlank: String
+    /**
      * The error shown when a project declares no file at all.
      */
     val errorProjectNeedsAFile: String

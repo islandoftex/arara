@@ -288,6 +288,9 @@ object EnglishMessages : AraraMessages {
     override val errorProjectNameKeyRequiresString =
         "The project 'name' key requires a string value."
 
+    override val errorProjectNameCannotBeBlank =
+        "A project name, when given, cannot be blank."
+
     override val errorProjectNeedsAFile =
         "A project must contain at least one file."
 

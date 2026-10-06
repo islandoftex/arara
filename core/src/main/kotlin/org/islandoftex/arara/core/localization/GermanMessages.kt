@@ -289,6 +289,9 @@ object GermanMessages : AraraMessages {
     override val errorProjectNameKeyRequiresString =
         "Der Schlüssel 'name' des Projekts erfordert einen Zeichenkettenwert."
 
+    override val errorProjectNameCannotBeBlank =
+        "Ein Projektname kann, wenn angegeben, nicht leer sein."
+
     override val errorProjectNeedsAFile =
         "Ein Projekt muss mindestens eine Datei enthalten."
 

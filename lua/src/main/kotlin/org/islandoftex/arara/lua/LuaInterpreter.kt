@@ -273,20 +273,35 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
 
     /**
      * Extracts a project from its Lua table: the name falls back to
-     * the caller's default when the key is absent, the working
-     * directory resolves against the application's, and the file
-     * entries and dependencies convert to their own shapes.
+     * the caller's default when the key is absent, a present name
+     * cannot be blank, the working directory resolves against the
+     * application's, and the file entries and dependencies convert
+     * to their own shapes.
      */
+    // one extraction surface, each throw a distinct parse
+    // violation reported where it is detected - the same shape
+    // the project list extraction carries
+    @Suppress("ThrowsCount")
     private fun extractProject(
         table: LuaTable,
         defaultName: String
     ): Project {
         rejectUnknownKeys(table, projectKeys)
-        val name = optionalString(
+        val explicitName = optionalString(
             table["name"],
             LanguageController.messages
                 .errorProjectNameKeyRequiresString
-        ) ?: defaultName
+        )
+        // a present name cannot be blank - the specification names
+        // the project, or it does not; the derived name the caller
+        // provides is a file's base name and is never blank
+        if (explicitName != null && explicitName.isBlank()) {
+            throw ProjectParseException(
+                LanguageController.messages
+                    .errorProjectNameCannotBeBlank
+            )
+        }
+        val name = explicitName ?: defaultName
         val workingDirectory = optionalString(
             table["working_directory"],
             LanguageController.messages

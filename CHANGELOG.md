@@ -147,7 +147,8 @@ on.
   file listed twice under two spellings of the same location is
   refused, the projects of a list need explicit, unique names -
   dependencies identify projects by name - and an empty list of
-  projects is not a specification at all.
+  projects is not a specification at all. A project name, when
+  given, cannot be blank.
 * Project specification scripts run with arara's values in scope,
   the same platform the configuration format provides: the table
   `user` carries the `home` and `name` of the user running arara,

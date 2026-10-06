@@ -289,6 +289,9 @@ object NorfolkMessages : AraraMessages {
     override val errorProjectNameKeyRequiresString =
         "The project 'name' key wants a string value."
 
+    override val errorProjectNameCannotBeBlank =
+        "Yew can't go settin' a project name as just empty air, can yew now."
+
     override val errorProjectNeedsAFile =
         "A project's gotta hev at least one file in it."
 

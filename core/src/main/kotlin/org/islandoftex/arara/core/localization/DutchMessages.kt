@@ -289,6 +289,9 @@ object DutchMessages : AraraMessages {
     override val errorProjectNameKeyRequiresString =
         "De sleutel 'name' van het project vereist een tekenreekswaarde."
 
+    override val errorProjectNameCannotBeBlank =
+        "Een projectnaam kan, indien opgegeven, niet leeg zijn."
+
     override val errorProjectNeedsAFile =
         "Een project moet minstens één bestand bevatten."
 
