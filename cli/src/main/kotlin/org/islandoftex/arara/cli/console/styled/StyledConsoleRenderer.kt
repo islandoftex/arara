@@ -382,11 +382,20 @@ class StyledConsoleRenderer(
         projectDisplayNames[currentProjectId] = name
         // the label and the directory are metadata (muted); the
         // name is the data (foreground) - the same three-level
-        // contrast the file information lines carry
+        // contrast the file information lines carry. A name too
+        // long for the measure abbreviates with the same
+        // ellipsis the entry names get, so the line fits the
+        // presentation's own geometry
+        val label = LanguageController.messages.infoLabelProject + " "
+        val suffix = " ($directory)"
+        val available = structureWidth - label.length - suffix.length
+        val fittedName = if (name.length > available && available > 0) {
+            name.abbreviate(available)
+        } else {
+            name
+        }
         terminal.println(
-            muted(
-                LanguageController.messages.infoLabelProject + " "
-            ) + name + muted(" ($directory)")
+            muted(label) + fittedName + muted(suffix)
         )
     }
 

@@ -258,7 +258,7 @@ class CLI : CliktCommand("arara") {
             // configuration of the invocation directory loads first,
             // so the file references resolve against the types the
             // configuration may provide
-            Project("Untitled", workingDir, emptySet())
+            Project("Single files", workingDir, emptySet())
                 .also { project -> loadProjectConfigurations(listOf(project)) }
                 .let { project ->
                     val anonymous = Project(
@@ -639,7 +639,7 @@ class CLI : CliktCommand("arara") {
             } else {
                 project.name
             }
-            val logName = if (isAnonymous) "Single files" else project.name
+            val logName = project.name
             Display.printProjectInformation(
                 displayName,
                 logName,
