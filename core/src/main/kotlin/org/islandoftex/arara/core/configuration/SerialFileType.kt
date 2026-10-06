@@ -4,6 +4,7 @@ package org.islandoftex.arara.core.configuration
 import kotlinx.serialization.Serializable
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.FileType
+import org.islandoftex.arara.core.files.FileSearching
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.LinearExecutor
 
@@ -37,11 +38,9 @@ data class SerialFileType(
             ?: throw AraraException(
                 LanguageController.messages.errorFiletypeUnknownExtension(
                     extension,
-                    // a plain enumeration in the priority order; a
-                    // type the configuration redeclares shows once
-                    LinearExecutor.executionOptions.fileTypes
-                        .distinctBy { it.extension }
-                        .joinToString(", ")
+                    FileSearching.knownExtensions(
+                        LinearExecutor.executionOptions
+                    )
                 )
             )
     )

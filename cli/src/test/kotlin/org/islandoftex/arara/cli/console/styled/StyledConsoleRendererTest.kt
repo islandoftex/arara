@@ -618,6 +618,20 @@ class StyledConsoleRendererTest {
     }
 
     @Test
+    fun `a degenerate width degrades the project line without crashing`() {
+        // the abbreviation's own minimum is two columns; a width
+        // that leaves less than that degrades to the full name on
+        // an ugly line, never a raw crash
+        val output = render(AnsiLevel.NONE, width = 14) {
+            printProjectInformation("A long project name", "d")
+        }
+        assertTrue(
+            "A long project name" in output,
+            "the full name prints even when the width cannot abbreviate"
+        )
+    }
+
+    @Test
     fun `prose wraps at the readable measure`() {
         val text = List(40) { "word" + it }.joinToString(" ")
         val output = render(AnsiLevel.NONE, width = 200) {

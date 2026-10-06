@@ -385,11 +385,13 @@ class StyledConsoleRenderer(
         // contrast the file information lines carry. A name too
         // long for the measure abbreviates with the same
         // ellipsis the entry names get, so the line fits the
-        // presentation's own geometry
+        // presentation's own geometry - and the abbreviation's
+        // own minimum is two columns, so a degenerate width
+        // degrades to the ugly line instead of throwing
         val label = LanguageController.messages.infoLabelProject + " "
         val suffix = " ($directory)"
         val available = structureWidth - label.length - suffix.length
-        val fittedName = if (name.length > available && available > 0) {
+        val fittedName = if (name.length > available && available >= 2) {
             name.abbreviate(available)
         } else {
             name
@@ -1248,6 +1250,12 @@ class StyledConsoleRenderer(
     override fun printRunSummary(success: Boolean) {
         closeCurrentFile()
         if (summary.isEmpty()) {
+            // the territory state clears even on an empty ledger:
+            // a run that errored between the project line and the
+            // first file must not carry the state forward
+            projectCounter = 0
+            currentProjectId = -1
+            projectDisplayNames.clear()
             return
         }
         // the verdict separates from an error it follows, from the

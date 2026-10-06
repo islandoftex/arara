@@ -254,29 +254,70 @@ class CLI : CliktCommand("arara") {
                 .toMutableList()
 
         if (inputs.isNotEmpty() || projects.isEmpty()) {
-            // the anonymous project wraps the loose input files; the
-            // configuration of the invocation directory loads first,
-            // so the file references resolve against the types the
-            // configuration may provide
-            Project("Single files", workingDir, emptySet())
-                .also { project -> loadProjectConfigurations(listOf(project)) }
-                .let { project ->
-                    val anonymous = Project(
-                        project.name,
-                        project.workingDirectory,
-                        inputs.map { fileName ->
-                            FileSearching.resolveFile(
-                                fileName,
-                                workingDir,
-                                LinearExecutor.executionOptions
-                            )
-                        }.toSet()
-                    )
-                    anonymousProject = anonymous
-                    projects += anonymous
-                }
+            appendAnonymousProject(projects, inputs, workingDir)
         }
-        // a file belongs to exactly one project of the run: two
+        validateNoNameCollision(projects)
+        validateNoSharedFile(projects)
+        return projects
+    }
+
+    /**
+     * Builds the anonymous project that wraps the loose input
+     * files, loading the invocation directory's configuration
+     * first so the file references resolve against the types
+     * the configuration provides.
+     */
+    private fun appendAnonymousProject(
+        projects: MutableList<org.islandoftex.arara.api.files.Project>,
+        inputs: List<String>,
+        workingDir: MPPPath
+    ) {
+        Project("Single files", workingDir, emptySet())
+            .also { project -> loadProjectConfigurations(listOf(project)) }
+            .let { project ->
+                val anonymous = Project(
+                    project.name,
+                    project.workingDirectory,
+                    inputs.map { fileName ->
+                        FileSearching.resolveFile(
+                            fileName,
+                            workingDir,
+                            LinearExecutor.executionOptions
+                        )
+                    }.toSet()
+                )
+                anonymousProject = anonymous
+                projects += anonymous
+            }
+    }
+
+    /**
+     * Rejects a specification project that carries the anonymous
+     * project's name: the two would collide on every surface -
+     * the console territory, the summary grouping, the log's
+     * boundary lines.
+     */
+    private fun validateNoNameCollision(
+        projects: List<org.islandoftex.arara.api.files.Project>
+    ) {
+        anonymousProject?.let { anonymous ->
+            if (projects.any { it !== anonymous && it.name == anonymous.name }) {
+                throw AraraException(
+                    LanguageController.messages
+                        .errorProjectDuplicateName(anonymous.name)
+                )
+            }
+        }
+    }
+
+    /**
+     * Rejects a file claimed by two projects of the run, naming
+     * the file and the projects with the remedy of removing it
+     * from all but one.
+     */
+    private fun validateNoSharedFile(
+        projects: List<org.islandoftex.arara.api.files.Project>
+    ) {
         // projects claiming the same file - from two
         // specifications, or from a specification and the
         // command line together - is an error naming the file
@@ -305,7 +346,6 @@ class CLI : CliktCommand("arara") {
                 } ?: run { claimed[path] = displayName }
             }
         }
-        return projects
     }
 
     /**
@@ -405,7 +445,6 @@ class CLI : CliktCommand("arara") {
     ): List<org.islandoftex.arara.api.files.Project> =
         projects.map { project ->
             ConfigurationFiles.configFileForProject(project)?.let {
-                Display.configurationFileName = it.toString()
                 val resource = ConfigurationFiles.load(it, project)
                 // the command line wins over the configuration file,
                 // which wins over the plain default; a mode the
