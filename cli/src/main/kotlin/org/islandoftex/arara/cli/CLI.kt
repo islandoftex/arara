@@ -337,9 +337,9 @@ class CLI : CliktCommand("arara") {
                     LanguageController.messages
                         .errorDiscoverFileFileNotFound(
                             argument,
-                            LinearExecutor.executionOptions.fileTypes
-                                .distinctBy { it.extension }
-                                .joinToString(", ")
+                            FileSearching.knownExtensions(
+                                LinearExecutor.executionOptions
+                            )
                         )
                 )
             }
@@ -619,6 +619,12 @@ class CLI : CliktCommand("arara") {
             DirectiveProcessing.initializeDirectiveCore()
         },
         executeBeforeProject = { project ->
+            // the configuration file name follows the project, so
+            // the per-file log lines name what the file actually
+            // used, not what the last-loaded project carried
+            Display.configurationFileName =
+                ConfigurationFiles.configFileForProject(project)
+                    ?.toString() ?: "[none]"
             // the configuration file of each project is loaded in
             // resolveProjects, where it has to be available before
             // the file references are resolved against the file

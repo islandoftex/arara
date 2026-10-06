@@ -92,9 +92,6 @@ object GermanMessages : AraraMessages {
     ) =
         "Ich konnte den Dateityp von '${file}' nicht bestimmen: Kein Dateityp dieses Durchlaufs trägt seine Erweiterung. Die Erweiterungen dieses Durchlaufs sind ${extensions}. Ergänze die Erweiterung in den 'file_types' der Konfiguration - oder, falls die Datei eine Projektspezifikation ist, trägt sie das Suffix '.proj.lua'."
 
-    override fun errorDiscoverFileIsAProjectSpecification(file: String) =
-        "Das Suffix '.proj.lua' benennt eine Projektspezifikation, daher kann '${file}' keine gewöhnliche Eingabedatei sein. Übergebe die Spezifikation als einziges Argument des Durchlaufs."
-
     override val errorEvaluateCompilationFailed =
         "Aus was für einen Grund auch immer kann ich den Ausdruck in der bereitgestellten Bedingung nicht kompilieren. Dieser Teil ist ziemlich knifflig, denn er bezieht die zugrundeliegende Sprache mit ein. Ich werde mein Bestes tun, um dir in jeglicher Art und Weise zu helfen."
 

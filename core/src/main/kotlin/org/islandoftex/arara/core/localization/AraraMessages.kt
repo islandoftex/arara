@@ -153,11 +153,6 @@ interface AraraMessages {
         extensions: String
     ): String
     /**
-     * The error shown when a reference carries the reserved
-     * project specification suffix.
-     */
-    fun errorDiscoverFileIsAProjectSpecification(file: String): String
-    /**
      * The error shown when a conditional expression cannot be
      * compiled.
      */

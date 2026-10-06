@@ -92,9 +92,6 @@ object DutchMessages : AraraMessages {
     ) =
         "Ik kon het bestandstype van '${file}' niet bepalen: geen enkel bestandstype van deze run draagt zijn extensie. De extensies van deze run zijn ${extensions}. Voeg de extensie toe aan de 'file_types' van de configuratie - of, als het bestand een projectspecificatie is, draagt het het achtervoegsel '.proj.lua'."
 
-    override fun errorDiscoverFileIsAProjectSpecification(file: String) =
-        "Het achtervoegsel '.proj.lua' benoemt een projectspecificatie, dus '${file}' kan geen gewoon invoerbestand zijn. Geef de specificatie als enige argument van de run mee."
-
     override val errorEvaluateCompilationFailed =
         "Om een of andere reden kon ik de expressie in de opgegeven voorwaarde niet compileren. Dit is een ingewikkeld probleem, omdat het te maken heeft met aspecten van de onderliggende expressietaal. Ik zal mijn best doen om je zoveel mogelijk hiermee te helpen."
 

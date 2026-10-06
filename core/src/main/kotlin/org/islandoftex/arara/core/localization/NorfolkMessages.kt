@@ -92,9 +92,6 @@ object NorfolkMessages : AraraMessages {
     ) =
         "I coont make aht the file type of '${file}': none o' the file types in this here run carries its extension. The extensions o' this here run is ${extensions}. Put the extension in the 'file_types' o' the configyrashun - or, if'n thet file's a project specifikashun, it wears the '.proj.lua' on the end."
 
-    override fun errorDiscoverFileIsAProjectSpecification(file: String) =
-        "That there '.proj.lua' on the end names a project specifikashun, so '${file}' can't be a ordinary input file. Yew pass the specifikashun as the one an' only argymunt of the run."
-
     override val errorEvaluateCompilationFailed =
         "Wuh, I ent got no idear wass gorn on but I coont git the hang o'that conditional. Yew're gotta he'sum idear wot this is orl abowt else yew mite be in a rite ole puckaterry but I'll help yew git it done if I can, ole partner."
 

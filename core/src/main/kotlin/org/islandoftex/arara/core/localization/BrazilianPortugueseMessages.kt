@@ -92,9 +92,6 @@ object BrazilianPortugueseMessages : AraraMessages {
     ) =
         "Não consegui determinar o tipo de arquivo de '${file}': nenhum tipo de arquivo desta execução corresponde à extensão dele. As extensões desta execução são ${extensions}. Adicione a extensão aos 'file_types' da configuração - ou, se o arquivo for uma especificação de projeto, o sufixo dele é '.proj.lua'."
 
-    override fun errorDiscoverFileIsAProjectSpecification(file: String) =
-        "O sufixo '.proj.lua' denota uma especificação de projeto, então '${file}' não pode ser um arquivo de entrada comum. Passe a especificação como o único argumento da execução."
-
     override val errorEvaluateCompilationFailed =
         "Por alguma razão, eu não consegui compilar a expressão condicional especificada. Esta parte é complicada, pois envolve aspectos da linguagem de expressão subjacente. Eu farei o possível para te ajudar da melhor forma que puder."
 

@@ -91,9 +91,6 @@ object EnglishMessages : AraraMessages {
     ) =
         "I could not determine the file type of '${file}': no file type of this run carries its extension. The extensions of this run are ${extensions}. Add the extension to the 'file_types' of the configuration - or, if the file is a project specification, its suffix is '.proj.lua'."
 
-    override fun errorDiscoverFileIsAProjectSpecification(file: String) =
-        "The suffix '.proj.lua' names a project specification, so '${file}' cannot be an ordinary input file. Pass the specification as the sole argument of the run."
-
     override val errorEvaluateCompilationFailed =
         "For whatever reason, I could not compile the expression in the provided conditional. This part is quite tricky, since it involves aspects of the underlying expression language. I will do my best to help you in any way I can."
 

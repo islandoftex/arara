@@ -247,13 +247,11 @@ on.
   specification on the command line, a project that declared no
   name takes the base name of its specification file, and the
   loose input files join the run as an anonymous project - every
-  invocation is a set of projects. The reserved suffix is refused
-  on the input path, where the old behavior ran a mistaken
-  specification as a silent empty success; and a file that
-  exists but whose extension no file type carries is told so,
-  with the extensions of the run and - for a Lua file - the
-  project specification suffix as the alternate remedy, where
-  the lookup used to claim it could not be found. Rename arara 7
+  invocation is a set of projects. A file that exists but whose
+  extension no file type carries is told so, with the
+  extensions of the run and - for a Lua file - the project
+  specification suffix as the alternate remedy, where the
+  lookup used to claim it could not be found. Rename arara 7
   project files from `project.lua` to `project.proj.lua`.
 * **Breaking:** Interactive dialogs are now a host capability: the
   library defines the dialog contract and ships a headless default

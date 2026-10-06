@@ -139,7 +139,6 @@ class AraraMessagesTest {
                 errorDiscoverFileFileNotFound("alpha", "beta"),
                 errorDiscoverFileUnknownExtension("alpha", "beta"),
                 errorDiscoverFileUnknownLuaExtension("alpha", "beta"),
-                errorDiscoverFileIsAProjectSpecification("alpha"),
                 errorFiletypeInvalidPattern("alpha"),
                 errorFiletypeNotAFile("alpha"),
                 errorFiletypeUnknownExtension("alpha", "beta"),
@@ -215,8 +214,6 @@ class AraraMessagesTest {
                 { it.errorDiscoverFileUnknownExtension("quux1", "quux2") },
             listOf("quux1", "quux2") to
                 { it.errorDiscoverFileUnknownLuaExtension("quux1", "quux2") },
-            listOf("quux1") to
-                { it.errorDiscoverFileIsAProjectSpecification("quux1") },
             listOf("quux1") to { it.errorFiletypeNotAFile("quux1") },
             listOf("quux1", "quux2") to
                 { it.errorFiletypeUnknownExtension("quux1", "quux2") },

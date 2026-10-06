@@ -135,10 +135,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
      * own configuration to resolve.
      */
     private fun detectFileType(path: MPPPath): FileType =
-        FileSearching.lookupFileType(
-            path.fileName.substringAfterLast('.', ""),
-            LinearExecutor.executionOptions
-        ) ?: FileType.UNKNOWN_TYPE
+        lookupExtension(path) ?: FileType.UNKNOWN_TYPE
 
     /**
      * Extracts the file name key of a project file entry, which has to
@@ -474,7 +471,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
                     .errorProjectReturnNotATable
             )
 
-        if (luaTable["files"] is LuaTable) {
+        if (!luaTable["files"].isnil()) {
             val project = extractProject(luaTable, defaultName)
             if (project.dependencies.isNotEmpty()) {
                 throw ProjectValidationException(
@@ -494,9 +491,19 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
 
     /**
      * Holds the post-configuration resolution of the file types
-     * the parse left pending.
+     * the parse left pending, and the shared extension lookup
+     * both the detection and the resolution go through.
      */
     companion object {
+        /**
+         * Looks up the file type of a path by its extension,
+         * against the file types in effect for the run.
+         */
+        private fun lookupExtension(path: MPPPath): FileType? =
+            FileSearching.lookupFileType(
+                path.fileName.substringAfterLast('.', ""),
+                LinearExecutor.executionOptions
+            )
         /**
          * Resolves the file types the parse left pending: an entry
          * that declared no file type is detected by its extension
@@ -514,10 +521,8 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
                 if (file is LuaProjectFile &&
                     file.fileType == FileType.UNKNOWN_TYPE
                 ) {
-                    val fileType = FileSearching.lookupFileType(
-                        file.path.fileName.substringAfterLast('.', ""),
-                        LinearExecutor.executionOptions
-                    ) ?: throw ProjectParseException(
+                    val fileType = lookupExtension(file.path)
+                        ?: throw ProjectParseException(
                         LanguageController.messages
                             .errorProjectFileTypeUnknownExtension(
                                 file.path.toString()

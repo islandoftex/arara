@@ -371,39 +371,6 @@ class FileSearchingTest {
                 "the error names the extensions of the run: ${exception.message}"
             )
         }
-
-        @Test
-        fun `refuses the project suffix on the input path`(
-            @TempDir tempDir: Path
-        ) {
-            (tempDir / "book.proj.lua").writeText("return { }")
-            val exception = assertFailsWith<AraraException>(
-                "the reserved suffix cannot resolve as input"
-            ) {
-                FileSearching.resolveFile(
-                    "book.proj.lua", tempDir.toMPPPath(), ExecutionOptions()
-                )
-            }
-            assertTrue(
-                exception.message!!.contains("sole argument"),
-                "the error says what the suffix wants: ${exception.message}"
-            )
-        }
-
-        @Test
-        fun `keeps the not-found verdict for a missing specification`(
-            @TempDir tempDir: Path
-        ) {
-            val exception = assertFailsWith<AraraException> {
-                FileSearching.resolveFile(
-                    "missing.proj.lua", tempDir.toMPPPath(), ExecutionOptions()
-                )
-            }
-            assertTrue(
-                "could not find" in exception.message!!,
-                "a missing file keeps the ordinary verdict: ${exception.message}"
-            )
-        }
     }
 
     @Test
