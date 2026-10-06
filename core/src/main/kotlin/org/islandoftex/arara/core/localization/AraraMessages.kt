@@ -401,6 +401,12 @@ interface AraraMessages {
      */
     fun infoDisplayProject(name: String, directory: String): String
     /**
+     * The label word that introduces a project's name in the
+     * styled presentation, where the label, the name and the
+     * directory carry different styles.
+     */
+    val infoLabelProject: String
+    /**
      * The label shown as the display name of the anonymous
      * project - the command line's own loose input files.
      */

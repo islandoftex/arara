@@ -186,6 +186,7 @@ class AraraMessagesTest {
                 infoDisplayTimeUnit,
                 infoInterpreterDryRunModeBooleanMode(true),
                 infoInterpreterDryRunModeSystemCommand("alpha"),
+                infoLabelProject,
                 infoLabelSingleFiles,
             ).forEach { rendered ->
                 assertTrue(

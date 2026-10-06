@@ -175,7 +175,8 @@ on.
   anonymous project - the command line's own loose input files -
   carries a localized display label instead of its model name,
   so no screen ever reads "Untitled". The styled presentation
-  renders each project's name as a bold header and groups the
+  renders each project with its label and directory muted and
+  its name in the foreground, and groups the
   summary table by project: each grid is the same table the
   single-project runs always had, with only the project's
   name above it.

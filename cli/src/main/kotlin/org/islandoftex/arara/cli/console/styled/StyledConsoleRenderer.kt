@@ -371,11 +371,13 @@ class StyledConsoleRenderer(
     override fun printProjectInformation(name: String, directory: String) {
         currentProjectId = ++projectCounter
         projectDisplayNames[currentProjectId] = name
+        // the label and the directory are metadata (muted); the
+        // name is the data (foreground) - the same three-level
+        // contrast the file information lines carry
         terminal.println(
-            TextStyle(bold = true)(
-                LanguageController.messages
-                    .infoDisplayProject(name, directory)
-            )
+            muted(
+                LanguageController.messages.infoLabelProject + " "
+            ) + name + muted(" ($directory)")
         )
     }
 
@@ -1299,7 +1301,7 @@ class StyledConsoleRenderer(
                     terminal.println("")
                 }
                 val displayName = projectDisplayNames[projectId] ?: ""
-                terminal.println(TextStyle(bold = true)(displayName))
+                terminal.println(displayName)
                 terminal.println("")
                 val entries = summary.filter { it.projectId == projectId }
                 terminal.println(buildSummaryTable(entries, messages))
