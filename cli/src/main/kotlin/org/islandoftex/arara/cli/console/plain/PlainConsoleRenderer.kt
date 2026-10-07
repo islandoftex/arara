@@ -403,10 +403,14 @@ object PlainConsoleRenderer : ConsoleRenderer {
      */
     override fun printUnprocessedFiles(files: List<String>) {
         println()
+        // the names wrap like every prose the silhouette prints -
+        // a long list has no measure of its own
         println(
-            LanguageController.messages
-                .infoDisplayUnprocessedFiles(files.size) +
-                files.joinToString(", ")
+            (
+                LanguageController.messages
+                    .infoDisplayUnprocessedFiles(files.size) +
+                    files.joinToString(", ")
+                ).wrap(outputWidth)
         )
     }
 

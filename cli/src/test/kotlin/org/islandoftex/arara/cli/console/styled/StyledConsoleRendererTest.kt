@@ -1010,6 +1010,51 @@ class StyledConsoleRendererTest {
     }
 
     @Test
+    fun `a long field label keeps the first line inside the measure`() {
+        // Italian's system command label outgrows the fixed
+        // gutter, so the wrapped value has to budget the label's
+        // real footprint
+        LanguageController.loadMessagesFor(MPPLocale("it"))
+        LinearExecutor.executionOptions = ExecutionOptions(verbose = true)
+        val output = render(AnsiLevel.NONE) {
+            printEntry("echoone", "The echoer")
+            printTaskDetails(
+                Command(listOf("echo", "QuackOne")),
+                DirectiveConditional(
+                    DirectiveConditionalType.IF,
+                    "found('log', 'Rerun')"
+                ),
+                listOf("Island of TeX")
+            )
+            printEntryResult(true)
+        }
+        output.lineSequence().forEach { line ->
+            assertTrue(
+                line.length <= 79,
+                "every field line keeps the measure: '$line'"
+            )
+        }
+    }
+
+    @Test
+    fun `the unprocessed files line wraps at the measure`() {
+        val names = (1..12).map { index -> "averylongfilename$index.tex" }
+        val output = render(AnsiLevel.NONE) {
+            printUnprocessedFiles(names)
+        }
+        output.lineSequence().forEach { line ->
+            assertTrue(
+                line.length <= 79,
+                "the names wrap under the measure: '$line'"
+            )
+        }
+        assertTrue(
+            "averylongfilename12.tex" in output,
+            "the whole list still prints"
+        )
+    }
+
+    @Test
     fun `the failure panel stays silent when the log does not exist`() {
         Session.loggingOptions = LoggingOptions(enableLogging = false)
         val manyLines = (1..20).joinToString("\n") { "tool line $it" }

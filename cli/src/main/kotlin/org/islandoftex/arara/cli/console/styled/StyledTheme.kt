@@ -12,7 +12,9 @@ import com.github.ajalt.mordant.rendering.TextColors
  * the muted chrome - so a theme change or a capability drop
  * restyles the run for free. The glyphs ride the color capability:
  * a terminal that cannot carry them falls back to the plain
- * characters every font has.
+ * characters every font has - the mid-dot separator and the
+ * ellipsis are the exception in the other direction, carried by
+ * every font, so they never degrade.
  *
  * @author Island of TeX
  */
@@ -112,6 +114,22 @@ object StyledTheme {
      * The ASCII fallback of the dotted leader.
      */
     const val leaderFallback = "."
+
+    /**
+     * The mid-dot that separates an entry's name from its task, a
+     * file from its metadata and a landed result from its
+     * duration. Every font carries it - legacy consoles included -
+     * so it rides undecorated streams like decorated ones.
+     */
+    const val separatorGlyph = "·"
+
+    /**
+     * The ellipsis that marks the truncation of the failure
+     * panel's quoted output. Every font carries it - legacy
+     * consoles included - so it rides undecorated streams like
+     * decorated ones.
+     */
+    const val ellipsisGlyph = "…"
 
     /**
      * The vertical bar of the failed task's output panel, the

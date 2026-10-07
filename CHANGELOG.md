@@ -208,9 +208,6 @@ on.
   `getSession()` exposes the same table of operations (`get`, `put`,
   `contains`, `remove`, `clear`) as directive conditionals, closing the
   gap to MVEL rules which always had session access.
-* The notice printed when a provided Lua file fails to parse as a
-  project specification is now localized; the parse details remain
-  available in the log.
 * The rule errors of the Lua engine now share the localized header with
   the YAML engine, unsupported rule file formats report a new localized
   message, and the previously untranslated project file message is now
@@ -484,6 +481,20 @@ on.
 
 ## Fixed
 
+* The verbose task fields wrap against the label's own footprint:
+  a locale whose label outgrows the fixed gutter - Italian's
+  system command label, for one - used to push the first line
+  past the width the rest of the presentation holds. The
+  unprocessed files line wraps at the measure in both
+  presentations, so a long list of unreached names no longer runs
+  past the width. The mid-dot separator and the truncation
+  ellipsis join the themed vocabulary - carried by every font,
+  legacy consoles included, they deliberately ride undecorated
+  streams like decorated ones, as the abbreviation ellipsis
+  always has. Two changelog entries describing the retired
+  project-probing notices were corrected: the flow they
+  described no longer exists - a broken specification is an
+  error, never a demotion.
 * The cycle verdict names only the projects that lie on the
   cycle: the topological walk omits the cycle members together
   with every project depending on them, and the verdict used to
@@ -710,11 +721,11 @@ on.
   the rule that called it: the reading helper always kept its probe
   semantics, and the path layer's own verdicts on impossible writes
   now count as the ordinary failure the helper's contract promises.
-* A Lua file argument that crashes while being evaluated as a
-  project specification no longer falls back to ordinary input
-  treatment in total silence: the console says so and the log
-  records the unexpected error, the same courtesy a file that is
-  simply not a project already received.
+* A broken project specification is an error, never a demotion: a
+  `.proj.lua` argument that fails to evaluate reports the localized
+  verdict citing the file itself as the error's source, where a
+  specification-shaped argument used to fall back to ordinary
+  input treatment in silence.
 * The last task of a run can no longer leave the live feedback
   fighting the closing output: a breath the landing outran - the
   animator dispatch arriving just as the outcome lands - used to

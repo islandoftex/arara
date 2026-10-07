@@ -434,7 +434,7 @@ class StyledConsoleRenderer(
         currentFileStart = TimeSource.Monotonic.markNow()
         val name = file.path.fileName
         val metadata = byteSizeToString(file.path.fileSize) +
-            " · " + file.path.lastModified
+            " ${StyledTheme.separatorGlyph} " + file.path.lastModified
         val title = hyperlink(name, file.path.toString())
         // the rule runs flush from the name to the muted metadata,
         // dimmed like the summary's section rule so the per-run
@@ -487,7 +487,7 @@ class StyledConsoleRenderer(
         // and the leader's floor and its separator are part of the
         // reservation
         val reserved = successGlyph().length + 1 + longestMatch
-        val head = "${runningGlyph()} $name · $task "
+        val head = "${runningGlyph()} $name ${StyledTheme.separatorGlyph} $task "
             .abbreviate(
                 // the abbreviation's own minimum is two columns, so
                 // the budget keeps it: a degenerate width degrades
@@ -692,7 +692,7 @@ class StyledConsoleRenderer(
         // the layout: the budget keeps the abbreviation's own
         // minimum of two columns
         terminal.println(
-            "${runningGlyph()} $name · $task"
+            "${runningGlyph()} $name ${StyledTheme.separatorGlyph} $task"
                 .abbreviate(structureWidth.coerceAtLeast(2))
         )
         terminal.println(muted(displaySeparator()))
@@ -716,7 +716,7 @@ class StyledConsoleRenderer(
         // minimum of two columns
         terminal.println(
             muted(
-                "[DR] ${runningGlyph()} $name · $task"
+                "[DR] ${runningGlyph()} $name ${StyledTheme.separatorGlyph} $task"
                     .abbreviate(structureWidth.coerceAtLeast(2))
             )
         )
@@ -772,7 +772,10 @@ class StyledConsoleRenderer(
                         .toDouble(DurationUnit.SECONDS)
                     terminal.println(
                         resultWord(value) +
-                            muted(" · " + formatSeconds(elapsed))
+                            muted(
+                                " ${StyledTheme.separatorGlyph} " +
+                                    formatSeconds(elapsed)
+                            )
                     )
                 } else {
                     val aligned = (
@@ -995,7 +998,15 @@ class StyledConsoleRenderer(
      */
     private fun printField(label: String, value: String) {
         val gutter = " ".repeat(fieldGutterWidth)
-        value.wrap(structureWidth - fieldGutterWidth).lineSequence()
+        // the first line carries the label itself, so the wrap
+        // budget accounts for its real footprint - a label longer
+        // than the gutter would otherwise push the first line
+        // past the measure the rest of the presentation holds
+        val budget = structureWidth - maxOf(
+            label.length + 1,
+            fieldGutterWidth
+        )
+        value.wrap(budget).lineSequence()
             .forEachIndexed { index, line ->
                 val prefix = if (index == 0) {
                     muted(label.padEnd(fieldGutterWidth))
@@ -1228,7 +1239,7 @@ class StyledConsoleRenderer(
         if (truncated) {
             // the cut is stated by the bare ellipsis: the middle is
             // elsewhere, the tail that follows is quoted
-            terminal.println(muted(bar + "…"))
+            terminal.println(muted(bar + StyledTheme.ellipsisGlyph))
         }
         // the quoted lines wrap under the bar with a hanging
         // indent, so every byte of the tool's own words survives
@@ -1256,20 +1267,27 @@ class StyledConsoleRenderer(
      * an exception stopped the run before their turn: the running
      * glyph marking the note, the muted label naming what the run
      * left undone, and the file names in normal weight - with the
-     * breathing of the presentation around it.
+     * breathing of the presentation around it and the names
+     * wrapping at the measure like every prose the presentation
+     * prints.
      *
      * @param files The names of the files that were never started.
      */
     override fun printUnprocessedFiles(files: List<String>) {
         terminal.println("")
-        terminal.println(
+        // the names wrap like the exception prose does - flush
+        // continuations under the measure, so a long list keeps
+        // the width the rest of the run holds
+        (
             runningGlyph() + " " +
                 muted(
                     LanguageController.messages
                         .infoDisplayUnprocessedFiles(files.size)
                 ) +
                 files.joinToString(", ")
-        )
+            ).wrap(structureWidth).lineSequence().forEach { line ->
+                terminal.println(line)
+            }
     }
 
     /**
