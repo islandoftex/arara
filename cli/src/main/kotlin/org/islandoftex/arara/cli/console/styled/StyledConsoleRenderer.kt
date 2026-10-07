@@ -64,6 +64,22 @@ class StyledConsoleRenderer(
     }
 
     /**
+     * The width of the full clock rung the live counter escalates
+     * to: "99:59:59" is the widest spelling before the hours
+     * outgrow two digits.
+     */
+    private val clockRungWidth = "99:59:59".length
+
+    /**
+     * The widest word the outcome zone carries: the longest
+     * result label, or the clock rung the live counter
+     * escalates to - whichever is wider, so every rung fits the
+     * zone the landing repaints.
+     */
+    private val outcomeWordWidth: Int
+        get() = maxOf(longestMatch, clockRungWidth)
+
+    /**
      * Whether a compact entry left its line open for the outcome to
      * land on: the error path tells the label that lands like a
      * result from the section title by it.
@@ -481,12 +497,14 @@ class StyledConsoleRenderer(
      */
     private fun buildShortEntry(name: String, task: String) {
         // the leader reserves exactly the space the glyph, its
-        // spacing and the longest result word need, so the aligned
-        // result lands at the terminal edge; a head longer than the
-        // space left abbreviates rather than breaking the layout,
-        // and the leader's floor and its separator are part of the
+        // spacing and the widest outcome word need - the longest
+        // result label or the clock rung the live counter can
+        // escalate to - so the aligned result lands at the
+        // terminal edge; a head longer than the space left
+        // abbreviates rather than breaking the layout, and the
+        // leader's floor and its separator are part of the
         // reservation
-        val reserved = successGlyph().length + 1 + longestMatch
+        val reserved = successGlyph().length + 1 + outcomeWordWidth
         val head = "${runningGlyph()} $name ${StyledTheme.separatorGlyph} $task "
             .abbreviate(
                 // the abbreviation's own minimum is two columns, so
@@ -757,7 +775,7 @@ class StyledConsoleRenderer(
                     styledResult(
                         value,
                         plainResultWord(value).padStart(
-                            successGlyph().length + 1 + longestMatch
+                            successGlyph().length + 1 + outcomeWordWidth
                         )
                     )
                 )
@@ -832,7 +850,7 @@ class StyledConsoleRenderer(
                         (failureGlyph() + " " +
                             LanguageController.messages.infoLabelOnError)
                             .padStart(
-                                successGlyph().length + 1 + longestMatch
+                                successGlyph().length + 1 + outcomeWordWidth
                             )
                     )
                 )
@@ -990,26 +1008,24 @@ class StyledConsoleRenderer(
     }
 
     /**
-     * Prints a verbose task field: the muted label aligned in the
-     * gutter, the value wrapped under itself.
+     * Prints a verbose task field: the muted label aligned in its
+     * own footprint, the value wrapped under itself.
      *
      * @param label The field label.
      * @param value The field value.
      */
     private fun printField(label: String, value: String) {
-        val gutter = " ".repeat(fieldGutterWidth)
-        // the first line carries the label itself, so the wrap
-        // budget accounts for its real footprint - a label longer
-        // than the gutter would otherwise push the first line
-        // past the measure the rest of the presentation holds
-        val budget = structureWidth - maxOf(
-            label.length + 1,
-            fieldGutterWidth
-        )
-        value.wrap(budget).lineSequence()
+        // the first line carries the label itself, so both the
+        // wrap budget and the gutter account for its real
+        // footprint - a label at or beyond the gutter still keeps
+        // its separating space, and the continuation lines indent
+        // to where the value began
+        val footprint = maxOf(label.length + 1, fieldGutterWidth)
+        val gutter = " ".repeat(footprint)
+        value.wrap(structureWidth - footprint).lineSequence()
             .forEachIndexed { index, line ->
                 val prefix = if (index == 0) {
-                    muted(label.padEnd(fieldGutterWidth))
+                    muted(label.padEnd(footprint))
                 } else {
                     gutter
                 }
@@ -1276,17 +1292,24 @@ class StyledConsoleRenderer(
     override fun printUnprocessedFiles(files: List<String>) {
         terminal.println("")
         // the names wrap like the exception prose does - flush
-        // continuations under the measure, so a long list keeps
-        // the width the rest of the run holds
-        (
-            runningGlyph() + " " +
-                muted(
-                    LanguageController.messages
-                        .infoDisplayUnprocessedFiles(files.size)
-                ) +
-                files.joinToString(", ")
-            ).wrap(structureWidth).lineSequence().forEach { line ->
-                terminal.println(line)
+        // continuations under the measure - and the composition
+        // wraps as plain text, so the budget counts no escape
+        // bytes; the muted style returns to the label on the
+        // first line, which no real label ever spans
+        val glyph = runningGlyph()
+        val label = LanguageController.messages
+            .infoDisplayUnprocessedFiles(files.size)
+        val names = files.joinToString(", ")
+        "$glyph $label$names".wrap(structureWidth).lineSequence()
+            .forEachIndexed { index, line ->
+                if (index == 0) {
+                    terminal.println(
+                        "$glyph ${muted(label)}" +
+                            line.removePrefix("$glyph $label")
+                    )
+                } else {
+                    terminal.println(line)
+                }
             }
     }
 

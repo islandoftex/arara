@@ -92,24 +92,43 @@ internal open class Graph<T> {
     /**
      * Computes the vertices that lie on a cycle. The topological
      * walk omits the cycle members together with every vertex
-     * depending on them, so the residue peels the omitted vertices
-     * carrying no outgoing edge into the residue itself - the pure
-     * dependents - until only the cycle members remain.
+     * depending on them and every vertex bridging two cycles, so
+     * each omitted vertex confirms its own membership: a vertex
+     * lies on a cycle when one of its own out-neighbours reaches
+     * it back.
      *
      * @return The vertices lying on a cycle, in insertion order.
      */
     fun cyclicVertices(): List<T> {
         val ordered = kahn().toSet()
-        val residue = vertices.keys.filter { it !in ordered }.toMutableSet()
-        var removable = residue.filter { vertex ->
-            vertices[vertex].orEmpty().none { it in residue }
+        return vertices.keys.filter { vertex ->
+            vertex !in ordered && reachesBack(vertex)
         }
-        while (removable.isNotEmpty()) {
-            residue.removeAll(removable)
-            removable = residue.filter { vertex ->
-                vertices[vertex].orEmpty().none { it in residue }
+    }
+
+    /**
+     * Tells whether one of the vertex's own out-neighbours
+     * reaches the vertex back - the definition of lying on a
+     * cycle, checked with a breadth-first walk over the graph's
+     * edges.
+     *
+     * @param vertex The vertex asking about its own membership.
+     * @return Whether a path leads out of the vertex and back to
+     *   it.
+     */
+    private fun reachesBack(vertex: T): Boolean {
+        val seen = mutableSetOf<T>()
+        val queue = ArrayDeque<T>()
+        vertices[vertex].orEmpty().forEach(queue::add)
+        while (queue.isNotEmpty()) {
+            val current = queue.removeFirst()
+            if (current == vertex) {
+                return true
+            }
+            if (seen.add(current)) {
+                vertices[current].orEmpty().forEach(queue::add)
             }
         }
-        return vertices.keys.filter { it in residue }
+        return false
     }
 }

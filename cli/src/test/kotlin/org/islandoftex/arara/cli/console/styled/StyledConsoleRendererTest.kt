@@ -1255,6 +1255,26 @@ class StyledConsoleRendererTest {
     }
 
     @Test
+    fun `the unprocessed wrap ignores the stream's color capability`() {
+        // the composition wraps as plain text and the muted style
+        // returns per line, so the budget counts no escape bytes -
+        // a decorated stream wraps at the same measure a plain
+        // one does, line for line
+        val names = (1..12).map { index -> "averylongfilename$index.tex" }
+        val plain = render(AnsiLevel.NONE) { printUnprocessedFiles(names) }
+        val decorated = render(AnsiLevel.TRUECOLOR) {
+            printUnprocessedFiles(names)
+        }
+        assertEquals(
+            plain.lineSequence().count(),
+            decorated.lineSequence()
+                .map { it.replace(Regex("\u001B\\[[0-9;]*m"), "") }
+                .count(),
+            "the wrap budget counts no escape bytes"
+        )
+    }
+
+    @Test
     fun `the failure panel stays silent when the log does not exist`() {
         Session.loggingOptions = LoggingOptions(enableLogging = false)
         val manyLines = (1..20).joinToString("\n") { "tool line $it" }

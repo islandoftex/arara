@@ -82,6 +82,12 @@ object EnglishMessages : AraraMessages {
     override fun errorDiscoverFileSafeModeNoCompletion(file: String) =
         "I could not find the provided file \"${file}\". Safe mode refuses to complete file references from their extensions, so please provide the full file name, extension included."
 
+    override fun errorDiscoverFileDottedExtension(
+        file: String,
+        extension: String
+    ) =
+        "I could not determine the file type of '${file}': the configured extension '${extension}' carries a dot, and the extension lookup reads only the last segment of a name. Declare the type under an extension without a dot."
+
     override fun errorDiscoverFileUnknownExtension(
         file: String,
         extensions: String

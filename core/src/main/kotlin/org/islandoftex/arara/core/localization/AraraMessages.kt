@@ -139,6 +139,15 @@ interface AraraMessages {
      */
     fun errorDiscoverFileSafeModeNoCompletion(file: String): String
     /**
+     * The error shown when a file reference resolves against a
+     * configured file type whose extension itself carries a dot,
+     * which the extension lookup cannot address.
+     */
+    fun errorDiscoverFileDottedExtension(
+        file: String,
+        extension: String
+    ): String
+    /**
      * The error shown when a referenced file exists but no file
      * type of the run carries its extension. The extensions
      * parameter carries the extensions of the run as a plain

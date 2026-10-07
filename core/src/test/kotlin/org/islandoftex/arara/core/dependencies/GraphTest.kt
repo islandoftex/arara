@@ -51,9 +51,9 @@ class GraphTest {
     @Test
     fun `names the cycle members alone, not their dependents`() {
         // the walk omits the cycle together with every vertex
-        // depending on it; the residue peels the pure dependents,
-        // so only the members remain - the dependent 3 and the
-        // deeper 4 are not accused of the cycle they hang from
+        // depending on it, so each omitted vertex confirms its own
+        // membership - the dependent 3 and the deeper 4 are not
+        // accused of the cycle they hang from
         assertEquals(
             listOf(1, 2),
             Graph<Int>().apply {
@@ -63,6 +63,39 @@ class GraphTest {
                 addEdge(3, 4)
             }.cyclicVertices(),
             "only the vertices on the cycle are named"
+        )
+    }
+    @Test
+    fun `names only the members of two cycles sharing a dependent`() {
+        assertEquals(
+            listOf(1, 2, 3, 4),
+            Graph<Int>().apply {
+                addEdge(1, 2)
+                addEdge(2, 1)
+                addEdge(3, 4)
+                addEdge(4, 3)
+                addEdge(1, 5)
+                addEdge(3, 5)
+            }.cyclicVertices(),
+            "the shared dependent is not a member of either cycle"
+        )
+    }
+    @Test
+    fun `does not name the bridge between two cycles`() {
+        // 5 depends on the first cycle, and the second cycle's 3
+        // depends on 5 - the bridge lies on a path between the
+        // cycles without lying on any cycle itself
+        assertEquals(
+            listOf(1, 2, 3, 4),
+            Graph<Int>().apply {
+                addEdge(1, 2)
+                addEdge(2, 1)
+                addEdge(3, 4)
+                addEdge(4, 3)
+                addEdge(1, 5)
+                addEdge(5, 3)
+            }.cyclicVertices(),
+            "the bridge between the cycles is not a member"
         )
     }
 }

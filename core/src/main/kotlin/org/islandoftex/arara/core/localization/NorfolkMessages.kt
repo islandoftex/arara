@@ -83,6 +83,12 @@ object NorfolkMessages : AraraMessages {
     override fun errorDiscoverFileSafeModeNoCompletion(file: String) =
         "Dunt yew git yarself inta a rite ole puckaterry, but I can't find yar file '${file}' nohow. Safe mode won't go a-guessin' at extensions, so yew're gotta give me the whole name, extension and all."
 
+    override fun errorDiscoverFileDottedExtension(
+        file: String,
+        extension: String
+    ) =
+        "I coont make aht the file type of '${file}': that there extension '${extension}' hev got a dot in it, and the lookup only reads the last bit of a name, ent it. Yew're gotta declare the type under an extension wi' no dot in it."
+
     override fun errorDiscoverFileUnknownExtension(
         file: String,
         extensions: String

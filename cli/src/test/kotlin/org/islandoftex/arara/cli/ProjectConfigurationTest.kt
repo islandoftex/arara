@@ -388,6 +388,104 @@ class ProjectConfigurationTest {
     }
 
     @Test
+    fun `rejects a specification deriving a whitespace name`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-space-spec")
+            Files.writeString(
+                directory.resolve(" .proj.lua"),
+                "return { files = { [\"a.tex\"] = { } } }\n"
+            )
+            Files.writeString(directory.resolve("a.tex"), "Quack\n")
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                " .proj.lua"
+            )
+            assertNotEquals(
+                0,
+                status,
+                "a whitespace name cannot identify a project"
+            )
+            assertTrue(
+                "cannot be blank" in output,
+                "the verdict names the blank name: $output"
+            )
+        }
+    }
+
+    @Test
+    fun `a degenerately named specification with explicit names runs`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-named-spec")
+            Files.writeString(
+                directory.resolve(".proj.lua"),
+                "return { name = \"good\", files = { [\"a.tex\"] = { } } }\n"
+            )
+            Files.writeString(
+                directory.resolve("arararc.yaml"),
+                "!config\npaths:\n  - './'\n"
+            )
+            Files.writeString(
+                directory.resolve("echoone.yaml"),
+                """
+                !config
+                identifier: echoone
+                name: The echoer
+                commands:
+                  - name: The echoer
+                    command: >
+                      @{
+                        return getCommand('echo', 'Quack');
+                      }
+                arguments: []
+                """.trimIndent()
+            )
+            Files.writeString(directory.resolve("a.tex"), "% arara: echoone\n")
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                ".proj.lua"
+            )
+            assertEquals(
+                0,
+                status,
+                "the declared name carries the run: $output"
+            )
+            assertTrue("TOTAL SUCCESS" in output, "the file ran: $output")
+        }
+    }
+
+    @Test
+    fun `a reused instance forgets the previous run's anonymous project`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-stale-anonymous")
+            Files.writeString(directory.resolve("loose.tex"), "Quack\n")
+            Files.writeString(
+                directory.resolve("collide.proj.lua"),
+                "return { name = \"Single files\", files = { [\"c.tex\"] = { } } }\n"
+            )
+            Files.writeString(directory.resolve("c.tex"), "Quack\n")
+            val cli = CLI()
+            runOn(
+                cli,
+                "--working-directory", directory.toString(),
+                "loose.tex"
+            )
+            val (status, output) = runOn(
+                cli,
+                "--working-directory", directory.toString(),
+                "collide.proj.lua"
+            )
+            assertTrue(
+                "share the name" !in output,
+                "the stale anonymous project does not reject the run: $output"
+            )
+            assertTrue(
+                "c.tex" in output,
+                "the specification's file reached processing: $output"
+            )
+        }
+    }
+
+    @Test
     fun `a failed resolution does not report the previous run's files`() {
         withRestoredState {
             val directory = createTempDirectory("arara-cli-reuse")

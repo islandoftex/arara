@@ -241,18 +241,24 @@ object FileSearching {
             testFile.exists && testFile.isRegularFile -> {
                 types.firstOrNull {
                     reference.endsWith("." + it.extension)
-                }?.let {
-                    // the type the suffix matched re-derives to its own
-                    // extension, so a miss in the lookup means the
-                    // extension itself carries a dot the lookup cannot
-                    // address - the honest unresolvable verdict beats
-                    // a pending type that would scan the file without
-                    // its header boundary
-                    lookupFileType(
+                }?.let { matched ->
+                    // the type the suffix matched re-derives to its
+                    // own extension for dot-free spellings, so a
+                    // miss in the lookup means the matched
+                    // extension itself carries a dot the lookup
+                    // cannot address - the verdict names the dot
+                    // instead of claiming no type carries the
+                    // extension
+                    val fileType = lookupFileType(
                         reference.substringAfterLast('.'),
                         executionOptions
+                    ) ?: throw AraraException(
+                        LanguageController.messages
+                            .errorDiscoverFileDottedExtension(
+                                reference,
+                                matched.extension
+                            )
                     )
-                }?.let { fileType ->
                     ProjectFile(path = testFile, fileType = fileType)
                 }
             }
@@ -269,24 +275,32 @@ object FileSearching {
             // so we need to add it and look again
             else -> {
                 val name = testFile.fileName
-                val found = types.map { testFile.parent / "$name.${it.extension}" }
+                val found = types.map {
+                    (testFile.parent / "$name.${it.extension}") to it
+                }
                     .union(
                         types.map {
-                            testFile.parent /
-                                "${name.removeSuffix(".").trim()}.${it.extension}"
+                            (testFile.parent /
+                                "${name.removeSuffix(".").trim()}.${it.extension}") to it
                         }
                     )
-                    .firstOrNull { it.exists && it.isRegularFile }
-                // the same honesty the direct search keeps: the
-                // candidate a type built matched, so a miss in the
-                // lookup means a dotted extension
-                found?.let { file ->
-                    lookupFileType(
+                    .firstOrNull { it.first.exists && it.first.isRegularFile }
+                // the same honesty the direct search keeps: a miss
+                // in the lookup means the matched type's extension
+                // carries a dot, and the verdict names it instead
+                // of claiming the found file could not be found
+                found?.let { (file, type) ->
+                    val fileType = lookupFileType(
                         file.toString().substringAfterLast('.'),
                         executionOptions
-                    )?.let { fileType ->
-                        ProjectFile(file, fileType)
-                    }
+                    ) ?: throw AraraException(
+                        LanguageController.messages
+                            .errorDiscoverFileDottedExtension(
+                                reference,
+                                type.extension
+                            )
+                    )
+                    ProjectFile(file, fileType)
                 }
             }
         }

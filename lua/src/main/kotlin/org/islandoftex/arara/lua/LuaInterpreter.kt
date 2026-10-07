@@ -320,16 +320,16 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
             LanguageController.messages
                 .errorProjectNameKeyRequiresString
         )
-        // a present name cannot be blank - the specification names
-        // the project, or it does not; the derived name the caller
-        // provides is whatever the caller's context yields
-        if (explicitName != null && explicitName.isBlank()) {
+        // a project's name cannot be blank, wherever it comes
+        // from - the specification's own declaration, or the
+        // derived name the caller provides for a nameless one
+        val name = explicitName ?: defaultName
+        if (name.isBlank()) {
             throw ProjectParseException(
                 LanguageController.messages
                     .errorProjectNameCannotBeBlank
             )
         }
-        val name = explicitName ?: defaultName
         val workingDirectory = optionalString(
             table["working_directory"],
             LanguageController.messages
@@ -444,7 +444,8 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
      *
      * @param luaScript The Lua string to be interpreted.
      * @param defaultName The name a project that declared no name
-     *   takes; the caller names it from its specification file.
+     *   takes; the caller names it from its specification file,
+     *   and a blank one is rejected like a blank declaration.
      * @param chunkName The name Lua errors cite as the source of a
      *   failure, so a broken specification points at its own file
      *   instead of a synthetic chunk.

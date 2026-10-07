@@ -320,4 +320,22 @@ class PlainConsoleRendererTest {
             "the time line separates from the verdict"
         )
     }
+
+    @Test
+    fun `the unprocessed files line wraps at the terminal width`() {
+        val names = (1..15).map { index -> "averylongfilenamehere$index.tex" }
+        val output = render {
+            printUnprocessedFiles(names)
+        }
+        output.lineSequence().forEach { line ->
+            assertTrue(
+                line.length <= 80,
+                "the names wrap under the terminal width: '$line'"
+            )
+        }
+        assertTrue(
+            "averylongfilenamehere15.tex" in output,
+            "the whole list still prints"
+        )
+    }
 }

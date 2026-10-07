@@ -147,8 +147,8 @@ on.
   file listed twice under two spellings of the same location is
   refused, the projects of a list need explicit, unique names -
   dependencies identify projects by name - and an empty list of
-  projects is not a specification at all. A project name, when
-  given, cannot be blank.
+  projects is not a specification at all. A project name cannot
+  be blank.
 * Project specification scripts run with arara's values in scope,
   the same platform the configuration format provides: the table
   `user` carries the `home` and `name` of the user running arara,
@@ -322,8 +322,9 @@ on.
 * The documentation example of the Lua rule format used a reference
   field spelling that does not exist; it now reads the actual
   `file_name` field of the reference table.
-* The Lua project parser's default name for nameless projects aligns
-  with the command line's fallback (`Untitled`).
+* The Lua project parser names nameless projects from the
+  caller's context - the command line passes each specification
+  file's base name.
 * A scalar `options` value in a directive is no longer silently
   replaced by an empty list when orb tag interpolation runs: values
   keep their shape, so a scalar option stays a scalar in normal runs
@@ -488,6 +489,28 @@ on.
 
 ## Fixed
 
+* The cycle verdict now names only the projects that lie on a
+  cycle for every shape: a project depending on one cycle and
+  depended on by another used to be accused alongside the
+  members, a bridge between cycles it never closed. The
+  blank-name rule holds the derived name of a nameless project
+  as strictly as a declared one, so a specification file whose
+  own name derives nothing but whitespace is rejected - while a
+  degenerately named file whose projects all declare names runs
+  fine. A file reference that resolves against a configured
+  type whose extension itself carries a dot gets a verdict
+  naming the dot, instead of claiming no type carries the
+  extension - or, when the completion search found the file,
+  claiming the file could not be found. The verbose task fields
+  keep their separating space and their continuation indent
+  under labels as long as or longer than the gutter, the
+  unprocessed files line of the styled presentation wraps at a
+  budget that ignores the stream's color escapes, and the
+  outcome zone widens to hold the clock rung the live counter
+  escalates to, so a task of ten hours or more no longer leaves
+  digits behind on the line. Four changelog entries that told
+  the retired era's story were corrected to read true of the
+  release.
 * The verbose task fields wrap against the label's own footprint:
   a locale whose label outgrows the fixed gutter - Italian's
   system command label, for one - used to push the first line
@@ -732,7 +755,7 @@ on.
   `.proj.lua` argument that fails to evaluate reports the localized
   verdict citing the file itself as the error's source, where a
   specification-shaped argument used to fall back to ordinary
-  input treatment in silence.
+  input treatment.
 * The last task of a run can no longer leave the live feedback
   fighting the closing output: a breath the landing outran - the
   animator dispatch arriving just as the outcome lands - used to
@@ -823,7 +846,7 @@ on.
   proper error naming the projects involved, instead of silently
   skipping them (Kahn's algorithm omits cyclic vertices from the
   topological order, so cyclic projects were simply not executed).
-* Project specifications (`.lua` files) now honor configuration files:
+* Project specifications (`.proj.lua` files) now honor configuration files:
   previously the configuration was loaded only for single file
   invocations, so rule paths, file types, language and the other
   settings were silently ignored when running a project.

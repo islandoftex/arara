@@ -326,6 +326,42 @@ class FileSearchingTest {
                 exception.message!!.contains("could not determine the file type"),
                 "the verdict names the unresolvable type: ${exception.message}"
             )
+            assertTrue(
+                "'tar.gz'" in exception.message!!,
+                "the verdict names the configured extension: ${exception.message}"
+            )
+        }
+
+        @Test
+        fun `the indirect completion names the dotted extension instead of claiming a miss`(
+            @TempDir tempDir: Path
+        ) {
+            // the completion search finds the candidate the type
+            // built, but the type's dotted extension cannot be
+            // re-derived - the verdict names the dot instead of
+            // claiming the found file could not be found
+            (tempDir / "archive.tar.gz").writeText("quack")
+            val options = ExecutionOptions().copy(
+                fileTypes = listOf(FileType("tar.gz", "^\\s*%\\s*")) +
+                    DefaultConfiguration.defaultFileTypes
+            )
+            val exception = assertFailsWith<AraraException>(
+                "a found candidate with a dotted type extension names the dot"
+            ) {
+                FileSearching.resolveFile(
+                    "archive",
+                    tempDir.toMPPPath(),
+                    options
+                )
+            }
+            assertTrue(
+                "'tar.gz'" in exception.message!!,
+                "the verdict names the configured extension: ${exception.message}"
+            )
+            assertTrue(
+                "could not find" !in exception.message!!,
+                "the found file is not reported missing: ${exception.message}"
+            )
         }
 
         @Test

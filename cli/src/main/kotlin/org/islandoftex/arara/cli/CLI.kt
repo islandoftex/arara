@@ -410,23 +410,12 @@ class CLI : CliktCommand("arara") {
                         .errorProjectSpecificationNotFound(argument)
                 )
             }
-            // a specification file named exactly after the suffix
-            // derives an empty base name - the run rejects it with
-            // the blank-name verdict, since an empty name can never
-            // identify a project
-            val derivedName = path.fileName.removeSuffix(".proj.lua")
-            if (derivedName.isEmpty()) {
-                throw AraraException(
-                    LanguageController.messages
-                        .errorProjectNameCannotBeBlank
-                )
-            }
             logger.info {
                 "Reading ${path.fileName} as a project specification."
             }
             LuaInterpreter(workingDir).parseProjectsFromLua(
                 path.readText(),
-                derivedName,
+                path.fileName.removeSuffix(".proj.lua"),
                 path.fileName
             )
         }

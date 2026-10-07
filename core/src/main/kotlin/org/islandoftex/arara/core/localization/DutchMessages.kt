@@ -83,6 +83,12 @@ object DutchMessages : AraraMessages {
     override fun errorDiscoverFileSafeModeNoCompletion(file: String) =
         "Ik kon het opgegeven bestand '${file}' niet vinden. De veilige modus vult bestandsverwijzingen niet aan vanuit hun extensies, dus geef de volledige bestandsnaam op, extensie inbegrepen."
 
+    override fun errorDiscoverFileDottedExtension(
+        file: String,
+        extension: String
+    ) =
+        "Ik kon het bestandstype van '${file}' niet bepalen: de geconfigureerde extensie '${extension}' bevat een punt, en de extensie-opzoeking leest alleen het laatste segment van een naam. Declareer het type onder een extensie zonder punt."
+
     override fun errorDiscoverFileUnknownExtension(
         file: String,
         extensions: String

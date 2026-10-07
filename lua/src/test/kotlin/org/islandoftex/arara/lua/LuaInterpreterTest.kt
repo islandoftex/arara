@@ -893,4 +893,16 @@ class LuaInterpreterTest {
             "the verdict names the expectation: ${exception.message}"
         )
     }
+
+    @Test
+    fun `rejects a blank derived name`() {
+        assertFailsWith<ProjectParseException>(
+            "a nameless project cannot take a blank default name"
+        ) {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
+                """return { files = { ["a.tex"] = { } } }""",
+                defaultName = " "
+            )
+        }
+    }
 }

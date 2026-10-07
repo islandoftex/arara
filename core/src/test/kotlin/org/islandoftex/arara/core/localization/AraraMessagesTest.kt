@@ -139,6 +139,7 @@ class AraraMessagesTest {
                 errorConfigurationKeyRequiresStringValues("alpha"),
                 errorDiscoverFileFileNotFound("alpha", "beta"),
                 errorDiscoverFileSafeModeNoCompletion("alpha"),
+                errorDiscoverFileDottedExtension("alpha", "beta"),
                 errorDiscoverFileUnknownExtension("alpha", "beta"),
                 errorDiscoverFileUnknownLuaExtension("alpha", "beta"),
                 errorFiletypeInvalidPattern("alpha"),
@@ -215,6 +216,8 @@ class AraraMessagesTest {
             listOf("quux1", "quux2") to
                 { it.errorDiscoverFileFileNotFound("quux1", "quux2") },
             listOf("quux1") to { it.errorDiscoverFileSafeModeNoCompletion("quux1") },
+            listOf("quux1", "quux2") to
+                { it.errorDiscoverFileDottedExtension("quux1", "quux2") },
             listOf("quux1", "quux2") to
                 { it.errorDiscoverFileUnknownExtension("quux1", "quux2") },
             listOf("quux1", "quux2") to

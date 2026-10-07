@@ -83,6 +83,12 @@ object ItalianMessages : AraraMessages {
     override fun errorDiscoverFileSafeModeNoCompletion(file: String) =
         "Non sono riuscito a trovare il file '${file}'. La modalità sicura non completa i riferimenti ai file dalle loro estensioni, quindi fornisci il nome completo del file, estensione inclusa."
 
+    override fun errorDiscoverFileDottedExtension(
+        file: String,
+        extension: String
+    ) =
+        "Non sono riuscito a determinare il tipo di file di '${file}': l'estensione configurata '${extension}' contiene un punto, e la ricerca delle estensioni legge solo l'ultimo segmento di un nome. Dichiara il tipo con un'estensione senza punto."
+
     override fun errorDiscoverFileUnknownExtension(
         file: String,
         extensions: String
