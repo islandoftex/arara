@@ -98,7 +98,7 @@ class LuaInterpreterTest {
     }
 
     @Test
-    fun `fails on an unsatisfied dependency`() {
+    fun `rejects dependencies in a single project specification`() {
         val script = """
             return {
               name = "My awesome book",
@@ -109,7 +109,7 @@ class LuaInterpreterTest {
             }
         """.trimIndent()
         assertFailsWith<AraraException>(
-            "an unsatisfied dependency must be rejected"
+            "a single project specification cannot declare dependencies"
         ) {
             LuaInterpreter(MPPPath(".")).parseProjectsFromLua(script)
         }

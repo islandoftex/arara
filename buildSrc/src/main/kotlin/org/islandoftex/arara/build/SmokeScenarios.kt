@@ -503,6 +503,20 @@ internal val scenarios = listOf(
                 authoredContent = "% arara: echoone\nQuack\n\\bye\n",
         ),
         Scenario(
+                name = "console-styled-projects.bats", dir = "console-styled-projects",
+                description = "the styled presentation across the projects of a run",
+                check = "the territory lines and the grouped summary name every project",
+                arguments = listOf("-c", "styled", "book.proj.lua", "notes.tex"),
+                expected = listOf(
+                        "Project: book",
+                        "Project: Single files",
+                        "Execution summary",
+                        "SpecRan",
+                        "LooseRan",
+                ),
+                fixture = "mixed",
+        ),
+        Scenario(
                 name = "console-dry-run.bats", dir = "console-dry-run",
                 description = "the styled dry run verdict",
                 check = "the simulated run closes with its count and no table",

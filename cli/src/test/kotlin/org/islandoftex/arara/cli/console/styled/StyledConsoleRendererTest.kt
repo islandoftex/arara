@@ -83,6 +83,23 @@ class StyledConsoleRendererTest {
         return sink.toString("UTF-8")
     }
 
+    /**
+     * Renders two runs through one renderer instance, the way an
+     * embedding reuses the presentation across invocations.
+     */
+    private fun renderTwice(
+        first: StyledConsoleRenderer.() -> Unit,
+        second: StyledConsoleRenderer.() -> Unit
+    ): String {
+        val sink = ByteArrayOutputStream()
+        System.setOut(PrintStream(sink, true))
+        val renderer = StyledConsoleRenderer(Terminal(AnsiLevel.NONE, width = 80))
+        renderer.first()
+        renderer.second()
+        System.setOut(originalOut)
+        return sink.toString("UTF-8")
+    }
+
     @Test
     fun `the banner carries the tint and the version`() {
         val output = render(AnsiLevel.TRUECOLOR) { printBanner() }
@@ -658,6 +675,189 @@ class StyledConsoleRendererTest {
             line.takeLast(2 + longest),
             "the word fills the reserved space: '$line'"
         )
+    }
+
+    @Test
+    fun `the summary groups by project behind the running glyph`() {
+        val figures = File.createTempFile("figures", ".mp")
+            .apply { writeText("quack"); deleteOnExit() }
+        val text = File.createTempFile("text", ".tex")
+            .apply { writeText("quack"); deleteOnExit() }
+        val output = render(AnsiLevel.NONE) {
+            printProjectInformation("figures", "d")
+            printFileInformation(
+                ProjectFile(MPPPath(figures.absolutePath), FileType("mp", "^%.*"))
+            )
+            printEntry("echoone", "The echoer")
+            printEntryResult(true)
+            printProjectInformation("text", "d")
+            printFileInformation(
+                ProjectFile(MPPPath(text.absolutePath), FileType("tex", "^%.*"))
+            )
+            printEntry("echotwo", "The echoer")
+            printEntryResult(true)
+            printRunSummary(true)
+        }
+        val lines = output.lineSequence().toList()
+        val figuresTitle = lines.indexOfFirst { it == "> figures" }
+        val textTitle = lines.indexOfFirst { it == "> text" }
+        assertTrue(figuresTitle >= 0, "the figures group titles")
+        assertTrue(textTitle > figuresTitle, "the groups follow the ledger order")
+        assertTrue(
+            figures.name in lines.subList(figuresTitle, textTitle).joinToString("\n"),
+            "the figures grid holds its file"
+        )
+        assertTrue(
+            text.name in lines.subList(textTitle, lines.size).joinToString("\n"),
+            "the text grid holds its file"
+        )
+    }
+
+    @Test
+    fun `same-named projects keep their own groups`() {
+        val first = File.createTempFile("first", ".tex")
+            .apply { writeText("quack"); deleteOnExit() }
+        val second = File.createTempFile("second", ".tex")
+            .apply { writeText("quack"); deleteOnExit() }
+        val output = render(AnsiLevel.NONE) {
+            printProjectInformation("same", "d")
+            printFileInformation(
+                ProjectFile(MPPPath(first.absolutePath), FileType("tex", "^%.*"))
+            )
+            printEntry("echoone", "The echoer")
+            printEntryResult(true)
+            printProjectInformation("same", "d")
+            printFileInformation(
+                ProjectFile(MPPPath(second.absolutePath), FileType("tex", "^%.*"))
+            )
+            printEntry("echotwo", "The echoer")
+            printEntryResult(true)
+            printRunSummary(true)
+        }
+        assertEquals(
+            2,
+            output.lineSequence().count { it == "> same" },
+            "each project keeps its own group"
+        )
+        assertTrue(
+            first.name in output && second.name in output,
+            "both grids carry their own file"
+        )
+    }
+
+    @Test
+    fun `a reused renderer starts the second run with a clean territory`() {
+        // the first run closes through the full reset path; the
+        // second run is single-project, so its summary must render
+        // the flat table - a second group title would mean the
+        // territory survived the reuse
+        val file = File.createTempFile("reuse", ".tex")
+            .apply { writeText("quack"); deleteOnExit() }
+        val output = renderTwice(
+            {
+                printProjectInformation("figures", "d")
+                printFileInformation(
+                    ProjectFile(MPPPath(file.absolutePath), FileType("tex", "^%.*"))
+                )
+                printEntry("echoone", "The echoer")
+                printEntryResult(true)
+                printRunSummary(true)
+            },
+            {
+                printFileInformation(
+                    ProjectFile(MPPPath(file.absolutePath), FileType("tex", "^%.*"))
+                )
+                printEntry("echotwo", "The echoer")
+                printEntryResult(true)
+                printRunSummary(true)
+            }
+        )
+        assertEquals(
+            1,
+            output.lineSequence().count { it == "> figures" },
+            "only the first run's summary groups the territory"
+        )
+    }
+
+    @Test
+    fun `an empty summary leaves no territory behind`() {
+        // a run that opened a project but recorded no file exits
+        // through the empty ledger - the territory state must clear
+        // with it, so the following single-project run stays flat
+        val file = File.createTempFile("empty", ".tex")
+            .apply { writeText("quack"); deleteOnExit() }
+        val output = renderTwice(
+            {
+                printProjectInformation("figures", "d")
+                printRunSummary(true)
+            },
+            {
+                printFileInformation(
+                    ProjectFile(MPPPath(file.absolutePath), FileType("tex", "^%.*"))
+                )
+                printEntry("echotwo", "The echoer")
+                printEntryResult(true)
+                printRunSummary(true)
+            }
+        )
+        assertEquals(
+            0,
+            output.lineSequence().count { it == "> figures" },
+            "the unrecorded territory never groups a later run"
+        )
+    }
+
+    @Test
+    fun `the degraded panel carries the ASCII bar`() {
+        Session.loggingOptions = LoggingOptions(enableLogging = true)
+        val output = render(AnsiLevel.NONE) {
+            printEntry("failechoer", "The failing echoer")
+            printEntryResult(false)
+            printCommandFailure("QuackFail")
+        }
+        assertTrue(
+            "| QuackFail" in output,
+            "the plain stream quotes under the ASCII bar"
+        )
+    }
+
+    @Test
+    fun `a long project name abbreviates into the measure`() {
+        val output = render(AnsiLevel.NONE, width = 80) {
+            printProjectInformation("n".repeat(70), "d")
+        }
+        val line = output.lineSequence().first { it.startsWith("Project:") }
+        assertEquals(
+            79,
+            line.length,
+            "the territory line keeps the measure: '$line'"
+        )
+        assertTrue("…" in line, "the long name abbreviates")
+    }
+
+    @Test
+    fun `a long group title abbreviates into the measure`() {
+        val document = File.createTempFile("titled", ".tex")
+            .apply { writeText("quack"); deleteOnExit() }
+        val output = render(AnsiLevel.NONE, width = 80) {
+            printProjectInformation("n".repeat(80), "d")
+            printFileInformation(
+                ProjectFile(MPPPath(document.absolutePath), FileType("tex", "^%.*"))
+            )
+            printEntry("echoone", "The echoer")
+            printEntryResult(true)
+            printRunSummary(true)
+        }
+        // the entry line shares the ">" prefix with the group title
+        // in a degraded stream, and the summary holds exactly one
+        // group - its title is the last line the prefix opens
+        val title = output.lineSequence().last { it.startsWith("> ") }
+        assertEquals(
+            79,
+            title.length,
+            "the group title keeps the measure: '$title'"
+        )
+        assertTrue("…" in title, "the long title abbreviates")
     }
 
     @Test

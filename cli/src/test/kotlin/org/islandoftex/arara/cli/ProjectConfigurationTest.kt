@@ -14,7 +14,10 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
+import org.islandoftex.arara.api.files.toMPPPath
+import org.islandoftex.arara.cli.configuration.ConfigurationFiles
 import org.islandoftex.arara.core.configuration.PreambleState
+import org.islandoftex.arara.core.files.Project
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
@@ -445,6 +448,250 @@ class ProjectConfigurationTest {
             assertTrue(
                 "(a, b, c)" !in output,
                 "the dependent is not accused of the cycle: $output"
+            )
+        }
+    }
+
+    @Test
+    fun `rejects a specification named Single files`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-english-collision")
+            Files.writeString(
+                directory.resolve("collide.proj.lua"),
+                "return { name = \"Single files\", files = { [\"c.tex\"] = { } } }\n"
+            )
+            Files.writeString(directory.resolve("c.tex"), "Quack\n")
+            Files.writeString(directory.resolve("b.tex"), "Quack\n")
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "collide.proj.lua", "b.tex"
+            )
+            assertNotEquals(0, status, "the model name cannot be claimed")
+            assertTrue(
+                "share the name" in output,
+                "the verdict names the collision: $output"
+            )
+        }
+    }
+
+    @Test
+    fun `a missing specification gets its own verdict`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-missing-spec")
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "missing.proj.lua"
+            )
+            assertNotEquals(0, status, "the missing specification fails the run")
+            assertTrue(
+                "could not find the specification file" in output,
+                "the verdict names the file: $output"
+            )
+            assertTrue(
+                "with any of the extensions" !in output,
+                "no extension enumeration for a direct open: $output"
+            )
+        }
+    }
+
+    @Test
+    fun `rejects stray dependencies in the merged specifications`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-stray")
+            Files.writeString(
+                directory.resolve("one.proj.lua"),
+                "return {\n  { name = \"one\", dependencies = { \"nowhere\" }, files = { [\"a.tex\"] = { } } }\n}\n"
+            )
+            Files.writeString(
+                directory.resolve("two.proj.lua"),
+                "return {\n  { name = \"two\", dependencies = { \"nowhere\" }, files = { [\"b.tex\"] = { } } }\n}\n"
+            )
+            Files.writeString(directory.resolve("a.tex"), "Quack\n")
+            Files.writeString(directory.resolve("b.tex"), "Quack\n")
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "one.proj.lua", "two.proj.lua"
+            )
+            assertNotEquals(0, status, "a dependency nothing carries fails the run")
+            assertTrue(
+                "list (nowhere) as dependencies" in output,
+                "the verdict lists the stray name: $output"
+            )
+            assertTrue(
+                "nowhere, nowhere" !in output,
+                "the same missing name is listed once: $output"
+            )
+        }
+    }
+
+    @Test
+    fun `the merge validation runs before the configuration loads`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-ordering")
+            Files.writeString(
+                directory.resolve("one.proj.lua"),
+                "return { name = \"same\", files = { [\"a.tex\"] = { } } }\n"
+            )
+            Files.writeString(
+                directory.resolve("two.proj.lua"),
+                "return { name = \"same\", files = { [\"b.tex\"] = { } } }\n"
+            )
+            Files.writeString(directory.resolve("a.tex"), "Quack\n")
+            Files.writeString(directory.resolve("b.tex"), "Quack\n")
+            // a configuration that cannot load: were the loads to
+            // come first, its error would surface before the merge
+            // validation's own verdict
+            Files.writeString(
+                directory.resolve("arararc.yaml"),
+                "!config\nfiletypes:\n  - extension"
+            )
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "one.proj.lua", "two.proj.lua"
+            )
+            assertNotEquals(0, status, "the run fails either way")
+            assertTrue(
+                "share the name" in output,
+                "the merge verdict comes first: $output"
+            )
+        }
+    }
+
+    @Test
+    fun `a directory named like a configuration file is not one`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-config-trap")
+            Files.createDirectory(directory.resolve("araraconfig.yaml"))
+            val found = ConfigurationFiles.configFileForProject(
+                Project("p", directory.toMPPPath(), emptySet())
+            )
+            assertNotEquals(
+                directory.resolve("araraconfig.yaml").toString(),
+                found?.toString(),
+                "the directory never poses as the configuration"
+            )
+        }
+    }
+
+    @Test
+    fun `the configuration falls back to the user home`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-config-project")
+            val home = createTempDirectory("arara-cli-config-home")
+            Files.writeString(
+                home.resolve("arararc.yaml"),
+                "!config\npaths:\n  - './'\n"
+            )
+            val original = System.getProperty("user.home")
+            System.setProperty("user.home", home.toString())
+            try {
+                val found = ConfigurationFiles.configFileForProject(
+                    Project("p", directory.toMPPPath(), emptySet())
+                )
+                assertEquals(
+                    home.resolve("arararc.yaml").toString(),
+                    found?.toString(),
+                    "the home configuration answers when the project has none"
+                )
+            } finally {
+                System.setProperty("user.home", original ?: directory.toString())
+            }
+        }
+    }
+
+    @Test
+    fun `the invocation configuration provides the loose file's type`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-loose-type")
+            Files.writeString(
+                directory.resolve("spec.proj.lua"),
+                "return { files = { [\"s.tex\"] = { } } }\n"
+            )
+            Files.writeString(directory.resolve("s.tex"), "% arara: echoone\n")
+            Files.writeString(directory.resolve("loose.my"), "% arara: echoone\n")
+            Files.writeString(
+                directory.resolve("arararc.yaml"),
+                "!config\npaths:\n  - './'\nfiletypes:\n  - extension: my\n    pattern: '^\\s*%\\s*'\n"
+            )
+            Files.writeString(
+                directory.resolve("echoone.yaml"),
+                """
+                !config
+                identifier: echoone
+                name: The echoer
+                commands:
+                  - name: The echoer
+                    command: >
+                      @{
+                        return getCommand('echo', 'Quack');
+                      }
+                arguments: []
+                """.trimIndent()
+            )
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "spec.proj.lua", "loose.my"
+            )
+            assertEquals(
+                0,
+                status,
+                "the configured type carries the loose file: $output"
+            )
+            assertTrue(
+                "loose.my" in output,
+                "the loose file resolves and runs: $output"
+            )
+            assertTrue(
+                "Project: spec" in output,
+                "the nameless specification shows its file's base name: $output"
+            )
+        }
+    }
+
+    @Test
+    fun `a higher priority file runs first within its project`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-priority-order")
+            Files.writeString(
+                directory.resolve("order.proj.lua"),
+                """
+                return {
+                  files = {
+                    ["low.tex"] = { priority = 1 },
+                    ["high.tex"] = { priority = 2 }
+                  }
+                }
+                """.trimIndent()
+            )
+            Files.writeString(
+                directory.resolve("arararc.yaml"),
+                "!config\npaths:\n  - './'\n"
+            )
+            Files.writeString(
+                directory.resolve("echoone.yaml"),
+                """
+                !config
+                identifier: echoone
+                name: The echoer
+                commands:
+                  - name: The echoer
+                    command: >
+                      @{
+                        return getCommand('echo', 'Quack');
+                      }
+                arguments: []
+                """.trimIndent()
+            )
+            Files.writeString(directory.resolve("low.tex"), "% arara: echoone\n")
+            Files.writeString(directory.resolve("high.tex"), "% arara: echoone\n")
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "order.proj.lua"
+            )
+            assertEquals(0, status, "the project runs")
+            assertTrue(
+                output.indexOf("high.tex") < output.indexOf("low.tex"),
+                "the higher priority runs first: $output"
             )
         }
     }

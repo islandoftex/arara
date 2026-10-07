@@ -170,6 +170,7 @@ class AraraMessagesTest {
                 errorProjectFileTypeUnknownExtension("alpha"),
                 errorProjectUnknownKey("alpha"),
                 errorConfigurationUnknownKeys("alpha"),
+                errorConfigurationPreamblePrependInvalid("alpha"),
                 errorRuleIdentifierAndPath("alpha", "beta"),
                 errorSaveCouldNotSaveDatabase("alpha"),
                 errorSessionObtainUnknownKey("alpha"),
@@ -250,6 +251,8 @@ class AraraMessagesTest {
             listOf("quux1") to
                 { it.errorConfigurationKeyRequiresStringValues("quux1") },
             listOf("quux1") to { it.errorConfigurationUnknownKeys("quux1") },
+            listOf("quux1") to
+                { it.errorConfigurationPreamblePrependInvalid("quux1") },
             listOf("quux1") to
                 { it.errorParseRuleArgumentNeedsFlagOrDefault("quux1") },
             listOf("quux1") to
