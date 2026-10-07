@@ -254,6 +254,30 @@ class FileSearchingTest {
         }
 
         @Test
+        fun `safe mode names its refusal instead of extensions it never tried`(
+            @TempDir tempDir: Path
+        ) {
+            // the file is absent as typed and safe mode refuses the
+            // completion, so the verdict says so - enumerating the
+            // extensions would claim a search that never ran
+            val exception = assertFailsWith<AraraException> {
+                FileSearching.resolveFile(
+                    "changes",
+                    tempDir.toMPPPath(),
+                    ExecutionOptions().copy(executionMode = ExecutionMode.SAFE_RUN)
+                )
+            }
+            assertTrue(
+                "Safe mode" in exception.message!!,
+                "the verdict names the refusal: ${exception.message}"
+            )
+            assertTrue(
+                "with any of the extensions" !in exception.message!!,
+                "no claim of an extension search: ${exception.message}"
+            )
+        }
+
+        @Test
         fun `reports the tried extensions as a plain enumeration`(
             @TempDir tempDir: Path
         ) {

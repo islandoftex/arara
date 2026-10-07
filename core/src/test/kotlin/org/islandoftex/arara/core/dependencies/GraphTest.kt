@@ -40,4 +40,29 @@ class GraphTest {
             "the topological order puts dependencies first"
         )
     }
+    @Test
+    fun `names a self-dependent vertex as its own cycle`() {
+        assertEquals(
+            listOf(1),
+            Graph<Int>().apply { addEdge(1, 1) }.cyclicVertices(),
+            "a self-dependent vertex is the cycle"
+        )
+    }
+    @Test
+    fun `names the cycle members alone, not their dependents`() {
+        // the walk omits the cycle together with every vertex
+        // depending on it; the residue peels the pure dependents,
+        // so only the members remain - the dependent 3 and the
+        // deeper 4 are not accused of the cycle they hang from
+        assertEquals(
+            listOf(1, 2),
+            Graph<Int>().apply {
+                addEdge(1, 2)
+                addEdge(2, 1)
+                addEdge(1, 3)
+                addEdge(3, 4)
+            }.cyclicVertices(),
+            "only the vertices on the cycle are named"
+        )
+    }
 }

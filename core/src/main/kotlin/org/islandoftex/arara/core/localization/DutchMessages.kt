@@ -80,6 +80,9 @@ object DutchMessages : AraraMessages {
     override fun errorDiscoverFileFileNotFound(file: String, extensions: String) =
         "Ik kon het opgegeven bestand '${file}' niet vinden met een van de extensies ${extensions}. Zorg ervoor dat het bestand bestaat en dat het een geldige extensie heeft."
 
+    override fun errorDiscoverFileSafeModeNoCompletion(file: String) =
+        "Ik kon het opgegeven bestand '${file}' niet vinden. De veilige modus vult bestandsverwijzingen niet aan vanuit hun extensies, dus geef de volledige bestandsnaam op, extensie inbegrepen."
+
     override fun errorDiscoverFileUnknownExtension(
         file: String,
         extensions: String
@@ -126,7 +129,7 @@ object DutchMessages : AraraMessages {
         "Ik kon een van de opgegeven opdrachten niet evalueren. Dit is een ingewikkeld probleem, omdat het te maken heeft met aspecten van de onderliggende expressietaal. Ik zal mijn best doen om je zoveel mogelijk hiermee te helpen."
 
     override fun errorInterpreterCommandUnsuccessfulExit(command: String) =
-        "Het commando \"${command}\" is onverwacht beëindigd met een afsluitwaarde die niet gelijk is aan nul. Bekijk het resultaat van het commando en analyseer het om uw volgende stappen te bepalen."
+        "Het commando \"${command}\" doorstond de exitcontrole van zijn regel niet. Bekijk het resultaat van het commando en analyseer het om uw volgende stappen te bepalen."
 
     override val errorInterpreterExitRuntimeError =
         "Ik kon de exitwaardemelding van een van de opgegeven opdrachten niet evalueren. Dit is een ingewikkeld probleem, omdat het te maken heeft met aspecten van de onderliggende expressietaal. Ik zal mijn best doen om je zoveel mogelijk hiermee te helpen."
@@ -263,6 +266,9 @@ object DutchMessages : AraraMessages {
 
     override val errorProjectFileTypeExtensionRequired =
         "Een extensie is vereist om het bestandstype te bepalen."
+
+    override val errorProjectFileTypeExtensionNotAString =
+        "De sleutel 'extension' van het bestandstype vereist een tekenreekswaarde."
 
     override val errorProjectFileTypeKeyRequiresTable =
         "De sleutel 'file_type' vereist een tabel."

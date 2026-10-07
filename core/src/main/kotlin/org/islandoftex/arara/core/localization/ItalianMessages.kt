@@ -80,6 +80,9 @@ object ItalianMessages : AraraMessages {
     override fun errorDiscoverFileFileNotFound(file: String, extensions: String) =
         "Non sono riuscito a trovare il file '${file}' con nessuna delle estensioni ${extensions}. Assicurati che il file esista e abbia un'estensione valida."
 
+    override fun errorDiscoverFileSafeModeNoCompletion(file: String) =
+        "Non sono riuscito a trovare il file '${file}'. La modalità sicura non completa i riferimenti ai file dalle loro estensioni, quindi fornisci il nome completo del file, estensione inclusa."
+
     override fun errorDiscoverFileUnknownExtension(
         file: String,
         extensions: String
@@ -126,7 +129,7 @@ object ItalianMessages : AraraMessages {
         "Non ho potuto valutare uno dei comandi forniti. Questa parte è un po' complicata perché coinvolge aspetti del linguaggio per le espressioni sottostante. Farò del mio meglio per darti una mano, per quanto posso."
 
     override fun errorInterpreterCommandUnsuccessfulExit(command: String) =
-        "Il comando \"${command}\" ha dato un esito inaspettato, con codice di ritorno non a zero. Guarda l'output per valutare le eventuali azioni da intraprendere."
+        "Il comando \"${command}\" non ha superato il controllo di uscita della sua regola. Guarda l'output per valutare le eventuali azioni da intraprendere."
 
     override val errorInterpreterUserRequestedHalt =
         "Su richiesta di una regola, il file verrà ora interrotto e le sue direttive rimanenti verranno saltate."
@@ -263,6 +266,9 @@ object ItalianMessages : AraraMessages {
 
     override val errorProjectFileTypeExtensionRequired =
         "È richiesta un'estensione per identificare il tipo di file."
+
+    override val errorProjectFileTypeExtensionNotAString =
+        "La chiave 'extension' del tipo di file richiede un valore stringa."
 
     override val errorProjectFileTypeKeyRequiresTable =
         "La chiave 'file_type' richiede una tabella."

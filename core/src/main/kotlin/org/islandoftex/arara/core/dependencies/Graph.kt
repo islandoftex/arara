@@ -88,4 +88,28 @@ internal open class Graph<T> {
         }
         return order
     }
+
+    /**
+     * Computes the vertices that lie on a cycle. The topological
+     * walk omits the cycle members together with every vertex
+     * depending on them, so the residue peels the omitted vertices
+     * carrying no outgoing edge into the residue itself - the pure
+     * dependents - until only the cycle members remain.
+     *
+     * @return The vertices lying on a cycle, in insertion order.
+     */
+    fun cyclicVertices(): List<T> {
+        val ordered = kahn().toSet()
+        val residue = vertices.keys.filter { it !in ordered }.toMutableSet()
+        var removable = residue.filter { vertex ->
+            vertices[vertex].orEmpty().none { it in residue }
+        }
+        while (removable.isNotEmpty()) {
+            residue.removeAll(removable)
+            removable = residue.filter { vertex ->
+                vertices[vertex].orEmpty().none { it in residue }
+            }
+        }
+        return vertices.keys.filter { it in residue }
+    }
 }

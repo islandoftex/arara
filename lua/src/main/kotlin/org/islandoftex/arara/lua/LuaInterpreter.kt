@@ -108,11 +108,7 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
      */
     private fun extractFileType(fileType: LuaTable): FileType {
         rejectUnknownKeys(fileType, fileTypeKeys) { "file_type.$it" }
-        val extension = fileType["extension"].takeIf { it is LuaString }?.toString()
-            ?: throw ProjectParseException(
-                LanguageController.messages
-                    .errorProjectFileTypeExtensionRequired
-            )
+        val extension = extractFileTypeExtension(fileType["extension"])
         val pattern = optionalString(
             fileType["pattern"],
             LanguageController.messages
@@ -125,6 +121,28 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
 
         return org.islandoftex.arara.core.files.FileType(extension, pattern)
     }
+
+    /**
+     * Converts the extension entry of a file type table: the entry
+     * is required and must be a string - a missing one and a
+     * mistyped one are distinct errors, each naming its own
+     * expectation.
+     *
+     * @param value The extension entry of the file type table.
+     * @return The extension, without the leading dot.
+     */
+    private fun extractFileTypeExtension(value: LuaValue): String =
+        when {
+            value.isnil() -> throw ProjectParseException(
+                LanguageController.messages
+                    .errorProjectFileTypeExtensionRequired
+            )
+            value is LuaString -> value.toString()
+            else -> throw ProjectParseException(
+                LanguageController.messages
+                    .errorProjectFileTypeExtensionNotAString
+            )
+        }
 
     /**
      * Detects the file type of an entry by its extension, against

@@ -484,6 +484,20 @@ on.
 
 ## Fixed
 
+* The cycle verdict names only the projects that lie on the
+  cycle: the topological walk omits the cycle members together
+  with every project depending on them, and the verdict used to
+  accuse the dependents too. Safe mode reports a missing file
+  with its own verdict naming the refusal, instead of
+  enumerating extensions the run never tried. A mistyped
+  'extension' entry of a file type gets the string expectation
+  as its own verdict, instead of the missing-entry one. The
+  exit-check record matches its own documentation: a command
+  that fails its rule's exit check is no longer described as
+  exiting non-zero, a claim the user-defined check itself never
+  promised. The graph backstop for stray dependencies joins the
+  merge validation's parenthesized shape, so both sites render
+  the verdict the same way.
 * A reused command line instance no longer reports the previous
   run's files as unreached when a new resolution fails: the
   expected file names reset with the rest of the invocation state.

@@ -80,6 +80,9 @@ object BrazilianPortugueseMessages : AraraMessages {
     override fun errorDiscoverFileFileNotFound(file: String, extensions: String) =
         "Não consegui encontrar o arquivo especificado '${file}' com qualquer uma das extensões ${extensions}. Por favor, certifique-se de que o arquivo existe e que possui uma extensão válida."
 
+    override fun errorDiscoverFileSafeModeNoCompletion(file: String) =
+        "Não consegui encontrar o arquivo especificado '${file}'. O modo seguro não completa referências de arquivos a partir de suas extensões, por favor, forneça o nome completo do arquivo, com a extensão."
+
     override fun errorDiscoverFileUnknownExtension(
         file: String,
         extensions: String
@@ -129,7 +132,7 @@ object BrazilianPortugueseMessages : AraraMessages {
         "Não consegui avaliar a expressão associada ao código de saída de um dos comandos disponibilizados. Esta parte é complicada, pois envolve aspectos da linguagem de expressão subjacente. Eu farei o possível para te ajudar da melhor forma que puder."
 
     override fun errorInterpreterCommandUnsuccessfulExit(command: String) =
-        "O comando \"${command}\" inesperadamente encerrou com um código de saída diferente de zero. Por favor, verifique a saída do comando para avaliar os próximos passos."
+        "O comando \"${command}\" não passou na verificação de saída da sua regra. Por favor, verifique a saída do comando para avaliar os próximos passos."
 
     override val errorInterpreterUserRequestedHalt =
         "O arquivo será interrompido agora por requisição de uma regra, e suas diretivas restantes serão ignoradas."
@@ -263,6 +266,9 @@ object BrazilianPortugueseMessages : AraraMessages {
 
     override val errorProjectFileTypeExtensionRequired =
         "Uma extensão é necessária para identificar o tipo de arquivo."
+
+    override val errorProjectFileTypeExtensionNotAString =
+        "A chave 'extension' do tipo de arquivo requer um valor de texto."
 
     override val errorProjectFileTypeKeyRequiresTable =
         "A chave 'file_type' requer uma tabela."

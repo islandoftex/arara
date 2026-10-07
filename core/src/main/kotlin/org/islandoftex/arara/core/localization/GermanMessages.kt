@@ -80,6 +80,9 @@ object GermanMessages : AraraMessages {
     override fun errorDiscoverFileFileNotFound(file: String, extensions: String) =
         "Ich konnte die vorausgesetzte Datei \"${file}\" mit keiner der Erweiterungen ${extensions} finden. Bitte stelle sicher, dass die Datei existiert und eine gültige Dateiendung hat."
 
+    override fun errorDiscoverFileSafeModeNoCompletion(file: String) =
+        "Ich konnte die vorausgesetzte Datei \"${file}\" nicht finden. Der sichere Modus vervollständigt Dateiverweise nicht aus ihren Dateiendungen, daher gib bitte den vollständigen Dateinamen mit Dateiendung an."
+
     override fun errorDiscoverFileUnknownExtension(
         file: String,
         extensions: String
@@ -126,7 +129,7 @@ object GermanMessages : AraraMessages {
         "Ich konnte eines der genutzten Kommandos nicht auswerten. Dieser Teil ist ziemlich knifflig, denn er bezieht Aspekte der zugrundeliegenden Sprache mit ein. Ich werde mein Bestes tun, um dir in jeglicher Art und Weise zu helfen."
 
     override fun errorInterpreterCommandUnsuccessfulExit(command: String) =
-        "Das Kommando \"${command}\" wurde unerwarteterweise mit einem Nicht-Null-Rückgabewert beendet. Bitte analysieren Sie den Output des Kommandos und ziehen Sie daraus Schlüsse auf mögliche Lösungen des Problems."
+        "Das Kommando \"${command}\" bestand den Exit-Check seiner Regel nicht. Bitte analysieren Sie den Output des Kommandos und ziehen Sie daraus Schlüsse auf mögliche Lösungen des Problems."
 
     override val errorInterpreterExitRuntimeError =
         "Ich kann den Status der Fertigmeldung (exit status) von einer der genutzten Anweisungen nicht auswerten. Dieser Teil ist ziemlich knifflig, denn er bezieht Aspekte der zugrundeliegenden Sprache mit ein. Ich werde mein Bestes tun, um dir in jeglicher Art und Weise zu helfen."
@@ -263,6 +266,9 @@ object GermanMessages : AraraMessages {
 
     override val errorProjectFileTypeExtensionRequired =
         "Eine Erweiterung ist erforderlich, um den Dateityp zu bestimmen."
+
+    override val errorProjectFileTypeExtensionNotAString =
+        "Der Schlüssel 'extension' des Dateityps erfordert einen Zeichenkettenwert."
 
     override val errorProjectFileTypeKeyRequiresTable =
         "Der Schlüssel 'file_type' erfordert eine Tabelle."

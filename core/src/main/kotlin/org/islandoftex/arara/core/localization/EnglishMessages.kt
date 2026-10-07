@@ -79,6 +79,9 @@ object EnglishMessages : AraraMessages {
     override fun errorDiscoverFileFileNotFound(file: String, extensions: String) =
         "I could not find the provided file \"${file}\" with any of the extensions ${extensions}. Please make sure the file exists and it has a valid extension."
 
+    override fun errorDiscoverFileSafeModeNoCompletion(file: String) =
+        "I could not find the provided file \"${file}\". Safe mode refuses to complete file references from their extensions, so please provide the full file name, extension included."
+
     override fun errorDiscoverFileUnknownExtension(
         file: String,
         extensions: String
@@ -125,7 +128,7 @@ object EnglishMessages : AraraMessages {
         "I could not evaluate one of the provided commands. This part is quite tricky, since it involves aspects of the underlying expression language. I will do my best to help you in any way I can."
 
     override fun errorInterpreterCommandUnsuccessfulExit(command: String) =
-        "The command \"${command}\" exited unexpectedly with a non-zero exit code. Please see the command's output to evaluate your next steps."
+        "The command \"${command}\" did not pass its rule's exit check. Please see the command's output to evaluate your next steps."
 
     override val errorInterpreterUserRequestedHalt =
         "The file will now halt on a rule's request, and its remaining directives are skipped."
@@ -262,6 +265,9 @@ object EnglishMessages : AraraMessages {
 
     override val errorProjectFileTypeExtensionRequired =
         "An extension is required to identify the file type."
+
+    override val errorProjectFileTypeExtensionNotAString =
+        "The file type 'extension' key requires a string value."
 
     override val errorProjectFileTypeKeyRequiresTable =
         "The 'file_type' key requires a table."

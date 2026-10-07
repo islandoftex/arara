@@ -417,6 +417,39 @@ class ProjectConfigurationTest {
     }
 
     @Test
+    fun `the cycle verdict names only the cycle members`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-cycle")
+            Files.writeString(
+                directory.resolve("cycle.proj.lua"),
+                """
+                return {
+                  { name = "a", dependencies = { "b" }, files = { ["a.tex"] = { } } },
+                  { name = "b", dependencies = { "a" }, files = { ["b.tex"] = { } } },
+                  { name = "c", dependencies = { "a" }, files = { ["c.tex"] = { } } }
+                }
+                """.trimIndent()
+            )
+            Files.writeString(directory.resolve("a.tex"), "Quack\n")
+            Files.writeString(directory.resolve("b.tex"), "Quack\n")
+            Files.writeString(directory.resolve("c.tex"), "Quack\n")
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "cycle.proj.lua"
+            )
+            assertNotEquals(0, status, "a cyclic specification fails the run")
+            assertTrue(
+                "(a, b)" in output,
+                "the verdict names the cycle members: $output"
+            )
+            assertTrue(
+                "(a, b, c)" !in output,
+                "the dependent is not accused of the cycle: $output"
+            )
+        }
+    }
+
+    @Test
     fun `rejects a file claimed by two projects`() {
         withRestoredState {
             val directory = createTempDirectory("arara-cli-cross-file")

@@ -80,6 +80,9 @@ object NorfolkMessages : AraraMessages {
     override fun errorDiscoverFileFileNotFound(file: String, extensions: String) =
         "Dunt yew git yarself inta a rite ole puckaterry, but I can't find yar file '${file}' not with none o' them extensions ${extensions}. Yew're gotta find the file and do yew see that has a proper extension on the end onnit, tergether."
 
+    override fun errorDiscoverFileSafeModeNoCompletion(file: String) =
+        "Dunt yew git yarself inta a rite ole puckaterry, but I can't find yar file '${file}' nohow. Safe mode won't go a-guessin' at extensions, so yew're gotta give me the whole name, extension and all."
+
     override fun errorDiscoverFileUnknownExtension(
         file: String,
         extensions: String
@@ -126,7 +129,7 @@ object NorfolkMessages : AraraMessages {
         "That ent gorn right wi' one onnem commands you giv' me. Wuh, yew're gotta he'sum idear wot this is orl abowt ter git th' hang o'this bit else yew myte be in a rite ole puckaterry but I'll help yew git it done if I can, my bewty."
 
     override fun errorInterpreterCommandUnsuccessfulExit(command: String) =
-        "That ole command \"${command}\" dint go roight. Do you have a peek at the output do you want ter know wass doing."
+        "That ole command \"${command}\" failed its rule's own roight check, I'm afraid. Do you have a peek at the output do you want ter know wass doing."
 
     override val errorInterpreterExitRuntimeError =
         "That ent gorn right wi' th' exit status of onnem commands you giv' me. Wuh, yew're gotta he'sum idear wot this is orl abowt ter git th' hang o'this bit else yew myte be in a rite ole puckaterry but I'll help yew git it done if I can, my bewty."
@@ -263,6 +266,9 @@ object NorfolkMessages : AraraMessages {
 
     override val errorProjectFileTypeExtensionRequired =
         "Yew're gotta hev an extension ter know the file type."
+
+    override val errorProjectFileTypeExtensionNotAString =
+        "The file type 'extension' key wants a string value."
 
     override val errorProjectFileTypeKeyRequiresTable =
         "The 'file_type' key wants a table."

@@ -134,6 +134,11 @@ interface AraraMessages {
      */
     fun errorDiscoverFileFileNotFound(file: String, extensions: String): String
     /**
+     * The error shown when a referenced file cannot be found and
+     * safe mode refuses to complete the name from the extensions.
+     */
+    fun errorDiscoverFileSafeModeNoCompletion(file: String): String
+    /**
      * The error shown when a referenced file exists but no file
      * type of the run carries its extension. The extensions
      * parameter carries the extensions of the run as a plain
@@ -358,7 +363,8 @@ interface AraraMessages {
     fun errorProjectCycle(cycle: String): String
     /**
      * The error shown when a project names a dependency no project
-     * of the run carries.
+     * of the run carries. The dependency parameter carries the
+     * stray names as a parenthesized enumeration.
      */
     fun errorProjectStrayDependency(dependency: String): String
     /**
@@ -382,7 +388,7 @@ interface AraraMessages {
      */
     val errorProjectDirectivesKeyRequiresTable: String
     /**
-     * The error shown when two projects of a list share a name.
+     * The error shown when two projects of the run share a name.
      */
     fun errorProjectDuplicateName(name: String): String
     /**
@@ -407,8 +413,9 @@ interface AraraMessages {
      */
     val infoLabelSingleFiles: String
     /**
-     * The error shown when the directives a project file
-     * specification carries cannot be extracted.
+     * The error shown when the directives of a project file cannot
+     * be extracted - the ones its specification carries, or, when
+     * it carries none, the file's own.
      */
     fun errorProjectFileDirectivesExtraction(
         file: String,
@@ -442,10 +449,15 @@ interface AraraMessages {
      */
     val errorProjectFilesKeyRequiresTable: String
     /**
-     * The error shown when a project file type declares no
-     * extension.
+     * The error shown when the extension of a project file type
+     * declares no extension.
      */
     val errorProjectFileTypeExtensionRequired: String
+    /**
+     * The error shown when the extension of a project file type
+     * is not a string.
+     */
+    val errorProjectFileTypeExtensionNotAString: String
     /**
      * The error shown when the file type of a project file is not
      * a table.
@@ -506,7 +518,8 @@ interface AraraMessages {
     val errorProjectPriorityKeyRequiresInteger: String
     /**
      * The error shown when a Lua project specification returns
-     * something other than a table.
+     * something other than a table, or a table holding no project
+     * at all.
      */
     val errorProjectReturnNotATable: String
     /**

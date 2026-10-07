@@ -25,8 +25,11 @@ internal class ProjectGraph : Graph<Project>() {
                 addEdge(
                     projects.find { it.name == dependency }
                         ?: throw AraraException(
+                            // the enumeration shape joins the merge
+                            // validation's, so both sites render the
+                            // verdict the same way
                             LanguageController.messages
-                                .errorProjectStrayDependency(dependency)
+                                .errorProjectStrayDependency("($dependency)")
                         ),
                     project
                 )

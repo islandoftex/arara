@@ -85,15 +85,18 @@ object LinearExecutor : Executor {
      * @return The report of the whole run.
      */
     override fun execute(projects: List<Project>): ExecutionReport {
-        val projectsInOrder = ProjectGraph().apply { addAll(projects) }.kahn()
+        val graph = ProjectGraph().apply { addAll(projects) }
+        val projectsInOrder = graph.kahn()
         // Kahn's algorithm silently omits vertices involved in a cycle, so
         // the topological order has to be verified to cover every project;
         // otherwise cyclic projects would simply not be executed at all
         if (projectsInOrder.size < projects.size) {
-            val cyclic = projects
-                .filter { project -> projectsInOrder.none { it.name == project.name } }
-                .map { it.name }
-                .joinToString(", ", "(", ")")
+            // the walk omits the cycle members together with every
+            // project depending on them, so the verdict names the
+            // members alone - a project that merely depends on a
+            // cycle is not accused of one
+            val cyclic = graph.cyclicVertices()
+                .joinToString(", ", "(", ")") { it.name }
             throw AraraException(
                 LanguageController.messages.errorProjectCycle(cyclic)
             )

@@ -870,4 +870,27 @@ class LuaInterpreterTest {
             "the type verdict holds the out-of-range value: ${exception.message}"
         )
     }
+
+    @Test
+    fun `rejects a mistyped file type extension`() {
+        val exception = assertFailsWith<ProjectParseException>(
+            "a wrongly typed extension is not a missing one"
+        ) {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
+                """
+                return {
+                  files = {
+                    ["a.tex"] = {
+                      file_type = { extension = 3, pattern = "quack" }
+                    }
+                  }
+                }
+                """.trimIndent()
+            )
+        }
+        assertTrue(
+            exception.message!!.contains("requires a string value"),
+            "the verdict names the expectation: ${exception.message}"
+        )
+    }
 }

@@ -165,11 +165,19 @@ object FileSearching {
                 )
             else ->
                 AraraException(
-                    LanguageController.messages
-                        .errorDiscoverFileFileNotFound(
-                            reference,
-                            knownExtensions(executionOptions)
-                        )
+                    // safe mode refuses the extension completion, so
+                    // the verdict says so instead of enumerating
+                    // extensions the run never tried
+                    if (executionOptions.executionMode == ExecutionMode.SAFE_RUN) {
+                        LanguageController.messages
+                            .errorDiscoverFileSafeModeNoCompletion(reference)
+                    } else {
+                        LanguageController.messages
+                            .errorDiscoverFileFileNotFound(
+                                reference,
+                                knownExtensions(executionOptions)
+                            )
+                    }
                 )
         }
     }
