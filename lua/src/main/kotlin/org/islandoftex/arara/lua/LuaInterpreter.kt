@@ -211,18 +211,8 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
                 .errorProjectFileTypeKeyRequiresTable
         )?.let { extractFileType(it) } ?: detectFileType(path)
 
-        val priority = table["priority"].let { value ->
-            when {
-                value.isnil() -> null
-                // an integral number names the priority; a fractional
-                // one is a type error, not a silent truncation
-                value is LuaNumber && value.isint() -> value.toint()
-                else -> throw ProjectParseException(
-                    LanguageController.messages
-                        .errorProjectPriorityKeyRequiresInteger
-                )
-            }
-        } ?: org.islandoftex.arara.core.files.ProjectFile.DEFAULT_PRIORITY
+        val priority = extractPriority(table["priority"])
+            ?: org.islandoftex.arara.core.files.ProjectFile.DEFAULT_PRIORITY
 
         val directives = optionalTable(
             table["directives"],
@@ -242,6 +232,29 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
         }
         return LuaProjectFile(path, fileType, priority, directives)
     }
+
+    /**
+     * Converts the priority entry of a project file: an integral
+     * number names the priority, a fractional one is a type error,
+     * not a silent truncation, and an absent entry leaves the
+     * default. The integer sense itself bounds the value - the
+     * platform's integers are int-backed and its doubles beyond
+     * that range are not integers in its own terms - so the type
+     * verdict already holds the out-of-range values and nothing
+     * ever wraps.
+     *
+     * @param value The priority entry of the file's table.
+     * @return The priority, or null when the entry is absent.
+     */
+    private fun extractPriority(value: LuaValue): Int? =
+        when {
+            value.isnil() -> null
+            value is LuaNumber && value.isint() -> value.toint()
+            else -> throw ProjectParseException(
+                LanguageController.messages
+                    .errorProjectPriorityKeyRequiresInteger
+            )
+        }
 
     /**
      * Extracts the files of a project from their table: every

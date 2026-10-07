@@ -14,6 +14,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.files.MPPPath
+import org.islandoftex.arara.api.localization.MPPLocale
 import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.configuration.LoggingOptions
@@ -628,6 +629,34 @@ class StyledConsoleRendererTest {
         assertTrue(
             "A long project name" in output,
             "the full name prints even when the width cannot abbreviate"
+        )
+    }
+
+    @Test
+    fun `the landing pads the plain word into the reserved space`() {
+        // German carries an asymmetric result pair - the success
+        // word is the longest - so a failure landing visibly pads.
+        // The padding has to apply before the theme colors the
+        // word: styling first would count the escape sequences and
+        // the word would sit left of the space the entry line
+        // reserves at its right edge
+        LanguageController.loadMessagesFor(MPPLocale("de"))
+        val output = render(AnsiLevel.TRUECOLOR) {
+            printEntry("echoone", "The echoer")
+            printEntryResult(false)
+        }
+        val longest = maxOf(
+            LanguageController.messages.infoLabelOnSuccess.length,
+            LanguageController.messages.infoLabelOnFailure.length
+        )
+        val word = "✗ " + LanguageController.messages.infoLabelOnFailure
+        val line = output.lineSequence()
+            .map { it.replace(Regex("\u001B\\[[0-9;]*m"), "") }
+            .first { it.contains(LanguageController.messages.infoLabelOnFailure) }
+        assertEquals(
+            word.padStart(2 + longest),
+            line.takeLast(2 + longest),
+            "the word fills the reserved space: '$line'"
         )
     }
 

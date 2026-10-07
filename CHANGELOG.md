@@ -484,6 +484,26 @@ on.
 
 ## Fixed
 
+* A reused command line instance no longer reports the previous
+  run's files as unreached when a new resolution fails: the
+  expected file names reset with the rest of the invocation state.
+  A configured file type whose extension itself carries a
+  dot (a `tar.gz` type, say) no longer slips a loose input file
+  past the type lookup into a headerless directive scan - the file
+  reports itself honestly instead. A specification project named
+  after the anonymous project's localized label (the pt-BR
+  'Arquivos avulsos', for instance) is rejected together with the
+  English model name the reservation already covered. A
+  specification file named exactly after its own suffix
+  (`.proj.lua`) no longer derives an empty project name - the run
+  rejects it with the blank-name verdict, which now drops its
+  'when given' clause and reads true wherever a name comes from.
+  And the compact result landing of the styled presentation pads
+  the plain word before the theme colors it: the padding used to
+  count the color escapes and never fire, so the word sat left of
+  the space the presentation reserves for it, and a task whose
+  live counter ran wider than the word left digits behind on the
+  line.
 * The summary group titles of the styled presentation fit the
   measure every other structural line holds: a project name
   longer than the width abbreviates instead of overflowing the

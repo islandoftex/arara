@@ -234,12 +234,18 @@ object FileSearching {
                 types.firstOrNull {
                     reference.endsWith("." + it.extension)
                 }?.let {
-                    val extension = reference.substringAfterLast('.')
-                    ProjectFile(
-                        path = testFile,
-                        fileType = types.firstOrNull { extension == it.extension }
-                            ?: FileType.UNKNOWN_TYPE
+                    // the type the suffix matched re-derives to its own
+                    // extension, so a miss in the lookup means the
+                    // extension itself carries a dot the lookup cannot
+                    // address - the honest unresolvable verdict beats
+                    // a pending type that would scan the file without
+                    // its header boundary
+                    lookupFileType(
+                        reference.substringAfterLast('.'),
+                        executionOptions
                     )
+                }?.let { fileType ->
+                    ProjectFile(path = testFile, fileType = fileType)
                 }
             }
             // when in safe mode we do not perform indirect search
@@ -255,7 +261,7 @@ object FileSearching {
             // so we need to add it and look again
             else -> {
                 val name = testFile.fileName
-                types.map { testFile.parent / "$name.${it.extension}" }
+                val found = types.map { testFile.parent / "$name.${it.extension}" }
                     .union(
                         types.map {
                             testFile.parent /
@@ -263,14 +269,17 @@ object FileSearching {
                         }
                     )
                     .firstOrNull { it.exists && it.isRegularFile }
-                    ?.let { found ->
-                        val extension = found.toString().substringAfterLast('.')
-                        ProjectFile(
-                            found,
-                            types.firstOrNull { extension == it.extension }
-                                ?: FileType.UNKNOWN_TYPE
-                        )
+                // the same honesty the direct search keeps: the
+                // candidate a type built matched, so a miss in the
+                // lookup means a dotted extension
+                found?.let { file ->
+                    lookupFileType(
+                        file.toString().substringAfterLast('.'),
+                        executionOptions
+                    )?.let { fileType ->
+                        ProjectFile(file, fileType)
                     }
+                }
             }
         }
     }

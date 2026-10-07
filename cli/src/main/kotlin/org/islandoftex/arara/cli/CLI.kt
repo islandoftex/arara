@@ -238,9 +238,13 @@ class CLI : CliktCommand("arara") {
     private fun resolveProjects(): List<org.islandoftex.arara.api.files.Project> {
         // the invocation's state resets with every resolution: a
         // reused instance must not carry the previous run's
-        // anonymous project or its processed files into this one
+        // anonymous project, its processed files or its expected
+        // file names into this one - a resolution that fails would
+        // otherwise report the previous run's files as unreached
         anonymousProject = null
         processedFiles.clear()
+        allFileNames = emptyList()
+        Display.projectCount = 0
         // resolve the working directory from the one that may be given
         // as command line parameter; otherwise resolve current directory
         val workingDir = (workingDirectory?.toMPPPath() ?: MPPPath("."))
@@ -306,9 +310,9 @@ class CLI : CliktCommand("arara") {
 
     /**
      * Rejects a specification project that carries the anonymous
-     * project's name: the two would collide on every surface -
-     * the console territory, the summary grouping, the log's
-     * boundary lines.
+     * project's name or display label: on the console territory
+     * and the summary titles the two would read identically, and
+     * the model name also collides in the log's boundary lines.
      *
      * @param projects The projects of the run, the anonymous one
      *   included.
@@ -317,10 +321,19 @@ class CLI : CliktCommand("arara") {
         projects: List<org.islandoftex.arara.api.files.Project>
     ) {
         anonymousProject?.let { anonymous ->
-            if (projects.any { it !== anonymous && it.name == anonymous.name }) {
+            // the anonymous project displays under the session's
+            // localized label, so a specification carrying either
+            // the model name or the label reads identically to it
+            val reserved = setOf(
+                anonymous.name,
+                LanguageController.messages.infoLabelSingleFiles
+            )
+            projects.firstOrNull {
+                it !== anonymous && it.name in reserved
+            }?.let {
                 throw AraraException(
                     LanguageController.messages
-                        .errorProjectDuplicateName(anonymous.name)
+                        .errorProjectDuplicateName(it.name)
                 )
             }
         }
@@ -397,12 +410,23 @@ class CLI : CliktCommand("arara") {
                         .errorProjectSpecificationNotFound(argument)
                 )
             }
+            // a specification file named exactly after the suffix
+            // derives an empty base name - the run rejects it with
+            // the blank-name verdict, since an empty name can never
+            // identify a project
+            val derivedName = path.fileName.removeSuffix(".proj.lua")
+            if (derivedName.isEmpty()) {
+                throw AraraException(
+                    LanguageController.messages
+                        .errorProjectNameCannotBeBlank
+                )
+            }
             logger.info {
                 "Reading ${path.fileName} as a project specification."
             }
             LuaInterpreter(workingDir).parseProjectsFromLua(
                 path.readText(),
-                path.fileName.removeSuffix(".proj.lua"),
+                derivedName,
                 path.fileName
             )
         }

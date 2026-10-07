@@ -277,6 +277,34 @@ class FileSearchingTest {
         }
 
         @Test
+        fun `a dotted configured extension reports the file instead of a pending type`(
+            @TempDir tempDir: Path
+        ) {
+            // the file matches the configured type by its suffix, but
+            // the type's own extension carries a dot the lookup cannot
+            // re-derive - the honest unresolvable verdict beats a
+            // headerless scan of the file
+            (tempDir / "archive.tar.gz").writeText("quack")
+            val options = ExecutionOptions().copy(
+                fileTypes = listOf(FileType("tar.gz", "^\\s*%\\s*")) +
+                    DefaultConfiguration.defaultFileTypes
+            )
+            val exception = assertFailsWith<AraraException>(
+                "a dotted extension never resolves to a pending type"
+            ) {
+                FileSearching.resolveFile(
+                    "archive.tar.gz",
+                    tempDir.toMPPPath(),
+                    options
+                )
+            }
+            assertTrue(
+                exception.message!!.contains("could not determine the file type"),
+                "the verdict names the unresolvable type: ${exception.message}"
+            )
+        }
+
+        @Test
         fun `lists a redeclared extension once`(@TempDir tempDir: Path) {
             // the configuration's redeclaration keeps its place at
             // the head of the order, and the enumeration shows it once

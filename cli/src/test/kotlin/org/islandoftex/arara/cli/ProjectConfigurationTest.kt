@@ -15,6 +15,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 import org.islandoftex.arara.core.configuration.PreambleState
+import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 
@@ -30,14 +31,15 @@ class ProjectConfigurationTest {
     /**
      * Runs the block restoring the global state a command line
      * invocation mutates - the execution options, the user interface
-     * options and the preamble state. The entry point applies its
-     * options globally and never reverts them, so a test leaving them
-     * behind changes the behavior of every subsequent test in the
-     * same virtual machine.
+     * options, the message catalog and the preamble state. The entry
+     * point applies its options globally and never reverts them, so
+     * a test leaving them behind changes the behavior of every
+     * subsequent test in the same virtual machine.
      */
     private fun <T> withRestoredState(work: () -> T): T {
         val executionOptions = LinearExecutor.executionOptions
         val userInterfaceOptions = Session.userInterfaceOptions
+        val messages = LanguageController.messages
         val defaultPreamble = PreambleState.defaultPreamble
         val preambles = PreambleState.preambles.toMap()
         return try {
@@ -45,19 +47,28 @@ class ProjectConfigurationTest {
         } finally {
             LinearExecutor.executionOptions = executionOptions
             Session.userInterfaceOptions = userInterfaceOptions
+            LanguageController.messages = messages
             PreambleState.defaultPreamble = defaultPreamble
             PreambleState.preambles.clear()
             PreambleState.preambles.putAll(preambles)
         }
     }
 
-    private fun runCLI(vararg args: String): Pair<Int, String> {
+    private fun runCLI(vararg args: String): Pair<Int, String> =
+        runOn(CLI(), *args)
+
+    /**
+     * Runs the provided command line instance against the arguments,
+     * so a test can drive one instance through several runs the way
+     * an embedding would.
+     */
+    private fun runOn(cli: CLI, vararg args: String): Pair<Int, String> {
         val sysout = System.out
         val output = ByteArrayOutputStream()
         return try {
             System.setOut(PrintStream(output))
             val status = try {
-                CLI().parse(args.toList())
+                cli.parse(args.toList())
                 0
             } catch (result: ProgramResult) {
                 result.statusCode
@@ -317,6 +328,90 @@ class ProjectConfigurationTest {
             assertTrue(
                 "share the name" in output,
                 "the verdict names the collision: $output"
+            )
+        }
+    }
+
+    @Test
+    fun `rejects a specification named after the localized anonymous label`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-label-collision")
+            Files.writeString(
+                directory.resolve("collide.proj.lua"),
+                "return { name = \"Arquivos avulsos\", files = { [\"c.tex\"] = { } } }\n"
+            )
+            Files.writeString(directory.resolve("c.tex"), "Quack\n")
+            Files.writeString(directory.resolve("b.tex"), "Quack\n")
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "-L", "pt-BR",
+                "collide.proj.lua", "b.tex"
+            )
+            assertNotEquals(
+                0,
+                status,
+                "a specification named after the localized label cannot merge"
+            )
+            assertTrue(
+                "compartilham" in output,
+                "the verdict names the collision: $output"
+            )
+        }
+    }
+
+    @Test
+    fun `rejects a specification file named exactly after the suffix`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-degenerate-spec")
+            Files.writeString(
+                directory.resolve(".proj.lua"),
+                "return { files = { [\"a.tex\"] = { } } }\n"
+            )
+            Files.writeString(directory.resolve("a.tex"), "Quack\n")
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                ".proj.lua"
+            )
+            assertNotEquals(
+                0,
+                status,
+                "the degenerate file name cannot derive a project"
+            )
+            assertTrue(
+                "cannot be blank" in output,
+                "the verdict names the blank name: $output"
+            )
+        }
+    }
+
+    @Test
+    fun `a failed resolution does not report the previous run's files`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-reuse")
+            Files.writeString(
+                directory.resolve("good.proj.lua"),
+                "return { files = { [\"a.tex\"] = { } } }\n"
+            )
+            Files.writeString(directory.resolve("a.tex"), "Quack\n")
+            val cli = CLI()
+            runOn(
+                cli,
+                "--working-directory", directory.toString(),
+                "good.proj.lua"
+            )
+            val (status, output) = runOn(
+                cli,
+                "--working-directory", directory.toString(),
+                "missing.proj.lua"
+            )
+            assertNotEquals(
+                0,
+                status,
+                "the missing specification fails the run"
+            )
+            assertTrue(
+                "a.tex" !in output,
+                "the previous run's files are not the failure's unreached files: $output"
             )
         }
     }

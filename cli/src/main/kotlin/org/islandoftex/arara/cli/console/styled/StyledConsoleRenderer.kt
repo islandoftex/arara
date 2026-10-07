@@ -748,10 +748,18 @@ class StyledConsoleRenderer(
                 // the reserved space keeps the word aligned even when
                 // the label of another language runs longer, and the
                 // line completes here: whatever follows starts on
-                // its own line
+                // its own line. The padding applies to the plain word
+                // - styling first would count the escape sequences
+                // and never pad - and the padded word repaints the
+                // whole zone, erasing whatever the live feedback
+                // left in it
                 terminal.println(
-                    resultWord(value)
-                        .padStart(successGlyph().length + 1 + longestMatch)
+                    styledResult(
+                        value,
+                        plainResultWord(value).padStart(
+                            successGlyph().length + 1 + longestMatch
+                        )
+                    )
                 )
             } else {
                 terminal.println("")
@@ -883,14 +891,32 @@ class StyledConsoleRenderer(
      * @return The styled result word.
      */
     private fun resultWord(value: Boolean): String =
+        styledResult(value, plainResultWord(value))
+
+    /**
+     * Gets the plain result word of an outcome: the glyph and the
+     * localized word, unstyled - the composition the compact
+     * landing pads before the theme colors it.
+     *
+     * @param value The outcome of the task.
+     * @return The unstyled result word.
+     */
+    private fun plainResultWord(value: Boolean): String =
+        (if (value) successGlyph() else failureGlyph()) +
+            " " + getResult(value)
+
+    /**
+     * Colors the result word by the theme's semantics.
+     *
+     * @param value The outcome of the task.
+     * @param word The result word to color.
+     * @return The colored result word.
+     */
+    private fun styledResult(value: Boolean, word: String): String =
         if (value) {
-            terminal.theme.success(
-                successGlyph() + " " + getResult(value)
-            )
+            terminal.theme.success(word)
         } else {
-            terminal.theme.danger(
-                failureGlyph() + " " + getResult(value)
-            )
+            terminal.theme.danger(word)
         }
 
     /**

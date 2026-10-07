@@ -851,4 +851,23 @@ class LuaInterpreterTest {
             "an integral double names the integer it equals"
         )
     }
+
+    @Test
+    fun `rejects priorities beyond the model's range`() {
+        // the platform's integers are int-backed, so a value beyond
+        // that range is not an integer in its own terms - the type
+        // verdict holds it, and the pin guards the boundary: a
+        // platform that ever widens its integer sense fails here
+        val exception = assertFailsWith<ProjectParseException>(
+            "a value beyond the model's range never reaches a silent wrap"
+        ) {
+            LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
+                """return { files = { ["a.tex"] = { priority = 4294967296 } } }"""
+            )
+        }
+        assertTrue(
+            exception.message!!.contains("requires an integer"),
+            "the type verdict holds the out-of-range value: ${exception.message}"
+        )
+    }
 }

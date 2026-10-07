@@ -292,7 +292,7 @@ object ItalianMessages : AraraMessages {
         "La chiave 'name' del progetto richiede un valore stringa."
 
     override val errorProjectNameCannotBeBlank =
-        "Il nome di un progetto, quando specificato, non può essere vuoto."
+        "Il nome di un progetto non può essere vuoto."
 
     override val errorProjectNeedsAFile =
         "Un progetto deve contenere almeno un file."
