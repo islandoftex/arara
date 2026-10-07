@@ -459,7 +459,7 @@ object BrazilianPortugueseMessages : AraraMessages {
         "ERRO"
 
     override val infoLabelOnFailure =
-        "FRACASSO"
+        "FALHA"
 
     override val infoLabelOnSuccess =
         "SUCESSO"

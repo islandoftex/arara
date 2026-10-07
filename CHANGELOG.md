@@ -231,6 +231,13 @@ on.
 
 ## Changed
 
+* The Brazilian Portuguese word for a failed task reads 'FALHA'
+  now: the landing used to say 'FRACASSO' while the closing
+  verdict said 'FALHA TOTAL', splitting the run's voice between
+  the two. The historic translation kept its emotive register on
+  the label; the standard technical one joins the verdict's
+  vocabulary, matching the English design where both places
+  share the root.
 * **Breaking:** Project specifications are recognized by their
   suffix alone: a `.proj.lua` argument is a project, declared and
   unambiguous, and a plain `.lua` argument is an ordinary input
