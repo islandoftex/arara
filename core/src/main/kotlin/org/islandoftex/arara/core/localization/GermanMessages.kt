@@ -164,9 +164,6 @@ object GermanMessages : AraraMessages {
     override val errorInterpreterWrongReturnType =
         "Eine Regel darf nur entweder einen logischen Wert (boolean value) oder ein Kommando zurückgeben. Andere Rückgaben werden nicht unterstützt."
 
-    override val errorInvalidProjectFile =
-        "Ich habe eine Datei gelesen, die ein Projekt sein sollte. Leider stellte sich heraus, dass sie weder ein Projekt noch eine Liste von Projekten ist. Bitte überprüfe, dass deine Projektdatei dem dokumentierten Format entspricht."
-
     override fun errorLoadCouldNotLoadDatabase(name: String) =
         "Ich konnte die Datei-Datenbank mit dem Namen \"${name}\" nicht laden. Ich habe keine Idee für die Fehlerursache. Vielleicht wurde die Datei vor oder während der Leseoperation verschoben oder gelöscht, oder möglicherweise habe ich nicht die geeigneten Rechte, um die Datei zu lesen. Übrigens: Falls die Datei Inhalte einer älteren Version von mir enthält, löschen Sie sie einfach oder benennen Sie sie um, und ich baue beim nächsten Lauf eine frische Datenbank auf."
 

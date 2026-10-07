@@ -164,9 +164,6 @@ object BrazilianPortugueseMessages : AraraMessages {
     override val errorInterpreterWrongReturnType =
         "Uma regra deve retornar como tipo um valor lógico ou de comando. Outros tipos de retorno não são suportados."
 
-    override val errorInvalidProjectFile =
-        "Eu li um arquivo que deveria ser um projeto. Infelizmente, descobri que ele não é nem um projeto nem uma lista de projetos. Por favor, verifique se o seu arquivo de projeto segue o formato documentado."
-
     override fun errorLoadCouldNotLoadDatabase(name: String) =
         "Não consegui carregar o banco de dados de arquivos chamado '${name}'. Não tenho ideia porque não deu certo. Talvez o arquivo tenha sido movido ou removido antes ou durante a operação de leitura, ou talvez eu não tenha as permissões corretas para lê-lo. A propósito, se o arquivo tiver conteúdo de uma versão anterior minha, simplesmente remova ou renomeie o arquivo, e eu construirei um banco de dados novo na próxima execução."
 

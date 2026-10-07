@@ -1212,14 +1212,17 @@ class StyledConsoleRendererTest {
     @Test
     fun `a long field label keeps the first line inside the measure`() {
         // Italian's system command label outgrows the fixed
-        // gutter, so the wrapped value has to budget the label's
-        // real footprint
+        // gutter, so a wrapped value has to budget the label's
+        // real footprint: the measure then holds every line, and
+        // the continuation indents to where the value began
         LanguageController.loadMessagesFor(MPPLocale("it"))
         LinearExecutor.executionOptions = ExecutionOptions(verbose = true)
+        val footprint =
+            LanguageController.messages.infoLabelSystemCommand.length + 1
         val output = render(AnsiLevel.NONE) {
             printEntry("echoone", "The echoer")
             printTaskDetails(
-                Command(listOf("echo", "QuackOne")),
+                Command(listOf("echo") + List(30) { "word$it" }),
                 DirectiveConditional(
                     DirectiveConditionalType.IF,
                     "found('log', 'Rerun')"
@@ -1234,6 +1237,11 @@ class StyledConsoleRendererTest {
                 "every field line keeps the measure: '$line'"
             )
         }
+        assertTrue(
+            output.lineSequence()
+                .any { it.startsWith(" ".repeat(footprint)) },
+            "the wrapped value indents to the label's footprint"
+        )
     }
 
     @Test
@@ -1271,6 +1279,23 @@ class StyledConsoleRendererTest {
                 .map { it.replace(Regex("\u001B\\[[0-9;]*m"), "") }
                 .count(),
             "the wrap budget counts no escape bytes"
+        )
+    }
+
+    @Test
+    fun `the unprocessed label never repeats itself at a narrow measure`() {
+        // a measure too narrow for the label used to let the wrap
+        // break the line inside it, and the composition then
+        // printed the label a second time beside its own line
+        val names = (1..12).map { index -> "averylongfilename$index.tex" }
+        val output = render(AnsiLevel.TRUECOLOR, width = 30) {
+            printUnprocessedFiles(names)
+        }
+        val stripped = output.replace(Regex("\u001B\\[[0-9;]*m"), "")
+        assertEquals(
+            1,
+            stripped.split("Files not processed").size - 1,
+            "the label rides its line once, however narrow the measure"
         )
     }
 

@@ -493,6 +493,10 @@ on.
 
 ## Fixed
 
+* The line that names the files a styled run left unprocessed no
+  longer repeats its own label when the terminal is too narrow to
+  hold it: the label stands clear of the wrap now, and only the
+  file names flow beneath it.
 * The cycle verdict now names only the projects that lie on a
   cycle for every shape: a project depending on one cycle and
   depended on by another used to be accused alongside the
@@ -512,7 +516,8 @@ on.
   budget that ignores the stream's color escapes, and the
   outcome zone widens to hold the clock rung the live counter
   escalates to, so a task of ten hours or more no longer leaves
-  digits behind on the line. Four changelog entries that told
+  digits behind on the line until its hours outgrow the two
+  digits the rung measures. Four changelog entries that told
   the retired era's story were corrected to read true of the
   release.
 * The verbose task fields wrap against the label's own footprint:

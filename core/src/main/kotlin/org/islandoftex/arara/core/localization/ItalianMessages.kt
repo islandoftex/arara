@@ -164,9 +164,6 @@ object ItalianMessages : AraraMessages {
     override val errorInterpreterWrongReturnType =
         "Una regola dovrebbe restituire solo un booleano o un comando. Altri tipi di risposta non sono supportati."
 
-    override val errorInvalidProjectFile =
-        "Ho letto un file che avrebbe dovuto essere un progetto. Purtroppo si è rivelato né un progetto né una lista di progetti. Per favore, controlla che il tuo file di progetto segua il formato documentato."
-
     override fun errorLoadCouldNotLoadDatabase(name: String) =
         "Non ho potuto caricare il database dei file di nome '${name}'. Purtroppo non ho idea del perché sia andata male. Forse il file è stato spostato o cancellato prima o durante l'operazione di lettura, o forse non ho i permessi necessari per leggerlo. Già che ci siamo: se il file contiene i dati di una versione precedente, basta rimuoverlo o rinominarlo, e alla prossima esecuzione costruisco un database nuovo."
 

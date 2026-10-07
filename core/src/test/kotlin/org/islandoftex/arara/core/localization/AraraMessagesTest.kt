@@ -57,7 +57,6 @@ class AraraMessagesTest {
                 errorInterpreterFlagRuntimeException,
                 errorInterpreterWrongExitClosureReturn,
                 errorInterpreterWrongReturnType,
-                errorInvalidProjectFile,
                 errorParseRuleGenericError,
                 errorParseRuleCommandFunctionMissing,
                 errorParseRuleCommandNameNotAString,

@@ -164,9 +164,6 @@ object DutchMessages : AraraMessages {
     override val errorInterpreterWrongReturnType =
         "Een regel mag alleen een, waar of niet waar (booleaanse waarde), of een commando als uitkomst hebben. Andere enter types worden niet ondersteund."
 
-    override val errorInvalidProjectFile =
-        "Ik heb een bestand gelezen dat een project zou moeten zijn. Helaas bleek het geen project en ook geen lijst van projecten te zijn. Controleer of je projectbestand het gedocumenteerde formaat volgt."
-
     override fun errorLoadCouldNotLoadDatabase(name: String) =
         "Ik kon de bestandsdatabase met de naam '${name}' niet laden. Ik weet niet waarom het precies fout ging. Misschien was het bestand verplaatst of verwijderd voor of tijdens de leesoperatie, of misschien heb ik niet de juiste rechten om het te lezen. Overigens: als het bestand inhoud van een oudere versie van mij bevat, verwijder of hernoem het dan gerust, dan bouw ik bij de volgende run een nieuwe database."
 

@@ -73,8 +73,8 @@ class StyledConsoleRenderer(
     /**
      * The widest word the outcome zone carries: the longest
      * result label, or the clock rung the live counter
-     * escalates to - whichever is wider, so every rung fits the
-     * zone the landing repaints.
+     * escalates to - whichever is wider, so every rung up to
+     * that spelling fits the zone the landing repaints.
      */
     private val outcomeWordWidth: Int
         get() = maxOf(longestMatch, clockRungWidth)
@@ -633,8 +633,10 @@ class StyledConsoleRenderer(
      * Formats the elapsed time the live feedback carries: the
      * counter tells time the way clocks do - live tenths under a
      * minute, minutes and seconds under an hour, the full clock
-     * beyond - so its width stays stable as the scale grows and
-     * every rung fits the zone the outcome claims. The escalated
+     * beyond - so its width stays stable as the scale grows, and
+     * every rung the two-digit hours spell fits the zone the
+     * outcome claims; once the hours outgrow the two digits,
+     * the rung widens past what the zone promises. The escalated
      * rungs are digits and colons alone, so no locale ever
      * reshapes them.
      *
@@ -1291,26 +1293,23 @@ class StyledConsoleRenderer(
      */
     override fun printUnprocessedFiles(files: List<String>) {
         terminal.println("")
-        // the names wrap like the exception prose does - flush
-        // continuations under the measure - and the composition
-        // wraps as plain text, so the budget counts no escape
-        // bytes; the muted style returns to the label on the
-        // first line, which no real label ever spans
+        // the label rides clear of the wrap: the muted style sits
+        // on it whole, and the names wrap on their own - the
+        // first line at the room the label leaves, the
+        // continuations flush under the measure - so no terminal
+        // width can break the line inside the label and print it
+        // twice; the wrap runs on the plain lengths, so a
+        // decorated stream wraps at the same measure a plain one
+        // does
         val glyph = runningGlyph()
         val label = LanguageController.messages
             .infoDisplayUnprocessedFiles(files.size)
-        val names = files.joinToString(", ")
-        "$glyph $label$names".wrap(structureWidth).lineSequence()
-            .forEachIndexed { index, line ->
-                if (index == 0) {
-                    terminal.println(
-                        "$glyph ${muted(label)}" +
-                            line.removePrefix("$glyph $label")
-                    )
-                } else {
-                    terminal.println(line)
-                }
-            }
+        val wrapped = files.joinToString(", ").wrap(
+            structureWidth,
+            structureWidth - "$glyph $label".length
+        )
+        ("$glyph ${muted(label)}$wrapped").lineSequence()
+            .forEach { terminal.println(it) }
     }
 
     /**

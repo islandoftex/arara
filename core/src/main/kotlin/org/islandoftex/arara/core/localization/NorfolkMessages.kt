@@ -164,9 +164,6 @@ object NorfolkMessages : AraraMessages {
     override val errorInterpreterWrongReturnType =
         "A rule shud ony retarn a boolean or a command. Narthing else ent supported"
 
-    override val errorInvalidProjectFile =
-        "I've read a file that were supposed ter be a project. Unluckily, it turned aht it weren't no project, nor a list of projects neither. Do please double-check that your project file folla the documented format."
-
     override fun errorLoadCouldNotLoadDatabase(name: String) =
         "Cor blast me, ole partner, but that file database '${name}' ent half puttin' on its parts but I ent got no idear wass gone wrong. Praps the file was hulled abowt afore or time the reading operation was doing else maybe I're gotta he'sum proper permissions to snout abowt the file. Atwin yew, me an' the geartepost, if'n thet file du hold the stuff o' some ole version o' mine, yew hull it out or gi' it a new name, an' I'll set up a fresh un come the nex' run."
 

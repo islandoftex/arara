@@ -163,9 +163,6 @@ object EnglishMessages : AraraMessages {
     override val errorInterpreterWrongReturnType =
         "A rule should only return a boolean or a command. Other return types are not supported."
 
-    override val errorInvalidProjectFile =
-        "I have read a file that was supposed to be a project. Unfortunately, it turned out it was neither a project nor a list of projects. Please double-check that your project file follows the documented format."
-
     override fun errorLoadCouldNotLoadDatabase(name: String) =
         "I could not load the file database named \"${name}\". I have no idea why it failed, though. Perhaps the file was moved or deleted before or during the reading operation, or maybe I do not have the proper permissions to read it. By the way, if the file holds content from an older version of mine, simply remove or rename it, and I will build a fresh database on the next run."
 

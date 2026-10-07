@@ -13,17 +13,33 @@ import org.islandoftex.arara.core.localization.LanguageController
  * own, so a message can carry its own structure - a list of paths,
  * a titled block - without the primitive flowing it away.
  *
- * Algorithm from Wikipedia:
- * https://en.wikipedia.org/wiki/Line_wrap_and_word_wrap#Minimum_number_of_lines
- *
  * @param width The width to wrap at.
  * @return Wrapped text.
  */
-fun String.wrap(width: Int): String = lineSequence()
-    .map { line ->
+fun String.wrap(width: Int): String = wrap(width, width)
+
+/**
+ * Wrap text at a specified width, breaking on spaces, with the
+ * first line filling a narrower budget: the prose that opens
+ * beside a leader - a glyph and a label - budgets the room the
+ * leader leaves on its own opening line, and every continuation
+ * returns to the full width. The first line means the text's
+ * first: a line behind an embedded break wraps from the full
+ * width, like every other continuation.
+ *
+ * Algorithm from Wikipedia:
+ * https://en.wikipedia.org/wiki/Line_wrap_and_word_wrap#Minimum_number_of_lines
+ *
+ * @param width The width every continuation wraps at.
+ * @param firstLineWidth The width the first line wraps at.
+ * @return Wrapped text.
+ */
+fun String.wrap(width: Int, firstLineWidth: Int): String = lineSequence()
+    .mapIndexed { lineIndex, line ->
         val words = line.split(" ")
         var wrapped = words[0]
-        var spaceLeft = width - wrapped.length
+        var spaceLeft =
+            (if (lineIndex == 0) firstLineWidth else width) - wrapped.length
         words.drop(1).forEach {
             val len = it.length
             wrapped += if (len + 1 > spaceLeft) {

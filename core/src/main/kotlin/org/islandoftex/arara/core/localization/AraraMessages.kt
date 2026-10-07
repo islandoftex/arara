@@ -282,11 +282,6 @@ interface AraraMessages {
      */
     val errorInterpreterWrongReturnType: String
     /**
-     * The error shown when a file is neither a project specification
-     * nor a list of them.
-     */
-    val errorInvalidProjectFile: String
-    /**
      * The error shown when the file database cannot be loaded.
      */
     fun errorLoadCouldNotLoadDatabase(name: String): String

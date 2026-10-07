@@ -7,8 +7,9 @@ import kotlin.test.assertEquals
 /**
  * Verifies the shared wrapping primitive: word-boundary wrapping, the
  * single-line behavior for short and long words, the empty input
- * that dialog bodies may carry, and the embedded line breaks that
- * act as hard breaks.
+ * that dialog bodies may carry, the embedded line breaks that
+ * act as hard breaks, and the narrower first-line budget a prose
+ * opening beside a leader fills.
  */
 class WrapTest {
     @Test
@@ -76,6 +77,36 @@ class WrapTest {
             "an introduction line\nthat is fairly long\n  - /the/first/path",
             message.wrap(21),
             "the line after the break starts from the full width again"
+        )
+    }
+
+    @Test
+    fun `budgets the first line narrower than the rest`() {
+        assertEquals(
+            "This text\nshould be wrapped across\nthe lines",
+            "This text should be wrapped across the lines".wrap(25, 10),
+            "the first line fills the leader's budget, the rest the width"
+        )
+    }
+
+    @Test
+    fun `a first-line budget equal to the width changes nothing`() {
+        val message = "a long message of several words"
+        assertEquals(
+            message.wrap(10),
+            message.wrap(10, 10),
+            "the single-width call and the equal two-width call agree"
+        )
+    }
+
+    @Test
+    fun `a hard break resets the budget to the full width`() {
+        val message =
+            "one item that is long\nsecond item wraps alone here"
+        assertEquals(
+            "one item\nthat is long\nsecond item wraps\nalone here",
+            message.wrap(19, 9),
+            "only the text's first line takes the narrow budget"
         )
     }
 }
