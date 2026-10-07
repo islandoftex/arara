@@ -59,9 +59,6 @@ object DutchMessages : AraraMessages {
     override fun errorConfigurationKeyRequiresStringKeys(key: String) =
         "De sleutel '${key}' vereist tekenreeksen als sleutels."
 
-    override fun errorConfigurationKeyRequiresStringValues(key: String) =
-        "De sleutel '${key}' vereist tekenreeksen als waarden."
-
     override val errorConfigurationFileTypeEntryNotATable =
         "Elke 'file_types'-waarde vereist een tabel met een 'extension' en een optioneel 'pattern'."
 

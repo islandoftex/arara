@@ -59,9 +59,6 @@ object BrazilianPortugueseMessages : AraraMessages {
     override fun errorConfigurationKeyRequiresStringKeys(key: String) =
         "A chave '${key}' requer textos como chaves."
 
-    override fun errorConfigurationKeyRequiresStringValues(key: String) =
-        "A chave '${key}' requer textos como valores."
-
     override val errorConfigurationFileTypeEntryNotATable =
         "Cada entrada de 'file_types' requer uma tabela com uma 'extension' e um 'pattern' opcional."
 

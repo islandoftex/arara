@@ -21,7 +21,8 @@ import org.islandoftex.arara.api.localization.MPPLocale
 @Suppress("TooManyFunctions")
 interface AraraMessages {
     /**
-     * The locale these messages are written for.
+     * The locale these messages are written for - the controller
+     * resolves a requested locale against these declarations.
      */
     val providedLocale: MPPLocale
 
@@ -97,11 +98,6 @@ interface AraraMessages {
      * not strings.
      */
     fun errorConfigurationKeyRequiresStringKeys(key: String): String
-    /**
-     * The error shown when the values of a configuration table are
-     * not strings.
-     */
-    fun errorConfigurationKeyRequiresStringValues(key: String): String
     /**
      * The error shown when a file type declaration of the
      * configuration is not a table.

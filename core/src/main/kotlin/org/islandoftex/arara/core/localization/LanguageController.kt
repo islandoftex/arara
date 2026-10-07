@@ -22,24 +22,32 @@ object LanguageController {
     var messages: AraraMessages = EnglishMessages
 
     /**
+     * The message catalogs the controller can install, each carrying
+     * the locale it is written for: a request resolves against those
+     * declarations, so a catalog joins the offered languages by
+     * declaring itself.
+     */
+    private val catalogs = listOf(
+        EnglishMessages,
+        GermanMessages,
+        ItalianMessages,
+        DutchMessages,
+        BrazilianPortugueseMessages,
+        NorfolkMessages
+    )
+
+    /**
      * Load messages for the specified [locale]. Alters the global state of
      * arara.
      */
     fun loadMessagesFor(locale: MPPLocale) {
-        messages = when (locale) {
-            MPPLocale("de") -> GermanMessages
-            MPPLocale("it") -> ItalianMessages
-            MPPLocale("nl") -> DutchMessages
-            MPPLocale("pt-BR") -> BrazilianPortugueseMessages
-            MPPLocale("en-QN") -> NorfolkMessages
-            MPPLocale("en") -> EnglishMessages
-            else -> {
+        messages = catalogs.firstOrNull { it.providedLocale == locale }
+            ?: run {
                 logger.warn {
                     "Language ${locale.displayLanguage} not available; " +
                         "defaulting to English."
                 }
                 EnglishMessages
             }
-        }
     }
 }

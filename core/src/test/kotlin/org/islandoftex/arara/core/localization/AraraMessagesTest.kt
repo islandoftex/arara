@@ -135,7 +135,6 @@ class AraraMessagesTest {
                 errorConfigurationKeyRequiresStringList("alpha"),
                 errorConfigurationKeyRequiresTable("alpha"),
                 errorConfigurationKeyRequiresStringKeys("alpha"),
-                errorConfigurationKeyRequiresStringValues("alpha"),
                 errorDiscoverFileFileNotFound("alpha", "beta"),
                 errorDiscoverFileSafeModeNoCompletion("alpha"),
                 errorDiscoverFileDottedExtension("alpha", "beta"),
@@ -250,8 +249,6 @@ class AraraMessagesTest {
                 { it.errorConfigurationKeyRequiresTable("quux1") },
             listOf("quux1") to
                 { it.errorConfigurationKeyRequiresStringKeys("quux1") },
-            listOf("quux1") to
-                { it.errorConfigurationKeyRequiresStringValues("quux1") },
             listOf("quux1") to { it.errorConfigurationUnknownKeys("quux1") },
             listOf("quux1") to
                 { it.errorConfigurationPreamblePrependInvalid("quux1") },

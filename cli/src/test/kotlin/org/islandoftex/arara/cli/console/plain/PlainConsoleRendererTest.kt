@@ -329,7 +329,7 @@ class PlainConsoleRendererTest {
         }
         output.lineSequence().forEach { line ->
             assertTrue(
-                line.length <= 80,
+                line.length <= 79,
                 "the names wrap under the terminal width: '$line'"
             )
         }

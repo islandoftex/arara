@@ -210,8 +210,9 @@ on.
   gap to MVEL rules which always had session access.
 * The rule errors of the Lua engine now share the localized header with
   the YAML engine, unsupported rule file formats report a new localized
-  message, and the previously untranslated project file message is now
-  available in all supported languages.
+  message, and the previously untranslated project file message joined
+  all supported catalogs - and has since been retired together with
+  the project-probing flow that raised it.
 * The log file (enabled via `-l`/`--log`) now records the selected rule
   engine, the exit value and duration of every system command,
   conditionally skipped directives and halt requests, and its line
@@ -559,9 +560,11 @@ on.
   'Arquivos avulsos', for instance) is rejected together with the
   English model name the reservation already covered. A
   specification file named exactly after its own suffix
-  (`.proj.lua`) no longer derives an empty project name - the run
-  rejects it with the blank-name verdict, which now drops its
-  'when given' clause and reads true wherever a name comes from.
+  (`.proj.lua`) no longer names a project by an empty string: a
+  project that would take the empty derivation meets the
+  blank-name verdict - which drops its 'when given' clause and
+  reads true wherever a name comes from - while the file's own
+  declared projects keep it running.
   And the compact result landing of the styled presentation pads
   the plain word before the theme colors it: the padding used to
   count the color escapes and never fire, so the word sat left of

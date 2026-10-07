@@ -58,9 +58,6 @@ object EnglishMessages : AraraMessages {
     override fun errorConfigurationKeyRequiresStringKeys(key: String) =
         "The '${key}' key requires string keys."
 
-    override fun errorConfigurationKeyRequiresStringValues(key: String) =
-        "The '${key}' key requires string values."
-
     override val errorConfigurationFileTypeEntryNotATable =
         "Every 'file_types' entry requires a table with an 'extension' and an optional 'pattern'."
 

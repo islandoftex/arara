@@ -301,10 +301,10 @@ class LuaInterpreter(private val appWorkingDir: MPPPath) {
 
     /**
      * Extracts a project from its Lua table: the name falls back to
-     * the caller's default when the key is absent, a present name
-     * cannot be blank, the working directory resolves against the
-     * application's, and the file entries and dependencies convert
-     * to their own shapes.
+     * the caller's default when the key is absent, the effective
+     * name - declared or derived - cannot be blank, the working
+     * directory resolves against the application's, and the file
+     * entries and dependencies convert to their own shapes.
      */
     // one extraction surface, each throw a distinct parse
     // violation reported where it is detected - the same shape

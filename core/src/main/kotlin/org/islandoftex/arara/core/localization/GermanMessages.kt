@@ -59,9 +59,6 @@ object GermanMessages : AraraMessages {
     override fun errorConfigurationKeyRequiresStringKeys(key: String) =
         "Der Schlüssel '${key}' erfordert Zeichenketten als Schlüssel."
 
-    override fun errorConfigurationKeyRequiresStringValues(key: String) =
-        "Der Schlüssel '${key}' erfordert Zeichenketten als Werte."
-
     override val errorConfigurationFileTypeEntryNotATable =
         "Jeder 'file_types'-Eintrag erfordert eine Tabelle mit einer 'extension' und einem optionalen 'pattern'."
 

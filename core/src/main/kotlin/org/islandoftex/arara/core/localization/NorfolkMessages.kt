@@ -59,9 +59,6 @@ object NorfolkMessages : AraraMessages {
     override fun errorConfigurationKeyRequiresStringKeys(key: String) =
         "The '${key}' key wants strings for its keys."
 
-    override fun errorConfigurationKeyRequiresStringValues(key: String) =
-        "The '${key}' key wants strings for its values."
-
     override val errorConfigurationFileTypeEntryNotATable =
         "Every 'file_types' entry wants a table with an 'extension' and a 'pattern' if yew're so minded."
 
