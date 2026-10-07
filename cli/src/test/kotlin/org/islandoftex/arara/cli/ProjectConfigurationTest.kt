@@ -434,7 +434,7 @@ class ProjectConfigurationTest {
                   - name: The echoer
                     command: >
                       @{
-                        return getCommand('echo', 'Quack');
+                        return isWindows(getCommand('cmd', '/c', 'echo', 'Quack'), getCommand('echo', 'Quack'));
                       }
                 arguments: []
                 """.trimIndent()
@@ -721,7 +721,7 @@ class ProjectConfigurationTest {
                   - name: The echoer
                     command: >
                       @{
-                        return getCommand('echo', 'Quack');
+                        return isWindows(getCommand('cmd', '/c', 'echo', 'Quack'), getCommand('echo', 'Quack'));
                       }
                 arguments: []
                 """.trimIndent()
@@ -775,7 +775,7 @@ class ProjectConfigurationTest {
                   - name: The echoer
                     command: >
                       @{
-                        return getCommand('echo', 'Quack');
+                        return isWindows(getCommand('cmd', '/c', 'echo', 'Quack'), getCommand('echo', 'Quack'));
                       }
                 arguments: []
                 """.trimIndent()
