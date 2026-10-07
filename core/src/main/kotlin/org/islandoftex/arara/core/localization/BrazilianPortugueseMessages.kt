@@ -87,19 +87,19 @@ object BrazilianPortugueseMessages : AraraMessages {
         file: String,
         extension: String
     ) =
-        "Não consegui determinar o tipo de arquivo de '${file}': a extensão configurada '${extension}' contém um ponto, e a busca de extensões lê apenas o último segmento de um nome. Declare o tipo com uma extensão sem ponto."
+        "Não consegui determinar o tipo de arquivo '${file}': a extensão configurada '${extension}' contém um ponto, e a busca de extensões lê apenas o último segmento de um nome. Declare o tipo com uma extensão sem ponto."
 
     override fun errorDiscoverFileUnknownExtension(
         file: String,
         extensions: String
     ) =
-        "Não consegui determinar o tipo de arquivo de '${file}': nenhum tipo de arquivo desta execução corresponde à extensão dele. As extensões desta execução são ${extensions}. Adicione a extensão que falta aos 'file_types' da configuração."
+        "Não consegui determinar o tipo de arquivo '${file}': nenhum tipo de arquivo desta execução corresponde à extensão dele. As extensões desta execução são ${extensions}. Adicione a extensão que falta aos 'file_types' da configuração."
 
     override fun errorDiscoverFileUnknownLuaExtension(
         file: String,
         extensions: String
     ) =
-        "Não consegui determinar o tipo de arquivo de '${file}': nenhum tipo de arquivo desta execução corresponde à extensão dele. As extensões desta execução são ${extensions}. Adicione a extensão aos 'file_types' da configuração - ou, se o arquivo for uma especificação de projeto, o sufixo dele é '.proj.lua'."
+        "Não consegui determinar o tipo de arquivo '${file}': nenhum tipo de arquivo desta execução corresponde à extensão dele. As extensões desta execução são ${extensions}. Adicione a extensão aos 'file_types' da configuração - ou, se o arquivo for uma especificação de projeto, o sufixo dele é '.proj.lua'."
 
     override val errorEvaluateCompilationFailed =
         "Por alguma razão, eu não consegui compilar a expressão condicional especificada. Esta parte é complicada, pois envolve aspectos da linguagem de expressão subjacente. Eu farei o possível para te ajudar da melhor forma que puder."
@@ -286,7 +286,7 @@ object BrazilianPortugueseMessages : AraraMessages {
         "A chave 'pattern' do tipo de arquivo requer um valor de texto."
 
     override fun errorProjectFileTypeUnknownExtension(file: String) =
-        "Não consegui determinar o tipo de arquivo de '${file}': nenhum tipo de arquivo desta execução corresponde à extensão dele. Declare um 'file_type' para a entrada, ou adicione a extensão aos 'file_types' da configuração."
+        "Não consegui determinar o tipo de arquivo '${file}': nenhum tipo de arquivo desta execução corresponde à extensão dele. Declare um 'file_type' para a entrada, ou adicione a extensão aos 'file_types' da configuração."
 
     override fun errorProjectSpecificationNotFound(file: String) =
         "Não consegui encontrar o arquivo de especificação \"${file}\". Por favor, verifique se o arquivo existe."

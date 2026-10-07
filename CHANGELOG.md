@@ -231,6 +231,10 @@ on.
 
 ## Changed
 
+* The Brazilian Portuguese file type verdicts read 'o tipo de
+  arquivo' for the file they name: the phrasing used to carry a
+  second 'de' before the file name, and all four members of the
+  family drop it together.
 * The Brazilian Portuguese word for a failed task reads 'FALHA'
   now: the landing used to say 'FRACASSO' while the closing
   verdict said 'FALHA TOTAL', splitting the run's voice between
