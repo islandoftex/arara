@@ -18,8 +18,10 @@ import org.junit.jupiter.api.TestInstance
  * Verifies the directive extraction and validation: multi-line
  * directives through the continuation marker, the until and unless
  * conditionals, the file-list replication and its degenerate
- * shapes, and the rejections for orphan markers, reserved
- * parameters and unparseable values.
+ * shapes, the rejections for orphan markers, reserved parameters
+ * and unparseable values, the orb tags in directive options, the
+ * numeric scalar conversion, the null rejection, and the rule
+ * file dispatch that rejects unknown formats.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DirectiveParsingTest {

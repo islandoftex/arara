@@ -22,7 +22,7 @@ class SessionTest {
     }
 
     @Test
-    fun `includes all environment variables`() {
+    fun `the environment import lands the system path in the session`() {
         Session.clear()
         Session.updateEnvironmentVariables()
         // on Linux it is called PATH, on Windows it may be Path

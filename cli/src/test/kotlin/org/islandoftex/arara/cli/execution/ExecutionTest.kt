@@ -198,7 +198,7 @@ class ExecutionTest {
     }
 
     @Test
-    fun `gracefully halts on the halt rule`() {
+    fun `the halt rule skips the directives that follow it`() {
         // a fresh session keeps the scenario independent from any halt
         // keys left behind by other specs or scenarios
         Session.clear()
@@ -211,7 +211,7 @@ class ExecutionTest {
     }
 
     @Test
-    fun `forcefully halts on the halt error rule`() {
+    fun `the error halt rule skips the directives that follow it`() {
         // a fresh session keeps the scenario independent from any halt
         // keys left behind by other specs or scenarios
         Session.clear()

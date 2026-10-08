@@ -30,7 +30,7 @@ class LuaConditionalEvaluatorErrorTest {
             )
         }
         assertTrue(
-            exception.message != null,
+            exception.message!!.contains("I could not compile the expression"),
             "the primary message is the localized evaluation error"
         )
         assertTrue(
@@ -51,8 +51,8 @@ class LuaConditionalEvaluatorErrorTest {
             )
         }
         assertTrue(
-            exception.message != exception.cause?.message,
-            "the strict boolean error is not nested behind itself"
+            exception.message!!.contains("expecting a boolean value as result"),
+            "the primary message is the strict boolean error"
         )
         assertTrue(
             exception.cause == null,

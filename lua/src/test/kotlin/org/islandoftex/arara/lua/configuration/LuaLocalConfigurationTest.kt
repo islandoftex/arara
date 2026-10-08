@@ -18,8 +18,10 @@ import org.islandoftex.arara.core.session.Environment
  * Verifies the Lua configuration parser: the full key surface with
  * its grouped families, the defaults for omitted keys, the
  * rejection of unknown keys - at the root and inside every group -
- * of wrong types and of unknown preamble policies, and the values
- * arara puts in scope for the script to compute its paths from.
+ * of wrong types and of unknown preamble policies, the configured
+ * file types leading the priority order, the Lua runtime rejection
+ * of a misspelled scope value, and the values arara puts in scope
+ * for the script to compute its paths from.
  */
 class LuaLocalConfigurationTest {
     private fun configFile(content: String): MPPPath {

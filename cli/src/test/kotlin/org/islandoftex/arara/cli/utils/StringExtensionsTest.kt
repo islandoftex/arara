@@ -7,7 +7,8 @@ import kotlin.test.assertFailsWith
 
 /**
  * Verifies the terminal output string helpers of the command line
- * application: abbreviation, centering and wrapping.
+ * application: abbreviation with its ellipsis and exact-fit edges,
+ * and the centering of the short and the long string.
  */
 class StringExtensionsTest {
     @Test

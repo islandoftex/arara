@@ -27,7 +27,9 @@ import org.islandoftex.arara.core.session.Session
  * Verifies the terminal presentation: the entry shapes across the
  * execution modes, the exception display with its details section,
  * the conditional and author listings, and the size and time
- * renderings. Output is captured from the standard stream; the
+ * renderings; the file header line, the per-file printed state the
+ * facade tracks, the centered separators, and the unprocessed-files
+ * closing line. Output is captured from the standard stream; the
  * presentation state rides the session and the execution options,
  * which are saved and restored around every test.
  */
@@ -124,7 +126,7 @@ class DisplayTest {
     }
 
     @Test
-    fun `prints exceptions verbosely and names causeless details`() {
+    fun `prints exceptions verbosely and names a silent cause by its type`() {
         val verbose = withOptions(ExecutionMode.NORMAL_RUN, true) {
             capturingOutput {
                 Display.printEntry("rule", "run")
@@ -144,7 +146,7 @@ class DisplayTest {
     }
 
     @Test
-    fun `shortens the result alignment on narrow terminals`() {
+    fun `the result word still lands on a narrow terminal`() {
         Session.userInterfaceOptions =
             UserInterfaceOptions(locale = MPPLocale("en"), terminalOutputWidth = 5)
         val narrow = capturingOutput {
@@ -158,10 +160,18 @@ class DisplayTest {
     fun `prints authors conditionally`() {
         val single = capturingOutput { Display.printAuthors(listOf("Island of TeX")) }
         assertTrue("Island" in single)
+        assertTrue("Author:" in single, "a lone author carries the singular label")
         val multiple = capturingOutput { Display.printAuthors(listOf("One", "Two")) }
         assertTrue("One" in multiple && "Two" in multiple)
+        assertTrue("Authors:" in multiple, "several authors carry the plural label")
         val none = capturingOutput { Display.printAuthors(emptyList()) }
-        assertTrue(none.isNotBlank(), "an empty author list has its own label")
+        // the empty listing runs past the pinned measure and wraps;
+        // flattened, the label and its text still read as one line
+        val flat = none.lineSequence().joinToString(" ") { it.trim() }
+        assertTrue(
+            "Authors: No authors provided" in flat,
+            "an empty author list has its own label"
+        )
     }
 
     @Test
@@ -191,6 +201,9 @@ class DisplayTest {
         assertEquals("1.0 MB", byteSizeToString(1000000))
         assertEquals("1.5 MB", byteSizeToString(1500000))
         assertEquals("1.0 GB", byteSizeToString(1000000000))
+        assertEquals("1.0 TB", byteSizeToString(1_000_000_000_000L))
+        assertEquals("1.0 PB", byteSizeToString(1_000_000_000_000_000L))
+        assertEquals("1.0 EB", byteSizeToString(1_000_000_000_000_000_000L))
     }
 
     @Test

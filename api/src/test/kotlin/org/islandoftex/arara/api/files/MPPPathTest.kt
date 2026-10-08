@@ -14,7 +14,9 @@ import org.junit.jupiter.api.io.TempDir
 /**
  * Verifies the path attributes and normalization of [MPPPath] across
  * operating systems: absolute path detection, dot segment resolution
- * and parent lookup, including the root edge cases. Platform-specific
+ * and parent lookup, including the root edge cases, and the live
+ * metadata queries of the file: its size and modification stamp,
+ * and the path exception a missing file raises. Platform-specific
  * expectations are selected by the [getValueByOS] helper.
  */
 class MPPPathTest {
@@ -49,14 +51,14 @@ class MPPPathTest {
     // path normalization
     @Test
     fun `normalizes dots`() {
-        val (expected, actual) = getValueByOS(
+        val (dotted, clean) = getValueByOS(
                 windows = "C:/tmp/./quack/.." to "C:/tmp/",
                 unix = "/tmp/./quack/.." to "/tmp/"
         )
 
         assertEquals(
-            MPPPath(actual).normalize().toString(),
-            MPPPath(expected).normalize().toString(),
+            MPPPath(clean).normalize().toString(),
+            MPPPath(dotted).normalize().toString(),
             "dot segments are resolved during normalization"
         )
     }
@@ -95,7 +97,7 @@ class MPPPathTest {
         )
     }
     @Test
-    fun `determines the parent correctly`() {
+    fun `resolves the parent of a dotted path to the root, both ways around normalization`() {
         val (expected, actual) = getValueByOS(
                 windows = "C:/tmp/./quack/.." to "C:/",
                 unix = "/tmp/./quack/.." to "/"
@@ -156,6 +158,11 @@ class MPPPathTest {
     private inline fun <reified T> getValueByOS(windows: T, unix: T): T =
             if (OS.isWindows) windows else unix
 
+    /**
+     * The drive letter the platform's working directory sits on, so
+     * the Windows-shaped expectations name the drive the test
+     * actually runs from instead of a hardcoded letter.
+     */
     private val drive: String by lazy {
         if (OS.isWindows) Path(".").absolutePathString()
                 .substringBefore(":") else "C"

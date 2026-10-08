@@ -5,17 +5,20 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 /**
- * Verifies the topological ordering of the dependency graph, including
- * the deliberate partial order for cyclic vertices (the linear executor
- * enforces completeness at the project level).
+ * Verifies the two answers of the dependency graph: the topological
+ * order Kahn's algorithm yields - including its deliberate partial
+ * order for cyclic vertices, which the linear executor completes
+ * at the project level - and the cycle membership the walk names,
+ * down to the members alone, without their dependents or the
+ * bridges between two cycles.
  */
 class GraphTest {
     @Test
-    fun `operates correctly on an empty graph`() {
+    fun `an empty graph orders to nothing`() {
         assertEquals(emptyList<Int>(), Graph<Int>().kahn(), "an empty graph has an empty order")
     }
     @Test
-    fun `operates correctly on a singleton graph`() {
+    fun `a lone vertex orders to itself`() {
         assertEquals(listOf(1), Graph<Int>().apply { addVertex(1) }.kahn(), "a singleton graph keeps its single vertex")
     }
     @Test

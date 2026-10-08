@@ -10,9 +10,10 @@ import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.rules.DirectiveConditional
 
 /**
- * Verifies the Lua directive conditional evaluator: truthiness,
- * unless/until inversion, the at-most-once guarantee of if conditions,
- * the maxLoops caps, the strict boolean requirement, syntax error
+ * Verifies the Lua directive conditional evaluator: the evaluation
+ * of true conditions, helper calls included, unless/until
+ * inversion, the at-most-once guarantee of if conditions, the
+ * maxLoops caps, the strict boolean requirement, syntax error
  * wrapping and the session exposure.
  */
 class LuaConditionalEvaluatorTest {

@@ -61,6 +61,14 @@ class InterpreterTest {
         Session.clear()
     }
 
+    /**
+     * Builds the halt directive for the file, rewriting its reference
+     * parameter the way directive processing does, so the interpreter
+     * resolves the file under run.
+     *
+     * @param filePath The file the halt directive names.
+     * @return The directive with the reference rewritten.
+     */
     private fun haltDirectiveFor(filePath: MPPPath): org.islandoftex.arara.api.rules.Directive =
         Directives.extractDirectives(
             listOf("% arara: halt"),
@@ -405,12 +413,53 @@ class InterpreterTest {
     @Test
     fun `continues past failures without halt on errors`() {
         Session.clear()
-        val status = executeFailingRule(haltOnErrors = false)
-        assertNotEquals(
-            0,
-            status,
-            "the failure surfaces as the exit code without halting"
+        val directory = Files.createTempDirectory("arara-interpreter-rule")
+        val java = ProcessHandle.current().info().command().orElse("java")
+        Files.writeString(
+            directory.resolve("arara-rule-lenient.yaml"),
+            """
+            !config
+            identifier: lenient
+            name: Lenient
+            authors:
+            - Island of TeX
+            commands:
+            - name: The failing tool
+              command: >
+                @{ return getCommandWithWorkingDirectory(
+                '${forMvel(directory)}', '${forMvel(java)}', '-wrongflag-quack'); }
+            - name: The tool that still runs
+              command: >
+                @{ return getCommandWithWorkingDirectory(
+                '${forMvel(directory)}', '${forMvel(java)}', '-version'); }
+            arguments: []
+            """.trimIndent()
         )
+        // under the lenient policy, the failure of the first command
+        // does not stop the run: the command after the failure still
+        // runs, and the failure keeps the run's verdict
+        val originalOut = System.out
+        try {
+            val output = ByteArrayOutputStream()
+            System.setOut(PrintStream(output, true))
+            val status = executeRule(directory, "lenient", haltOnErrors = false)
+            val rendered = output.toByteArray().toString(Charsets.UTF_8)
+            assertNotEquals(
+                0,
+                status,
+                "the failure surfaces as the exit code without halting"
+            )
+            assertTrue(
+                "The failing tool" in rendered,
+                "the failing command landed on the console"
+            )
+            assertTrue(
+                "The tool that still runs" in rendered,
+                "the command after the failure still ran"
+            )
+        } finally {
+            System.setOut(originalOut)
+        }
     }
 
     @Test
@@ -739,8 +788,13 @@ class InterpreterTest {
     /**
      * Runs a directive whose rule command exits non-zero through a
      * stateless command expression, returning the exit code the
-     * interpreter reports; the halt expectation surfaces as an
-     * exception, the lenient mode as the exit code.
+     * interpreter reports under the requested error-halt policy -
+     * the strict mode stops at the failing task inside the
+     * interpreter, the lenient mode reports the failure after the
+     * run.
+     *
+     * @param haltOnErrors The error-halt policy the run asks for.
+     * @return The exit code the interpreter reports.
      */
     private fun executeFailingRule(haltOnErrors: Boolean): Int {
         Session.clear()

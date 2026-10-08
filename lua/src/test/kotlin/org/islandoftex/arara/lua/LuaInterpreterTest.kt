@@ -15,9 +15,16 @@ import org.islandoftex.arara.core.files.UNKNOWN_TYPE
 import org.islandoftex.arara.core.session.LinearExecutor
 
 /**
- * Verifies the Lua project specification parser: single projects, file
- * entries with their explicit directives, project lists, the
- * dependency validation and the rejection of wrongly typed entries.
+ * Verifies the Lua project specification parser: single projects
+ * and project lists with their file entries, explicit directives,
+ * priorities and file types; the working directory resolution
+ * against the application's own; the user, home and cwd values
+ * the script computes from; the file type detection by extension
+ * and the pending entries that resolve through the types of the
+ * run; the dependency validation; and the rejections of wrongly
+ * typed or unknown keys, of outdated spellings, of blank and
+ * duplicated names, and of files listed twice under two
+ * spellings.
  */
 class LuaInterpreterTest {
     @Test
@@ -202,7 +209,7 @@ class LuaInterpreterTest {
     }
 
     @Test
-    fun `rejects number dependency entries`() {
+    fun `the number dependency rejection names the expected entry type`() {
         val script = """
             return {
               {
@@ -232,7 +239,7 @@ class LuaInterpreterTest {
     }
 
     @Test
-    fun `rejects number file keys`() {
+    fun `the number file key rejection names the expected key shape`() {
         val script = """
             return {
               files = {
@@ -252,7 +259,7 @@ class LuaInterpreterTest {
     }
 
     @Test
-    fun `rejects non table project list entries`() {
+    fun `the non-table list entry rejection names the expected entry shape`() {
         val script = """
             return {
               "not a project"
@@ -333,7 +340,7 @@ class LuaInterpreterTest {
     }
 
     @Test
-    fun `rejects single projects with dependencies`() {
+    fun `the single-project dependency rejection is the validation violation`() {
         assertFailsWith<ProjectValidationException> {
             LuaInterpreter(MPPPath(".")).parseProjectsFromLua(
                 """

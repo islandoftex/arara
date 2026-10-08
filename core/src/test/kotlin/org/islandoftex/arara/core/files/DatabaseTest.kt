@@ -17,8 +17,9 @@ import org.junit.jupiter.api.io.TempDir
 /**
  * Verifies the file change database: path normalization on insertion,
  * removal semantics, and the record format of the on-disk cache - the
- * round trips, the guard against foreign files, and the idempotence
- * of the sorted writes.
+ * round trips, the guard against foreign files, the rejections of
+ * malformed, duplicated and stale records, the idempotence of the
+ * sorted writes, and the wrapping of unwritable save targets.
  */
 class DatabaseTest {
     @Test

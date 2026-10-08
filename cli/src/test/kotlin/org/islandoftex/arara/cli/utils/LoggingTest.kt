@@ -8,7 +8,10 @@ import org.apache.logging.log4j.ThreadContext
 import org.islandoftex.arara.core.configuration.LoggingOptions
 
 /**
- * Verifies the log4j2 setup performed by [Logging].
+ * Verifies the logging setup [Logging] performs: the log file path
+ * registers in the logging context, and the setup is undone
+ * afterwards so the context values cannot leak into later tests
+ * of the same machine.
  */
 class LoggingTest {
     @Test

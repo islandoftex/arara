@@ -57,7 +57,7 @@ class PlainDialogRendererStreamTest {
     }
 
     @Test
-    fun `renders a closing separator for every block`() {
+    fun `the message block opens and closes on a separator`() {
         val (_, output) = withStreams("") {
             TerminalDialogs.showMessage(1, "Greetings", "This is a dialog")
             ""

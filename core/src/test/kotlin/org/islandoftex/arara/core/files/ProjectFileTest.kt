@@ -16,9 +16,11 @@ import org.islandoftex.arara.core.rules.DirectiveFetchingHooks
 import org.islandoftex.arara.core.rules.Directives
 
 /**
- * Verifies that the project file extraction honors the header-only
- * parameter it receives, instead of silently consulting the global
- * execution options.
+ * Verifies the project file model: the directive extraction honors
+ * the header-only parameter it receives instead of silently
+ * consulting the global execution options, an unreadable path
+ * reaches the extraction error, and files compare by their
+ * ingredients - path, type and priority alike.
  */
 class ProjectFileTest {
     private val installedHooks = Directives.hooks

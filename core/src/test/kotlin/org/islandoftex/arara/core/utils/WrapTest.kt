@@ -69,7 +69,7 @@ class WrapTest {
     }
 
     @Test
-    fun `wraps the line after a hard break from its own edge`() {
+    fun `a wrapping segment keeps the hard-broken line to itself`() {
         val message =
             "an introduction line that is fairly long\n" +
                 "  - /the/first/path"

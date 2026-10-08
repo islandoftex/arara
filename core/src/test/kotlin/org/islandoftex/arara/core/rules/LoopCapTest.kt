@@ -10,10 +10,11 @@ import org.islandoftex.arara.core.configuration.ExecutionOptions
 import org.islandoftex.arara.core.session.LinearExecutor
 
 /**
- * Verifies the loop cap of the conditional evaluator: a `while` and an
- * `until` body run exactly the configured number of times, and the
- * evaluation reports false once the cap is reached - the boundary the
- * loop guards protect the tool with.
+ * Verifies the loop cap of the conditional evaluator: a `while` body
+ * runs exactly the configured number of times, an `until` body stops
+ * one evaluation earlier at its own boundary, and the evaluation
+ * reports false once the cap is reached - the boundary the loop
+ * guards protect the tool with.
  */
 class LoopCapTest {
     private fun conditional(type: DirectiveConditionalType): DirectiveConditional =

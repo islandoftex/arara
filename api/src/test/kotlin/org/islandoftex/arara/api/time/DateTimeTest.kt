@@ -11,7 +11,7 @@ import kotlin.test.assertEquals
  */
 class DateTimeTest {
     @Test
-    fun `correctly parses a date to its string representation`() {
+    fun `formats the date to its string representation`() {
         assertEquals(
             "2025-08-01 17:46:01",
             DateTime(2025, 8, 1, 17, 46, 1).toString(),
@@ -20,7 +20,7 @@ class DateTimeTest {
     }
 
     @Test
-    fun `correctly parses a date to its epoch representation`() {
+    fun `converts the date to its epoch representation`() {
         assertEquals(
             1754017751000L,
             DateTime(2025, 8, 1, 3, 9, 11).toLong(ZoneId.of("UTC")),

@@ -8,7 +8,11 @@ import kotlin.test.assertTrue
 import org.islandoftex.arara.api.AraraException
 
 /**
- * Tests for glob to regex conversion.
+ * Verifies the glob-to-regex conversion the file listings and rule
+ * lookups rely on: the wildcards become their regex counterparts,
+ * escapes and character classes keep their meaning, braces become
+ * groups, and a malformed glob surfaces as the arara error naming
+ * the pattern.
  *
  * Code by [Neil Traft](https://stackoverflow.com/users/213525/neil-traft)
  * (see https://stackoverflow.com/a/17369948, released into public domain as

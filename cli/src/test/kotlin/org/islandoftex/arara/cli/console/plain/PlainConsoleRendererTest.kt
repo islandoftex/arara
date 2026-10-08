@@ -23,8 +23,11 @@ import org.islandoftex.arara.core.session.Session
 /**
  * Verifies the plain console renderer: the error section on its
  * dashed rule, the word landing like a result on an open entry
- * line, the closing verdict and its tallies, and the per-file flag
- * hygiene that keeps the separations honest.
+ * line, the closing verdict and its tallies, the per-file flag
+ * hygiene that keeps the separations honest, the banner that
+ * names the run and resets the tallies, and the
+ * unprocessed-files closing line that wraps at the terminal
+ * width.
  */
 class PlainConsoleRendererTest {
     private val originalOut = System.out

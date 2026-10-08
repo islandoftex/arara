@@ -13,8 +13,9 @@ import org.islandoftex.arara.core.rules.RuleMethods
 import org.islandoftex.arara.core.session.LinearExecutor
 
 /**
- * Verifies the command runner: exit codes report through, failures map
- * to their localized errors, and the duration pairing survives.
+ * Verifies the command runner: exit codes report through with the
+ * captured output beside them, and failures map to their localized
+ * errors - the timeout and the missing command alike.
  */
 class CommandRunnerTest {
     private val originalOptions = LinearExecutor.executionOptions

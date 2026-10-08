@@ -24,11 +24,17 @@ import org.islandoftex.arara.core.session.Session
 
 /**
  * Runs the actual CLI entry point to verify behavior that only manifests
- * through it. [ProjectConfigurationTest] pins the fix for project
- * specifications ignoring configuration files: the `project-config`
- * fixture is only solvable when the configuration of the project is
- * loaded, as its rule is reachable exclusively through the rule paths
- * the configuration provides.
+ * through it: the project specification flow (the configuration loading
+ * that made the `project-config` fixture solvable, the merging of
+ * several specifications with their cross-file dependencies, the name
+ * derivation and the name collisions, the cycle verdict naming only
+ * its members, and the degenerate specification names), the
+ * configuration resolution (the project directory, the user home
+ * fallback, the directory that poses as a configuration file), and
+ * the command line surface (the option mapping onto the execution,
+ * the dry and safe run modes, the help request, the preambles, the
+ * call parameter precedence, and the log file that never materializes
+ * without the flag).
  */
 class ProjectConfigurationTest {
     /**
@@ -259,7 +265,7 @@ class ProjectConfigurationTest {
     }
 
     @Test
-    fun `derives the names of nameless specifications from their files`() {
+    fun `two nameless specifications merge without colliding`() {
         withRestoredState {
             val directory = createTempDirectory("arara-cli-nameless")
             Files.writeString(
@@ -910,15 +916,23 @@ class ProjectConfigurationTest {
     fun `rejects preambles the configuration does not define`() {
         withRestoredState {
             val directory = createTempDirectory("arara-cli-preamble")
+            // the file has to exist and carry a directive, so the run
+            // reaches the preamble resolution itself instead of dying
+            // at the file lookup - the rejection under test is the
+            // verdict, not the missing file
+            Files.writeString(
+                directory.resolve("preamble.tex"),
+                "% arara: echoone\n"
+            )
             val (status, output) = runCLI(
                 "--working-directory", directory.toString(),
                 "--preamble", "nonexistent",
-                "missing.tex"
+                "preamble.tex"
             )
             assertNotEquals(0, status, "an undefined preamble is an error")
             assertTrue(
-                output.isNotBlank(),
-                "the rejection is reported to the user"
+                "the preamble \"nonexistent\" could not be found" in output,
+                "the rejection names the requested preamble"
             )
         }
     }
@@ -942,7 +956,7 @@ class ProjectConfigurationTest {
     }
 
     @Test
-    fun `maps the command line options onto the execution`() {
+    fun `a run under the full option surface succeeds`() {
         withRestoredState {
             val (status, output) = runCLI(
                 "--working-directory",
@@ -963,7 +977,7 @@ class ProjectConfigurationTest {
     }
 
     @Test
-    fun `maps the dry run and safe run modes`() {
+    fun `the dry run mode marks its entries and the safe mode keeps ordinary commands running`() {
         withRestoredState {
             val dryRun = runCLI(
                 "--working-directory",

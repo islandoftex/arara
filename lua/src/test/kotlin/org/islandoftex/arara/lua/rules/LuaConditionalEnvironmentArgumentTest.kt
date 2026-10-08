@@ -67,7 +67,7 @@ class LuaConditionalEnvironmentArgumentTest {
     }
 
     @Test
-    fun `rejects non strings where strings are expected`() {
+    fun `rejects a boolean needle and a nil session value with the bad argument error`() {
         assertBadArgument("found", 2, "string") {
             binding("found").call(LuaValue.valueOf("log"), LuaValue.TRUE)
         }

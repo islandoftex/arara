@@ -151,6 +151,10 @@ class SessionLogTest {
             "the wipe names its count"
         )
         assertTrue(
+            "Session cleared (1 variable)." in content,
+            "a lone variable clears under the singular spelling"
+        )
+        assertTrue(
             content.indexOf(set) < content.indexOf(overwrite) &&
                 content.indexOf(overwrite) < content.indexOf(removed),
             "the lines land in the order the mutations happened"
@@ -174,6 +178,8 @@ class SessionLogTest {
                       getSession().put('alpha', 'two');
                       getSession().put('beta', 'three');
                       getSession().remove('alpha');
+                      getSession().clear();
+                      getSession().put('gamma', 'four');
                       getSession().clear();
                       return isWindows(getCommand('cmd', '/c', 'echo', 'Quack'), getCommand('echo', 'Quack'));
                   }
@@ -202,6 +208,8 @@ class SessionLogTest {
                     session.put('alpha', 'two')
                     session.put('beta', 'three')
                     session.remove('alpha')
+                    session.clear()
+                    session.put('gamma', 'four')
                     session.clear()
                     return isWindows(
                       getCommand('cmd', '/c', 'echo', 'Quack'),

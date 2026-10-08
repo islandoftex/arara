@@ -33,10 +33,4 @@ public interface FileType {
          */
         public const val INVALID_PATTERN: String = ""
     }
-
-    /**
-     * This indicates whether an instance of an implementation is invalid.
-     */
-    public val isUnknown: Boolean
-        get() = extension == INVALID_EXTENSION || pattern == INVALID_PATTERN
 }

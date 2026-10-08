@@ -168,27 +168,6 @@ internal object LuaConversion {
         }
 
     /**
-     * Extract the value at the given position as a Lua string,
-     * rejecting other types.
-     */
-    fun Varargs.stringArgument(helper: String, index: Int): String =
-        arg(index).stringArgument(helper, index)
-
-    /**
-     * Extract the value at the given position as a Lua number,
-     * rejecting other types.
-     */
-    fun Varargs.numberArgument(helper: String, index: Int): Int =
-        arg(index).numberArgument(helper, index)
-
-    /**
-     * Extract the value at the given position as a Lua boolean,
-     * rejecting other types.
-     */
-    fun Varargs.booleanArgument(helper: String, index: Int): Boolean =
-        arg(index).booleanArgument(helper, index)
-
-    /**
      * Extract the value as a list of strings, rejecting other shapes
      * and non-string elements alike.
      */

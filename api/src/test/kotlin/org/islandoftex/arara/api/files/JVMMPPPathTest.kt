@@ -25,7 +25,11 @@ import org.junit.jupiter.api.io.TempDir
  * Verifies the JVM path model of [MPPPath]: reading and writing text,
  * the value semantics of the two paths every model carries (the
  * user-provided spelling and the absolutized reference), the lexical
- * prefix check, the resolution chain and the JVM escape hatches.
+ * prefix check, the resolution chain, the JVM escape hatches, the
+ * symlink chains the metadata queries follow, the degenerate
+ * spellings that collapse at construction, the Windows-shaped drive
+ * and UNC spellings, and the in-memory file system the model's I/O
+ * can ride.
  */
 class JVMMPPPathTest {
     /**
@@ -270,9 +274,16 @@ class JVMMPPPathTest {
      */
     @Nested
     inner class `symlink resolution` {
-        // creating symlinks requires elevated privileges on some
-        // platforms, so the capability is probed first and the tests
-        // are skipped wherever creation is denied
+        /**
+         * Creates a symbolic link, answering whether the platform
+         * allowed it: creating symlinks requires elevated privileges
+         * on some systems, so the capability is probed first and
+         * the tests are skipped wherever creation is denied.
+         *
+         * @param link The link to create.
+         * @param target The link's target.
+         * @return Whether the link was created.
+         */
         private fun createSymlink(link: Path, target: Path): Boolean =
             try {
                 Files.createSymbolicLink(link, target)
@@ -468,10 +479,15 @@ class JVMMPPPathTest {
      */
     @Nested
     inner class `in-memory file system` {
-        // the path model reads and writes through an injectable file
-        // system; swapping it for the in-memory implementation keeps
-        // the host platform untouched while exercising the model
-        // operations, and the previous instance is always restored
+        /**
+         * Swaps the global file system for the in-memory implementation
+         * around the action, keeping the host platform untouched while
+         * the model operations run, and the previous instance is always
+         * restored.
+         *
+         * @param action The block to run against the fake.
+         * @return Whatever the block returns.
+         */
         private fun <T> withFakeFileSystem(action: () -> T): T {
             val original = PathModelFileSystem.current
             PathModelFileSystem.current = FakeFileSystem()

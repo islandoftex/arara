@@ -456,6 +456,12 @@ on.
 
 ## Removed
 
+* Removed the unused convenience surfaces: the file type's
+  unknown-check property, a one-line expression over the two public
+  constants any caller can spell itself, and the Lua
+  argument-extraction twins that spare one call every binding site
+  preferred to write out. No call site in the tool ever reached
+  either family.
 * **Breaking:** The Swing dialogs are gone. The interactive helpers
   render on the terminal only, so scripts that relied on dialog
   windows, and headless runs that met them, see different behavior by

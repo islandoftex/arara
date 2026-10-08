@@ -10,12 +10,14 @@ import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.files.Project
 
 /**
- * Verifies that project graphs order dependencies before their
- * dependents.
+ * Verifies the project graph's two contracts: dependencies order
+ * before their dependents, and a merge naming a dependency no
+ * project carries fails with the parenthesized enumeration the
+ * validation reports.
  */
 class ProjectGraphTest {
     @Test
-    fun `adds projects and their dependencies to the graph`() {
+    fun `orders dependencies before their dependents`() {
         assertEquals(
             ProjectGraph().apply {
                 addAll(

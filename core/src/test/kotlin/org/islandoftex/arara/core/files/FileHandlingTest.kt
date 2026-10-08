@@ -33,7 +33,7 @@ class FileHandlingTest {
     }
 
     @Test
-    fun `gets subdirectory relationships right`() {
+    fun `a nested path is a subdirectory of its parent, and not the other way around`() {
         assertTrue(
             FileHandling.isSubDirectory(MPPPath("../docs"), MPPPath("..")),
             "a nested directory is a subdirectory of its parent"

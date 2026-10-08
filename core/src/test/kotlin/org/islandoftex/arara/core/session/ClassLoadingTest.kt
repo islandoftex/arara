@@ -19,8 +19,8 @@ import org.islandoftex.arara.core.session.LinearExecutor
 /**
  * Verifies the class loading resolution: lazily referenced companion
  * classes from the same archive resolve through the archive loader,
- * the user's file is copied rather than held open, and the safe-run
- * guard rejects the helpers.
+ * the missing archive and the missing class report their own
+ * statuses, and the safe-run guard rejects the helpers.
  */
 class ClassLoadingTest {
     /**
