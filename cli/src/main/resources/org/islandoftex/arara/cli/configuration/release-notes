@@ -1,11 +1,17 @@
-* Add a Lua rule format in which rules are Lua scripts returning a rule
-  table, with the usual helper methods available as Lua globals.
-* Add a Lua configuration file format, considered when no YAML
-  configuration file is found.
-* Add the `-e`/`--engine` option to select the rule engine to use:
-  `yaml` (default, deprecated) or `lua`.
-* Ship every official rule in both formats, alongside the
-  `scripts/yaml2lua.py` converter.
+* Add a Lua rule format in which rules are Lua scripts returning a rule table,
+  with every official rule shipped in both formats, and select the engine with
+  the new -e/--engine option - the historic YAML engine stays, deprecated, for
+  the transition.
+* Add a Lua configuration file format, considered when no YAML configuration
+  file is found, whose scripts run with arara's own values in scope.
+* Make the invocation a set of projects: .proj.lua files declare their files,
+  priorities, dependencies and working directories, specifications merge into
+  one ordered run, and loose files ride as the anonymous project.
+* Add the -c/--console option and the console configuration key, choosing
+  between the plain presentation and the styled one, which carries live
+  feedback while a task runs.
+* Let the log file trail the session's every mutation, and name the verdict and
+  the provenance of the run.
 
 See the full changelog of this release at
 https://gitlab.com/islandoftex/arara/-/blob/development/CHANGELOG.md
