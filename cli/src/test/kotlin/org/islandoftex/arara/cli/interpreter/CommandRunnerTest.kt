@@ -62,11 +62,15 @@ class CommandRunnerTest {
             .copy(timeoutValue = 5.milliseconds)
         try {
             val java = ProcessHandle.current().info().command().orElse("java")
-            assertFailsWith<AraraException> {
+            val exception = assertFailsWith<AraraException> {
                 CommandRunner.run(
                     RuleMethods.getCommandWithWorkingDirectory(directory.toString(), java)
                 )
             }
+            assertTrue(
+                "reached the provided timeout value" in exception.message!!,
+                "the localized timeout error carries: ${exception.message}"
+            )
         } finally {
             LinearExecutor.executionOptions = originalOptions
         }

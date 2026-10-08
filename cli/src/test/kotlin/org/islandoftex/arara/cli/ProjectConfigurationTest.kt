@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli
 
+import com.github.ajalt.clikt.core.BadParameterValue
 import com.github.ajalt.clikt.core.PrintHelpMessage
 import com.github.ajalt.clikt.core.ProgramResult
 import com.github.ajalt.clikt.core.parse
@@ -904,11 +905,146 @@ class ProjectConfigurationTest {
 
     @Test
     fun `prints the help with the arara flair`() {
-        // the help text is rendered by the command line framework's own
-        // terminal, so the test pins the help request itself; the flair
-        // and the custom formatter run while the message is built
+        // the framework throws its own message for the help request and
+        // renders the text at the catching side, so the pin has two
+        // halves: the request raises the framework's help message, and
+        // the command's own formatted help carries the flair the custom
+        // formatter builds
+        val cli = CLI()
         assertFailsWith<PrintHelpMessage> {
-            CLI().parse(listOf("--help"))
+            cli.parse(listOf("--help"))
+        }
+        val text = cli.getFormattedHelp() ?: ""
+        assertTrue(
+            "cool TeX automation tool" in text,
+            "the tagline renders in the help"
+        )
+        assertTrue(
+            "arara" in text,
+            "the logo names the tool"
+        )
+    }
+
+    @Test
+    fun `an invocation with no arguments prints the help`() {
+        withRestoredState {
+            assertFailsWith<PrintHelpMessage> { runCLI() }
+        }
+    }
+
+    @Test
+    fun `propagates a task's requested exit code to the process`() {
+        withRestoredState {
+            val (status, _) = runCLI(
+                "--working-directory",
+                "src/test/resources/executiontests/halt-code",
+                "halt-code.tex"
+            )
+            assertEquals(
+                42, status,
+                "the requested halt status reaches the process unchanged"
+            )
+        }
+    }
+
+    @Test
+    fun `a zero max-loops value is a usage error`() {
+        withRestoredState {
+            // the framework rejects the value during parsing, before
+            // the run could begin, so the rejection surfaces as its
+            // own usage error rather than a failed run
+            val exception = assertFailsWith<BadParameterValue> {
+                runCLI(
+                    "--working-directory",
+                    "src/test/resources/executiontests/simple-directive",
+                    "--max-loops", "0",
+                    "simple-directive.tex"
+                )
+            }
+            assertTrue(
+                "minimum" in exception.message!!,
+                "the usage error names the lower bound: ${exception.message}"
+            )
+        }
+    }
+
+    @Test
+    fun `a zero timeout is a usage error`() {
+        withRestoredState {
+            val exception = assertFailsWith<BadParameterValue> {
+                runCLI(
+                    "--working-directory",
+                    "src/test/resources/executiontests/simple-directive",
+                    "--timeout", "0",
+                    "simple-directive.tex"
+                )
+            }
+            assertTrue(
+                "minimum" in exception.message!!,
+                "the usage error names the lower bound: ${exception.message}"
+            )
+        }
+    }
+
+    @Test
+    fun `an unknown engine is a usage error`() {
+        withRestoredState {
+            val exception = assertFailsWith<BadParameterValue> {
+                runCLI(
+                    "--working-directory",
+                    "src/test/resources/executiontests/simple-directive",
+                    "--engine", "nonsense",
+                    "simple-directive.tex"
+                )
+            }
+            assertTrue(
+                "yaml, lua" in exception.message!!,
+                "the usage error names the choices: ${exception.message}"
+            )
+        }
+    }
+
+    @Test
+    fun `a nonexistent working directory is a usage error`() {
+        withRestoredState {
+            val exception = assertFailsWith<BadParameterValue> {
+                runCLI(
+                    "--working-directory", "/nowhere-quack",
+                    "simple-directive.tex"
+                )
+            }
+            assertTrue(
+                "nowhere-quack" in exception.message!!,
+                "the usage error names the path: ${exception.message}"
+            )
+        }
+    }
+
+    @Test
+    fun `--whole-file extracts directives beyond the header through the CLI`() {
+        withRestoredState {
+            // the header-only half runs first: the whole-file half
+            // leaves the global options with header parsing off, and
+            // the entry point applies its options globally, never
+            // reverting them
+            val (withoutFlag, _) = runCLI(
+                "--working-directory",
+                "src/test/resources/executiontests/whole-file",
+                "body.tex"
+            )
+            assertNotEquals(
+                0, withoutFlag,
+                "the header alone holds no directive"
+            )
+            val (withFlag, _) = runCLI(
+                "--working-directory",
+                "src/test/resources/executiontests/whole-file",
+                "--whole-file", "body.tex"
+            )
+            assertEquals(
+                0, withFlag,
+                "the body directive runs under the whole-file flag"
+            )
         }
     }
 

@@ -463,6 +463,265 @@ class InterpreterTest {
     }
 
     @Test
+    fun `rejects unknown directive keys`() {
+        Session.clear()
+        val directory = Files.createTempDirectory("arara-interpreter-rule")
+        Files.writeString(
+            directory.resolve("arara-rule-unknownkeys.yaml"),
+            """
+            !config
+            identifier: unknownkeys
+            name: Unknown Keys
+            authors:
+            - Island of TeX
+            commands:
+            - name: The echoer
+              command: >
+                @{ return isWindows(getCommandWithWorkingDirectory(
+                '${forMvel(directory)}', 'cmd', '/c', 'echo', 'Quack'),
+                getCommandWithWorkingDirectory(
+                '${forMvel(directory)}', 'echo', 'Quack')); }
+            arguments:
+            - identifier: marker
+              flag: >
+                @{ return parameters.marker; }
+            """.trimIndent()
+        )
+        val filePath = Files.createTempFile("arara-interpreter-file", ".tex")
+        val directive = Directives.extractDirectives(
+            listOf("% arara: unknownkeys: { bogus: 'x' }"), false, texFile
+        ).single().run {
+            DirectiveImpl(
+                identifier,
+                parameters.plus("reference" to filePath.toString()),
+                conditional, lineNumbers
+            )
+        }
+        val exception = assertFailsWith<AraraException>(
+            "a key the rule does not declare must not pass silently"
+        ) {
+            Interpreter(
+                ExecutionOptions(rulePaths = setOf(MPPPath(directory.toString()))),
+                ProjectFile(MPPPath(filePath.toString()), texFile),
+                MPPPath(filePath.parent.toString())
+            ).execute(directive)
+        }
+        assertTrue(
+            "unknown keys" in exception.message!!,
+            "the rejection names the unknown keys: ${exception.message}"
+        )
+        assertTrue(
+            "bogus" in exception.message!!,
+            "the rejection names the offending key: ${exception.message}"
+        )
+    }
+
+    @Test
+    fun `runs every task of a list-returning command`() {
+        Session.clear()
+        val directory = Files.createTempDirectory("arara-interpreter-rule")
+        Files.writeString(
+            directory.resolve("arara-rule-multitask.yaml"),
+            """
+            !config
+            identifier: multitask
+            name: Multitask
+            authors:
+            - Island of TeX
+            commands:
+            - name: The task pair
+              command: >
+                @{ return [isWindows(getCommandWithWorkingDirectory(
+                '${forMvel(directory)}', 'cmd', '/c', 'echo', 'one'),
+                getCommandWithWorkingDirectory('${forMvel(directory)}', 'echo', 'one')),
+                isWindows(getCommandWithWorkingDirectory(
+                '${forMvel(directory)}', 'cmd', '/c', 'echo', 'two'),
+                getCommandWithWorkingDirectory('${forMvel(directory)}', 'echo', 'two'))]; }
+            arguments: []
+            """.trimIndent()
+        )
+        val filePath = Files.createTempFile("arara-interpreter-file", ".tex")
+        val directive = Directives.extractDirectives(
+            listOf("% arara: multitask"), false, texFile
+        ).single().run {
+            DirectiveImpl(
+                identifier,
+                parameters.plus("reference" to filePath.toString()),
+                conditional, lineNumbers
+            )
+        }
+        val originalOut = System.out
+        try {
+            val output = ByteArrayOutputStream()
+            System.setOut(PrintStream(output, true))
+            val status = Interpreter(
+                ExecutionOptions(
+                    rulePaths = setOf(MPPPath(directory.toString())),
+                    verbose = true
+                ),
+                ProjectFile(MPPPath(filePath.toString()), texFile),
+                MPPPath(filePath.parent.toString())
+            ).execute(directive).exitCode
+            val rendered = output.toByteArray().toString(Charsets.UTF_8)
+            assertEquals(0, status, "every task of the list succeeds")
+            // the list's tasks inherit the command's own name, so
+            // both of them answer the entry the rule declared
+            assertEquals(
+                2, rendered.split("The task pair").size - 1,
+                "every task of the list rendered its own entry"
+            )
+        } finally {
+            System.setOut(originalOut)
+        }
+    }
+
+    @Test
+    fun `names a task that carries no name of its own`() {
+        Session.clear()
+        val directory = Files.createTempDirectory("arara-interpreter-rule")
+        Files.writeString(
+            directory.resolve("arara-rule-nameless.yaml"),
+            """
+            !config
+            identifier: nameless
+            name: Nameless
+            authors:
+            - Island of TeX
+            commands:
+            - command: >
+                @{ return isWindows(getCommandWithWorkingDirectory(
+                '${forMvel(directory)}', 'cmd', '/c', 'echo', 'Quack'),
+                getCommandWithWorkingDirectory(
+                '${forMvel(directory)}', 'echo', 'Quack')); }
+            arguments: []
+            """.trimIndent()
+        )
+        val filePath = Files.createTempFile("arara-interpreter-file", ".tex")
+        val directive = Directives.extractDirectives(
+            listOf("% arara: nameless"), false, texFile
+        ).single().run {
+            DirectiveImpl(
+                identifier,
+                parameters.plus("reference" to filePath.toString()),
+                conditional, lineNumbers
+            )
+        }
+        val originalOut = System.out
+        try {
+            val output = ByteArrayOutputStream()
+            System.setOut(PrintStream(output, true))
+            Interpreter(
+                ExecutionOptions(rulePaths = setOf(MPPPath(directory.toString()))),
+                ProjectFile(MPPPath(filePath.toString()), texFile),
+                MPPPath(filePath.parent.toString())
+            ).execute(directive)
+            val rendered = output.toByteArray().toString(Charsets.UTF_8)
+            assertTrue(
+                "Unnamed task" in rendered,
+                "a command without a name renders the unnamed task label"
+            )
+        } finally {
+            System.setOut(originalOut)
+        }
+    }
+
+    @Test
+    fun `an absent optional argument contributes no flags`() {
+        Session.clear()
+        val directory = Files.createTempDirectory("arara-interpreter-rule")
+        Files.writeString(
+            directory.resolve("arara-rule-absentarg.yaml"),
+            """
+            !config
+            identifier: absentarg
+            name: Absent Argument
+            authors:
+            - Island of TeX
+            commands:
+            - name: The bare echoer
+              command: >
+                @{ return isWindows(getCommandWithWorkingDirectory(
+                '${forMvel(directory)}', 'cmd', '/c', 'echo'),
+                getCommandWithWorkingDirectory(
+                '${forMvel(directory)}', 'echo')); }
+            arguments:
+            - identifier: marker
+              flag: >
+                @{ return parameters.marker; }
+            """.trimIndent()
+        )
+        // the directive omits the optional argument: the flag
+        // evaluates to nothing and the command runs bare
+        val filePath = Files.createTempFile("arara-interpreter-file", ".tex")
+        val directive = Directives.extractDirectives(
+            listOf("% arara: absentarg"), false, texFile
+        ).single().run {
+            DirectiveImpl(
+                identifier,
+                parameters.plus("reference" to filePath.toString()),
+                conditional, lineNumbers
+            )
+        }
+        val originalOut = System.out
+        try {
+            val output = ByteArrayOutputStream()
+            System.setOut(PrintStream(output, true))
+            val status = Interpreter(
+                ExecutionOptions(rulePaths = setOf(MPPPath(directory.toString()))),
+                ProjectFile(MPPPath(filePath.toString()), texFile),
+                MPPPath(filePath.parent.toString())
+            ).execute(directive).exitCode
+            assertEquals(0, status, "the bare command succeeds")
+        } finally {
+            System.setOut(originalOut)
+        }
+    }
+
+    @Test
+    fun `wraps failing command expressions`() {
+        Session.clear()
+        val directory = Files.createTempDirectory("arara-interpreter-rule")
+        Files.writeString(
+            directory.resolve("arara-rule-crashing.yaml"),
+            """
+            !config
+            identifier: crashing
+            name: Crashing
+            authors:
+            - Island of TeX
+            commands:
+            - name: The crashing tool
+              command: >
+                @{ throw new RuntimeException('QuackBoom'); }
+            arguments: []
+            """.trimIndent()
+        )
+        val filePath = Files.createTempFile("arara-interpreter-file", ".tex")
+        val directive = Directives.extractDirectives(
+            listOf("% arara: crashing"), false, texFile
+        ).single().run {
+            DirectiveImpl(
+                identifier,
+                parameters.plus("reference" to filePath.toString()),
+                conditional, lineNumbers
+            )
+        }
+        val exception = assertFailsWith<AraraException>(
+            "a crashing command expression must be wrapped, not propagated raw"
+        ) {
+            Interpreter(
+                ExecutionOptions(rulePaths = setOf(MPPPath(directory.toString()))),
+                ProjectFile(MPPPath(filePath.toString()), texFile),
+                MPPPath(filePath.parent.toString())
+            ).execute(directive)
+        }
+        assertTrue(
+            "could not evaluate one of the provided commands" in exception.message!!,
+            "the rejection is the command runtime error: ${exception.message}"
+        )
+    }
+
+    @Test
     fun `a failing command survives a later command's success`() {
         Session.clear()
         val directory = Files.createTempDirectory("arara-interpreter-rule")

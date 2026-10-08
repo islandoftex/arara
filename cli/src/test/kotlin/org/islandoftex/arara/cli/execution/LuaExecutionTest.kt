@@ -253,4 +253,13 @@ class LuaExecutionTest {
             "an until loop runs the body at most the configured maximum"
         )
     }
+
+    @Test
+    fun `runs every task of a table-returning command in the Lua dialect`() {
+        val output = outputForTest("lua-engine-multitask")
+        assertEquals(
+            2, output.split("The task pair").size - 1,
+            "every task of the table rendered its own entry"
+        )
+    }
 }

@@ -17,15 +17,17 @@ import org.islandoftex.arara.core.rules.RuleMethods
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
+import org.islandoftex.arara.core.ui.DialogRenderer
+import org.islandoftex.arara.core.ui.TerminalDialogs
 
 /**
  * Verifies the rule helper bindings of the Lua environment: the
  * string, boolean, file and system families, including the arity
  * branches of the interpreting helpers. The bindings that read the
  * executor state are exercised inside the lifecycle window in which
- * real directives run; the interactive dialog surface is
- * deliberately out of scope here, as the dialog suites verify it
- * whole.
+ * real directives run; the message helper's binding to the wired
+ * renderer is verified here, while the dialog suites verify the
+ * rendering whole.
  */
 class LuaRuleEnvironmentTest {
     private val globals = LuaRuleEnvironment.newGlobals()
@@ -300,6 +302,56 @@ class LuaRuleEnvironmentTest {
             }
         } finally {
             LinearExecutor.executionOptions = original
+        }
+    }
+
+    /**
+     * A renderer that records the message conversations and throws
+     * on every other dialog, standing in for whatever the host wired.
+     */
+    private class MessageRecorder : DialogRenderer {
+        val calls = mutableListOf<String>()
+        override fun showMessage(type: Int, title: String, text: String) {
+            calls += "showMessage:$type:$title:$text"
+        }
+        override fun showOptions(
+            type: Int,
+            title: String,
+            text: String,
+            buttons: Array<out Any>
+        ): Int = error("no options dialog in this pin")
+        override fun showInput(
+            type: Int,
+            title: String,
+            text: String
+        ): String = error("no input dialog in this pin")
+        override fun showDropdown(
+            type: Int,
+            title: String,
+            text: String,
+            elements: Array<out Any>
+        ): Int = error("no dropdown in this pin")
+    }
+
+    @Test
+    fun `the message helper reaches the wired renderer`() {
+        val original = TerminalDialogs.renderer
+        val recorder = MessageRecorder()
+        TerminalDialogs.renderer = recorder
+        try {
+            call(
+                "show_message",
+                LuaValue.valueOf(1),
+                LuaValue.valueOf("Title"),
+                LuaValue.valueOf("Text")
+            )
+            assertEquals(
+                "showMessage:1:Title:Text",
+                recorder.calls.single(),
+                "the message dialog reaches the wired renderer"
+            )
+        } finally {
+            TerminalDialogs.renderer = original
         }
     }
 }

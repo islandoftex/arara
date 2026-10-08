@@ -1400,4 +1400,12 @@ class StyledConsoleRendererTest {
             "the file names render joined"
         )
     }
+
+    @Test
+    fun `prints the elapsed time beside its label`() {
+        val output = render(AnsiLevel.NONE) { printTime(0.25) }
+        assertTrue("Elapsed time:" in output, "the label renders")
+        assertTrue("0.2500" in output, "the seconds pad to the millisecond")
+        assertTrue("seconds" in output, "the unit follows the value")
+    }
 }
