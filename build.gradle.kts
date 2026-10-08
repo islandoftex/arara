@@ -228,13 +228,8 @@ tasks {
                         version.matches(Regex("(?i).*[.-]$qualifier[.\\d-+]*"))
                     }
 
-            // the standard library is managed by the compatibility
-            // plugin, so upgrade suggestions for its requested pin are
-            // noise rather than opportunities
-            val pinnedElsewhere = setOf("org.jetbrains.kotlin:kotlin-stdlib")
-
             (isNonStable(candidate.version) && !isNonStable(currentVersion)) ||
-                    ("${candidate.group}:${candidate.module}" in pinnedElsewhere &&
+                    ("${candidate.group}:${candidate.module}" in pinnedModules &&
                             candidate.version != currentVersion)
         }
 
@@ -303,12 +298,15 @@ tasks {
 
 version = spotlessChangelog.versionNext
 
-// JVM and Kotlin compatibility targets, defined in gradle.properties;
-// the compatibility plugin derives every compiler flag from these two
-// values
+// JVM and Kotlin compatibility targets + pinned modules, defined in
+// gradle.properties; the compatibility plugin derives every compiler
+// flag from the two targets, and manages the standard library the
+// pinned set names, so their upgrade suggestions are noise rather
+// than opportunities
 val targetJvm = providers.gradleProperty("arara.jvm.target").get().toInt()
-
 val targetKotlin = providers.gradleProperty("arara.kotlin.target").get()
+val pinnedModules =
+    providers.gradleProperty("arara.pinned").get().split(",").map(String::trim)
 
 // opt-in gate: run the build with -PwarningsAsErrors=true to prove that
 // the tree compiles without a single warning
@@ -403,7 +401,7 @@ val htmlDocsJar = tasks.register<Jar>("htmlDocsJar") {
 
 subprojects {
 
-    apply(plugin = "org.jetbrains.dokka")
+    apply(plugin = pluginId("dokka"))
 
     // the modules apply the Kotlin plugin through their own plugins
     // blocks; the root reacts to each application instead of applying

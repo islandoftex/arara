@@ -405,7 +405,9 @@ name `arara.db`.
   and the mirrored end-to-end suites own the scenario level.
 - Root `gradle.properties` also drives the build: `arara.jvm.target` and
   `arara.kotlin.target` (the compatibility levels the tapmoc plugin
-  enforces); the version catalog is `gradle/libs.versions.toml`.
+  enforces) and `arara.pinned` (the modules whose versions the plugin
+  manages, so the upgrade report rejects their suggestions); the
+  version catalog is `gradle/libs.versions.toml`.
 - Git history starts at the `oc0` tag (the pristine baseline); every later
   `oc<n>` tag marks one verified repair/modernization step, so regressions can
   be bisected by tags.
