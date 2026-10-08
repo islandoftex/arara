@@ -70,6 +70,15 @@ tasks {
         archiveAppendix.set("with-deps")
         archiveClassifier.set("")
 
+        // the terminal library binds through JNA, whose dispatch
+        // load trips the native-access guard the newest runtimes
+        // keep on restricted calls; the manifest attribute
+        // declares the jar's intent and the launcher grants it,
+        // so the invocation opens clean wherever the guard stands
+        manifest {
+            attributes("Enable-Native-Access" to "ALL-UNNAMED")
+        }
+
         minimize {
             exclude(dependency("org.jetbrains.kotlin:.*"))
             exclude(dependency("org.apache.logging.log4j:log4j-slf4j2-impl:.*"))

@@ -494,6 +494,12 @@ on.
 
 ## Fixed
 
+* The runnable jar declares native access in its manifest: the
+  terminal library binds through JNA, whose dispatch load tripped
+  the guard the newest runtimes keep on restricted calls, so an
+  invocation opened with warning lines naming a future that blocks
+  them. The launcher reads the declaration and grants it - the
+  invocation opens clean now.
 * The line that names the files a styled run left unprocessed no
   longer repeats its own label when the terminal is too narrow to
   hold it: the label stands clear of the wrap now, and only the
