@@ -20,8 +20,8 @@ import org.islandoftex.arara.core.configuration.LoggingOptions as CoreLoggingOpt
  * configuration as a context value, and a fresh process either
  * appends to an existing log file or starts it from scratch, exactly
  * as asked. Each method writes its own file, so the shared stream
- * of one JVM cannot leak state between them. This is the one test
- * that deliberately mounts a real logging backend; it restores the
+ * of one JVM cannot leak state between them. This class
+ * deliberately mounts a real logging backend; it restores the
  * silent root level afterwards, so the suite's backendless design
  * survives it.
  */
@@ -35,12 +35,16 @@ class LoggingAppendTest {
     fun restoreBackend() {
         ThreadContext.remove("araraLogFile")
         ThreadContext.remove("araraAppend")
-        // the file appender holds the log open until the context
-        // stops: Windows refuses to delete a file a live handle
-        // claims, so the context releases it before the delete -
-        // Linux tolerates the opposite order, which is why this
-        // teardown was born green there
-        (LogManager.getContext(false) as LoggerContext).stop()
+        // the file appender holds the log open until it stops:
+        // Windows refuses to delete a file a live handle claims,
+        // so the appenders release it before the delete - Linux
+        // tolerates the opposite order, which is why this
+        // teardown was born green there. The context itself keeps
+        // running: stopping it would strand every shared logger
+        // created before the stop, and the classes that assert
+        // logged lines later in the suite depend on them
+        (LogManager.getContext(false) as LoggerContext)
+            .configuration.appenders.values.forEach { it.stop() }
         Files.deleteIfExists(logFile)
         Configurator.setRootLevel(Level.OFF)
     }

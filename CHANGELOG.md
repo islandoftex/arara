@@ -16,6 +16,13 @@ on.
 
 ## Added
 
+* The log now trails the session's every mutation: a variable
+  set, an overwrite - naming the value it displaced - a removal
+  and the wipe with its count, each line placed where it
+  happened, so a variable interfering with a run tells its own
+  story between the run's entries. The startup seeding of the
+  environment into the session records its refresh in one line,
+  and the reads stay silent, as they fire on every conditional.
 * New live feedback for the styled presentation: while a task
   runs, the outcome zone breathes - braille frames cycling in
   the application's cyan accent beside a live counter of the
