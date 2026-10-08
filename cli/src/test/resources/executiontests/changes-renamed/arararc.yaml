@@ -1,0 +1,5 @@
+!config
+verbose: true
+paths:
+  - './'
+dbname: mydb.db

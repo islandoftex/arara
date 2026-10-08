@@ -117,6 +117,24 @@ class JVMMPPPathTest {
                 "the append error names the offending operation"
             )
         }
+
+        @Test
+        fun `refuses a regular file where a directory is asked`(
+            @TempDir tempDir: Path
+        ) {
+            val file = tempDir.resolve("quack.txt")
+            file.writeText("quack")
+            assertFailsWith<AraraIOException>(
+                "a regular file is not a directory to create"
+            ) {
+                MPPPath(file.toString()).createDirectories()
+            }
+            assertFailsWith<AraraIOException>(
+                "a regular file is not a directory to remove"
+            ) {
+                MPPPath(file.toString()).removeDirectory()
+            }
+        }
     }
 
     /**
@@ -246,6 +264,20 @@ class JVMMPPPathTest {
                 "the parent of a relative path is the working directory"
             )
         }
+
+        @Test
+        fun `divides and resolves siblings by path operands`() {
+            assertEquals(
+                MPPPath("a/b"),
+                MPPPath("a") / MPPPath("b"),
+                "the path operand divides like the string twin"
+            )
+            assertEquals(
+                MPPPath("a/c"),
+                MPPPath("a/b").resolveSibling(MPPPath("c")),
+                "the path operand resolves siblings like the string twin"
+            )
+        }
     }
 
     /**
@@ -348,6 +380,20 @@ class JVMMPPPathTest {
             assertFalse(
                 MPPPath(link.toString()).exists,
                 "a broken link does not exist"
+            )
+        }
+
+        @Test
+        fun `answers a symlink loop as missing`(@TempDir tempDir: Path) {
+            val first = tempDir.resolve("first.txt")
+            val second = tempDir.resolve("second.txt")
+            assumeTrue(
+                createSymlink(first, second) && createSymlink(second, first),
+                "the host cannot create symlinks"
+            )
+            assertFalse(
+                MPPPath(first.toString()).exists,
+                "a symlink loop answers as missing"
             )
         }
     }

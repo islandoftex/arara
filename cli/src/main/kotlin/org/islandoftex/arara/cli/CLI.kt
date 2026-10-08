@@ -119,12 +119,21 @@ class CLI : CliktCommand("arara") {
         .help("Generate a log output")
         .flag()
     /**
-     * Whether the tool output echoes live; the silent alias
-     * negates the request.
+     * Whether the tool output echoes live, lifting a quiet
+     * configuration; the silent alias on its own negates a
+     * verbose one, so neither request drowns behind the
+     * configuration's standing choice.
      */
     private val verbose by option("-v", "--verbose")
         .help("Print the command output")
-        .flag("-s", "--silent")
+        .flag()
+    /**
+     * Whether the run stays silent, negating a verbose
+     * configuration for the one invocation that asks for quiet.
+     */
+    private val silent by option("-s", "--silent")
+        .help("Keep the command output unprinted, even when the configuration asks for it")
+        .flag()
     /**
      * Whether the run goes through every motion of its commands
      * without ever calling them.
@@ -586,6 +595,27 @@ class CLI : CliktCommand("arara") {
     /**
      * Update arara's configuration with the command line arguments.
      */
+    /**
+     * Resolves the echo the run asks for: an explicit verbose
+     * request wins, the silent alias negates the standing
+     * configuration, and an absent pair carries the
+     * configuration's choice.
+     *
+     * @param requested Whether the verbose flag was given.
+     * @param silent Whether the silent alias was given.
+     * @param standing The configuration's standing choice.
+     * @return The echo the run asks for.
+     */
+    private fun resolveVerboseEcho(
+        requested: Boolean,
+        silent: Boolean,
+        standing: Boolean
+    ): Boolean = when {
+        requested -> true
+        silent -> false
+        else -> standing
+    }
+
     private fun updateConfigurationFromCommandLine() {
         RuleEngine.current = engine
         // logged per file so a log file stays self-describing about the
@@ -616,8 +646,11 @@ class CLI : CliktCommand("arara") {
                     ?: LinearExecutor.executionOptions.maxLoops,
                 timeoutValue = timeout?.let { it.milliseconds }
                     ?: LinearExecutor.executionOptions.timeoutValue,
-                verbose = verbose ||
-                    LinearExecutor.executionOptions.verbose,
+                verbose = resolveVerboseEcho(
+                    verbose,
+                    silent,
+                    LinearExecutor.executionOptions.verbose
+                ),
                 executionMode = when {
                     dryRun -> ExecutionMode.DRY_RUN
                     safeRun -> ExecutionMode.SAFE_RUN

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.lua.rules
 
+import io.github.taoguan.luaj.LuaValue
 import io.github.taoguan.luaj.lib.jse.JsePlatform
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -61,5 +62,35 @@ class LuaConversionTest {
         // the environment import brings its bulk back for the
         // suites that follow
         Session.updateEnvironmentVariables()
+    }
+
+    @Test
+    fun `converts the remaining Kotlin shapes into Lua`() {
+        assertTrue(
+            LuaConversion.toLua(null).isnil(),
+            "null crosses as the nil value"
+        )
+        val number = LuaConversion.toLua(1.5f)
+        assertTrue(
+            number.isnumber() && number.todouble() == 1.5,
+            "a boxed float keeps its number"
+        )
+        val value = LuaValue.valueOf("quack")
+        assertTrue(
+            LuaConversion.toLua(value) === value,
+            "a Lua value passes through unchanged"
+        )
+        assertTrue(
+            LuaConversion.toLua(Any()).isuserdata(),
+            "a foreign object crosses as userdata"
+        )
+    }
+
+    @Test
+    fun `a nil flag result yields no flags`() {
+        assertTrue(
+            LuaConversion.flagResultToList(LuaValue.NIL).isEmpty(),
+            "a nil flag result contributes no flags"
+        )
     }
 }

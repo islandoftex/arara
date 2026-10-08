@@ -198,6 +198,32 @@ class ExecutionTest {
     }
 
     @Test
+    fun `tracks changes against the configured database name`() {
+        val file = File(getPathForTest("changes-renamed") + "/mydb.db")
+        if (file.exists()) file.delete()
+        try {
+            assertTrue(
+                outputForTest("changes-renamed", "changes.tex")
+                    .contains("QuackOne"),
+                "the first run executes the directive"
+            )
+            assertFalse(
+                outputForTest("changes-renamed", "changes.tex")
+                    .contains("QuackOne"),
+                "the second run skips the unchanged file"
+            )
+            assertTrue(
+                file.exists(),
+                "the record lives under the configured name"
+            )
+        } finally {
+            // the renamed database is as much a runtime artifact as
+            // the default one: the fixture stays clean either way
+            file.delete()
+        }
+    }
+
+    @Test
     fun `the halt rule skips the directives that follow it`() {
         // a fresh session keeps the scenario independent from any halt
         // keys left behind by other specs or scenarios

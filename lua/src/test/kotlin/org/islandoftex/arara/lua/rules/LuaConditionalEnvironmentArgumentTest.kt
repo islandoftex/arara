@@ -154,4 +154,21 @@ class LuaConditionalEnvironmentArgumentTest {
             globals.load("getSession().remove('f')").call()
         }
     }
+
+    @Test
+    fun `rejects foreign handles where a file is expected`() {
+        // the doctrine keeps JVM objects crossing the boundary as
+        // opaque handles that only their own helpers accept: a
+        // command handle where a file is wanted meets the same
+        // bad argument verdict as a plain wrong type
+        assertBadArgument("exists", 1, "file or string") {
+            binding("exists").invoke(
+                LuaValue.userdataOf(
+                    org.islandoftex.arara.core.session.Command(
+                        listOf("echo")
+                    )
+                )
+            )
+        }
+    }
 }

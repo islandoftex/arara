@@ -34,6 +34,46 @@ class SessionTest {
     }
 
     @Test
+    fun `the addition filter admits only the named variables`() {
+        Session.clear()
+        Session.updateEnvironmentVariables(
+            additionFilter = { it == "PATH" || it == "Path" }
+        )
+        assertTrue(
+            Session.contains("environment:PATH") ||
+                Session.contains("environment:Path"),
+            "the named variable crosses the filter"
+        )
+        // a variable every host carries, under its own spelling per
+        // platform, answers whether the filter kept the others out
+        val other = if (org.islandoftex.arara.api.utils.OS.isWindows)
+            "SystemRoot" else "HOME"
+        assertFalse(
+            Session.contains("environment:$other"),
+            "every other variable stays outside the session"
+        )
+    }
+
+    @Test
+    fun `the removal filter spares the keys it refuses`() {
+        Session.clear()
+        Session.updateEnvironmentVariables()
+        Session.put("environment:ARARA_SYNTHETIC", "planted")
+        Session.updateEnvironmentVariables(
+            removalFilter = { it != "ARARA_SYNTHETIC" }
+        )
+        assertTrue(
+            Session.contains("environment:ARARA_SYNTHETIC"),
+            "the key the filter refuses survives the refresh"
+        )
+        assertTrue(
+            Session.contains("environment:PATH") ||
+                Session.contains("environment:Path"),
+            "the refresh still reseeds the environment"
+        )
+    }
+
+    @Test
     fun `properly checks the existence of keys`() {
         Session.clear()
         Session.put("A", "B")

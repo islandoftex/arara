@@ -10,9 +10,11 @@ import java.io.File
 import java.io.PrintStream
 import java.nio.file.Files
 import java.nio.file.Files.createTempDirectory
+import java.nio.file.Path
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 import org.islandoftex.arara.api.files.toMPPPath
@@ -1044,6 +1046,516 @@ class ProjectConfigurationTest {
             assertEquals(
                 0, withFlag,
                 "the body directive runs under the whole-file flag"
+            )
+        }
+    }
+
+    @Test
+    fun `--silent negates a standing verbose configuration`() {
+        withRestoredState {
+            // the fixture's configuration asks for the tool output to
+            // echo, so the run without the alias shows it and the run
+            // with the alias is the one that has to defeat it
+            val (chatty, _) = runCLI(
+                "--working-directory",
+                "src/test/resources/executiontests/simple-directive",
+                "simple-directive.tex"
+            )
+            assertEquals(0, chatty, "the verbose configuration runs")
+            val (quiet, output) = runCLI(
+                "--working-directory",
+                "src/test/resources/executiontests/simple-directive",
+                "--silent",
+                "simple-directive.tex"
+            )
+            assertEquals(0, quiet, "the silenced run still succeeds")
+            assertFalse(
+                "QuackOne" in output,
+                "the alias negates the configuration's echo request"
+            )
+        }
+    }
+
+    @Test
+    fun `--verbose lifts a quiet configuration`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-lift")
+            Files.writeString(
+                directory.resolve("arararc.yaml"),
+                "!config\npaths:\n  - './'\n"
+            )
+            Files.writeString(
+                directory.resolve("echoone.yaml"),
+                """
+                !config
+                identifier: echoone
+                name: The echoer
+                commands:
+                  - name: The echoer
+                    command: >
+                      @{ return isWindows(getCommand('cmd', '/c', 'echo', 'QuackOne'), getCommand('echo', 'QuackOne')); }
+                arguments: []
+                """.trimIndent()
+            )
+            Files.writeString(
+                directory.resolve("main.tex"),
+                "% arara: echoone\n"
+            )
+            val (quiet, plain) = runCLI(
+                "--working-directory", directory.toString(),
+                "main.tex"
+            )
+            assertEquals(0, quiet, "the quiet configuration runs")
+            assertFalse(
+                "QuackOne" in plain,
+                "the quiet configuration echoes nothing"
+            )
+            val (chatty, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "--verbose",
+                "main.tex"
+            )
+            assertEquals(0, chatty, "the lifted run still succeeds")
+            assertTrue(
+                "QuackOne" in output,
+                "the verbose flag lifts the quiet configuration"
+            )
+        }
+    }
+
+    /**
+     * Builds a runnable echo fixture in a fresh directory: the echo
+     * rules and a one-directive document, so a test can shape the
+     * configuration and the document to its need.
+     */
+    private fun echoFixture(document: String = "% arara: echoone\n"): Path {
+        val directory = createTempDirectory("arara-cli-fixture")
+        Files.writeString(
+            directory.resolve("echoone.yaml"),
+            """
+            !config
+            identifier: echoone
+            name: The echoer
+            commands:
+              - name: The echoer
+                command: >
+                  @{ return isWindows(getCommand('cmd', '/c', 'echo', 'QuackOne'), getCommand('echo', 'QuackOne')); }
+            arguments: []
+            """.trimIndent()
+        )
+        Files.writeString(
+            directory.resolve("preambleer.yaml"),
+            """
+            !config
+            identifier: preambleer
+            name: The preamble echoer
+            commands:
+              - name: The preamble echoer
+                command: >
+                  @{ return isWindows(getCommand('cmd', '/c', 'echo', 'PreambleFirst'), getCommand('echo', 'PreambleFirst')); }
+            arguments: []
+            """.trimIndent()
+        )
+        Files.writeString(directory.resolve("main.tex"), document)
+        return directory
+    }
+
+    @Test
+    fun `a logname in the YAML configuration renames the log`() {
+        withRestoredState {
+            val directory = echoFixture()
+            val log = directory.resolve("mylog.log")
+            Files.writeString(
+                directory.resolve("arararc.yaml"),
+                "!config\npaths:\n  - './'\n" +
+                    "logname: ${log.toString().replace("\\", "/")}\n"
+            )
+            val (status, _) = runCLI(
+                "--working-directory", directory.toString(),
+                "--log", "main.tex"
+            )
+            assertEquals(0, status, "the run with the renamed log succeeds")
+            assertTrue(
+                log.toFile().exists(),
+                "the log carries the configured name"
+            )
+            assertFalse(
+                directory.resolve("arara.log").toFile().exists(),
+                "the default name stays unused"
+            )
+        }
+    }
+
+    @Test
+    fun `a Lua configuration's log file key renames the log`() {
+        withRestoredState {
+            val directory = echoFixture()
+            val log = directory.resolve("lua-mylog.log")
+            Files.writeString(
+                directory.resolve("arararc.lua"),
+                """
+                return {
+                  paths = { "./" },
+                  log = {
+                    file = "${log.toString().replace("\\", "/")}"
+                  }
+                }
+                """.trimIndent()
+            )
+            val (status, _) = runCLI(
+                "--working-directory", directory.toString(),
+                "--log", "main.tex"
+            )
+            assertEquals(0, status, "the run under the Lua configuration succeeds")
+            assertTrue(log.toFile().exists(), "the Lua log key renames the log")
+        }
+    }
+
+    @Test
+    fun `the database anchors at the project's working directory`() {
+        withRestoredState {
+            val directory = createTempDirectory("arara-cli-dbanchor")
+            Files.createDirectories(directory.resolve("book/rules"))
+            Files.writeString(
+                directory.resolve("book/.araraconfig.lua"),
+                "return { paths = { \"./rules\" } }\n"
+            )
+            Files.writeString(
+                directory.resolve("book/rules/echoone.yaml"),
+                """
+                !config
+                identifier: echoone
+                name: The echoer
+                commands:
+                  - name: The echoer
+                    command: >
+                      @{ return isWindows(getCommand('cmd', '/c', 'echo', 'QuackOne'), getCommand('echo', 'QuackOne')); }
+                arguments: []
+                """.trimIndent()
+            )
+            Files.writeString(
+                directory.resolve("book/book.tex"),
+                "% arara: echoone if changed('tex')\n"
+            )
+            Files.writeString(
+                directory.resolve("spec.proj.lua"),
+                "return { name = \"book\", working_directory = \"book\", " +
+                    "files = { [\"book.tex\"] = { } } }\n"
+            )
+            val (status, _) = runCLI(
+                "--working-directory", directory.toString(),
+                "spec.proj.lua"
+            )
+            assertEquals(0, status, "the subdirectory project runs")
+            assertTrue(
+                directory.resolve("book/arara.db").toFile().exists(),
+                "the database anchors at the project's working directory"
+            )
+            assertFalse(
+                directory.resolve("arara.db").toFile().exists(),
+                "the invocation directory holds no database of the project"
+            )
+        }
+    }
+
+    @Test
+    fun `a Lua configuration provides the file type end to end`() {
+        withRestoredState {
+            val directory = echoFixture("-- arara: echoone\n")
+            Files.writeString(directory.resolve("main.my"), "-- arara: echoone\n")
+            Files.writeString(
+                directory.resolve("arararc.lua"),
+                """
+                return {
+                  paths = { "./" },
+                  file_types = {
+                    { extension = "my", pattern = "^\\s*--\\s*" }
+                  }
+                }
+                """.trimIndent()
+            )
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "main.my"
+            )
+            assertEquals(0, status, "the Lua-configured type carries the file")
+            assertTrue("SUCCESS" in output, "the directive of the foreign type ran")
+        }
+    }
+
+    @Test
+    fun `a redeclared extension changes the directive lines end to end`() {
+        withRestoredState {
+            val slashes = echoFixture("// arara: echoone\n")
+            Files.writeString(
+                slashes.resolve("arararc.yaml"),
+                "!config\npaths:\n  - './'\n" +
+                    "filetypes:\n  - extension: tex\n    pattern: '^\\s*//\\s*'\n"
+            )
+            val (status, _) = runCLI(
+                "--working-directory", slashes.toString(),
+                "main.tex"
+            )
+            assertEquals(0, status, "the redeclared pattern carries the line")
+
+            val plain = echoFixture("% arara: echoone\n")
+            Files.writeString(
+                plain.resolve("arararc.yaml"),
+                "!config\npaths:\n  - './'\n" +
+                    "filetypes:\n  - extension: tex\n    pattern: '^\\s*//\\s*'\n"
+            )
+            val (rejected, _) = runCLI(
+                "--working-directory", plain.toString(),
+                "main.tex"
+            )
+            assertNotEquals(
+                0, rejected,
+                "the historic comment line is no longer a directive"
+            )
+        }
+    }
+
+    @Test
+    fun `a pattern that matches nothing leaves the file directive-less`() {
+        withRestoredState {
+            val directory = echoFixture()
+            Files.writeString(
+                directory.resolve("arararc.yaml"),
+                "!config\npaths:\n  - './'\n" +
+                    "filetypes:\n  - extension: tex\n    pattern: '^ZZZ'\n"
+            )
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "main.tex"
+            )
+            assertNotEquals(0, status, "a pattern that matches nothing finds nothing")
+            assertTrue(
+                "directives" in output,
+                "the rejection is the no-directives verdict"
+            )
+        }
+    }
+
+    @Test
+    fun `the default preamble applies without a request`() {
+        withRestoredState {
+            val directory = echoFixture("just text, no directives\n")
+            Files.writeString(
+                directory.resolve("arararc.yaml"),
+                "!config\npaths:\n  - './'\n" +
+                    "preambles:\n  test: '% arara: echoone'\n" +
+                    "defaultPreamble: test\n"
+            )
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "main.tex"
+            )
+            assertEquals(0, status, "the default preamble runs the file")
+            assertTrue("SUCCESS" in output, "the preamble's directive ran")
+        }
+    }
+
+    @Test
+    fun `the without-directives policy spares files with their own directives`() {
+        withRestoredState {
+            val configuration = "!config\nverbose: true\npaths:\n  - './'\n" +
+                "preambles:\n  test: '% arara: echoone'\n" +
+                "defaultPreamble: test\n" +
+                "prependPreambleIfDirectivesGiven: false\n"
+            val withOwn = echoFixture()
+            Files.writeString(withOwn.resolve("arararc.yaml"), configuration)
+            val (ownStatus, ownOutput) = runCLI(
+                "--working-directory", withOwn.toString(),
+                "main.tex"
+            )
+            assertEquals(0, ownStatus, "the file with its own directive runs")
+            assertEquals(
+                1, ownOutput.split("QuackOne").size - 1,
+                "the policy spares the file its own directives"
+            )
+            val withoutOwn = echoFixture("just text\n")
+            Files.writeString(withoutOwn.resolve("arararc.yaml"), configuration)
+            val (bareStatus, bareOutput) = runCLI(
+                "--working-directory", withoutOwn.toString(),
+                "main.tex"
+            )
+            assertEquals(0, bareStatus, "the directive-less file runs")
+            assertEquals(
+                1, bareOutput.split("QuackOne").size - 1,
+                "the policy still serves the file with none of its own"
+            )
+        }
+    }
+
+    @Test
+    fun `preamble directives run before the file's own`() {
+        withRestoredState {
+            val directory = echoFixture()
+            Files.writeString(
+                directory.resolve("arararc.yaml"),
+                "!config\nverbose: true\npaths:\n  - './'\n" +
+                    "preambles:\n  test: '% arara: preambleer'\n"
+            )
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "--preamble", "test",
+                "main.tex"
+            )
+            assertEquals(0, status, "the preamble and the file's directive both run")
+            assertTrue(
+                output.indexOf("PreambleFirst") < output.indexOf("QuackOne"),
+                "the preamble's directive runs before the file's own"
+            )
+        }
+    }
+
+    @Test
+    fun `the command line preamble wins over a Lua configuration's default`() {
+        withRestoredState {
+            val directory = echoFixture()
+            Files.writeString(
+                directory.resolve("arararc.lua"),
+                """
+                return {
+                  paths = { "./" },
+                  verbose = true,
+                  preamble = {
+                    default = "alpha",
+                    definitions = {
+                      alpha = { "% arara: preambleer" },
+                      beta = { "% arara: echoone" }
+                    }
+                  }
+                }
+                """.trimIndent()
+            )
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "--preamble", "beta",
+                "main.tex"
+            )
+            assertEquals(0, status, "the requested preamble runs")
+            assertTrue("QuackOne" in output, "the requested preamble's directive ran")
+            assertFalse(
+                "PreambleFirst" in output,
+                "the configuration's default stays unapplied"
+            )
+        }
+    }
+
+    @Test
+    fun `an explicit preamble applies even under the without-directives policy`() {
+        withRestoredState {
+            val directory = echoFixture()
+            Files.writeString(
+                directory.resolve("arararc.yaml"),
+                "!config\nverbose: true\npaths:\n  - './'\n" +
+                    "preambles:\n  test: '% arara: echoone'\n" +
+                    "prependPreambleIfDirectivesGiven: false\n"
+            )
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "--preamble", "test",
+                "main.tex"
+            )
+            assertEquals(0, status, "the explicit preamble and the file's directive run")
+            assertEquals(
+                2, output.split("QuackOne").size - 1,
+                "the explicit request beats the policy"
+            )
+        }
+    }
+
+    @Test
+    fun `rules read the seeded environment in the deprecated dialect`() {
+        withRestoredState {
+            val directory = echoFixture()
+            Files.writeString(
+                directory.resolve("envreader.yaml"),
+                """
+                !config
+                identifier: envreader
+                name: The environment reader
+                commands:
+                  - name: The environment reader
+                    command: >
+                      @{ return isWindows(getCommand('cmd', '/c', 'echo',
+                      getSession().contains('environment:PATH') ||
+                      getSession().contains('environment:Path')
+                      ? 'EnvWorks' : 'NoEnv'),
+                      getCommand('echo',
+                      getSession().contains('environment:PATH') ||
+                      getSession().contains('environment:Path')
+                      ? 'EnvWorks' : 'NoEnv')); }
+                arguments: []
+                """.trimIndent()
+            )
+            Files.writeString(
+                directory.resolve("arararc.yaml"),
+                "!config\nverbose: true\npaths:\n  - './'\n"
+            )
+            Files.writeString(
+                directory.resolve("main.tex"),
+                "% arara: envreader\n"
+            )
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "main.tex"
+            )
+            assertEquals(0, status, "the environment-reading rule runs")
+            assertTrue(
+                "EnvWorks" in output,
+                "the rule reads the seeded environment"
+            )
+        }
+    }
+
+    @Test
+    fun `rules read the seeded environment in the Lua dialect`() {
+        withRestoredState {
+            val directory = echoFixture()
+            Files.writeString(
+                directory.resolve("envreader.lua"),
+                """
+                return {
+                  identifier = "envreader",
+                  name = "The environment reader",
+                  authors = { "Island of TeX" },
+                  commands = {
+                    {
+                      name = "The environment reader",
+                      command = function(ctx)
+                        local session = getSession()
+                        local has = session.contains('environment:PATH')
+                          or session.contains('environment:Path')
+                        return isWindows(
+                          getCommand('cmd', '/c', 'echo', has and 'EnvWorks' or 'NoEnv'),
+                          getCommand('echo', has and 'EnvWorks' or 'NoEnv')
+                        )
+                      end
+                    }
+                  },
+                  arguments = {}
+                }
+                """.trimIndent()
+            )
+            Files.writeString(
+                directory.resolve("arararc.yaml"),
+                "!config\nverbose: true\npaths:\n  - './'\n"
+            )
+            Files.writeString(
+                directory.resolve("main.tex"),
+                "% arara: envreader\n"
+            )
+            val (status, output) = runCLI(
+                "--working-directory", directory.toString(),
+                "--engine", "lua",
+                "main.tex"
+            )
+            assertEquals(0, status, "the environment-reading rule runs")
+            assertTrue(
+                "EnvWorks" in output,
+                "the Lua rule reads the seeded environment"
             )
         }
     }

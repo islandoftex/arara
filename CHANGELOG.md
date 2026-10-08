@@ -510,6 +510,13 @@ on.
 
 ## Fixed
 
+* The silent alias keeps its promise now: a verbose configuration
+  no longer rides over an explicit request for quiet - the alias
+  negates it for the one invocation that asks, and the verbose
+  flag lifts a quiet configuration just the same. The alias had
+  been decorative since the configuration key existed: the two
+  requests folded into one flag whose negation was
+  indistinguishable from its absence.
 * The runnable jar declares native access in its manifest: the
   terminal library binds through JNA, whose dispatch load tripped
   the guard the newest runtimes keep on restricted calls, so an

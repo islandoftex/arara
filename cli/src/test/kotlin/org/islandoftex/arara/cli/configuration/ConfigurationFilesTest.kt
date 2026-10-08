@@ -59,6 +59,23 @@ class ConfigurationFilesTest {
     }
 
     @Test
+    fun `a malformed pattern in a configuration is a load error`() {
+        val directory = Files.createTempDirectory("arara-config-pattern")
+        val config = directory.resolve("arararc.yaml")
+        Files.writeString(
+            config,
+            "!config\nfiletypes:\n  - extension: my\n    pattern: '[a'\n"
+        )
+        assertFailsWith<AraraException>(
+            "a malformed pattern is a load error"
+        ) {
+            ConfigurationFiles.load(
+                MPPPath(config.toString()), projectIn(directory)
+            )
+        }
+    }
+
+    @Test
     fun `rejects invalid loop counts in the YAML configuration`() {
         val directory = Files.createTempDirectory("arara-config-loops")
         val config = directory.resolve("arararc.yaml")
