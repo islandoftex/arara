@@ -40,6 +40,8 @@ internal data class Scenario(
     val forbidden: List<String> = emptyList(),
     /** The strings the log file has to contain; defaults to none. */
     val logChecks: List<String> = emptyList(),
+    /** The log file the log checks read; defaults to the tool's own name. */
+    val logFile: String = "arara.log",
     /** The process exit code the scenario expects; defaults to success. */
     val exitCode: Int = 0,
     /** An extra shell step the setup runs before the invocation. */
@@ -566,6 +568,89 @@ internal val scenarios = listOf(
                 logParity = true,
                 fixture = "console-explicit",
         ),
+        Scenario(
+                name = "session-trail.bats", dir = "session-trail",
+                description = "the session's mutation trail in the log",
+                check = "the log carries the session's lines as they happen",
+                arguments = listOf("--log", "sessions.tex"),
+                expected = listOf("SUCCESS"),
+                logChecks = listOf(
+                        "Session variable 'quack' set to 'Quack'.",
+                        "Session environment refreshed (",
+                ),
+                fixture = "sessions",
+        ),
+        Scenario(
+                name = "completion.bats", dir = "completion",
+                description = "the shell completion through the runnable jar",
+                check = "the generated script names the tool and its flags",
+                arguments = listOf("--generate-completion", "bash"),
+                expected = listOf("arara", "--engine"),
+        ),
+        Scenario(
+                name = "version.bats", dir = "version",
+                description = "the version line through the runnable jar",
+                check = "the version message carries the logo and the notes",
+                arguments = listOf("--version"),
+                expected = listOf("arara", "Island of TeX"),
+        ),
+        Scenario(
+                name = "timeout.bats", dir = "timeout",
+                description = "the command line timeout through the pipeline",
+                check = "a slow command meets the timeout verdict",
+                arguments = listOf("--timeout", "200", "timeout.tex"),
+                expected = listOf("reached the provided timeout value"),
+                exitCode = 2,
+                fixture = "timeout",
+        ),
+        Scenario(
+                name = "logname.bats", dir = "logname",
+                description = "the logname configuration key changing the log",
+                check = "the log lands under the configured name alone",
+                arguments = listOf("--log", "doc.tex"),
+                expected = listOf("SUCCESS"),
+                logChecks = listOf("Run completed with exit code 0"),
+                logFile = "mylog.log",
+                fixture = "logname",
+        ),
+        Scenario(
+                name = "project-subdir.bats", dir = "project-subdir",
+                description = "a project specification with its own directory",
+                check = "the subdirectory project runs through its own configuration",
+                arguments = listOf("spec.proj.lua"),
+                expected = listOf("SUCCESS"),
+                fixture = "project-subdir",
+        ),
+        Scenario(
+                name = "lua-file-types.bats", dir = "lua-file-types",
+                description = "a custom file type through the Lua configuration",
+                check = "the Lua-configured type carries the document",
+                arguments = listOf("main.my"),
+                expected = listOf("SUCCESS"),
+                fixture = "lua-file-types",
+        ),
+        Scenario(
+                name = "db-rename.bats", dir = "db-rename",
+                description = "the file database under its configured name",
+                check = "the record-and-skip semantics hold under the rename",
+                arguments = listOf("changes.tex"),
+                expected = listOf("QuackOne"),
+                extraSetup = "rm -f mydb.db",
+                doubleRun = true,
+                secondRunForbidden = "QuackOne",
+                fixture = "changes-renamed",
+        ),
+        Scenario(
+                name = "call-property.bats", dir = "call-property",
+                description = "call parameters through the command line flag",
+                check = "the flagged value flows into the rule command",
+                arguments = listOf(
+                        "--call-property", "marker=FromTheFlag",
+                        "call-property.tex"
+                ),
+                expected = listOf("FromTheFlag"),
+                fixture = "call-property",
+        ),
 )
 
 /**
@@ -615,7 +700,7 @@ private fun render(scenario: Scenario): String = bats {
         if (scenario.logChecks.isNotEmpty()) {
             // the log file is read back through a second run, so its
             // recorded facts assert like ordinary command output
-            run { "cat arara.log" }
+            run { "cat ${scenario.logFile}" }
             output {
                 scenario.logChecks.forEach { needle -> it contains needle }
             }

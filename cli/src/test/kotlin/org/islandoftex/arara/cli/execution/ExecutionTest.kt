@@ -200,6 +200,10 @@ class ExecutionTest {
     @Test
     fun `tracks changes against the configured database name`() {
         val file = File(getPathForTest("changes-renamed") + "/mydb.db")
+        // the fixture's configured name applies globally through the
+        // run and would leak into every later suite of the machine,
+        // so the options return with the artifact
+        val originalOptions = LinearExecutor.executionOptions
         if (file.exists()) file.delete()
         try {
             assertTrue(
@@ -220,6 +224,7 @@ class ExecutionTest {
             // the renamed database is as much a runtime artifact as
             // the default one: the fixture stays clean either way
             file.delete()
+            LinearExecutor.executionOptions = originalOptions
         }
     }
 

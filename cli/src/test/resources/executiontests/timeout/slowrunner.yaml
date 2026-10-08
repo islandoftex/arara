@@ -1,0 +1,8 @@
+!config
+identifier: slowrunner
+name: The slow runner
+commands:
+  - name: The slow runner
+    command: >
+      @{ return isWindows(getCommand('cmd', '/c', 'ping', '-n', '3', '127.0.0.1'), getCommand('sleep', '2')); }
+arguments: []

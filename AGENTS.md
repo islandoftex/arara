@@ -82,7 +82,15 @@ line, the styled presentation under a captured stream asserting the
 degraded structure with its closing verdict and summary, the styled
 dry run verdict without a table, the failed task quoting its own
 output with the log keeping the full record, and the log parity
-between the plain and the styled presentations)
+between the plain and the styled presentations, the session's
+mutation trail in the log, the shell completion and the version
+line through the runnable jar, the command line timeout aborting
+a slow command, the logname configuration key renaming the log, a
+project specification running from its own subdirectory through
+its own configuration, a custom file type through the Lua
+configuration, the file database carrying the record-and-skip
+semantics under its configured name, and call parameters reaching
+the rules through the command line flag)
 and the real TeX toolchain (the official `pdflatex` rule through both
 dialects). The historical scenarios the compact matrix once dropped are
 restored to the end-to-end set; the remaining fixture shapes stay with
