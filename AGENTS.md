@@ -111,7 +111,7 @@ carries no dependencies.
 
 ## Commands
 
-Gradle 9.8.0 wrapper, Kotlin 2.4.20. Compatibility targets live in root
+Gradle 9.8.1 wrapper, Kotlin 2.4.21. Compatibility targets live in root
 `gradle.properties` (`arara.jvm.target=11`, `arara.kotlin.target=2.4.0`) and
 are enforced by the tapmoc plugin — no toolchains are configured, so whatever
 JVM drives the build compiles release-11 bytecode, with the JDK 11 API
