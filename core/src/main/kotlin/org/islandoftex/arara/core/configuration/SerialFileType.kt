@@ -10,8 +10,6 @@ import org.islandoftex.arara.core.session.LinearExecutor
 
 /**
  * Implements the file type model.
- *
- * @author Island of TeX
  */
 @Serializable
 data class SerialFileType(

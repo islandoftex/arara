@@ -12,8 +12,6 @@ import org.islandoftex.arara.lua.rules.LuaRuleParser
  * Implements rule file resolution: locating the rule file for a directive
  * and parsing it into the rule representation, including the one-time
  * deprecation warning of the YAML format.
- *
- * @author Island of TeX
  */
 @Suppress("DEPRECATION")
 object RuleFiles {

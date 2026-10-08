@@ -15,8 +15,6 @@ import com.github.ajalt.mordant.rendering.TextColors
  * characters every font has - the mid-dot separator and the
  * ellipsis are the exception in the other direction, carried by
  * every font, so they never degrade.
- *
- * @author Island of TeX
  */
 object StyledTheme {
     /**

@@ -12,8 +12,6 @@ import org.islandoftex.arara.core.localization.LanguageController
  * has to be provided by the application embedding arara. An
  * application with an interactive surface replaces this renderer
  * with its own implementation at startup.
- *
- * @author Island of TeX
  */
 object HeadlessDialogRenderer : DialogRenderer {
     /**

@@ -7,8 +7,6 @@ import org.islandoftex.arara.api.rules.DirectiveConditionalType
 /**
  * The conditional class, it represents the type of conditional available
  * for a directive and its corresponding expression to be evaluated.
- *
- * @author Island of TeX
  */
 data class DirectiveConditional(
     /**

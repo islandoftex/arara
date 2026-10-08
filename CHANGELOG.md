@@ -232,6 +232,9 @@ on.
 
 ## Changed
 
+* The source code carries no author tags any longer: the
+  repository's history is the record of who wrote what, and the
+  rendered documentation follows.
 * The Brazilian Portuguese file type verdicts read 'o tipo de
   arquivo' for the file they name: the phrasing used to carry a
   second 'de' before the file name, and all four members of the

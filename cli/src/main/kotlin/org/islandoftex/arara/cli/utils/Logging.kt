@@ -14,8 +14,6 @@ import org.islandoftex.arara.api.configuration.LoggingOptions
  * fresh, exactly as the options ask: the append flag travels to the
  * configuration as a context value, and the file appender reads
  * it, so a persisted log survives across runs when requested.
- *
- * @author Island of TeX
  */
 object Logging {
     /**

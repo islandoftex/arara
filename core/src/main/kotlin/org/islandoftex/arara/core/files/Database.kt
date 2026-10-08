@@ -21,8 +21,6 @@ import org.islandoftex.arara.core.localization.LanguageController
  *
  * The class intentionally shares its simple name with the api interface
  * it implements; the local declaration shadows the import on purpose.
- *
- * @author Island of TeX
  */
 data class Database(
     /**

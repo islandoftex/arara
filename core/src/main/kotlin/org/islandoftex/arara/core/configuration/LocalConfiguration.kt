@@ -17,8 +17,6 @@ import org.islandoftex.arara.core.session.Environment
 /**
  * A local configuration which resembles configuration files in the working
  * directory.
- *
- * @author Island of TeX
  */
 @Serializable
 data class LocalConfiguration(

@@ -11,8 +11,6 @@ import org.islandoftex.arara.core.rules.RuleMethods
  * MVEL evaluates strings, so its helpers arrive as a pre-wired
  * map; the Lua dialect binds the very same helpers directly as
  * functions and keeps no registry of its own.
- *
- * @author Island of TeX
  */
 object MvelState {
     /**

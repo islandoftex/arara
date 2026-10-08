@@ -19,8 +19,6 @@ import org.mvel2.templates.TemplateRuntime
 /**
  * Implements directive processing: the wiring of the extraction
  * hooks, the parameter resolution and the validation pipeline.
- *
- * @author Island of TeX
  */
 object DirectiveProcessing {
     /**

@@ -59,8 +59,6 @@ internal fun runPriorEvaluation(conditional: DirectiveConditional): Boolean {
  * the rule file, validates the arguments and runs the command
  * list under the halt policy, driven once per directive by the
  * directive model that constructs it.
- *
- * @author Island of TeX
  */
 @Suppress("TooManyFunctions")
 class Interpreter(

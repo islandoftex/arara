@@ -40,8 +40,6 @@ import org.islandoftex.arara.core.utils.wrap
  * plain characters and no escapes. The renderer holds no logging:
  * the run log writes the diagnostic artifact, so the presentation
  * can never change what the log records.
- *
- * @author Island of TeX
  */
 @Suppress("TooManyFunctions", "LargeClass")
 class StyledConsoleRenderer(

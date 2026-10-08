@@ -4,8 +4,6 @@ package org.islandoftex.arara.core.rules
 /**
  * Implements a directive assembler in order to help build a directive from a
  * list of strings.
- *
- * @author Island of TeX
  */
 internal class DirectiveAssembler {
     /**

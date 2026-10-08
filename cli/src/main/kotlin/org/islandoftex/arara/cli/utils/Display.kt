@@ -20,8 +20,6 @@ import org.islandoftex.arara.core.localization.LanguageController
  * records the same lines. The historic plain renderer is the
  * default presentation, and the facade keeps the surface the
  * interpreter, the command runner and the tests were built on.
- *
- * @author Island of TeX
  */
 @Suppress("TooManyFunctions")
 object Display {

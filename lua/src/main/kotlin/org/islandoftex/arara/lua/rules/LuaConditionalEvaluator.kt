@@ -17,8 +17,6 @@ import org.islandoftex.arara.core.rules.DirectiveConditionalEvaluator
  * rejected. Single-call conditions such as `exists('log')` work in both
  * dialects unchanged, but compound conditions use Lua's `and`, `or` and
  * `not` instead of `&&`, `||` and `!`.
- *
- * @author Island of TeX
  */
 class LuaConditionalEvaluator(
     executionOptions: ExecutionOptions

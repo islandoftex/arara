@@ -23,8 +23,6 @@ import java.io.PrintStream
  * output codepage and returns it at exit, because console
  * state outlives the process. Every refusal leaves the streams
  * exactly as the JVM built them.
- *
- * @author Island of TeX
  */
 object StandardStreams {
     /**

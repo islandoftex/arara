@@ -17,8 +17,6 @@ import org.islandoftex.arara.core.ui.DialogRenderer
  * layout the tool has printed since its first release. A mode the
  * configuration names but the application does not offer is an
  * error rather than a silent fallback.
- *
- * @author Island of TeX
  */
 enum class ConsoleMode {
     /**

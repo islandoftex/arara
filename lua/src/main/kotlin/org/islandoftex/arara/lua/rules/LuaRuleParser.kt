@@ -51,8 +51,6 @@ import org.islandoftex.arara.core.localization.LanguageController
  * value of the argument as second parameter. The helper functions known
  * from the YAML format (`getCommand`, `isTrue`, `throwError`, ...) are
  * available as globals.
- *
- * @author Island of TeX
  */
 object LuaRuleParser {
     /**

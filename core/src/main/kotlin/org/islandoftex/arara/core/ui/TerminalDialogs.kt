@@ -10,8 +10,6 @@ package org.islandoftex.arara.core.ui
  * surface wires its implementation - so the semantics of the
  * conversation live in the contract while the presentation belongs
  * to whoever actually has a surface to present on.
- *
- * @author Island of TeX
  */
 object TerminalDialogs {
     /**

@@ -22,8 +22,6 @@ import org.islandoftex.arara.core.utils.wrap
  * the degraded form is the plain one by construction: the sibling
  * renders it, not a copy of it, and the reading semantics are
  * shared, never re-derived.
- *
- * @author Island of TeX
  */
 @Suppress("MagicNumber", "TooManyFunctions")
 class StyledDialogRenderer(

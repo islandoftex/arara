@@ -8,8 +8,6 @@ import org.islandoftex.arara.api.rules.RuleCommand
 
 /**
  * Implements the rule command model.
- *
- * @author Island of TeX
  */
 @Serializable
 class SerialRuleCommand : RuleCommand {

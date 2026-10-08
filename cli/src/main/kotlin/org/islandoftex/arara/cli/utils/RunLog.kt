@@ -16,8 +16,6 @@ import org.islandoftex.arara.core.session.Session
  * reads the same whichever console rendered the run - and the log
  * blocks the interpreter, the command runner and the directive
  * processing build all frame through the same helpers.
- *
- * @author Island of TeX
  */
 // the log entries are one function per line the run writes - the
 // count is the shape of the log surface, not accumulated

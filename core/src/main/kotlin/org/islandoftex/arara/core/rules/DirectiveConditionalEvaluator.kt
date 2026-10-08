@@ -14,8 +14,6 @@ import org.islandoftex.arara.api.rules.DirectiveConditionalType
  * One evaluator instance is expected per directive, as the loop
  * counter and the once-only guard of the single-evaluation
  * conditionals are tied to the lifetime of one conditional.
- *
- * @author Island of TeX
  */
 abstract class DirectiveConditionalEvaluator(
     /**

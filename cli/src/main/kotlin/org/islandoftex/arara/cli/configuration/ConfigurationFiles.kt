@@ -21,8 +21,6 @@ import org.islandoftex.arara.lua.configuration.LuaLocalConfiguration
 /**
  * Implements configuration file resolution and loading: which names
  * to look up, in which directories, and how each format is read.
- *
- * @author Island of TeX
  */
 object ConfigurationFiles {
     /**

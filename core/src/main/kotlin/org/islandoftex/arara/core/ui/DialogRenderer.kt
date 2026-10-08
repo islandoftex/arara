@@ -11,8 +11,6 @@ package org.islandoftex.arara.core.ui
  * implementation matching the surface it actually has. The library
  * assumes none by default, so a host that never wires one meets a
  * clear error instead of a silent guess.
- *
- * @author Island of TeX
  */
 interface DialogRenderer {
     /**

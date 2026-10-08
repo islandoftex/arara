@@ -10,8 +10,6 @@ import org.islandoftex.arara.core.localization.LanguageController
 /**
  * Implements the session, i.e. one single run of the whole arara tool.
  * It is a superset of the session exposed to the user.
- *
- * @author Island of TeX
  */
 object Session : Session {
     // the session map which holds the execution session;

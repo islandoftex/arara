@@ -14,8 +14,6 @@ import org.islandoftex.arara.api.session.Command
  * and holds no logging, and the application resolves the renderer
  * once at startup without touching the interpreter, the command
  * runner or the command line.
- *
- * @author Island of TeX
  */
 @Suppress("TooManyFunctions")
 interface ConsoleRenderer {

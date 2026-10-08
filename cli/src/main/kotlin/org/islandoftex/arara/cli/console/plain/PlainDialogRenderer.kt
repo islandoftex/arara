@@ -16,8 +16,6 @@ import org.islandoftex.arara.core.utils.wrap
  * wires this implementation when it runs on a terminal; the layout
  * itself is frozen on purpose, as the rest of the plain console
  * is.
- *
- * @author Island of TeX
  */
 object PlainDialogRenderer : DialogRenderer {
     /**

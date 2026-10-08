@@ -12,8 +12,6 @@ import org.islandoftex.arara.api.files.toJVMFile
 /**
  * Implements the class loading and object instantiation helpers the
  * registry exposes to rules, backed by archive inspection.
- *
- * @author Island of TeX
  */
 object ClassLoading {
     /**

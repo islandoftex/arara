@@ -12,8 +12,6 @@ import org.mvel2.templates.TemplateRuntime
 /**
  * Implements the evaluator for the MVEL dialect of directive
  * conditionals.
- *
- * @author Island of TeX
  */
 class DirectiveConditionalEvaluator(executionOptions: ExecutionOptions) :
     DirectiveConditionalEvaluator(executionOptions) {

@@ -20,8 +20,6 @@ import org.zeroturnaround.exec.InvalidExitValueException
  * Implements the system command runner: the single execution surface the
  * interpreter dispatches through, pairing every run with its duration
  * and the output buffer, and mapping failures to their localized errors.
- *
- * @author Island of TeX
  */
 internal object CommandRunner {
     /**

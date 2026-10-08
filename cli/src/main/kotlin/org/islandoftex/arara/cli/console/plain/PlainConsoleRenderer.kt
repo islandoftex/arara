@@ -24,8 +24,6 @@ import org.islandoftex.arara.core.utils.wrap
  * presentation is moved, not modernized. It holds no logging: the
  * log entries of a run live in the run log, so no presentation can
  * ever change what the log records.
- *
- * @author Island of TeX
  */
 @Suppress("TooManyFunctions")
 object PlainConsoleRenderer : ConsoleRenderer {

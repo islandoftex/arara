@@ -6,8 +6,6 @@ import org.islandoftex.arara.api.session.Command
 
 /**
  * Implements a command model, containing a list of strings.
- *
- * @author Island of TeX
  */
 data class Command(
     /**

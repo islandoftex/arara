@@ -67,8 +67,6 @@ import org.islandoftex.arara.lua.LuaInterpreter
 
 /**
  * arara's command line interface
- *
- * @author Island of TeX
  */
 // the command line class carries its option surface and the run
 // orchestration side by side: the count is intrinsic to the entry

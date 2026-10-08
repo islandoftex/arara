@@ -7,8 +7,6 @@ import java.util.Locale
 /**
  * A locale representation, identified by an IETF BCP 47 language tag such
  * as `en` or `pt-BR`.
- *
- * @author Island of TeX
  */
 public class MPPLocale constructor(tag: String) {
     /**

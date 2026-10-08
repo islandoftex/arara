@@ -11,8 +11,6 @@ import org.islandoftex.arara.core.session.Environment
  * The Lua platform arara's script formats run on: the standard
  * globals with arara's own values in scope, shared by the
  * configuration and the project specification formats.
- *
- * @author Island of TeX
  */
 internal object LuaPlatform {
     /**

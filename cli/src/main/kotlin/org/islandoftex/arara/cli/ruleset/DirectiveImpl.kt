@@ -8,8 +8,6 @@ import org.islandoftex.arara.core.session.LinearExecutor
 
 /**
  * Implements the directive model.
- *
- * @author Island of TeX
  */
 data class DirectiveImpl(
     /**

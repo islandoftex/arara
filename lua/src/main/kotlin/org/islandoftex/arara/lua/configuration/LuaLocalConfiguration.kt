@@ -76,8 +76,6 @@ import org.islandoftex.arara.lua.rules.LuaConversion
  * The parsed result is converted into the very same
  * [LocalConfiguration] representation the YAML parser produces,
  * so both formats behave identically once loaded.
- *
- * @author Island of TeX
  */
 // the parser walks a key surface of two depths - roots and
 // groups - and every extraction is its own function; the count

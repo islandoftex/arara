@@ -16,8 +16,6 @@ import org.islandoftex.arara.core.utils.globToRegex
 /**
  * Implements the file lookups, from reference resolution to the file
  * type discovery the interpreter dispatches on.
- *
- * @author Island of TeX
  */
 object FileSearching {
     /**
