@@ -224,7 +224,7 @@ as the runnable jar).
 
 - `api` — the public, stable interface. Builds with `explicitApi()`, so
   public members must be explicitly `public`. **`api/.../AraraAPI.kt` is
-  generated** by the `createAraraAPIObject` task at compile time (it embeds
+  generated** at configuration time (it embeds
   the project version); never edit it by hand.
 - `core` — implementations: linear executor/session, file handling, the
   file database (`arara.db`, an internal machine-owned cache in a

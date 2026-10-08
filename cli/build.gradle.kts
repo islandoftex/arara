@@ -28,9 +28,9 @@ configurations {
 
 dependencies {
     implementation(project(":core"))
-    implementation(libs.kotaml)
     implementation(project(":lua"))
     implementation(project(":mvel"))
+    implementation(libs.kotaml)
     // the command line framework, the YAML parser, the serialization
     // runtime and the logging facade reference the Kotlin reflection
     // classes at runtime, but none of them declares the dependency, so
@@ -59,10 +59,6 @@ dependencies {
 tasks {
 
     build {
-        dependsOn("shadowJar")
-    }
-
-    named<Task>("assembleDist").configure {
         dependsOn("shadowJar")
     }
 

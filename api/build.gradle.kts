@@ -16,37 +16,32 @@ dependencies {
     testImplementation(libs.okio.fakefilesystem)
 }
 
-tasks {
+// the version object is generated in place at configuration time:
+// every reader of the module's main sources - the compiler, the
+// linter, the formatter, the documentation generator - sees the file
+// without a single ordering wire, and no reader can race a write it
+// never observes; the project version is a configuration input, so
+// a version change always refreshes the file before any task runs.
+// The tracked copy stays an honest diff of every version bump.
+val araraVersion = project.version
+file("src/main/kotlin/org/islandoftex/arara/api/AraraAPI.kt").writeText(
+    """
+    // SPDX-License-Identifier: BSD-3-Clause
+    package org.islandoftex.arara.api
 
-    compileKotlin {
-        dependsOn("createAraraAPIObject")
+    /**
+     * Store information about arara's build.
+     */
+    public object AraraAPI {
+        /**
+         * arara's version.
+         */
+        @Suppress("MayBeConst")
+        public val version: String = "$araraVersion"
     }
 
-    register("createAraraAPIObject") {
-        listOf(
-                "src/main/kotlin/org/islandoftex/arara/api/AraraAPI.kt",
-        ).forEach {
-            file(it).writeText(
-                    """
-                // SPDX-License-Identifier: BSD-3-Clause
-                package org.islandoftex.arara.api
-
-                /**
-                 * Store information about arara's build.
-                 */
-                public object AraraAPI {
-                    /**
-                     * arara's version.
-                     */
-                    @Suppress("MayBeConst")
-                    public val version: String = "${project.version}"
-                }
-
-            """.trimIndent()
-            )
-        }
-    }
-}
+    """.trimIndent()
+)
 
 // the module's own test suite is what its report measures - the
 // cross-module coverage of these classes is guarded by the aggregate

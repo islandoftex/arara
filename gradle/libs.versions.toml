@@ -21,6 +21,7 @@ spotless-changelog-version = "3.1.2"
 spotless-version = "8.10.3"
 tapmoc-version = "0.4.2"
 versions-version = "0.65.0"
+kobats-version = "0.2.2"
 zt-exec-version = "1.13.0"
 
 [libraries]
@@ -37,6 +38,7 @@ log4j-core = { group = "org.apache.logging.log4j", name = "log4j-core", version.
 log4j-impl = { group = "org.apache.logging.log4j", name = "log4j-slf4j2-impl", version.ref = "log4j-version" }
 jna = { group = "net.java.dev.jna", name = "jna", version.ref = "jna-version" }
 mvel = { group = "org.mvel", name = "mvel2", version.ref = "mvel-version" }
+kobats = { group = "org.islandoftex", name = "kobats", version.ref = "kobats-version" }
 okio = { group = "com.squareup.okio", name = "okio", version.ref = "okio-version" }
 okio-fakefilesystem = { group = "com.squareup.okio", name = "okio-fakefilesystem", version.ref = "okio-version" }
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j-version" }
