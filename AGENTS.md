@@ -210,15 +210,17 @@ differs from the build floor).
   `promoteChangelog` by hand to promote the unreleased section and
   rewrite the diff-comparison links the promotion leaves behind.
 - The former packaging tasks (`roast`, `assembleCTAN*`, `assembleTDS*`, the
-  `docs` Gradle module) were removed from the build: the doc/CTAN toolchain
-  (zola, weasyprint, htmlq) is unavailable here and out of scope. The `docs/`
-  directory still holds the manual sources (inert), and the removed tasks
-  remain recoverable from the `oc1` tag.
+  `docs` Gradle module, and the old PDF toolchain that scraped the rendered
+  website) were removed from the build and the tree: the manual now lives as
+  Markdown sources in `docs/`, awaiting the LaTeX generation pipeline and the
+  website that will render them. The removed machinery remains recoverable
+  from the `oc247` tag.
 
 ## Layout and architecture
 
 Dependency chain: `api` → `core` → (`mvel`, `lua`) → `cli`.
-`docs` holds the manual sources; `buildSrc` holds the publication
+`docs` holds the manual as Markdown sources plus the hand-written LaTeX
+skeleton; `buildSrc` holds the publication
 logic (the four library modules alone — the CLI application ships only
 as the runnable jar).
 
