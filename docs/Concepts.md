@@ -394,6 +394,23 @@ filetypes:
     pattern: '^\s*--\s*'
 ```
 
+The same declaration in the Lua configuration format:
+
+```lua
+return {
+  file_types = {
+    { extension = "my", pattern = "^\\s*--\\s*" }
+  }
+}
+```
+
+{% <devlab.callout type="warning" title="Mind the backslashes"> %}
+Observe the doubled backslashes in the Lua string. In YAML, a single-quoted
+pattern is literal — `'^\s*--\s*'` works as written. In Lua, string escapes
+are processed, so every backslash in the pattern doubles up. Getting this
+wrong is the classic first scratch of every new configuration.
+{% </devlab.callout> %}
+
 When arara looks for the type of a file, it walks the list of known types and
 answers with the first one whose extension matches. The order of the walk is
 a single tier: the types your configuration declares come first, in the order
@@ -460,6 +477,15 @@ end
 And if a task should never fail the run regardless of what the command says,
 the function can simply return `true` — the `clean` rule has been politely
 succeeding this way for years.
+
+For the deprecated YAML rules you will meet in the wild, the same override is
+a plain MVEL expression:
+
+```yaml
+exit: value > 0
+```
+
+The old era's material is gathered in [Migration](Migration.md).
 
 That is the vocabulary: rules describe tasks, directives request them, file
 types decide what arara reads, the header decides how far, sessions remember,
