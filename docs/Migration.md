@@ -102,15 +102,12 @@ The correspondence, key by key:
 | `parameters.shell` in MVEL | `ctx.shell` / the `value` parameter |
 | `getCommand`, `isTrue`, camelCase | `get_command`, `is_true`, or the same camelCase names — both spellings work |
 
-The official converter ships with the tool — `scripts/yaml2lua.py`, a
-Python script that reads a YAML rule and writes its Lua twin:
-
-```sh
-$ python3 scripts/yaml2lua.py pdflatex.yaml
-```
-
-Every official rule has already been converted this way, so the shipped
-pack is the best gallery of what idiomatic Lua rules look like.
+There is no automated converter: the translation is done by hand, and
+the correspondence table above is the whole method. The best worked
+examples are the shipped pairs themselves — every official rule exists
+in both formats, so reading a rule's YAML source beside its Lua twin is
+the most faithful conversion tutorial the tool can offer, and your own
+rules convert the same way, key by key.
 
 {% <devlab.callout type="warning" title="The conditionals differ too"> %}
 A rule's *directive conditionals* follow the engine, not the rule file:

@@ -142,7 +142,7 @@ formats, and no workflow breaks today — but the future belongs to Lua,
 and the sooner a project's rules migrate, the sooner the warning goes
 quiet.
 
-The migration itself is a chapter of its own: the shipped converter, the
-dialect correspondences, and the timeline live in
+The migration itself is a chapter of its own: the dialect
+correspondences and the timeline live in
 [Migration](Migration.md). If you are starting a new project, start it in
 Lua — there is no reason to write for yesterday's engine.
