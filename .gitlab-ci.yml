@@ -1,0 +1,208 @@
+variables:
+  # disable the Gradle daemon for Continuous Integration servers
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false -Xmx6g"
+  GIT_SUBMODULE_STRATEGY: recursive
+
+include:
+  - template: SAST.gitlab-ci.yml
+  - template: Dependency-Scanning.gitlab-ci.yml
+
+stages:
+  - build
+  - test
+  - pages
+  - publish
+
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+
+.cachetemplate: &cachedefinition
+  key: "$CI_COMMIT_REF_NAME-$JAVA_VERSION"
+  paths:
+    - build
+    - api/build
+    - core/build
+    - cli/build
+    - .gradle
+
+.buildtemplate: &builddefinition
+  stage: build
+  script:
+    # create the executables for distribution
+    - ./gradlew --build-cache assembleDist --info
+    - mkdir bin
+    - cp cli/build/libs/*.jar bin/
+    - cp cli/build/distributions/*.zip bin/
+    # create checksum file to make sure we're distributing the right thing
+    - cd bin
+    - md5sum *.{jar,zip} > checksums.txt
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME-snapshot"
+    paths:
+      - bin
+    expire_in: 1 week
+  cache:
+    <<: *cachedefinition
+    policy: push
+
+build:linux:jdk17:
+  image: amazoncorretto:17
+  <<: *builddefinition
+
+.testtemplate: &testdefinition
+  stage: test
+  script:
+    - ./gradlew allTests
+    - ./gradlew detekt
+  cache:
+    <<: *cachedefinition
+    policy: pull
+
+test:dependencies:
+  stage: test
+  needs: ["build:linux:jdk17"]
+  image: amazoncorretto:17
+  script:
+    - ./gradlew --no-parallel dependencyUpdates
+  cache:
+    <<: *cachedefinition
+    policy: pull
+
+test:roast:
+  stage: test
+  needs: ["build:linux:jdk17"]
+  image: amazoncorretto:17
+  script:
+    - ./gradlew roast
+  cache:
+    <<: *cachedefinition
+    policy: pull
+
+# to enable this job, remove the period
+# from the start of its name
+.test:flake-dependencies:
+  stage: test
+  image: nixpkgs/nix-flakes:latest-x86_64-linux
+  needs: []
+  script:
+    - nix profile add nixpkgs#corretto17 nixpkgs#diffutils nixpkgs#findutils nixpkgs#gnused
+    - nix run github:tadfisher/gradle2nix/v2 -- -l gradle.lock.new
+    - nix shell nixpkgs#diffutils -c diff gradle.lock gradle.lock.new
+  cache:
+    <<: *cachedefinition
+    policy: pull
+  rules:
+    - changes:
+        - build.gradle.kts
+        - flake.lock
+        - flake.nix
+        - gradle.lock
+        - gradle/libs.versions.toml
+        - gradle/wrapper/gradle-wrapper.properties
+
+test:spotless:
+  stage: test
+  needs: ["build:linux:jdk17"]
+  image: amazoncorretto:17
+  script:
+    - ./gradlew spotlessCheck
+  cache:
+    <<: *cachedefinition
+    policy: pull
+
+test:linux:jdk17:
+  needs: ["build:linux:jdk17"]
+  image: amazoncorretto:17
+  <<: *testdefinition
+
+test:linux:jdk21:
+  needs: ["build:linux:jdk17"]
+  image: amazoncorretto:21
+  <<: *testdefinition
+
+test:linux:jdk24:
+  needs: ["build:linux:jdk17"]
+  image: amazoncorretto:24
+  before_script:
+    - yum install findutils -y
+  <<: *testdefinition
+
+.pagestemplate: &pagesdefinition
+  stage: pages
+  image: nixpkgs/nix-flakes:latest-x86_64-linux
+  needs: []
+  script:
+    - nix build .#website
+    # GL pages needs the artifact at the root directory, the manual in website
+    - cp -r result/public ./public
+    - cp -r result/public ./website/public
+
+pages:
+  <<: *pagesdefinition
+  artifacts:
+    paths:
+      - public
+      # this is required for building the manual and quickstart PDF
+      - website/public
+    expire_in: 1 week
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "master"'
+    - if: '$CI_COMMIT_TAG'
+
+pages:for-manual:
+  <<: *pagesdefinition
+  artifacts:
+    paths:
+      # this is required for building the manual and quickstart PDF
+      - website/public
+    expire_in: 1 week
+  rules:
+    - if: '$CI_COMMIT_REF_NAME != "master"'
+    - if: '$CI_COMMIT_TAG == null'
+
+publish:gitlab:
+  image: amazoncorretto:17
+  stage: publish
+  script:
+    - ./gradlew publishAllPublicationsToGitLabRepository -PjobToken=$CI_JOB_TOKEN -Prelease=true
+  cache:
+    <<: *cachedefinition
+    policy: pull
+  rules:
+    - if: '$CI_COMMIT_TAG != null'
+
+.ctantemplate: &ctandefinition
+  stage: publish
+  image: nixpkgs/nix-flakes:latest-x86_64-linux
+  script:
+    - nix develop -c ./gradlew -Prelease=$PRELEASE assembleCTAN --info
+    - cp build/*.zip ./
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME-ctan"
+    paths:
+      - ./*.zip
+      - docs/*.pdf
+    expire_in: 1 week
+  cache:
+    <<: *cachedefinition
+    policy: pull
+
+publish:snapshot_tdszip:
+  needs:
+    - build:linux:jdk17
+    - test:linux:jdk17
+    - job: pages:for-manual
+      artifacts: true
+  variables:
+    PRELEASE: "false"
+  <<: *ctandefinition
+  rules:
+    - if: '$CI_COMMIT_TAG == null && $CI_MERGE_REQUEST_ID == null && $CI_COMMIT_REF_NAME == "development"'
+    - if: '$CI_COMMIT_TAG == null && $CI_MERGE_REQUEST_ID == null && $CI_COMMIT_REF_NAME == "master"'
+
+publish:tdszip:
+  variables:
+    PRELEASE: "true"
+  <<: *ctandefinition
+  rules:
+    - if: '$CI_COMMIT_TAG != null'
