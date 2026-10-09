@@ -261,35 +261,55 @@ configuration.
 # The Lua configuration
 
 A configuration file may also be written as a Lua script returning a
-table. The keys mirror the YAML ones, with the natural Lua
-representations: string lists become Lua sequences, the preambles mapping
-becomes a Lua table, and the `filetypes` entries become tables with
-`extension` and an optional `pattern` field. There is no `!config` header
-in the Lua format. A complete example:
+table — but mind this from the start: the Lua configuration is *its own
+vocabulary*, not the YAML keys spelled in Lua. The names are
+Lua-idiomatic, and grouped keys gather what the YAML format spreads
+apart. A complete example:
 
 ```lua
 return {
   paths = { user.home .. "/rules", "/opt/islandoftex/rules" },
-  filetypes = {
+  file_types = {
     { extension = "tex" },
     { extension = "texw", pattern = "^\\s*%\\s+" }
   },
   language = "en",
   loops = 10,
   verbose = true,
-  logging = false,
   header = true,
-  dbname = "arara.db",
-  logname = "arara.log",
-  console = "plain",
-  animations = true,
-  preambles = {
-    twopdftex = "% arara: pdflatex\n% arara: pdflatex"
+  database = "arara.db",
+  log = {
+    enabled = false,
+    file = "arara.log"
   },
-  defaultPreamble = "twopdftex",
-  prependPreambleIfDirectivesGiven = true
+  console = {
+    mode = "plain",
+    animations = true
+  },
+  preamble = {
+    default = "twopdftex",
+    prepend = "always",
+    definitions = {
+      twopdftex = { "% arara: pdflatex", "% arara: pdflatex" }
+    }
+  }
 }
 ```
+
+The correspondences worth teaching by name:
+
+| The YAML surface | The Lua surface |
+|---|---|
+| `filetypes` | `file_types` |
+| `dbname` | `database` |
+| `logging` and `logname` | the `log` group: `enabled` and `file` |
+| `console` as a plain string, and `animations` | the `console` group: `mode` and `animations` |
+| `preambles`, `defaultPreamble` and `prependPreambleIfDirectivesGiven` | the `preamble` group: `definitions`, `default` and `prepend` |
+
+The `paths`, `language`, `loops`, `verbose` and `header` keys carry the
+same names in both formats, and the `prepend` policy keeps its two
+names: `always`, the historical default, and `without-directives`,
+which spares the files that carry directives of their own.
 
 {% <devlab.callout type="warning" title="Mind the backslashes, again"> %}
 Unlike YAML, Lua strings do process escapes, so a pattern like
@@ -305,24 +325,9 @@ placeholder, no interpolation. In fact, no placeholder expansion applies
 to a Lua configuration at all: what the script computes is what arara
 uses.
 
-The preamble family carries the same keys, and a `preamble` group gathers
-them when the Lua spelling feels more natural:
-
-```lua
-preamble = {
-  default = "twopdftex",
-  prepend = "always",
-  definitions = {
-    twopdftex = { "% arara: pdflatex", "% arara: pdflatex" }
-  }
-}
-```
-
-The `prepend` policy names the two behaviours: `always`, the historical
-default, and `without-directives`, which spares the files that carry
-directives of their own. Remember that Lua configuration files are only
-considered if no YAML configuration file is found at all — the YAML names
-always win the lookup.
+Remember that Lua configuration files are only considered if no YAML
+configuration file is found at all — the YAML names always win the
+lookup.
 
 Since arara allows several different names for configuration files, two
 formats, as well as global and local approaches, it is highly advisable

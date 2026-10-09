@@ -24,9 +24,9 @@ The build asks for three things:
   git version 2.50.0
   ```
 
-- **A Java Development Kit.** The tool runs on Java 11 to 27 from any
-  vendor, and the build happily rides any of them — the compiled code
-  targets the runtime floor, not the compiler's ceiling:
+- **A Java Development Kit.** The tool *runs* on Java 11 to 27, from any
+  vendor — but the *build* is a Gradle build, and Gradle itself needs 17
+  or newer, so pick a JDK from 17 up and both truths hold at once:
 
   ```sh
   $ javac -version

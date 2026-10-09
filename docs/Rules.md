@@ -183,9 +183,9 @@ so `get_basename("hello.tex")` and its handle twin do the same work.
 # The helper surface
 
 The engine binds a family of helpers into every rule, each under its
-historic camelCase name and its Lua-idiomatic snake_case alias — `getCommand`
+historic camel case name and its Lua-idiomatic snake case alias — `getCommand`
 and `get_command` are the same helper, and the official rules ship in the
-snake_case spelling. The boundary is typed: a helper that expects a string
+snake case spelling. The boundary is typed: a helper that expects a string
 will refuse a number with Lua's own complaint — `bad argument #2 to
 'session.put' (value expected, got nil)` — the same device Lua's standard
 library uses, so the errors read familiar.
@@ -302,6 +302,13 @@ The helpers, organized by family:
   end
   ```
 
+  {% <devlab.callout type="info" title="The dot, not the colon"> %}
+  The session's operations are function-valued members of the table —
+  plain functions bound to it, not methods carrying a self — so the dot
+  call `session.contains(…)` is the correct spelling; no colon is
+  needed, and none would work.
+  {% </devlab.callout> %}
+
 ## Dialogs
 
 - `show_message(type, title, text)` shows a message box on the console —
@@ -339,7 +346,7 @@ that is not there.
 {% </devlab.callout> %}
 
 {% <devlab.callout type="info" title="The old YAML dialect"> %}
-Every helper in this chapter has a camelCase twin from the deprecated YAML
+Every helper in this chapter has a camel case twin from the deprecated YAML
 era — `get_command` was `getCommand`, `is_true` was `isTrue` — and the
 YAML rules spell their commands in MVEL, the expression language covered in
 [Engines](Engines.md). If you are tending to old rules before retiring

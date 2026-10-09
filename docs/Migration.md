@@ -100,7 +100,7 @@ The correspondence, key by key:
 | `default: 'value'` | `default = "value"` |
 | `exit: expression` | `exit = function(code) … end` |
 | `parameters.shell` in MVEL | `ctx.shell` / the `value` parameter |
-| `getCommand`, `isTrue`, camelCase | `get_command`, `is_true`, or the same camelCase names — both spellings work |
+| `getCommand`, `isTrue`, camel case | `get_command`, `is_true`, or the same camel case names — both spellings work |
 
 There is no automated converter: the translation is done by hand, and
 the correspondence table above is the whole method. The best worked

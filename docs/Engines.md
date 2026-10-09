@@ -87,7 +87,7 @@ seen in [Important concepts](Concepts.md).
 
 Under `--engine lua`, everything the MVEL snippets did speaks plain Lua —
 the rules, as taught in [Writing rules](Rules.md), the helpers under their
-camelCase and snake_case spellings, the conditionals, and the parameter
+camel case and snake case spellings, the conditionals, and the parameter
 interpolation. Two doctrines define the dialect's character:
 
 - **Strict booleans.** A conditional has to yield a proper boolean — `1`
@@ -129,7 +129,7 @@ dialects; a compound expression does not.
 {% <devlab.callout type="info" title="Helper names"> %}
 Under the Lua engine, every helper answers both spellings — the historic
 `getCommand` and the Lua-idiomatic `get_command` — so old habits survive
-the transition. The official rules ship in the snake_case spelling, and it
+the transition. The official rules ship in the snake case spelling, and it
 is the one this manual teaches.
 {% </devlab.callout> %}
 
