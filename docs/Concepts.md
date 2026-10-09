@@ -301,12 +301,33 @@ file or with a command line flag, both covered in
 [The command line](CommandLine.md).
 {% </devlab.callout> %}
 
-{% <devlab.callout type="info" title="The two dialects"> %}
-The conditionals above speak MVEL, the dialect of the default engine. Under
-`--engine lua`, the same four operators speak Lua instead, with the same
-helpers and the same strict booleans — the whole story, dialect by dialect,
-lives in [Engines](Engines.md).
-{% </devlab.callout> %}
+## The two dialects of conditionals
+
+The conditionals above speak MVEL, the dialect of the default engine — a
+first run of the tool evaluates them exactly as written. When you switch to
+`--engine lua`, the same four operators and the same helpers are available,
+but the compound expressions spell their logical operators the Lua way:
+
+| Meaning | MVEL, the default engine | Lua, `--engine lua` |
+|---|---|---|
+| conjunction | `&&` | `and` |
+| disjunction | `\|\|` | `or` |
+| negation | `!` | `not` |
+
+The same conditional, one in each dialect:
+
+```tex
+% arara: pdflatex while missing('pdf') || changed('tex')
+```
+
+```tex
+% arara: pdflatex while missing('pdf') or changed('tex')
+```
+
+A condition that is a single helper call translates verbatim between the
+dialects; a compound one does not — the operators are the engine's own, and
+a conditional written for one engine will not parse under the other. The
+whole story, dialect by dialect, lives in [Engines](Engines.md).
 
 ## Replicating directives over files
 
