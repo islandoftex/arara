@@ -17,8 +17,8 @@ is, in some aspects, similar to other well-known tools like `latexmk` and
 that arara aims at explicit instructions in the source code (in the form of
 comments) in order to determine what to do instead of relying on other
 resources, such as log file analysis. It is a different approach for an
-automation tool, and we have both advantages and disadvantages of such
-design. Let us use the following file `hello.tex` as an example:
+automation tool, and such a design brings both advantages and disadvantages.
+Let us use the following file `hello.tex` as an example:
 
 ```tex
 \documentclass{article}
@@ -37,7 +37,7 @@ $ latexmk -pdf hello.tex
 $ rubber --pdf hello.tex
 ```
 
-The mentioned tools perform an analysis on the file and decide what has to be
+These tools perform an analysis on the file and decide what has to be
 done. However, if one tries to invoke `arara` on `hello.tex`, I am afraid
 *nothing* will be generated; the truth is, arara does not know what to do with
 your file, and the tool will even raise an error message complaining about this
@@ -74,7 +74,6 @@ an automatic process and the tool does not employ any guesswork on its own*. You
 are in control of your documents; arara will not do anything unless you *teach
 it how to do a task and explicitly tell it to execute the task*.
 {% </devlab.callout> %}
-
 Now, how does one tell arara to do a task? That is actually the easy part,
 provided that you have everything up and running. We accomplish the task by
 adding a special comment line, hereafter known as *directive*, somewhere in our
@@ -135,8 +134,7 @@ might find this decision rather annoying, since other tools have most of their
 rules hard-coded, making the automation process even more transparent. However,
 since arara does not rely on a specific automation or compilation scheme, it
 becomes more extensible. The use of directives in the source code makes the
-automation steps more fluent, which allows the specification of complex
-workflows much easier.
+automation steps more fluent, which makes specifying complex workflows much
 {% </devlab.callout> %}
 
 Despite the inherited verbosity of automation steps not being suitable for small
@@ -146,10 +144,10 @@ workflows are easily tackled by our tool.
 
 Rules and directives are the core concepts of arara: the first dictates how a
 task is done, and the latter is the proper instance of the associated rule on
-the current document, i.e, when and where the commands must be executed.
+the current document, i.e., when and where the commands must be executed.
 
 {% <devlab.callout type="tip" title="The name"> %}
-*Do you like araras? We do, specially our tool which shares the same name of
+*Do you like araras? We do, especially our tool, which shares its name with
 this colorful bird — and since this manual carries no photographs, you can
 meet our noisy, naughty namesake on the [project's home
 page](https://islandoftex.gitlab.io/arara/), where the bird lives as the brand
@@ -206,7 +204,7 @@ awaits in [Engines](Engines.md) and [Migration](Migration.md).
 Now, we have a queue of pairs *(directive, rule)* to process. For each pair,
 arara will map the directive to its corresponding rule, evaluate it and run the
 proper command. The execution chain requires that command *i* was successfully
-executed to then proceed to command *i + 1*, and so on, so forth. This is also
+executed to then proceed to command *i + 1*, and so forth. This is also
 by design: arara will halt the execution if any of the commands in the queue
 raised an error. How does one know if a command was successfully executed?
 arara checks the corresponding *exit status* available after a command
@@ -277,9 +275,9 @@ particular scenario, get the latest virtual machine.
 
 In [Building and deploying](Building.md), we provide instructions on how to
 build arara from sources using Gradle. Even if you use multiple operating
-systems, arara should behave the same, including the rules. There are helper
-functions available in order to provide support for system-specific rules based
-on the underlying operating system.
+systems, arara should behave the same, including the rules. Helper functions
+are available for system-specific rules based on the underlying operating
+system.
 
 # Support
 
@@ -296,5 +294,5 @@ worthy of an issue, open one in our
 [GitLab repository](https://gitlab.com/islandoftex/arara/issues).
 
 We really hope you like our humble contribution to the TeX community. Let arara
-enhance your TeX experience, it will help you when you will need it the most.
+enhance your TeX experience; it will help you when you need it the most.
 Enjoy the manual.
