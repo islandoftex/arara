@@ -23,6 +23,17 @@ import org.islandoftex.svgecko.Svg
  * registry into the skeleton's tinted boxes, tables ride the GFM element
  * tree with their mixed content intact, and every prose character the
  * LaTeX engine would misread is escaped on arrival.
+ *
+ * The two books — the reference guide and the standalone quickstart —
+ * share this one conversion: the skeletons decide what each book
+ * contains, and the same generated chapters feed both.
+ *
+ * The pipeline is deliberately bridge-free: every construct the manual
+ * writes is native to the conversion library, so no preprocessing shim
+ * or post-hoc patch lives here. The one final pass, the TeX-family
+ * logos, rewrites prose mentions into their true letterforms after the
+ * components restore, leaving every verbatim region untouched; the
+ * text layer it delegates to carries that story.
  */
 object DocsConversion {
 
@@ -81,6 +92,12 @@ object DocsConversion {
     /**
      * Builds the CoralMark preset that converts the manual into the LaTeX
      * the skeleton compiles.
+     *
+     * Two text passes run at two depths: the text processor escapes
+     * every prose character while the tree walk renders, and the logo
+     * pass rewrites whole words after the components restore, when
+     * the verbatim regions are exactly the shapes its exclusions can
+     * find.
      *
      * @param diagrams the chapter's diagram name factory, shared with the
      *   recursive conversions so extracted files stay unique

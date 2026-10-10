@@ -16,17 +16,20 @@ import org.gradle.kotlin.dsl.credentials
 
 /**
  * A simple wrapper around arara's publication logic. The plugin covers
- * the library modules alone: the application module ships as the
+ * the four library modules alone — the application module ships as the
  * runnable jar, and its thin jar is a build intermediate no consumer
- * depends on, so it never reaches a Maven repository.
+ * depends on, so it never reaches a Maven repository. The publications
+ * target this project's GitLab package registry when the CI variables
+ * are present; a local build simply has no remote to configure, and
+ * local repositories keep working through the default.
  */
 open class AraraPublication : Plugin<Project> {
-    @Suppress("LongMethod")
     /**
      * Installs the Maven publication for the module: the library
      * artifact, the sources jar and the license metadata, with
      * the aggregated HTML documentation as its own distribution.
      */
+    @Suppress("LongMethod")
     override fun apply(target: Project) {
         target.apply(plugin = "maven-publish")
         // the sources jar completes the conventional library artifact
@@ -45,11 +48,18 @@ open class AraraPublication : Plugin<Project> {
             publications.configureEach {
                 this as MavenPublication
 
+                // the artifact carries the module prefix, so the
+                // repository reads as one family of libraries
+                // instead of four coincidentally named jars
                 artifactId = "arara-" + target.name
 
                 groupId = target.group.toString()
                 version = target.version.toString()
 
+                // the metadata describes the family once; every
+                // module shares the same identity, provenance and
+                // people, and the artifact name is what tells them
+                // apart
                 pom {
                     name.set("arara (${target.name} module)")
                     description.set(
@@ -113,6 +123,10 @@ open class AraraPublication : Plugin<Project> {
                 }
             }
 
+            // the registry URL is only known inside the CI environment,
+            // whose variables name this very project; a local build
+            // keeps the block empty and stays on local repositories,
+            // so the guard decides remote presence, not publishability
             System.getenv("CI_PROJECT_ID")?.let { projectId ->
                 repositories {
                     maven {

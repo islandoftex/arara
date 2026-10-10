@@ -33,11 +33,11 @@ abstract class GenerateSmokeBats : DefaultTask() {
     @get:OutputDirectory
     abstract val outputDirectory: DirectoryProperty
 
-    @TaskAction
     /**
      * Renders every scenario to its runner file in the output
      * directory, replacing any previous generation.
      */
+    @TaskAction
     fun generate() {
         val output = outputDirectory.get().asFile
         output.mkdirs()
@@ -111,12 +111,12 @@ abstract class RunSmokeBats : DefaultTask() {
      */
     private val skips = mutableListOf<String>()
 
-    @TaskAction
     /**
      * Runs both legs of the scenario matrix on the provisioned
      * tree: the underlying JVM first, then the floor runtime, and
      * fails loudly when a leg's runner reports failure.
      */
+    @TaskAction
     fun run() {
         runner = probeRunner()
         probeGit()

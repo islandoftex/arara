@@ -8,8 +8,16 @@ import org.islandoftex.coralmark.TextFragment
 
 /**
  * The LaTeX text layer of the manual conversion: the escaping every
- * prose character needs, and the rendering of mixed content — table
- * cells, hyperlink labels, and the fragments they are made of.
+ * prose character needs, the rendering of mixed content — table cells,
+ * hyperlink labels, and the fragments they are made of — and the
+ * TeX-family logo pass.
+ *
+ * The three concerns share one rule: prose is transformed, verbatim
+ * never is. The escaping runs as the conversion's text processor while
+ * the tree walk renders, the mixed-content renderers serve the element
+ * handlers, and the logo pass runs last, over the restored document,
+ * where the verbatim regions are structural enough to be excluded
+ * exactly.
  */
 internal object LatexText {
 
@@ -77,7 +85,8 @@ internal object LatexText {
     /**
      * Renders one table cell through its fragments: text runs are
      * escaped, inline code rides texttt, and emphasis and links keep
-     * their shape.
+     * their shape. The same fragment chain serves the hyperlink
+     * labels, so both render paths treat mixed content identically.
      */
     fun renderCell(
         cell: TagElement,
