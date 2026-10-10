@@ -6,7 +6,7 @@ weight = 2
 
 Welcome to arara, the cool TeX automation tool! This document is intended
 to be a quickstart guide, providing the basic instructions to start using
-our tool. We will help our good friend Peter,[^1] the anteater, in his
+our tool. We will help our good friend Peter, the anteater, in his
 learning adventure. He is very excited about it! Hello, Peter!
 
 ***Peter:** Hello, nice to meet you, person from the Island of TeX! I am
@@ -341,7 +341,7 @@ workings better.
 ***Peter:** I will certainly check them out! Now, I am curious to see
 other directives in action together, so let us try a different yet common
 scenario: bibliographies and citations. Consider the following
-bibliography file, containing a reference[^2] to my doctoral thesis:*
+bibliography file, containing a reference to my doctoral thesis:*
 
 ```bibtex
 @phdthesis{peter:2020,
@@ -508,18 +508,17 @@ report is worthy of an issue, open one in our
 [GitLab repository](https://gitlab.com/islandoftex/arara/issues). Happy
 TeXing with arara, Peter!
 
----
+# Colophon
 
-[^1]: *Peter was graduated from Termite High School, Alta Floresta, Mato
-Grosso, Brazil. He went on to study at the California Institute of
-Ti*k*Zlings with a scholarship from San Diego Zoo. He completed his
-university education at the Rain Forest Academy, Manaus. He is currently
-teaching as a Fellow of the Federal University for the Advancement of
-Furry Animals, Cuiabá. He is a Corresponding Member of Duckpond Academy,
-Sempione Park, Milano, Italy.*
-
-[^2]: *Peter's doctoral thesis "On flexibility: LaTeX, latex and rubber"
-was published at Manaus. His reputation in the academic world is based on
-his famous study "The Mandelbrot heritage: towards a fractal topology of
+Peter, our co-author in this quick tour, was graduated from Termite High
+School, Alta Floresta, Mato Grosso, Brazil. He went on to study at the
+California Institute of Ti*k*Zlings with a scholarship from San Diego
+Zoo, and completed his university education at the Rain Forest Academy,
+Manaus. He is currently teaching as a Fellow of the Federal University
+for the Advancement of Furry Animals, Cuiabá, and is a Corresponding
+Member of Duckpond Academy, Sempione Park, Milano, Italy. His doctoral
+thesis "On flexibility: LaTeX, latex and rubber" was published at
+Manaus, and his reputation in the academic world rests on his famous
+study "The Mandelbrot heritage: towards a fractal topology of
 formicaries". Some of his works arose from a fruitful cooperation with
-the well known Brazilian-Italian savant Professore P. van Duck.*
+the well known Brazilian-Italian savant Professore P. van Duck.
