@@ -1,0 +1,37 @@
+% arara, the cool TeX automation tool — the quickstart.
+%
+% The other book the docs pipeline typesets: the quick tour, a
+% standalone story and not a reference chapter, so it typesets on
+% its own with no table of contents. The chapter is CoralMark's
+% output from the Markdown source in docs/, generated into
+% build/generated/docs/; the conversion task copies this driver and
+% the shared preamble there, so the compile runs in one directory.
+
+\documentclass[11pt,a4paper]{report}
+\input{preamble}
+
+\begin{document}
+
+% the cover: the logo appears the moment one is committed to the
+% assets directory, and the books compile clean without it
+\begin{titlepage}
+  \centering
+  \vspace*{2em}
+  \araracoverart{width=0.35\textwidth}
+  \vspace{2em}
+
+  {\Huge\bfseries The arara quickstart\par}
+  \vspace{1.5em}
+  {\Large A quick tour with Peter the anteater\par}
+
+  \vfill
+  {\large Island of TeX\par}
+  \vspace{1em}
+  {\large\today\par}
+  \vspace{2em}
+\end{titlepage}
+
+% the tour itself, opening under its front-matter title
+\input{Quickstart}
+
+\end{document}

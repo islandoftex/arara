@@ -1,0 +1,160 @@
+% arara, the cool TeX automation tool — the shared preamble of the
+% two books the docs pipeline typesets: the reference guide and the
+% quickstart. The drivers input it right after their documentclass;
+% everything lives here — fonts, layout, the listings setup with
+% its per-language styles and the six-glyph literate table, the
+% callout boxes with their four tints, and the version macro the
+% Gradle task writes from the changelog-derived version.
+
+% --- encoding and fonts -------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% --- the layout ---------------------------------------------------------
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{parskip}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+\renewcommand{\arraystretch}{1.2}
+
+% --- the structure ------------------------------------------------------
+\usepackage{titlesec}
+\titleformat{\chapter}[hang]{\bfseries\Large}{\thechapter.}{0.5em}{}
+\titleformat{\section}[hang]{\bfseries\large}{\thesection}{0.5em}{}
+\titlespacing*{\chapter}{0pt}{0pt}{1em}
+\titlespacing*{\section}{0pt}{1.5em}{0.5em}
+
+% --- links and graphics -------------------------------------------------
+\usepackage[hidelinks]{hyperref}
+\usepackage{url}
+\usepackage{graphicx}
+
+% --- tables -------------------------------------------------------------
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{array}
+
+% --- code blocks: listings, with per-language styles --------------------
+\usepackage{listings}
+\usepackage{xcolor}
+
+% the manual's terminal outputs and code samples are UTF-8: the six
+% non-ASCII glyphs that ride the fences get explicit literate
+% mappings — listings cannot digest multi-byte sequences on its
+% own — with the box-drawing trio taking its classic ASCII shape
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  breakatwhitespace=true,
+  postbreak=\mbox{\textcolor{gray}{$\hookrightarrow$}\space},
+  frame=single,
+  framesep=5pt,
+  framerule=0.4pt,
+  rulecolor=\color{black!20},
+  backgroundcolor=\color{black!3},
+  showstringspaces=false,
+  columns=fullflexible,
+  keepspaces=true,
+  literate=
+    {·}{{\textperiodcentered}}1
+    {—}{{\textemdash}}1
+    {←}{{\textleftarrow}}1
+    {─}{{-}}1
+    {├}{{+}}1
+    {└}{{`}}1,
+}
+
+% per-language styles; the YAML and Kotlin dialects are defined by
+% hand, as listings predates both languages
+\lstdefinestyle{sh}{language=sh}
+\lstdefinestyle{tex}{language=[LaTeX]TeX}
+\lstdefinelanguage[arara-lua]{Lua}{
+  morekeywords={return, function, end, if, then, else, local, not, and, or},
+}
+\lstdefinestyle{lua}{language=[arara-lua]Lua}
+\lstdefinelanguage{yaml}{
+  morekeywords={true, false, null, yes, no, on, off},
+  sensitive=true,
+  morecomment=[l]{\#},
+  morestring=[b]',
+  morestring=[b]",
+}
+\lstdefinestyle{yaml}{language=yaml}
+\lstdefinelanguage{bibtex}{morekeywords={@phdthesis,@article,@book}}
+\lstdefinestyle{bibtex}{language=bibtex}
+\lstdefinestyle{java}{language=Java}
+\lstdefinelanguage{kotlin}{
+  morekeywords={fun, val, var, return, if, else, for, while, when, class,
+    object, interface, import, package, data, sealed, companion},
+  sensitive=true,
+}
+\lstdefinestyle{kotlin}{language=kotlin}
+\lstdefinestyle{plain}{language=}
+
+% --- the callout environment -------------------------------------------
+% The devlab callout components render here: the four variants the
+% manual carries (info, warning, error, tip), each with its tint and
+% its title. The conversion emits the matching style key in the
+% optional argument; the info tints are the fallback.
+\usepackage[most]{tcolorbox}
+
+% the four tint families: the colors follow the callout types
+\definecolor{calloutinfo}{RGB}{2,136,209}
+\definecolor{calloutwarning}{RGB}{230,81,0}
+\definecolor{callouterror}{RGB}{213,0,0}
+\definecolor{callouttip}{RGB}{46,125,50}
+
+% the light backgrounds, each a whisper of its frame color
+\definecolor{calloutinfobg}{RGB}{232,243,252}
+\definecolor{calloutwarningbg}{RGB}{253,240,227}
+\definecolor{callouterrorbg}{RGB}{253,233,233}
+\definecolor{callouttipbg}{RGB}{236,246,237}
+
+% the style keys the conversion's optional argument selects
+\tcbset{
+  callout info/.style={colframe=calloutinfo, colback=calloutinfobg,
+    boxed title style={colback=calloutinfo}},
+  callout warning/.style={colframe=calloutwarning, colback=calloutwarningbg,
+    boxed title style={colback=calloutwarning}},
+  callout error/.style={colframe=callouterror, colback=callouterrorbg,
+    boxed title style={colback=callouterror}},
+  callout tip/.style={colframe=callouttip, colback=callouttipbg,
+    boxed title style={colback=callouttip}},
+}
+
+\newtcolorbox{araracallout}[2][]{%
+  enhanced,
+  breakable,
+  colback=calloutinfobg,
+  colframe=calloutinfo,
+  boxrule=0.5pt,
+  arc=2mm,
+  left=6pt, right=6pt, top=4pt, bottom=4pt,
+  title={#2},
+  coltitle=white,
+  fonttitle=\bfseries\small,
+  attach boxed title to top left={yshift=-2mm, xshift=4mm},
+  boxed title style={arc=1mm},
+  #1
+}
+
+% --- the version macro --------------------------------------------------
+% The version arrives from the Gradle task; the skeleton only
+% \input's it. The file defines \araraversion.
+\input{arara-version}
+
+% --- the cover art ------------------------------------------------------
+% The books' title pages include the logo when one is committed to the
+% assets directory — a vector PDF first, a PNG as the fallback, and no
+% art at all when neither is present yet, so the books always compile.
+\newcommand{\araracoverart}[1]{%
+  \IfFileExists{assets/arara-logo.pdf}{%
+    \includegraphics[#1]{assets/arara-logo.pdf}%
+  }{%
+    \IfFileExists{assets/arara-logo.png}{%
+      \includegraphics[#1]{assets/arara-logo.png}%
+    }{}%
+  }%
+}

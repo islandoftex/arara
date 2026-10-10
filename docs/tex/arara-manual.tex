@@ -1,0 +1,53 @@
+% arara, the cool TeX automation tool — the reference guide.
+%
+% One of the two books the docs pipeline typesets: the fourteen
+% reference chapters, in their manual order, with the table of
+% contents. The chapters are CoralMark's output from the Markdown
+% sources in docs/, generated into build/generated/docs/; the
+% conversion task copies this driver and the shared preamble there,
+% so the compile runs in one directory.
+
+\documentclass[11pt,a4paper]{report}
+\input{preamble}
+
+\begin{document}
+
+% the cover: the logo appears the moment one is committed to the
+% assets directory, and the books compile clean without it
+\begin{titlepage}
+  \centering
+  \vspace*{2em}
+  \araracoverart{width=0.35\textwidth}
+  \vspace{2em}
+
+  {\Huge\bfseries The arara reference guide\par}
+  \vspace{1.5em}
+  {\Large arara \araraversion, the cool TeX automation tool\par}
+
+  \vfill
+  {\large Island of TeX\par}
+  \vspace{1em}
+  {\large\today\par}
+  \vspace{2em}
+\end{titlepage}
+
+\tableofcontents
+
+% the reference chapters, in the manual's weight order; the input
+% names match the Markdown sources verbatim
+\input{Introduction}
+\input{Concepts}
+\input{CommandLine}
+\input{Rules}
+\input{Configuration}
+\input{Engines}
+\input{Projects}
+\input{Console}
+\input{Logging}
+\input{Database}
+\input{Building}
+\input{Migration}
+\input{Library}
+\input{Pack}
+
+\end{document}

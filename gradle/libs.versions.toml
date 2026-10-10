@@ -22,6 +22,9 @@ spotless-version = "8.10.3"
 tapmoc-version = "0.4.2"
 versions-version = "0.65.0"
 kobats-version = "0.2.2"
+coralmark-version = "0.3.1"
+crocplot-version = "0.1.0"
+svgecko-version = "0.1.0"
 zt-exec-version = "1.13.0"
 
 [libraries]
@@ -39,6 +42,9 @@ log4j-impl = { group = "org.apache.logging.log4j", name = "log4j-slf4j2-impl", v
 jna = { group = "net.java.dev.jna", name = "jna", version.ref = "jna-version" }
 mvel = { group = "org.mvel", name = "mvel2", version.ref = "mvel-version" }
 kobats = { group = "org.islandoftex", name = "kobats", version.ref = "kobats-version" }
+coralmark = { group = "org.islandoftex", name = "coralmark", version.ref = "coralmark-version" }
+crocplot = { group = "org.islandoftex", name = "crocplot", version.ref = "crocplot-version" }
+svgecko = { group = "org.islandoftex", name = "svgecko", version.ref = "svgecko-version" }
 okio = { group = "com.squareup.okio", name = "okio", version.ref = "okio-version" }
 okio-fakefilesystem = { group = "com.squareup.okio", name = "okio-fakefilesystem", version.ref = "okio-version" }
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j-version" }

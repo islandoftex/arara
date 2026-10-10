@@ -211,10 +211,28 @@ differs from the build floor).
   rewrite the diff-comparison links the promotion leaves behind.
 - The former packaging tasks (`roast`, `assembleCTAN*`, `assembleTDS*`, the
   `docs` Gradle module, and the old PDF toolchain that scraped the rendered
-  website) were removed from the build and the tree: the manual now lives as
-  Markdown sources in `docs/`, awaiting the LaTeX generation pipeline and the
-  website that will render them. The removed machinery remains recoverable
-  from the `oc247` tag.
+  website) were removed from the build and the tree. The manual now lives as
+  Markdown sources in `docs/`, and the LaTeX generation pipeline is in place:
+  `convertDocs` converts every chapter through CoralMark (the front matter
+  names the book's chapters, code fences ride listings, the mermaid fences
+  are extracted, the devlab callout components render as tinted boxes, the
+  GFM tables keep their mixed content, and every prose character LaTeX would
+  misread is escaped), `generateVersionMacro` writes the version the
+  changelog derives, and `renderDiagrams` draws the extracted mermaid sources
+  through a Kroki endpoint — the `arara.docs.kroki` property points at it —
+  syncing the diagram pair back into `docs/tex/assets/` as a pipeline-
+  maintained checkpoint, so the books build from a fresh clone even without
+  a reachable service; the fence in each chapter remains the single source
+  of truth and the checkpoint is never hand-edited. The typeset step runs
+  outside Gradle, wherever a TeX distribution lives:
+  `latexmk -pdf -interaction=nonstopmode arara-manual.tex arara-quickstart.tex
+  && latexmk -c arara-manual.tex arara-quickstart.tex` in
+  `build/generated/docs/` builds the two books — the reference guide and the
+  standalone quickstart, both with their covers — and cleans the LaTeX
+  intermediates, keeping the PDFs and the sources. Static art (the logo, the
+  cover) is committed under `docs/tex/assets/`; the covers pick the logo up
+  the moment it lands there and compile clean without it. The removed
+  machinery remains recoverable from the `oc247` tag.
 
 ## Layout and architecture
 
