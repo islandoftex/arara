@@ -130,6 +130,9 @@ object DocsConversion {
         // every prose character that would be misread is escaped on
         // arrival, so the LaTeX the tags emit is safe
         textProcessor { text -> LatexText.escapeLatex(text) }
+        // the TeX-family logos: prose mentions render as their true
+        // letterforms, the verbatim regions untouched
+        postProcess { output -> LatexText.renderLogos(output) }
     }
 
     /**
