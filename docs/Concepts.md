@@ -290,7 +290,7 @@ describes all conditional operators available in the directive context.
 Several helper methods are available in the directive context to ease the
 writing of conditionals, such as `missing`, `changed`, `found`, `unchanged`
 and `exists`, featured in the previous examples. They are properly detailed
-later on, in [Methods](Methods.md).
+later on, in [Rules](Rules.md).
 
 {% <devlab.callout type="info" title="No infinite loops"> %}
 Although there are no conceptual guarantees for the proper halting of
@@ -348,7 +348,7 @@ arara might be a plain TeX document, while `pdflatex` is actually being called
 on two LaTeX documents — first `doc1.tex`, and then, at last, `doc2.tex`.
 Even when a directive is interpreted with a file other than the one being
 processed, helper methods in the rule context still give access to the
-original file and reference, detailed in [Methods](Methods.md).
+original file and reference, detailed in [Rules](Rules.md).
 
 # The header
 
