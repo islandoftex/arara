@@ -221,12 +221,10 @@ object DocsConversion {
             val text = code?.text ?: element.text
             if (language == "mermaid") {
                 val name = diagrams.write(text)
-                // the max limits shrink an oversized figure into
-                // the page and leave a small one at its natural
-                // size — no inflation either way
-                "\\begin{center}\\includegraphics[" +
-                    "max width=0.85\\textwidth, max height=0.8\\textheight]" +
-                    "{assets/$name}\\end{center}"
+                // the figure macro carries the conditional: the drawn
+                // figure when it exists, a loud box naming the missing
+                // render and the command that draws it when not
+                "\\ararafigure{$name}"
             } else {
                 lstlistingFor(language, text)
             }
@@ -246,27 +244,22 @@ object DocsConversion {
     }
 
     /**
-     * Renders the extracted mermaid sources into the vector figures the
-     * generated chapters reference, and refreshes the committed
-     * checkpoint: the extracted sources and the rendered figures are
-     * synced back into the assets directory, so the books build from a
-     * fresh clone even without a reachable diagram service, and the
-     * diff of a diagram change shows up in review. The fence in the
-     * chapter remains the single source of truth — the checkpoint is
-     * pipeline-maintained and never hand-edited.
+     * Renders the extracted mermaid sources into the vector figures
+     * the generated chapters reference. The render is a pure step: the
+     * sources arrive from the conversion's extraction, the figures
+     * land beside the chapters where the conditional includes find
+     * them, and the tree stays pure — nothing syncs anywhere.
      *
      * Kroki draws mermaid as SVG — it offers no PDF for it — and the
      * vector stream is transcoded straight into the crisp PDF the
      * books include, with no raster in sight.
      *
      * @param mermaidDir the directory holding the extracted .mmd files
-     * @param checkpointDir the committed assets directory the pair syncs back to
      * @param endpoint the Kroki server to talk to
      * @return the rendered figure files
      */
     fun renderDiagrams(
         mermaidDir: File,
-        checkpointDir: File,
         endpoint: String,
     ): List<File> {
         val sources = mermaidDir.listFiles { f -> f.extension == "mmd" }.orEmpty().sortedBy { it.name }
@@ -287,13 +280,6 @@ object DocsConversion {
                     figure.writeBytes(
                         Svg.parse(svg).normalizer(SvgNormalizers.mermaid).toPdfBytes(),
                     )
-                    // the checkpoint refresh: the committed pair mirrors
-                    // the extraction and the render, overwriting whatever
-                    // was there before
-                    val checkpoint = checkpointDir.resolve(source.name)
-                    checkpoint.parentFile.mkdirs()
-                    source.copyTo(checkpoint, overwrite = true)
-                    figure.copyTo(checkpointDir.resolve(figure.name), overwrite = true)
                     figure
                 }
             }

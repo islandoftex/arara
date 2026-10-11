@@ -1,16 +1,12 @@
 # The book assets
 
-Everything the two books `\includegraphics` lands here, in two
-populations with different owners.
-
-**The static art** — the logo, the cover art, any hand-drawn figure —
-is authored and committed by hand, and referenced from the skeletons in
+Static art lives here — the logo, the cover, any hand-drawn figure —
+authored and committed by hand, and referenced from the skeletons in
 `docs/tex/`.
 
-**The diagram checkpoint** — `Concepts.mmd`/`Concepts.png` and friends —
-is pipeline-maintained: the fence inside each chapter's Markdown is the
-single source of truth, the conversion extracts the source, the diagram
-pass renders the figure, and both sync back into this directory so the
-books build from a fresh clone even without a reachable diagram service,
-and a diagram change shows up as a reviewable diff. Never edit the
-checkpoint by hand — the next build silently reverts it.
+The rendered diagram figures are generated: the fences inside each
+chapter's Markdown are the single source of truth, and the diagram pass
+(`./gradlew renderDiagrams`) draws them into the build tree. They are
+deliberately not committed; a figure that has not been rendered yet
+compiles to a visible box naming the render command, so the books always
+build, never silently missing art.

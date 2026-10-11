@@ -220,10 +220,11 @@ differs from the build floor).
   misread is escaped), `generateVersionMacro` writes the version the
   changelog derives, and `renderDiagrams` draws the extracted mermaid sources
   through a Kroki endpoint — the `arara.docs.kroki` property points at it —
-  syncing the diagram pair back into `docs/tex/assets/` as a pipeline-
-  maintained checkpoint, so the books build from a fresh clone even without
-  a reachable service; the fence in each chapter remains the single source
-  of truth and the checkpoint is never hand-edited. The typeset step runs
+  into vector figures the conditional includes place in the books; a figure
+  that has not been rendered yet compiles to a visible box naming the
+  render command, so the books always build, never silently missing art.
+  The fence in each chapter remains the single source of truth and the
+  rendered figures are never committed. The typeset step runs
   outside Gradle, wherever a TeX distribution lives:
   `latexmk -pdf -interaction=nonstopmode arara-manual.tex arara-quickstart.tex
   && latexmk -c arara-manual.tex arara-quickstart.tex` in
@@ -248,8 +249,8 @@ differs from the build floor).
   One asymmetry cost an evening once: the companion *declares* port 8000
   through its own variables, but the main container *connects* on 8002 —
   the two sides read the same-named variables with different meanings.
-  The books never need the pair: the committed checkpoint carries the
-  figures, and the network only refreshes them. CI runs its own
+  The books compile without the pair — unrendered figures arrive as
+  visible boxes naming the render command — and CI runs its own
   throwaway pair as job services instead.
 
 ## Layout and architecture

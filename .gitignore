@@ -24,5 +24,9 @@ Thumbs.db
 docs/resources/version.txt
 docs/*.pdf
 
+# rendered diagram figures (refreshed by renderDiagrams)
+docs/tex/assets/*.mmd
+docs/tex/assets/*.pdf
+
 # zola website output
 website/public/

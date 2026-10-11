@@ -360,19 +360,19 @@ val convertDocs = tasks.register("convertDocs") {
 }
 
 // the diagram pass: the extracted mermaid sources become the vector
-// figures the generated chapters reference. The endpoint rides a
-// property so CI can point at its own Kroki while local runs fall
+// figures the generated chapters reference, drawn whenever a diagram
+// changed or a fresh tree wants its books complete. The endpoint rides
+// a property so CI can point at its own Kroki while local runs fall
 // back to the public service; the task needs the conversion's
 // output, so it chains after it
 val renderDiagrams: TaskProvider<Task> = tasks.register("renderDiagrams") {
     val generatedDir = layout.buildDirectory.dir("generated/docs")
-    val checkpointDir = file("docs/tex/assets")
     val endpoint = providers.gradleProperty("arara.docs.kroki").orElse("https://kroki.io")
     dependsOn(convertDocs)
     inputs.property("endpoint", endpoint)
     doLast {
         val figures =
-            DocsConversion.renderDiagrams(generatedDir.get().asFile.resolve("assets"), checkpointDir, endpoint.get())
+            DocsConversion.renderDiagrams(generatedDir.get().asFile.resolve("assets"), endpoint.get())
         logger.lifecycle("Rendered {} diagram(s) through {}", figures.size, endpoint.get())
     }
 }

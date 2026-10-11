@@ -152,6 +152,22 @@
 % \input's it. The file defines \araraversion.
 \input{arara-version}
 
+% --- the figures ----------------------------------------------------------
+% Diagram figures arrive from the diagram pass; a figure that has not
+% been rendered yet compiles to a box that says so, so a fresh tree
+% builds its books loud and complete, never silently missing art
+\newcommand{\ararafigure}[1]{%
+  \begin{center}
+  \IfFileExists{assets/#1.pdf}{%
+    \includegraphics[max width=0.85\textwidth, max height=0.8\textheight]{assets/#1.pdf}%
+  }{%
+    \fbox{\parbox{0.6\textwidth}{\centering
+      The figure \texttt{#1} awaits rendering.\\[0.3em]
+      Run \texttt{./gradlew renderDiagrams} to draw it.}}%
+  }%
+  \end{center}
+}
+
 % --- the cover art ------------------------------------------------------
 % The books' title pages include the logo when one is committed to the
 % assets directory — a vector PDF first, a PNG as the fallback, and no

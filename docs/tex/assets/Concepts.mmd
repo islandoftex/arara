@@ -1,6 +1,0 @@
-flowchart TD
-  found["A directive is found in the file"] --> rule["arara locates the rule by identifier"]
-  rule --> args["Argument values are evaluated in the rule context"]
-  args --> cond{"Does the conditional hold?"}
-  cond -- "no" --> skip["The directive is skipped"]
-  cond -- "yes" --> eval["The command expression is evaluated"]
