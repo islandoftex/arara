@@ -233,6 +233,24 @@ differs from the build floor).
   cover) is committed under `docs/tex/assets/`; the covers pick the logo up
   the moment it lands there and compile clean without it. The removed
   machinery remains recoverable from the `oc247` tag.
+- Refreshing the diagram checkpoint needs a Kroki pair, and the public
+  service has proven unreliable for mermaid. Run one locally with podman
+  (two containers, one private network, the main delegating mermaid to
+  the companion by host name):
+  `podman network create kroki-net`, then
+  `podman run -d --name kroki-mermaid --network kroki-net -e
+  KROKI_MERMAID_HOST=0.0.0.0 -e KROKI_MERMAID_PORT=8000
+  yuzutech/kroki-mermaid`, then
+  `podman run -d --name kroki --network kroki-net -p 8000:8000 -e
+  KROKI_MERMAID_HOST=kroki-mermaid -e KROKI_MERMAID_PORT=8002
+  yuzutech/kroki`, and finally
+  `./gradlew renderDiagrams -Parara.docs.kroki=http://localhost:8000`.
+  One asymmetry cost an evening once: the companion *declares* port 8000
+  through its own variables, but the main container *connects* on 8002 —
+  the two sides read the same-named variables with different meanings.
+  The books never need the pair: the committed checkpoint carries the
+  figures, and the network only refreshes them. CI runs its own
+  throwaway pair as job services instead.
 
 ## Layout and architecture
 
