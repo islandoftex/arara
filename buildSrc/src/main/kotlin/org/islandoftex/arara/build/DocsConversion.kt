@@ -10,6 +10,7 @@ import org.islandoftex.crocplot.KrokiClient
 import org.islandoftex.crocplot.OutputFormat
 import org.islandoftex.crocplot.mermaid
 import org.islandoftex.svgecko.Svg
+import org.islandoftex.svgecko.SvgNormalizers
 
 /**
  * The conversion of the manual's Markdown into the LaTeX the skeleton
@@ -273,7 +274,14 @@ object DocsConversion {
                     val request = mermaid(OutputFormat.SVG) { source.readText() }
                     val svg = client.render(request).toString(Charsets.UTF_8)
                     val figure = source.resolveSibling("${source.nameWithoutExtension}.pdf")
-                    figure.writeBytes(Svg.parse(svg).toPdfBytes())
+                    // the mermaid step rides the conversion: Kroki's
+                    // diagrams carry their labels as HTML inside
+                    // foreignObject elements and placeholder shapes
+                    // the engine rejects, and the normalizer turns
+                    // both into what a vector PDF can hold
+                    figure.writeBytes(
+                        Svg.parse(svg).normalizer(SvgNormalizers.mermaid).toPdfBytes(),
+                    )
                     // the checkpoint refresh: the committed pair mirrors
                     // the extraction and the render, overwriting whatever
                     // was there before

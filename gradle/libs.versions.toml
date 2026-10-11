@@ -24,7 +24,7 @@ versions-version = "0.65.0"
 kobats-version = "0.2.2"
 coralmark-version = "0.3.1"
 crocplot-version = "0.1.0"
-svgecko-version = "0.1.0"
+svgecko-version = "0.2.0"
 zt-exec-version = "1.13.0"
 
 [libraries]
