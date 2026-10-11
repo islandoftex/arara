@@ -144,7 +144,7 @@ When the conditional holds, the second half takes over: the command runs,
 and answers for its exit status.
 
 ```mermaid
-flowchart TD
+flowchart LR
   run["The system command runs"] --> status{"Does the exit status check out?"}
   status -- "no" --> halt["The run halts with the failure"]
   status -- "yes" --> next["The next directive takes its turn"]

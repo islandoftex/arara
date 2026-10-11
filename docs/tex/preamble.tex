@@ -33,6 +33,10 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{url}
 \usepackage{graphicx}
+% the export option lends adjustbox's max limits to includegraphics:
+% figures render at their natural size and only ever shrink, never
+% inflate to fill a limit they never asked for
+\usepackage[export]{adjustbox}
 
 % --- tables -------------------------------------------------------------
 \usepackage{longtable}
