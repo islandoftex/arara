@@ -1,41 +1,51 @@
+# The pipeline answers the tree it serves: the strict gate runs
+# verbatim under one JDK, the smoke suite rides the TeX Live image the
+# project's own registry holds, the books build through a throwaway
+# Kroki pair, and only a version tag ships.
+
+# a one-shot container dies before a daemon could pay for its
+# startup, so the build runs in-process, with room to breathe
 variables:
-  # disable the Gradle daemon for Continuous Integration servers
   GRADLE_OPTS: "-Dorg.gradle.daemon=false -Xmx6g"
-  GIT_SUBMODULE_STRATEGY: recursive
 
-include:
-  - template: SAST.gitlab-ci.yml
-  - template: Dependency-Scanning.gitlab-ci.yml
-
+# four movements: build the tool, prove it, build its books, ship
 stages:
   - build
   - test
-  - pages
+  - docs
   - publish
 
+# Gradle's home lives inside the project, so the dependency store
+# rides the cache instead of downloading on every job
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
+# the build job fills the cache for its pipeline; every other job
+# only reads it, so no failure poisons what the next build sees
 .cachetemplate: &cachedefinition
-  key: "$CI_COMMIT_REF_NAME-$JAVA_VERSION"
+  key: "$CI_COMMIT_REF_NAME-jdk21"
   paths:
     - build
     - api/build
     - core/build
+    - mvel/build
+    - lua/build
     - cli/build
     - .gradle
 
-.buildtemplate: &builddefinition
+# the runnable jar is the application's whole distribution: the four
+# library modules ship through the package registry, and the tool
+# itself ships as one executable jar
+build:
   stage: build
+  image: eclipse-temurin:21
   script:
-    # create the executables for distribution
-    - ./gradlew --build-cache assembleDist --info
+    - ./gradlew --build-cache :cli:shadowJar --info
     - mkdir bin
-    - cp cli/build/libs/*.jar bin/
-    - cp cli/build/distributions/*.zip bin/
+    - cp cli/build/libs/arara-cli-with-deps-*.jar bin/
     # create checksum file to make sure we're distributing the right thing
     - cd bin
-    - md5sum *.{jar,zip} > checksums.txt
+    - md5sum *.jar > checksums.txt
   artifacts:
     name: "$CI_COMMIT_REF_NAME-snapshot"
     paths:
@@ -45,164 +55,117 @@ before_script:
     <<: *cachedefinition
     policy: push
 
-build:linux:jdk17:
-  image: amazoncorretto:17
-  <<: *builddefinition
-
-.testtemplate: &testdefinition
+# the project's own strict gate, verbatim
+test:gate:
   stage: test
+  needs: ["build"]
+  image: eclipse-temurin:21
   script:
-    - ./gradlew allTests
-    - ./gradlew detekt
+    - ./gradlew -PwarningsAsErrors=true test detekt spotlessCheck changelogCheck koverVerify koverXmlReport :dokkaGeneratePublicationHtml
   cache:
     <<: *cachedefinition
     policy: pull
 
+# the image this pipeline exists to serve: TeX Live runs the
+# typesetting scenarios, bats and git run the harness, the JDK drives
+# the build, and the toolchain resolver provisions the JRE 11 floor
+# at runtime
+test:smoke:
+  stage: test
+  needs: ["build"]
+  image: registry.gitlab.com/islandoftex/images/texlive-ci:latest
+  script:
+    - ./gradlew smoke -Psmoke.strict=true
+  cache:
+    <<: *cachedefinition
+    policy: pull
+
+# the upgrade report: what newer versions exist, stated on every
+# pipeline, so the dependency story stays visible
 test:dependencies:
   stage: test
-  needs: ["build:linux:jdk17"]
-  image: amazoncorretto:17
+  needs: ["build"]
+  image: eclipse-temurin:21
   script:
     - ./gradlew --no-parallel dependencyUpdates
   cache:
     <<: *cachedefinition
     policy: pull
 
-test:roast:
-  stage: test
-  needs: ["build:linux:jdk17"]
-  image: amazoncorretto:17
-  script:
-    - ./gradlew roast
-  cache:
-    <<: *cachedefinition
-    policy: pull
-
-# to enable this job, remove the period
-# from the start of its name
-.test:flake-dependencies:
-  stage: test
-  image: nixpkgs/nix-flakes:latest-x86_64-linux
+# the books' ingredients: the chapters turn into LaTeX, and the
+# diagrams draw through the throwaway Kroki pair — the companion
+# declares 8000 through its own variables, the main connects on 8002,
+# the same names with different meanings on each side
+docs:generate:
+  stage: docs
+  image: eclipse-temurin:21
   needs: []
+  variables:
+    ARARA_DOCS_KROKI: "http://kroki:8000"
+  services:
+    - name: yuzutech/kroki-mermaid
+      alias: kroki-mermaid
+      variables:
+        KROKI_MERMAID_HOST: 0.0.0.0
+        KROKI_MERMAID_PORT: "8000"
+    - name: yuzutech/kroki
+      alias: kroki
+      variables:
+        KROKI_MERMAID_HOST: kroki-mermaid
+        KROKI_MERMAID_PORT: "8002"
   script:
-    - nix profile add nixpkgs#corretto17 nixpkgs#diffutils nixpkgs#findutils nixpkgs#gnused
-    - nix run github:tadfisher/gradle2nix/v2 -- -l gradle.lock.new
-    - nix shell nixpkgs#diffutils -c diff gradle.lock gradle.lock.new
-  cache:
-    <<: *cachedefinition
-    policy: pull
-  rules:
-    - changes:
-        - build.gradle.kts
-        - flake.lock
-        - flake.nix
-        - gradle.lock
-        - gradle/libs.versions.toml
-        - gradle/wrapper/gradle-wrapper.properties
-
-test:spotless:
-  stage: test
-  needs: ["build:linux:jdk17"]
-  image: amazoncorretto:17
-  script:
-    - ./gradlew spotlessCheck
-  cache:
-    <<: *cachedefinition
-    policy: pull
-
-test:linux:jdk17:
-  needs: ["build:linux:jdk17"]
-  image: amazoncorretto:17
-  <<: *testdefinition
-
-test:linux:jdk21:
-  needs: ["build:linux:jdk17"]
-  image: amazoncorretto:21
-  <<: *testdefinition
-
-test:linux:jdk24:
-  needs: ["build:linux:jdk17"]
-  image: amazoncorretto:24
-  before_script:
-    - yum install findutils -y
-  <<: *testdefinition
-
-.pagestemplate: &pagesdefinition
-  stage: pages
-  image: nixpkgs/nix-flakes:latest-x86_64-linux
-  needs: []
-  script:
-    - nix build .#website
-    # GL pages needs the artifact at the root directory, the manual in website
-    - cp -r result/public ./public
-    - cp -r result/public ./website/public
-
-pages:
-  <<: *pagesdefinition
+    - ./gradlew generateVersionMacro convertDocs renderDiagrams -Parara.docs.kroki=$ARARA_DOCS_KROKI
   artifacts:
+    name: "$CI_COMMIT_REF_NAME-docs-sources"
     paths:
-      - public
-      # this is required for building the manual and quickstart PDF
-      - website/public
-    expire_in: 1 week
-  rules:
-    - if: '$CI_COMMIT_REF_NAME == "master"'
-    - if: '$CI_COMMIT_TAG'
-
-pages:for-manual:
-  <<: *pagesdefinition
-  artifacts:
-    paths:
-      # this is required for building the manual and quickstart PDF
-      - website/public
-    expire_in: 1 week
-  rules:
-    - if: '$CI_COMMIT_REF_NAME != "master"'
-    - if: '$CI_COMMIT_TAG == null'
-
-publish:gitlab:
-  image: amazoncorretto:17
-  stage: publish
-  script:
-    - ./gradlew publishAllPublicationsToGitLabRepository -PjobToken=$CI_JOB_TOKEN -Prelease=true
-  cache:
-    <<: *cachedefinition
-    policy: pull
-  rules:
-    - if: '$CI_COMMIT_TAG != null'
-
-.ctantemplate: &ctandefinition
-  stage: publish
-  image: nixpkgs/nix-flakes:latest-x86_64-linux
-  script:
-    - nix develop -c ./gradlew -Prelease=$PRELEASE assembleCTAN --info
-    - cp build/*.zip ./
-  artifacts:
-    name: "$CI_COMMIT_REF_NAME-ctan"
-    paths:
-      - ./*.zip
-      - docs/*.pdf
+      - build/generated/docs
     expire_in: 1 week
   cache:
     <<: *cachedefinition
     policy: pull
 
-publish:snapshot_tdszip:
+# typesetting needs no JDK — the plain TeX Live base carries the
+# books, and the post-clean tree is the CTAN-ready documentation set:
+# the PDFs, their LaTeX sources, and the rendered figures
+docs:compile:
+  stage: docs
   needs:
-    - build:linux:jdk17
-    - test:linux:jdk17
-    - job: pages:for-manual
+    - job: "docs:generate"
       artifacts: true
-  variables:
-    PRELEASE: "false"
-  <<: *ctandefinition
-  rules:
-    - if: '$CI_COMMIT_TAG == null && $CI_MERGE_REQUEST_ID == null && $CI_COMMIT_REF_NAME == "development"'
-    - if: '$CI_COMMIT_TAG == null && $CI_MERGE_REQUEST_ID == null && $CI_COMMIT_REF_NAME == "master"'
+  image: registry.gitlab.com/islandoftex/images/texlive:latest
+  script:
+    - cd build/generated/docs
+    - latexmk -pdf -interaction=nonstopmode arara-manual.tex arara-quickstart.tex
+    - latexmk -c arara-manual.tex arara-quickstart.tex
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME-documentation"
+    paths:
+      - build/generated/docs
+    expire_in: 1 week
 
-publish:tdszip:
-  variables:
-    PRELEASE: "true"
-  <<: *ctandefinition
+# the registry and its job token arrive with the runner's own CI
+# variables, and the build wires them itself: the plain lifecycle
+# suffices, and the changelog-derived version carries its -SNAPSHOT
+publish:snapshot:
+  stage: publish
+  image: eclipse-temurin:21
+  script:
+    - ./gradlew publish
+  cache:
+    <<: *cachedefinition
+    policy: pull
   rules:
-    - if: '$CI_COMMIT_TAG != null'
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+# at the version tag the build ships the stable release the promoted
+# changelog names, and nothing else can ever trip the release
+publish:gitlab:
+  stage: publish
+  image: eclipse-temurin:21
+  script:
+    - ./gradlew publish -Prelease=true
+  cache:
+    <<: *cachedefinition
+    policy: pull
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v/'
