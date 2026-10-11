@@ -1,0 +1,4 @@
+flowchart TD
+  run["The system command runs"] --> status{"Does the exit status check out?"}
+  status -- "no" --> halt["The run halts with the failure"]
+  status -- "yes" --> next["The next directive takes its turn"]

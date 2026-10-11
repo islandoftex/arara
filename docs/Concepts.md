@@ -128,7 +128,8 @@ with Perl and friends.
 
 Since rules and directives work in pairs, it helps to see the whole journey a
 directive takes, from the comment in your source to the exit status of a
-command:
+command. The journey folds at the conditional — the first half resolves the
+directive:
 
 ```mermaid
 flowchart TD
@@ -137,14 +138,20 @@ flowchart TD
   args --> cond{"Does the conditional hold?"}
   cond -- "no" --> skip["The directive is skipped"]
   cond -- "yes" --> eval["The command expression is evaluated"]
-  eval --> run["The system command runs"]
-  run --> status{"Does the exit status check out?"}
+```
+
+When the conditional holds, the second half takes over: the command runs,
+and answers for its exit status.
+
+```mermaid
+flowchart TD
+  run["The system command runs"] --> status{"Does the exit status check out?"}
   status -- "no" --> halt["The run halts with the failure"]
   status -- "yes" --> next["The next directive takes its turn"]
 ```
 
 Every element of that journey gets its own section in this chapter or the
-next; the diagram is a map you can return to whenever the pieces start
+next; the diagrams are a map you can return to whenever the pieces start
 blurring together.
 
 # Directives

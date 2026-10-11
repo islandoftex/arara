@@ -4,7 +4,3 @@ flowchart TD
   args --> cond{"Does the conditional hold?"}
   cond -- "no" --> skip["The directive is skipped"]
   cond -- "yes" --> eval["The command expression is evaluated"]
-  eval --> run["The system command runs"]
-  run --> status{"Does the exit status check out?"}
-  status -- "no" --> halt["The run halts with the failure"]
-  status -- "yes" --> next["The next directive takes its turn"]

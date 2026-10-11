@@ -221,7 +221,11 @@ object DocsConversion {
             val text = code?.text ?: element.text
             if (language == "mermaid") {
                 val name = diagrams.write(text)
-                "\\begin{center}\\includegraphics[width=0.85\\textwidth]{assets/$name}\\end{center}"
+                // both limits with the ratio kept: whichever dimension
+                // binds, the figure fits the page
+                "\\begin{center}\\includegraphics[" +
+                    "width=0.85\\textwidth, height=0.85\\textheight, keepaspectratio]" +
+                    "{assets/$name}\\end{center}"
             } else {
                 lstlistingFor(language, text)
             }
