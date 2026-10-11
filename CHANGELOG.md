@@ -1557,7 +1557,7 @@ on.
 For versions previous to version 5.0.0, there has not been any persistent record
 of changes. Please refer to the commit history for details.
 
-[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v7.2.0...master
+[Unreleased]: https://gitlab.com/islandoftex/arara/compare/v7.2.0...main
 [7.2.0]: https://gitlab.com/islandoftex/arara/compare/v7.1.5...v7.2.0
 [7.1.5]: https://gitlab.com/islandoftex/arara/compare/v7.1.4...v7.1.5
 [7.1.4]: https://gitlab.com/islandoftex/arara/compare/v7.1.3...v7.1.4

@@ -93,14 +93,14 @@ spotlessChangelog {
     tagPrefix("v")
     commitMessage("Release v{{version}}")
     remote("origin")
-    branch("master")
+    branch("main")
 }
 
 // the promotion tool of the release flow: promoteChangelog is run by
 // hand to promote the unreleased section and rewrite the diff links;
 // CI never runs it - the promotion declares the release
 solstice {
-    branch = "master"
+    branch = "main"
 }
 
 spotless {
