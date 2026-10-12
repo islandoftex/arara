@@ -135,7 +135,7 @@ docs:compile:
   image: registry.gitlab.com/islandoftex/images/texlive:latest
   script:
     - cd build/generated/docs
-    - latexmk -pdf -interaction=nonstopmode arara-manual.tex arara-quickstart.tex
+    - latexmk -lualatex -interaction=nonstopmode arara-manual.tex arara-quickstart.tex
     - latexmk -c arara-manual.tex arara-quickstart.tex
   artifacts:
     name: "$CI_COMMIT_REF_NAME-documentation"

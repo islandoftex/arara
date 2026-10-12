@@ -1,58 +1,62 @@
-% arara, the cool TeX automation tool — the shared preamble of the
-% two books the docs pipeline typesets: the reference guide and the
-% quickstart. The drivers input it right after their documentclass;
-% everything lives here — fonts, layout, the listings setup with
-% its per-language styles and the six-glyph literate table, the
-% callout boxes with their four tints, and the version macro the
-% Gradle task writes from the changelog-derived version.
+%=====================================================================
+% The shared preamble of both books: the identity's fonts and colors,
+% the layout, the listings, the callouts, the headers and footers, and
+% the macros the generated chapters compile against, unchanged.
+%=====================================================================
 
-% --- encoding and fonts -------------------------------------------------
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{lmodern}
+%=====================================================================
+% Fonts and colors (Island of TeX identity)
+%=====================================================================
+\usepackage{islandoftex-fonts}
+\usepackage{islandoftex-colors}
 \usepackage{microtype}
-% the true letterforms of the TeX family: the logos ride hologo,
-% each word rendered as its official shape
+% hologo names the TeX family logos the generated chapters cite.
 \usepackage{hologo}
 
-% --- the layout ---------------------------------------------------------
-\usepackage[margin=2.5cm]{geometry}
-\usepackage{parskip}
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{0.5em}
-\renewcommand{\arraystretch}{1.2}
+%=====================================================================
+% Headings and margin notes
+%=====================================================================
+% Section numbers hang into the left margin.
+\renewcommand\sectionlinesformat[4]{%
+  \leavevmode\llap{#3\unskip\hskip\marginparsep}#4%
+}
 
-% --- the structure ------------------------------------------------------
-\usepackage{titlesec}
-\titleformat{\chapter}[hang]{\bfseries\Large}{\thechapter.}{0.5em}{}
-\titleformat{\section}[hang]{\bfseries\large}{\thesection}{0.5em}{}
-\titlespacing*{\chapter}{0pt}{0pt}{1em}
-\titlespacing*{\section}{0pt}{1.5em}{0.5em}
+% The disposition renders in the identity's display font and dark blue.
+\addtokomafont{disposition}{\color{iot-dark}\displayfont}
+\addtokomafont{chapter}{\Huge}
+\addtokomafont{section}{\Large}
+\addtokomafont{subsection}{\large}
+\addtokomafont{subsubsection}{\normalsize}
 
-% --- links and graphics -------------------------------------------------
-\usepackage[hidelinks]{hyperref}
+% Margin note helper.
+\reversemarginpar
+\newcommand*\marginheading[1]{%
+  \leavevmode\marginline{\sffamily\small #1}\ignorespaces}
+
+%=====================================================================
+% Links and graphics
+%=====================================================================
+\usepackage[colorlinks, allcolors=iot-dark]{hyperref}
 \usepackage{url}
 \usepackage{graphicx}
-% the export option lends adjustbox's max limits to includegraphics:
-% figures render at their natural size and only ever shrink, never
-% inflate to fill a limit they never asked for
+% adjustbox exports the max width/height keys the figures shrink by.
 \usepackage[export]{adjustbox}
 
-% --- tables -------------------------------------------------------------
+%=====================================================================
+% Tables
+%=====================================================================
 \usepackage{longtable}
 \usepackage{booktabs}
 \usepackage{array}
 
-% --- code blocks: listings, with per-language styles --------------------
+%=====================================================================
+% Code listings
+%=====================================================================
 \usepackage{listings}
-\usepackage{xcolor}
-
-% the manual's terminal outputs and code samples are UTF-8: the six
-% non-ASCII glyphs that ride the fences get explicit literate
-% mappings — listings cannot digest multi-byte sequences on its
-% own — with the box-drawing trio taking its classic ASCII shape
 \lstset{
-  basicstyle=\ttfamily\small,
+  basicstyle=\ttfamily\normalsize,
+  aboveskip=1.2\baselineskip plus 2pt minus 2pt,
+  belowskip=1.2\baselineskip plus 2pt minus 2pt,
   breaklines=true,
   breakatwhitespace=true,
   postbreak=\mbox{\textcolor{gray}{$\hookrightarrow$}\space},
@@ -73,8 +77,7 @@
     {└}{{`}}1,
 }
 
-% per-language styles; the YAML and Kotlin dialects are defined by
-% hand, as listings predates both languages
+% Per-language styles; the names match the conversion's output.
 \lstdefinestyle{sh}{language=sh}
 \lstdefinestyle{tex}{language=[LaTeX]TeX}
 \lstdefinelanguage[arara-lua]{Lua}{
@@ -89,7 +92,11 @@
   morestring=[b]",
 }
 \lstdefinestyle{yaml}{language=yaml}
-\lstdefinelanguage{bibtex}{morekeywords={@phdthesis,@article,@book}}
+\lstdefinelanguage{bibtex}{
+  morekeywords={@article,@book,@phdthesis,@inproceedings,@mastersthesis,@techreport,@misc},
+  sensitive=false,
+  morecomment=[l]{@},
+}
 \lstdefinestyle{bibtex}{language=bibtex}
 \lstdefinestyle{java}{language=Java}
 \lstdefinelanguage{kotlin}{
@@ -100,62 +107,97 @@
 \lstdefinestyle{kotlin}{language=kotlin}
 \lstdefinestyle{plain}{language=}
 
-% --- the callout environment -------------------------------------------
-% The devlab callout components render here: the four variants the
-% manual carries (info, warning, error, tip), each with its tint and
-% its title. The conversion emits the matching style key in the
-% optional argument; the info tints are the fallback.
+%=====================================================================
+% Callout boxes (araracallout)
+%=====================================================================
+% Four types — info, warning, error, tip — each with the identity's
+% colors and a tinted background.
 \usepackage[most]{tcolorbox}
 
-% the four tint families: the colors follow the callout types
-\definecolor{calloutinfo}{RGB}{2,136,209}
-\definecolor{calloutwarning}{RGB}{230,81,0}
-\definecolor{callouterror}{RGB}{213,0,0}
-\definecolor{callouttip}{RGB}{46,125,50}
-
-% the light backgrounds, each a whisper of its frame color
+% Background tints for the four callout types.
 \definecolor{calloutinfobg}{RGB}{232,243,252}
 \definecolor{calloutwarningbg}{RGB}{253,240,227}
 \definecolor{callouterrorbg}{RGB}{253,233,233}
 \definecolor{callouttipbg}{RGB}{236,246,237}
 
-% the style keys the conversion's optional argument selects
 \tcbset{
-  callout info/.style={colframe=calloutinfo, colback=calloutinfobg,
-    boxed title style={colback=calloutinfo}},
-  callout warning/.style={colframe=calloutwarning, colback=calloutwarningbg,
-    boxed title style={colback=calloutwarning}},
-  callout error/.style={colframe=callouterror, colback=callouterrorbg,
-    boxed title style={colback=callouterror}},
-  callout tip/.style={colframe=callouttip, colback=callouttipbg,
-    boxed title style={colback=callouttip}},
+  % the full-width title tile, in the identity's bold sans
+  calloutitle/.style={
+    tile, halign=left,
+    before upper={\vphantom{Äg}\small}, after upper={\vphantom{Äg}},
+    fontupper=\sffamily\bfseries,
+    coltext=white,
+  },
+  % the shared base every callout type refines
+  callout base/.style={
+    enhanced,
+    breakable,
+    before skip=1.2\baselineskip plus 2pt minus 2pt,
+    after skip=1.2\baselineskip plus 2pt minus 2pt,
+    boxrule=0pt,
+    frame hidden,
+    borderline west={4pt}{0pt}{iot-info},
+    left=10pt, right=10pt, top=6pt, bottom=6pt,
+    arc=0mm,
+    attach boxed title to top left={xshift=0pt, yshift=0pt, yshifttext=0pt},
+    boxed title style={calloutitle, width=\textwidth},
+  },
+  callout info/.style={
+    callout base,
+    colback=calloutinfobg,
+    borderline west={4pt}{0pt}{iot-info},
+    boxed title style={calloutitle, colback=iot-info},
+  },
+  callout warning/.style={
+    callout base,
+    colback=calloutwarningbg,
+    borderline west={4pt}{0pt}{iot-alert},
+    boxed title style={calloutitle, colback=iot-alert},
+  },
+  callout error/.style={
+    callout base,
+    colback=callouterrorbg,
+    borderline west={4pt}{0pt}{iot-alert},
+    boxed title style={calloutitle, colback=iot-alert},
+  },
+  callout tip/.style={
+    callout base,
+    colback=callouttipbg,
+    borderline west={4pt}{0pt}{iot-neutral},
+    boxed title style={calloutitle, colback=iot-neutral},
+  },
 }
 
+% \begin{araracallout}[callout info]{Title} ... \end{araracallout};
+% the optional argument selects the type, info by default.
 \newtcolorbox{araracallout}[2][]{%
-  enhanced,
-  breakable,
-  colback=calloutinfobg,
-  colframe=calloutinfo,
-  boxrule=0.5pt,
-  arc=2mm,
-  left=6pt, right=6pt, top=4pt, bottom=4pt,
+  callout info,
   title={#2},
-  coltitle=white,
-  fonttitle=\bfseries\small,
-  attach boxed title to top left={yshift=-2mm, xshift=4mm},
-  boxed title style={arc=1mm},
   #1
 }
 
-% --- the version macro --------------------------------------------------
-% The version arrives from the Gradle task; the skeleton only
-% \input's it. The file defines \araraversion.
+%=====================================================================
+% Headers and footers
+%=====================================================================
+\usepackage[automark]{scrlayer-scrpage}
+\clearpairofpagestyles
+\ofoot{\pagemark}
+\ohead{\headmark}
+\addtokomafont{pageheadfoot}{\sffamily\small}
+\addtokomafont{pagenumber}{\displayfont}
+
+%=====================================================================
+% The version macro
+%=====================================================================
+% \araraversion, written by the build's version task.
 \input{arara-version}
 
-% --- the figures ----------------------------------------------------------
-% Diagram figures arrive from the diagram pass; a figure that has not
-% been rendered yet compiles to a box that says so, so a fresh tree
-% builds its books loud and complete, never silently missing art
+%=====================================================================
+% The figure macro
+%=====================================================================
+% \ararafigure{name} includes the rendered figure when it exists, and
+% otherwise a visible box naming the render command — the books always
+% build, never silently missing art.
 \newcommand{\ararafigure}[1]{%
   \begin{center}
   \IfFileExists{assets/#1.pdf}{%
@@ -168,10 +210,11 @@
   \end{center}
 }
 
-% --- the cover art ------------------------------------------------------
-% The books' title pages include the logo when one is committed to the
-% assets directory — a vector PDF first, a PNG as the fallback, and no
-% art at all when neither is present yet, so the books always compile.
+%=====================================================================
+% The cover art macro
+%=====================================================================
+% \araracoverart{options} includes the logo when present; the covers
+% compile cleanly without it.
 \newcommand{\araracoverart}[1]{%
   \IfFileExists{assets/arara-logo.pdf}{%
     \includegraphics[#1]{assets/arara-logo.pdf}%

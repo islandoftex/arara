@@ -27,6 +27,8 @@ docs/*.pdf
 # rendered diagram figures (refreshed by renderDiagrams)
 docs/tex/assets/*.mmd
 docs/tex/assets/*.pdf
+# the logo is static art, not a rendered figure
+!docs/tex/assets/arara-logo.pdf
 
 # zola website output
 website/public/

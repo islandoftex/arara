@@ -1,31 +1,41 @@
-% arara, the cool TeX automation tool — the reference guide.
+% arara: lualatex
+% arara: lualatex
+% arara, the cool \TeX{} automation tool — the reference guide.
 %
-% One of the two books the docs pipeline typesets: the fourteen
-% reference chapters, in their manual order, with the table of
-% contents. The chapters are CoralMark's output from the Markdown
-% sources in docs/, generated into build/generated/docs/; the
-% conversion task copies this driver and the shared preamble there,
-% so the compile runs in one directory.
+% Build: latexmk -lualatex arara-manual.tex
+% DIV=13 is the type area factor, BCOR=1cm the binding correction.
 
-\documentclass[11pt,a4paper]{report}
+\documentclass[parskip=half-, DIV=13, BCOR=1cm, fontsize=11pt, paper=a4]{scrbook}
 \input{preamble}
 
 \begin{document}
 
-% the cover: the logo appears the moment one is committed to the
-% assets directory, and the books compile clean without it
+% The cover: the identity's dark tile beside the logo.
 \begin{titlepage}
   \centering
-  \vspace*{2em}
+  \vspace*{3em}
   \araracoverart{width=0.35\textwidth}
   \vspace{2em}
 
-  {\Huge\bfseries The arara reference guide\par}
+  \begin{tcolorbox}[
+    calloutitle,
+    colback=iot-dark,
+    coltext=iot-light,
+    top=20pt, bottom=20pt,
+    grow to left by=\marginparwidth+\marginparsep,
+    left=\marginparwidth+\marginparsep,
+    fontupper=\displayfont\Huge,
+    halign=left,
+    before upper={\vphantom{Äg}}, after upper={\vphantom{Äg}}
+  ]
+    The arara reference guide
+  \end{tcolorbox}
   \vspace{1.5em}
-  {\Large arara \araraversion, the cool TeX automation tool\par}
+
+  {\displayfont\Large arara \araraversion, the cool \TeX{} automation tool\par}
 
   \vfill
-  {\large Island of TeX\par}
+  {\sffamily\large Island of \TeX\par}
   \vspace{1em}
   {\large\today\par}
   \vspace{2em}
@@ -33,8 +43,7 @@
 
 \tableofcontents
 
-% the reference chapters, in the manual's weight order; the input
-% names match the Markdown sources verbatim
+% The chapters, generated from the Markdown sources.
 \input{Introduction}
 \input{Concepts}
 \input{CommandLine}

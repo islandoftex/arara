@@ -345,12 +345,16 @@ val convertDocs = tasks.register("convertDocs") {
         docsDir.resolve("tex/assets").takeIf { it.isDirectory }?.let { committed ->
             committed.copyRecursively(assetsDir, overwrite = true)
         }
-        // the hand-written skeletons join the generated chapters, so
-        // the compile step runs in one directory with no path juggling
-        docsDir.resolve("tex").listFiles { f -> f.extension == "tex" }!!
-            .forEach { skeleton ->
-                skeleton.copyTo(outputDir.resolve(skeleton.name), overwrite = true)
+        // the hand-written skeletons, the identity styles and the fonts
+        // they load join the generated chapters, so the compile step
+        // runs in one directory with no path juggling
+        docsDir.resolve("tex").listFiles { f -> f.extension == "tex" || f.extension == "sty" }!!
+            .forEach { source ->
+                source.copyTo(outputDir.resolve(source.name), overwrite = true)
             }
+        docsDir.resolve("tex/fonts").takeIf { it.isDirectory }?.let { fonts ->
+            fonts.copyRecursively(outputDir.resolve("fonts"), overwrite = true)
+        }
         docsDir.listFiles { f -> f.extension == "md" }!!
             .sortedBy { it.name }
             .forEach { source ->

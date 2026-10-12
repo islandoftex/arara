@@ -1,6 +1,6 @@
 # The book assets
 
-Static art lives here — the logo, the cover, any hand-drawn figure —
+Static art lives here — the logo, any hand-drawn figure —
 authored and committed by hand, and referenced from the skeletons in
 `docs/tex/`.
 

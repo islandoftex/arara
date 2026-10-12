@@ -1,37 +1,47 @@
-% arara, the cool TeX automation tool — the quickstart.
+% arara: lualatex
+% arara: lualatex
+% arara, the cool \TeX{} automation tool — the quickstart.
 %
-% The other book the docs pipeline typesets: the quick tour, a
-% standalone story and not a reference chapter, so it typesets on
-% its own with no table of contents. The chapter is CoralMark's
-% output from the Markdown source in docs/, generated into
-% build/generated/docs/; the conversion task copies this driver and
-% the shared preamble there, so the compile runs in one directory.
+% Build: latexmk -lualatex arara-quickstart.tex
+% DIV=13 is the type area factor, BCOR=1cm the binding correction.
 
-\documentclass[11pt,a4paper]{report}
+\documentclass[parskip=half-, DIV=13, BCOR=1cm, fontsize=11pt, paper=a4]{scrbook}
 \input{preamble}
 
 \begin{document}
 
-% the cover: the logo appears the moment one is committed to the
-% assets directory, and the books compile clean without it
+% The cover: the identity's dark tile beside the logo.
 \begin{titlepage}
   \centering
-  \vspace*{2em}
+  \vspace*{3em}
   \araracoverart{width=0.35\textwidth}
   \vspace{2em}
 
-  {\Huge\bfseries The arara quickstart\par}
+  \begin{tcolorbox}[
+    calloutitle,
+    colback=iot-dark,
+    coltext=iot-light,
+    top=20pt, bottom=20pt,
+    grow to left by=\marginparwidth+\marginparsep,
+    left=\marginparwidth+\marginparsep,
+    fontupper=\displayfont\Huge,
+    halign=left,
+    before upper={\vphantom{Äg}}, after upper={\vphantom{Äg}}
+  ]
+    The arara quickstart
+  \end{tcolorbox}
   \vspace{1.5em}
-  {\Large A quick tour with Peter the anteater\par}
+
+  {\displayfont\Large A quick tour with Peter the anteater\par}
 
   \vfill
-  {\large Island of TeX\par}
+  {\sffamily\large Island of \TeX\par}
   \vspace{1em}
   {\large\today\par}
   \vspace{2em}
 \end{titlepage}
 
-% the tour itself, opening under its front-matter title
+% The single chapter, generated from the Markdown source.
 \input{Quickstart}
 
 \end{document}
