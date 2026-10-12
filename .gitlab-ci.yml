@@ -66,14 +66,16 @@ test:gate:
     <<: *cachedefinition
     policy: pull
 
-# the image this pipeline exists to serve: TeX Live runs the
-# typesetting scenarios, bats and git run the harness, the JDK drives
-# the build, and the toolchain resolver provisions the JRE 11 floor
-# at runtime
+# the smoke suite rides the plain TeX Live base: the JDK and bats
+# arrive per run through apt, TeX Live runs the typesetting
+# scenarios, and the toolchain resolver provisions the JRE 11 floor
 test:smoke:
   stage: test
   needs: ["build"]
-  image: registry.gitlab.com/islandoftex/images/texlive-ci:latest
+  image: registry.gitlab.com/islandoftex/images/texlive:latest
+  before_script:
+    - export GRADLE_USER_HOME=`pwd`/.gradle
+    - apt-get update && apt-get install -y --no-install-recommends openjdk-21-jdk-headless bats
   script:
     - ./gradlew smoke -Psmoke.strict=true
   cache:
