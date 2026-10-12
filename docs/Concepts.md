@@ -132,7 +132,7 @@ command. The journey folds at the conditional — the first half resolves the
 directive:
 
 ```mermaid
-flowchart TD
+flowchart LR
   found["A directive is found in the file"] --> rule["arara locates the rule by identifier"]
   rule --> args["Argument values are evaluated in the rule context"]
   args --> cond{"Does the conditional hold?"}
