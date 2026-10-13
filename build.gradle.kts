@@ -372,8 +372,14 @@ val convertDocs = tasks.register("convertDocs") {
 val renderDiagrams: TaskProvider<Task> = tasks.register("renderDiagrams") {
     val generatedDir = layout.buildDirectory.dir("generated/docs")
     val endpoint = providers.gradleProperty("arara.docs.kroki").orElse("https://kroki.io")
+    val assetsDir = layout.buildDirectory.dir("generated/docs/assets").get()
     dependsOn(convertDocs)
     inputs.property("endpoint", endpoint)
+    // the extracted diagram sources are the task's true inputs, and
+    // the figures its true outputs: watching the endpoint alone once
+    // let a changed fence skip its own re-render entirely
+    inputs.files(fileTree(assetsDir) { include("*.mmd") })
+    outputs.files(fileTree(assetsDir) { include("*.pdf"); exclude("arara-logo.pdf") })
     doLast {
         val figures =
             DocsConversion.renderDiagrams(generatedDir.get().asFile.resolve("assets"), endpoint.get())

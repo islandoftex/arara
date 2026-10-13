@@ -105,13 +105,14 @@ directory, your home, a USB drive, even a floppy disk. The one
 convention that matters is the directory structure, because the tool
 derives its default rule path from where its own heart beats:
 
-```text
-arara/                  ← ARARA_HOME, the tool's home
-├── arara.jar           ← the heart and soul
-└── rules/              ← the default rule pack, both dialects
-    ├── arara-rule-pdflatex.yaml
-    ├── arara-rule-pdflatex.lua
-    └── ...
+```mermaid
+flowchart LR
+  home["arara/ — ARARA_HOME"]
+  home --> jar["arara.jar — the heart and soul"]
+  home --> rules["rules/ — the default rule pack"]
+  rules --> yaml["YAML rule"]
+  rules --> lua["Lua rule"]
+  rules --> more["…"]
 ```
 
 The `ARARA_HOME` alias refers to the directory containing `arara.jar`,
