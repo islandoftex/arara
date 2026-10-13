@@ -66,7 +66,7 @@
 }
 
 % Per-language styles; the names match the conversion's output.
-\lstdefinestyle{sh}{language=sh}
+\lstdefinestyle{sh}{}
 \lstdefinestyle{tex}{language=[LaTeX]TeX}
 \lstdefinelanguage[arara-lua]{Lua}{
   morekeywords={return, function, end, if, then, else, local, not, and, or},
@@ -169,14 +169,15 @@
   enhanced,
   listing only,
   breakable,
-  boxrule=0pt,
   sharp corners,
   size=small,
+  boxrule=0pt,
   frame hidden,
   borderline west={4pt}{0pt}{iot-dark!40},
   top=-\baselineskip,
   bottom=-\baselineskip,
-  pad after break=\baselineskip,
+  pad before break=0.7\baselineskip,
+  pad after break=0.7\baselineskip,
   left=8pt,
   colback=iot-dark!6,
   listing options={style=#1}
