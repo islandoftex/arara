@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.build
 
+import java.awt.Font
 import java.io.File
 import kotlinx.coroutines.runBlocking
 import org.islandoftex.coralmark.CoralMark
@@ -266,19 +267,36 @@ object DocsConversion {
         if (sources.isEmpty()) {
             return emptyList()
         }
+        // the labels wear the identity's text face, at the size
+        // mermaid styles its labels: the generated tree carries the
+        // fonts beside the assets, so the pass needs no file from
+        // outside its own output
+        val labelFontSize = 16f
+        val font =
+            Font
+                .createFont(
+                    Font.TRUETYPE_FONT,
+                    mermaidDir.resolveSibling("fonts/Karla-Light.ttf").inputStream(),
+                ).deriveFont(labelFontSize)
         return runBlocking {
             KrokiClient(endpoint).use { client ->
                 sources.map { source ->
                     val request = mermaid(OutputFormat.SVG) { source.readText() }
                     val svg = client.render(request).toString(Charsets.UTF_8)
                     val figure = source.resolveSibling("${source.nameWithoutExtension}.pdf")
-                    // the mermaid step rides the conversion: Kroki's
-                    // diagrams carry their labels as HTML inside
-                    // foreignObject elements and placeholder shapes
-                    // the engine rejects, and the normalizer turns
-                    // both into what a vector PDF can hold
+                    // the two normalization steps ride the conversion:
+                    // mermaid's diagrams carry their labels as HTML
+                    // inside foreignObject elements and placeholder
+                    // shapes the engine rejects, and its step turns
+                    // both into plain text; the outline step then
+                    // turns the text into letterform geometry itself,
+                    // so the figures reference no font at all — the
+                    // books embed everything they draw
                     figure.writeBytes(
-                        Svg.parse(svg).normalizer(SvgNormalizers.mermaid).toPdfBytes(),
+                        Svg.parse(svg)
+                            .normalizer(SvgNormalizers.mermaid)
+                            .normalizer(SvgNormalizers.outlineText(font))
+                            .toPdfBytes(),
                     )
                     figure
                 }
