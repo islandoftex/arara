@@ -60,11 +60,6 @@
   breaklines=true,
   breakatwhitespace=true,
   postbreak=\mbox{\textcolor{gray}{$\hookrightarrow$}\space},
-  frame=single,
-  framesep=5pt,
-  framerule=0.4pt,
-  rulecolor=\color{black!20},
-  backgroundcolor=\color{black!3},
   showstringspaces=false,
   columns=fullflexible,
   keepspaces=true,
@@ -114,12 +109,6 @@
 % colors and a tinted background.
 \usepackage[most]{tcolorbox}
 
-% Background tints for the four callout types.
-\definecolor{calloutinfobg}{RGB}{232,243,252}
-\definecolor{calloutwarningbg}{RGB}{253,240,227}
-\definecolor{callouterrorbg}{RGB}{253,233,233}
-\definecolor{callouttipbg}{RGB}{236,246,237}
-
 \tcbset{
   % the full-width title tile, in the identity's bold sans
   calloutitle/.style={
@@ -141,28 +130,30 @@
     arc=0mm,
     attach boxed title to top left={xshift=0pt, yshift=0pt, yshifttext=0pt},
     boxed title style={calloutitle, width=\textwidth},
+    before upper={\setlength{\parskip}{1em}},
   },
   callout info/.style={
     callout base,
-    colback=calloutinfobg,
+    colback=iot-info!10,
     borderline west={4pt}{0pt}{iot-info},
     boxed title style={calloutitle, colback=iot-info},
   },
   callout warning/.style={
     callout base,
-    colback=calloutwarningbg,
+    colback=iot-alert!10,
     borderline west={4pt}{0pt}{iot-alert},
     boxed title style={calloutitle, colback=iot-alert},
   },
   callout error/.style={
     callout base,
-    colback=callouterrorbg,
+    % the severer type rides the deeper paper
+    colback=iot-alert!15,
     borderline west={4pt}{0pt}{iot-alert},
     boxed title style={calloutitle, colback=iot-alert},
   },
   callout tip/.style={
     callout base,
-    colback=callouttipbg,
+    colback=iot-neutral!10,
     borderline west={4pt}{0pt}{iot-neutral},
     boxed title style={calloutitle, colback=iot-neutral},
   },
@@ -174,6 +165,28 @@
   callout info,
   title={#2},
   #1
+}
+
+% \begin{araralisting}{style} ... \end{araralisting}: the fence
+% blocks the conversion emits, the style naming the fence's language.
+% The definition waits for the callout styles, because tcolorbox
+% arrives with them, and the papers and rules ride the identity's own
+% arithmetic — the navy rule, the navy's breath as the paper.
+\DeclareTCBListing{araralisting}{m}{
+  enhanced,
+  listing only,
+  breakable,
+  boxrule=0pt,
+  sharp corners,
+  size=small,
+  frame hidden,
+  borderline west={4pt}{0pt}{iot-dark!40},
+  top=-\baselineskip,
+  bottom=-\baselineskip,
+  pad after break=\baselineskip,
+  left=8pt,
+  colback=iot-dark!6,
+  listing options={style=#1}
 }
 
 %=====================================================================

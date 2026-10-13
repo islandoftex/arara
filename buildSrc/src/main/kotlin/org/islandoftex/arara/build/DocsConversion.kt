@@ -50,10 +50,12 @@ object DocsConversion {
     private val titleRegex = Regex("""title\s*=\s*"([^"]*)"""")
 
     /**
-     * The chapter's contribution to the book: one listings environment
-     * per fenced block, reading the style the fence's language asked for.
+     * The chapter's contribution to the book: one listing environment
+     * per fenced block, reading the style the fence's language asked
+     * for, with the content trimmed of its trailing blank line and a
+     * line break after the close, so the next block begins its own.
      */
-    private fun lstlistingFor(language: String, text: String): String {
+    private fun listingFor(language: String, text: String): String {
         val style =
             when (language) {
                 "sh", "bash" -> "sh"
@@ -65,7 +67,7 @@ object DocsConversion {
                 "kotlin" -> "kotlin"
                 else -> "plain"
             }
-        return "\\begin{lstlisting}[style=$style]\n$text\n\\end{lstlisting}"
+        return "\\begin{araralisting}{$style}\n${text.trimEnd()}\n\\end{araralisting}\n"
     }
 
     /**
@@ -227,7 +229,7 @@ object DocsConversion {
                 // render and the command that draws it when not
                 "\\ararafigure{$name}"
             } else {
-                lstlistingFor(language, text)
+                listingFor(language, text)
             }
         }
 

@@ -23,7 +23,7 @@ internal object LatexText {
 
     /** The fenced listings: verbatim, never rewritten. */
     private val listingRegex =
-        Regex("""\\begin\{lstlisting\}.*?\\end\{lstlisting\}""", setOf(RegexOption.DOT_MATCHES_ALL))
+        Regex("""\\begin\{araralisting\}.*?\\end\{araralisting\}""", setOf(RegexOption.DOT_MATCHES_ALL))
 
     /**
      * Inline code: verbatim, never rewritten. The content rides
