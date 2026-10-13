@@ -114,9 +114,9 @@ object DocsConversion {
     ): Preset = {
         tags {
             // headings: the chapter's internal structure
-            "h1" ("\\section{" to "}")
-            "h2" ("\\subsection{" to "}")
-            "h3" ("\\subsubsection{" to "}")
+            "h1" ("\\section{" to "}\n")
+            "h2" ("\\subsection{" to "}\n")
+            "h3" ("\\subsubsection{" to "}\n")
             // inline emphasis
             "strong" ("\\textbf{" to "}")
             "em" ("\\emph{" to "}")
@@ -145,7 +145,7 @@ object DocsConversion {
                 val title = LatexText.escapeLatex(params["title"].orEmpty())
                 val body =
                     CoralMark.convert(content.trim(), latexPreset(diagrams, chapterNames)).getOrThrow()
-                "\\begin{araracallout}[callout $type]{$title}\n$body\n\\end{araracallout}"
+                "\\begin{araracallout}[callout $type]{$title}\n$body\n\\end{araracallout}\n"
             }
         }
         // every prose character that would be misread is escaped on
@@ -227,7 +227,7 @@ object DocsConversion {
                 // the figure macro carries the conditional: the drawn
                 // figure when it exists, a loud box naming the missing
                 // render and the command that draws it when not
-                "\\ararafigure{$name}"
+                "\\ararafigure{$name}\n"
             } else {
                 listingFor(language, text)
             }
