@@ -100,7 +100,7 @@ class StyledDialogRendererTest {
         val output = withStreams(AnsiLevel.TRUECOLOR, "0\n") {
             assertEquals(
                 0,
-                showDropdown(
+                showList(
                     2, "Pick one", "Choose an engine",
                     arrayOf("pdflatex", "lualatex", "xelatex")
                 ),

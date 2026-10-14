@@ -199,7 +199,7 @@ object ConditionalMethods {
     ): String = TerminalDialogs.showInput(type, title, text)
 
     /**
-     * Shows a message with options presented as a dropdown list of elements.
+     * Shows a message with options presented as a list of elements.
      *
      * @param type Type of message.
      * @param title Title of the message.
@@ -208,12 +208,12 @@ object ConditionalMethods {
      * @return The index of the selected element, starting from 1.
      */
     @JvmStatic
-    fun showDropdown(
+    fun showList(
         type: Int,
         title: String,
         text: String,
         vararg elements: Any
-    ): Int = TerminalDialogs.showDropdown(type, title, text, elements)
+    ): Int = TerminalDialogs.showList(type, title, text, elements)
 
     /**
      * Gets the file reference for the current directive. It is important to

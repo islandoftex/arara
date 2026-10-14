@@ -53,13 +53,13 @@ class LuaConditionalEnvironmentDialogTest {
             return inputAnswer
         }
 
-        override fun showDropdown(
+        override fun showList(
             type: Int,
             title: String,
             text: String,
             elements: Array<out Any>
         ): Int {
-            calls += "showDropdown:$type:$title:$text:" + elements.joinToString(",")
+            calls += "showList:$type:$title:$text:" + elements.joinToString(",")
             return dropdownAnswer
         }
     }
@@ -118,7 +118,7 @@ class LuaConditionalEnvironmentDialogTest {
     fun `the dropdown binding honors the no-selection`() {
         recorder.dropdownAnswer = 0
         val result = call(
-            "showDropdown",
+            "showList",
             LuaValue.valueOf(2),
             LuaValue.valueOf("Pick one"),
             LuaValue.valueOf("Choose an engine"),
@@ -128,7 +128,7 @@ class LuaConditionalEnvironmentDialogTest {
         )
         assertEquals(0, result.toint(), "the no-selection flows back to Lua")
         assertEquals(
-            "showDropdown:2:Pick one:Choose an engine:pdflatex,lualatex,xelatex",
+            "showList:2:Pick one:Choose an engine:pdflatex,lualatex,xelatex",
             recorder.calls.single(),
             "the elements reach the wired renderer"
         )

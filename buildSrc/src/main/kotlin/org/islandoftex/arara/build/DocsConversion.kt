@@ -49,6 +49,9 @@ object DocsConversion {
     /** The title entry inside the front matter. */
     private val titleRegex = Regex("""title\s*=\s*"([^"]*)"""")
 
+    /** The font size mermaid styles its diagram labels with. */
+    private const val LABEL_FONT_SIZE = 16f
+
     /**
      * The chapter's contribution to the book: one listing environment
      * per fenced block, reading the style the fence's language asked
@@ -269,17 +272,16 @@ object DocsConversion {
         if (sources.isEmpty()) {
             return emptyList()
         }
-        // the labels wear the identity's text face, at the size
-        // mermaid styles its labels: the generated tree carries the
-        // fonts beside the assets, so the pass needs no file from
-        // outside its own output
-        val labelFontSize = 16f
+        // the labels wear the identity's text face, at mermaid's own
+        // label size: the generated tree carries the fonts beside
+        // the assets, so the pass needs no file from outside its
+        // own output
         val font =
             Font
                 .createFont(
                     Font.TRUETYPE_FONT,
                     mermaidDir.resolveSibling("fonts/Karla-Light.ttf").inputStream(),
-                ).deriveFont(labelFontSize)
+                ).deriveFont(LABEL_FONT_SIZE)
         return runBlocking {
             KrokiClient(endpoint).use { client ->
                 sources.map { source ->

@@ -99,7 +99,7 @@ class PlainDialogRendererStreamTest {
     @Test
     fun `honors the deliberate no-selection of the dropdown`() {
         val (result, output) = withStreams("0\n") {
-            TerminalDialogs.showDropdown(
+            TerminalDialogs.showList(
                 2, "Pick one", "Choose an engine",
                 arrayOf("pdflatex", "lualatex", "xelatex")
             ).toString()
@@ -158,7 +158,7 @@ class PlainDialogRendererStreamTest {
             TerminalDialogs.showOptions(
                 4, "Nothing", "No buttons at all", emptyArray()
             ).toString() + ":" +
-                TerminalDialogs.showDropdown(
+                TerminalDialogs.showList(
                     4, "Nothing", "No elements at all", emptyArray()
                 )
         }

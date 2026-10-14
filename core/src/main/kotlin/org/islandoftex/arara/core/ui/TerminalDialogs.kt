@@ -68,10 +68,10 @@ object TerminalDialogs {
      * choosing nothing yields zero, and an empty element list offers
      * nothing, so it yields zero as well.
      */
-    fun showDropdown(
+    fun showList(
         type: Int,
         title: String,
         text: String,
         elements: Array<out Any>
-    ): Int = renderer.showDropdown(type, title, text, elements)
+    ): Int = renderer.showList(type, title, text, elements)
 }

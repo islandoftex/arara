@@ -51,7 +51,7 @@ class HeadlessDialogRendererTest {
     @Test
     fun `a dropdown dialog raises the not-configured error`() {
         assertUnsupported {
-            HeadlessDialogRenderer.showDropdown(
+            HeadlessDialogRenderer.showList(
                 2, "Pick one", "Choose an engine",
                 arrayOf("pdflatex", "lualatex")
             )

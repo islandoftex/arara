@@ -325,7 +325,7 @@ class LuaRuleEnvironmentTest {
             title: String,
             text: String
         ): String = error("no input dialog in this pin")
-        override fun showDropdown(
+        override fun showList(
             type: Int,
             title: String,
             text: String,

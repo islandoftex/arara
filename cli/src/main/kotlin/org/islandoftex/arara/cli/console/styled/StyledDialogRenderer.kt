@@ -133,7 +133,7 @@ class StyledDialogRenderer(
      * choosing nothing yields zero, and an empty element list offers
      * nothing, so it yields zero as well.
      */
-    override fun showDropdown(
+    override fun showList(
         type: Int,
         title: String,
         text: String,
@@ -146,7 +146,7 @@ class StyledDialogRenderer(
             terminal.println("")
             readSelection(elements.size, allowNone = true)
         } else {
-            PlainDialogRenderer.showDropdown(type, title, text, elements)
+            PlainDialogRenderer.showList(type, title, text, elements)
         }
     }
 

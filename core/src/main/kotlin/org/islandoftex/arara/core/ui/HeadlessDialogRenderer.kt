@@ -73,7 +73,7 @@ object HeadlessDialogRenderer : DialogRenderer {
      * choosing nothing yields zero, and an empty element list offers
      * nothing, so it yields zero as well.
      */
-    override fun showDropdown(
+    override fun showList(
         type: Int,
         title: String,
         text: String,

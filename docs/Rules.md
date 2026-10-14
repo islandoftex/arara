@@ -326,7 +326,7 @@ integer code that drives the visual tone of the box:
 | 1 | error — reporting a condition the rule detected, something wrong that does not stop the run |
 | 2 | information — a neutral note about what the rule is about to do, an observation |
 | 3 | warning — proceed with caution, a deprecated option, a long task ahead |
-| 4 | question — the *I'm asking* type, the natural companion of `show_options`, `show_input` and `show_dropdown` |
+| 4 | question — the *I'm asking* type, the natural companion of `show_options`, `show_input` and `show_list` |
 | anything else | plain — no tone, just the words |
 
 - `show_message(type, title, text)` shows a message — no answer is
@@ -367,7 +367,7 @@ integer code that drives the visual tone of the box:
   end
   ```
 
-- `show_dropdown(type, title, text, ...elements)` shows a dropdown
+- `show_list(type, title, text, ...elements)` shows a list
   list and returns the index of the chosen one, starting from one.
   Choosing nothing yields zero, and an empty element list offers
   nothing, so it yields zero as well. The dropdown is the polite
@@ -375,7 +375,7 @@ integer code that drives the visual tone of the box:
 
   ```lua
   command = function(ctx)
-    local choice = show_dropdown(4, 'Engine',
+    local choice = show_list(4, 'Engine',
       'Which engine shall I use?',
       'pdfTeX', 'LuaTeX', 'XeTeX')
     if choice == 1 then

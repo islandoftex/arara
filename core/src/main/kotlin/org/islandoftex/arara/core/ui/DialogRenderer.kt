@@ -50,8 +50,8 @@ interface DialogRenderer {
     fun showInput(type: Int, title: String, text: String): String
 
     /**
-     * Shows a message with options presented as a dropdown list of
-     * elements.
+     * Shows a message with options presented as a list of elements,
+     * and returns the index of the chosen one.
      *
      * @param type Type of message.
      * @param title Title of the message.
@@ -61,7 +61,7 @@ interface DialogRenderer {
      * choosing nothing yields zero, and an empty element list offers
      * nothing, so it yields zero as well.
      */
-    fun showDropdown(
+    fun showList(
         type: Int,
         title: String,
         text: String,
