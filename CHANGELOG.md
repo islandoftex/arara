@@ -404,7 +404,7 @@ on.
   shared configuration model (`LocalConfiguration`, `SerialFileType`)
   and the interpreter exception moved from the MVEL module to the core
   and API modules; the Lua engine no longer depends on the MVEL module
-  at all (version 9 groundwork, see `ROADMAP.md`).
+  at all (version 9 groundwork).
 * The rule lookup error lists the searched paths one per line with a
   dash marker, so each directory reads for itself instead of hiding
   inside a punctuation group; a message may now carry its own line
@@ -451,8 +451,7 @@ on.
 * The YAML/MVEL rule format and YAML configuration files are deprecated
   and will be removed in a future version; arara logs a warning when YAML
   rules are used. Please migrate to the Lua rule and configuration
-  formats. (Directive options and conditionals are unaffected.) The
-  removal playbook is documented in `ROADMAP.md`.
+  formats. (Directive options and conditionals are unaffected.)
 
 ## Removed
 
