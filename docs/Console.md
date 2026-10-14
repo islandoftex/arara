@@ -81,7 +81,7 @@ styled workflow to plain.
 # The dialogs
 
 Rules can hold a conversation with the person running the tool — a
-message, a choice of options, an input request, a dropdown — through the
+message, a choice of options, an input request, a selection — through the
 dialog helpers of [Writing rules](Rules.md). The conversation survives
 every execution mode and both presentations: the plain one renders the
 classic terminal dialogs, and the styled one the type-tinted dialog

@@ -197,8 +197,9 @@ Arguments:
   <file>  The file(s) to evaluate and process
 ```
 
-The available options are detailed as follows. Each option contains short
-and long variations, denoted by `-o` and `--option` respectively. When a
+The available options are detailed as follows. Each option contains a
+short form — a single letter preceded by a dash, such as `-v` — and a
+long form, a word preceded by two dashes, such as `--verbose`. When a
 parameter is required, it is denoted by `<parameter>` in the description.
 
 - `-h` / `--help`: as the name indicates, this option prints the help

@@ -312,7 +312,7 @@ The helpers, organized by family:
 ## Dialogs
 
 Rules can hold a conversation with the person running the tool — a
-message, a choice of options, a text input, a dropdown — through the
+message, a choice of options, a text input, a selection — through the
 dialog helpers. The conversation survives every execution mode and
 both presentations, as covered in [The console](Console.md): the
 plain one renders the classic terminal blocks, and the styled one the
@@ -367,10 +367,10 @@ integer code that drives the visual tone of the box:
   end
   ```
 
-- `show_list(type, title, text, ...elements)` shows a list
-  list and returns the index of the chosen one, starting from one.
+- `show_list(type, title, text, ...elements)` shows a list of
+  elements and returns the index of the chosen one, starting from one.
   Choosing nothing yields zero, and an empty element list offers
-  nothing, so it yields zero as well. The dropdown is the polite
+  nothing, so it yields zero as well. The list is the polite
   cousin of the options — a longer list, the same conversation:
 
   ```lua
@@ -432,7 +432,7 @@ Every helper in this chapter has a camel case twin from the deprecated YAML
 era — `get_command` was `getCommand`, `is_true` was `isTrue` — and the
 YAML rules spell their commands in MVEL, the expression language covered in
 [Engines](Engines.md). If you are tending to old rules before retiring
-them, [Migration](Migration.md) holds the complete correspondence between
+them, [Migration](Migration.md) holds the key correspondences between
 the two dialects.
 {% </devlab.callout> %}
 

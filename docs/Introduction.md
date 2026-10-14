@@ -145,6 +145,9 @@ workflows are easily tackled by our tool.
 Rules and directives are the core concepts of arara: the first dictates how a
 task is done, and the latter is the proper instance of the associated rule on
 the current document, i.e., when and where the commands must be executed.
+A rule is not limited to running commands silently: it can hold a
+conversation with the person at the terminal — asking a question, offering
+a choice, showing a warning — and branch on the answer it receives.
 
 {% <devlab.callout type="tip" title="The name"> %}
 *Do you like araras? We do, especially our tool, which shares its name with
