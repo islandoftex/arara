@@ -127,8 +127,10 @@ docs:generate:
     policy: pull
 
 # typesetting needs no JDK — the plain TeX Live base carries the
-# books, and the post-clean tree is the CTAN-ready documentation set:
-# the PDFs, their LaTeX sources, and the rendered figures
+# books, and the tool builds them itself: arara reads the directives
+# from the skeletons and drives LuaLaTeX and the clean, and the
+# post-clean tree is the CTAN-ready documentation set: the PDFs,
+# their LaTeX sources, and the rendered figures
 docs:compile:
   stage: docs
   needs:
@@ -137,8 +139,7 @@ docs:compile:
   image: registry.gitlab.com/islandoftex/images/texlive:latest
   script:
     - cd build/generated/docs
-    - latexmk -lualatex -interaction=nonstopmode arara-manual.tex arara-quickstart.tex
-    - latexmk -c arara-manual.tex arara-quickstart.tex
+    - arara -v arara-manual.tex arara-quickstart.tex
   artifacts:
     name: "$CI_COMMIT_REF_NAME-documentation"
     paths:

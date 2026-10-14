@@ -1,8 +1,12 @@
 % arara: lualatex
 % arara: lualatex
-% arara, the cool \TeX{} automation tool — the reference guide.
+% arara: lualatex
+% arara: clean: {
+% arara: --> extensions: [ aux, listing, log, toc ]
+% arara: --> }
 %
-% Build: latexmk -lualatex arara-manual.tex
+% arara, the cool TeX automation tool — the reference guide.
+%
 % DIV=13 is the type area factor, BCOR=1cm the binding correction.
 
 \documentclass[parskip=half-, DIV=13, BCOR=1cm, fontsize=11pt, paper=a4]{scrbook}
