@@ -311,10 +311,92 @@ The helpers, organized by family:
 
 ## Dialogs
 
-- `show_message(type, title, text)` shows a message box on the console —
-  the interactive conversation with the person running the tool, rendered
-  by the presentation the run chose, as covered in
-  [The console](Console.md).
+Rules can hold a conversation with the person running the tool — a
+message, a choice of options, a text input, a dropdown — through the
+dialog helpers. The conversation survives every execution mode and
+both presentations, as covered in [The console](Console.md): the
+plain one renders the classic terminal blocks, and the styled one the
+type-tinted dialog boxes, both sharing the same reading semantics.
+
+The first argument of every dialog helper is the message type — an
+integer code that drives the visual tone of the box:
+
+| Code | Meaning |
+|---|---|
+| 1 | error — reporting a condition the rule detected, something wrong that does not stop the run |
+| 2 | information — a neutral note about what the rule is about to do, an observation |
+| 3 | warning — proceed with caution, a deprecated option, a long task ahead |
+| 4 | question — the *I'm asking* type, the natural companion of `show_options`, `show_input` and `show_dropdown` |
+| anything else | plain — no tone, just the words |
+
+- `show_message(type, title, text)` shows a message — no answer is
+  expected, no answer is returned. It is the polite tap on the
+  shoulder: a warning before a long task, a note about a deprecated
+  option, a greeting for the person who wrote the rule.
+
+  ```lua
+  show_message(3, 'A reminder', 'The draft mode is on.')
+  ```
+
+- `show_options(type, title, text, ...buttons)` shows a numbered list
+  of buttons and returns the index of the chosen one, starting from
+  one. An empty button list offers nothing, so it yields zero. The
+  answer is what a rule branches on:
+
+  ```lua
+  command = function(ctx)
+    local answer = show_options(4, 'Proceed?',
+      'Shall I typeset the document?', 'Yes', 'No')
+    if answer == 1 then
+      return get_command('pdflatex', ctx.reference.file_name)
+    end
+    return nil
+  end
+  ```
+
+- `show_input(type, title, text)` shows a text field and returns the
+  answer, trimmed of its surrounding spaces. It is the open question —
+  a file name, a version number, whatever the rule needs and cannot
+  guess:
+
+  ```lua
+  command = function(ctx)
+    local name = show_input(4, 'File name',
+      'Which file shall I typeset?')
+    return get_command('pdflatex', name)
+  end
+  ```
+
+- `show_dropdown(type, title, text, ...elements)` shows a dropdown
+  list and returns the index of the chosen one, starting from one.
+  Choosing nothing yields zero, and an empty element list offers
+  nothing, so it yields zero as well. The dropdown is the polite
+  cousin of the options — a longer list, the same conversation:
+
+  ```lua
+  command = function(ctx)
+    local choice = show_dropdown(4, 'Engine',
+      'Which engine shall I use?',
+      'pdfTeX', 'LuaTeX', 'XeTeX')
+    if choice == 1 then
+      return get_command('pdflatex', ctx.reference.file_name)
+    elseif choice == 2 then
+      return get_command('lualatex', ctx.reference.file_name)
+    elseif choice == 3 then
+      return get_command('xelatex', ctx.reference.file_name)
+    end
+    return nil
+  end
+  ```
+
+{% <devlab.callout type="info" title="Two contexts, one conversation"> %}
+The `show_message` helper is a command helper — it acts, so it lives
+in the rule context alone. The other three are conditional helpers —
+they return answers, so they are available in both the rule context
+and the conditional context, the same family as `missing` and
+`found`. A rule can ask a question inside an `if` and branch on the
+answer.
+{% </devlab.callout> %}
 
 ## The conditional family
 
