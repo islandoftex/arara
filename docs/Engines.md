@@ -103,7 +103,7 @@ interpolation. Two doctrines define the dialect's character:
 ## Interpolation
 
 Under the Lua engine, directive parameters interpolate through Lua tags —
-the `{{ … }}` markers, filled with the same expressions the conditionals
+the double-curly-brace markers, filled with the same expressions the conditionals
 speak:
 
 ```tex

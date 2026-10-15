@@ -29,9 +29,9 @@ on.
   directive conditionals (`if`, `while`, `until`, `unless`) are
   evaluated as Lua expressions (compound conditions use `and`, `or`
   and `not` instead of `&&`, `||` and `!`), and interpolation tags
-  in directive `options` use `{{ … }}` delimiters — the `@{ … }` orb
-  tags belong to the deprecated YAML engine and are rejected with a
-  hint. The helper boundary is typed: helper arguments have to match
+  in directive `options` use double-curly-brace delimiters — the
+  `@{ … }` orb tags belong to the deprecated YAML engine and are
+  rejected with a hint. The helper boundary is typed: helper arguments have to match
   the declared type and mismatches raise Lua-style `bad argument
   #<n> to '<helper>'` errors. Numbers no longer silently become
   strings, the `halt` exit code has to be a number, and a rule's
