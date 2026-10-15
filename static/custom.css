@@ -266,3 +266,17 @@ h1, h2, h3, h4, h5, h6 { font-family: "Rosario", var(--font-sans); }
 .tex-logo   { white-space: nowrap; }
 .tex-logo-e { vertical-align: -0.5ex; margin-left: -0.1667em; margin-right: -0.125em; }
 .tex-logo-a { font-size: 0.72em; vertical-align: 0.45ex; margin-left: -0.36em; margin-right: -0.15em; }
+
+/* ── Callout code chips ───────────────────────────────────────────
+ * The theme paints inline code inside callouts with the callout's
+ * saturated border color and typesets it with the callout's body
+ * foreground — a pairing that drowns when the foreground is dark.
+ * The deep greens and bricks carry white directly; the bright blues
+ * and oranges cannot, so their chips deepen one shade in the same
+ * hue first — and then every chip speaks the same white ink.
+ */
+
+.callout--tip code     { color: #ffffff; }
+.callout--info code    { color: #ffffff; background: #1d6fa5; }
+.callout--warning code { color: #ffffff; background: #a84a0f; }
+.callout--error code   { color: #ffffff; }
