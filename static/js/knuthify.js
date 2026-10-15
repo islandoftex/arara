@@ -1,6 +1,6 @@
 "use strict";
 /**
- * knuthify 0.1.0 (typescript)
+ * knuthify 0.2.0 (typescript)
  *
  * Set TeX words the way TeX sets them: a zero-dependency, client-side
  * walker that decorates TeX-family words in rendered prose with the
@@ -22,13 +22,14 @@
  */
 (() => {
     "use strict";
-    /** Corpus-attested (arara manual) + future-proof (shipped rules). */
+    /** Manual-attested, shipped-rules vocabulary, and site-attested. */
     const WORDS = [
         "TeX", "PDFLaTeX", "pdfLaTeX", "LaTeX", "BibTeX", "pdfTeX",
         "LuaTeX", "LuaLaTeX", "XeTeX", "upLaTeX", "pLaTeX",
         "PythonTeX", "PerlTeX", "ConTeXt",
         "PDFTeX", "LuaHBTeX", "upTeX", "eTeX", "XeLaTeX",
         "BibTeX8", "BibTeXu", "pBibTeX", "upBibTeX", "SliTeX", "PiCTeX",
+        "MacTeX", "MiKTeX",
     ];
     /** Longest-first, so BibTeX8 can never be shadowed by BibTeX. */
     const alternation = [...WORDS].sort((a, b) => b.length - a.length).join("|");
