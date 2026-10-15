@@ -1,0 +1,30 @@
+{% set footer_text = config.title %}
+{% set show_footer = true %}
+{% if config.extra.devlab is defined and config.extra.devlab.brand is defined and config.extra.devlab.brand.footer_text is defined %}
+{% set footer_text = config.extra.devlab.brand.footer_text %}
+{% endif %}
+{% set footer_note = "" %}
+{% set footer_links = [] %}
+{% set footer_links_label = ui.footer_links %}
+{% set footer_show_link_names = false %}
+{% if config.extra.devlab is defined and config.extra.devlab.footer is defined %}
+{% set show_footer = config.extra.devlab.footer.show | default(value=true) %}
+{% set footer_note = config.extra.devlab.footer.note | default(value="") %}
+{% set footer_links = config.extra.devlab.footer.links | default(value=[]) %}
+{% set footer_links_label = config.extra.devlab.footer.links_label | default(value=ui.footer_links) %}
+{% set footer_show_link_names = config.extra.devlab.footer.show_link_names | default(value=false) %}
+{% endif %}
+{% if show_footer %}
+{% set footer_year = now() | date(format="%Y") %}
+{% set footer_class = "site-footer" %}
+{% if footer_compact is defined and footer_compact %}
+{% set footer_class = footer_class ~ " site-footer-compact" %}
+{# The Docs sidebar and the mobile Docs panel show the links as icons only. #}
+{% set footer_show_link_names = false %}
+{% endif %}
+<footer class="{{ footer_class }}">
+  <div class="site-footer-inner">
+    {% include "partials/footer-content.html" %}
+  </div>
+</footer>
+{% endif %}

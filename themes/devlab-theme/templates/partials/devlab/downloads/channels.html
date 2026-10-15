@@ -1,0 +1,14 @@
+{# Internal DevLab partial. #}
+{% if has_channels %}
+<section class="downloads-channel-section" aria-labelledby="downloads-channels-title">
+  <h2 class="downloads-channels-title" id="downloads-channels-title">
+    {{ channels_label }}
+  </h2>
+
+  <div class="downloads-channels">
+    {% for channel in downloads.channels %}
+    {{<devlab.download_card channel={channel} unavailable_label={unavailable_label} />}}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}

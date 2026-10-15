@@ -1,0 +1,107 @@
+.content h2 {
+  margin-top: var(--space-10);
+}
+
+.content :is(h2, h3, h4, h5, h6) {
+  scroll-margin-top: var(--sticky-offset);
+}
+
+.content :is(h1, h2, h3, h4, h5, h6) .zola-anchor {
+  display: inline-block;
+  margin-inline-start: 0.35rem;
+  vertical-align: middle;
+
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  opacity: 0;
+
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    opacity var(--duration-fast) var(--ease-standard);
+}
+
+.content :is(h1, h2, h3, h4, h5, h6) .zola-anchor .content-icon {
+  font-size: 1em;
+}
+
+.content :is(h1, h2, h3, h4, h5, h6):hover .zola-anchor,
+.content :is(h1, h2, h3, h4, h5, h6) .zola-anchor:focus-visible {
+  opacity: 1;
+}
+
+.content .zola-anchor:hover,
+.content .zola-anchor:focus-visible {
+  color: var(--color-accent);
+}
+
+.content .zola-anchor:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content :is(h1, h2, h3, h4, h5, h6) .zola-anchor {
+    transition: none;
+  }
+}
+
+.content a {
+  overflow-wrap: anywhere;
+}
+
+.content table {
+  width: 100%;
+  margin: var(--space-5) 0;
+  border: 1px solid var(--color-border);
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+
+  font-size: 0.95rem;
+}
+
+.content th,
+.content td {
+  padding: 0.65rem 0.8rem;
+  border-bottom: 1px solid var(--color-border);
+
+  text-align: start;
+  vertical-align: top;
+}
+
+.content th {
+  background: var(--color-surface-subtle);
+  color: var(--color-fg);
+  font-weight: 700;
+}
+
+.content tr:last-child td {
+  border-bottom: 0;
+}
+
+.content img {
+  max-width: 100%;
+  height: auto;
+}
+
+.content figure {
+  margin: var(--space-6) 0;
+}
+
+.content figure img {
+  display: block;
+  width: 100%;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+}
+
+.content figcaption {
+  margin-top: var(--space-2);
+
+  color: var(--color-muted);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+}

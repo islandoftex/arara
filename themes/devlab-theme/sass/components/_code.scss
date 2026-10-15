@@ -1,0 +1,353 @@
+.content code {
+  direction: ltr;
+  unicode-bidi: isolate;
+  overflow-wrap: anywhere;
+
+  padding: 0.15rem 0.35rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-code-bg);
+  color: var(--color-code-fg);
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+.content pre.giallo {
+  /*
+   * Zola emits syntax tokens as light-dark(<light_theme>, <dark_theme>) and
+   * resolves them against color-scheme. The code surface can be dark even in
+   * the light theme, so follow --color-pre-scheme instead of the page mode.
+   */
+  color-scheme: var(--color-pre-scheme, inherit) !important;
+  background-color: var(--color-pre-bg) !important;
+  color: var(--color-pre-fg) !important;
+}
+
+.content pre {
+  direction: ltr;
+  max-width: 100%;
+  margin: var(--space-6) 0;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  padding: 1.125rem 1.25rem;
+
+  border: 1px solid color-mix(in srgb, var(--color-pre-fg) 15%, var(--color-pre-bg));
+  border-radius: calc(var(--radius-lg) + 0.125rem);
+  background: var(--color-pre-bg);
+  color: var(--color-pre-fg);
+  box-shadow: var(--shadow-sm);
+  scrollbar-color: color-mix(in srgb, var(--color-pre-fg) 28%, transparent) transparent;
+  scrollbar-width: thin;
+
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  line-height: 1.65;
+  tab-size: 4;
+  text-align: left;
+  unicode-bidi: isolate;
+}
+
+.content pre:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.content pre::-webkit-scrollbar {
+  height: 0.625rem;
+}
+
+.content pre::-webkit-scrollbar-thumb {
+  border: 0.1875rem solid transparent;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-pre-fg) 30%, transparent);
+  background-clip: padding-box;
+}
+
+.content pre code {
+  overflow-wrap: normal;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
+}
+
+.content pre.giallo code {
+  display: block;
+  white-space: normal;
+}
+
+.content .giallo-l {
+  display: block;
+  min-height: 1lh;
+  margin: 0 -1.25rem;
+  padding: 0 1.25rem;
+  white-space: pre;
+}
+
+.content .giallo-l[style*="background-color"] {
+  background: color-mix(in srgb, var(--color-accent) 14%, transparent) !important;
+  box-shadow: inset 0.1875rem 0 var(--color-accent);
+}
+
+.content .giallo-ln {
+  display: inline-block;
+  min-width: 3.5ch;
+  margin-inline-end: 0.875em;
+  padding-inline-end: 0.75em;
+
+  border-inline-end: 1px solid color-mix(in srgb, var(--color-pre-fg) 16%, transparent);
+  color: color-mix(in srgb, var(--color-pre-fg) 48%, transparent) !important;
+
+  text-align: end;
+  user-select: none;
+}
+
+.content .code-block {
+  margin: var(--space-6) 0;
+  overflow: hidden;
+  isolation: isolate;
+
+  border: 1px solid color-mix(in srgb, var(--color-pre-fg) 16%, var(--color-pre-bg));
+  border-radius: calc(var(--radius-lg) + 0.125rem);
+  background: var(--color-pre-bg);
+  box-shadow: var(--shadow-md);
+
+  pre {
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background-color: var(--color-pre-bg) !important;
+    box-shadow: none;
+  }
+}
+
+.content .code-block:has(pre:focus-visible) {
+  outline: var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.content .code-block pre:focus-visible {
+  outline: none;
+}
+
+.content .code-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 2.75rem;
+  gap: var(--space-4);
+  padding: 0.5rem 0.625rem 0.5rem 1rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-pre-fg) 12%, var(--color-pre-bg));
+  background: color-mix(in srgb, var(--color-pre-fg) 5%, var(--color-pre-bg));
+  color: var(--color-pre-fg);
+}
+
+.content .code-block-language {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  overflow: hidden;
+  color: color-mix(in srgb, var(--color-pre-fg) 68%, var(--color-pre-bg));
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  line-height: 1;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.content .code-block-language::before {
+  flex: 0 0 auto;
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 0 0.1875rem color-mix(in srgb, var(--color-accent) 15%, transparent);
+  content: "";
+}
+
+.content .code-block-meta {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: var(--space-3);
+}
+
+.content .code-block-title {
+  overflow: hidden;
+  min-width: 0;
+
+  color: var(--color-pre-fg);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* With a filename present the language becomes supporting metadata, not the title. */
+.content .code-block-meta.is-titled .code-block-language {
+  flex: 0 0 auto;
+  padding: 0.1875rem 0.4375rem;
+
+  border: 1px solid color-mix(in srgb, var(--color-pre-fg) 16%, transparent);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-pre-fg) 6%, transparent);
+
+  font-size: 0.625rem;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.content .code-block-meta.is-titled .code-block-language::before {
+  display: none;
+}
+
+.content .code-copy-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 2rem;
+  min-width: 2rem;
+  min-height: 2rem;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--color-pre-fg) 18%, transparent);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-pre-fg) 5%, transparent);
+  color: color-mix(in srgb, var(--color-pre-fg) 72%, var(--color-pre-bg));
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 650;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+}
+
+.content .code-copy-icon {
+  position: relative;
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.content .code-copy-icon::before,
+.content .code-copy-icon::after {
+  position: absolute;
+  width: 0.5rem;
+  height: 0.625rem;
+  border: 1.5px solid currentColor;
+  border-radius: 0.125rem;
+  content: "";
+}
+
+.content .code-copy-icon::before {
+  inset: 0.0625rem auto auto 0.0625rem;
+}
+
+.content .code-copy-icon::after {
+  inset: 0.1875rem 0.0625rem 0 auto;
+  background: color-mix(in srgb, var(--color-pre-fg) 5%, var(--color-pre-bg));
+}
+
+.content .code-copy-button:hover {
+  border-color: color-mix(in srgb, var(--color-pre-fg) 34%, transparent);
+  background: color-mix(in srgb, var(--color-pre-fg) 10%, transparent);
+  color: var(--color-pre-fg);
+}
+
+.content .code-copy-button:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.content .code-copy-button[data-copy-state="success"] {
+  border-color: color-mix(in srgb, #4ade80 42%, transparent);
+  background: color-mix(in srgb, #4ade80 10%, transparent);
+  color: #86efac;
+}
+
+.content .code-copy-button[data-copy-state="success"] .code-copy-icon::before {
+  inset: 0 0 0 0.1875rem;
+  width: 0.375rem;
+  height: 0.6875rem;
+  border: 0 solid currentColor;
+  border-right-width: 0.125rem;
+  border-bottom-width: 0.125rem;
+  border-radius: 0;
+  transform: rotate(45deg);
+}
+
+.content .code-copy-button[data-copy-state="success"] .code-copy-icon::after {
+  display: none;
+}
+
+.content .code-copy-button[data-copy-state="error"] {
+  border-color: color-mix(in srgb, #fb7185 42%, transparent);
+  background: color-mix(in srgb, #fb7185 10%, transparent);
+  color: #fda4af;
+}
+
+.content .code-copy-button[data-copy-state="error"] .code-copy-icon::before {
+  inset: 0;
+  width: auto;
+  height: auto;
+  border: 0;
+  content: "!";
+  font-size: 0.875rem;
+  font-weight: 800;
+  line-height: 0.875rem;
+  text-align: center;
+}
+
+.content .code-copy-button[data-copy-state="error"] .code-copy-icon::after {
+  display: none;
+}
+
+.content .code-copy-label,
+.content .code-copy-status {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .content .code-block-header {
+    gap: var(--space-2);
+    padding-inline: 0.75rem 0.5rem;
+  }
+
+  .content .code-block-meta {
+    gap: var(--space-2);
+  }
+
+  .content .code-block-title {
+    font-size: 0.6875rem;
+  }
+
+  .content pre {
+    padding: 0.875rem;
+    font-size: 0.8125em;
+  }
+
+  .content .giallo-l {
+    margin: 0 -0.875rem;
+    padding: 0 0.875rem;
+  }
+
+  .content .code-copy-button {
+    width: 2rem;
+    min-width: 2rem;
+  }
+}

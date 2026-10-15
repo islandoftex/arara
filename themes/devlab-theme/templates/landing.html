@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block main_class %}{% set home = config.extra.devlab.home | default(value={}) %}{% if context_item and context_item.extra.devlab is defined and context_item.extra.devlab.home is defined %}{% set home = {...home, ...context_item.extra.devlab.home} %}{% endif %} site-main-home-{{ home.layout | default(value="default") }}{% endblock main_class %}
+{% block content %}
+{% set home = config.extra.devlab.home | default(value={}) %}
+{% if context_item.extra.devlab is defined and context_item.extra.devlab.home is defined %}{% set home = {...home, ...context_item.extra.devlab.home} %}{% endif %}
+{% set home_layout = home.layout | default(value="default") %}
+{% if home_layout not in ["default", "wide"] %}{{ throw(message="devlab.home.layout must be default or wide.") }}{% endif %}
+{% set blocks = home.blocks | default(value=[{"type": "hero"}, {"type": "content"}]) %}
+{% set hero_blocks = [item for item in blocks if item.type == "hero"] %}
+{% if hero_blocks | length > 1 %}{{ throw(message="A landing page supports at most one hero block.") }}{% endif %}
+{% if hero_blocks and blocks[0].type != "hero" %}{{ throw(message="The landing hero must be the first block.") }}{% endif %}
+<div class="home-page home-page-{{ home_layout }} landing-page">
+{% if not hero_blocks %}<header class="page-header landing-content"><h1>{{ context_item.title }}</h1>{% if context_item.description %}<p class="page-description">{{ context_item.description }}</p>{% endif %}</header>{% endif %}
+{% set_global landing_ids = [] %}
+{% for block in blocks %}
+{% set block_id = block.id | default(value="landing-block-" ~ loop.index) %}
+{% if block_id in landing_ids %}{{ throw(message="Landing block ids must be unique: " ~ block_id) }}{% endif %}
+{% set_global landing_ids = [...landing_ids, block_id] %}
+{% include "partials/landing-block.html" %}
+{% endfor %}
+</div>
+{% endblock content %}

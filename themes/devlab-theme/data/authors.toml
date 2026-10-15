@@ -1,0 +1,11 @@
+# Blog author profiles. Keys match the `authors` taxonomy values in post
+# front matter and give every writer a stable page at /authors/<key>/.
+# Unknown keys in posts degrade to a plain linked name instead of a build error.
+
+[ripetitor]
+name = "RiPetitor"
+role = "DevLab maintainer"
+avatar = "/images/people/ripetitor-avatar.svg"
+links = [
+  { name = "Codeberg", path = "https://codeberg.org/RiPetitor", icon = "codeberg" },
+]

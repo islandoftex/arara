@@ -1,0 +1,208 @@
+{% block layout_context %}{% set devlab_layout = "page" %}{% endblock layout_context %}
+{% set ui_catalogs = config.extra.devlab.i18n.translations | default(value={}) %}
+{% set ui_defaults = ui_catalogs %}
+{# A local theme.toml supplies defaults for the standalone theme demo. #}
+{% set local_theme = load_data(path="theme.toml", required=false) %}
+{% if local_theme and local_theme.extra is defined and local_theme.extra.devlab is defined and local_theme.extra.devlab.i18n is defined and local_theme.extra.devlab.i18n.translations is defined %}{% set ui_defaults = local_theme.extra.devlab.i18n.translations %}{% endif %}
+{% set primary_ui = ui_catalogs.en | default(value={}) %}
+{% set ui = {...ui_defaults.en, ...primary_ui} %}
+{% set downloads_ui = {...ui_defaults.en.downloads, ...primary_ui.downloads | default(value={})} %}
+{% if ui_defaults[lang] is defined %}{% set ui = {...ui, ...ui_defaults[lang]} %}{% set downloads_ui = {...downloads_ui, ...ui_defaults[lang].downloads | default(value={})} %}{% endif %}
+{% if ui_catalogs[lang] is defined %}{% set ui = {...ui, ...ui_catalogs[lang]} %}{% set downloads_ui = {...downloads_ui, ...ui_catalogs[lang].downloads | default(value={})} %}{% endif %}
+{# Resolve collection membership independently of the chosen layout. #}
+{% set active_path = current_path | default(value="") %}
+{% set active_url = current_url | default(value="") %}
+{% set docs_options = config.extra.devlab.docs | default(value={}) %}
+{% set docs_section_path = "" %}
+{% set docs_section = none %}
+{% set collection_id = "" %}
+{% set context_item = none %}
+{% if page is defined %}{% set context_item = page %}{% elif section is defined %}{% set context_item = section %}{% endif %}
+{% include "partials/devlab/validate-config.html" %}
+{% set author_registry = load_data(path="data/authors.toml", required=false) %}
+{% if not author_registry %}{% set author_registry = {} %}{% endif %}
+{% include "partials/devlab/author-registry.html" %}
+{% set collections = config.extra.devlab.collections | default(value={}) %}
+{% set_global collection_match_length = 0 %}
+{% for id, collection in collections %}
+{% if not collection.section | default(value="") %}{{ throw(message="Every devlab collection needs a section source path.") }}{% endif %}
+{% set root = get_section(path=collection.section, lang=lang, allow_missing=lang != config.default_language) %}
+{% if root and context_item and (root.relative_path == context_item.relative_path or root.relative_path in context_item.ancestors) and root.relative_path | length > collection_match_length %}
+{% set_global collection_id = id %}
+{% set_global collection_match_length = root.relative_path | length %}
+{% set_global docs_section = root %}
+{% set collection_actions = {...config.extra.devlab.docs.page_actions | default(value={}), ...collection.page_actions | default(value={})} %}
+{% set_global docs_options = {...config.extra.devlab.docs, ...collection, "title": collection.title | default(value=root.title), "page_actions": collection_actions} %}
+{% set_global docs_section_path = collection.section %}
+{% endif %}
+{% endfor %}
+{% set docs_context_path = "" %}
+{% if docs_section %}{% set docs_context_path = docs_section.path %}{% endif %}
+{# Inheritance is shallow except page_actions, whose fields merge individually. #}
+{% set_global resolved_page_actions = docs_options.page_actions | default(value={}) %}
+{% if context_item and docs_section and (context_item.relative_path == docs_section.relative_path or docs_section.relative_path in context_item.ancestors) %}
+{% set docs_source_prefix = docs_section.relative_path | split(pat="_index") | first %}
+{% for ancestor_path in context_item.ancestors %}
+{% set ancestor = get_section(path=ancestor_path, lang=lang) %}
+{% if ancestor.relative_path is starting_with(pat=docs_source_prefix) and ancestor.extra.devlab is defined %}
+{% set_global docs_options = {...docs_options, ...ancestor.extra.devlab} %}
+{% set ancestor_actions = ancestor.extra.devlab.page_actions | default(value={}) %}
+{% set_global resolved_page_actions = {...resolved_page_actions, ...ancestor_actions} %}
+{% endif %}
+{% endfor %}
+{% if context_item.extra.devlab is defined %}
+{% set docs_options = {...docs_options, ...context_item.extra.devlab} %}
+{% set item_actions = context_item.extra.devlab.page_actions | default(value={}) %}
+{% set resolved_page_actions = {...resolved_page_actions, ...item_actions} %}
+{% endif %}
+{% endif %}
+{% set docs_options = {...docs_options, "section": docs_section_path, "page_actions": resolved_page_actions} %}
+{% set docs_toc_enabled = docs_options.show_toc | default(value=true) %}
+{% set_global nav_links = [] %}
+{% for link in config.extra.devlab.navigation.links | default(value=[]) %}
+{% if link.collection is defined %}
+{% if collections[link.collection] is not defined %}{{ throw(message="Navigation references an unknown devlab collection: " ~ link.collection) }}{% endif %}
+{% set root = get_section(path=collections[link.collection].section, lang=lang, allow_missing=lang != config.default_language) %}
+{% if root %}{% set_global nav_links = [...nav_links, {...link, "path": root.permalink, "name": link.name | default(value=root.title)}] %}{% endif %}
+{% else %}
+{% if not link.path | default(value="") or not link.name | default(value="") %}{{ throw(message="Navigation links require name and path, or a collection.") }}{% endif %}
+{% set_global nav_links = [...nav_links, link] %}
+{% endif %}
+{% endfor %}
+
+{% set document_direction = "ltr" %}
+{% if config.extra.devlab.i18n is defined and config.extra.devlab.i18n.rtl_languages is defined and lang in config.extra.devlab.i18n.rtl_languages %}
+{% set document_direction = "rtl" %}
+{% endif %}
+{% set has_announcement = false %}
+{% set announcement_key = "" %}
+{% set announcement_dismissible = false %}
+{% if config.extra.devlab.announcement is defined %}
+{% set announcement_message = config.extra.devlab.announcement.message | default(value="") %}
+{% set announcement_enabled = config.extra.devlab.announcement.show | default(value=false) %}
+{% set has_announcement = announcement_enabled and announcement_message %}
+{% set announcement_key = config.extra.devlab.announcement.key | default(value="") %}
+{% set announcement_dismissible = has_announcement and announcement_key and config.extra.devlab.announcement.dismissible | default(value=true) %}
+{% endif %}
+<!doctype html>
+<html
+  lang="{{ lang }}"
+  dir="{{ document_direction }}"
+  {% if has_announcement %}data-announcement-active="true"{% endif %}
+  {% if announcement_dismissible %}data-announcement-key="{{ announcement_key }}"{% endif %}
+>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% set content_title = config.title %}
+  {% if page is defined %}
+  {% set content_title = page.title %}
+  {% elif section is defined %}
+  {% set content_title = section.title %}
+  {% elif term is defined %}
+  {% set taxonomy_title = taxonomy.name | title %}
+  {% set content_title = term.name ~ " | " ~ taxonomy_title %}
+  {% if taxonomy.name == "authors" and author_registry[term.name] is defined %}{% set content_title = author_registry[term.name].name | trim %}{% endif %}
+  {% elif taxonomy is defined %}
+  {% set content_title = taxonomy.name | title %}
+  {% endif %}
+  {% set html_title = content_title %}
+  {% if paginator is defined and paginator.current_index > 1 %}
+  {% set html_title = html_title ~ " | " ~ ui.page ~ " " ~ paginator.current_index %}
+  {% endif %}
+  {% if content_title != config.title %}
+  {% set html_title = html_title ~ " | " ~ config.title %}
+  {% endif %}
+  <title>{% block title %}{{ html_title }}{% endblock title %}</title>
+  {% include "partials/head.html" %}
+  {% block head_extra %}{% endblock head_extra %}
+  {% block extra_styles %}{% endblock extra_styles %}
+</head>
+
+{% set search_enabled = config.extra.devlab.search.enabled | default(value=true) %}
+{% set has_site_search = config.build_search_index and search_enabled %}
+{% if config.search is defined and config.search.index_format is defined and config.search.index_format != "elasticlunr_javascript" %}
+{% set has_site_search = false %}
+{% endif %}
+<body{% if has_site_search %} class="has-site-search"{% endif %}>
+  {% set is_docs_page = false %}
+  {% if devlab_layout == "docs" or devlab_layout == "reader" %}
+  {% set is_docs_page = true %}
+  {% endif %}
+  {% set has_scroll_header_divider = not is_docs_page and ((section is defined and not section.ancestors) or devlab_layout in ["blog", "article", "downloads"]) %}
+  {% set_global has_navigation_links = false %}
+  {% set_global has_docs_navigation_panel = false %}
+  {% set_global docs_navigation_has_items = false %}
+  {% if docs_section %}
+  {% if docs_options.navigation is defined and docs_options.navigation %}
+  {% set_global navigation_sections = [] %}
+  {% set_global navigation_entries = [] %}
+  {% set_global pending_navigation_label = "" %}
+  {% for navigation_item in docs_options.navigation %}
+  {% if navigation_item.label is defined %}
+  {% if not navigation_item.label | trim %}{{ throw(message="Collection navigation labels must be non-empty text.") }}{% endif %}
+  {% if navigation_item.section is defined or navigation_item.path is defined %}{{ throw(message="Collection navigation labels cannot have a section or path.") }}{% endif %}
+  {% set label_translations = navigation_item.translations | default(value={}) %}
+  {% set_global pending_navigation_label = label_translations[lang] | default(value=navigation_item.label) %}
+  {% if not pending_navigation_label | trim %}{{ throw(message="Collection navigation label translations must be non-empty text.") }}{% endif %}
+  {% else %}
+  {% if not navigation_item.section | default(value="") %}{{ throw(message="Collection navigation entries require a section source path or a label.") }}{% endif %}
+  {% if lang == config.default_language %}
+  {% set navigation_section = get_section(path=navigation_item.section, lang=lang) %}
+  {% else %}
+  {% set navigation_section = get_section(path=navigation_item.section, lang=lang, allow_missing=true) %}
+  {% endif %}
+  {% if navigation_section %}
+  {% if navigation_section.relative_path != docs_section.relative_path and docs_section.relative_path not in navigation_section.ancestors %}{{ throw(message="Collection navigation must stay inside its source root: " ~ navigation_item.section) }}{% endif %}
+  {% for listed in navigation_sections %}
+  {% if navigation_section.relative_path == listed.relative_path %}{{ throw(message="Collection navigation entries must be unique: " ~ navigation_item.section) }}{% endif %}
+  {% if navigation_section.relative_path in listed.ancestors or listed.relative_path in navigation_section.ancestors %}{{ throw(message="Collection navigation entries must not overlap: " ~ navigation_item.section) }}{% endif %}
+  {% endfor %}
+  {% if pending_navigation_label %}
+  {% set_global navigation_entries = [...navigation_entries, {"label": pending_navigation_label}] %}
+  {% set_global pending_navigation_label = "" %}
+  {% endif %}
+  {% set_global navigation_sections = [...navigation_sections, navigation_section] %}
+  {% set_global navigation_entries = [...navigation_entries, {"section": navigation_section}] %}
+  {% set_global docs_navigation_has_items = true %}
+  {% endif %}
+  {% endif %}
+  {% endfor %}
+  {% else %}
+  {% set docs_navigation_items_marker = <devlab.docs_nav_items_marker nav_section={docs_section} /> %}
+  {% if docs_navigation_items_marker %}{% set_global docs_navigation_has_items = true %}{% endif %}
+  {% endif %}
+  {% endif %}
+  {% set has_navigation_links = nav_links | length > 0 %}
+  {% set has_docs_navigation_panel = is_docs_page and docs_navigation_has_items %}
+  {% set has_site_menu = has_navigation_links or has_docs_navigation_panel %}
+
+  <a class="skip-link" href="#main-content">{{ ui.skip }}</a>
+  {% block body_start %}{% endblock body_start %}
+
+  <div class="site-shell">
+    {% if has_announcement %}
+    {% include "partials/announcement.html" %}
+    {% endif %}
+    {% include "partials/header.html" %}
+    {% if has_site_menu %}
+    {% include "partials/site-menu.html" %}
+    {% endif %}
+    
+    <main id="main-content" class="site-main{% if is_docs_page %} site-main-docs{% endif %}{% block main_class %}{% endblock main_class %}" tabindex="-1">
+      {% block main_before %}{% endblock main_before %}
+      {% block content %}{% endblock content %}
+      {% block main_after %}{% endblock main_after %}
+    </main>
+
+    {% if not is_docs_page %}
+    {% include "partials/footer.html" %}
+    {% endif %}
+  </div>
+  
+  {% include "partials/devlab/scripts.html" %}
+  {% block layout_scripts %}{% endblock layout_scripts %}
+  {% block extra_scripts %}{% endblock extra_scripts %}
+  {% block body_end %}{% endblock body_end %}
+</body>
+</html>

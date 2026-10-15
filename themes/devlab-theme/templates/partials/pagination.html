@@ -1,0 +1,19 @@
+{% if paginator is defined and paginator.number_pagers > 1 %}
+<nav class="pagination" aria-label="{{ ui.pagination }}">
+  {% if paginator.previous %}
+  <a class="pagination-link pagination-previous" href="{{ paginator.previous }}">
+    <span class="pagination-arrow" aria-hidden="true">&larr;</span> {{ ui.previous }}
+  </a>
+  {% endif %}
+
+  <span class="pagination-status" aria-current="page">
+    {{ ui.page_count | replace(from="{current}", to=paginator.current_index | str) | replace(from="{total}", to=paginator.number_pagers | str) }}
+  </span>
+
+  {% if paginator.next %}
+  <a class="pagination-link pagination-next" href="{{ paginator.next }}">
+    {{ ui.next }} <span class="pagination-arrow" aria-hidden="true">&rarr;</span>
+  </a>
+  {% endif %}
+</nav>
+{% endif %}

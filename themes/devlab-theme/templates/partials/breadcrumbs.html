@@ -1,0 +1,30 @@
+{% if breadcrumbs_root_label and breadcrumbs_root_permalink and breadcrumbs_current_label %}
+<nav class="breadcrumbs" aria-label="{{ ui.breadcrumb }}">
+  <ol class="breadcrumbs-list">
+    <li class="breadcrumbs-item">
+      <a href="{{ breadcrumbs_root_permalink }}">{{ breadcrumbs_root_label }}</a>
+    </li>
+
+    {% if breadcrumbs_ancestor_start_path is defined and breadcrumbs_ancestor_start_path %}
+    {% set_global breadcrumbs_ancestor_matched = false %}
+    {% if page.ancestors is defined %}
+    {% for ancestor_path in page.ancestors %}
+    {% if breadcrumbs_ancestor_matched %}
+    {% set ancestor_section = get_section(path=ancestor_path, lang=lang) %}
+    <li class="breadcrumbs-item">
+      <a href="{{ ancestor_section.permalink }}">{{ ancestor_section.title }}</a>
+    </li>
+    {% endif %}
+    {% if ancestor_path == breadcrumbs_ancestor_start_path %}
+    {% set_global breadcrumbs_ancestor_matched = true %}
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    {% endif %}
+
+    <li class="breadcrumbs-item" aria-current="page">
+      <span>{{ breadcrumbs_current_label }}</span>
+    </li>
+  </ol>
+</nav>
+{% endif %}

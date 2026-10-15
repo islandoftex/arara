@@ -1,0 +1,193 @@
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+
+  margin-top: var(--space-8);
+}
+
+.feature-card {
+  padding: var(--space-5);
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-sm);
+}
+
+.feature-card-kicker {
+  margin: 0 0 var(--space-2);
+
+  color: var(--color-accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.feature-card-title {
+  margin: 0 0 var(--space-3);
+
+  font-size: 1.1rem;
+  letter-spacing: 0;
+}
+
+.feature-card-description {
+  margin: 0;
+
+  color: var(--color-muted);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 760px) {
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.content .card {
+  display: block;
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-subtle);
+  color: inherit;
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+.content .card--link:hover {
+  border-color: var(--color-accent);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-md);
+}
+
+.content .card-title {
+  margin: 0 0 var(--space-2);
+  font-size: 1.1rem;
+}
+
+.content .card-body {
+  color: var(--color-muted);
+  font-size: 0.95rem;
+}
+
+.content .card-body p:last-child {
+  margin-bottom: 0;
+}
+
+.content .cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: var(--space-4);
+
+  margin: var(--space-6) 0;
+}
+
+.content .cards > .card {
+  height: 100%;
+}
+
+.content .card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+
+  margin-bottom: var(--space-3);
+}
+
+.content .card-icon {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 2.25rem;
+  height: 2.25rem;
+
+  border: 1px solid color-mix(in srgb, var(--color-accent) 26%, var(--color-border));
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface-raised));
+  color: var(--color-accent);
+}
+
+.content .card-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.content .card-title-text {
+  min-width: 0;
+}
+
+.content .card-indicator {
+  flex: 0 0 auto;
+
+  color: var(--color-muted);
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+}
+
+.content .card--link:is(:hover, :focus-within) .card-indicator {
+  color: var(--color-accent);
+}
+
+@media (hover: hover) {
+  .content .card--link:hover .card-indicator {
+    transform: translateX(0.125rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content .card-indicator {
+    transition: none;
+  }
+
+  .content .card--link:hover .card-indicator {
+    transform: none;
+  }
+}
+
+// Stretch the heading link without nesting body links inside it.
+.content .card--link {
+  position: relative;
+  isolation: isolate;
+}
+
+.content .card-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.content .card-link::after {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+  content: "";
+}
+
+.content .card-link:focus-visible {
+  outline: none;
+}
+
+.content .card-link:focus-visible::after {
+  outline: var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.content .card--link .card-body :is(a, button, input, select, textarea, summary) {
+  position: relative;
+  z-index: 1;
+}

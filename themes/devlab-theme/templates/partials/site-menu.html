@@ -1,0 +1,29 @@
+<div class="site-menu-backdrop" data-site-menu-backdrop hidden></div>
+
+<div
+  id="site-menu"
+  class="site-menu"
+  role="dialog"
+  aria-label="{{ ui.mobile_navigation }}"
+  aria-modal="true"
+  aria-hidden="true"
+  data-site-menu
+  data-site-menu-initial-panel="{% if has_docs_navigation_panel and is_docs_page %}docs{% else %}main{% endif %}"
+  inert
+>
+  <div class="site-menu-header">
+    <p class="site-menu-title">{{ ui.menu }}</p>
+
+    <button
+      class="site-menu-close"
+      type="button"
+      aria-label="{{ ui.menu_close }}"
+      data-site-menu-close
+    >
+      &times;
+    </button>
+  </div>
+
+  {% include "partials/devlab/site-menu/main-panel.html" %}
+  {% include "partials/devlab/site-menu/docs-panel.html" %}
+</div>

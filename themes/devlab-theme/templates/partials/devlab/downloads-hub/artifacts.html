@@ -1,0 +1,88 @@
+{% set dlh_channel_groups = dlh_product_artifacts | group_by(attribute="channel") %}
+{% set dlh_sha_label = "SHA256" %}
+{% set dlh_sig_label = labels.signature %}
+{% if dlh_verification is defined %}
+{% if dlh_verification.sha_label is defined and dlh_verification.sha_label %}{% set dlh_sha_label = dlh_verification.sha_label %}{% endif %}
+{% if dlh_verification.sig_label is defined and dlh_verification.sig_label %}{% set dlh_sig_label = dlh_verification.sig_label %}{% endif %}
+{% endif %}
+
+<div
+  class="content-tabs dlh-channels"
+  data-content-tabs
+  data-tabs-label="{{ labels.channels }}"
+  data-tabs-sync="downloads-channel"
+>
+  {% for dlh_channel in dlh_channels %}
+  {% set dlh_items = dlh_channel_groups[dlh_channel.id] | default(value=[]) %}
+  {% if dlh_items %}
+  <section
+    class="content-tab-panel dlh-channel"
+    data-content-tab
+    data-tab-name="{{ dlh_channel.label }}"
+    data-tab-value="{{ dlh_channel.id }}"
+  >
+    <p class="content-tab-fallback-label" data-tab-fallback-label>{{ dlh_channel.label }}</p>
+
+    <div class="content-tab-body">
+      {% if dlh_channel.description %}
+      <p class="dlh-channel-description">{{ dlh_channel.description }}</p>
+      {% endif %}
+
+      <ul class="dlh-artifacts" role="list">
+        {% for dlh_item in dlh_items %}
+        {% set dlh_artifact_name = dlh_item.name | trim %}
+        {% if dlh_item.variant %}{% set dlh_artifact_name = dlh_artifact_name ~ " " ~ dlh_item.variant %}{% endif %}
+        {% if dlh_item.arch %}{% set dlh_artifact_name = dlh_artifact_name ~ " " ~ dlh_item.arch %}{% endif %}
+        {% if dlh_item.version %}{% set dlh_artifact_name = dlh_artifact_name ~ " " ~ dlh_item.version %}{% endif %}
+        {% set dlh_status_label = labels.planned %}
+        {% set dlh_status_tone = "neutral" %}
+        {% if dlh_item.status == "ready" and dlh_item.url and not dlh_item.demo | default(value=false) %}
+        {% set dlh_status_label = labels.ready %}
+        {% set dlh_status_tone = "success" %}
+        {% elif dlh_item.status == "development" %}
+        {% set dlh_status_label = labels.development %}
+        {% set dlh_status_tone = "warning" %}
+        {% endif %}
+
+        <li class="dlh-artifact">
+          <div class="dlh-artifact-main">
+            <div class="dlh-artifact-head">
+              <h3 class="dlh-artifact-title">
+                {{ dlh_item.name }}{% if dlh_item.variant %} <span class="dlh-artifact-variant">{{ dlh_item.variant }}</span>{% endif %}
+              </h3>
+
+              <p class="dlh-artifact-flags">
+                {{<devlab.badge text={dlh_status_label} tone={dlh_status_tone} />}}
+                {% if dlh_item.recommended and dlh_item.url and not dlh_item.demo | default(value=false) %}<span class="dlh-tag dlh-tag-accent">{{ labels.recommended }}</span>{% endif %}
+                {% if dlh_item.demo %}<span class="dlh-tag">{{ labels.demo }}</span>{% endif %}
+              </p>
+            </div>
+
+            <dl class="dlh-artifact-meta">
+              {% if dlh_item.kernel %}<div><dt>{{ labels.kernel }}</dt><dd>{{ dlh_item.kernel }}</dd></div>{% endif %}
+              {% if dlh_item.version %}<div><dt>{{ labels.version }}</dt><dd>{{ dlh_item.version }}</dd></div>{% endif %}
+              {% if dlh_item.date %}<div><dt>{{ labels.date }}</dt><dd>{{ dlh_item.date }}</dd></div>{% endif %}
+              {% if dlh_item.arch %}<div><dt>{{ labels.arch }}</dt><dd>{{ dlh_item.arch }}</dd></div>{% endif %}
+              {% if dlh_item.size %}<div><dt>{{ labels.size }}</dt><dd>{{ dlh_item.size }}</dd></div>{% endif %}
+            </dl>
+          </div>
+
+          <div class="dlh-artifact-actions">
+            {% if dlh_item.url and not dlh_item.demo | default(value=false) %}
+            <a class="button button-primary dlh-download" href="{{<devlab.url path={dlh_item.url} />}}" aria-label="{{ labels.download }} {{ dlh_artifact_name }}">{{ labels.download }}</a>
+            {% else %}
+            <span class="dlh-unavailable">{{ labels.unavailable }}</span>
+            {% endif %}
+            {% if dlh_item.sha_url and dlh_item.url and not dlh_item.demo | default(value=false) %}<a class="dlh-action" href="{{<devlab.url path={dlh_item.sha_url} />}}" aria-label="{{ dlh_sha_label }} {{ dlh_artifact_name }}">{{ dlh_sha_label }}</a>{% endif %}
+            {% if dlh_item.sig_url and dlh_item.url and not dlh_item.demo | default(value=false) %}<a class="dlh-action" href="{{<devlab.url path={dlh_item.sig_url} />}}" aria-label="{{ dlh_sig_label }} {{ dlh_artifact_name }}">{{ dlh_sig_label }}</a>{% endif %}
+            {% if dlh_item.torrent_url and dlh_item.url and not dlh_item.demo | default(value=false) %}<a class="dlh-action" href="{{<devlab.url path={dlh_item.torrent_url} />}}" aria-label="Torrent {{ dlh_artifact_name }}">Torrent</a>{% endif %}
+            {% if dlh_item.release_notes %}<a class="dlh-action" href="{{<devlab.url path={dlh_item.release_notes} />}}" aria-label="{{ labels.release_notes }} {{ dlh_artifact_name }}">{{ labels.release_notes }}</a>{% endif %}
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+  {% endif %}
+  {% endfor %}
+</div>

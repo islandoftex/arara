@@ -1,0 +1,57 @@
+{% if has_site_search %}
+{% set search_start_label = ui.search_start %}
+{% set search_no_results_label = ui.search_no_results %}
+{% set search_unavailable_label = ui.search_unavailable %}
+{% set search_results_label = ui.search_results %}
+{% set search_results_count_label = ui.search_results_count %}
+<div
+  class="site-search"
+  data-search
+  data-search-index-format="elasticlunr_javascript"
+  data-search-start-label="{{ search_start_label }}"
+  data-search-no-results-label="{{ search_no_results_label }}"
+  data-search-unavailable-label="{{ search_unavailable_label }}"
+  data-search-results-count-label="{{ search_results_count_label }}"
+>
+  <label class="site-search-label" for="site-search-input">
+    {{ ui.search }}
+  </label>
+
+  <input
+    id="site-search-input"
+    class="site-search-input"
+    type="text"
+    inputmode="search"
+    enterkeyhint="search"
+    placeholder="{{ ui.search_placeholder }}"
+    autocomplete="off"
+    role="combobox"
+    aria-autocomplete="list"
+    aria-controls="site-search-results"
+    aria-expanded="false"
+    aria-haspopup="listbox"
+    data-search-input
+  >
+
+  <kbd class="site-search-shortcut" data-search-shortcut aria-hidden="true">Ctrl+K</kbd>
+
+  <div class="site-search-results" data-search-results hidden>
+    <div
+      id="site-search-results"
+      class="site-search-list"
+      role="listbox"
+      aria-label="{{ search_results_label }}"
+      data-search-list
+    ></div>
+    <p class="site-search-empty" data-search-message hidden></p>
+  </div>
+
+  <p
+    class="site-search-status"
+    role="status"
+    aria-live="polite"
+    aria-atomic="true"
+    data-search-status
+  ></p>
+</div>
+{% endif %}

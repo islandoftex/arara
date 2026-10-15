@@ -1,0 +1,66 @@
+.steps {
+  margin: var(--space-6) 0;
+}
+
+.steps > ol {
+  position: relative;
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+  counter-reset: steps-counter;
+}
+
+.steps > ol > li {
+  position: relative;
+  padding-block: 0 var(--space-6);
+  padding-inline: 2.75rem 0;
+  counter-increment: steps-counter;
+}
+
+.steps > ol > li:last-child {
+  padding-bottom: 0;
+}
+
+.steps > ol > li::before {
+  content: counter(steps-counter);
+
+  position: absolute;
+  top: 0;
+  inset-inline-start: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-surface-subtle);
+
+  color: var(--color-fg);
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.steps > ol > li:not(:last-child)::after {
+  content: "";
+
+  position: absolute;
+  top: 1.75rem;
+  bottom: 0;
+  inset-inline-start: 0.87rem;
+
+  width: 1px;
+  background: var(--color-border);
+}
+
+.steps > ol > li > :first-child {
+  margin-top: var(--space-1);
+}
+
+.steps > ol > li > :last-child {
+  margin-bottom: 0;
+}

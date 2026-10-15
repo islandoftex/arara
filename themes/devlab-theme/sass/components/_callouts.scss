@@ -1,0 +1,57 @@
+.callout {
+  padding: var(--space-4) var(--space-5);
+  margin: var(--space-6) 0;
+
+  border-inline-start: 4px solid;
+  border-radius: var(--radius-md);
+
+  background: var(--callout-bg);
+  border-color: var(--callout-border);
+  color: var(--callout-fg);
+
+  .callout-title {
+    margin: 0 0 var(--space-2);
+
+    font-weight: 600;
+    font-size: 0.95rem;
+
+    color: var(--callout-fg);
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+
+  code {
+    background: var(--callout-border);
+    color: var(--callout-fg);
+  }
+
+  --callout-bg: var(--color-callout-info-bg);
+  --callout-border: var(--color-callout-info-border);
+  --callout-fg: var(--color-callout-info-fg);
+
+  &.callout--info {
+    --callout-bg: var(--color-callout-info-bg);
+    --callout-border: var(--color-callout-info-border);
+    --callout-fg: var(--color-callout-info-fg);
+  }
+
+  &.callout--warning {
+    --callout-bg: var(--color-callout-warning-bg);
+    --callout-border: var(--color-callout-warning-border);
+    --callout-fg: var(--color-callout-warning-fg);
+  }
+
+  &.callout--error {
+    --callout-bg: var(--color-callout-error-bg);
+    --callout-border: var(--color-callout-error-border);
+    --callout-fg: var(--color-callout-error-fg);
+  }
+
+  &.callout--tip {
+    --callout-bg: var(--color-callout-tip-bg);
+    --callout-border: var(--color-callout-tip-border);
+    --callout-fg: var(--color-callout-tip-fg);
+  }
+}

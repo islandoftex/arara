@@ -1,0 +1,200 @@
+{# Global Tera 2 components. Escape text and attributes in Markdown calls. #}
+
+{% component devlab.navigation_link(nav_link: map, class_name: string, active_path: string, wrap_name: bool = false, active_url: string = "", content_lang: string = "", active_collection: string = "") %}
+{% set link_url = <devlab.route_url path={nav_link.path} content_lang={content_lang} /> %}
+{% set link_prefix = link_url ~ "/" %}
+{% if link_url is ending_with(pat="/") %}
+{% set link_prefix = link_url %}
+{% endif %}
+{% set is_exact = active_path == nav_link.path %}
+{% set is_active = is_exact or (nav_link.path != '/' and active_path is starting_with(pat=nav_link.path)) %}
+{% if active_url and content_lang %}
+{% set is_exact = active_url == link_url or active_url == link_prefix %}
+{% set is_active = is_exact or (nav_link.path != '/' and active_url is starting_with(pat=link_prefix)) %}
+{% endif %}
+{% if nav_link.collection is defined %}{% set is_active = nav_link.collection == active_collection %}{% endif %}
+<a
+  class="{{ class_name }} {% if is_active %}is-active{% endif %}"
+  href="{{ link_url }}"
+  {% if is_active %}aria-current="{% if is_exact %}page{% else %}location{% endif %}"{% endif %}
+>
+  {% if wrap_name %}<span>{{ nav_link.name }}</span>{% else %}{{ nav_link.name }}{% endif %}
+</a>
+{% endcomponent devlab.navigation_link %}
+
+{% component devlab.toc(items: array) %}
+  {% if items %}
+  <ul class="docs-toc-list">
+    {% for item in items %}
+    <li class="docs-toc-item docs-toc-level-{{ item.level }}">
+      {% if item.children and item.level < 3 %}
+      <details class="docs-toc-group" data-docs-toc-group>
+        <summary class="docs-toc-group-toggle">
+          <a href="{{ item.permalink | safe }}">
+            {{ item.title }}
+          </a>
+          <span class="docs-toc-group-indicator" aria-hidden="true">&rsaquo;</span>
+        </summary>
+
+        {{<devlab.toc items={item.children} />}}
+      </details>
+      {% else %}
+      <a href="{{ item.permalink | safe }}">
+        {{ item.title }}
+      </a>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+{% endcomponent devlab.toc %}
+
+{% component devlab.docs_page_paths(nav_section: map, content_lang: string) -%}
+{%- for doc_page in nav_section.pages -%}
+{%- set doc_parent_path = doc_page.ancestors | last -%}
+{%- if doc_parent_path == nav_section.relative_path -%}
+{{- doc_page.relative_path | safe -}}:::
+{%- endif -%}
+{%- endfor -%}
+{%- for subsection_path in nav_section.subsections -%}
+{%- set path_subsection = get_section(path=subsection_path, lang=content_lang) -%}
+{{- <devlab.docs_page_paths nav_section={path_subsection} content_lang={content_lang} /> -}}
+{%- endfor -%}
+{%- endcomponent devlab.docs_page_paths %}
+
+{% component devlab.docs_nav_items_marker(nav_section: map) -%}
+{%- for doc_page in nav_section.pages -%}
+{%- set doc_parent_path = doc_page.ancestors | last -%}
+{%- if doc_parent_path == nav_section.relative_path -%}1{%- endif -%}
+{%- endfor -%}
+{%- for subsection_path in nav_section.subsections -%}
+{%- set subsection = get_section(path=subsection_path, lang=nav_section.lang) -%}
+{%- if subsection.transparent -%}
+{{- <devlab.docs_nav_items_marker nav_section={subsection} /> -}}
+{%- else -%}
+1
+{%- endif -%}
+{%- endfor -%}
+{%- endcomponent devlab.docs_nav_items_marker %}
+
+{% component devlab.docs_nav_tree(nav_section: map, id_prefix: string, active_path: string, toggle_label: string, content_lang: string, active_sources: array) %}
+{% for doc_page in nav_section.pages %}
+{% set doc_parent_path = doc_page.ancestors | last %}
+{% if doc_parent_path == nav_section.relative_path %}
+<li class="docs-nav-item">
+  <a
+    class="docs-nav-link {% if active_path == doc_page.path %}is-active{% endif %}"
+    href="{{ doc_page.permalink }}"
+    {% if active_path == doc_page.path %}aria-current="page"{% endif %}
+  >
+    {{ doc_page.title }}
+  </a>
+</li>
+{% endif %}
+{% endfor %}
+
+{% for subsection_path in nav_section.subsections %}
+{% set subsection = get_section(path=subsection_path, lang=content_lang) %}
+{% set subsection_id_prefix = id_prefix ~ "-section-" ~ loop.index %}
+{% if subsection.transparent %}
+  {{<devlab.docs_nav_tree nav_section={subsection} id_prefix={subsection_id_prefix} active_path={active_path} toggle_label={toggle_label} content_lang={content_lang} active_sources={active_sources} />}}
+{% else %}
+  {{<devlab.docs_nav_section subsection={subsection} subsection_id_prefix={subsection_id_prefix} active_path={active_path} toggle_label={toggle_label} content_lang={content_lang} active_sources={active_sources} />}}
+{% endif %}
+{% endfor %}
+{% endcomponent devlab.docs_nav_tree %}
+
+{% component devlab.docs_nav_section(subsection: map, subsection_id_prefix: string, active_path: string, toggle_label: string, content_lang: string, active_sources: array) %}
+{% set is_active_branch = subsection.relative_path in active_sources %}
+{% if subsection.pages or subsection.subsections %}
+{% set subsection_toggle_label = toggle_label | replace(from="{title}", to=subsection.title) %}
+<li
+  class="docs-nav-group{% if is_active_branch %} is-active-branch{% endif %}"
+  data-docs-nav-group="{{ subsection.permalink }}"
+  {% if is_active_branch %}data-docs-nav-active-branch{% endif %}
+>
+  <div class="docs-nav-group-row">
+    <a
+      class="docs-nav-link docs-nav-section-link {% if active_path == subsection.path %}is-active{% endif %}"
+      href="{{ subsection.permalink }}"
+      {% if active_path == subsection.path %}aria-current="page"{% endif %}
+    >
+      {{ subsection.title }}
+    </a>
+
+    <button
+      class="docs-nav-group-toggle"
+      type="button"
+      aria-label="{{ subsection_toggle_label }}"
+      aria-controls="{{ subsection_id_prefix }}-children"
+      aria-expanded="{% if is_active_branch %}true{% else %}false{% endif %}"
+      data-docs-nav-toggle
+      hidden
+    >
+      <span class="docs-nav-group-indicator" aria-hidden="true">&rsaquo;</span>
+    </button>
+  </div>
+
+  <ul
+    id="{{ subsection_id_prefix }}-children"
+    class="docs-nav-list docs-nav-group-links"
+    data-docs-nav-children
+  >
+    {{<devlab.docs_nav_tree nav_section={subsection} id_prefix={subsection_id_prefix} active_path={active_path} toggle_label={toggle_label} content_lang={content_lang} active_sources={active_sources} />}}
+  </ul>
+</li>
+{% else %}
+<li class="docs-nav-item">
+  <a
+    class="docs-nav-link docs-nav-section-link {% if active_path == subsection.path %}is-active{% endif %}"
+    href="{{ subsection.permalink }}"
+    {% if active_path == subsection.path %}aria-current="page"{% endif %}
+  >
+    {{ subsection.title }}
+  </a>
+</li>
+{% endif %}
+{% endcomponent devlab.docs_nav_section %}
+
+{% component devlab.docs_overview_card(item: map, heading_level: integer = 2) %}
+{%- set overview_card_heading = heading_level -%}
+{%- if overview_card_heading not in [2, 3, 4, 5, 6] -%}
+{%- set overview_card_heading = 2 -%}
+{%- endif -%}
+{%- set overview_card_icon = "" -%}
+{%- if item.extra is defined and item.extra.icon is defined -%}
+{%- set overview_card_icon = item.extra.icon -%}
+{%- endif -%}
+<li class="docs-overview-card-item">
+  <a class="docs-overview-card" href="{{ item.permalink }}">
+    {% if overview_card_icon %}
+    <span class="docs-overview-card-icon">{{<devlab.icon name={overview_card_icon} size="md" />}}</span>
+    {% endif %}
+    <div class="docs-overview-card-copy">
+      <h{{ overview_card_heading }}>{{ item.title }}</h{{ overview_card_heading }}>
+
+      {% if item.description %}
+      <p>{{ item.description }}</p>
+      {% endif %}
+    </div>
+  </a>
+</li>
+{% endcomponent devlab.docs_overview_card %}
+
+{% component devlab.docs_overview_catalog_items(catalog_section: map, content_lang: string) %}
+{% for overview_page in catalog_section.pages %}
+{% set overview_page_parent_path = overview_page.ancestors | last %}
+{% if overview_page_parent_path == catalog_section.relative_path %}
+  {{<devlab.docs_overview_card item={overview_page} />}}
+{% endif %}
+{% endfor %}
+
+{% for overview_subsection_path in catalog_section.subsections %}
+{% set overview_subsection = get_section(path=overview_subsection_path, lang=content_lang) %}
+{% if overview_subsection.transparent %}
+  {{<devlab.docs_overview_catalog_items catalog_section={overview_subsection} content_lang={content_lang} />}}
+{% else %}
+  {{<devlab.docs_overview_card item={overview_subsection} />}}
+{% endif %}
+{% endfor %}
+{% endcomponent devlab.docs_overview_catalog_items %}

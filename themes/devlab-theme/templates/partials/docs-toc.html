@@ -1,0 +1,32 @@
+{% set has_docs_toc = false %}
+{% set toc_edit_url = "" %}
+{% set toc_edit_label = ui.edit_page %}
+{% if edit_url is defined %}{% set toc_edit_url = edit_url %}{% endif %}
+{% if edit_page_label is defined %}{% set toc_edit_label = edit_page_label %}{% endif %}
+{% if toc_items %}
+{% set first_toc_item = toc_items[0] %}
+{% if toc_items | length > 1 or first_toc_item.children %}
+{% set has_docs_toc = true %}
+{% endif %}
+{% endif %}
+{% if has_docs_toc or toc_edit_url %}
+{% set toc_label = ui.toc %}
+<aside class="docs-toc{% if not has_docs_toc %} docs-toc-only-actions{% endif %}" data-devlab-toc{% if has_docs_toc %} aria-labelledby="docs-toc-title"{% endif %}>
+  {% if has_docs_toc %}
+  <p class="docs-toc-title" id="docs-toc-title">{{ toc_label }}</p>
+
+  <nav class="docs-toc-nav" aria-label="{{ toc_label }}">
+    {{<devlab.toc items={toc_items} />}}
+  </nav>
+  {% endif %}
+
+  {% if toc_edit_url %}
+  <div class="docs-toc-actions">
+    <a class="docs-toc-edit" href="{{ toc_edit_url }}{{ page.relative_path }}">
+      <span>{{ toc_edit_label }}</span>
+      {{<devlab.icon name="external-link" size="sm" />}}
+    </a>
+  </div>
+  {% endif %}
+</aside>
+{% endif %}

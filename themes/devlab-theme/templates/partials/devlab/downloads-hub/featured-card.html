@@ -1,0 +1,19 @@
+<a class="dlh-feature" href="{{ dlh_product_url }}">
+  <div class="dlh-feature-visual">
+    {% if dlh_product.image %}
+    <img class="dlh-feature-image" src="{{<devlab.url path={dlh_product.image} />}}" alt="" loading="lazy">
+    {% else %}
+    <span class="dlh-feature-image dlh-placeholder" aria-hidden="true">{{<devlab.icon name="file" />}}</span>
+    {% endif %}
+  </div>
+
+  <div class="dlh-feature-copy">
+    <p class="dlh-feature-vendor">{{ dlh_product.vendor | default(value="") }}</p>
+    <h3 class="dlh-feature-name">{{ dlh_product.name }}</h3>
+  </div>
+
+  <span class="dlh-feature-badge">
+    {% set dlh_badge_id = dlh_product.support | default(value="") %}
+    {% include "partials/devlab/downloads-hub/support-badge.html" %}
+  </span>
+</a>

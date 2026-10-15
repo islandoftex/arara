@@ -1,0 +1,23 @@
+{% if dlh_verification.description | default(value="") | trim or dlh_verification.commands | default(value="") | trim or dlh_verification.key_url | default(value="") | trim %}
+<section class="dlh-card-section" aria-labelledby="dlh-verification-title">
+  <div class="dlh-section-head">
+    <p class="hero-eyebrow">{{ dlh_verification.label | default(value=labels.verification) }}</p>
+    <h2 id="dlh-verification-title">{{ dlh_verification.title | default(value=labels.verification_title) }}</h2>
+    {% if dlh_verification.description %}
+    <p class="page-description">{{ dlh_verification.description }}</p>
+    {% endif %}
+  </div>
+
+  <div class="dlh-section-body">
+    {% if dlh_verification.commands %}
+    <div class="content"><pre class="dlh-code"><code>{{ dlh_verification.commands }}</code></pre></div>
+    {% endif %}
+
+    {% if dlh_verification.key_url %}
+    <div class="dlh-verification-links">
+      <a class="button button-secondary" href="{{<devlab.url path={dlh_verification.key_url} />}}">{{ dlh_verification.key_label | default(value=labels.key) }}</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endif %}

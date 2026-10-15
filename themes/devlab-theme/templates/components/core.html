@@ -1,0 +1,37 @@
+{# Global Tera 2 components. Escape text and attributes in Markdown calls. #}
+
+{% component devlab.url(path: string, content_lang: string = "") -%}
+{%- set normalized_path = path | lower -%}
+{%- set has_external_scheme =
+  normalized_path is starting_with(pat="http://")
+  or normalized_path is starting_with(pat="https://")
+  or normalized_path is starting_with(pat="mailto:")
+  or normalized_path is starting_with(pat="tel:")
+-%}
+{%- set is_browser_relative =
+  path is starting_with(pat="//")
+  or path is starting_with(pat="#")
+  or path is starting_with(pat="?")
+-%}
+{%- if has_external_scheme or is_browser_relative -%}
+{{- path | escape -}}
+{%- elif content_lang -%}
+{{- get_url(path=path, lang=content_lang) | escape -}}
+{%- else -%}
+{{- get_url(path=path) | escape -}}
+{%- endif -%}
+{%- endcomponent devlab.url %}
+
+{% component devlab.route_url(path: string, content_lang: string = "") -%}
+{{- <devlab.url path={path} content_lang={content_lang} /> -}}
+{%- endcomponent devlab.route_url %}
+
+{% component devlab.svg_icon(name: string) %}{% include "partials/icon.html" %}{% endcomponent devlab.svg_icon %}
+
+{% component devlab.icon(name: string, size: string = "inline", label: string = "", extra_class: string = "") -%}
+{%- set icon_size = size -%}
+{%- if size not in ["sm", "inline", "md", "lg"] -%}
+  {%- set icon_size = "inline" -%}
+{%- endif -%}
+<span class="content-icon content-icon-{{ icon_size }}{% if extra_class %} {{ extra_class | escape }}{% endif %}" {% if label %}role="img" aria-label="{{ label | escape }}"{% else %}aria-hidden="true"{% endif %}>{{<devlab.svg_icon name={name} />}}</span>
+{%- endcomponent devlab.icon %}

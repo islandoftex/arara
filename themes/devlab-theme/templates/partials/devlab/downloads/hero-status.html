@@ -1,0 +1,51 @@
+{# Internal DevLab partial. #}
+<section class="downloads-hero{% if has_status %} downloads-hero-with-status{% endif %}">
+  <div class="downloads-hero-copy">
+    {% if eyebrow %}
+    <p class="hero-eyebrow">
+      {{ eyebrow }}
+    </p>
+    {% endif %}
+
+    <h1>{{ section.title }}</h1>
+
+    {% if section.description %}
+    <p class="page-description">
+      {{ section.description }}
+    </p>
+    {% endif %}
+
+    {% if section.content %}
+    <div class="downloads-intro">
+      {{ section.content | safe }}
+    </div>
+    {% endif %}
+  </div>
+
+  {% if has_status %}
+  <aside class="downloads-status" aria-labelledby="downloads-status-title">
+    <p class="downloads-status-label">
+      {{ status_label }}
+    </p>
+
+    <h2 id="downloads-status-title">
+      {{ downloads.status.title }}
+    </h2>
+
+    {% if downloads.status.description is defined and downloads.status.description %}
+    <p class="downloads-status-description">{{ downloads.status.description }}</p>
+    {% endif %}
+
+    {% if downloads.status.items is defined and downloads.status.items %}
+    <dl class="downloads-status-list">
+      {% for item in downloads.status.items %}
+      <div>
+        <dt>{{ item.label }}</dt>
+        <dd>{{ item.value }}</dd>
+      </div>
+      {% endfor %}
+    </dl>
+    {% endif %}
+  </aside>
+  {% endif %}
+</section>

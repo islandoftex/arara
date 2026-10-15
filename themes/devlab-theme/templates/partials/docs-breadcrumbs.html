@@ -1,0 +1,9 @@
+{% set docs_section_path = docs_options.section | default(value="") %}
+{% if docs_section_path %}
+{% set docs = get_section(path=docs_section_path, lang=lang) %}
+{% set breadcrumbs_root_label = docs.title %}
+{% set breadcrumbs_root_permalink = docs.permalink %}
+{% set breadcrumbs_ancestor_start_path = docs.relative_path %}
+{% set breadcrumbs_current_label = page.title %}
+{% include "partials/breadcrumbs.html" %}
+{% endif %}

@@ -1,0 +1,40 @@
+{# Keep rendered HTML free of blank/indented blocks: Zola runs Markdown after Tera. #}
+{%- if not person.name | default(value="") | trim -%}{{ throw(message="Each devlab.people member needs a non-empty name.") }}{%- endif -%}
+{%- set person_avatar = person.avatar | default(value="") -%}
+{%- set person_initials = person.initials | default(value="") -%}
+{%- if not person_initials -%}
+{%- set person_initials = person.name | trim | truncate(length=1, end="") | upper -%}
+{%- endif -%}
+{%- set person_path = person.path | default(value="") -%}
+{%- set person_nickname = person.nickname | default(value="") -%}
+{%- set person_support = person.support | default(value={}) -%}
+{%- if person_support and (not person_support.label | default(value="") | trim or not person_support.path | default(value="") | trim) -%}{{ throw(message="A devlab.people support link needs label and path.") }}{%- endif -%}
+{%- set person_role = person.role | default(value="") -%}
+{%- set person_bio = person.bio | default(value="") -%}
+{%- set person_links = person.links | default(value=[]) -%}
+{%- set rendered_person_links = <devlab.person_links person_name={person.name} links={person_links} content_lang={content_lang} /> -%}
+<article class="person-card">
+<div class="person-body">
+<div class="person-identity">
+<div class="person-avatar" aria-hidden="true">
+{% if person_avatar -%}
+<img src="{{<devlab.url path={person_avatar} />}}" alt="" width="96" height="96" loading="lazy" decoding="async">
+{% else -%}
+<span class="person-initials" dir="auto">{{ person_initials | escape }}</span>
+{% endif -%}
+</div>
+<div class="person-heading">
+<h{{ person_heading_level }} class="person-name" dir="auto">{% if person_path %}<a href="{{<devlab.route_url path={person_path} content_lang={content_lang} />}}">{{ person.name | escape }}</a>{% else %}{{ person.name | escape }}{% endif %}</h{{ person_heading_level }}>
+{% if person_nickname %}<p class="person-nickname" dir="auto">{{ person_nickname | escape }}</p>{% endif -%}
+{% if person_role %}<p class="person-role" dir="auto">{{ person_role | escape }}</p>{% endif -%}
+</div>
+</div>
+{% if person_bio %}<p class="person-bio" dir="auto">{{ person_bio | escape }}</p>{% endif -%}
+{% if rendered_person_links -%}
+<div class="person-links">{{ rendered_person_links | safe }}</div>
+{% endif -%}
+</div>
+{% if person_support -%}
+<a class="person-support" href="{{<devlab.route_url path={person_support.path} content_lang={content_lang} />}}" aria-label="{{ person.name | escape }} — {{ person_support.label | escape }}">{{<devlab.icon name="heart" />}}<span dir="auto">{{ person_support.label | escape }}</span></a>
+{% endif -%}
+</article>

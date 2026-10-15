@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block layout_context %}{% set devlab_layout = "article" %}{% endblock layout_context %}
+
+{% block main_class %} site-main-blog site-main-blog-post{% endblock main_class %}
+
+{% block content %}
+{% set blog_toc_enabled = config.extra.devlab.blog.show_toc | default(value=true) %}
+{% set toc_items = [] %}
+{% if blog_toc_enabled %}{% set toc_items = page.toc %}{% endif %}
+{% set has_blog_toc = false %}
+{% if toc_items %}
+{% set first_toc_item = toc_items[0] %}
+{% if toc_items | length > 1 or first_toc_item.children %}
+{% set has_blog_toc = true %}
+{% endif %}
+{% endif %}
+{% set toc_label = ui.toc %}
+<div class="blog-shell{% if not has_blog_toc %} blog-shell-no-toc{% endif %}">
+  <article class="content blog-article"{% if has_blog_toc %} data-devlab-toc-content{% endif %}>
+    {% include "partials/blog-breadcrumbs.html" %}
+
+    {% set heading_header_class = "blog-article-header" %}
+{% include "partials/page-heading.html" %}
+
+    {% if has_blog_toc %}
+    <details class="blog-toc-inline" data-devlab-toc>
+      <summary class="blog-toc-inline-summary">{{ toc_label }}</summary>
+      <nav class="blog-toc-nav" aria-label="{{ toc_label }}">
+        {{<devlab.toc items={toc_items} />}}
+      </nav>
+    </details>
+    {% endif %}
+
+    {{ page.content | safe }}
+  {% include "partials/page-actions.html" %}
+  </article>
+
+  {% if has_blog_toc %}
+  <aside class="blog-toc" data-devlab-toc aria-labelledby="blog-toc-title">
+    <p class="blog-toc-title" id="blog-toc-title">{{ toc_label }}</p>
+    <nav class="blog-toc-nav" aria-label="{{ toc_label }}">
+      {{<devlab.toc items={toc_items} />}}
+    </nav>
+  </aside>
+  {% endif %}
+</div>
+{% endblock content %}

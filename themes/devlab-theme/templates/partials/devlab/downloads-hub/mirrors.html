@@ -1,0 +1,19 @@
+{% if dlh_mirrors %}
+<section class="dlh-card-section" aria-labelledby="dlh-mirrors-title">
+  <div class="dlh-section-head">
+    <p class="hero-eyebrow">{{ labels.mirrors }}</p>
+    <h2 id="dlh-mirrors-title">{{ labels.mirrors_title }}</h2>
+  </div>
+
+  <div class="dlh-section-body">
+    <ul class="dlh-mirrors-grid" role="list">
+      {% for dlh_mirror in dlh_mirrors %}
+      <li class="dlh-mirror-card">
+        <a class="dlh-mirror-name" href="{{<devlab.url path={dlh_mirror.url} />}}">{{ dlh_mirror.name }}</a>
+        <code class="dlh-mirror-url">{{ dlh_mirror.url }}</code>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}

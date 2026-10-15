@@ -1,0 +1,44 @@
+[
+  {
+    "title": "Codeberg",
+    "hex": "2185D0",
+    "source": "https://codeberg.org/Codeberg/Design/src/commit/ac514aa9aaa2457d4af3c3e13df3ab136d22a49a/logo/special/codeberg-logo_special_fake-transaprency.svg",
+    "guidelines": "https://codeberg.org/Codeberg/Design",
+    "license": {
+      "type": "CC0-1.0"
+    }
+  },
+  {
+    "title": "Discord",
+    "hex": "5865F2",
+    "source": "https://discord.com/branding",
+    "guidelines": "https://discord.com/branding"
+  },
+  {
+    "title": "GitHub",
+    "hex": "181717",
+    "source": "https://github.com/logos",
+    "guidelines": "https://github.com/logos"
+  },
+  {
+    "title": "GitLab",
+    "hex": "FC6D26",
+    "source": "https://about.gitlab.com/press/press-kit/",
+    "guidelines": "https://about.gitlab.com/handbook/marketing/corporate-marketing/brand-activation/trademark-guidelines/"
+  },
+  {
+    "title": "Matrix",
+    "hex": "000000",
+    "source": "https://matrix.org"
+  },
+  {
+    "title": "Telegram",
+    "hex": "26A5E4",
+    "source": "https://telegram.org/tour/screenshots"
+  },
+  {
+    "title": "Zulip",
+    "hex": "6492FE",
+    "source": "https://github.com/zulip/zulip/blob/df9e40491dc77b658d943cff36a816d46e32ce1b/static/images/logo/zulip-org-logo.svg"
+  }
+]

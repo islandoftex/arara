@@ -1,0 +1,154 @@
+{# Global Tera 2 components. Escape text and attributes in Markdown calls. #}
+
+{% component devlab.callout(type: string = "info", title: string = "") %}
+{%- set callout_type = type -%}
+{%- if callout_type not in ["info", "warning", "error", "tip"] -%}
+{%- set callout_type = "info" -%}
+{%- endif -%}
+{%- set callout_labels = {"info": "Info", "warning": "Warning", "error": "Error", "tip": "Tip"} -%}
+{%- set callout_label = callout_labels[callout_type] -%}
+<div class="callout callout--{{ callout_type }}">
+  <p class="callout-title">{% if title %}{{ title | escape }}{% else %}{{ callout_label }}{% endif %}</p>
+  {{ body | markdown | safe }}
+</div>
+{% endcomponent devlab.callout %}
+
+{% component devlab.cards() -%}
+<div class="cards">{{- body | safe -}}</div>
+{%- endcomponent devlab.cards %}
+
+{% component devlab.card(title: string = "", href: string = "", content_lang: string = "", icon: string = "", tag: string = "", tag_tone: string = "neutral", heading_level: integer = 3) -%}
+{%- if href and not title -%}{{ throw(message="A linked devlab.card needs a title for its accessible link name.") }}{%- endif -%}
+{%- set card_heading_level = heading_level -%}
+{%- if heading_level not in [2, 3, 4, 5, 6] -%}{%- set card_heading_level = 3 -%}{%- endif -%}
+{%- set card_is_external = false -%}
+{%- if href -%}
+{%- set normalized_href = href | lower -%}
+{%- if normalized_href is starting_with(pat="http://") or normalized_href is starting_with(pat="https://") -%}
+{%- set card_is_external = true -%}
+{%- endif -%}
+{%- endif -%}
+<div class="card{% if href %} card--link{% if card_is_external %} card--external{% endif %}{% endif %}">
+{% if icon or tag -%}
+<div class="card-head">{% if icon %}<span class="card-icon">{{<devlab.icon name={icon} size="md" />}}</span>{% endif %}{% if tag %}{{<devlab.badge text={tag} tone={tag_tone} />}}{% endif %}</div>
+{% endif -%}
+{% if title -%}
+<h{{ card_heading_level }} class="card-title">{% if href %}<a class="card-link" href="{{<devlab.route_url path={href} content_lang={content_lang} />}}">{% endif %}<span class="card-title-text">{{ title | escape }}</span>{% if href %}<span class="card-indicator" aria-hidden="true">{% if card_is_external %}{{<devlab.icon name="external-link" size="sm" />}}{% else %}&rarr;{% endif %}</span></a>{% endif %}</h{{ card_heading_level }}>
+{% endif -%}
+<div class="card-body">{{ body | markdown | safe }}</div>
+</div>
+{%- endcomponent devlab.card %}
+
+{% component devlab.people(members: array, content_lang: string = "", heading_level: integer = 3) -%}
+{%- set person_heading_level = heading_level -%}
+{%- if heading_level not in [2, 3, 4, 5, 6] -%}
+{%- set person_heading_level = 3 -%}
+{%- endif -%}
+{%- if members -%}
+<ul class="people-grid" role="list">{% for person in members %}<li class="people-grid-item">{% include "partials/devlab/people/card.html" %}</li>{% endfor %}</ul>
+{%- endif -%}
+{%- endcomponent devlab.people %}
+
+{% component devlab.person_links(person_name: string, links: array, content_lang: string = "") -%}
+{%- set person_icons = ["github", "gitlab", "codeberg", "matrix", "zulip", "telegram", "discord", "rss", "email", "link", "external-link"] -%}
+{%- for person_link in links -%}
+{%- if person_link.name is defined and person_link.name and person_link.path is defined and person_link.path -%}
+{%- set person_icon = person_link.icon | default(value="link") -%}
+{%- if person_icon not in person_icons -%}{%- set person_icon = "link" -%}{%- endif -%}
+<a class="person-link" href="{{<devlab.route_url path={person_link.path} content_lang={content_lang} />}}" aria-label="{{ person_name | escape }} — {{ person_link.name | escape }}" title="{{ person_name | escape }} — {{ person_link.name | escape }}">{{<devlab.icon name={person_icon} size="md" />}}</a>
+{%- endif -%}
+{%- endfor -%}
+{%- endcomponent devlab.person_links %}
+
+{% component devlab.badge(text: string, tone: string = "neutral") -%}
+{%- set badge_tone = tone -%}
+{%- if tone not in ["neutral", "info", "success", "warning", "danger"] -%}
+{%- set badge_tone = "neutral" -%}
+{%- endif -%}
+<span class="content-badge content-badge-{{ badge_tone }}" dir="auto">{{ text | escape }}</span>
+{%- endcomponent devlab.badge %}
+
+{% component devlab.tabs(sync: string = "", label: string = "Tabs") %}
+<div
+  class="content-tabs"
+  data-content-tabs
+  data-tabs-label="{{ label | escape }}"
+  data-tabs-sync="{{ sync | escape }}"
+>
+  {{ body | safe }}
+</div>
+{% endcomponent devlab.tabs %}
+
+{% component devlab.tab(name: string, value: string = "", selected: bool = false) %}
+<section
+  class="content-tab-panel"
+  data-content-tab
+  data-tab-name="{{ name | escape }}"
+  data-tab-value="{{ value | escape }}"
+  data-tab-selected="{{ selected }}"
+>
+  <p class="content-tab-fallback-label" data-tab-fallback-label>{{ name | escape }}</p>
+  <div class="content-tab-body">
+    {{ body | markdown | safe }}
+  </div>
+</section>
+{% endcomponent devlab.tab %}
+
+{% component devlab.diagram(id: string, label: string, description: string = "", error_message: string = "Diagram could not be rendered.") -%}
+<figure class="content-diagram" data-devlab-diagram data-diagram-state="loading" data-diagram-source="{{ body | base64_encode }}" data-diagram-error="{{ error_message | escape }}"><figcaption class="diagram-caption"><strong class="diagram-label" id="{{ id | escape }}-label" dir="auto">{{ label | escape }}</strong>{% if description %}<span class="diagram-description" id="{{ id | escape }}-description" dir="auto">{{ description | escape }}</span>{% endif %}</figcaption><div class="diagram-stage" data-devlab-diagram-stage role="img" aria-labelledby="{{ id | escape }}-label"{% if description %} aria-describedby="{{ id | escape }}-description"{% endif %} aria-busy="true"></div><noscript><style>.content-diagram[data-diagram-state="loading"] .diagram-stage{display:none}</style><p class="diagram-noscript">{{ error_message | escape }}</p></noscript></figure>{# diagrams.js is loaded once per page from the scripts partial. #}
+{%- endcomponent devlab.diagram %}
+
+{% component devlab.file_tree(label: string = "File tree") -%}
+<figure class="content-file-tree"><figcaption class="file-tree-label" dir="auto">{{ label | escape }}</figcaption><ul class="file-tree-list">{{- body | safe -}}</ul></figure>
+{%- endcomponent devlab.file_tree %}
+
+{% component devlab.folder(name: string, open: bool = true) -%}
+<li class="file-tree-item file-tree-folder"><details class="file-tree-folder-details"{% if open %} open{% endif %}><summary class="file-tree-row file-tree-folder-row"><span class="file-tree-indicator" aria-hidden="true">&rsaquo;</span>{{<devlab.icon name="folder" size="sm" />}}<span class="file-tree-name" dir="auto">{{ name | escape }}</span></summary><ul class="file-tree-list file-tree-children">{{- body | safe -}}</ul></details></li>
+{%- endcomponent devlab.folder %}
+
+{% component devlab.file(name: string, note: string = "") -%}
+<li class="file-tree-item file-tree-file"><div class="file-tree-row file-tree-file-row"><span class="file-tree-indicator-spacer" aria-hidden="true"></span>{{<devlab.icon name="file" size="sm" />}}<span class="file-tree-name" dir="auto">{{ name | escape }}</span>{% if note %}<span class="file-tree-note" dir="auto">{{ note | escape }}</span>{% endif %}</div></li>
+{%- endcomponent devlab.file %}
+
+{% component devlab.details(summary: string) %}
+<details class="details">
+  <summary class="details-summary">
+    <span class="details-indicator" aria-hidden="true">&rsaquo;</span>
+    {{ summary | escape }}
+  </summary>
+  <div class="details-body">
+    {{ body | markdown | safe }}
+  </div>
+</details>
+{% endcomponent devlab.details %}
+
+{% component devlab.steps() %}
+<div class="steps">
+  {{ body | markdown | safe }}
+</div>
+{% endcomponent devlab.steps %}
+
+{% component devlab.timeline() -%}
+<ol class="timeline">
+{{- body | safe -}}
+</ol>
+{%- endcomponent devlab.timeline %}
+
+{% component devlab.timeline_item(title: string, status: string = "planned", date: string = "", label: string = "", heading_level: integer = 3) -%}
+{%- set timeline_status = status -%}
+{%- if timeline_status not in ["done", "active", "planned", "blocked"] -%}
+{%- set timeline_status = "planned" -%}
+{%- endif -%}
+{%- set timeline_tones = {"done": "success", "active": "info", "planned": "neutral", "blocked": "danger"} -%}
+{%- set timeline_labels = {"done": "Done", "active": "In progress", "planned": "Planned", "blocked": "Blocked"} -%}
+{%- set timeline_tone = timeline_tones[timeline_status] -%}
+{%- set timeline_label = label -%}
+{%- if not timeline_label -%}
+{%- set timeline_label = timeline_labels[timeline_status] -%}
+{%- endif -%}
+{%- set timeline_heading = heading_level -%}
+{%- if timeline_heading not in [2, 3, 4, 5, 6] -%}
+{%- set timeline_heading = 3 -%}
+{%- endif -%}
+<li class="timeline-item timeline-item--{{ timeline_status }}"><span class="timeline-marker" aria-hidden="true"></span><div class="timeline-content"><p class="timeline-meta"><span class="content-badge content-badge-{{ timeline_tone }}">{{ timeline_label | escape }}</span>{% if date %}<span class="timeline-date" dir="ltr">{{ date | escape }}</span>{% endif %}</p><h{{ timeline_heading }} class="timeline-title">{{ title | escape }}</h{{ timeline_heading }}><div class="timeline-body">{{ body | markdown | safe }}</div></div></li>
+{%- endcomponent devlab.timeline_item %}

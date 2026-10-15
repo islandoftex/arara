@@ -1,0 +1,72 @@
+{% set published_label = ui.published %}
+{% set updated_label = ui.updated %}
+{% set reading_time_label = ui.reading_time %}
+{% set date_format = "%d.%m.%Y" %}
+{% set configured_date_format = config.extra.devlab.blog.date_format | default(value="") %}
+{% set show_reading_time = config.extra.devlab.blog.show_reading_time | default(value=true) %}
+{% if page.extra.show_reading_time is defined %}{% set show_reading_time = page.extra.show_reading_time %}{% endif %}
+{% if configured_date_format %}
+{% set date_format = configured_date_format %}
+{% endif %}
+{% set author_keys = page.taxonomies.authors | default(value=[]) %}
+{% set has_byline = author_keys | length > 0 %}
+{% set has_release = page.extra.release is defined and page.extra.release %}
+{% set has_reading_time = show_reading_time and page.reading_time %}
+{% if has_byline or page.date or page.updated or has_release or has_reading_time %}
+<div class="post-meta">
+  {% if has_release %}
+  <span class="post-release-badge" dir="ltr">{{ page.extra.release }}</span>
+  {% endif %}
+
+  {% if has_byline %}
+  <span class="post-byline">
+    {% for author_key in author_keys %}
+    {% if not loop.first %}<span class="post-byline-separator" aria-hidden="true">·</span>{% endif %}
+    {% set author_profile = false %}
+    {% if author_registry is defined and author_registry[author_key] is defined %}
+    {% set author_profile = author_registry[author_key] %}
+    {% endif %}
+    {% set author_name = author_key %}
+    {% if author_profile %}{% set author_name = author_profile.name | default(value=author_key) | trim %}{% endif %}
+    {% set author_href = get_taxonomy_url(kind="authors", term=author_key, lang=lang) %}
+    {% if author_profile and author_profile.path is defined and author_profile.path %}
+    {% set author_href = author_profile.path %}
+    {% endif %}
+    {% set author_avatar = "" %}
+    {% if author_profile %}{% set author_avatar = author_profile.avatar | default(value="") %}{% endif %}
+    <a class="post-byline-author" href="{{<devlab.route_url path={author_href} content_lang={lang} />}}">
+      <span class="post-byline-avatar" aria-hidden="true">
+        {% if author_avatar %}<img src="{{<devlab.url path={author_avatar} />}}" alt="" width="24" height="24" loading="lazy" decoding="async">{% else %}<span class="post-byline-initials" dir="auto">{{ author_name | trim | truncate(length=1, end="") | upper }}</span>{% endif %}
+      </span>
+      <span class="post-byline-name" dir="auto">{{ author_name }}</span>
+    </a>
+    {% endfor %}
+  </span>
+  {% endif %}
+
+  {% if page.date %}
+  <span class="post-meta-item">
+    {{ published_label }}
+    <time datetime="{{ page.date }}" dir="ltr">{{ page.date | date(format=date_format) }}</time>
+  </span>
+  {% endif %}
+
+  {% if page.updated and page.updated != page.date %}
+  <span class="post-meta-item">
+    {{ updated_label }}
+    <time datetime="{{ page.updated }}" dir="ltr">{{ page.updated | date(format=date_format) }}</time>
+  </span>
+  {% endif %}
+
+  {% if has_reading_time %}
+  <span class="post-meta-item post-reading-time" dir="ltr">{{ page.reading_time }} {{ reading_time_label }}</span>
+  {% endif %}
+</div>
+{% endif %}
+{% if page.taxonomies.tags | default(value=[]) %}
+<ul class="post-tags" aria-label="{{ ui.post_tags }}" role="list">
+  {% for tag in page.taxonomies.tags %}
+  <li><a href="{{ get_taxonomy_url(kind='tags', term=tag, lang=lang) }}" rel="tag">{{ tag }}</a></li>
+  {% endfor %}
+</ul>
+{% endif %}

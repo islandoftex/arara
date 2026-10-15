@@ -1,0 +1,7 @@
+{% if has_navigation_links %}
+    <nav class="site-nav" aria-label="{{ ui.main_navigation }}">
+      {% for nav_link in nav_links %}
+      {{<devlab.navigation_link nav_link={nav_link} class_name="site-nav-link" active_path={active_path} active_url={active_url} content_lang={lang} active_collection={collection_id} />}}
+      {% endfor %}
+    </nav>
+    {% endif %}

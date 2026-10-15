@@ -1,0 +1,48 @@
+.site-main-downloads {
+  width: 100%;
+  max-width: none;
+  padding: 0;
+}
+
+.downloads-page {
+  display: grid;
+  gap: clamp(var(--space-12), 6vw, var(--space-20));
+  width: min(100% - var(--wide-gutter), var(--wide-width));
+  margin: 0 auto;
+  padding: clamp(var(--space-12), 6vw, var(--space-20)) 0;
+}
+
+.downloads-hero-with-status {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(20rem, 0.85fr);
+  gap: clamp(var(--space-8), 5vw, var(--space-20));
+  align-items: start;
+}
+
+.downloads-hero-copy {
+  max-width: 48rem;
+}
+
+.downloads-hero h1 {
+  max-width: 12ch;
+  overflow-wrap: anywhere;
+}
+
+.downloads-hero .page-description {
+  max-width: 60ch;
+  line-height: var(--leading-body);
+  overflow-wrap: anywhere;
+}
+
+.downloads-intro {
+  max-width: 62ch;
+  margin-top: var(--space-6);
+  color: var(--color-muted);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+  overflow-wrap: anywhere;
+}
+
+.downloads-intro p:last-child {
+  margin-bottom: 0;
+}

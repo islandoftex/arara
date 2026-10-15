@@ -1,0 +1,54 @@
+# arara — the Island of TeX website
+# The site inherits its URL from the previous incarnation.
+base_url = "https://islandoftex.gitlab.io/arara"
+title = "arara"
+description = "A TeX automation tool based on directives and rules."
+default_language = "en"
+
+theme = "devlab-theme"
+
+compile_sass = true
+build_search_index = true
+
+[search]
+index_format = "elasticlunr_javascript"
+include_title = true
+include_description = true
+include_content = true
+
+[markdown]
+insert_anchor_links = "right"
+
+[markdown.highlighting]
+light_theme = "github-light"
+dark_theme = "github-dark"
+
+# The landing: wide layout so the hero sits beside its copy,
+# and the recording takes the stage. The real block stack
+# (features, learn, workflow, call to action) arrives with Act II.
+[extra.devlab.home]
+layout = "wide"
+blocks = [
+  { type = "hero", image = "/hero.gif", image_alt = "arara building a LaTeX project in a terminal" },
+  { type = "content" },
+]
+
+[extra.devlab.brand]
+logo_text = "arara"
+footer_text = "Island of TeX"
+show_logo_mark = true
+logo_mark_path = "/brand/arara-logo.svg"
+
+[extra.devlab.footer]
+show = true
+note = "The cool TeX automation tool."
+show_link_names = true
+links = [
+  { name = "GitLab", path = "https://gitlab.com/islandoftex/arara", icon = "gitlab" },
+  { name = "CTAN", path = "https://ctan.org/pkg/arara", icon = "link" },
+]
+
+[extra.devlab.navigation]
+links = [
+  { name = "Home", path = "/" },
+]

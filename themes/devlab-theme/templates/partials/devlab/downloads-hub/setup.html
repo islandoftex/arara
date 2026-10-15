@@ -1,0 +1,37 @@
+{# Shared data contract for Single and Catalog, including product detail pages. #}
+{% if dlh_mode not in ["single", "catalog"] %}{{ throw(message="Downloads mode must be single or catalog.") }}{% endif %}
+{% if dlh_channel_ids | length != dlh_channels | length %}{{ throw(message="Downloads channel IDs must be unique.") }}{% endif %}
+{% if dlh_product_ids | length != dlh_products | length %}{{ throw(message="Downloads product IDs must be unique.") }}{% endif %}
+{% for channel in dlh_channels %}
+{% if not channel.id | default(value="") | trim or not channel.label | default(value="") | trim %}{{ throw(message="Downloads channels need non-empty id and label fields.") }}{% endif %}
+{% endfor %}
+{% set dlh_support_ids = dlh_support | group_by(attribute="id") %}
+{% if dlh_support_ids | length != dlh_support | length %}{{ throw(message="Downloads support IDs must be unique.") }}{% endif %}
+{% for support in dlh_support %}
+{% if not support.id | default(value="") | trim or support.id == "all" or not support.label | default(value="") | trim %}{{ throw(message="Downloads support needs a non-empty label and an ID other than all.") }}{% endif %}
+{% endfor %}
+{% for product in dlh_products %}
+{% if product.vendor | default(value="") == "all" %}{{ throw(message="Downloads vendor all is reserved for the catalog filter.") }}{% endif %}
+{% if product.support and product.support not in dlh_support_ids %}{{ throw(message="Downloads product.support must match a declared support.id.") }}{% endif %}
+{% if not product.id | default(value="") | trim or not product.name | default(value="") | trim %}{{ throw(message="Downloads products need non-empty id and name fields.") }}{% endif %}
+{% if dlh_mode == "catalog" and not product.url | default(value="") | trim %}{{ throw(message="Downloads catalog products need a url pointing to their detail page.") }}{% endif %}
+{% for artifact in product.artifact | default(value=[]) %}
+{% if artifact.channel not in dlh_channel_ids %}{{ throw(message="Downloads artifact.channel must match a declared channel.id.") }}{% endif %}
+{% if artifact.status | default(value="planned") not in ["ready", "development", "planned"] %}{{ throw(message="Downloads artifact.status must be ready, development or planned.") }}{% endif %}
+{% if not artifact.name | default(value="") | trim %}{{ throw(message="Downloads artifacts need a non-empty name (package name).") }}{% endif %}
+{% if artifact.url is defined and not artifact.url | trim %}{{ throw(message="Downloads artifact.url must be non-empty when supplied. Omit it for an unpublished file.") }}{% endif %}
+{% endfor %}
+{% endfor %}
+{% set mirror_groups = [dl.mirror | default(value=[])] %}
+{% for product in dlh_products %}
+{% set_global mirror_groups = [...mirror_groups, product.mirror | default(value=[])] %}
+{% endfor %}
+{% for action in dl.actions | default(value=[]) %}
+{% if not action.label | default(value="") | trim or not action.url | default(value="") | trim %}{{ throw(message="Downloads actions require non-empty label and url fields.") }}{% endif %}
+{% if action.style | default(value="secondary") not in ["primary", "secondary"] %}{{ throw(message="Downloads action.style must be primary or secondary.") }}{% endif %}
+{% endfor %}
+{% for mirrors in mirror_groups %}
+{% for mirror in mirrors %}
+{% if not mirror.name | default(value="") | trim or not mirror.url | default(value="") | trim %}{{ throw(message="Downloads mirrors require non-empty name and url fields.") }}{% endif %}
+{% endfor %}
+{% endfor %}

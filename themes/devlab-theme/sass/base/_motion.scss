@@ -1,0 +1,28 @@
+@media (prefers-reduced-motion: reduce) {
+  .site-nav-link,
+  .site-announcement-dismiss,
+  .button,
+  .content .card,
+  .person-link,
+  .theme-toggle,
+  .site-search-input,
+  .site-menu,
+  .docs-nav-group-indicator,
+  .docs-nav-link,
+  .docs-toc-group-indicator,
+  .details-indicator,
+  .content-tab,
+  .file-tree-indicator,
+  .code-copy-button,
+  .content-diagram[data-diagram-state="loading"] .diagram-stage::after,
+  .docs-overview-card,
+  .docs-overview-card :is(h2, h3, h4, h5),
+  .docs-copy-link-button,
+  .docs-page-discussion,
+  .docs-prev-next-link,
+  .post-list-copy h2 a,
+  .post-list + .pagination .pagination-link {
+    transition: none;
+    animation: none;
+  }
+}

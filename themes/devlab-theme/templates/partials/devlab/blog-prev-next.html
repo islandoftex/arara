@@ -1,0 +1,6 @@
+{% if config.extra.devlab.blog.show_pagination | default(value=true) and (page.lower or page.higher) %}
+<nav class="docs-prev-next blog-prev-next" aria-label="{{ ui.post_navigation }}">
+  {% if page.lower %}<a class="docs-prev-next-link docs-prev-next-link-previous" href="{{ page.lower.permalink }}"><span class="docs-prev-next-label">{{ ui.newer_post }}</span><span class="docs-prev-next-title">{{ page.lower.title }}</span></a>{% endif %}
+  {% if page.higher %}<a class="docs-prev-next-link docs-prev-next-link-next" href="{{ page.higher.permalink }}"><span class="docs-prev-next-label">{{ ui.older_post }}</span><span class="docs-prev-next-title">{{ page.higher.title }}</span></a>{% endif %}
+</nav>
+{% endif %}

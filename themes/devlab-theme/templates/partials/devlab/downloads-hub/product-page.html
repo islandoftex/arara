@@ -1,0 +1,79 @@
+{% set dlh_verification = {...dl.verification | default(value={}), ...dlh_product.verification | default(value={})} %}
+{% set dlh_mirrors = dlh_product.mirror | default(value=dl.mirror | default(value=[])) %}
+{% set dlh_product_artifacts = dlh_product.artifact | default(value=[]) %}
+<section class="dlh-product-hero">
+  {% if dlh_product_breadcrumbs and dlh_catalog_permalink %}
+  {% set breadcrumbs_root_label = labels.downloads %}
+  {% set breadcrumbs_root_permalink = dlh_catalog_permalink %}
+  {% set breadcrumbs_current_label = dlh_product.name %}
+  {% include "partials/breadcrumbs.html" %}
+  {% endif %}
+
+  <div class="dlh-product-copy">
+    {% if dlh_product_eyebrow %}
+    <p class="hero-eyebrow">{{ dlh_product_eyebrow }}</p>
+    {% endif %}
+
+    <p class="dlh-product-vendor">{{ dlh_product.vendor | default(value="") }}</p>
+
+    <div class="dlh-product-heading">
+      <h1 class="dlh-product-title">{{ dlh_product.name }}</h1>
+      {% set dlh_badge_id = dlh_product.support | default(value="") %}
+      {% include "partials/devlab/downloads-hub/support-badge.html" %}
+    </div>
+
+    {% if dlh_product_lead %}
+    <p class="page-description">{{ dlh_product_lead }}</p>
+    {% endif %}
+
+    {% if dlh_product_intro %}
+    <div class="downloads-intro">{{ dlh_product_intro | markdown | safe }}</div>
+    {% endif %}
+
+    {% if dlh_product.tags %}
+    <ul class="dlh-tags" role="list">
+      {% for dlh_tag in dlh_product.tags %}
+      <li class="dlh-tag">{{ dlh_tag }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if dlh_product_actions or dlh_product.docs_url %}
+    <div class="dlh-actions">
+      {% for dlh_action in dlh_product_actions %}
+      <a class="button button-{{ dlh_action.style | default(value='secondary') }}" href="{{<devlab.url path={dlh_action.url} />}}">{{ dlh_action.label }}</a>
+      {% endfor %}
+      {% if dlh_product.docs_url %}
+      <a class="button button-secondary" href="{{<devlab.url path={dlh_product.docs_url} />}}">{{ dlh_product.docs_label | default(value=labels.docs) }}</a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="dlh-product-visual">
+    {% if dlh_product.image %}
+    <img class="dlh-product-image" src="{{<devlab.url path={dlh_product.image} />}}" alt="">
+    {% else %}
+    <span class="dlh-product-image dlh-placeholder" aria-hidden="true">{{<devlab.icon name="file" />}}</span>
+    {% endif %}
+  </div>
+</section>
+
+<section class="dlh-downloads" aria-labelledby="dlh-downloads-title">
+  <h2 class="dlh-section-title" id="dlh-downloads-title">{{ labels.artifacts }}</h2>
+
+  {% if dlh_product_artifacts %}
+  {% include "partials/devlab/downloads-hub/artifacts.html" %}
+  {% else %}
+  <p class="dlh-product-empty">{{ labels.no_artifacts }}</p>
+  {% endif %}
+</section>
+
+{% set dlh_product_status = dlh_product.status | default(value=false) %}
+{% if dlh_product_status %}
+{% set dlh_status = dlh_product_status %}
+{% include "partials/devlab/downloads-hub/status.html" %}
+{% endif %}
+
+{% include "partials/devlab/downloads-hub/verification.html" %}
+{% include "partials/devlab/downloads-hub/mirrors.html" %}

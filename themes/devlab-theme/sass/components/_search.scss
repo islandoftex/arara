@@ -1,0 +1,7 @@
+@import "search/control";
+@import "search/results";
+
+@media (max-width: 760px) {
+  @import "search/header-integration";
+  @import "search/responsive";
+}

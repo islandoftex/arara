@@ -1,0 +1,135 @@
+clone:
+  git:
+    image: woodpeckerci/plugin-git
+    settings:
+      partial: false
+      depth: 0
+steps:
+  - name: validate-release-tag
+    image: alpine:3.24
+    commands:
+      - |
+        theme_version="$(sed -n 's/^version = "\([^"]*\)"$/\1/p' theme.toml)"
+        if [ -z "$theme_version" ]; then
+          echo "Could not read the theme version from theme.toml."
+          exit 1
+        fi
+        expected_tag="v$theme_version"
+        if [ "$CI_COMMIT_TAG" != "$expected_tag" ]; then
+          echo "Tag $CI_COMMIT_TAG does not match theme.toml version $theme_version (expected $expected_tag)."
+          exit 1
+        fi
+    when:
+      - event: tag
+  - name: build
+    image: debian:bookworm-slim
+    commands:
+      - apt-get update
+      - apt-get install -y --no-install-recommends ca-certificates curl git tar python3
+      - curl -fsSL https://github.com/getzola/zola/releases/download/v0.23.6/zola-v0.23.6-x86_64-unknown-linux-gnu.tar.gz -o /tmp/zola.tar.gz
+      - echo "8f5132b3522412d04e395e0b25f6d68613ad272a873e54a2b3ebf664873024a4  /tmp/zola.tar.gz" | sha256sum -c -
+      - tar -xzf /tmp/zola.tar.gz -C /usr/local/bin
+      - chmod +x /usr/local/bin/zola
+      - test "$(zola --version)" = "zola 0.23.6"
+      - |
+        python3 - <<'PY'
+        from pathlib import Path
+        import re
+        import subprocess
+        import tomllib
+        from urllib.request import Request, urlopen
+
+        version = tomllib.loads(Path('theme.toml').read_text())['version']
+        upstream = 'https://codeberg.org/RiPetitor/devlab-theme'
+        tag = 'refs/tags/v' + version
+        remote = subprocess.run(
+            ['git', 'ls-remote', '--exit-code', '--tags', upstream + '.git', tag, tag + '^{}'],
+            capture_output=True, text=True, timeout=60)
+        if remote.returncode == 2:
+            print('Release tag is not published. Demo archives remain unavailable.')
+            raise SystemExit(0)
+        remote.check_returncode()
+        refs = dict(line.split()[::-1] for line in remote.stdout.splitlines())
+        local = subprocess.check_output(['git', 'rev-parse', tag + '^{commit}'], text=True).strip()
+        if refs.get(tag + '^{}', refs.get(tag)) != local:
+            raise RuntimeError('Published release tag differs from the local tag')
+        subprocess.run(['git', 'merge-base', '--is-ancestor', tag, 'HEAD'], check=True)
+
+        urls = {variant: f'{upstream}/archive/v{version}.{variant}' for variant in ('tar.gz', 'zip')}
+        for url in urls.values():
+            with urlopen(Request(url, method='HEAD'), timeout=30) as response:
+                if response.status != 200 or 'text/html' in response.headers.get('Content-Type', ''):
+                    raise RuntimeError('Release archive is not available: ' + url)
+
+        outputs = {}
+        for path in map(Path, ('data/downloads.toml', 'data/downloads-catalog.toml')):
+            blocks = re.split(r'(?m)(?=^\[)', path.read_text())
+            product = None
+            enabled = 0
+            for index, block in enumerate(blocks):
+                if block.startswith('[[product]]'):
+                    product = tomllib.loads(block)['product'][0]['id']
+                elif block.startswith('[[product.artifact]]') and product == 'devlab':
+                    artifact = tomllib.loads(block)['product']['artifact'][0]
+                    if (artifact.get('channel') != 'stable' or artifact.get('version') != version
+                            or artifact.get('variant') not in urls or artifact.get('demo')):
+                        continue
+                    url = urls[artifact['variant']]
+                    if 'url' in artifact and artifact['url'] != url:
+                        raise RuntimeError('Refusing to replace a custom archive URL')
+                    if 'url' not in artifact:
+                        block = block.rstrip() + f'\nurl = "{url}"\n\n'
+                    if 'status' in artifact:
+                        block = re.sub(r'(?m)^status = "[^"]*"$', 'status = "ready"', block)
+                    else:
+                        block = block.rstrip() + '\nstatus = "ready"\n\n'
+                    blocks[index] = block
+                    enabled += 1
+            if not enabled:
+                raise RuntimeError(f'No DevLab stable archives found for {version} in {path}')
+            text = ''.join(blocks).replace(
+                f'Version {version} archives will appear after its tag is published. Use Get source code for a repository checkout.',
+                f'Source archives for version {version}. Read the installation guide before updating.')
+            tomllib.loads(text)
+            outputs[path] = text
+        for path, text in outputs.items():
+            path.write_text(text)
+        print(f'Enabled demo archives for the verified published tag v{version}.')
+        PY
+      - zola build --base-url "https://ripetitor.codeberg.page/devlab-theme/"
+    when:
+      - event: push
+      - event: pull_request
+      - event: tag
+  - name: deploy
+    image: alpine:3.24
+    environment:
+      CB_TOKEN:
+        from_secret: codeberg_token
+    commands:
+      - apk add --no-cache git
+      - |
+        if [ -n "$CI_COMMIT_TAG" ]; then
+          main_sha="$(git ls-remote https://codeberg.org/$CI_REPO.git refs/heads/main | cut -f1)"
+          if [ "$main_sha" != "$CI_COMMIT_SHA" ]; then
+            echo "Tag is not the current main commit. Skipping demo deployment."
+            exit 0
+          fi
+        fi
+      - git config --global user.name "Woodpecker CI"
+      - git config --global user.email "ci@woodpecker"
+      - git clone --branch pages --depth 1 https://codeberg.org/$CI_REPO.git _pages || (mkdir -p _pages && cd _pages && git init -b pages)
+      - cd _pages
+      - git rm -rf . 2>/dev/null || true
+      - cd ..
+      - cp -ar public/. _pages/
+      - cd _pages
+      - git remote add origin https://RiPetitor:$CB_TOKEN@codeberg.org/$CI_REPO.git 2>/dev/null || git remote set-url origin https://RiPetitor:$CB_TOKEN@codeberg.org/$CI_REPO.git
+      - git add -A
+      - |
+        git diff --cached --quiet || git commit -m "ci(pages): deploy $CI_COMMIT_SHA"
+      - git push origin pages
+    when:
+      - event: push
+        branch: main
+      - event: tag

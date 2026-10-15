@@ -1,0 +1,34 @@
+.site-menu-panel[hidden] {
+  display: none;
+}
+
+.site-menu-panel {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.site-menu-panel[data-site-menu-panel="docs"] {
+  min-height: calc(100vh - 5rem);
+  min-height: calc(100dvh - 5rem);
+  grid-template-rows: auto 1fr auto;
+}
+
+.site-menu-nav {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.site-menu-docs-nav {
+  align-content: start;
+}
+
+.site-menu-link-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.site-menu .site-footer-compact {
+  margin-top: var(--space-6);
+}

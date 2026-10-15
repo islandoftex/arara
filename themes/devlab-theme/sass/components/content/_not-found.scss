@@ -1,0 +1,79 @@
+.site-main-not-found {
+  display: grid;
+  place-items: center;
+}
+
+.not-found {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-4);
+
+  width: min(100%, 46rem);
+  margin: 0 auto;
+
+  text-align: center;
+}
+
+.not-found-code {
+  margin: 0 0 var(--space-1);
+
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: 7rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 0.8;
+}
+
+.not-found h1 {
+  margin: 0;
+
+  font-size: 2.75rem;
+  letter-spacing: 0;
+  line-height: 1.05;
+}
+
+.not-found-description {
+  max-width: 38rem;
+  margin: 0;
+
+  color: var(--color-muted);
+  font-size: 1.15rem;
+}
+
+.not-found-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+
+  margin-top: var(--space-4);
+}
+
+.not-found-hint {
+  max-width: 34rem;
+  margin: 0;
+
+  color: var(--color-muted);
+  font-size: 0.95rem;
+}
+
+@media (min-width: 760px) {
+  .not-found-code {
+    font-size: 11rem;
+  }
+
+  .not-found h1 {
+    font-size: 3.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .not-found-actions {
+    width: 100%;
+  }
+
+  .not-found-actions .button {
+    width: 100%;
+  }
+}

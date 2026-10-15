@@ -1,0 +1,21 @@
+<header class="site-header{% if has_site_menu %} site-header-has-menu{% endif %}"{% if has_scroll_header_divider %} data-scroll-header{% endif %}>
+  <div class="site-header-inner">
+    {% include "partials/header-brand.html" %}
+
+    {% include "partials/header-navigation.html" %}
+    {% include "partials/header-tools.html" %}
+
+    {% if has_site_menu %}
+    <button
+      class="site-menu-button"
+      type="button"
+      aria-label="{{ ui.menu_open }}"
+      aria-controls="site-menu"
+      aria-expanded="false"
+      data-site-menu-toggle
+    >
+      <span class="site-menu-button-icon" aria-hidden="true"></span>
+    </button>
+    {% endif %}
+  </div>
+</header>

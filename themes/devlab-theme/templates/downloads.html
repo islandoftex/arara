@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block layout_context %}{% set devlab_layout = "downloads" %}{% endblock layout_context %}
+
+{% block main_class %} site-main-downloads{% endblock main_class %}
+
+{% block content %}
+{% set eyebrow = "Downloads" %}
+{% set channels_label = "Download options" %}
+{% set unavailable_label = "Unavailable" %}
+{% set status_label = "Release status" %}
+{% set verification_label = "Verify" %}
+{% set has_status = false %}
+{% set has_channels = false %}
+{% set has_verification = false %}
+{% set has_verification_body = false %}
+{% set verification_links = [] %}
+{% if section.extra.downloads is defined %}
+{% set downloads = section.extra.downloads %}
+{% if downloads.eyebrow is defined and downloads.eyebrow %}{% set eyebrow = downloads.eyebrow %}{% endif %}
+{% if downloads.channels_label is defined and downloads.channels_label %}{% set channels_label = downloads.channels_label %}{% endif %}
+{% if downloads.unavailable_label is defined and downloads.unavailable_label %}{% set unavailable_label = downloads.unavailable_label %}{% endif %}
+{% if downloads.channels is defined and downloads.channels %}{% set has_channels = true %}{% endif %}
+{% if downloads.status is defined and downloads.status.title is defined and downloads.status.title %}
+{% set has_status = true %}
+{% if downloads.status.label is defined and downloads.status.label %}{% set status_label = downloads.status.label %}{% endif %}
+{% endif %}
+{% if downloads.verification is defined and downloads.verification.title | default(value="") | trim %}
+{% set has_verification = true %}
+{% if downloads.verification.label is defined and downloads.verification.label %}{% set verification_label = downloads.verification.label %}{% endif %}
+{% for link in downloads.verification.links | default(value=[]) %}
+{% if link.url | default(value="") | trim and not link.label | default(value="") | trim %}{{ throw(message="Download card verification links with a URL require a non-empty label.") }}{% endif %}
+{% endfor %}
+{% set verification_links = [link for link in downloads.verification.links | default(value=[]) if link.url | default(value="") | trim] %}
+{% if downloads.verification.description | default(value="") | trim or verification_links %}
+{% set has_verification_body = true %}
+{% endif %}
+{% endif %}
+{% endif %}
+
+<div class="downloads-page">
+  {% include "partials/devlab/downloads/hero-status.html" %}
+  {% include "partials/devlab/downloads/channels.html" %}
+  {% include "partials/devlab/downloads/verification.html" %}
+</div>
+{% endblock content %}

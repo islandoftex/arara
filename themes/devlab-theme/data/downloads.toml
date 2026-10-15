@@ -1,0 +1,60 @@
+mode = "single"
+eyebrow = "Downloads"
+description = "A Zola theme for project pages, blogs, documentation and books. Read the release notes and installation guide before selecting a revision."
+actions = [
+  { label = "Get source code", url = "https://codeberg.org/RiPetitor/devlab-theme", style = "primary" },
+  { label = "Installation guide", url = "@/docs/getting-started/installation.md", style = "secondary" },
+  { label = "Release notes", url = "@/blog/devlab-theme-v0-9-0.md", style = "secondary" },
+]
+
+[[support]]
+id = "maintained"
+label = "Maintained"
+tone = "success"
+
+[[channel]]
+id = "stable"
+label = "Stable"
+description = "Version 0.9.0 archives will appear after its tag is published. Use Get source code for a repository checkout."
+
+[[channel]]
+id = "preview"
+label = "Preview"
+description = "Upcoming work is available from the development branch. No preview archive has been published."
+
+[[product]]
+id = "devlab"
+name = "DevLab Theme"
+image = "/favicon.svg"
+vendor = "RiPetitor"
+support = "maintained"
+tags = ["Zola 0.23.6+", "No frontend build step", "MIT license"]
+
+[product.status]
+label = "Compatibility"
+title = "Before you install"
+items = [
+  { label = "Engine", value = "Zola 0.23.6 or newer" },
+  { label = "Installation", value = "Tagged Git checkout, submodule or source archive" },
+  { label = "Dependencies", value = "Zola only; no Node.js or npm required" },
+]
+
+[[product.artifact]]
+channel = "stable"
+name = "Source archive"
+variant = "tar.gz"
+version = "0.9.0"
+status = "planned"
+release_notes = "@/blog/devlab-theme-v0-9-0.md"
+
+[[product.artifact]]
+channel = "stable"
+name = "Source archive"
+variant = "zip"
+version = "0.9.0"
+status = "planned"
+
+[[product.artifact]]
+channel = "preview"
+name = "Preview archive"
+status = "development"

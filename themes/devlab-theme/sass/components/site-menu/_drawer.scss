@@ -1,0 +1,42 @@
+body.site-menu-is-ready .site-menu-backdrop:not([hidden]) {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+
+  display: block;
+  background: rgba(17, 24, 39, 0.5);
+}
+
+body.site-menu-is-ready .site-menu {
+  position: fixed;
+  inset-block: 0;
+  inset-inline: 0 auto;
+  z-index: 30;
+
+  display: block;
+  width: min(22rem, calc(100vw - var(--layout-gutter)));
+  max-height: none;
+  padding: var(--space-4);
+  border-inline-end: 1px solid var(--color-border);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-overlay);
+
+  overflow-y: auto;
+  pointer-events: none;
+  transform: translateX(-100%);
+  visibility: hidden;
+  transition:
+    transform var(--duration-fast) var(--ease-standard),
+    visibility 0s linear var(--duration-fast);
+}
+
+body.site-menu-is-ready .site-menu.is-open {
+  pointer-events: auto;
+  transform: translateX(0);
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+[dir="rtl"] body.site-menu-is-ready .site-menu:not(.is-open) {
+  transform: translateX(100%);
+}

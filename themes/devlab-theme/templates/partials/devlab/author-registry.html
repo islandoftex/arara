@@ -1,0 +1,7 @@
+{# Site-owned profiles. Unknown post keys retain their documented name fallback. #}
+{% for key, profile in author_registry %}
+{% if not profile.name | default(value="") | trim %}{{ throw(message="Author profile " ~ key ~ " requires a non-empty name in data/authors.toml.") }}{% endif %}
+{% for link in profile.links | default(value=[]) %}
+{% if not link.name | default(value="") | trim or not link.path | default(value="") | trim %}{{ throw(message="Author profile " ~ key ~ " links require non-empty name and path fields.") }}{% endif %}
+{% endfor %}
+{% endfor %}

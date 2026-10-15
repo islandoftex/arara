@@ -1,0 +1,11 @@
+{% if config.extra.devlab.i18n.show_switcher | default(value=true) and context_item and context_item.translations | length > 1 %}
+<nav class="language-switcher" aria-label="{{ ui.language_switcher }}">
+{% for translation in context_item.translations %}
+{% set translation_lang = translation.lang %}
+{% if not translation_lang %}{% set translation_lang = config.default_language %}{% endif %}
+{% set language_name = translation_lang | upper %}
+{% if config.extra.devlab.i18n.language_names is defined and config.extra.devlab.i18n.language_names[translation_lang] is defined %}{% set language_name = config.extra.devlab.i18n.language_names[translation_lang] %}{% endif %}
+<a href="{{ translation.permalink }}" lang="{{ translation_lang }}" hreflang="{{ translation_lang }}"{% if translation_lang == lang %} aria-current="page"{% endif %}>{{ language_name }}</a>
+{% endfor %}
+</nav>
+{% endif %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% include "partials/page-heading.html" %}
+
+{% if section.content %}
+<div class="content">
+  {{ section.content | safe }}
+</div>
+{% endif %}
+
+{% if paginator is defined %}
+{% set section_pages = paginator.pages %}
+{% else %}
+{% set section_pages = section.pages %}
+{% endif %}
+
+{% if section.subsections or section_pages %}
+<section class="page-list" aria-label="{{ section.title }} pages">
+  {% for subsection_path in section.subsections %}
+  {% set subsection = get_section(path=subsection_path) %}
+  <article class="page-list-item">
+    <h2>
+      <a href="{{ subsection.permalink }}">{{ subsection.title }}</a>
+    </h2>
+
+    {% if subsection.description %}
+    <p>{{ subsection.description }}</p>
+    {% endif %}
+  </article>
+  {% endfor %}
+
+  {% for page in section_pages %}
+  <article class="page-list-item">
+    <h2>
+      <a href="{{ page.permalink }}">{{ page.title }}</a>
+    </h2>
+
+    {% if page.description %}
+    <p>{{ page.description }}</p>
+    {% endif %}
+  </article>
+  {% endfor %}
+</section>
+{% endif %}
+
+{% include "partials/page-actions.html" %}
+{% include "partials/pagination.html" %}
+{% endblock content %}

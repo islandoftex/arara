@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="page-header">
+  <h1 id="taxonomy-term-title">{{ term.name }}</h1>
+  <p class="page-description">{{ taxonomy.name | title }}</p>
+</header>
+
+{% if paginator is defined %}
+{% set taxonomy_pages = paginator.pages %}
+{% else %}
+{% set taxonomy_pages = term.pages %}
+{% endif %}
+
+{% if taxonomy_pages %}
+<section class="post-list" aria-labelledby="taxonomy-term-title">
+  {% for page in taxonomy_pages %}
+  <article class="post-list-item">
+    {% include "partials/post-meta.html" %}
+
+    <div class="post-list-copy">
+      <h2>
+        <a href="{{ page.permalink }}">{{ page.title }}</a>
+      </h2>
+
+      {% include "partials/devlab/post-description.html" %}
+    </div>
+  </article>
+  {% endfor %}
+</section>
+{% endif %}
+
+{% include "partials/pagination.html" %}
+{% endblock content %}

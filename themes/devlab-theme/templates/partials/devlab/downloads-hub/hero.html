@@ -1,0 +1,30 @@
+{% set dlh_eyebrow = dl.eyebrow | default(value="") %}
+{% set dlh_title = dl.title | default(value=section.title) %}
+{% set dlh_description = dl.description | default(value="") %}
+{% set dlh_intro = dl.intro | default(value="") %}
+{% set dlh_actions = dl.actions | default(value=[]) %}
+<section class="downloads-hero dlh-hero">
+  <div class="downloads-hero-copy">
+    {% if dlh_eyebrow %}
+    <p class="hero-eyebrow">{{ dlh_eyebrow }}</p>
+    {% endif %}
+
+    <h1>{{ dlh_title }}</h1>
+
+    {% if dlh_description %}
+    <p class="page-description">{{ dlh_description }}</p>
+    {% endif %}
+
+    {% if dlh_intro %}
+    <div class="downloads-intro">{{ dlh_intro | markdown | safe }}</div>
+    {% endif %}
+
+    {% if dlh_actions %}
+    <div class="dlh-actions">
+      {% for dlh_action in dlh_actions %}
+      <a class="button button-{{ dlh_action.style | default(value='secondary') }}" href="{{<devlab.url path={dlh_action.url} />}}">{{ dlh_action.label }}</a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</section>

@@ -1,0 +1,27 @@
+{% set docs_section_path = docs_options.section | default(value="") %}
+{% set is_docs_root = docs_context_path and section.path == docs_context_path %}
+{% set has_curated_docs_navigation = docs_options.navigation is defined and docs_options.navigation %}
+
+{% if has_curated_docs_navigation %}
+  {% if is_docs_root %}
+    <section class="docs-overview-direct docs-overview-catalog" aria-label="{{ ui.docs_sections }}">
+      <ul class="docs-overview-card-grid">
+        {% for overview_item in navigation_sections %}
+          {{<devlab.docs_overview_card item={overview_item} />}}
+        {% endfor %}
+      </ul>
+    </section>
+  {% elif section.pages or section.subsections %}
+    <section class="docs-overview-direct docs-overview-catalog" aria-label="{{ ui.docs_pages_sections }}">
+      <ul class="docs-overview-card-grid">
+        {{<devlab.docs_overview_catalog_items catalog_section={section} content_lang={lang} />}}
+      </ul>
+    </section>
+  {% endif %}
+{% elif section.pages or section.subsections %}
+  <section class="docs-overview-direct docs-overview-catalog" aria-label="{{ ui.docs_pages_sections }}">
+    <ul class="docs-overview-card-grid">
+      {{<devlab.docs_overview_catalog_items catalog_section={section} content_lang={lang} />}}
+    </ul>
+  </section>
+{% endif %}

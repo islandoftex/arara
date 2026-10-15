@@ -1,0 +1,13 @@
+{% include "partials/theme-init.html" %}
+
+{% include "partials/seo.html" %}
+
+{% if config.generate_feeds and config.feed_filenames %}
+{% for feed_filename in config.feed_filenames %}
+<link rel="alternate"{% if feed_filename == "atom.xml" %} type="application/atom+xml"{% elif feed_filename == "rss.xml" %} type="application/rss+xml"{% endif %} title="{{ config.title }}" href="{{ get_url(path=feed_filename, lang=lang) }}">
+{% endfor %}
+{% endif %}
+<link rel="icon" href="{{ get_url(path='favicon.svg') }}" type="image/svg+xml">
+<link rel="stylesheet" href="{{ get_url(path='main.css') }}">
+
+<link rel="stylesheet" href="{{ get_url(path='print.css') }}" media="print">

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block layout_context %}{% set devlab_layout = "blog" %}{% endblock layout_context %}
+
+{% block main_class %} site-main-blog{% endblock main_class %}
+
+{% block content %}
+<div class="blog-index">
+  <div class="blog-index-lead{% if section.content %} blog-index-lead-with-intro{% endif %}">
+    {% set heading_header_class = "blog-index-header" %}
+{% set heading_id = "blog-index-title" %}
+{% include "partials/page-heading.html" %}
+
+    {% if section.content %}
+    <div class="content blog-index-intro">
+      {{ section.content | safe }}
+    </div>
+    {% endif %}
+  </div>
+
+  {% if paginator is defined %}
+  {% set post_pages = paginator.pages %}
+  {% else %}
+  {% set post_pages = section.pages %}
+  {% endif %}
+
+  {% if post_pages %}
+  <section class="post-list" aria-labelledby="blog-index-title">
+    {% for page in post_pages %}
+    {% set show_post_reading_time = config.extra.devlab.blog.show_reading_time | default(value=true) %}
+    {% if page.extra.show_reading_time is defined %}{% set show_post_reading_time = page.extra.show_reading_time %}{% endif %}
+    {% set has_post_authors = page.taxonomies.authors is defined and page.taxonomies.authors | length > 0 %}
+    {% set has_post_context = page.date or page.updated or has_post_authors or (page.extra.release is defined and page.extra.release) or (show_post_reading_time and page.reading_time) %}
+    <article class="post-list-item">
+      <div class="post-list-copy{% if not has_post_context %} post-list-copy-wide{% endif %}">
+        <h2>
+          <a href="{{ page.permalink }}">{{ page.title }}</a>
+        </h2>
+
+        {% include "partials/post-meta.html" %}
+
+        {% include "partials/devlab/post-description.html" %}
+      </div>
+    </article>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  {% include "partials/pagination.html" %}
+</div>
+{% endblock content %}

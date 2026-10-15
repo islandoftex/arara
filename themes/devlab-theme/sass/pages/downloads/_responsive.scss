@@ -1,0 +1,36 @@
+@media (max-width: 900px) {
+  .downloads-hero-with-status,
+  .downloads-verification {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .downloads-page {
+    width: min(100% - var(--wide-gutter-compact), var(--wide-width));
+  }
+}
+
+@media (max-width: 600px) {
+  .download-card {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .downloads-page {
+    gap: var(--space-12);
+    padding: var(--space-12) 0;
+  }
+
+  .downloads-status,
+  .download-card,
+  .downloads-verification {
+    padding: var(--space-5);
+  }
+
+  .downloads-status-list div {
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+  }
+}

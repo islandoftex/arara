@@ -1,0 +1,56 @@
+{% set block_type = block.type | default(value="") %}
+{% if block_type == "hero" %}
+{% set hero_image = block.image | default(value="") %}
+<section id="{{ block_id }}" class="hero{% if home_layout == 'wide' %} hero-wide{% if hero_image %} hero-with-media{% endif %}{% endif %}">
+  <div class="hero-copy">
+    {% if block.eyebrow | default(value="") %}<p class="hero-eyebrow">{{ block.eyebrow }}</p>{% endif %}
+    <h1 class="hero-title">{{ block.title | default(value=context_item.title) }}</h1>
+    {% set description = block.description | default(value=context_item.description) %}
+    {% if description %}<p class="hero-description">{{ description }}</p>{% endif %}
+    {% set actions = block.actions | default(value=[]) %}
+    {% include "partials/devlab/landing-actions.html" %}
+  </div>
+  {% if hero_image %}<figure class="hero-media"><img src="{{<devlab.url path={hero_image} />}}" alt="{{ block.image_alt | default(value='') }}" decoding="async" fetchpriority="high"></figure>{% endif %}
+</section>
+{% elif block_type in ["features", "learn", "workflow", "cta", "content"] %}
+{% set items = block.items | default(value=[]) %}
+{% set actions = block.actions | default(value=[]) %}
+{% set has_heading = block.title | default(value="") or block.eyebrow | default(value="") or block.description | default(value="") %}
+<section id="{{ block_id }}" class="landing-content landing-block landing-block-{{ block_type }}{% if has_heading %} landing-block-has-heading{% endif %}{% if items %} landing-block-with-items{% endif %}{% if actions %} landing-block-with-actions{% endif %}{% if block_type == 'content' %} content{% endif %}"{% if block.title | default(value="") %} aria-labelledby="{{ block_id }}-title"{% endif %}>
+  {% if block_type == "content" %}
+    {% include "partials/devlab/landing-heading.html" %}
+    {% if block.body is defined %}{{ block.body | markdown | safe }}{% else %}{{ context_item.content | safe }}{% endif %}
+  {% elif block_type == "features" %}
+    {% include "partials/devlab/landing-heading.html" %}
+    {% if items %}<div class="feature-grid">
+      {% for item in items %}{% include "partials/devlab/landing-card.html" %}{% endfor %}
+    </div>{% endif %}
+  {% elif block_type == "learn" %}
+    <div class="landing-learn-inner">
+      {% include "partials/devlab/landing-heading.html" %}
+      {% if items %}<div class="landing-learn-grid">
+        {% for item in items %}{% include "partials/devlab/landing-card.html" %}{% endfor %}
+      </div>{% endif %}
+    </div>
+  {% elif block_type == "workflow" %}
+    {% include "partials/devlab/landing-heading.html" %}
+    {% if items %}<ol class="landing-workflow" role="list">
+      {% for item in items %}
+      <li class="landing-workflow-step">
+        <div class="landing-workflow-item">
+          {% if item.icon | default(value="") %}{{<devlab.icon name={item.icon} size="md" />}}{% endif %}
+          {% if item.kicker | default(value="") %}<p class="feature-card-kicker">{{ item.kicker }}</p>{% endif %}
+          <h{% if block.title | default(value="") %}3{% else %}2{% endif %} class="landing-step-title">{% if item.path | default(value="") %}<a class="landing-step-link" href="{{<devlab.route_url path={item.path} content_lang={lang} />}}">{% endif %}{{ item.title }}{% if item.path | default(value="") %}</a>{% endif %}</h{% if block.title | default(value="") %}3{% else %}2{% endif %}>
+          {% if item.description | default(value="") %}<p class="landing-step-description">{{ item.description }}</p>{% endif %}
+        </div>
+      </li>
+      {% endfor %}
+    </ol>{% endif %}
+  {% elif block_type == "cta" %}
+    {% include "partials/devlab/landing-heading.html" %}
+  {% endif %}
+  {% include "partials/devlab/landing-actions.html" %}
+</section>
+{% else %}
+{{ throw(message="Unknown landing block type: " ~ block_type ~ ". Override partials/landing-block.html to add a custom type.") }}
+{% endif %}

@@ -1,0 +1,130 @@
+.timeline {
+  position: relative;
+
+  margin: var(--space-6) 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.timeline-item {
+  position: relative;
+  padding-block: 0 var(--space-6);
+  padding-inline: 2.75rem 0;
+}
+
+.timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.timeline-marker {
+  position: absolute;
+  top: 0.2rem;
+  inset-inline-start: 0;
+
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-surface-subtle);
+}
+
+.timeline-marker::after {
+  content: "";
+
+  width: 0.5rem;
+  height: 0.5rem;
+
+  border-radius: 50%;
+  background: var(--color-muted);
+}
+
+.timeline-item:not(:last-child)::after {
+  content: "";
+
+  position: absolute;
+  top: 1.75rem;
+  bottom: 0;
+  inset-inline-start: 0.87rem;
+
+  width: 1px;
+  background: var(--color-border);
+}
+
+.timeline-item--done .timeline-marker {
+  border-color: var(--color-callout-tip-border);
+  background: var(--color-callout-tip-bg);
+}
+
+.timeline-item--done .timeline-marker::after {
+  background: var(--color-callout-tip-border);
+}
+
+.timeline-item--active .timeline-marker {
+  border-color: var(--color-callout-info-border);
+  background: var(--color-callout-info-bg);
+  box-shadow: 0 0 0 0.1875rem color-mix(in srgb, var(--color-callout-info-border) 18%, transparent);
+}
+
+.timeline-item--active .timeline-marker::after {
+  background: var(--color-callout-info-border);
+}
+
+.timeline-item--blocked .timeline-marker {
+  border-color: var(--color-callout-error-border);
+  background: var(--color-callout-error-bg);
+}
+
+.timeline-item--blocked .timeline-marker::after {
+  background: var(--color-callout-error-border);
+}
+
+.timeline-content {
+  min-width: 0;
+}
+
+.timeline-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+
+  margin: 0 0 var(--space-2);
+}
+
+.timeline-date {
+  color: var(--color-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.timeline-title {
+  margin: 0;
+
+  font-size: 1.05rem;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.timeline-body {
+  margin-top: var(--space-2);
+
+  color: var(--color-muted);
+  font-size: 0.95rem;
+}
+
+.timeline-body:empty {
+  display: none;
+}
+
+.timeline-body > :first-child {
+  margin-top: 0;
+}
+
+.timeline-body > :last-child {
+  margin-bottom: 0;
+}

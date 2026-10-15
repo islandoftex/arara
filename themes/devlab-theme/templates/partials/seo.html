@@ -1,0 +1,124 @@
+{%- if content_title is defined -%}
+{%- set seo_title = content_title -%}
+{%- else -%}
+{%- set seo_title = config.title -%}
+{%- if page is defined -%}
+{%- set seo_title = page.title -%}
+{%- elif section is defined -%}
+{%- set seo_title = section.title -%}
+{%- elif term is defined -%}
+{%- set taxonomy_title = taxonomy.name | title -%}
+{%- set seo_title = term.name ~ " | " ~ taxonomy_title -%}
+{%- elif taxonomy is defined -%}
+{%- set seo_title = taxonomy.name | title -%}
+{%- endif -%}
+{%- endif -%}
+
+{%- set seo_description = "" -%}
+{%- if page is defined and page.description -%}
+{%- set seo_description = page.description -%}
+{%- elif section is defined and section.description -%}
+{%- set seo_description = section.description -%}
+{%- elif config.description -%}
+{%- set seo_description = config.description -%}
+{%- endif -%}
+
+{%- if term is defined and taxonomy.name == "authors" and author_registry[term.name] is defined and author_registry[term.name].role | default(value="") | trim -%}
+{%- set seo_description = author_registry[term.name].role | trim -%}
+{%- endif -%}
+
+{%- set seo_url = "" -%}
+{%- if current_url is defined and current_url -%}
+{%- set seo_url = current_url -%}
+{%- elif page is defined -%}
+{%- set seo_url = page.permalink -%}
+{%- elif section is defined -%}
+{%- set seo_url = section.permalink -%}
+{%- endif -%}
+
+{%- set seo_options = config.extra.devlab.seo | default(value={}) -%}
+{%- if context_item and context_item.extra.devlab is defined and context_item.extra.devlab.seo is defined -%}
+{%- set seo_options = {...seo_options, ...context_item.extra.devlab.seo} -%}
+{%- endif -%}
+{%- set configured_og_image = seo_options.og_image | default(value="") -%}
+{%- set seo_image_alt = seo_options.og_image_alt | default(value="") -%}
+{%- set seo_type = "website" -%}
+{%- if devlab_layout == "article" -%}{%- set seo_type = "article" -%}{%- endif -%}
+{%- set seo_type = seo_options.og_type | default(value=seo_type) -%}
+{%- set seo_image = "" -%}
+{%- if configured_og_image -%}
+{%- if configured_og_image is starting_with(pat="http://") -%}
+{%- set seo_image = configured_og_image -%}
+{%- elif configured_og_image is starting_with(pat="https://") -%}
+{%- set seo_image = configured_og_image -%}
+{%- else -%}
+{%- set seo_image = get_url(path=configured_og_image) -%}
+{%- endif -%}
+{%- endif %}
+
+{%- if seo_description %}
+<meta name="description" content="{{ seo_description }}">
+{%- endif %}
+
+{%- if seo_url %}
+<link rel="canonical" href="{{ seo_url | safe }}">
+{%- endif %}
+
+<meta property="og:title" content="{{ seo_title }}">
+{%- if seo_description %}
+<meta property="og:description" content="{{ seo_description }}">
+{%- endif %}
+<meta property="og:type" content="{{ seo_type }}">
+{%- if seo_url %}
+<meta property="og:url" content="{{ seo_url | safe }}">
+{%- endif %}
+<meta property="og:site_name" content="{{ config.title }}">
+{%- if page is defined and page.date %}
+<meta property="article:published_time" content="{{ page.date }}">
+{%- endif %}
+{%- if page is defined and page.updated %}
+<meta property="article:modified_time" content="{{ page.updated }}">
+{%- endif %}
+{%- if page is defined and page.taxonomies.authors is defined and page.taxonomies.authors %}
+{%- for author_key in page.taxonomies.authors %}
+{%- set author_profile = false %}
+{%- if author_registry is defined and author_registry[author_key] is defined %}
+{%- set author_profile = author_registry[author_key] %}
+{%- endif %}
+{%- set author_name = author_key %}
+{%- if author_profile %}
+{%- set author_name = author_profile.name | default(value=author_key) | trim %}
+{%- endif %}
+<meta name="author" content="{{ author_name }}">
+{%- set author_href = get_taxonomy_url(kind="authors", term=author_key, lang=lang) %}
+{%- if author_profile and author_profile.path is defined and author_profile.path %}
+{%- set author_href = author_profile.path %}
+{%- endif %}
+<link rel="author" href="{{<devlab.route_url path={author_href} content_lang={lang} />}}">
+{%- endfor %}
+{%- endif %}
+{%- if seo_image %}
+<meta property="og:image" content="{{ seo_image }}">
+{%- if seo_image_alt %}<meta property="og:image:alt" content="{{ seo_image_alt }}">{% endif %}
+{%- endif %}
+
+<meta name="twitter:card" content="{% if seo_image %}summary_large_image{% else %}summary{% endif %}">
+<meta name="twitter:title" content="{{ seo_title }}">
+{%- if seo_description %}
+<meta name="twitter:description" content="{{ seo_description }}">
+{%- endif %}
+{%- if seo_image %}
+<meta name="twitter:image" content="{{ seo_image }}">
+{%- if seo_image_alt %}<meta name="twitter:image:alt" content="{{ seo_image_alt }}">{% endif %}
+{%- endif %}
+
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b1120" media="(prefers-color-scheme: dark)">
+
+{% if context_item %}
+{% for translation in context_item.translations %}
+{% set translation_lang = translation.lang %}
+{% if not translation_lang %}{% set translation_lang = config.default_language %}{% endif %}
+<link rel="alternate" hreflang="{{ translation_lang }}" href="{{ translation.permalink }}">
+{% endfor %}
+{% endif %}

@@ -1,0 +1,17 @@
+{% set docs_sidebar_title = docs_options.title | default(value=ui.docs_sidebar) %}
+<aside
+  id="docs-sidebar"
+  class="docs-sidebar"
+  aria-label="{{ docs_sidebar_title }}"
+>
+  {% include "partials/sidebar-before.html" %}
+  <nav class="docs-sidebar-nav" aria-label="{{ docs_sidebar_title }}">
+    <p class="docs-sidebar-title">{{ docs_sidebar_title }}</p>
+    {% set docs_nav_instance = "docs-sidebar" %}
+    {% include "partials/docs-nav.html" %}
+  </nav>
+
+  {% include "partials/sidebar-after.html" %}
+  {% set footer_compact = true %}
+  {% include "partials/footer.html" %}
+</aside>

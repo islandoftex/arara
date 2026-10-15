@@ -1,0 +1,6 @@
+{% if actions %}<div class="hero-actions">
+{% for action in actions %}
+{% if not action.path | default(value="") or not action.label | default(value="") %}{{ throw(message="Landing actions require label and path.") }}{% endif %}
+<a class="button {% if loop.first %}button-primary{% else %}button-secondary{% endif %}" href="{{<devlab.route_url path={action.path} content_lang={lang} />}}">{{ action.label }}</a>
+{% endfor %}
+</div>{% endif %}

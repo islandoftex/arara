@@ -1,0 +1,26 @@
+.docs-content {
+  width: 100%;
+  max-width: 60rem;
+  min-width: 0;
+  padding: var(--space-12) clamp(var(--space-8), 4vw, var(--space-16)) var(--space-20);
+
+  justify-self: center;
+}
+
+.docs-content .page-header {
+  margin-bottom: var(--space-10);
+}
+
+.docs-content .page-header h1 {
+  font-size: clamp(2.25rem, 4vw, 3rem);
+}
+
+.docs-content .page-description {
+  font-size: var(--text-lg);
+  line-height: var(--leading-body);
+}
+
+.docs-content .page-list-item {
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-subtle);
+}

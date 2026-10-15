@@ -1,0 +1,9 @@
+{% extends "devlab-theme/templates/base.html" %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ get_url(path='custom.css') }}">
+{% endblock extra_styles %}
+
+{% block extra_scripts %}
+<script defer src="{{ get_url(path='js/knuthify.js') }}"></script>
+{% endblock extra_scripts %}

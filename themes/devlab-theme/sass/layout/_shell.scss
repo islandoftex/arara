@@ -1,0 +1,54 @@
+.skip-link {
+  position: fixed;
+  z-index: 100;
+  top: 0.75rem;
+  inset-inline-start: 0.75rem;
+
+  padding: 0.7rem var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+
+  transform: translateY(calc(-100% - 1.5rem));
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.site-main:focus {
+  outline: none;
+}
+
+.site-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.site-main {
+  width: min(100% - var(--layout-gutter), var(--site-width));
+  margin: 0 auto;
+  padding: var(--space-16) 0;
+  flex: 1;
+}
+
+.site-main-home-wide {
+  width: 100%;
+  max-width: none;
+  padding: 0;
+}
+
+.site-main-docs {
+  width: 100%;
+  max-width: none;
+  padding: 0;
+}
+
+.site-main > .content,
+.site-main > .page-header {
+  max-width: var(--content-width);
+}
