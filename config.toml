@@ -43,9 +43,9 @@ actions = [
 [[extra.devlab.home.blocks]]
 type = "features"
 items = [
-  { kicker = "The idea", title = "Directives in your source", description = "You list the tasks in a comment line and arara runs exactly those — the build recipe lives in the document itself.", path = "/manual/introduction/" },
-  { kicker = "The engine", title = "Rules, now in Lua", description = "Every task is a rule: a name, a command, the arguments it takes. Rules speak Lua now, and the YAML era continues in graceful retirement.", path = "/manual/rules/" },
-  { kicker = "The console", title = "A console that talks back", description = "The styled presentation animates every task, reports every verdict, and closes the run with a summary table.", path = "/manual/console/" },
+  { kicker = "The idea", title = "Directives in the source", description = "You list the tasks in a comment line and arara runs exactly those — the build recipe lives in the document itself.", path = "/manual/introduction/" },
+  { kicker = "The engine", title = "Rules, now also in Lua", description = "Every task is a rule: a name, a command, the arguments it takes. Rules speak Lua now, and the YAML era continues in graceful retirement.", path = "/manual/rules/" },
+  { kicker = "The console", title = "The console talks back", description = "The styled presentation animates every task, reports every verdict, and closes the run with a summary table.", path = "/manual/console/" },
 ]
 
 [[extra.devlab.home.blocks]]
@@ -56,28 +56,32 @@ description = "A quickstart for the impatient, a manual for the curious, and a c
 items = [
   { kicker = "Five minutes", title = "Quickstart", description = "Get a document building with directives before your tea cools.", path = "/quickstart/" },
   { kicker = "Fourteen chapters", title = "The arara manual", description = "The whole tool, from concepts to rule authorship — the same book the PDF tells.", path = "/manual/" },
-  { kicker = "The record", title = "Changelog", description = "Every notable change, Keep a Changelog style.", path = "/changelog/" },
+  { kicker = "The record", title = "Changelog", description = "Every notable change to arara, kept in the Keep a Changelog style.", path = "/changelog/" },
+  { kicker = "Community", title = "The arara room", description = "Questions, ideas and release chatter in arara's dedicated Matrix room.", path = "https://matrix.to/#/!HfEWIEvFtDplCLSQvz:matrix.org?via=matrix.org" },
 ]
 
 [[extra.devlab.home.blocks]]
 type = "workflow"
 eyebrow = "How a run goes"
 title = "From comment to compiled"
-description = "arara runs a document the way the document asks to be run."
+description = "A run is exactly what you asked for: arara reads the directives, resolves each rule, runs each task in the order you wrote, and reports every verdict on the way — nothing more, nothing less."
 items = [
   { title = "Write the directives", description = "A comment line per task, right where the document lives" },
-  { title = "Invoke the tool", description = "arara thesis.tex at the prompt" },
+  { title = "Invoke the tool", description = "One call, one file — the run begins" },
   { title = "Watch the tasks", description = "Each rule runs in order, reported live" },
   { title = "Read the verdict", description = "A summary table closes the run" },
 ]
 
 [[extra.devlab.home.blocks]]
+type = "content"
+
+[[extra.devlab.home.blocks]]
 type = "cta"
 title = "arara ships in TeX Live and MiKTeX"
-description = "No manual deployment needed — and the CTAN page carries the story for every other case."
+description = "No manual deployment needed — and the CTAN page carries the story for every other case. On macOS, MacTeX cannot include arara for signing reasons — the maintenance note in the news tells the honest story."
 actions = [
   { label = "Get arara from CTAN", path = "https://ctan.org/pkg/arara" },
-  { label = "Browse the manual", path = "/manual/", style = "secondary" },
+  { label = "The project on GitLab", path = "https://gitlab.com/islandoftex/arara", style = "secondary" },
 ]
 
 [extra.devlab.brand]
@@ -100,8 +104,9 @@ note = "The cool TeX automation tool."
 links_label = "The Island"
 show_link_names = true
 links = [
-  { name = "GitLab", path = "https://gitlab.com/islandoftex/arara", icon = "gitlab" },
-  { name = "CTAN", path = "https://ctan.org/pkg/arara", icon = "link" },
+  { name = "Home page", path = "https://islandoftex.gitlab.io/", icon = "link" },
+  { name = "GitLab", path = "https://gitlab.com/islandoftex", icon = "gitlab" },
+  { name = "Community", path = "https://matrix.to/#/!titTeSvZiqNOvRIKCv:matrix.org?via=matrix.org", icon = "matrix" },
 ]
 
 [extra.devlab.navigation]
