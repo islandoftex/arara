@@ -153,6 +153,98 @@ def outdent_nested_callouts(text: str) -> str:
     return "\n".join(out)
 
 
+# The four diagrams the manual carries, with curated labels and
+# descriptions for the component wrapper; any fence beyond the table
+# falls back to generic, honest prose.
+DIAGRAM_META = {
+    ("Building", 0): (
+        "arara-home-layout",
+        "The arara home layout",
+        "The ARARA_HOME directory: the tool's jar beside the rules "
+        "directory, the default rule pack with every official rule "
+        "in both formats."),
+    ("Concepts", 0): (
+        "directive-evaluation-flow",
+        "The directive evaluation flow",
+        "From a directive found in the file to the evaluation of its "
+        "command expression."),
+    ("Concepts", 1): (
+        "command-execution-flow",
+        "The command execution flow",
+        "The system command runs, and the exit status decides whether "
+        "the run proceeds."),
+    ("Projects", 0): (
+        "multi-project-run",
+        "The multi-project run",
+        "Specification files merge into one dependency graph, which "
+        "resolves the order in which each project runs."),
+}
+
+
+# A leading mermaid init directive for every hatched diagram: the
+# renderer lays out at the natural width instead of stretching to
+# the page, and the site's stylesheet scales down gracefully when a
+# diagram is wider than its column — never up.
+DIAGRAM_INIT = "%%{init: { 'flowchart': { 'useMaxWidth': false } } }%%"
+
+# The manual's diagrams are wide ribbons — flowchart LR — chosen for
+# the printed page. The site's column is narrow and tall, so the
+# seam stands the ribbons up: the flowchart direction flips to TD
+# in the assembled copies, and the text renders at its natural size
+# instead of shrinking to fit. The PDF keeps its ribbons as set.
+FLOWCHART_DIRECTION = re.compile(r"^(\s*(?:flowchart|graph)\s+)LR(\s*)$")
+
+
+def wrap_mermaid_diagrams(text: str, chapter: str) -> str:
+    """Hatch mermaid fences as the theme's diagram components.
+
+    The chapters write diagrams as ```mermaid fences — the PDF
+    pipeline reads them through its own figure machinery — but the
+    site's theme expects its devlab.diagram component, which carries
+    an accessible label and description, and which loads the theme's
+    bundled renderer only on the pages that use it (no configuration
+    needed: the marker itself is the switch). At the seam, each
+    fence's body travels verbatim inside the component wrapper,
+    opening with the init directive above so the diagram renders at
+    its natural width; curated labels and descriptions ride along
+    from the table, and any fence beyond the table gets a generic,
+    honest fallback.
+
+    The component tags are emitted at column zero regardless of the
+    fence's indentation — a diagram can never be born nested, the
+    structural guarantee the callout outdent provides retroactively.
+    The state machine: a ```mermaid line opens a component and the
+    following bare ``` line closes it, so the fence structure stays
+    balanced for any transform that ran before this one. Inside the
+    component, the flowchart direction flips from LR to TD — the
+    site's column wants its chains standing up, not stretched wide.
+    """
+    out = []
+    inside = False
+    index = 0
+    for line in text.split("\n"):
+        if not inside and line.strip() == "```mermaid":
+            diagram_id, label, description = DIAGRAM_META.get(
+                (chapter, index),
+                (f"{chapter.lower()}-diagram-{index + 1}",
+                 "Diagram", "A Mermaid diagram from the arara manual."))
+            out.append(
+                '{% <devlab.diagram id="' + diagram_id
+                + '" label="' + label
+                + '" description="' + description + '"> %}')
+            out.append(DIAGRAM_INIT)
+            inside = True
+            index += 1
+        elif inside and line.strip() == "```":
+            out.append("{% </devlab.diagram> %}")
+            inside = False
+        elif inside and FLOWCHART_DIRECTION.match(line):
+            out.append(FLOWCHART_DIRECTION.sub(r"\1TD\2", line))
+        else:
+            out.append(line)
+    return "\n".join(out)
+
+
 def assemble(repo: Path, site: Path) -> None:
     """Lift the manual, the quickstart and the changelog into the site."""
     docs = repo / "docs"
@@ -172,15 +264,17 @@ def assemble(repo: Path, site: Path) -> None:
     manual.mkdir(parents=True)
     (manual / "_index.md").write_text(MANUAL_INDEX, encoding="utf-8")
 
-    # The chapters, near-verbatim: the three site transforms in
+    # The chapters, near-verbatim: the four site transforms in
     # sequence — literal braces neutralized, headings demoted,
-    # nested callouts freed — and nothing else.
+    # nested callouts freed, mermaid fences hatched — and nothing
+    # else.
     for name in CHAPTERS:
         source = docs / f"{name}.md"
         text = source.read_text(encoding="utf-8")
         text = tera_raw_wrap(text)
         text = demote_headings(text)
         text = outdent_nested_callouts(text)
+        text = wrap_mermaid_diagrams(text, name)
         (manual / f"{name}.md").write_text(text, encoding="utf-8")
 
     # The quickstart is a standalone page rather than a chapter: the
@@ -190,6 +284,7 @@ def assemble(repo: Path, site: Path) -> None:
     quickstart = tera_raw_wrap(quickstart)
     quickstart = demote_headings(quickstart)
     quickstart = outdent_nested_callouts(quickstart)
+    quickstart = wrap_mermaid_diagrams(quickstart, "Quickstart")
     (content / "quickstart.md").write_text(quickstart, encoding="utf-8")
 
     # The changelog is a plain repository document: the site page

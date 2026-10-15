@@ -27,6 +27,19 @@ the chapters with the web:
    block-level divs that, under the render-then-parse model, tear the
    surrounding list apart. Every nested callout moves to the top
    level, its inner structure intact.
+4. **Mermaid fences hatched.** The chapters write diagrams as
+   ```mermaid fences for the PDF pipeline's figure machinery; the
+   site's theme expects its `devlab.diagram` component, which loads
+   the bundled renderer only on the pages that use it — the marker
+   itself is the switch, no configuration needed. The seam wraps
+   each fence as a component, with curated labels and descriptions
+   for the four diagrams the manual carries and a generic fallback
+   for any future one. Each hatched body opens with a mermaid init
+   directive that disables `useMaxWidth`, so diagrams render at
+   their natural width — the site's stylesheet scales them down
+   when wide, never up. And each flowchart direction flips from LR
+   to TD: the site's column wants its chains standing up, not
+   stretched wide — the PDF keeps its ribbons as typeset.
 
 The sources are never touched: the PDF pipeline keeps its typeset
 nesting and heading levels, the repository's browsable Markdown keeps
