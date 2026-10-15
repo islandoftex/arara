@@ -21,7 +21,10 @@ insert_anchor_links = "right"
 
 [markdown.highlighting]
 light_theme = "github-light"
-dark_theme = "github-dark"
+dark_theme = "github-dark-high-contrast"
+# The site's own highlight themes, as JSON TextMate files — see
+# highlight_themes/README.md.
+extra_themes = ["highlight_themes/github-dark-high-contrast.json"]
 
 # The landing: the hero beside its recording, then the story.
 [extra.devlab.home]
