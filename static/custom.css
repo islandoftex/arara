@@ -280,3 +280,13 @@ h1, h2, h3, h4, h5, h6 { font-family: "Rosario", var(--font-sans); }
 .callout--info code    { color: #ffffff; background: #1d6fa5; }
 .callout--warning code { color: #ffffff; background: #a84a0f; }
 .callout--error code   { color: #ffffff; }
+
+/* ── Diagrams at natural size ─────────────────────────────────────
+ * The theme stretches every rendered diagram to the full stage
+ * width, which turns compact flowchains into wall posters. The
+ * assembly script disables mermaid's useMaxWidth so the renderer
+ * lays out at the natural width; this rule makes the stylesheet
+ * respect it — never upscale, downscale gracefully when wider.
+ */
+
+.diagram-svg { width: auto; max-width: 100%; }
