@@ -4,7 +4,7 @@ package org.islandoftex.arara.api.files
 import org.islandoftex.arara.api.rules.Directive
 
 /**
- * A file in a [Project]. This layer is a [MPPPath] providing a [FileType]
+ * A file in a [Project]. This layer wraps a [MPPPath] with a [FileType]
  * object to ensure arara is able to choose the right behavior dependent on the
  * file's type.
  */
@@ -25,8 +25,10 @@ public interface ProjectFile {
 
     /**
      * Within a project, a file may have a priority. Files with highest
-     * priority are compiled before files with lower priority. Files with
-     * equal priority are ordered by normalized path by the default executor.
+     * priority are compiled before files with lower priority. Files
+     * with equal priority run in the sorted order of their resolved
+     * paths, so the order is deterministic even when the
+     * specification cannot express one.
      */
     public val priority: Int
 
@@ -34,7 +36,8 @@ public interface ProjectFile {
      * Get the file's directives. This does not put them into any context,
      * just resolves the literal directives.
      *
-     * @param parseOnlyHeader Stop when a line no longer matches the file's comment pattern.
+     * @param parseOnlyHeader Whether the extraction looks at the
+     *   header alone.
      * @return The list of directives in the file, in order.
      */
     public fun fetchDirectives(parseOnlyHeader: Boolean): List<Directive>

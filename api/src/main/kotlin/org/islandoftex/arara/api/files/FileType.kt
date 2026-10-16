@@ -15,7 +15,9 @@ public interface FileType {
      */
     public val pattern: String
 
-    /** Sentinel values used to represent an unknown file type. */
+    /**
+     * Constants for invalid file types.
+     */
     public companion object {
         /**
          * This constant identifies an invalid extension. As unices do not
@@ -25,15 +27,10 @@ public interface FileType {
         public const val INVALID_EXTENSION: String = "/\\"
 
         /**
-         * This constant identifies an invalid pattern. This is an opening
-         * character class which is invalid.
+         * This constant identifies an invalid pattern: an empty
+         * one, which matches every line and thus distinguishes
+         * nothing on its own.
          */
         public const val INVALID_PATTERN: String = ""
     }
-
-    /**
-     * This indicates whether an instance of an implementation is invalid.
-     */
-    public val isUnknown: Boolean
-        get() = extension == INVALID_EXTENSION || pattern == INVALID_PATTERN
 }

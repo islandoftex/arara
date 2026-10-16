@@ -6,29 +6,45 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 
 /**
- * Platform-independent object to represent a date and time.
+ * A date and time representation.
  */
-public actual class DateTime {
-    /** Calendar year in the selected time zone. */
+public class DateTime {
+    /**
+     * The year of the date.
+     */
     public val year: Int
-    /** Month of year, from 1 to 12. */
+    /**
+     * The month of the year, from 1 (January) to 12 (December).
+     */
     public val month: Int
-    /** Day of month, from 1 to 31. */
+    /**
+     * The day of the month, from 1 to 31.
+     */
     public val day: Int
-    /** Hour of day, from 0 to 23. */
+    /**
+     * The hour of the day, from 0 to 23.
+     */
     public val hour: Int
-    /** Minute of hour, from 0 to 59. */
+    /**
+     * The minute of the hour, from 0 to 59.
+     */
     public val minute: Int
-    /** Second of minute, from 0 to 59. */
+    /**
+     * The second of the minute, from 0 to 59.
+     */
     public val second: Int
 
+    /**
+     * The zone the date-time renders in, defaulting to the
+     * system zone of the running JVM.
+     */
     private val timezone: ZoneId = ZoneId.systemDefault()
 
     /**
      * Constructor that builds the object from each part of a date (year,
      * month, and day) and time (hour, minute, second).
      */
-    public actual constructor(
+    public constructor(
             year: Int,
             month: Int,
             day: Int,
@@ -47,7 +63,7 @@ public actual class DateTime {
     /**
      * Constructor that builds the object from a long timestamp.
      */
-    public actual constructor(timestamp: Long) {
+    public constructor(timestamp: Long) {
         Instant.ofEpochMilli(timestamp)
                 .atZone(timezone).toLocalDateTime().let {
             year = it.year
@@ -59,7 +75,11 @@ public actual class DateTime {
         }
     }
 
-    /** Local date and time in `yyyy-MM-dd HH:mm:ss` form. */
+    /**
+     * The point in time as a timestamp of the form
+     * `year-month-day hour:minute:second`, with the numbers zero
+     * padded.
+     */
     override fun toString(): String = "%d-%02d-%02d %02d:%02d:%02d"
             .format(year, month, day, hour, minute, second)
 

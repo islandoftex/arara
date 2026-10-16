@@ -7,7 +7,8 @@ package org.islandoftex.arara.api
 public open class AraraException : Exception {
     /**
      * The underlying exception, used to hold more details
-     * on what really happened
+     * on what really happened. Note that this mirrors the inherited
+     * cause of the exception; prefer reading the cause in new code.
      */
     public val exception: Exception?
 
@@ -24,7 +25,8 @@ public open class AraraException : Exception {
      * @param message The exception message.
      * @param exception The underlying exception object.
      */
-    public constructor(message: String, exception: Exception) : super(message, exception) {
+    public constructor(message: String, exception: Exception) :
+            super(message, exception) {
         this.exception = exception
     }
 
@@ -33,12 +35,15 @@ public open class AraraException : Exception {
      * @param message The exception message.
      * @param throwable The underlying exception as generic throwable.
      */
-    public constructor(message: String, throwable: Throwable) : this(message, RuntimeException(throwable))
+    public constructor(message: String, throwable: Throwable) :
+            this(message, RuntimeException(throwable))
 
     /**
-     * Checks if there is an underlying exception defined in the current object.
+     * Checks if there is an underlying exception with a message defined in
+     * the current object. Note that the check includes the message: an
+     * underlying exception without a message of its own counts as absent.
      * @return A boolean value indicating if the current object has an
-     * underlying exception.
+     * underlying exception with a message.
      */
     public fun hasException(): Boolean = exception?.message != null
 }
@@ -56,6 +61,15 @@ public class SafeRunViolationException(msg: String) : AraraException(msg)
  * error occurs.
  */
 public class AraraIOException : AraraException {
+    /**
+     * Constructor that takes the message of the failure.
+     */
     public constructor(msg: String) : super(msg)
-    public constructor(msg: String, exception: Exception) : super(msg, exception)
+
+    /**
+     * Constructor that takes the message of the failure and the
+     * underlying cause.
+     */
+    public constructor(msg: String, exception: Exception) :
+            super(msg, exception)
 }

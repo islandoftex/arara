@@ -21,12 +21,11 @@ public interface UserInterfaceOptions {
      */
     public val terminalOutputWidth: Int
 
-    /** Optional maximum width for adaptive console layouts; null retains the detected terminal width. */
-    public val terminalOutputWidthLimit: Int? get() = null
-
-    /** Whether styled tasks may animate on an interactive terminal with cursor support. */
-    public val enableAnimations: Boolean get() = true
-
-    /** Console presentation requested by configuration, or the host default. */
-    public val consoleMode: String? get() = null
+    /**
+     * Whether the terminal presentations may animate their live
+     * feedback while a task runs. The breath is on by default:
+     * the animations key silences it, and a stream that cannot
+     * carry it never sees a frame.
+     */
+    public val enableAnimations: Boolean
 }

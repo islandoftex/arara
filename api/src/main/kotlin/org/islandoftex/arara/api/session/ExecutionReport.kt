@@ -28,9 +28,11 @@ public interface ExecutionReport {
 
     /**
      * The exit code reported by the execution. It will propagate the first
-     * error exit code on [ExecutionOptions.haltOnErrors], the last error exit
-     * code if [ExecutionOptions.haltOnErrors] is falsy and the success code
-     * `0` if the run completes successfully.
+     * error exit code on
+     * [ExecutionOptions.haltOnErrors][org.islandoftex.arara.api.configuration.ExecutionOptions.haltOnErrors],
+     * the last error exit code if
+     * [ExecutionOptions.haltOnErrors][org.islandoftex.arara.api.configuration.ExecutionOptions.haltOnErrors]
+     * is falsy and the success code `0` if the run completes successfully.
      */
     public val exitCode: Int
 }

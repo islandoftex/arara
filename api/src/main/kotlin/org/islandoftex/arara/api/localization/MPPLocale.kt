@@ -4,12 +4,27 @@ package org.islandoftex.arara.api.localization
 import java.text.DecimalFormatSymbols
 import java.util.Locale
 
-public actual class MPPLocale actual constructor(tag: String) {
+/**
+ * A locale representation, identified by an IETF BCP 47 language tag such
+ * as `en` or `pt-BR`.
+ */
+public class MPPLocale constructor(tag: String) {
+    /**
+     * The JVM locale the tag resolved to, backing the display
+     * names and the format calls.
+     */
     private val locale: Locale = Locale.forLanguageTag(tag)
 
-    public actual val displayLanguage: String = locale.displayLanguage
+    /**
+     * The name of the locale's language, localized for display.
+     */
+    public val displayLanguage: String = locale.displayLanguage
 
-    public actual val decimalSeparator: Char = DecimalFormatSymbols(locale)
+    /**
+     * The decimal separator character used by the locale, e.g. `,` for
+     * German.
+     */
+    public val decimalSeparator: Char = DecimalFormatSymbols(locale)
         .decimalSeparator
 
     /**
@@ -17,14 +32,21 @@ public actual class MPPLocale actual constructor(tag: String) {
      */
     public fun toJVMLocale(): Locale = locale
 
-    /** Hash of the underlying JVM locale. */
+    /**
+     * The hash code is derived from the wrapped JVM locale, consistent
+     * with [equals].
+     */
     override fun hashCode(): Int =
         locale.hashCode()
-    /** The underlying JVM locale identifier. */
+    /**
+     * The string representation is the one of the wrapped JVM locale.
+     */
     override fun toString(): String =
         locale.toString()
 
-    /** Whether both wrappers contain the same JVM locale. */
+    /**
+     * Two locales are equal if they wrap the same JVM locale.
+     */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

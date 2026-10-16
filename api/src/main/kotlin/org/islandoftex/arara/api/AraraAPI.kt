@@ -4,9 +4,10 @@ package org.islandoftex.arara.api
 /**
  * Store information about arara's build.
  */
-public expect object AraraAPI {
+public object AraraAPI {
     /**
      * arara's version.
      */
-    public val version: String
+    @Suppress("MayBeConst")
+    public val version: String = "8.0.0-SNAPSHOT"
 }
