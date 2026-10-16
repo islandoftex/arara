@@ -15,8 +15,8 @@ import org.islandoftex.arara.core.files.workspace.present
 import org.islandoftex.arara.core.files.workspace.trackWorkspace
 
 /** JVM staging uses native operations for links, binary copying and atomic state replacement. */
-actual object BuildWorkspaces {
-    actual fun validate(projects: List<Project>, observer: (BuildWorkspaceEvent) -> Unit) {
+object BuildWorkspaces {
+    fun validate(projects: List<Project>, observer: (BuildWorkspaceEvent) -> Unit = { }) {
         val enabled = projects.filter { it.buildDirectory != null }
         for ((index, project) in enabled.withIndex()) trackWorkspace(
             project, BuildWorkspaceOperation.VALIDATE, observer
@@ -40,8 +40,9 @@ actual object BuildWorkspaces {
     private fun invalid(root: MPPPath): Nothing =
         throw AraraException(messages.errorBuildDirectoryInvalid(root.toString()))
 
-    actual fun prepare(
-        project: Project, excluded: List<MPPPath>, stage: Boolean, observer: (BuildWorkspaceEvent) -> Unit
+    fun prepare(
+        project: Project, excluded: List<MPPPath>, stage: Boolean = true,
+        observer: (BuildWorkspaceEvent) -> Unit = { }
     ): Project {
         if (project.buildDirectory == null) return project
         return if (!stage) guarded(project) {
@@ -69,7 +70,7 @@ actual object BuildWorkspaces {
         }
     }
 
-    actual fun clean(project: Project, observer: (BuildWorkspaceEvent) -> Unit) {
+    fun clean(project: Project, observer: (BuildWorkspaceEvent) -> Unit = { }) {
         if (project.buildDirectory == null) return
         trackWorkspace(project, BuildWorkspaceOperation.CLEAN, observer) {
             validate(listOf(project))

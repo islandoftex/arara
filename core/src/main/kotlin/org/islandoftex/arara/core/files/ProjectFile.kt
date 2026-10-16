@@ -11,18 +11,29 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.Directives
 
 /**
- * A source file and its execution metadata.
- * Equality includes path, file type and priority; file ownership is validated separately.
+ * Implements the project file model: a file reference paired with its
+ * type and a priority deciding the execution order within a project.
  */
 open class ProjectFile(
-    /** Source path used for directive extraction. */
+    /**
+     * The path of the file within the project.
+     */
     override val path: MPPPath,
-    /** Filename extension and directive comment pattern. */
+    /**
+     * The type the file was detected as.
+     */
     override val fileType: FileType,
-    /** Execution priority within the project; higher values run first. */
+    /**
+     * The priority deciding the execution order within the project;
+     * files with the highest priority run first, and equals run in
+     * the sorted order of their resolved paths - the map form of
+     * the specification has no declaration order to keep.
+     */
     override val priority: Int = DEFAULT_PRIORITY
 ) : ProjectFile {
-    /** Default execution metadata for project files. */
+    /**
+     * Holds the default priority of a project file.
+     */
     companion object {
         /**
          * This value represents the default priority of a project file. It
@@ -32,7 +43,10 @@ open class ProjectFile(
         const val DEFAULT_PRIORITY = 0
     }
 
-    /** Compare path, file type and priority. */
+    /**
+     * Two project files are equal if they agree on path, file type and
+     * priority.
+     */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is org.islandoftex.arara.core.files.ProjectFile) return false
@@ -44,7 +58,9 @@ open class ProjectFile(
         return true
     }
 
-    /** Hash the same metadata used by [equals]. */
+    /**
+     * The hash code is consistent with [equals].
+     */
     override fun hashCode(): Int {
         var result = path.hashCode()
         result = 31 * result + fileType.hashCode()
@@ -53,8 +69,8 @@ open class ProjectFile(
     }
 
     /**
-     * Read directives from [path], restricting extraction to the header when requested.
-     * Read failures are wrapped in [AraraException] with the original cause.
+     * Extracts the directives of the file, honouring the header-only
+     * flag and the comment pattern of the file type.
      */
     override fun fetchDirectives(parseOnlyHeader: Boolean): List<Directive> =
         try {
@@ -70,7 +86,10 @@ open class ProjectFile(
             )
         }
 
-    /** Describe the path, file type and priority for diagnostics. */
+    /**
+     * A human-readable representation of the project file, for logs and
+     * error reports.
+     */
     override fun toString(): String {
         return "ProjectFile(path=$path, fileType=$fileType, priority=$priority)"
     }

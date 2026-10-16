@@ -2,30 +2,32 @@
 package org.islandoftex.arara.core.files
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import okio.FileSystem
+import okio.Path.Companion.toPath
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.configuration.ExecutionMode
 import org.islandoftex.arara.api.configuration.ExecutionOptions
+import org.islandoftex.arara.api.files.FileType
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.utils.globToRegex
 
 /**
- * Implements file searching auxiliary methods.
- *
- * @author Island of TeX
- * @version 5.0
- * @since 4.0
+ * Implements the file lookups, from reference resolution to the file
+ * type discovery the interpreter dispatches on.
  */
 object FileSearching {
-    // get the logger context from a factory
+    /**
+     * The logger of the file searching.
+     */
     private val logger = KotlinLogging.logger { }
 
     /**
-     * List all files from the provided directory according to the list of
-     * extensions. The leading dot must be omitted, unless it is part of the
-     * extension.
+     * List all files from the provided directory according to the
+     * list of extensions. Each file matches by the text that
+     * follows the last dot of its name, so the extensions carry
+     * no leading dot.
      *
      * @param directory The provided directory.
      * @param extensions The list of extensions.
@@ -55,22 +57,63 @@ object FileSearching {
         patterns: List<String>,
         recursive: Boolean
     ): List<MPPPath> =
+        // return the result of the provided
+        // search, with the wildcard filter
+        // and a potential recursive search
         patterns.map { it.globToRegex() }.let { regexes ->
-            searchFiles(directory, recursive).filter { file -> regexes.any { it.matches(file.fileName) } }
+            searchFiles(directory, recursive).filter { file ->
+                regexes.any { it.matches(file.fileName) }
+            }
         }
 
-    private fun searchFiles(directory: MPPPath, recursive: Boolean): List<MPPPath> = try {
-        directory.listFiles(recursive)
-    } catch (_: AraraIOException) {
-        emptyList()
+    // the traversal returns the search target itself when it is a
+    // regular file — the platform walk included such a target in its
+    // own results — and otherwise lists the directory tree, following
+    // links as the platform walk did; the recursive listing is lazy,
+    // so it is materialized inside the block for traversal failures
+    // to hit the fallback
+    /**
+     * Lists the regular files of the provided directory, its whole
+     * tree when the recursive flag is set, falling back to an
+     * empty list when the traversal fails.
+     *
+     * @param directory The directory to search.
+     * @param recursive Whether the search follows the whole tree.
+     * @return The regular files the traversal found.
+     */
+    private fun searchFiles(
+        directory: MPPPath,
+        recursive: Boolean
+    ): List<MPPPath> {
+        val target = directory.normalize()
+        if (target.isRegularFile) return listOf(target)
+        return runCatching {
+            val path = target.toString().toPath()
+            val entries = if (recursive)
+                FileSystem.SYSTEM.listRecursively(path, followSymlinks = true)
+            else
+                FileSystem.SYSTEM.listOrNull(path).orEmpty().asSequence()
+            entries.map { MPPPath(it.toString()) }.toList()
+        }.getOrDefault(
+            // if something bad happens,
+            // gracefully fallback to
+            // an empty file list
+            emptyList()
+        ).filter {
+            it.isRegularFile
+        }
     }
 
     /**
-     * Discovers the file through string reference lookup and sets the
-     * configuration accordingly.
+     * Discovers the file through string reference lookup, failing
+     * with a localized error when no file matches.
      *
      * @param reference The string reference.
-     * @throw AraraException Something wrong happened, to be caught in the
+     * @param workingDirectory The working directory to resolve the
+     *   reference against.
+     * @param executionOptions The execution options holding the known
+     *   file types.
+     * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
     @Throws(AraraException::class)
@@ -80,38 +123,108 @@ object FileSearching {
         executionOptions: ExecutionOptions
     ): ProjectFile =
         lookupFile(reference, workingDirectory, executionOptions)
-            ?: throw fileResolutionError(reference, workingDirectory, executionOptions)
+            ?: throw fileResolutionError(
+                reference, workingDirectory, executionOptions
+            )
 
+    /**
+     * Builds the error for a reference no file of the run
+     * resolves: an existing file whose extension no type carries
+     * is told so instead of being reported missing - a plain Lua
+     * file getting the verdict that also names its project
+     * specification suffix - and everything else keeps the
+     * not-found verdict with the extensions the run would have
+     * completed the name with.
+     */
     private fun fileResolutionError(
         reference: String,
         workingDirectory: MPPPath,
         executionOptions: ExecutionOptions
     ): AraraException {
-        val messages = LanguageController.messages
-        val extensions = executionOptions.fileTypes.map { it.extension }.distinct().joinToString(", ")
-        val path = workingDirectory / reference
-        val message = when {
-            path.isRegularFile -> if (reference.endsWith(".lua")) {
-                messages.errorDiscoverFileUnknownLuaExtension(reference, extensions)
-            } else {
-                messages.errorDiscoverFileUnknownExtension(reference, extensions)
-            }
-            executionOptions.executionMode == ExecutionMode.SAFE_RUN ->
-                messages.errorDiscoverFileSafeModeNoCompletion(reference)
-            else -> messages.errorDiscoverFileFileNotFound(reference, extensions)
+        val target = (workingDirectory / reference).normalize()
+        return when {
+            target.exists && target.isRegularFile ->
+                AraraException(
+                    // a plain Lua file could also be a project
+                    // specification waiting for its suffix
+                    if (target.fileName.substringAfterLast('.', "") == "lua") {
+                        LanguageController.messages
+                            .errorDiscoverFileUnknownLuaExtension(
+                                reference,
+                                knownExtensions(executionOptions)
+                            )
+                    } else {
+                        LanguageController.messages
+                            .errorDiscoverFileUnknownExtension(
+                                reference,
+                                knownExtensions(executionOptions)
+                            )
+                    }
+                )
+            else ->
+                AraraException(
+                    // safe mode refuses the extension completion, so
+                    // the verdict says so instead of enumerating
+                    // extensions the run never tried
+                    if (executionOptions.executionMode == ExecutionMode.SAFE_RUN) {
+                        LanguageController.messages
+                            .errorDiscoverFileSafeModeNoCompletion(reference)
+                    } else {
+                        LanguageController.messages
+                            .errorDiscoverFileFileNotFound(
+                                reference,
+                                knownExtensions(executionOptions)
+                            )
+                    }
+                )
         }
-        return AraraException(message)
     }
+
+    /**
+     * Names the extensions of the run's effective file types as
+     * a plain enumeration, in the priority order of the list:
+     * the first spelling of a redeclared type is the one the
+     * search tries, and the listing shows once.
+     *
+     * @param executionOptions The options whose effective file
+     *   types the enumeration names.
+     * @return The plain enumeration of the extensions.
+     */
+    fun knownExtensions(executionOptions: ExecutionOptions): String =
+        executionOptions.fileTypes
+            .distinctBy { it.extension }
+            .joinToString(", ")
+
+    /**
+     * Looks up the file type an extension maps to, in the priority
+     * order of the effective file types: the first type carrying
+     * the extension wins, so a type the configuration redeclares
+     * is the one its files resolve to.
+     *
+     * @param extension The extension to look up, without the
+     *   leading dot.
+     * @param executionOptions The execution options holding the
+     *   known file types.
+     * @return The file type of the extension, or null when no
+     *   effective type carries it.
+     */
+    fun lookupFileType(
+        extension: String,
+        executionOptions: ExecutionOptions
+    ): FileType? =
+        executionOptions.fileTypes.firstOrNull { it.extension == extension }
 
     /**
      * Performs a file lookup based on a string reference.
      *
      * @param reference The file reference as a string.
-     * @return The file as result of the lookup operation.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
+     * @param workingDirectory The working directory to resolve the
+     *   reference against.
+     * @param executionOptions The execution options holding the known
+     *   file types.
+     * @return The file as result of the lookup operation, or null if no
+     *   match was found.
      */
-    @Throws(AraraException::class)
     internal fun lookupFile(
         reference: String,
         workingDirectory: MPPPath,
@@ -127,7 +240,24 @@ object FileSearching {
                 types.firstOrNull {
                     reference.endsWith("." + it.extension)
                 }?.let { matched ->
-                    ProjectFile(path = testFile, fileType = matched)
+                    // the type the suffix matched re-derives to its
+                    // own extension for dot-free spellings, so a
+                    // miss in the lookup means the matched
+                    // extension itself carries a dot the lookup
+                    // cannot address - the verdict names the dot
+                    // instead of claiming no type carries the
+                    // extension
+                    val fileType = lookupFileType(
+                        reference.substringAfterLast('.'),
+                        executionOptions
+                    ) ?: throw AraraException(
+                        LanguageController.messages
+                            .errorDiscoverFileDottedExtension(
+                                reference,
+                                matched.extension
+                            )
+                    )
+                    ProjectFile(path = testFile, fileType = fileType)
                 }
             }
             // when in safe mode we do not perform indirect search
@@ -143,15 +273,33 @@ object FileSearching {
             // so we need to add it and look again
             else -> {
                 val name = testFile.fileName
-                types.map { (testFile.parent / "$name.${it.extension}") to it }
+                val found = types.map {
+                    (testFile.parent / "$name.${it.extension}") to it
+                }
                     .union(
                         types.map {
                             (testFile.parent /
                                 "${name.removeSuffix(".").trim()}.${it.extension}") to it
                         }
                     )
-                    .firstOrNull { (file, _) -> file.exists && file.isRegularFile }
-                    ?.let { (file, type) -> ProjectFile(file, type) }
+                    .firstOrNull { it.first.exists && it.first.isRegularFile }
+                // the same honesty the direct search keeps: a miss
+                // in the lookup means the matched type's extension
+                // carries a dot, and the verdict names it instead
+                // of claiming the found file could not be found
+                found?.let { (file, type) ->
+                    val fileType = lookupFileType(
+                        file.toString().substringAfterLast('.'),
+                        executionOptions
+                    ) ?: throw AraraException(
+                        LanguageController.messages
+                            .errorDiscoverFileDottedExtension(
+                                reference,
+                                type.extension
+                            )
+                    )
+                    ProjectFile(file, fileType)
+                }
             }
         }
     }

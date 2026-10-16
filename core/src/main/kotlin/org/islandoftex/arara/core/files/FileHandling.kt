@@ -1,13 +1,18 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.files
 
+import java.io.IOException
 import java.util.zip.CRC32
+import okio.FileSystem
+import okio.Path.Companion.toPath
 import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.core.localization.LanguageController
 
-/** Filesystem helpers for rule evaluation and file-change detection. */
+/**
+ * Implements the common file operations, such as extension
+ * swapping, change tracking via the hash database and checksums.
+ */
 object FileHandling {
     /**
      * Resolve the sibling of a file with just its extension changed.
@@ -50,20 +55,17 @@ object FileHandling {
     @Throws(AraraException::class)
     fun calculateHash(path: MPPPath): Long =
         try {
-            path.read { input ->
-                val checksum = CRC32()
-                val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
-                var count = input.read(buffer)
-                while (count != -1) {
-                    checksum.update(buffer, 0, count)
-                    count = input.read(buffer)
-                }
-                checksum.value
-            }
-        } catch (exception: AraraIOException) {
+            CRC32().apply {
+                update(
+                    FileSystem.SYSTEM.read(path.normalize().toString().toPath()) {
+                        readByteArray()
+                    }
+                )
+            }.value
+        } catch (exception: IOException) {
             throw AraraException(
                 LanguageController.messages.errorCalculateHashIoException,
-                exception.exception ?: exception
+                exception
             )
         }
 
