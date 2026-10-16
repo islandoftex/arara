@@ -1,0 +1,292 @@
+/*
+ * arara — the identity layer.
+ *
+ * Loaded after the theme stylesheet through the extra_styles block,
+ * so same-specificity tokens win without !important.
+ *
+ * The four voices follow the manual's own registration:
+ *   Karla        the text face, Light as regular (Numbers=OldStyle in the book)
+ *   Rosario      the sans companion, the headings' voice
+ *   Expletus Sans  display text: titles, the cover
+ *   Cascadia Code  the code voice, Light as regular, ligatures intact
+ *
+ * All families are SIL Open Font License 1.1 — see fonts/OFL.txt.
+ */
+
+/* ── The four voices ─────────────────────────────────────────── */
+
+/* Karla — text face, Light as regular per the manual. */
+@font-face {
+  font-family: "Karla";
+  src: url("fonts/karla-v33-latin_latin-ext-300.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Karla";
+  src: url("fonts/karla-v33-latin_latin-ext-300italic.woff2") format("woff2");
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Karla";
+  src: url("fonts/karla-v33-latin_latin-ext-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Karla";
+  src: url("fonts/karla-v33-latin_latin-ext-700italic.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Rosario — the headings' voice. */
+@font-face {
+  font-family: "Rosario";
+  src: url("fonts/rosario-v35-latin_latin-ext-300.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Rosario";
+  src: url("fonts/rosario-v35-latin_latin-ext-300italic.woff2") format("woff2");
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Rosario";
+  src: url("fonts/rosario-v35-latin_latin-ext-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Rosario";
+  src: url("fonts/rosario-v35-latin_latin-ext-700italic.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Expletus Sans — the display voice: titles, the cover. */
+@font-face {
+  font-family: "Expletus Sans";
+  src: url("fonts/expletus-sans-v31-latin_latin-ext-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Expletus Sans";
+  src: url("fonts/expletus-sans-v31-latin_latin-ext-italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Expletus Sans";
+  src: url("fonts/expletus-sans-v31-latin_latin-ext-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Expletus Sans";
+  src: url("fonts/expletus-sans-v31-latin_latin-ext-700italic.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Cascadia Code — the code voice, Light as regular, ligatures intact. */
+@font-face {
+  font-family: "Cascadia Code";
+  src: url("fonts/cascadia-code-light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cascadia Code";
+  src: url("fonts/cascadia-code-light-italic.woff2") format("woff2");
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cascadia Code";
+  src: url("fonts/cascadia-code-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cascadia Code";
+  src: url("fonts/cascadia-code-bold-italic.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ── The tokens ─────────────────────────────────────────────────
+ * The IoT identity, split into its two sides: the cream paper
+ * (light) and the navy cover (dark), with the orange accent both
+ * sides share. Three blocks, per the theme's prescription: explicit
+ * light, the system-dark fallback, and explicit dark.
+ */
+
+:root,
+:root[data-theme="light"] {
+  --font-sans: "Karla", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Cascadia Code", ui-monospace, monospace;
+
+  --color-bg: #f5f0e3;
+  --color-surface: #fdfaf1;
+  --color-fg: #102542;
+  --color-muted: #5c6c85;
+  --color-border: #d8d2c4;
+  --color-accent: #e66c1b;
+  --color-accent-contrast: #ffffff;
+
+  /* Code surfaces keep the navy both sides — the book's listings. */
+  --color-code-bg: #102542;
+  --color-code-fg: #eae0cc;
+  --color-pre-bg: #102542;
+  --color-pre-fg: #eae0cc;
+  --color-pre-scheme: dark;
+
+  /* Strong surfaces decouple from the code voice: the theme aliases
+     surface-strong to code-bg, which would sweep the hero gradient
+     into the listings' navy. Here it settles into deep cream. */
+  --color-surface-strong: #e9ddc4;
+
+  --color-callout-info-bg: #e3edf5;
+  --color-callout-info-border: #449dd1;
+  --color-callout-info-fg: #102542;
+  --color-callout-tip-bg: #e3efe7;
+  --color-callout-tip-border: #2c6e49;
+  --color-callout-tip-fg: #102542;
+  --color-callout-warning-bg: #f8e9dc;
+  --color-callout-warning-border: #e66c1b;
+  --color-callout-warning-fg: #102542;
+  --color-callout-error-bg: #f4e0dc;
+  --color-callout-error-border: #a63d2f;
+  --color-callout-error-fg: #102542;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #102542;
+    --color-surface: #18304f;
+    --color-fg: #eae0cc;
+    --color-muted: #9fb0c8;
+    --color-border: #2a3f5f;
+    --color-accent: #e66c1b;
+    --color-accent-contrast: #102542;
+
+    --color-code-bg: #0b1b33;
+    --color-code-fg: #eae0cc;
+    --color-pre-bg: #0b1b33;
+    --color-pre-fg: #eae0cc;
+    --color-pre-scheme: dark;
+
+    /* strong surfaces settle, not plunge */
+    --color-surface-strong: #0b1b33;
+
+    --color-callout-info-bg: #1a3055;
+    --color-callout-info-border: #449dd1;
+    --color-callout-info-fg: #eae0cc;
+    --color-callout-tip-bg: #16362b;
+    --color-callout-tip-border: #2c6e49;
+    --color-callout-tip-fg: #eae0cc;
+    --color-callout-warning-bg: #382711;
+    --color-callout-warning-border: #e66c1b;
+    --color-callout-warning-fg: #eae0cc;
+    --color-callout-error-bg: #3a1f1a;
+    --color-callout-error-border: #c65b45;
+    --color-callout-error-fg: #eae0cc;
+  }
+}
+
+:root[data-theme="dark"] {
+  --color-bg: #102542;
+  --color-surface: #18304f;
+  --color-fg: #eae0cc;
+  --color-muted: #9fb0c8;
+  --color-border: #2a3f5f;
+  --color-accent: #e66c1b;
+  --color-accent-contrast: #102542;
+
+  --color-code-bg: #0b1b33;
+  --color-code-fg: #eae0cc;
+  --color-pre-bg: #0b1b33;
+  --color-pre-fg: #eae0cc;
+  --color-pre-scheme: dark;
+
+  /* strong surfaces settle, not plunge */
+  --color-surface-strong: #0b1b33;
+
+  --color-callout-info-bg: #1a3055;
+  --color-callout-info-border: #449dd1;
+  --color-callout-info-fg: #eae0cc;
+  --color-callout-tip-bg: #16362b;
+  --color-callout-tip-border: #2c6e49;
+  --color-callout-tip-fg: #eae0cc;
+  --color-callout-warning-bg: #382711;
+  --color-callout-warning-border: #e66c1b;
+  --color-callout-warning-fg: #eae0cc;
+  --color-callout-error-bg: #3a1f1a;
+  --color-callout-error-border: #c65b45;
+  --color-callout-error-fg: #eae0cc;
+}
+
+/* ── Which voice speaks where ─────────────────────────────────── */
+
+/* The body is Light, exactly like the manual's prose. */
+body { font-weight: 300; }
+
+/* Rosario carries the headings — the book's running-header voice. */
+h1, h2, h3, h4, h5, h6 { font-family: "Rosario", var(--font-sans); }
+
+/* Expletus Sans carries display text — the cover's voice. */
+.hero-title, .hero-eyebrow { font-family: "Expletus Sans", var(--font-sans); }
+
+/* ── knuthify: Knuth's metrics, ported ────────────────────────────
+ * \TeX = T\kern-.1667em\lower.5ex\hbox{E}\kern-.125emX (D. E. Knuth)
+ * The LaTeX A follows the LaTeX2e kernel: a script-size capital.
+ */
+
+.tex-logo   { white-space: nowrap; }
+.tex-logo-e { vertical-align: -0.5ex; margin-left: -0.1667em; margin-right: -0.125em; }
+.tex-logo-a { font-size: 0.72em; vertical-align: 0.45ex; margin-left: -0.36em; margin-right: -0.15em; }
+
+/* ── Callout code chips ───────────────────────────────────────────
+ * The theme paints inline code inside callouts with the callout's
+ * saturated border color and typesets it with the callout's body
+ * foreground — a pairing that drowns when the foreground is dark.
+ * The deep greens and bricks carry white directly; the bright blues
+ * and oranges cannot, so their chips deepen one shade in the same
+ * hue first — and then every chip speaks the same white ink.
+ */
+
+.callout--tip code     { color: #ffffff; }
+.callout--info code    { color: #ffffff; background: #1d6fa5; }
+.callout--warning code { color: #ffffff; background: #a84a0f; }
+.callout--error code   { color: #ffffff; }
+
+/* ── Diagrams at natural size ─────────────────────────────────────
+ * The theme stretches every rendered diagram to the full stage
+ * width, which turns compact flowchains into wall posters. The
+ * assembly script disables mermaid's useMaxWidth so the renderer
+ * lays out at the natural width; this rule makes the stylesheet
+ * respect it — never upscale, downscale gracefully when wider.
+ */
+
+.diagram-svg { width: auto; max-width: 100%; }
