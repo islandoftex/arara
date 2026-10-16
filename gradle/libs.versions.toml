@@ -1,5 +1,6 @@
 [versions]
 chronoheader-version = "0.1.2"
+leopack-version = "0.1.1"
 clikt-version = "5.1.0"
 detekt-version = "1.23.8"
 dokka-version = "2.2.0"
@@ -53,6 +54,7 @@ zt-exec = { group = "org.zeroturnaround", name = "zt-exec", version.ref = "zt-ex
 
 [plugins]
 chronoheader = { id = "org.islandoftex.chronoheader", version.ref = "chronoheader-version" }
+leopack-scribeswan = { id = "org.islandoftex.leopack.scribeswan", version.ref = "leopack-version" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt-version" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka-version" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }

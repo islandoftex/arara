@@ -193,3 +193,35 @@ pages:
       - public
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
+
+# the CTAN artifact: the texlive image needs a JDK for Gradle (the
+# smoke test's precedent), and one command builds the jar, typesets
+# the books with the tool itself, and packs everything LeoPack-style
+docs:ctan:
+  stage: docs
+  image: registry.gitlab.com/islandoftex/images/texlive:latest
+  variables:
+    ARARA_DOCS_KROKI: "http://kroki:8000"
+  services:
+    - name: yuzutech/kroki-mermaid
+      alias: kroki-mermaid
+      variables:
+        KROKI_MERMAID_HOST: 0.0.0.0
+        KROKI_MERMAID_PORT: "8000"
+    - name: yuzutech/kroki
+      alias: kroki
+      variables:
+        KROKI_MERMAID_HOST: kroki-mermaid
+        KROKI_MERMAID_PORT: "8002"
+  before_script:
+    - apt-get update && apt-get install -y openjdk-21-jdk-headless
+  script:
+    - ./gradlew ctanZip -Parara.docs.kroki=$ARARA_DOCS_KROKI
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME-ctan"
+    paths:
+      - build/ctan
+    expire_in: 1 week
+  cache:
+    <<: *cachedefinition
+    policy: pull

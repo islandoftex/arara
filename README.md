@@ -1,6 +1,4 @@
-[![pipeline status](https://gitlab.com/islandoftex/arara/badges/main/pipeline.svg?style=flat-square)](https://gitlab.com/islandoftex/arara/-/pipelines)
-[![Latest release](https://img.shields.io/badge/dynamic/json.svg?color=blue&label=Latest%20release&query=%24.0.name&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2F14349047%2Frepository%2Ftags&style=flat-square)](https://gitlab.com/islandoftex/arara/-/releases)
-![Requires Java 11+](https://img.shields.io/badge/Requires-Java_11%2B-blue.svg?style=flat-square)
+[![pipeline status](https://gitlab.com/islandoftex/arara/badges/main/pipeline.svg?style=flat-square)](https://gitlab.com/islandoftex/arara/-/pipelines) [![Latest release](https://img.shields.io/badge/dynamic/json.svg?color=blue&label=Latest%20release&query=%24.0.name&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2F14349047%2Frepository%2Ftags&style=flat-square)](https://gitlab.com/islandoftex/arara/-/releases) [![Requires Java 11+](https://img.shields.io/badge/Requires-Java_11%2B-blue.svg?style=flat-square)
 
 # arara
 

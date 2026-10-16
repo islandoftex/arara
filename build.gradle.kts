@@ -1,5 +1,12 @@
 // SPDX-License-Identifier: BSD-3-Clause
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
+import org.islandoftex.leopack.Stage
+import org.islandoftex.leopack.scribeswan.scribeswan
+import org.islandoftex.scribeswan.bold
+import org.islandoftex.scribeswan.italic
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import io.gitlab.arturbosch.detekt.Detekt
 import java.io.File
 import org.gradle.api.Action
@@ -54,6 +61,7 @@ plugins {
     alias(libs.plugins.kover)
     alias(libs.plugins.chronoheader)
     alias(libs.plugins.solstice)
+    alias(libs.plugins.leopack.scribeswan)
     `java-base`
 }
 
@@ -385,6 +393,216 @@ val renderDiagrams: TaskProvider<Task> = tasks.register("renderDiagrams") {
             DocsConversion.renderDiagrams(generatedDir.get().asFile.resolve("assets"), endpoint.get())
         logger.lifecycle("Rendered {} diagram(s) through {}", figures.size, endpoint.get())
     }
+}
+
+// ── the CTAN artifact ─────────────────────────────────────────────────────
+// arara packs itself: the freshly built jar, staged with its rule pack
+// exactly as CTAN delivers it, typesets the manual and the quickstart,
+// and LeoPack derives the TDS tree and the submission zip — the tool
+// ships its own books, packed by its own family.
+
+// the packaging block resolves :cli's shadow jar at configuration
+// time, and the root configures before its children, so the
+// evaluation dependency makes the task resolvable first
+evaluationDependsOn(":cli")
+
+// the staged run mirrors the shipped layout: arara.jar with rules/
+// beside it, the configuration every CTAN user receives
+val stageAraraRun = tasks.register<Sync>("stageAraraRun") {
+    dependsOn(":cli:shadowJar")
+    into(layout.buildDirectory.dir("arara-run"))
+    from(project(":cli").tasks.named("shadowJar")) { rename { "arara.jar" } }
+    // from copies directory contents, so the into wrapper recreates
+    // the folder: arara looks for rules/ beside its own jar
+    into("rules") { from("rules") }
+}
+
+// the books are typeset by arara itself: the staged jar drives
+// LuaLaTeX through the skeletons, so every release documents itself
+val typesetDocs = tasks.register("typesetDocs") {
+    dependsOn(stageAraraRun, generateVersionMacro, convertDocs, renderDiagrams)
+    val docsDir = layout.buildDirectory.dir("generated/docs")
+    val jarFile = layout.buildDirectory.file("arara-run/arara.jar")
+    outputs.files(
+        layout.buildDirectory.file("generated/docs/arara-manual.pdf"),
+        layout.buildDirectory.file("generated/docs/arara-quickstart.pdf"),
+    )
+    doLast {
+        val result = ProcessBuilder(
+            "java", "-jar", jarFile.get().asFile.absolutePath,
+            "-v", "arara-manual.tex", "arara-quickstart.tex",
+        )
+            .directory(docsDir.get().asFile)
+            .inheritIO()
+            .start()
+            .waitFor()
+        if (result != 0) {
+            throw GradleException("arara failed to typeset its own books (exit $result)")
+        }
+    }
+}
+
+// the release date rides the changelog line of the very version the
+// build carries; before that line exists — snapshots — the man page
+// falls back to today. The lookup reads the changelog through the
+// build's working directory, so the man page lambda captures nothing
+// from the script and stays configuration-cache-safe
+
+ctan {
+    // the version sentence, resolved once at configuration time: the
+    // line filters below capture this plain string instead of the
+    // extension, so the recorded operations stay cache-serializable
+    val versionSentence = "This is arara v${version.get()}."
+
+    tds {
+        doc {
+            from(typesetDocs) { include("*.pdf") }
+            // the badge row doubles as the version placeholder: the
+            // shipped copy swaps the entire line for the version
+            // sentence, so the repository keeps its badges and CTAN
+            // reads a versioned, self-contained document — the
+            // convention is that every badge lives on this one line
+            from("README.md") {
+                filterLines { line ->
+                    when {
+                        "img.shields.io" in line || "/badges/" in line -> versionSentence
+                        else -> line
+                    }
+                }
+            }
+            manPage {
+                scribeswan { version ->
+                    // the date, from the changelog's own line for this
+                    // version — or today, while the entry is Unreleased
+                    val iso = Regex("^## \\[$version\\] - (\\d{4}-\\d{2}-\\d{2})$")
+                        .find(File("CHANGELOG.md").readText())
+                        ?.groupValues?.get(1)
+                    val date = (iso?.let(LocalDate::parse) ?: LocalDate.now())
+                        .format(DateTimeFormatter.ofPattern("d MMMM uuuu", Locale.ENGLISH))
+                    header(
+                        title = "arara",
+                        section = "1",
+                        date = date,
+                        source = "arara v$version",
+                        manual = "User Commands",
+                    )
+                    name("arara", "a TeX automation tool based on rules and directives")
+                    synopsis {
+                        paragraph("${bold("arara")} [options] ${italic("documents")}...")
+                    }
+                    description {
+                        paragraph(
+                            "${bold("arara")} is a TeX automation tool based on rules and " +
+                                "directives. It gives you a way to enhance your TeX experience. " +
+                                "The tool is an effort to provide a concise way to automate the " +
+                                "daily TeX workflow for users and also package writers. Users " +
+                                "might write their own rules when the provided ones do not " +
+                                "suffice: rules speak Lua, and the YAML era continues in " +
+                                "graceful retirement.",
+                        )
+                        paragraph(
+                            "arara takes a list of documents as input. They will be " +
+                                "processed according to their directives. Options apply to " +
+                                "the execution of all documents.",
+                        )
+                    }
+                    options {
+                        option("--log") { description("Generate a log output.") }
+                        option("--verbose", "--silent") { description("Print or suppress command output.") }
+                        option("--dry-run") {
+                            description("Go through all the motions of running a command but with no actual calls.")
+                        }
+                        option("--safe-run") {
+                            description("Run in safe mode and disable potentially harmful features.")
+                        }
+                        option("--whole-file") {
+                            description("Extract directives in the file, not only in the header.")
+                        }
+                        option("--preamble", argument = "name") {
+                            description("Set the file preamble as named based on the configuration file.")
+                        }
+                        option("--timeout", argument = "milliseconds") {
+                            description("Set the execution timeout for spawned processes.")
+                        }
+                        option("--language", argument = "code") {
+                            description("Set the localization to the language specified by code.")
+                        }
+                        option("--max-loops", argument = "number") {
+                            description("Set the number greater than zero of loops for looping directives.")
+                        }
+                        option("--working-directory", argument = "path") {
+                            description("Set the working directory for the whole execution.")
+                        }
+                        option("--call-property", argument = "value") {
+                            description("Pass a property as ${bold("key=value")} parameter into the application to be used within the session.")
+                        }
+                        option("--properties-file", argument = "path") {
+                            description("Pass a properties file to the application to be used within the session.")
+                        }
+                        option("--generate-completion", argument = "shell") {
+                            description("Generate a completion script for arara.")
+                        }
+                        option("--engine", argument = "engine") {
+                            description("Select the rule engine: ${bold("yaml")} (deprecated) or ${bold("lua")}.")
+                        }
+                        option("--console", argument = "mode") {
+                            description("Select how the tool presents itself: ${bold("plain")} or ${bold("styled")}.")
+                        }
+                        option("--version") { description("Show the version and exit.") }
+                        option("--help") { description("Show a help message and exit.") }
+                    }
+                    examples {
+                        literal(
+                            """
+                            % arara: pdflatex
+                            % arara: bibtex
+                            % arara: pdflatex
+
+                            ${'$'} arara thesis.tex
+                            """.trimIndent(),
+                        )
+                    }
+                    bugs {
+                        paragraph("Issue tracker at")
+                        link("https://gitlab.com/islandoftex/arara/-/issues")
+                    }
+                }
+            }
+        }
+        scripts {
+            jar(project(":cli").tasks.named("shadowJar"))
+            launcherScript()
+            into("rules") { from("rules") }
+        }
+        source {
+            zip {
+                from(
+                    "api", "core", "lua", "mvel", "cli", "buildSrc",
+                    "build.gradle.kts", "settings.gradle.kts",
+                    "gradle/libs.versions.toml", "gradlew", "gradle/wrapper",
+                )
+                exclude("**/build/**")
+            }
+        }
+    }
+    sourceZips {
+        register("docsrc") {
+            from(layout.buildDirectory.dir("generated/docs")) {
+                // the two books ride in doc/ directly; the figures in
+                // assets/ stay — they are part of the sources
+                exclude("arara-manual.pdf", "arara-quickstart.pdf")
+            }
+            stageIn.set(Stage.DOC)
+        }
+    }
+}
+
+// the docsrc zip stages a directory, and a directory input cannot
+// wire tasks by itself; depending on the typeset step covers every
+// producer in the directory — the skeleton, the conversion, the
+// figures — and guarantees the snapshot happens after the books
+tasks.named("ctanSourceZipDocsrc") {
+    dependsOn(typesetDocs)
 }
 
 // opt-in gate: run the build with -PwarningsAsErrors=true to prove that
