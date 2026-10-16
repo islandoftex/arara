@@ -1,0 +1,10 @@
+!config
+identifier: missingbinary
+name: Test rule for a missing binary
+commands:
+  - name: The missing binary
+    command: >
+      @{
+          return isWindows(getCommand('this-binary-does-not-exist-quack-win'), getCommand('this-binary-does-not-exist-quack'));
+      }
+arguments: []

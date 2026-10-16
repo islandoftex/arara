@@ -1,0 +1,8 @@
+!config
+identifier: echoone
+name: The echoer
+commands:
+  - name: The echoer
+    command: >
+      @{ return isWindows(getCommand('cmd', '/c', 'echo', 'QuackOne'), getCommand('echo', 'QuackOne')); }
+arguments: []

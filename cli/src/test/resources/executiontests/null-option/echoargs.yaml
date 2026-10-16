@@ -1,0 +1,27 @@
+!config
+identifier: echoargs
+name: Null option test rule
+commands:
+  - name: The echoer
+    command: >
+      @{
+          if (!opt.contains('QuackDefault')) {
+              throwError('The default value was not used.');
+          }
+          return isWindows(getCommand('cmd', '/c', 'echo', 'required:', req, 'optional:', opt),
+                  getCommand('echo', 'required:', req, 'optional:', opt));
+      }
+arguments:
+- identifier: req
+  required: true
+  flag: >
+    @{
+        return parameters.req;
+    }
+- identifier: opt
+  required: false
+  default: 'QuackDefault'
+  flag: >
+    @{
+        return parameters.opt;
+    }

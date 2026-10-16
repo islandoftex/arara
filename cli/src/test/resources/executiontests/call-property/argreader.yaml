@@ -1,0 +1,8 @@
+!config
+identifier: argreader
+name: The argument reader
+commands:
+  - name: The echoer
+    command: >
+      @{ return isWindows(getCommand('cmd', '/c', 'echo', getSession().get('arg:marker')), getCommand('echo', getSession().get('arg:marker'))); }
+arguments: []

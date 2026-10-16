@@ -1,0 +1,8 @@
+% arara: echoer: { marker: 'One' }
+% arara: echoer: { marker: 'Two' } if exists('nonexistent')
+% arara: echoer: { marker: 'Three' } if not exists('nonexistent')
+% arara: echoer: { marker: 'Four' } if (exists('probe') and found('probe', 'QUACK'))
+\documentclass{article}
+\begin{document}
+Lua conditional smoke test
+\end{document}

@@ -1,0 +1,14 @@
+!config
+identifier: scalarechoer
+name: Scalar options echo rule
+authors:
+  - Island of TeX
+commands:
+  - name: The echoer
+    command: >
+      @{ return isWindows(getCommand('cmd', '/c', 'echo', options), getCommand('echo', options)); }
+arguments:
+  - identifier: options
+    default: 'none'
+    flag: >
+      @{ return parameters.options; }

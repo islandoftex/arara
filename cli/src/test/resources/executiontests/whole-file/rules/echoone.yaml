@@ -1,0 +1,11 @@
+!config
+identifier: echoone
+name: The whole file echoer
+authors:
+- Island of TeX
+commands:
+  - name: The echoer
+    command: >
+      @{ return isWindows(getCommand('cmd', '/c', 'echo', 'WholeFileWorks'),
+      getCommand('echo', 'WholeFileWorks')); }
+arguments: []

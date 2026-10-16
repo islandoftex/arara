@@ -1,0 +1,10 @@
+!config
+identifier: silentone
+name: Test rule for a silent command
+commands:
+  - name: The silent one
+    command: >
+      @{
+          return isWindows(getCommand('cmd', '/c', 'exit', '0'), getCommand('true'));
+      }
+arguments: []
