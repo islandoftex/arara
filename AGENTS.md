@@ -122,9 +122,8 @@ compilation surface tapmoc does not govern — with a harmless
 Java/Kotlin target mismatch warning; switch the shell back to a
 supported JVM and the noise disappears. The foojay resolver in `settings.gradle.kts`
 remains solely to provision the smoke suite's floor runtime through the
-`printSmokeJavaRuntime` task (driven by `smoke.jvm.version` and
-`smoke.jvm.vendor`, with a loud notice whenever the smoke floor
-differs from the build floor).
+`printSmokeJavaRuntime` task (driven by `smoke.jvm.version`, with a
+loud notice whenever the smoke floor differs from the build floor).
 
 - `./gradlew :cli:run` — run arara from sources (entry point
   `org.islandoftex.arara.cli.CLIKt`).

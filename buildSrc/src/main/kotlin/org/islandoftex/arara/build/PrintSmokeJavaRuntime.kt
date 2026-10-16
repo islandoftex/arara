@@ -22,10 +22,6 @@ abstract class PrintSmokeJavaRuntime : DefaultTask() {
     @get:Input
     abstract val smokeVersion: Property<Int>
 
-    /** The vendor the smoke suite verifies on. */
-    @get:Input
-    abstract val smokeVendor: Property<String>
-
     /** The version the build itself compiles against, for the notice. */
     @get:Input
     abstract val buildFloor: Property<Int>

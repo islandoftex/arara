@@ -12,7 +12,6 @@ import org.gradle.jvm.tasks.Jar
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.jvm.toolchain.JavaToolchainService
 import org.gradle.jvm.toolchain.JavaToolchainSpec
-import org.gradle.jvm.toolchain.JvmVendorSpec
 import org.islandoftex.arara.build.AraraPublication
 import org.islandoftex.arara.build.DocsConversion
 import org.islandoftex.arara.build.GenerateSmokeBats
@@ -210,7 +209,10 @@ val validateLuaRules: Boolean = providers
         .getOrElse(false)
 
 // the smoke runtime is resolved through the toolchain service, which
-// provisions on demand; the resolution happens eagerly here so that a
+// provisions on demand; the floor asks for the version alone, since
+// a vendor constraint names the catalogue entry and the installed
+// vendor string differently, and the mainstream catalogues have
+// retired Java 11 anyway. The resolution happens eagerly here so a
 // missing floor degrades to a loud skip instead of failing every
 // build, and the smoke tasks consume the resolved value
 val smokeToolchainService = the<JavaToolchainService>()
@@ -219,7 +221,6 @@ val smokeFloorJava: String? = runCatching {
             Action<JavaToolchainSpec> {
                 languageVersion.set(JavaLanguageVersion.of(
                         providers.gradleProperty("smoke.jvm.version").get().toInt()))
-                vendor.set(JvmVendorSpec.matching(providers.gradleProperty("smoke.jvm.vendor").get()))
             }
     ).get().executablePath.asFile.absolutePath
 }.getOrNull()
@@ -259,7 +260,6 @@ tasks {
 
     register<PrintSmokeJavaRuntime>("printSmokeJavaRuntime") {
         smokeVersion.set(providers.gradleProperty("smoke.jvm.version").map { it.toInt() })
-        smokeVendor.set(providers.gradleProperty("smoke.jvm.vendor"))
         buildFloor.set(providers.gradleProperty("arara.jvm.target").map { it.toInt() })
         if (smokeFloorJava != null) {
             launcherPath.set(smokeFloorJava)
