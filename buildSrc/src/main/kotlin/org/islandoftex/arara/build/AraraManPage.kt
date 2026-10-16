@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.build
 
-import org.islandoftex.scribeswan.ManPage
-import org.islandoftex.scribeswan.bold
-import org.islandoftex.scribeswan.italic
 import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import org.islandoftex.scribeswan.ManPage
+import org.islandoftex.scribeswan.bold
+import org.islandoftex.scribeswan.italic
 
 /**
  * Writes arara's man page on ScribeSwan's builder, for the CTAN
@@ -47,6 +47,18 @@ fun ManPage.araraManPage(version: String) {
     synopsis {
         paragraph("${bold("arara")} [options] ${italic("documents")}...")
     }
+    araraDescription()
+    araraOptions()
+    araraExamples()
+    bugs {
+        paragraph("Issue tracker at")
+        link("https://gitlab.com/islandoftex/arara/-/issues")
+    }
+}
+
+// the description section, so the page builder above reads as the
+// outline of the very document it writes
+private fun ManPage.araraDescription() {
     description {
         paragraph(
             "${bold("arara")} is a TeX automation tool based on rules and " +
@@ -63,6 +75,10 @@ fun ManPage.araraManPage(version: String) {
                 "the execution of all documents.",
         )
     }
+}
+
+// the command line roster, one entry per option
+private fun ManPage.araraOptions() {
     options {
         option("--log") { description("Generate a log output.") }
         option("--verbose", "--silent") { description("Print or suppress command output.") }
@@ -91,7 +107,10 @@ fun ManPage.araraManPage(version: String) {
             description("Set the working directory for the whole execution.")
         }
         option("--call-property", argument = "value") {
-            description("Pass a property as ${bold("key=value")} parameter into the application to be used within the session.")
+            description(
+                "Pass a property as ${bold("key=value")} parameter into the " +
+                    "application to be used within the session.",
+            )
         }
         option("--properties-file", argument = "path") {
             description("Pass a properties file to the application to be used within the session.")
@@ -108,6 +127,10 @@ fun ManPage.araraManPage(version: String) {
         option("--version") { description("Show the version and exit.") }
         option("--help") { description("Show a help message and exit.") }
     }
+}
+
+// the examples section: the whole idea in two directives
+private fun ManPage.araraExamples() {
     examples {
         literal(
             """
@@ -118,9 +141,5 @@ fun ManPage.araraManPage(version: String) {
             ${'$'} arara thesis.tex
             """.trimIndent(),
         )
-    }
-    bugs {
-        paragraph("Issue tracker at")
-        link("https://gitlab.com/islandoftex/arara/-/issues")
     }
 }
