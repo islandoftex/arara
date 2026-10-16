@@ -13,6 +13,9 @@ import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.jvm.toolchain.JavaToolchainService
 import org.gradle.jvm.toolchain.JavaToolchainSpec
 import org.islandoftex.arara.build.AraraPublication
+import org.islandoftex.arara.build.GenerateSmokeBats
+import org.islandoftex.arara.build.PrintSmokeJavaRuntime
+import org.islandoftex.arara.build.RunSmokeBats
 import org.islandoftex.chronoheader.ChronoField
 import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.dokka.gradle.engine.plugins.DokkaHtmlPluginParameters
@@ -192,6 +195,23 @@ val validateLuaRules: Boolean = providers
         .map { it.toBoolean() }
         .getOrElse(false)
 
+// the smoke runtime is resolved through the toolchain service, which
+// provisions on demand; the floor asks for the version alone, since
+// a vendor constraint names the catalogue entry and the installed
+// vendor string differently, and the mainstream catalogues have
+// retired Java 11 anyway. The resolution happens eagerly here so a
+// missing floor degrades to a loud skip instead of failing every
+// build, and the smoke tasks consume the resolved value
+val smokeToolchainService = the<JavaToolchainService>()
+val smokeFloorJava: String? = runCatching {
+    smokeToolchainService.launcherFor(
+            Action<JavaToolchainSpec> {
+                languageVersion.set(JavaLanguageVersion.of(
+                        providers.gradleProperty("smoke.jvm.version").get().toInt()))
+            }
+    ).get().executablePath.asFile.absolutePath
+}.getOrNull()
+
 tasks {
 
     withType<DependencyUpdatesTask> {
@@ -225,7 +245,47 @@ tasks {
         enabled = validateLuaRules
     }
 
+    register<PrintSmokeJavaRuntime>("printSmokeJavaRuntime") {
+        smokeVersion.set(providers.gradleProperty("smoke.jvm.version").map { it.toInt() })
+        buildFloor.set(providers.gradleProperty("arara.jvm.target").map { it.toInt() })
+        if (smokeFloorJava != null) {
+            launcherPath.set(smokeFloorJava)
+        }
+    }
 
+    val generateSmokeBats = register<GenerateSmokeBats>("generateSmokeBats") {
+        outputDirectory.set(layout.buildDirectory.dir("smoke-bats"))
+    }
+
+    register<RunSmokeBats>("smoke") {
+        dependsOn(":cli:shadowJar")
+        dependsOn(generateSmokeBats)
+        batsFiles.from(generateSmokeBats.flatMap { it.outputDirectory })
+        appJar.set(project(":cli").tasks.named<Jar>("shadowJar").flatMap { it.archiveFile })
+        fixturesRoot.set(layout.projectDirectory.dir("cli/src/test/resources/executiontests"))
+        rulesRoot.set(layout.projectDirectory.dir("rules"))
+        // the scratch tree must resolve to one location for both the
+        // virtual machine and the shell: the POSIX-style default splits
+        // into two directories on Windows, where the shell maps /tmp to
+        // its own tree while the machine writes to the drive root, so
+        // Windows falls back to the machine's temp directory
+        smokeDir.set(
+            providers.environmentVariable("SMOKE_DIR").orElse(
+                if (OperatingSystem.current().isWindows)
+                    File(System.getProperty("java.io.tmpdir"), "arara-smoke")
+                        .absolutePath
+                else
+                    "/tmp/arara-smoke"
+            )
+        )
+        strict.set(providers.gradleProperty("smoke.strict").map { it.toBoolean() }.orElse(false))
+        floorVersion.set(providers.gradleProperty("smoke.jvm.version").map { it.toInt() })
+        if (smokeFloorJava != null) {
+            floorJavaPath.set(smokeFloorJava)
+        }
+        reportsDir.set(layout.buildDirectory.dir("reports/smoke"))
+        outputs.upToDateWhen { false }
+    }
 }
 
 version = spotlessChangelog.versionNext
