@@ -1,75 +1,30 @@
-# The URL the site will be built for
+# arara — the Island of TeX website
+# The site inherits its URL from the previous incarnation.
 base_url = "https://islandoftex.gitlab.io/arara"
-
 title = "arara"
 description = "A TeX automation tool based on directives and rules."
+default_language = "en"
 
 theme = "devlab-theme"
 
-# Whether to automatically compile all Sass files in the sass directory
 compile_sass = true
-
-# Whether to build a search index to be used later on by a JavaScript library
 build_search_index = true
-
-[markdown.highlighting]
-error_on_missing_language = true
-light_theme = "github-light"
-dark_theme = "github-dark-high-contrast"
-extra_themes = ["highlight_themes/github-dark-high-contrast.json"]
-
-[markdown]
-# When set to "true", emoji aliases translated to their corresponding
-# Unicode emoji equivalent in the rendered Markdown files. (e.g.: :smile: => 😄)
-render_emoji = true
-
-# Whether external links are to be opened in a new tab
-# If this is true, a `rel="noopener"` will always automatically be added for security reasons
-external_links_target_blank = true
-
-# Whether to set rel="noreferrer" for all external links
-external_links_no_referrer = true
 
 [search]
 index_format = "elasticlunr_javascript"
+include_title = true
+include_description = true
+include_content = true
 
-[extra.devlab.brand]
-logo_text = "arara"
-show_logo_mark = true
-logo_mark_path = "/brand/arara-logo.svg"
+[markdown]
+insert_anchor_links = "right"
 
-[extra.devlab.appearance]
-default_mode = "system"
-show_toggle = true
-
-[extra.devlab.footer]
-show = true
-note = "arara by the Island of TeX"
-links_label = "Community"
-show_link_names = true
-links = [
-  { name = "Island of TeX", path = "https://islandoftex.gitlab.io/", icon = "link" },
-  { name = "GitLab", path = "https://gitlab.com/islandoftex/arara", icon = "gitlab" },
-  { name = "Matrix", path = "https://matrix.to/#/!HfEWIEvFtDplCLSQvz:matrix.org?via=matrix.org", icon = "matrix" },
-]
-
-[extra.devlab.navigation]
-links = [
-  { name = "Quickstart", path = "/quickstart/" },
-  { name = "Changelog", path = "/changelog/" },
-  { name = "Manual", collection = "manual" },
-  { name = "News", path = "/news/" },
-  { name = "GitLab", path = "https://gitlab.com/islandoftex/arara" },
-]
-
-[extra.devlab.collections.manual]
-section = "manual/_index.md"
-show_breadcrumbs = true
-show_toc = true
-show_pagination = true
-
-[extra.devlab.collections.manual.page_actions]
-edit_url = "https://gitlab.com/islandoftex/arara/-/edit/development/website/content/"
+[markdown.highlighting]
+light_theme = "github-light"
+dark_theme = "github-dark-high-contrast"
+# The site's own highlight themes, as JSON TextMate files — see
+# highlight_themes/README.md.
+extra_themes = ["highlight_themes/github-dark-high-contrast.json"]
 
 [extra.devlab.home]
 layout = "wide"
@@ -116,3 +71,41 @@ actions = [
   { label = "CTAN package", path = "https://ctan.org/pkg/arara" },
   { label = "GitLab releases", path = "https://gitlab.com/islandoftex/arara/-/releases" },
 ]
+
+[extra.devlab.brand]
+logo_text = "arara"
+footer_text = "Island of TeX"
+show_logo_mark = true
+logo_mark_path = "/brand/arara-logo.svg"
+
+[extra.devlab.appearance]
+default_mode = "system"
+show_toggle = true
+
+[extra.devlab.blog]
+show_reading_time = true
+show_toc = true
+
+[extra.devlab.footer]
+show = true
+note = "The cool TeX automation tool."
+links_label = "The Island"
+show_link_names = true
+links = [
+  { name = "Home page", path = "https://islandoftex.gitlab.io/", icon = "link" },
+  { name = "GitLab", path = "https://gitlab.com/islandoftex", icon = "gitlab" },
+  { name = "Community", path = "https://matrix.to/#/!titTeSvZiqNOvRIKCv:matrix.org?via=matrix.org", icon = "matrix" },
+]
+
+[extra.devlab.navigation]
+links = [
+  { name = "Home", path = "/" },
+  { name = "Manual", collection = "manual" },
+  { name = "News", path = "/news/" },
+]
+
+[extra.devlab.collections.manual]
+section = "manual/_index.md"
+show_breadcrumbs = true
+show_toc = true
+show_pagination = true

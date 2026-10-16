@@ -1,0 +1,10 @@
+node_modules/
+dist/
+public/
+
+# The manual, quickstart and changelog are assembled from the main
+# repository's docs/ by scripts/assemble-website.py — generated files
+# are never committed.
+content/manual/
+content/quickstart.md
+content/changelog.md
