@@ -24,6 +24,10 @@ repositories {
     maven {
         url = uri("https://gitlab.com/api/v4/projects/87464209/packages/maven")
     }
+    // the man page library ships on the group registry
+    maven {
+        url = uri("https://gitlab.com/api/v4/projects/71753494/packages/maven")
+    }
 }
 
 dependencies {
@@ -31,4 +35,5 @@ dependencies {
     implementation(libs.coralmark)
     implementation(libs.crocplot)
     implementation(libs.svgecko)
+    implementation(libs.scribeswan)
 }
