@@ -7,8 +7,28 @@ import com.charleskorn.kaml.YamlNode
 import com.charleskorn.kaml.YamlNull
 import com.charleskorn.kaml.YamlScalar
 
-/** Converts directive YAML to interpreter values; quoted scalars remain strings. */
+/**
+ * Converts a parsed YAML node tree of a directive parameter map into the
+ * plain Kotlin values the interpreter expects (mirroring the untyped
+ * decoding the former directive parser performed).
+ *
+ * Maps become `Map<String, Any>`, sequences become `List<Any>` and
+ * scalars resolve according to the YAML 1.2 core schema — but only when
+ * written plainly: a quoted scalar is always a string, preserving the
+ * author's intent (for example, `shell: 'yes'` and `shell: yes` are
+ * both the string `yes`, as `yes` is not a YAML 1.2 boolean).
+ *
+ * Null values are rejected: directive parameters must carry a value.
+ */
 internal object YamlNodeConversion {
+    /**
+     * Convert the root node of a directive parameter map, requiring it to
+     * hold a map.
+     *
+     * @param node The parsed YAML root node.
+     * @return The plain Kotlin map of directive parameters.
+     * @throws IllegalArgumentException The root is not a map.
+     */
     fun toParameterMap(node: YamlNode): Map<String, Any> = when (node) {
         is YamlMap -> node.entries
             .mapKeys { (key, _) -> key.content }
@@ -18,7 +38,14 @@ internal object YamlNodeConversion {
         )
     }
 
-    private fun toPlainKotlinValue(node: YamlNode): Any = when (node) {
+    /**
+     * Convert the provided node into a plain Kotlin value.
+     *
+     * @param node The parsed YAML node.
+     * @return The plain Kotlin value: a map, a list or a scalar value.
+     * @throws IllegalArgumentException The node holds a null value.
+     */
+    fun toPlainKotlinValue(node: YamlNode): Any = when (node) {
         is YamlMap -> node.entries
             .mapKeys { (key, _) -> key.content }
             .mapValues { (_, value) -> toPlainKotlinValue(value) }
@@ -32,6 +59,13 @@ internal object YamlNodeConversion {
         )
     }
 
+    /**
+     * Resolve a scalar according to the YAML 1.2 core schema, honoring
+     * the quoting style: quoted scalars are always strings. The forms
+     * accepted are deliberately conservative: booleans (`true`, `false`
+     * and their case variants), decimal integers, and decimal floats
+     * with optional exponent - anything else is a string.
+     */
     private fun toScalarValue(scalar: YamlScalar): Any {
         val content = scalar.content
         if (!scalar.plain) return content
@@ -45,8 +79,20 @@ internal object YamlNodeConversion {
         }
     }
 
+    /**
+     * The pattern a scalar must match to be read as a
+     * boolean value.
+     */
     private val booleanRegex = Regex("true|True|TRUE|false|False|FALSE")
+    /**
+     * The pattern a scalar must match to be read as an
+     * integer.
+     */
     private val integerRegex = Regex("[-+]?[0-9]+")
+    /**
+     * The patterns a scalar must match to be read as a
+     * floating-point number.
+     */
     private val floatRegex =
         Regex("[-+]?(\\.[0-9]+|[0-9]+(\\.[0-9]*)?)([eE][-+]?[0-9]+)?")
 }

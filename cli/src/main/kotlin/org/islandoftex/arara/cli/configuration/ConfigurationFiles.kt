@@ -2,13 +2,14 @@
 package org.islandoftex.arara.cli.configuration
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import java.io.InputStreamReader
 import java.nio.charset.Charset
+import java.nio.file.Path
 import java.util.Properties
+import kotlin.io.path.bufferedReader
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.Project
-import org.islandoftex.arara.cli.utils.LoggingUtils
+import org.islandoftex.arara.cli.utils.Logging
 import org.islandoftex.arara.core.configuration.LocalConfiguration
 import org.islandoftex.arara.core.configuration.PreambleState
 import org.islandoftex.arara.core.localization.LanguageController
@@ -16,74 +17,107 @@ import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.Session
 import org.islandoftex.arara.lua.configuration.LuaLocalConfiguration
-import org.islandoftex.arara.mvel.configuration.YamlLocalConfiguration
 
 /**
- * Resolves configuration files and loads configuration and call properties.
- *
- * @author Island of TeX
- * @version 5.0
- * @since 4.0
+ * Implements configuration file resolution and loading: which names
+ * to look up, in which directories, and how each format is read.
  */
 object ConfigurationFiles {
+    /**
+     * The logger of the configuration file handling.
+     */
     private val logger = KotlinLogging.logger { }
+
+    /**
+     * The base names a configuration file may take, without extension, in
+     * lookup order.
+     */
+    private val baseNames = listOf(
+        ".araraconfig", "araraconfig", ".arararc", "arararc"
+    )
 
     /**
      * The configuration file in use.
      *
-     * Look for configuration files in the user's working directory first
-     * if no configuration files are found in the user's working directory,
-     * try to look up in a global directory, that is, the user home. Within
-     * each directory Lua names precede YAML names. Only regular files qualify.
+     * arara first looks for YAML configuration files, then for Lua
+     * configuration files with the same base names. Within each format,
+     * files in the project's working directory take precedence; if no
+     * configuration file is found there, arara looks up a global one in
+     * the user home directory.
      */
-    fun configFileForProject(project: Project): MPPPath? {
-        val names = listOf("lua", "yaml").flatMap { extension ->
-            listOf(".araraconfig", "araraconfig", ".arararc", "arararc").map { "$it.$extension" }
+    fun configFileForProject(project: Project): MPPPath? =
+        listOf("yaml", "lua").firstNotNullOfOrNull { extension ->
+            configFileWithExtension(project, extension)
         }
-        val directories = listOfNotNull(
-            project.workingDirectory,
-            Environment.getSystemPropertyOrNull("user.home")?.let { MPPPath(it) }
-        )
-        return directories.firstNotNullOfOrNull { directory ->
-            names.map { directory / it }.firstOrNull { it.exists && it.isRegularFile }
-        }
+
+    /**
+     * Find the first configuration file with the provided
+     * [extension], preferring the project's working directory over
+     * the user home directory. A directory that happens to carry
+     * a configuration file's name is not a configuration file.
+     */
+    private fun configFileWithExtension(
+        project: Project,
+        extension: String
+    ): MPPPath? {
+        val names = baseNames.map { "$it.$extension" }
+        return project.workingDirectory.let { workingDir ->
+            names.map { workingDir / it }
+                .firstOrNull { it.exists && it.isRegularFile }
+        } ?: Environment.getSystemPropertyOrNull("user.home")
+            ?.let { userHome ->
+                names.map { MPPPath(userHome) / it }
+                    .firstOrNull { it.exists && it.isRegularFile }
+            }
     }
 
     /**
      * Validates the configuration file.
      *
      * @param file The configuration file.
+     * @param currentProject The project the configuration is loaded for;
+     *   its working directory is in scope to a Lua script as `cwd`.
      * @return The configuration file as a resource.
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
     @Throws(AraraException::class)
     private fun loadLocalConfiguration(
-        file: MPPPath, currentProject: Project, scriptOutputToStderr: Boolean
+        file: MPPPath,
+        currentProject: Project
     ): LocalConfiguration =
-        when (file.fileName.substringAfterLast('.')) {
-            "yaml" -> YamlLocalConfiguration.load(file)
-            "lua" -> LuaLocalConfiguration.load(file, currentProject.workingDirectory, scriptOutputToStderr)
-            else -> throw AraraException("Unsupported configuration format: $file")
+        when (file.toString().substringAfterLast('.')) {
+            "yaml" -> LocalConfiguration.load(file)
+            "lua" -> LuaLocalConfiguration.load(
+                file,
+                currentProject.workingDirectory
+            )
+            else -> throw AraraException(
+                // this is a developer contract violation (the lookup
+                // only offers the formats the loaders above cover),
+                // not a user error, so it deliberately stays an
+                // English exception outside the localized catalog
+                "The configuration file '$file' uses a format arara does " +
+                    "not support."
+            )
         }
 
     /**
      * Loads the application configuration.
      *
-     * @param file The Lua or YAML configuration file.
-     * @param configureLogging Apply the destination immediately; CLI callers defer this until overrides are applied.
-     * @param scriptOutputToStderr Route Lua script output to diagnostics for structured callers.
-     *
+     * @param file The configuration file (YAML or Lua) to read the
+     * configuration from.
+     * @param currentProject The project the configuration is loaded for;
+     *   its working directory anchors relative rule paths.
+     * @return The loaded configuration resource, so callers reach the
+     *   keys with no session home.
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun load(
-        file: MPPPath, currentProject: Project, configureLogging: Boolean = true,
-        scriptOutputToStderr: Boolean = false
-    ) {
+    fun load(file: MPPPath, currentProject: Project): LocalConfiguration {
         // then validate it and update the configuration accordingly
-        val resource = loadLocalConfiguration(file, currentProject, scriptOutputToStderr)
+        val resource = loadLocalConfiguration(file, currentProject)
         LinearExecutor.executionOptions = resource.toExecutionOptions(
             currentProject,
             LinearExecutor.executionOptions
@@ -95,29 +129,39 @@ object ConfigurationFiles {
             Session.userInterfaceOptions
         )
 
-        PreambleState.preambles.clear()
         PreambleState.preambles += resource.preambles
         PreambleState.defaultPreamble = resource.defaultPreamble
-        PreambleState.prependPreambleIfDirectivesGiven = resource.prependPreambleIfDirectivesGiven
+        PreambleState.prependPreambleIfDirectivesGiven =
+            resource.prependPreambleIfDirectivesGiven
 
         // just to be sure, update the current locale in order to
         // display localized messages and reset logging status
         LanguageController.loadMessagesFor(Session.userInterfaceOptions.locale)
-        if (configureLogging) LoggingUtils.setupLogging(Session.loggingOptions)
+        Logging.setupLogging(Session.loggingOptions)
+        return resource
     }
 
-    /** Loads UTF-8 call properties, logging failures while retaining best-effort loading. */
-    fun loadProperties(properties: Properties, path: MPPPath, charset: Charset = Charsets.UTF_8) {
+    /**
+     * Loads the properties from the file, reporting an unreadable file
+     * as a warning instead of silently receiving an empty map.
+     */
+    fun loadProperties(
+        properties: Properties,
+        path: Path,
+        charset: Charset = Charsets.UTF_8
+    ) {
         runCatching {
-            path.read { source ->
-                InputStreamReader(source.inputStream(), charset.newDecoder()).buffered().use { properties.load(it) }
+            path.bufferedReader(charset).use { properties.load(it) }
+        }.onFailure {
+            logger.warn {
+                "Could not load the properties file $path: ${it.message}"
             }
-        }.onFailure { exception ->
-            logger.warn { "Could not load the properties file $path: ${exception.message}" }
         }
     }
 
-    /** Converts property keys and values to strings for session arguments. */
+    /**
+     * Converts the properties to a map of key/value string pairs.
+     */
     fun toMap(properties: Properties): Map<String, String> =
         properties.entries.associate { "${it.key}" to "${it.value}" }
 }

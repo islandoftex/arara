@@ -8,30 +8,38 @@ import org.islandoftex.arara.core.session.LinearExecutor
 
 /**
  * Implements the directive model.
- *
- * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
 data class DirectiveImpl(
-    /** Rule identifier requested by the directive. */
+    /**
+     * The identifier of the rule this directive asks for.
+     */
     override val identifier: String,
-    /** Raw directive parameters supplied to the resolved rule engine. */
+    /**
+     * The resolved parameters of the directive.
+     */
     override val parameters: Map<String, Any>,
-    /** Condition controlling directive scheduling. */
+    /**
+     * The conditional attached to the directive, if any.
+     */
     override val conditional: DirectiveConditional,
-    /** One-based source lines occupied by this directive. */
-    override val lineNumbers: List<Int>,
-    /** Preferred rule engine; lookup can resolve the other format. */
-    val engine: RuleEngine = RuleEngine.YAML
+    /**
+     * The lines the directive was extracted from.
+     */
+    override val lineNumbers: List<Int>
 ) : Directive {
-    /** Execute using the current linear-executor file, project and options, returning the final status. */
+    /**
+     * Interprets the directive through the interpreter and reports its
+     * exit code.
+     */
     override fun execute(): Int = Interpreter(
         LinearExecutor.executionOptions, LinearExecutor.currentFile!!,
         LinearExecutor.currentProject!!.executionDirectory, engine
     ).execute(this).exitCode
 
-    /** Describe the directive and its source metadata for diagnostics. */
+    /**
+     * A human-readable representation of the directive, for logs and
+     * error reports.
+     */
     override fun toString(): String {
         return "Directive(identifier='$identifier', parameters=$parameters," +
             "conditional=$conditional, lineNumbers=$lineNumbers)"

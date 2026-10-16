@@ -10,18 +10,19 @@ import org.islandoftex.arara.cli.utils.RunLog
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.DirectiveFetchingHooks
 import org.islandoftex.arara.core.rules.Directives
+import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.lua.rules.LuaInterpolation
-import org.islandoftex.arara.mvel.utils.MvelState
+import org.islandoftex.arara.mvel.rules.MvelState
 import org.mvel2.templates.TemplateRuntime
 
 /**
- * Implements directive utilitary methods.
- *
- * @author Island of TeX
- * @version 5.0
- * @since 4.0
+ * Implements directive processing: the wiring of the extraction
+ * hooks, the parameter resolution and the validation pipeline.
  */
-object DirectiveUtils {
+object DirectiveProcessing {
+    /**
+     * The logger of the directive processing.
+     */
     private val logger = KotlinLogging.logger { }
 
     /**
@@ -33,7 +34,7 @@ object DirectiveUtils {
             processPotentialDirective = { line, directive ->
                 directive.trim().also {
                     logger.info {
-                        "Potential directive at line $line: $it"
+                        "I found a potential pattern in line $line: $it"
                     }
                 }
             },
@@ -76,8 +77,14 @@ object DirectiveUtils {
         if (text == null)
             return mapOf()
 
-        val map = kotlin.runCatching {
-            YamlNodeConversion.toParameterMap(Yaml.default.parseToYamlNode(text))
+        val map = runCatching {
+            // the directive parameters are parsed into the YAML node
+            // model and converted into the plain Kotlin values the
+            // interpreter expects; null values are rejected, preserving
+            // the contract that directive parameters must carry a value
+            YamlNodeConversion.toParameterMap(
+                Yaml.default.parseToYamlNode(text)
+            )
         }.getOrElse {
             throw AraraException(
                 LanguageController.messages.errorValidateYamlException(
@@ -87,16 +94,20 @@ object DirectiveUtils {
             )
         }
 
-        return map
-    }
-
-    internal fun interpolateOptions(value: Any, engine: RuleEngine): Any {
-        fun interpolate(text: String): Any = if (engine == RuleEngine.LUA) {
-            LuaInterpolation.interpolate(text)
-        } else {
-            if ("{{" in text) throw AraraException(
-                LanguageController.messages.errorExtractorInterpolationFailure,
-                IllegalArgumentException(LanguageController.messages.errorLuaTagsInYaml)
+        return if ("options" in map.keys && LinearExecutor.executionOptions
+            .executionMode != ExecutionMode.SAFE_RUN
+        ) {
+            // perform directive interpolation by applying the methods of
+            // the selected engine to the directive arguments; the value
+            // keeps its shape, so a scalar option stays a scalar (the
+            // safe run preserves it verbatim as well)
+            map.plus(
+                "options" to when (val options = map["options"]) {
+                    is List<*> -> options.map { value ->
+                        interpolate(value.toString())
+                    }
+                    else -> interpolate(options.toString())
+                }
             )
             kotlin.runCatching { TemplateRuntime.eval(text, MvelState.directiveMethods) }.getOrElse {
                 throw AraraException(LanguageController.messages.errorExtractorInterpolationFailure, it)
@@ -104,6 +115,26 @@ object DirectiveUtils {
         }
         return if (value is List<*>) value.map { interpolate(it.toString()) } else interpolate(value.toString())
     }
+
+    /**
+     * Interpolate the provided value with the tag machinery of the
+     * selected rule engine.
+     */
+    @Throws(AraraException::class)
+    private fun interpolate(value: String): Any =
+        when (RuleEngine.current) {
+            RuleEngine.LUA -> LuaInterpolation.interpolate(value)
+            RuleEngine.YAML ->
+                runCatching {
+                    TemplateRuntime.eval(value, MvelState.directiveMethods)
+                }.getOrElse {
+                    throw AraraException(
+                        LanguageController.messages
+                            .errorExtractorInterpolationFailure,
+                        it
+                    )
+                }
+        }
 
     /**
      * Validates the list of directives, returning a new list.
@@ -125,7 +156,11 @@ object DirectiveUtils {
 
             if (parameters.containsKey("reference"))
                 throw AraraException(
-                    LanguageController.messages.errorValidateReferenceIsReserved(directive.lineNumbers.joinToString(", ", "(", ")"))
+                    LanguageController.messages
+                        .errorValidateReferenceIsReserved(
+                            directive.lineNumbers
+                                .joinToString(", ", "(", ")")
+                        )
                 )
 
             if (parameters.containsKey("files")) {
@@ -147,12 +182,14 @@ object DirectiveUtils {
             }
         }.also { result ->
             logger.info {
-                buildString {
-                    appendLine("All directives were validated.")
-                    appendLine(RunLog.outputSeparator("DIRECTIVES"))
-                    result.forEach { appendLine(it) }
-                    append(RunLog.separator())
-                }
+                """
+                    All directives were validated. We are good to go.
+                    ${RunLog.outputSeparator(
+                    "DIRECTIVES"
+                )}
+                    ${result.joinToString("\n")}
+                    ${RunLog.separator()}
+                """.trimIndent()
             }
         }
 }

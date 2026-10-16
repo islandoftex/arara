@@ -1,100 +1,68 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.ruleset
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.files.MPPPath
-import org.islandoftex.arara.api.rules.Directive
+import org.islandoftex.arara.api.rules.Rule
 import org.islandoftex.arara.core.localization.LanguageController
-import org.islandoftex.arara.mvel.rules.Rule
+import org.islandoftex.arara.lua.rules.LuaRuleParser
 
 /**
- * Locates and parses rule files in directory order, preferring the requested engine within each directory.
- *
- * @author Island of TeX
- * @version 5.0
- * @since 4.0
+ * Implements rule file resolution: locating the rule file for a directive
+ * and parsing it into the rule representation, including the one-time
+ * deprecation warning of the YAML format.
  */
+@Suppress("DEPRECATION")
 object RuleFiles {
+    /**
+     * The logger of the rule file resolution.
+     */
+    private val logger = KotlinLogging.logger { }
+    /**
+     * Whether the one-time YAML deprecation warning was already
+     * spoken, so a run of mixed rule formats does not repeat it.
+     */
+    private var yamlDeprecationShown = false
+
     /**
      * Parses the provided file, checks the identifier and returns a rule
      * representation.
      *
      * @param file The rule file.
      * @param identifier The directive identifier.
-     * @param scriptOutputToStderr Route Lua script output to diagnostics for structured callers.
      * @return The rule object.
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
     @Throws(AraraException::class)
-    fun parseRule(
-        file: MPPPath, identifier: String, scriptOutputToStderr: Boolean = false
-    ): org.islandoftex.arara.api.rules.Rule {
-        return if (file.toString().substringAfterLast('.') == "yaml")
-            Rule.parse(file, identifier)
-        else if (file.toString().endsWith(".lua"))
-            org.islandoftex.arara.lua.rules.LuaRuleParser.parse(file, identifier, scriptOutputToStderr)
-        else
-            throw AraraException(
-                LanguageController.messages.errorParseRuleUnsupportedFormat(identifier, file.toString())
-            )
-    }
-
-    /**
-     * Gets the rule according to the provided directive.
-     *
-     * @param directive The provided directive.
-     * @return The absolute, normalized path of the rule, given the provided
-     * directive.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
-     */
-    @Throws(AraraException::class)
-    internal fun find(
-        directive: Directive,
-        executionOptions: org.islandoftex.arara.api.configuration.ExecutionOptions,
-        workingDirectory: MPPPath,
-        engine: RuleEngine
-    ): MPPPath = resolve(directive.identifier, executionOptions, workingDirectory, engine)
-
-    internal fun resolve(
-        identifier: String,
-        executionOptions: org.islandoftex.arara.api.configuration.ExecutionOptions,
-        workingDirectory: MPPPath,
-        engine: RuleEngine
-    ): MPPPath {
-        val paths = executionOptions.rulePaths
-        return candidates(identifier, paths, workingDirectory, engine).firstOrNull { it.exists }
-            ?: throw AraraException(
-                LanguageController.messages.errorInterpreterRuleNotFound(
-                    identifier,
-                    "$identifier.lua / $identifier.yaml",
-                    paths.joinToString("; ", "(", ")") { it.normalize().toString() }
+    fun parseRule(file: MPPPath, identifier: String): Rule =
+        when (file.toString().substringAfterLast('.')) {
+            RuleFormat.LUA.extension ->
+                LuaRuleParser.parse(file, identifier)
+            RuleFormat.MVEL.extension -> {
+                warnAboutYamlDeprecation()
+                org.islandoftex.arara.mvel.rules.Rule.parse(file, identifier)
+            }
+            else ->
+                throw AraraException(
+                    LanguageController.messages
+                        .errorParseRuleUnsupportedFormat(
+                            identifier,
+                            file.normalize().parent.toString(),
+                            file.fileName
+                        )
                 )
-            )
-    }
-
-    internal fun candidates(
-        identifier: String,
-        paths: Set<MPPPath>,
-        workingDirectory: MPPPath,
-        engine: RuleEngine
-    ): List<MPPPath> = paths.flatMap { path ->
-        val formats = if (engine == RuleEngine.LUA) listOf(RuleFormat.LUA, RuleFormat.MVEL)
-            else listOf(RuleFormat.MVEL, RuleFormat.LUA)
-        formats.flatMap { format ->
-            listOf(
-                construct(path, identifier, format, workingDirectory),
-                construct(path, "arara-rule-$identifier", format, workingDirectory)
-            )
         }
-    }.distinct()
 
     /**
      * Constructs the path given the current path and the rule name.
      *
      * @param path The current path.
      * @param name The rule name.
+     * @param format The rule format determining the file extension.
+     * @param workingDirectory The working directory to resolve relative
+     *   rule paths against.
      * @return The constructed path.
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
@@ -116,4 +84,19 @@ object RuleFiles {
             workingDirectory / path / fileName
         }
     }.normalize()
+
+    /**
+     * Speaks the one-time YAML deprecation warning into the log:
+     * a run of mixed rule formats hears it once, never per rule.
+     */
+    private fun warnAboutYamlDeprecation() {
+        if (!yamlDeprecationShown) {
+            yamlDeprecationShown = true
+            logger.warn {
+                "YAML rules are deprecated and will be removed in a " +
+                    "future version of arara. Please migrate your rules " +
+                    "to the Lua format (see the --engine option)."
+            }
+        }
+    }
 }

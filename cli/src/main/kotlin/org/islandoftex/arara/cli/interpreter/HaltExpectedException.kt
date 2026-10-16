@@ -10,5 +10,9 @@ import org.islandoftex.arara.api.session.ExecutionStatus
  */
 internal class HaltExpectedException(
     msg: String,
+    /**
+     * The status the halted run reports: the requested halt
+     * status, or the failure the error-halt option stops at.
+     */
     val status: ExecutionStatus
 ) : AraraException(msg)

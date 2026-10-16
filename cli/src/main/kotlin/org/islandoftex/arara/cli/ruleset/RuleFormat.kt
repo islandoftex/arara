@@ -2,15 +2,25 @@
 package org.islandoftex.arara.cli.ruleset
 
 /**
- * Rule file suffixes.
- * @property extension Filename extension without its leading dot.
+ * Describe the rule formats supported by this CLI implementation.
  */
-enum class RuleFormat(val extension: String) {
-    /** Lua rule tables evaluated with Luak. */
-    LUA("lua"),
-
+enum class RuleFormat(
+    /**
+     * The file extension rules of this format are named with.
+     */
+    val extension: String
+) {
     /**
      * The traditional MVEL rules from version 1 on.
      */
-    MVEL("yaml")
+    @Deprecated(
+        "YAML/MVEL rules are deprecated and will be removed in a future " +
+            "version; use the Lua rule format instead."
+    )
+    MVEL("yaml"),
+
+    /**
+     * The Lua rule format from version 8 on, superseding the YAML format.
+     */
+    LUA("lua")
 }

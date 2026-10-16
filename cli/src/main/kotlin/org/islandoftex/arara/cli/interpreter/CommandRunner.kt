@@ -1,67 +1,115 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.cli.interpreter
 
+import io.github.oshai.kotlinlogging.KotlinLogging
+import java.io.IOException
+import java.util.Locale
+import java.util.concurrent.TimeoutException
+import kotlin.time.DurationUnit
 import kotlin.time.TimeSource
 import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.api.session.Command
-import org.islandoftex.arara.cli.utils.DisplayUtils
 import org.islandoftex.arara.cli.utils.RunLog
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.Environment
 import org.islandoftex.arara.core.session.LinearExecutor
 import org.islandoftex.arara.core.session.SystemCommandResult
+import org.zeroturnaround.exec.InvalidExitValueException
 
 /**
- * Runs system commands, logs captured output, and maps process failures to localized errors.
- *
- * @author Island of TeX
- * @version 5.0
- * @since 4.0
+ * Implements the system command runner: the single execution surface the
+ * interpreter dispatches through, pairing every run with its duration
+ * and the output buffer, and mapping failures to their localized errors.
  */
 internal object CommandRunner {
+    /**
+     * The logger of the command runner.
+     */
+    private val logger = KotlinLogging.logger { }
+
+    /**
+     * Writes the captured output of a command to the log: a transcript
+     * is framed between the buffer markers - the tool's own words, on
+     * either outcome - and a silent tool is a recorded fact, not an
+     * absent one, so the emptiness is stated instead of framed.
+     *
+     * @param output The captured output of the command.
+     */
+    private fun logOutputBuffer(output: String) {
+        logger.info {
+            if (output.isBlank()) {
+                "The tool produced no output."
+            } else {
+                """
+                    Command output
+                    ${RunLog.outputSeparator(
+                    "BEGIN OUTPUT BUFFER"
+                )}
+                    ${output}
+                    ${RunLog.outputSeparator(
+                    "END OUTPUT BUFFER"
+                )}
+                """.trimIndent()
+            }
+        }
+    }
+
     /**
      * Runs the command in the underlying operating system.
      *
      * @param command An object representing the command.
-     * @return An integer value representing the exit code.
+     * @return The exit code of the command and the output it
+     * captured, so a failing task can quote its own words.
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
     @Throws(AraraException::class)
-    internal fun run(command: Command): Int = runResult(command).exitCode
-
-    internal fun runResult(command: Command): SystemCommandResult.Completed {
+    internal fun run(command: Command): Pair<Int, String> {
+        // the monotonic clock keeps the recorded duration immune to wall
+        // clock corrections that can strike while a command runs
         val start = TimeSource.Monotonic.markNow()
-        val result = Environment.executeSystemCommandResult(
+        val result = Environment.executeSystemCommand(
             command,
             !LinearExecutor.executionOptions.verbose,
             LinearExecutor.executionOptions.timeoutValue
         )
-        val milliseconds = start.elapsedNow().inWholeMilliseconds
-        return result.let {
-            RunLog.commandOutput(when (it) {
-                is SystemCommandResult.Completed -> it.output
-                is SystemCommandResult.Failed -> it.output
-            })
-            if (it is SystemCommandResult.Failed) {
-                RunLog.commandFailed(command, it.kind.name, milliseconds, it.exception)
-                DisplayUtils.renderer.printCommandFailure(it.output)
+        val duration = start.elapsedNow()
+        return when (result) {
+            is SystemCommandResult.Failed -> {
+                logOutputBuffer(result.output)
                 throw AraraException(
-                    LanguageController.messages.run {
-                        when (it.kind) {
-                            SystemCommandResult.FailureKind.IO -> errorRunIoException
-                            SystemCommandResult.FailureKind.TIMEOUT -> errorRunTimeoutException
-                            SystemCommandResult.FailureKind.INTERRUPTED -> errorRunInterruptedException
-                            SystemCommandResult.FailureKind.INVALID_EXIT_VALUE -> errorRunInvalidExitValueException
-                            SystemCommandResult.FailureKind.OTHER -> errorRunGenericException
-                        }
+                    when (result.exception) {
+                        is IOException ->
+                            LanguageController.messages.errorRunIoException
+                        is TimeoutException ->
+                            LanguageController.messages
+                                .errorRunTimeoutException
+                        is InterruptedException ->
+                            LanguageController.messages
+                                .errorRunInterruptedException
+                        is InvalidExitValueException ->
+                            LanguageController.messages
+                                .errorRunInvalidExitValueException
+                        else -> LanguageController.messages
+                            .errorRunGenericException
                     },
-                    it.exception
+                    result.exception
                 )
             }
-            it as SystemCommandResult.Completed
-            RunLog.commandCompleted(command, it.exitCode, milliseconds)
-            it
+            is SystemCommandResult.Completed -> {
+                logger.info {
+                    // the exit value is recorded here because the caller
+                    // reduces it to a plain boolean right afterwards, and
+                    // the duration pairs the two facts in one place
+                    "System command exited with value ${result.exitCode} in " +
+                        String.format(
+                            Locale.ROOT, "%.4f",
+                            duration.toDouble(DurationUnit.SECONDS)
+                        ) + " seconds"
+                }
+                logOutputBuffer(result.output)
+                result.exitCode to result.output
+            }
         }
     }
 }
