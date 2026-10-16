@@ -1,0 +1,13 @@
+# The Island's authors: the key must match the string in each
+# post's front matter exactly; it feeds the byline, the initials
+# badge (when no avatar is set), and the author page.
+
+["Paulo Cereda"]
+name = "Paulo Cereda"
+role = "Developer"
+links = [{ name = "GitLab", path = "https://gitlab.com/cereda", icon = "gitlab" }]
+
+["Ben Frank"]
+name = "Ben Frank"
+role = "Tech lead"
+links = [{ name = "GitLab", path = "https://gitlab.com/benfrank", icon = "gitlab" }]
