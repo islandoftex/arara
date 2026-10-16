@@ -1,0 +1,21 @@
+This website embeds four font families, all released under the
+SIL Open Font License 1.1:
+
+  Karla           by Jonathan Pinhorn
+                  https://fonts.google.com/specimen/Karla
+
+  Rosario         by Omnibus-Type
+                  https://fonts.google.com/specimen/Rosario
+
+  Expletus Sans   by ND Foundry
+                  https://fonts.google.com/specimen/Expletus+Sans
+
+  Cascadia Code   by Microsoft
+                  https://github.com/microsoft/cascadia-code
+
+The WOFF2 files for Karla, Rosario and Expletus Sans come from the
+Google Fonts project (v33, v35 and v31 respectively); the Cascadia
+Code files were subset from the copies the arara manual itself
+embeds. The full license text is available at
+
+  https://openfontlicense.org
