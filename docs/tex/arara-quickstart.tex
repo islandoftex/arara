@@ -1,0 +1,50 @@
+% arara: lualatex
+% arara: lualatex
+% arara: clean: {
+% arara: --> extensions: [ aux, listing, log ]
+% arara: --> }
+%
+% arara, the cool TeX automation tool — the quickstart.
+%
+% DIV=13 is the type area factor, BCOR=1cm the binding correction.
+
+\documentclass[parskip=half-, DIV=13, BCOR=1cm, fontsize=11pt, paper=a4]{scrbook}
+\input{preamble}
+
+\begin{document}
+
+% The cover: the identity's dark tile beside the logo.
+\begin{titlepage}
+  \centering
+  \vspace*{3em}
+  \araracoverart{width=0.35\textwidth}
+  \vspace{2em}
+
+  \begin{tcolorbox}[
+    calloutitle,
+    colback=iot-dark,
+    coltext=iot-light,
+    top=20pt, bottom=20pt,
+    grow to left by=\marginparwidth+\marginparsep,
+    left=\marginparwidth+\marginparsep,
+    fontupper=\displayfont\Huge,
+    halign=left,
+    before upper={\vphantom{Äg}}, after upper={\vphantom{Äg}}
+  ]
+    The arara quickstart
+  \end{tcolorbox}
+  \vspace{1.5em}
+
+  {\displayfont\Large A quick tour with Peter the anteater\par}
+
+  \vfill
+  {\sffamily\large Island of \TeX\par}
+  \vspace{1em}
+  {\large\today\par}
+  \vspace{2em}
+\end{titlepage}
+
+% The single chapter, generated from the Markdown source.
+\input{Quickstart}
+
+\end{document}

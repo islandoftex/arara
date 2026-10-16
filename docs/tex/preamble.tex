@@ -1,0 +1,233 @@
+%=====================================================================
+% The shared preamble of both books: the identity's fonts and colors,
+% the layout, the listings, the callouts, the headers and footers, and
+% the macros the generated chapters compile against, unchanged.
+%=====================================================================
+
+%=====================================================================
+% Fonts and colors (Island of TeX identity)
+%=====================================================================
+\usepackage{islandoftex-fonts}
+\usepackage{islandoftex-colors}
+\usepackage{microtype}
+% hologo names the TeX family logos the generated chapters cite.
+\usepackage{hologo}
+
+%=====================================================================
+% Headings and margin notes
+%=====================================================================
+% Section numbers hang into the left margin.
+\renewcommand\sectionlinesformat[4]{%
+  \leavevmode\llap{#3\unskip\hskip\marginparsep}#4%
+}
+
+% The disposition renders in the identity's display font and dark blue.
+\addtokomafont{disposition}{\color{iot-dark}\displayfont}
+\addtokomafont{chapter}{\Huge}
+\addtokomafont{section}{\Large}
+\addtokomafont{subsection}{\large}
+\addtokomafont{subsubsection}{\normalsize}
+
+% Margin note helper.
+\reversemarginpar
+\newcommand*\marginheading[1]{%
+  \leavevmode\marginline{\sffamily\small #1}\ignorespaces}
+
+%=====================================================================
+% Links and graphics
+%=====================================================================
+\usepackage[colorlinks, allcolors=iot-dark]{hyperref}
+\usepackage{url}
+\usepackage{graphicx}
+% adjustbox exports the max width/height keys the figures shrink by.
+\usepackage[export]{adjustbox}
+
+%=====================================================================
+% Tables
+%=====================================================================
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{array}
+
+%=====================================================================
+% Code listings
+%=====================================================================
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\normalsize,
+  aboveskip=1.2\baselineskip plus 2pt minus 2pt,
+  belowskip=1.2\baselineskip plus 2pt minus 2pt,
+  breaklines=true,
+  breakatwhitespace=true,
+  postbreak=\mbox{\textcolor{gray}{$\hookrightarrow$}\space},
+  showstringspaces=false,
+  columns=fullflexible,
+  keepspaces=true,
+}
+
+% Per-language styles; the names match the conversion's output.
+\lstdefinestyle{sh}{}
+\lstdefinestyle{tex}{language=[LaTeX]TeX}
+\lstdefinelanguage[arara-lua]{Lua}{
+  morekeywords={return, function, end, if, then, else, local, not, and, or},
+}
+\lstdefinestyle{lua}{language=[arara-lua]Lua}
+\lstdefinelanguage{yaml}{
+  morekeywords={true, false, null, yes, no, on, off},
+  sensitive=true,
+  morecomment=[l]{\#},
+  morestring=[b]',
+  morestring=[b]",
+}
+\lstdefinestyle{yaml}{language=yaml}
+\lstdefinelanguage{bibtex}{
+  morekeywords={@article,@book,@phdthesis,@inproceedings,@mastersthesis,@techreport,@misc},
+  sensitive=false,
+  morecomment=[l]{@},
+}
+\lstdefinestyle{bibtex}{language=bibtex}
+\lstdefinestyle{java}{language=Java}
+\lstdefinelanguage{kotlin}{
+  morekeywords={fun, val, var, return, if, else, for, while, when, class,
+    object, interface, import, package, data, sealed, companion},
+  sensitive=true,
+}
+\lstdefinestyle{kotlin}{language=kotlin}
+\lstdefinestyle{plain}{language=}
+
+%=====================================================================
+% Callout boxes (araracallout)
+%=====================================================================
+% Four types — info, warning, error, tip — each with the identity's
+% colors and a tinted background.
+\usepackage[most]{tcolorbox}
+
+\tcbset{
+  % the full-width title tile, in the identity's bold sans
+  calloutitle/.style={
+    tile, halign=left,
+    before upper={\vphantom{Äg}\small}, after upper={\vphantom{Äg}},
+    fontupper=\sffamily\bfseries,
+    coltext=white,
+  },
+  % the shared base every callout type refines
+  callout base/.style={
+    enhanced,
+    breakable,
+    before skip=1.2\baselineskip plus 2pt minus 2pt,
+    after skip=1.2\baselineskip plus 2pt minus 2pt,
+    boxrule=0pt,
+    frame hidden,
+    borderline west={4pt}{0pt}{iot-info},
+    left=10pt, right=10pt, top=6pt, bottom=6pt,
+    arc=0mm,
+    attach boxed title to top left={xshift=0pt, yshift=0pt, yshifttext=0pt},
+    boxed title style={calloutitle, width=\textwidth},
+    before upper={\setlength{\parskip}{1em}},
+  },
+  callout info/.style={
+    callout base,
+    colback=iot-info!10,
+    borderline west={4pt}{0pt}{iot-info},
+    boxed title style={calloutitle, colback=iot-info},
+  },
+  callout warning/.style={
+    callout base,
+    colback=iot-alert!10,
+    borderline west={4pt}{0pt}{iot-alert},
+    boxed title style={calloutitle, colback=iot-alert},
+  },
+  callout error/.style={
+    callout base,
+    % the severer type rides the deeper paper
+    colback=iot-alert!15,
+    borderline west={4pt}{0pt}{iot-alert},
+    boxed title style={calloutitle, colback=iot-alert},
+  },
+  callout tip/.style={
+    callout base,
+    colback=iot-neutral!10,
+    borderline west={4pt}{0pt}{iot-neutral},
+    boxed title style={calloutitle, colback=iot-neutral},
+  },
+}
+
+% \begin{araracallout}[callout info]{Title} ... \end{araracallout};
+% the optional argument selects the type, info by default.
+\newtcolorbox{araracallout}[2][]{%
+  callout info,
+  title={#2},
+  #1
+}
+
+% \begin{araralisting}{style} ... \end{araralisting}: the fence
+% blocks the conversion emits, the style naming the fence's language.
+% The definition waits for the callout styles, because tcolorbox
+% arrives with them, and the papers and rules ride the identity's own
+% arithmetic — the navy rule, the navy's breath as the paper.
+\DeclareTCBListing{araralisting}{m}{
+  enhanced,
+  listing only,
+  breakable,
+  sharp corners,
+  size=small,
+  boxrule=0pt,
+  frame hidden,
+  borderline west={4pt}{0pt}{iot-dark!40},
+  top=-\baselineskip,
+  bottom=-\baselineskip,
+  pad before break=0.7\baselineskip,
+  pad after break=0.7\baselineskip,
+  left=8pt,
+  colback=iot-dark!6,
+  listing options={style=#1}
+}
+
+%=====================================================================
+% Headers and footers
+%=====================================================================
+\usepackage[automark]{scrlayer-scrpage}
+\clearpairofpagestyles
+\ofoot{\pagemark}
+\ohead{\headmark}
+\addtokomafont{pageheadfoot}{\sffamily\small}
+\addtokomafont{pagenumber}{\displayfont}
+
+%=====================================================================
+% The version macro
+%=====================================================================
+% \araraversion, written by the build's version task.
+\input{arara-version}
+
+%=====================================================================
+% The figure macro
+%=====================================================================
+% \ararafigure{name} includes the rendered figure when it exists, and
+% otherwise a visible box naming the render command — the books always
+% build, never silently missing art.
+\newcommand{\ararafigure}[1]{%
+  \begin{center}
+  \IfFileExists{assets/#1.pdf}{%
+    \includegraphics[max width=0.85\textwidth, max height=0.8\textheight]{assets/#1.pdf}%
+  }{%
+    \fbox{\parbox{0.6\textwidth}{\centering
+      The figure \texttt{#1} awaits rendering.\\[0.3em]
+      Run \texttt{./gradlew renderDiagrams} to draw it.}}%
+  }%
+  \end{center}
+}
+
+%=====================================================================
+% The cover art macro
+%=====================================================================
+% \araracoverart{options} includes the logo when present; the covers
+% compile cleanly without it.
+\newcommand{\araracoverart}[1]{%
+  \IfFileExists{assets/arara-logo.pdf}{%
+    \includegraphics[#1]{assets/arara-logo.pdf}%
+  }{%
+    \IfFileExists{assets/arara-logo.png}{%
+      \includegraphics[#1]{assets/arara-logo.png}%
+    }{}%
+  }%
+}

@@ -1,0 +1,133 @@
+% The Island of TeX identity typefaces: five families loaded from the
+% adjacent fonts/ directory, and the TeX family logos re-kerned to
+% ride them. Requires LuaLaTeX.
+\ProvidesPackage{islandoftex-fonts}[2026/10/12 Island of TeX identity fonts]
+
+\RequirePackage{fontspec}
+\RequirePackage{unicode-math}
+
+% The text faces carry no arrows of their own, so Karla consults the
+% identity's glyph reserve: the fallback fires only for missing
+% glyphs, and everything Karla has stays Karla's. The registration
+% must precede the font that references it, so it sits before the
+% loads.
+\directlua{
+  luaotfload.add_fallback("iotglyphs", {
+    "[fonts/FiraMath-Regular.otf]:mode=base;"
+  })
+}
+
+% Expletus Sans carries display text: titles, page numbers, the cover.
+\newfontfamily\displayfont{ExpletusSans-Regular.ttf}[
+  Path=fonts/,
+  Scale=MatchLowercase,
+  Renderer=HarfBuzz,
+  BoldFont=ExpletusSans-Bold.ttf,
+  ItalicFont=ExpletusSans-Italic.ttf,
+  BoldItalicFont=ExpletusSans-BoldItalic.ttf,
+]
+
+% Karla is the text face, with old-style figures.
+\setmainfont{Karla-Light.ttf}[
+  Path=fonts/,
+  Numbers=OldStyle,
+  Renderer=HarfBuzz,
+  RawFeature={fallback=iotglyphs},
+  BoldFont=Karla-Bold.ttf,
+  ItalicFont=Karla-LightItalic.ttf,
+  BoldItalicFont=Karla-BoldItalic.ttf,
+]
+
+% Rosario is the sans companion, and the running headers' voice.
+\setsansfont{Rosario-Light.ttf}[
+  Path=fonts/,
+  Scale=MatchLowercase,
+  Renderer=HarfBuzz,
+  BoldFont=Rosario-Bold.ttf,
+  ItalicFont=Rosario-LightItalic.ttf,
+  BoldItalicFont=Rosario-BoldItalic.ttf,
+]
+
+% Cascadia Code is the mono face, scaled to sit well beside the text.
+\setmonofont{CascadiaCode-Light.otf}[
+  Path=fonts/,
+  Scale=0.82,
+  Renderer=HarfBuzz,
+  BoldFont=CascadiaCode-Bold.otf,
+  ItalicFont=CascadiaCode-LightItalic.otf,
+  BoldItalicFont=CascadiaCode-BoldItalic.otf,
+]
+
+% Fira Math in three weights, chosen by \mathversion.
+\setmathfont{FiraMath-Regular.otf}[
+  Path=fonts/,
+  Scale=MatchLowercase,
+  mathbf=sym,
+]
+\ExplSyntaxOn
+\seq_const_from_clist:Nn \c_iot_weight_seq
+  { ExtraLight, Light, Regular }
+\seq_map_inline:Nn \c_iot_weight_seq
+  { \setmathfont { FiraMath-#1.otf }
+    [
+    Path = fonts/,
+    version = #1,
+    Scale = MatchLowercase,
+    mathrm=sym,
+    ]
+  }
+\ExplSyntaxOff
+\mathversion{Light}
+
+% The upright math faces mirror the text families.
+\setmathrm{Karla-Light.ttf}[Path=fonts/, Numbers=OldStyle, Renderer=HarfBuzz]
+\setmathsf{Rosario-Light.ttf}[Path=fonts/, Scale=MatchLowercase, Renderer=HarfBuzz]
+\setmathtt{CascadiaCode-Light.otf}[Path=fonts/, Scale=0.82, Renderer=HarfBuzz]
+
+% The TeX family logos, re-kerned for these faces.
+\ExplSyntaxOn
+\cs_new_protected_nopar:Npn \iot_kern_family_switch:nnnn #1#2#3#4
+{
+  \str_case_e:nnF { \f@family }
+  {
+    { \rmdefault } { \tex_kern:D #1 }
+    { \sfdefault } { \tex_kern:D #2 }
+    { \ttdefault } { \tex_kern:D #3 }
+  }
+  % false case includes display font
+  { \tex_kern:D #4 }
+}
+
+\DeclareDocumentCommand\TeX{}
+{
+  T
+  \iot_kern_family_switch:nnnn {-.1667em} {-.1667em} {-.1667em} {-.1667em}
+  \lower.5ex
+  \hbox{E}
+  \iot_kern_family_switch:nnnn {-.08em} {-.07em} {-.08em} {-.08em}
+  X\@
+}
+\DeclareDocumentCommand{\LaTeX}{}
+{
+  L
+  \iot_kern_family_switch:nnnn {-.25em} {-.3em} {-.35em} {-.3em}
+  {\sbox\z@ T
+    \vbox to\ht\z@{\hbox{\check@mathfonts
+      \fontsize\sf@size\z@
+      \math@fontsfalse\selectfont
+      A}
+    \vss}
+  }
+  \iot_kern_family_switch:nnnn {-.07em} {-.12em} {-.12em} {-.12em}
+  \TeX
+}
+\DeclareDocumentCommand{\LaTeXe}{}
+{
+  \mbox{\m@th
+    \if b\expandafter\@car\f@series\@nil\boldmath\fi
+    \LaTeX
+    \iot_kern_family_switch:nnnn {.15em} {.15em} {.15em} {.15em}
+    2
+    $\c_math_subscript_token {\textstyle\varepsilon}$}
+}
+\ExplSyntaxOff

@@ -13,6 +13,7 @@ import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.jvm.toolchain.JavaToolchainService
 import org.gradle.jvm.toolchain.JavaToolchainSpec
 import org.islandoftex.arara.build.AraraPublication
+import org.islandoftex.arara.build.DocsConversion
 import org.islandoftex.arara.build.GenerateSmokeBats
 import org.islandoftex.arara.build.PrintSmokeJavaRuntime
 import org.islandoftex.arara.build.RunSmokeBats
@@ -299,6 +300,84 @@ val targetJvm = providers.gradleProperty("arara.jvm.target").get().toInt()
 val targetKotlin = providers.gradleProperty("arara.kotlin.target").get()
 val pinnedModules =
     providers.gradleProperty("arara.pinned").get().split(",").map(String::trim)
+
+// the version macro the manual's LaTeX skeleton inputs: the number
+// flows from the changelog through the project version, the same
+// single source that drives the banner, the API object and the Gradle
+// version itself — one truth, many faces
+val generateVersionMacro = tasks.register("generateVersionMacro") {
+    val target = layout.buildDirectory.file("generated/docs/arara-version.tex")
+    val version = project.version.toString()
+    inputs.property("version", version)
+    outputs.file(target)
+    doLast {
+        target.get().asFile.writeText("\\def\\araraversion{$version}\n")
+    }
+}
+
+// the conversion of the manual's Markdown into the LaTeX the
+// skeleton compiles: each chapter's front matter names it, the
+// headings and prose ride CoralMark's tag rules, the code fences
+// ride the listings environments, the mermaid fences are
+// extracted for the diagram pass, the devlab callout components
+// render through the native component registry, and the tables
+// ride the GFM element tree with their mixed content intact
+val convertDocs = tasks.register("convertDocs") {
+    val docsDir = file("docs")
+    val outputDir = layout.buildDirectory.dir("generated/docs").get().asFile
+    val assetsDir = outputDir.resolve("assets")
+    inputs.dir(docsDir)
+    outputs.dir(outputDir)
+    doLast {
+        // the committed assets — the static art and the diagram
+        // checkpoints — join the output first, so a conversion without
+        // the diagram pass still compiles complete books; the chapter
+        // extraction below then rewrites the extracted sources from
+        // the fences, which remain the single truth
+        docsDir.resolve("tex/assets").takeIf { it.isDirectory }?.let { committed ->
+            committed.copyRecursively(assetsDir, overwrite = true)
+        }
+        // the hand-written skeletons, the identity styles and the fonts
+        // they load join the generated chapters, so the compile step
+        // runs in one directory with no path juggling
+        docsDir.resolve("tex").listFiles { f -> f.extension == "tex" || f.extension == "sty" }!!
+            .forEach { source ->
+                source.copyTo(outputDir.resolve(source.name), overwrite = true)
+            }
+        docsDir.resolve("tex/fonts").takeIf { it.isDirectory }?.let { fonts ->
+            fonts.copyRecursively(outputDir.resolve("fonts"), overwrite = true)
+        }
+        docsDir.listFiles { f -> f.extension == "md" }!!
+            .sortedBy { it.name }
+            .forEach { source ->
+                DocsConversion.convertChapter(source, outputDir, assetsDir)
+            }
+    }
+}
+
+// the diagram pass: the extracted mermaid sources become the vector
+// figures the generated chapters reference, drawn whenever a diagram
+// changed or a fresh tree wants its books complete. The endpoint rides
+// a property so CI can point at its own Kroki while local runs fall
+// back to the public service; the task needs the conversion's
+// output, so it chains after it
+val renderDiagrams: TaskProvider<Task> = tasks.register("renderDiagrams") {
+    val generatedDir = layout.buildDirectory.dir("generated/docs")
+    val endpoint = providers.gradleProperty("arara.docs.kroki").orElse("https://kroki.io")
+    val assetsDir = layout.buildDirectory.dir("generated/docs/assets").get()
+    dependsOn(convertDocs)
+    inputs.property("endpoint", endpoint)
+    // the extracted diagram sources are the task's true inputs, and
+    // the figures its true outputs: watching the endpoint alone once
+    // let a changed fence skip its own re-render entirely
+    inputs.files(fileTree(assetsDir) { include("*.mmd") })
+    outputs.files(fileTree(assetsDir) { include("*.pdf"); exclude("arara-logo.pdf") })
+    doLast {
+        val figures =
+            DocsConversion.renderDiagrams(generatedDir.get().asFile.resolve("assets"), endpoint.get())
+        logger.lifecycle("Rendered {} diagram(s) through {}", figures.size, endpoint.get())
+    }
+}
 
 // opt-in gate: run the build with -PwarningsAsErrors=true to prove that
 // the tree compiles without a single warning
