@@ -1,75 +1,70 @@
 [versions]
-ktlint = "1.8.0"
-# --------------------------------
-# Kotlin itself
-# --------------------------------
-kotlin = "2.4.21"
-# --------------------------------
-# Plugins
-# --------------------------------
-detektPlugin = "1.23.8"
-dokkaPlugin = "2.2.0"
-koverPlugin = "0.9.11"
-shadowPlugin = "9.6.1"
-spotlessChangelogPlugin = "3.1.2"
-spotlessPlugin = "8.10.4"
-versionsPlugin = "0.66.0"
-# --------------------------------
-# Libraries
-# --------------------------------
-clikt = "5.1.0"
-jna = "5.19.1"
-jgit = "7.8.0.202609011348-r"
-junit = "6.1.3"
-kotaml = "0.111.0"
-kotest = "6.2.6"
-kotlinLogging = "8.0.4"
-kotlinxSerialization = "1.12.0"
-log4j = "2.26.1"
-luak = "3.4.0"
-mordant = "3.1.0"
-mvel = "2.6.0.Final"
-okio = "3.18.2"
-slf4j = "2.0.20"
-ztExec = "1.13.0"
-# --------------------------------
+chronoheader-version = "0.1.2"
+leopack-version = "0.1.1"
+clikt-version = "5.1.0"
+detekt-version = "1.23.8"
+dokka-version = "2.2.0"
+jna-version = "5.19.1"
+kotlin-version = "2.4.21"
+kotlin-logging-version = "8.0.4"
+kotaml-version = "0.111.0"
+kotlinx-serialization-version = "1.11.0"
+kover-version = "0.9.11"
+log4j-version = "2.26.1"
+luaj-version = "1.0.3"
+mordant-version = "3.1.0"
+mvel-version = "2.5.4.Final"
+okio-version = "3.18.2"
+shadow-version = "9.6.1"
+slf4j-version = "2.0.20"
+solstice-version = "0.1.0"
+spotless-changelog-version = "3.1.2"
+spotless-version = "8.10.4"
+tapmoc-version = "0.5.0"
+versions-version = "0.66.0"
+kobats-version = "0.2.2"
+coralmark-version = "0.3.1"
+scribeswan-version = "0.2.0"
+crocplot-version = "0.1.0"
+svgecko-version = "0.3.0"
+zt-exec-version = "1.13.0"
 
 [libraries]
-kotlin-test-common = { module = "org.jetbrains.kotlin:kotlin-test-common", version.ref = "kotlin" }
-kotlin-test-annotations-common = { module = "org.jetbrains.kotlin:kotlin-test-annotations-common", version.ref = "kotlin" }
-kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlin" }
-clikt = { group = "com.github.ajalt.clikt", name = "clikt", version.ref = "clikt" }
-clikt-markdown = { group = "com.github.ajalt.clikt", name = "clikt-markdown", version.ref = "clikt" }
-jgit = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit" }
-jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
-junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit" }
-kotaml = { group = "io.heapy.kotaml", name = "kotaml", version.ref = "kotaml" }
-korlibs-luak = { group = "com.soywiz.korlibs.luak", name = "luak", version.ref = "luak" }
-kotest-assertions-jvm = { group = "io.kotest", name = "kotest-assertions-core-jvm", version.ref = "kotest" }
-kotest-runner-jvm = { group = "io.kotest", name = "kotest-runner-junit5-jvm", version.ref = "kotest" }
-kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version.ref = "kotlinLogging" }
-kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
-kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
-log4j-core = { group = "org.apache.logging.log4j", name = "log4j-core", version.ref = "log4j" }
-log4j-json = { group = "org.apache.logging.log4j", name = "log4j-layout-template-json", version.ref = "log4j" }
-log4j-impl = { group = "org.apache.logging.log4j", name = "log4j-slf4j2-impl", version.ref = "log4j" }
-mordant-core = { group = "com.github.ajalt.mordant", name = "mordant-core", version.ref = "mordant" }
-mordant-jna = { group = "com.github.ajalt.mordant", name = "mordant-jvm-jna", version.ref = "mordant" }
-mvel = { group = "org.mvel", name = "mvel2", version.ref = "mvel" }
-okio = { group = "com.squareup.okio", name = "okio", version.ref = "okio" }
-okio-fakefilesystem = { group = "com.squareup.okio", name = "okio-fakefilesystem", version.ref = "okio" }
-slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
-slf4j-simple = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j" }
-ztexec = { group = "org.zeroturnaround", name = "zt-exec", version.ref = "ztExec" }
+clikt = { group = "com.github.ajalt.clikt", name = "clikt", version.ref = "clikt-version" }
+mordant = { group = "com.github.ajalt.mordant", name = "mordant-jvm", version.ref = "mordant-version" }
+clikt-markdown = { group = "com.github.ajalt.clikt", name = "clikt-markdown", version.ref = "clikt-version" }
+kotaml = { group = "io.heapy.kotaml", name = "kotaml", version.ref = "kotaml-version" }
+kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version.ref = "kotlin-logging-version" }
+kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin-version" }
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin-version" }
+luaj = { group = "io.github.taoguan", name = "luaj", version.ref = "luaj-version" }
+kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinx-serialization-version" }
+log4j-core = { group = "org.apache.logging.log4j", name = "log4j-core", version.ref = "log4j-version" }
+log4j-impl = { group = "org.apache.logging.log4j", name = "log4j-slf4j2-impl", version.ref = "log4j-version" }
+jna = { group = "net.java.dev.jna", name = "jna", version.ref = "jna-version" }
+mvel = { group = "org.mvel", name = "mvel2", version.ref = "mvel-version" }
+kobats = { group = "org.islandoftex", name = "kobats", version.ref = "kobats-version" }
+coralmark = { group = "org.islandoftex", name = "coralmark", version.ref = "coralmark-version" }
+scribeswan = { group = "org.islandoftex", name = "scribeswan", version.ref = "scribeswan-version" }
+crocplot = { group = "org.islandoftex", name = "crocplot", version.ref = "crocplot-version" }
+svgecko = { group = "org.islandoftex", name = "svgecko", version.ref = "svgecko-version" }
+okio = { group = "com.squareup.okio", name = "okio", version.ref = "okio-version" }
+okio-fakefilesystem = { group = "com.squareup.okio", name = "okio-fakefilesystem", version.ref = "okio-version" }
+slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j-version" }
+slf4j-simple = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j-version" }
+zt-exec = { group = "org.zeroturnaround", name = "zt-exec", version.ref = "zt-exec-version" }
 
 [plugins]
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "koverPlugin" }
-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detektPlugin" }
-dokka = { id = "org.jetbrains.dokka", version.ref = "dokkaPlugin" }
-shadow = { id = "com.gradleup.shadow", version.ref = "shadowPlugin" }
-spotless = { id = "com.diffplug.spotless", version.ref = "spotlessPlugin" }
-spotlessChangelog = { id = "com.diffplug.spotless-changelog", version.ref = "spotlessChangelogPlugin" }
-versions = { id = "io.github.ben-manes.versions", version.ref = "versionsPlugin" }
+chronoheader = { id = "org.islandoftex.chronoheader", version.ref = "chronoheader-version" }
+leopack-scribeswan = { id = "org.islandoftex.leopack.scribeswan", version.ref = "leopack-version" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt-version" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka-version" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-version" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover-version" }
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow-version" }
+solstice = { id = "org.islandoftex.solstice", version.ref = "solstice-version" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless-version" }
+spotless-changelog = { id = "com.diffplug.spotless-changelog", version.ref = "spotless-changelog-version" }
+tapmoc = { id = "com.gradleup.tapmoc", version.ref = "tapmoc-version" }
+versions = { id = "io.github.ben-manes.versions", version.ref = "versions-version" }

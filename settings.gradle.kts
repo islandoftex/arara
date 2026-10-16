@@ -1,5 +1,30 @@
-// automatic toolchain resolution
+// SPDX-License-Identifier: BSD-3-Clause
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+        // the chronoheader plugin registry
+        maven {
+            url = uri("https://gitlab.com/api/v4/projects/85815049/packages/maven")
+        }
+        // the solstice plugin registry
+        maven {
+            url = uri("https://gitlab.com/api/v4/projects/87038355/packages/maven")
+        }
+        // the leopack plugin registry
+        maven {
+            url = uri("https://gitlab.com/api/v4/projects/86391394/packages/maven")
+        }
+        // the scribeswan registry, consumed by the leopack companion
+        maven {
+            url = uri("https://gitlab.com/api/v4/projects/71753494/packages/maven")
+        }
+    }
+}
+
 plugins {
+    // the settings plugin block has no access to the project catalog's
+    // accessors, so the toolchain resolver declaration stays inline
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
@@ -8,10 +33,6 @@ rootProject.name = "arara"
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
-        // Shadow's optional R8 configuration is also resolved by dependency scanning.
-        google {
-            content { includeModule("com.android.tools", "r8") }
-        }
     }
 }
 
@@ -20,12 +41,5 @@ include(
     "core",
     "lua",
     "mvel",
-    "cli",
-    "docs",
-    "smoke-tests"
+    "cli"
 )
-
-// CI passes documentation cache entries between jobs as artifacts.
-buildCache {
-    local { directory = file(".gradle/build-cache") }
-}

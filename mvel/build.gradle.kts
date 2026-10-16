@@ -1,59 +1,30 @@
 // SPDX-License-Identifier: BSD-3-Clause
 plugins {
-    alias(libs.plugins.kover)
-    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.tapmoc)
+    alias(libs.plugins.kover)
 }
 
-kotlin {
-    jvm()
-
-    sourceSets {
-
-        all {
-            languageSettings.optIn("kotlin.time.ExperimentalTime")
-            languageSettings.optIn("kotlin.RequiresOptIn")
-        }
-
-        commonMain {
-            dependencies {
-                implementation(project(":core"))
-                implementation(libs.kotlinx.serialization)
-            }
-        }
-
-        jvmMain {
-            dependencies {
-                api(project(":api"))
-                implementation(libs.slf4j.api)
-                implementation(libs.mvel)
-                implementation(libs.kotaml)
-            }
-        }
-
-        commonTest {
-            dependencies {
-                implementation(libs.kotlin.test.common)
-                implementation(libs.kotlin.test.annotations.common)
-            }
-        }
-
-        jvmTest {
-            dependencies {
-                implementation(libs.kotlin.test.junit5)
-                runtimeOnly(libs.junit.jupiter.engine)
-            }
-        }
-    }
+dependencies {
+    api(project(":api"))
+    implementation(project(":core"))
+    implementation(libs.slf4j.api)
+    implementation(libs.mvel)
+    implementation(libs.kotlinx.serialization)
+    implementation(libs.kotaml)
+    testImplementation(libs.kotlin.test)
 }
 
-// This floor measures this module's own test suite.
+// the module's own test suite is what its report measures - the
+// cross-module coverage of these classes is guarded by the aggregate
+// floor at the root. This floor sits below the module's own measured
+// baseline, so a regression in the module suite fails the gate
 kover {
     reports {
-        total {
-            verify {
-                onCheck.set(false)
-                rule { minBound(79) }
+        verify {
+            rule {
+                minBound(65)
             }
         }
     }

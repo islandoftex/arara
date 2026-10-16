@@ -1,69 +1,42 @@
 // SPDX-License-Identifier: BSD-3-Clause
 plugins {
-    alias(libs.plugins.kover)
-    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.tapmoc)
+    alias(libs.plugins.kover)
 }
 
 kotlin {
-    jvm()
-
     compilerOptions {
-        freeCompilerArgs.add("-Xexpect-actual-classes")
-    }
-
-    sourceSets {
-
-        all {
-            languageSettings.apply {
-                optIn("kotlin.time.ExperimentalTime")
-                optIn("kotlin.ExperimentalUnsignedTypes")
-            }
-        }
-
-        commonMain {
-            dependencies {
-                api(project(":api"))
-                implementation(libs.kotlin.logging)
-                implementation(libs.kotaml)
-                implementation(libs.kotlinx.serialization)
-            }
-        }
-
-        jvmMain {
-            dependencies {
-                implementation(libs.ztexec)
-                implementation(libs.jgit)
-                runtimeOnly(libs.slf4j.api)
-            }
-        }
-
-        jvmTest {
-            dependencies {
-                implementation(libs.kotlin.test.junit5)
-                runtimeOnly(libs.junit.jupiter.engine)
-                implementation(libs.kotest.runner.jvm)
-                implementation(libs.kotest.assertions.jvm)
-                runtimeOnly(libs.slf4j.simple)
-            }
-        }
-
-        commonTest {
-            dependencies {
-                implementation(libs.kotlin.test.common)
-                implementation(libs.kotlin.test.annotations.common)
-            }
-        }
+        optIn.add("kotlin.ExperimentalUnsignedTypes")
     }
 }
 
-// This floor measures this module's own test suite.
+dependencies {
+    api(project(":api"))
+    implementation(libs.kotlin.logging)
+    implementation(libs.kotaml)
+    implementation(libs.kotlinx.serialization)
+    implementation(libs.okio)
+    implementation(libs.zt.exec)
+
+    testImplementation(libs.kotlin.test)
+    testRuntimeOnly(libs.slf4j.simple)
+}
+
+// the module's own test suite is what its report measures - the
+// cross-module coverage of these classes is guarded by the aggregate
+// floor at the root. This floor sits below the module's own measured
+// baseline, so a regression in the module suite fails the gate; the
+// baseline includes arms no test can reach, among them the
+// defensive cleanup of the class loading helpers - a copy source
+// that cannot be malformed, and the exit hook that only the dying
+// process runs
 kover {
     reports {
-        total {
-            verify {
-                onCheck.set(false)
-                rule { minBound(80) }
+        verify {
+            rule {
+                minBound(89)
             }
         }
     }

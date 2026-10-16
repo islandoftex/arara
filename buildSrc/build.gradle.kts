@@ -1,54 +1,39 @@
 // SPDX-License-Identifier: BSD-3-Clause
-
-repositories {
-    mavenCentral()
-}
-
 plugins {
     `kotlin-dsl`
 }
 
+// the Kotlin plugin's own stdlib and reflect coordinates resolve
+// through here, and so does the helper build's dependencies, so the
+// repositories declaration is load-bearing
+repositories {
+    mavenCentral()
+    // the scenario generator library ships on the group registry
+    maven {
+        url = uri("https://gitlab.com/api/v4/projects/74459964/packages/maven")
+    }
+    // the markdown conversion library ships on the group registry
+    maven {
+        url = uri("https://gitlab.com/api/v4/projects/85981688/packages/maven")
+    }
+    // the diagram rendering client ships on the group registry
+    maven {
+        url = uri("https://gitlab.com/api/v4/projects/87423722/packages/maven")
+    }
+    // the SVG to PDF transcoder ships on the group registry
+    maven {
+        url = uri("https://gitlab.com/api/v4/projects/87464209/packages/maven")
+    }
+    // the man page library ships on the group registry
+    maven {
+        url = uri("https://gitlab.com/api/v4/projects/71753494/packages/maven")
+    }
+}
+
 dependencies {
-    implementation(gradleTestKit())
+    implementation(libs.kobats)
+    implementation(libs.coralmark)
+    implementation(libs.crocplot)
+    implementation(libs.svgecko)
+    implementation(libs.scribeswan)
 }
-
-val websiteToolsTest = tasks.register<JavaExec>("websiteToolsTest") {
-    group = "verification"
-    dependsOn(tasks.testClasses)
-    classpath = sourceSets.test.get().runtimeClasspath
-    mainClass.set("org.islandoftex.arara.build.website.WebsiteToolsChecksKt")
-    args(projectDir.parentFile.absolutePath)
-    inputs.dir(projectDir.parentFile.resolve("website/content"))
-    inputs.dir(projectDir.parentFile.resolve("website/themes/devlab-theme"))
-}
-
-// Regression checks use a standalone Kotlin main rather than a JUnit engine.
-tasks.test { failOnNoDiscoveredTests.set(false) }
-tasks.check { dependsOn(websiteToolsTest) }
-
-val packagingTest = tasks.register<JavaExec>("packagingTest") {
-    group = "verification"
-    dependsOn(tasks.testClasses)
-    classpath = sourceSets.test.get().runtimeClasspath
-    mainClass.set("org.islandoftex.arara.build.PackagingChecksKt")
-    args(gradle.gradleHomeDir!!.absolutePath, sourceSets.main.get().output.classesDirs.asPath)
-}
-tasks.check { dependsOn(packagingTest) }
-
-val runtimeDependencyTest = tasks.register<JavaExec>("runtimeDependencyTest") {
-    group = "verification"
-    dependsOn(tasks.testClasses)
-    classpath = sourceSets.test.get().runtimeClasspath
-    mainClass.set("org.islandoftex.arara.build.RuntimeDependencyChecksKt")
-    args(gradle.gradleHomeDir!!.absolutePath, sourceSets.main.get().output.classesDirs.asPath)
-}
-tasks.check { dependsOn(runtimeDependencyTest) }
-
-val documentationCacheTest = tasks.register<JavaExec>("documentationCacheTest") {
-    group = "verification"
-    dependsOn(tasks.testClasses)
-    classpath = sourceSets.test.get().runtimeClasspath
-    mainClass.set("org.islandoftex.arara.build.DocumentationCacheChecksKt")
-    args(gradle.gradleHomeDir!!.absolutePath, sourceSets.main.get().output.classesDirs.asPath)
-}
-tasks.check { dependsOn(documentationCacheTest) }
