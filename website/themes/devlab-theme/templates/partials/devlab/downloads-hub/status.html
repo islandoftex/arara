@@ -1,0 +1,20 @@
+<section class="dlh-card-section" aria-labelledby="dlh-status-title">
+  <div class="dlh-section-head">
+    <p class="hero-eyebrow">{{ dlh_status.label | default(value=labels.status) }}</p>
+    <h2 id="dlh-status-title">{{ dlh_status.title | default(value=labels.status_title) }}</h2>
+    {% if dlh_status.description %}
+    <p class="page-description">{{ dlh_status.description }}</p>
+    {% endif %}
+  </div>
+
+  {% if dlh_status.items %}
+  <dl class="dlh-status-list">
+    {% for dlh_status_item in dlh_status.items %}
+    <div class="dlh-status-item">
+      <dt>{{ dlh_status_item.label }}</dt>
+      <dd>{{ dlh_status_item.value }}</dd>
+    </div>
+    {% endfor %}
+  </dl>
+  {% endif %}
+</section>

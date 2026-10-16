@@ -1,0 +1,120 @@
+.docs-overview-intro {
+  margin: -0.75rem 0 2rem;
+}
+
+.docs-overview-intro > :last-child {
+  margin-bottom: 0;
+}
+
+.docs-overview-direct {
+  margin-top: 2rem;
+}
+
+.docs-overview-direct + .content {
+  margin-top: 2rem;
+}
+
+.docs-overview-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: var(--space-4);
+
+  width: 100%;
+  margin-block: 0;
+  margin-inline: 0 auto;
+  padding: 0;
+
+  list-style: none;
+}
+
+.docs-overview-card-item {
+  min-width: 0;
+}
+
+.docs-overview-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+
+  min-height: 100%;
+  padding: var(--space-5) var(--space-6);
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-subtle);
+  box-shadow: var(--shadow-sm);
+
+  color: var(--color-fg);
+  text-decoration: none;
+  transition: box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+.docs-overview-card:hover {
+  box-shadow: var(--shadow-md);
+  text-decoration: none;
+}
+
+.docs-overview-card:focus-visible {
+  box-shadow: var(--shadow-md);
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.docs-overview-card-icon {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 2.25rem;
+  height: 2.25rem;
+
+  border: 1px solid color-mix(in srgb, var(--color-accent) 26%, var(--color-border));
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface-raised));
+  color: var(--color-accent);
+}
+
+.docs-overview-card-copy {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.docs-overview-card :is(h2, h3, h4, h5) {
+  margin: 0;
+
+  color: var(--color-fg);
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.docs-overview-card h2,
+.docs-overview-card h3 {
+  font-size: 1.15rem;
+}
+
+.docs-overview-card h4 {
+  font-size: 1rem;
+}
+
+.docs-overview-card h5 {
+  font-size: 0.95rem;
+}
+
+.docs-overview-card p {
+  display: -webkit-box;
+  margin: 0.45rem 0 0;
+  overflow: hidden;
+
+  color: var(--color-muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.docs-overview-card:hover :is(h2, h3, h4, h5),
+.docs-overview-card:focus-visible :is(h2, h3, h4, h5) {
+  color: var(--color-accent);
+}

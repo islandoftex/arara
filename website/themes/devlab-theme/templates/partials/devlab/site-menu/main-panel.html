@@ -1,0 +1,25 @@
+{# Internal DevLab partial. #}
+
+<div id="site-menu-panel-main" class="site-menu-panel" data-site-menu-panel="main">
+  <nav class="site-menu-nav" aria-label="{{ ui.main_mobile_navigation }}">
+    {% for nav_link in nav_links %}
+    {% if has_docs_navigation_panel and nav_link.collection is defined and nav_link.collection == collection_id %}
+    <div class="site-menu-link-row">
+      {{<devlab.navigation_link nav_link={nav_link} class_name="site-menu-link" active_path={active_path} wrap_name={true} active_url={active_url} content_lang={lang} active_collection={collection_id} />}}
+      <button
+        class="site-menu-link-disclosure"
+        type="button"
+        aria-label="{{ ui.menu_docs }}"
+        aria-controls="site-menu-panel-docs"
+        aria-expanded="false"
+        data-site-menu-panel-target="docs"
+      >
+        <span class="site-menu-link-indicator" aria-hidden="true">&rsaquo;</span>
+      </button>
+    </div>
+    {% else %}
+    {{<devlab.navigation_link nav_link={nav_link} class_name="site-menu-link" active_path={active_path} active_url={active_url} content_lang={lang} active_collection={collection_id} />}}
+    {% endif %}
+    {% endfor %}
+  </nav>
+</div>

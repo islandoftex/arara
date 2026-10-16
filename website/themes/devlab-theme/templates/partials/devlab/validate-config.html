@@ -1,0 +1,22 @@
+{# Reject retired theme settings before they can silently change a consumer site. #}
+{% set retired_home_keys = ["home_layout", "home_eyebrow", "home_hero_image", "home_hero_image_alt", "home_primary_action_label", "home_primary_action_path", "home_secondary_action_label", "home_secondary_action_path", "home_features", "home_learn", "home_workflow", "home_cta"] %}
+{% set settings_sources = [config.extra] %}
+{% if context_item %}{% set settings_sources = [...settings_sources, context_item.extra] %}{% endif %}
+{% for settings in settings_sources %}
+{% for key in retired_home_keys %}
+{% if settings[key] is defined %}{{ throw(message="DevLab 0.9: extra." ~ key ~ " was removed. Use extra.devlab.home and ordered blocks. Follow the v0.8 to v0.9 upgrade guide.") }}{% endif %}
+{% endfor %}
+{% set settings_devlab = settings.devlab | default(value={}) %}
+{% set retired_docs = settings_devlab.docs | default(value={}) %}
+{% set retired_blog = settings_devlab.blog | default(value={}) %}
+{% for key in ["section", "path", "get_started_path"] %}
+{% if retired_docs[key] is defined %}{{ throw(message="DevLab 0.9: devlab.docs." ~ key ~ " was removed. Register a devlab.collections entry and an explicit navigation destination. Follow the v0.8 to v0.9 upgrade guide.") }}{% endif %}
+{% endfor %}
+{% if retired_blog.path is defined %}{{ throw(message="DevLab 0.9: devlab.blog.path was removed. Use an explicit navigation path and blog templates in front matter.") }}{% endif %}
+{% endfor %}
+{% for key in ["labels", "search_label", "search_placeholder"] %}
+{% if config.extra[key] is defined %}{{ throw(message="DevLab 0.9: extra." ~ key ~ " was removed. Use extra.devlab.i18n.translations.<language>.") }}{% endif %}
+{% endfor %}
+{% for link in config.extra.devlab.navigation.links | default(value=[]) %}
+{% if link.kind is defined %}{{ throw(message="DevLab 0.9: navigation kind was removed. Use a collection link or explicit name and path.") }}{% endif %}
+{% endfor %}

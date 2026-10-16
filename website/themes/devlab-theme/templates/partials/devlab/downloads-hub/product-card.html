@@ -1,0 +1,39 @@
+{% set dlh_card_artifacts = [item for item in dlh_product.artifact | default(value=[]) if item.url | default(value="") | trim and not item.demo | default(value=false)] %}
+<a
+  class="dlh-card"
+  href="{{ dlh_product_url }}"
+  data-dlh-card
+  data-product="{{ dlh_product.id }}"
+  data-support="{{ dlh_product.support | default(value="") }}"
+  data-vendor="{{ dlh_product.vendor | default(value="") }}"
+  data-name="{{ dlh_product.name }}"
+  data-search="{{ dlh_product.name }} {{ dlh_product.vendor | default(value="") }}{% if dlh_product.tags %} {{ dlh_product.tags | join(sep=' ') }}{% endif %}{% if dlh_product.summary %} {{ dlh_product.summary }}{% endif %}"
+>
+  <div class="dlh-card-visual">
+    <span class="dlh-card-glow" aria-hidden="true"></span>
+    {% if dlh_product.image %}
+    <img class="dlh-card-image" src="{{<devlab.url path={dlh_product.image} />}}" alt="" loading="lazy">
+    {% else %}
+    <span class="dlh-card-image dlh-placeholder" aria-hidden="true">{{<devlab.icon name="file" />}}</span>
+    {% endif %}
+    <span class="dlh-card-badge">
+      {% set dlh_badge_id = dlh_product.support | default(value="") %}
+      {% include "partials/devlab/downloads-hub/support-badge.html" %}
+    </span>
+  </div>
+
+  <div class="dlh-card-body">
+    <p class="dlh-card-vendor">{{ dlh_product.vendor | default(value="") }}</p>
+    <h3 class="dlh-card-title">{{ dlh_product.name }}</h3>
+    {% if dlh_product.summary %}
+    <p class="dlh-card-summary">{{ dlh_product.summary }}</p>
+    {% endif %}
+  </div>
+
+  <div class="dlh-card-foot">
+    <span class="dlh-card-count">
+      {% if dlh_card_artifacts %}{{ labels.files }}: {{ dlh_card_artifacts | length }}{% else %}{{ labels.unavailable }}{% endif %}
+    </span>
+    <span class="dlh-card-arrow" aria-hidden="true">{{<devlab.icon name="arrow-right" size="sm" />}}</span>
+  </div>
+</a>

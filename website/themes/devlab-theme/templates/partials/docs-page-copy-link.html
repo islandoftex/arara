@@ -1,0 +1,27 @@
+{% if show_copy_link %}
+<div class="docs-copy-link">
+  <button
+    class="docs-copy-link-button"
+    type="button"
+    aria-label="{{ copy_link_label }}"
+    title="{{ copy_link_label }}"
+    data-docs-copy-link
+    hidden
+  >
+    <span class="docs-copy-link-default-icon" data-docs-copy-link-default-icon>
+      {{<devlab.icon name="link" size="sm" />}}
+    </span>
+    <span class="docs-copy-link-success-icon" data-docs-copy-link-success-icon>
+      {{<devlab.icon name="check" size="sm" />}}
+    </span>
+    <span class="docs-copy-link-label" data-docs-copy-link-label>{{ copy_link_label }}</span>
+  </button>
+  <span
+    class="docs-page-action-status"
+    role="status"
+    aria-live="polite"
+    aria-atomic="true"
+    data-docs-copy-link-status
+  ></span>
+</div>
+{% endif %}

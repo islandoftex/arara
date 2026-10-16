@@ -1,0 +1,42 @@
+{% set footer_show_link_names = footer_show_link_names | default(value=false) %}
+
+<div class="site-footer-info">
+{% if footer_note %}
+<p class="site-footer-note">{{ footer_note }}</p>
+{% endif %}
+
+<p class="site-footer-copyright">&copy; {{ footer_year }} {{ footer_text }}</p>
+</div>
+
+{% if footer_links %}
+<nav class="site-footer-links" aria-label="{{ footer_links_label }}">
+  {% if footer_show_link_names %}
+  <p class="site-footer-links-title">{{ footer_links_label }}</p>
+  {% endif %}
+
+  {% for footer_link in footer_links %}
+  {% if footer_link.name is defined and footer_link.path is defined %}
+  {% set footer_icon = footer_link.icon | default(value="") %}
+  {% set footer_icon_markup = "" %}
+  {% if footer_icon %}{% set footer_icon_markup = <devlab.svg_icon name={footer_icon} /> %}{% endif %}
+  {% set has_footer_icon = footer_icon_markup is containing(pat="<svg") %}
+  <a
+    class="site-footer-link"
+    href="{{<devlab.route_url path={footer_link.path} content_lang={lang} />}}"
+    {% if has_footer_icon and not footer_show_link_names %}aria-label="{{ footer_link.name }}"{% endif %}
+  >
+    {% if has_footer_icon %}
+    <span class="site-footer-link-mark" aria-hidden="true">
+      {{ footer_icon_markup | safe }}
+    </span>
+    {% endif %}
+    {% if footer_show_link_names %}
+    <span class="site-footer-link-name">{{ footer_link.name }}</span>
+    {% elif not has_footer_icon %}
+    {{ footer_link.name }}
+    {% endif %}
+  </a>
+  {% endif %}
+  {% endfor %}
+</nav>
+{% endif %}

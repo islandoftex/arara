@@ -1,0 +1,102 @@
+{# Vendor and support are optional product fields, so the vendor list is collected
+   by hand instead of with group_by, which requires the attribute to exist. #}
+{% set_global dlh_vendor_names = [] %}
+{% for dlh_product in dlh_products %}
+{% set dlh_product_vendor = dlh_product.vendor | default(value="") %}
+{% if dlh_product_vendor and dlh_product_vendor not in dlh_vendor_names %}{% set_global dlh_vendor_names = [...dlh_vendor_names, dlh_product_vendor] %}{% endif %}
+{% endfor %}
+{% set dlh_vendor_options = dlh_vendor_names | sort %}
+<section class="dlh-catalog" data-dlh-catalog data-result-label="{{ labels.results }}" aria-label="{{ labels.catalog }}">
+  {% if dl.featured %}
+  <div class="dlh-featured">
+    <div class="dlh-featured-head">
+      <div class="dlh-featured-heading">
+        <p class="hero-eyebrow">{{ dl.featured.label | default(value=labels.featured) }}</p>
+        <h2 class="dlh-featured-title">{{ dl.featured.title | default(value=labels.featured_title) }}</h2>
+        {% if dl.featured.description %}
+        <p class="dlh-featured-description">{{ dl.featured.description }}</p>
+        {% endif %}
+      </div>
+
+      <a class="dlh-featured-more" href="#dlh-product-grid" data-dlh-see-all>
+        {{ dl.featured.see_all_label | default(value=labels.all_products) }}
+        <span class="dlh-pill-count" data-dlh-count="all">{{ dlh_products | length }}</span>
+        {{<devlab.icon name="arrow-right" size="sm" />}}
+      </a>
+    </div>
+
+    <div class="dlh-featured-grid">
+      {% for dlh_product in dlh_products %}
+      {% if dlh_product.featured %}
+      {% set dlh_product_url = <devlab.url path={dlh_product.url} /> %}
+      {% include "partials/devlab/downloads-hub/featured-card.html" %}
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="dlh-toolbar" data-dlh-toolbar hidden>
+    <div class="dlh-field dlh-field-search">
+      <label class="dlh-label" for="dlh-search-input">{{ labels.search }}</label>
+      <input
+        class="dlh-input"
+        id="dlh-search-input"
+        type="search"
+        data-dlh-search
+        placeholder="{{ labels.search_placeholder }}"
+        autocomplete="off"
+      >
+    </div>
+
+    <div class="dlh-field">
+      <span class="dlh-label" id="dlh-support-label">{{ labels.support }}</span>
+      <div class="dlh-pills" role="group" aria-labelledby="dlh-support-label">
+        <button class="dlh-pill" type="button" data-dlh-support="all" aria-pressed="true">
+          {{ labels.all }} <span class="dlh-pill-count" data-dlh-count="all">{{ dlh_products | length }}</span>
+        </button>
+        {% for dlh_level in dlh_support %}
+        {% set_global dlh_level_count = 0 %}
+        {% for dlh_product in dlh_products %}{% if dlh_product.support | default(value="") == dlh_level.id %}{% set_global dlh_level_count = dlh_level_count + 1 %}{% endif %}{% endfor %}
+        <button class="dlh-pill" type="button" data-dlh-support="{{ dlh_level.id }}" aria-pressed="false">
+          {{ dlh_level.label }}
+          <span class="dlh-pill-count" data-dlh-count="{{ dlh_level.id }}">{{ dlh_level_count }}</span>
+        </button>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="dlh-selects">
+      <div class="dlh-field">
+        <label class="dlh-label" for="dlh-vendor">{{ labels.vendor }}</label>
+        <select class="dlh-select" id="dlh-vendor" data-dlh-vendor>
+          <option value="all">{{ labels.all }}</option>
+          {% for dlh_vendor in dlh_vendor_options %}
+          <option value="{{ dlh_vendor }}">{{ dlh_vendor }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="dlh-field">
+        <label class="dlh-label" for="dlh-sort">{{ labels.sort }}</label>
+        <select class="dlh-select" id="dlh-sort" data-dlh-sort>
+          <option value="default">{{ labels.sort_default }}</option>
+          <option value="name">{{ labels.sort_name }}</option>
+          <option value="support">{{ labels.sort_support }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="dlh-results"><p class="dlh-result" data-dlh-result role="status" aria-live="polite" aria-atomic="true" hidden></p>
+  <button class="dlh-reset" type="button" data-dlh-reset hidden>{{ labels.reset }}</button></div>
+
+  <div class="dlh-grid" id="dlh-product-grid" data-dlh-grid>
+    {% for dlh_product in dlh_products %}
+    {% set dlh_product_url = <devlab.url path={dlh_product.url} /> %}
+    {% include "partials/devlab/downloads-hub/product-card.html" %}
+    {% endfor %}
+  </div>
+
+  <p class="dlh-empty" data-dlh-empty hidden>{{ labels.no_results }}</p>
+</section>

@@ -1,0 +1,81 @@
+.downloads-channel-section {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.downloads-channels-title {
+  max-width: 18ch;
+  margin: 0;
+  font-size: var(--text-2xl);
+  overflow-wrap: anywhere;
+}
+
+.downloads-channels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
+  gap: var(--space-5);
+}
+
+.download-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  min-width: 0;
+  min-height: 16rem;
+  padding: var(--space-6);
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-subtle);
+  box-shadow: var(--shadow-sm);
+}
+
+.download-card-status {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0;
+  padding: var(--space-1) var(--space-2);
+
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-strong);
+
+  color: var(--color-fg);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: var(--leading-snug);
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+  unicode-bidi: plaintext;
+}
+
+.download-card h3 {
+  margin-top: var(--space-3);
+  font-size: var(--text-xl);
+  overflow-wrap: anywhere;
+  unicode-bidi: plaintext;
+}
+
+.download-card-description {
+  margin: 0;
+  color: var(--color-muted);
+  line-height: var(--leading-body);
+  overflow-wrap: anywhere;
+  unicode-bidi: plaintext;
+}
+
+.download-card .button {
+  width: 100%;
+  max-width: 100%;
+  margin-top: auto;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.download-card button[disabled] {
+  cursor: not-allowed;
+  background: var(--color-surface-strong);
+  color: var(--color-muted);
+  opacity: 1;
+}

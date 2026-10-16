@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block layout_context %}{% set devlab_layout = "downloads" %}{% endblock layout_context %}
+{% block main_class %} site-main-downloads{% endblock main_class %}
+{% block content %}
+{% set dl = load_data(path=page.extra.data) %}
+{% set labels = {...downloads_ui, ...dl.labels | default(value={})} %}
+{% set dlh_mode = dl.mode | default(value="single") %}
+{% set dlh_products = dl.product | default(value=[]) %}
+{% set dlh_channels = dl.channel | default(value=[]) %}
+{% set dlh_support = dl.support | default(value=[]) %}
+{% set dlh_channel_ids = dlh_channels | group_by(attribute="id") %}
+{% set dlh_product_ids = dlh_products | group_by(attribute="id") %}
+{% include "partials/devlab/downloads-hub/setup.html" %}
+{% set dlh_groups = dlh_products | group_by(attribute="id") %}
+{% set dlh_matches = dlh_groups[page.extra.product] | default(value=[]) %}
+{% if dlh_matches | length != 1 %}{{ throw(message="Downloads: extra.product must match exactly one product.id in extra.data.") }}{% endif %}
+{% set dlh_product = dlh_matches | first %}
+{% set dlh_parent = get_section(path=page.ancestors | last, lang=lang) %}
+{% set dlh_catalog_permalink = dlh_parent.permalink %}
+{% set dlh_product_breadcrumbs = true %}
+{% set dlh_product_eyebrow = "" %}
+{% set dlh_product_lead = dlh_product.summary | default(value=page.description | default(value="")) %}
+{% set dlh_product_intro = "" %}
+{% set dlh_product_actions = [] %}
+<div class="downloads-page dlh">
+  {% include "partials/devlab/downloads-hub/product-page.html" %}
+  {% if page.content %}<div class="content dlh-body">{{ page.content | safe }}</div>{% endif %}
+</div>
+{% endblock content %}

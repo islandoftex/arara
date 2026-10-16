@@ -1,0 +1,17 @@
+{% set_global blog_breadcrumb_root_path = false %}
+{% if page.ancestors is defined %}
+{% for ancestor_path in page.ancestors %}
+{% if not blog_breadcrumb_root_path and ancestor_path is containing(pat="/") %}
+{% set_global blog_breadcrumb_root_path = ancestor_path %}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% if blog_breadcrumb_root_path %}
+{% set blog_breadcrumb_root = get_section(path=blog_breadcrumb_root_path, lang=lang) %}
+{% set breadcrumbs_root_label = blog_breadcrumb_root.title %}
+{% set breadcrumbs_root_permalink = blog_breadcrumb_root.permalink %}
+{% set breadcrumbs_ancestor_start_path = blog_breadcrumb_root_path %}
+{% set breadcrumbs_current_label = page.title %}
+{% include "partials/breadcrumbs.html" %}
+{% endif %}

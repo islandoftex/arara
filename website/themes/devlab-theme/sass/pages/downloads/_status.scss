@@ -1,0 +1,72 @@
+.downloads-status {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-subtle);
+  box-shadow: var(--shadow-md);
+}
+
+.downloads-status {
+  display: grid;
+  gap: var(--space-5);
+  padding: clamp(var(--space-6), 3vw, var(--space-8));
+}
+
+.downloads-status-label {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.downloads-status h2,
+.download-card h3,
+.downloads-verification h2 {
+  margin: 0;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.downloads-status-description {
+  margin: 0;
+  color: var(--color-muted);
+  line-height: var(--leading-body);
+  overflow-wrap: anywhere;
+}
+
+.downloads-status-list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: var(--space-2) 0 0;
+  border-block-start: 1px solid var(--color-border);
+}
+
+.downloads-status-list div {
+  display: grid;
+  grid-template-columns: minmax(7rem, 0.35fr) minmax(0, 1fr);
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+  border-block-end: 1px solid var(--color-border);
+}
+
+.downloads-status-list div:last-child {
+  padding-block-end: 0;
+  border-block-end: 0;
+}
+
+.downloads-status-list dt {
+  color: var(--color-muted);
+  font-size: var(--text-sm);
+  overflow-wrap: anywhere;
+}
+
+.downloads-status-list dd {
+  margin: 0;
+  color: var(--color-fg);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+  unicode-bidi: plaintext;
+}

@@ -1,0 +1,110 @@
+.content-diagram {
+  --diagram-bg: var(--color-surface-raised);
+  --diagram-fg: var(--color-fg);
+  --diagram-line: var(--color-muted);
+  --diagram-accent: var(--color-accent);
+  --diagram-muted: var(--color-muted);
+  --diagram-surface: var(--color-surface-subtle);
+  --diagram-border: var(--color-border);
+
+  margin: var(--space-8) 0;
+  overflow: hidden;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-sm);
+}
+
+.diagram-caption {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-5);
+  border-block-end: 1px solid var(--color-border);
+  background: var(--color-surface-subtle);
+}
+
+.diagram-label {
+  color: var(--color-fg);
+  font-size: var(--text-sm);
+  font-weight: 750;
+  letter-spacing: var(--tracking-heading);
+}
+
+.diagram-description {
+  color: var(--color-muted);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+}
+
+.diagram-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 20rem;
+  padding: clamp(var(--space-5), 5vw, var(--space-10));
+  overflow: auto hidden;
+  overscroll-behavior-inline: contain;
+  scrollbar-color: var(--color-muted) transparent;
+  scrollbar-width: thin;
+
+  background:
+    radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--color-muted) 18%, transparent) 1px, transparent 0)
+      0 0 / 1.25rem 1.25rem,
+    var(--color-surface-raised);
+}
+
+.content-diagram[data-diagram-state="loading"] .diagram-stage::after {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid var(--color-border);
+  border-block-start-color: var(--color-accent);
+  border-radius: 50%;
+  content: "";
+  animation: diagram-loading 720ms linear infinite;
+}
+
+.diagram-svg {
+  display: block;
+  width: 100%;
+  min-width: 24rem;
+  height: auto;
+  max-height: 44rem;
+}
+
+.diagram-error-message,
+.diagram-noscript {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+.content-diagram[data-diagram-state="error"] .diagram-stage {
+  display: block;
+}
+
+.content-diagram[data-diagram-state="error"] .diagram-stage pre {
+  margin-block-end: 0;
+}
+
+@keyframes diagram-loading {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (max-width: 480px) {
+  .diagram-caption {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .diagram-stage {
+    min-height: 18rem;
+    padding: var(--space-4) var(--space-2);
+  }
+
+  .diagram-svg {
+    min-width: 21rem;
+  }
+}

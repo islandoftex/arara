@@ -1,0 +1,52 @@
+{% set theme_default = config.extra.devlab.appearance.default_mode | default(value="system") %}
+<script>
+  (function () {
+    var storageKey = "devlab-theme-color-mode";
+    var announcementStorageKey = "devlab-announcement-dismissed";
+    var root = document.documentElement;
+    var defaultMode = "{% if theme_default == "light" or theme_default == "dark" or theme_default == "system" %}{{ theme_default }}{% else %}system{% endif %}";
+
+    function isValidMode(mode) {
+      return mode === "light" || mode === "dark" || mode === "system";
+    }
+
+    function getSystemTheme() {
+      return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    }
+
+    function resolveTheme(mode) {
+      return mode === "system" ? getSystemTheme() : mode;
+    }
+
+    function getStoredMode() {
+      try {
+        return localStorage.getItem(storageKey);
+      } catch (_) {
+        return null;
+      }
+    }
+
+    var storedMode = getStoredMode();
+    var mode = isValidMode(storedMode) ? storedMode : defaultMode;
+
+    if (!isValidMode(mode)) {
+      mode = "system";
+    }
+
+    root.dataset.themeDefault = defaultMode;
+    root.dataset.themeMode = mode;
+    root.dataset.theme = resolveTheme(mode);
+
+    if (root.dataset.announcementKey) {
+      try {
+        if (localStorage.getItem(announcementStorageKey) === root.dataset.announcementKey) {
+          root.dataset.announcementDismissed = "true";
+        }
+      } catch (_) {
+        // Keep the announcement visible when persistent storage is unavailable.
+      }
+    }
+  })();
+</script>

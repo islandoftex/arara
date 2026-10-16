@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<article class="content">
+  {% include "partials/page-heading.html" %}
+
+  {{ page.content | safe }}
+  {% include "partials/page-actions.html" %}
+</article>
+{% endblock content %}

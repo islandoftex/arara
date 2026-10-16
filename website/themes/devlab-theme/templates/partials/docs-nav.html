@@ -1,0 +1,44 @@
+{% if devlab_layout == "reader" %}
+{% include "partials/reader-nav.html" %}
+{% else %}
+{% set docs_section_path = docs_options.section | default(value="") %}
+{% set active_path = "" %}
+{% if current_path is defined %}
+{% set active_path = current_path %}
+{% endif %}
+
+{% set active_sources = [] %}
+{% if context_item %}{% set active_sources = [...context_item.ancestors, context_item.relative_path] %}{% endif %}
+
+{% set docs = none %}
+{% if docs_section is defined and docs_section %}
+{% set docs = docs_section %}
+{% elif docs_section_path %}
+{% if lang == config.default_language %}
+{% set docs = get_section(path=docs_section_path, lang=lang) %}
+{% else %}
+{% set docs = get_section(path=docs_section_path, lang=lang, allow_missing=true) %}
+{% endif %}
+{% endif %}
+
+{% if docs %}
+{% set nav_section = docs %}
+{% set docs_nav_id_prefix = docs_nav_instance | default(value="docs-nav") %}
+{% set docs_section_toggle_label = ui.docs_section_toggle %}
+<ul class="docs-nav-list">
+  {% if docs_options.navigation is defined and docs_options.navigation %}
+  {% for navigation_entry in navigation_entries %}
+  {% if navigation_entry.label is defined %}
+  <li class="docs-nav-label"><p class="docs-nav-label-text" dir="auto">{{ navigation_entry.label | escape }}</p></li>
+  {% else %}
+  {% set subsection_id_prefix = docs_nav_id_prefix ~ "-section-" ~ loop.index %}
+  {{<devlab.docs_nav_section subsection={navigation_entry.section} subsection_id_prefix={subsection_id_prefix} active_path={active_path} toggle_label={docs_section_toggle_label} content_lang={lang} active_sources={active_sources} />}}
+  {% endif %}
+  {% endfor %}
+  {% else %}
+  {{<devlab.docs_nav_tree nav_section={nav_section} id_prefix={docs_nav_id_prefix} active_path={active_path} toggle_label={docs_section_toggle_label} content_lang={lang} active_sources={active_sources} />}}
+  {% endif %}
+</ul>
+{% endif %}
+
+{% endif %}

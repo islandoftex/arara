@@ -1,0 +1,4 @@
+{% extends "doc-page.html" %}
+{% block layout_context %}{% set devlab_layout = "reader" %}{% endblock layout_context %}
+{% block main_class %} site-main-reader{% endblock main_class %}
+{% block content %}{% set page = context_item %}{{ super() }}{% endblock content %}

@@ -1,0 +1,32 @@
+{# Internal built-in icon dispatcher. #}
+
+{%- if name == "sun" -%}{% include "components/icons/sun.html" %}
+{%- elif name == "moon" -%}{% include "components/icons/moon.html" %}
+{%- elif name == "desktop" -%}{% include "components/icons/desktop.html" %}
+{%- elif name == "terminal" -%}{% include "components/icons/terminal.html" %}
+{%- elif name == "github" -%}{% include "components/icons/github.html" %}
+{%- elif name == "gitlab" -%}{% include "components/icons/gitlab.html" %}
+{%- elif name == "codeberg" -%}{% include "components/icons/codeberg.html" %}
+{%- elif name == "matrix" -%}{% include "components/icons/matrix.html" %}
+{%- elif name == "zulip" -%}{% include "components/icons/zulip.html" %}
+{%- elif name == "telegram" -%}{% include "components/icons/telegram.html" %}
+{%- elif name == "discord" -%}{% include "components/icons/discord.html" %}
+{%- elif name == "rss" -%}{% include "components/icons/rss.html" %}
+{%- elif name == "email" -%}{% include "components/icons/email.html" %}
+{%- elif name == "heart" -%}{% include "components/icons/heart.html" %}
+{%- elif name == "link" -%}{% include "components/icons/link.html" %}
+{%- elif name == "search" -%}{% include "components/icons/search.html" %}
+{%- elif name == "chevron-right" -%}{% include "components/icons/chevron-right.html" %}
+{%- elif name == "external-link" -%}{% include "components/icons/external-link.html" %}
+{%- elif name == "copy" -%}{% include "components/icons/copy.html" %}
+{%- elif name == "check" -%}{% include "components/icons/check.html" %}
+{%- elif name == "info" -%}{% include "components/icons/info.html" %}
+{%- elif name == "warning" -%}{% include "components/icons/warning.html" %}
+{%- elif name == "menu" -%}{% include "components/icons/menu.html" %}
+{%- elif name == "x" -%}{% include "components/icons/x.html" %}
+{%- elif name == "arrow-left" -%}{% include "components/icons/arrow-left.html" %}
+{%- elif name == "arrow-right" -%}{% include "components/icons/arrow-right.html" %}
+{%- elif name == "folder" -%}{% include "components/icons/folder.html" %}
+{%- elif name == "file" -%}{% include "components/icons/file.html" %}
+{%- else -%}<!-- Icon "{{ name }}" not found -->
+{%- endif -%}

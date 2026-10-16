@@ -1,0 +1,27 @@
+# Zola build output
+/public/
+/.zola/
+
+# Build artifacts
+/target/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.bak
+*.orig
+*.rej
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor swap files
+*.swp
+*.swo
+
+# Python test caches
+__pycache__/
+*.pyc

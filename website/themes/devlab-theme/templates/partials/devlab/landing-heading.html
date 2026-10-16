@@ -1,0 +1,7 @@
+{% if has_heading %}
+<div class="landing-heading">
+  {% if block.eyebrow | default(value="") %}<p class="hero-eyebrow">{{ block.eyebrow }}</p>{% endif %}
+  {% if block.title | default(value="") %}<h2 id="{{ block_id }}-title">{{ block.title }}</h2>{% endif %}
+  {% if block.description | default(value="") %}<p class="page-description">{{ block.description }}</p>{% endif %}
+</div>
+{% endif %}

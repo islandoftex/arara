@@ -1,0 +1,28 @@
+{# Internal download card component. #}
+{% component devlab.download_card(channel: map, unavailable_label: string) %}
+{% set channel_name = channel.name | default(value="") | trim %}
+{% if not channel_name %}{{ throw(message="Download cards require a non-empty channel name.") }}{% endif %}
+<article class="download-card">
+  <div>
+    {% if channel.status is defined and channel.status %}
+    <p class="download-card-status">{{ channel.status }}</p>
+    {% endif %}
+
+    <h3>{{ channel_name }}</h3>
+  </div>
+
+  {% if channel.description is defined and channel.description %}
+  <p class="download-card-description">{{ channel.description }}</p>
+  {% endif %}
+
+  {% if channel.url | default(value="") | trim %}
+  <a class="button button-primary" href="{{<devlab.url path={channel.url} />}}">
+    {% if channel.button_label is defined and channel.button_label %}{{ channel.button_label }}{% else %}{{ channel_name }}{% endif %}
+  </a>
+  {% else %}
+  <button class="button button-secondary" type="button" disabled>
+    {% if channel.button_label is defined and channel.button_label %}{{ channel.button_label }}{% else %}{{ unavailable_label }}{% endif %}
+  </button>
+  {% endif %}
+</article>
+{% endcomponent devlab.download_card %}

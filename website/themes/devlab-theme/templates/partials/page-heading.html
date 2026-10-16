@@ -1,0 +1,9 @@
+{# Public heading slot. Receives context_item, devlab_layout, ui and optional heading_id/classes. #}
+<header class="page-header{% if heading_header_class is defined and heading_header_class %} {{ heading_header_class }}{% endif %}">
+  {% if devlab_layout in ["docs", "reader"] %}<div class="docs-page-heading">{% endif %}
+  <h1{% if heading_id is defined and heading_id %} id="{{ heading_id }}"{% endif %}>{{ context_item.title }}</h1>
+  {% if devlab_layout in ["docs", "reader"] %}{% if show_copy_link is defined and show_copy_link %}{% include "partials/docs-page-copy-link.html" %}{% endif %}</div>{% endif %}
+  {% include "partials/page-meta.html" %}
+  {% if context_item.description %}<p class="page-description">{{ context_item.description }}</p>{% endif %}
+  {% include "partials/page-heading-extra.html" %}
+</header>

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block layout_context %}{% set devlab_layout = "docs" %}{% endblock layout_context %}
+
+{% block content %}
+{% set show_last_updated = false %}
+{% set show_copy_link = false %}
+{% set edit_url = "" %}
+{% set report_url = "" %}
+{% set date_format = "%Y-%m-%d" %}
+{% if docs_options.page_actions is defined %}
+{% set page_actions = docs_options.page_actions %}
+{% set show_last_updated = page_actions.show_last_updated | default(value=false) %}
+{% set show_copy_link = page_actions.show_copy_link | default(value=false) %}
+{% set edit_url = page_actions.edit_url | default(value="") %}
+{% set report_url = page_actions.report_url | default(value="") %}
+{% set date_format = page_actions.date_format | default(value="%Y-%m-%d") %}
+{% if not date_format %}{% set date_format = "%Y-%m-%d" %}{% endif %}
+{% endif %}
+
+{% set page_actions_label = ui.page_actions %}
+{% set last_updated_label = ui.last_updated %}
+{% set copy_link_label = ui.copy_link %}
+{% set edit_page_label = ui.edit_page %}
+{% set feedback_prompt_label = ui.feedback_prompt %}
+{% set report_issue_label = ui.report_issue %}
+{% set has_last_updated = show_last_updated and page.updated | default(value="") %}
+{% set show_breadcrumbs = docs_options.show_breadcrumbs | default(value=true) %}
+{% set show_pagination = docs_options.show_pagination | default(value=true) %}
+
+<div class="docs-shell">
+  {% include "partials/docs-sidebar.html" %}
+
+  <article class="docs-content content">
+    {% if show_breadcrumbs %}
+    {% include "partials/docs-breadcrumbs.html" %}
+    {% endif %}
+
+    {% include "partials/page-heading.html" %}
+
+    {% set toc_items = [] %}
+    {% if docs_toc_enabled %}{% set toc_items = page.toc %}{% endif %}
+    {% include "partials/docs-toc-inline.html" %}
+
+    {{ page.content | safe }}
+
+    {% include "partials/page-actions.html" %}
+
+    {% if show_pagination %}
+    {% if devlab_layout == "reader" %}{% include "partials/reader-prev-next.html" %}{% else %}{% include "partials/docs-prev-next.html" %}{% endif %}
+    {% endif %}
+  </article>
+
+  {% set toc_items = [] %}
+  {% if docs_toc_enabled %}{% set toc_items = page.toc %}{% endif %}
+  {% include "partials/docs-toc.html" %}
+</div>
+{% endblock content %}

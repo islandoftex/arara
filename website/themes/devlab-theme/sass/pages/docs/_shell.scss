@@ -1,0 +1,16 @@
+.docs-shell {
+  display: grid;
+  grid-template-columns: 17.5rem minmax(0, 1fr) 15rem;
+  gap: 0;
+  align-items: start;
+
+  width: 100%;
+  min-height: calc(100vh - var(--announcement-height) - var(--header-height));
+}
+
+/* Pages without headings render no TOC; give the content the free column. */
+@media (min-width: 1181px) {
+  .docs-shell:not(:has(.docs-toc)) {
+    grid-template-columns: 17.5rem minmax(0, 1fr);
+  }
+}

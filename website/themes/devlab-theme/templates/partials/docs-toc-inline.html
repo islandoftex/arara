@@ -1,0 +1,8 @@
+{% if toc_items and (toc_items | length > 1 or toc_items[0].children) %}
+<details class="docs-toc-inline" data-devlab-toc>
+  <summary>{{ ui.toc }}</summary>
+  <nav aria-label="{{ ui.toc }}">
+    {{<devlab.toc items={toc_items} />}}
+  </nav>
+</details>
+{% endif %}

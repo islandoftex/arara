@@ -1,0 +1,23 @@
+@import "base/variables/palettes";
+
+@media print {
+  :root { @include theme-palette-light; color-scheme: light; }
+  body { background: white; color: black; font-size: 11pt; }
+  .site-header, .site-announcement, .site-menu, .site-menu-backdrop,
+  .site-footer, .docs-sidebar, .docs-toc, .docs-toc-inline, .blog-toc,
+  .blog-toc-inline, .docs-prev-next, .docs-page-actions, .docs-copy-link,
+  .skip-link, .code-copy-button, .content-tab-list, .dlh-toolbar, .dlh-results, .zola-anchor { display: none !important; }
+  .site-shell, .site-main, .docs-shell, .blog-shell, .docs-content,
+  .blog-article, .content { display: block; width: auto; max-width: none; min-height: 0; margin: 0; padding: 0; }
+  h1, h2, h3, h4, h5, h6 { break-after: avoid; color: black; }
+  figure, blockquote, tr { break-inside: avoid; }
+  pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+  .content pre.giallo .giallo-l { white-space: pre-wrap; overflow-wrap: anywhere; }
+  img, svg, table { max-width: 100%; }
+  a { color: inherit; text-decoration: underline; }
+  details > * { display: block !important; }
+  .content-tabs .content-tab-panel[hidden],
+  .content-tabs .content-tab-fallback-label { display: block !important; }
+  .content-tabs .content-tab-panel { break-inside: auto; }
+  .dlh-card[hidden] { display: block !important; }
+}

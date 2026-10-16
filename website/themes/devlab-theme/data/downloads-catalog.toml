@@ -1,0 +1,75 @@
+mode = "catalog"
+eyebrow = "Specialized example"
+title = "Product downloads"
+description = "One catalog for a family of projects. Pick a product to see its releases and installation details."
+
+[featured]
+title = "Start here"
+description = "Selected projects and their release status."
+
+[[support]]
+id = "maintained"
+label = "Maintained"
+tone = "success"
+[[support]]
+id = "development"
+label = "In development"
+tone = "warning"
+[[support]]
+id = "planned"
+label = "Planned"
+tone = "neutral"
+
+[[channel]]
+id = "stable"
+label = "Stable"
+description = "Published releases."
+[[channel]]
+id = "preview"
+label = "Preview"
+description = "Builds being prepared for testing."
+
+[[product]]
+id = "devlab"
+name = "DevLab Theme"
+vendor = "RiPetitor"
+support = "maintained"
+featured = true
+summary = "Project pages, blogs, documentation and books with Zola."
+tags = ["Zola", "Documentation"]
+url = "@/examples/downloads-catalog/devlab.md"
+docs_url = "@/docs/getting-started/installation.md"
+[[product.mirror]]
+name = "Codeberg releases"
+url = "https://codeberg.org/RiPetitor/devlab-theme/releases"
+
+[[product.artifact]]
+channel = "stable"
+name = "Source archive"
+variant = "tar.gz"
+version = "0.9.0"
+status = "planned"
+release_notes = "@/blog/devlab-theme-v0-9-0.md"
+
+[[product]]
+id = "toolkit"
+name = "Sample Toolkit"
+vendor = "Example Project"
+support = "development"
+summary = "An unpublished command-line toolkit demonstrating preview channels."
+tags = ["CLI", "Linux"]
+url = "@/examples/downloads-catalog/toolkit.md"
+[[product.artifact]]
+channel = "preview"
+name = "Linux package"
+arch = "x86_64"
+status = "development"
+
+[[product]]
+id = "product"
+name = "Sample Device"
+vendor = "Example Hardware"
+support = "planned"
+summary = "A device profile demonstrating the empty downloads state."
+tags = ["ARM64", "Hardware"]
+url = "@/examples/downloads-catalog/product.md"

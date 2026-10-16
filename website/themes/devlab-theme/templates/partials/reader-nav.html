@@ -1,0 +1,12 @@
+{% if docs_section_path %}
+{% set order = <devlab.reader_order section_path={docs_section_path} content_lang={lang} reading_order={docs_options.reading_order | default(value=[])} primary_language={config.default_language} /> %}
+<ol class="docs-nav-list reader-chapters">
+{% for entry in order | split(pat=":::") %}
+{% if entry %}
+{% if entry is starting_with(pat="s:") %}{% set chapter = get_section(path=entry | trim_start(pat="s:"), lang=lang) %}
+{% else %}{% set chapter = get_page(path=entry | trim_start(pat="p:"), lang=lang) %}{% endif %}
+<li class="docs-nav-item"><a class="docs-nav-link{% if active_path == chapter.path %} is-active{% endif %}" href="{{ chapter.permalink }}"{% if active_path == chapter.path %} aria-current="page"{% endif %}>{{ chapter.title }}</a></li>
+{% endif %}
+{% endfor %}
+</ol>
+{% endif %}

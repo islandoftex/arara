@@ -1,0 +1,133 @@
+{# Internal DevLab partial. #}
+{% if announcement_dismissible %}
+<script defer src="{{ get_url(path='js/announcement.js') }}"></script>
+{% endif %}
+{% if has_site_search %}
+{% set search_index_path = "search_index." ~ lang ~ ".js" %}
+{% if config.extra.devlab.search.index is defined and config.extra.devlab.search.index %}
+{% set search_index_path = config.extra.devlab.search.index %}
+{% endif %}
+{% set language_scripts = [] %}
+{% if lang == "ru" or lang == "de" %}{% set language_scripts = ["vendor/lunr-languages/lunr.stemmer.support.min.js", "vendor/lunr-languages/lunr." ~ lang ~ ".min.js"] %}{% endif %}
+{% if config.extra.devlab.search.language_scripts is defined and config.extra.devlab.search.language_scripts[lang] is defined %}{% set language_scripts = config.extra.devlab.search.language_scripts[lang] %}{% endif %}
+{# The search bundle is loaded on first interaction (focus or Ctrl+K), not on
+   every page load: the index can be hundreds of kilobytes per language. #}
+<script>
+  (function () {
+    var sources = [
+      "{{ get_url(path='elasticlunr.min.js') }}",
+      {% if language_scripts %}"{{ get_url(path='js/search-language-support.js') }}",{% endif %}
+      {% for source in language_scripts %}
+      {{ get_url(path=source) | json_encode | safe }},
+      {% endfor %}
+      "{{ get_url(path=search_index_path) }}",
+      "{{ get_url(path='js/search.js') }}"
+    ];
+    var loading = false;
+
+    function loadSearch() {
+      if (loading) {
+        return;
+      }
+      loading = true;
+
+      for (var i = 0; i < sources.length; i++) {
+        var script = document.createElement("script");
+        script.src = sources[i];
+        script.async = false;
+        document.head.appendChild(script);
+      }
+    }
+
+    document.addEventListener("focusin", function (event) {
+      var target = event.target;
+      if (target && target.matches && target.matches("[data-search-input]")) {
+        loadSearch();
+      }
+    }, true);
+
+    document.addEventListener("keydown", function (event) {
+      if (
+        (event.ctrlKey || event.metaKey) &&
+        !event.altKey &&
+        event.key.toLowerCase() === "k"
+      ) {
+        var input = document.querySelector("[data-search-input]");
+        if (input) {
+          event.preventDefault();
+          document.dispatchEvent(new Event("devlab:search-open"));
+          input.focus();
+        }
+        loadSearch();
+      }
+    }, true);
+  })();
+</script>
+{% endif %}
+<script defer src="{{ get_url(path='js/theme.js') }}"></script>
+{% if has_scroll_header_divider %}
+<script defer src="{{ get_url(path='js/header-divider.js') }}"></script>
+{% endif %}
+{% if (context_item and context_item.content is containing(pat="<pre")) or devlab_layout == "downloads" %}
+{% set copy_label = ui.copy %}
+{% set copied_label = ui.copied %}
+{% set copy_failed_label = ui.copy_failed %}
+{% set copy_success_message = ui.copy_success %}
+{% set copy_error_message = ui.copy_error %}
+<script
+  defer
+  src="{{ get_url(path='js/copy-button.js') }}"
+  data-copy-label="{{ copy_label }}"
+  data-copied-label="{{ copied_label }}"
+  data-copy-failed-label="{{ copy_failed_label }}"
+  data-copy-success-message="{{ copy_success_message }}"
+  data-copy-error-message="{{ copy_error_message }}"
+></script>
+
+{% endif %}
+{% if (context_item and context_item.content is containing(pat="data-tabs")) or devlab_layout == "downloads" %}
+<script defer src="{{ get_url(path='js/tabs.js') }}"></script>
+{% endif %}
+{% set diagram_marker = "data-devlab-diagram" %}
+{% set has_content_diagrams = false %}
+{% if page is defined and page.content is containing(pat=diagram_marker) %}
+{% set has_content_diagrams = true %}
+{% elif section is defined and section.content is containing(pat=diagram_marker) %}
+{% set has_content_diagrams = true %}
+{% endif %}
+{% if has_content_diagrams %}
+<script type="module" src="{{ get_url(path='js/diagrams.js') }}"></script>
+{% endif %}
+{% if is_docs_page or has_docs_navigation_panel %}
+<script defer src="{{ get_url(path='js/docs-nav.js') }}"></script>
+{% endif %}
+{% set has_blog_toc = false %}
+{% if page is defined and devlab_layout == "article" %}
+{% set blog_toc_enabled = config.extra.devlab.blog.show_toc | default(value=true) %}
+{% if blog_toc_enabled and page.toc %}
+{% set first_blog_toc_item = page.toc[0] %}
+{% if page.toc | length > 1 or first_blog_toc_item.children %}
+{% set has_blog_toc = true %}
+{% endif %}
+{% endif %}
+{% endif %}
+{% if (is_docs_page and docs_toc_enabled) or has_blog_toc %}
+<script defer src="{{ get_url(path='js/toc.js') }}"></script>
+{% endif %}
+{% if is_docs_page and docs_options.page_actions is defined and docs_options.page_actions.show_copy_link | default(value=false) %}
+{% set link_copied_label = ui.link_copied %}
+{% set copy_link_failed_label = ui.copy_link_failed %}
+{% set copy_link_success_message = ui.copy_link_success %}
+{% set copy_link_error_message = ui.copy_link_error %}
+<script
+  defer
+  src="{{ get_url(path='js/docs-page-actions.js') }}"
+  data-link-copied-label="{{ link_copied_label }}"
+  data-copy-link-failed-label="{{ copy_link_failed_label }}"
+  data-copy-link-success-message="{{ copy_link_success_message }}"
+  data-copy-link-error-message="{{ copy_link_error_message }}"
+></script>
+{% endif %}
+{% if has_site_menu %}
+<script defer src="{{ get_url(path='js/site-menu.js') }}"></script>
+{% endif %}

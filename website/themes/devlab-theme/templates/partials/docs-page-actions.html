@@ -1,0 +1,27 @@
+{# Internal DevLab partial. Article-end actions are opt-in through devlab.docs.page_actions. #}
+{% if has_last_updated or report_url or edit_url %}
+<footer class="docs-page-actions" aria-label="{{ page_actions_label }}">
+  {% if edit_url %}<a class="docs-page-edit-inline" href="{{ edit_url }}{{ page.relative_path }}">{{ edit_page_label }}</a>{% endif %}
+  {% if report_url %}
+  <a class="docs-page-discussion" href="{{ report_url }}">
+    <span class="docs-page-discussion-icon">
+      {{<devlab.icon name="info" size="inline" />}}
+    </span>
+    <span class="docs-page-discussion-copy">
+      <span class="docs-page-discussion-prompt">{{ feedback_prompt_label }}</span>
+      <strong>{{ report_issue_label }}</strong>
+    </span>
+    <span class="docs-page-discussion-external">
+      {{<devlab.icon name="external-link" size="sm" />}}
+    </span>
+  </a>
+  {% endif %}
+
+  {% if has_last_updated %}
+  <p class="docs-page-updated">
+    <span class="docs-page-updated-label">{{ last_updated_label }}</span>
+    <time datetime="{{ page.updated }}" dir="ltr">{{ page.updated | date(format=date_format) }}</time>
+  </p>
+  {% endif %}
+</footer>
+{% endif %}

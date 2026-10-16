@@ -1,0 +1,45 @@
+{% set announcement = config.extra.devlab.announcement %}
+{% set announcement_label = announcement.label | default(value="") %}
+{% set announcement_path = announcement.path | default(value="") %}
+{% set announcement_region_label = ui.announcement %}
+{% set announcement_dismiss_label = ui.announcement_dismiss %}
+<aside
+  class="site-announcement"
+  aria-label="{{ announcement_region_label }}"
+  data-announcement
+  {% if announcement_dismissible %}data-announcement-key="{{ announcement_key }}"{% endif %}
+>
+  <div class="site-announcement-inner">
+    <span class="site-announcement-spacer" aria-hidden="true"></span>
+
+    {% if announcement_path %}
+    <a
+      class="site-announcement-content"
+      href="{{<devlab.route_url path={announcement_path} content_lang={lang} />}}"
+    >
+      {% if announcement_label %}<span class="site-announcement-label">{{ announcement_label }}</span>{% endif %}
+      <span class="site-announcement-message">{{ announcement.message }}</span>
+      <span class="site-announcement-arrow" aria-hidden="true">→</span>
+    </a>
+    {% else %}
+    <p class="site-announcement-content">
+      {% if announcement_label %}<span class="site-announcement-label">{{ announcement_label }}</span>{% endif %}
+      <span class="site-announcement-message">{{ announcement.message }}</span>
+    </p>
+    {% endif %}
+
+    {% if announcement_dismissible %}
+    <button
+      class="site-announcement-dismiss"
+      type="button"
+      aria-label="{{ announcement_dismiss_label }}"
+      title="{{ announcement_dismiss_label }}"
+      data-announcement-dismiss
+    >
+      {{<devlab.svg_icon name="x" />}}
+    </button>
+    {% else %}
+    <span class="site-announcement-spacer" aria-hidden="true"></span>
+    {% endif %}
+  </div>
+</aside>

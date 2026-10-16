@@ -1,0 +1,143 @@
+# Theme demonstration site. Consumers supply their own zola.toml.
+base_url = "https://ripetitor.codeberg.page/devlab-theme/"
+title = "DevLab"
+description = "A Zola theme for project pages, blogs, documentation and books."
+author = "RiPetitor"
+default_language = "en"
+
+# Compile the theme stylesheets.
+compile_sass = true
+
+# Build the demonstration search index.
+build_search_index = true
+
+# Publish dated posts in the demonstration feed.
+generate_feeds = true
+feed_filenames = ["atom.xml"]
+exclude_paginated_pages_in_sitemap = "all"
+taxonomies = [
+  { name = "tags", paginate_by = 5 },
+  { name = "authors", feed = true },
+]
+
+[search]
+index_format = "elasticlunr_javascript"
+include_title = true
+include_description = true
+include_content = true
+
+[markdown]
+insert_anchor_links = "right"
+
+[markdown.highlighting]
+light_theme = "github-light"
+dark_theme = "github-dark"
+
+[extra.devlab.home]
+layout = "default"
+
+[extra.devlab.brand]
+logo_text = "DevLab"
+footer_text = "DevLab"
+show_logo_mark = true
+logo_mark_path = ""
+
+[extra.devlab.announcement]
+show = true
+key = "release-v0.9.0"
+label = "v0.9.0"
+message = "Layouts, collections and setup: what changes in DevLab 0.9.0"
+path = "/blog/devlab-theme-v0-9-0/"
+dismissible = true
+
+[extra.devlab.footer]
+show = true
+note = "A Zola-native theme for technical projects."
+show_link_names = true
+links = [
+  { name = "Community", path = "/community/", icon = "link" },
+  { name = "Codeberg", path = "https://codeberg.org/RiPetitor/devlab-theme", icon = "codeberg" },
+  { name = "Atom feed", path = "/atom.xml", icon = "rss" },
+]
+
+[extra.devlab.navigation]
+links = [
+  { name = "Home", path = "/" },
+  { name = "Docs", collection = "manual" },
+  { name = "Blog", path = "/blog/" },
+  { name = "Downloads", path = "/downloads/" },
+]
+
+[extra.devlab.collections.manual]
+section = "docs/_index.md"
+show_breadcrumbs = true
+show_toc = true
+show_pagination = true
+navigation = [
+  { section = "docs/getting-started/_index.md" },
+  { section = "docs/guides/_index.md" },
+  { label = "Configuration", translations = { de = "Konfiguration", ru = "Настройка" } },
+  { section = "docs/customization/_index.md" },
+  { section = "docs/reference/_index.md" },
+]
+
+[extra.devlab.docs.page_actions]
+show_last_updated = true
+show_copy_link = true
+edit_url = "https://codeberg.org/RiPetitor/devlab-theme/_edit/main/content/"
+report_url = "https://codeberg.org/RiPetitor/devlab-theme/issues/new"
+date_format = "%Y-%m-%d"
+
+[extra.devlab.blog]
+show_reading_time = true
+show_toc = true
+
+[extra.devlab.appearance]
+default_mode = "system"
+show_toggle = true
+
+[extra.devlab.i18n]
+rtl_languages = []
+
+[extra.devlab.search]
+enabled = true
+index = ""
+
+[extra.devlab.seo]
+og_image = ""
+
+# Fictional profiles for the community demo and component documentation.
+# This is authored content, not a required theme setting.
+[[extra.community_members]]
+name = "Alex Morgan"
+nickname = "alexm"
+support = { label = "Contribute", path = "https://codeberg.org/RiPetitor/devlab-theme" }
+role = "Project maintainer"
+bio = "Develops the theme and reviews contributions."
+avatar = "/images/people/demo-avatar.svg"
+path = "/docs/guides/publishing/"
+links = [
+  { name = "Project on Codeberg", path = "https://codeberg.org/RiPetitor/devlab-theme", icon = "codeberg" },
+  { name = "Publishing guide", path = "/docs/guides/publishing/", icon = "link" },
+]
+
+[[extra.community_members]]
+name = "Mira Chen"
+nickname = "mirac"
+initials = "MC"
+role = "Documentation & accessibility"
+bio = "Edits setup instructions and checks keyboard navigation."
+links = [
+  { name = "Documentation", path = "/docs/", icon = "link" },
+  { name = "Interface guide", path = "/docs/guides/interface-controls/", icon = "external-link" },
+]
+
+[[extra.community_members]]
+name = "Sam Rivera"
+nickname = "samr"
+initials = "SR"
+role = "Packages"
+bio = "Maintains packages and installation instructions."
+links = [
+  { name = "Downloads", path = "/downloads/", icon = "link" },
+]

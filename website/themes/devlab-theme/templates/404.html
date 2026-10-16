@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ ui.not_found }} | {{ config.title }}
+{% endblock title %}
+
+{% block main_class %} site-main-not-found{% endblock main_class %}
+
+{% block content %}
+<section class="not-found" aria-labelledby="not-found-title">
+  <p class="not-found-code" aria-hidden="true">404</p>
+
+  <h1 id="not-found-title">{{ ui.not_found }}</h1>
+
+  <p class="not-found-description">
+    {{ ui.not_found_description }}
+  </p>
+
+  <div class="not-found-actions">
+    <a class="button button-primary" href="{{<devlab.route_url path='/' content_lang={lang} />}}">{{ ui.go_home }}</a>
+  </div>
+
+  {% if has_site_search %}
+  <p class="not-found-hint">
+    {{ ui.not_found_hint }}
+  </p>
+  {% endif %}
+</section>
+{% endblock content %}

@@ -1,0 +1,27 @@
+{# Native depth-first order: introduction, direct pages, then subsections. #}
+{% component devlab.reader_paths(section_path: string, content_lang: string) -%}
+{%- set root = get_section(path=section_path, lang=content_lang) -%}
+{%- if not root.transparent -%}s:{{ root.relative_path }}:::{%- endif -%}
+{%- for child in root.pages -%}
+{%- if child.ancestors | last == root.relative_path -%}p:{{ child.relative_path }}:::{%- endif -%}
+{%- endfor -%}
+{%- for source in root.subsections -%}{{- <devlab.reader_paths section_path={source} content_lang={content_lang} /> -}}{%- endfor -%}
+{%- endcomponent devlab.reader_paths %}
+
+{% component devlab.reader_order(section_path: string, content_lang: string, reading_order: array = [], primary_language: string = "en") -%}
+{%- if not reading_order -%}{{- <devlab.reader_paths section_path={section_path} content_lang={content_lang} /> -}}{%- else -%}
+{%- set root = get_section(path=section_path, lang=content_lang) -%}
+{%- if reading_order | unique | length != reading_order | length -%}{{ throw(message="reading_order entries must be unique.") }}{%- endif -%}
+{%- for source in reading_order -%}
+{%- set kind = "p" -%}
+{%- set filename = source | split(pat="/") | last -%}
+{%- if filename is starting_with(pat="_index.") -%}
+{%- set kind = "s" -%}{%- set item = get_section(path=source, lang=content_lang, allow_missing=content_lang != primary_language) -%}
+{%- else -%}{%- set item = get_page(path=source, lang=content_lang, allow_missing=content_lang != primary_language) -%}{%- endif -%}
+{%- if item -%}
+{%- if item.relative_path != root.relative_path and root.relative_path not in item.ancestors -%}{{ throw(message="reading_order entries must belong to their collection: " ~ source) }}{%- endif -%}
+{{ kind }}:{{ item.relative_path }}:::
+{%- endif -%}
+{%- endfor -%}
+{%- endif -%}
+{%- endcomponent devlab.reader_order %}

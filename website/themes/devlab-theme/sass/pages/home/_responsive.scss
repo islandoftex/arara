@@ -1,0 +1,40 @@
+@media (min-width: 1280px) {
+  .hero-title { max-width: 16ch; }
+  .hero-description, .hero-content { max-width: 64ch; }
+}
+@media (max-width: 900px) {
+  .hero-with-media { grid-template-columns: minmax(0, 1fr); gap: var(--space-10); }
+  .hero-media { width: min(100%, 48rem); }
+  .landing-block-learn.landing-block-with-items.landing-block-has-heading .landing-learn-inner,
+  .landing-block-workflow.landing-block-with-items.landing-block-has-heading,
+  .landing-block-cta.landing-block-with-actions.landing-block-has-heading {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-10);
+  }
+}
+@media (max-width: 760px) {
+  .hero-wide {
+    width: min(100% - var(--wide-gutter-compact), var(--wide-width));
+    padding: var(--space-16) var(--space-6) clamp(var(--space-20), 14vw, 6rem);
+  }
+  .home-page-wide .landing-content { width: min(100% - var(--wide-gutter-compact), var(--site-width)); }
+  .home-page-wide :is(.landing-block-features, .landing-block-learn, .landing-block-workflow, .landing-block-cta) {
+    width: min(100% - var(--wide-gutter-compact), var(--wide-width));
+  }
+  .home-page-wide .hero-wide + .landing-block-features:not(.landing-block-has-heading) {
+    margin-top: calc(var(--space-10) * -1);
+  }
+  .home-page .feature-grid { grid-template-columns: minmax(0, 1fr); }
+  .home-page .feature-card { padding: var(--space-6); }
+  .landing-learn-grid { grid-template-columns: minmax(0, 1fr); }
+  .home-page .landing-learn-grid .feature-card { min-height: 0; }
+  .landing-block-workflow { padding-block: var(--space-16); }
+  .landing-block-cta { padding: var(--space-8); margin-bottom: var(--space-16); }
+}
+@media (max-width: 480px) {
+  .hero-wide { padding: var(--space-12) var(--space-5) var(--space-20); border-radius: calc(var(--radius-lg) + var(--space-1)); }
+  .hero-media { padding-block-start: var(--space-6); }
+  .hero-copy .hero-actions .button,
+  .landing-block-cta .hero-actions .button { flex: 1 1 100%; }
+  .landing-workflow-step { grid-template-columns: 2.5rem minmax(0, 1fr); column-gap: var(--space-3); }
+}

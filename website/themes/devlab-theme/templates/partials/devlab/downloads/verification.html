@@ -1,0 +1,32 @@
+{# Internal DevLab partial. #}
+{% if has_verification %}
+<section class="downloads-verification{% if not has_verification_body %} downloads-verification-heading-only{% endif %}" aria-labelledby="downloads-verification-title">
+  <div>
+    <p class="hero-eyebrow">
+      {{ verification_label }}
+    </p>
+
+    <h2 id="downloads-verification-title">
+      {{ downloads.verification.title }}
+    </h2>
+  </div>
+
+  {% if has_verification_body %}
+  <div class="downloads-verification-body">
+    {% if downloads.verification.description | default(value="") | trim %}
+    <p>{{ downloads.verification.description }}</p>
+    {% endif %}
+
+    {% if verification_links %}
+    <div class="downloads-verification-links">
+      {% for link in verification_links %}
+      <a class="button button-secondary" href="{{<devlab.url path={link.url} />}}">
+        {{ link.label }}
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+</section>
+{% endif %}

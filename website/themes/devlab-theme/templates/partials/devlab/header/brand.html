@@ -1,0 +1,43 @@
+{# Internal DevLab partial. #}
+{% set logo_text = config.title %}
+{% set show_logo_mark = false %}
+{% set logo_mark_path = "" %}
+{% if config.extra.devlab is defined and config.extra.devlab.brand is defined %}
+{% if config.extra.devlab.brand.logo_text is defined %}
+{% set logo_text = config.extra.devlab.brand.logo_text %}
+{% endif %}
+{% if config.extra.devlab.brand.show_logo_mark is defined %}
+{% set show_logo_mark = config.extra.devlab.brand.show_logo_mark %}
+{% endif %}
+{% if config.extra.devlab.brand.logo_mark_path is defined %}
+{% set logo_mark_path = config.extra.devlab.brand.logo_mark_path %}
+{% endif %}
+{% endif %}
+{% if not logo_text and not show_logo_mark %}
+{% set logo_text = config.title %}
+{% endif %}
+
+<a class="site-logo" href="{{<devlab.route_url path='/' content_lang={lang} />}}"{% if not logo_text %} aria-label="{{ config.title }}"{% endif %}>
+  {% if show_logo_mark %}
+  {% if logo_mark_path %}
+  <img
+    class="site-logo-mark site-logo-mark-image"
+    src="{{<devlab.url path={logo_mark_path} />}}"
+    alt=""
+    width="32"
+    height="32"
+  >
+  {% else %}
+  {# Terminal geometry: Tabler Icons v3.48.0, terminal-2 (MIT). #}
+  <svg xmlns="http://www.w3.org/2000/svg" class="site-logo-mark site-logo-mark-default" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+    <path d="M8 9l3 3l-3 3"></path>
+    <path d="M13 15l3 0"></path>
+    <path d="M3 6a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2l0 -12"></path>
+  </svg>
+  {% endif %}
+  {% endif %}
+
+  {% if logo_text %}
+  <span class="site-logo-text">{{ logo_text }}</span>
+  {% endif %}
+</a>

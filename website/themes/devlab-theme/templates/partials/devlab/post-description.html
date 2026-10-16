@@ -1,0 +1,6 @@
+{% if page.description %}
+<p class="post-list-description">{{ page.description }}</p>
+{% elif page.summary %}
+{# Zola already escaped this HTML. Strip its tags without escaping entities twice. #}
+<p class="post-list-description">{{ page.summary | striptags | trim | truncate(length=280) | safe }}</p>
+{% endif %}

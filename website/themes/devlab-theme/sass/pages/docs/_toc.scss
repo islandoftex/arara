@@ -1,0 +1,193 @@
+.docs-toc {
+  position: sticky;
+  top: calc(var(--announcement-height) + var(--header-height));
+
+  justify-self: stretch;
+  min-width: 0;
+  height: calc(100vh - var(--announcement-height) - var(--header-height));
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+
+  padding: 3.5rem 1.5rem 3rem;
+  border-inline-start: 1px solid var(--color-border);
+}
+
+.docs-toc-title {
+  margin: 0 0 0.85rem;
+
+  color: var(--color-fg);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.docs-toc-nav {
+  font-size: 0.88rem;
+  line-height: 1.35;
+}
+
+.docs-toc-list {
+  display: grid;
+  gap: 0.15rem;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.docs-toc-list .docs-toc-list {
+  gap: 0.1rem;
+  margin-top: 0.15rem;
+  padding-inline-start: 0.75rem;
+  border-inline-start: 1px solid var(--color-border);
+}
+
+.docs-toc-item a {
+  display: block;
+  padding: 0.25rem 0.45rem;
+  border-radius: 0.4rem;
+
+  color: var(--color-muted);
+  overflow-wrap: anywhere;
+}
+
+.docs-toc-group-toggle {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 1.5rem;
+  align-items: center;
+  gap: 0.25rem;
+
+  border-radius: 0.4rem;
+
+  cursor: pointer;
+  list-style: none;
+}
+
+.docs-toc-group-toggle::-webkit-details-marker {
+  display: none;
+}
+
+.docs-toc-group-toggle:hover {
+  background: var(--color-surface);
+}
+
+.docs-toc-group-toggle:hover > a {
+  background: transparent;
+  color: var(--color-fg);
+}
+
+.docs-toc-group-toggle:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.docs-toc-group-indicator {
+  direction: ltr;
+  display: grid;
+  place-items: center;
+
+  width: 1.5rem;
+  height: 1.5rem;
+
+  color: var(--color-muted);
+  line-height: 1;
+  transform: rotate(0deg);
+  transition: transform 160ms ease;
+}
+
+.docs-toc-group[open] > .docs-toc-group-toggle .docs-toc-group-indicator {
+  transform: rotate(90deg);
+}
+
+[dir="rtl"] .docs-toc-group:not([open]) > .docs-toc-group-toggle .docs-toc-group-indicator {
+  transform: rotate(180deg);
+}
+
+.docs-toc-item a:hover,
+.docs-toc-item a:focus-visible {
+  background: var(--color-surface);
+  color: var(--color-fg);
+  text-decoration: none;
+}
+
+.docs-toc .toc-link.is-active {
+  color: var(--color-fg);
+  font-weight: 700;
+}
+
+
+.docs-toc-group-toggle > .toc-link.is-active {
+  background: transparent;
+}
+
+.docs-toc-item a:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.docs-toc-level-3 a {
+  color: var(--color-muted);
+  font-size: 0.82rem;
+}
+
+.docs-toc-level-4,
+.docs-toc-level-5,
+.docs-toc-level-6 {
+  display: none;
+}
+
+.docs-toc-actions {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.docs-toc-only-actions .docs-toc-actions {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.docs-toc-edit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) 0.45rem;
+  border-radius: var(--radius-md);
+
+  color: var(--color-muted);
+  font-size: 0.82rem;
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.docs-toc-edit:hover,
+.docs-toc-edit:focus-visible {
+  background: var(--color-surface);
+  color: var(--color-fg);
+  text-decoration: none;
+}
+
+.docs-toc-edit:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.docs-toc-edit .content-icon {
+  flex: 0 0 auto;
+}
+
+.docs-toc-inline { display: none; margin-block: var(--space-5); padding: var(--space-4); border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+.docs-toc-inline summary { cursor: pointer; font-weight: 650; }
+.docs-toc-inline nav { margin-block-start: var(--space-3); }
+.docs-toc-inline .toc-link.is-active { color: var(--color-accent); font-weight: 700; }
+.docs-page-edit-inline { display: none; }
+.site-main-reader .docs-content { max-width: var(--reader-width, 48rem); }
+@media (max-width: 1180px) {
+  .docs-toc-inline { display: block; }
+  .docs-page-edit-inline { display: inline-flex; }
+}

@@ -1,0 +1,36 @@
+{# Internal DevLab partial. #}
+{% if docs_previous_path %}
+{% if devlab_layout == "reader" and docs_previous_path is starting_with(pat="s:") %}
+{% set docs_previous_page = get_section(path=docs_previous_path | trim_start(pat="s:"), lang=lang) %}
+{% else %}{% set docs_previous_page = get_page(path=docs_previous_path | trim_start(pat="p:"), lang=lang) %}{% endif %}
+{% endif %}
+{% if docs_next_path %}
+{% if devlab_layout == "reader" and docs_next_path is starting_with(pat="s:") %}
+{% set docs_next_page = get_section(path=docs_next_path | trim_start(pat="s:"), lang=lang) %}
+{% else %}{% set docs_next_page = get_page(path=docs_next_path | trim_start(pat="p:"), lang=lang) %}{% endif %}
+{% endif %}
+
+<nav
+  class="docs-prev-next"
+  aria-label="{{ ui.docs_pagination }}"
+>
+  {% if docs_previous_path %}
+  <a
+    class="docs-prev-next-link docs-prev-next-link-previous"
+    href="{{ docs_previous_page.permalink }}"
+  >
+    <span class="docs-prev-next-label"><span class="pagination-arrow" aria-hidden="true">&larr;</span> {{ previous_label }}</span>
+    <span class="docs-prev-next-title">{{ docs_previous_page.title }}</span>
+  </a>
+  {% endif %}
+
+  {% if docs_next_path %}
+  <a
+    class="docs-prev-next-link docs-prev-next-link-next"
+    href="{{ docs_next_page.permalink }}"
+  >
+    <span class="docs-prev-next-label">{{ next_label }} <span class="pagination-arrow" aria-hidden="true">&rarr;</span></span>
+    <span class="docs-prev-next-title">{{ docs_next_page.title }}</span>
+  </a>
+  {% endif %}
+</nav>

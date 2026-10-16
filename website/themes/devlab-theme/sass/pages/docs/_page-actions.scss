@@ -1,0 +1,187 @@
+.docs-page-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.docs-page-heading h1 {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+}
+
+.docs-copy-link {
+  position: relative;
+  flex: 0 0 auto;
+  margin-top: 0.35rem;
+}
+
+.docs-copy-link-button {
+  display: grid;
+  place-items: center;
+
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-subtle);
+  box-shadow: var(--shadow-sm);
+
+  color: var(--color-muted);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+
+.docs-copy-link-button[hidden] {
+  display: none;
+}
+
+.docs-copy-link-button:hover {
+  border-color: color-mix(in srgb, var(--color-accent) 48%, var(--color-border));
+  background: var(--color-surface-raised);
+  color: var(--color-fg);
+}
+
+.docs-copy-link-button:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.docs-copy-link-button .content-icon {
+  display: grid;
+  place-items: center;
+}
+
+.docs-copy-link-success-icon {
+  display: none;
+}
+
+.docs-copy-link-button[data-copy-state="success"] {
+  border-color: var(--color-callout-tip-border);
+  background: var(--color-callout-tip-bg);
+  color: var(--color-callout-tip-fg);
+}
+
+.docs-copy-link-button[data-copy-state="success"] .docs-copy-link-default-icon {
+  display: none;
+}
+
+.docs-copy-link-button[data-copy-state="success"] .docs-copy-link-success-icon {
+  display: grid;
+}
+
+.docs-copy-link-button[data-copy-state="error"] {
+  border-color: var(--color-callout-error-border);
+  background: var(--color-callout-error-bg);
+  color: var(--color-callout-error-fg);
+}
+
+.docs-copy-link-label,
+.docs-page-action-status {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.docs-page-actions {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-12);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+}
+
+.docs-page-actions + .docs-prev-next {
+  margin-top: var(--space-8);
+  padding-top: 0;
+  border-top: 0;
+}
+
+.docs-page-discussion {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-subtle);
+  box-shadow: var(--shadow-sm);
+
+  color: var(--color-fg);
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+.docs-page-discussion:hover {
+  border-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-border));
+  box-shadow: var(--shadow-md);
+  text-decoration: none;
+}
+
+.docs-page-discussion:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.docs-page-discussion-icon {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  color: var(--color-accent);
+}
+
+.docs-page-discussion-copy {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.docs-page-discussion-prompt {
+  color: var(--color-muted);
+  font-size: var(--text-xs);
+  line-height: 1.2;
+}
+
+.docs-page-discussion-copy strong {
+  font-size: var(--text-sm);
+  line-height: 1.25;
+}
+
+.docs-page-discussion-external {
+  display: grid;
+  place-items: center;
+  color: var(--color-muted);
+}
+
+.docs-page-updated {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  justify-self: start;
+  margin: 0;
+
+  color: var(--color-muted);
+  font-size: var(--text-sm);
+}
+
+.docs-page-updated-label {
+  color: var(--color-fg);
+  font-weight: 700;
+}

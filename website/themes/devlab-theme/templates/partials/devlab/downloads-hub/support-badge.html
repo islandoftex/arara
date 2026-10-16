@@ -1,0 +1,9 @@
+{% set_global dlh_badge_label = "" %}
+{% set_global dlh_badge_tone = "neutral" %}
+{% for dlh_badge_level in dlh_support %}
+{% if dlh_badge_level.id == dlh_badge_id %}
+{% set_global dlh_badge_label = dlh_badge_level.label %}
+{% set_global dlh_badge_tone = dlh_badge_level.tone | default(value="neutral") %}
+{% endif %}
+{% endfor %}
+{% if dlh_badge_label %}{{<devlab.badge text={dlh_badge_label} tone={dlh_badge_tone} />}}{% endif %}

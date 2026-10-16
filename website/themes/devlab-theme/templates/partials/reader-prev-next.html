@@ -1,0 +1,21 @@
+{% set previous_label = ui.previous %}
+{% set next_label = ui.next %}
+{% set_global reader_previous = "" %}
+{% set_global reader_next = "" %}
+{% set_global reader_found = false %}
+{% if docs_section_path %}
+{% set order = <devlab.reader_order section_path={docs_section_path} content_lang={lang} reading_order={docs_options.reading_order | default(value=[])} primary_language={config.default_language} /> %}
+{% for entry in order | split(pat=":::") %}
+{% if entry %}
+{% set source = entry | trim_start(pat="p:") | trim_start(pat="s:") %}
+{% if reader_found %}{% if not reader_next %}{% set_global reader_next = entry %}{% endif %}
+{% elif source == page.relative_path %}{% set_global reader_found = true %}
+{% else %}{% set_global reader_previous = entry %}{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% set docs_previous_path = reader_previous %}
+{% set docs_next_path = reader_next %}
+{% if reader_found and (reader_previous or reader_next) %}
+{% include "partials/devlab/docs-prev-next-links.html" %}
+{% endif %}

@@ -1,0 +1,2 @@
+# Generated vendor files can contain intentional whitespace inside string literals.
+static/vendor/** -whitespace

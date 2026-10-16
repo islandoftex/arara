@@ -1,0 +1,27 @@
+.page-list {
+  display: grid;
+  gap: var(--space-4);
+
+  margin-top: var(--space-8);
+}
+
+.page-list-item {
+  padding: var(--space-5);
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-sm);
+}
+
+.page-list-item h2 {
+  margin: 0 0 var(--space-2);
+
+  font-size: 1.15rem;
+}
+
+.page-list-item p {
+  margin: 0;
+
+  color: var(--color-muted);
+}

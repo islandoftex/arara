@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block layout_context %}{% set devlab_layout = "blog" %}{% endblock layout_context %}
+
+{% block main_class %} site-main-blog{% endblock main_class %}
+
+{% block content %}
+{% set author_key = term.name %}
+{% set author_profile = false %}
+{% if author_registry is defined and author_registry[author_key] is defined %}
+{% set author_profile = author_registry[author_key] %}
+{% endif %}
+{% set author_name = author_key %}
+{% if author_profile %}{% set author_name = author_profile.name | default(value=author_key) | trim %}{% endif %}
+{% set author_role = "" %}
+{% if author_profile %}{% set author_role = author_profile.role | default(value="") %}{% endif %}
+{% set author_avatar = "" %}
+{% if author_profile %}{% set author_avatar = author_profile.avatar | default(value="") %}{% endif %}
+{% set author_links = [] %}
+{% if author_profile %}{% set author_links = author_profile.links | default(value=[]) %}{% endif %}
+
+<div class="author-page">
+  <header class="page-header author-header">
+    <span class="author-avatar" aria-hidden="true">
+      {% if author_avatar %}<img src="{{<devlab.url path={author_avatar} />}}" alt="" width="72" height="72" decoding="async">{% else %}<span class="author-initials" dir="auto">{{ author_name | trim | truncate(length=1, end="") | upper }}</span>{% endif %}
+    </span>
+    <div class="author-copy">
+      <h1 id="author-title">{{ author_name }}</h1>
+      {% if author_role %}
+      <p class="page-description author-role">{{ author_role }}</p>
+      {% endif %}
+      {% set rendered_author_links = <devlab.person_links person_name={author_name} links={author_links} content_lang={lang} /> %}
+      {% if rendered_author_links %}<div class="author-links">{{ rendered_author_links | safe }}</div>{% endif %}
+      {% if taxonomy.feed is defined and taxonomy.feed and config.feed_filenames %}
+      {% set author_feed_filename = config.feed_filenames | first %}
+      {% set author_feed_label = ui.author_feed %}
+{% set author_feed_label = author_feed_label | replace(from="{author}", to=author_name) %}
+      <p class="author-feed">
+        <a class="person-link author-feed-link" href="{{ term.permalink ~ author_feed_filename }}" aria-label="{{ author_feed_label }}" title="{{ author_feed_label }}">
+          {{<devlab.icon name="rss" size="md" />}}
+        </a>
+      </p>
+      {% endif %}
+    </div>
+  </header>
+
+  {% if paginator is defined %}
+  {% set author_pages = paginator.pages %}
+  {% else %}
+  {% set author_pages = term.pages %}
+  {% endif %}
+
+  {% if author_pages %}
+  <section class="post-list" aria-labelledby="author-title">
+    {% for page in author_pages %}
+    {% set show_post_reading_time = config.extra.devlab.blog.show_reading_time | default(value=true) %}
+    {% if page.extra.show_reading_time is defined %}{% set show_post_reading_time = page.extra.show_reading_time %}{% endif %}
+    {% set has_post_authors = page.taxonomies.authors is defined and page.taxonomies.authors | length > 0 %}
+    {% set has_post_context = page.date or page.updated or has_post_authors or (page.extra.release is defined and page.extra.release) or (show_post_reading_time and page.reading_time) %}
+    <article class="post-list-item">
+      <div class="post-list-copy{% if not has_post_context %} post-list-copy-wide{% endif %}">
+        <h2>
+          <a href="{{ page.permalink }}">{{ page.title }}</a>
+        </h2>
+
+        {% include "partials/post-meta.html" %}
+
+        {% include "partials/devlab/post-description.html" %}
+      </div>
+    </article>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  {% include "partials/pagination.html" %}
+</div>
+{% endblock content %}

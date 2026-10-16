@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block layout_context %}{% set devlab_layout = "docs" %}{% endblock layout_context %}
+
+{% block content %}
+{% set is_docs_root = docs_context_path and section.path == docs_context_path %}
+<div class="docs-shell">
+  {% include "partials/docs-sidebar.html" %}
+
+  <div class="docs-content">
+{% include "partials/page-heading.html" %}
+
+    {% set toc_items = [] %}
+    {% if docs_toc_enabled %}{% set toc_items = section.toc %}{% endif %}
+    {% include "partials/docs-toc-inline.html" %}
+
+    {% if is_docs_root and section.content %}
+    <div class="content docs-overview-intro">
+      {{ section.content | safe }}
+    </div>
+    {% endif %}
+
+    {% include "partials/docs-overview.html" %}
+
+    {% if section.content and not is_docs_root %}
+    <div class="content">
+      {{ section.content | safe }}
+    </div>
+    {% endif %}
+  </div>
+
+  {% set toc_items = [] %}
+  {% if docs_toc_enabled %}{% set toc_items = section.toc %}{% endif %}
+  {% include "partials/docs-toc.html" %}
+</div>
+{% endblock content %}

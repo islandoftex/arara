@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="144" height="144" viewBox="0 0 144 144" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="18" y1="12" x2="126" y2="132" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="36" y1="28" x2="118" y2="116" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#BFDBFE" stop-opacity=".8"/>
+      <stop offset="1" stop-color="#60A5FA" stop-opacity=".08"/>
+    </linearGradient>
+  </defs>
+  <rect width="144" height="144" rx="72" fill="url(#bg)"/>
+  <circle cx="112" cy="28" r="44" fill="url(#glow)"/>
+  <circle cx="24" cy="126" r="48" fill="#60A5FA" fill-opacity=".14"/>
+  <text x="72" y="87" fill="#EFF6FF" font-family="system-ui, sans-serif" font-size="44" font-weight="750" letter-spacing="-2" text-anchor="middle">RP</text>
+</svg>

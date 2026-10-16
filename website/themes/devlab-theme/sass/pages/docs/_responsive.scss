@@ -1,0 +1,135 @@
+@media (max-width: 1180px) {
+  .docs-shell {
+    grid-template-columns: 15rem minmax(0, 1fr);
+  }
+
+  .docs-toc {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .docs-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .docs-sidebar {
+    position: static;
+    height: auto;
+    max-height: none;
+    padding: 0;
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .docs-sidebar-nav {
+    padding: 1.5rem 1rem;
+  }
+
+  .docs-content {
+    max-width: none;
+    padding: 2.5rem 1rem 3.5rem;
+  }
+
+  .docs-overview-intro {
+    margin-top: -0.5rem;
+  }
+
+  .docs-overview-card-grid {
+    grid-template-columns: 1fr;
+    gap: 0.625rem;
+  }
+
+  .docs-overview-card {
+    padding: 0.875rem 1rem;
+  }
+
+  body.site-menu-is-ready .docs-sidebar {
+    display: none;
+  }
+
+  .docs-prev-next {
+    gap: 0.5rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+  }
+
+  .docs-prev-next-link {
+    min-width: 0;
+    min-height: 5rem;
+    padding: var(--space-4);
+    gap: var(--space-1);
+    overflow: hidden;
+  }
+
+  .docs-prev-next-link-next {
+    grid-column: 2;
+  }
+
+  .docs-prev-next-link:only-child {
+    grid-column: 1 / -1;
+  }
+
+  .docs-prev-next-label {
+    max-width: 100%;
+    overflow: hidden;
+
+    font-size: var(--text-xs);
+    letter-spacing: 0.04em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .docs-prev-next-title {
+    display: -webkit-box;
+    align-self: start;
+    overflow: hidden;
+
+    font-size: 0.9rem;
+    line-height: 1.25;
+
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}
+
+@media (max-width: 480px) {
+  .docs-content .page-header h1 {
+    font-size: 2rem;
+  }
+
+  .docs-prev-next {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.375rem;
+  }
+
+  .docs-prev-next-link {
+    min-height: 4.5rem;
+    padding: var(--space-3);
+  }
+
+  .docs-prev-next-link-next {
+    grid-column: 2;
+  }
+
+  .docs-prev-next-link:only-child {
+    grid-column: 1 / -1;
+  }
+
+  .docs-prev-next-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.02em;
+  }
+
+  .docs-prev-next-title {
+    display: -webkit-box;
+    font-size: 0.82rem;
+    line-height: 1.2;
+
+    -webkit-line-clamp: 2;
+  }
+
+  .docs-page-discussion {
+    padding: var(--space-3);
+  }
+}

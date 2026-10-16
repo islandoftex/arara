@@ -1,0 +1,8 @@
+<article class="feature-card{% if item.path | default(value='') %} feature-card--link{% endif %}">
+  {% if item.icon | default(value="") %}{{<devlab.icon name={item.icon} size="md" />}}{% endif %}
+  {% if item.kicker | default(value="") %}<p class="feature-card-kicker">{{ item.kicker }}</p>{% endif %}
+  <h{% if block.title | default(value="") %}3{% else %}2{% endif %} class="feature-card-title">
+    {% if item.path | default(value="") %}<a class="feature-card-link" href="{{<devlab.route_url path={item.path} content_lang={lang} />}}">{% endif %}{{ item.title }}{% if item.path | default(value="") %}</a>{% endif %}
+  </h{% if block.title | default(value="") %}3{% else %}2{% endif %}>
+  {% if item.description | default(value="") %}<p class="feature-card-description">{{ item.description }}</p>{% endif %}
+</article>

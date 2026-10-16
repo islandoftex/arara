@@ -1,0 +1,14 @@
+@media (max-width: 768px) {
+  .content table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+
+    font-size: 0.85rem;
+  }
+
+  .content th,
+  .content td {
+    padding: 0.5rem 0.55rem;
+  }
+}

@@ -1,0 +1,24 @@
+{# Internal DevLab partial. #}
+{% if has_docs_navigation_panel %}
+<div id="site-menu-panel-docs" class="site-menu-panel" data-site-menu-panel="docs" hidden>
+  {% if has_navigation_links %}
+  <button
+    class="site-menu-back"
+    type="button"
+    aria-controls="site-menu-panel-main"
+    data-site-menu-panel-target="main"
+  >
+    <span aria-hidden="true">&larr;</span>
+    {{ ui.menu_back }}
+  </button>
+  {% endif %}
+
+  <nav class="site-menu-nav site-menu-docs-nav" aria-label="{{ ui.docs_mobile_navigation }}">
+    {% set docs_nav_instance = "site-menu-docs" %}
+    {% include "partials/docs-nav.html" %}
+  </nav>
+
+  {% set footer_compact = true %}
+  {% include "partials/footer.html" %}
+</div>
+{% endif %}

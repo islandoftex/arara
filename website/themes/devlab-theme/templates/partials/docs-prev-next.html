@@ -1,0 +1,38 @@
+{% set previous_label = ui.previous %}
+{% set next_label = ui.next %}
+{% set docs_section_path = docs_options.section | default(value="") %}
+{% set_global docs_previous_path = "" %}
+{% set_global docs_next_path = "" %}
+{% set_global docs_pagination_found = false %}
+{% set_global docs_page_paths_output = "" %}
+{% set_global docs_seen_page_paths = [] %}
+
+{% if docs_section_path %}
+{% if docs_options.navigation is defined and docs_options.navigation %}
+{% for navigation_section in navigation_sections %}
+{% set navigation_page_paths_output = <devlab.docs_page_paths nav_section={navigation_section} content_lang={lang} /> %}
+{% set_global docs_page_paths_output = docs_page_paths_output ~ navigation_page_paths_output %}
+{% endfor %}
+{% else %}
+{% set_global docs_page_paths_output = <devlab.docs_page_paths nav_section={docs_section} content_lang={lang} /> %}
+{% endif %}
+{% set docs_page_paths = docs_page_paths_output | split(pat=":::") %}
+{% for candidate_path in docs_page_paths %}
+{% if candidate_path and candidate_path not in docs_seen_page_paths %}
+{% set_global docs_seen_page_paths = [...docs_seen_page_paths, candidate_path] %}
+{% if docs_pagination_found %}
+{% if not docs_next_path %}
+{% set_global docs_next_path = candidate_path %}
+{% endif %}
+{% elif candidate_path == page.relative_path %}
+{% set_global docs_pagination_found = true %}
+{% else %}
+{% set_global docs_previous_path = candidate_path %}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% if docs_pagination_found and (docs_previous_path or docs_next_path) %}
+{% include "partials/devlab/docs-prev-next-links.html" %}
+{% endif %}
