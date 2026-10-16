@@ -9,50 +9,74 @@ import org.islandoftex.arara.api.AraraExceptionWithHeader
 import org.islandoftex.arara.api.rules.RuleArgument
 import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.rules.InputHandling
-import org.islandoftex.arara.mvel.utils.MvelState
 import org.mvel2.templates.TemplateRuntime
 import org.slf4j.LoggerFactory
 
 /**
  * The rule argument model.
- *
- * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
 @Serializable
 class RuleArgument : RuleArgument<Any?> {
+    /**
+     * The logger of the rule argument evaluation.
+     */
     @Transient
     private val logger = LoggerFactory.getLogger(RuleArgument::class.java)
 
-    /** Directive parameter name. */
+    /**
+     * The identifier directives use to pass this argument.
+     */
     override var identifier: String = ""
 
-    /** Whether the directive must supply this argument explicitly. */
+    /**
+     * Whether the argument must be present in every directive.
+     */
     @SerialName("required")
     override var isRequired: Boolean = false
 
+    /**
+     * The flag the argument renders when the value is
+     * present, or null when the default applies.
+     */
     private var flag: String? = null
         get() = field?.trim()
 
-    /** Default YAML text with outer whitespace removed, or null. */
+    /**
+     * The value the argument takes when the directive omits it.
+     */
     override val defaultValue: Any?
         get() = default?.trim()
 
+    /**
+     * The default value the argument falls back to when
+     * the directive provides none, or null when the rule
+     * declares no default.
+     */
     private val default: String? = null
 
-    /** Evaluate the MVEL flag template with the supplied value and raw parameter context. */
+    /**
+     * Evaluates the MVEL flag expression of the argument against the
+     * input value, returning the resulting list of flags.
+     */
     @Transient
+    // user-provided MVEL flag expressions may throw anything, so the
+    // catch has to stay generic to wrap the failure into an arara error
+    @Suppress("TooGenericExceptionCaught")
     override val processor: (Any?, Map<String, Any>) -> List<String> = { input, context ->
         try {
-            val resolvedContext = context.plus(
-                "parameters" to (
-                    context
-                        .getValue("parameters") as Map<*, *>
-                    )
-                    .plus(identifier to input!!)
-            )
-            val evaluationContext = resolvedContext.plus(MvelState.ruleMethods)
+            val resolvedContext = context
+                .plus(
+                    "parameters" to (
+                        context
+                            .getValue("parameters") as Map<*, *>
+                        )
+                        .plus(identifier to input!!)
+                )
+                // the MVEL flag expressions call the rule helpers, so
+                // the registry joins the context here: the shared call
+                // site passes only what every engine needs, and each
+                // engine brings its own machinery
+                .plus(MvelState.ruleMethods)
             flag?.let { fn ->
                 when (val output = TemplateRuntime.eval(fn, evaluationContext)) {
                     is String -> listOf(output)
@@ -95,7 +119,10 @@ class RuleArgument : RuleArgument<Any?> {
         )
     }
 
-    /** Describe argument metadata for diagnostics, without evaluating its templates. */
+    /**
+     * A human-readable representation of the argument, for logs and
+     * error reports.
+     */
     override fun toString(): String {
         return "RuleArgument(identifier='$identifier', isRequired=$isRequired, " +
             "flag=$flag, defaultValue=$defaultValue)"

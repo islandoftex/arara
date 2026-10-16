@@ -7,16 +7,27 @@ import org.islandoftex.arara.api.rules.RuleCommand
 
 /**
  * Implements the rule command model.
- *
- * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
 @Serializable
 class SerialRuleCommand : RuleCommand {
-    /** Optional human-readable task name. */
+    /**
+     * The name the command entry displays itself with, if any.
+     */
     override var name: String? = null
-    /** MVEL command template, with outer whitespace trimmed on access. */
+    /**
+     * Always unsupported: the command entry evaluates through the MVEL
+     * template machinery instead of a closure.
+     */
+    override val command: () -> Int
+        get() = throw AraraException("Operation not supported for SerialRuleCommand")
+
+    // the template arrives with the surrounding whitespace of its
+    // block in the rule file; the trimmed form is what the
+    // evaluator sees and the log shows
+    /**
+     * The MVEL expression the command entry evaluates against the
+     * resolved arguments.
+     */
     @SerialName("command")
     var commandString: String? = null
         get() = field?.trim()
@@ -26,7 +37,10 @@ class SerialRuleCommand : RuleCommand {
      */
     var exit: String? = null
 
-    /** Describe the task name and command template for diagnostics. */
+    /**
+     * A human-readable representation of the command entry, for logs
+     * and error reports.
+     */
     override fun toString(): String {
         return "RuleCommand(name=$name, commandString=$commandString)"
     }

@@ -11,27 +11,45 @@ import org.islandoftex.arara.core.localization.LanguageController
 
 /**
  * Implements the rule model.
- *
- * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
 @Serializable
 data class Rule(
-    /** Identifier used to locate this rule. */
+    /**
+     * The identifier directives use to ask for this rule.
+     */
     override val identifier: String,
-    /** Optional human-readable rule name. */
+    /**
+     * The name the rule displays itself with.
+     */
     @SerialName("name")
     override val displayName: String? = null,
-    /** Authors credited by the rule. */
+    /**
+     * The authors credited for the rule.
+     */
     override val authors: List<String> = emptyList(),
-    /** Commands evaluated in declaration order. */
+    /**
+     * The commands of the rule, in order.
+     */
     override val commands: List<SerialRuleCommand> = emptyList(),
-    /** Accepted directive parameters and their processors. */
+    /**
+     * The arguments the rule declares.
+     */
     override val arguments: List<RuleArgument> = emptyList()
 ) : Rule {
-    /** YAML rule loading and validation. */
+    /**
+     * Holds the rule parser of the YAML format.
+     */
     companion object {
+        /**
+         * Builds the rule error header, containing the identifier and the
+         * location of the rule.
+         */
+        private fun ruleErrorHeader(identifier: String, path: String): String =
+            LanguageController.messages.errorRuleIdentifierAndPath(
+                identifier,
+                path
+            ) + " "
+
         /**
          * Parses the provided file, checks the identifier and returns a rule
          * representation.
@@ -44,9 +62,9 @@ data class Rule(
          */
         @Throws(AraraException::class)
         fun parse(file: MPPPath, identifier: String): Rule {
-            val ruleErrorHeader = LanguageController.messages.errorRuleIdentifierAndPath(
-                identifier, file.normalize().toString()
-            ) + " "
+            val errorHeader = ruleErrorHeader(
+                identifier, file.normalize().parent.toString()
+            )
             val rule = file.runCatching {
                 val text = readText()
                 if (!text.startsWith("!config"))
@@ -56,14 +74,14 @@ data class Rule(
                 )
             }.getOrElse {
                 throw AraraException(
-                    ruleErrorHeader + LanguageController
+                    errorHeader + LanguageController
                         .messages.errorParseRuleGenericError,
                     it
                 )
             }
 
-            validateHeader(rule, identifier, ruleErrorHeader)
-            validateBody(rule, ruleErrorHeader)
+            validateHeader(rule, identifier, errorHeader)
+            validateBody(rule, errorHeader)
             return rule
         }
 
@@ -72,21 +90,30 @@ data class Rule(
          *
          * @param rule The rule object.
          * @param identifier The directive identifier.
+         * @param errorHeader The rule error header for error messages.
          * @throws AraraException Something wrong happened, to be caught in the
          * higher levels.
          */
         @Throws(AraraException::class)
         @Suppress("ThrowsCount")
-        private fun validateHeader(rule: Rule, identifier: String, ruleErrorHeader: String) {
+        private fun validateHeader(
+            rule: Rule,
+            identifier: String,
+            errorHeader: String
+        ) {
             if (rule.identifier != identifier) {
                 throw AraraException(
-                    ruleErrorHeader +
-                        LanguageController.messages.errorValidateHeaderWrongIdentifier(identifier, rule.identifier)
+                    errorHeader +
+                        LanguageController.messages
+                            .errorValidateHeaderWrongIdentifier(
+                                rule.identifier,
+                                identifier
+                            )
                 )
             }
             if (rule.displayName == null) {
                 throw AraraException(
-                    ruleErrorHeader + LanguageController
+                    errorHeader + LanguageController
                         .messages.errorValidateHeaderNullName
                 )
             }
@@ -96,31 +123,39 @@ data class Rule(
          * Validates the rule body.
          *
          * @param rule The rule object.
+         * @param errorHeader The rule error header for error messages.
          * @throws AraraException Something wrong happened, to be caught in the
          * higher levels.
          */
         @Throws(AraraException::class)
         @Suppress("ThrowsCount")
-        private fun validateBody(rule: org.islandoftex.arara.mvel.rules.Rule, ruleErrorHeader: String) {
+        private fun validateBody(
+            rule: org.islandoftex.arara.mvel.rules.Rule,
+            errorHeader: String
+        ) {
             if (rule.commands.any { it.commandString == null })
                 throw AraraException(
-                    ruleErrorHeader + LanguageController
+                    errorHeader + LanguageController
                         .messages.errorValidateBodyNullCommand
                 )
 
-            val arguments = rule.arguments.filter { it.validate(ruleErrorHeader) }
+            // the validation compares the argument identifiers, not the
+            // argument objects - comparing objects against identifier
+            // strings would silently disable both checks
+            val arguments = rule.arguments
+                .filter { it.validate(errorHeader) }
                 .map { it.identifier }
 
             arguments.intersect(listOf("files", "reference")).forEach {
                 throw AraraException(
-                    ruleErrorHeader + LanguageController
-                        .messages.errorValidateBodyArgumentIdIsReserved(it)
+                    errorHeader + LanguageController.messages
+                        .errorValidateBodyArgumentIdIsReserved(it)
                 )
             }
 
             if (arguments.size != arguments.toSet().size) {
                 throw AraraException(
-                    ruleErrorHeader + LanguageController.messages
+                    errorHeader + LanguageController.messages
                         .errorValidateBodyDuplicateArgumentIdentifiers
                 )
             }
