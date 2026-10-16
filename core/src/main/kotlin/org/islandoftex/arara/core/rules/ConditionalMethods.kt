@@ -11,14 +11,19 @@ import org.islandoftex.arara.core.localization.LanguageController
 import org.islandoftex.arara.core.session.ClassLoading
 import org.islandoftex.arara.core.session.ClassLoading.ClassLoadingStatus
 import org.islandoftex.arara.core.session.LinearExecutor
-import org.islandoftex.arara.core.session.Session
-import org.islandoftex.arara.core.ui.DialogRenderer
-import org.islandoftex.arara.core.ui.Dialogs
+import org.islandoftex.arara.core.ui.TerminalDialogs
 
-/** Interpreter-neutral conditional helpers exposed to rule engines. */
-@Suppress("unused", "TooManyFunctions")
+/**
+ * Implements the helper methods available to directive conditionals in
+ * both dialects, such as file existence and change checks, dialogs and
+ * class loading. The MVEL registry and the Lua conditional environment
+ * bind the very same helpers. The registry binds them as reflective
+ * method pointers invoked without an instance, so the public members
+ * need to stay true statics - removing the annotations fails only at
+ * the first conditional evaluation inside a rule.
+ */
+@Suppress("TooManyFunctions")
 object ConditionalMethods {
-    private val dialogs: DialogRenderer get() = Dialogs.renderer
 
     /**
      * Checks if the file exists according to its extension.
@@ -104,7 +109,7 @@ object ConditionalMethods {
     @Throws(AraraException::class)
     fun changed(filename: MPPPath): Boolean = FileHandling.hasChanged(
         filename,
-        LinearExecutor.currentProject!!.executionDirectory /
+        LinearExecutor.currentProject!!.workingDirectory /
             LinearExecutor.executionOptions.databaseName
     )
 
@@ -149,15 +154,8 @@ object ConditionalMethods {
      */
     @JvmStatic
     @Throws(AraraException::class)
-    fun found(file: MPPPath, regex: String): Boolean = try {
-        val text = file.readText()
-        regex.toRegex().containsMatchIn(text)
-    } catch (exception: AraraIOException) {
-        throw AraraException(
-            LanguageController.messages.errorCheckRegexIoException(file.fileName),
-            exception
-        )
-    }
+    fun found(file: MPPPath, regex: String): Boolean =
+        checkRegex(file, regex)
 
     /**
      * Returns a file object based on the provided name.
@@ -183,7 +181,7 @@ object ConditionalMethods {
         title: String,
         text: String,
         vararg buttons: Any
-    ): Int = dialogs.showOptions(type, title, text, buttons)
+    ): Int = TerminalDialogs.showOptions(type, title, text, buttons)
 
     /**
      * Shows a message with a text input.
@@ -198,10 +196,10 @@ object ConditionalMethods {
         type: Int,
         title: String,
         text: String
-    ): String = dialogs.showInput(type, title, text)
+    ): String = TerminalDialogs.showInput(type, title, text)
 
     /**
-     * Shows a message with options presented as a numbered list of elements.
+     * Shows a message with options presented as a list of elements.
      *
      * @param type Type of message.
      * @param title Title of the message.
@@ -215,7 +213,7 @@ object ConditionalMethods {
         title: String,
         text: String,
         vararg elements: Any
-    ): Int = dialogs.showList(type, title, text, elements)
+    ): Int = TerminalDialogs.showList(type, title, text, elements)
 
     /**
      * Gets the file reference for the current directive. It is important to
@@ -236,10 +234,13 @@ object ConditionalMethods {
      * @return A pair representing the status and the class.
      */
     @JvmStatic
-    fun loadClass(file: MPPPath, name: String): Pair<ClassLoadingStatus, Class<*>> {
-        ensureClassLoadingAllowed()
-        return ClassLoading.loadClass(file, name)
-    }
+    fun loadClass(file: MPPPath, name: String): Pair<ClassLoadingStatus, Class<*>> =
+        if (LinearExecutor.executionOptions.executionMode == ExecutionMode.SAFE_RUN)
+            throw SafeRunViolationException(
+                LanguageController.messages.errorSafeModeClassLoading
+            )
+        else
+            ClassLoading.loadClass(file, name)
 
     /**
      * Loads a class from the provided string reference, representing a file.
@@ -260,10 +261,13 @@ object ConditionalMethods {
      * @return A pair representing the status and the class object.
      */
     @JvmStatic
-    fun loadObject(file: MPPPath, name: String): Pair<ClassLoadingStatus, Any> {
-        ensureClassLoadingAllowed()
-        return ClassLoading.loadObject(file, name)
-    }
+    fun loadObject(file: MPPPath, name: String): Pair<ClassLoadingStatus, Any> =
+        if (LinearExecutor.executionOptions.executionMode == ExecutionMode.SAFE_RUN)
+            throw SafeRunViolationException(
+                LanguageController.messages.errorSafeModeClassLoading
+            )
+        else
+            ClassLoading.loadObject(file, name)
 
     /**
      * Loads a class from the provided string reference, instantiating it.
@@ -276,10 +280,31 @@ object ConditionalMethods {
     fun loadObject(ref: String, name: String): Pair<ClassLoadingStatus, Any> =
         loadObject(MPPPath(ref), name)
 
-    private fun ensureClassLoadingAllowed() {
-        if (LinearExecutor.executionOptions.executionMode == ExecutionMode.SAFE_RUN) {
-            throw SafeRunViolationException(LanguageController.messages.errorSafeModeClassLoading)
+    /**
+     * Checks if the file contains the provided regex.
+     *
+     * As this reads the whole file, it should not be called on files
+     * larger than two gigabytes.
+     *
+     * @param file The file.
+     * @param regex The regex.
+     * @return A boolean value indicating if the file contains the
+     * provided regex.
+     * @throws AraraException Something wrong happened, to be caught in the
+     * higher levels.
+     */
+    @Throws(AraraException::class)
+    private fun checkRegex(file: MPPPath, regex: String): Boolean {
+        try {
+            val text = file.readText()
+            val pattern = regex.toRegex()
+            return pattern.containsMatchIn(text)
+        } catch (exception: AraraIOException) {
+            throw AraraException(
+                LanguageController.messages
+                    .errorCheckRegexIoException(file.fileName),
+                exception
+            )
         }
     }
-
 }

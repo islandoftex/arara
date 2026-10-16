@@ -6,18 +6,17 @@ import org.islandoftex.arara.api.session.Command
 
 /**
  * Implements a command model, containing a list of strings.
- *
- * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
 data class Command(
-    /** Executable followed by its arguments, without shell tokenization. */
+    /**
+     * The command and its arguments, as separate elements.
+     */
     override val elements: List<String>,
-    /** Subprocess working directory, or null to inherit the process default. */
-    override val workingDirectory: MPPPath? = null,
-    /** Optional task label, falling back to the rule task name when absent or blank. */
-    override val displayName: String? = null
+    /**
+     * The directory the command runs in, if different from the
+     * working directory of the project.
+     */
+    override val workingDirectory: MPPPath? = null
 ) : Command {
     /**
      * Provides a textual representation of the current command.

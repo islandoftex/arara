@@ -6,8 +6,6 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
-import org.islandoftex.arara.api.AraraException
-import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.files.MPPPath
 import org.islandoftex.arara.api.files.toJVMFile
 import org.islandoftex.arara.api.session.Command
@@ -19,33 +17,35 @@ import org.zeroturnaround.exec.stream.TeeOutputStream
  * An object to handle interaction with the operating system.
  */
 object Environment {
-    // get the logger context from a factory
+    /**
+     * The logger of the environment interaction.
+     */
     private val logger = KotlinLogging.logger { }
 
     /**
-     * Gets the system property according to the provided key, or resort to the
-     * fallback value if an exception is thrown or if the key is invalid.
+     * Gets the system property according to the provided key,
+     * falling back to the provided value when the lookup throws
+     * or the property holds an empty string.
      *
      * @param key The system property key.
      * @param fallback The fallback value.
      * @return A string containing the system property value or the fallback.
      */
-    @JvmStatic
     fun getSystemProperty(key: String, fallback: String): String =
-        System.getProperties().runCatching {
-            getOrDefault(key, fallback).toString().takeIf { it != "" }
+        runCatching {
+            System.getProperties().getOrDefault(key, fallback).toString()
+                .takeIf { it != "" }
         }.getOrNull() ?: fallback
 
     /**
      * Access a system property.
      *
      * @param key The key of the property.
-     * @return The value of the system property or null if there is an
-     *   exception.
+     * @return The value of the system property, or null when the
+     *   lookup throws or names no property.
      */
-    @JvmStatic
     fun getSystemPropertyOrNull(key: String): String? =
-        System.getProperties().runCatching { getValue(key).toString() }
+        runCatching { System.getProperties().getValue(key).toString() }
             .getOrNull()
 
     /**
@@ -56,11 +56,17 @@ object Environment {
      * output whether we are running a Cygwin kernel.
      */
     private val inCygwinEnvironment by lazy {
-        executeSystemCommand(
-            // execute the Cygwin detection; we do not specify a working
-            // directory because for the test it is irrelevant
-            Command(listOf("uname", "-s"))
-        ).second.lowercase().startsWith("cygwin")
+        when (
+            val result = executeSystemCommand(
+                // execute the Cygwin detection; we do not specify a working
+                // directory because for the test it is irrelevant
+                Command(listOf("uname", "-s"))
+            )
+        ) {
+            is SystemCommandResult.Completed ->
+                result.output.lowercase().startsWith("cygwin")
+            is SystemCommandResult.Failed -> false
+        }
     }
 
     /**
@@ -90,11 +96,7 @@ object Environment {
      * @param value A string representing an operating system.
      * @return A boolean value indicating if the provided string refers to the
      * underlying operating system.
-     * @throws AraraException Something wrong happened, to be caught in the
-     * higher levels.
      */
-    @JvmStatic
-    @Throws(AraraException::class)
     fun checkOS(value: SupportedOS): Boolean =
         when (value) {
             SupportedOS.WINDOWS -> OS.isWindows
@@ -144,7 +146,6 @@ object Environment {
      * @param command A string representing the command.
      * @return A logic value.
      */
-    @JvmStatic
     fun isOnPath(command: String): Boolean {
         // first and foremost, let's build the list
         // of filenames based on the underlying
@@ -178,14 +179,13 @@ object Environment {
     }
 
     /**
-     * When executing a system call goes wrong, this status code is returned.
+     * When executing a system call goes wrong, this status code is
+     * reported to rules through the unsafe system command helper.
      */
     const val ERROR_EXIT_STATUS = -99
 
     /**
-     * Executes a system command from the underlying operating system and
-     * returns a pair containing the exit status and the command output as a
-     * string.
+     * Executes a system command from the underlying operating system.
      *
      * @param command The system command to be executed.
      * @param silenceSystemOut If true, the system output will not be appended
@@ -193,27 +193,11 @@ object Environment {
      *   internal capture buffer.
      * @param timeout An optional timeout. Non-zero values will be applied to
      *   the executor.
-     * @return A pair containing the exit status and the system command output
-     *   as a string. In case of an error, return a pair of [ERROR_EXIT_STATUS]
-     *   and any captured output, falling back to the throwable when no output was captured.
+     * @return The result of the execution: the exit status and the output if
+     *   the command ran to completion, or the underlying exception if it
+     *   did not.
      */
-    @JvmStatic
     fun executeSystemCommand(
-        command: Command,
-        silenceSystemOut: Boolean = true,
-        timeout: Duration = Duration.ZERO
-    ): Pair<Int, String> = when (val result = executeSystemCommandResult(command, silenceSystemOut, timeout)) {
-        is SystemCommandResult.Completed -> result.exitCode to result.output
-        is SystemCommandResult.Failed -> ERROR_EXIT_STATUS to
-            result.output.ifEmpty { result.exception.toString() }
-    }
-
-    /**
-     * Executes a command while preserving the failure and any captured output.
-     * The pair-returning helper remains available for existing rule callers.
-     */
-    @JvmStatic
-    fun executeSystemCommandResult(
         command: Command,
         silenceSystemOut: Boolean = true,
         timeout: Duration = Duration.ZERO
@@ -244,14 +228,22 @@ object Environment {
                 timeout(timeout.inWholeNanoseconds, TimeUnit.NANOSECONDS)
             }
 
-            SystemCommandResult.Completed(execute().exitValue, buffer.toString())
+            SystemCommandResult.Completed(
+                execute().exitValue,
+                buffer.toString()
+            )
         }.getOrElse {
             logger.debug {
-                "Caught an exception when executing $command"
+                "Caught an exception when executing " +
+                    "$command: ${it.message}"
             }
-            if (it is InterruptedException) Thread.currentThread().interrupt()
-            if (it !is Exception) throw it
-            SystemCommandResult.Failed(it, buffer.toString())
+            SystemCommandResult.Failed(
+                it as? Exception ?: RuntimeException(it),
+                // the output a tool printed before the failure is the
+                // fact that explains it, so the capture survives the
+                // failed run
+                buffer.toString()
+            )
         }
     }
 }

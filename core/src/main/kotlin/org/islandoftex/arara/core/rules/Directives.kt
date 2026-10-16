@@ -10,23 +10,40 @@ import org.islandoftex.arara.api.rules.DirectiveConditionalType
 import org.islandoftex.arara.core.localization.LanguageController
 
 /**
- * Implements directive auxiliary methods.
+ * Implements directive extraction: the line patterns, the parsing
+ * hooks and the replication the file list asks for.
  */
 object Directives {
-    /** Hooks used to transform potential directives and construct engine-specific directive objects. */
-    @JvmStatic
+    /**
+     * The hooks the directive extraction consults, so the execution
+     * flow can observe every potential directive line.
+     */
     var hooks = DirectiveFetchingHooks()
 
+    /**
+     * The head of a directive line: the identifier and its
+     * optional parameter block.
+     */
     private const val DIRECTIVE_START = """^\s*(\w+)\s*(:\s*(\{.*\})\s*)?"""
+    /**
+     * The optional conditional tail of a directive line.
+     */
     private const val PATTERN = """(\s+(if|while|until|unless)\s+(\S.*))?$"""
 
-    // pattern to match directives against
+    /**
+     * The pattern a directive line must match.
+     */
     private val directivePattern = (DIRECTIVE_START + PATTERN).toRegex()
 
-    // math the arara part in `% arara: pdflatex`
+    /**
+     * The marker of the arara directive part, looked for within
+     * a line of the file type's pattern.
+     */
     private const val NAME_PATTERN = "arara:\\s"
 
-    // what to expect after a line break in a directive
+    /**
+     * The pattern a linebreak continuation must match.
+     */
     private val linebreakPattern = "^\\s*-->\\s(.*)$".toRegex()
 
     /**
@@ -71,7 +88,6 @@ object Directives {
      * @throws AraraException Something wrong happened, to be caught in the
      * higher levels.
      */
-    @JvmStatic
     @Throws(AraraException::class)
     @Suppress("MagicNumber")
     fun extractDirectives(
@@ -90,7 +106,7 @@ object Directives {
                 if (!assembler.isAppendAllowed) {
                     throw AraraException(
                         LanguageController
-                            .messages.errorValidateOrphanLinebreak(lineno.toString())
+                            .messages.errorValidateOrphanLinebreak(lineno)
                     )
                 } else {
                     assembler.addLineNumber(lineno)
@@ -140,11 +156,11 @@ object Directives {
                     condition = match.groupValues[6]
                 ),
                 // line numbers
-                assembler.getLineNumbers()
+                assembler.lineNumbers
             )
         } ?: throw AraraException(
             LanguageController.messages.errorValidateInvalidDirectiveFormat(
-                assembler.getLineNumbers()
+                assembler.lineNumbers
                     .joinToString(", ", "(", ")")
             )
         )
@@ -159,7 +175,6 @@ object Directives {
      * @throws AraraException If there is an error validating the [holder]
      *   object.
      */
-    @JvmStatic
     @Throws(AraraException::class)
     fun replicateDirective(
         holder: Any,
@@ -186,10 +201,11 @@ object Directives {
                 // file, and we did not filter out any invalid argument
                 .takeIf { it.isNotEmpty() && holder.size == it.size }
                 ?: throw AraraException(
-                    LanguageController.messages.errorValidateEmptyFilesList(
-                        directive.lineNumbers
-                            .joinToString(", ", "(", ")")
-                    )
+                    LanguageController.messages
+                        .errorValidateEmptyFilesList(
+                            directive.lineNumbers
+                                .joinToString(", ", "(", ")")
+                        )
                 )
         } else {
             throw AraraException(
@@ -225,5 +241,10 @@ private fun String?.toDirectiveConditional() = when (this) {
     "if" -> DirectiveConditionalType.IF
     "while" -> DirectiveConditionalType.WHILE
     "until" -> DirectiveConditionalType.UNTIL
-    else -> DirectiveConditionalType.UNLESS
+    "unless" -> DirectiveConditionalType.UNLESS
+    // the directive pattern constrains the captured token to the four
+    // conditional keywords, so anything else is a programming error
+    else -> error(
+        "Unknown conditional type '$this'."
+    )
 }

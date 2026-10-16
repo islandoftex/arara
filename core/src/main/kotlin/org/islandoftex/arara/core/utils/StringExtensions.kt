@@ -5,6 +5,56 @@ import org.islandoftex.arara.api.AraraException
 import org.islandoftex.arara.core.localization.LanguageController
 
 /**
+ * Wrap text at a specified width, breaking on spaces. This is the
+ * single wrapping primitive of the console output: every terminal
+ * surface, the display as well as the dialogs, wraps through it, so
+ * the configured column width is honored identically everywhere.
+ * Embedded line breaks are hard breaks: every line wraps on its
+ * own, so a message can carry its own structure - a list of paths,
+ * a titled block - without the primitive flowing it away.
+ *
+ * @param width The width to wrap at.
+ * @return Wrapped text.
+ */
+fun String.wrap(width: Int): String = wrap(width, width)
+
+/**
+ * Wrap text at a specified width, breaking on spaces, with the
+ * first line filling a narrower budget: the prose that opens
+ * beside a leader - a glyph and a label - budgets the room the
+ * leader leaves on its own opening line, and every continuation
+ * returns to the full width. The first line means the text's
+ * first: a line behind an embedded break wraps from the full
+ * width, like every other continuation.
+ *
+ * Algorithm from Wikipedia:
+ * https://en.wikipedia.org/wiki/Line_wrap_and_word_wrap#Minimum_number_of_lines
+ *
+ * @param width The width every continuation wraps at.
+ * @param firstLineWidth The width the first line wraps at.
+ * @return Wrapped text.
+ */
+fun String.wrap(width: Int, firstLineWidth: Int): String = lineSequence()
+    .mapIndexed { lineIndex, line ->
+        val words = line.split(" ")
+        var wrapped = words[0]
+        var spaceLeft =
+            (if (lineIndex == 0) firstLineWidth else width) - wrapped.length
+        words.drop(1).forEach {
+            val len = it.length
+            wrapped += if (len + 1 > spaceLeft) {
+                spaceLeft = width - len
+                "\n$it"
+            } else {
+                spaceLeft -= len + 1
+                " $it"
+            }
+        }
+        wrapped
+    }
+    .joinToString("\n")
+
+/**
  * Converts a standard POSIX Shell globbing pattern into a regular expression
  * pattern. The result can be used with the standard [Regex] API to recognize
  * strings which match the glob pattern.
@@ -17,19 +67,40 @@ import org.islandoftex.arara.core.localization.LanguageController
  * per [his comment](https://stackoverflow.com/questions/1247772/is-there-an-
  * equivalent-of-java-util-regex-for-glob-type-patterns#comment108405664_17369948).
  *
- * @receiver The glob pattern to convert.
- * @return A regex to recognize the given glob pattern.
+ * @return A regex to recognize the glob pattern held by the receiver.
  */
-@Suppress("ComplexMethod")
 internal fun String.globToRegex(): Regex =
     buildString(length) {
-        var inGroup = 0
-        var inClass = 0
-        var firstIndexInClass = -1
-        val arr = toCharArray()
-        var i = 0
-        while (i < arr.size) {
-            when (val ch = arr[i]) {
+        appendGlobPattern(this@globToRegex)
+    }.let { pattern ->
+        // a malformed glob (e.g. an unbalanced brace) would otherwise
+        // surface as a raw pattern syntax exception deep inside a rule
+        // evaluation
+        runCatching { pattern.toRegex() }.getOrElse {
+            throw AraraException(
+                LanguageController.messages.errorGlobPatternInvalid(
+                    this,
+                    it.message ?: ""
+                )
+            )
+        }
+    }
+
+/**
+ * Appends the regular expression equivalent of the glob pattern held by
+ * the receiver to this builder.
+ */
+// the algorithm is a faithful, branchy port of the public-domain
+// original; its control flow reflects the number of glob metacharacters
+@Suppress("ComplexMethod", "NestedBlockDepth")
+private fun StringBuilder.appendGlobPattern(glob: String) {
+    var inGroup = 0
+    var inClass = 0
+    var firstIndexInClass = -1
+    val arr = glob.toCharArray()
+    var i = 0
+    while (i < arr.size) {
+        when (val ch = arr[i]) {
                 '\\' -> {
                     i += 1
                     if (i >= arr.size) {
@@ -81,13 +152,4 @@ internal fun String.globToRegex(): Regex =
             }
             i++
         }
-    }.let { pattern ->
-        try {
-            pattern.toRegex()
-        } catch (exception: IllegalArgumentException) {
-            throw AraraException(
-                LanguageController.messages.errorGlobPatternInvalid(this, exception.message.orEmpty()),
-                exception
-            )
-        }
-    }
+}

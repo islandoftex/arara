@@ -22,7 +22,8 @@ object InputHandling {
         val no = listOf("no", "false", "0", "off")
         return if (!yes.union(no).contains(value.lowercase())) {
             throw AraraException(
-                LanguageController.messages.errorCheckBooleanNotValidBoolean(value)
+                LanguageController.messages
+                    .errorCheckBooleanNotValidBoolean(value)
             )
         } else {
             yes.contains(value.lowercase())
@@ -30,8 +31,9 @@ object InputHandling {
     }
 
     /**
-     * Flattens a potential list of lists into a list of objects.
-     * Null entries in the list and nested lists are omitted.
+     * Flattens a potential list of lists into a list of objects. Null
+     * entries are skipped, mirroring the Lua conversion and the filtering
+     * performed by the command helper.
      *
      * @param list The list to be flattened.
      * @return The flattened list.

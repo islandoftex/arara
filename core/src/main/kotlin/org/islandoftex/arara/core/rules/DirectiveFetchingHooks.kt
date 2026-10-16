@@ -23,7 +23,15 @@ data class DirectiveFetchingHooks(
      */
     val buildDirectiveRaw: (String, String?, DirectiveConditional, List<Int>) -> Directive = {
             _, _, _, _ ->
-        TODO("directives can't be built by default")
+        // this is a developer contract violation (the command line
+        // application installs the hooks before extracting directives),
+        // not a user error, so it deliberately stays an English
+        // exception outside the localized message catalog
+        throw IllegalStateException(
+            "The directive fetching hooks were not initialized; the " +
+                "command line application has to install them before " +
+                "running."
+        )
     },
     /**
      * Given the directive's characteristics identifier, parameters,
@@ -32,6 +40,10 @@ data class DirectiveFetchingHooks(
      */
     val buildDirective: (String, Map<String, Any>, DirectiveConditional, List<Int>) -> Directive = {
             _, _, _, _ ->
-        TODO("directives can't be built by default")
+        throw IllegalStateException(
+            "The directive fetching hooks were not initialized; the " +
+                "command line application has to install them before " +
+                "running."
+        )
     }
 )

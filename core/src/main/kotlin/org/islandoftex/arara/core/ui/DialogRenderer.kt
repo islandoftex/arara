@@ -1,24 +1,70 @@
 // SPDX-License-Identifier: BSD-3-Clause
 package org.islandoftex.arara.core.ui
 
-/** Host-provided interactive dialogs. Choice indices start at one; cancellation returns zero. */
+/**
+ * Defines the contract of a dialog renderer: the interactive
+ * conversation surface the rule helpers offer. The semantics belong
+ * to the contract - the message kind codes rule authors write, the
+ * numbered choices starting from one, the deliberate no-selection
+ * of a dropdown yielding zero, the trimmed answer of an input - and
+ * the presentation belongs to the host: an application wires the
+ * implementation matching the surface it actually has. The library
+ * assumes none by default, so a host that never wires one meets a
+ * clear error instead of a silent guess.
+ */
 interface DialogRenderer {
-    /** Display a message. */
+    /**
+     * Shows the message.
+     *
+     * @param type Type of message.
+     * @param title Title of the message.
+     * @param text Text of the message.
+     */
     fun showMessage(type: Int, title: String, text: String)
 
-    /** Ask for a button selection, returning its one-based index or zero. */
-    fun showOptions(type: Int, title: String, text: String, buttons: Array<out Any>): Int
+    /**
+     * Shows a message with options presented as an array of buttons.
+     *
+     * @param type Type of message.
+     * @param title Title of the message.
+     * @param text Text of the message.
+     * @param buttons An array of objects to be presented as buttons.
+     * @return The index of the selected button, starting from 1; an
+     * empty button list offers nothing, so it yields zero.
+     */
+    fun showOptions(
+        type: Int,
+        title: String,
+        text: String,
+        buttons: Array<out Any>
+    ): Int
 
-    /** Ask for trimmed text; cancellation returns an empty string. */
+    /**
+     * Shows a message with a text input.
+     *
+     * @param type Type of message.
+     * @param title Title of the message.
+     * @param text Text of the message.
+     * @return The string representing the input text.
+     */
     fun showInput(type: Int, title: String, text: String): String
 
-    /** Ask for an element selection, returning its one-based index or zero. */
-    fun showList(type: Int, title: String, text: String, elements: Array<out Any>): Int
-
-}
-
-/** Dialog capability installed by the host, independent of rule-helper initialization. */
-object Dialogs {
-    /** Dialog renderer supplied by the host; the default rejects dialogs in headless use. */
-    var renderer: DialogRenderer = HeadlessDialogRenderer
+    /**
+     * Shows a message with options presented as a list of elements,
+     * and returns the index of the chosen one.
+     *
+     * @param type Type of message.
+     * @param title Title of the message.
+     * @param text Text of the message.
+     * @param elements An array of objects representing the elements.
+     * @return The index of the selected element, starting from 1;
+     * choosing nothing yields zero, and an empty element list offers
+     * nothing, so it yields zero as well.
+     */
+    fun showList(
+        type: Int,
+        title: String,
+        text: String,
+        elements: Array<out Any>
+    ): Int
 }

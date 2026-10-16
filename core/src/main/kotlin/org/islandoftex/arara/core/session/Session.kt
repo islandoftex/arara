@@ -11,18 +11,35 @@ import org.islandoftex.arara.core.localization.LanguageController
 /**
  * Implements the session, i.e. one single run of the whole arara tool.
  * It is a superset of the session exposed to the user.
- *
- * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
-actual object Session : Session {
+object Session : Session {
+    /**
+     * The logger of the session's own mutations: every set,
+     * overwrite, removal and wipe writes its line as it happens,
+     * so a variable interfering with a run tells its own story
+     * between the run's entries - the reads stay silent, as they
+     * fire on every conditional.
+     */
     private val logger = KotlinLogging.logger { }
 
     // the session map which holds the execution session;
     // the idea here is to provide wrappers to the map
     // methods, so it could be easily manipulated
+    /**
+     * The backing store of the session: the key-value pairs
+     * the run accumulates.
+     */
     private val map = mutableMapOf<String, Any>()
+
+    /**
+     * Spells a count of session variables for a log line, so the
+     * singular never reads as a plural.
+     *
+     * @param count The number of session variables.
+     * @return The count with its noun.
+     */
+    private fun variables(count: Int) =
+        "$count ${if (count == 1) "variable" else "variables"}"
 
     /**
      * arara's user interface configuration.
@@ -46,15 +63,11 @@ actual object Session : Session {
      * higher levels.
      */
     @Throws(AraraException::class)
-    override operator fun get(key: String): Any {
-        return if (contains(key)) {
-            map.getValue(key)
-        } else {
-            throw AraraException(
-                    LanguageController.messages.errorSessionObtainUnknownKey(key)
-            )
-        }
-    }
+    override operator fun get(key: String): Any =
+        map[key] ?: throw AraraException(
+            LanguageController.messages
+                .errorSessionObtainUnknownKey(key)
+        )
 
     /**
      * Inserts (or overwrites) the object indexed by the provided key into the
@@ -64,9 +77,15 @@ actual object Session : Session {
      * @param value The value to be inserted.
      */
     override fun put(key: String, value: Any) {
-        val overwritten = map.containsKey(key)
-        map[key] = value
-        logger.debug { "Session variable '$key' ${if (overwritten) "overwritten" else "set"}." }
+        val previous = map.put(key, value)
+        logger.info {
+            if (previous == null) {
+                "Session variable '$key' set to '$value'."
+            } else {
+                "Session variable '$key' overwritten with " +
+                    "'$value' (was '$previous')."
+            }
+        }
     }
 
     /**
@@ -81,10 +100,11 @@ actual object Session : Session {
     override fun remove(key: String) {
         if (contains(key)) {
             map.remove(key)
-            logger.debug { "Session variable '$key' removed." }
+            logger.info { "Session variable '$key' removed." }
         } else {
             throw AraraException(
-                    LanguageController.messages.errorSessionRemoveUnknownKey(key)
+                    LanguageController.messages
+                            .errorSessionRemoveUnknownKey(key)
             )
         }
     }
@@ -105,7 +125,7 @@ actual object Session : Session {
     override fun clear() {
         val count = map.size
         map.clear()
-        logger.debug { "Session cleared (${variables(count)})." }
+        logger.info { "Session cleared (${variables(count)})." }
     }
 
     /**
@@ -117,22 +137,25 @@ actual object Session : Session {
      * @param removalFilter Which environment variables to remove beforehand.
      *   By default all values will be removed.
      */
-    actual fun updateEnvironmentVariables(
-            additionFilter: (String) -> Boolean,
-            removalFilter: (String) -> Boolean
+    fun updateEnvironmentVariables(
+            additionFilter: (String) -> Boolean = { true },
+            removalFilter: (String) -> Boolean = { true }
     ) {
-        // remove all current environment variables to clean up the session
+        // remove all current environment variables to clean up the session;
+        // both filters operate on the plain environment variable names
         map.filterKeys { it.startsWith("environment:") }
-                .filterKeys { removalFilter(it.removePrefix("environment:")) }
-                .forEach { remove(it.key) }
+                .forEach { (key, _) ->
+                    if (removalFilter(key.removePrefix("environment:")))
+                        remove(key)
+                }
         // add all relevant new environment variables
         map.putAll(
-            System.getenv().filterKeys(additionFilter).mapKeys { "environment:${it.key}" }
+                System.getenv()
+                        .filterKeys(additionFilter)
+                        .mapKeys { "environment:${it.key}" }
         )
-        logger.debug {
-            val count = map.keys.count { it.startsWith("environment:") }
-            "Session environment refreshed (${variables(count)})."
-        }
+        val count = map.keys.count { it.startsWith("environment:") }
+        logger.info { "Session environment refreshed (${variables(count)})." }
     }
 
     private fun variables(count: Int): String = "$count ${if (count == 1) "variable" else "variables"}"

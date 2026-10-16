@@ -4,12 +4,21 @@ package org.islandoftex.arara.core.session
 import kotlin.time.TimeMark
 import org.islandoftex.arara.api.session.ExecutionReport
 
-/** Elapsed-time marks and final status for a file or a complete invocation. */
+/**
+ * Implements the execution report model, holding the start and end
+ * stamps of an execution and the resulting exit code.
+ */
 data class ExecutionReport(
-    /** Monotonic mark captured before execution. */
+    /**
+     * The monotonic mark the execution started at.
+     */
     override val executionStarted: TimeMark,
-    /** Monotonic mark captured after execution. */
+    /**
+     * The monotonic mark the execution stopped at.
+     */
     override val executionStopped: TimeMark,
-    /** Final status; zero denotes success. */
+    /**
+     * The exit code the execution reports.
+     */
     override val exitCode: Int
 ) : ExecutionReport

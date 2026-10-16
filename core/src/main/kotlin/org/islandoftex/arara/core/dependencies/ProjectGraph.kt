@@ -6,13 +6,15 @@ import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.core.localization.LanguageController
 
 /**
- * A graph of projects. Implemented for convenience.
+ * A graph of the projects of one run: the projects are the
+ * vertices and their dependencies the edges, and the topological
+ * walk resolves the execution order.
  */
 internal class ProjectGraph : Graph<Project>({ it.name }) {
     /**
      * Add all projects and their dependencies into the graph.
      *
-     * @param projects The iterable of projects to
+     * @param projects The iterable of projects to add to the graph.
      */
     fun addAll(projects: Iterable<Project>) {
         val ordered = projects.sortedBy { it.name }
@@ -25,9 +27,13 @@ internal class ProjectGraph : Graph<Project>({ it.name }) {
         ordered.forEach { project ->
             project.dependencies.sorted().forEach { dependency ->
                 addEdge(
-                    byName[dependency]
+                    projects.find { it.name == dependency }
                         ?: throw AraraException(
-                            LanguageController.messages.errorProjectUnknownDependency(project.name, dependency)
+                            // the enumeration shape joins the merge
+                            // validation's, so both sites render the
+                            // verdict the same way
+                            LanguageController.messages
+                                .errorProjectStrayDependency("($dependency)")
                         ),
                     project
                 )

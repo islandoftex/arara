@@ -7,15 +7,16 @@ import org.islandoftex.arara.api.rules.DirectiveConditionalType
 /**
  * The conditional class, it represents the type of conditional available
  * for a directive and its corresponding expression to be evaluated.
- *
- * @author Island of TeX
- * @version 5.0
- * @since 4.0
  */
 data class DirectiveConditional(
-    /** Conditional operator applied to the directive. */
+    /**
+     * The kind of the conditional: none, `if`, `while`, `until` or
+     * `unless`.
+     */
     override val type: DirectiveConditionalType = DirectiveConditionalType.NONE,
-    /** Expression evaluated by the selected rule engine. */
+    /**
+     * The condition expression, evaluated by the engine's dialect.
+     */
     override val condition: String = ""
 ) : DirectiveConditional {
     /**
@@ -23,9 +24,9 @@ data class DirectiveConditional(
      * @return A string representation of this object.
      */
     override fun toString(): String {
-        return "{ $type" +
-            if (type != DirectiveConditionalType.NONE)
-                ", expression: ${condition.trim()}"
-            else "" + " }"
+        val expression = if (type != DirectiveConditionalType.NONE)
+            ", expression: ${condition.trim()}"
+        else ""
+        return "{ $type$expression }"
     }
 }

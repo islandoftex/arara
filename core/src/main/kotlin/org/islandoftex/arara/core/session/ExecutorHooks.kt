@@ -5,27 +5,51 @@ import org.islandoftex.arara.api.files.Project
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.Directive
 import org.islandoftex.arara.api.session.ExecutionReport
-import org.islandoftex.arara.core.files.BuildWorkspaceEvent
 
 /**
  * arara's core executor is configurable at some places by inserting hooks.
  * This is a collection of all hooks that are applicable.
  */
 data class ExecutorHooks(
-    /** Called after invocation validation, before any project runs. */
+    /**
+     * Runs once, before the whole execution.
+     */
     val executeBeforeExecution: () -> Unit = { },
-    /** Called with the aggregate report when execution returns normally, including nonzero statuses. */
+    /**
+     * Runs once, after the whole execution, with its report.
+     */
     val executeAfterExecution: (ExecutionReport) -> Unit = { _ -> },
-    /** Called after the current project is set, before its files run. */
+    /**
+     * Runs before every project, with the project.
+     */
     val executeBeforeProject: (Project) -> Unit = { _ -> },
-    /** Called after the project file loop, including a stop on a nonzero status; skipped on exceptions. */
+    /**
+     * Runs after every project, with the project.
+     *
+     * A project the run abandons mid-file - a failing file under
+     * the error-halt option, or a halt request with a failing
+     * status - never reaches this hook: the stop leaves the file
+     * loop directly.
+     */
     val executeAfterProject: (Project) -> Unit = { _ -> },
-    /** Called before the file becomes current and its directives are fetched. */
+    /**
+     * Runs before every file, with the file.
+     */
     val executeBeforeFile: (ProjectFile) -> Unit = { _ -> },
-    /** Called with the file report after current-file state is cleared; skipped if file execution throws. */
+    /**
+     * Runs after every file that completed, with the report of
+     * that file's own run: its start and stop stamps and the
+     * exit code it reports.
+     *
+     * A file the run stops at - a failing task under the error-halt
+     * option, or a halt request with a failing status - never
+     * reaches this hook: the stop returns before the closing hook
+     * runs.
+     */
     val executeAfterFile: (ExecutionReport) -> Unit = { _ -> },
-    /** Transforms extracted directives before their execution; also receives the current project file. */
-    val processDirectives: (ProjectFile, List<Directive>) -> List<Directive> = { _, l -> l },
-    /** Workspace operations, including validation, preparation metrics and failures. */
-    val buildWorkspace: (BuildWorkspaceEvent) -> Unit = { }
+    /**
+     * Processes the directives of every file, returning the list to
+     * execute; preambles and validation plug in here.
+     */
+    val processDirectives: (ProjectFile, List<Directive>) -> List<Directive> = { _, l -> l }
 )
