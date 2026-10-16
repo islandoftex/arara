@@ -3,70 +3,186 @@ package org.islandoftex.arara.cli.console
 
 import org.islandoftex.arara.api.files.ProjectFile
 import org.islandoftex.arara.api.rules.DirectiveConditional
-import org.islandoftex.arara.core.localization.LanguageController
+import org.islandoftex.arara.api.session.Command
 
-/** Terminal presentation only; logging belongs to the display facade. */
+/**
+ * Defines the contract of a console renderer: the whole run
+ * lifecycle a presentation prints - the entries and their results,
+ * the file information, the messages, the errors and the closing
+ * blocks. The display facade keeps every call site stable and owns
+ * the log entries, so a renderer is pure presentation: it prints
+ * and holds no logging, and the application resolves the renderer
+ * once at startup without touching the interpreter, the command
+ * runner or the command line.
+ */
 @Suppress("TooManyFunctions")
 interface ConsoleRenderer {
-    /** Print the application logo and version. */
+    /**
+     * Displays the application banner in the terminal: the greeting
+     * that opens every run.
+     */
     fun printBanner()
-    /** Begin presentation of a task within its rule. */
-    fun printEntry(name: String, task: String)
-    /** Finish the current task with a success or failure result. */
+
+    /**
+     * Displays the current entry result in the terminal.
+     *
+     * @param value The boolean value to be displayed.
+     */
     fun printEntryResult(value: Boolean)
-    /** Present an application error and optional cause details. */
+
+    /**
+     * Displays the current entry in the terminal.
+     *
+     * @param name The rule name.
+     * @param task Task name.
+     */
+    fun printEntry(name: String, task: String)
+
+    /**
+     * Displays the exception in the terminal.
+     *
+     * @param text The message to be displayed.
+     * @param details The underlying cause details, if any.
+     */
     fun printException(text: String, details: String?)
-    /** Print prose wrapped to the available terminal width. */
+
+    /**
+     * Displays the provided text wrapped nicely according to the
+     * default terminal width.
+     *
+     * @param text The text to be displayed.
+     */
     fun printWrapped(text: String)
-    /** Present the rule authors. */
+
+    /**
+     * Displays the rule authors in the terminal.
+     *
+     * @param authors The list of authors.
+     */
     fun printAuthors(authors: List<String>)
-    /** Present the directive conditional, including its expression. */
+
+    /**
+     * Displays the current conditional in the terminal.
+     *
+     * @param conditional The conditional object.
+     */
     fun printConditional(conditional: DirectiveConditional)
-    /** Present elapsed time in seconds. */
+
+    /**
+     * Displays the elapsed time in the terminal.
+     *
+     * @param seconds The elapsed seconds.
+     */
     fun printTime(seconds: Double)
-    /** Present the input path, size and modification time. */
-    fun printFileInformation(file: ProjectFile)
-    /** Build a separator for the current output width. */
-    fun displaySeparator(): String
-    /** Build an output-buffer separator containing the supplied message. */
+
+    /**
+     * Gets the output separator with the provided text.
+     *
+     * @param message The provided text.
+     * @return A string containing the output separator with the
+     * provided text.
+     */
     fun displayOutputSeparator(message: String): String
 
-    /** Present a workspace operation before validation, staging or cleanup starts. */
-    fun startBuildDirectory(message: String) = printWrapped(message)
+    /**
+     * Gets the line separator.
+     *
+     * @return A string containing the line separator.
+     */
+    fun displaySeparator(): String
 
-    /** Retire workspace feedback and present its localized outcome. */
-    fun finishBuildDirectory(message: String) = printWrapped(message)
+    /**
+     * Displays the file information in the terminal: the localized
+     * file line of the run.
+     *
+     * @param file The project file.
+     */
+    fun printFileInformation(file: ProjectFile)
 
-    /** Suspend live feedback before another component prints or asks for input. */
-    fun suspendProgress() { }
+    /**
+     * Displays the project information in the terminal: the
+     * structural line that opens a project's territory in a
+     * multi-project run. Single-project runs never call it, so
+     * the historic silhouette keeps its shape.
+     *
+     * @param name The display name of the project - the model's
+     *   name for specification projects, or the anonymous
+     *   project's label.
+     * @param directory The working directory's short name.
+     */
+    fun printProjectInformation(name: String, directory: String)
 
-    /** Release presentation-owned resources; host streams remain open. */
-    fun close() { }
+    /**
+     * Displays the command a dry run is about to run. The historic
+     * plain presentation renders the localized sentence, so its
+     * override carries the bytes and the default here is a
+     * uniformity guarantee for presentations that own no words of
+     * their own, rather than a load-bearing silence.
+     *
+     * @param command The command the dry run simulates.
+     */
+    fun printDryRunCommand(command: Command) {
+    }
 
-    /** Legacy project presentation hook; the default emits nothing. */
-    fun printProjectInformation(name: String, directory: String) { }
+    /**
+     * Displays the details of the task a verbose styled run shows:
+     * the command it executes, its conditional and the rule authors,
+     * framed for the tool output that follows. The historic plain
+     * presentation prints none of these, so the default says
+     * nothing.
+     *
+     * @param command The command the task executes.
+     * @param conditional The conditional of the directive.
+     * @param authors The authors of the rule.
+     */
+    fun printTaskDetails(
+        command: Command,
+        conditional: DirectiveConditional,
+        authors: List<String>
+    ) {
+    }
 
-    /** Present project context, identifying multi-project runs; the default delegates to the legacy hook. */
-    fun printProjectInformation(name: String, directory: String, multipleProjects: Boolean) =
-        printProjectInformation(name, directory)
+    /**
+     * Displays the naming of a directive its conditional skipped.
+     * The historic plain presentation leaves no console trace of a
+     * skip - the log carries the record - so the default says
+     * nothing.
+     *
+     * @param identifier The identifier of the skipped directive.
+     */
+    fun printSkippedDirective(identifier: String) {
+    }
 
-    /** Present complete run metadata; the default delegates to the legacy file-status summary. */
-    fun printRunSummary(summary: RunSummary) =
-        printRunSummary(summary.success, summary.files.map { it.path.toString() to it.exitCode })
+    /**
+     * Displays the tail of the output a failed command captured, so
+     * the tool's own explanation of its failure sits beside the
+     * verdict. A verbose run already streamed the output live, and
+     * the historic plain presentation keeps its silence, so the
+     * default says nothing.
+     *
+     * @param output The captured output of the failed command.
+     */
+    fun printCommandFailure(output: String) {
+    }
 
-    /** Present command, conditional and author fields; the default emits nothing. */
-    fun printTaskDetails(command: String, conditional: DirectiveConditional, authors: List<String>) { }
+    /**
+     * Displays the files that were requested but never reached,
+     * when an exception stopped the run before their turn. The
+     * line follows the closing summary, naming what the run left
+     * undone.
+     *
+     * @param files The names of the files that were never started.
+     */
+    fun printUnprocessedFiles(files: List<String>)
 
-    /** Present a simulated command; the default prints the localized dry-run message. */
-    fun printDryRunCommand(command: String) =
-        printWrapped(LanguageController.messages.infoInterpreterDryRunModeSystemCommand(command))
-
-    /** Present a directive skipped by its conditional; the default emits nothing. */
-    fun printSkippedDirective(identifier: String) { }
-
-    /** Present a process launch or execution failure; the default emits nothing. */
-    fun printCommandFailure(output: String) { }
-
-    /** Legacy run summary hook; null file statuses identify files never reached. The default emits nothing. */
-    fun printRunSummary(success: Boolean, files: List<Pair<String, Int?>>) { }
+    /**
+     * Displays the closing summary of the run: the verdict and, for
+     * the presentations that keep one, the table of the processed
+     * files. The historic plain ending stays as it always was, so
+     * the default says nothing.
+     *
+     * @param success Whether the whole run succeeded.
+     */
+    fun printRunSummary(success: Boolean) {
+    }
 }
