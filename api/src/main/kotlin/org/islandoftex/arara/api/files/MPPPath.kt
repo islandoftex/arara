@@ -3,145 +3,163 @@ package org.islandoftex.arara.api.files
 
 import java.io.File
 import java.io.IOException
-import java.nio.charset.CodingErrorAction
-import java.nio.file.FileSystemLoopException
-import java.nio.file.Path
+import java.nio.file.Path as JVMPath
 import java.nio.file.Paths
-import kotlin.io.path.name
 import kotlin.jvm.Throws
-import okio.BufferedSource
 import okio.FileMetadata
-import okio.FileSystem
-import okio.FileSystem.Companion.asOkioFileSystem
+import okio.Path
 import okio.Path.Companion.toPath
 import okio.buffer
 import org.islandoftex.arara.api.AraraIOException
 import org.islandoftex.arara.api.time.DateTime
+import org.islandoftex.arara.api.utils.OS
 
 /**
- * Platform-independent object to deal with paths.
+ * A path model for arara, built on a multiplatform path algebra and
+ * retaining both the path exactly as provided and an absolutized,
+ * normalized reference of it.
+ *
+ * Members that inspect the raw spelling (`isAbsolute`, `startsWith`,
+ * the `resolve` inputs and the JVM bridges) read the provided path;
+ * identity, I/O and display operate on the reference.
  */
 // since this should provide a fluent API to deal with paths,
 // we are adding an annotation to suppress detekt's warning
 // on too many functions
 @Suppress("TooManyFunctions")
-public actual class MPPPath {
-    internal val providedPath: Path
-    internal val referencePath: Path
-    private val fileSystem: FileSystem
-
+public class MPPPath {
     /**
-     * A constructor that accepts a string to be converted into a native path.
+     * The path exactly as the caller wrote it: it alone carries the
+     * original spelling, and backs the queries that depend on it -
+     * the absoluteness check and the prefix and resolution
+     * relations.
      */
-    public actual constructor(path: String) : this(Paths.get(path))
+    internal val providedPath: Path
+    /**
+     * The absolutized and normalized form of the provided path: it
+     * backs the string representation, the I/O and the equality of
+     * this model.
+     */
+    internal val referencePath: Path
 
     /**
-     * Get the last segment of a path which by definition is the file name.
+     * A constructor that accepts a string to be converted into a
+     * native path.
+     */
+    public constructor(path: String) {
+        val provided = platformSpelling(path).toPath()
+        this.providedPath = provided
+        this.referencePath = provided.absolutized()
+    }
+
+    /**
+     * A constructor that creates a copy of the provided path, retaining
+     * both its provided and reference forms.
      */
     public constructor(initPath: MPPPath) {
         providedPath = initPath.providedPath
         referencePath = initPath.referencePath
-        fileSystem = initPath.fileSystem
     }
 
     /**
-     * Internal constructor to ease handling JVM paths directly.
-     * It should apply the same logic in the actual constructor
-     * (absolute path + normalization).
+     * Internal constructor to handle platform paths directly. It
+     * applies the same canonicalization as the string constructor.
      */
-    internal constructor(initPath: Path, fileSystem: FileSystem = initPath.fileSystem.asOkioFileSystem()) {
-        this.fileSystem = fileSystem
+    internal constructor(initPath: Path) {
         providedPath = initPath
-        referencePath = initPath.toAbsolutePath().normalize()
+        referencePath = initPath.absolutized()
     }
 
     /**
      * Check whether a path is absolute. Does not guarantee it is normalized.
      */
-    public actual val isAbsolute: Boolean
+    public val isAbsolute: Boolean
         @JvmName("mppIsAbsolute")
         get() = providedPath.isAbsolute
 
     /**
      * Get the last segment of a path which by definition is the file name.
      */
-    public actual val fileName: String
+    public val fileName: String
         get() = referencePath.name
 
     /**
      * Get the file size of this file in bytes.
      */
-    public actual val fileSize: Long
-        get() = metadata().size ?: throw AraraIOException("File size is unavailable: $this")
+    public val fileSize: Long
+        get() = metadata().size ?: 0L
 
     /**
      * Get the last modification date of this file as timestamp.
      */
-    public actual val lastModified: DateTime
-        get() = metadata().lastModified ?: throw AraraIOException("Modification time is unavailable: $this")
+    public val lastModified: DateTime
+        get() = DateTime(metadata().lastModifiedAtMillis ?: 0L)
 
     /**
      * Get the parent object of the currently represented path. If it has no
      * parent, i.e. it is the root, it is returned itself.
      */
-    public actual val parent: MPPPath
-        get() = MPPPath(referencePath.parent ?: referencePath.root, fileSystem)
+    public val parent: MPPPath
+        get() = MPPPath(referencePath.parent ?: referencePath.root ?: referencePath)
 
     /**
      * Indicates whether the file exists.
      */
-    public actual val exists: Boolean
-        get() = probe { metadata(); true }
+    public val exists: Boolean
+        get() = resolveMetadataOrNull() != null
 
     /**
      * Indicates whether the file is a directory. If `false` it does not mean,
      * the file is a regular file.
      */
-    public actual val isDirectory: Boolean
-        get() = probe { metadata().isDirectory }
+    public val isDirectory: Boolean
+        get() = resolveMetadataOrNull()?.isDirectory == true
 
     /**
      * Indicates whether the file is a regular file. If `false` it does not
      * mean, the file is a directory.
      */
-    public actual val isRegularFile: Boolean
-        get() = probe { metadata().isRegularFile }
+    public val isRegularFile: Boolean
+        get() = resolveMetadataOrNull()?.isRegularFile == true
 
     /**
-     * Checks whether the path starts with [p].
+     * Checks whether the path starts with [p], comparing the provided
+     * spellings: the check is lexical, so different spellings of the
+     * same location do not match. Normalize both paths first when the
+     * comparison should be location-based.
      */
-    public actual fun startsWith(p: MPPPath): Boolean =
+    public fun startsWith(p: MPPPath): Boolean =
             providedPath.startsWith(p.providedPath)
 
     /**
      * Normalizes the path. For [MPPPath] this means, the path is transformed
      * into an absolute path and then normalized.
      */
-    public actual fun normalize(): MPPPath =
-            MPPPath(referencePath, fileSystem)
+    public fun normalize(): MPPPath =
+            MPPPath(referencePath)
 
     /**
      * Resolve the child [p] of the current path.
      */
-    public actual fun resolve(p: String): MPPPath =
-        MPPPath(providedPath.resolve(p), fileSystem)
+    public fun resolve(p: String): MPPPath =
+        MPPPath(providedPath.resolve(platformSpelling(p)))
 
     /**
      * Resolve the child [p] of the current path.
      */
-    public actual fun resolve(p: MPPPath): MPPPath =
-        MPPPath(providedPath.resolve(p.providedPath), fileSystem)
+    public fun resolve(p: MPPPath): MPPPath =
+        MPPPath(providedPath.resolve(p.providedPath))
 
     /**
      * Resolve the sibling [p] of the current path.
      */
-    public actual fun resolveSibling(p: String): MPPPath =
+    public fun resolveSibling(p: String): MPPPath =
         MPPPath(parent.resolve(p))
 
     /**
      * Resolve the sibling [p] of the current path.
      */
-    public actual fun resolveSibling(p: MPPPath): MPPPath =
+    public fun resolveSibling(p: MPPPath): MPPPath =
         MPPPath(parent.resolve(p))
 
     /**
@@ -150,14 +168,17 @@ public actual class MPPPath {
      * impossible.
      */
     @Throws(AraraIOException::class)
-    public actual fun readLines(): List<String> {
-        if (exists && !isRegularFile) throw AraraIOException("Can only read lines from files.")
-        return read { source ->
-            val decoder = Charsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
-                .onUnmappableCharacter(CodingErrorAction.REPORT)
-            java.io.InputStreamReader(source.inputStream(), decoder).buffered().readLines()
-        }
-    }
+    public fun readLines(): List<String> =
+            try {
+                PathModelFileSystem.current.read(referencePath) {
+                    readUtf8().lines()
+                }
+            } catch (ioexception: IOException) {
+                // the read taxonomy lives here, at the path layer: every
+                // consumer downstream catches this type, so a raw system
+                // failure would bypass the handler written for it
+                throw AraraIOException(ioexception.toString(), ioexception)
+            }
 
     /**
      * Read whole text from the file specified at the current path. Fails with
@@ -165,40 +186,61 @@ public actual class MPPPath {
      * impossible.
      */
     @Throws(AraraIOException::class)
-    public actual fun readText(): String {
-        if (exists && !isRegularFile) throw AraraIOException("Can only read text from files.")
-        return read { source -> source.inputStream().reader(Charsets.UTF_8).readText() }
-    }
+    public fun readText(): String =
+        if (isRegularFile)
+            try {
+                PathModelFileSystem.current.read(referencePath) { readUtf8() }
+            } catch (ioexception: IOException) {
+                throw AraraIOException(ioexception.toString(), ioexception)
+            }
+        else
+            throw AraraIOException("Can only read text from files.")
 
     /**
      * Write [text] to the file specified at the current path. Overwrite by
      * default if [append] is not set. Fails with an [AraraIOException]
-     * exception if the file is a directory or access is impossible.
+     * exception if the file is a directory or appending to a file that does
+     * not exist; other write failures surface as raw system exceptions, as
+     * the writing helpers catch those for their logical fallback.
      */
     @Throws(AraraIOException::class)
-    public actual fun writeText(text: String, append: Boolean): Unit = io {
+    public fun writeText(text: String, append: Boolean = false): Unit {
         if (isDirectory) throw AraraIOException("Can only write text to files.")
-        if (append && !exists) throw AraraIOException("Can only append text to existing files.")
-
-        val sink = if (append) fileSystem.appendingSink(toOkioPath(), mustExist = true)
-            else fileSystem.sink(toOkioPath())
-        sink.buffer().use { it.write(text.toByteArray(Charsets.UTF_8)) }
+        if (append) {
+            if (!exists) {
+                throw AraraIOException("Can only append text to existing files.")
+            }
+            PathModelFileSystem.current.appendingSink(referencePath)
+                .buffer().use { it.writeUtf8(text) }
+        }
+        else {
+            PathModelFileSystem.current.write(referencePath) {
+                writeUtf8(text)
+            }
+        }
     }
 
     /**
-     * The platform path spelling, without resolving symbolic links.
+     * The string representation is the reference path, that is, the
+     * absolutized and normalized spelling. The form the caller wrote
+     * the path in is not visible here; two paths created from different
+     * spellings of the same location print the same string.
      */
     override fun toString(): String =
         referencePath.toString()
 
     /**
-     * Hash of the underlying platform path.
+     * The hash code is derived from the absolute, normalized reference
+     * path, consistent with [equals].
      */
     override fun hashCode(): Int =
         referencePath.hashCode()
 
     /**
-     * Lexical platform path equality; does not compare file contents or resolve symbolic links.
+     * Two paths are equal if they denote the same location, that is, if
+     * their absolute, normalized reference paths match. The provided
+     * (raw) spellings are irrelevant: `MPPPath("a")` and the absolute
+     * form of the same location are equal.
      */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -212,165 +254,163 @@ public actual class MPPPath {
     /**
      * Resolve the child [p] against the current path.
      */
-    public actual operator fun div(p: String): MPPPath = resolve(p)
+    public operator fun div(p: String): MPPPath = resolve(p)
 
     /**
      * Resolve the child [p] against the current path.
      */
-    public actual operator fun div(p: MPPPath): MPPPath = resolve(p)
+    public operator fun div(p: MPPPath): MPPPath = resolve(p)
 
     /**
      * Treat this path as a directory identifier and create a directory at
      * this location including all missing parents.
      * Does nothing if a directory exists at the current location.
      *
-     * Fails with an [AraraIOException] if the directory could not be created
-     * or a regular file exists at the location.
+     * Fails with an [AraraIOException] when a regular file exists at
+     * the location; a creation the backend refuses surfaces as the
+     * raw system error of the underlying operation.
      */
     @Throws(AraraIOException::class)
-    public actual fun createDirectories(): Unit = io {
+    public fun createDirectories() {
         if (!exists) {
-            if (fileSystem.metadataOrNull(toOkioPath())?.symlinkTarget != null) {
-                throw IOException("Cannot create a directory at an unresolved link: $this")
+            PathModelFileSystem.current.createDirectories(referencePath)
+        } else {
+            if (isRegularFile) {
+                throw AraraIOException("Directory already exists as a file.")
             }
-            fileSystem.createDirectories(toOkioPath())
-        } else if (isRegularFile) throw AraraIOException("Directory already exists as a file.")
+        }
     }
 
     /**
      * Treat this path as a directory identifier and remove it at
      * this location including its contents.
      * Does nothing if this directory does not exist at the current location.
-     * Directory links are removed without deleting their targets.
      *
-     * Fails with an [AraraIOException] if the directory could not be removed
-     * or a regular file exists at the location.
+     * Fails with an [AraraIOException] when a regular file exists at
+     * the location; a removal the backend refuses surfaces as the
+     * raw system error of the underlying operation.
      */
     @Throws(AraraIOException::class)
-    public actual fun removeDirectory(): Unit = io {
+    public fun removeDirectory() {
         if (exists) {
-            if (!isDirectory) throw AraraIOException("Target directory is a file.")
-            fileSystem.deleteRecursively(toOkioPath())
-        }
-    }
-
-    /**
-     * Absolute normalized backend path; never exports the provided spelling.
-     */
-    public actual fun toOkioPath(): okio.Path = referencePath.toString().toPath()
-
-    /**
-     * Strict lookup: missing files, cycles and inspection failures raise [AraraIOException].
-     */
-    @Throws(AraraIOException::class)
-    public actual fun metadata(): PathMetadata = io {
-        val metadata = resolvedMetadata().second
-        PathMetadata(
-            metadata.isRegularFile,
-            metadata.isDirectory,
-            metadata.size,
-            metadata.lastModifiedAtMillis?.let { DateTime(it) }
-        )
-    }
-
-    /**
-     * The source belongs to this call and is closed after [block] returns.
-     */
-    @Throws(AraraIOException::class)
-    public actual fun <T> read(block: (BufferedSource) -> T): T = io {
-        val (resolved, metadata) = resolvedMetadata()
-        if (!metadata.isRegularFile) throw AraraIOException("Can only read from files: $this")
-        fileSystem.source(resolved).buffer().use(block)
-    }
-
-    /**
-     * Direct children from this backend, including directories and special files.
-     */
-    @Throws(AraraIOException::class)
-    public actual fun listEntries(): List<MPPPath> = io {
-        fileSystem.list(toOkioPath()).map { MPPPath(referencePath.fileSystem.getPath(it.toString()), fileSystem) }
-    }
-
-    /**
-     * Follow directory links, detecting ancestor cycles without suppressing sibling aliases.
-     */
-    @Throws(AraraIOException::class)
-    public actual fun listFiles(recursive: Boolean): List<MPPPath> = io {
-        val files = mutableListOf<MPPPath>()
-        val ancestors = mutableSetOf<okio.Path>()
-
-        fun visit(path: MPPPath, descend: Boolean) {
-            val (resolved, metadata) = path.resolvedMetadata()
-            if (metadata.isRegularFile) {
-                files.add(path)
-            } else if (metadata.isDirectory && descend) {
-                val canonical = fileSystem.canonicalize(resolved)
-                if (!ancestors.add(canonical)) throw FileSystemLoopException(path.toString())
-                try {
-                    fileSystem.list(path.toOkioPath()).forEach { child ->
-                        try {
-                            visit(MPPPath(referencePath.fileSystem.getPath(child.toString()), fileSystem), recursive)
-                        } catch (_: java.io.FileNotFoundException) {
-                            // Broken links and entries removed during traversal are not regular files.
-                        }
-                    }
-                } finally {
-                    ancestors.remove(canonical)
-                }
+            if (isDirectory) {
+                PathModelFileSystem.current.deleteRecursively(referencePath)
+            }
+            else {
+                throw AraraIOException("Target directory is a file.")
             }
         }
-
-        visit(this, true)
-        files.sortedBy { it.toString() }
     }
 
-    private fun resolvedMetadata(): Pair<okio.Path, FileMetadata> {
-        var path = toOkioPath()
-        val visited = mutableSetOf<okio.Path>()
-        while (true) {
-            if (!visited.add(path)) throw FileSystemLoopException(path.toString())
-            val metadata = fileSystem.metadata(path)
-            val target = metadata.symlinkTarget ?: return path to metadata
-            path = (if (target.isAbsolute) target else path.parent!!.resolve(target)).normalized()
+    // the file system reads metadata without following symlinks and
+    // reports the link target separately, while the established
+    // semantics of this model follow links; chains are resolved
+    // here, and a chain exceeding the limit counts as unresolvable,
+    // matching how such loops surface as errors on the platform
+    /**
+     * Resolves the file metadata through the JVM bridge,
+     * following symlink chains as the backend reads them,
+     * or null when the path names no file.
+     *
+     * @return The metadata of the file, or null.
+     */
+    private fun resolveMetadataOrNull(): FileMetadata? {
+        var path = referencePath
+        repeat(SYMLINK_CHAIN_LIMIT) {
+            val metadata = PathModelFileSystem.current.metadataOrNull(path)
+            // a missing file or a terminal link ends the walk: the
+            // metadata is null in the former case and final in the
+            // latter, and both return through the same branch
+            val target = metadata?.symlinkTarget ?: return metadata
+            path = if (target.isAbsolute) target
+            else path.parent?.let { parent -> parent / target } ?: target
         }
+        return null
     }
 
-    private inline fun probe(block: () -> Boolean): Boolean = try {
-        block()
-    } catch (_: AraraIOException) {
-        false
-    } catch (_: SecurityException) {
-        false
-    }
-
-    private inline fun <T> io(operation: () -> T): T = try {
-        operation()
-    } catch (exception: IOException) {
-        throw AraraIOException(exception.toString(), exception)
-    }
-
+    /**
+     * Resolves the file metadata through the JVM bridge, failing
+     * with an I/O error when the path names no file.
+     *
+     * @return The metadata of the file.
+     */
+    private fun metadata(): FileMetadata =
+        resolveMetadataOrNull()
+            ?: throw AraraIOException("The file could not be found.")
 }
 
 /**
- * Return the absolute, normalized JVM [Path] of this multiplatform path.
+ * The number of symlink hops the model follows before treating a
+ * chain as a loop; the platform reports such loops as errors.
  */
-public fun MPPPath.toJVMPath(): Path =
-        this.referencePath
+private const val SYMLINK_CHAIN_LIMIT: Int = 8
 
 /**
- * Return the absolute, normalized JVM [File] of this multiplatform path.
+ * The working directory is queried at construction time, matching
+ * the platform semantics: absolutization resolves against the
+ * process working directory at the moment of the call.
+ */
+private val workingDirectory: Path
+    get() = System.getProperty("user.dir").toPath()
+
+/**
+ * Absolutizes the path against the working directory and
+ * normalizes the result.
+ */
+private fun Path.absolutized(): Path =
+    (workingDirectory / this).normalized()
+
+/**
+ * A segment-wise prefix check: the roots must match and the other
+ * path's segments must form a prefix of this path's segments,
+ * matching the platform comparison semantics.
+ */
+private fun Path.startsWith(other: Path): Boolean {
+    if (root != other.root) return false
+    val prefix = other.segments
+    val segments = segments
+    // the roots match, so the other path is a prefix when its
+    // segments form the head of this path's segments
+    return prefix.size <= segments.size &&
+        segments.subList(0, prefix.size) == prefix
+}
+
+/**
+ * Windows accepts both separators in spellings, but the path
+ * algebra recognizes a Windows path by its first backslash, and
+ * the TeX toolchain itself reports forward slashes there;
+ * drive-prefixed and UNC spellings are re-spelled with backslashes
+ * before parsing on that platform so they keep their intended
+ * shape.
+ */
+private fun platformSpelling(path: String): String {
+    if (!OS.isWindows) return path
+    val drivePrefixed = path.length >= 2 && path[1] == ':' &&
+        (path[0] in 'A'..'Z' || path[0] in 'a'..'z')
+    val uncPrefixed = path.startsWith("//")
+    return if (drivePrefixed || uncPrefixed) path.replace('/', '\\') else path
+}
+
+/**
+ * Return a JVM [JVMPath] representation of this multiplatform path.
+ */
+public fun MPPPath.toJVMPath(): JVMPath =
+        Paths.get(providedPath.toString())
+
+/**
+ * Return a JVM [File] representation of this multiplatform path.
  */
 public fun MPPPath.toJVMFile(): File =
-        this.referencePath.toFile()
+        File(providedPath.toString())
 
 /**
- * Simple wrapper to transform a JVM [Path] into a [MPPPath].
+ * Simple wrapper to transform a JVM [JVMPath] into a [MPPPath].
  */
-public fun Path.toMPPPath(): MPPPath =
-        MPPPath(this)
+public fun JVMPath.toMPPPath(): MPPPath =
+        MPPPath(toString())
 
 /**
  * Simple wrapper to transform a JVM [File] into a [MPPPath].
  */
 public fun File.toMPPPath(): MPPPath =
-        MPPPath(this.toPath())
+        MPPPath(toString())
